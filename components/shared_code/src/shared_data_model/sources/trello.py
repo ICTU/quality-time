@@ -1,6 +1,8 @@
 """Trello source."""
 
-from shared_data_model.meta.entity import EntityAttributeType
+from pydantic import HttpUrl
+
+from shared_data_model.meta.entity import Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     URL,
@@ -12,15 +14,15 @@ from shared_data_model.parameters import (
 
 ALL_TRELLO_METRICS = ["issues", "source_up_to_dateness"]
 
-ISSUE_ENTITY = {
-    "name": "issue",
-    "attributes": [
-        {"name": "Title", "url": "url"},
-        {"name": "List"},
-        {"name": "Due date", "type": EntityAttributeType.DATETIME},
-        {"name": "Date of last activity", "key": "date_last_activity", "type": EntityAttributeType.DATETIME},
+ISSUE_ENTITY = Entity(
+    name="issue",
+    attributes=[
+        EntityAttribute(name="Title", url="url"),
+        EntityAttribute(name="List"),
+        EntityAttribute(name="Due date", type=EntityAttributeType.DATETIME),
+        EntityAttribute(name="Date of last activity", key="date_last_activity", type=EntityAttributeType.DATETIME),
     ],
-}
+)
 
 INACTIVE_DAYS_PARAMETER = Days(
     name="Number of days without activity after which to consider cards inactive",
@@ -43,32 +45,35 @@ CARDS_TO_COUNT_PARAMETER = MultipleChoiceParameter(
     metrics=["issues"],
 )
 
+TRELLO_URL = "https://trello.com"
+TRELLO_APP_KEY_URL = HttpUrl(f"{TRELLO_URL}/app-key")
+
 TRELLO = Source(
     name="Trello",
     description="Trello is a collaboration tool that organizes projects into boards.",
-    url="https://trello.com",
+    url=HttpUrl(TRELLO_URL),
     parameters={
         "url": URL(
             name="URL",
             validate_on=["api_key", "token"],
-            default_value="https://trello.com",
+            default_value=TRELLO_URL,
             metrics=ALL_TRELLO_METRICS,
         ),
         "api_key": StringParameter(
             name="API key",
             short_name="API key",
-            help_url="https://trello.com/app-key",
+            help_url=TRELLO_APP_KEY_URL,
             metrics=ALL_TRELLO_METRICS,
         ),
         "token": StringParameter(
             name="Token",
-            help_url="https://trello.com/app-key",
+            help_url=TRELLO_APP_KEY_URL,
             metrics=ALL_TRELLO_METRICS,
         ),
         "board": StringParameter(
             name="Board (title or id)",
             short_name="board",
-            help_url="https://trello.com/1/members/me/boards?fields=name",
+            help_url=HttpUrl(f"{TRELLO_URL}/1/members/me/boards?fields=name"),
             mandatory=True,
             metrics=ALL_TRELLO_METRICS,
         ),

@@ -1,6 +1,8 @@
 """GitLab source."""
 
-from shared_data_model.meta.entity import Color, EntityAttributeType
+from pydantic import HttpUrl
+
+from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     URL,
@@ -27,28 +29,28 @@ ALL_GITLAB_METRICS = [
     "unused_jobs",
 ]
 
-JOB_ENTITY = {
-    "name": "job",
-    "attributes": [
-        {"name": "Job name", "key": "name", "url": "url"},
-        {"name": "Job stage", "key": "stage"},
-        {"name": "Branch or tag", "key": "branch"},
-        {
-            "name": "Status of most recent build",
-            "key": "build_status",
-            "color": {"canceled": Color.ACTIVE, "failed": Color.NEGATIVE, "success": Color.POSITIVE},
-        },
-        {"name": "Date of most recent build", "key": "build_date", "type": EntityAttributeType.DATE},
+JOB_ENTITY = Entity(
+    name="job",
+    attributes=[
+        EntityAttribute(name="Job name", key="name", url="url"),
+        EntityAttribute(name="Job stage", key="stage"),
+        EntityAttribute(name="Branch or tag", key="branch"),
+        EntityAttribute(
+            name="Status of most recent build",
+            key="build_status",
+            color={"canceled": Color.ACTIVE, "failed": Color.NEGATIVE, "success": Color.POSITIVE},
+        ),
+        EntityAttribute(name="Date of most recent build", key="build_date", type=EntityAttributeType.DATE),
     ],
-}
+)
 
-GITLAB_BRANCH_HELP_URL = "https://docs.gitlab.com/ee/user/project/repository/branches/"
+GITLAB_BRANCH_HELP_URL = HttpUrl("https://docs.gitlab.com/ee/user/project/repository/branches/")
 
 GITLAB = Source(
     name="GitLab",
     description="GitLab provides Git-repositories, wiki's, issue-tracking and continuous integration/continuous "
     "deployment pipelines.",
-    url="https://about.gitlab.com/",
+    url=HttpUrl("https://about.gitlab.com/"),
     documentation={
         "generic": """```{note}
 Some metric sources are documents in JSON, XML, CSV, or HTML format. Examples include JUnit XML reports, JaCoCo XML
@@ -95,7 +97,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             name="Project (name with namespace or id)",
             short_name="project",
             mandatory=True,
-            help_url="https://docs.gitlab.com/ee/user/project/",
+            help_url=HttpUrl("https://docs.gitlab.com/ee/user/project/"),
             metrics=[
                 "failed_jobs",
                 "job_runs_within_time_period",
@@ -107,7 +109,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         ),
         "private_token": PrivateToken(
             name="Private token (with read_api scope)",
-            help_url="https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html",
+            help_url=HttpUrl("https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html"),
             metrics=ALL_GITLAB_METRICS,
         ),
         "file_path": StringParameter(
@@ -154,7 +156,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         "approval_state": MultipleChoiceParameter(
             name="Approval states to include (requires GitLab Premium)",
             short_name="approval states",
-            help_url="https://docs.gitlab.com/ee/user/project/merge_requests/approvals/",
+            help_url=HttpUrl("https://docs.gitlab.com/ee/user/project/merge_requests/approvals/"),
             values=["approved", "not approved", "unknown"],
             api_values={"approved": "yes", "not approved": "no", "unknown": "?"},
             placeholder="all approval states",
@@ -216,28 +218,32 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
     entities={
         "failed_jobs": JOB_ENTITY,
         "job_runs_within_time_period": JOB_ENTITY,
-        "merge_requests": {
-            "name": "merge request",
-            "attributes": [
-                {"name": "Merge request", "key": "title", "url": "url"},
-                {"name": "Target branch"},
-                {"name": "State"},
-                {"name": "Approved"},
-                {"name": "Upvotes", "type": EntityAttributeType.INTEGER},
-                {"name": "Downvotes", "type": EntityAttributeType.INTEGER},
-                {"name": "Created", "type": EntityAttributeType.DATETIME},
-                {"name": "Updated", "type": EntityAttributeType.DATETIME},
-                {"name": "Merged", "type": EntityAttributeType.DATETIME},
+        "merge_requests": Entity(
+            name="merge request",
+            attributes=[
+                EntityAttribute(name="Merge request", key="title", url="url"),
+                EntityAttribute(name="Target branch"),
+                EntityAttribute(name="State"),
+                EntityAttribute(name="Approved"),
+                EntityAttribute(name="Upvotes", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Downvotes", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Created", type=EntityAttributeType.DATETIME),
+                EntityAttribute(name="Updated", type=EntityAttributeType.DATETIME),
+                EntityAttribute(name="Merged", type=EntityAttributeType.DATETIME),
             ],
-        },
-        "unmerged_branches": {
-            "name": "branch",
-            "name_plural": "branches",
-            "attributes": [
-                {"name": "Branch name", "key": "name", "url": "url"},
-                {"name": "Date of most recent commit", "key": "commit_date", "type": EntityAttributeType.DATE},
+        ),
+        "unmerged_branches": Entity(
+            name="branch",
+            name_plural="branches",
+            attributes=[
+                EntityAttribute(name="Branch name", key="name", url="url"),
+                EntityAttribute(
+                    name="Date of most recent commit",
+                    key="commit_date",
+                    type=EntityAttributeType.DATE,
+                ),
             ],
-        },
+        ),
         "unused_jobs": JOB_ENTITY,
     },
 )

@@ -13,5 +13,5 @@ class MetaModelTestCase(unittest.TestCase):
     def check_validation_error(self, message, **model_kwargs):
         """Check that parsing the object with the model raises a validation error with the specified message."""
         with self.assertRaises(ValidationError) as context:
-            self.MODEL.parse_obj(model_kwargs)
+            self.MODEL(**model_kwargs)
         self.assertIn(message, str(context.exception))

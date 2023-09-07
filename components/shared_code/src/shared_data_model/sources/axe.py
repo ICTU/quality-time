@@ -1,6 +1,8 @@
 """Axe sources."""
 
-from shared_data_model.meta.entity import Color
+from pydantic import HttpUrl
+
+from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import MultipleChoiceParameter, MultipleChoiceWithAdditionParameter, access_parameters
 
@@ -56,26 +58,26 @@ RESULT_TYPES = MultipleChoiceParameter(
 )
 
 ENTITIES = {
-    "accessibility": {
-        "name": "accessibility violation",
-        "attributes": [
-            {"name": "Violation type", "url": "help"},
-            {
-                "name": "Result type",
-                "color": {
+    "accessibility": Entity(
+        name="accessibility violation",
+        attributes=[
+            EntityAttribute(name="Violation type", url="help"),
+            EntityAttribute(
+                name="Result type",
+                color={
                     "passes": Color.POSITIVE,
                     "violations": Color.NEGATIVE,
                     "inapplicable": Color.ACTIVE,
                     "incomplete": Color.WARNING,
                 },
-            },
-            {"name": "Impact"},
-            {"name": "Page of the violation", "key": "page", "url": "url"},
-            {"name": "Element"},
-            {"name": "Description"},
-            {"name": "Tags"},
+            ),
+            EntityAttribute(name="Impact"),
+            EntityAttribute(name="Page of the violation", key="page", url="url"),
+            EntityAttribute(name="Element"),
+            EntityAttribute(name="Description"),
+            EntityAttribute(name="Tags"),
         ],
-    },
+    ),
 }
 
 AXE_CORE_DOCUMENTATION = """
@@ -89,7 +91,7 @@ in one JSON file that contains a list of results objects.
 AXE_CORE = Source(
     name="Axe-core",
     description="Axe is an accessibility testing engine for websites and other HTML-based user interfaces.",
-    url="https://github.com/dequelabs/axe-core",
+    url=HttpUrl("https://github.com/dequelabs/axe-core"),
     documentation={
         "accessibility": AXE_CORE_DOCUMENTATION,
         "source_up_to_dateness": AXE_CORE_DOCUMENTATION
@@ -113,54 +115,54 @@ When combining results objects, make sure the `testEngine` field is retained in 
 ```
 """,
     },
-    parameters=dict(
-        tags_to_include=TAGS_TO_INCLUDE,
-        tags_to_ignore=TAGS_TO_IGNORE,
-        element_include_filter=ELEMENT_INCLUDE_FILTER,
-        element_exclude_filter=ELEMENT_EXCLUDE_FILTER,
-        impact=IMPACT,
-        result_types=RESULT_TYPES,
+    parameters={
+        "tags_to_include": TAGS_TO_INCLUDE,
+        "tags_to_ignore": TAGS_TO_IGNORE,
+        "element_include_filter": ELEMENT_INCLUDE_FILTER,
+        "element_exclude_filter": ELEMENT_EXCLUDE_FILTER,
+        "impact": IMPACT,
+        "result_types": RESULT_TYPES,
         **access_parameters(ALL_AXE_CORE_METRICS, source_type="an Axe-core report", source_type_format="JSON"),
-    ),
+    },
     entities=ENTITIES,
 )
 
 AXE_HTML_REPORTER = Source(
     name="Axe HTML reporter",
     description="Creates an HTML report from the axe-core library AxeResults object.",
-    url="https://www.npmjs.com/package/axe-html-reporter",
-    parameters=dict(
-        tags_to_include=TAGS_TO_INCLUDE,
-        tags_to_ignore=TAGS_TO_IGNORE,
-        element_include_filter=ELEMENT_INCLUDE_FILTER,
-        element_exclude_filter=ELEMENT_EXCLUDE_FILTER,
-        impact=IMPACT,
-        result_types=RESULT_TYPES,
+    url=HttpUrl("https://www.npmjs.com/package/axe-html-reporter"),
+    parameters={
+        "tags_to_include": TAGS_TO_INCLUDE,
+        "tags_to_ignore": TAGS_TO_IGNORE,
+        "element_include_filter": ELEMENT_INCLUDE_FILTER,
+        "element_exclude_filter": ELEMENT_EXCLUDE_FILTER,
+        "impact": IMPACT,
+        "result_types": RESULT_TYPES,
         **access_parameters(["accessibility"], source_type="an Axe report", source_type_format="HTML"),
-    ),
+    },
     entities=ENTITIES,
 )
 
 AXE_CSV = Source(
     name="Axe CSV",
     description="An Axe accessibility report in CSV format.",
-    url="https://github.com/ICTU/axe-reports",
-    parameters=dict(
-        element_include_filter=ELEMENT_INCLUDE_FILTER,
-        element_exclude_filter=ELEMENT_EXCLUDE_FILTER,
-        impact=IMPACT,
+    url=HttpUrl("https://github.com/ICTU/axe-reports"),
+    parameters={
+        "element_include_filter": ELEMENT_INCLUDE_FILTER,
+        "element_exclude_filter": ELEMENT_EXCLUDE_FILTER,
+        "impact": IMPACT,
         **access_parameters(["accessibility"], source_type="an Axe report", source_type_format="CSV"),
-    ),
+    },
     entities={
-        "accessibility": {
-            "name": "accessibility violation",
-            "attributes": [
-                {"name": "Violation type", "url": "help"},
-                {"name": "Impact"},
-                {"name": "Page of the violation", "key": "page", "url": "url"},
-                {"name": "Element"},
-                {"name": "Description"},
+        "accessibility": Entity(
+            name="accessibility violation",
+            attributes=[
+                EntityAttribute(name="Violation type", url="help"),
+                EntityAttribute(name="Impact"),
+                EntityAttribute(name="Page of the violation", key="page", url="url"),
+                EntityAttribute(name="Element"),
+                EntityAttribute(name="Description"),
             ],
-        },
+        ),
     },
 )

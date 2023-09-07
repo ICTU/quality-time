@@ -1,6 +1,8 @@
 """Performancetest-runner source."""
 
-from shared_data_model.meta.entity import Color
+from pydantic import HttpUrl
+
+from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     MultipleChoiceParameter,
@@ -22,10 +24,10 @@ ALL_PERFORMANCETEST_RUNNER_METRICS = [
 PERFORMANCETEST_RUNNER = Source(
     name="Performancetest-runner",
     description="An open source tool to run performancetests and create performancetest reports.",
-    url="https://github.com/ICTU/performancetest-runner",
-    parameters=dict(
-        test_result=TestResult(values=["failed", "success"]),
-        thresholds=MultipleChoiceParameter(
+    url=HttpUrl("https://github.com/ICTU/performancetest-runner"),
+    parameters={
+        "test_result": TestResult(values=["failed", "success"]),
+        "thresholds": MultipleChoiceParameter(
             name="Thresholds",
             help="If provided, only count transactions that surpass the selected thresholds.",
             placeholder="all thresholds",
@@ -33,13 +35,13 @@ PERFORMANCETEST_RUNNER = Source(
             api_values={"high": "red", "warning": "yellow"},
             metrics=["slow_transactions"],
         ),
-        transactions_to_ignore=MultipleChoiceWithAdditionParameter(
+        "transactions_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Transactions to ignore (regular expressions or transaction names)",
             short_name="transactions to ignore",
             help="Transactions to ignore can be specified by transaction name or by regular expression.",
             metrics=TRANSACTION_METRICS,
         ),
-        transactions_to_include=MultipleChoiceWithAdditionParameter(
+        "transactions_to_include": MultipleChoiceWithAdditionParameter(
             name="Transactions to include (regular expressions or transaction names)",
             short_name="transactions to include",
             help="Transactions to include can be specified by transaction name or by regular expression.",
@@ -52,14 +54,14 @@ PERFORMANCETEST_RUNNER = Source(
             source_type_format="HTML",
             include={"landing_url": False},
         ),
-    ),
+    },
     entities={
-        "slow_transactions": {
-            "name": "slow transaction",
-            "attributes": [
-                {"name": "Transaction", "key": "name"},
-                {"name": "Threshold", "color": {"high": Color.NEGATIVE, "warning": Color.WARNING}},
+        "slow_transactions": Entity(
+            name="slow transaction",
+            attributes=[
+                EntityAttribute(name="Transaction", key="name"),
+                EntityAttribute(name="Threshold", color={"high": Color.NEGATIVE, "warning": Color.WARNING}),
             ],
-        },
+        ),
     },
 )

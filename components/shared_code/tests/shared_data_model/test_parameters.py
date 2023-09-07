@@ -16,5 +16,5 @@ class IntegerParameterTest(MetaModelTestCase):
             "Parameter Parameter has no unit",
             name="Parameter",
             type="integer",
-            metrics=[],
+            metrics=["loc"],
         )

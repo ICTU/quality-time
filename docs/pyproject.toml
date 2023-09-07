@@ -5,6 +5,7 @@ dependencies = [
     "furo==2023.8.19",
     "gitpython==3.1.35",
     "myst-parser==2.0.0",
+    "pydantic==2.3.0",  # Needed for generating the reference docs from the data model
     "Sphinx==7.2.5",
     "sphinx-copybutton==0.5.2",
     "sphinx_design==0.5.0"
@@ -16,7 +17,6 @@ dev = [
     "pip==23.2.1",
     "pipx==1.2.0",
     "pip-tools==7.3.0",  # To add hashes to requirements
-    "pydantic==1.10.12",  # Needed for importing the data model in the tests from the shared code component
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
@@ -24,6 +24,7 @@ tools = [
     "bandit==1.7.5",
     "mypy==1.5.1",
     "pip-audit==2.6.1",
+    "pydantic==2.3.0",  # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "ruff==0.0.287",
     "safety==2.3.5",
     "vulture==2.9.1"
@@ -33,6 +34,7 @@ tools = [
 line-length = 120
 
 [tool.mypy]
+plugins = "pydantic.mypy"
 ignore_missing_imports = false
 incremental = false
 warn_redundant_casts = true
@@ -53,6 +55,13 @@ ignore = [
     "PD",      # https://beta.ruff.rs/docs/rules/#pandas-vet-pd - pandas isn't used
     "PT",      # https://beta.ruff.rs/docs/rules/#flake8-pytest-style-pt - pytest isn't used
 ]
+
+[tool.ruff.isort]
+section-order = ["future", "standard-library", "third-party", "second-party", "first-party", "tests", "local-folder"]
+
+[tool.ruff.isort.sections]
+"second-party" = ["shared", "shared_data_model"]
+"tests" = ["tests"]
 
 [tool.ruff.per-file-ignores]
 ".vulture_ignore_list.py" = ["ALL"]

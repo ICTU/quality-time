@@ -7,4 +7,4 @@ from .sources import SOURCES
 from .subjects import SUBJECTS
 
 DATA_MODEL = DataModel(scales=SCALES, metrics=METRICS, sources=SOURCES, subjects=SUBJECTS)
-DATA_MODEL_JSON = DATA_MODEL.json(exclude_none=True)
+DATA_MODEL_JSON = DATA_MODEL.model_dump_json(exclude_none=True)

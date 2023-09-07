@@ -1,6 +1,14 @@
 """Quality-time source."""
 
-from shared_data_model.meta.entity import Color, EntityAttributeAligment, EntityAttributeType
+from pydantic import HttpUrl
+
+from shared_data_model.meta.entity import (
+    Color,
+    Entity,
+    EntityAttribute,
+    EntityAttributeAligment,
+    EntityAttributeType,
+)
 from shared_data_model.meta.source import Source
 from shared_data_model.meta.unit import Unit
 from shared_data_model.parameters import (
@@ -15,7 +23,7 @@ ALL_QUALITY_TIME_METRICS = ["metrics", "missing_metrics", "source_up_to_dateness
 QUALITY_TIME = Source(
     name="Quality-time",
     description="Quality report software for software development and maintenance.",
-    url="https://github.com/ICTU/quality-time",
+    url=HttpUrl("https://github.com/ICTU/quality-time"),
     parameters={
         "url": URL(
             name="Quality-time URL",
@@ -259,36 +267,36 @@ QUALITY_TIME = Source(
         ),
     },
     entities={
-        "metrics": {
-            "name": "metric",
-            "attributes": [
-                {"name": "Report", "url": "report_url"},
-                {"name": "Subject", "url": "subject_url"},
-                {"name": "Metric", "url": "metric_url"},
-                {
-                    "name": "Status",
-                    "type": EntityAttributeType.STATUS,
-                    "color": {
+        "metrics": Entity(
+            name="metric",
+            attributes=[
+                EntityAttribute(name="Report", url="report_url"),
+                EntityAttribute(name="Subject", url="subject_url"),
+                EntityAttribute(name="Metric", url="metric_url"),
+                EntityAttribute(
+                    name="Status",
+                    type=EntityAttributeType.STATUS,
+                    color={
                         "target_met": Color.POSITIVE,
                         "near_target_met": Color.WARNING,
                         "target_not_met": Color.NEGATIVE,
                         "technical_debt_target_met": Color.ACTIVE,
                     },
-                },
-                {"name": "Status start date", "type": EntityAttributeType.DATE},
-                {"name": "Measurement", "type": EntityAttributeType.INTEGER},
-                {"name": "Target", "alignment": EntityAttributeAligment.RIGHT},
-                {"name": "Unit"},
+                ),
+                EntityAttribute(name="Status start date", type=EntityAttributeType.DATE),
+                EntityAttribute(name="Measurement", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Target", alignment=EntityAttributeAligment.RIGHT),
+                EntityAttribute(name="Unit"),
             ],
-        },
-        "missing_metrics": {
-            "name": "metric type",
-            "attributes": [
-                {"name": "Report", "url": "report_url"},
-                {"name": "Subject", "url": "subject_url"},
-                {"name": "Subject type"},
-                {"name": "Metric type"},
+        ),
+        "missing_metrics": Entity(
+            name="metric type",
+            attributes=[
+                EntityAttribute(name="Report", url="report_url"),
+                EntityAttribute(name="Subject", url="subject_url"),
+                EntityAttribute(name="Subject type"),
+                EntityAttribute(name="Metric type"),
             ],
-        },
+        ),
     },
 )

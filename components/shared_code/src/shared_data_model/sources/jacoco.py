@@ -1,5 +1,7 @@
 """JaCoCo source."""
 
+from pydantic import HttpUrl
+
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import access_parameters
 
@@ -10,7 +12,7 @@ ALL_JACOCO_METRICS = ["source_up_to_dateness", "uncovered_branches", "uncovered_
 JACOCO = Source(
     name="JaCoCo",
     description="JaCoCo is an open-source tool for measuring and reporting Java code coverage.",
-    url="https://www.eclemma.org/jacoco/",
+    url=HttpUrl("https://www.eclemma.org/jacoco/"),
     parameters=access_parameters(ALL_JACOCO_METRICS, source_type="JaCoCo report", source_type_format="XML"),
 )
 
@@ -22,7 +24,7 @@ JACOCO_JENKINS_PLUGIN = Source(
         "uncovered_branches": JENKINS_TOKEN_DOCS,
         "uncovered_lines": JENKINS_TOKEN_DOCS,
     },
-    url="https://plugins.jenkins.io/jacoco",
+    url=HttpUrl("https://plugins.jenkins.io/jacoco"),
     parameters=jenkins_access_parameters(
         ALL_JACOCO_METRICS,
         kwargs={

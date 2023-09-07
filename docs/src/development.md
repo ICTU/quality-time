@@ -176,27 +176,25 @@ Suppose we want to add a lines of code metric to the data model, to measure the 
 ```python
 """Data model metrics."""
 
-from .meta.metric import ..., Metrics, Tag, Unit
+from .meta.metric import ..., Metric, Tag, Unit
 
 ...
 
-METRICS = Metrics.parse_obj(
-    dict(
-        ...
-        loc=dict(
-            name="Size (LOC)",
-            description="The size of the software in lines of code.",
-            rationale="The size of software is correlated with the effort it takes to maintain it. Lines of code is "
-            "one of the most widely used metrics to measure size of software.",
-            unit=Unit.LINES,
-            target="30000",
-            near_target="35000",
-            sources=["manual_number"],
-            tags=[Tag.MAINTAINABILITY],
-        ),
-        ...
-    )
-)
+METRICS = {
+    ...
+    "loc": Metric(
+        name="Size (LOC)",
+        description="The size of the software in lines of code.",
+        rationale="The size of software is correlated with the effort it takes to maintain it. Lines of code is "
+        "one of the most widely used metrics to measure size of software.",
+        unit=Unit.LINES,
+        target="30000",
+        near_target="35000",
+        sources=["manual_number"],
+        tags=[Tag.MAINTAINABILITY],
+    ),
+    ...
+}
 ```
 
 Since we have no (automated) source for the size metric yet, we have added manual number to the list of sources. We also need to add the size metric to the list of metrics that the manual number source supports:
@@ -264,23 +262,21 @@ CLOC = Source(
 Because cloc can be used to measure the lines of code metric, we need to add the cloc source to the list of sources that can measure lines of code:
 
 ```python
-METRICS = Metrics.parse_obj(
-    dict(
-        ...
-        loc=dict(
-            name="Size (LOC)",
-            description="The size of the software in lines of code.",
-            rationale="The size of software is correlated with the effort it takes to maintain it. Lines of code is "
-            "one of the most widely used metrics to measure size of software.",
-            unit=Unit.LINES,
-            target="30000",
-            near_target="35000",
-            sources=["cloc", "manual_number"],  # Add cloc here
-            tags=[Tag.MAINTAINABILITY],
-        ),
-        ...
-    )
-)
+METRICS = {
+    ...
+    "loc": Metric(
+        name="Size (LOC)",
+        description="The size of the software in lines of code.",
+        rationale="The size of software is correlated with the effort it takes to maintain it. Lines of code is "
+        "one of the most widely used metrics to measure size of software.",
+        unit=Unit.LINES,
+        target="30000",
+        near_target="35000",
+        sources=["cloc", "manual_number"],  # Add cloc here
+        tags=[Tag.MAINTAINABILITY],
+    ),
+    ...
+}
 ```
 
 ##### Adding a new source to the collector

@@ -50,9 +50,10 @@ Feature: measurement entities
       | 2   | 20           |
     Then the metric status is "target_met"
     When the client waits a second
-    When the client sets the status of entity 1 to "false_positive"
+    And the client sets the status of entity 1 to "false_positive"
     Then the metric status is "target_not_met"
-    When the client sets the status of entity 1 to "unconfirmed"
+    When the client waits a second
+    And the client sets the status of entity 1 to "unconfirmed"
     Then the metric status is "target_met"
 
   Scenario: mark an entity as false positive with status end date in the past

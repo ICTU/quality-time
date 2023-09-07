@@ -1,6 +1,8 @@
 """Jenkins source."""
 
-from shared_data_model.meta.entity import Color, EntityAttributeType
+from pydantic import HttpUrl
+
+from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.parameter import Parameter
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
@@ -12,7 +14,7 @@ from shared_data_model.parameters import (
     access_parameters,
 )
 
-AUTHENTICATION_URL = "https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/"
+AUTHENTICATION_URL = HttpUrl("https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/")
 
 
 def jenkins_access_parameters(*args, **kwargs) -> dict[str, Parameter]:
@@ -42,23 +44,23 @@ ALL_JENKINS_METRICS = [
     "unused_jobs",
 ]
 
-JOB_ENTITY = {
-    "name": "job",
-    "attributes": [
-        {"name": "Job name", "key": "name", "url": "url"},
-        {
-            "name": "Status of most recent build",
-            "key": "build_status",
-            "color": {
+JOB_ENTITY = Entity(
+    name="job",
+    attributes=[
+        EntityAttribute(name="Job name", key="name", url="url"),
+        EntityAttribute(
+            name="Status of most recent build",
+            key="build_status",
+            color={
                 "Success": Color.POSITIVE,
                 "Failure": Color.NEGATIVE,
                 "Aborted": Color.ACTIVE,
                 "Unstable": Color.WARNING,
             },
-        },
-        {"name": "Date of most recent build", "key": "build_date", "type": EntityAttributeType.DATE},
+        ),
+        EntityAttribute(name="Date of most recent build", key="build_date", type=EntityAttributeType.DATE),
     ],
-}
+)
 
 JENKINS = Source(
     name="Jenkins",
@@ -81,15 +83,15 @@ the "Username" field and the private token in the "**Password**" field.
         "source_up_to_dateness": JENKINS_TOKEN_DOCS,
         "source_version": JENKINS_TOKEN_DOCS,
     },
-    url="https://www.jenkins.io/",
-    parameters=dict(
-        inactive_days=Days(
+    url=HttpUrl("https://www.jenkins.io/"),
+    parameters={
+        "inactive_days": Days(
             name="Number of days without builds after which to consider CI-jobs unused",
             short_name="number of days without builds",
             default_value="90",
             metrics=["unused_jobs"],
         ),
-        jobs_to_include=MultipleChoiceWithAdditionParameter(
+        "jobs_to_include": MultipleChoiceWithAdditionParameter(
             name="Jobs to include (regular expressions or job names)",
             short_name="jobs to include",
             help="Jobs to include can be specified by job name or by regular expression. "
@@ -97,20 +99,20 @@ the "Username" field and the private token in the "**Password**" field.
             placeholder="all",
             metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
         ),
-        jobs_to_ignore=MultipleChoiceWithAdditionParameter(
+        "jobs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Jobs to ignore (regular expressions or job names)",
             short_name="jobs to ignore",
             help="Jobs to ignore can be specified by job name or by regular expression. "
             "Use {parent job name}/{child job name} for the names of nested jobs.",
             metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
         ),
-        lookback_days=Days(
+        "lookback_days": Days(
             name="Number of days to look back for selecting job builds",
             short_name="number of days to look back",
             default_value="90",
             metrics=["job_runs_within_time_period"],
         ),
-        result_type=MultipleChoiceParameter(
+        "result_type": MultipleChoiceParameter(
             name="Build result types",
             short_name="result types",
             help="Limit which build result types to include.",
@@ -118,7 +120,7 @@ the "Username" field and the private token in the "**Password**" field.
             values=["Aborted", "Failure", "Not built", "Success", "Unstable"],
             metrics=["source_up_to_dateness"],
         ),
-        failure_type=FailureType(values=["Aborted", "Failure", "Not built", "Unstable"]),
+        "failure_type": FailureType(values=["Aborted", "Failure", "Not built", "Unstable"]),
         **jenkins_access_parameters(
             ALL_JENKINS_METRICS,
             kwargs={
@@ -129,16 +131,20 @@ the "Username" field and the private token in the "**Password**" field.
                 },
             },
         ),
-    ),
+    },
     entities={
         "failed_jobs": JOB_ENTITY,
-        "job_runs_within_time_period": {
-            "name": "build",
-            "attributes": [
-                {"name": "Job name", "key": "name", "url": "url"},
-                {"name": "Number of builds in time period", "key": "build_count", "type": EntityAttributeType.INTEGER},
+        "job_runs_within_time_period": Entity(
+            name="build",
+            attributes=[
+                EntityAttribute(name="Job name", key="name", url="url"),
+                EntityAttribute(
+                    name="Number of builds in time period",
+                    key="build_count",
+                    type=EntityAttributeType.INTEGER,
+                ),
             ],
-        },
+        ),
         "source_up_to_dateness": JOB_ENTITY,
         "unused_jobs": JOB_ENTITY,
     },
@@ -146,18 +152,18 @@ the "Username" field and the private token in the "**Password**" field.
 
 ALL_JENKINS_TEST_REPORT_METRICS = ["source_up_to_dateness", "test_cases", "tests"]
 
-TEST_ENTITIES = {
-    "name": "test",
-    "attributes": [
-        {"name": "Class name"},
-        {"name": "Test case", "key": "name"},
-        {
-            "name": "Test result",
-            "color": {"failed": Color.NEGATIVE, "passed": Color.POSITIVE, "skipped": Color.WARNING},
-        },
-        {"name": "Number of builds the test has been failing", "key": "age", "type": EntityAttributeType.INTEGER},
+TEST_ENTITIES = Entity(
+    name="test",
+    attributes=[
+        EntityAttribute(name="Class name"),
+        EntityAttribute(name="Test case", key="name"),
+        EntityAttribute(
+            name="Test result",
+            color={"failed": Color.NEGATIVE, "passed": Color.POSITIVE, "skipped": Color.WARNING},
+        ),
+        EntityAttribute(name="Number of builds the test has been failing", key="age", type=EntityAttributeType.INTEGER),
     ],
-}
+)
 
 JENKINS_TEST_REPORT = Source(
     name="Jenkins test report",
@@ -167,9 +173,9 @@ JENKINS_TEST_REPORT = Source(
         "tests": JENKINS_TOKEN_DOCS,
         "source_up_to_dateness": JENKINS_TOKEN_DOCS,
     },
-    url="https://plugins.jenkins.io/junit",
-    parameters=dict(
-        test_result=TestResult(values=["failed", "passed", "skipped"]),
+    url=HttpUrl("https://plugins.jenkins.io/junit"),
+    parameters={
+        "test_result": TestResult(values=["failed", "passed", "skipped"]),
         **jenkins_access_parameters(
             ALL_JENKINS_TEST_REPORT_METRICS,
             kwargs={
@@ -180,6 +186,6 @@ JENKINS_TEST_REPORT = Source(
                 },
             },
         ),
-    ),
+    },
     entities={"tests": TEST_ENTITIES, "test_cases": TEST_ENTITIES},
 )
