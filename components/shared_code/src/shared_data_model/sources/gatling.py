@@ -1,6 +1,8 @@
 """Gatling sources."""
 
-from shared_data_model.meta.entity import EntityAttributeType
+from pydantic import HttpUrl
+
+from shared_data_model.meta.entity import Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     MultipleChoiceWithAdditionParameter,
@@ -20,7 +22,7 @@ from .jmeter import (
 GATLING_JSON_METRICS = ["slow_transactions", "tests"]
 GATLING_LOG_METRICS = ["performancetest_duration", "source_up_to_dateness", "source_version"]
 GATLING_METRICS = GATLING_JSON_METRICS + GATLING_LOG_METRICS
-GATLING_URL = "https://gatling.io"
+GATLING_URL = HttpUrl("https://gatling.io")
 GATLING_DESCRIPTION = (
     "Gatling is an open-source load testing solution, designed for continuous load testing and development pipeline "
     "integration."
@@ -67,42 +69,42 @@ del GATLING_SLOW_TRANSACTION_ENTITY_ATTRIBUTES[8]  # Remove the 90th percentile 
 del GATLING_SLOW_TRANSACTION_ENTITY_ATTRIBUTES[5]  # Remove the median attribute
 GATLING_SLOW_TRANSACTION_ENTITY_ATTRIBUTES.insert(
     7,
-    {
-        "name": "50th percentile",
-        "help": "50th percentile response time (milliseconds)",
-        "key": "percentile_50_response_time",
-        "type": EntityAttributeType.FLOAT,
-    },
+    EntityAttribute(
+        name="50th percentile",
+        help="50th percentile response time (milliseconds)",
+        key="percentile_50_response_time",
+        type=EntityAttributeType.FLOAT,
+    ),
 )
 GATLING_SLOW_TRANSACTION_ENTITY_ATTRIBUTES.insert(
     8,
-    {
-        "name": "75 percentile",
-        "help": "75th percentile response time (milliseconds)",
-        "key": "percentile_75_response_time",
-        "type": EntityAttributeType.FLOAT,
-    },
+    EntityAttribute(
+        name="75 percentile",
+        help="75th percentile response time (milliseconds)",
+        key="percentile_75_response_time",
+        type=EntityAttributeType.FLOAT,
+    ),
 )
 
 ENTITIES = {
-    "slow_transactions": {
-        "name": "slow transaction",
-        "attributes": GATLING_SLOW_TRANSACTION_ENTITY_ATTRIBUTES,
-    },
+    "slow_transactions": Entity(
+        name="slow transaction",
+        attributes=GATLING_SLOW_TRANSACTION_ENTITY_ATTRIBUTES,
+    ),
 }
 
 GATLING = Source(
     name="Gatling",
     description=GATLING_DESCRIPTION,
     url=GATLING_URL,
-    parameters=dict(
-        test_result=TestResult(values=["failed", "success"]),
-        response_time_to_evaluate=RESPONSE_TIME_TO_EVALUATE,
-        target_response_time=TARGET_RESPONSE_TIME,
-        transaction_specific_target_response_times=TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
-        transactions_to_ignore=TRANSACTIONS_TO_IGNORE,
-        transactions_to_include=TRANSACTIONS_TO_INCLUDE,
+    parameters={
+        "test_result": TestResult(values=["failed", "success"]),
+        "response_time_to_evaluate": RESPONSE_TIME_TO_EVALUATE,
+        "target_response_time": TARGET_RESPONSE_TIME,
+        "transaction_specific_target_response_times": TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
+        "transactions_to_ignore": TRANSACTIONS_TO_IGNORE,
+        "transactions_to_include": TRANSACTIONS_TO_INCLUDE,
         **access_parameters(GATLING_METRICS, source_type="Gatling report", source_type_format="HTML"),
-    ),
+    },
     entities=ENTITIES,
 )

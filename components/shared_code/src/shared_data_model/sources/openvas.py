@@ -1,6 +1,8 @@
 """OpenVAS source."""
 
-from shared_data_model.meta.entity import Color
+from pydantic import HttpUrl
+
+from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import Severities, access_parameters
 
@@ -10,21 +12,21 @@ OPENVAS = Source(
     name="OpenVAS",
     description="OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools "
     "offering vulnerability scanning and vulnerability management.",
-    url="https://www.openvas.org",
-    parameters=dict(
-        severities=Severities(values=["log", "low", "medium", "high"]),
+    url=HttpUrl("https://www.openvas.org"),
+    parameters={
+        "severities": Severities(values=["log", "low", "medium", "high"]),
         **access_parameters(ALL_OPENVAS_METRICS, source_type="an OpenVAS report", source_type_format="XML"),
-    ),
+    },
     entities={
-        "security_warnings": {
-            "name": "security warning",
-            "attributes": [
-                {"name": "Warning", "key": "name"},
-                {"name": "Severity", "color": {"High": Color.NEGATIVE, "Medium": Color.WARNING}},
-                {"name": "Description", "pre": True},
-                {"name": "Host"},
-                {"name": "Port"},
+        "security_warnings": Entity(
+            name="security warning",
+            attributes=[
+                EntityAttribute(name="Warning", key="name"),
+                EntityAttribute(name="Severity", color={"High": Color.NEGATIVE, "Medium": Color.WARNING}),
+                EntityAttribute(name="Description", pre=True),
+                EntityAttribute(name="Host"),
+                EntityAttribute(name="Port"),
             ],
-        },
+        ),
     },
 )

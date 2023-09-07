@@ -1,5 +1,7 @@
 """Cobertura source."""
 
+from pydantic import HttpUrl
+
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import access_parameters
 
@@ -8,7 +10,7 @@ from .jenkins import JENKINS_TOKEN_DOCS, jenkins_access_parameters
 COBERTURA = Source(
     name="Cobertura",
     description="Cobertura is a free Java tool that calculates the percentage of code accessed by tests.",
-    url="https://cobertura.github.io/cobertura/",
+    url=HttpUrl("https://cobertura.github.io/cobertura/"),
     parameters=access_parameters(
         [
             "source_up_to_dateness",
@@ -30,7 +32,7 @@ COBERTURA_JENKINS_PLUGIN = Source(
         "uncovered_branches": JENKINS_TOKEN_DOCS,
         "uncovered_lines": JENKINS_TOKEN_DOCS,
     },
-    url="https://plugins.jenkins.io/cobertura/",
+    url=HttpUrl("https://plugins.jenkins.io/cobertura/"),
     parameters=jenkins_access_parameters(
         ["source_up_to_dateness", "uncovered_branches", "uncovered_lines"],
         kwargs={

@@ -1,6 +1,6 @@
 """Generic JSON for security warnings source."""
 
-from shared_data_model.meta.entity import Color
+from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import Severities, access_parameters
 
@@ -38,22 +38,22 @@ GENERIC_JSON = Source(
     name="JSON file with security warnings",
     description="A generic vulnerability report with security warnings in JSON format.",
     documentation={"generic": DOCUMENTATION},
-    parameters=dict(
-        severities=Severities(values=["low", "medium", "high"]),
+    parameters={
+        "severities": Severities(values=["low", "medium", "high"]),
         **access_parameters(
             ["security_warnings"],
             source_type="generic vulnerability report",
             source_type_format="JSON",
         ),
-    ),
+    },
     entities={
-        "security_warnings": {
-            "name": "security warning",
-            "attributes": [
-                {"name": "Title"},
-                {"name": "Description"},
-                {"name": "Severity", "color": {"high": Color.NEGATIVE, "medium": Color.WARNING}},
+        "security_warnings": Entity(
+            name="security warning",
+            attributes=[
+                EntityAttribute(name="Title"),
+                EntityAttribute(name="Description"),
+                EntityAttribute(name="Severity", color={"high": Color.NEGATIVE, "medium": Color.WARNING}),
             ],
-        },
+        ),
     },
 )

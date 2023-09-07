@@ -12,18 +12,19 @@ class EntityTest(MetaModelTestCase):
 
     def test_check_name_correct(self):
         """Test that a correct name passes the check."""
-        entity = Entity.parse_obj({"name": "lower case", "attributes": []})
+        entity = Entity(name="lower case", attributes=[])
         self.assertEqual("lower case", entity.name)
 
     def test_check_name_incorrect(self):
         """Test that an incorrect name does not pass the check."""
-        self.check_validation_error('name\n  string does not match regex "[a-z]+"', name="Upper case")
+        self.check_validation_error("String should match pattern '^[^A-Z]+$'", name="Upper case", attributes=[])
 
     def test_measured_attribute_exists(self):
         """Test that the measured attribute is an existing attribute."""
         self.check_validation_error(
             "Measured attribute attribute is not an attribute of entity entity",
             name="entity",
+            attributes=[],
             measured_attribute="attribute",
         )
 

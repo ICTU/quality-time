@@ -1,6 +1,8 @@
 """Robot Framework source."""
 
-from shared_data_model.meta.entity import Color
+from pydantic import HttpUrl
+
+from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import TestResult, access_parameters
 
@@ -12,23 +14,23 @@ ROBOT_FRAMEWORK = Source(
     name="Robot Framework",
     description="Robot Framework is a generic open source automation framework for acceptance testing, acceptance "
     "test driven development, and robotic process automation.",
-    url="https://robotframework.org",
-    parameters=dict(
-        test_result=TestResult(values=["fail", "pass", "skip"]),
+    url=HttpUrl("https://robotframework.org"),
+    parameters={
+        "test_result": TestResult(values=["fail", "pass", "skip"]),
         **access_parameters(
             ALL_ROBOT_FRAMEWORK_METRICS,
             source_type="Robot Framework report",
             source_type_format="XML",
         ),
-    ),
+    },
     entities={
-        "tests": {
-            "name": "test",
-            "attributes": [
-                {"name": "Test name", "key": "name"},
-                {"name": "Test result", "color": {"fail": Color.NEGATIVE, "pass": Color.POSITIVE}},
+        "tests": Entity(
+            name="test",
+            attributes=[
+                EntityAttribute(name="Test name", key="name"),
+                EntityAttribute(name="Test result", color={"fail": Color.NEGATIVE, "pass": Color.POSITIVE}),
             ],
-        },
+        ),
     },
 )
 
@@ -39,9 +41,12 @@ ROBOT_FRAMEWORK_JENKINS_PLUGIN = Source(
     description="A Jenkins plugin for Robot Framework, a generic open source automation framework for acceptance "
     "testing, acceptance test driven development, and robotic process automation.",
     documentation={"source_up_to_dateness": JENKINS_TOKEN_DOCS, "tests": JENKINS_TOKEN_DOCS},
-    url="https://plugins.jenkins.io/robot/",
-    parameters=dict(
-        test_result=TestResult(values=["fail", "pass"], api_values={"fail": "overallFailed", "pass": "overallPassed"}),
+    url=HttpUrl("https://plugins.jenkins.io/robot/"),
+    parameters={
+        "test_result": TestResult(
+            values=["fail", "pass"],
+            api_values={"fail": "overallFailed", "pass": "overallPassed"},
+        ),
         **jenkins_access_parameters(
             ALL_ROBOT_FRAMEWORK_JENKINS_PLUGIN_METRICS,
             kwargs={
@@ -52,5 +57,5 @@ ROBOT_FRAMEWORK_JENKINS_PLUGIN = Source(
                 },
             },
         ),
-    ),
+    },
 )

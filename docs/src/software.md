@@ -181,7 +181,7 @@ The `metrics` part of the data model is a dictionary with all supported metric t
 class Metric(DescribedModel):
     """Base model for metrics."""
 
-    scales: list[str] = Field(["count"], min_items=1)
+    scales: list[str] = Field(["count"], min_length=1)
     default_scale: str = "count"
     unit: Unit = Unit.NONE
     addition: Addition = Addition.SUM
@@ -189,8 +189,12 @@ class Metric(DescribedModel):
     target: str = "0"
     near_target: str = "10"
     sources: list[str] = Field(..., min_items=1)
-    default_source: Optional[str] = None
     tags: list[Tag] = []
+    rationale: str = ""  # Answers the question "Why measure this metric?", included in documentation and UI
+    rationale_urls: list[str] = []
+    explanation: str | None = ""  # Optional explanation of concepts in text format, included in documentation and UI
+    explanation_urls: list[str] = []
+    documentation: str | None = ""  # Optional documentation in Markdown format, only included in the documentation
 ```
 
 The `name` is the default name of metrics of this type. The `description` describes what the metric measures. These are part of the `DescribedModel`.
@@ -219,11 +223,12 @@ The `sources` part of the data model is a dictionary that describes all supporte
 class Source(DescribedModel):
     """The source model extends the base model with source parameters and measurement entities."""
 
-    url: Optional[HttpUrl] = None
-    configuration: Optional[Configurations] = None
-    parameters: Parameters
-    entities: Entities = cast(Entities, {})
-
+    url: HttpsUrl | None = None
+    documentation: dict[str, str] | None = None  # Documentation in Markdown format
+    configuration: dict[str, Configuration] = {}
+    parameters: dict[str, Parameter]
+    entities: dict[str, Entity] = {}
+    issue_tracker: bool | None = False
 ```
 
 The `name` is the default name of sources of this type. The `description` gives some background information on the source type. These are part of the `DescribedModel`.
@@ -250,18 +255,18 @@ The `parameters` describe the parameters that need to be entered by the user to 
 class Parameter(NamedModel):
     """Source parameter model."""
 
-    short_name: Optional[str] = None
-    help: Optional[str] = Field(None, regex=r".+\.")
-    help_url: Optional[HttpUrl] = None
+    short_name: str | None = None
+    help: str | None = None
+    help_url: HttpsUrl | None = None
     type: ParameterType
-    placeholder: Optional[str] = None
+    placeholder: str | None = None
     mandatory: bool = False
-    default_value: Union[str, list[str]] = ""
-    unit: Optional[str] = None
+    default_value: str | list[str] = ""
+    unit: str | None = None
     metrics: list[str] = Field(..., min_items=1)
-    values: Optional[list[str]] = None
-    api_values: Optional[dict[str, str]] = None
-    validate_on: Optional[list[str]] = None
+    values: list[str] | None = None
+    api_values: dict[str, str] | None = None
+    validate_on: list[str] | None = None
 ```
 
 Each parameter has a `name` (via `NamedModel`) and a `short_name` used as label in the user interface. The parameter can have a `help` string or a `help_url` (but not both).
@@ -293,20 +298,22 @@ class Entity(BaseModel):
     """Measurement entity (violation, warning, etc.)."""
 
     name: str = Field(..., regex=r"[a-z]+")
-    name_plural: Optional[str] = None
+    name_plural: str | None = None
     attributes: list[EntityAttribute]
-    measured_attribute: Optional[str] = None
+    measured_attribute: str | None = None
 
 
 class EntityAttribute(NamedModel):
     """Attributes of measurement entities."""
 
-    key: Optional[str] = None
-    url: Optional[str] = None
-    color: Optional[dict[str, Color]] = None
-    type: Optional[EntityAttributeType] = None
-    pre: Optional[bool] = None
-    visible: Optional[bool] = None
+    key: str | None = None
+    help: str | None = None
+    url: str | None = None  # Which key to use to get the URL for this attribute
+    color: dict[str, Color] | None = None
+    type: EntityAttributeType | None = None
+    alignment: EntityAttributeAligment | None = None  # If not given, the aligment is based on the attribute type
+    pre: bool | None = None  # Should the attribute be formatted using <pre></pre>? Defaults to False
+    visible: bool | None = None  # Should this attribute be visible in the UI? Defaults to True
 ```
 
 Each entity contains the name (both singular and plural) of the entities and a list of `attributes`.

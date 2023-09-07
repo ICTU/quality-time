@@ -1,11 +1,7 @@
 """Data model scales."""
 
-from .base import DescribedModel, MappedModel
+from .base import DescribedModel
 
 
 class Scale(DescribedModel):
     """Base model for scales."""
-
-
-class Scales(MappedModel[Scale]):
-    """Scales mapping."""

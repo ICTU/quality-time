@@ -1,6 +1,8 @@
 """JMeter sources."""
 
-from shared_data_model.meta.entity import EntityAttributeType
+from pydantic import HttpUrl
+
+from shared_data_model.meta.entity import Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     IntegerParameter,
@@ -13,7 +15,7 @@ from shared_data_model.parameters import (
 JMETER_JSON_METRICS = ["slow_transactions", "tests"]
 JMETER_CSV_METRICS = [*JMETER_JSON_METRICS, "performancetest_duration", "source_up_to_dateness"]
 
-JMETER_URL = "https://jmeter.apache.org"
+JMETER_URL = HttpUrl("https://jmeter.apache.org")
 
 JMETER_DESCRIPTION = (
     "Apache JMeter application is open source software, a 100% pure Java application designed to "
@@ -79,39 +81,39 @@ RESPONSE_TIME_TO_EVALUATE = SingleChoiceParameter(
 INTEGER, FLOAT = EntityAttributeType.INTEGER, EntityAttributeType.FLOAT
 HELP = "response time (milliseconds)"
 JMETER_SLOW_TRANSACTION_ENTITY_ATTRIBUTES = [
-    {"name": "Transactions", "key": "name"},
-    {"name": "Sample count", "type": INTEGER},
-    {"name": "Error count", "type": INTEGER},
-    {"name": "Error percentage", "type": FLOAT},
-    {"name": "Mean", "help": f"Mean {HELP}", "key": "mean_response_time", "type": FLOAT},
-    {"name": "Median", "help": f"Median {HELP}", "key": "median_response_time", "type": FLOAT},
-    {"name": "Minimum", "help": f"Minimum {HELP}", "key": "min_response_time", "type": FLOAT},
-    {"name": "Maximum", "help": f"Maximum {HELP}", "key": "max_response_time", "type": FLOAT},
-    {"name": PERCENTILE_90, "help": f"{PERCENTILE_90} {HELP}", "key": "percentile_90_response_time", "type": FLOAT},
-    {"name": PERCENTILE_95, "help": f"{PERCENTILE_95} {HELP}", "key": "percentile_95_response_time", "type": FLOAT},
-    {"name": PERCENTILE_99, "help": f"{PERCENTILE_99} {HELP}", "key": "percentile_99_response_time", "type": FLOAT},
+    EntityAttribute(name="Transactions", key="name"),
+    EntityAttribute(name="Sample count", type=INTEGER),
+    EntityAttribute(name="Error count", type=INTEGER),
+    EntityAttribute(name="Error percentage", type=FLOAT),
+    EntityAttribute(name="Mean", help=f"Mean {HELP}", key="mean_response_time", type=FLOAT),
+    EntityAttribute(name="Median", help=f"Median {HELP}", key="median_response_time", type=FLOAT),
+    EntityAttribute(name="Minimum", help=f"Minimum {HELP}", key="min_response_time", type=FLOAT),
+    EntityAttribute(name="Maximum", help=f"Maximum {HELP}", key="max_response_time", type=FLOAT),
+    EntityAttribute(name=PERCENTILE_90, help=f"{PERCENTILE_90} {HELP}", key="percentile_90_response_time", type=FLOAT),
+    EntityAttribute(name=PERCENTILE_95, help=f"{PERCENTILE_95} {HELP}", key="percentile_95_response_time", type=FLOAT),
+    EntityAttribute(name=PERCENTILE_99, help=f"{PERCENTILE_99} {HELP}", key="percentile_99_response_time", type=FLOAT),
 ]
 
 ENTITIES = {
-    "slow_transactions": {
-        "name": "slow transaction",
-        "attributes": JMETER_SLOW_TRANSACTION_ENTITY_ATTRIBUTES,
-    },
+    "slow_transactions": Entity(
+        name="slow transaction",
+        attributes=JMETER_SLOW_TRANSACTION_ENTITY_ATTRIBUTES,
+    ),
 }
 
 JMETER_CSV = Source(
     name="JMeter CSV",
     description=JMETER_DESCRIPTION,
     url=JMETER_URL,
-    parameters=dict(
-        test_result=TestResult(values=["failed", "success"]),
-        response_time_to_evaluate=RESPONSE_TIME_TO_EVALUATE,
-        target_response_time=TARGET_RESPONSE_TIME,
-        transaction_specific_target_response_times=TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
-        transactions_to_ignore=TRANSACTIONS_TO_IGNORE,
-        transactions_to_include=TRANSACTIONS_TO_INCLUDE,
+    parameters={
+        "test_result": TestResult(values=["failed", "success"]),
+        "response_time_to_evaluate": RESPONSE_TIME_TO_EVALUATE,
+        "target_response_time": TARGET_RESPONSE_TIME,
+        "transaction_specific_target_response_times": TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
+        "transactions_to_ignore": TRANSACTIONS_TO_IGNORE,
+        "transactions_to_include": TRANSACTIONS_TO_INCLUDE,
         **access_parameters(JMETER_CSV_METRICS, source_type="JMeter report", source_type_format="CSV"),
-    ),
+    },
     entities=ENTITIES,
 )
 
@@ -119,14 +121,14 @@ JMETER_JSON = Source(
     name="JMeter JSON",
     description=JMETER_DESCRIPTION,
     url=JMETER_URL,
-    parameters=dict(
-        test_result=TestResult(values=["failed", "success"]),
-        response_time_to_evaluate=RESPONSE_TIME_TO_EVALUATE,
-        target_response_time=TARGET_RESPONSE_TIME,
-        transaction_specific_target_response_times=TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
-        transactions_to_ignore=TRANSACTIONS_TO_IGNORE,
-        transactions_to_include=TRANSACTIONS_TO_INCLUDE,
+    parameters={
+        "test_result": TestResult(values=["failed", "success"]),
+        "response_time_to_evaluate": RESPONSE_TIME_TO_EVALUATE,
+        "target_response_time": TARGET_RESPONSE_TIME,
+        "transaction_specific_target_response_times": TRANSACTION_SPECIFIC_TARGET_RESPONSE_TIMES,
+        "transactions_to_ignore": TRANSACTIONS_TO_IGNORE,
+        "transactions_to_include": TRANSACTIONS_TO_INCLUDE,
         **access_parameters(JMETER_JSON_METRICS, source_type="JMeter report", source_type_format="JSON"),
-    ),
+    },
     entities=ENTITIES,
 )

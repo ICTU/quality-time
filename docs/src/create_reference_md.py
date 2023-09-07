@@ -3,6 +3,8 @@
 import pathlib
 import re
 
+from pydantic import HttpUrl
+
 from shared_data_model import DATA_MODEL
 from shared_data_model.meta import Metric, NamedModel, Parameter, Source, Subject
 
@@ -18,7 +20,7 @@ def markdown_paragraph(text: str) -> str:
     return f"\n{text}\n\n"
 
 
-def markdown_link(url: str, anchor: str | None = None) -> str:
+def markdown_link(url: HttpUrl | str, anchor: HttpUrl | str | None = None) -> str:
     """Return a Markdown link."""
     anchor = anchor or url
     return f"[{anchor}]({url})"

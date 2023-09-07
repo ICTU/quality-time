@@ -1,8 +1,10 @@
 """Data model source parameters."""
 
-from pydantic import Field, HttpUrl, validator
+from typing import Self
 
-from .base import MappedModel, NamedModel, StrEnum
+from pydantic import ConfigDict, Field, HttpUrl, model_validator
+
+from .base import NamedModel, StrEnum
 
 
 class ParameterType(StrEnum):
@@ -21,84 +23,83 @@ class ParameterType(StrEnum):
 class Parameter(NamedModel):
     """Source parameter model."""
 
-    short_name: str | None = None
-    help: str | None = Field(None, regex=r".+\.")  # noqa: A003
+    model_config = ConfigDict(validate_default=True)
+
+    short_name: str = ""
+    help: str | None = None  # noqa: A003
     help_url: HttpUrl | None = None
     type: ParameterType  # noqa: A003
     placeholder: str | None = None
     mandatory: bool = False
     default_value: str | list[str] = ""
     unit: str | None = None
-    metrics: list[str] = Field(..., min_items=1)
+    metrics: list[str] = Field(..., min_length=1)
     values: list[str] | None = None
     api_values: dict[str, str] | None = None
     validate_on: list[str] | None = None
 
-    @validator("short_name", always=True)
-    def set_short_name(cls, short_name: str | None, values) -> str | None:
+    @model_validator(mode="after")
+    def set_short_name(self) -> Self:
         """Set the short name if no value was supplied."""
-        return short_name or values["name"].lower()
+        if not self.short_name:
+            self.short_name = self.name.lower()
+        return self
 
-    @validator("help_url", always=True)
-    def check_help(cls, help_url: HttpUrl | None, values) -> HttpUrl | None:
+    @model_validator(mode="after")
+    def check_help(self) -> Self:
         """Check that not both help and help URL are set."""
-        if help_url and values.get("help"):
-            msg = f"Parameter {values['name']} has both help and help_url"
+        if self.help_url and self.help:
+            msg = f"Parameter {self.name} has both help and help_url"
             raise ValueError(msg)
-        return help_url
+        if self.help:
+            self.check_punctuation("help", self.help)
+        return self
 
-    @validator("placeholder", always=True)
-    def check_placeholder(cls, placeholder: str | None, values) -> str | None:
+    @model_validator(mode="after")
+    def check_placeholder(self) -> Self:
         """Check that a placeholder exist if the parameter type is multiple choice."""
-        if cls.is_multiple_choice(values) and not placeholder:
-            msg = f"Parameter {values['name']} is multiple choice but has no placeholder"
+        if self.is_multiple_choice() and not self.placeholder:
+            msg = f"Parameter {self.name} is multiple choice but has no placeholder"
             raise ValueError(msg)
-        return placeholder
+        return self
 
-    @validator("default_value", always=True)
-    def check_default_value(cls, default_value: str | list[str], values) -> str | list[str]:
+    @model_validator(mode="after")
+    def check_default_value(self) -> Self:
         """Check that the default value is a list if the parameter type is multiple choice."""
-        if cls.is_multiple_choice(values) and not isinstance(default_value, list):
-            msg = f"Parameter {values['name']} is multiple choice but default_value is not a list"
+        if self.is_multiple_choice() and not isinstance(self.default_value, list):
+            msg = f"Parameter {self.name} is multiple choice but default_value is not a list"
             raise ValueError(msg)
-        if cls.is_multiple_choice_with_addition(values) and isinstance(default_value, list) and default_value:
-            msg = f"Parameter {values['name']} is multiple choice with addition but default_value is not empty"
+        if self.is_multiple_choice_with_addition() and isinstance(self.default_value, list) and self.default_value:
+            msg = f"Parameter {self.name} is multiple choice with addition but default_value is not empty"
             raise ValueError(msg)
-        return default_value
+        return self
 
-    @validator("values", always=True)
-    def check_values(cls, values_list: list[str] | None, values) -> list[str] | None:
-        """Check that the there are at least two values if the parameter is multiple choice without addition."""
-        parameter_type = values.get("type")
-        if parameter_type == ParameterType.MULTIPLE_CHOICE and (values_list is None or len(values_list) <= 1):
-            msg = f"Parameter {values['name']} is multiple choice but has fewer than two values"
+    @model_validator(mode="after")
+    def check_values(self) -> Self:
+        """Check that the number of values of the parameter matches the parameter type."""
+        if self.type == ParameterType.MULTIPLE_CHOICE and (self.values is None or len(self.values) <= 1):
+            msg = f"Parameter {self.name} is multiple choice but has fewer than two values"
             raise ValueError(msg)
-        if cls.is_multiple_choice_with_addition(values) and values_list:
-            msg = f"Parameter {values['name']} is multiple choice with addition but has values"
+        if self.is_multiple_choice_with_addition() and self.values:
+            msg = f"Parameter {self.name} is multiple choice with addition but has values"
             raise ValueError(msg)
-        return values_list
+        return self
 
-    @validator("api_values")
-    def check_api_values(cls, api_values: dict[str, str] | None, values) -> dict[str, str] | None:
-        """Check that if the parameter has API values it also has values."""
-        if api_values and not values.get("values"):
-            msg = f"Parameter {values['name']} has api_values but no values"
+    @model_validator(mode="after")
+    def check_api_values(self) -> Self:
+        """Check that if the parameter has API values, the API values match with the values."""
+        if self.api_values and not self.values:
+            msg = f"Parameter {self.name} has api_values but no values"
             raise ValueError(msg)
-        if api_values and not set(api_values.keys()).issubset(set(values.get("values", []))):
-            msg = f"Parameter {values['name']} has api_values keys that are not listed in values"
+        if self.api_values and self.values and not set(self.api_values.keys()).issubset(set(self.values)):
+            msg = f"Parameter {self.name} has api_values keys that are not listed in values"
             raise ValueError(msg)
-        return api_values
+        return self
 
-    @classmethod
-    def is_multiple_choice(cls, values) -> bool:
+    def is_multiple_choice(self) -> bool:
         """Return whether the parameter is multiple choice."""
-        return values.get("type") in (ParameterType.MULTIPLE_CHOICE, ParameterType.MULTIPLE_CHOICE_WITH_ADDITION)
+        return self.type in (ParameterType.MULTIPLE_CHOICE, ParameterType.MULTIPLE_CHOICE_WITH_ADDITION)
 
-    @classmethod
-    def is_multiple_choice_with_addition(cls, values) -> bool:
+    def is_multiple_choice_with_addition(self) -> bool:
         """Return whether the parameter is multiple choice with addition."""
-        return bool(values.get("type") == ParameterType.MULTIPLE_CHOICE_WITH_ADDITION)
-
-
-class Parameters(MappedModel[Parameter]):
-    """Parameter mapping."""
+        return bool(self.type == ParameterType.MULTIPLE_CHOICE_WITH_ADDITION)

@@ -1,6 +1,8 @@
 """Azure DevOps source."""
 
-from shared_data_model.meta.entity import Color, EntityAttributeType
+from pydantic import HttpUrl
+
+from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     URL,
@@ -32,25 +34,25 @@ ALL_AZURE_DEVOPS_METRICS = [
 ]
 
 ISSUE_ATTRIBUTES = [
-    {"name": "Project"},
-    {"name": "Title", "url": "url"},
-    {"name": "Work item type"},
-    {"name": "State"},
+    EntityAttribute(name="Project"),
+    EntityAttribute(name="Title", url="url"),
+    EntityAttribute(name="Work item type"),
+    EntityAttribute(name="State"),
 ]
 
 PIPELINE_ATTRIBUTES = [
-    {"name": "Pipeline", "key": "name", "url": "url"},
-    {
-        "name": "Status of most recent build",
-        "key": "build_status",
-        "color": {
+    EntityAttribute(name="Pipeline", key="name", url="url"),
+    EntityAttribute(
+        name="Status of most recent build",
+        key="build_status",
+        color={
             "succeeded": Color.POSITIVE,
             "failed": Color.NEGATIVE,
             "canceled": Color.ACTIVE,
             "partiallySucceeded": Color.WARNING,
         },
-    },
-    {"name": "Date of most recent build", "key": "build_date", "type": EntityAttributeType.DATE},
+    ),
+    EntityAttribute(name="Date of most recent build", key="build_date", type=EntityAttributeType.DATE),
 ]
 
 AZURE_DEVOPS = Source(
@@ -58,7 +60,7 @@ AZURE_DEVOPS = Source(
     description="Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code "
     "management, reporting, requirements management, project management, automated builds, testing and "
     "release management.",
-    url="https://azure.microsoft.com/en-us/services/devops/server/",
+    url=HttpUrl("https://azure.microsoft.com/en-us/services/devops/server/"),
     parameters={
         "url": URL(
             name="URL including organization and project",
@@ -68,8 +70,10 @@ AZURE_DEVOPS = Source(
             metrics=ALL_AZURE_DEVOPS_METRICS,
         ),
         "private_token": PrivateToken(
-            help_url="https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/"
-            "use-personal-access-tokens-to-authenticate?view=azure-devops",
+            help_url=HttpUrl(
+                "https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/"
+                "use-personal-access-tokens-to-authenticate?view=azure-devops",
+            ),
             metrics=ALL_AZURE_DEVOPS_METRICS,
         ),
         "wiql": StringParameter(
@@ -78,7 +82,7 @@ AZURE_DEVOPS = Source(
             mandatory=False,
             help="This should only contain the WHERE clause of a WIQL query, as the selected fields are static. "
             "For example, use the following clause to hide issues marked as done: \"[System.State] <> 'Done'\". "
-            "See https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops",
+            "See https://docs.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops.",
             metrics=["average_issue_lead_time", "issues", "user_story_points"],
         ),
         "file_path": StringParameter(
@@ -97,7 +101,9 @@ AZURE_DEVOPS = Source(
         ),
         "branch": Branch(),
         "branches_to_ignore": BranchesToIgnore(
-            help_url="https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
+            help_url=HttpUrl(
+                "https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
+            ),
         ),
         "inactive_days": Days(
             name="Number of days since last commit after which to consider branches inactive",
@@ -180,69 +186,79 @@ AZURE_DEVOPS = Source(
         ),
         "upvotes": Upvotes(),
         "target_branches_to_include": TargetBranchesToInclude(
-            help_url="https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
+            help_url=HttpUrl(
+                "https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
+            ),
         ),
     },
     entities={
-        "average_issue_lead_time": {
-            "name": "work item",
-            "attributes": [
+        "average_issue_lead_time": Entity(
+            name="work item",
+            attributes=[
                 *ISSUE_ATTRIBUTES,
-                {"name": "Work item lead time in days", "key": "lead_time", "type": EntityAttributeType.INTEGER},
+                EntityAttribute(
+                    name="Work item lead time in days",
+                    key="lead_time",
+                    type=EntityAttributeType.INTEGER,
+                ),
             ],
-        },
-        "failed_jobs": {"name": "failed pipeline", "attributes": PIPELINE_ATTRIBUTES},
-        "job_runs_within_time_period": {"name": "pipeline", "attributes": PIPELINE_ATTRIBUTES},
-        "merge_requests": {
-            "name": "merge request",
-            "attributes": [
-                {"name": "Merge request", "key": "title", "url": "url"},
-                {"name": "Target branch", "key": "target_branch"},
-                {"name": "State"},
-                {"name": "Upvotes", "type": EntityAttributeType.INTEGER},
-                {"name": "Downvotes", "type": EntityAttributeType.INTEGER},
-                {"name": "Created", "type": EntityAttributeType.DATETIME},
-                {"name": "Closed", "type": EntityAttributeType.DATETIME},
+        ),
+        "failed_jobs": Entity(name="failed pipeline", attributes=PIPELINE_ATTRIBUTES),
+        "job_runs_within_time_period": Entity(name="pipeline", attributes=PIPELINE_ATTRIBUTES),
+        "merge_requests": Entity(
+            name="merge request",
+            attributes=[
+                EntityAttribute(name="Merge request", key="title", url="url"),
+                EntityAttribute(name="Target branch", key="target_branch"),
+                EntityAttribute(name="State"),
+                EntityAttribute(name="Upvotes", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Downvotes", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Created", type=EntityAttributeType.DATETIME),
+                EntityAttribute(name="Closed", type=EntityAttributeType.DATETIME),
             ],
-        },
-        "tests": {
-            "name": "test run",
-            "measured_attribute": "counted_tests",
-            "attributes": [
-                {"name": "Test run name", "key": "name", "url": "url"},
-                {"name": "Test run state", "key": "state"},
-                {"name": "Build id"},
-                {"name": "Started date", "type": EntityAttributeType.DATETIME},
-                {"name": "Completed date", "type": EntityAttributeType.DATETIME},
-                {"name": "Incomplete tests", "type": EntityAttributeType.INTEGER},
-                {"name": "Not applicable tests", "type": EntityAttributeType.INTEGER},
-                {"name": "Passed tests", "type": EntityAttributeType.INTEGER},
-                {"name": "Failed tests", "key": "unanalyzed_tests", "type": EntityAttributeType.INTEGER},
-                {"name": "Total tests", "type": EntityAttributeType.INTEGER},
-                {"name": "Counted tests", "type": EntityAttributeType.INTEGER, "visible": False},
+        ),
+        "tests": Entity(
+            name="test run",
+            measured_attribute="counted_tests",
+            attributes=[
+                EntityAttribute(name="Test run name", key="name", url="url"),
+                EntityAttribute(name="Test run state", key="state"),
+                EntityAttribute(name="Build id"),
+                EntityAttribute(name="Started date", type=EntityAttributeType.DATETIME),
+                EntityAttribute(name="Completed date", type=EntityAttributeType.DATETIME),
+                EntityAttribute(name="Incomplete tests", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Not applicable tests", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Passed tests", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Failed tests", key="unanalyzed_tests", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Total tests", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Counted tests", type=EntityAttributeType.INTEGER, visible=False),
             ],
-        },
-        "unused_jobs": {"name": "unused pipeline", "attributes": PIPELINE_ATTRIBUTES},
-        "unmerged_branches": {
-            "name": "branch",
-            "name_plural": "branches",
-            "attributes": [
-                {"name": "Branch name", "key": "name", "url": "url"},
-                {"name": "Date of most recent commit", "key": "commit_date", "type": EntityAttributeType.DATE},
+        ),
+        "unused_jobs": Entity(name="unused pipeline", attributes=PIPELINE_ATTRIBUTES),
+        "unmerged_branches": Entity(
+            name="branch",
+            name_plural="branches",
+            attributes=[
+                EntityAttribute(name="Branch name", key="name", url="url"),
+                EntityAttribute(
+                    name="Date of most recent commit",
+                    key="commit_date",
+                    type=EntityAttributeType.DATE,
+                ),
             ],
-        },
-        "issues": {"name": "issue", "attributes": ISSUE_ATTRIBUTES},
-        "user_story_points": {
-            "name": "user story",
-            "name_plural": "user stories",
-            "measured_attribute": "story_points",
-            "attributes": [
-                {"name": "Project"},
-                {"name": "Title", "url": "url"},
-                {"name": "Work item type"},
-                {"name": "State"},
-                {"name": "Story points", "type": EntityAttributeType.INTEGER},
+        ),
+        "issues": Entity(name="issue", attributes=ISSUE_ATTRIBUTES),
+        "user_story_points": Entity(
+            name="user story",
+            name_plural="user stories",
+            measured_attribute="story_points",
+            attributes=[
+                EntityAttribute(name="Project"),
+                EntityAttribute(name="Title", url="url"),
+                EntityAttribute(name="Work item type"),
+                EntityAttribute(name="State"),
+                EntityAttribute(name="Story points", type=EntityAttributeType.INTEGER),
             ],
-        },
+        ),
     },
 )
