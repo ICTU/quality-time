@@ -2,9 +2,9 @@
 name = "release"
 version = "5.1.0"
 dependencies = [
-    "black==23.9.0",  # The pre-commit hook (../githooks/pre-commit) calls black
+    "black==23.9.1",  # The pre-commit hook (../githooks/pre-commit) calls black
     "bump2version==1.0.1",
-    "gitpython==3.1.35",
+    "gitpython==3.1.36",
 ]
 
 [project.optional-dependencies]
