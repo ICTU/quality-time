@@ -52,7 +52,7 @@ jobs:
 
   unittest_docs:
     machine:
-      image: ubuntu-2204:2023.04.2
+      image: ubuntu-2204:2023.07.2
     steps:
       - checkout
       - run: |
@@ -66,7 +66,7 @@ jobs:
 
   application_tests:
     machine:
-      image: ubuntu-2004:current
+      image: ubuntu-2204:2023.07.2
     parallelism: 1
     steps:
       - checkout
@@ -90,7 +90,7 @@ jobs:
 
   feature_tests:
     machine:
-      image: ubuntu-2004:current
+      image: ubuntu-2204:2023.07.2
     parallelism: 1
     steps:
       - checkout
