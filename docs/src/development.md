@@ -12,7 +12,7 @@ If you want to get *Quality-time* up and running quickly, for example for a demo
 
 #### Install prerequisites
 
-Prerequisites are Docker and Git for both scenario's. For scenario 2 you also need Python 3.11 and a recent version of Node.js (we test with the Long Term Support version of Node).
+Prerequisites are Docker and Git for both scenario's. For scenario 2 you also need Python 3.11 and a recent version of Node.js (we currently use Node.js v20).
 
 Clone this repository:
 
