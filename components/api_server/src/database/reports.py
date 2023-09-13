@@ -67,7 +67,7 @@ def _get_change_key(change: Change) -> str:
 def latest_report(database: Database, report_uuid: str) -> Report | None:
     """Get latest report with this uuid."""
     report_dict = database.reports.find_one({"report_uuid": report_uuid, "last": True, "deleted": DOES_NOT_EXIST})
-    return Report(DATA_MODEL.dict(), report_dict) if report_dict else None
+    return Report(DATA_MODEL.model_dump(), report_dict) if report_dict else None
 
 
 # Sort order:
