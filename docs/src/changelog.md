@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v5.3.0-rc.1 - 2023-10-02
+## [Unreleased]
 
 ### Deployment notes
 
@@ -17,6 +17,10 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Added
 
 - Support downloading Harbor JSON vulnerability reports from a JSON file. Closes [#7147](https://github.com/ICTU/quality-time/issues/7147).
+
+### Changed
+
+- Upgrade MongoDB from 6.0 to 7.0.
 
 ## v5.2.0 - 2023-09-29
 
