@@ -136,7 +136,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
         f"'{subject.name}' in report '{report.name}' from '{old_value}' to '{new_value}'."
     )
     insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
-    metric = Metric(DATA_MODEL.dict(), metric, metric_uuid)
+    metric = Metric(DATA_MODEL.model_dump(), metric, metric_uuid)
     if metric_attribute in ATTRIBUTES_IMPACTING_STATUS and (latest := latest_measurement(database, metric)):
         return insert_new_measurement(database, latest.copy())
     return {"ok": True}
@@ -150,7 +150,7 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     if new_accept_debt:
         # Get the latest measurement to get the current metric value:
-        latest = latest_measurement(database, Metric(DATA_MODEL.dict(), metric, metric_uuid))
+        latest = latest_measurement(database, Metric(DATA_MODEL.model_dump(), metric, metric_uuid))
         # Only if the metric has at least one measurement can a technical debt target be set:
         new_debt_target = latest.value() if latest else None
         today = datetime.now(tz=UTC).date()
@@ -175,7 +175,7 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
     description += " and".join(attribute_descriptions)
     description += f" of metric '{metric.name}' of subject '{subject.name}' in report '{report.name}'."
     insert_new_report(database, description, [report.uuid, subject.uuid, metric.uuid], report)
-    if latest := latest_measurement(database, Metric(DATA_MODEL.dict(), metric, metric_uuid)):
+    if latest := latest_measurement(database, Metric(DATA_MODEL.model_dump(), metric, metric_uuid)):
         return insert_new_measurement(database, latest.copy())
     return {"ok": True}
 

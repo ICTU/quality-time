@@ -8,7 +8,7 @@ def is_password_parameter(source_type: str, parameter: str, data_model: dict | N
     # If the parameter key can't be found (this can happen when the parameter is removed from the data model),
     # err on the safe side and assume it was a password type
     if data_model is None:
-        data_model = DATA_MODEL.dict()
+        data_model = DATA_MODEL.model_dump()
     try:
         return bool(data_model["sources"][source_type]["parameters"][parameter]["type"] == "password")
     except KeyError:
