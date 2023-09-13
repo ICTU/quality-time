@@ -2,8 +2,8 @@
 name = "docs"
 version = "5.1.0"
 dependencies = [
-    "furo==2023.8.19",
-    "gitpython==3.1.35",
+    "furo==2023.9.10",
+    "gitpython==3.1.36",
     "myst-parser==2.0.0",
     "Sphinx==7.2.5",
     "sphinx-copybutton==0.5.2",
@@ -16,15 +16,15 @@ dev = [
     "pip==23.2.1",
     "pipx==1.2.0",
     "pip-tools==7.3.0",  # To add hashes to requirements
-    "pydantic==1.10.12",  # Needed for importing the data model in the tests from the shared code component
+    "pydantic==2.3.0",  # Needed for importing the data model in the tests from the shared code component
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
-    "black==23.7.0",
+    "black==23.9.1",
     "bandit==1.7.5",
     "mypy==1.5.1",
     "pip-audit==2.6.1",
-    "ruff==0.0.287",
+    "ruff==0.0.289",
     "safety==2.3.5",
     "vulture==2.9.1"
 ]
