@@ -1,6 +1,6 @@
 """Documentation routes."""
 
-import os
+from shared.utils.env import getenv
 
 import bottle
 
@@ -10,7 +10,7 @@ import bottle
 @bottle.get("/api/<version>/<fragment>", authentication_required=False)
 def get_api(version="", fragment=""):
     """Return the API. Use version and/or fragment to limit the routes returned."""
-    port = os.environ.get("API_SERVER_PORT", "5001")
+    port = getenv("API_SERVER_PORT")
     routes = [route for route in bottle.default_app().routes if version in route.rule and fragment in route.rule]
     return {
         route.rule: {

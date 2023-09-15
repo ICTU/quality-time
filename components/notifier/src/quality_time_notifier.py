@@ -2,18 +2,18 @@
 
 import asyncio
 import logging
-import os
 from typing import NoReturn
 
 from shared.initialization.database import database_connection
+from shared.utils.env import getenv
 
 from notifier.notifier import notify
 
 
 def start_notifications() -> NoReturn:
     """Notify indefinitely."""
-    logging.getLogger().setLevel(str(os.getenv("NOTIFIER_LOG_LEVEL", "WARNING")))
-    sleep_duration = int(os.getenv("NOTIFIER_SLEEP_DURATION", "60"))
+    logging.getLogger().setLevel(getenv("NOTIFIER_LOG_LEVEL"))
+    sleep_duration = int(getenv("NOTIFIER_SLEEP_DURATION"))
     asyncio.run(notify(database_connection(), sleep_duration))
 
 

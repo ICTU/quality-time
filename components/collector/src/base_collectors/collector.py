@@ -11,12 +11,12 @@ from pymongo.database import Database
 
 from shared.database.reports import get_reports
 from shared.model.report import get_metrics_from_reports
+from shared.utils.env import getenv
 
 from collector_utilities.functions import timer
 from collector_utilities.type import JSONDict
 from database.measurements import create_measurement
 
-from . import config
 from .metric_collector import MetricCollector
 
 if TYPE_CHECKING:
@@ -34,7 +34,7 @@ class Collector:
     @staticmethod
     def record_health() -> None:
         """Record the current date and time in a file to allow for health checks."""
-        filename = pathlib.Path(config.HEALTH_CHECK_FILE)
+        filename = pathlib.Path(getenv("HEALTH_CHECK_FILE"))
         try:
             with filename.open("w", encoding="utf-8") as health_check:
                 health_check.write(datetime.now(tz=UTC).isoformat())
@@ -58,7 +58,7 @@ class Collector:
             ) as session:
                 with timer() as collection_timer:
                     await self.collect_metrics(session)
-            sleep_duration = max(0, config.MAX_SLEEP_DURATION - collection_timer.duration)
+            sleep_duration = max(0, int(getenv("COLLECTOR_SLEEP_DURATION")) - collection_timer.duration)
             logging.info(
                 "Collecting took %.1f seconds. Sleeping %.1f seconds...",
                 collection_timer.duration,
@@ -70,10 +70,11 @@ class Collector:
         """Collect measurements for metrics, prioritizing edited metrics."""
         reports = get_reports(self.database)
         metrics = get_metrics_from_reports(reports)
-        next_fetch = datetime.now(tz=UTC) + timedelta(seconds=config.MEASUREMENT_FREQUENCY)
+        interval = timedelta(seconds=int(getenv("COLLECTOR_MEASUREMENT_FREQUENCY")))
+        next_fetch = datetime.now(tz=UTC) + interval
         tasks: list[Coroutine] = []
         for metric_uuid, metric in self.__sorted_by_edit_status(cast(JSONDict, metrics)):
-            if len(tasks) >= config.MEASUREMENT_LIMIT:
+            if len(tasks) >= int(getenv("COLLECTOR_MEASUREMENT_LIMIT")):
                 break
             if self.__should_collect(metric_uuid, metric):
                 tasks.append(self.collect_metric(session, metric_uuid, metric, next_fetch))

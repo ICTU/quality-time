@@ -23,6 +23,7 @@ WORKDIR /home/server
 USER server
 
 COPY --from=compile-image /home/server/venv /home/server/venv
+COPY api_server/default.env /home/server
 COPY api_server/src /home/server
 COPY shared_code /home/shared_code
 

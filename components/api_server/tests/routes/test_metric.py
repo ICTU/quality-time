@@ -19,7 +19,10 @@ from routes import (
     post_metric_new,
     post_move_metric,
 )
-from tests.base import DataModelTestCase, disable_logging
+
+from shared_test_utils import disable_logging
+
+from tests.base import DataModelTestCase
 from tests.fixtures import (
     JOHN,
     METRIC_ID,

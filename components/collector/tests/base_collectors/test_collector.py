@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import pathlib
 import unittest
 from datetime import UTC, datetime
@@ -12,7 +13,7 @@ import aiohttp
 import mongomock
 
 import quality_time_collector
-from base_collectors import Collector, config
+from base_collectors import Collector
 
 from tests.fixtures import METRIC_ID, METRIC_ID2, SOURCE_ID, SUBJECT_ID, create_report
 
@@ -201,7 +202,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             {"has_error": False, "sources": [self._source()], "metric_uuid": "metric_uuid", "report_uuid": "report1"},
         )
 
-    @patch.object(config, "MEASUREMENT_LIMIT", 1)
+    @patch.dict(os.environ, {"COLLECTOR_MEASUREMENT_LIMIT": "1"})
     async def test_fetch_in_batches(self):
         """Test that metrics are fetched in batches."""
         mock_async_get_request = AsyncMock()
@@ -220,7 +221,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         )
         post.assert_has_calls(calls=[expected_call1, expected_call2])
 
-    @patch.object(config, "MEASUREMENT_LIMIT", 1)
+    @patch.dict(os.environ, {"COLLECTOR_MEASUREMENT_LIMIT": "1"})
     async def test_prioritize_edited_metrics(self):
         """Test that edited metrics get priority."""
         report1 = create_report()

@@ -8,6 +8,7 @@ dependencies = [
     "pydantic==2.5.0",
     "pymongo==4.6.0",
     "python-dateutil==2.8.2",
+    "python-dotenv==1.0.0",
 ]
 
 [project.optional-dependencies]

@@ -1,12 +1,12 @@
 """Database initialization."""
 
 import logging
-import os
 
 import pymongo
 from pymongo.database import Database
 
 from shared.initialization.database import client
+from shared.utils.env import getenv
 
 from .datamodel import import_datamodel
 from .report import import_example_reports, initialize_reports_overview
@@ -26,7 +26,7 @@ def init_database() -> Database:  # pragma: no feature-test-cover
     import_datamodel(database)
     initialize_secrets(database)
     initialize_reports_overview(database)
-    if os.environ.get("LOAD_EXAMPLE_REPORTS", "True").lower() == "true":
+    if getenv("LOAD_EXAMPLE_REPORTS").lower() == "true":
         import_example_reports(database)
     return database
 

@@ -77,21 +77,27 @@ The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/api
 
 ### Environment variables
 
-The API-server uses the following environment variables:
+The API-server uses the environment variables below. See [components/api_server/default.env](../../components/api_server/default.env) for the default values.
 
-| Name                        | Default value                             | Description                                                                                                                                                                                                                                                                 |
-|:----------------------------|:------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `API_SERVER_PORT`           | `5001`                                    | Port of the API-server.                                                                                                                                                                                                                                                     |
-| `API_SERVER_LOG_LEVEL`      | `WARNING`                                 | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.                                                                                                                                                                                          |
-| `DATABASE_URL`              | `mongodb://root:root@database:27017`      | Mongo database connection URL.                                                                                                                                                                                                                                              |
-| `LDAP_URL`                  | `ldap://ldap:389`                         | Comma-separated list of LDAP connection URL(s).                                                                                                                                                                                                                             |
-| `LDAP_ROOT_DN`              | `dc=example,dc=org`                       | LDAP root distinguished name.                                                                                                                                                                                                                                               |
-| `LDAP_LOOKUP_USER_DN`       | `cn=admin,dc=example,dc=org`              | LDAP lookup user distinguished name.                                                                                                                                                                                                                                        |
-| `LDAP_LOOKUP_USER_PASSWORD` | `admin`                                   | LDAP lookup user password.                                                                                                                                                                                                                                                  |
-| `LDAP_SEARCH_FILTER`        | `(&#124;(uid=$$username)(cn=$$username))` | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box. |
-| `LOAD_EXAMPLE_REPORTS`      | `True`                                    | Whether or not to import example reports in the database on start up.                                                                                                                                                                                                       |
-| `FORWARD_AUTH_ENABLED`      | `False`                                   | Whether or not to enable forward authentication.                                                                                                                                                                                                                            |
-| `FORWARD_AUTH_HEADER`       | `X-Forwarded-User`                        | Header to use for getting the username if forward authentication is turned on.                                                                                                                                                                                              |
+| Name                        | Description                                                                                                                                                                                                                                                                 |
+|:----------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `API_SERVER_LOG_LEVEL`      | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.                                                                                                                                                                                          |
+| `API_SERVER_PORT`           | Port of the API-server.                                                                                                                                                                                                                                                     |
+| `DATABASE_USER`             | Mongo database user.                                                                                                                                                                                                                                                        |
+| `DATABASE_PASSWORD`         | Mongo database password.                                                                                                                                                                                                                                                    |
+| `DATABASE_HOST`             | Mongo database host.                                                                                                                                                                                                                                                        |
+| `DATABASE_PORT`             | Mongo database port.                                                                                                                                                                                                                                                        |
+| `DATABASE_URL`              | Mongo database connection URL. **Deprecated**: please use `DATABASE_USER`, `DATABASE_PASSWORD`, `DATABASE_HOST`, and `DATABASE_PORT`.                                                                                                                                       |
+| `FORWARD_AUTH_ENABLED`      | Whether or not to enable forward authentication.                                                                                                                                                                                                                            |
+| `FORWARD_AUTH_HEADER`       | Header to use for getting the username if forward authentication is turned on.                                                                                                                                                                                              |
+| `LDAP_LOOKUP_USER_DN`       | LDAP lookup user distinguished name.                                                                                                                                                                                                                                        |
+| `LDAP_LOOKUP_USER_PASSWORD` | LDAP lookup user password.                                                                                                                                                                                                                                                  |
+| `LDAP_ROOT_DN`              | LDAP root distinguished name.                                                                                                                                                                                                                                               |
+| `LDAP_SEARCH_FILTER`        | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box. |
+| `LDAP_URL`                  | Comma-separated list of LDAP connection URL(s).                                                                                                                                                                                                                             |
+| `LOAD_EXAMPLE_REPORTS`      | Whether or not to import example reports in the database on start up.                                                                                                                                                                                                       |
+| `RENDERER_HOST`             | Renderer host                                                                                                                                                                                                                                                               |
+| `RENDERER_PORT`             | Renderer port                                                                                                                                                                                                                                                               |
 
 ## Collector
 
@@ -107,17 +113,21 @@ Every time the collector wakes up, it writes the current date and time in ISO fo
 
 ### Environment variables
 
-The collector uses the following environment variables:
+The collector uses the environment variables below. See [components/collector/default.env](../../components/collector/default.env) for the default values.
 
-| Name                              | Default value                        | Description                                                                                                                                                                       |
-|:----------------------------------|:-------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `COLLECTOR_LOG_LEVEL`             | `WARNING`                            | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `CRITICAL`, and `ERROR`.                                                                                                |
-| `COLLECTOR_SLEEP_DURATION`        | `20`                                 | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements.                                                                                |
-| `COLLECTOR_MEASUREMENT_LIMIT`     | `30`                                 | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up. |
-| `COLLECTOR_MEASUREMENT_FREQUENCY` | `900`                                | The amount of time (in seconds) after which a metric should be measured again.                                                                                                    |
-| `DATABASE_URL`                    | `mongodb://root:root@database:27017` | Mongo database connection URL.                                                                                                                                                    |
-| `HEALTH_CHECK_FILE`               | `/home/collector/health_check.txt`   | Path to the file used for health check.                                                                                                                                           |
-| `HTTP(S)_PROXY`                   |                                      | Proxy to use by the collector.                                                                                                                                                    |
+| Name                              | Description                                                                                                                                                                       |
+|:----------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `COLLECTOR_LOG_LEVEL`             | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `CRITICAL`, and `ERROR`.                                                                                                |
+| `COLLECTOR_MEASUREMENT_FREQUENCY` | The amount of time (in seconds) after which a metric should be measured again.                                                                                                    |
+| `COLLECTOR_MEASUREMENT_LIMIT`     | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up. |
+| `COLLECTOR_SLEEP_DURATION`        | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements.                                                                                |
+| `DATABASE_USER`                   | Mongo database user.                                                                                                                                                              |
+| `DATABASE_PASSWORD`               | Mongo database password.                                                                                                                                                          |
+| `DATABASE_HOST`                   | Mongo database host.                                                                                                                                                              |
+| `DATABASE_PORT`                   | Mongo database port.                                                                                                                                                              |
+| `DATABASE_URL`                    | Mongo database connection URL. **Deprecated**: please use `DATABASE_USER`, `DATABASE_PASSWORD`, `DATABASE_HOST`, and `DATABASE_PORT`.                                             |
+| `HEALTH_CHECK_FILE`               | Path to the file used for health check.                                                                                                                                           |
+| `HTTP(S)_PROXY`                   | Proxy to use by the collector.                                                                                                                                                    |
 
 ```{seealso}
 See the [`aiohttp` documentation](https://docs.aiohttp.org/en/stable/client_advanced.html#proxy-support) for more information on proxy support.
@@ -133,14 +143,18 @@ Every time the notifier wakes up, it writes the current date and time in ISO for
 
 ### Environment variables
 
-The notifier uses the following environment variables:
+The notifier uses the environment variables below. See [components/notifier/default.env](../../components/notifier/default.env) for the default values.
 
-| Name                      | Default value                        | Description                                                                             |
-|:--------------------------|:-------------------------------------|:----------------------------------------------------------------------------------------|
-| `DATABASE_URL`            | `mongodb://root:root@database:27017` | Mongo database connection URL.                                                          |
-| `HEALTH_CHECK_FILE`       | `/home/notifier/health_check.txt`    | Path to the file used for health check.                                                 |
-| `NOTIFIER_LOG_LEVEL`      | `WARNING`                            | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.      |
-| `NOTIFIER_SLEEP_DURATION` | `60`                                 | The amount of time (in seconds) that the notifier sleeps between sending notifications. |
+| Name                      | Description                                                                                                                           |
+|:--------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|
+| `DATABASE_USER`           | Mongo database user.                                                                                                                  |
+| `DATABASE_PASSWORD`       | Mongo database password.                                                                                                              |
+| `DATABASE_HOST`           | Mongo database host.                                                                                                                  |
+| `DATABASE_PORT`           | Mongo database port.                                                                                                                  |
+| `DATABASE_URL`            | Mongo database connection URL. **Deprecated**: please use `DATABASE_USER`, `DATABASE_PASSWORD`, `DATABASE_HOST`, and `DATABASE_PORT`. |
+| `HEALTH_CHECK_FILE`       | Path to the file used for health check.                                                                                               |
+| `NOTIFIER_LOG_LEVEL`      | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.                                                    |
+| `NOTIFIER_SLEEP_DURATION` | The amount of time (in seconds) that the notifier sleeps between sending notifications.                                               |
 
 ## Shared code
 
@@ -402,8 +416,8 @@ The renderer uses the following environment variables:
 | Name             | Default value | Description                                                                                                      |
 |:-----------------|:--------------|:-----------------------------------------------------------------------------------------------------------------|
 | `PROXY_HOST`     | `www`         | Hostname of the proxy. The renderer uses this to access the reports that need to be exported to PDF.             |
-| `PROXY_PORT`     | `80`          | Port of the proxy. The renderer uses this to access the reports that need to be exported to PDF.                    |
-| `PROXY_PROTOCOL` | `http`        | Protocol of the proxy. The renderer uses this to access the reports that need to be exported to PDF.                 |
+| `PROXY_PORT`     | `80`          | Port of the proxy. The renderer uses this to access the reports that need to be exported to PDF.                 |
+| `PROXY_PROTOCOL` | `http`        | Protocol of the proxy. The renderer uses this to access the reports that need to be exported to PDF.             |
 | `LC_ALL`         |               | Set the date format in the PDF export. For example, to get DD-MM-YYYY use: `en_GB.UTF-8`.                        |
 | `TZ`             |               | Make the PDF export use the correct timezone. For example, to get Central European Time use: `Europe/Amsterdam`. |
 

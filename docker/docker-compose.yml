@@ -28,12 +28,8 @@ services:
       - ALL
   collector:
     image: ictu/quality-time_collector:${QUALITY_TIME_VERSION}
-    environment:
-      - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
-      - COLLECTOR_MEASUREMENT_FREQUENCY=${COLLECTOR_MEASUREMENT_FREQUENCY:-900}
-      - COLLECTOR_MEASUREMENT_LIMIT=${COLLECTOR_MEASUREMENT_LIMIT:-30}
-      - COLLECTOR_SLEEP_DURATION=${COLLECTOR_SLEEP_DURATION:-20}
-      - COLLECTOR_LOG_LEVEL=${COLLECTOR_LOG_LEVEL:-WARNING}
+    env_file:
+      - ../components/collector/default.env
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
     depends_on:
@@ -42,10 +38,8 @@ services:
       - ALL
   notifier:
     image: ictu/quality-time_notifier:${QUALITY_TIME_VERSION}
-    environment:
-      - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
-      - NOTIFIER_SLEEP_DURATION=${NOTIFIER_SLEEP_DURATION:-60}
-      - NOTIFIER_LOG_LEVEL=${NOTIFIER_LOG_LEVEL:-WARNING}
+    env_file:
+      - ../components/notifier/default.env
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
     depends_on:
@@ -54,20 +48,8 @@ services:
       - ALL
   api_server:
     image: ictu/quality-time_api_server:${QUALITY_TIME_VERSION}
-    environment:
-      - API_SERVER_PORT=${API_SERVER_PORT:-5001}
-      - API_SERVER_LOG_LEVEL=${API_SERVER_LOG_LEVEL:-WARNING}
-      - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
-      - LDAP_URL=${LDAP_URL:-ldap://ldap:389}
-      - LDAP_ROOT_DN=${LDAP_ROOT_DN:-dc=example,dc=org}
-      - LDAP_LOOKUP_USER_DN=${LDAP_LOOKUP_USER_DN:-cn=admin,dc=example,dc=org}
-      - LDAP_LOOKUP_USER_PASSWORD=${LDAP_LOOKUP_USER_PASSWORD:-admin}
-      - LDAP_SEARCH_FILTER=${LDAP_SEARCH_FILTER:-(|(uid=$$username)(cn=$$username))}
-      - LOAD_EXAMPLE_REPORTS=${LOAD_EXAMPLE_REPORTS:-True}
-      - FORWARD_AUTH_ENABLED=${FORWARD_AUTH_ENABLED:-False}
-      - FORWARD_AUTH_HEADER=${FORWARD_AUTH_HEADER:-X-Forwarded-User}
-      - RENDERER_HOST=${RENDERER_HOST:-renderer}
-      - RENDERER_PORT=${RENDERER_PORT:-9000}
+    env_file:
+      - ../components/api_server/default.env
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
     depends_on:

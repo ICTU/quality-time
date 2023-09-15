@@ -14,7 +14,7 @@ python3 -m venv venv
 . venv/bin/activate
 ci/pip-install.sh
 coverage erase
-RENDERER_HOST=localhost python tests/quality_time_api_server_under_coverage.py &> ../../build/quality_time_api_server.log &
+RENDERER_HOST=localhost DATABASE_HOST=localhost LDAP_URL=ldap://localhost:389 python tests/quality_time_api_server_under_coverage.py &> ../../build/quality_time_api_server.log &
 deactivate
 cd ../..
 # We need to start a second API-server for the renderer. We start it after the API-server under coverage so

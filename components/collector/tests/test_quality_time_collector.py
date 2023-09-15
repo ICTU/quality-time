@@ -1,6 +1,7 @@
 """Unit tests for the collector main script."""
 
 import logging
+import os
 import unittest
 from unittest.mock import AsyncMock, patch
 
@@ -23,7 +24,7 @@ class CollectorTestCase(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("WARNING", logging.getLevelName(logging.getLogger().getEffectiveLevel()))
 
     @patch("base_collectors.Collector.start", AsyncMock())
-    @patch("base_collectors.config.LOG_LEVEL", "DEBUG")
+    @patch.dict(os.environ, {"COLLECTOR_LOG_LEVEL": "DEBUG"})
     async def test_change_log_level(self):
         """Test that the logging level can be changed."""
         await collect()

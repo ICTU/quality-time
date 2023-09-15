@@ -5,6 +5,8 @@ from unittest.mock import Mock, mock_open, patch
 
 from initialization.database import init_database
 
+from shared_test_utils import disable_logging
+
 from tests.base import DataModelTestCase
 
 
@@ -26,15 +28,17 @@ class DatabaseInitTest(DataModelTestCase):
         self.database.measurements.index_information.return_value = {}
         self.mongo_client().quality_time_db = self.database
 
-    def init_database(self, data_model_json: str, assert_glob_called: bool = True) -> None:
+    @disable_logging
+    def init_database(self, data_model_json: str, load_example_reports: bool = True) -> None:
         """Initialize the database."""
+        getenv_return_value = "True" if load_example_reports else "False"
         with patch.object(pathlib.Path, "glob", Mock(return_value=[])) as glob_mock, patch.object(
             pathlib.Path,
             "open",
             mock_open(read_data=data_model_json),
-        ), patch("pymongo.MongoClient", self.mongo_client):
+        ), patch("pymongo.MongoClient", self.mongo_client), patch("os.getenv", Mock(return_value=getenv_return_value)):
             init_database()
-        if assert_glob_called:
+        if load_example_reports:
             glob_mock.assert_called()
         else:
             glob_mock.assert_not_called()
@@ -57,7 +61,6 @@ class DatabaseInitTest(DataModelTestCase):
 
     def test_skip_loading_example_reports(self):
         """Test that loading example reports can be skipped."""
-        with patch("src.initialization.database.os.environ.get", Mock(return_value="False")):
-            self.init_database('{"change": "yes"}', False)
+        self.init_database('{"change": "yes"}', load_example_reports=False)
         self.database.datamodels.insert_one.assert_called_once()
         self.database.reports_overviews.insert_one.assert_called_once()

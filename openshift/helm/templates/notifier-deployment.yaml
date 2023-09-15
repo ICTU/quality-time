@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - env:
-            - name: DATABASE_URL
-              value: mongodb://root:root@{{ .Values.database.name }}:27017
+            - name: DATABASE_HOST
+              value: {{ .Values.database.name }}
             - name: NOTIFIER_SLEEP_DURATION
               value: "60"
           image: {{ .Values.notifier.image }}

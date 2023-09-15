@@ -5,6 +5,7 @@
 .*_cache
 .coverage*
 .dockerignore
+.env
 .idea
 .pipx
 .venv

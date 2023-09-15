@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - env:
-            - name: DATABASE_URL
-              value: mongodb://root:root@{{ .Values.database.name }}:27017
+            - name: DATABASE_HOST
+              value: {{ .Values.database.name }}
             - name: API_SERVER_PORT
               value: "5001"
             - name: FORWARD_AUTH_ENABLED

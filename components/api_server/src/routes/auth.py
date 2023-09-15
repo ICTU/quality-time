@@ -3,7 +3,6 @@
 import base64
 import hashlib
 import logging
-import os
 import re
 import string
 from datetime import datetime, timedelta, UTC
@@ -14,6 +13,8 @@ import bottle
 from ldap3 import ALL, Connection, Server, ServerPool, AUTO_BIND_NO_TLS
 from ldap3.core import exceptions
 from pymongo.database import Database
+
+from shared.utils.env import getenv
 
 from database.users import upsert_user, get_user
 from database import sessions
@@ -78,12 +79,12 @@ def get_credentials() -> tuple[str, str]:
 
 def get_ldap_config(username):
     """Get LDAP config from environment."""
-    ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
+    ldap_search_filter_template = getenv("LDAP_SEARCH_FILTER")
     return {
-        "ldap_root_dn": os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org"),
-        "ldap_urls": os.environ.get("LDAP_URL", "ldap://localhost:389").split(","),
-        "ldap_lookup_user_dn": os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org"),
-        "ldap_lookup_user_pw": os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin"),
+        "ldap_root_dn": getenv("LDAP_ROOT_DN"),
+        "ldap_urls": getenv("LDAP_URL").split(","),
+        "ldap_lookup_user_dn": getenv("LDAP_LOOKUP_USER_DN"),
+        "ldap_lookup_user_pw": getenv("LDAP_LOOKUP_USER_PASSWORD"),
         "ldap_search_filter": string.Template(ldap_search_filter_template).substitute(username=username),
     }
 
@@ -130,8 +131,8 @@ def verify_user(database: Database, username: str, password: str) -> User:
 @bottle.post("/api/v3/login", authentication_required=False)
 def login(database: Database) -> dict[str, bool | str]:
     """Log the user in. Add credentials as JSON payload, e.g. {username: 'user', password: 'pass'}."""
-    if os.environ.get("FORWARD_AUTH_ENABLED", "").lower() == "true":  # pragma: no feature-test-cover
-        forward_auth_header = str(os.environ.get("FORWARD_AUTH_HEADER", "X-Forwarded-User"))
+    if getenv("FORWARD_AUTH_ENABLED").lower() == "true":  # pragma: no feature-test-cover
+        forward_auth_header = getenv("FORWARD_AUTH_HEADER")
         username = bottle.request.get_header(forward_auth_header, None)
         user = User(username, username or "", "", username is not None)
     else:

@@ -1,8 +1,9 @@
 """Unit tests for the notifier main script."""
 
 import logging
+import os
 import unittest
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, patch
 
 from quality_time_notifier import start_notifications
 
@@ -16,7 +17,7 @@ class NotifierTestCase(unittest.TestCase):
         start_notifications()
         self.assertEqual("WARNING", logging.getLevelName(logging.getLogger().getEffectiveLevel()))
 
-    @patch("os.getenv", Mock(side_effect=lambda key, default=None: "DEBUG" if key == "NOTIFIER_LOG_LEVEL" else default))
+    @patch.dict(os.environ, {"NOTIFIER_LOG_LEVEL": "DEBUG"})
     def test_change_log_level(self):
         """Test that the logging level can be changed."""
         start_notifications()

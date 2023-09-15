@@ -1,12 +1,8 @@
 """Base classes for the model unit tests."""
 
-import functools
 import json
-import logging
 import unittest
-from collections.abc import Callable
 from unittest.mock import Mock
-from typing import TypeVar
 
 from shared_data_model import DATA_MODEL_JSON
 
@@ -39,20 +35,3 @@ class DataModelTestCase(DatabaseTestCase):
         data_model["_id"] = "id"
         data_model["timestamp"] = "now"
         return data_model
-
-
-ReturnType = TypeVar("ReturnType")
-
-
-def disable_logging(func: Callable[..., ReturnType]):
-    """Temporarily disable logging."""
-
-    @functools.wraps(func)
-    def wrapper_decorator(*args, **kwargs) -> ReturnType:
-        """Disable logging before calling func and reenable it afterwards."""
-        logging.disable(logging.CRITICAL)
-        result = func(*args, **kwargs)
-        logging.disable(logging.NOTSET)
-        return result
-
-    return wrapper_decorator

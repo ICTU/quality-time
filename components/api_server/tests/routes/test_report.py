@@ -22,7 +22,9 @@ from routes import (
 )
 from utils.functions import asymmetric_encrypt
 
-from tests.base import DataModelTestCase, disable_logging
+from shared_test_utils import disable_logging
+
+from tests.base import DataModelTestCase
 from tests.fixtures import JENNY, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, create_report
 
 

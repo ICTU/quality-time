@@ -11,6 +11,8 @@ from typing import Any, ClassVar, cast
 import aiohttp
 from packaging.version import Version
 
+from shared.utils.env import getenv
+
 from collector_utilities.date_time import days_ago, days_to_go
 from collector_utilities.exceptions import CollectorError
 from collector_utilities.functions import (
@@ -20,8 +22,6 @@ from collector_utilities.functions import (
 )
 from collector_utilities.type import URL, Response, Responses, Value
 from model import Entities, Entity, IssueStatus, SourceMeasurement, SourceParameters, SourceResponses
-
-from .config import MAX_SLEEP_DURATION
 
 
 class SourceCollector(ABC):
@@ -96,7 +96,8 @@ class SourceCollector(ABC):
             api_url = await self._api_url()
             safe_api_url = tokenless(api_url) or class_name
             logging.info("%s retrieving %s", class_name, safe_api_url)
-            responses = await asyncio.wait_for(self._get_source_responses(api_url), timeout=MAX_SLEEP_DURATION)
+            max_sleep_duration = int(getenv("COLLECTOR_SLEEP_DURATION"))
+            responses = await asyncio.wait_for(self._get_source_responses(api_url), timeout=max_sleep_duration)
             logging.info("%s retrieved %s", class_name, safe_api_url)
         except (CollectorError, aiohttp.ClientError, asyncio.TimeoutError) as reason:
             error = self.__logsafe_exception(reason)

@@ -26,6 +26,7 @@ RUN touch ${HEALTH_CHECK_FILE} && chmod g+w ${HEALTH_CHECK_FILE} && chgrp root $
 HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta, UTC; import sys; sys.exit(dt.now(tz=UTC) - dt.fromisoformat(open('${HEALTH_CHECK_FILE}', encoding='utf-8').read().strip()) > timedelta(seconds=600))"
 
 COPY --from=compile-image /home/collector/venv /home/collector/venv
+COPY collector/default.env /home/collector
 COPY collector/src /home/collector
 COPY shared_code /home/shared_code
 

@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 from model.issue_tracker import IssueParameters, IssueSuggestion, IssueTracker, IssueTrackerCredentials
 
-from tests.base import disable_logging
+from shared_test_utils import disable_logging
 
 
 class IssueTrackerTest(unittest.TestCase):
