@@ -142,3 +142,4 @@ from .testng.test_cases import TestNGTestCases
 from .testng.tests import TestNGTests
 from .trello.issues import TrelloIssues
 from .trello.source_up_to_dateness import TrelloSourceUpToDateness
+from .trivy.security_warnings import TrivyJSONSecurityWarnings

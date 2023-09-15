@@ -327,6 +327,50 @@ report(s).
         sources=["manual_number", "performancetest_runner"],
         tags=[Tag.PERFORMANCE],
     ),
+    "security_warnings": Metric(
+        name="Security warnings",
+        description="The number of security warnings about the software.",
+        rationale="Monitor security warnings about the software, its source code, dependencies, or "
+        "infrastructure so vulnerabilities can be fixed before they end up in production.",
+        unit=Unit.SECURITY_WARNINGS,
+        near_target="5",
+        sources=[
+            "anchore",
+            "anchore_jenkins_plugin",
+            "bandit",
+            "cargo_audit",
+            "cxsast",
+            "generic_json",
+            "harbor",
+            "manual_number",
+            "openvas",
+            "owasp_dependency_check",
+            "owasp_zap",
+            "pyupio_safety",
+            "sarif_json",
+            "snyk",
+            "sonarqube",
+            "trivy_json",
+        ],
+        tags=[Tag.SECURITY],
+    ),
+    "sentiment": Metric(
+        name="Sentiment",
+        description="How are the team members feeling?",
+        rationale="Satisfaction is how fulfilled developers feel with their work, team, tools, or culture; "
+        "well-being is how healthy and happy they are, and how their work impacts it. Measuring satisfaction "
+        "and well-being can be beneficial for understanding productivity and perhaps even for predicting it. "
+        "For example, productivity and satisfaction are correlated, and it is possible that satisfaction could "
+        "serve as a leading indicator for productivity; a decline in satisfaction and engagement could signal "
+        "upcoming burnout and reduced productivity.",
+        rationale_urls=["https://queue.acm.org/detail.cfm?id=3454124"],
+        unit=Unit.NONE,
+        addition=Addition.MIN,
+        direction=Direction.MORE_IS_BETTER,
+        target="10",
+        near_target="8",
+        sources=["manual_number"],
+    ),
     "slow_transactions": Metric(
         name="Slow transactions",
         description="The number of transactions slower than their target response time.",
@@ -336,6 +380,24 @@ report(s).
         near_target="5",
         sources=["gatling", "manual_number", "jmeter_csv", "jmeter_json", "performancetest_runner"],
         tags=[Tag.PERFORMANCE],
+    ),
+    "software_version": Metric(
+        name="Software version",
+        description="The version number of the software as analyzed by the source.",
+        rationale="Monitor that the version of the software is at least a specific version or get notified when "
+        "the software version becomes higher than a specific version.",
+        explanation=VERSION_NUMBER_EXPLANATION,
+        explanation_urls=VERSION_NUMBER_EXPLANATION_URLS,
+        scales=["version_number"],
+        addition=Addition.MIN,
+        direction=Direction.MORE_IS_BETTER,
+        target="1.0",
+        near_target="0.9",
+        sources=[
+            "performancetest_runner",
+            "sonarqube",
+        ],
+        tags=[Tag.CI],
     ),
     "source_up_to_dateness": Metric(
         name="Source up-to-dateness",
@@ -375,24 +437,6 @@ report(s).
             "sonarqube",
             "testng",
             "trello",
-        ],
-        tags=[Tag.CI],
-    ),
-    "software_version": Metric(
-        name="Software version",
-        description="The version number of the software as analyzed by the source.",
-        rationale="Monitor that the version of the software is at least a specific version or get notified when "
-        "the software version becomes higher than a specific version.",
-        explanation=VERSION_NUMBER_EXPLANATION,
-        explanation_urls=VERSION_NUMBER_EXPLANATION_URLS,
-        scales=["version_number"],
-        addition=Addition.MIN,
-        direction=Direction.MORE_IS_BETTER,
-        target="1.0",
-        near_target="0.9",
-        sources=[
-            "performancetest_runner",
-            "sonarqube",
         ],
         tags=[Tag.CI],
     ),
@@ -437,49 +481,6 @@ have 2.9.3 and the version available is 3.9.1, then the metric will turn red.
             "sonarqube",
         ],
         tags=[Tag.CI],
-    ),
-    "security_warnings": Metric(
-        name="Security warnings",
-        description="The number of security warnings about the software.",
-        rationale="Monitor security warnings about the software, its source code, dependencies, or "
-        "infrastructure so vulnerabilities can be fixed before they end up in production.",
-        unit=Unit.SECURITY_WARNINGS,
-        near_target="5",
-        sources=[
-            "anchore",
-            "anchore_jenkins_plugin",
-            "bandit",
-            "cargo_audit",
-            "cxsast",
-            "generic_json",
-            "harbor",
-            "manual_number",
-            "openvas",
-            "owasp_dependency_check",
-            "owasp_zap",
-            "pyupio_safety",
-            "sarif_json",
-            "snyk",
-            "sonarqube",
-        ],
-        tags=[Tag.SECURITY],
-    ),
-    "sentiment": Metric(
-        name="Sentiment",
-        description="How are the team members feeling?",
-        rationale="Satisfaction is how fulfilled developers feel with their work, team, tools, or culture; "
-        "well-being is how healthy and happy they are, and how their work impacts it. Measuring satisfaction "
-        "and well-being can be beneficial for understanding productivity and perhaps even for predicting it. "
-        "For example, productivity and satisfaction are correlated, and it is possible that satisfaction could "
-        "serve as a leading indicator for productivity; a decline in satisfaction and engagement could signal "
-        "upcoming burnout and reduced productivity.",
-        rationale_urls=["https://queue.acm.org/detail.cfm?id=3454124"],
-        unit=Unit.NONE,
-        addition=Addition.MIN,
-        direction=Direction.MORE_IS_BETTER,
-        target="10",
-        near_target="8",
-        sources=["manual_number"],
     ),
     "suppressed_violations": Metric(
         name="Suppressed violations",

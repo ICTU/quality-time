@@ -36,6 +36,7 @@ from .snyk import SNYK
 from .sonarqube import SONARQUBE
 from .testng import TESTNG
 from .trello import TRELLO
+from .trivy import TRIVY_JSON
 
 SOURCES = {
     "anchore": ANCHORE,
@@ -81,5 +82,6 @@ SOURCES = {
     "snyk": SNYK,
     "sonarqube": SONARQUBE,
     "testng": TESTNG,
+    "trivy_json": TRIVY_JSON,
     "trello": TRELLO,
 }
