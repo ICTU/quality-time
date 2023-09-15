@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - The "Reset all settings" button did not reset filtered tags. Fixes [#6947](https://github.com/ICTU/quality-time/issues/6947).
 
+### Added
+
+- Support Trivy JSON files as source for the security warnings metric. Closes [#6927](https://github.com/ICTU/quality-time/issues/6927).
+
 ## v5.1.0 - 2023-09-05
 
 ### Deployment notes

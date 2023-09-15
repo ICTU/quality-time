@@ -1,4 +1,4 @@
-"""SARIF JSON for security warnings source."""
+"""SARIF JSON source."""
 
 from pydantic import HttpUrl
 

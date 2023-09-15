@@ -472,6 +472,16 @@
                                 "password": "",
                                 "private_token": ""
                             }
+                        },
+                        "84eee1c2-53e5-5260-75cb-2b444a5ba336": {
+                            "type": "trivy_json",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/trivy_json/trivy.json",
+                                "landing_url": "http://localhost:8000/reports/trivy_json/trivy.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
+                            }
                         }
                     },
                     "name": null,

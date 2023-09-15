@@ -18,7 +18,10 @@ class Entity(dict):
 
     @staticmethod
     def safe_entity_key(key: str) -> str:
-        """Return an escaped version of the key that is safe in URLs and as Mongo document key."""
+        """Return an escaped version of the key that is safe in URLs and as Mongo document key.
+
+        See https://www.mongodb.com/docs/manual/core/document/#field-names.
+        """
         return re.sub(QUOTED_SLASH, "-", str(key).replace("/", "-").replace(".", "_"))
 
 
