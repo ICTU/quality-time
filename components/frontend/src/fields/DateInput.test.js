@@ -37,7 +37,7 @@ it('renders in error state if a value is missing and required', () => {
 it('submits the value when changed', async () => {
     let set_value = jest.fn()
     renderDateInput({ value: "2022-02-10", set_value: set_value })
-    await userEvent.type(screen.getByDisplayValue("2022-02-10"), "2023-03-11{Tab}", {initialSelectionStart: 0, initialSelectionEnd: 10})
+    await userEvent.type(screen.getByDisplayValue("2022-02-10"), "2023-03-11", {initialSelectionStart: 0, initialSelectionEnd: 10})
     expect(screen.getByDisplayValue("2023-03-11")).not.toBe(null)
     expect(set_value).toHaveBeenCalledWith("2023-03-11")
 })
@@ -55,6 +55,6 @@ it('does not submit the value when the value is not valid', async () => {
     let set_value = jest.fn()
     const date = "2022-02-10"
     renderDateInput({ value: date, set_value: set_value })
-    await userEvent.type(screen.getByDisplayValue(date), "invalid{Tab}", {initialSelectionStart: 0, initialSelectionEnd: 10})
+    await userEvent.type(screen.getByDisplayValue(date), "invalid", {initialSelectionStart: 0, initialSelectionEnd: 10})
     expect(set_value).not.toHaveBeenCalled()
 })
