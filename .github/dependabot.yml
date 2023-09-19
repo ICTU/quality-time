@@ -4,17 +4,13 @@ updates:
   directory: "/"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/components/collector"
-  groups:
-    python:
-      patterns:
-        - "*"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: docker
   directory: "/components/collector"
@@ -23,7 +19,7 @@ updates:
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: docker
   directory: "/components/database"
@@ -32,7 +28,7 @@ updates:
   ignore:
     - dependency-name: "mongo"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Patches only, please
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: docker
   directory: "/components/frontend"
@@ -41,27 +37,19 @@ updates:
   ignore:
     - dependency-name: "node"
       update-types: ["version-update:semver-major"]  # We use the LTS, so ignore major updates
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: npm
   directory: "/components/frontend"
-  groups:
-    npm:
-      patterns:
-        - "*"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/components/notifier"
-  groups:
-    python:
-      patterns:
-        - "*"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: docker
   directory: "/components/notifier"
@@ -70,13 +58,13 @@ updates:
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: docker
   directory: "/components/proxy"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: docker
   directory: "/components/renderer"
@@ -85,17 +73,13 @@ updates:
   ignore:
     - dependency-name: "node"
       update-types: ["version-update:semver-major"]  # We use the LTS, so ignore major updates
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: npm
   directory: "/components/renderer"
-  groups:
-    npm:
-      patterns:
-        - "*"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: docker
   directory: "/components/api_server"
@@ -104,27 +88,19 @@ updates:
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/components/api_server"
-  groups:
-    python:
-      patterns:
-        - "*"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/components/shared_code"
-  groups:
-    python:
-      patterns:
-        - "*"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: docker
   directory: "/components/testdata"
@@ -133,54 +109,34 @@ updates:
   ignore:
     - dependency-name: "python"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Prevent alpha releases, see https://github.com/dependabot/dependabot-core/issues/4643
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: npm
   directory: "/docs"
-  groups:
-    npm:
-      patterns:
-        - "*"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/docs"
-  groups:
-    python:
-      patterns:
-        - "*"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/release"
-  groups:
-    python:
-      patterns:
-        - "*"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/tests/application_tests"
-  groups:
-    python:
-      patterns:
-        - "*"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/tests/feature_tests"
-  groups:
-    python:
-      patterns:
-        - "*"
   schedule:
     interval: "daily"
-  open-pull-requests-limit: 100
+  open-pull-requests-limit: 5
