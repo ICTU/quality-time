@@ -8,6 +8,8 @@ updates:
 
 - package-ecosystem: pip
   directory: "/components/collector"
+  allow:
+    - dependency-type: "direct"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 5
@@ -47,6 +49,8 @@ updates:
 
 - package-ecosystem: pip
   directory: "/components/notifier"
+  allow:
+    - dependency-type: "direct"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 5
@@ -77,6 +81,8 @@ updates:
 
 - package-ecosystem: npm
   directory: "/components/renderer"
+  allow:
+    - dependency-type: "direct"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 5
@@ -92,12 +98,16 @@ updates:
 
 - package-ecosystem: pip
   directory: "/components/api_server"
+  allow:
+    - dependency-type: "direct"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/components/shared_code"
+  allow:
+    - dependency-type: "direct"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 5
@@ -113,30 +123,40 @@ updates:
 
 - package-ecosystem: npm
   directory: "/docs"
+  allow:
+    - dependency-type: "direct"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/docs"
+  allow:
+    - dependency-type: "direct"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/release"
+  allow:
+    - dependency-type: "direct"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/tests/application_tests"
+  allow:
+    - dependency-type: "direct"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 5
 
 - package-ecosystem: pip
   directory: "/tests/feature_tests"
+  allow:
+    - dependency-type: "direct"
   schedule:
     interval: "daily"
   open-pull-requests-limit: 5
