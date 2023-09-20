@@ -17,7 +17,7 @@ class AxeCoreSourceUpToDatenessTest(AxeCoreTestCase):
     def setUp(self):
         """Extend to set up test fixtures."""
         super().setUp()
-        self.expected_age = days_ago(datetime(2020, 9, 1, 14, 6, 9, tzinfo=UTC))
+        self.expected_age = days_ago(datetime(2020, 9, 1, 14, 7, 9, tzinfo=UTC))
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
