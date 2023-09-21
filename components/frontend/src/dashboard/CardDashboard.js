@@ -4,48 +4,43 @@ import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/P
 
 const ReactGridLayout = WidthProvider(RGL);
 
-function card_divs(cards, cols, isDragging, card_width = 4, card_height = 6) {
-    let divs = [];
-    cards.forEach(
-        (card, index) => divs.push(
-            <div
-                onClickCapture={(e) => { if (isDragging(e)) { e.stopPropagation() } }}
-                key={card.key}
-                data-grid={
-                    {
-                        i: card.key,
-                        x: (card_width * index) % cols,
-                        y: card_height * Math.trunc((card_width * index) / cols),
-                        w: card_width,
-                        h: card_height,
-                        isResizable: false
-                    }
-                }
-            >
-                {card}
-            </div>)
-    );
-    return divs;
+function cardDivs(cards, isDragging) {
+    return cards.map((card) => (
+        <div
+            onClickCapture={(e) => { if (isDragging(e)) { e.stopPropagation() } }}
+            key={card.key}
+        >
+            {card}
+        </div>
+    ));
 }
 
-export function CardDashboard({ cards, initial_layout, save_layout }) {
+function defaultLayout(cards, cols, cardWidth = 4, cardHeight = 6) {
+    return cards.map((card, index) => (
+        {
+            i: card.key,
+            x: (cardWidth * index) % cols,
+            y: cardHeight * Math.trunc((cardWidth * index) / cols),
+            w: cardWidth,
+            h: cardHeight,
+            isResizable: false
+        }
+    ))
+}
+
+export function CardDashboard({ cards, initialLayout, saveLayout }) {
+    const cols = 32;
     const [dragging, setDragging] = useState(false);
     const [mousePos, setMousePos] = useState([0, 0, 0]);
-    const [layout, setLayout] = useState(initial_layout);
     if (cards.length === 0) { return null }
-    function onLayoutChange(newLayout) {
-        if (dragging && newLayout.length === layout.length && JSON.stringify(newLayout) !== JSON.stringify(layout)) {
-            // Only save the layout if it was changed by rearranging cards
-            save_layout(newLayout)
-        }
-        setLayout(newLayout);
-    }
+    const layout = initialLayout?.length === 0 ? defaultLayout(cards, cols) : initialLayout
     function onDragStart(_currentLayout, _oldItem, _newItem, _placeholder, event) {
         setDragging(true);
         const now = new Date();
         setMousePos([event.clientX, event.clientY, now.getTime()]);
     }
-    function onDragStop(_currentLayout, _oldItem, _newItem, _placeholder, _event) {
+    function onDragStop(newLayout, _oldItem, _newItem, _placeholder, _event) {
+        saveLayout(newLayout)
         setTimeout(() => setDragging(false), 200);  // User was dragging, prevent click event propagation
     }
     function isDragging(event) {
@@ -55,8 +50,6 @@ export function CardDashboard({ cards, initial_layout, save_layout }) {
         const timedelta = now.getTime() - mousePos[2];
         return (distanceX > 10 || distanceY > 10 || timedelta > 250) ? dragging : false;
     }
-    const cols = 32;
-    const divs = card_divs(cards, cols, isDragging);
     return (
         <Permissions.Consumer>{(permissions) => (
             <ReactGridLayout
@@ -66,11 +59,10 @@ export function CardDashboard({ cards, initial_layout, save_layout }) {
                 layout={layout}
                 onDragStart={onDragStart}
                 onDragStop={onDragStop}
-                onLayoutChange={onLayoutChange}
                 preventCollision={true}
                 rowHeight={24}
             >
-                {divs}
+                {cardDivs(cards, isDragging)}
             </ReactGridLayout>)}
         </Permissions.Consumer>
     )
