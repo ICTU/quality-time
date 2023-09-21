@@ -5,7 +5,7 @@ import { ViewPanel } from './ViewPanel';
 function eventHandlers() {
     return {
         clearHiddenColumns: jest.fn(),
-        clearSelectedTags: jest.fn(),
+        clearHiddenTags: jest.fn(),
         clearVisibleDetailsTabs: jest.fn(),
         handleDateChange: jest.fn(),
         handleSort: jest.fn(),
@@ -30,6 +30,7 @@ it('resets the settings', () => {
             dateInterval={14}
             dateOrder="ascending"
             hiddenColumns={["trend"]}
+            hiddenTags={["security"]}
             hideMetricsNotRequiringAction={true}
             issueSettings={
                 {
@@ -42,7 +43,7 @@ it('resets the settings', () => {
                 }
             }
             nrDates={7}
-            reportDate={"2023-01-01"}
+            reportDate={new Date("2023-01-01")}
             sortColumn="status"
             sortDirection="descending"
             uiMode="dark"
@@ -52,7 +53,7 @@ it('resets the settings', () => {
     )
     fireEvent.click(screen.getByText(/Reset all settings/))
     expect(props.clearHiddenColumns).toHaveBeenCalledWith()
-    expect(props.clearSelectedTags).toHaveBeenCalledWith()
+    expect(props.clearHiddenTags).toHaveBeenCalledWith()
     expect(props.clearVisibleDetailsTabs).toHaveBeenCalledWith()
     expect(props.handleDateChange).toHaveBeenCalledWith(null)
     expect(props.handleSort).toHaveBeenCalledWith(null)
@@ -76,6 +77,7 @@ it('does not reset the settings when all have the default value', () => {
             dateInterval={7}
             dateOrder="descending"
             hiddenColumns={[]}
+            hiddenTags={[]}
             hideMetricsNotRequiringAction={false}
             issueSettings={
                 {
@@ -89,7 +91,6 @@ it('does not reset the settings when all have the default value', () => {
             }
             nrDates={1}
             reportDate={null}
-            selectedTags={[]}
             sortColumn={null}
             sortDirection="ascending"
             uiMode={null}
@@ -99,7 +100,7 @@ it('does not reset the settings when all have the default value', () => {
     )
     fireEvent.click(screen.getByText(/Reset all settings/))
     expect(props.clearHiddenColumns).not.toHaveBeenCalled()
-    expect(props.clearSelectedTags).not.toHaveBeenCalled()
+    expect(props.clearHiddenTags).not.toHaveBeenCalled()
     expect(props.clearVisibleDetailsTabs).not.toHaveBeenCalled()
     expect(props.handleDateChange).not.toHaveBeenCalled()
     expect(props.handleSort).not.toHaveBeenCalled()
@@ -133,7 +134,7 @@ it("sets light mode", () => {
 it("sets dark mode on keypress", async () => {
     const setUIMode = jest.fn();
     render(<ViewPanel hideMetricsNotRequiringAction={true} setUIMode={setUIMode} />)
-    await userEvent.type(screen.getByText(/Dark mode/), "{Enter}")
+    await userEvent.type(screen.getByText(/Dark mode/), " ")
     expect(setUIMode).toHaveBeenCalledWith("dark")
 })
 
@@ -154,8 +155,29 @@ it("shows the metrics not requiring action", () => {
 it("shows the metrics not requiring action by keypress", async () => {
     const setHideMetricsNotRequiringAction = jest.fn();
     render(<ViewPanel hideMetricsNotRequiringAction={true} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />)
-    await userEvent.type(screen.getByText(/All metrics/), "{Enter}")
+    await userEvent.type(screen.getByText(/All metrics/), " ")
     expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
+})
+
+it("hides a tag", () => {
+    const toggleHiddenTag = jest.fn();
+    render(<ViewPanel tags={["security"]} toggleHiddenTag={toggleHiddenTag} />)
+    fireEvent.click(screen.getByText(/security/))
+    expect(toggleHiddenTag).toHaveBeenCalledWith("security")
+})
+
+it("hides a tag by keypress", async () => {
+    const toggleHiddenTag = jest.fn();
+    render(<ViewPanel tags={["security"]} toggleHiddenTag={toggleHiddenTag} />)
+    await userEvent.type(screen.getAllByText(/security/)[0], " ")
+    expect(toggleHiddenTag).toHaveBeenCalledWith("security")
+})
+
+it("shows a tag", () => {
+    const toggleHiddenTag = jest.fn();
+    render(<ViewPanel tags={["security"]} hiddenTags={["security"]} toggleHiddenTag={toggleHiddenTag} />)
+    fireEvent.click(screen.getAllByText(/security/)[0])
+    expect(toggleHiddenTag).toHaveBeenCalledWith("security")
 })
 
 it("hides a column", () => {
@@ -168,7 +190,7 @@ it("hides a column", () => {
 it("hides a column by keypress", async () => {
     const toggleHiddenColumn = jest.fn();
     render(<ViewPanel toggleHiddenColumn={toggleHiddenColumn} />)
-    await userEvent.type(screen.getAllByText(/Comment/)[0], "{Enter}")
+    await userEvent.type(screen.getAllByText(/Comment/)[0], " ")
     expect(toggleHiddenColumn).toHaveBeenCalledWith("comment")
 })
 
@@ -196,14 +218,14 @@ it("sorts a column descending", () => {
 it("sorts a column by keypress", async () => {
     const handleSort = jest.fn();
     render(<ViewPanel handleSort={handleSort} />)
-    await userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
+    await userEvent.type(screen.getAllByText(/Comment/)[1], " ")
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
 it("ignores a keypress if the menu item is disabled", async () => {
     const handleSort = jest.fn();
     render(<ViewPanel hiddenColumns={["comment"]} handleSort={handleSort} />)
-    await userEvent.type(screen.getAllByText(/Comment/)[1], "{Enter}")
+    await userEvent.type(screen.getAllByText(/Comment/)[1], " ")
     expect(handleSort).not.toHaveBeenCalledWith("comment")
 })
 
@@ -217,7 +239,7 @@ it("sets the number of dates", () => {
 it("sets the number of dates by keypress", async () => {
     const setNrDates = jest.fn();
     render(<ViewPanel nrDates={1} setNrDates={setNrDates} />)
-    await userEvent.type(screen.getByText(/5 dates/), "{Enter}")
+    await userEvent.type(screen.getByText(/5 dates/), " ")
     expect(setNrDates).toHaveBeenCalledWith(5)
 })
 
@@ -238,7 +260,7 @@ it("sets the date interval to one day", () => {
 it("sets the date interval by keypress", async () => {
     const setDateInterval = jest.fn();
     render(<ViewPanel dateInterval={7} setDateInterval={setDateInterval} />)
-    await userEvent.type(screen.getByText(/1 day/), "{Enter}")
+    await userEvent.type(screen.getByText(/1 day/), " ")
     expect(setDateInterval).toHaveBeenCalledWith(1)
 })
 
@@ -252,7 +274,7 @@ it("sorts the dates descending", () => {
 it("sorts the dates ascending by keypress", async () => {
     const setDateOrder = jest.fn();
     render(<ViewPanel dateOrder="descending" setDateOrder={setDateOrder} />)
-    await userEvent.type(screen.getByText(/Ascending/), "{Enter}")
+    await userEvent.type(screen.getByText(/Ascending/), " ")
     expect(setDateOrder).toHaveBeenCalledWith("ascending")
 })
 
@@ -266,6 +288,6 @@ it("shows issue summaries", async () => {
 it("shows issue summaries by keypress", async () => {
     const setShowIssueSummary = jest.fn();
     render(<ViewPanel setShowIssueSummary={setShowIssueSummary} />)
-    await userEvent.type(screen.getAllByText(/Summary/)[0], "{Enter}")
+    await userEvent.type(screen.getAllByText(/Summary/)[0], " ")
     expect(setShowIssueSummary).toHaveBeenCalledWith(true)
 })

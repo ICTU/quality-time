@@ -32,28 +32,40 @@ const report = {
         subject_uuid: {
             type: "subject_type", name: "Subject title", metrics: {
                 metric_uuid: { name: "Metric name", type: "metric_type", tags: ["tag"], recent_measurements: [] },
-                another_metric_uuid: { name: "Metric name", type: "metric_type", tags: [], recent_measurements: [] },
+                another_metric_uuid: { name: "Metric name", type: "metric_type", tags: ["other"], recent_measurements: [] },
             }
         }
     }
 };
 
-function renderReport(reportToRender, { dates = [new Date()], report_date = null, hiddenColumns = [], handleSort = null, selectedTags = [], sortColumn = null, sortDirection = "ascending", toggleSelectedTag = null } = {}) {
+function renderReport(
+    reportToRender,
+    {
+        dates = [new Date()],
+        handleSort = null,
+        hiddenColumns = [],
+        hiddenTags = [],
+        report_date = null,
+        sortDirection = "ascending",
+        sortColumn = null,
+        toggleHiddenTag = null
+    } = {}
+) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
                 <Report
                     dates={dates}
+                    handleSort={handleSort}
+                    hiddenColumns={hiddenColumns}
+                    hiddenTags={hiddenTags}
+                    measurements={[]}
                     reports={[reportToRender]}
                     report={reportToRender}
                     report_date={report_date}
-                    hiddenColumns={hiddenColumns}
-                    handleSort={handleSort}
-                    measurements={[]}
-                    selectedTags={selectedTags}
-                    sortColumn={sortColumn}
                     sortDirection={sortDirection}
-                    toggleSelectedTag={toggleSelectedTag}
+                    sortColumn={sortColumn}
+                    toggleHiddenTag={toggleHiddenTag}
                     visibleDetailsTabs={[]}
                 />
             </DataModel.Provider>
@@ -117,9 +129,22 @@ it('sorts another column', async () => {
     expect(handleSort).toHaveBeenCalledWith("comment")
 });
 
-it('invokes callback on clicking tag', async () => {
-    let toggleSelectedTag = jest.fn();
-    await act(async () => renderReport(report, { toggleSelectedTag: toggleSelectedTag }))
+it('hides tags', async () => {
+    let toggleHiddenTag = jest.fn();
+    await act(async () => renderReport(report, { toggleHiddenTag: toggleHiddenTag }))
     fireEvent.click(screen.getAllByText(/tag/)[0])
-    expect(toggleSelectedTag).toHaveBeenCalledWith("tag")
-});
+    expect(toggleHiddenTag).toHaveBeenCalledWith("other")
+})
+
+it('shows hidden tags', async () => {
+    let toggleHiddenTag = jest.fn();
+    await act(async () => renderReport(report, { hiddenTags: ["other"], toggleHiddenTag: toggleHiddenTag }))
+    expect(screen.queryAllByText("other").length).toBe(0)
+    fireEvent.click(screen.getAllByText(/tag/)[0])
+    expect(toggleHiddenTag).toHaveBeenCalledWith("other")
+})
+
+it('hides subjects if empty', async () => {
+    await act(async () => renderReport(report, { hiddenTags: ["tag", "other"] }))
+    expect(screen.queryAllByText(/Subject title/).length).toBe(0)
+})

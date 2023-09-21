@@ -1,5 +1,7 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { Segment } from '../semantic_ui_react_wrappers';
+import { datePropType, datesPropType, issueSettingsPropType, sortDirectionPropType } from '../sharedPropTypes';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { AddDropdownButton, CopyButton, MoveButton } from '../widgets/Button';
@@ -14,6 +16,7 @@ export function Subjects({
     dates,
     handleSort,
     hiddenColumns,
+    hiddenTags,
     hideMetricsNotRequiringAction,
     issueSettings,
     measurements,
@@ -23,7 +26,6 @@ export function Subjects({
     report_date,
     sortColumn,
     sortDirection,
-    tags,
     toggleVisibleDetailsTab,
     visibleDetailsTabs
 }) {
@@ -40,6 +42,7 @@ export function Subjects({
                         first_subject={index === 0}
                         handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
+                        hiddenTags={hiddenTags}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                         issueSettings={issueSettings}
                         key={subject_uuid}
@@ -51,7 +54,6 @@ export function Subjects({
                         sortColumn={sortColumn}
                         sortDirection={sortDirection}
                         subject_uuid={subject_uuid}
-                        tags={tags}
                         toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                         visibleDetailsTabs={visibleDetailsTabs}
                         reload={reload}
@@ -78,4 +80,22 @@ export function Subjects({
             />
         </>
     )
+}
+Subjects.propTypes = {
+    changed_fields: PropTypes.arrayOf(PropTypes.string),
+    dates: datesPropType,
+    handleSort: PropTypes.func,
+    hiddenColumns: PropTypes.arrayOf(PropTypes.string),
+    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hideMetricsNotRequiringAction: PropTypes.bool,
+    issueSettings: issueSettingsPropType,
+    measurements: PropTypes.array,
+    reload: PropTypes.func,
+    report: PropTypes.object,
+    reports: PropTypes.array,
+    report_date: datePropType,
+    sortColumn: PropTypes.string,
+    sortDirection: sortDirectionPropType,
+    toggleVisibleDetailsTab: PropTypes.func,
+    visibleDetailsTabs: PropTypes.arrayOf(PropTypes.string),
 }

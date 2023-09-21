@@ -1,5 +1,7 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { Message } from 'semantic-ui-react';
+import { datePropType, datesPropType, issueSettingsPropType, sortDirectionPropType } from '../sharedPropTypes';
 import { DataModel } from '../context/DataModel';
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from '../subject/Subjects';
@@ -9,13 +11,13 @@ import { CardDashboard } from '../dashboard/CardDashboard';
 import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { set_report_attribute } from '../api/report';
-import { getReportTags, getMetricTags, nrMetricsInReport, get_subject_name, STATUS_COLORS } from '../utils';
+import { getReportTags, getMetricTags, nrMetricsInReport, get_subject_name, STATUS_COLORS, visibleMetrics } from '../utils';
 import { ReportTitle } from './ReportTitle';
 import { metricStatusOnDate } from './report_utils';
 
-function summarizeSubjectOnDate(subject, measurements, date) {
+function summarizeMetricsOnDate(metrics, measurements, date) {
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
-    Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+    Object.entries(metrics).forEach(([metric_uuid, metric]) => {
         const status = metricStatusOnDate(metric_uuid, metric, measurements, date);
         summary[STATUS_COLORS[status]] += 1
     })
@@ -35,16 +37,29 @@ function summarizeTagOnDate(report, measurements, tag, date) {
     return summary
 }
 
-function ReportDashboard({ dates, measurements, report, onClick, selectedTags, toggleSelectedTag, reload }) {
+function ReportDashboard(
+    {
+        dates,
+        hiddenTags,
+        hideMetricsNotRequiringAction,
+        measurements,
+        onClick,
+        onClickTag,
+        reload,
+        report
+    }
+) {
     const dataModel = useContext(DataModel)
     const nrMetrics = Math.max(nrMetricsInReport(report), 1);
-    function subject_cards() {
-        return Object.entries(report.subjects).map(([subject_uuid, subject]) => {
+    const subjectCards = []
+    Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
+        const metrics = visibleMetrics(subject.metrics, hideMetricsNotRequiringAction, hiddenTags)
+        if (Object.keys(metrics).length > 0) {
             const summary = {}
             dates.forEach((date) => {
-                summary[date] = summarizeSubjectOnDate(subject, measurements, date)
+                summary[date] = summarizeMetricsOnDate(metrics, measurements, date)
             })
-            return (
+            subjectCards.push(
                 <MetricSummaryCard
                     header={get_subject_name(report.subjects[subject_uuid], dataModel)}
                     key={subject_uuid}
@@ -53,34 +68,42 @@ function ReportDashboard({ dates, measurements, report, onClick, selectedTags, t
                     summary={summary}
                 />
             )
-        });
-    }
-    function tag_cards() {
-        return getReportTags(report).map((tag) => {
-            const summary = {}
-            dates.forEach((date) => {
-                summary[date] = summarizeTagOnDate(report, measurements, tag, date)
-            })
-            return (
-                <MetricSummaryCard
-                    header={<Tag tag={tag} selected={selectedTags.includes(tag)} />}
-                    key={tag}
-                    maxY={nrMetrics}
-                    onClick={() => toggleSelectedTag(tag)}
-                    summary={summary}
-                />
-            )
+        }
+    })
+    const tagCards = getReportTags(report, hiddenTags).map((tag) => {
+        const summary = {}
+        dates.forEach((date) => {
+            summary[date] = summarizeTagOnDate(report, measurements, tag, date)
         })
-    }
+        return (
+            <MetricSummaryCard
+                header={<Tag tag={tag} />}
+                key={tag}
+                maxY={nrMetrics}
+                onClick={() => onClickTag(tag)}
+                summary={summary}
+            />
+        )
+    })
     return (
         <Permissions.Consumer>{(permissions) => (
             <CardDashboard
-                cards={subject_cards().concat(tag_cards().concat([<LegendCard key="legend" />]))}
+                cards={subjectCards.concat(tagCards.concat([<LegendCard key="legend" />]))}
                 initialLayout={report.layout}
                 saveLayout={function (layout) { if (accessGranted(permissions, [EDIT_REPORT_PERMISSION])) { set_report_attribute(report.report_uuid, "layout", layout, reload) } }}
             />)}
         </Permissions.Consumer>
     )
+}
+ReportDashboard.propTypes = {
+    dates: datesPropType,
+    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hideMetricsNotRequiringAction: PropTypes.bool,
+    measurements: PropTypes.array,
+    onClick: PropTypes.func,
+    onClickTag: PropTypes.func,
+    reload: PropTypes.func,
+    report: PropTypes.object
 }
 
 function ReportErrorMessage({ report_date }) {
@@ -92,6 +115,9 @@ function ReportErrorMessage({ report_date }) {
         </Message>
     )
 }
+ReportErrorMessage.propTypes = {
+    report_date: datePropType
+}
 
 export function Report({
     changed_fields,
@@ -99,6 +125,7 @@ export function Report({
     go_home,
     handleSort,
     hiddenColumns,
+    hiddenTags,
     hideMetricsNotRequiringAction,
     issueSettings,
     measurements,
@@ -106,10 +133,9 @@ export function Report({
     report,
     report_date,
     reports,
-    selectedTags,
     sortColumn,
     sortDirection,
-    toggleSelectedTag,
+    toggleHiddenTag,
     toggleVisibleDetailsTab,
     visibleDetailsTabs
 }) {
@@ -138,10 +164,14 @@ export function Report({
             <CommentSegment comment={report.comment} />
             <ReportDashboard
                 dates={dates}
+                hiddenTags={hiddenTags}
+                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 measurements={reversedMeasurements}
                 onClick={(e, s) => navigate_to_subject(e, s)}
-                selectedTags={selectedTags}
-                toggleSelectedTag={toggleSelectedTag}
+                onClickTag={(tag) => {
+                    const tagsToToggle = hiddenTags?.length > 0 ? hiddenTags : getReportTags(report)
+                    toggleHiddenTag(...tagsToToggle.filter((visibleTag) => visibleTag !== tag))
+                }}
                 report={report}
                 reload={reload}
             />
@@ -150,6 +180,7 @@ export function Report({
                 dates={dates}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
+                hiddenTags={hiddenTags}
                 hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 issueSettings={issueSettings}
                 measurements={measurements}
@@ -159,10 +190,29 @@ export function Report({
                 report_date={report_date}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
-                tags={selectedTags.filter((tag) => getReportTags(report).includes(tag))}  // Only filter by tags that are actually used in this report
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                 visibleDetailsTabs={visibleDetailsTabs}
             />
         </div>
     )
+}
+Report.propTypes = {
+    changed_fields: PropTypes.arrayOf(PropTypes.string),
+    dates: datesPropType,
+    go_home: PropTypes.func,
+    handleSort: PropTypes.func,
+    hiddenColumns: PropTypes.arrayOf(PropTypes.string),
+    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hideMetricsNotRequiringAction: PropTypes.bool,
+    issueSettings: issueSettingsPropType,
+    measurements: PropTypes.array,
+    reload: PropTypes.func,
+    report: PropTypes.object,
+    report_date: datePropType,
+    reports: PropTypes.array,
+    sortColumn: PropTypes.string,
+    sortDirection: sortDirectionPropType,
+    toggleHiddenTag: PropTypes.func,
+    toggleVisibleDetailsTab: PropTypes.func,
+    visibleDetailsTabs: PropTypes.arrayOf(PropTypes.string)
 }

@@ -70,6 +70,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
                 onDragStop={onDragStop}
                 preventCollision={true}
                 rowHeight={24}
+                style={{ zIndex: "0" }}  // Prevent cards from being shown above the settings panel after being clicked
             >
                 {cardDivs(cards, isDragging)}
             </ReactGridLayout>)}

@@ -89,9 +89,9 @@ it('shows the view panel on menu item click', () => {
     expect(screen.getAllByText(/Hello/).length).toBe(1)
 });
 
-it('shows the view panel on enter', async () => {
+it('shows the view panel on space', async () => {
     render(<Menubar atHome={true} panel={<div>Hello</div>} />);
-    await userEvent.type(screen.getByText(/Settings/), "{Enter}");
+    await userEvent.type(screen.getByText(/Settings/), " ")
     expect(screen.getAllByText(/Hello/).length).toBe(1)
 })
 
