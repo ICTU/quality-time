@@ -76,8 +76,8 @@ function ReportDashboard({ dates, measurements, report, onClick, selectedTags, t
         <Permissions.Consumer>{(permissions) => (
             <CardDashboard
                 cards={subject_cards().concat(tag_cards().concat([<LegendCard key="legend" />]))}
-                initial_layout={report.layout || []}
-                save_layout={function (layout) { if (accessGranted(permissions, [EDIT_REPORT_PERMISSION])) { set_report_attribute(report.report_uuid, "layout", layout, reload) } }}
+                initialLayout={report.layout}
+                saveLayout={function (layout) { if (accessGranted(permissions, [EDIT_REPORT_PERMISSION])) { set_report_attribute(report.report_uuid, "layout", layout, reload) } }}
             />)}
         </Permissions.Consumer>
     )

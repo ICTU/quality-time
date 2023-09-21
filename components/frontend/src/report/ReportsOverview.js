@@ -81,8 +81,8 @@ function ReportsDashboard({ dates, reports, open_report, measurements, layout, r
     return (
         <CardDashboard
             cards={report_cards.concat(tag_cards).concat([<LegendCard key="legend" />])}
-            initial_layout={layout || []}
-            save_layout={function (new_layout) { set_reports_attribute("layout", new_layout, reload) }}
+            initialLayout={layout}
+            saveLayout={function (new_layout) { set_reports_attribute("layout", new_layout, reload) }}
         />
     )
 }
