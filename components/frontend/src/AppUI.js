@@ -12,7 +12,7 @@ import { DataModel } from './context/DataModel';
 import { DarkMode } from './context/DarkMode';
 import { Permissions } from './context/Permissions';
 import { PageContent } from './PageContent';
-import { getUserPermissions, reportIsTagReport, userPrefersDarkMode, useURLSearchQuery } from './utils'
+import { getReportsTags, getUserPermissions, reportIsTagReport, userPrefersDarkMode, useURLSearchQuery } from './utils'
 
 export function AppUI({
     changed_fields,
@@ -54,8 +54,8 @@ export function AppUI({
     const [dateInterval, setDateInterval] = useURLSearchQuery("date_interval", "integer", 7);
     const [dateOrder, setDateOrder] = useURLSearchQuery("date_order", "string", "descending");
     const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery("hidden_columns", "array");
+    const [hiddenTags, toggleHiddenTag, clearHiddenTags] = useURLSearchQuery("hidden_tags", "array");
     const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery("hide_metrics_not_requiring_action", "boolean", false);
-    const [selectedTags, toggleSelectedTag, clearSelectedTags] = useURLSearchQuery("selected_tags", "array");
     const [nrDates, setNrDates] = useURLSearchQuery("nr_dates", "integer", 1);
     const [sortColumn, setSortColumn] = useURLSearchQuery("sort_column", "string", null);
     const [sortDirection, setSortDirection] = useURLSearchQuery("sort_direction", "string", "ascending");
@@ -108,18 +108,18 @@ export function AppUI({
                     visibleDetailsTabs={visibleDetailsTabs}
                     panel={<ViewPanel
                         clearHiddenColumns={clearHiddenColumns}
-                        clearSelectedTags={clearSelectedTags}
+                        clearHiddenTags={clearHiddenTags}
                         clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                         dateInterval={dateInterval}
                         dateOrder={dateOrder}
                         handleDateChange={handleDateChange}
                         handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
+                        hiddenTags={hiddenTags}
                         hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                         issueSettings={issueSettings}
                         nrDates={nrDates}
                         reportDate={report_date}
-                        selectedTags={selectedTags}
                         setDateInterval={setDateInterval}
                         setDateOrder={setDateOrder}
                         setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
@@ -133,7 +133,9 @@ export function AppUI({
                         setUIMode={setUIMode}
                         sortColumn={sortColumn}
                         sortDirection={sortDirection}
+                        tags={getReportsTags(reports)}
                         toggleHiddenColumn={toggleHiddenColumn}
+                        toggleHiddenTag={toggleHiddenTag}
                         uiMode={uiMode}
                         visibleDetailsTabs={visibleDetailsTabs}
                     />}
@@ -149,6 +151,7 @@ export function AppUI({
                             go_home={go_home}
                             handleSort={handleSort}
                             hiddenColumns={hiddenColumns}
+                            hiddenTags={hiddenTags}
                             hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                             issueSettings={issueSettings}
                             loading={loading}
@@ -160,10 +163,9 @@ export function AppUI({
                             report_uuid={report_uuid}
                             reports={reports}
                             reports_overview={reports_overview}
-                            selectedTags={selectedTags}
                             sortColumn={sortColumn}
                             sortDirection={sortDirection}
-                            toggleSelectedTag={toggleSelectedTag}
+                            toggleHiddenTag={toggleHiddenTag}
                             toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                             visibleDetailsTabs={visibleDetailsTabs}
                         />

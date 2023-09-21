@@ -9,7 +9,7 @@ export function TableRowWithDetails(props) {
                 <Table.Cell
                     collapsing
                     onClick={() => onExpand(!expanded)}
-                    onKeyPress={() => onExpand(!expanded)}
+                    onKeyPress={(event) => {event.preventDefault(); onExpand(!expanded)}}
                     tabIndex="0"
                     textAlign="center"
                     style={style}

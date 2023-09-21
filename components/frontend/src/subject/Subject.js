@@ -1,20 +1,25 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { DataModel } from '../context/DataModel';
-import { get_metric_comment, get_metric_issue_ids, get_metric_name, get_metric_status, getMetricTags, get_metric_target, getMetricResponseOverrun, getMetricResponseTimeLeft, getMetricUnit, get_metric_value, get_source_name } from '../utils';
+import { datePropType, datesPropType, issueSettingsPropType, sortDirectionPropType } from '../sharedPropTypes';
+import {
+    get_metric_comment,
+    get_metric_issue_ids,
+    get_metric_name,
+    get_metric_status,
+    getMetricTags,
+    get_metric_target,
+    getMetricResponseOverrun,
+    getMetricResponseTimeLeft,
+    getMetricUnit,
+    get_metric_value,
+    get_source_name,
+    visibleMetrics
+} from '../utils';
 import { SubjectTable } from './SubjectTable';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { SubjectTitle } from './SubjectTitle';
 import './Subject.css'
-
-function displayedMetrics(allMetrics, hideMetricsNotRequiringAction, tags) {
-    const metrics = {}
-    Object.entries(allMetrics).forEach(([metric_uuid, metric]) => {
-        if (hideMetricsNotRequiringAction && (["target_met", "debt_target_met", "informative"].includes(metric.status))) { return }
-        if (tags.length > 0 && tags.filter(value => metric.tags?.includes(value)).length === 0) { return }
-        metrics[metric_uuid] = metric
-    })
-    return metrics
-}
 
 function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, measurements) {
     const status_order = { "": "0", target_not_met: "1", near_target_met: "2", debt_target_met: "3", target_met: "4", informative: "5" };
@@ -89,6 +94,7 @@ export function Subject({
     first_subject,
     handleSort,
     hiddenColumns,
+    hiddenTags,
     hideMetricsNotRequiringAction,
     issueSettings,
     last_subject,
@@ -99,14 +105,14 @@ export function Subject({
     sortColumn,
     sortDirection,
     subject_uuid,
-    tags,
     toggleVisibleDetailsTab,
     visibleDetailsTabs,
     reload
 }) {
     const subject = report.subjects[subject_uuid];
-    const metrics = displayedMetrics(subject.metrics, hideMetricsNotRequiringAction, tags)
+    const metrics = visibleMetrics(subject.metrics, hideMetricsNotRequiringAction, hiddenTags)
     const dataModel = useContext(DataModel)
+    if (Object.keys(metrics).length === 0) { return null }
     let metricEntries = Object.entries(metrics);
     if (sortColumn !== null) {
         sortMetrics(dataModel, metricEntries, sortDirection, sortColumn, report, measurements);
@@ -146,4 +152,25 @@ export function Subject({
             />
         </div>
     )
+}
+Subject.propTypes = {
+    changed_fields: PropTypes.arrayOf(PropTypes.string),
+    dates: datesPropType,
+    first_subject: PropTypes.bool,
+    handleSort: PropTypes.func,
+    hiddenColumns: PropTypes.arrayOf(PropTypes.string),
+    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hideMetricsNotRequiringAction: PropTypes.bool,
+    issueSettings: issueSettingsPropType,
+    last_subject: PropTypes.bool,
+    measurements: PropTypes.array,
+    report: PropTypes.object,
+    report_date: datePropType,
+    reports: PropTypes.array,
+    sortColumn: PropTypes.string,
+    sortDirection: sortDirectionPropType,
+    subject_uuid: PropTypes.string,
+    toggleVisibleDetailsTab: PropTypes.func,
+    visibleDetailsTabs: PropTypes.arrayOf(PropTypes.string),
+    reload: PropTypes.func
 }

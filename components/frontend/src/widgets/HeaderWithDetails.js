@@ -10,7 +10,7 @@ export function HeaderWithDetails({ children, className, header, level, style, s
             <Header
                 as={level}
                 onClick={() => setShowDetails(!show_details)}
-                onKeyPress={() => setShowDetails(!show_details)}
+                onKeyPress={(event) => { event.preventDefault(); setShowDetails(!show_details) }}
                 style={style}
                 tabIndex="0"
             >

@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 ### Added
 
+- The visibility of tags can be configured via the Settings panel. When a tag is hidden, its tag card is also hidden in the dashboard. When all tags of metric are hidden, the metric itself is hidden. When all metrics in a subject are hidden, the subject is also hidden. Closes [#7086](https://github.com/ICTU/quality-time/issues/7086).
 - Support downloading Harbor JSON vulnerability reports from a JSON file. Closes [#7147](https://github.com/ICTU/quality-time/issues/7147).
 
 ### Changed

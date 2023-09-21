@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Message } from 'semantic-ui-react';
 import { Segment } from '../semantic_ui_react_wrappers';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
@@ -13,6 +14,7 @@ import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
 import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum } from '../utils';
 import { metricStatusOnDate } from './report_utils';
+import { datePropType, datesPropType } from '../sharedPropTypes';
 
 function summarizeReportOnDate(report, measurements, date) {
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
@@ -41,7 +43,7 @@ function summarizeReportsOnDate(reports, measurements, date, tag) {
 }
 
 
-function ReportsDashboard({ dates, reports, open_report, measurements, layout, reload }) {
+function ReportsDashboard({ dates, hiddenTags, reports, open_report, measurements, layout, reload }) {
     let nrMetrics = 0
     const reportSummary = {}
     reports.forEach((report) => {
@@ -52,7 +54,7 @@ function ReportsDashboard({ dates, reports, open_report, measurements, layout, r
         })
     })
     const tagSummary = {}
-    const tags = getReportsTags(reports)
+    const tags = getReportsTags(reports, hiddenTags)
     tags.forEach((tag) => {
         tagSummary[tag] = {}
         dates.forEach((date) => {
@@ -69,7 +71,7 @@ function ReportsDashboard({ dates, reports, open_report, measurements, layout, r
             summary={reportSummary[report.report_uuid]}
         />
     );
-    const tag_cards = tags.map((tag) =>
+    const tagCards = tags.filter((tag) => (!hiddenTags?.includes(tag))).map((tag) =>
         <MetricSummaryCard
             key={tag}
             header={<Tag tag={tag} />}
@@ -80,14 +82,23 @@ function ReportsDashboard({ dates, reports, open_report, measurements, layout, r
     );
     return (
         <CardDashboard
-            cards={report_cards.concat(tag_cards).concat([<LegendCard key="legend" />])}
+            cards={report_cards.concat(tagCards).concat([<LegendCard key="legend" />])}
             initialLayout={layout}
             saveLayout={function (new_layout) { set_reports_attribute("layout", new_layout, reload) }}
         />
     )
 }
+ReportsDashboard.propTypes = {
+    dates: datesPropType,
+    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    reports: PropTypes.array,
+    open_report: PropTypes.func,
+    measurements: PropTypes.array,
+    layout: PropTypes.object,
+    reload: PropTypes.func
+}
 
-export function ReportsOverview({ dates, measurements, reports, open_report, report_date, reports_overview, reload }) {
+export function ReportsOverview({ dates, hiddenTags, measurements, reports, open_report, report_date, reports_overview, reload }) {
     if (reports.length === 0 && report_date !== null) {
         return (
             <Message warning size='huge'>
@@ -103,7 +114,7 @@ export function ReportsOverview({ dates, measurements, reports, open_report, rep
         <div id="dashboard">
             <ReportsOverviewTitle reports_overview={reports_overview} reload={reload} />
             <CommentSegment comment={reports_overview.comment} />
-            <ReportsDashboard dates={dates} measurements={reversedMeasurements} reports={reports} open_report={open_report} layout={reports_overview.layout} reload={reload} />
+            <ReportsDashboard dates={dates} hiddenTags={hiddenTags} measurements={reversedMeasurements} reports={reports} open_report={open_report} layout={reports_overview.layout} reload={reload} />
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment basic>
                     <AddButton
@@ -120,4 +131,14 @@ export function ReportsOverview({ dates, measurements, reports, open_report, rep
             />
         </div>
     )
+}
+ReportsOverview.propTypes = {
+    dates: datesPropType,
+    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    measurements: PropTypes.array,
+    reports: PropTypes.array,
+    open_report: PropTypes.func,
+    report_date: datePropType,
+    reports_overview: PropTypes.object,
+    reload: PropTypes.func
 }

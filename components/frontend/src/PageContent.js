@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { Container, Loader } from 'semantic-ui-react';
 import { Segment } from './semantic_ui_react_wrappers';
 import { Report } from './report/Report';
@@ -26,6 +27,7 @@ export function PageContent({
     dateOrder,
     handleSort,
     hiddenColumns,
+    hiddenTags,
     hideMetricsNotRequiringAction,
     issueSettings,
     loading,
@@ -38,10 +40,9 @@ export function PageContent({
     report_uuid,
     reports,
     reports_overview,
-    selectedTags,
     sortColumn,
     sortDirection,
-    toggleSelectedTag,
+    toggleHiddenTag,
     toggleVisibleDetailsTab,
     visibleDetailsTabs
 }) {
@@ -65,6 +66,7 @@ export function PageContent({
                 go_home={go_home}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
+                hiddenTags={hiddenTags}
                 hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 issueSettings={issueSettings}
                 measurements={measurements}
@@ -72,16 +74,16 @@ export function PageContent({
                 report={current_report}
                 reports={reports}
                 report_date={report_date}
-                selectedTags={selectedTags}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
-                toggleSelectedTag={toggleSelectedTag}
+                toggleHiddenTag={toggleHiddenTag}
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                 visibleDetailsTabs={visibleDetailsTabs}
             />
         } else {
             content = <ReportsOverview
                 dates={dates}
+                hiddenTags={hiddenTags}
                 measurements={measurements}
                 open_report={open_report}
                 reload={reload}
@@ -92,4 +94,8 @@ export function PageContent({
         }
     }
     return <Container fluid className="MainContainer">{content}</Container>
+}
+PageContent.propTypes = {
+    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    toggleHiddenTag: PropTypes.func
 }

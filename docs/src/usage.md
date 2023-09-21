@@ -407,7 +407,7 @@ Metrics can be sorted by clicking on the table column headers. The sort order cy
 
 ### Filtering metrics by tag
 
-In a report's dashboard, click on a tag card to show only metrics that have the selected tag. The selected tag turns blue to indicate it is filtered on. Click the selected tag again to turn off the filtering. Selecting multiple tags shows metrics that have at least one of the selected tags.
+In a report's dashboard, click on a tag card to show only metrics that have the selected tag. Click the selected tag again to turn off the filtering. To filter on multiple tags, use the 'Settings' panel.
 
 ### Filtering metrics by status
 
@@ -448,6 +448,8 @@ The `report_uuid` is the unique identifier that *Quality-time* assigns to a repo
 To hide metrics that do not need any action, set the `hide_metrics_not_requiring_action` parameter to true, i.e. `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hide_metrics_not_requiring_action=true`.
 
 To hide columns from the report, set the `hidden_columns` parameter, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hidden_columns=target,comment`. Possible options are `trend`, `status`, `measurement`, `target`, `source`, `comment`, `issues`, and `tags`.
+
+To hide tags from the report, set the `hidden_tags` parameter, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hidden_tags=security,usability`.
 
 To expand metrics and set the active tab of the metric detail information, add the `tabs` parameter, i.e. `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?tabs=<metric_uuid>:<tab_index>,<metric_uuid>:<tab_index>,...`. The metric UUID can be found by navigating to a report in the browser, expanding the metric, and looking for the `tabs` parameter in the address bar. For example, when the URL in the browser's address bar is `https://www.quality-time.example.org/1d0e056-2440-43bd-b640-f6753ccf4496?tabs=d4c0dea1-b072-417f-804e-6045544748db:0`, the part between the equal sign and the colon is the metric UUID of the expanded metric. The number after the colon is the number of the active tab, e.g. 0 is the metrics configuration tab, 1 is the source configuration tab, 2 is the trend graph, etc.
 

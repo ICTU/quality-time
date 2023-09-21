@@ -15,7 +15,7 @@ export const report = {
                 metric_uuid: {
                     name: "M1",
                     type: "metric_type",
-                    tags: [],
+                    tags: ["other tag"],
                     target: "1",
                     sources: {},
                     status: "target_not_met",
@@ -23,7 +23,7 @@ export const report = {
                     latest_measurement: {count: 1},
                     comment: "Comment 1"
                 },
-                metric_uuidi2: {
+                metric_uuid2: {
                     name: "M2",
                     type: "metric_type",
                     tags: ["tag"],

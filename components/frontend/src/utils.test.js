@@ -1,9 +1,9 @@
 import { renderHook, act } from '@testing-library/react'
 import history from 'history/browser';
 import {
-    capitalize, getUserPermissions, getMetricTags, get_metric_target, get_source_name, get_subject_name,
+    capitalize, getUserPermissions, getMetricTags, get_metric_target, getReportTags, get_source_name, get_subject_name,
     nice_number, scaled_number, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery,
-    getMetricResponseOverrun, reportIsTagReport
+    getMetricResponseOverrun, reportIsTagReport, visibleMetrics
 } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
 
@@ -369,4 +369,42 @@ it("returns the metric response overrun when there are two measurements with dif
 it("returns whether a report is a tag report", () => {
     expect(reportIsTagReport("report")).toBe(false)
     expect(reportIsTagReport("tag-report")).toBe(true)
+})
+
+it("returns the tags of an empty report", () => {
+    expect(getReportTags({"subjects": {}})).toStrictEqual([])
+})
+
+it("returns the tags of a report with one tag", () => {
+    expect(getReportTags({"subjects": {"subject_uud": {"metrics": {"metric_uuid": {"tags": ["tag"]}}}}})).toStrictEqual(["tag"])
+})
+
+it("does not return hidden tags", () => {
+    expect(getReportTags({"subjects": {"subject_uud": {"metrics": {"metric_uuid": {"tags": ["tag", "hidden"]}}}}}, ["hidden"])).toStrictEqual(["tag"])
+})
+
+it("hides metrics not requiring action", () => {
+    expect(visibleMetrics({}, true, [])).toStrictEqual({})
+    expect(visibleMetrics({}, false, [])).toStrictEqual({})
+    const metricNotRequiringAction = {"metric_uuid": {"status": "informative"}}
+    expect(visibleMetrics(metricNotRequiringAction, true, [])).toStrictEqual({})
+    expect(visibleMetrics(metricNotRequiringAction, false, [])).toStrictEqual(metricNotRequiringAction)
+    const metricRequiringAction = {"metric_uuid": {"status": "target_not_met"}}
+    expect(visibleMetrics(metricRequiringAction, true, [])).toStrictEqual(metricRequiringAction)
+    expect(visibleMetrics(metricRequiringAction, false, [])).toStrictEqual(metricRequiringAction)
+})
+
+it("hides metrics with hidden tags", () => {
+    expect(visibleMetrics({}, false, [])).toStrictEqual({})
+    expect(visibleMetrics({}, false, ["hidden"])).toStrictEqual({})
+    const metricWithoutTags = {"metric_uuid": {"tags": []}}
+    expect(visibleMetrics(metricWithoutTags, false, [])).toStrictEqual(metricWithoutTags)
+    expect(visibleMetrics(metricWithoutTags, false, ["hidden"])).toStrictEqual(metricWithoutTags)
+    const metricWithHiddenTag = {"metric_uuid": {"tags": ["hidden"]}}
+    expect(visibleMetrics(metricWithHiddenTag, false, [])).toStrictEqual(metricWithHiddenTag)
+    expect(visibleMetrics(metricWithHiddenTag, false, ["hidden"])).toStrictEqual({})
+    const metricWithMultipleTags = {"metric_uuid": {"tags": ["hidden", "maybe hidden"]}}
+    expect(visibleMetrics(metricWithMultipleTags, false, [])).toStrictEqual(metricWithMultipleTags)
+    expect(visibleMetrics(metricWithMultipleTags, false, ["hidden"])).toStrictEqual(metricWithMultipleTags)
+    expect(visibleMetrics(metricWithMultipleTags, false, ["hidden", "maybe hidden"])).toStrictEqual({})
 })

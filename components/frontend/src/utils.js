@@ -171,11 +171,25 @@ export function getMetricTags(metric) {
     return tags
 }
 
-export function getReportTags(report) {
+export function visibleMetrics(metrics, hideMetricsNotRequiringAction, hiddenTags) {
+    const visible = {}
+    Object.entries(metrics).forEach(([metric_uuid, metric]) => {
+        if (hideMetricsNotRequiringAction && (["target_met", "debt_target_met", "informative"].includes(metric.status))) { return }
+        if (hiddenTags?.length > 0 && metric.tags?.length > 0 && hiddenTags?.filter(hiddenTag => metric.tags?.includes(hiddenTag)).length >= metric.tags?.length) { return }
+        visible[metric_uuid] = metric
+    })
+    return visible
+}
+
+export function getReportTags(report, hiddenTags) {
     const tags = new Set();
     Object.values(report.subjects).forEach((subject) => {
         Object.values(subject.metrics).forEach((metric) => {
-            getMetricTags(metric).forEach((tag) => tags.add(tag))
+            getMetricTags(metric).forEach((tag) => {
+                if (!(hiddenTags ?? []).includes(tag)) {
+                    tags.add(tag)
+                }
+            })
         })
     })
     const sortedTags = Array.from(tags);

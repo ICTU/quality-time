@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
 import { Icon, Popup } from '../semantic_ui_react_wrappers';
+import { datePropType, issueSettingsPropType, sortDirectionPropType, uiModePropType } from '../sharedPropTypes';
 import { capitalize, pluralize } from "../utils";
 import './ViewPanel.css';
 
@@ -8,18 +10,18 @@ const activeColor = "grey"
 
 export function ViewPanel({
     clearHiddenColumns,
-    clearSelectedTags,
+    clearHiddenTags,
     clearVisibleDetailsTabs,
     dateInterval,
     dateOrder,
     handleDateChange,
     handleSort,
     hiddenColumns,
+    hiddenTags,
     hideMetricsNotRequiringAction,
     issueSettings,
     nrDates,
     reportDate,
-    selectedTags,
     setDateInterval,
     setDateOrder,
     setHideMetricsNotRequiringAction,
@@ -33,12 +35,33 @@ export function ViewPanel({
     setUIMode,
     sortColumn,
     sortDirection,
+    tags,
     toggleHiddenColumn,
+    toggleHiddenTag,
     uiMode,
     visibleDetailsTabs
 }) {
     const multipleDateColumns = nrDates > 1
     const oneDateColumn = nrDates === 1
+    const menuProps = { compact: true, vertical: true, inverted: true, secondary: true }
+    const dateIntervalMenuItemProps = {
+        dateInterval: dateInterval,
+        disabled: oneDateColumn,
+        help: "The date interval can only be changed when at least two dates are shown",
+        setDateInterval: setDateInterval
+    }
+    const metricMenuItemProps = {
+        hideMetricsNotRequiringAction: hideMetricsNotRequiringAction,
+        setHideMetricsNotRequiringAction: setHideMetricsNotRequiringAction
+    }
+    const sortColumnMenuItemProps = { sortColumn: sortColumn, sortDirection: sortDirection, handleSort: handleSort }
+    const sortOrderMenuItemProps = {
+        disabled: oneDateColumn,
+        help: "The date order can only be changed when at least two dates are shown",
+        setSortOrder: setDateOrder,
+        sortOrder: dateOrder,
+    }
+    const visibleColumnMenuItemProps = { hiddenColumns: hiddenColumns, toggleHiddenColumn: toggleHiddenColumn }
     hiddenColumns = hiddenColumns ?? [];
     visibleDetailsTabs = visibleDetailsTabs ?? [];
     return (
@@ -51,55 +74,43 @@ export function ViewPanel({
                 <Grid padded>
                     <Grid.Row>
                         <Grid.Column>
-                            <Button
-                                disabled={
-                                    selectedTags?.length === 0 &&
-                                    visibleDetailsTabs?.length === 0 &&
-                                    !hideMetricsNotRequiringAction &&
-                                    hiddenColumns?.length === 0 &&
-                                    nrDates === 1 &&
-                                    dateInterval === 7 &&
-                                    dateOrder === "descending" &&
-                                    !issueSettings.showIssueCreationDate &&
-                                    !issueSettings.showIssueSummary &&
-                                    !issueSettings.showIssueUpdateDate &&
-                                    !issueSettings.showIssueDueDate &&
-                                    !issueSettings.showIssueRelease &&
-                                    !issueSettings.showIssueSprint &&
-                                    reportDate === null &&
-                                    sortColumn === null &&
-                                    sortDirection === "ascending" &&
-                                    uiMode === null
-                                }
-                                onClick={() => {
-                                    clearSelectedTags();
-                                    clearVisibleDetailsTabs();
-                                    setHideMetricsNotRequiringAction(false);
-                                    clearHiddenColumns();
-                                    handleDateChange(null);
-                                    handleSort(null);
-                                    setNrDates(1);
-                                    setDateInterval(7);
-                                    setDateOrder("descending");
-                                    setShowIssueCreationDate(false);
-                                    setShowIssueSummary(false);
-                                    setShowIssueUpdateDate(false);
-                                    setShowIssueDueDate(false);
-                                    setShowIssueRelease(false);
-                                    setShowIssueSprint(false);
-                                    setUIMode(null);
-                                }}
-                                inverted
-                            >
-                                Reset all settings
-                            </Button>
+                            <ResetAllSettingsButton
+                                clearHiddenColumns={clearHiddenColumns}
+                                clearHiddenTags={clearHiddenTags}
+                                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
+                                dateInterval={dateInterval}
+                                dateOrder={dateOrder}
+                                handleDateChange={handleDateChange}
+                                handleSort={handleSort}
+                                hiddenColumns={hiddenColumns}
+                                hiddenTags={hiddenTags}
+                                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                                issueSettings={issueSettings}
+                                nrDates={nrDates}
+                                reportDate={reportDate}
+                                setDateInterval={setDateInterval}
+                                setDateOrder={setDateOrder}
+                                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                                setNrDates={setNrDates}
+                                setShowIssueCreationDate={setShowIssueCreationDate}
+                                setShowIssueSummary={setShowIssueSummary}
+                                setShowIssueUpdateDate={setShowIssueUpdateDate}
+                                setShowIssueDueDate={setShowIssueDueDate}
+                                setShowIssueRelease={setShowIssueRelease}
+                                setShowIssueSprint={setShowIssueSprint}
+                                setUIMode={setUIMode}
+                                sortColumn={sortColumn}
+                                sortDirection={sortDirection}
+                                uiMode={uiMode}
+                                visibleDetailsTabs={visibleDetailsTabs}
+                            />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Dark/light mode</Header>
-                <Menu vertical inverted size="small">
+                <Menu {...menuProps}>
                     <UIModeMenuItem mode={null} uiMode={uiMode} setUIMode={setUIMode} />
                     <UIModeMenuItem mode="dark" uiMode={uiMode} setUIMode={setUIMode} />
                     <UIModeMenuItem mode="light" uiMode={uiMode} setUIMode={setUIMode} />
@@ -107,72 +118,147 @@ export function ViewPanel({
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Visible metrics</Header>
-                <Menu vertical inverted size="small">
-                    <MetricMenuItem hide={false} hideMetricsNotRequiringAction={hideMetricsNotRequiringAction} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />
-                    <MetricMenuItem hide={true} hideMetricsNotRequiringAction={hideMetricsNotRequiringAction} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />
+                <Menu {...menuProps}>
+                    <MetricMenuItem hide={false} {...metricMenuItemProps} />
+                    <MetricMenuItem hide={true} {...metricMenuItemProps} />
+                </Menu>
+            </Segment>
+            <Segment inverted color="black">
+                <Header size='small'>Visible tags</Header>
+                <Menu style={{ maxHeight: "450px", overflow: "auto" }} {...menuProps}>
+                    {(tags ?? []).map((tag) =>
+                        <VisibleTagMenuItem key={tag} tag={tag} hiddenTags={hiddenTags} toggleHiddenTag={toggleHiddenTag} />
+                    )}
                 </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Visible columns</Header>
-                <Menu vertical inverted size="small">
-                    <VisibleColumnMenuItem column="trend" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="status" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="measurement" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="target" disabled={multipleDateColumns} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="unit" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="source" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="time_left" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="overrun" disabled={nrDates === 1} hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="comment" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="issues" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
-                    <VisibleColumnMenuItem column="tags" hiddenColumns={hiddenColumns} toggleHiddenColumn={toggleHiddenColumn} />
+                <Menu {...menuProps}>
+                    <VisibleColumnMenuItem
+                        column="trend"
+                        disabled={multipleDateColumns}
+                        help="The trend column can only be made visible when one date is shown"
+                        {...visibleColumnMenuItemProps}
+                    />
+                    <VisibleColumnMenuItem
+                        column="status"
+                        disabled={multipleDateColumns}
+                        help="The status column can only be made visible when one date is shown"
+                        {...visibleColumnMenuItemProps}
+                    />
+                    <VisibleColumnMenuItem
+                        column="measurement"
+                        disabled={multipleDateColumns}
+                        help="The measurement column can only be made visible when one date is shown"
+                        {...visibleColumnMenuItemProps}
+                    />
+                    <VisibleColumnMenuItem
+                        column="target"
+                        disabled={multipleDateColumns}
+                        help="The target column can only be made visible when one date is shown"
+                        {...visibleColumnMenuItemProps}
+                    />
+                    <VisibleColumnMenuItem column="unit" {...visibleColumnMenuItemProps} />
+                    <VisibleColumnMenuItem column="source" {...visibleColumnMenuItemProps} />
+                    <VisibleColumnMenuItem column="time_left" {...visibleColumnMenuItemProps} />
+                    <VisibleColumnMenuItem
+                        column="overrun"
+                        disabled={nrDates === 1}
+                        help="The overrun column can only be made visible when at least two dates are shown"
+                        {...visibleColumnMenuItemProps}
+                    />
+                    <VisibleColumnMenuItem column="comment" {...visibleColumnMenuItemProps} />
+                    <VisibleColumnMenuItem column="issues" {...visibleColumnMenuItemProps} />
+                    <VisibleColumnMenuItem column="tags" {...visibleColumnMenuItemProps} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size="small">Sort column</Header>
-                <Menu vertical inverted size="small">
-                    <SortColumnMenuItem column="name" sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="status" disabled={multipleDateColumns || hiddenColumns.includes("status")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="measurement" disabled={multipleDateColumns || hiddenColumns.includes("measurement")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="target" disabled={multipleDateColumns || hiddenColumns.includes("target")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="unit" disabled={hiddenColumns.includes("unit")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="source" disabled={hiddenColumns.includes("source")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="time_left" disabled={hiddenColumns.includes("time_left")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="overrun" disabled={nrDates === 1 || hiddenColumns.includes("overrun")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="comment" disabled={hiddenColumns.includes("comment")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="issues" disabled={hiddenColumns.includes("issues")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
-                    <SortColumnMenuItem column="tags" disabled={hiddenColumns.includes("tags")} sortColumn={sortColumn} sortDirection={sortDirection} handleSort={handleSort} />
+                <Menu {...menuProps}>
+                    <SortColumnMenuItem column="name" {...sortColumnMenuItemProps} />
+                    <SortColumnMenuItem
+                        column="status"
+                        disabled={multipleDateColumns || hiddenColumns.includes("status")}
+                        help="The status column can only be selected for sorting when it is visible"
+                        {...sortColumnMenuItemProps}
+                    />
+                    <SortColumnMenuItem
+                        column="measurement"
+                        disabled={multipleDateColumns || hiddenColumns.includes("measurement")}
+                        help="The measurement column can only be selected for sorting when it is visible"
+                        {...sortColumnMenuItemProps}
+                    />
+                    <SortColumnMenuItem
+                        column="target"
+                        disabled={multipleDateColumns || hiddenColumns.includes("target")}
+                        help="The target column can only be selected for sorting when it is visible"
+                        {...sortColumnMenuItemProps}
+                    />
+                    <SortColumnMenuItem
+                        column="unit"
+                        disabled={hiddenColumns.includes("unit")}
+                        {...sortColumnMenuItemProps}
+                    />
+                    <SortColumnMenuItem
+                        column="source"
+                        disabled={hiddenColumns.includes("source")}
+                        {...sortColumnMenuItemProps}
+                    />
+                    <SortColumnMenuItem
+                        column="time_left"
+                        disabled={hiddenColumns.includes("time_left")}
+                        {...sortColumnMenuItemProps}
+                    />
+                    <SortColumnMenuItem
+                        column="overrun"
+                        disabled={nrDates === 1 || hiddenColumns.includes("overrun")}
+                        help="The overrun column can only be selected for sorting when it is visible"
+                        {...sortColumnMenuItemProps}
+                    />
+                    <SortColumnMenuItem
+                        column="comment"
+                        disabled={hiddenColumns.includes("comment")}
+                        {...sortColumnMenuItemProps}
+                    />
+                    <SortColumnMenuItem
+                        column="issues"
+                        disabled={hiddenColumns.includes("issues")}
+                        {...sortColumnMenuItemProps}
+                    />
+                    <SortColumnMenuItem
+                        column="tags"
+                        disabled={hiddenColumns.includes("tags")}
+                        {...sortColumnMenuItemProps}
+                    />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Number of dates</Header>
-                <Menu vertical inverted size="small">
+                <Menu {...menuProps}>
                     {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
-                        <div key={nr} onBeforeInput={(event) => { event.preventDefault(); setNrDates(nr) }} tabIndex={0}>
-                            <Menu.Item active={nr === nrDates} color={activeColor} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
-                        </div>
+                        <NrOfDatesMenuItem key={nr} nr={nr} nrDates={nrDates} setNrDates={setNrDates} />
                     )}
                 </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Time between dates</Header>
-                <Menu vertical inverted size="small">
-                    <DateIntervalMenuItem key={1} nr={1} dateInterval={dateInterval} disabled={oneDateColumn} setDateInterval={setDateInterval} />
+                <Menu {...menuProps}>
+                    <DateIntervalMenuItem key={1} nr={1} {...dateIntervalMenuItemProps} />
                     {[7, 14, 21, 28].map((nr) =>
-                        <DateIntervalMenuItem key={nr} nr={nr} dateInterval={dateInterval} disabled={oneDateColumn} setDateInterval={setDateInterval} />
+                        <DateIntervalMenuItem key={nr} nr={nr} {...dateIntervalMenuItemProps} />
                     )}
                 </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Date order</Header>
-                <Menu vertical inverted size="small">
-                    <SortOrderMenuItem disabled={oneDateColumn} order="ascending" sortOrder={dateOrder} setSortOrder={setDateOrder} />
-                    <SortOrderMenuItem disabled={oneDateColumn} order="descending" sortOrder={dateOrder} setSortOrder={setDateOrder} />
+                <Menu {...menuProps}>
+                    <SortOrderMenuItem order="ascending" {...sortOrderMenuItemProps} />
+                    <SortOrderMenuItem order="descending" {...sortOrderMenuItemProps} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Visible issue details</Header>
-                <Menu vertical inverted size="small">
+                <Menu {...menuProps}>
                     <IssueAttributeMenuItem
                         issueAttributeName="Summary"
                         issueAttribute={issueSettings?.showIssueSummary}
@@ -214,20 +300,51 @@ export function ViewPanel({
         </Segment.Group>
     )
 }
-
-
-function VisibleColumnMenuItem({ column, disabled, hiddenColumns, toggleHiddenColumn }) {
-    return (
-        <div onBeforeInput={(event) => { event.preventDefault(); toggleHiddenColumn(column) }} tabIndex={0}>
-            <Menu.Item active={disabled ? false : !hiddenColumns?.includes(column)} color={activeColor} disabled={disabled} onClick={() => toggleHiddenColumn(column)}>
-                {capitalize(column).replaceAll('_', ' ')}
-            </Menu.Item>
-        </div>
-    )
+ViewPanel.propTypes = {
+    toggleHiddenColumn: PropTypes.func,
+    toggleHiddenTag: PropTypes.func,
+    ...ResetAllSettingsButton.propTypes,
 }
 
-function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handleSort }) {
-    const active = disabled ? false : sortColumn === column;
+function VisibleTagMenuItem({ tag, hiddenTags, toggleHiddenTag }) {
+    return (
+        <SettingsMenuItem
+            active={!hiddenTags?.includes(tag)}
+            onClick={toggleHiddenTag}
+            onClickData={tag}
+        >
+            {tag}
+        </SettingsMenuItem>
+    )
+}
+VisibleTagMenuItem.propTypes = {
+    tag: PropTypes.string,
+    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    toggleHiddenTag: PropTypes.func
+}
+
+function VisibleColumnMenuItem({ column, disabled, hiddenColumns, toggleHiddenColumn, help }) {
+    return (
+        <SettingsMenuItem
+            active={disabled ? false : !hiddenColumns?.includes(column)}
+            disabled={disabled}
+            disabledHelp={help}
+            onClick={toggleHiddenColumn}
+            onClickData={column}
+        >
+            {capitalize(column).replaceAll('_', ' ')}
+        </SettingsMenuItem>
+    )
+}
+VisibleColumnMenuItem.propTypes = {
+    column: PropTypes.string,
+    disabled: PropTypes.bool,
+    hiddenColumns: PropTypes.arrayOf(PropTypes.string),
+    toggleHiddenColumn: PropTypes.func,
+    help: PropTypes.string
+}
+
+function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handleSort, help }) {
     let sortIndicator = null;
     if (sortColumn === column && sortDirection) {
         // We use a triangle because the sort down and up icons are not at the same height
@@ -235,67 +352,276 @@ function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handl
         sortIndicator = <Icon disabled={disabled} name={`triangle ${iconDirection}`} aria-label={`sorted ${sortDirection}`} />
     }
     return (
-        <div onBeforeInput={(event) => { event.preventDefault(); if (!disabled) { handleSort(column) } }} tabIndex={0}>
-            <Menu.Item active={active} color={activeColor} disabled={disabled} onClick={() => handleSort(column)}>
-                {capitalize(column === "name" ? "metric" : column).replaceAll('_', ' ')} <span>{sortIndicator}</span>
-            </Menu.Item>
-        </div>
+        <SettingsMenuItem
+            active={disabled ? false : sortColumn === column}
+            disabled={disabled}
+            disabledHelp={help}
+            onClick={handleSort}
+            onClickData={column}
+        >
+            {capitalize(column === "name" ? "metric" : column).replaceAll('_', ' ')} <span>{sortIndicator}</span>
+        </SettingsMenuItem>
     )
 }
-
-function DateIntervalMenuItem({ nr, dateInterval, disabled, setDateInterval }) {
-    return (
-        <div onBeforeInput={(event) => { event.preventDefault(); setDateInterval(nr) }} tabIndex={0}>
-            <Menu.Item key={nr} active={disabled ? false : nr === dateInterval} color={activeColor} disabled={disabled} onClick={() => setDateInterval(nr)}>
-                {nr === 1 ? "1 day" : `${nr / 7} ${pluralize("week", nr / 7)}`}
-            </Menu.Item>
-        </div>
-    )
+SortColumnMenuItem.propTypes = {
+    column: PropTypes.string,
+    disabled: PropTypes.bool,
+    sortColumn: PropTypes.string,
+    sortDirection: sortDirectionPropType,
+    handleSort: PropTypes.func,
+    help: PropTypes.string
 }
 
-function SortOrderMenuItem({ disabled, order, sortOrder, setSortOrder }) {
+function NrOfDatesMenuItem({ nr, nrDates, setNrDates }) {
     return (
-        <div onBeforeInput={(event) => { event.preventDefault(); setSortOrder(order) }} tabIndex={0}>
-            <Menu.Item active={disabled ? false : sortOrder === order} color={activeColor} disabled={disabled} onClick={() => setSortOrder(order)}>
-                {capitalize(order)}
-            </Menu.Item>
-        </div>
+        <SettingsMenuItem
+            active={nr === nrDates}
+            onClick={setNrDates}
+            onClickData={nr}
+        >
+            {`${nr} ${pluralize("date", nr)}`}
+        </SettingsMenuItem>
     )
+}
+NrOfDatesMenuItem.propTypes = {
+    nr: PropTypes.number,
+    nrDates: PropTypes.number,
+    setNrDates: PropTypes.func
+}
+
+function DateIntervalMenuItem({ nr, dateInterval, disabled, setDateInterval, help }) {
+    return (
+        <SettingsMenuItem
+            active={disabled ? false : nr === dateInterval}
+            disabled={disabled}
+            disabledHelp={help}
+            onClick={setDateInterval}
+            onClickData={nr}
+        >
+            {nr === 1 ? "1 day" : `${nr / 7} ${pluralize("week", nr / 7)}`}
+        </SettingsMenuItem>
+    )
+}
+DateIntervalMenuItem.propTypes = {
+    nr: PropTypes.number,
+    dateInterval: PropTypes.number,
+    disabled: PropTypes.bool,
+    setDateInterval: PropTypes.func,
+    help: PropTypes.string
+}
+
+function SortOrderMenuItem({ disabled, order, sortOrder, setSortOrder, help }) {
+    return (
+        <SettingsMenuItem
+            active={disabled ? false : sortOrder === order}
+            disabled={disabled}
+            disabledHelp={help}
+            onClick={setSortOrder}
+            onClickData={order}
+        >
+            {capitalize(order)}
+        </SettingsMenuItem>
+    )
+}
+SortOrderMenuItem.propTypes = {
+    disabled: PropTypes.bool,
+    order: sortDirectionPropType,
+    sortOrder: sortDirectionPropType,
+    setSortOrder: PropTypes.func,
+    help: PropTypes.string
 }
 
 function MetricMenuItem({ hide, hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction }) {
     return (
-        <div onBeforeInput={(event) => { event.preventDefault(); setHideMetricsNotRequiringAction(hide) }} tabIndex={0}>
-            <Menu.Item active={hideMetricsNotRequiringAction === hide} color={activeColor} onClick={() => setHideMetricsNotRequiringAction(hide)}>
-                {hide ? 'Metrics requiring action' : 'All metrics'}
-            </Menu.Item>
-        </div>
+        <SettingsMenuItem
+            active={hideMetricsNotRequiringAction === hide}
+            onClick={setHideMetricsNotRequiringAction}
+            onClickData={hide}
+        >
+            {hide ? 'Metrics requiring action' : 'All metrics'}
+        </SettingsMenuItem>
     )
+}
+MetricMenuItem.propTypes = {
+    hide: PropTypes.bool,
+    hideMetricsNotRequiringAction: PropTypes.bool,
+    setHideMetricsNotRequiringAction: PropTypes.func
 }
 
 function UIModeMenuItem({ mode, uiMode, setUIMode }) {
     return (
-        <div onBeforeInput={(event) => { event.preventDefault(); setUIMode(mode) }} tabIndex={0}>
-            <Menu.Item color={activeColor} active={mode === uiMode} onClick={() => setUIMode(mode)}>
-                {{ null: "Follow OS setting", "dark": "Dark mode", "light": "Light mode" }[mode]}
-            </Menu.Item>
-        </div>
+        <SettingsMenuItem
+            active={mode === uiMode}
+            onClick={setUIMode}
+            onClickData={mode}
+        >
+            {{ null: "Follow OS setting", "dark": "Dark mode", "light": "Light mode" }[mode]}
+        </SettingsMenuItem>
     )
+}
+UIModeMenuItem.propTypes = {
+    mode: uiModePropType,
+    uiMode: uiModePropType,
+    setUIMode: PropTypes.func
 }
 
 function IssueAttributeMenuItem({ help, issueAttributeName, issueAttribute, setIssueAttribute }) {
     return (
-        <Popup
-            content={help}
-            inverted
-            position="left center"
-            trigger={
-                <div onBeforeInput={(event) => { event.preventDefault(); setIssueAttribute(!issueAttribute) }} tabIndex={0}>
-                    <Menu.Item color={activeColor} active={issueAttribute} onClick={() => setIssueAttribute(!issueAttribute)} >
-                        {issueAttributeName}
-                    </Menu.Item>
-                </div>
-            }
-        />
+        <SettingsMenuItem
+            active={issueAttribute}
+            help={help}
+            onClick={setIssueAttribute}
+            onClickData={!issueAttribute}
+        >
+            {issueAttributeName}
+        </SettingsMenuItem>
     )
+}
+IssueAttributeMenuItem.propTypes = {
+    help: PropTypes.string,
+    issueAttributeName: PropTypes.string,
+    issueAttribute: PropTypes.bool,
+    setIssueAttribute: PropTypes.func
+}
+
+function SettingsMenuItem({ active, children, disabled, disabledHelp, help, onClick, onClickData }) {
+    // A menu item that can can show help when disabled so users can see why the menu item is disabled
+    const props = {
+        active: active,
+        color: activeColor,
+        disabled: disabled,
+        onBeforeInput: (event) => { event.preventDefault(); if (!disabled) { onClick(onClickData) } },  // Uncovered, see https://github.com/testing-library/react-testing-library/issues/1152
+        onClick: () => onClick(onClickData),
+        tabIndex: 0
+    }
+    if (help || (disabledHelp && disabled)) {
+        props["style"] = { marginLeft: 0, marginRight: 0, marginBottom: 5 }  // Compensate for the span
+        return (
+            <Popup
+                content={disabledHelp || help}
+                inverted
+                position="left center"
+                // We need a span here to prevent the popup from becoming disabled when the menu item is disabled:
+                trigger={<span><Menu.Item {...props}>{children}</Menu.Item></span>}
+            />
+        )
+    }
+    return <Menu.Item {...props} >{children}</Menu.Item>
+}
+SettingsMenuItem.propTypes = {
+    active: PropTypes.bool,
+    children: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+    disabled: PropTypes.bool,
+    disabledHelp: PropTypes.string,
+    help: PropTypes.string,
+    onClick: PropTypes.func,
+    onClickData: PropTypes.oneOfType([PropTypes.bool, PropTypes.number, PropTypes.string])
+}
+
+function ResetAllSettingsButton(
+    {
+        clearHiddenColumns,
+        clearHiddenTags,
+        clearVisibleDetailsTabs,
+        dateInterval,
+        dateOrder,
+        handleDateChange,
+        handleSort,
+        hiddenColumns,
+        hiddenTags,
+        hideMetricsNotRequiringAction,
+        issueSettings,
+        nrDates,
+        reportDate,
+        setDateInterval,
+        setDateOrder,
+        setHideMetricsNotRequiringAction,
+        setNrDates,
+        setShowIssueCreationDate,
+        setShowIssueSummary,
+        setShowIssueUpdateDate,
+        setShowIssueDueDate,
+        setShowIssueRelease,
+        setShowIssueSprint,
+        setUIMode,
+        sortColumn,
+        sortDirection,
+        uiMode,
+        visibleDetailsTabs
+    }
+) {
+    return (
+        <Button
+            disabled={
+                visibleDetailsTabs?.length === 0 &&
+                !hideMetricsNotRequiringAction &&
+                hiddenColumns?.length === 0 &&
+                hiddenTags?.length === 0 &&
+                nrDates === 1 &&
+                dateInterval === 7 &&
+                dateOrder === "descending" &&
+                !issueSettings.showIssueCreationDate &&
+                !issueSettings.showIssueSummary &&
+                !issueSettings.showIssueUpdateDate &&
+                !issueSettings.showIssueDueDate &&
+                !issueSettings.showIssueRelease &&
+                !issueSettings.showIssueSprint &&
+                reportDate === null &&
+                sortColumn === null &&
+                sortDirection === "ascending" &&
+                uiMode === null
+            }
+            onClick={() => {
+                clearVisibleDetailsTabs();
+                setHideMetricsNotRequiringAction(false);
+                clearHiddenColumns();
+                clearHiddenTags();
+                handleDateChange(null);
+                handleSort(null);
+                setNrDates(1);
+                setDateInterval(7);
+                setDateOrder("descending");
+                setShowIssueCreationDate(false);
+                setShowIssueSummary(false);
+                setShowIssueUpdateDate(false);
+                setShowIssueDueDate(false);
+                setShowIssueRelease(false);
+                setShowIssueSprint(false);
+                setUIMode(null);
+            }}
+            inverted
+        >
+            Reset all settings
+        </Button>
+    )
+}
+ResetAllSettingsButton.propTypes = {
+    clearHiddenColumns: PropTypes.func,
+    clearHiddenTags: PropTypes.func,
+    clearVisibleDetailsTabs: PropTypes.func,
+    dateInterval: PropTypes.number,
+    dateOrder: sortDirectionPropType,
+    handleDateChange: PropTypes.func,
+    handleSort: PropTypes.func,
+    hiddenColumns: PropTypes.arrayOf(PropTypes.string),
+    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hideMetricsNotRequiringAction: PropTypes.bool,
+    issueSettings: issueSettingsPropType,
+    nrDates: PropTypes.number,
+    reportDate: datePropType,
+    setDateInterval: PropTypes.func,
+    setDateOrder: PropTypes.func,
+    setHideMetricsNotRequiringAction: PropTypes.func,
+    setNrDates: PropTypes.func,
+    setShowIssueCreationDate: PropTypes.func,
+    setShowIssueSummary: PropTypes.func,
+    setShowIssueUpdateDate: PropTypes.func,
+    setShowIssueDueDate: PropTypes.func,
+    setShowIssueRelease: PropTypes.func,
+    setShowIssueSprint: PropTypes.func,
+    setUIMode: PropTypes.func,
+    sortColumn: PropTypes.string,
+    sortDirection: sortDirectionPropType,
+    uiMode: uiModePropType,
+    visibleDetailsTabs: PropTypes.arrayOf(PropTypes.string)
 }
