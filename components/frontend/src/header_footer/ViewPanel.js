@@ -148,7 +148,7 @@ export function ViewPanel({
                 <Header size='small'>Number of dates</Header>
                 <Menu vertical inverted size="small">
                     {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
-                        <div key={nr} onKeyPress={(event) => { event.preventDefault(); setNrDates(nr) }} tabIndex={0}>
+                        <div key={nr} onBeforeInput={(event) => { event.preventDefault(); setNrDates(nr) }} tabIndex={0}>
                             <Menu.Item active={nr === nrDates} color={activeColor} onClick={() => setNrDates(nr)}>{`${nr} ${pluralize("date", nr)}`}</Menu.Item>
                         </div>
                     )}
@@ -218,7 +218,7 @@ export function ViewPanel({
 
 function VisibleColumnMenuItem({ column, disabled, hiddenColumns, toggleHiddenColumn }) {
     return (
-        <div onKeyPress={(event) => { event.preventDefault(); toggleHiddenColumn(column) }} tabIndex={0}>
+        <div onBeforeInput={(event) => { event.preventDefault(); toggleHiddenColumn(column) }} tabIndex={0}>
             <Menu.Item active={disabled ? false : !hiddenColumns?.includes(column)} color={activeColor} disabled={disabled} onClick={() => toggleHiddenColumn(column)}>
                 {capitalize(column).replaceAll('_', ' ')}
             </Menu.Item>
@@ -235,7 +235,7 @@ function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handl
         sortIndicator = <Icon disabled={disabled} name={`triangle ${iconDirection}`} aria-label={`sorted ${sortDirection}`} />
     }
     return (
-        <div onKeyPress={(event) => { event.preventDefault(); if (!disabled) { handleSort(column) } }} tabIndex={0}>
+        <div onBeforeInput={(event) => { event.preventDefault(); if (!disabled) { handleSort(column) } }} tabIndex={0}>
             <Menu.Item active={active} color={activeColor} disabled={disabled} onClick={() => handleSort(column)}>
                 {capitalize(column === "name" ? "metric" : column).replaceAll('_', ' ')} <span>{sortIndicator}</span>
             </Menu.Item>
@@ -245,7 +245,7 @@ function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handl
 
 function DateIntervalMenuItem({ nr, dateInterval, disabled, setDateInterval }) {
     return (
-        <div onKeyPress={(event) => { event.preventDefault(); setDateInterval(nr) }} tabIndex={0}>
+        <div onBeforeInput={(event) => { event.preventDefault(); setDateInterval(nr) }} tabIndex={0}>
             <Menu.Item key={nr} active={disabled ? false : nr === dateInterval} color={activeColor} disabled={disabled} onClick={() => setDateInterval(nr)}>
                 {nr === 1 ? "1 day" : `${nr / 7} ${pluralize("week", nr / 7)}`}
             </Menu.Item>
@@ -255,7 +255,7 @@ function DateIntervalMenuItem({ nr, dateInterval, disabled, setDateInterval }) {
 
 function SortOrderMenuItem({ disabled, order, sortOrder, setSortOrder }) {
     return (
-        <div onKeyPress={(event) => { event.preventDefault(); setSortOrder(order) }} tabIndex={0}>
+        <div onBeforeInput={(event) => { event.preventDefault(); setSortOrder(order) }} tabIndex={0}>
             <Menu.Item active={disabled ? false : sortOrder === order} color={activeColor} disabled={disabled} onClick={() => setSortOrder(order)}>
                 {capitalize(order)}
             </Menu.Item>
@@ -265,7 +265,7 @@ function SortOrderMenuItem({ disabled, order, sortOrder, setSortOrder }) {
 
 function MetricMenuItem({ hide, hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction }) {
     return (
-        <div onKeyPress={(event) => { event.preventDefault(); setHideMetricsNotRequiringAction(hide) }} tabIndex={0}>
+        <div onBeforeInput={(event) => { event.preventDefault(); setHideMetricsNotRequiringAction(hide) }} tabIndex={0}>
             <Menu.Item active={hideMetricsNotRequiringAction === hide} color={activeColor} onClick={() => setHideMetricsNotRequiringAction(hide)}>
                 {hide ? 'Metrics requiring action' : 'All metrics'}
             </Menu.Item>
@@ -275,7 +275,7 @@ function MetricMenuItem({ hide, hideMetricsNotRequiringAction, setHideMetricsNot
 
 function UIModeMenuItem({ mode, uiMode, setUIMode }) {
     return (
-        <div onKeyPress={(event) => { event.preventDefault(); setUIMode(mode) }} tabIndex={0}>
+        <div onBeforeInput={(event) => { event.preventDefault(); setUIMode(mode) }} tabIndex={0}>
             <Menu.Item color={activeColor} active={mode === uiMode} onClick={() => setUIMode(mode)}>
                 {{ null: "Follow OS setting", "dark": "Dark mode", "light": "Light mode" }[mode]}
             </Menu.Item>
@@ -290,7 +290,7 @@ function IssueAttributeMenuItem({ help, issueAttributeName, issueAttribute, setI
             inverted
             position="left center"
             trigger={
-                <div onKeyPress={(event) => { event.preventDefault(); setIssueAttribute(!issueAttribute) }} tabIndex={0}>
+                <div onBeforeInput={(event) => { event.preventDefault(); setIssueAttribute(!issueAttribute) }} tabIndex={0}>
                     <Menu.Item color={activeColor} active={issueAttribute} onClick={() => setIssueAttribute(!issueAttribute)} >
                         {issueAttributeName}
                     </Menu.Item>

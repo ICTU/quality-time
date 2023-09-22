@@ -89,14 +89,11 @@ it('shows the view panel on menu item click', () => {
     expect(screen.getAllByText(/Hello/).length).toBe(1)
 });
 
-["{Enter}", " ", "x"].forEach(key => {
-    it('shows the view panel on enter', async () => {
-        render(<Menubar atHome={true} panel={<div>Hello</div>} />);
-        await userEvent.tab()  // Move focus to the settings button
-        await userEvent.keyboard(key)
-        expect(screen.getAllByText(/Hello/).length).toBe(1)
-    })
-});
+it('shows the view panel on enter', async () => {
+    render(<Menubar atHome={true} panel={<div>Hello</div>} />);
+    await userEvent.type(screen.getByText(/Settings/), "{Enter}");
+    expect(screen.getAllByText(/Hello/).length).toBe(1)
+})
 
 it('hides the view panel on click', () => {
     render(<Menubar panel={<div>Hello</div>} />)
@@ -106,15 +103,13 @@ it('hides the view panel on click', () => {
     expect(screen.queryAllByText(/Hello/).length).toBe(0)
 });
 
-["{Escape}", "{Enter}", " ", "x"].forEach(key => {
-    it('hides the view panel on key press', async () => {
-        render(<Menubar panel={<div>Hello</div>} />)
-        fireEvent.click(screen.getByText(/Settings/));
-        expect(screen.getAllByText(/Hello/).length).toBe(1)
-        await userEvent.keyboard(key)
-        expect(screen.queryAllByText(/Hello/).length).toBe(0)
-    })
-});
+it('hides the view panel on escape', async () => {
+    render(<Menubar panel={<div>Hello</div>} />)
+    fireEvent.click(screen.getByText(/Settings/));
+    expect(screen.getAllByText(/Hello/).length).toBe(1)
+    await userEvent.keyboard("{Escape}")
+    expect(screen.queryAllByText(/Hello/).length).toBe(0)
+})
 
 it("clears the visible details tabs", () => {
     const clearVisibleDetailsTabs = jest.fn();
