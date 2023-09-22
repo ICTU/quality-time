@@ -88,7 +88,7 @@ export function Menubar({
                         content="Go to reports overview"
                         disabled={atHome}
                         trigger={
-                            <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(false); go_home() }} tabIndex={atHome ? -1 : 0}>
+                            <div onBeforeInput={(event) => { event.preventDefault(); setPanelVisible(false); go_home() }} tabIndex={atHome ? -1 : 0}>
                                 <Menu.Item header onClick={atHome ? null : () => { setPanelVisible(false); go_home() }}>
                                     <Image size='mini' src='/favicon.ico' alt="Go home" />
                                     <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
@@ -97,7 +97,7 @@ export function Menubar({
                         }
                     />
                     <FocusLock group="panel" disabled={!panelVisible} className="center">
-                        <div onKeyPress={(event) => { event.preventDefault(); setPanelVisible(!panelVisible) }} tabIndex={0}>
+                        <div onBeforeInput={(event) => { event.preventDefault(); setPanelVisible(!panelVisible) }} tabIndex={0}>
                             <Menu.Item onClick={(event) => { event.stopPropagation(); setPanelVisible(!panelVisible) }}>
                                 <Icon size='large' name={`caret ${panelVisible ? "down" : "right"}`} />
                                 Settings
