@@ -15,34 +15,40 @@ function cardDivs(cards, isDragging) {
     ));
 }
 
-function defaultLayout(cards, cols, cardWidth = 4, cardHeight = 6) {
-    return cards.map((card, index) => (
+export function CardDashboard({ cards, initialLayout, saveLayout }) {
+    const cols = 32;
+    const cardWidth = 4
+    const cardHeight = 6
+    const [dragging, setDragging] = useState(false);
+    const [mousePos, setMousePos] = useState([0, 0, 0]);
+    if (cards.length === 0) { return null }
+    const cardKeys = cards.map((card) => card.key)
+    const layout = (initialLayout ?? []).filter((layoutItem) => cardKeys.includes(layoutItem.i))
+    const layoutItemIds = layout.map((layoutItem) => layoutItem.i)
+    const newCards = cards.filter((card) => !layoutItemIds.includes(card.key))
+    const maxY = layout.length === 0 ? 0 : Math.max(...layout.map((card) => card.y)) + cardHeight
+    newCards.forEach((card, index) => layout.push(
         {
             i: card.key,
-            x: (cardWidth * index) % cols,
-            y: cardHeight * Math.trunc((cardWidth * index) / cols),
+            x: (index * cardWidth) % cols,
+            y: maxY + cardHeight * Math.trunc((cardWidth * index) / cols),
             w: cardWidth,
             h: cardHeight,
             isResizable: false
         }
     ))
-}
 
-export function CardDashboard({ cards, initialLayout, saveLayout }) {
-    const cols = 32;
-    const [dragging, setDragging] = useState(false);
-    const [mousePos, setMousePos] = useState([0, 0, 0]);
-    if (cards.length === 0) { return null }
-    const layout = initialLayout?.length === 0 ? defaultLayout(cards, cols) : initialLayout
     function onDragStart(_currentLayout, _oldItem, _newItem, _placeholder, event) {
         setDragging(true);
         const now = new Date();
         setMousePos([event.clientX, event.clientY, now.getTime()]);
     }
+
     function onDragStop(newLayout, _oldItem, _newItem, _placeholder, _event) {
         saveLayout(newLayout)
         setTimeout(() => setDragging(false), 200);  // User was dragging, prevent click event propagation
     }
+
     function isDragging(event) {
         const now = new Date();
         const distanceX = Math.abs(event.clientX - mousePos[0]);
@@ -50,6 +56,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
         const timedelta = now.getTime() - mousePos[2];
         return (distanceX > 10 || distanceY > 10 || timedelta > 250) ? dragging : false;
     }
+
     return (
         <Permissions.Consumer>{(permissions) => (
             <ReactGridLayout
