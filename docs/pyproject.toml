@@ -3,7 +3,7 @@ name = "docs"
 version = "5.1.0"
 dependencies = [
     "furo==2023.9.10",
-    "gitpython==3.1.36",
+    "gitpython==3.1.37",
     "myst-parser==2.0.0",
     "pydantic==2.3.0",  # Needed for generating the reference docs from the data model
     "Sphinx==7.2.6",
