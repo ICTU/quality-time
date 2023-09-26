@@ -45,7 +45,9 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
     }
 
     function onDragStop(newLayout, _oldItem, _newItem, _placeholder, _event) {
-        saveLayout(newLayout)
+        if (newLayout !== layout) {
+            saveLayout(newLayout)
+        }
         setTimeout(() => setDragging(false), 200);  // User was dragging, prevent click event propagation
     }
 
