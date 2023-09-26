@@ -12,7 +12,7 @@ class MetricTest(MetaModelTestCase):
 
     def test_addition(self):
         """Test that an invalid addition value throws a validation error."""
-        self.check_validation_error("Input should be 'max','min' or 'sum'", addition="invalid")
+        self.check_validation_error("Input should be 'max', 'min' or 'sum'", addition="invalid")
 
     def test_direction(self):
         """Test that an invalid direction value throws a validation error."""
