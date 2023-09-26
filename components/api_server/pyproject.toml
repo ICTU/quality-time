@@ -20,7 +20,7 @@ dev = [
     "pydantic==2.3.0",  # Needed for importing the data model in the tests from the shared code component
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.14",
-    "types-requests==2.31.0.4",
+    "types-requests==2.31.0.5",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
