@@ -178,9 +178,9 @@ trio==0.22.2 \
     # via
     #   selenium
     #   trio-websocket
-trio-websocket==0.10.4 \
-    --hash=sha256:c7a620c4013c34b7e4477d89fe76695da1e455e4510a8d7ae13f81c632bdce1d \
-    --hash=sha256:e66b3db3e2453017431dfbd352081006654e1241c2a6800dc2f43d7df54d55c5
+trio-websocket==0.11.1 \
+    --hash=sha256:18c11793647703c158b1f6e62de638acada927344d534e3c7628eedcb746839f \
+    --hash=sha256:520d046b0d030cf970b8b2b2e00c4c2245b3807853ecd44214acd33d74581638
     # via selenium
 urllib3==2.0.5 \
     --hash=sha256:13abf37382ea2ce6fb744d4dad67838eec857c9f4f57009891805e0b5e123594 \
