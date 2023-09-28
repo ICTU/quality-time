@@ -23,6 +23,8 @@ spec:
               value: {{ .Values.www.name }}
             - name: PROXY_PORT
               value: "80"
+            - name: PROXY_PROTOCOL
+              value: "http"
             - name: TZ
               value: Europe/Amsterdam
           image: {{ .Values.renderer.image }}

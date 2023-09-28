@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v5.2.0-rc.1 - 2023-09-27
+## [Unreleased]
 
 ### Fixed
 
@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Added
 
 - Support Trivy JSON files as source for the security warnings metric. Closes [#6927](https://github.com/ICTU/quality-time/issues/6927).
+- Renderer can also connect to https proxies.
 
 ## v5.1.0 - 2023-09-05
 
