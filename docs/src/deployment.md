@@ -142,7 +142,7 @@ The date/time format and timezone of the reports that user sees are determined b
 ```yaml
   renderer:
     environment:
-      - PROXY_HOST=wwww  # hostname of service
+      - PROXY_HOST=www  # Hostname of service
       - PROXY_PORT=80  # Port of service
       - PROXY_PROTOCOL=http  # http/https
 ```
