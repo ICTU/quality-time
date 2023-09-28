@@ -137,6 +137,16 @@ The date/time format and timezone of the reports that user sees are determined b
       - TZ=Europe/Amsterdam  # To get Central European Time
 ```
 
+## Configuring renderer proxy (optional)
+
+```yaml
+  renderer:
+    environment:
+      - PROXY_HOST=www  # Hostname of service
+      - PROXY_PORT=80  # Port of service
+      - PROXY_PROTOCOL=http  # http/https
+```
+
 ## Configuring logging (optional)
 
 The options for configuring logging are limited at the moment. The MongoDB daemon can be told to produce less logging by passing the `--quiet` flag:
