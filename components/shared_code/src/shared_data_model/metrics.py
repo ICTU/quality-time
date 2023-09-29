@@ -342,6 +342,7 @@ report(s).
             "cxsast",
             "generic_json",
             "harbor",
+            "harbor_json",
             "manual_number",
             "openvas",
             "owasp_dependency_check",

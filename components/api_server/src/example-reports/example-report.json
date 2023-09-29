@@ -476,8 +476,18 @@
                         "84eee1c2-53e5-5260-75cb-2b444a5ba336": {
                             "type": "trivy_json",
                             "parameters": {
-                                "url": "http://testdata:8000/reports/trivy_json/trivy.json",
-                                "landing_url": "http://localhost:8000/reports/trivy_json/trivy.json",
+                                "url": "http://testdata:8000/reports/trivy/trivy.json",
+                                "landing_url": "http://localhost:8000/reports/trivy/trivy.json",
+                                "username": "",
+                                "password": "",
+                                "private_token": ""
+                            }
+                        },
+                        "8456abc2-63a0-72c0-7110-254adaebaff6": {
+                            "type": "harbor_json",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/harbor/harbor.json",
+                                "landing_url": "http://localhost:8000/reports/harbor/harbor.json",
                                 "username": "",
                                 "password": "",
                                 "private_token": ""
