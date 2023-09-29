@@ -8,3 +8,7 @@
     overflow: hidden;
     white-space: nowrap;
 }
+
+.ui.card.legend .list {
+    margin-top: 0.5em;
+}
