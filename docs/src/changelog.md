@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Added
 
 - Support Trivy JSON files as source for the security warnings metric. Closes [#6927](https://github.com/ICTU/quality-time/issues/6927).
-- The renderer component can be configured to use https, instead of http, to connect to the proxy component.
+- The renderer component can be configured to use HTTPS, instead of HTTP, to connect to the proxy component.
 
 ## v5.1.0 - 2023-09-05
 
