@@ -4,15 +4,19 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import MultipleChoiceWithAdditionParameter, access_parameters
+from shared_data_model.parameters import MultipleChoiceWithAdditionParameter, Severities, access_parameters
 
 ALL_HARBOR_METRICS = ["security_warnings"]
+HARBOR_URL = HttpUrl("https://goharbor.io")
+HARBOR_DESCRIPTION = (
+    "Harbor is an open source registry that secures artifacts with policies and role-based access control, "
+    "ensures images are scanned and free from vulnerabilities, and signs images as trusted."
+)
 
 HARBOR = Source(
     name="Harbor",
-    description="Harbor is an open source registry that secures artifacts with policies and role-based access control, "
-    "ensures images are scanned and free from vulnerabilities, and signs images as trusted.",
-    url=HttpUrl("https://goharbor.io"),
+    description=HARBOR_DESCRIPTION,
+    url=HARBOR_URL,
     parameters={
         "projects_to_include": MultipleChoiceWithAdditionParameter(
             name="Projects to include (regular expressions or project names)",
@@ -65,6 +69,32 @@ HARBOR = Source(
                 EntityAttribute(name="Highest severity", color={"Critical": Color.NEGATIVE, "High": Color.WARNING}),
                 EntityAttribute(name="Fixable", type=EntityAttributeType.INTEGER),
                 EntityAttribute(name="Total", type=EntityAttributeType.INTEGER),
+            ],
+        ),
+    },
+)
+
+HARBOR_JSON = Source(
+    name="Harbor JSON",
+    description=(
+        HARBOR_DESCRIPTION + " Use Harbor JSON as source for accessing vulnerability reports downloaded from "
+        "the Harbor API in JSON format."
+    ),
+    url=HARBOR_URL,
+    parameters={
+        "severities": Severities(values=["low", "medium", "high", "critical"]),
+        **access_parameters(ALL_HARBOR_METRICS, source_type="Harbor vulnerability report", source_type_format="JSON"),
+    },
+    entities={
+        "security_warnings": Entity(
+            name="security warning",
+            attributes=[
+                EntityAttribute(name="Vulnerability id", url="url"),
+                EntityAttribute(name="Package"),
+                EntityAttribute(name="Version"),
+                EntityAttribute(name="Fix version"),
+                EntityAttribute(name="Severity", color={"Critical": Color.NEGATIVE, "High": Color.WARNING}),
+                EntityAttribute(name="Description"),
             ],
         ),
     },
