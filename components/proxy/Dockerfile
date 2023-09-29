@@ -1,5 +1,5 @@
 ARG IMAGE_NAME=nginx
-ARG IMAGE_VERSION=1.24.0-alpine-slim
+ARG IMAGE_VERSION=1.25.2-alpine3.18-slim
 FROM $IMAGE_NAME:$IMAGE_VERSION
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
