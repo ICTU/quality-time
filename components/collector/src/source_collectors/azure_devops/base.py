@@ -108,23 +108,29 @@ class AzureDevopsPipelines(SourceCollector):
         # currently the pipelines api is not available in any version which is not a -preview version
         return URL(f"{await super()._api_url()}/_apis/pipelines{pipeline_id_runs}?api-version=6.0-preview.1")
 
-    async def _active_pipelines(self) -> list[tuple[int, str]]:
+    async def _active_pipelines(self) -> list[int]:
         """Find all active pipeline ids to traverse."""
         api_pipelines_url = await self._api_url()
-        pipelines = (await (await super()._get_source_responses(api_pipelines_url))[0].json())["value"]
-        return [(pipeline["id"], pipeline["name"]) for pipeline in pipelines if "id" in pipeline]
+        pipelines_response = await super()._get_source_responses(api_pipelines_url)
+        pipelines = (await pipelines_response[0].json())["value"]
+        return [pipeline["id"] for pipeline in pipelines if "id" in pipeline]
+
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Override because we need to first query the pipeline ids to separately get the entities."""
+        pipeline_ids = await self._active_pipelines()
+        api_pipelines_urls = [await self._api_url(pipeline_id) for pipeline_id in pipeline_ids]
+        return await super()._get_source_responses(*api_pipelines_urls)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the pipelines."""
         entities = Entities()
-
-        for pipeline_id, pipeline_name in await self._active_pipelines():
-            api_pipelines_url = await self._api_url(pipeline_id)
-
-            for pipeline_run in (await (await super()._get_source_responses(api_pipelines_url))[0].json())["value"]:
+        for pipeline_response in responses:
+            for pipeline_run in (await pipeline_response.json())["value"]:
                 if not bool(pipeline_run.get("finishedDate")):
                     continue  # The pipeline has not completed
 
+                pipeline_id = pipeline_run["pipeline"]["id"]
+                pipeline_name = pipeline_run["pipeline"]["name"]
                 entities.append(
                     Entity(
                         key="-".join([str(pipeline_id), pipeline_run["name"]]),

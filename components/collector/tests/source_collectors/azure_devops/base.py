@@ -85,7 +85,8 @@ class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):
     def setUp(self):
         """Extend to set up pipeline data."""
         super().setUp()
-        self.pipelines = {"count": 1, "value": [{"id": 42, "name": "azure-pipelines.yml"}]}
+        self.test_pipeline = {"id": 42, "name": "azure-pipelines.yml"}
+        self.pipelines = {"count": 1, "value": [self.test_pipeline]}
         self.pipeline_runs = {
             "count": 3,
             "value": [
@@ -94,6 +95,7 @@ class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):
                     "result": "succeeded",
                     "createdDate": "2019-10-15T12:20:10.1905868Z",
                     "finishedDate": "2019-10-15T12:24:10.1905868Z",
+                    "pipeline": self.test_pipeline,
                     "id": 1,
                     "name": "20191015.1",
                     "url": f"{self.url}/_build/results?buildId=1",
@@ -104,6 +106,7 @@ class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):
                     "result": "succeeded",
                     "createdDate": "2019-10-15T12:30:10.1905868Z",
                     "finishedDate": "2019-10-15T12:34:10.1905868Z",
+                    "pipeline": self.test_pipeline,
                     "id": 2,
                     "name": "20191015.2",
                     "url": f"{self.url}/_build/results?buildId=2",
@@ -112,6 +115,7 @@ class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):
                 {
                     "state": "inProgress",
                     "createdDate": "2019-10-15T12:40:10.1905868Z",
+                    "pipeline": self.test_pipeline,
                     "id": 4,
                     "name": "20191015.4",
                     "url": f"{self.url}/_build/results?buildId=4",
@@ -122,16 +126,16 @@ class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):
         self.expected_entities = [
             {
                 "name": "20191015.1",
-                "pipeline": self.pipelines["value"][0]["name"],
-                "key": f"{self.pipelines['value'][0]['id']}-20191015_1",  # safe_entity_key
+                "pipeline": self.test_pipeline["name"],
+                "key": f"{self.test_pipeline['id']}-20191015_1",  # safe_entity_key
                 "url": f"{self.url}/_build/results?buildId=1",
                 "build_date": "2019-10-15",
                 "build_status": "completed",
             },
             {
                 "name": "20191015.2",
-                "pipeline": self.pipelines["value"][0]["name"],
-                "key": f"{self.pipelines['value'][0]['id']}-20191015_2",  # safe_entity_key
+                "pipeline": self.test_pipeline["name"],
+                "key": f"{self.test_pipeline['id']}-20191015_2",  # safe_entity_key
                 "url": f"{self.url}/_build/results?buildId=2",
                 "build_date": "2019-10-15",
                 "build_status": "completed",
