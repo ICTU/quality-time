@@ -60,6 +60,7 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
                     "result": "succeeded",
                     "createdDate": last_week_timestamp,
                     "finishedDate": last_week_timestamp,
+                    "pipeline": self.test_pipeline,
                     "id": 5,
                     "name": f"{last_week_timestamp[0:10].replace('-', '')}.1",
                     "url": f"{self.url}/_build/results?buildId=5",
@@ -70,6 +71,7 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
                     "result": "succeeded",
                     "createdDate": now_timestamp,
                     "finishedDate": now_timestamp,
+                    "pipeline": self.test_pipeline,
                     "id": 6,
                     "name": f"{now_timestamp[0:10].replace('-', '')}.1",
                     "url": f"{self.url}/_build/results?buildId=6",
@@ -86,8 +88,8 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
         expected_entities = [
             {
                 "name": f"{now_date_str.replace('-', '')}.1",
-                "pipeline": self.pipelines["value"][0]["name"],
-                "key": f"{self.pipelines['value'][0]['id']}-{now_date_str.replace('-', '')}_1",  # safe_entity_key
+                "pipeline": self.test_pipeline["name"],
+                "key": f"{self.test_pipeline['id']}-{now_date_str.replace('-', '')}_1",  # safe_entity_key
                 "url": f"{self.url}/_build/results?buildId=6",
                 "build_date": now_date_str,
                 "build_status": "completed",
