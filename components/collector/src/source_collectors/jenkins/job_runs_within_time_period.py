@@ -19,7 +19,7 @@ class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
 
     def _builds_within_timeperiod(self, job: Job) -> int:
         """Return the number of job builds within time period."""
-        return len([build for build in job.get("builds", []) if self._include_build(build)])
+        return len(super()._builds(job))
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs."""
@@ -37,6 +37,6 @@ class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Count the sum of jobs ran."""
-        parsed_entities = await self._parse_entities(responses)
-        job_runs = [job["build_count"] for job in parsed_entities]
-        return SourceMeasurement(value=str(sum(job_runs)), entities=parsed_entities)
+        included_entities = [entity for entity in await self._parse_entities(responses) if self._include_entity(entity)]
+        job_runs = [job["build_count"] for job in included_entities]
+        return SourceMeasurement(value=str(sum(job_runs)), entities=Entities(included_entities))
