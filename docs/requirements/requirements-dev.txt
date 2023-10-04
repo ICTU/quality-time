@@ -16,9 +16,9 @@ argcomplete==3.1.2 \
     --hash=sha256:d5d1e5efd41435260b8f85673b74ea2e883affcbec9f4230c582689e8e78251b \
     --hash=sha256:d97c036d12a752d1079f190bc1521c545b941fda89ad85d15afa909b4d1b9a99
     # via pipx
-babel==2.12.1 \
-    --hash=sha256:b4246fb7677d3b98f501a39d43396d3cafdc8eadb045f4a31be01863f655c610 \
-    --hash=sha256:cc2d99999cd01d44420ae725a21c9e3711b3aadc7976d6147f622d8581963455
+babel==2.13.0 \
+    --hash=sha256:04c3e2d28d2b7681644508f836be388ae49e0cfe91465095340395b60d00f210 \
+    --hash=sha256:fbfcae1575ff78e26c7449136f1abbefc3c13ce542eeb13d43d50d8b047216ec
     # via sphinx
 beautifulsoup4==4.12.2 \
     --hash=sha256:492bbc69dca35d12daac71c4db1bfff0c876c00ef4a2ffacce226d4638eb72da \
