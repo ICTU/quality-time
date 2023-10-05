@@ -5,7 +5,7 @@ from collections.abc import Iterator
 from base_collectors import SourceCollector
 from collector_utilities.date_time import datetime_fromtimestamp
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import URL, Job, Jobs
+from collector_utilities.type import URL, Builds, Job, Jobs
 from model import Entities, Entity, SourceResponses
 
 
@@ -64,7 +64,7 @@ class JenkinsJobs(SourceCollector):
                 return str(status).capitalize().replace("_", " ")
         return "Not built"
 
-    def _builds(self, job: Job) -> list[dict[str, str]]:
+    def _builds(self, job: Job) -> Builds:
         """Return the builds of the job."""
         return [build for build in job.get("builds", []) if self._include_build(build)]
 

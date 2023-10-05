@@ -4,6 +4,8 @@ from typing import Any, NewType
 
 import aiohttp
 
+Build = dict[str, str]
+Builds = list[Build]
 ErrorMessage = None | str
 Job = dict[str, Any]
 Jobs = list[Job]
