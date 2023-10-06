@@ -102,11 +102,16 @@ class AzureDevopsJobs(SourceCollector):
 class AzureDevopsPipelines(SourceCollector):
     """Base class for pipeline collectors."""
 
-    async def _api_url(self, pipeline_id: int | None = None) -> URL:
+    async def _api_url(self) -> URL:
         """Extend to add the pipelines API path."""
-        pipeline_id_runs = "" if pipeline_id is None else f"/{pipeline_id}/runs"
         # currently the pipelines api is not available in any version which is not a -preview version
-        return URL(f"{await super()._api_url()}/_apis/pipelines{pipeline_id_runs}?api-version=6.0-preview.1")
+        return URL(f"{await super()._api_url()}/_apis/pipelines?api-version=6.0-preview.1")
+
+    async def _api_runs_url(self, pipeline_id: int) -> URL:
+        """Extend to add the pipeline runs API path."""
+        split_api_url = urllib.parse.urlsplit(await self._api_url())
+        new_api_url_parts = split_api_url._replace(path=f"{split_api_url[2]}/{pipeline_id}/runs")
+        return URL(urllib.parse.urlunsplit(new_api_url_parts))
 
     async def _active_pipelines(self) -> list[int]:
         """Find all active pipeline ids to traverse."""
@@ -118,7 +123,7 @@ class AzureDevopsPipelines(SourceCollector):
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override because we need to first query the pipeline ids to separately get the entities."""
         pipeline_ids = await self._active_pipelines()
-        api_pipelines_urls = [await self._api_url(pipeline_id) for pipeline_id in pipeline_ids]
+        api_pipelines_urls = [await self._api_runs_url(pipeline_id) for pipeline_id in pipeline_ids]
         return await super()._get_source_responses(*api_pipelines_urls)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
