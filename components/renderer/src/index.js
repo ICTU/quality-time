@@ -27,7 +27,8 @@ app.get("/api/render", async (req, res) => {
         });
         console.log(`URL ${url}: opened`);
         await webPage.waitForSelector(".loader", { hidden: true });
-        console.log(`URL ${url}: spinner hidden`);
+        await webPage.waitForSelector("#dashboard.animated");
+        console.log(`URL ${url}: loader hidden and animations finished`);
         const pdf = await webPage.pdf({
             printBackground: true,
             format: "A4",

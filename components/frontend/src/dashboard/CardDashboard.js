@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import RGL, { WidthProvider } from "react-grid-layout";
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 
 const ReactGridLayout = WidthProvider(RGL);
 
-function cardDivs(cards, isDragging) {
+function cardDivs(cards, dragging, isDragging) {
     return cards.map((card) => (
         <div
             onClickCapture={(e) => { if (isDragging(e)) { e.stopPropagation() } }}
             key={card.key}
+            style={{ transition: dragging ? "0ms" : "400ms" }}
         >
             {card}
         </div>
@@ -19,8 +20,16 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
     const cols = 32;
     const cardWidth = 4
     const cardHeight = 6
-    const [dragging, setDragging] = useState(false);
     const [mousePos, setMousePos] = useState([0, 0, 0]);
+    const [dragging, setDragging] = useState(false);
+    useEffect(() => {
+        const dashboard = document.getElementById("dashboard");
+        Promise.all(
+            dashboard.getAnimations().map(animation => animation.finished)
+        ).then(
+            () => dashboard.classList.add("animated")  // Used by the renderer to wait for animations to finish
+        )
+    }, []);
     if (cards.length === 0) { return null }
     const cardKeys = cards.map((card) => card.key)
     const layout = (initialLayout ?? []).filter((layoutItem) => cardKeys.includes(layoutItem.i))
@@ -52,11 +61,14 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
     }
 
     function isDragging(event) {
-        const now = new Date();
-        const distanceX = Math.abs(event.clientX - mousePos[0]);
-        const distanceY = Math.abs(event.clientY - mousePos[1]);
-        const timedelta = now.getTime() - mousePos[2];
-        return (distanceX > 10 || distanceY > 10 || timedelta > 250) ? dragging : false;
+        if (dragging) {
+            const now = new Date();
+            const distanceX = Math.abs(event.clientX - mousePos[0]);
+            const distanceY = Math.abs(event.clientY - mousePos[1]);
+            const timedelta = now.getTime() - mousePos[2];
+            return distanceX > 10 || distanceY > 10 || timedelta > 250
+        }
+        return false
     }
 
     return (
@@ -70,9 +82,11 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
                 onDragStop={onDragStop}
                 preventCollision={true}
                 rowHeight={24}
-                style={{ zIndex: "0" }}  // Prevent cards from being shown above the settings panel after being clicked
+                style={{
+                    zIndex: "0",  // Prevent cards from being shown above the settings panel after being clicked
+                }}
             >
-                {cardDivs(cards, isDragging)}
+                {cardDivs(cards, dragging, isDragging)}
             </ReactGridLayout>)}
         </Permissions.Consumer>
     )
