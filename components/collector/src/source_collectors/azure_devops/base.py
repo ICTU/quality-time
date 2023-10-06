@@ -108,7 +108,7 @@ class AzureDevopsPipelines(SourceCollector):
         return URL(f"{await super()._api_url()}/_apis/pipelines?api-version=6.0-preview.1")
 
     async def _api_runs_url(self, pipeline_id: int) -> URL:
-        """Extend to add the pipeline runs API path."""
+        """Add the pipeline runs API path."""
         split_api_url = urllib.parse.urlsplit(await self._api_url())
         new_api_url_parts = split_api_url._replace(path=f"{split_api_url[2]}/{pipeline_id}/runs")
         return URL(urllib.parse.urlunsplit(new_api_url_parts))
