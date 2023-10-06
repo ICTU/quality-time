@@ -3,25 +3,25 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { ReportsOverview } from './ReportsOverview';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import * as fetch_server_api from '../api/fetch_server_api';
-
-jest.mock('../api/fetch_server_api', () => {
-    const originalModule = jest.requireActual('../api/fetch_server_api');
-
-    return {
-        __esModule: true,
-        ...originalModule,
-        fetch_server_api: jest.fn().mockResolvedValue({ ok: true }),
-    };
-});
+import { mockGetAnimations } from '../dashboard/MockAnimations';
 
 beforeEach(() => {
-    jest.clearAllMocks();
-});
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
+    mockGetAnimations()
+})
+
+afterEach(() => jest.restoreAllMocks());
 
 function render_reports_overview(reports, reportsOverview, reportDate) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <ReportsOverview dates={[reportDate || new Date()]} measurements={[{ status: "target_met" }]} reports={reports} reports_overview={reportsOverview} report_date={reportDate || null} />
+            <ReportsOverview
+                dates={[reportDate || new Date()]}
+                measurements={[{ status: "target_met" }]}
+                report_date={reportDate || null}
+                reports={reports}
+                reports_overview={reportsOverview}
+            />
         </Permissions.Provider>
     )
 }

@@ -3,16 +3,15 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import history from 'history/browser';
 import { datamodel, report } from "./__fixtures__/fixtures";
 import { AppUI } from './AppUI';
+import * as fetch_server_api from './api/fetch_server_api';
+import { mockGetAnimations } from './dashboard/MockAnimations';
 
-jest.mock('./api/fetch_server_api', () => {
-    const originalModule = jest.requireActual('./api/fetch_server_api');
-
-    return {
-        __esModule: true,
-        ...originalModule,
-        fetch_server_api: jest.fn().mockResolvedValue({ ok: true, measurements: [] }),
-    };
+beforeEach(() => {
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
+    mockGetAnimations()
 });
+
+afterEach(() => jest.restoreAllMocks())
 
 it('shows an error message when there are no reports', async () => {
     await act(async () => render(<AppUI report_uuid="" reports={[]} reports_overview={{}} />))

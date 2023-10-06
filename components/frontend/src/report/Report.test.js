@@ -3,20 +3,15 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Report } from './Report';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
-
-jest.mock('../api/fetch_server_api', () => {
-    const originalModule = jest.requireActual('../api/fetch_server_api');
-
-    return {
-        __esModule: true,
-        ...originalModule,
-        fetch_server_api: jest.fn().mockResolvedValue({ ok: true, measurements: [{ status: "target_met" }] }),
-    };
-});
+import * as fetch_server_api from '../api/fetch_server_api';
+import { mockGetAnimations } from '../dashboard/MockAnimations';
 
 beforeEach(() => {
-    jest.clearAllMocks();
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
+    mockGetAnimations()
 });
+
+afterEach(() => jest.restoreAllMocks())
 
 const datamodel = {
     subjects: {

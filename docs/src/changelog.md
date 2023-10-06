@@ -26,6 +26,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Fixed
 
 - When measuring the number of job runs within a time period using Jenkins as source, filters to include and exclude jobs would be ignored. Fixes [#7172](https://github.com/ICTU/quality-time/issues/7172).
+- Speed up the rendering of the dashboard to prevent exported PDFs from containing a partly rendered dashboard. Fixes [#7208](https://github.com/ICTU/quality-time/issues/7208).
 
 ## v5.2.0 - 2023-09-29
 

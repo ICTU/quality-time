@@ -94,7 +94,7 @@ ReportsDashboard.propTypes = {
     reports: PropTypes.array,
     open_report: PropTypes.func,
     measurements: PropTypes.array,
-    layout: PropTypes.object,
+    layout: PropTypes.array,
     reload: PropTypes.func
 }
 
@@ -114,7 +114,15 @@ export function ReportsOverview({ dates, hiddenTags, measurements, reports, open
         <div id="dashboard">
             <ReportsOverviewTitle reports_overview={reports_overview} reload={reload} />
             <CommentSegment comment={reports_overview.comment} />
-            <ReportsDashboard dates={dates} hiddenTags={hiddenTags} measurements={reversedMeasurements} reports={reports} open_report={open_report} layout={reports_overview.layout} reload={reload} />
+            <ReportsDashboard
+                dates={dates}
+                hiddenTags={hiddenTags}
+                layout={reports_overview.layout ?? []}
+                measurements={reversedMeasurements}
+                open_report={open_report}
+                reload={reload}
+                reports={reports}
+            />
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment basic>
                     <AddButton
