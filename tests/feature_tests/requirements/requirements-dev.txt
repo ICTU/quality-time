@@ -511,9 +511,9 @@ six==1.16.0 \
 sseclient==0.0.27 \
     --hash=sha256:b2fe534dcb33b1d3faad13d60c5a7c718e28f85987f2a034ecf5ec279918c11c
     # via feature-tests (pyproject.toml)
-types-requests==2.31.0.7 \
-    --hash=sha256:39844effefca88f4f824dcdc4127b813d3b86a56b2248d3d1afa58832040d979 \
-    --hash=sha256:4d930dcabbc2452e3d70728e581ac4ac8c2d13f62509ad9114673f542af8cb4e
+types-requests==2.31.0.8 \
+    --hash=sha256:39894cbca3fb3d032ed8bdd02275b4273471aa5668564617cc1734b0a65ffdf8 \
+    --hash=sha256:e1b325c687b3494a2f528ab06e411d7092cc546cc9245c000bacc2fca5ae96d4
     # via feature-tests (pyproject.toml)
 unittest-xml-reporting==3.2.0 \
     --hash=sha256:edd8d3170b40c3a81b8cf910f46c6a304ae2847ec01036d02e9c0f9b85762d28 \
