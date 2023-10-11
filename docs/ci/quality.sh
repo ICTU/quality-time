@@ -10,7 +10,7 @@ run pipx run `spec ruff` .
 
 # Mypy
 # pipx run can't be used because mypy needs the pydantic plugin to be installed in the same venv (using pipx inject)
-run pipx install `spec mypy`
+run pipx install --force `spec mypy`  # --force works around this bug: https://github.com/pypa/pipx/issues/795
 run pipx inject mypy `spec pydantic`
 run $PIPX_BIN_DIR/mypy src --python-executable=$(which python)
 
