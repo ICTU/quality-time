@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import HashLinkObserver from "react-hash-link";
+import useLocalStorageState from 'use-local-storage-state';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 import { Menubar } from './header_footer/Menubar';
 import { Footer } from './header_footer/Footer';
-import { ViewPanel } from './header_footer/ViewPanel';
+import { SettingsPanel } from './header_footer/SettingsPanel';
 
 import { DataModel } from './context/DataModel';
 import { DarkMode } from './context/DarkMode';
@@ -32,19 +33,17 @@ export function AppUI({
     set_user,
     user
 }) {
-    const [uiMode, setUIMode] = useURLSearchQuery("ui_mode", "string", null);
+    const [uiMode, setUIMode] = useLocalStorageState("ui_mode", {"defaultValue": "follow_os"})
     useEffect(() => {
         const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
         mediaQueryList.addEventListener("change", changeMode);
         function changeMode(e) {
-            if (uiMode === null) {  // Only update if the user is following the OS mode setting
+            if (uiMode === "follow_os") {  // Only update if the user is following the OS mode setting
                 setUIMode(e.matches ? "dark" : "light")  // Force redraw
-                setTimeout(() => setUIMode(null))  // Reset setting
+                setTimeout(() => setUIMode("follow_os"))  // Reset setting
             }
         }
-        return () => {
-            mediaQueryList.removeEventListener("change", changeMode);
-        }
+        return () => mediaQueryList.removeEventListener("change", changeMode);
     }, [uiMode, setUIMode]);
 
     const user_permissions = getUserPermissions(
@@ -106,7 +105,7 @@ export function AppUI({
                     set_user={set_user}
                     user={user}
                     visibleDetailsTabs={visibleDetailsTabs}
-                    panel={<ViewPanel
+                    panel={<SettingsPanel
                         clearHiddenColumns={clearHiddenColumns}
                         clearHiddenTags={clearHiddenTags}
                         clearVisibleDetailsTabs={clearVisibleDetailsTabs}
@@ -130,15 +129,15 @@ export function AppUI({
                         setShowIssueDueDate={setShowIssueDueDate}
                         setShowIssueRelease={setShowIssueRelease}
                         setShowIssueSprint={setShowIssueSprint}
-                        setUIMode={setUIMode}
                         sortColumn={sortColumn}
                         sortDirection={sortDirection}
                         tags={getReportsTags(reports)}
                         toggleHiddenColumn={toggleHiddenColumn}
                         toggleHiddenTag={toggleHiddenTag}
-                        uiMode={uiMode}
                         visibleDetailsTabs={visibleDetailsTabs}
                     />}
+                    setUIMode={setUIMode}
+                    uiMode={uiMode}
                 />
                 <ToastContainer theme="colored" />
                 <Permissions.Provider value={user_permissions}>

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { Button, Dropdown, Icon, Image, Menu, Message, Portal } from 'semantic-ui-react';
 import { Form, Modal, Popup } from '../semantic_ui_react_wrappers';
 import FocusLock from 'react-focus-lock';
 import { login, logout } from '../api/auth';
 import { Avatar } from '../widgets/Avatar';
 import { DatePicker } from '../widgets/DatePicker';
+import { datePropType, uiModePropType } from '../sharedPropTypes';
+import { UIModeMenu } from './UIModeMenu';
 import './Menubar.css';
 
 function Login({ set_user }) {
@@ -70,14 +73,16 @@ export function Menubar({
     panel,
     report_date,
     set_user,
+    setUIMode,
+    uiMode,
     user,
     visibleDetailsTabs
 }) {
-    const [panelVisible, setPanelVisible] = useState(false)
+    const [settingsPanelVisible, setSettingsPanelVisible] = useState(false)
     useEffect(() => {
-        function closePanel(event) { if (event.key === "Escape") { setPanelVisible(false) } }
-        window.addEventListener('keydown', closePanel)
-        return () => { window.removeEventListener('keydown', closePanel) };
+        function closePanels(event) { if (event.key === "Escape") { setSettingsPanelVisible(false) } }
+        window.addEventListener('keydown', closePanels)
+        return () => { window.removeEventListener('keydown', closePanels) };
     }, []);
 
     return (
@@ -88,18 +93,18 @@ export function Menubar({
                         content="Go to reports overview"
                         disabled={atHome}
                         trigger={
-                            <div onBeforeInput={(event) => { event.preventDefault(); setPanelVisible(false); go_home() }} tabIndex={atHome ? -1 : 0}>
-                                <Menu.Item header onClick={atHome ? null : () => { setPanelVisible(false); go_home() }}>
+                            <div onBeforeInput={(event) => { event.preventDefault(); setSettingsPanelVisible(false); go_home() }} tabIndex={atHome ? -1 : 0}>
+                                <Menu.Item header onClick={atHome ? null : () => { setSettingsPanelVisible(false); go_home() }}>
                                     <Image size='mini' src='/favicon.ico' alt="Go home" />
                                     <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
                                 </Menu.Item>
                             </div>
                         }
                     />
-                    <FocusLock group="panel" disabled={!panelVisible} className="center">
-                        <div onBeforeInput={(event) => { event.preventDefault(); setPanelVisible(!panelVisible) }} tabIndex={0}>
-                            <Menu.Item onClick={(event) => { event.stopPropagation(); setPanelVisible(!panelVisible) }}>
-                                <Icon size='large' name={`caret ${panelVisible ? "down" : "right"}`} />
+                    <FocusLock group="settingsPanel" disabled={!settingsPanelVisible} className="center">
+                        <div onBeforeInput={(event) => { event.preventDefault(); setSettingsPanelVisible(!settingsPanelVisible) }} tabIndex={0}>
+                            <Menu.Item onClick={(event) => { event.stopPropagation(); setSettingsPanelVisible(!settingsPanelVisible) }}>
+                                <Icon size='large' name={`caret ${settingsPanelVisible ? "down" : "right"}`} />
                                 Settings
                             </Menu.Item>
                         </div>
@@ -144,17 +149,34 @@ export function Menubar({
                         </Menu.Item>
                     } />
                     <Menu.Item>
+                        <UIModeMenu setUIMode={setUIMode} uiMode={uiMode} />
+                    </Menu.Item>
+                    <Menu.Item>
                         {(user !== null) ? <Logout email={email} user={user} set_user={set_user} /> : <Login set_user={set_user} />}
                     </Menu.Item>
                 </Menu.Menu>
             </Menu>
-            <Portal closeOnTriggerClick={true} open={panelVisible} onClose={(event) => { event.stopPropagation(); setPanelVisible(false) }} unmountOnHide>
+            <Portal closeOnTriggerClick={true} open={settingsPanelVisible} onClose={(event) => { event.stopPropagation(); setSettingsPanelVisible(false) }} unmountOnHide>
                 <div className="panel">
-                    <FocusLock group="panel">
+                    <FocusLock group="settingsPanel">
                         {panel}
                     </FocusLock>
                 </div>
             </Portal>
         </>
     )
+}
+Menubar.propTypes = {
+    atHome: PropTypes.bool,
+    clearVisibleDetailsTabs: PropTypes.func,
+    email: PropTypes.string,
+    go_home: PropTypes.func,
+    onDate: PropTypes.func,
+    panel: PropTypes.element,
+    report_date: datePropType,
+    set_user: PropTypes.func,
+    setUIMode: PropTypes.func,
+    uiMode: uiModePropType,
+    user: PropTypes.string,
+    visibleDetailsTabs: PropTypes.array
 }

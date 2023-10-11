@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Changed
 
 - Upgrade MongoDB from 6.0 to 7.0.
+- Move the dark/light mode setting to a separate menu in the menu bar. Store the value of the dark/light mode in the local storage of the user's browser instead of in the URL as query parameter. Closes [#7212](https://github.com/ICTU/quality-time/issues/7212).
 
 ### Fixed
 

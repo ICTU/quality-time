@@ -79,7 +79,7 @@ class OpenReportTest(unittest.TestCase):
     def test_login_and_logout(self):
         """Test that a user can login and logout."""
         self.login()
-        logout_dropdown = self.driver.find_element(By.CLASS_NAME, "dropdown")
+        logout_dropdown = self.driver.find_elements(By.CLASS_NAME, "dropdown")[1]
         logout_dropdown.click()
         logout_menu_item = self.driver.find_element(By.CLASS_NAME, "selected.item")
         logout_menu_item.click()

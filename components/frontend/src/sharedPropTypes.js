@@ -15,4 +15,4 @@ export const datePropType = PropTypes.instanceOf(Date)
 
 export const datesPropType = PropTypes.arrayOf(datePropType)
 
-export const uiModePropType = PropTypes.oneOf(["dark", "light"])
+export const uiModePropType = PropTypes.oneOf(["dark", "light", "follow_os"])

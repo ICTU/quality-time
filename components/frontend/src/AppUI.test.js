@@ -9,6 +9,7 @@ import { mockGetAnimations } from './dashboard/MockAnimations';
 beforeEach(() => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     mockGetAnimations()
+    history.push("")
 });
 
 afterEach(() => jest.restoreAllMocks())
@@ -40,17 +41,15 @@ let changeMode
 
 beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
-        value: jest.fn().mockImplementation(_query => ({
-            matches: matchMediaMatches,
-            addEventListener: (_eventType, eventHandler) => { changeMode = eventHandler },
-            removeEventListener: () => { /* No implementation needed */ },
-        }))
+        value: jest.fn().mockImplementation(_query => {
+            return {
+                matches: matchMediaMatches,
+                addEventListener: (_eventType, eventHandler) => { changeMode = eventHandler },
+                removeEventListener: () => { /* No implementation needed */ },
+            }
+        })
     });
 });
-
-beforeEach(() => {
-    history.push("")
-})
 
 async function renderAppUI() {
     return await act(async () => render(<AppUI report_uuid="" reports={[]} reports_overview={{}} />))
@@ -73,7 +72,7 @@ it('follows OS mode when switching to light mode', async () => {
     const { container } = await renderAppUI()
     expect(container.firstChild.style.background).toEqual("rgb(40, 40, 40)")
     act(() => {
-        changeMode({matches: false})
+        changeMode({ matches: false })
     })
     expect(container.firstChild.style.background).toEqual("white")
 })
@@ -83,18 +82,19 @@ it('follows OS mode when switching to dark mode', async () => {
     const { container } = await renderAppUI()
     expect(container.firstChild.style.background).toEqual("white")
     act(() => {
-        changeMode({matches: true})
+        changeMode({ matches: true })
     })
     expect(container.firstChild.style.background).toEqual("rgb(40, 40, 40)")
 })
 
 it('ignores OS mode when mode explicitly set', async () => {
     matchMediaMatches = false
-    history.push("?ui_mode=light")
-    const { container } = await renderAppUI()
+    const { container } = await act(async () => await renderAppUI())
+    fireEvent.click(screen.getByLabelText("Dark/light mode"))
+    fireEvent.click(screen.getByText("Light mode"))
     expect(container.firstChild.style.background).toEqual("white")
     act(() => {
-        changeMode({matches: true})
+        changeMode({ matches: true })
     })
     expect(container.firstChild.style.background).toEqual("white")
 })
