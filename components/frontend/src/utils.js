@@ -366,7 +366,7 @@ export function getUserPermissions(username, email, current_report_is_tag_report
 }
 
 export function userPrefersDarkMode(uiMode) {
-    return uiMode === "dark" || (uiMode === null && window.matchMedia?.('(prefers-color-scheme: dark)').matches)
+    return uiMode === "dark" || (uiMode === "follow_os" && window.matchMedia?.('(prefers-color-scheme: dark)').matches)
 }
 
 export function dropdownOptions(options) {

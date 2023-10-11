@@ -255,12 +255,12 @@ it("returns false when the user sets light mode", () => {
 
 it("returns true when the user prefers dark mode", () => {
     matchMediaMatches = true
-    expect(userPrefersDarkMode(null)).toBe(true)
+    expect(userPrefersDarkMode("follow_os")).toBe(true)
 })
 
 it("returns false when the user prefers light mode", () => {
     matchMediaMatches = false
-    expect(userPrefersDarkMode(null)).toBe(false)
+    expect(userPrefersDarkMode("follow_os")).toBe(false)
 })
 
 it("returns the metric response overrun when there are no measurements", () => {

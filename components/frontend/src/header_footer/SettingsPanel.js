@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
-import { Icon, Popup } from '../semantic_ui_react_wrappers';
-import { datePropType, issueSettingsPropType, sortDirectionPropType, uiModePropType } from '../sharedPropTypes';
+import { Icon } from '../semantic_ui_react_wrappers';
+import { datePropType, issueSettingsPropType, sortDirectionPropType } from '../sharedPropTypes';
 import { capitalize, pluralize } from "../utils";
-import './ViewPanel.css';
+import { SettingsMenuItem} from "./SettingsMenuItem";
+import './SettingsPanel.css';
 
-const activeColor = "grey"
-
-export function ViewPanel({
+export function SettingsPanel({
     clearHiddenColumns,
     clearHiddenTags,
     clearVisibleDetailsTabs,
@@ -32,13 +31,11 @@ export function ViewPanel({
     setShowIssueDueDate,
     setShowIssueRelease,
     setShowIssueSprint,
-    setUIMode,
     sortColumn,
     sortDirection,
     tags,
     toggleHiddenColumn,
     toggleHiddenTag,
-    uiMode,
     visibleDetailsTabs
 }) {
     const multipleDateColumns = nrDates > 1
@@ -98,23 +95,13 @@ export function ViewPanel({
                                 setShowIssueDueDate={setShowIssueDueDate}
                                 setShowIssueRelease={setShowIssueRelease}
                                 setShowIssueSprint={setShowIssueSprint}
-                                setUIMode={setUIMode}
                                 sortColumn={sortColumn}
                                 sortDirection={sortDirection}
-                                uiMode={uiMode}
                                 visibleDetailsTabs={visibleDetailsTabs}
                             />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-            </Segment>
-            <Segment inverted color="black">
-                <Header size='small'>Dark/light mode</Header>
-                <Menu {...menuProps}>
-                    <UIModeMenuItem mode={null} uiMode={uiMode} setUIMode={setUIMode} />
-                    <UIModeMenuItem mode="dark" uiMode={uiMode} setUIMode={setUIMode} />
-                    <UIModeMenuItem mode="light" uiMode={uiMode} setUIMode={setUIMode} />
-                </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Visible metrics</Header>
@@ -300,7 +287,7 @@ export function ViewPanel({
         </Segment.Group>
     )
 }
-ViewPanel.propTypes = {
+SettingsPanel.propTypes = {
     toggleHiddenColumn: PropTypes.func,
     toggleHiddenTag: PropTypes.func,
     ...ResetAllSettingsButton.propTypes,
@@ -448,23 +435,6 @@ MetricMenuItem.propTypes = {
     setHideMetricsNotRequiringAction: PropTypes.func
 }
 
-function UIModeMenuItem({ mode, uiMode, setUIMode }) {
-    return (
-        <SettingsMenuItem
-            active={mode === uiMode}
-            onClick={setUIMode}
-            onClickData={mode}
-        >
-            {{ null: "Follow OS setting", "dark": "Dark mode", "light": "Light mode" }[mode]}
-        </SettingsMenuItem>
-    )
-}
-UIModeMenuItem.propTypes = {
-    mode: uiModePropType,
-    uiMode: uiModePropType,
-    setUIMode: PropTypes.func
-}
-
 function IssueAttributeMenuItem({ help, issueAttributeName, issueAttribute, setIssueAttribute }) {
     return (
         <SettingsMenuItem
@@ -482,40 +452,6 @@ IssueAttributeMenuItem.propTypes = {
     issueAttributeName: PropTypes.string,
     issueAttribute: PropTypes.bool,
     setIssueAttribute: PropTypes.func
-}
-
-function SettingsMenuItem({ active, children, disabled, disabledHelp, help, onClick, onClickData }) {
-    // A menu item that can can show help when disabled so users can see why the menu item is disabled
-    const props = {
-        active: active,
-        color: activeColor,
-        disabled: disabled,
-        onBeforeInput: (event) => { event.preventDefault(); if (!disabled) { onClick(onClickData) } },  // Uncovered, see https://github.com/testing-library/react-testing-library/issues/1152
-        onClick: () => onClick(onClickData),
-        tabIndex: 0
-    }
-    if (help || (disabledHelp && disabled)) {
-        props["style"] = { marginLeft: 0, marginRight: 0, marginBottom: 5 }  // Compensate for the span
-        return (
-            <Popup
-                content={disabledHelp || help}
-                inverted
-                position="left center"
-                // We need a span here to prevent the popup from becoming disabled when the menu item is disabled:
-                trigger={<span><Menu.Item {...props}>{children}</Menu.Item></span>}
-            />
-        )
-    }
-    return <Menu.Item {...props} >{children}</Menu.Item>
-}
-SettingsMenuItem.propTypes = {
-    active: PropTypes.bool,
-    children: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-    disabled: PropTypes.bool,
-    disabledHelp: PropTypes.string,
-    help: PropTypes.string,
-    onClick: PropTypes.func,
-    onClickData: PropTypes.oneOfType([PropTypes.bool, PropTypes.number, PropTypes.string])
 }
 
 function ResetAllSettingsButton(
@@ -543,10 +479,8 @@ function ResetAllSettingsButton(
         setShowIssueDueDate,
         setShowIssueRelease,
         setShowIssueSprint,
-        setUIMode,
         sortColumn,
         sortDirection,
-        uiMode,
         visibleDetailsTabs
     }
 ) {
@@ -568,8 +502,7 @@ function ResetAllSettingsButton(
                 !issueSettings.showIssueSprint &&
                 reportDate === null &&
                 sortColumn === null &&
-                sortDirection === "ascending" &&
-                uiMode === null
+                sortDirection === "ascending"
             }
             onClick={() => {
                 clearVisibleDetailsTabs();
@@ -587,7 +520,6 @@ function ResetAllSettingsButton(
                 setShowIssueDueDate(false);
                 setShowIssueRelease(false);
                 setShowIssueSprint(false);
-                setUIMode(null);
             }}
             inverted
         >
@@ -619,9 +551,7 @@ ResetAllSettingsButton.propTypes = {
     setShowIssueDueDate: PropTypes.func,
     setShowIssueRelease: PropTypes.func,
     setShowIssueSprint: PropTypes.func,
-    setUIMode: PropTypes.func,
     sortColumn: PropTypes.string,
     sortDirection: sortDirectionPropType,
-    uiMode: uiModePropType,
     visibleDetailsTabs: PropTypes.arrayOf(PropTypes.string)
 }
