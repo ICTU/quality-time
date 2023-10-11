@@ -1,6 +1,6 @@
 """A class that represents a subject."""
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, cast
 
 from shared.utils.type import MetricId, SubjectId
 
@@ -46,7 +46,7 @@ class Subject(dict):
     @property
     def metrics_dict(self) -> dict[MetricId, Metric]:
         """Return the dict with metric uuids as keys and metric instances as values."""
-        return self.get("metrics", {})
+        return cast(dict[MetricId, Metric], self.get("metrics", {}))
 
     @property
     def name(self) -> str | None:

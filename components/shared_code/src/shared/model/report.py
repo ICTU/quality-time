@@ -62,12 +62,12 @@ class Report(dict):
     @property
     def subjects_dict(self) -> dict[SubjectId, Subject]:
         """Return the dict with subject uuids as keys and subject instances as values."""
-        return self.get("subjects", {})
+        return cast(dict[SubjectId, Subject], self.get("subjects", {}))
 
     @property
     def name(self) -> str:
         """A different access to title."""
-        return self.get("title", "")
+        return cast(str, self.get("title", ""))
 
     def __eq__(self, other: object) -> bool:
         """Return whether the reports are equal."""

@@ -56,7 +56,7 @@ class Metric(dict):
     @property
     def sources_dict(self) -> dict[SourceId, Source]:
         """Return the dict with source_uuid as keys and source instances as values."""
-        return self.get("sources", {})
+        return cast(dict[SourceId, Source], self.get("sources", {}))
 
     @property
     def name(self) -> str | None:
@@ -73,7 +73,7 @@ class Metric(dict):
 
     def evaluate_targets(self) -> bool:
         """Return whether the metric is to evaluate its targets. If not, it is considered to be informative."""
-        return self.get("evaluate_targets", True)
+        return bool(self.get("evaluate_targets", True))
 
     def status(self, last_measurement: Measurement | None) -> Status | None:
         """Determine the metric status."""
@@ -88,7 +88,7 @@ class Metric(dict):
 
     def issue_ids(self) -> list[str]:
         """Return the ids of this metric's issues."""
-        return self.get("issue_ids", [])
+        return cast(list[str], self.get("issue_ids", []))
 
     def addition(self) -> Callable:
         """Return the addition operator of the metric: sum, min, or max."""
