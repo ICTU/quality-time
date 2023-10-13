@@ -4,12 +4,13 @@ import { Dropdown, Icon } from 'semantic-ui-react';
 import { uiModePropType } from '../sharedPropTypes';
 
 export function UIModeMenu({ setUIMode, uiMode }) {
+    const style = { textShadow: "0px 0px" }
     return (
         <Dropdown
             icon={
                 <Icon.Group aria-label="Dark/light mode" size="big">
-                    <Icon corner="top left" name="sun" />
-                    <Icon corner="bottom right" name="moon" />
+                    <Icon corner="top left" name="sun" style={style} />
+                    <Icon corner="bottom right" name="moon" style={style} />
                 </Icon.Group>
             }
         >
