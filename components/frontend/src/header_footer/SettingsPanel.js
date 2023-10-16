@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
 import { Icon } from '../semantic_ui_react_wrappers';
-import { datePropType, issueSettingsPropType, sortDirectionPropType } from '../sharedPropTypes';
+import { datePropType, issueSettingsPropType, metricsToHidePropType, sortDirectionPropType } from '../sharedPropTypes';
 import { capitalize, pluralize } from "../utils";
 import { SettingsMenuItem} from "./SettingsMenuItem";
 import './SettingsPanel.css';
@@ -18,13 +18,13 @@ export function SettingsPanel({
     handleSort,
     hiddenColumns,
     hiddenTags,
-    hideMetricsNotRequiringAction,
+    metricsToHide,
     issueSettings,
     nrDates,
     reportDate,
     setDateInterval,
     setDateOrder,
-    setHideMetricsNotRequiringAction,
+    setMetricsToHide,
     setNrDates,
     setShowIssueCreationDate,
     setShowIssueSummary,
@@ -49,8 +49,8 @@ export function SettingsPanel({
         setDateInterval: setDateInterval
     }
     const metricMenuItemProps = {
-        hideMetricsNotRequiringAction: hideMetricsNotRequiringAction,
-        setHideMetricsNotRequiringAction: setHideMetricsNotRequiringAction
+        metricsToHide: metricsToHide,
+        setMetricsToHide: setMetricsToHide
     }
     const sortColumnMenuItemProps = { sortColumn: sortColumn, sortDirection: sortDirection, handleSort: handleSort }
     const sortOrderMenuItemProps = {
@@ -83,13 +83,13 @@ export function SettingsPanel({
                                 handleSort={handleSort}
                                 hiddenColumns={hiddenColumns}
                                 hiddenTags={hiddenTags}
-                                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                                metricsToHide={metricsToHide}
                                 issueSettings={issueSettings}
                                 nrDates={nrDates}
                                 reportDate={reportDate}
                                 setDateInterval={setDateInterval}
                                 setDateOrder={setDateOrder}
-                                setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                                setMetricsToHide={setMetricsToHide}
                                 setNrDates={setNrDates}
                                 setShowIssueCreationDate={setShowIssueCreationDate}
                                 setShowIssueSummary={setShowIssueSummary}
@@ -108,8 +108,9 @@ export function SettingsPanel({
             <Segment inverted color="black">
                 <Header size='small'>Visible metrics</Header>
                 <Menu {...menuProps}>
-                    <MetricMenuItem hide={false} {...metricMenuItemProps} />
-                    <MetricMenuItem hide={true} {...metricMenuItemProps} />
+                    <MetricMenuItem hide="none" {...metricMenuItemProps} />
+                    <MetricMenuItem hide="no_action_needed" {...metricMenuItemProps} />
+                    <MetricMenuItem hide="all" {...metricMenuItemProps} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
@@ -420,21 +421,21 @@ SortOrderMenuItem.propTypes = {
     help: PropTypes.string
 }
 
-function MetricMenuItem({ hide, hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction }) {
+function MetricMenuItem({ hide, metricsToHide, setMetricsToHide }) {
     return (
         <SettingsMenuItem
-            active={hideMetricsNotRequiringAction === hide}
-            onClick={setHideMetricsNotRequiringAction}
+            active={hide === metricsToHide}
+            onClick={setMetricsToHide}
             onClickData={hide}
         >
-            {hide ? 'Metrics requiring action' : 'All metrics'}
+            {{"none": "All metrics", "no_action_needed": "Metrics requiring action", "all": "No metrics"}[hide]}
         </SettingsMenuItem>
     )
 }
 MetricMenuItem.propTypes = {
-    hide: PropTypes.bool,
-    hideMetricsNotRequiringAction: PropTypes.bool,
-    setHideMetricsNotRequiringAction: PropTypes.func
+    hide: metricsToHidePropType,
+    metricsToHide: metricsToHidePropType,
+    setMetricsToHide: PropTypes.func
 }
 
 function IssueAttributeMenuItem({ help, issueAttributeName, issueAttribute, setIssueAttribute }) {
@@ -468,13 +469,13 @@ function ResetSettingsButton(
         handleSort,
         hiddenColumns,
         hiddenTags,
-        hideMetricsNotRequiringAction,
+        metricsToHide,
         issueSettings,
         nrDates,
         reportDate,
         setDateInterval,
         setDateOrder,
-        setHideMetricsNotRequiringAction,
+        setMetricsToHide,
         setNrDates,
         setShowIssueCreationDate,
         setShowIssueSummary,
@@ -490,26 +491,25 @@ function ResetSettingsButton(
     return (
         <Button
             disabled={
-                visibleDetailsTabs?.length === 0 &&
-                !hideMetricsNotRequiringAction &&
-                hiddenColumns?.length === 0 &&
-                hiddenTags?.length === 0 &&
-                nrDates === 1 &&
                 dateInterval === 7 &&
                 dateOrder === "descending" &&
+                hiddenColumns?.length === 0 &&
+                hiddenTags?.length === 0 &&
                 !issueSettings.showIssueCreationDate &&
                 !issueSettings.showIssueSummary &&
                 !issueSettings.showIssueUpdateDate &&
                 !issueSettings.showIssueDueDate &&
                 !issueSettings.showIssueRelease &&
                 !issueSettings.showIssueSprint &&
+                metricsToHide === "none" &&
+                nrDates === 1 &&
                 reportDate === null &&
                 sortColumn === null &&
-                sortDirection === "ascending"
+                sortDirection === "ascending" &&
+                visibleDetailsTabs?.length === 0
             }
             onClick={() => {
                 clearVisibleDetailsTabs();
-                setHideMetricsNotRequiringAction(false);
                 clearHiddenColumns();
                 clearHiddenTags();
                 handleDateChange(null);
@@ -517,6 +517,7 @@ function ResetSettingsButton(
                 setNrDates(1);
                 setDateInterval(7);
                 setDateOrder("descending");
+                setMetricsToHide("none");
                 setShowIssueCreationDate(false);
                 setShowIssueSummary(false);
                 setShowIssueUpdateDate(false);
@@ -541,13 +542,13 @@ ResetSettingsButton.propTypes = {
     handleSort: PropTypes.func,
     hiddenColumns: PropTypes.arrayOf(PropTypes.string),
     hiddenTags: PropTypes.arrayOf(PropTypes.string),
-    hideMetricsNotRequiringAction: PropTypes.bool,
     issueSettings: issueSettingsPropType,
+    metricsToHide: metricsToHidePropType,
     nrDates: PropTypes.number,
     reportDate: datePropType,
     setDateInterval: PropTypes.func,
     setDateOrder: PropTypes.func,
-    setHideMetricsNotRequiringAction: PropTypes.func,
+    setMetricsToHide: PropTypes.func,
     setNrDates: PropTypes.func,
     setShowIssueCreationDate: PropTypes.func,
     setShowIssueSummary: PropTypes.func,

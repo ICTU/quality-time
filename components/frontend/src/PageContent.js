@@ -5,6 +5,7 @@ import { Segment } from './semantic_ui_react_wrappers';
 import { Report } from './report/Report';
 import { ReportsOverview } from './report/ReportsOverview';
 import { get_measurements } from './api/measurement';
+import { metricsToHidePropType } from './sharedPropTypes';
 
 function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
     const baseDate = reportDate ? new Date(reportDate) : new Date();
@@ -28,7 +29,7 @@ export function PageContent({
     handleSort,
     hiddenColumns,
     hiddenTags,
-    hideMetricsNotRequiringAction,
+    metricsToHide,
     issueSettings,
     loading,
     nrDates,
@@ -67,7 +68,7 @@ export function PageContent({
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
                 hiddenTags={hiddenTags}
-                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                metricsToHide={metricsToHide}
                 issueSettings={issueSettings}
                 measurements={measurements}
                 reload={reload}
@@ -97,6 +98,7 @@ export function PageContent({
 }
 PageContent.propTypes = {
     hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    metricsToHide: metricsToHidePropType,
     openReportsOverview: PropTypes.func,
     toggleHiddenTag: PropTypes.func
 }

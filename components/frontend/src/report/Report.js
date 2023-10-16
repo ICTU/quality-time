@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Message } from 'semantic-ui-react';
-import { datePropType, datesPropType, issueSettingsPropType, sortDirectionPropType } from '../sharedPropTypes';
+import { datePropType, datesPropType, issueSettingsPropType, metricsToHidePropType, sortDirectionPropType } from '../sharedPropTypes';
 import { DataModel } from '../context/DataModel';
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from '../subject/Subjects';
@@ -41,7 +41,6 @@ function ReportDashboard(
     {
         dates,
         hiddenTags,
-        hideMetricsNotRequiringAction,
         measurements,
         onClick,
         onClickTag,
@@ -53,7 +52,7 @@ function ReportDashboard(
     const nrMetrics = Math.max(nrMetricsInReport(report), 1);
     const subjectCards = []
     Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-        const metrics = visibleMetrics(subject.metrics, hideMetricsNotRequiringAction, hiddenTags)
+        const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
         if (Object.keys(metrics).length > 0) {
             const summary = {}
             dates.forEach((date) => {
@@ -98,7 +97,6 @@ function ReportDashboard(
 ReportDashboard.propTypes = {
     dates: datesPropType,
     hiddenTags: PropTypes.arrayOf(PropTypes.string),
-    hideMetricsNotRequiringAction: PropTypes.bool,
     measurements: PropTypes.array,
     onClick: PropTypes.func,
     onClickTag: PropTypes.func,
@@ -125,9 +123,9 @@ export function Report({
     handleSort,
     hiddenColumns,
     hiddenTags,
-    hideMetricsNotRequiringAction,
     issueSettings,
     measurements,
+    metricsToHide,
     openReportsOverview,
     reload,
     report,
@@ -165,7 +163,6 @@ export function Report({
             <ReportDashboard
                 dates={dates}
                 hiddenTags={hiddenTags}
-                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 measurements={reversedMeasurements}
                 onClick={(e, s) => navigate_to_subject(e, s)}
                 onClickTag={(tag) => {
@@ -181,7 +178,7 @@ export function Report({
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
                 hiddenTags={hiddenTags}
-                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                metricsToHide={metricsToHide}
                 issueSettings={issueSettings}
                 measurements={measurements}
                 reload={reload}
@@ -202,9 +199,9 @@ Report.propTypes = {
     handleSort: PropTypes.func,
     hiddenColumns: PropTypes.arrayOf(PropTypes.string),
     hiddenTags: PropTypes.arrayOf(PropTypes.string),
-    hideMetricsNotRequiringAction: PropTypes.bool,
     issueSettings: issueSettingsPropType,
     measurements: PropTypes.array,
+    metricsToHide: metricsToHidePropType,
     openReportsOverview: PropTypes.func,
     reload: PropTypes.func,
     report: PropTypes.object,
