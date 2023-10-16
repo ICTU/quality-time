@@ -18,7 +18,7 @@ it("sets light mode", () => {
 
 it("sets dark mode on keypress", async () => {
     const setUIMode = jest.fn();
-    render(<UIModeMenu hideMetricsNotRequiringAction={true} setUIMode={setUIMode} />)
+    render(<UIModeMenu metricsToHide={true} setUIMode={setUIMode} />)
     await userEvent.type(screen.getByText(/Dark mode/), " ")
     expect(setUIMode).toHaveBeenCalledWith("dark")
 })

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { DataModel } from '../context/DataModel';
-import { datePropType, datesPropType, issueSettingsPropType, sortDirectionPropType } from '../sharedPropTypes';
+import { datePropType, datesPropType, issueSettingsPropType, metricsToHidePropType, sortDirectionPropType } from '../sharedPropTypes';
 import {
     get_metric_comment,
     get_metric_issue_ids,
@@ -95,10 +95,10 @@ export function Subject({
     handleSort,
     hiddenColumns,
     hiddenTags,
-    hideMetricsNotRequiringAction,
     issueSettings,
     last_subject,
     measurements,
+    metricsToHide,
     report,
     report_date,
     reports,
@@ -110,7 +110,7 @@ export function Subject({
     reload
 }) {
     const subject = report.subjects[subject_uuid];
-    const metrics = visibleMetrics(subject.metrics, hideMetricsNotRequiringAction, hiddenTags)
+    const metrics = visibleMetrics(subject.metrics, metricsToHide, hiddenTags)
     const dataModel = useContext(DataModel)
     if (Object.keys(metrics).length === 0) { return null }
     let metricEntries = Object.entries(metrics);
@@ -160,10 +160,10 @@ Subject.propTypes = {
     handleSort: PropTypes.func,
     hiddenColumns: PropTypes.arrayOf(PropTypes.string),
     hiddenTags: PropTypes.arrayOf(PropTypes.string),
-    hideMetricsNotRequiringAction: PropTypes.bool,
     issueSettings: issueSettingsPropType,
     last_subject: PropTypes.bool,
     measurements: PropTypes.array,
+    metricsToHide: metricsToHidePropType,
     report: PropTypes.object,
     report_date: datePropType,
     reports: PropTypes.array,

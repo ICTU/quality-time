@@ -11,7 +11,7 @@ function eventHandlers() {
         handleSort: jest.fn(),
         setDateInterval: jest.fn(),
         setDateOrder: jest.fn(),
-        setHideMetricsNotRequiringAction: jest.fn(),
+        setMetricsToHide: jest.fn(),
         setNrDates: jest.fn(),
         setShowIssueCreationDate: jest.fn(),
         setShowIssueSummary: jest.fn(),
@@ -31,7 +31,7 @@ it('resets the settings', () => {
             dateOrder="ascending"
             hiddenColumns={["trend"]}
             hiddenTags={["security"]}
-            hideMetricsNotRequiringAction={true}
+            metricsToHide="no_action_needed"
             issueSettings={
                 {
                     showIssueCreationDate: true,
@@ -59,7 +59,7 @@ it('resets the settings', () => {
     expect(props.setDateInterval).toHaveBeenCalledWith(7)
     expect(props.setDateOrder).toHaveBeenCalledWith("descending")
     expect(props.setNrDates).toHaveBeenCalledWith(1)
-    expect(props.setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
+    expect(props.setMetricsToHide).toHaveBeenCalledWith("none")
     expect(props.setShowIssueCreationDate).toHaveBeenCalledWith(false)
     expect(props.setShowIssueSummary).toHaveBeenCalledWith(false)
     expect(props.setShowIssueUpdateDate).toHaveBeenCalledWith(false)
@@ -77,7 +77,7 @@ it('does not reset the settings when all have the default value', () => {
             dateOrder="descending"
             hiddenColumns={[]}
             hiddenTags={[]}
-            hideMetricsNotRequiringAction={false}
+            metricsToHide="none"
             issueSettings={
                 {
                     showIssueCreationDate: false,
@@ -105,7 +105,7 @@ it('does not reset the settings when all have the default value', () => {
     expect(props.setDateInterval).not.toHaveBeenCalled()
     expect(props.setDateOrder).not.toHaveBeenCalled()
     expect(props.setNrDates).not.toHaveBeenCalled()
-    expect(props.setHideMetricsNotRequiringAction).not.toHaveBeenCalled()
+    expect(props.setMetricsToHide).not.toHaveBeenCalled()
     expect(props.setShowIssueCreationDate).not.toHaveBeenCalled()
     expect(props.setShowIssueSummary).not.toHaveBeenCalled()
     expect(props.setShowIssueUpdateDate).not.toHaveBeenCalled()
@@ -115,24 +115,24 @@ it('does not reset the settings when all have the default value', () => {
 })
 
 it("hides the metrics not requiring action", () => {
-    const setHideMetricsNotRequiringAction = jest.fn();
-    render(<SettingsPanel hideMetricsNotRequiringAction={false} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />)
+    const setMetricsToHide = jest.fn();
+    render(<SettingsPanel metricsToHide="none" setMetricsToHide={setMetricsToHide} />)
     fireEvent.click(screen.getByText(/Metrics requiring action/))
-    expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(true)
+    expect(setMetricsToHide).toHaveBeenCalledWith("no_action_needed")
 })
 
-it("shows the metrics not requiring action", () => {
-    const setHideMetricsNotRequiringAction = jest.fn();
-    render(<SettingsPanel hideMetricsNotRequiringAction={true} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />)
+it("shows all metrics", () => {
+    const setMetricsToHide = jest.fn();
+    render(<SettingsPanel metricsToHide="all" setMetricsToHide={setMetricsToHide} />)
     fireEvent.click(screen.getByText(/All metrics/))
-    expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
+    expect(setMetricsToHide).toHaveBeenCalledWith("none")
 })
 
-it("shows the metrics not requiring action by keypress", async () => {
-    const setHideMetricsNotRequiringAction = jest.fn();
-    render(<SettingsPanel hideMetricsNotRequiringAction={true} setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction} />)
+it("shows all metrics by keypress", async () => {
+    const setMetricsToHide = jest.fn();
+    render(<SettingsPanel metricsToHide="all" setMetricsToHide={setMetricsToHide} />)
     await userEvent.type(screen.getByText(/All metrics/), " ")
-    expect(setHideMetricsNotRequiringAction).toHaveBeenCalledWith(false)
+    expect(setMetricsToHide).toHaveBeenCalledWith("none")
 })
 
 it("hides a tag", () => {

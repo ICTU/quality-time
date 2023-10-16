@@ -58,7 +58,7 @@ export function AppUI({
     const [dateOrder, setDateOrder] = useURLSearchQuery("date_order" + urlSearchQueryKeyPostfix, "string", "descending");
     const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery("hidden_columns" + urlSearchQueryKeyPostfix, "array");
     const [hiddenTags, toggleHiddenTag, clearHiddenTags] = useURLSearchQuery("hidden_tags" + urlSearchQueryKeyPostfix, "array");
-    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery("hide_metrics_not_requiring_action" + urlSearchQueryKeyPostfix, "boolean", false);
+    const [metricsToHide, setMetricsToHide] = useURLSearchQuery("metrics_to_hide" + urlSearchQueryKeyPostfix, "string", "none");
     const [nrDates, setNrDates] = useURLSearchQuery("nr_dates" + urlSearchQueryKeyPostfix, "integer", 1);
     const [sortColumn, setSortColumn] = useURLSearchQuery("sort_column" + urlSearchQueryKeyPostfix, "string", null);
     const [sortDirection, setSortDirection] = useURLSearchQuery("sort_direction" + urlSearchQueryKeyPostfix, "string", "ascending");
@@ -121,13 +121,13 @@ export function AppUI({
                         handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
                         hiddenTags={hiddenTags}
-                        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                        metricsToHide={metricsToHide}
                         issueSettings={issueSettings}
                         nrDates={nrDates}
                         reportDate={report_date}
                         setDateInterval={setDateInterval}
                         setDateOrder={setDateOrder}
-                        setHideMetricsNotRequiringAction={setHideMetricsNotRequiringAction}
+                        setMetricsToHide={setMetricsToHide}
                         setNrDates={setNrDates}
                         setShowIssueCreationDate={setShowIssueCreationDate}
                         setShowIssueSummary={setShowIssueSummary}
@@ -157,7 +157,7 @@ export function AppUI({
                             handleSort={handleSort}
                             hiddenColumns={hiddenColumns}
                             hiddenTags={hiddenTags}
-                            hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                            metricsToHide={metricsToHide}
                             issueSettings={issueSettings}
                             loading={loading}
                             nrDates={nrDates}

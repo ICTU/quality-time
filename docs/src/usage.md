@@ -445,7 +445,7 @@ If the PDF report needs to be downloaded programmatically, e.g. for inclusion in
 
 The `report_uuid` is the unique identifier that *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `https://www.quality-time.example.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.
 
-To hide metrics that do not need any action, set the `hide_metrics_not_requiring_action` parameter to true, i.e. `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hide_metrics_not_requiring_action=true`.
+To hide metrics that do not need any action, set the `metrics_to_hide` parameter to `no_action_needed`, i.e. `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?metrics_to_hide=no_action_needed`. To hide all metrics and only export the report dashboard to PDF, set the `metrics_to_hide` parameter to `all`.
 
 To hide columns from the report, set the `hidden_columns` parameter, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hidden_columns=target,comment`. Possible options are `trend`, `status`, `measurement`, `target`, `source`, `comment`, `issues`, and `tags`.
 

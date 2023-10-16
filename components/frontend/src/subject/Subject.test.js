@@ -3,7 +3,7 @@ import { Subject } from "./Subject";
 import { DataModel } from "../context/DataModel";
 import { datamodel, report } from "../__fixtures__/fixtures";
 
-function renderSubject(dates, hiddenTags, hideMetricsNotRequiringAction, sortColumn, sortDirection, reportDate) {
+function renderSubject(dates, hiddenTags, metricsToHide, sortColumn, sortDirection, reportDate) {
     render(
         <DataModel.Provider value={datamodel}>
             <Subject
@@ -11,6 +11,7 @@ function renderSubject(dates, hiddenTags, hideMetricsNotRequiringAction, sortCol
                 handleSort={() => { /* Dummy implementation */ }}
                 hiddenTags={hiddenTags ?? []}
                 measurements={[]}
+                metricsToHide={metricsToHide ?? "none"}
                 report={report}
                 report_date={reportDate}
                 sortColumn={sortColumn}
@@ -18,7 +19,6 @@ function renderSubject(dates, hiddenTags, hideMetricsNotRequiringAction, sortCol
                 subject_uuid="subject_uuid"
                 tags={[]}
                 hiddenColumns={[]}
-                hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
                 visibleDetailsTabs={[]} />
         </DataModel.Provider>
     )
@@ -30,7 +30,7 @@ it('shows the subject title', async () => {
 })
 
 it('hides metrics not requiring action', async () => {
-    await act(async () => { renderSubject([new Date(2022, 3, 26)], [], true) });
+    await act(async () => { renderSubject([new Date(2022, 3, 26)], [], "no_action_needed") });
     expect(screen.queryAllByText(/M\d/).length).toBe(1);
 })
 
@@ -46,7 +46,7 @@ function expectOrder(metricNames) {
 for (const attribute of ["name", "measurement", "target", "comment", "source", "issues", "tags", "unit", "status", "time_left", "overrun"]) {
     for (const order of ["ascending", "descending"]) {
         it('sorts metrics by attribute', async () => {
-            await act(async () => { renderSubject([], [], false, attribute, order) });
+            await act(async () => { renderSubject([], [], "none", attribute, order) });
             expectOrder(order === "ascending" ? ["M1", "M2"] : ["M2", "M1"])
         })
     }

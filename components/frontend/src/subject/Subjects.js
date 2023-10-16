@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Segment } from '../semantic_ui_react_wrappers';
-import { datePropType, datesPropType, issueSettingsPropType, sortDirectionPropType } from '../sharedPropTypes';
+import { datePropType, datesPropType, issueSettingsPropType, metricsToHidePropType, sortDirectionPropType } from '../sharedPropTypes';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { AddDropdownButton, CopyButton, MoveButton } from '../widgets/Button';
@@ -17,7 +17,7 @@ export function Subjects({
     handleSort,
     hiddenColumns,
     hiddenTags,
-    hideMetricsNotRequiringAction,
+    metricsToHide,
     issueSettings,
     measurements,
     reload,
@@ -43,7 +43,7 @@ export function Subjects({
                         handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
                         hiddenTags={hiddenTags}
-                        hideMetricsNotRequiringAction={hideMetricsNotRequiringAction}
+                        metricsToHide={metricsToHide}
                         issueSettings={issueSettings}
                         key={subject_uuid}
                         last_subject={index === last_index}
@@ -87,9 +87,9 @@ Subjects.propTypes = {
     handleSort: PropTypes.func,
     hiddenColumns: PropTypes.arrayOf(PropTypes.string),
     hiddenTags: PropTypes.arrayOf(PropTypes.string),
-    hideMetricsNotRequiringAction: PropTypes.bool,
     issueSettings: issueSettingsPropType,
     measurements: PropTypes.array,
+    metricsToHide: metricsToHidePropType,
     reload: PropTypes.func,
     report: PropTypes.object,
     reports: PropTypes.array,
