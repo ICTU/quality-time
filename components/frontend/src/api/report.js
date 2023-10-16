@@ -8,8 +8,8 @@ export function copy_report(report_uuid, reload) {
   return fetch_server_api('post', `report/${report_uuid}/copy`, {}).then(reload)
 }
 
-export function delete_report(report_uuid, go_home) {
-  return fetch_server_api('delete', `report/${report_uuid}`, {}).then(go_home)
+export function delete_report(report_uuid, openReportsOverview) {
+  return fetch_server_api('delete', `report/${report_uuid}`, {}).then(openReportsOverview)
 }
 
 export function get_reports_overview(date) {

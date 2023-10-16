@@ -65,11 +65,11 @@ function Logout({ user, email, set_user }) {
 }
 
 export function Menubar({
-    atHome,
+    atReportsOverview,
     clearVisibleDetailsTabs,
     email,
-    go_home,
     onDate,
+    openReportsOverview,
     panel,
     report_date,
     set_user,
@@ -91,10 +91,10 @@ export function Menubar({
                 <Menu.Menu position="left">
                     <Popup
                         content="Go to reports overview"
-                        disabled={atHome}
+                        disabled={atReportsOverview}
                         trigger={
-                            <div onBeforeInput={(event) => { event.preventDefault(); setSettingsPanelVisible(false); go_home() }} tabIndex={atHome ? -1 : 0}>
-                                <Menu.Item header onClick={atHome ? null : () => { setSettingsPanelVisible(false); go_home() }}>
+                            <div onBeforeInput={(event) => { event.preventDefault(); setSettingsPanelVisible(false); openReportsOverview() }} tabIndex={atReportsOverview ? -1 : 0}>
+                                <Menu.Item header onClick={atReportsOverview ? null : () => { setSettingsPanelVisible(false); openReportsOverview() }}>
                                     <Image size='mini' src='/favicon.ico' alt="Go home" />
                                     <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
                                 </Menu.Item>
@@ -167,11 +167,11 @@ export function Menubar({
     )
 }
 Menubar.propTypes = {
-    atHome: PropTypes.bool,
+    atReportsOverview: PropTypes.bool,
     clearVisibleDetailsTabs: PropTypes.func,
     email: PropTypes.string,
-    go_home: PropTypes.func,
     onDate: PropTypes.func,
+    openReportsOverview: PropTypes.func,
     panel: PropTypes.element,
     report_date: datePropType,
     set_user: PropTypes.func,

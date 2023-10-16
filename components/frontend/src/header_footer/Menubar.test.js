@@ -63,24 +63,24 @@ it('logs out', async () => {
 });
 
 it('does not go to home page if on reports overview', async () => {
-    const go_home = jest.fn();
-    render(<Menubar atHome={true} go_home={go_home} />);
+    const openReportsOverview = jest.fn();
+    render(<Menubar atReportsOverview={true} openReportsOverview={openReportsOverview} />);
     act(() => { fireEvent.click(screen.getByAltText(/Go home/)) });
-    expect(go_home).not.toHaveBeenCalled();
+    expect(openReportsOverview).not.toHaveBeenCalled();
 });
 
 it('goes to home page if on report', async () => {
-    const go_home = jest.fn();
-    render(<Menubar atHome={false} go_home={go_home} />);
+    const openReportsOverview = jest.fn();
+    render(<Menubar atReportsOverview={false} openReportsOverview={openReportsOverview} />);
     await act(async () => { fireEvent.click(screen.getByAltText(/Go home/)) })
-    expect(go_home).toHaveBeenCalled();
+    expect(openReportsOverview).toHaveBeenCalled();
 });
 
 it('goes to home page on keypress', async () => {
-    const go_home = jest.fn();
-    render(<Menubar go_home={go_home} />);
+    const openReportsOverview = jest.fn();
+    render(<Menubar openReportsOverview={openReportsOverview} />);
     await userEvent.type(screen.getByAltText(/Go home/), "{Enter}");
-    expect(go_home).toHaveBeenCalled();
+    expect(openReportsOverview).toHaveBeenCalled();
 });
 
 it('shows the view panel on menu item click', () => {
@@ -90,7 +90,7 @@ it('shows the view panel on menu item click', () => {
 });
 
 it('shows the view panel on space', async () => {
-    render(<Menubar atHome={true} panel={<div>Hello</div>} />);
+    render(<Menubar atReportsOverview={true} panel={<div>Hello</div>} />);
     await userEvent.type(screen.getByText(/Settings/), " ")
     expect(screen.getAllByText(/Hello/).length).toBe(1)
 })

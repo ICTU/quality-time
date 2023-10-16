@@ -26,6 +26,7 @@ it('resets the settings', () => {
     const props = eventHandlers();
     render(
         <SettingsPanel
+            atReportsOverview={true}
             dateInterval={14}
             dateOrder="ascending"
             hiddenColumns={["trend"]}
@@ -49,7 +50,7 @@ it('resets the settings', () => {
             {...props}
         />
     )
-    fireEvent.click(screen.getByText(/Reset all settings/))
+    fireEvent.click(screen.getByText(/Reset reports overview settings/))
     expect(props.clearHiddenColumns).toHaveBeenCalledWith()
     expect(props.clearHiddenTags).toHaveBeenCalledWith()
     expect(props.clearVisibleDetailsTabs).toHaveBeenCalledWith()
@@ -71,6 +72,7 @@ it('does not reset the settings when all have the default value', () => {
     const props = eventHandlers();
     render(
         <SettingsPanel
+            atReportsOverview={false}
             dateInterval={7}
             dateOrder="descending"
             hiddenColumns={[]}
@@ -94,7 +96,7 @@ it('does not reset the settings when all have the default value', () => {
             {...props}
         />
     )
-    fireEvent.click(screen.getByText(/Reset all settings/))
+    fireEvent.click(screen.getByText(/Reset this report's settings/))
     expect(props.clearHiddenColumns).not.toHaveBeenCalled()
     expect(props.clearHiddenTags).not.toHaveBeenCalled()
     expect(props.clearVisibleDetailsTabs).not.toHaveBeenCalled()

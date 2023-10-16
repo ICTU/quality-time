@@ -8,6 +8,7 @@ import { SettingsMenuItem} from "./SettingsMenuItem";
 import './SettingsPanel.css';
 
 export function SettingsPanel({
+    atReportsOverview,
     clearHiddenColumns,
     clearHiddenTags,
     clearVisibleDetailsTabs,
@@ -71,7 +72,8 @@ export function SettingsPanel({
                 <Grid padded>
                     <Grid.Row>
                         <Grid.Column>
-                            <ResetAllSettingsButton
+                            <ResetSettingsButton
+                                atReportsOverview={atReportsOverview}
                                 clearHiddenColumns={clearHiddenColumns}
                                 clearHiddenTags={clearHiddenTags}
                                 clearVisibleDetailsTabs={clearVisibleDetailsTabs}
@@ -290,7 +292,7 @@ export function SettingsPanel({
 SettingsPanel.propTypes = {
     toggleHiddenColumn: PropTypes.func,
     toggleHiddenTag: PropTypes.func,
-    ...ResetAllSettingsButton.propTypes,
+    ...ResetSettingsButton.propTypes,
 }
 
 function VisibleTagMenuItem({ tag, hiddenTags, toggleHiddenTag }) {
@@ -454,8 +456,9 @@ IssueAttributeMenuItem.propTypes = {
     setIssueAttribute: PropTypes.func
 }
 
-function ResetAllSettingsButton(
+function ResetSettingsButton(
     {
+        atReportsOverview,
         clearHiddenColumns,
         clearHiddenTags,
         clearVisibleDetailsTabs,
@@ -523,11 +526,12 @@ function ResetAllSettingsButton(
             }}
             inverted
         >
-            Reset all settings
+            Reset {atReportsOverview ? "reports overview" : "this report's" } settings
         </Button>
     )
 }
-ResetAllSettingsButton.propTypes = {
+ResetSettingsButton.propTypes = {
+    atReportsOverview: PropTypes.bool,
     clearHiddenColumns: PropTypes.func,
     clearHiddenTags: PropTypes.func,
     clearVisibleDetailsTabs: PropTypes.func,
