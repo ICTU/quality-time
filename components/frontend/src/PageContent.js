@@ -31,10 +31,10 @@ export function PageContent({
     hideMetricsNotRequiringAction,
     issueSettings,
     loading,
-    go_home,
     nrDates,
     nrMeasurements,
     open_report,
+    openReportsOverview,
     reload,
     report_date,
     report_uuid,
@@ -63,7 +63,7 @@ export function PageContent({
             content = <Report
                 changed_fields={changed_fields}
                 dates={dates}
-                go_home={go_home}
+                openReportsOverview={openReportsOverview}
                 handleSort={handleSort}
                 hiddenColumns={hiddenColumns}
                 hiddenTags={hiddenTags}
@@ -97,5 +97,6 @@ export function PageContent({
 }
 PageContent.propTypes = {
     hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    openReportsOverview: PropTypes.func,
     toggleHiddenTag: PropTypes.func
 }

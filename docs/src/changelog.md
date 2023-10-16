@@ -18,6 +18,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 - The visibility of tags can be configured via the Settings panel. When a tag is hidden, its tag card is also hidden in the dashboard. When all tags of metric are hidden, the metric itself is hidden. When all metrics in a subject are hidden, the subject is also hidden. Closes [#7086](https://github.com/ICTU/quality-time/issues/7086).
 - Support downloading Harbor JSON vulnerability reports from a JSON file. Closes [#7147](https://github.com/ICTU/quality-time/issues/7147).
+- Allow for changing and resetting settings per report. Closes [#7213](https://github.com/ICTU/quality-time/issues/7213).
 
 ### Changed
 
@@ -441,7 +442,7 @@ See the [deployment instructions](https://quality-time.readthedocs.io/en/latest/
 ### Fixed
 
 - *Quality-time* would use the Jira issue picker endpoint to suggest issue ids to the user when typing text in the issue id field. However, the Jira endpoint uses the Jira interaction history of the user contacting the endpoint to make suggestions. In the case of *Quality-time*, this would be the user configured in the issue tracker. If this is a system user without any Jira interaction history, no suggestions would be made. Fixed by using the Jira search endpoint instead of the Jira issue picker endpoint. Fixes [#4017](https://github.com/ICTU/quality-time/issues/4017).
-- The user interface would sometimes crash when navigating to the report overview right after editing an input field on a report page. Fixes [#4034](https://github.com/ICTU/quality-time/issues/4034).
+- The user interface would sometimes crash when navigating to the reports overview right after editing an input field on a report page. Fixes [#4034](https://github.com/ICTU/quality-time/issues/4034).
 
 ## v3.37.0 - 2022-06-07
 
@@ -620,7 +621,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 - Show the source, comment, issues, and tags columns in the metric trend view. Closes [#2414](https://github.com/ICTU/quality-time/issues/2414), [#3203](https://github.com/ICTU/quality-time/issues/3203), [#3037](https://github.com/ICTU/quality-time/issues/3037), and [#3202](https://github.com/ICTU/quality-time/issues/3202).
 - Allow for copying permanent links to metrics, subjects, and reports via the new 'Share' tabs. Closes [#2925](https://github.com/ICTU/quality-time/issues/2925).
-- Allow for adding comments to the report overview, to reports, and to subjects. Expand the title of the report overview, report, or subject to enter comments. Entered comments are shown below the title of the report overview, report, or subject. Basic HTML (headers, bold, italic, links, etc.) is allowed. Closes [#2926](https://github.com/ICTU/quality-time/issues/2926).
+- Allow for adding comments to the reports overview, to reports, and to subjects. Expand the title of the reports overview, report, or subject to enter comments. Entered comments are shown below the title of the reports overview, report, or subject. Basic HTML (headers, bold, italic, links, etc.) is allowed. Closes [#2926](https://github.com/ICTU/quality-time/issues/2926).
 - Explain in the [documentation](https://quality-time.readthedocs.io/en/latest/usage.html#via-the-api) how to include the correct report URL in the footer when exporting reports to PDF via the API. Closes [#2954](https://github.com/ICTU/quality-time/issues/2954).
 - In addition to the 90th percentile, also allow for evaluating the 95th and 99th percentile transaction response time when using JMeter CSV or JSON as source for the 'slow transactions' metric. Closes [#3084](https://github.com/ICTU/quality-time/issues/3084).
 - Add support for Gatling as source for the 'slow transactions', 'tests', 'performancetest duration', 'source up-to-dateness', and 'source version' metrics. Closes [#3085](https://github.com/ICTU/quality-time/issues/3085), [#3086](https://github.com/ICTU/quality-time/issues/3086), [#3087](https://github.com/ICTU/quality-time/issues/3087), [#3088](https://github.com/ICTU/quality-time/issues/3088), and [#3089](https://github.com/ICTU/quality-time/issues/3089).

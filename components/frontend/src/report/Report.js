@@ -122,13 +122,13 @@ ReportErrorMessage.propTypes = {
 export function Report({
     changed_fields,
     dates,
-    go_home,
     handleSort,
     hiddenColumns,
     hiddenTags,
     hideMetricsNotRequiringAction,
     issueSettings,
     measurements,
+    openReportsOverview,
     reload,
     report,
     report_date,
@@ -154,7 +154,7 @@ export function Report({
     return (
         <div id="dashboard">
             <ReportTitle
-                go_home={go_home}
+                openReportsOverview={openReportsOverview}
                 report={report}
                 changed_fields={changed_fields}
                 reload={reload}
@@ -199,13 +199,13 @@ export function Report({
 Report.propTypes = {
     changed_fields: PropTypes.arrayOf(PropTypes.string),
     dates: datesPropType,
-    go_home: PropTypes.func,
     handleSort: PropTypes.func,
     hiddenColumns: PropTypes.arrayOf(PropTypes.string),
     hiddenTags: PropTypes.arrayOf(PropTypes.string),
     hideMetricsNotRequiringAction: PropTypes.bool,
     issueSettings: issueSettingsPropType,
     measurements: PropTypes.array,
+    openReportsOverview: PropTypes.func,
     reload: PropTypes.func,
     report: PropTypes.object,
     report_date: datePropType,

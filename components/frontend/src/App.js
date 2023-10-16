@@ -122,7 +122,7 @@ class App extends Component {
         this.setState({ report_date: date, loading: true }, () => this.reload())
     }
 
-    go_home() {
+    openReportsOverview() {
         if (history.location.pathname !== "/") {
             this.history_push("/")
             this.setState({ report_uuid: "", loading: true }, () => this.reload());
@@ -235,8 +235,9 @@ class App extends Component {
                 changed_fields={this.changed_fields}
                 datamodel={this.state.datamodel}
                 email={this.state.email}
-                go_home={() => this.go_home()}
+                openReportsOverview={() => this.openReportsOverview()}
                 handleDateChange={(date) => this.handleDateChange(date)}
+                key={this.state.report_uuid}  // Make sure the AppUI is refreshed whenever the current report changes
                 last_update={this.state.last_update}
                 loading={this.state.loading}
                 nrMeasurements={this.state.nrMeasurements}

@@ -20,17 +20,28 @@ it('shows an error message when there are no reports', async () => {
 })
 
 it('handles sorting', async () => {
-    await act(async () => render(<AppUI datamodel={datamodel} report_date={null} report_uuid="report_uuid" reports={[report]} reports_overview={{}} user="xxx" />))
+    await act(
+        async () => render(
+            <AppUI
+                datamodel={datamodel}
+                report_date={null}
+                report_uuid="report_uuid"
+                reports={[report]}
+                reports_overview={{}}
+                user="xxx"
+            />
+        )
+    )
     fireEvent.click(screen.getAllByText("Comment")[0])
-    expect(history.location.search).toEqual("?sort_column=comment")
+    expect(history.location.search).toEqual("?sort_column_report_uuid=comment")
     fireEvent.click(screen.getAllByText("Status")[0])
-    expect(history.location.search).toEqual("?sort_column=status")
+    expect(history.location.search).toEqual("?sort_column_report_uuid=status")
     fireEvent.click(screen.getAllByText("Status")[0])
-    expect(history.location.search).toEqual("?sort_column=status&sort_direction=descending")
+    expect(history.location.search).toEqual("?sort_column_report_uuid=status&sort_direction_report_uuid=descending")
     fireEvent.click(screen.getAllByText("Status")[0])
     expect(history.location.search).toEqual("")
     fireEvent.click(screen.getAllByText("Comment")[0])
-    expect(history.location.search).toEqual("?sort_column=comment")
+    expect(history.location.search).toEqual("?sort_column_report_uuid=comment")
     await act(async () => fireEvent.click(screen.getAllByText(/Add metric/)[0]))
     await act(async () => fireEvent.click(screen.getAllByText(/Metric type/)[0]))
     expect(history.location.search).toEqual("")

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Grid, Icon, Menu } from 'semantic-ui-react';
 import { Label, Segment, Tab } from '../semantic_ui_react_wrappers';
 import { Comment } from '../fields/Comment';
@@ -233,21 +234,25 @@ function ReactionTimes({ report, reload }) {
     )
 }
 
-function ButtonRow({ report_uuid, go_home }) {
+function ButtonRow({ report_uuid, openReportsOverview }) {
     return (
         <>
             <DownloadAsPDFButton report_uuid={report_uuid} />
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <DeleteButton
                     item_type='report'
-                    onClick={() => delete_report(report_uuid, go_home)}
+                    onClick={() => delete_report(report_uuid, openReportsOverview)}
                 />}
             />
         </>
     )
 }
+ButtonRow.propTypes = {
+    report_uuid: PropTypes.string,
+    openReportsOverview: PropTypes.func,
+}
 
-export function ReportTitle({ report, go_home, reload }) {
+export function ReportTitle({ report, openReportsOverview, reload }) {
     const report_uuid = report.report_uuid;
     const reportUrl = `${window.location}`;
     const panes = [
@@ -282,9 +287,14 @@ export function ReportTitle({ report, go_home, reload }) {
             <>
                 <Tab panes={panes} />
                 <div style={{ marginTop: "20px" }}>
-                    <ButtonRow report_uuid={report_uuid} go_home={go_home} />
+                    <ButtonRow report_uuid={report_uuid} openReportsOverview={openReportsOverview} />
                 </div>
             </>
         </HeaderWithDetails>
     )
+}
+ReportTitle.propTypes = {
+    openReportsOverview: PropTypes.func,
+    reload: PropTypes.func,
+    report: PropTypes.object
 }

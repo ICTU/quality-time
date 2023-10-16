@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 import HashLinkObserver from "react-hash-link";
 import useLocalStorageState from 'use-local-storage-state';
@@ -19,11 +20,11 @@ export function AppUI({
     changed_fields,
     datamodel,
     email,
-    go_home,
     handleDateChange,
     last_update,
     loading,
     nrMeasurements,
+    openReportsOverview,
     open_report,
     reload,
     report_date,
@@ -50,21 +51,24 @@ export function AppUI({
         user, email, reportIsTagReport(report_uuid), report_date, reports_overview.permissions || {}
     )
     const current_report = reports.filter((report) => report.report_uuid === report_uuid)[0] || null;
-    const [dateInterval, setDateInterval] = useURLSearchQuery("date_interval", "integer", 7);
-    const [dateOrder, setDateOrder] = useURLSearchQuery("date_order", "string", "descending");
-    const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery("hidden_columns", "array");
-    const [hiddenTags, toggleHiddenTag, clearHiddenTags] = useURLSearchQuery("hidden_tags", "array");
-    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery("hide_metrics_not_requiring_action", "boolean", false);
-    const [nrDates, setNrDates] = useURLSearchQuery("nr_dates", "integer", 1);
-    const [sortColumn, setSortColumn] = useURLSearchQuery("sort_column", "string", null);
-    const [sortDirection, setSortDirection] = useURLSearchQuery("sort_direction", "string", "ascending");
-    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery("tabs", "array");
-    const [showIssueSummary, setShowIssueSummary] = useURLSearchQuery("show_issue_summary", "boolean", false);
-    const [showIssueCreationDate, setShowIssueCreationDate] = useURLSearchQuery("show_issue_creation_date", "boolean", false);
-    const [showIssueUpdateDate, setShowIssueUpdateDate] = useURLSearchQuery("show_issue_update_date", "boolean", false);
-    const [showIssueDueDate, setShowIssueDueDate] = useURLSearchQuery("show_issue_due_date", "boolean", false);
-    const [showIssueRelease, setShowIssueRelease] = useURLSearchQuery("show_issue_release", "boolean", false);
-    const [showIssueSprint, setShowIssueSprint] = useURLSearchQuery("show_issue_sprint", "boolean", false);
+    // Make the settings changeable per report (and separately for the reports overview) by adding the report UUID as
+    // postfix to the settings key:
+    const urlSearchQueryKeyPostfix = report_uuid ? `_${report_uuid}` : ""
+    const [dateInterval, setDateInterval] = useURLSearchQuery("date_interval" + urlSearchQueryKeyPostfix, "integer", 7);
+    const [dateOrder, setDateOrder] = useURLSearchQuery("date_order" + urlSearchQueryKeyPostfix, "string", "descending");
+    const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery("hidden_columns" + urlSearchQueryKeyPostfix, "array");
+    const [hiddenTags, toggleHiddenTag, clearHiddenTags] = useURLSearchQuery("hidden_tags" + urlSearchQueryKeyPostfix, "array");
+    const [hideMetricsNotRequiringAction, setHideMetricsNotRequiringAction] = useURLSearchQuery("hide_metrics_not_requiring_action" + urlSearchQueryKeyPostfix, "boolean", false);
+    const [nrDates, setNrDates] = useURLSearchQuery("nr_dates" + urlSearchQueryKeyPostfix, "integer", 1);
+    const [sortColumn, setSortColumn] = useURLSearchQuery("sort_column" + urlSearchQueryKeyPostfix, "string", null);
+    const [sortDirection, setSortDirection] = useURLSearchQuery("sort_direction" + urlSearchQueryKeyPostfix, "string", "ascending");
+    const [visibleDetailsTabs, toggleVisibleDetailsTab, clearVisibleDetailsTabs] = useURLSearchQuery("tabs" + urlSearchQueryKeyPostfix, "array");
+    const [showIssueSummary, setShowIssueSummary] = useURLSearchQuery("show_issue_summary" + urlSearchQueryKeyPostfix, "boolean", false);
+    const [showIssueCreationDate, setShowIssueCreationDate] = useURLSearchQuery("show_issue_creation_date" + urlSearchQueryKeyPostfix, "boolean", false);
+    const [showIssueUpdateDate, setShowIssueUpdateDate] = useURLSearchQuery("show_issue_update_date" + urlSearchQueryKeyPostfix, "boolean", false);
+    const [showIssueDueDate, setShowIssueDueDate] = useURLSearchQuery("show_issue_due_date" + urlSearchQueryKeyPostfix, "boolean", false);
+    const [showIssueRelease, setShowIssueRelease] = useURLSearchQuery("show_issue_release" + urlSearchQueryKeyPostfix, "boolean", false);
+    const [showIssueSprint, setShowIssueSprint] = useURLSearchQuery("show_issue_sprint" + urlSearchQueryKeyPostfix, "boolean", false);
     const issueSettings = {
         showIssueSummary: showIssueSummary,
         showIssueCreationDate: showIssueCreationDate,
@@ -91,21 +95,23 @@ export function AppUI({
 
     const darkMode = userPrefersDarkMode(uiMode);
     const backgroundColor = darkMode ? "rgb(40, 40, 40)" : "white"
+    const atReportsOverview = report_uuid === ""
     return (
         <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column", backgroundColor: backgroundColor }}>
             <DarkMode.Provider value={darkMode}>
                 <HashLinkObserver />
                 <Menubar
-                    atHome={report_uuid === ""}
+                    atReportsOverview={atReportsOverview}
                     clearVisibleDetailsTabs={clearVisibleDetailsTabs}
                     email={email}
-                    go_home={go_home}
+                    openReportsOverview={openReportsOverview}
                     onDate={handleDateChange}
                     report_date={report_date}
                     set_user={set_user}
                     user={user}
                     visibleDetailsTabs={visibleDetailsTabs}
                     panel={<SettingsPanel
+                        atReportsOverview={atReportsOverview}
                         clearHiddenColumns={clearHiddenColumns}
                         clearHiddenTags={clearHiddenTags}
                         clearVisibleDetailsTabs={clearVisibleDetailsTabs}
@@ -147,7 +153,7 @@ export function AppUI({
                             current_report={current_report}
                             dateInterval={dateInterval}
                             dateOrder={dateOrder}
-                            go_home={go_home}
+                            openReportsOverview={openReportsOverview}
                             handleSort={handleSort}
                             hiddenColumns={hiddenColumns}
                             hiddenTags={hiddenTags}
@@ -174,4 +180,7 @@ export function AppUI({
             </DarkMode.Provider>
         </div>
     )
+}
+AppUI.propTypes = {
+    openReportsOverview: PropTypes.func
 }
