@@ -6,6 +6,8 @@ import {
     datesPropType,
     issueSettingsPropType,
     metricsToHidePropType,
+    reportPropType,
+    reportsPropType,
     sortDirectionPropType,
     stringsPropType
 } from '../sharedPropTypes';
@@ -96,6 +98,7 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
 }
 
 export function Subject({
+    atReportsOverview,
     changed_fields,
     dates,
     firstSubject,
@@ -129,6 +132,7 @@ export function Subject({
         <div id={subject_uuid}>
             <div className="sticky">
                 <SubjectTitle
+                    atReportsOverview={atReportsOverview}
                     report={report}
                     subject={subject}
                     subject_uuid={subject_uuid}
@@ -161,6 +165,7 @@ export function Subject({
     )
 }
 Subject.propTypes = {
+    atReportsOverview: PropTypes.bool,
     changed_fields: stringsPropType,
     dates: datesPropType,
     firstSubject: PropTypes.bool,
@@ -171,9 +176,9 @@ Subject.propTypes = {
     lastSubject: PropTypes.bool,
     measurements: PropTypes.array,
     metricsToHide: metricsToHidePropType,
-    report: PropTypes.object,
+    report: reportPropType,
     report_date: datePropType,
-    reports: PropTypes.array,
+    reports: reportsPropType,
     sortColumn: PropTypes.string,
     sortDirection: sortDirectionPropType,
     subject_uuid: PropTypes.string,

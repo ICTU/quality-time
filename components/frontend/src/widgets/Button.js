@@ -148,6 +148,7 @@ export function DeleteButton(props) {
 }
 
 function download_pdf(report_uuid, query_string, callback) {
+    const reportId = report_uuid ? `report-${report_uuid}` : "reports-overview"
     get_report_pdf(report_uuid, query_string)
         .then(response => {
             if (response.ok === false) {
@@ -158,7 +159,7 @@ function download_pdf(report_uuid, query_string, callback) {
                 a.href = url;
                 const now = new Date();
                 const local_now = new Date(now.getTime() - (now.getTimezoneOffset() * 60000));
-                a.download = `Quality-time-report-${report_uuid}-${local_now.toISOString().split(".")[0]}.pdf`;
+                a.download = `Quality-time-${reportId}-${local_now.toISOString().split(".")[0]}.pdf`;
                 a.click();
             }
         }).finally(() => callback());
@@ -170,11 +171,12 @@ export function DownloadAsPDFButton({ report_uuid }) {
     const query = registeredURLSearchParams();
     const queryString = query.toString() ? ("?" + query.toString()) : ""
     query.set("report_url", window.location.origin + window.location.pathname + queryString + window.location.hash);
+    const itemType = report_uuid ? "report" : "reports overview"
     return (
         <ActionButton
             action='Download'
             icon="file pdf"
-            item_type='report as PDF'
+            item_type={`${itemType} as PDF`}
             loading={loading}
             onClick={() => {
                 if (!loading) {
@@ -182,7 +184,7 @@ export function DownloadAsPDFButton({ report_uuid }) {
                     download_pdf(report_uuid, `?${query.toString()}`, () => { setLoading(false) })
                 }
             }}
-            popup="Generate a PDF version of the report as currently displayed and download it. This may take a few seconds."
+            popup={`Generate a PDF version of the ${itemType} as currently displayed. This may take some time.`}
         />
     )
 }

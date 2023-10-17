@@ -7,6 +7,7 @@ import { AddDropdownButton, CopyButton, MoveButton } from '../widgets/Button';
 import { add_subject, copy_subject, move_subject } from '../api/subject';
 import { subject_options } from '../widgets/menu_options';
 import { subjectTypes } from './SubjectType';
+import { reportPropType, reportsPropType } from '../sharedPropTypes';
 
 export function SubjectsButtonRow({ reload, report, reports }) {
     const dataModel = useContext(DataModel)
@@ -34,6 +35,6 @@ export function SubjectsButtonRow({ reload, report, reports }) {
 }
 SubjectsButtonRow.propTypes = {
     reload: PropTypes.func,
-    report: PropTypes.object,
-    reports: PropTypes.array
+    report: reportPropType,
+    reports: reportsPropType
 }

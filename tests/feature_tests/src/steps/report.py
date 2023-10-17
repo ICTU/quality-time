@@ -11,9 +11,11 @@ from behave.runner import Context
 
 
 @when("the client downloads the report as PDF")
+@when("the client downloads the reports overview as PDF")
 def download_report_as_pdf(context: Context) -> None:
     """Download the report as PDF."""
-    context.get(f"report/{context.uuid['report']}/pdf")
+    path = "reports_overview" if "overview" in context.step.name else f"report/{context.uuid['report']}"
+    context.get(path + "/pdf")
 
 
 @when("the client downloads the report as JSON")

@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { Table } from '../semantic_ui_react_wrappers';
 import { DataModel } from "../context/DataModel";
 import { DarkMode } from "../context/DarkMode";
@@ -17,6 +18,15 @@ import { formatMetricScale, get_metric_name, getMetricTags, getMetricUnit } from
 import { SubjectTableFooter } from './SubjectTableFooter';
 import { SubjectTableHeader } from './SubjectTableHeader';
 import "./SubjectTable.css"
+import {
+    datePropType,
+    datesPropType,
+    issueSettingsPropType,
+    reportPropType,
+    reportsPropType,
+    sortDirectionPropType,
+    stringsPropType
+} from '../sharedPropTypes';
 
 function MeasurementCells({ dates, metric, metric_uuid, measurements }) {
     return (
@@ -123,11 +133,7 @@ export function SubjectTable({
                             {nrDates > 1 && !hiddenColumns.includes("overrun") && <Table.Cell style={style}><Overrun metric={metric} metric_uuid={metric_uuid} report={report} measurements={measurements} dates={dates} /></Table.Cell>}
                             {!hiddenColumns.includes("comment") && <Table.Cell style={style}><div style={{wordBreak: "break-word"}} dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
                             {!hiddenColumns.includes("issues") && <Table.Cell style={style}>
-                                <IssueStatus
-                                    metric={metric}
-                                    issueTrackerMissing={!report.issue_tracker && !report.report_uuid.startsWith("tag-")}
-                                    issueSettings={issueSettings}
-                                />
+                                <IssueStatus metric={metric} issueTrackerMissing={!report.issue_tracker} issueSettings={issueSettings} />
                             </Table.Cell>}
                             {!hiddenColumns.includes("tags") && <Table.Cell style={style}>{getMetricTags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
                         </TableRowWithDetails>
@@ -143,4 +149,23 @@ export function SubjectTable({
                 stopSorting={() => handleSort(null)} />
         </Table>
     )
+}
+SubjectTable.propTypes = {
+    changed_fields: stringsPropType,
+    dates: datesPropType,
+    handleSort: PropTypes.func,
+    hiddenColumns: stringsPropType,
+    issueSettings: issueSettingsPropType,
+    measurements: PropTypes.array,
+    metricEntries: PropTypes.array,
+    reload: PropTypes.func,
+    report: reportPropType,
+    reportDate: datePropType,
+    reports: reportsPropType,
+    sortDirection: sortDirectionPropType,
+    sortColumn: PropTypes.string,
+    subject: PropTypes.object,
+    subject_uuid: PropTypes.string,
+    toggleVisibleDetailsTab: PropTypes.func,
+    visibleDetailsTabs: stringsPropType
 }

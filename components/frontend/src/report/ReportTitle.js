@@ -14,10 +14,11 @@ import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
 import { delete_report, set_report_attribute } from '../api/report';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { NotificationDestinations } from '../notification/NotificationDestinations';
-import { IssueTracker } from './IssueTracker';
 import { defaultDesiredResponseTimes } from '../defaults';
-import { setDocumentTitle } from './document_title';
 import { STATUS_DESCRIPTION, STATUS_NAME } from '../utils';
+import { reportPropType } from '../sharedPropTypes';
+import { IssueTracker } from './IssueTracker';
+import { setDocumentTitle } from './document_title';
 
 function ReportConfiguration({ report, reload }) {
     return (
@@ -296,5 +297,5 @@ export function ReportTitle({ report, openReportsOverview, reload }) {
 ReportTitle.propTypes = {
     openReportsOverview: PropTypes.func,
     reload: PropTypes.func,
-    report: PropTypes.object
+    report: reportPropType
 }

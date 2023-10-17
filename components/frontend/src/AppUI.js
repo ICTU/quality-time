@@ -14,7 +14,8 @@ import { DataModel } from './context/DataModel';
 import { DarkMode } from './context/DarkMode';
 import { Permissions } from './context/Permissions';
 import { PageContent } from './PageContent';
-import { getReportsTags, getUserPermissions, reportIsTagReport, userPrefersDarkMode, useURLSearchQuery } from './utils'
+import { getReportsTags, getUserPermissions, userPrefersDarkMode, useURLSearchQuery } from './utils'
+import { datePropType, reportsPropType, stringsPropType } from './sharedPropTypes';
 
 export function AppUI({
     changed_fields,
@@ -25,7 +26,7 @@ export function AppUI({
     loading,
     nrMeasurements,
     openReportsOverview,
-    open_report,
+    openReport,
     reload,
     report_date,
     report_uuid,
@@ -47,10 +48,10 @@ export function AppUI({
         return () => mediaQueryList.removeEventListener("change", changeMode);
     }, [uiMode, setUIMode]);
 
-    const user_permissions = getUserPermissions(
-        user, email, reportIsTagReport(report_uuid), report_date, reports_overview.permissions || {}
-    )
-    const current_report = reports.filter((report) => report.report_uuid === report_uuid)[0] || null;
+    const user_permissions = getUserPermissions(user, email, report_date, reports_overview.permissions || {})
+    const atReportsOverview = report_uuid === ""
+    const current_report = atReportsOverview ? null : reports.filter((report) => report.report_uuid === report_uuid)[0];
+    const metricsToHideDefault = atReportsOverview ? "all" : "none"
     // Make the settings changeable per report (and separately for the reports overview) by adding the report UUID as
     // postfix to the settings key:
     const urlSearchQueryKeyPostfix = report_uuid ? `_${report_uuid}` : ""
@@ -58,7 +59,7 @@ export function AppUI({
     const [dateOrder, setDateOrder] = useURLSearchQuery("date_order" + urlSearchQueryKeyPostfix, "string", "descending");
     const [hiddenColumns, toggleHiddenColumn, clearHiddenColumns] = useURLSearchQuery("hidden_columns" + urlSearchQueryKeyPostfix, "array");
     const [hiddenTags, toggleHiddenTag, clearHiddenTags] = useURLSearchQuery("hidden_tags" + urlSearchQueryKeyPostfix, "array");
-    const [metricsToHide, setMetricsToHide] = useURLSearchQuery("metrics_to_hide" + urlSearchQueryKeyPostfix, "string", "none");
+    const [metricsToHide, setMetricsToHide] = useURLSearchQuery("metrics_to_hide" + urlSearchQueryKeyPostfix, "string", metricsToHideDefault);
     const [nrDates, setNrDates] = useURLSearchQuery("nr_dates" + urlSearchQueryKeyPostfix, "integer", 1);
     const [sortColumn, setSortColumn] = useURLSearchQuery("sort_column" + urlSearchQueryKeyPostfix, "string", null);
     const [sortDirection, setSortDirection] = useURLSearchQuery("sort_direction" + urlSearchQueryKeyPostfix, "string", "ascending");
@@ -95,7 +96,6 @@ export function AppUI({
 
     const darkMode = userPrefersDarkMode(uiMode);
     const backgroundColor = darkMode ? "rgb(40, 40, 40)" : "white"
-    const atReportsOverview = report_uuid === ""
     return (
         <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column", backgroundColor: backgroundColor }}>
             <DarkMode.Provider value={darkMode}>
@@ -162,7 +162,7 @@ export function AppUI({
                             loading={loading}
                             nrDates={nrDates}
                             nrMeasurements={nrMeasurements}
-                            open_report={open_report}
+                            openReport={openReport}
                             reload={reload}
                             report_date={report_date}
                             report_uuid={report_uuid}
@@ -182,5 +182,19 @@ export function AppUI({
     )
 }
 AppUI.propTypes = {
-    openReportsOverview: PropTypes.func
+    changed_fields: stringsPropType,
+    datamodel: PropTypes.object,
+    email: PropTypes.string,
+    handleDateChange: PropTypes.func,
+    last_update: datePropType,
+    loading: PropTypes.bool,
+    openReport: PropTypes.func,
+    openReportsOverview: PropTypes.func,
+    reload: PropTypes.func,
+    report_date: datePropType,
+    report_uuid: PropTypes.string,
+    reports: reportsPropType,
+    reports_overview: PropTypes.object,
+    set_user: PropTypes.func,
+    user: PropTypes.string
 }

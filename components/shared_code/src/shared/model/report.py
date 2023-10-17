@@ -41,7 +41,7 @@ class Report(dict):
         self.sources_dict = self._sources()
         self.sources = list(self.sources_dict.values())
 
-        if "_id" in self:
+        if "_id" in self:  # pragma: no feature-test-cover
             self["_id"] = str(self["_id"])
 
     @property
@@ -75,14 +75,10 @@ class Report(dict):
 
     def _subjects(self, subject_data: dict) -> dict[str, Subject]:
         """Instantiate subjects of this report."""
-        subjects = {}
-        for subject_uuid, subject in subject_data.items():
-            if isinstance(subject, Subject):
-                subjects[subject_uuid] = subject
-            else:
-                subjects[subject_uuid] = Subject(self.__data_model, subject, subject_uuid, self)
-
-        return subjects
+        return {
+            subject_uuid: Subject(self.__data_model, subject, subject_uuid, self)
+            for subject_uuid, subject in subject_data.items()
+        }
 
     def _metrics(self) -> dict[MetricId, Metric]:
         """All metrics of all subjects of this report."""

@@ -6,7 +6,7 @@ import FocusLock from 'react-focus-lock';
 import { login, logout } from '../api/auth';
 import { Avatar } from '../widgets/Avatar';
 import { DatePicker } from '../widgets/DatePicker';
-import { datePropType, uiModePropType } from '../sharedPropTypes';
+import { datePropType, stringsPropType, uiModePropType } from '../sharedPropTypes';
 import { UIModeMenu } from './UIModeMenu';
 import './Menubar.css';
 
@@ -178,5 +178,5 @@ Menubar.propTypes = {
     setUIMode: PropTypes.func,
     uiMode: uiModePropType,
     user: PropTypes.string,
-    visibleDetailsTabs: PropTypes.array
+    visibleDetailsTabs: stringsPropType
 }

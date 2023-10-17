@@ -3,7 +3,7 @@ import history from 'history/browser';
 import {
     capitalize, getUserPermissions, getMetricTags, get_metric_target, getReportTags, get_source_name, get_subject_name,
     nice_number, scaled_number, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery,
-    getMetricResponseOverrun, reportIsTagReport, visibleMetrics
+    getMetricResponseOverrun, visibleMetrics
 } from './utils';
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
 
@@ -63,32 +63,27 @@ it('adds a scale', () => {
 });
 
 it('gives users all permissions if permissions have not been limited', () => {
-    const permissions = getUserPermissions("jodoe", "john.doe@example.org", false, null, {});
+    const permissions = getUserPermissions("jodoe", "john.doe@example.org", null, {});
     expect(permissions).toStrictEqual([EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION]);
 });
 
 it('gives users edit report permissions if edit report permissions have been granted', () => {
-    const permissions = getUserPermissions("jodoe", "john.doe@example.org", false, null, { [EDIT_REPORT_PERMISSION]: ["jodoe"], [EDIT_ENTITY_PERMISSION]: ["jadoe"] });
+    const permissions = getUserPermissions("jodoe", "john.doe@example.org", null, { [EDIT_REPORT_PERMISSION]: ["jodoe"], [EDIT_ENTITY_PERMISSION]: ["jadoe"] });
     expect(permissions).toStrictEqual([EDIT_REPORT_PERMISSION]);
 });
 
 it('gives users edit entity permissions if edit entity permissions have been granted', () => {
-    const permissions = getUserPermissions("jodoe", "john.doe@example.org", false, null, { [EDIT_REPORT_PERMISSION]: ["jadoe"], [EDIT_ENTITY_PERMISSION]: ["jodoe"] });
+    const permissions = getUserPermissions("jodoe", "john.doe@example.org", null, { [EDIT_REPORT_PERMISSION]: ["jadoe"], [EDIT_ENTITY_PERMISSION]: ["jodoe"] });
     expect(permissions).toStrictEqual([EDIT_ENTITY_PERMISSION]);
 });
 
 it('gives users no permissions if they have not logged in', () => {
-    const permissions = getUserPermissions(null, null, false, null, {});
+    const permissions = getUserPermissions(null, null, null, {});
     expect(permissions).toStrictEqual([]);
 });
 
 it('gives users no permissions if the report date is in the past', () => {
-    const permissions = getUserPermissions("jodoe", "john.doe@example.org", false, new Date(), {});
-    expect(permissions).toStrictEqual([]);
-});
-
-it('gives users no permissions if the report is a tag report', () => {
-    const permissions = getUserPermissions("jodoe", "john.doe@example.org", true, null, {});
+    const permissions = getUserPermissions("jodoe", "john.doe@example.org", new Date(), {});
     expect(permissions).toStrictEqual([]);
 });
 
@@ -364,11 +359,6 @@ it("returns the metric response overrun when there are two measurements with dif
         {metric_uuid: "uuid", start: "2000-01-03", end: "2000-01-05", count: {status: "target_met"}}
     ]
     expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual({"overruns": [], "totalOverrun": 0})
-})
-
-it("returns whether a report is a tag report", () => {
-    expect(reportIsTagReport("report")).toBe(false)
-    expect(reportIsTagReport("tag-report")).toBe(true)
 })
 
 it("returns the tags of an empty report", () => {

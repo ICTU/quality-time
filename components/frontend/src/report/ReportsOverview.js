@@ -5,6 +5,7 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissio
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
+import { Subjects } from '../subject/Subjects';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { Tag } from '../widgets/Tag';
 import { add_report, set_reports_attribute, copy_report } from '../api/report';
@@ -12,7 +13,15 @@ import { ReportsOverviewTitle } from './ReportsOverviewTitle';
 import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
 import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum } from '../utils';
-import { datePropType, datesPropType, stringsPropType } from '../sharedPropTypes';
+import {
+    datePropType,
+    datesPropType,
+    issueSettingsPropType,
+    metricsToHidePropType,
+    reportsPropType,
+    sortDirectionPropType,
+    stringsPropType
+} from '../sharedPropTypes';
 import { ReportsOverviewErrorMessage } from './ReportErrorMessage';
 import { metricStatusOnDate } from './report_utils';
 
@@ -43,7 +52,7 @@ function summarizeReportsOnDate(reports, measurements, date, tag) {
 }
 
 
-function ReportsDashboard({ dates, hiddenTags, reports, open_report, measurements, layout, reload }) {
+function ReportsDashboard({ dates, hiddenTags, reports, onClickTag, openReport, measurements, layout, reload }) {
     let nrMetrics = 0
     const reportSummary = {}
     reports.forEach((report) => {
@@ -67,7 +76,7 @@ function ReportsDashboard({ dates, hiddenTags, reports, open_report, measurement
             key={report.report_uuid}
             header={report.title}
             maxY={nrMetrics}
-            onClick={(e) => open_report(e, report.report_uuid)}
+            onClick={(event) => { event.preventDefault(); openReport(report.report_uuid) }}
             summary={reportSummary[report.report_uuid]}
         />
     );
@@ -76,7 +85,7 @@ function ReportsDashboard({ dates, hiddenTags, reports, open_report, measurement
             key={tag}
             header={<Tag tag={tag} />}
             maxY={nrMetrics}
-            onClick={(e) => open_report(e, `tag-${tag}`)}
+            onClick={() => onClickTag(tag)}
             summary={tagSummary[tag]}
         />
     );
@@ -91,14 +100,59 @@ function ReportsDashboard({ dates, hiddenTags, reports, open_report, measurement
 ReportsDashboard.propTypes = {
     dates: datesPropType,
     hiddenTags: stringsPropType,
-    reports: PropTypes.array,
-    open_report: PropTypes.func,
-    measurements: PropTypes.array,
     layout: PropTypes.array,
-    reload: PropTypes.func
+    measurements: PropTypes.array,
+    onClickTag: PropTypes.func,
+    openReport: PropTypes.func,
+    reload: PropTypes.func,
+    reports: reportsPropType
 }
 
-export function ReportsOverview({ dates, hiddenTags, measurements, reports, open_report, report_date, reports_overview, reload }) {
+function ReportsOverviewButtonRow({ reload, reports }) {
+    return (
+        <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
+            <Segment basic>
+                <AddButton
+                    item_type={"report"}
+                    onClick={() => add_report(reload)}
+                />
+                <CopyButton
+                    item_type={"report"}
+                    get_options={() => report_options(reports)}
+                    onChange={(source_report_uuid) => copy_report(source_report_uuid, reload)}
+                />
+            </Segment>
+        }
+        />
+    )
+}
+ReportsOverviewButtonRow.propTypes = {
+    reload: PropTypes.func,
+    reports: reportsPropType
+}
+
+export function ReportsOverview(
+    {
+        changed_fields,
+        dates,
+        handleSort,
+        hiddenColumns,
+        hiddenTags,
+        issueSettings,
+        measurements,
+        metricsToHide,
+        openReport,
+        reload,
+        reports,
+        report_date,
+        reports_overview,
+        sortColumn,
+        sortDirection,
+        toggleHiddenTag,
+        toggleVisibleDetailsTab,
+        visibleDetailsTabs
+    }
+) {
     if (reports.length === 0 && report_date !== null) {
         return <ReportsOverviewErrorMessage reportDate={report_date} />
     }
@@ -113,35 +167,56 @@ export function ReportsOverview({ dates, hiddenTags, measurements, reports, open
                 hiddenTags={hiddenTags}
                 layout={reports_overview.layout ?? []}
                 measurements={reversedMeasurements}
-                open_report={open_report}
+                onClickTag={(tag) => {
+                    // If there are hidden tags (hiddenTags.length > 0), show the hidden tags.
+                    // Otherwise, hide all tags in all reports except the one clicked on.
+                    const tagsToToggle = hiddenTags?.length > 0 ? hiddenTags : getReportsTags(reports)
+                    toggleHiddenTag(...tagsToToggle.filter((visibleTag) => visibleTag !== tag))
+                }}
+                openReport={openReport}
                 reload={reload}
                 reports={reports}
             />
-
-            <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
-                <Segment basic>
-                    <AddButton
-                        item_type={"report"}
-                        onClick={() => add_report(reload)}
-                    />
-                    <CopyButton
-                        item_type={"report"}
-                        get_options={() => report_options(reports)}
-                        onChange={(source_report_uuid) => copy_report(source_report_uuid, reload)}
-                    />
-                </Segment>
-            }
+            <Subjects
+                atReportsOverview={true}
+                changed_fields={changed_fields}
+                dates={dates}
+                handleSort={handleSort}
+                hiddenColumns={hiddenColumns}
+                hiddenTags={hiddenTags}
+                issueSettings={issueSettings}
+                measurements={measurements}
+                metricsToHide={metricsToHide}
+                reload={reload}
+                reportsToShow={reports}
+                report_date={report_date}
+                reports={reports}
+                sortColumn={sortColumn}
+                sortDirection={sortDirection}
+                toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                visibleDetailsTabs={visibleDetailsTabs}
             />
+            <ReportsOverviewButtonRow reload={reload} reports={reports} />
         </div>
     )
 }
 ReportsOverview.propTypes = {
+    changed_fields: stringsPropType,
     dates: datesPropType,
+    handleSort: PropTypes.func,
+    hiddenColumns: stringsPropType,
     hiddenTags: stringsPropType,
+    issueSettings: issueSettingsPropType,
     measurements: PropTypes.array,
-    reports: PropTypes.array,
-    open_report: PropTypes.func,
+    metricsToHide: metricsToHidePropType,
+    reports: reportsPropType,
+    openReport: PropTypes.func,
+    reload: PropTypes.func,
     report_date: datePropType,
     reports_overview: PropTypes.object,
-    reload: PropTypes.func
+    sortColumn: PropTypes.string,
+    sortDirection: sortDirectionPropType,
+    toggleHiddenTag: PropTypes.func,
+    toggleVisibleDetailsTab: PropTypes.func,
+    visibleDetailsTabs: stringsPropType
 }

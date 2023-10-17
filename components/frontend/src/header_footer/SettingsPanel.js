@@ -494,6 +494,7 @@ function ResetSettingsButton(
         visibleDetailsTabs
     }
 ) {
+    const metricsToHideDefault = atReportsOverview ? "all" : "none"
     return (
         <Button
             disabled={
@@ -507,7 +508,7 @@ function ResetSettingsButton(
                 !issueSettings.showIssueDueDate &&
                 !issueSettings.showIssueRelease &&
                 !issueSettings.showIssueSprint &&
-                metricsToHide === "none" &&
+                metricsToHide === metricsToHideDefault &&
                 nrDates === 1 &&
                 reportDate === null &&
                 sortColumn === null &&
@@ -523,7 +524,7 @@ function ResetSettingsButton(
                 setNrDates(1);
                 setDateInterval(7);
                 setDateOrder("descending");
-                setMetricsToHide("none");
+                setMetricsToHide(metricsToHideDefault);
                 setShowIssueCreationDate(false);
                 setShowIssueSummary(false);
                 setShowIssueUpdateDate(false);

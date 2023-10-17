@@ -44,5 +44,6 @@ export const report = {
                 }
             }
         }
-    }
+    },
+    title: "Report title"
 }

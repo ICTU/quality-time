@@ -154,8 +154,14 @@ test('DeleteButton has the correct label', () => {
     });
 });
 
-test("DownloadAsPDFButton has the correct label", () => {
+test("DownloadAsPDFButton has the correct label for reports overview", () => {
     render(<DownloadAsPDFButton />);
+    expect(screen.getAllByText(/reports overview as PDF/).length).toBe(1);
+
+});
+
+test("DownloadAsPDFButton has the correct label for a report", () => {
+    render(<DownloadAsPDFButton report_uuid={"report_uuid"}/>);
     expect(screen.getAllByText(/report as PDF/).length).toBe(1);
 
 });

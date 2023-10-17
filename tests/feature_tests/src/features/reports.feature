@@ -21,3 +21,7 @@ Feature: reports
     When the client waits a second
     And the client changes the reports_overview comment to "Cleaned<script>alert('Danger')</script>"
     Then the reports_overview comment is "Cleaned"
+
+  Scenario: export reports overview as PDF
+    When the client downloads the reports overview as PDF
+    Then the client receives the PDF

@@ -1,8 +1,8 @@
 """Unit tests for the reports routes."""
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
-from routes import get_reports_overview, post_reports_overview_attribute
+from routes import export_reports_overview_as_pdf, get_reports_overview, post_reports_overview_attribute
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 
 from tests.base import DataModelTestCase
@@ -136,3 +136,12 @@ class ReportsOverviewTest(DataModelTestCase):
     def test_get_reports_overview(self):
         """Test that a report can be retrieved and credentials are hidden."""
         self.assertEqual({"_id": "id", "title": "Reports", "subtitle": ""}, get_reports_overview(self.database))
+
+    @patch("requests.get")
+    def test_get_pdf_report(self, requests_get):
+        """Test that a PDF version of the reports overview can be retrieved."""
+        response = Mock()
+        response.content = b"PDF"
+        requests_get.return_value = response
+        self.assertEqual(b"PDF", export_reports_overview_as_pdf())
+        requests_get.assert_called_once_with("http://renderer:9000/api/render?path=%3Fhide_toasts%3Dtrue", timeout=120)
