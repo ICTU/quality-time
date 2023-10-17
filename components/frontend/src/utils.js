@@ -358,8 +358,8 @@ export function toISODateStringInCurrentTZ(date) {
     return `${String(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
 }
 
-export function getUserPermissions(username, email, current_report_is_tag_report, report_date, permissions) {
-    if (username === null || report_date !== null || current_report_is_tag_report) { return [] }
+export function getUserPermissions(username, email, report_date, permissions) {
+    if (username === null || report_date !== null) { return [] }
     return PERMISSIONS.filter((permission) => {
         const permittedUsers = permissions?.[permission] ?? [];
         return permittedUsers.length === 0 ? true : permittedUsers.includes(username) || permittedUsers.includes(email)
@@ -381,8 +381,4 @@ export function slugify(name) {
 export function sum(object) {
     const list = typeof object == Array ? object : Object.values(object)
     return list.reduce((a, b) => a + b, 0)
-}
-
-export function reportIsTagReport(report_uuid) {
-    return report_uuid.slice(0, 4) === "tag-"
 }

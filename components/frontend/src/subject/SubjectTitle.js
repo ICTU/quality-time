@@ -13,6 +13,7 @@ import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { slugify } from '../utils';
 import { SubjectParameters } from './SubjectParameters';
+import { reportPropType } from '../sharedPropTypes';
 
 function SubjectHeader({ subjectType }) {
     const url = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html${slugify(subjectType.name)}`
@@ -50,15 +51,16 @@ ButtonRow.propTypes = {
     reload: PropTypes.func
 }
 
-export function SubjectTitle({ report, subject, subject_uuid, firstSubject, lastSubject, reload }) {
+export function SubjectTitle({ atReportsOverview, report, subject, subject_uuid, firstSubject, lastSubject, reload }) {
     const dataModel = useContext(DataModel)
     const subjectType = dataModel.subjects[subject.type] || { name: "Unknown subject type" };
-    const subject_name = subject.name || subjectType.name;
+    const subjectName = subject.name || subjectType.name;
+    const subjectTitle = (atReportsOverview ? report.title + " ❯ " : "") + subjectName
     const subjectUrl = `${window.location}#${subject_uuid}`
     const panes = [
         {
             menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane><SubjectParameters subject={subject} subject_uuid={subject_uuid} subject_name={subject_name} reload={reload} /></Tab.Pane>
+            render: () => <Tab.Pane><SubjectParameters subject={subject} subject_uuid={subject_uuid} subject_name={subjectName} reload={reload} /></Tab.Pane>
         },
         {
             menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>,
@@ -70,7 +72,7 @@ export function SubjectTitle({ report, subject, subject_uuid, firstSubject, last
         }
     ];
     return (
-        <HeaderWithDetails className="sticky" level="h2" header={subject_name} subheader={subject.subtitle} style={{ marginTop: 50 }}>
+        <HeaderWithDetails className="sticky" level="h2" header={subjectTitle} subheader={subject.subtitle} style={{ marginTop: 50 }}>
             <SubjectHeader subjectType={subjectType} />
             <Tab panes={panes} />
             <div style={{ marginTop: "20px" }}>
@@ -80,7 +82,8 @@ export function SubjectTitle({ report, subject, subject_uuid, firstSubject, last
     )
 }
 SubjectTitle.propTypes = {
-    report: PropTypes.object,
+    atReportsOverview: PropTypes.bool,
+    report: reportPropType,
     subject: PropTypes.object,
     subject_uuid: PropTypes.string,
     firstSubject: PropTypes.bool,

@@ -6,7 +6,7 @@ import { get_report, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
 import { showMessage, showConnectionMessage } from './widgets/toast';
-import { isValidDate_YYYYMMDD, registeredURLSearchParams, reportIsTagReport, toISODateStringInCurrentTZ } from './utils'
+import { isValidDate_YYYYMMDD, registeredURLSearchParams, toISODateStringInCurrentTZ } from './utils'
 import { AppUI } from './AppUI';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -129,16 +129,8 @@ class App extends Component {
         }
     }
 
-    open_report(event, report_uuid) {
-        event.preventDefault();
+    openReport(report_uuid) {
         this.history_push(encodeURI(report_uuid))
-        if (reportIsTagReport(report_uuid)) {
-            showMessage(
-                "info",
-                "Tag reports are read-only",
-                "You opened a report for a specific metric tag. These reports are generated dynamically. Editing is not possible."
-            )
-        }
         this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
     }
 
@@ -241,7 +233,7 @@ class App extends Component {
                 last_update={this.state.last_update}
                 loading={this.state.loading}
                 nrMeasurements={this.state.nrMeasurements}
-                open_report={(e, r) => this.open_report(e, r)}
+                openReport={(report_uuid) => this.openReport(report_uuid)}
                 reload={(json) => this.reload(json)}
                 report_date={this.state.report_date}
                 report_uuid={this.state.report_uuid}

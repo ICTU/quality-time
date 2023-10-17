@@ -439,6 +439,10 @@ To manually download a PDF version of a report, navigate to the report and expan
 
 The exported PDF report has the same metric table rows and columns hidden as in the user interface, and has the same metrics expanded as in the user interface. The exported PDF report also has the same date as the report visible in the user interface.
 
+```{tip}
+It is also possible to download a PDF version of the reports overview. Navigate to the reports overview and expand the title of the reports overview. Click the "Download overview as PDF" button to create and download the PDF report.
+```
+
 ### Via the API
 
 If the PDF report needs to be downloaded programmatically, e.g. for inclusion in a release package, use the API: `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf`. No authorization is needed for this API.
@@ -462,6 +466,10 @@ To add issue attributes to the exported report, set the `show_issue_summary`, `s
 To export an older version of a report, add the `report_date` parameter with a date value in ISO-format (YYYY-MM-DD), for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_date=2020-09-01`.
 
 Reports contain the report URL in the footer of the report. When exporting PDFs manually, the *Quality-time* frontend supplies the report URL to the API. When using the API directly to export a report to PDF, the report URL needs to be supplied as parameter. Add the `report_url` parameter with the URL of the report, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_url=https://www.quality-time.example.org/<report_uuid>`.
+
+```{tip}
+It is also possible to download a PDF version of the reports overview via the API. Use the endpoint `https://www.quality-time.example.org/api/v3/reports_overview/pdf`. No authorization is needed for this API. The parameters for exporting a report, listed above, can also be used when exporting the reports overview.
+```
 
 ```{index} Export report
 ```

@@ -5,6 +5,7 @@ import {
     datesPropType,
     issueSettingsPropType,
     metricsToHidePropType,
+    reportsPropType,
     sortDirectionPropType,
     stringsPropType
 } from '../sharedPropTypes';
@@ -12,14 +13,15 @@ import { useDelayedRender } from '../utils';
 import { Subject } from './Subject';
 
 export function Subjects({
+    atReportsOverview,
     changed_fields,
     dates,
     handleSort,
     hiddenColumns,
     hiddenTags,
-    metricsToHide,
     issueSettings,
     measurements,
+    metricsToHide,
     reload,
     reports,
     reportsToShow,
@@ -29,45 +31,45 @@ export function Subjects({
     toggleVisibleDetailsTab,
     visibleDetailsTabs
 }) {
+    // Assume max 3 subjects are visible below the dashboard when the page is initially rendered
+    const nrSubjectsVisibleOnInitialRender = 3
     const visible = useDelayedRender();
     const subjects = []
     reportsToShow.forEach((report) => {
-        Object.keys(report.subjects).forEach((subject_uuid) => {
-            subjects.push([report, subject_uuid])
+        const lastIndex = Object.keys(report.subjects).length - 1;
+        Object.keys(report.subjects).forEach((subject_uuid, index) => {
+            if (!visible && subjects.length > nrSubjectsVisibleOnInitialRender) { return }
+            subjects.push(
+                <Subject
+                    atReportsOverview={atReportsOverview}
+                    changed_fields={changed_fields}
+                    dates={dates}
+                    firstSubject={index === 0}
+                    handleSort={handleSort}
+                    hiddenColumns={hiddenColumns}
+                    hiddenTags={hiddenTags}
+                    issueSettings={issueSettings}
+                    key={subject_uuid}
+                    lastSubject={index === lastIndex}
+                    measurements={measurements}
+                    metricsToHide={metricsToHide}
+                    reload={reload}
+                    report={report}
+                    reports={reports}
+                    report_date={report_date}
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
+                    subject_uuid={subject_uuid}
+                    toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                    visibleDetailsTabs={visibleDetailsTabs}
+                />
+            )
         })
     })
-    const lastIndex = subjects.length - 1;
-    return (
-        <>
-            {subjects.map(([report, subject_uuid], index) =>
-                visible || index < 3 ?
-                    <Subject
-                        changed_fields={changed_fields}
-                        dates={dates}
-                        firstSubject={index === 0}
-                        handleSort={handleSort}
-                        hiddenColumns={hiddenColumns}
-                        hiddenTags={hiddenTags}
-                        issueSettings={issueSettings}
-                        key={subject_uuid}
-                        lastSubject={index === lastIndex}
-                        measurements={measurements}
-                        metricsToHide={metricsToHide}
-                        reload={reload}
-                        report={report}
-                        reports={reports}
-                        report_date={report_date}
-                        sortColumn={sortColumn}
-                        sortDirection={sortDirection}
-                        subject_uuid={subject_uuid}
-                        toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                        visibleDetailsTabs={visibleDetailsTabs}
-                    /> : null
-            )}
-        </>
-    )
+    return subjects
 }
 Subjects.propTypes = {
+    atReportsOverview: PropTypes.bool,
     changed_fields: stringsPropType,
     dates: datesPropType,
     handleSort: PropTypes.func,
@@ -77,8 +79,8 @@ Subjects.propTypes = {
     measurements: PropTypes.array,
     metricsToHide: metricsToHidePropType,
     reload: PropTypes.func,
-    reports: PropTypes.array,
-    reportsToShow: PropTypes.arrayOf(PropTypes.object),
+    reports: reportsPropType,
+    reportsToShow: reportsPropType,
     report_date: datePropType,
     sortColumn: PropTypes.string,
     sortDirection: sortDirectionPropType,

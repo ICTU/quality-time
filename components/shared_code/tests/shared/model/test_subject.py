@@ -54,30 +54,6 @@ class SubjectTest(DataModelTestCase):
         subject = Subject(data_model, {"type": "software"}, SUBJECT_ID, self.report)
         self.assertIsNone(subject.name)
 
-    def test_tag_subject(self):
-        """Test that a new subject can be created with metrics filtered by tag."""
-        metric = Metric(self.DATA_MODEL, {"tags": ["tag"]}, METRIC_ID)
-        subject = Subject(
-            self.DATA_MODEL,
-            {"name": "Subject", "metrics": {METRIC_ID: metric}},
-            SUBJECT_ID,
-            self.report,
-        )
-        tag_subject = subject.tag_subject("tag")
-        self.assertEqual([metric], tag_subject.metrics)
-        self.assertEqual("Report ❯ Subject", tag_subject.name)  # noqa: RUF001
-
-    def test_tag_subject_with_unused_tag(self):
-        """Test that filtering a subject's metrics by a non-existing tag returns None."""
-        metric = Metric(self.DATA_MODEL, {"tags": ["tag"]}, METRIC_ID)
-        subject = Subject(
-            self.DATA_MODEL,
-            {"name": "Subject", "metrics": {METRIC_ID: metric}},
-            SUBJECT_ID,
-            self.report,
-        )
-        self.assertIsNone(subject.tag_subject("unused"))
-
     def test_summarize(self):
         """Test that a subject can be summarized."""
         metric = Metric(self.DATA_MODEL, {"type": "violations"}, METRIC_ID)

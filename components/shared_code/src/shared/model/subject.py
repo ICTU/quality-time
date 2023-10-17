@@ -1,6 +1,6 @@
 """A class that represents a subject."""
 
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, cast
 
 from shared.utils.type import MetricId, SubjectId
 
@@ -55,16 +55,6 @@ class Subject(dict):
             return str(name)
         default_name = self.__data_model["subjects"].get(self.type, {}).get("name")
         return str(default_name) if default_name else None
-
-    def tag_subject(self, tag: str) -> Optional["Subject"]:
-        """Return a Subject instance with only metrics belonging to one tag."""
-        metrics = {metric.uuid: metric for metric in self.metrics if tag in metric.get("tags", [])}
-        if len(metrics) == 0:
-            return None
-        data = dict(self)
-        data["metrics"] = metrics
-        data["name"] = self.report.name + " ❯ " + (self.name or "")  # noqa: RUF001
-        return Subject(self.__data_model, data, self.uuid, self.report)
 
     def summarize(self, measurements: dict[MetricId, list[Measurement]]) -> dict:
         """Create a summary dict of this subject."""

@@ -1,7 +1,5 @@
 """Unit tests for the report routes."""
 
-from datetime import datetime, UTC
-from typing import cast
 from unittest.mock import Mock, patch
 import copy
 
@@ -438,84 +436,6 @@ class ReportTest(ReportTestCase):
         report = get_report(self.database, REPORT_ID)["reports"][0]
         self.assertEqual(issue_status, report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_status"][0])
 
-    @patch("shared.utils.functions.datetime")
-    def test_get_tag_report(self, date_time):
-        """Test that a tag report can be retrieved."""
-        date_time.now.return_value = now = datetime.now(tz=UTC)
-        self.database.reports.find_one.return_value = {
-            "_id": "id",
-            "report_uuid": REPORT_ID,
-            "title": "Report",
-            "subjects": {
-                "subject_without_metrics": {"metrics": {}},
-                SUBJECT_ID: {
-                    "name": "Subject",
-                    "type": "software",
-                    "metrics": {
-                        "metric_with_tag": {"type": "violations", "tags": ["tag"]},
-                        "metric_without_tag": {"type": "violations", "tags": ["other tag"]},
-                    },
-                },
-            },
-        }
-        expected_counts = {"blue": 0, "red": 0, "green": 0, "yellow": 0, "grey": 0, "white": 1}
-        self.assertDictEqual(
-            {
-                "ok": True,
-                "reports": [
-                    {
-                        "summary": expected_counts,
-                        "title": 'Report for tag "tag"',
-                        "report_uuid": "tag-tag",
-                        "timestamp": now.replace(microsecond=0).isoformat(),
-                        "subjects": {
-                            SUBJECT_ID: {
-                                "name": "Report ❯ Subject",  # noqa: RUF001
-                                "type": "software",
-                                "metrics": {
-                                    "metric_with_tag": {
-                                        "status": None,
-                                        "status_start": None,
-                                        "scale": "count",
-                                        "sources": {},
-                                        "recent_measurements": [],
-                                        "latest_measurement": None,
-                                        "type": "violations",
-                                        "tags": ["tag"],
-                                    },
-                                },
-                            },
-                        },
-                    },
-                ],
-            },
-            get_report(self.database, "tag-tag"),
-        )
-
-    @patch("shared.utils.functions.datetime")
-    def test_no_empty_tag_report(self, date_time):
-        """Test that empty tag reports are omitted."""
-        date_time.now.return_value = datetime.now(tz=UTC)
-        self.database.reports.find.return_value = [
-            {
-                "_id": "id",
-                "report_uuid": REPORT_ID,
-                "title": "Report",
-                "subjects": {
-                    "subject_without_metrics": {"metrics": {}},
-                    SUBJECT_ID: {
-                        "name": "Subject",
-                        "type": "software",
-                        "metrics": {
-                            "metric_with_tag": {"type": "metric_type", "tags": ["tag"]},
-                            "metric_without_tag": {"type": "metric_type", "tags": ["other tag"]},
-                        },
-                    },
-                },
-            },
-        ]
-        self.assertDictEqual({"ok": True, "reports": []}, get_report(self.database, "tag-non-existing-tag"))
-
     def test_add_report(self):
         """Test that a report can be added."""
         self.assertTrue(post_report_new(self.database)["ok"])
@@ -561,16 +481,6 @@ class ReportTest(ReportTestCase):
         self.assertEqual(b"PDF", export_report_as_pdf(REPORT_ID))
         requests_get.assert_called_once_with(
             f"http://renderer:9000/api/render?path={REPORT_ID}%3Fhide_toasts%3Dtrue",
-            timeout=120,
-        )
-
-    @patch("requests.get")
-    def test_get_pdf_tag_report(self, requests_get):
-        """Test that a PDF version of a tag report can be retrieved."""
-        requests_get.return_value = Mock(content=b"PDF")
-        self.assertEqual(b"PDF", export_report_as_pdf(cast(ReportId, "tag-security")))
-        requests_get.assert_called_once_with(
-            "http://renderer:9000/api/render?path=tag-security%3Fhide_toasts%3Dtrue",
             timeout=120,
         )
 

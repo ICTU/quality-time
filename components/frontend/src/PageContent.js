@@ -5,7 +5,15 @@ import { Segment } from './semantic_ui_react_wrappers';
 import { Report } from './report/Report';
 import { ReportsOverview } from './report/ReportsOverview';
 import { get_measurements } from './api/measurement';
-import { metricsToHidePropType, stringsPropType } from './sharedPropTypes';
+import {
+    datePropType,
+    issueSettingsPropType,
+    metricsToHidePropType,
+    reportPropType,
+    reportsPropType,
+    sortDirectionPropType,
+    stringsPropType
+} from './sharedPropTypes';
 
 function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
     const baseDate = reportDate ? new Date(reportDate) : new Date();
@@ -29,12 +37,12 @@ export function PageContent({
     handleSort,
     hiddenColumns,
     hiddenTags,
-    metricsToHide,
     issueSettings,
+    metricsToHide,
     loading,
     nrDates,
     nrMeasurements,
-    open_report,
+    openReport,
     openReportsOverview,
     reload,
     report_date,
@@ -60,45 +68,63 @@ export function PageContent({
     if (loading) {
         content = <Segment basic placeholder aria-label="Loading..."><Loader active size="massive" /></Segment>
     } else {
+        const commonProps = {
+            changed_fields: changed_fields,
+            dates: dates,
+            handleSort: handleSort,
+            hiddenColumns: hiddenColumns,
+            hiddenTags: hiddenTags,
+            issueSettings: issueSettings,
+            measurements: measurements,
+            metricsToHide: metricsToHide,
+            reload: reload,
+            reports: reports,
+            report_date: report_date,
+            sortColumn: sortColumn,
+            sortDirection: sortDirection,
+            toggleHiddenTag: toggleHiddenTag,
+            toggleVisibleDetailsTab: toggleVisibleDetailsTab,
+            visibleDetailsTabs: visibleDetailsTabs
+        }
         if (report_uuid) {
             content = <Report
-                changed_fields={changed_fields}
-                dates={dates}
                 openReportsOverview={openReportsOverview}
-                handleSort={handleSort}
-                hiddenColumns={hiddenColumns}
-                hiddenTags={hiddenTags}
-                metricsToHide={metricsToHide}
-                issueSettings={issueSettings}
-                measurements={measurements}
-                reload={reload}
                 report={current_report}
-                reports={reports}
-                report_date={report_date}
-                sortColumn={sortColumn}
-                sortDirection={sortDirection}
-                toggleHiddenTag={toggleHiddenTag}
-                toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                visibleDetailsTabs={visibleDetailsTabs}
+                {...commonProps}
             />
         } else {
             content = <ReportsOverview
-                dates={dates}
-                hiddenTags={hiddenTags}
-                measurements={measurements}
-                open_report={open_report}
-                reload={reload}
-                reports={reports}
+                openReport={openReport}
                 reports_overview={reports_overview}
-                report_date={report_date}
+                {...commonProps}
             />
         }
     }
     return <Container fluid className="MainContainer">{content}</Container>
 }
 PageContent.propTypes = {
+    changed_fields: stringsPropType,
+    current_report: reportPropType,
+    dateInterval: PropTypes.number,
+    dateOrder: sortDirectionPropType,
+    handleSort: PropTypes.func,
+    hiddenColumns: stringsPropType,
     hiddenTags: stringsPropType,
+    issueSettings: issueSettingsPropType,
     metricsToHide: metricsToHidePropType,
+    loading: PropTypes.bool,
+    nrDates: PropTypes.number,
+    nrMeasurements: PropTypes.number,
+    openReport: PropTypes.func,
     openReportsOverview: PropTypes.func,
-    toggleHiddenTag: PropTypes.func
+    reload: PropTypes.func,
+    report_date: datePropType,
+    report_uuid: PropTypes.string,
+    reports: reportsPropType,
+    reports_overview: PropTypes.object,
+    sortColumn: PropTypes.string,
+    sortDirection: sortDirectionPropType,
+    toggleHiddenTag: PropTypes.func,
+    toggleVisibleDetailsTab: PropTypes.func,
+    visibleDetailsTabs: stringsPropType
 }

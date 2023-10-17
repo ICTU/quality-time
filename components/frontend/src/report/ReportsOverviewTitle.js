@@ -8,6 +8,7 @@ import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { set_reports_attribute } from '../api/report';
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from '../context/Permissions';
+import { DownloadAsPDFButton } from '../widgets/Button';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { dropdownOptions } from '../utils';
 import { setDocumentTitle } from './document_title';
@@ -98,6 +99,9 @@ export function ReportsOverviewTitle({ reports_overview, reload }) {
     return (
         <HeaderWithDetails level="h1" header={reports_overview.title} subheader={reports_overview.subtitle}>
             <Tab panes={panes} />
+            <div style={{ marginTop: "20px" }}>
+                <DownloadAsPDFButton />
+            </div>
         </HeaderWithDetails>
     )
 }

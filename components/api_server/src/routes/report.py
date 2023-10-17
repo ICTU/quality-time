@@ -1,17 +1,13 @@
 """Report routes."""
 
-import os
 from collections.abc import Callable
 from functools import partial, wraps
 from http import HTTPStatus
 from typing import TypeVar, cast
-from urllib import parse
 
 import bottle
-import requests
 from pymongo.database import Database
 
-from shared.utils.functions import iso_timestamp
 from shared.utils.type import ReportId
 from shared_data_model import DATA_MODEL
 from shared_data_model.parameters import PrivateToken
@@ -30,6 +26,7 @@ from model.transformations import (
 )
 from utils.functions import DecryptionError, check_url_availability, report_date_time, sanitize_html, uuid
 
+from .pdf import export_as_pdf
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
@@ -68,20 +65,12 @@ def get_report(database: Database, report_uuid: ReportId | None = None):
     data_model = latest_datamodel(database, date_time)
     reports = latest_reports_before_timestamp(database, data_model, date_time)
     summarized_reports = []
-
-    if report_uuid and report_uuid.startswith("tag-"):
-        report = tag_report(data_model, report_uuid[4:], reports)
-        if len(report.subjects) > 0:
+    for report in reports:
+        if not report_uuid or report["report_uuid"] == report_uuid:
             measurements = recent_measurements(database, report.metrics_dict, date_time)
             summarized_reports.append(report.summarize(measurements))
-    else:
-        for report in reports:
-            if not report_uuid or report["report_uuid"] == report_uuid:
-                measurements = recent_measurements(database, report.metrics_dict, date_time)
-                summarized_reports.append(report.summarize(measurements))
-            else:
-                summarized_reports.append(report)
-
+        else:
+            summarized_reports.append(report)
     hide_credentials(data_model, *summarized_reports)
     return {"ok": True, "reports": summarized_reports}
 
@@ -140,16 +129,7 @@ def post_report_copy(database: Database, report: Report, report_uuid: ReportId):
 @bottle.get("/api/v3/report/<report_uuid>/pdf", authentication_required=False)
 def export_report_as_pdf(report_uuid: ReportId):
     """Download the report as PDF."""
-    renderer_host = os.environ.get("RENDERER_HOST", "renderer")
-    renderer_port = os.environ.get("RENDERER_PORT", "9000")
-    render_url = f"http://{renderer_host}:{renderer_port}/api/render"
-    # Tell the frontend to not display toast messages to prevent them from being included in the PDF:
-    query_string = "?hide_toasts=true" + (f"&{bottle.request.query_string}" if bottle.request.query_string else "")
-    report_path = parse.quote(f"{report_uuid}{query_string}")
-    response = requests.get(f"{render_url}?path={report_path}", timeout=120)
-    response.raise_for_status()
-    bottle.response.content_type = "application/pdf"
-    return response.content
+    return export_as_pdf(report_uuid)
 
 
 @bottle.get("/api/v3/report/<report_uuid>/json", authentication_required=True)
@@ -246,22 +226,3 @@ def get_report_issue_tracker_options(database: Database, report: Report):  # noq
     """Get options for the issue tracker attributes such as project key and issue type."""
     issue_tracker = report.issue_tracker()
     return issue_tracker.get_options().as_dict() | {"ok": True}
-
-
-def tag_report(data_model, tag: str, reports: list[Report]) -> Report:
-    """Create a report for a tag."""
-    subjects = {}
-    for report in reports:
-        for subject in report.subjects:
-            if tag_subject := subject.tag_subject(tag):
-                subjects[subject.uuid] = tag_subject
-
-    return Report(
-        data_model,
-        {
-            "title": f'Report for tag "{tag}"',
-            "report_uuid": f"tag-{tag}",
-            "timestamp": iso_timestamp(),
-            "subjects": subjects,
-        },
-    )

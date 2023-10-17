@@ -59,7 +59,7 @@ it('resets the settings', () => {
     expect(props.setDateInterval).toHaveBeenCalledWith(7)
     expect(props.setDateOrder).toHaveBeenCalledWith("descending")
     expect(props.setNrDates).toHaveBeenCalledWith(1)
-    expect(props.setMetricsToHide).toHaveBeenCalledWith("none")
+    expect(props.setMetricsToHide).toHaveBeenCalledWith("all")
     expect(props.setShowIssueCreationDate).toHaveBeenCalledWith(false)
     expect(props.setShowIssueSummary).toHaveBeenCalledWith(false)
     expect(props.setShowIssueUpdateDate).toHaveBeenCalledWith(false)

@@ -20,6 +20,11 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 - Support downloading Harbor JSON vulnerability reports from a JSON file. Closes [#7147](https://github.com/ICTU/quality-time/issues/7147).
 - In addition to hiding metrics that do not require immediate action, also allow for hiding all metrics so that only the dashboard of a report is visible. Closes [#7211](https://github.com/ICTU/quality-time/issues/7211).
 - Allow for changing and resetting settings per report. Closes [#7213](https://github.com/ICTU/quality-time/issues/7213).
+- Allow for showing all metrics on the reports overview page. Closes [#7215](https://github.com/ICTU/quality-time/issues/7215).
+
+### Removed
+
+- Tag reports. Clicking a tag on the reports overview page now filters the metrics by tag instead of opening a dynamically generated, read-only tag report. Makes [#1301](https://github.com/ICTU/quality-time/issues/1301) obsolete. Closes [#7214](https://github.com/ICTU/quality-time/issues/7214).
 
 ### Changed
 

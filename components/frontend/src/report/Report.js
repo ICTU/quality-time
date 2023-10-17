@@ -5,11 +5,12 @@ import {
     datesPropType,
     issueSettingsPropType,
     metricsToHidePropType,
+    reportPropType,
+    reportsPropType,
     sortDirectionPropType,
     stringsPropType
 } from '../sharedPropTypes';
 import { DataModel } from '../context/DataModel';
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from '../subject/Subjects';
 import { SubjectsButtonRow } from '../subject/SubjectsButtonRow';
 import { CommentSegment } from '../widgets/CommentSegment';
@@ -19,7 +20,7 @@ import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { set_report_attribute } from '../api/report';
 import { getReportTags, getMetricTags, nrMetricsInReport, get_subject_name, STATUS_COLORS, visibleMetrics } from '../utils';
-import { ReportErrorMessage} from './ReportErrorMessage';
+import { ReportErrorMessage } from './ReportErrorMessage';
 import { ReportTitle } from './ReportTitle';
 import { metricStatusOnDate } from './report_utils';
 
@@ -94,13 +95,11 @@ function ReportDashboard(
         )
     })
     return (
-        <Permissions.Consumer>{(permissions) => (
-            <CardDashboard
-                cards={subjectCards.concat(tagCards.concat([<LegendCard key="legend" />]))}
-                initialLayout={report.layout}
-                saveLayout={function (layout) { if (accessGranted(permissions, [EDIT_REPORT_PERMISSION])) { set_report_attribute(report.report_uuid, "layout", layout, reload) } }}
-            />)}
-        </Permissions.Consumer>
+        <CardDashboard
+            cards={subjectCards.concat(tagCards.concat([<LegendCard key="legend" />]))}
+            initialLayout={report.layout}
+            saveLayout={function (new_layout) { set_report_attribute(report.report_uuid, "layout", new_layout, reload) }}
+        />
     )
 }
 ReportDashboard.propTypes = {
@@ -110,7 +109,7 @@ ReportDashboard.propTypes = {
     onClick: PropTypes.func,
     onClickTag: PropTypes.func,
     reload: PropTypes.func,
-    report: PropTypes.object
+    report: reportPropType
 }
 
 export function Report({
@@ -162,6 +161,8 @@ export function Report({
                 measurements={reversedMeasurements}
                 onClick={(e, s) => navigate_to_subject(e, s)}
                 onClickTag={(tag) => {
+                    // If there are hidden tags (hiddenTags.length > 0), show the hidden tags.
+                    // Otherwise, hide all tags in this report except the one clicked on.
                     const tagsToToggle = hiddenTags?.length > 0 ? hiddenTags : getReportTags(report)
                     toggleHiddenTag(...tagsToToggle.filter((visibleTag) => visibleTag !== tag))
                 }}
@@ -169,6 +170,7 @@ export function Report({
                 reload={reload}
             />
             <Subjects
+                atReportsOverview={false}
                 changed_fields={changed_fields}
                 dates={dates}
                 handleSort={handleSort}
@@ -201,9 +203,9 @@ Report.propTypes = {
     metricsToHide: metricsToHidePropType,
     openReportsOverview: PropTypes.func,
     reload: PropTypes.func,
-    report: PropTypes.object,
+    report: reportPropType,
     report_date: datePropType,
-    reports: PropTypes.array,
+    reports: reportsPropType,
     sortColumn: PropTypes.string,
     sortDirection: sortDirectionPropType,
     toggleHiddenTag: PropTypes.func,

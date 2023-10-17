@@ -3,10 +3,11 @@ import { Subject } from "./Subject";
 import { DataModel } from "../context/DataModel";
 import { datamodel, report } from "../__fixtures__/fixtures";
 
-function renderSubject(dates, hiddenTags, metricsToHide, sortColumn, sortDirection, reportDate) {
+function renderSubject(atReportsOverview, dates, hiddenTags, metricsToHide, sortColumn, sortDirection, reportDate) {
     render(
         <DataModel.Provider value={datamodel}>
             <Subject
+                atReportsOverview={atReportsOverview}
                 dates={dates}
                 handleSort={() => { /* Dummy implementation */ }}
                 hiddenTags={hiddenTags ?? []}
@@ -25,17 +26,22 @@ function renderSubject(dates, hiddenTags, metricsToHide, sortColumn, sortDirecti
 }
 
 it('shows the subject title', async () => {
-    await act(async () => { renderSubject([new Date(2022, 3, 26)]) });
+    await act(async () => { renderSubject(false, [new Date(2022, 3, 26)]) });
     expect(screen.queryAllByText("Subject 1 title").length).toBe(1);
 })
 
+it('shows the subject title at the reports overview', async () => {
+    await act(async () => { renderSubject(true, [new Date(2022, 3, 26)]) });
+    expect(screen.queryAllByText("Report title ❯ Subject 1 title").length).toBe(1);
+})
+
 it('hides metrics not requiring action', async () => {
-    await act(async () => { renderSubject([new Date(2022, 3, 26)], [], "no_action_needed") });
+    await act(async () => { renderSubject(false, [new Date(2022, 3, 26)], [], "no_action_needed") });
     expect(screen.queryAllByText(/M\d/).length).toBe(1);
 })
 
 it('hides the subject if all metrics are hidden', async () => {
-    await act(async () => { renderSubject([], ["tag", "other tag"]) });
+    await act(async () => { renderSubject(false, [], ["tag", "other tag"]) });
     expect(screen.queryAllByText("Subject 1 title").length).toBe(0);
 })
 
@@ -46,7 +52,7 @@ function expectOrder(metricNames) {
 for (const attribute of ["name", "measurement", "target", "comment", "source", "issues", "tags", "unit", "status", "time_left", "overrun"]) {
     for (const order of ["ascending", "descending"]) {
         it('sorts metrics by attribute', async () => {
-            await act(async () => { renderSubject([], [], "none", attribute, order) });
+            await act(async () => { renderSubject(false, [], [], "none", attribute, order) });
             expectOrder(order === "ascending" ? ["M1", "M2"] : ["M2", "M1"])
         })
     }
