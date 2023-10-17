@@ -2,7 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
 import { Icon } from '../semantic_ui_react_wrappers';
-import { datePropType, issueSettingsPropType, metricsToHidePropType, sortDirectionPropType } from '../sharedPropTypes';
+import {
+    datePropType,
+    issueSettingsPropType,
+    metricsToHidePropType,
+    sortDirectionPropType,
+    stringsPropType
+} from '../sharedPropTypes';
 import { capitalize, pluralize } from "../utils";
 import { SettingsMenuItem} from "./SettingsMenuItem";
 import './SettingsPanel.css';
@@ -309,7 +315,7 @@ function VisibleTagMenuItem({ tag, hiddenTags, toggleHiddenTag }) {
 }
 VisibleTagMenuItem.propTypes = {
     tag: PropTypes.string,
-    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hiddenTags: stringsPropType,
     toggleHiddenTag: PropTypes.func
 }
 
@@ -329,7 +335,7 @@ function VisibleColumnMenuItem({ column, disabled, hiddenColumns, toggleHiddenCo
 VisibleColumnMenuItem.propTypes = {
     column: PropTypes.string,
     disabled: PropTypes.bool,
-    hiddenColumns: PropTypes.arrayOf(PropTypes.string),
+    hiddenColumns: stringsPropType,
     toggleHiddenColumn: PropTypes.func,
     help: PropTypes.string
 }
@@ -540,8 +546,8 @@ ResetSettingsButton.propTypes = {
     dateOrder: sortDirectionPropType,
     handleDateChange: PropTypes.func,
     handleSort: PropTypes.func,
-    hiddenColumns: PropTypes.arrayOf(PropTypes.string),
-    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hiddenColumns: stringsPropType,
+    hiddenTags: stringsPropType,
     issueSettings: issueSettingsPropType,
     metricsToHide: metricsToHidePropType,
     nrDates: PropTypes.number,
@@ -558,5 +564,5 @@ ResetSettingsButton.propTypes = {
     setShowIssueSprint: PropTypes.func,
     sortColumn: PropTypes.string,
     sortDirection: sortDirectionPropType,
-    visibleDetailsTabs: PropTypes.arrayOf(PropTypes.string)
+    visibleDetailsTabs: stringsPropType
 }

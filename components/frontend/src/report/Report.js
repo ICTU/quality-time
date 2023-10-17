@@ -1,6 +1,13 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { datePropType, datesPropType, issueSettingsPropType, metricsToHidePropType, sortDirectionPropType } from '../sharedPropTypes';
+import {
+    datePropType,
+    datesPropType,
+    issueSettingsPropType,
+    metricsToHidePropType,
+    sortDirectionPropType,
+    stringsPropType
+} from '../sharedPropTypes';
 import { DataModel } from '../context/DataModel';
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from '../subject/Subjects';
@@ -97,7 +104,7 @@ function ReportDashboard(
 }
 ReportDashboard.propTypes = {
     dates: datesPropType,
-    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hiddenTags: stringsPropType,
     measurements: PropTypes.array,
     onClick: PropTypes.func,
     onClickTag: PropTypes.func,
@@ -182,11 +189,11 @@ export function Report({
     )
 }
 Report.propTypes = {
-    changed_fields: PropTypes.arrayOf(PropTypes.string),
+    changed_fields: stringsPropType,
     dates: datesPropType,
     handleSort: PropTypes.func,
-    hiddenColumns: PropTypes.arrayOf(PropTypes.string),
-    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hiddenColumns: stringsPropType,
+    hiddenTags: stringsPropType,
     issueSettings: issueSettingsPropType,
     measurements: PropTypes.array,
     metricsToHide: metricsToHidePropType,
@@ -199,5 +206,5 @@ Report.propTypes = {
     sortDirection: sortDirectionPropType,
     toggleHiddenTag: PropTypes.func,
     toggleVisibleDetailsTab: PropTypes.func,
-    visibleDetailsTabs: PropTypes.arrayOf(PropTypes.string)
+    visibleDetailsTabs: stringsPropType
 }

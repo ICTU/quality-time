@@ -1,7 +1,14 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { DataModel } from '../context/DataModel';
-import { datePropType, datesPropType, issueSettingsPropType, metricsToHidePropType, sortDirectionPropType } from '../sharedPropTypes';
+import {
+    datePropType,
+    datesPropType,
+    issueSettingsPropType,
+    metricsToHidePropType,
+    sortDirectionPropType,
+    stringsPropType
+} from '../sharedPropTypes';
 import {
     get_metric_comment,
     get_metric_issue_ids,
@@ -91,12 +98,12 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
 export function Subject({
     changed_fields,
     dates,
-    first_subject,
+    firstSubject,
     handleSort,
     hiddenColumns,
     hiddenTags,
     issueSettings,
-    last_subject,
+    lastSubject,
     measurements,
     metricsToHide,
     report,
@@ -125,8 +132,8 @@ export function Subject({
                     report={report}
                     subject={subject}
                     subject_uuid={subject_uuid}
-                    first_subject={first_subject}
-                    last_subject={last_subject}
+                    firstSubject={firstSubject}
+                    lastSubject={lastSubject}
                     reload={reload}
                 />
             </div>
@@ -154,14 +161,14 @@ export function Subject({
     )
 }
 Subject.propTypes = {
-    changed_fields: PropTypes.arrayOf(PropTypes.string),
+    changed_fields: stringsPropType,
     dates: datesPropType,
-    first_subject: PropTypes.bool,
+    firstSubject: PropTypes.bool,
     handleSort: PropTypes.func,
-    hiddenColumns: PropTypes.arrayOf(PropTypes.string),
-    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hiddenColumns: stringsPropType,
+    hiddenTags: stringsPropType,
     issueSettings: issueSettingsPropType,
-    last_subject: PropTypes.bool,
+    lastSubject: PropTypes.bool,
     measurements: PropTypes.array,
     metricsToHide: metricsToHidePropType,
     report: PropTypes.object,
@@ -171,6 +178,6 @@ Subject.propTypes = {
     sortDirection: sortDirectionPropType,
     subject_uuid: PropTypes.string,
     toggleVisibleDetailsTab: PropTypes.func,
-    visibleDetailsTabs: PropTypes.arrayOf(PropTypes.string),
+    visibleDetailsTabs: stringsPropType,
     reload: PropTypes.func
 }
