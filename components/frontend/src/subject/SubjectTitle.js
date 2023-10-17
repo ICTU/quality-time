@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { Icon, Menu } from 'semantic-ui-react';
 import { Header, Tab } from '../semantic_ui_react_wrappers';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
@@ -13,37 +14,46 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissio
 import { slugify } from '../utils';
 import { SubjectParameters } from './SubjectParameters';
 
-function SubjectHeader({ subject_type }) {
-    const url = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html${slugify(subject_type.name)}`
+function SubjectHeader({ subjectType }) {
+    const url = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html${slugify(subjectType.name)}`
     return (
         <Header>
             <Header.Content>
-                {subject_type.name}
+                {subjectType.name}
                 <Header.Subheader>
-                    {subject_type.description} <HyperLink url={url}>Read the Docs <Icon name="external" link /></HyperLink>
+                    {subjectType.description} <HyperLink url={url}>Read the Docs <Icon name="external" link /></HyperLink>
                 </Header.Subheader>
             </Header.Content>
         </Header>
     )
 }
+SubjectHeader.propTypes = {
+    subjectType: PropTypes.object
+}
 
-function ButtonRow({ subject_uuid, first_subject, last_subject, reload }) {
+function ButtonRow({ subject_uuid, firstSubject, lastSubject, reload }) {
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <>
                 <ReorderButtonGroup
-                    first={first_subject} last={last_subject} moveable="subject"
+                    first={firstSubject} last={lastSubject} moveable="subject"
                     onClick={(direction) => { set_subject_attribute(subject_uuid, "position", direction, reload) }} />
                 <DeleteButton item_type="subject" onClick={() => delete_subject(subject_uuid, reload)} />
             </>
         } />
     )
 }
+ButtonRow.propTypes = {
+    subject_uuid: PropTypes.string,
+    firstSubject: PropTypes.bool,
+    lastSubject: PropTypes.bool,
+    reload: PropTypes.func
+}
 
-export function SubjectTitle({ report, subject, subject_uuid, first_subject, last_subject, reload }) {
+export function SubjectTitle({ report, subject, subject_uuid, firstSubject, lastSubject, reload }) {
     const dataModel = useContext(DataModel)
-    const current_subject_type = dataModel.subjects[subject.type] || { name: "Unknown subject type" };
-    const subject_name = subject.name || current_subject_type.name;
+    const subjectType = dataModel.subjects[subject.type] || { name: "Unknown subject type" };
+    const subject_name = subject.name || subjectType.name;
     const subjectUrl = `${window.location}#${subject_uuid}`
     const panes = [
         {
@@ -61,11 +71,19 @@ export function SubjectTitle({ report, subject, subject_uuid, first_subject, las
     ];
     return (
         <HeaderWithDetails className="sticky" level="h2" header={subject_name} subheader={subject.subtitle} style={{ marginTop: 50 }}>
-            <SubjectHeader subject_type={current_subject_type} />
+            <SubjectHeader subjectType={subjectType} />
             <Tab panes={panes} />
             <div style={{ marginTop: "20px" }}>
-                <ButtonRow subject_uuid={subject_uuid} first_subject={first_subject} last_subject={last_subject} reload={reload} />
+                <ButtonRow subject_uuid={subject_uuid} firstSubject={firstSubject} lastSubject={lastSubject} reload={reload} />
             </div>
         </HeaderWithDetails>
     )
+}
+SubjectTitle.propTypes = {
+    report: PropTypes.object,
+    subject: PropTypes.object,
+    subject_uuid: PropTypes.string,
+    firstSubject: PropTypes.bool,
+    lastSubject: PropTypes.bool,
+    reload: PropTypes.func
 }

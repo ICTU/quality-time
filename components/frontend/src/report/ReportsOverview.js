@@ -12,7 +12,7 @@ import { ReportsOverviewTitle } from './ReportsOverviewTitle';
 import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
 import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum } from '../utils';
-import { datePropType, datesPropType } from '../sharedPropTypes';
+import { datePropType, datesPropType, stringsPropType } from '../sharedPropTypes';
 import { ReportsOverviewErrorMessage } from './ReportErrorMessage';
 import { metricStatusOnDate } from './report_utils';
 
@@ -90,7 +90,7 @@ function ReportsDashboard({ dates, hiddenTags, reports, open_report, measurement
 }
 ReportsDashboard.propTypes = {
     dates: datesPropType,
-    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hiddenTags: stringsPropType,
     reports: PropTypes.array,
     open_report: PropTypes.func,
     measurements: PropTypes.array,
@@ -117,6 +117,7 @@ export function ReportsOverview({ dates, hiddenTags, measurements, reports, open
                 reload={reload}
                 reports={reports}
             />
+
             <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment basic>
                     <AddButton
@@ -136,7 +137,7 @@ export function ReportsOverview({ dates, hiddenTags, measurements, reports, open
 }
 ReportsOverview.propTypes = {
     dates: datesPropType,
-    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hiddenTags: stringsPropType,
     measurements: PropTypes.array,
     reports: PropTypes.array,
     open_report: PropTypes.func,

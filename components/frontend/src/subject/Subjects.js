@@ -1,7 +1,14 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Segment } from '../semantic_ui_react_wrappers';
-import { datePropType, datesPropType, issueSettingsPropType, metricsToHidePropType, sortDirectionPropType } from '../sharedPropTypes';
+import {
+    datePropType,
+    datesPropType,
+    issueSettingsPropType,
+    metricsToHidePropType,
+    sortDirectionPropType,
+    stringsPropType
+} from '../sharedPropTypes';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { AddDropdownButton, CopyButton, MoveButton } from '../widgets/Button';
@@ -31,7 +38,7 @@ export function Subjects({
 }) {
     const visible = useDelayedRender();
     const dataModel = useContext(DataModel)
-    const last_index = Object.keys(report.subjects).length - 1;
+    const lastIndex = Object.keys(report.subjects).length - 1;
     return (
         <>
             {Object.keys(report.subjects).map((subject_uuid, index) =>
@@ -39,14 +46,14 @@ export function Subjects({
                     <Subject
                         changed_fields={changed_fields}
                         dates={dates}
-                        first_subject={index === 0}
+                        firstSubject={index === 0}
                         handleSort={handleSort}
                         hiddenColumns={hiddenColumns}
                         hiddenTags={hiddenTags}
                         metricsToHide={metricsToHide}
                         issueSettings={issueSettings}
                         key={subject_uuid}
-                        last_subject={index === last_index}
+                        lastSubject={index === lastIndex}
                         measurements={measurements}
                         report={report}
                         report_date={report_date}
@@ -82,11 +89,11 @@ export function Subjects({
     )
 }
 Subjects.propTypes = {
-    changed_fields: PropTypes.arrayOf(PropTypes.string),
+    changed_fields: stringsPropType,
     dates: datesPropType,
     handleSort: PropTypes.func,
-    hiddenColumns: PropTypes.arrayOf(PropTypes.string),
-    hiddenTags: PropTypes.arrayOf(PropTypes.string),
+    hiddenColumns: stringsPropType,
+    hiddenTags: stringsPropType,
     issueSettings: issueSettingsPropType,
     measurements: PropTypes.array,
     metricsToHide: metricsToHidePropType,
@@ -97,5 +104,5 @@ Subjects.propTypes = {
     sortColumn: PropTypes.string,
     sortDirection: sortDirectionPropType,
     toggleVisibleDetailsTab: PropTypes.func,
-    visibleDetailsTabs: PropTypes.arrayOf(PropTypes.string),
+    visibleDetailsTabs: stringsPropType,
 }
