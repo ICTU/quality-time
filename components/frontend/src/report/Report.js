@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Message } from 'semantic-ui-react';
 import { datePropType, datesPropType, issueSettingsPropType, metricsToHidePropType, sortDirectionPropType } from '../sharedPropTypes';
 import { DataModel } from '../context/DataModel';
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
@@ -12,8 +11,10 @@ import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { set_report_attribute } from '../api/report';
 import { getReportTags, getMetricTags, nrMetricsInReport, get_subject_name, STATUS_COLORS, visibleMetrics } from '../utils';
+import { ReportErrorMessage} from './ReportErrorMessage';
 import { ReportTitle } from './ReportTitle';
 import { metricStatusOnDate } from './report_utils';
+
 
 function summarizeMetricsOnDate(metrics, measurements, date) {
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
@@ -104,19 +105,6 @@ ReportDashboard.propTypes = {
     report: PropTypes.object
 }
 
-function ReportErrorMessage({ report_date }) {
-    return (
-        <Message warning size='huge'>
-            <Message.Header>
-                {report_date ? `Sorry, this report didn't exist at ${report_date}` : "Sorry, this report doesn't exist"}
-            </Message.Header>
-        </Message>
-    )
-}
-ReportErrorMessage.propTypes = {
-    report_date: datePropType
-}
-
 export function Report({
     changed_fields,
     dates,
@@ -145,7 +133,7 @@ export function Report({
     }
 
     if (!report) {
-        return <ReportErrorMessage report_date={report_date} />
+        return <ReportErrorMessage reportDate={report_date} />
     }
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
     const reversedMeasurements = measurements.slice().sort((m1, m2) => m1.start < m2.start ? 1 : -1)
