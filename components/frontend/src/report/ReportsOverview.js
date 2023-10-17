@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Message } from 'semantic-ui-react';
 import { Segment } from '../semantic_ui_react_wrappers';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { CardDashboard } from '../dashboard/CardDashboard';
@@ -13,8 +12,9 @@ import { ReportsOverviewTitle } from './ReportsOverviewTitle';
 import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
 import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum } from '../utils';
-import { metricStatusOnDate } from './report_utils';
 import { datePropType, datesPropType } from '../sharedPropTypes';
+import { ReportsOverviewErrorMessage } from './ReportErrorMessage';
+import { metricStatusOnDate } from './report_utils';
 
 function summarizeReportOnDate(report, measurements, date) {
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
@@ -100,13 +100,7 @@ ReportsDashboard.propTypes = {
 
 export function ReportsOverview({ dates, hiddenTags, measurements, reports, open_report, report_date, reports_overview, reload }) {
     if (reports.length === 0 && report_date !== null) {
-        return (
-            <Message warning size='huge'>
-                <Message.Header>
-                    {`Sorry, no reports existed at ${report_date}`}
-                </Message.Header>
-            </Message>
-        )
+        return <ReportsOverviewErrorMessage reportDate={report_date} />
     }
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
     const reversedMeasurements = measurements.slice().sort((m1, m2) => m1.start < m2.start ? 1 : -1)
