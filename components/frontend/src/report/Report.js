@@ -11,6 +11,7 @@ import {
 import { DataModel } from '../context/DataModel';
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { Subjects } from '../subject/Subjects';
+import { SubjectsButtonRow } from '../subject/SubjectsButtonRow';
 import { CommentSegment } from '../widgets/CommentSegment';
 import { Tag } from '../widgets/Tag';
 import { CardDashboard } from '../dashboard/CardDashboard';
@@ -177,14 +178,15 @@ export function Report({
                 issueSettings={issueSettings}
                 measurements={measurements}
                 reload={reload}
-                report={report}
                 reports={reports}
+                reportsToShow={[report]}
                 report_date={report_date}
                 sortColumn={sortColumn}
                 sortDirection={sortDirection}
                 toggleVisibleDetailsTab={toggleVisibleDetailsTab}
                 visibleDetailsTabs={visibleDetailsTabs}
             />
+            <SubjectsButtonRow reload={reload} report={report} reports={reports} />
         </div>
     )
 }
