@@ -71,8 +71,8 @@ jobs:
       if: env.SONAR_TOKEN != null
       working-directory: components/frontend
       run: |
-        npm install
-        npm run build --if-present
+        npm install --ignore-scripts
+        npm run --ignore-scripts build --if-present
         npm test -- --coverage
       env:
         CI: true
