@@ -17,7 +17,7 @@ jobs:
       run: |
         cd docs
         ci/pip-install.sh
-        npm install
+        npm install --ignore-scripts
     - name: Test
       run: |
         cd docs

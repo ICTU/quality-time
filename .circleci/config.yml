@@ -47,7 +47,7 @@ jobs:
       - checkout
       - run: |
           cd components/frontend
-          npm install
+          npm install --ignore-scripts
           npm test
 
   unittest_docs:
@@ -57,7 +57,7 @@ jobs:
       - checkout
       - run: |
           cd docs
-          npm install
+          npm install --ignore-scripts
           python3 -m venv venv
           . venv/bin/activate
           ci/pip-install.sh

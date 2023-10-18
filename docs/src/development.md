@@ -107,7 +107,7 @@ Open another terminal and run the frontend:
 
 ```console
 cd components/frontend
-npm install
+npm install --ignore-scripts
 npm run start
 ```
 
