@@ -18,7 +18,7 @@ RUN apk add --no-cache \
 RUN update-ms-fonts \
     && fc-cache -f
 
-RUN npm install -g npm@10.1.0
+RUN npm install -g npm@10.2.0
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser

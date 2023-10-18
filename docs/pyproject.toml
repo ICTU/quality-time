@@ -3,7 +3,7 @@ name = "docs"
 version = "5.3.0-rc.1"
 dependencies = [
     "furo==2023.9.10",
-    "gitpython==3.1.37",
+    "gitpython==3.1.38",
     "myst-parser==2.0.0",
     "pydantic==2.4.2",  # Needed for generating the reference docs from the data model
     "Sphinx==7.2.6",
@@ -20,7 +20,7 @@ dev = [
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
-    "black==23.9.1",
+    "black==23.10.0",
     "bandit==1.7.5",
     "mypy==1.6.0",
     "pip-audit==2.6.1",
