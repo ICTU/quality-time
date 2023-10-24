@@ -14,8 +14,8 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "coverage==7.3.2",
-    "pip==23.3",
-    "pipx==1.2.0",
+    "pip==23.3.1",
+    "pipx==1.2.1",
     "pip-tools==7.3.0",  # To add hashes to requirements
     "pydantic==2.4.2",  # Needed for importing the data model in the tests from the shared code component
     "types-cryptography==3.3.23.2",
@@ -25,7 +25,7 @@ dev = [
 ]
 tools = [
     "bandit==1.7.5",
-    "black==23.10.0",
+    "black==23.10.1",
     "mypy==1.6.1",
     "pip-audit==2.6.1",
     "ruff==0.1.1",
