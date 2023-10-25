@@ -79,6 +79,7 @@ function ReportDashboard(
             )
         }
     })
+    const anyTagsHidden = hiddenTags.length > 0
     const tagCards = getReportTags(report, hiddenTags).map((tag) => {
         const summary = {}
         dates.forEach((date) => {
@@ -86,7 +87,7 @@ function ReportDashboard(
         })
         return (
             <MetricSummaryCard
-                header={<Tag tag={tag} />}
+                header={<Tag selected={anyTagsHidden} tag={tag} />}
                 key={tag}
                 maxY={nrMetrics}
                 onClick={() => onClickTag(tag)}
