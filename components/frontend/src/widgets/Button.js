@@ -2,8 +2,8 @@ import React, { useRef, useState } from 'react';
 import { Icon, Input } from 'semantic-ui-react';
 import { Button, Dropdown, Label, Popup } from '../semantic_ui_react_wrappers';
 import { get_report_pdf } from '../api/report';
+import { registeredURLSearchParams } from '../hooks/url_search_query';
 import { showMessage } from '../widgets/toast';
-import { registeredURLSearchParams } from '../utils';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 
 export function ActionButton(props) {

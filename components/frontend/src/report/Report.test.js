@@ -1,14 +1,18 @@
 import React from 'react';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, renderHook, screen } from '@testing-library/react';
+import history from 'history/browser';
+import { useHiddenTagsURLSearchQuery } from '../app_ui_settings';
 import { Report } from './Report';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import * as fetch_server_api from '../api/fetch_server_api';
 import { mockGetAnimations } from '../dashboard/MockAnimations';
+import { createTestableSettings } from '../__fixtures__/fixtures';
 
 beforeEach(() => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     mockGetAnimations()
+    history.push("")
 });
 
 afterEach(() => jest.restoreAllMocks())
@@ -34,34 +38,27 @@ const report = {
 };
 
 function renderReport(
-    reportToRender,
     {
+        reportToRender = null,
         dates = [new Date()],
-        handleSort = null,
-        hiddenColumns = [],
-        hiddenTags = [],
-        report_date = null,
-        sortDirection = "ascending",
-        sortColumn = null,
-        toggleHiddenTag = null
+        handleSort = jest.fn(),
+        hiddenTags = null,
+        report_date = null
     } = {}
 ) {
+    let settings = createTestableSettings()
+    if (hiddenTags) { settings.hiddenTags = hiddenTags}
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
                 <Report
                     dates={dates}
                     handleSort={handleSort}
-                    hiddenColumns={hiddenColumns}
-                    hiddenTags={hiddenTags}
                     measurements={[]}
                     reports={[reportToRender]}
                     report={reportToRender}
                     report_date={report_date}
-                    sortDirection={sortDirection}
-                    sortColumn={sortColumn}
-                    toggleHiddenTag={toggleHiddenTag}
-                    visibleDetailsTabs={[]}
+                    settings={settings}
                 />
             </DataModel.Provider>
         </Permissions.Provider>
@@ -69,77 +66,86 @@ function renderReport(
 }
 
 it('shows the report', async () => {
-    await act(async () => renderReport(report))
+    renderReport({ reportToRender: report })
     expect(screen.getAllByText(/Subject title/).length).toBe(2)  // Once as dashboard card and once as subject header
 });
 
 it('shows an error message if there is no report', async () => {
-    await act(async () => renderReport(null))
+    renderReport()
     expect(screen.getAllByText(/Sorry, this report doesn't exist/).length).toBe(1)
 });
 
 it('shows an error message if there was no report', async () => {
-    await act(async () => renderReport(null, { report_date: new Date("2020-01-01") }))
+    renderReport({ report_date: new Date("2020-01-01") })
     expect(screen.getAllByText(/Sorry, this report didn't exist/).length).toBe(1)
 });
 
 it('hides columns on load', async () => {
-    await act(async () => renderReport(report, { hiddenColumns: ["status"] }))
+    history.push("?hidden_columns=status")
+    renderReport({ reportToRender: report })
     expect(screen.queryByText(/Status/)).toBe(null)
 });
 
 it('sorts the column', async () => {
     let handleSort = jest.fn();
-    await act(async () => renderReport(report, { handleSort: handleSort }))
+    renderReport({ reportToRender: report, handleSort: handleSort })
     fireEvent.click(screen.getByText(/Comment/))
     expect(handleSort).toHaveBeenCalledWith("comment")
 });
 
 it('sorts the column descending', async () => {
+    history.push("?sort_column=comment")
     let handleSort = jest.fn();
-    await act(async () => renderReport(report, { sortColumn: "comment", handleSort: handleSort }))
+    renderReport({ reportToRender: report, handleSort: handleSort })
     fireEvent.click(screen.getByText(/Comment/))
     expect(handleSort).toHaveBeenCalledWith("comment")
 });
 
 it('stops sorting', async () => {
+    history.push("?sort_column=issues&sort_direction=descending")
     let handleSort = jest.fn();
-    await act(async () => renderReport(report, { sortColumn: "issues", sortDirection: "descending", handleSort: handleSort }))
+    renderReport({ reportToRender: report, handleSort: handleSort })
     fireEvent.click(screen.getByText(/Issues/))
     expect(handleSort).toHaveBeenCalledWith("issues")
 });
 
 it('stop sorting on add metric', async () => {
+    history.push("?sort_column=status")
     let handleSort = jest.fn();
-    await act(async () => renderReport(report, { sortColumn: "status", handleSort: handleSort }))
-    await act(async () => fireEvent.click(screen.getByText(/Add metric/)))
-    await act(async () => fireEvent.click(screen.getByText(/Metric type/)))
+    renderReport({ reportToRender: report, handleSort: handleSort })
+    fireEvent.click(screen.getByText(/Add metric/))
+    fireEvent.click(screen.getByText(/Metric type/))
     expect(handleSort).toHaveBeenCalledWith(null)
 })
 
 it('sorts another column', async () => {
+    history.push("?sort_column=issues")
     let handleSort = jest.fn();
-    await act(async () => renderReport(report, { sortColumn: "issues", handleSort: handleSort }))
+    renderReport({ reportToRender: report, handleSort: handleSort })
     fireEvent.click(screen.getByText(/Comment/))
     expect(handleSort).toHaveBeenCalledWith("comment")
 });
 
 it('hides tags', async () => {
-    let toggleHiddenTag = jest.fn();
-    await act(async () => renderReport(report, { toggleHiddenTag: toggleHiddenTag }))
+    const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
+    renderReport({ reportToRender: report, hiddenTags: hiddenTags.result.current })
     fireEvent.click(screen.getAllByText(/tag/)[0])
-    expect(toggleHiddenTag).toHaveBeenCalledWith("other")
+    hiddenTags.rerender()
+    expect(hiddenTags.result.current.value).toStrictEqual(["other"])
 })
 
 it('shows hidden tags', async () => {
-    let toggleHiddenTag = jest.fn();
-    await act(async () => renderReport(report, { hiddenTags: ["other"], toggleHiddenTag: toggleHiddenTag }))
+    history.push("?hidden_tags=other")
+    const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
+    renderReport({ reportToRender: report, hiddenTags: hiddenTags.result.current })
     expect(screen.queryAllByText("other").length).toBe(0)
     fireEvent.click(screen.getAllByText(/tag/)[0])
-    expect(toggleHiddenTag).toHaveBeenCalledWith("other")
+    hiddenTags.rerender()
+    expect(hiddenTags.result.current.value).toStrictEqual([])
 })
 
 it('hides subjects if empty', async () => {
-    await act(async () => renderReport(report, { hiddenTags: ["tag", "other"] }))
+    history.push("?hidden_tags=tag,other")
+    renderReport({ reportToRender: report })
     expect(screen.queryAllByText(/Subject title/).length).toBe(0)
 })

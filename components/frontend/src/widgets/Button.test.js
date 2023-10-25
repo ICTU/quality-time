@@ -200,6 +200,7 @@ test("DownloadAsPDFButton ignores a second click", async () => {
 
 test("DownloadAsPDFButton stops loading after returning pdf", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue("pdf");
+    HTMLAnchorElement.prototype.click = jest.fn()  // Prevent "Not implemented: navigation (except hash changes)"
     window.URL.createObjectURL = jest.fn();
     render(<DownloadAsPDFButton report={test_report} />);
     await act(async () => {
@@ -210,7 +211,6 @@ test("DownloadAsPDFButton stops loading after returning pdf", async () => {
 
 test("DownloadAsPDFButton stops loading after receiving error", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false });
-    window.URL.createObjectURL = jest.fn();
     render(<DownloadAsPDFButton report={test_report} />);
     await act(async () => {
         fireEvent.click(screen.getByText(new RegExp(/Download/)));

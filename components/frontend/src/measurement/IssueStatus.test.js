@@ -1,14 +1,15 @@
 import React from 'react';
+import history from 'history/browser';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { IssueStatus } from './IssueStatus';
+import { createTestableSettings } from '../__fixtures__/fixtures';
 
 function renderIssueStatus(
     {
         connectionError = false,
         created = true,
         due = false,
-        issueSettings = {},
         issueTrackerMissing = false,
         landingUrl = "https://issue",
         parseError = false,
@@ -23,6 +24,7 @@ function renderIssueStatus(
         updated = false,
     } = {}
 ) {
+    const settings = createTestableSettings()
     let creationDate = new Date();
     creationDate.setDate(creationDate.getDate() - 4);
     let updateDate = new Date();
@@ -54,9 +56,13 @@ function renderIssueStatus(
         issue_status: [issueStatus]
     }
     return render(
-        <IssueStatus metric={metric} issueTrackerMissing={issueTrackerMissing} issueSettings={issueSettings} />
+        <IssueStatus metric={metric} issueTrackerMissing={issueTrackerMissing} settings={settings} />
     )
 }
+
+beforeEach(() => {
+    history.push("")
+});
 
 it("displays the issue id", () => {
     const { queryByText } = renderIssueStatus()
@@ -104,12 +110,14 @@ it("displays a question mark as status if the issue has no status", () => {
 });
 
 it("displays the issue summary in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ issueSettings: {showIssueSummary: true} })
+    history.push("?show_issue_summary=true")
+    const { queryByText } = renderIssueStatus()
     expect(queryByText(/summary/)).not.toBe(null)
 });
 
 it("displays the creation date in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ issueSettings: { showIssueCreationDate: true }})
+    history.push("?show_issue_creation_date=true")
+    const { queryByText } = renderIssueStatus()
     expect(queryByText(/4 days ago/)).not.toBe(null)
 });
 
@@ -136,7 +144,8 @@ it("displays the creation date in the popup", async () => {
 });
 
 it("displays the update date in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ updated: true, issueSettings: { showIssueUpdateDate: true }})
+    history.push("?show_issue_update_date=true")
+    const { queryByText } = renderIssueStatus({ updated: true })
     expect(queryByText(/2 days ago/)).not.toBe(null)
 });
 
@@ -155,7 +164,8 @@ it("displays the update date in the popup", async () => {
 });
 
 it("displays the due date in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ due: true, issueSettings: {showIssueDueDate: true }})
+    history.push("?show_issue_due_date=true")
+    const { queryByText } = renderIssueStatus({ due: true })
     expect(queryByText(/2 days from now/)).not.toBe(null)
 });
 
@@ -173,28 +183,32 @@ it("displays the due date in the popup", async () => {
 });
 
 it("displays the planned release in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ release: true, issueSettings: {showIssueRelease: true }})
+    history.push("?show_issue_release=true")
+    const { queryByText } = renderIssueStatus({ release: true })
     expect(queryByText(/1.0/)).not.toBe(null)
     expect(queryByText(/planned/)).not.toBe(null)
     expect(queryByText(/from now/)).not.toBe(null)
 });
 
 it("displays the released release in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ release: true, releaseReleased: true, issueSettings: {showIssueRelease: true }})
+    history.push("?show_issue_release=true")
+    const { queryByText } = renderIssueStatus({ release: true, releaseReleased: true })
     expect(queryByText(/1.0/)).not.toBe(null)
     expect(queryByText(/released/)).not.toBe(null)
     expect(queryByText(/from now/)).not.toBe(null)
 });
 
 it("displays the release in the label if configured, but without release date", async () => {
-    const { queryByText } = renderIssueStatus({ release: true, releaseDate: null, issueSettings: {showIssueRelease: true }})
+    history.push("?show_issue_release=true")
+    const { queryByText } = renderIssueStatus({ release: true, releaseDate: null })
     expect(queryByText(/1.0/)).not.toBe(null)
     expect(queryByText(/planned/)).not.toBe(null)
     expect(queryByText(/from now/)).toBe(null)
 });
 
 it("displays the release without doubling release in the label", async () => {
-    const { queryByText } = renderIssueStatus({ release: true, releaseName: "Release 1.0", issueSettings: {showIssueRelease: true }})
+    history.push("?show_issue_release=true")
+    const { queryByText } = renderIssueStatus({ release: true, releaseName: "Release 1.0" })
     expect(queryByText(/Release 1.0/)).not.toBe(null)
     expect(queryByText(/Release Release 1.0/)).toBe(null)
 });
@@ -227,14 +241,16 @@ it("displays the release in the popup without release date", async () => {
 });
 
 it("displays the sprint in the label if configured", async () => {
-    const { queryByText } = renderIssueStatus({ sprint: true, issueSettings: {showIssueSprint: true }})
+    history.push("?show_issue_sprint=true")
+    const { queryByText } = renderIssueStatus({ sprint: true })
     expect(queryByText(/Sprint 42/)).not.toBe(null)
     expect(queryByText(/active/)).not.toBe(null)
     expect(queryByText(/from now/)).not.toBe(null)
 });
 
 it("displays the sprint in the label if configured, but without sprint end date", async () => {
-    const { queryByText } = renderIssueStatus({ sprint: true, sprintEndDate: null, issueSettings: {showIssueSprint: true }})
+    history.push("?show_issue_sprint=true")
+    const { queryByText } = renderIssueStatus({ sprint: true, sprintEndDate: null })
     expect(queryByText(/Sprint 42/)).not.toBe(null)
     expect(queryByText(/active/)).not.toBe(null)
     expect(queryByText(/from now/)).toBe(null)

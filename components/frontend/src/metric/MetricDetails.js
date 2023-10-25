@@ -16,6 +16,7 @@ import { MetricConfigurationParameters } from './MetricConfigurationParameters';
 import { MetricDebtParameters } from './MetricDebtParameters';
 import { MetricTypeHeader } from './MetricTypeHeader';
 import { TrendGraph } from './TrendGraph';
+import { stringsURLSearchQueryPropType} from '../sharedPropTypes';
 
 function Buttons({ metric_uuid, first_metric, last_metric, stopSorting, reload }) {
     return (
@@ -50,7 +51,6 @@ export function MetricDetails({
     stopSorting,
     changed_fields,
     visibleDetailsTabs,
-    toggleVisibleDetailsTab,
     reload
 }) {
     const dataModel = useContext(DataModel)
@@ -133,12 +133,12 @@ export function MetricDetails({
     const metricUrl = `${window.location}#${metric_uuid}`
 
     function onTabChange(_event, data) {
-        const old_tab = visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid))[0];
+        const old_tab = visibleDetailsTabs.value.filter((tab) => tab?.startsWith(metric_uuid))[0];
         const new_tab = `${metric_uuid}:${data.activeIndex}`;
-        toggleVisibleDetailsTab(old_tab, new_tab);
+        visibleDetailsTabs.toggle(old_tab, new_tab);
     }
 
-    const visible_tabs = visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid));
+    const visible_tabs = visibleDetailsTabs.value.filter((tab) => tab?.startsWith(metric_uuid));
     const defaultActiveTab = visible_tabs.length > 0 ? Number(visible_tabs[0].split(":")[1]) : 0;
     const metricType = dataModel.metrics[metric.type];
     return (
@@ -148,4 +148,7 @@ export function MetricDetails({
             <Buttons metric_uuid={metric_uuid} first_metric={first_metric} last_metric={last_metric} stopSorting={stopSorting} reload={reload} />
         </>
     );
+}
+MetricDetails.propTypes = {
+    visibleDetailsTabs: stringsURLSearchQueryPropType
 }

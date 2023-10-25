@@ -19,13 +19,12 @@ import { SubjectTableFooter } from './SubjectTableFooter';
 import { SubjectTableHeader } from './SubjectTableHeader';
 import "./SubjectTable.css"
 import {
-    datePropType,
     datesPropType,
-    issueSettingsPropType,
+    optionalDatePropType,
     reportPropType,
     reportsPropType,
-    sortDirectionPropType,
-    stringsPropType
+    settingsPropType,
+    stringsPropType,
 } from '../sharedPropTypes';
 
 function MeasurementCells({ dates, metric, metric_uuid, measurements }) {
@@ -46,13 +45,13 @@ function MeasurementCells({ dates, metric, metric_uuid, measurements }) {
     )
 }
 
-function expandVisibleDetailsTab(expand, metric_uuid, visibleDetailsTabs, toggleVisibleDetailsTab) {
+function expandVisibleDetailsTab(expand, metric_uuid, visibleDetailsTabs) {
     if (expand) {
-        toggleVisibleDetailsTab(`${metric_uuid}:0`)
+        visibleDetailsTabs.toggle(`${metric_uuid}:0`)
     } else {
-        const tabs = visibleDetailsTabs.filter((each) => each?.startsWith(metric_uuid));
+        const tabs = visibleDetailsTabs.value.filter((each) => each?.startsWith(metric_uuid));
         if (tabs.length > 0) {
-            toggleVisibleDetailsTab(tabs[0])
+            visibleDetailsTabs.toggle(tabs[0])
         }
     }
 }
@@ -61,20 +60,15 @@ export function SubjectTable({
     changed_fields,
     dates,
     handleSort,
-    hiddenColumns,
-    issueSettings,
     measurements,
     metricEntries,
     reload,
     report,
     reportDate,
     reports,
-    sortDirection,
-    sortColumn,
+    settings,
     subject,
-    subject_uuid,
-    toggleVisibleDetailsTab,
-    visibleDetailsTabs
+    subject_uuid
 }) {
     const last_index = Object.entries(subject.metrics).length - 1;
     const className = "stickyHeader" + (subject.subtitle ? " subjectHasSubTitle" : "")
@@ -89,9 +83,7 @@ export function SubjectTable({
             <SubjectTableHeader
                 columnDates={dates}
                 handleSort={handleSort}
-                hiddenColumns={hiddenColumns}
-                sortColumn={sortColumn}
-                sortDirection={sortDirection}
+                settings={settings}
             />
             <Table.Body>
                 {metricEntries.map(([metric_uuid, metric], index) => {
@@ -110,32 +102,31 @@ export function SubjectTable({
                                     subject_uuid={subject_uuid}
                                     metric_uuid={metric_uuid}
                                     changed_fields={changed_fields}
-                                    visibleDetailsTabs={visibleDetailsTabs}
-                                    toggleVisibleDetailsTab={toggleVisibleDetailsTab}
+                                    visibleDetailsTabs={settings.visibleDetailsTabs}
                                     stopSorting={() => handleSort(null)}
                                     reload={reload}
                                 />
                             }
-                            expanded={visibleDetailsTabs.filter((tab) => tab?.startsWith(metric_uuid)).length > 0}
+                            expanded={settings.visibleDetailsTabs.value.filter((tab) => tab?.startsWith(metric_uuid)).length > 0}
                             id={metric_uuid}
-                            onExpand={(expand) => expandVisibleDetailsTab(expand, metric_uuid, visibleDetailsTabs, toggleVisibleDetailsTab)}
+                            onExpand={(expand) => expandVisibleDetailsTab(expand, metric_uuid, settings.visibleDetailsTabs)}
                             style={style}
                         >
                             <Table.Cell style={style}>{metricName}</Table.Cell>
                             {nrDates > 1 && <MeasurementCells dates={dates} metric={metric} metric_uuid={metric_uuid} measurements={reversedMeasurements} />}
-                            {nrDates === 1 && !hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={reportDate} scale={metric.scale} /></Table.Cell>}
-                            {nrDates === 1 && !hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
-                            {nrDates === 1 && !hiddenColumns.includes("measurement") && <Table.Cell textAlign="right"><MeasurementValue metric={metric} reportDate={reportDate} /></Table.Cell>}
-                            {nrDates === 1 && !hiddenColumns.includes("target") && <Table.Cell textAlign="right"><MeasurementTarget metric={metric} /></Table.Cell>}
-                            {!hiddenColumns.includes("unit") && <Table.Cell style={style}>{unit}</Table.Cell>}
-                            {!hiddenColumns.includes("source") && <Table.Cell style={style}><MeasurementSources metric={metric} /></Table.Cell>}
-                            {!hiddenColumns.includes("time_left") && <Table.Cell style={style}><TimeLeft metric={metric} report={report} /></Table.Cell>}
-                            {nrDates > 1 && !hiddenColumns.includes("overrun") && <Table.Cell style={style}><Overrun metric={metric} metric_uuid={metric_uuid} report={report} measurements={measurements} dates={dates} /></Table.Cell>}
-                            {!hiddenColumns.includes("comment") && <Table.Cell style={style}><div style={{wordBreak: "break-word"}} dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
-                            {!hiddenColumns.includes("issues") && <Table.Cell style={style}>
-                                <IssueStatus metric={metric} issueTrackerMissing={!report.issue_tracker} issueSettings={issueSettings} />
+                            {nrDates === 1 && !settings.hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={reportDate} scale={metric.scale} /></Table.Cell>}
+                            {nrDates === 1 && !settings.hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
+                            {nrDates === 1 && !settings.hiddenColumns.includes("measurement") && <Table.Cell textAlign="right"><MeasurementValue metric={metric} reportDate={reportDate} /></Table.Cell>}
+                            {nrDates === 1 && !settings.hiddenColumns.includes("target") && <Table.Cell textAlign="right"><MeasurementTarget metric={metric} /></Table.Cell>}
+                            {!settings.hiddenColumns.includes("unit") && <Table.Cell style={style}>{unit}</Table.Cell>}
+                            {!settings.hiddenColumns.includes("source") && <Table.Cell style={style}><MeasurementSources metric={metric} /></Table.Cell>}
+                            {!settings.hiddenColumns.includes("time_left") && <Table.Cell style={style}><TimeLeft metric={metric} report={report} /></Table.Cell>}
+                            {nrDates > 1 && !settings.hiddenColumns.includes("overrun") && <Table.Cell style={style}><Overrun metric={metric} metric_uuid={metric_uuid} report={report} measurements={measurements} dates={dates} /></Table.Cell>}
+                            {!settings.hiddenColumns.includes("comment") && <Table.Cell style={style}><div style={{wordBreak: "break-word"}} dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
+                            {!settings.hiddenColumns.includes("issues") && <Table.Cell style={style}>
+                                <IssueStatus metric={metric} issueTrackerMissing={!report.issue_tracker} settings={settings} />
                             </Table.Cell>}
-                            {!hiddenColumns.includes("tags") && <Table.Cell style={style}>{getMetricTags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
+                            {!settings.hiddenColumns.includes("tags") && <Table.Cell style={style}>{getMetricTags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
                         </TableRowWithDetails>
                     )
                 })
@@ -154,18 +145,13 @@ SubjectTable.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
     handleSort: PropTypes.func,
-    hiddenColumns: stringsPropType,
-    issueSettings: issueSettingsPropType,
     measurements: PropTypes.array,
     metricEntries: PropTypes.array,
     reload: PropTypes.func,
     report: reportPropType,
-    reportDate: datePropType,
+    reportDate: optionalDatePropType,
     reports: reportsPropType,
-    sortDirection: sortDirectionPropType,
-    sortColumn: PropTypes.string,
+    settings: settingsPropType,
     subject: PropTypes.object,
-    subject_uuid: PropTypes.string,
-    toggleVisibleDetailsTab: PropTypes.func,
-    visibleDetailsTabs: stringsPropType
+    subject_uuid: PropTypes.string
 }

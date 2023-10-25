@@ -1,14 +1,18 @@
 import React from 'react';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
+import history from 'history/browser';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import * as fetch_server_api from '../api/fetch_server_api';
 import { mockGetAnimations } from '../dashboard/MockAnimations';
 import { ReportsOverview } from './ReportsOverview';
+import { useHiddenTagsURLSearchQuery } from '../app_ui_settings';
+import { createTestableSettings } from '../__fixtures__/fixtures';
 
 beforeEach(() => {
     fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) });
     mockGetAnimations()
+    history.push("")
 })
 
 afterEach(() => jest.restoreAllMocks());
@@ -22,20 +26,26 @@ const datamodel = {
     }
 }
 
-function render_reports_overview(reports, reportsOverview, reportDate, toggleHiddenTag, hiddenTags) {
+function renderReportsOverview(
+    {
+        hiddenTags = null,
+        reportDate = null,
+        reports = [],
+        reportsOverview = {},
+    } = {}
+) {
+    let settings = createTestableSettings()
+    if (hiddenTags) { settings.hiddenTags = hiddenTags }
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
                 <ReportsOverview
                     dates={[reportDate || new Date()]}
-                    hiddenColumns={[]}
-                    hiddenTags={hiddenTags ?? []}
                     measurements={[{ status: "target_met" }]}
-                    report_date={reportDate || null}
+                    report_date={reportDate}
                     reports={reports}
                     reports_overview={reportsOverview}
-                    toggleHiddenTag={toggleHiddenTag ?? jest.fn()}
-                    visibleDetailsTabs={[]}
+                    settings={settings}
                 />
             </DataModel.Provider>
         </Permissions.Provider>
@@ -43,21 +53,21 @@ function render_reports_overview(reports, reportsOverview, reportDate, toggleHid
 }
 
 it('shows an error message if there are no reports at the specified date', async () => {
-    await act(async () => render_reports_overview([], {}, new Date()))
+    renderReportsOverview({ reportDate: new Date() })
     expect(screen.getAllByText(/Sorry, no reports existed at/).length).toBe(1);
 });
 
 it('shows the reports overview', async () => {
     const reports = [{ subjects: {} }]
     const reportsOverview = { title: "Overview", permissions: {} }
-    await act(async () => render_reports_overview(reports, reportsOverview, new Date()))
+    renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expect(screen.getAllByText(/Overview/).length).toBe(1);
 });
 
 it('shows the comment', async () => {
     const reports = [{ subjects: {} }]
     const reportsOverview = { title: "Overview", comment: "Commentary", permissions: {} }
-    await act(async () => render_reports_overview(reports, reportsOverview))
+    renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expect(screen.getAllByText(/Commentary/).length).toBe(1);
 });
 
@@ -87,26 +97,27 @@ const reports = [
 const reportsOverview = { title: "Overview", permissions: {} }
 
 it('hides the report tag cards', async () => {
-    const toggleHiddenTag = jest.fn()
-    await act(async () => render_reports_overview(reports, reportsOverview, new Date(), toggleHiddenTag))
-    expect(screen.getAllByText(/Foo/).length).toBe(2)  // One in the dashboard, one in the table of metrics
-    expect(screen.getAllByText(/Bar/).length).toBe(2)  // One in the dashboard, one in the table of metrics
+    const { result } = renderHook(() => useHiddenTagsURLSearchQuery())
+    renderReportsOverview({ reports: reports, reportsOverview: reportsOverview, hiddenTags: result.current })
+    expect(screen.getAllByText(/Foo/).length).toBe(2)
+    expect(screen.getAllByText(/Bar/).length).toBe(2)
     fireEvent.click(screen.getAllByText(/Foo/)[0])
-    expect(toggleHiddenTag).toHaveBeenLastCalledWith("Bar")
+    expect(result.current.value).toStrictEqual(["Bar"])
 })
 
 it('shows the report tag cards', async () => {
-    const toggleHiddenTag = jest.fn()
-    await act(async () => render_reports_overview(reports, reportsOverview, new Date(), toggleHiddenTag, ["Bar"]))
-    expect(screen.getAllByText(/Foo/).length).toBe(2)  // One in the dashboard, one in the table of metrics
+    history.push("?hidden_tags=Bar")
+    const { result } = renderHook(() => useHiddenTagsURLSearchQuery())
+    renderReportsOverview({ reports: reports, reportsOverview: reportsOverview, hiddenTags: result.current })
+    expect(screen.getAllByText(/Foo/).length).toBe(2)
     expect(screen.queryAllByText(/Bar/).length).toBe(0)
     fireEvent.click(screen.getAllByText(/Foo/)[0])
-    expect(toggleHiddenTag).toHaveBeenLastCalledWith("Bar")
+    expect(result.current.value).toStrictEqual([])
 })
 
 it('adds a report', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await act(async () => render_reports_overview([], {}));
+    renderReportsOverview();
     fireEvent.click(screen.getByText(/Add report/));
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/new", {});
 });
@@ -114,7 +125,7 @@ it('adds a report', async () => {
 it('copies a report', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     const reports = [{ report_uuid: "uuid", subjects: {}, title: "Existing report" }]
-    await act(async () => render_reports_overview(reports, {}))
+    renderReportsOverview({ reports: reports })
     fireEvent.click(screen.getByText(/Copy report/));
     await act(async () => { fireEvent.click(screen.getByRole("option")); });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/uuid/copy", {});

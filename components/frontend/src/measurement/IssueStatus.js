@@ -1,8 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import TimeAgo from 'react-timeago';
 import { Label, Popup } from '../semantic_ui_react_wrappers';
 import { HyperLink } from '../widgets/HyperLink';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
-import TimeAgo from 'react-timeago';
+import { issueStatusPropType, metricPropType, settingsPropType, stringsPropType } from '../sharedPropTypes';
 
 function IssueWithoutTracker({ issueId }) {
     return (
@@ -13,36 +15,49 @@ function IssueWithoutTracker({ issueId }) {
         />
     )
 }
+IssueWithoutTracker.propType = {
+    issueId: PropTypes.string
+}
 
 function IssuesWithoutTracker({ issueIds }) {
     return <>{issueIds.map((issueId) => <IssueWithoutTracker key={issueId} issueId={issueId} />)}</>
 }
+IssuesWithoutTracker.propTypes = {
+    issueIds: stringsPropType
+}
 
-function labelDetails(issueStatus, issueSettings) {
+function labelDetails(issueStatus, settings) {
     let details = [<Label.Detail key="name">{issueStatus.name || "?"}</Label.Detail>]
-    if (issueStatus.summary && issueSettings?.showIssueSummary) {
+    if (issueStatus.summary && settings.showIssueSummary.value) {
         details.push(<Label.Detail key="summary">{issueStatus.summary}</Label.Detail>)
     }
-    if (issueStatus.created && issueSettings?.showIssueCreationDate) {
+    if (issueStatus.created && settings.showIssueCreationDate.value) {
         details.push(<Label.Detail key="created">Created <TimeAgo date={issueStatus.created} /></Label.Detail>)
     }
-    if (issueStatus.updated && issueSettings?.showIssueUpdateDate) {
+    if (issueStatus.updated && settings.showIssueUpdateDate.value) {
         details.push(<Label.Detail key="updated">Updated <TimeAgo date={issueStatus.updated} /></Label.Detail>)
     }
-    if (issueStatus.duedate && issueSettings?.showIssueDueDate) {
+    if (issueStatus.duedate && settings.showIssueDueDate.value) {
         details.push(<Label.Detail key="duedate">Due <TimeAgo date={issueStatus.duedate} /></Label.Detail>)
     }
-    if (issueStatus.release_name && issueSettings?.showIssueRelease) {
+    if (issueStatus.release_name && settings.showIssueRelease.value) {
         details.push(releaseLabel(issueStatus))
     }
-    if (issueStatus.sprint_name && issueSettings?.showIssueSprint) {
+    if (issueStatus.sprint_name && settings.showIssueSprint.value) {
         details.push(sprintLabel(issueStatus))
     }
     return details
 }
+labelDetails.propTypes = {
+    issueStatus: issueStatusPropType,
+    settings: settingsPropType
+}
 
 function releaseStatus(issueStatus) {
     return issueStatus.release_released ? "released" : "planned"
+}
+releaseStatus.propTypes = {
+    issueStatus: issueStatusPropType
 }
 
 function releaseLabel(issueStatus) {
@@ -53,6 +68,9 @@ function releaseLabel(issueStatus) {
         </Label.Detail>
     )
 }
+releaseLabel.propTypes = {
+    issueStatus: issueStatusPropType
+}
 
 function sprintLabel(issueStatus) {
     const sprintEnd = issueStatus.sprint_enddate ? <>ends <TimeAgo date={issueStatus.sprint_enddate}/></> : null
@@ -62,23 +80,35 @@ function sprintLabel(issueStatus) {
         </Label.Detail>
     )
 }
+sprintLabel.propTypes = {
+    issueStatus: issueStatusPropType
+}
 
 function prefixName(name, prefix) {
     // Prefix the name with prefix unless the name already contains the prefix
     return name.toLowerCase().indexOf(prefix.toLowerCase()) < 0 ? `${prefix} ${name}` : name;
 }
+prefixName.propType = {
+    name: PropTypes.string,
+    prefix: PropTypes.string
+}
 
-function issueLabel(issueStatus, issueSettings, error) {
+function issueLabel(issueStatus, settings, error) {
     const color = error ? "red" : {todo: "grey", doing: "blue", done: "green"}[issueStatus.status_category ?? "todo"];
-    const label = <Label basic={!error} color={color}>{issueStatus.issue_id}{labelDetails(issueStatus, issueSettings)}</Label>
+    const label = <Label basic={!error} color={color}>{issueStatus.issue_id}{labelDetails(issueStatus, settings)}</Label>
     if (issueStatus.landing_url) {
         // Without the span, the popup doesn't work
         return <span><HyperLink url={issueStatus.landing_url}>{label}</HyperLink></span>
     }
     return label
 }
+issueLabel.propTypes = {
+    issueStatus: issueStatusPropType,
+    settings: settingsPropType,
+    error: PropTypes.string
+}
 
-function IssueWithTracker({ issueStatus, issueSettings }) {
+function IssueWithTracker({ issueStatus, settings }) {
     let popupContent = "";  // Will contain error if any, otherwise creation and update dates, if any, else be empty
     let popupHeader = "";
     if (issueStatus.connection_error) {
@@ -89,7 +119,7 @@ function IssueWithTracker({ issueStatus, issueSettings }) {
         popupHeader = "Parse error";
         popupContent = "Quality-time could not parse the data received from the issue tracker."
     }
-    let label = issueLabel(issueStatus, issueSettings, popupHeader)
+    let label = issueLabel(issueStatus, settings, popupHeader)
     if (!popupContent && issueStatus.created) {
         popupHeader = issueStatus.summary;
         popupContent = issuePopupContent(issueStatus)
@@ -98,6 +128,10 @@ function IssueWithTracker({ issueStatus, issueSettings }) {
         label = <Popup header={popupHeader} content={popupContent} flowing hoverable trigger={label} />
     }
     return label
+}
+IssueWithTracker.propTypes = {
+    issueStatus: issueStatusPropType,
+    settings: settingsPropType
 }
 
 function issuePopupContent(issueStatus) {
@@ -118,19 +152,31 @@ function issuePopupContent(issueStatus) {
     }
     return popupContent
 }
+issuePopupContent.propTypes = {
+    issueStatus: issueStatusPropType
+}
 
-function IssuesWithTracker({ metric, issueSettings }) {
+function IssuesWithTracker({ metric, settings }) {
     const issueStatuses = metric.issue_status || [];
     return <>{issueStatuses.map((issueStatus) => <IssueWithTracker
         key={issueStatus.issue_id}
         issueStatus={issueStatus}
-        issueSettings={issueSettings}
+        settings={settings}
     />)}</>
 }
+IssuesWithTracker.propTypes = {
+    metric: metricPropType,
+    settings: settingsPropType
+}
 
-export function IssueStatus({ metric, issueTrackerMissing, issueSettings }) {
+export function IssueStatus({ metric, issueTrackerMissing, settings }) {
     if (issueTrackerMissing && metric.issue_ids?.length > 0) {
         return <IssuesWithoutTracker issueIds={metric.issue_ids} />
     }
-    return <IssuesWithTracker metric={metric} issueSettings={issueSettings} />
+    return <IssuesWithTracker metric={metric} settings={settings} />
+}
+IssueStatus.propTypes = {
+    issueTrackerMissing: PropTypes.bool,
+    metric: metricPropType,
+    settings: settingsPropType
 }

@@ -1,11 +1,8 @@
-import { renderHook, act } from '@testing-library/react'
-import history from 'history/browser';
+import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
 import {
     capitalize, getUserPermissions, getMetricTags, get_metric_target, getReportTags, get_source_name, get_subject_name,
-    nice_number, scaled_number, registeredURLSearchParams, userPrefersDarkMode, useURLSearchQuery,
-    getMetricResponseOverrun, visibleMetrics
+    nice_number, scaled_number, userPrefersDarkMode, getMetricResponseOverrun, visibleMetrics
 } from './utils';
-import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
 
 let matchMediaMatches
 
@@ -16,10 +13,6 @@ beforeAll(() => {
         })),
     });
 });
-
-beforeEach(() => {
-    history.push("")
-})
 
 it('capitalizes strings', () => {
     expect(capitalize("")).toBe("")
@@ -118,127 +111,6 @@ it('gets the subject name', () => {
 it('gets the subject name from the data model if the subject has no name', () => {
     expect(get_subject_name({ type: "subject_type" }, { subjects: { "subject_type": { name: "subject" } } })).toStrictEqual("subject")
 });
-
-it('gets a boolean value', () => {
-    history.push("?key=true")
-    const { result } = renderHook(() => useURLSearchQuery("key", "boolean"))
-    expect(result.current[0]).toBe(true)
-})
-
-it('gets the default boolean value', () => {
-    const { result } = renderHook(() => useURLSearchQuery("key", "boolean", false))
-    expect(result.current[0]).toBe(false)
-})
-
-it('sets a boolean value', () => {
-    const { result } = renderHook(() => useURLSearchQuery("key", "boolean", false))
-    act(() => { result.current[1](true) })
-    expect(result.current[0]).toBe(true)
-    expect(history.location.search).toEqual("?key=true")
-})
-
-it('removes the boolean value when set to default value', () => {
-    const { result } = renderHook(() => useURLSearchQuery("key", "boolean", false))
-    act(() => { result.current[1](true) })
-    act(() => { result.current[1](false) })
-    expect(result.current[0]).toBe(false)
-    expect(history.location.search).toEqual("")
-})
-
-it('gets an integer value', () => {
-    history.push("?key=42")
-    const { result } = renderHook(() => useURLSearchQuery("key", "integer"))
-    expect(result.current[0]).toBe(42)
-})
-
-it('gets the default integer value', () => {
-    const { result } = renderHook(() => useURLSearchQuery("key", "integer", 7))
-    expect(result.current[0]).toBe(7)
-})
-
-it('sets an integer value', () => {
-    const { result } = renderHook(() => useURLSearchQuery("key", "integer", 0))
-    act(() => { result.current[1](42) })
-    expect(result.current[0]).toBe(42)
-    expect(history.location.search).toEqual("?key=42")
-})
-
-it('removes the integer value when set to the default value', () => {
-    history.push("?key=42")
-    const { result } = renderHook(() => useURLSearchQuery("key", "integer", 2))
-    act(() => { result.current[1](2) })
-    expect(history.location.search).toEqual("")
-})
-
-it('gets an array value', () => {
-    history.push("?key=a,b")
-    const { result } = renderHook(() => useURLSearchQuery("key", "array"))
-    expect(result.current[0]).toStrictEqual(["a", "b"])
-})
-
-it('sets an array value', () => {
-    const { result } = renderHook(() => useURLSearchQuery("key", "array"))
-    act(() => { result.current[1]("a") })
-    act(() => { result.current[1]("b") })
-    expect(result.current[0]).toStrictEqual(["a", "b"])
-    expect(history.location.search).toEqual("?key=a,b")
-})
-
-it('unsets an array value', () => {
-    history.push("?key=a")
-    const { result } = renderHook(() => useURLSearchQuery("key", "array"))
-    act(() => { result.current[1]("a") })
-    expect(result.current[0]).toStrictEqual([])
-    expect(history.location.search).toEqual("")
-})
-
-it('clears the array value', () => {
-    const { result } = renderHook(() => useURLSearchQuery("key", "array"))
-    act(() => { result.current[1]("a") })
-    act(() => { result.current[1]("b") })
-    act(() => { result.current[2]() })
-    expect(result.current[0]).toStrictEqual([])
-    expect(history.location.search).toEqual("")
-})
-
-it('sets both a boolean and an integer parameter', () => {
-    const hook1 = renderHook(() => useURLSearchQuery("boolean_key", "boolean"))
-    act(() => { hook1.result.current[1](true) })
-    const hook2 = renderHook(() => useURLSearchQuery("integer_key", "integer"))
-    act(() => { hook2.result.current[1](42) })
-    expect(history.location.search).toEqual("?boolean_key=true&integer_key=42")
-})
-
-it('gets a string value', () => {
-    history.push("?key=value")
-    const { result } = renderHook(() => useURLSearchQuery("key", "string"))
-    expect(result.current[0]).toBe("value")
-})
-
-it('gets the default string value', () => {
-    const { result } = renderHook(() => useURLSearchQuery("key", "string", "default"))
-    expect(result.current[0]).toBe("default")
-})
-
-it('sets a string value', () => {
-    const { result } = renderHook(() => useURLSearchQuery("key", "string", ""))
-    act(() => { result.current[1]("value") })
-    expect(result.current[0]).toBe("value")
-    expect(history.location.search).toEqual("?key=value")
-})
-
-it('removes the string value when set to the default value', () => {
-    history.push("?key=value")
-    const { result } = renderHook(() => useURLSearchQuery("key", "string", "default"))
-    act(() => { result.current[1]("default") })
-    expect(history.location.search).toEqual("")
-})
-
-it('returns registered URL search parameters only', () => {
-    history.push('?unregistered_key=value&report_date=2022-02-11')
-    const expected = new URLSearchParams("?report_date=2022-02-11")
-    expect(registeredURLSearchParams().toString()).toEqual(expected.toString())
-})
 
 it("returns true when the user sets dark mode", () => {
     expect(userPrefersDarkMode("dark")).toBe(true)

@@ -2,14 +2,12 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { DataModel } from '../context/DataModel';
 import {
-    datePropType,
     datesPropType,
-    issueSettingsPropType,
-    metricsToHidePropType,
+    optionalDatePropType,
     reportPropType,
     reportsPropType,
-    sortDirectionPropType,
-    stringsPropType
+    settingsPropType,
+    stringsPropType,
 } from '../sharedPropTypes';
 import {
     get_metric_comment,
@@ -103,29 +101,22 @@ export function Subject({
     dates,
     firstSubject,
     handleSort,
-    hiddenColumns,
-    hiddenTags,
-    issueSettings,
     lastSubject,
     measurements,
-    metricsToHide,
     report,
     report_date,
     reports,
-    sortColumn,
-    sortDirection,
+    settings,
     subject_uuid,
-    toggleVisibleDetailsTab,
-    visibleDetailsTabs,
     reload
 }) {
     const subject = report.subjects[subject_uuid];
-    const metrics = visibleMetrics(subject.metrics, metricsToHide, hiddenTags)
+    const metrics = visibleMetrics(subject.metrics, settings.metricsToHide.value, settings.hiddenTags.value)
     const dataModel = useContext(DataModel)
     if (Object.keys(metrics).length === 0) { return null }
     let metricEntries = Object.entries(metrics);
-    if (sortColumn !== null) {
-        sortMetrics(dataModel, metricEntries, sortDirection, sortColumn, report, measurements);
+    if (settings.sortColumn.value !== "") {
+        sortMetrics(dataModel, metricEntries, settings.sortDirection.value, settings.sortColumn.value, report, measurements);
     }
 
     return (
@@ -146,20 +137,15 @@ export function Subject({
                 changed_fields={changed_fields}
                 dates={dates}
                 handleSort={handleSort}
-                hiddenColumns={hiddenColumns}
-                issueSettings={issueSettings}
                 measurements={measurements}
                 metricEntries={metricEntries}
                 reload={reload}
                 report={report}
                 reportDate={report_date}
                 reports={reports}
-                sortDirection={sortDirection}
-                sortColumn={sortColumn}
+                settings={settings}
                 subject={subject}
                 subject_uuid={subject_uuid}
-                toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                visibleDetailsTabs={visibleDetailsTabs}
             />
         </div>
     )
@@ -170,19 +156,12 @@ Subject.propTypes = {
     dates: datesPropType,
     firstSubject: PropTypes.bool,
     handleSort: PropTypes.func,
-    hiddenColumns: stringsPropType,
-    hiddenTags: stringsPropType,
-    issueSettings: issueSettingsPropType,
     lastSubject: PropTypes.bool,
     measurements: PropTypes.array,
-    metricsToHide: metricsToHidePropType,
     report: reportPropType,
-    report_date: datePropType,
+    report_date: optionalDatePropType,
     reports: reportsPropType,
-    sortColumn: PropTypes.string,
-    sortDirection: sortDirectionPropType,
+    settings: settingsPropType,
     subject_uuid: PropTypes.string,
-    toggleVisibleDetailsTab: PropTypes.func,
-    visibleDetailsTabs: stringsPropType,
     reload: PropTypes.func
 }

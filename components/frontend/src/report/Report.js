@@ -1,14 +1,13 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-    datePropType,
     datesPropType,
-    issueSettingsPropType,
-    metricsToHidePropType,
+    optionalDatePropType,
     reportPropType,
     reportsPropType,
-    sortDirectionPropType,
-    stringsPropType
+    settingsPropType,
+    stringsPropType,
+    stringsURLSearchQueryPropType
 } from '../sharedPropTypes';
 import { DataModel } from '../context/DataModel';
 import { Subjects } from '../subject/Subjects';
@@ -62,7 +61,7 @@ function ReportDashboard(
     const nrMetrics = Math.max(nrMetricsInReport(report), 1);
     const subjectCards = []
     Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-        const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
+        const metrics = visibleMetrics(subject.metrics, "none", hiddenTags.value)
         if (Object.keys(metrics).length > 0) {
             const summary = {}
             dates.forEach((date) => {
@@ -79,8 +78,8 @@ function ReportDashboard(
             )
         }
     })
-    const anyTagsHidden = hiddenTags.length > 0
-    const tagCards = getReportTags(report, hiddenTags).map((tag) => {
+    const anyTagsHidden = hiddenTags.value.length > 0
+    const tagCards = getReportTags(report, hiddenTags.value).map((tag) => {
         const summary = {}
         dates.forEach((date) => {
             summary[date] = summarizeTagOnDate(report, measurements, tag, date)
@@ -105,7 +104,7 @@ function ReportDashboard(
 }
 ReportDashboard.propTypes = {
     dates: datesPropType,
-    hiddenTags: stringsPropType,
+    hiddenTags: stringsURLSearchQueryPropType,
     measurements: PropTypes.array,
     onClick: PropTypes.func,
     onClickTag: PropTypes.func,
@@ -117,23 +116,14 @@ export function Report({
     changed_fields,
     dates,
     handleSort,
-    hiddenColumns,
-    hiddenTags,
-    issueSettings,
     measurements,
-    metricsToHide,
     openReportsOverview,
     reload,
     report,
     report_date,
     reports,
-    sortColumn,
-    sortDirection,
-    toggleHiddenTag,
-    toggleVisibleDetailsTab,
-    visibleDetailsTabs
+    settings
 }) {
-
     function navigate_to_subject(event, subject_uuid) {
         event.preventDefault();
         document.getElementById(subject_uuid).scrollIntoView();
@@ -158,14 +148,14 @@ export function Report({
             <CommentSegment comment={report.comment} />
             <ReportDashboard
                 dates={dates}
-                hiddenTags={hiddenTags}
+                hiddenTags={settings.hiddenTags}
                 measurements={reversedMeasurements}
                 onClick={(e, s) => navigate_to_subject(e, s)}
                 onClickTag={(tag) => {
                     // If there are hidden tags (hiddenTags.length > 0), show the hidden tags.
                     // Otherwise, hide all tags in this report except the one clicked on.
-                    const tagsToToggle = hiddenTags?.length > 0 ? hiddenTags : getReportTags(report)
-                    toggleHiddenTag(...tagsToToggle.filter((visibleTag) => visibleTag !== tag))
+                    const tagsToToggle = settings.hiddenTags.value.length > 0 ? settings.hiddenTags.value : getReportTags(report)
+                    settings.hiddenTags.toggle(...tagsToToggle.filter((visibleTag) => visibleTag !== tag))
                 }}
                 report={report}
                 reload={reload}
@@ -175,19 +165,12 @@ export function Report({
                 changed_fields={changed_fields}
                 dates={dates}
                 handleSort={handleSort}
-                hiddenColumns={hiddenColumns}
-                hiddenTags={hiddenTags}
-                metricsToHide={metricsToHide}
-                issueSettings={issueSettings}
                 measurements={measurements}
                 reload={reload}
                 reports={reports}
                 reportsToShow={[report]}
                 report_date={report_date}
-                sortColumn={sortColumn}
-                sortDirection={sortDirection}
-                toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                visibleDetailsTabs={visibleDetailsTabs}
+                settings={settings}
             />
             <SubjectsButtonRow reload={reload} report={report} reports={reports} />
         </div>
@@ -197,19 +180,11 @@ Report.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
     handleSort: PropTypes.func,
-    hiddenColumns: stringsPropType,
-    hiddenTags: stringsPropType,
-    issueSettings: issueSettingsPropType,
     measurements: PropTypes.array,
-    metricsToHide: metricsToHidePropType,
     openReportsOverview: PropTypes.func,
     reload: PropTypes.func,
     report: reportPropType,
-    report_date: datePropType,
+    report_date: optionalDatePropType,
     reports: reportsPropType,
-    sortColumn: PropTypes.string,
-    sortDirection: sortDirectionPropType,
-    toggleHiddenTag: PropTypes.func,
-    toggleVisibleDetailsTab: PropTypes.func,
-    visibleDetailsTabs: stringsPropType
+    settings: settingsPropType
 }
