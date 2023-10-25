@@ -80,10 +80,11 @@ function ReportsDashboard({ dates, hiddenTags, reports, onClickTag, openReport, 
             summary={reportSummary[report.report_uuid]}
         />
     );
+    const anyTagsHidden = hiddenTags.length > 0
     const tagCards = tags.filter((tag) => (!hiddenTags?.includes(tag))).map((tag) =>
         <MetricSummaryCard
             key={tag}
-            header={<Tag tag={tag} />}
+            header={<Tag selected={anyTagsHidden} tag={tag} />}
             maxY={nrMetrics}
             onClick={() => onClickTag(tag)}
             summary={tagSummary[tag]}
