@@ -1,3 +1,22 @@
+import { renderHook } from '@testing-library/react';
+import {
+    useDateIntervalURLSearchQuery,
+    useDateOrderURLSearchQuery,
+    useHiddenColumnsURLSearchQuery,
+    useHiddenTagsURLSearchQuery,
+    useMetricsToHideURLSearchQuery,
+    useNrDatesURLSearchQuery,
+    useSortColumnURLSearchQuery,
+    useSortDirectionURLSearchQuery,
+    useVisibleDetailsTabsSearchQuery,
+    useShowIssueSummaryURLSearchQuery,
+    useShowIssueCreationDateURLSearchQuery,
+    useShowIssueUpdateDateURLSearchQuery,
+    useShowIssueDueDateURLSearchQuery,
+    useShowIssueReleaseURLSearchQuery,
+    useShowIssueSprintURLSearchQuery
+} from '../app_ui_settings';
+
 export const datamodel = {
     subjects: {
         subject_type: { name: "Subject type", metrics: ["metric_type"] }
@@ -46,4 +65,24 @@ export const report = {
         }
     },
     title: "Report title"
+}
+
+export function createTestableSettings() {
+    return {
+        dateInterval: renderHook(() => useDateIntervalURLSearchQuery()).result.current,
+        dateOrder: renderHook(() => useDateOrderURLSearchQuery()).result.current,
+        hiddenColumns: renderHook(() => useHiddenColumnsURLSearchQuery()).result.current,
+        hiddenTags: renderHook(() => useHiddenTagsURLSearchQuery()).result.current,
+        metricsToHide: renderHook(() => useMetricsToHideURLSearchQuery()).result.current,
+        nrDates: renderHook(() => useNrDatesURLSearchQuery()).result.current,
+        showIssueCreationDate: renderHook(() => useShowIssueCreationDateURLSearchQuery()).result.current,
+        showIssueSummary: renderHook(() => useShowIssueSummaryURLSearchQuery()).result.current,
+        showIssueUpdateDate: renderHook(() => useShowIssueUpdateDateURLSearchQuery()).result.current,
+        showIssueDueDate: renderHook(() => useShowIssueDueDateURLSearchQuery()).result.current,
+        showIssueRelease: renderHook(() => useShowIssueReleaseURLSearchQuery()).result.current,
+        showIssueSprint: renderHook(() => useShowIssueSprintURLSearchQuery()).result.current,
+        sortColumn: renderHook(() => useSortColumnURLSearchQuery()).result.current,
+        sortDirection: renderHook(() => useSortDirectionURLSearchQuery()).result.current,
+        visibleDetailsTabs: renderHook(() => useVisibleDetailsTabsSearchQuery()).result.current
+    }
 }

@@ -1,47 +1,57 @@
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import history from 'history/browser';
 import { Subject } from "./Subject";
 import { DataModel } from "../context/DataModel";
-import { datamodel, report } from "../__fixtures__/fixtures";
+import { createTestableSettings, datamodel, report } from "../__fixtures__/fixtures";
 
-function renderSubject(atReportsOverview, dates, hiddenTags, metricsToHide, sortColumn, sortDirection, reportDate) {
+function renderSubject(
+    {
+        atReportsOverview = false,
+        dates = [new Date()],
+        reportDate = null,
+    } = {}
+) {
+    const settings = createTestableSettings()
     render(
         <DataModel.Provider value={datamodel}>
             <Subject
                 atReportsOverview={atReportsOverview}
                 dates={dates}
-                handleSort={() => { /* Dummy implementation */ }}
-                hiddenTags={hiddenTags ?? []}
+                handleSort={() => jest.fn()}
                 measurements={[]}
-                metricsToHide={metricsToHide ?? "none"}
                 report={report}
                 report_date={reportDate}
-                sortColumn={sortColumn}
-                sortDirection={sortDirection}
+                settings={settings}
                 subject_uuid="subject_uuid"
                 tags={[]}
-                hiddenColumns={[]}
-                visibleDetailsTabs={[]} />
+            />
         </DataModel.Provider>
     )
 }
 
+beforeEach(() => {
+    history.push("")
+})
+
 it('shows the subject title', async () => {
-    await act(async () => { renderSubject(false, [new Date(2022, 3, 26)]) });
+    renderSubject({ dates: [new Date(2022, 3, 26)] })
     expect(screen.queryAllByText("Subject 1 title").length).toBe(1);
 })
 
 it('shows the subject title at the reports overview', async () => {
-    await act(async () => { renderSubject(true, [new Date(2022, 3, 26)]) });
+    renderSubject({ atReportsOverview: true, dates: [new Date(2022, 3, 26)] })
     expect(screen.queryAllByText("Report title ❯ Subject 1 title").length).toBe(1);
 })
 
 it('hides metrics not requiring action', async () => {
-    await act(async () => { renderSubject(false, [new Date(2022, 3, 26)], [], "no_action_needed") });
+    history.push("?metrics_to_hide=no_action_needed")
+    renderSubject()
     expect(screen.queryAllByText(/M\d/).length).toBe(1);
 })
 
 it('hides the subject if all metrics are hidden', async () => {
-    await act(async () => { renderSubject(false, [], ["tag", "other tag"]) });
+    history.push("?hidden_tags=tag,other tag")
+    renderSubject();
     expect(screen.queryAllByText("Subject 1 title").length).toBe(0);
 })
 
@@ -52,7 +62,8 @@ function expectOrder(metricNames) {
 for (const attribute of ["name", "measurement", "target", "comment", "source", "issues", "tags", "unit", "status", "time_left", "overrun"]) {
     for (const order of ["ascending", "descending"]) {
         it('sorts metrics by attribute', async () => {
-            await act(async () => { renderSubject(false, [], [], "none", attribute, order) });
+            history.push(`?sort_column=${attribute}&sort_direction=${order}`)
+            renderSubject();
             expectOrder(order === "ascending" ? ["M1", "M2"] : ["M2", "M1"])
         })
     }

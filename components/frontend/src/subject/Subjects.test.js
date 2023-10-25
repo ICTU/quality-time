@@ -1,25 +1,30 @@
 import React from 'react';
 import { render, screen } from "@testing-library/react";
+import history from 'history/browser';
 import { DataModel } from '../context/DataModel';
 import { Subjects } from './Subjects';
-import { datamodel, report } from "../__fixtures__/fixtures";
+import { createTestableSettings, datamodel, report } from "../__fixtures__/fixtures";
 
 function renderSubjects(reports) {
+    const settings = createTestableSettings()
     return render(
         <DataModel.Provider value={datamodel}>
             <Subjects
                 dates={[]}
-                hiddenColumns={[]}
                 history={history}
                 measurements={[]}
                 reports={reports}
                 reportsToShow={reports}
+                settings={settings}
                 tags={[]}
-                visibleDetailsTabs={[]}
             />
         </DataModel.Provider>
     )
 }
+
+beforeEach(() => {
+    history.push("")
+})
 
 it("shows the subjects", () => {
     renderSubjects([report]);

@@ -1,11 +1,13 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import history from 'history/browser';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { MetricDetails } from './MetricDetails';
 import * as changelog_api from '../api/changelog';
 import * as metric_api from '../api/metric';
 import * as measurement_api from '../api/measurement';
+import { createTestableSettings } from '../__fixtures__/fixtures';
 
 jest.mock("../api/changelog.js");
 jest.mock("../api/metric.js");
@@ -59,51 +61,52 @@ async function renderMetricDetails(stopSorting, connection_error) {
         ]
     }));
     changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }));
-
-    await act(async () => {
-        render(
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <DataModel.Provider value={data_model}>
-                    <MetricDetails
-                        metric_uuid="metric_uuid"
-                        report={report}
-                        reports={[report]}
-                        stopSorting={stopSorting}
-                        subject_uuid="subject_uuid"
-                        visibleDetailsTabs={[]}
-                        toggleVisibleDetailsTab={() => {/*Dummy implementation*/ }}
-                    />
-                </DataModel.Provider>
-            </Permissions.Provider>
-        )
-    })
+    const settings = createTestableSettings()
+    await act(async () => render(
+        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+            <DataModel.Provider value={data_model}>
+                <MetricDetails
+                    metric_uuid="metric_uuid"
+                    report={report}
+                    reports={[report]}
+                    stopSorting={stopSorting}
+                    subject_uuid="subject_uuid"
+                    visibleDetailsTabs={settings.visibleDetailsTabs}
+                />
+            </DataModel.Provider>
+        </Permissions.Provider>
+    ))
 }
+
+beforeEach(() => {
+    history.push("")
+});
 
 it('switches tabs', async () => {
     await renderMetricDetails();
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
-    await act(async () => fireEvent.click(screen.getByText(/Sources/)))
+    fireEvent.click(screen.getByText(/Sources/))
     expect(screen.getAllByText(/Source name/).length).toBe(1);
 });
 
 it('switches tabs to technical debt', async () => {
     await renderMetricDetails();
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
-    await act(async () => fireEvent.click(screen.getByText(/Technical debt/)))
+    fireEvent.click(screen.getByText(/Technical debt/))
     expect(screen.getAllByText(/Technical debt target/).length).toBe(1);
 })
 
 it('switches tabs to measurement entities', async () => {
     await renderMetricDetails();
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
-    await act(async () => fireEvent.click(screen.getByText(/The source/)))
+    fireEvent.click(screen.getByText(/The source/))
     expect(screen.getAllByText(/Attribute status/).length).toBe(1);
 })
 
 it('switches tabs to the trend graph', async () => {
     await renderMetricDetails();
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
-    await act(async () => fireEvent.click(screen.getByText(/Trend graph/)))
+    fireEvent.click(screen.getByText(/Trend graph/))
     expect(screen.getAllByText(/Time/).length).toBe(1);
 })
 
@@ -116,7 +119,7 @@ it('does not show the trend graph tab if the metric scale is version number', as
 it('switches tabs to the share tab', async () => {
     await renderMetricDetails();
     expect(screen.getAllByText(/Metric name/).length).toBe(1);
-    await act(async () => fireEvent.click(screen.getByText(/Share/)))
+    fireEvent.click(screen.getByText(/Share/))
     expect(screen.getAllByText(/Metric permanent link/).length).toBe(1);
 })
 
@@ -141,6 +144,6 @@ it('loads the changelog', async () => {
 
 it('calls the callback on delete', async () => {
     await renderMetricDetails();
-    await act(async () => fireEvent.click(screen.getByText(/Delete metric/)));
+    fireEvent.click(screen.getByText(/Delete metric/));
     expect(metric_api.delete_metric).toHaveBeenCalled();
 })

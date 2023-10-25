@@ -12,7 +12,7 @@ export function SettingsMenuItem({ active, children, disabled, disabledHelp, hel
         color: activeColor,
         disabled: disabled,
         onBeforeInput: (event) => { event.preventDefault(); if (!disabled) { onClick(onClickData) } },  // Uncovered, see https://github.com/testing-library/react-testing-library/issues/1152
-        onClick: () => onClick(onClickData),
+        onClick: (event) => { event.preventDefault(); onClick(onClickData) },
         tabIndex: 0
     }
     if (help || (disabledHelp && disabled)) {

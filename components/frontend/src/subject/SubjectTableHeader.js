@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { PropTypes } from 'prop-types';
 import { List, Table } from "semantic-ui-react";
 import { Icon, Label } from "../semantic_ui_react_wrappers";
 import { DarkMode } from "../context/DarkMode";
@@ -6,6 +7,7 @@ import { StatusIcon } from '../measurement/StatusIcon';
 import { SortableTableHeaderCell, UnsortableTableHeaderCell } from '../widgets/TableHeaderCell';
 import { HyperLink } from "../widgets/HyperLink";
 import { STATUSES, STATUS_DESCRIPTION } from '../utils';
+import { datesPropType, settingsPropType } from '../sharedPropTypes';
 
 const metricHelp = <>
     <p>
@@ -227,30 +229,33 @@ export function SubjectTableHeader(
     {
         columnDates,
         handleSort,
-        hiddenColumns,
-        sortColumn,
-        sortDirection,
+        settings
     }) {
     const darkMode = useContext(DarkMode)
-    const sortProps = { sortColumn: sortColumn, sortDirection: sortDirection, handleSort: handleSort }
+    const sortProps = { sortColumn: settings.sortColumn, sortDirection: settings.sortDirection, handleSort: handleSort }
     const nrDates = columnDates.length
     return (
         <Table.Header>
             <Table.Row>
                 <SortableTableHeaderCell colSpan="2" column='name' label='Metric' help={metricHelp} {...sortProps} />
                 {nrDates > 1 && columnDates.map(date => <UnsortableTableHeaderCell key={date} textAlign="right" label={date.toLocaleDateString()} />)}
-                {nrDates === 1 && !hiddenColumns.includes("trend") && <UnsortableTableHeaderCell width="2" label="Trend (7 days)" help={trendHelp} />}
-                {nrDates === 1 && !hiddenColumns.includes("status") && <SortableTableHeaderCell column='status' label='Status' textAlign='center' help={statusHelp(darkMode)} {...sortProps} />}
-                {nrDates === 1 && !hiddenColumns.includes("measurement") && <SortableTableHeaderCell column='measurement' label='Measurement' textAlign="right" help={measurementHelp} {...sortProps} />}
-                {nrDates === 1 && !hiddenColumns.includes("target") && <SortableTableHeaderCell column='target' label='Target' textAlign="right" help={targetHelp} {...sortProps} />}
-                {!hiddenColumns.includes("unit") && <SortableTableHeaderCell column="unit" label="Unit" help={unitHelp} {...sortProps} />}
-                {!hiddenColumns.includes("source") && <SortableTableHeaderCell column='source' label='Sources' help={sourcesHelp} {...sortProps} />}
-                {!hiddenColumns.includes("time_left") && <SortableTableHeaderCell column='time_left' label='Time left' help={timeLeftHelp} {...sortProps} />}
-                {nrDates > 1 && !hiddenColumns.includes("overrun") && <SortableTableHeaderCell column='overrun' label='Overrun' help={overrunHelp} {...sortProps} />}
-                {!hiddenColumns.includes("comment") && <SortableTableHeaderCell column='comment' label='Comment' help={commentHelp} {...sortProps} />}
-                {!hiddenColumns.includes("issues") && <SortableTableHeaderCell column='issues' label='Issues' help={issuesHelp} {...sortProps} />}
-                {!hiddenColumns.includes("tags") && <SortableTableHeaderCell column='tags' label='Tags' help={tagsHelp} {...sortProps} />}
+                {nrDates === 1 && !settings.hiddenColumns.includes("trend") && <UnsortableTableHeaderCell width="2" label="Trend (7 days)" help={trendHelp} />}
+                {nrDates === 1 && !settings.hiddenColumns.includes("status") && <SortableTableHeaderCell column='status' label='Status' textAlign='center' help={statusHelp(darkMode)} {...sortProps} />}
+                {nrDates === 1 && !settings.hiddenColumns.includes("measurement") && <SortableTableHeaderCell column='measurement' label='Measurement' textAlign="right" help={measurementHelp} {...sortProps} />}
+                {nrDates === 1 && !settings.hiddenColumns.includes("target") && <SortableTableHeaderCell column='target' label='Target' textAlign="right" help={targetHelp} {...sortProps} />}
+                {!settings.hiddenColumns.includes("unit") && <SortableTableHeaderCell column="unit" label="Unit" help={unitHelp} {...sortProps} />}
+                {!settings.hiddenColumns.includes("source") && <SortableTableHeaderCell column='source' label='Sources' help={sourcesHelp} {...sortProps} />}
+                {!settings.hiddenColumns.includes("time_left") && <SortableTableHeaderCell column='time_left' label='Time left' help={timeLeftHelp} {...sortProps} />}
+                {nrDates > 1 && !settings.hiddenColumns.includes("overrun") && <SortableTableHeaderCell column='overrun' label='Overrun' help={overrunHelp} {...sortProps} />}
+                {!settings.hiddenColumns.includes("comment") && <SortableTableHeaderCell column='comment' label='Comment' help={commentHelp} {...sortProps} />}
+                {!settings.hiddenColumns.includes("issues") && <SortableTableHeaderCell column='issues' label='Issues' help={issuesHelp} {...sortProps} />}
+                {!settings.hiddenColumns.includes("tags") && <SortableTableHeaderCell column='tags' label='Tags' help={tagsHelp} {...sortProps} />}
             </Table.Row>
         </Table.Header>
     )
+}
+SubjectTableHeader.propTypes = {
+    columnDates: datesPropType,
+    handleSort: PropTypes.func,
+    settings: settingsPropType
 }

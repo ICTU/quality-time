@@ -14,13 +14,11 @@ import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
 import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum } from '../utils';
 import {
-    datePropType,
     datesPropType,
-    issueSettingsPropType,
-    metricsToHidePropType,
+    optionalDatePropType,
     reportsPropType,
-    sortDirectionPropType,
-    stringsPropType
+    settingsPropType,
+    stringsPropType,
 } from '../sharedPropTypes';
 import { ReportsOverviewErrorMessage } from './ReportErrorMessage';
 import { metricStatusOnDate } from './report_utils';
@@ -137,21 +135,13 @@ export function ReportsOverview(
         changed_fields,
         dates,
         handleSort,
-        hiddenColumns,
-        hiddenTags,
-        issueSettings,
         measurements,
-        metricsToHide,
         openReport,
         reload,
         reports,
         report_date,
         reports_overview,
-        sortColumn,
-        sortDirection,
-        toggleHiddenTag,
-        toggleVisibleDetailsTab,
-        visibleDetailsTabs
+        settings
     }
 ) {
     if (reports.length === 0 && report_date !== null) {
@@ -165,14 +155,14 @@ export function ReportsOverview(
             <CommentSegment comment={reports_overview.comment} />
             <ReportsDashboard
                 dates={dates}
-                hiddenTags={hiddenTags}
+                hiddenTags={settings.hiddenTags.value}
                 layout={reports_overview.layout ?? []}
                 measurements={reversedMeasurements}
                 onClickTag={(tag) => {
                     // If there are hidden tags (hiddenTags.length > 0), show the hidden tags.
                     // Otherwise, hide all tags in all reports except the one clicked on.
-                    const tagsToToggle = hiddenTags?.length > 0 ? hiddenTags : getReportsTags(reports)
-                    toggleHiddenTag(...tagsToToggle.filter((visibleTag) => visibleTag !== tag))
+                    const tagsToToggle = settings.hiddenTags.value.length > 0 ? settings.hiddenTags.value : getReportsTags(reports)
+                    settings.hiddenTags.toggle(...tagsToToggle.filter((visibleTag) => visibleTag !== tag))
                 }}
                 openReport={openReport}
                 reload={reload}
@@ -183,19 +173,12 @@ export function ReportsOverview(
                 changed_fields={changed_fields}
                 dates={dates}
                 handleSort={handleSort}
-                hiddenColumns={hiddenColumns}
-                hiddenTags={hiddenTags}
-                issueSettings={issueSettings}
                 measurements={measurements}
-                metricsToHide={metricsToHide}
                 reload={reload}
                 reportsToShow={reports}
                 report_date={report_date}
                 reports={reports}
-                sortColumn={sortColumn}
-                sortDirection={sortDirection}
-                toggleVisibleDetailsTab={toggleVisibleDetailsTab}
-                visibleDetailsTabs={visibleDetailsTabs}
+                settings={settings}
             />
             <ReportsOverviewButtonRow reload={reload} reports={reports} />
         </div>
@@ -205,19 +188,11 @@ ReportsOverview.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
     handleSort: PropTypes.func,
-    hiddenColumns: stringsPropType,
-    hiddenTags: stringsPropType,
-    issueSettings: issueSettingsPropType,
     measurements: PropTypes.array,
-    metricsToHide: metricsToHidePropType,
     reports: reportsPropType,
     openReport: PropTypes.func,
     reload: PropTypes.func,
-    report_date: datePropType,
+    report_date: optionalDatePropType,
     reports_overview: PropTypes.object,
-    sortColumn: PropTypes.string,
-    sortDirection: sortDirectionPropType,
-    toggleHiddenTag: PropTypes.func,
-    toggleVisibleDetailsTab: PropTypes.func,
-    visibleDetailsTabs: stringsPropType
+    settings: settingsPropType
 }

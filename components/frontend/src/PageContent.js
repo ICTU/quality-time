@@ -6,13 +6,11 @@ import { Report } from './report/Report';
 import { ReportsOverview } from './report/ReportsOverview';
 import { get_measurements } from './api/measurement';
 import {
-    datePropType,
-    issueSettingsPropType,
-    metricsToHidePropType,
     reportPropType,
     reportsPropType,
-    sortDirectionPropType,
-    stringsPropType
+    settingsPropType,
+    stringsPropType,
+    optionalDatePropType,
 } from './sharedPropTypes';
 
 function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
@@ -32,15 +30,8 @@ function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
 export function PageContent({
     changed_fields,
     current_report,
-    dateInterval,
-    dateOrder,
     handleSort,
-    hiddenColumns,
-    hiddenTags,
-    issueSettings,
-    metricsToHide,
     loading,
-    nrDates,
     nrMeasurements,
     openReport,
     openReportsOverview,
@@ -49,13 +40,9 @@ export function PageContent({
     report_uuid,
     reports,
     reports_overview,
-    sortColumn,
-    sortDirection,
-    toggleHiddenTag,
-    toggleVisibleDetailsTab,
-    visibleDetailsTabs
+    settings
 }) {
-    const dates = getColumnDates(report_date, dateInterval, dateOrder, nrDates)
+    const dates = getColumnDates(report_date, settings.dateInterval.value, settings.dateOrder.value, settings.nrDates.value)
     const [measurements, setMeasurements] = useState([]);
     useEffect(() => {
         const minReportDate = dates.slice().sort((d1, d2) => { return d1.getTime() - d2.getTime() }).at(0);
@@ -63,7 +50,7 @@ export function PageContent({
             setMeasurements(json.measurements ?? [])
         })
         // eslint-disable-next-line
-    }, [report_date, nrMeasurements, dateInterval, nrDates]);
+    }, [report_date, nrMeasurements, settings.dateInterval.value, settings.nrDates.value]);
     let content;
     if (loading) {
         content = <Segment basic placeholder aria-label="Loading..."><Loader active size="massive" /></Segment>
@@ -72,19 +59,11 @@ export function PageContent({
             changed_fields: changed_fields,
             dates: dates,
             handleSort: handleSort,
-            hiddenColumns: hiddenColumns,
-            hiddenTags: hiddenTags,
-            issueSettings: issueSettings,
             measurements: measurements,
-            metricsToHide: metricsToHide,
             reload: reload,
             reports: reports,
             report_date: report_date,
-            sortColumn: sortColumn,
-            sortDirection: sortDirection,
-            toggleHiddenTag: toggleHiddenTag,
-            toggleVisibleDetailsTab: toggleVisibleDetailsTab,
-            visibleDetailsTabs: visibleDetailsTabs
+            settings: settings
         }
         if (report_uuid) {
             content = <Report
@@ -105,26 +84,15 @@ export function PageContent({
 PageContent.propTypes = {
     changed_fields: stringsPropType,
     current_report: reportPropType,
-    dateInterval: PropTypes.number,
-    dateOrder: sortDirectionPropType,
     handleSort: PropTypes.func,
-    hiddenColumns: stringsPropType,
-    hiddenTags: stringsPropType,
-    issueSettings: issueSettingsPropType,
-    metricsToHide: metricsToHidePropType,
     loading: PropTypes.bool,
-    nrDates: PropTypes.number,
     nrMeasurements: PropTypes.number,
     openReport: PropTypes.func,
     openReportsOverview: PropTypes.func,
     reload: PropTypes.func,
-    report_date: datePropType,
+    report_date: optionalDatePropType,
     report_uuid: PropTypes.string,
     reports: reportsPropType,
     reports_overview: PropTypes.object,
-    sortColumn: PropTypes.string,
-    sortDirection: sortDirectionPropType,
-    toggleHiddenTag: PropTypes.func,
-    toggleVisibleDetailsTab: PropTypes.func,
-    visibleDetailsTabs: stringsPropType
+    settings: settingsPropType
 }

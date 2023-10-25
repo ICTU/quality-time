@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-import history from 'history/browser';
 import { PERMISSIONS } from './context/Permissions';
 import { HyperLink } from './widgets/HyperLink';
 import { defaultDesiredResponseTimes } from './defaults';
@@ -275,74 +273,6 @@ export function formatMetricScaleAndUnit(metricType, metric) {
 
 export function days(timeInMs) {
     return Math.round(timeInMs / MILLISECONDS_PER_DAY)
-}
-
-const registeredURLSearchQueryKeys = new Set(["report_date", "report_url", "hide_toasts"]);
-
-export function useURLSearchQuery(key, state_type, default_value) {
-    // state_type can either be "boolean", "integer", "string", or "array"
-    const [state, setState] = useState(getState());
-    registeredURLSearchQueryKeys.add(key);
-
-    function getState() {
-        const parsed_state = parseURLSearchQuery().get(key);
-        if (state_type === "boolean") {
-            return parsed_state === "true"
-        } else if (state_type === "integer") {
-            return typeof parsed_state === "string" ? parseInt(parsed_state, 10) : default_value;
-        } else if (state_type === "string") {
-            return parsed_state ?? default_value
-        }
-        // else state_type is "array"
-        return parsed_state?.split(",") ?? []
-    }
-
-    function parseURLSearchQuery() {
-        return new URLSearchParams(history.location.search)
-    }
-
-    function setURLSearchQuery(new_state) {
-        let parsed = parseURLSearchQuery();
-        if ((state_type === "array" && new_state.length === 0) || (new_state === default_value)) {
-            parsed.delete(key)
-        } else {
-            parsed.set(key, new_state)
-        }
-        const search = parsed.toString().replace(/%2C/g, ",")  // No need to encode commas
-        history.replace({ search: search.length > 0 ? "?" + search : "" });
-        setState(new_state);
-    }
-
-    function toggleURLSearchQuery(...items) {
-        const new_state = [];
-        state.forEach((item) => { if (!items.includes(item)) { new_state.push(item) } })
-        items.forEach((item) => { if (!state.includes(item)) { new_state.push(item) } })
-        setURLSearchQuery(new_state);
-    }
-
-    function clearURLSearchQuery() {
-        setURLSearchQuery([]);
-    }
-
-    return state_type === "array" ? [state, toggleURLSearchQuery, clearURLSearchQuery] : [state, setURLSearchQuery]
-}
-
-export function registeredURLSearchParams() {
-    // Return registered URL search parameters only; to prevent CodeQL js/client-side-unvalidated-url-redirection
-    let parsed = new URLSearchParams(history.location.search)
-    for (let key of parsed.keys()) {
-        if (!registeredURLSearchQueryKeys.has(key)) { parsed.delete(key) }
-    }
-    return parsed
-}
-
-export function useDelayedRender() {
-    const [visible, setVisible] = useState(false);
-    useEffect(() => {
-        const timeout = setTimeout(setVisible, 50, true);
-        return () => clearTimeout(timeout)
-    }, []);
-    return visible;
 }
 
 export function isValidDate_YYYYMMDD(string) {

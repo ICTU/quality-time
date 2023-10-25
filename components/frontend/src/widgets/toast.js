@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { registeredURLSearchParams } from '../utils'
+import { registeredURLSearchParams } from '../hooks/url_search_query'
 
 export function showMessage(type, title, description) {
     const hideToasts = registeredURLSearchParams().get("hide_toasts");

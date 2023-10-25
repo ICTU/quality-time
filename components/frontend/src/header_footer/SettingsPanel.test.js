@@ -1,269 +1,272 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import history from 'history/browser';
 import { SettingsPanel } from './SettingsPanel';
+import {
+    useDateIntervalURLSearchQuery,
+    useDateOrderURLSearchQuery,
+    useHiddenColumnsURLSearchQuery,
+    useHiddenTagsURLSearchQuery,
+    useMetricsToHideURLSearchQuery,
+    useNrDatesURLSearchQuery,
+    useShowIssueSummaryURLSearchQuery,
+} from '../app_ui_settings';
+import { createTestableSettings } from '../__fixtures__/fixtures';
 
-function eventHandlers() {
-    return {
-        clearHiddenColumns: jest.fn(),
-        clearHiddenTags: jest.fn(),
-        clearVisibleDetailsTabs: jest.fn(),
-        handleDateChange: jest.fn(),
-        handleSort: jest.fn(),
-        setDateInterval: jest.fn(),
-        setDateOrder: jest.fn(),
-        setMetricsToHide: jest.fn(),
-        setNrDates: jest.fn(),
-        setShowIssueCreationDate: jest.fn(),
-        setShowIssueSummary: jest.fn(),
-        setShowIssueUpdateDate: jest.fn(),
-        setShowIssueDueDate: jest.fn(),
-        setShowIssueRelease: jest.fn(),
-        setShowIssueSprint: jest.fn(),
-    }
+beforeEach(() => {
+    history.push("")
+});
+
+function renderSettingsPanel(
+    {
+        atReportsOverview = true,
+        dateInterval = null,
+        dateOrder = null,
+        handleDateChange = jest.fn(),
+        handleSort = jest.fn(),
+        hiddenColumns = null,
+        hiddenTags = null,
+        metricsToHide = null,
+        nrDates = null,
+        reportDate = null,
+        showIssueCreationDate = null,
+        showIssueSummary = null,
+        showIssueUpdateDate = null,
+        showIssueDueDate = null,
+        showIssueRelease = null,
+        showIssueSprint = null,
+        sortColumn = null,
+        sortDirection = null,
+        tags = [],
+        visibleDetailsTabs = null
+    } = {}
+) {
+    const settings = createTestableSettings()
+    render(
+        <SettingsPanel
+            atReportsOverview={atReportsOverview}
+            handleDateChange={handleDateChange}
+            handleSort={handleSort}
+            settings={{
+                dateInterval: dateInterval ?? settings.dateInterval,
+                dateOrder: dateOrder ?? settings.dateOrder,
+                hiddenColumns: hiddenColumns ?? settings.hiddenColumns,
+                hiddenTags: hiddenTags ?? settings.hiddenTags,
+                metricsToHide: metricsToHide ?? settings.metricsToHide,
+                nrDates: nrDates ?? settings.nrDates,
+                showIssueCreationDate: showIssueCreationDate ?? settings.showIssueCreationDate,
+                showIssueSummary: showIssueSummary ?? settings.showIssueSummary,
+                showIssueUpdateDate: showIssueUpdateDate ?? settings.showIssueUpdateDate,
+                showIssueDueDate: showIssueDueDate ?? settings.showIssueDueDate,
+                showIssueRelease: showIssueRelease ?? settings.showIssueRelease,
+                showIssueSprint: showIssueSprint ?? settings.showIssueSprint,
+                sortColumn: sortColumn ?? settings.sortColumn,
+                sortDirection: sortDirection ?? settings.sortDirection,
+                visibleDetailsTabs: visibleDetailsTabs ?? settings.visibleDetailsTabs
+            }}
+            reportDate={reportDate}
+            tags={tags}
+        />
+    )
 }
 
-it('resets the settings', () => {
-    const props = eventHandlers();
-    render(
-        <SettingsPanel
-            atReportsOverview={true}
-            dateInterval={14}
-            dateOrder="ascending"
-            hiddenColumns={["trend"]}
-            hiddenTags={["security"]}
-            metricsToHide="no_action_needed"
-            issueSettings={
-                {
-                    showIssueCreationDate: true,
-                    showIssueSummary: true,
-                    showIssueUpdateDate: true,
-                    showIssueDueDate: true,
-                    showIssueRelease: true,
-                    showIssueSprint: true
-                }
-            }
-            nrDates={7}
-            reportDate={new Date("2023-01-01")}
-            sortColumn="status"
-            sortDirection="descending"
-            visibleDetailsTabs={["tab"]}
-            {...props}
-        />
+it('resets the settings', async () => {
+    history.push(
+        "?date_interval=2&date_order=ascending&hidden_columns=comment&hidden_tags=tag&metrics_to_hide=none&" +
+        "nr_dates=2&show_issue_creation_date=true&show_issue_summary=true&show_issue_update_date=true&" +
+        "show_issue_due_date=true&show_issue_release=true&show_issue_sprint=true&sort_column=status&" +
+        "sort_direction=descending&tabs=tab"
     )
+    const settings = createTestableSettings()
+    const handleDateChange = jest.fn()
+    renderSettingsPanel({
+        handleDateChange: handleDateChange,
+        reportDate: new Date("2023-01-01"),
+        ...settings
+    })
+    Object.values(settings).forEach((setting) => expect(setting.isDefault()).not)
     fireEvent.click(screen.getByText(/Reset reports overview settings/))
-    expect(props.clearHiddenColumns).toHaveBeenCalledWith()
-    expect(props.clearHiddenTags).toHaveBeenCalledWith()
-    expect(props.clearVisibleDetailsTabs).toHaveBeenCalledWith()
-    expect(props.handleDateChange).toHaveBeenCalledWith(null)
-    expect(props.handleSort).toHaveBeenCalledWith(null)
-    expect(props.setDateInterval).toHaveBeenCalledWith(7)
-    expect(props.setDateOrder).toHaveBeenCalledWith("descending")
-    expect(props.setNrDates).toHaveBeenCalledWith(1)
-    expect(props.setMetricsToHide).toHaveBeenCalledWith("all")
-    expect(props.setShowIssueCreationDate).toHaveBeenCalledWith(false)
-    expect(props.setShowIssueSummary).toHaveBeenCalledWith(false)
-    expect(props.setShowIssueUpdateDate).toHaveBeenCalledWith(false)
-    expect(props.setShowIssueDueDate).toHaveBeenCalledWith(false)
-    expect(props.setShowIssueRelease).toHaveBeenCalledWith(false)
-    expect(props.setShowIssueSprint).toHaveBeenCalledWith(false)
+    Object.values(settings).forEach((setting) => expect(setting.isDefault()))
+    expect(handleDateChange).toHaveBeenCalledWith(null)
 })
 
-it('does not reset the settings when all have the default value', () => {
-    const props = eventHandlers();
-    render(
-        <SettingsPanel
-            atReportsOverview={false}
-            dateInterval={7}
-            dateOrder="descending"
-            hiddenColumns={[]}
-            hiddenTags={[]}
-            metricsToHide="none"
-            issueSettings={
-                {
-                    showIssueCreationDate: false,
-                    showIssueSummary: false,
-                    showIssueUpdateDate: false,
-                    showIssueDueDate: false,
-                    showIssueRelease: false,
-                    showIssueSprint: false
-                }
-            }
-            nrDates={1}
-            reportDate={null}
-            sortColumn={null}
-            sortDirection="ascending"
-            visibleDetailsTabs={[]}
-            {...props}
-        />
-    )
+it('does not reset the settings when all have the default value', async () => {
+    const settings = createTestableSettings()
+    const handleDateChange = jest.fn()
+    renderSettingsPanel({
+        atReportsOverview: false,
+        handleDateChange: handleDateChange,
+        ...settings
+    })
+    Object.values(settings).forEach((setting) => expect(setting.isDefault()))
     fireEvent.click(screen.getByText(/Reset this report's settings/))
-    expect(props.clearHiddenColumns).not.toHaveBeenCalled()
-    expect(props.clearHiddenTags).not.toHaveBeenCalled()
-    expect(props.clearVisibleDetailsTabs).not.toHaveBeenCalled()
-    expect(props.handleDateChange).not.toHaveBeenCalled()
-    expect(props.handleSort).not.toHaveBeenCalled()
-    expect(props.setDateInterval).not.toHaveBeenCalled()
-    expect(props.setDateOrder).not.toHaveBeenCalled()
-    expect(props.setNrDates).not.toHaveBeenCalled()
-    expect(props.setMetricsToHide).not.toHaveBeenCalled()
-    expect(props.setShowIssueCreationDate).not.toHaveBeenCalled()
-    expect(props.setShowIssueSummary).not.toHaveBeenCalled()
-    expect(props.setShowIssueUpdateDate).not.toHaveBeenCalled()
-    expect(props.setShowIssueDueDate).not.toHaveBeenCalled()
-    expect(props.setShowIssueRelease).not.toHaveBeenCalled()
-    expect(props.setShowIssueSprint).not.toHaveBeenCalled()
+    Object.values(settings).forEach((setting) => expect(setting.isDefault()))
+    expect(handleDateChange).not.toHaveBeenCalled()
 })
 
-it("hides the metrics not requiring action", () => {
-    const setMetricsToHide = jest.fn();
-    render(<SettingsPanel metricsToHide="none" setMetricsToHide={setMetricsToHide} />)
+it("hides the metrics not requiring action", async () => {
+    const { result } = renderHook(() => useMetricsToHideURLSearchQuery())
+    renderSettingsPanel({ metricsToHide: result.current })
     fireEvent.click(screen.getByText(/Metrics requiring action/))
-    expect(setMetricsToHide).toHaveBeenCalledWith("no_action_needed")
+    expect(result.current.value).toBe("no_action_needed")
 })
 
-it("shows all metrics", () => {
-    const setMetricsToHide = jest.fn();
-    render(<SettingsPanel metricsToHide="all" setMetricsToHide={setMetricsToHide} />)
+it("shows all metrics", async () => {
+    const { result } = renderHook(() => useMetricsToHideURLSearchQuery())
+    renderSettingsPanel({ metricsToHide: result.current })
     fireEvent.click(screen.getByText(/All metrics/))
-    expect(setMetricsToHide).toHaveBeenCalledWith("none")
+    expect(result.current.value).toBe("none")
 })
 
 it("shows all metrics by keypress", async () => {
-    const setMetricsToHide = jest.fn();
-    render(<SettingsPanel metricsToHide="all" setMetricsToHide={setMetricsToHide} />)
+    history.push("?metrics_to_hide=no_action_needed")
+    const { result } = renderHook(() => useMetricsToHideURLSearchQuery())
+    renderSettingsPanel({ metricsToHide: result.current })
     await userEvent.type(screen.getByText(/All metrics/), " ")
-    expect(setMetricsToHide).toHaveBeenCalledWith("none")
+    expect(result.current.value).toBe("none")
 })
 
-it("hides a tag", () => {
-    const toggleHiddenTag = jest.fn();
-    render(<SettingsPanel tags={["security"]} toggleHiddenTag={toggleHiddenTag} />)
+it("hides a tag", async () => {
+    const { result } = renderHook(() => useHiddenTagsURLSearchQuery())
+    renderSettingsPanel({ tags: ["security"], hiddenTags: result.current })
     fireEvent.click(screen.getByText(/security/))
-    expect(toggleHiddenTag).toHaveBeenCalledWith("security")
+    expect(result.current.value).toStrictEqual(["security"])
 })
 
 it("hides a tag by keypress", async () => {
-    const toggleHiddenTag = jest.fn();
-    render(<SettingsPanel tags={["security"]} toggleHiddenTag={toggleHiddenTag} />)
+    const { result } = renderHook(() => useHiddenTagsURLSearchQuery())
+    renderSettingsPanel({ tags: ["security"], hiddenTags: result.current })
     await userEvent.type(screen.getAllByText(/security/)[0], " ")
-    expect(toggleHiddenTag).toHaveBeenCalledWith("security")
+    expect(result.current.value).toStrictEqual(["security"])
 })
 
-it("shows a tag", () => {
-    const toggleHiddenTag = jest.fn();
-    render(<SettingsPanel tags={["security"]} hiddenTags={["security"]} toggleHiddenTag={toggleHiddenTag} />)
+it("shows a tag", async () => {
+    history.push("?hidden_tags=security")
+    const { result } = renderHook(() => useHiddenTagsURLSearchQuery())
+    renderSettingsPanel({ tags: ["security"], hiddenTags: result.current })
     fireEvent.click(screen.getAllByText(/security/)[0])
-    expect(toggleHiddenTag).toHaveBeenCalledWith("security")
+    expect(result.current.value).toStrictEqual([])
 })
 
-it("hides a column", () => {
-    const toggleHiddenColumn = jest.fn();
-    render(<SettingsPanel toggleHiddenColumn={toggleHiddenColumn} />)
+it("hides a column", async () => {
+    const { result } = renderHook(() => useHiddenColumnsURLSearchQuery())
+    renderSettingsPanel({ hiddenColumns: result.current })
     fireEvent.click(screen.getByText(/Trend/))
-    expect(toggleHiddenColumn).toHaveBeenCalledWith("trend")
+    expect(result.current.value).toStrictEqual(["trend"])
 })
 
 it("hides a column by keypress", async () => {
-    const toggleHiddenColumn = jest.fn();
-    render(<SettingsPanel toggleHiddenColumn={toggleHiddenColumn} />)
+    const { result } = renderHook(() => useHiddenColumnsURLSearchQuery())
+    renderSettingsPanel({ hiddenColumns: result.current })
     await userEvent.type(screen.getAllByText(/Comment/)[0], " ")
-    expect(toggleHiddenColumn).toHaveBeenCalledWith("comment")
+    expect(result.current.value).toStrictEqual(["comment"])
 })
 
-it("shows a column", () => {
-    const toggleHiddenColumn = jest.fn();
-    render(<SettingsPanel toggleHiddenColumn={toggleHiddenColumn} />)
+it("shows a column", async () => {
+    history.push("?hidden_columns=status")
+    const { result } = renderHook(() => useHiddenColumnsURLSearchQuery())
+    renderSettingsPanel({ hiddenColumns: result.current })
     fireEvent.click(screen.getAllByText(/Status/)[0])
-    expect(toggleHiddenColumn).toHaveBeenCalledWith("status")
+    expect(result.current.value).toStrictEqual([])
 })
 
-it("sorts a column", () => {
+it("changes the sorting of an unsorted column", async () => {
     const handleSort = jest.fn();
-    render(<SettingsPanel handleSort={handleSort} />)
+    renderSettingsPanel({ handleSort: handleSort })
     fireEvent.click(screen.getAllByText(/Comment/)[1])
     expect(handleSort).toHaveBeenCalledWith("comment")
-})
+});
 
-it("sorts a column descending", () => {
-    const handleSort = jest.fn();
-    render(<SettingsPanel sortColumn="comment" sortDirection="ascending" handleSort={handleSort} />)
-    fireEvent.click(screen.getAllByText(/Comment/)[1])
-    expect(handleSort).toHaveBeenCalledWith("comment")
-})
+["ascending", "descending"].forEach((sortOrder) => {
+    it("changes the sorting of a column", async () => {
+        history.push(`?sort_column=comment&sort_direction=${sortOrder}`)
+        const handleSort = jest.fn();
+        renderSettingsPanel({ handleSort: handleSort })
+        fireEvent.click(screen.getAllByText(/Comment/)[1])
+        expect(handleSort).toHaveBeenCalledWith("comment")
+    })
+});
 
 it("sorts a column by keypress", async () => {
     const handleSort = jest.fn();
-    render(<SettingsPanel handleSort={handleSort} />)
+    renderSettingsPanel({ handleSort: handleSort })
     await userEvent.type(screen.getAllByText(/Comment/)[1], " ")
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
 it("ignores a keypress if the menu item is disabled", async () => {
+    history.push("?hidden_columns=comment")
     const handleSort = jest.fn();
-    render(<SettingsPanel hiddenColumns={["comment"]} handleSort={handleSort} />)
+    renderSettingsPanel({ handleSort: handleSort })
     await userEvent.type(screen.getAllByText(/Comment/)[1], " ")
     expect(handleSort).not.toHaveBeenCalledWith("comment")
 })
 
-it("sets the number of dates", () => {
-    const setNrDates = jest.fn();
-    render(<SettingsPanel nrDates={2} setNrDates={setNrDates} />)
+it("sets the number of dates", async () => {
+    history.push("?nr_dates=2")
+    const { result } = renderHook(() => useNrDatesURLSearchQuery())
+    renderSettingsPanel({ nrDates: result.current })
     fireEvent.click(screen.getByText(/7 dates/))
-    expect(setNrDates).toHaveBeenCalledWith(7)
+    expect(result.current.value).toBe(7)
 })
 
 it("sets the number of dates by keypress", async () => {
-    const setNrDates = jest.fn();
-    render(<SettingsPanel nrDates={1} setNrDates={setNrDates} />)
+    const { result } = renderHook(() => useNrDatesURLSearchQuery())
+    renderSettingsPanel({ nrDates: result.current })
     await userEvent.type(screen.getByText(/5 dates/), " ")
-    expect(setNrDates).toHaveBeenCalledWith(5)
+    expect(result.current.value).toBe(5)
 })
 
-it("sets the date interval to weeks", () => {
-    const setDateInterval = jest.fn();
-    render(<SettingsPanel dateInterval={1} setDateInterval={setDateInterval} />)
-    fireEvent.click(screen.getByText(/2 weeks/))
-    expect(setDateInterval).toHaveBeenCalledWith(14)
+it("sets the date interval to weeks", async () => {
+    history.push("?nr_dates=2")
+    const dateInterval = renderHook(() => useDateIntervalURLSearchQuery())
+    renderSettingsPanel({ dateInterval: dateInterval.result.current })
+    await act(async () => fireEvent.click(screen.getByText(/2 weeks/)))
+    expect(dateInterval.result.current.value).toBe(14)
 })
 
 it("sets the date interval to one day", () => {
-    const setDateInterval = jest.fn();
-    render(<SettingsPanel dateInterval={7} setDateInterval={setDateInterval} />)
+    history.push("?nr_dates=2")
+    const dateInterval = renderHook(() => useDateIntervalURLSearchQuery())
+    renderSettingsPanel({ dateInterval: dateInterval.result.current })
     fireEvent.click(screen.getByText(/1 day/))
-    expect(setDateInterval).toHaveBeenCalledWith(1)
+    expect(dateInterval.result.current.value).toBe(1)
 })
 
 it("sets the date interval by keypress", async () => {
-    const setDateInterval = jest.fn();
-    render(<SettingsPanel dateInterval={7} setDateInterval={setDateInterval} />)
+    history.push("?nr_dates=2&date_interval=7")
+    const dateInterval = renderHook(() => useDateIntervalURLSearchQuery())
+    renderSettingsPanel({ dateInterval: dateInterval.result.current })
     await userEvent.type(screen.getByText(/1 day/), " ")
-    expect(setDateInterval).toHaveBeenCalledWith(1)
+    expect(dateInterval.result.current.value).toBe(1)
 })
 
-it("sorts the dates descending", () => {
-    const setDateOrder = jest.fn();
-    render(<SettingsPanel dateOrder="ascending" setDateOrder={setDateOrder} />)
-    fireEvent.click(screen.getByText(/Descending/))
-    expect(setDateOrder).toHaveBeenCalledWith("descending")
+it("sorts the dates descending", async () => {
+    history.push("?nr_dates=2")
+    const dateOrder = renderHook(() => useDateOrderURLSearchQuery())
+    renderSettingsPanel({ dateOrder: dateOrder.result.current })
+    await act(async () => fireEvent.click(screen.getByText(/Descending/)))
+    expect(dateOrder.result.current.value).toBe("descending")
 })
 
 it("sorts the dates ascending by keypress", async () => {
-    const setDateOrder = jest.fn();
-    render(<SettingsPanel dateOrder="descending" setDateOrder={setDateOrder} />)
+    history.push("?nr_dates=2")
+    const dateOrder = renderHook(() => useDateOrderURLSearchQuery("", "ascending"))
+    renderSettingsPanel({ dateOrder: dateOrder.result.current })
     await userEvent.type(screen.getByText(/Ascending/), " ")
-    expect(setDateOrder).toHaveBeenCalledWith("ascending")
+    expect(dateOrder.result.current.value).toBe("ascending")
 })
 
 it("shows issue summaries", async () => {
-    const setShowIssueSummary = jest.fn();
-    render(<SettingsPanel setShowIssueSummary={setShowIssueSummary} />)
+    const { result } = renderHook(() => useShowIssueSummaryURLSearchQuery())
+    renderSettingsPanel({ showIssueSummary: result.current })
     await act(async () => { fireEvent.click(screen.getAllByText(/Summary/)[0]) });
-    expect(setShowIssueSummary).toHaveBeenCalledWith(true)
+    expect(result.current.value).toBe(true)
 })
 
 it("shows issue summaries by keypress", async () => {
-    const setShowIssueSummary = jest.fn();
-    render(<SettingsPanel setShowIssueSummary={setShowIssueSummary} />)
+    const { result } = renderHook(() => useShowIssueSummaryURLSearchQuery())
+    renderSettingsPanel({ showIssueSummary: result.current })
     await userEvent.type(screen.getAllByText(/Summary/)[0], " ")
-    expect(setShowIssueSummary).toHaveBeenCalledWith(true)
+    expect(result.current.value).toBe(true)
 })

@@ -3,71 +3,46 @@ import PropTypes from 'prop-types';
 import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
 import { Icon } from '../semantic_ui_react_wrappers';
 import {
-    datePropType,
-    issueSettingsPropType,
+    boolURLSearchQueryPropType,
+    integerURLSearchQueryPropType,
     metricsToHidePropType,
+    metricsToHideURLSearchQueryPropType,
+    optionalDatePropType,
+    settingsPropType,
     sortDirectionPropType,
-    stringsPropType
+    sortDirectionURLSearchQueryPropType,
+    stringURLSearchQueryPropType,
+    stringsPropType,
+    stringsURLSearchQueryPropType
 } from '../sharedPropTypes';
 import { capitalize, pluralize } from "../utils";
-import { SettingsMenuItem} from "./SettingsMenuItem";
+import { SettingsMenuItem } from "./SettingsMenuItem";
 import './SettingsPanel.css';
 
 export function SettingsPanel({
     atReportsOverview,
-    clearHiddenColumns,
-    clearHiddenTags,
-    clearVisibleDetailsTabs,
-    dateInterval,
-    dateOrder,
     handleDateChange,
     handleSort,
-    hiddenColumns,
-    hiddenTags,
-    metricsToHide,
-    issueSettings,
-    nrDates,
     reportDate,
-    setDateInterval,
-    setDateOrder,
-    setMetricsToHide,
-    setNrDates,
-    setShowIssueCreationDate,
-    setShowIssueSummary,
-    setShowIssueUpdateDate,
-    setShowIssueDueDate,
-    setShowIssueRelease,
-    setShowIssueSprint,
-    sortColumn,
-    sortDirection,
-    tags,
-    toggleHiddenColumn,
-    toggleHiddenTag,
-    visibleDetailsTabs
+    settings,
+    tags
 }) {
-    const multipleDateColumns = nrDates > 1
-    const oneDateColumn = nrDates === 1
+    const oneDateColumn = settings.nrDates.equals(1)
+    const multipleDateColumns = !oneDateColumn
     const menuProps = { compact: true, vertical: true, inverted: true, secondary: true }
     const dateIntervalMenuItemProps = {
-        dateInterval: dateInterval,
+        dateInterval: settings.dateInterval,
         disabled: oneDateColumn,
         help: "The date interval can only be changed when at least two dates are shown",
-        setDateInterval: setDateInterval
     }
-    const metricMenuItemProps = {
-        metricsToHide: metricsToHide,
-        setMetricsToHide: setMetricsToHide
-    }
-    const sortColumnMenuItemProps = { sortColumn: sortColumn, sortDirection: sortDirection, handleSort: handleSort }
+    const metricMenuItemProps = { metricsToHide: settings.metricsToHide }
+    const sortColumnMenuItemProps = { sortColumn: settings.sortColumn, sortDirection: settings.sortDirection, handleSort: handleSort }
     const sortOrderMenuItemProps = {
         disabled: oneDateColumn,
         help: "The date order can only be changed when at least two dates are shown",
-        setSortOrder: setDateOrder,
-        sortOrder: dateOrder,
+        sortOrder: settings.dateOrder,
     }
-    const visibleColumnMenuItemProps = { hiddenColumns: hiddenColumns, toggleHiddenColumn: toggleHiddenColumn }
-    hiddenColumns = hiddenColumns ?? [];
-    visibleDetailsTabs = visibleDetailsTabs ?? [];
+    const visibleColumnMenuItemProps = { hiddenColumns: settings.hiddenColumns }
     return (
         <Segment.Group
             horizontal
@@ -80,32 +55,10 @@ export function SettingsPanel({
                         <Grid.Column>
                             <ResetSettingsButton
                                 atReportsOverview={atReportsOverview}
-                                clearHiddenColumns={clearHiddenColumns}
-                                clearHiddenTags={clearHiddenTags}
-                                clearVisibleDetailsTabs={clearVisibleDetailsTabs}
-                                dateInterval={dateInterval}
-                                dateOrder={dateOrder}
                                 handleDateChange={handleDateChange}
                                 handleSort={handleSort}
-                                hiddenColumns={hiddenColumns}
-                                hiddenTags={hiddenTags}
-                                metricsToHide={metricsToHide}
-                                issueSettings={issueSettings}
-                                nrDates={nrDates}
                                 reportDate={reportDate}
-                                setDateInterval={setDateInterval}
-                                setDateOrder={setDateOrder}
-                                setMetricsToHide={setMetricsToHide}
-                                setNrDates={setNrDates}
-                                setShowIssueCreationDate={setShowIssueCreationDate}
-                                setShowIssueSummary={setShowIssueSummary}
-                                setShowIssueUpdateDate={setShowIssueUpdateDate}
-                                setShowIssueDueDate={setShowIssueDueDate}
-                                setShowIssueRelease={setShowIssueRelease}
-                                setShowIssueSprint={setShowIssueSprint}
-                                sortColumn={sortColumn}
-                                sortDirection={sortDirection}
-                                visibleDetailsTabs={visibleDetailsTabs}
+                                settings={settings}
                             />
                         </Grid.Column>
                     </Grid.Row>
@@ -122,9 +75,7 @@ export function SettingsPanel({
             <Segment inverted color="black">
                 <Header size='small'>Visible tags</Header>
                 <Menu style={{ maxHeight: "450px", overflow: "auto" }} {...menuProps}>
-                    {(tags ?? []).map((tag) =>
-                        <VisibleTagMenuItem key={tag} tag={tag} hiddenTags={hiddenTags} toggleHiddenTag={toggleHiddenTag} />
-                    )}
+                    {tags.map((tag) => <VisibleTagMenuItem key={tag} tag={tag} hiddenTags={settings.hiddenTags} />)}
                 </Menu>
             </Segment>
             <Segment inverted color="black">
@@ -159,7 +110,7 @@ export function SettingsPanel({
                     <VisibleColumnMenuItem column="time_left" {...visibleColumnMenuItemProps} />
                     <VisibleColumnMenuItem
                         column="overrun"
-                        disabled={nrDates === 1}
+                        disabled={oneDateColumn}
                         help="The overrun column can only be made visible when at least two dates are shown"
                         {...visibleColumnMenuItemProps}
                     />
@@ -174,56 +125,56 @@ export function SettingsPanel({
                     <SortColumnMenuItem column="name" {...sortColumnMenuItemProps} />
                     <SortColumnMenuItem
                         column="status"
-                        disabled={multipleDateColumns || hiddenColumns.includes("status")}
+                        disabled={multipleDateColumns || settings.hiddenColumns.includes("status")}
                         help="The status column can only be selected for sorting when it is visible"
                         {...sortColumnMenuItemProps}
                     />
                     <SortColumnMenuItem
                         column="measurement"
-                        disabled={multipleDateColumns || hiddenColumns.includes("measurement")}
+                        disabled={multipleDateColumns || settings.hiddenColumns.includes("measurement")}
                         help="The measurement column can only be selected for sorting when it is visible"
                         {...sortColumnMenuItemProps}
                     />
                     <SortColumnMenuItem
                         column="target"
-                        disabled={multipleDateColumns || hiddenColumns.includes("target")}
+                        disabled={multipleDateColumns || settings.hiddenColumns.includes("target")}
                         help="The target column can only be selected for sorting when it is visible"
                         {...sortColumnMenuItemProps}
                     />
                     <SortColumnMenuItem
                         column="unit"
-                        disabled={hiddenColumns.includes("unit")}
+                        disabled={settings.hiddenColumns.includes("unit")}
                         {...sortColumnMenuItemProps}
                     />
                     <SortColumnMenuItem
                         column="source"
-                        disabled={hiddenColumns.includes("source")}
+                        disabled={settings.hiddenColumns.includes("source")}
                         {...sortColumnMenuItemProps}
                     />
                     <SortColumnMenuItem
                         column="time_left"
-                        disabled={hiddenColumns.includes("time_left")}
+                        disabled={settings.hiddenColumns.includes("time_left")}
                         {...sortColumnMenuItemProps}
                     />
                     <SortColumnMenuItem
                         column="overrun"
-                        disabled={nrDates === 1 || hiddenColumns.includes("overrun")}
+                        disabled={settings.nrDates.equals(1) || settings.hiddenColumns.includes("overrun")}
                         help="The overrun column can only be selected for sorting when it is visible"
                         {...sortColumnMenuItemProps}
                     />
                     <SortColumnMenuItem
                         column="comment"
-                        disabled={hiddenColumns.includes("comment")}
+                        disabled={settings.hiddenColumns.includes("comment")}
                         {...sortColumnMenuItemProps}
                     />
                     <SortColumnMenuItem
                         column="issues"
-                        disabled={hiddenColumns.includes("issues")}
+                        disabled={settings.hiddenColumns.includes("issues")}
                         {...sortColumnMenuItemProps}
                     />
                     <SortColumnMenuItem
                         column="tags"
-                        disabled={hiddenColumns.includes("tags")}
+                        disabled={settings.hiddenColumns.includes("tags")}
                         {...sortColumnMenuItemProps}
                     />
                 </Menu>
@@ -232,7 +183,7 @@ export function SettingsPanel({
                 <Header size='small'>Number of dates</Header>
                 <Menu {...menuProps}>
                     {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
-                        <NrOfDatesMenuItem key={nr} nr={nr} nrDates={nrDates} setNrDates={setNrDates} />
+                        <NrOfDatesMenuItem key={nr} nr={nr} nrDates={settings.nrDates} />
                     )}
                 </Menu>
             </Segment>
@@ -257,38 +208,32 @@ export function SettingsPanel({
                 <Menu {...menuProps}>
                     <IssueAttributeMenuItem
                         issueAttributeName="Summary"
-                        issueAttribute={issueSettings?.showIssueSummary}
-                        setIssueAttribute={setShowIssueSummary}
+                        issueAttribute={settings.showIssueSummary}
                         help="Next to the issue status, also show the issue summary. Note: the popup over the issue always shows the issue summary, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Creation date"
-                        issueAttribute={issueSettings?.showIssueCreationDate}
-                        setIssueAttribute={setShowIssueCreationDate}
+                        issueAttribute={settings.showIssueCreationDate}
                         help="Next to the issue status, also show how long ago issue were created. Note: the popup over the issue always shows the exact date when the issue was created, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Update date"
-                        issueAttribute={issueSettings?.showIssueUpdateDate}
-                        setIssueAttribute={setShowIssueUpdateDate}
+                        issueAttribute={settings.showIssueUpdateDate}
                         help="Next to the issue status, also show how long ago issues were last updated. Note: the popup over the issue always shows the exact date when the issue was last updated, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Due date"
-                        issueAttribute={issueSettings?.showIssueDueDate}
-                        setIssueAttribute={setShowIssueDueDate}
+                        issueAttribute={settings.showIssueDueDate}
                         help="Next to the issue status, also show the due date of issues. Note: the popup over the issue always shows the due date, if the issue has one, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Release"
-                        issueAttribute={issueSettings?.showIssueRelease}
-                        setIssueAttribute={setShowIssueRelease}
+                        issueAttribute={settings.showIssueRelease}
                         help="Next to the issue status, also show the release issues are assigned to. Note: the popup over the issue always shows the release, if the issue has one, regardless of this setting."
                     />
                     <IssueAttributeMenuItem
                         issueAttributeName="Sprint"
-                        issueAttribute={issueSettings?.showIssueSprint}
-                        setIssueAttribute={setShowIssueSprint}
+                        issueAttribute={settings.showIssueSprint}
                         help="Next to the issue status, also show the sprint issues are assigned to. Note: the popup over the issue always shows the sprint, if the issue has one, regardless of this setting."
                     />
                 </Menu>
@@ -297,16 +242,16 @@ export function SettingsPanel({
     )
 }
 SettingsPanel.propTypes = {
-    toggleHiddenColumn: PropTypes.func,
-    toggleHiddenTag: PropTypes.func,
+    handleSort: PropTypes.func,
+    tags: stringsPropType.isRequired,
     ...ResetSettingsButton.propTypes,
 }
 
-function VisibleTagMenuItem({ tag, hiddenTags, toggleHiddenTag }) {
+function VisibleTagMenuItem({ tag, hiddenTags }) {
     return (
         <SettingsMenuItem
-            active={!hiddenTags?.includes(tag)}
-            onClick={toggleHiddenTag}
+            active={!hiddenTags.includes(tag)}
+            onClick={hiddenTags.toggle}
             onClickData={tag}
         >
             {tag}
@@ -315,17 +260,16 @@ function VisibleTagMenuItem({ tag, hiddenTags, toggleHiddenTag }) {
 }
 VisibleTagMenuItem.propTypes = {
     tag: PropTypes.string,
-    hiddenTags: stringsPropType,
-    toggleHiddenTag: PropTypes.func
+    hiddenTags: stringsURLSearchQueryPropType,
 }
 
-function VisibleColumnMenuItem({ column, disabled, hiddenColumns, toggleHiddenColumn, help }) {
+function VisibleColumnMenuItem({ column, disabled, hiddenColumns, help }) {
     return (
         <SettingsMenuItem
-            active={disabled ? false : !hiddenColumns?.includes(column)}
+            active={disabled ? false : !hiddenColumns.includes(column)}
             disabled={disabled}
             disabledHelp={help}
-            onClick={toggleHiddenColumn}
+            onClick={hiddenColumns.toggle}
             onClickData={column}
         >
             {capitalize(column).replaceAll('_', ' ')}
@@ -335,17 +279,16 @@ function VisibleColumnMenuItem({ column, disabled, hiddenColumns, toggleHiddenCo
 VisibleColumnMenuItem.propTypes = {
     column: PropTypes.string,
     disabled: PropTypes.bool,
-    hiddenColumns: stringsPropType,
-    toggleHiddenColumn: PropTypes.func,
+    hiddenColumns: stringsURLSearchQueryPropType,
     help: PropTypes.string
 }
 
 function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handleSort, help }) {
     let sortIndicator = null;
-    if (sortColumn === column && sortDirection) {
+    if (sortColumn.equals(column) && sortDirection.value) {
         // We use a triangle because the sort down and up icons are not at the same height
-        const iconDirection = sortDirection === "ascending" ? "up" : "down"
-        sortIndicator = <Icon disabled={disabled} name={`triangle ${iconDirection}`} aria-label={`sorted ${sortDirection}`} />
+        const iconDirection = sortDirection.equals("ascending") ? "up" : "down"
+        sortIndicator = <Icon disabled={disabled} name={`triangle ${iconDirection}`} aria-label={`sorted ${sortDirection.value}`} />
     }
     return (
         <SettingsMenuItem
@@ -362,17 +305,17 @@ function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handl
 SortColumnMenuItem.propTypes = {
     column: PropTypes.string,
     disabled: PropTypes.bool,
-    sortColumn: PropTypes.string,
-    sortDirection: sortDirectionPropType,
+    sortColumn: stringURLSearchQueryPropType,
+    sortDirection: sortDirectionURLSearchQueryPropType,
     handleSort: PropTypes.func,
     help: PropTypes.string
 }
 
-function NrOfDatesMenuItem({ nr, nrDates, setNrDates }) {
+function NrOfDatesMenuItem({ nr, nrDates }) {
     return (
         <SettingsMenuItem
-            active={nr === nrDates}
-            onClick={setNrDates}
+            active={nrDates.equals(nr)}
+            onClick={nrDates.set}
             onClickData={nr}
         >
             {`${nr} ${pluralize("date", nr)}`}
@@ -381,17 +324,16 @@ function NrOfDatesMenuItem({ nr, nrDates, setNrDates }) {
 }
 NrOfDatesMenuItem.propTypes = {
     nr: PropTypes.number,
-    nrDates: PropTypes.number,
-    setNrDates: PropTypes.func
+    nrDates: integerURLSearchQueryPropType
 }
 
-function DateIntervalMenuItem({ nr, dateInterval, disabled, setDateInterval, help }) {
+function DateIntervalMenuItem({ nr, dateInterval, disabled, help }) {
     return (
         <SettingsMenuItem
-            active={disabled ? false : nr === dateInterval}
+            active={disabled ? false : dateInterval.equals(nr)}
             disabled={disabled}
             disabledHelp={help}
-            onClick={setDateInterval}
+            onClick={dateInterval.set}
             onClickData={nr}
         >
             {nr === 1 ? "1 day" : `${nr / 7} ${pluralize("week", nr / 7)}`}
@@ -400,19 +342,18 @@ function DateIntervalMenuItem({ nr, dateInterval, disabled, setDateInterval, hel
 }
 DateIntervalMenuItem.propTypes = {
     nr: PropTypes.number,
-    dateInterval: PropTypes.number,
+    dateInterval: integerURLSearchQueryPropType,
     disabled: PropTypes.bool,
-    setDateInterval: PropTypes.func,
     help: PropTypes.string
 }
 
-function SortOrderMenuItem({ disabled, order, sortOrder, setSortOrder, help }) {
+function SortOrderMenuItem({ disabled, order, sortOrder, help }) {
     return (
         <SettingsMenuItem
-            active={disabled ? false : sortOrder === order}
+            active={disabled ? false : sortOrder.equals(order)}
             disabled={disabled}
             disabledHelp={help}
-            onClick={setSortOrder}
+            onClick={sortOrder.set}
             onClickData={order}
         >
             {capitalize(order)}
@@ -422,35 +363,33 @@ function SortOrderMenuItem({ disabled, order, sortOrder, setSortOrder, help }) {
 SortOrderMenuItem.propTypes = {
     disabled: PropTypes.bool,
     order: sortDirectionPropType,
-    sortOrder: sortDirectionPropType,
-    setSortOrder: PropTypes.func,
+    sortOrder: sortDirectionURLSearchQueryPropType,
     help: PropTypes.string
 }
 
-function MetricMenuItem({ hide, metricsToHide, setMetricsToHide }) {
+function MetricMenuItem({ hide, metricsToHide }) {
     return (
         <SettingsMenuItem
-            active={hide === metricsToHide}
-            onClick={setMetricsToHide}
+            active={metricsToHide.equals(hide)}
+            onClick={metricsToHide.set}
             onClickData={hide}
         >
-            {{"none": "All metrics", "no_action_needed": "Metrics requiring action", "all": "No metrics"}[hide]}
+            {{ "none": "All metrics", "no_action_needed": "Metrics requiring action", "all": "No metrics" }[hide]}
         </SettingsMenuItem>
     )
 }
 MetricMenuItem.propTypes = {
     hide: metricsToHidePropType,
-    metricsToHide: metricsToHidePropType,
-    setMetricsToHide: PropTypes.func
+    metricsToHide: metricsToHideURLSearchQueryPropType,
 }
 
-function IssueAttributeMenuItem({ help, issueAttributeName, issueAttribute, setIssueAttribute }) {
+function IssueAttributeMenuItem({ help, issueAttributeName, issueAttribute }) {
     return (
         <SettingsMenuItem
-            active={issueAttribute}
+            active={issueAttribute.value}
             help={help}
-            onClick={setIssueAttribute}
-            onClickData={!issueAttribute}
+            onClick={issueAttribute.set}
+            onClickData={!issueAttribute.value}
         >
             {issueAttributeName}
         </SettingsMenuItem>
@@ -459,111 +398,65 @@ function IssueAttributeMenuItem({ help, issueAttributeName, issueAttribute, setI
 IssueAttributeMenuItem.propTypes = {
     help: PropTypes.string,
     issueAttributeName: PropTypes.string,
-    issueAttribute: PropTypes.bool,
-    setIssueAttribute: PropTypes.func
+    issueAttribute: boolURLSearchQueryPropType
 }
 
 function ResetSettingsButton(
     {
         atReportsOverview,
-        clearHiddenColumns,
-        clearHiddenTags,
-        clearVisibleDetailsTabs,
-        dateInterval,
-        dateOrder,
         handleDateChange,
-        handleSort,
-        hiddenColumns,
-        hiddenTags,
-        metricsToHide,
-        issueSettings,
-        nrDates,
         reportDate,
-        setDateInterval,
-        setDateOrder,
-        setMetricsToHide,
-        setNrDates,
-        setShowIssueCreationDate,
-        setShowIssueSummary,
-        setShowIssueUpdateDate,
-        setShowIssueDueDate,
-        setShowIssueRelease,
-        setShowIssueSprint,
-        sortColumn,
-        sortDirection,
-        visibleDetailsTabs
+        settings
     }
 ) {
     const metricsToHideDefault = atReportsOverview ? "all" : "none"
     return (
         <Button
             disabled={
-                dateInterval === 7 &&
-                dateOrder === "descending" &&
-                hiddenColumns?.length === 0 &&
-                hiddenTags?.length === 0 &&
-                !issueSettings.showIssueCreationDate &&
-                !issueSettings.showIssueSummary &&
-                !issueSettings.showIssueUpdateDate &&
-                !issueSettings.showIssueDueDate &&
-                !issueSettings.showIssueRelease &&
-                !issueSettings.showIssueSprint &&
-                metricsToHide === metricsToHideDefault &&
-                nrDates === 1 &&
-                reportDate === null &&
-                sortColumn === null &&
-                sortDirection === "ascending" &&
-                visibleDetailsTabs?.length === 0
+                settings.dateInterval.isDefault() &&
+                settings.dateOrder.isDefault() &&
+                settings.hiddenColumns.isDefault() &&
+                settings.hiddenTags.isDefault() &&
+                settings.metricsToHide.equals(metricsToHideDefault) &&
+                settings.nrDates.isDefault() &&
+                settings.showIssueCreationDate.isDefault() &&
+                settings.showIssueDueDate.isDefault() &&
+                settings.showIssueRelease.isDefault() &&
+                settings.showIssueSprint.isDefault() &&
+                settings.showIssueSummary.isDefault() &&
+                settings.showIssueUpdateDate.isDefault() &&
+                settings.sortColumn.isDefault() &&
+                settings.sortDirection.isDefault() &&
+                settings.visibleDetailsTabs.isDefault() &&
+                reportDate === null
             }
             onClick={() => {
-                clearVisibleDetailsTabs();
-                clearHiddenColumns();
-                clearHiddenTags();
                 handleDateChange(null);
-                handleSort(null);
-                setNrDates(1);
-                setDateInterval(7);
-                setDateOrder("descending");
-                setMetricsToHide(metricsToHideDefault);
-                setShowIssueCreationDate(false);
-                setShowIssueSummary(false);
-                setShowIssueUpdateDate(false);
-                setShowIssueDueDate(false);
-                setShowIssueRelease(false);
-                setShowIssueSprint(false);
+                settings.dateInterval.reset();
+                settings.dateOrder.reset();
+                settings.hiddenColumns.reset();
+                settings.hiddenTags.reset();
+                settings.metricsToHide.reset();
+                settings.nrDates.reset();
+                settings.showIssueCreationDate.reset();
+                settings.showIssueDueDate.reset()
+                settings.showIssueRelease.reset();
+                settings.showIssueSprint.reset();
+                settings.showIssueSummary.reset();
+                settings.showIssueUpdateDate.reset();
+                settings.sortColumn.reset();
+                settings.sortDirection.reset();
+                settings.visibleDetailsTabs.reset();
             }}
             inverted
         >
-            Reset {atReportsOverview ? "reports overview" : "this report's" } settings
+            Reset {atReportsOverview ? "reports overview" : "this report's"} settings
         </Button>
     )
 }
 ResetSettingsButton.propTypes = {
     atReportsOverview: PropTypes.bool,
-    clearHiddenColumns: PropTypes.func,
-    clearHiddenTags: PropTypes.func,
-    clearVisibleDetailsTabs: PropTypes.func,
-    dateInterval: PropTypes.number,
-    dateOrder: sortDirectionPropType,
     handleDateChange: PropTypes.func,
-    handleSort: PropTypes.func,
-    hiddenColumns: stringsPropType,
-    hiddenTags: stringsPropType,
-    issueSettings: issueSettingsPropType,
-    metricsToHide: metricsToHidePropType,
-    nrDates: PropTypes.number,
-    reportDate: datePropType,
-    setDateInterval: PropTypes.func,
-    setDateOrder: PropTypes.func,
-    setMetricsToHide: PropTypes.func,
-    setNrDates: PropTypes.func,
-    setShowIssueCreationDate: PropTypes.func,
-    setShowIssueSummary: PropTypes.func,
-    setShowIssueUpdateDate: PropTypes.func,
-    setShowIssueDueDate: PropTypes.func,
-    setShowIssueRelease: PropTypes.func,
-    setShowIssueSprint: PropTypes.func,
-    sortColumn: PropTypes.string,
-    sortDirection: sortDirectionPropType,
-    visibleDetailsTabs: stringsPropType
+    reportDate: optionalDatePropType,
+    settings: settingsPropType
 }

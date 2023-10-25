@@ -5,8 +5,9 @@ import { get_datamodel } from './api/datamodel';
 import { get_report, get_reports_overview } from './api/report';
 import { nr_measurements_api } from './api/measurement';
 import { login } from './api/auth';
+import { registeredURLSearchParams } from './hooks/url_search_query';
 import { showMessage, showConnectionMessage } from './widgets/toast';
-import { isValidDate_YYYYMMDD, registeredURLSearchParams, toISODateStringInCurrentTZ } from './utils'
+import { isValidDate_YYYYMMDD, toISODateStringInCurrentTZ } from './utils'
 import { AppUI } from './AppUI';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';

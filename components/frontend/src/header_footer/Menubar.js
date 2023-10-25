@@ -6,7 +6,7 @@ import FocusLock from 'react-focus-lock';
 import { login, logout } from '../api/auth';
 import { Avatar } from '../widgets/Avatar';
 import { DatePicker } from '../widgets/DatePicker';
-import { datePropType, stringsPropType, uiModePropType } from '../sharedPropTypes';
+import { optionalDatePropType, stringsURLSearchQueryPropType, uiModePropType } from '../sharedPropTypes';
 import { UIModeMenu } from './UIModeMenu';
 import './Menubar.css';
 
@@ -66,7 +66,6 @@ function Logout({ user, email, set_user }) {
 
 export function Menubar({
     atReportsOverview,
-    clearVisibleDetailsTabs,
     email,
     onDate,
     openReportsOverview,
@@ -118,11 +117,11 @@ export function Menubar({
                                     <Button
                                         aria-label="Collapse all metrics"
                                         basic
-                                        disabled={visibleDetailsTabs?.length === 0}
-                                        onClick={() => clearVisibleDetailsTabs()}
+                                        disabled={visibleDetailsTabs.equals([])}
+                                        onClick={() => visibleDetailsTabs.reset()}
                                         icon={
                                             <Icon
-                                                name={`caret ${visibleDetailsTabs?.length === 0 ? "right" : "down"}`}
+                                                name={`caret ${visibleDetailsTabs.equals([]) ? "right" : "down"}`}
                                                 size='large'
                                             />
                                         }
@@ -168,15 +167,14 @@ export function Menubar({
 }
 Menubar.propTypes = {
     atReportsOverview: PropTypes.bool,
-    clearVisibleDetailsTabs: PropTypes.func,
     email: PropTypes.string,
     onDate: PropTypes.func,
     openReportsOverview: PropTypes.func,
     panel: PropTypes.element,
-    report_date: datePropType,
+    report_date: optionalDatePropType,
     set_user: PropTypes.func,
     setUIMode: PropTypes.func,
     uiMode: uiModePropType,
     user: PropTypes.string,
-    visibleDetailsTabs: stringsPropType
+    visibleDetailsTabs: stringsURLSearchQueryPropType
 }
