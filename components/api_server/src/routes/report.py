@@ -65,9 +65,10 @@ def get_report(database: Database, report_uuid: ReportId | None = None):
     data_model = latest_datamodel(database, date_time)
     reports = latest_reports_before_timestamp(database, data_model, date_time)
     summarized_reports = []
+    metrics_dict = {metric_uuid: metric for report in reports for metric_uuid, metric in report.metrics_dict.items()}
+    measurements = recent_measurements(database, metrics_dict, date_time)
     for report in reports:
         if not report_uuid or report["report_uuid"] == report_uuid:
-            measurements = recent_measurements(database, report.metrics_dict, date_time)
             summarized_reports.append(report.summarize(measurements))
         else:
             summarized_reports.append(report)

@@ -16,9 +16,8 @@ from shared.utils.functions import first
 from shared.utils.type import MetricId, SourceId
 
 from database import sessions
-from database.datamodels import latest_datamodel
-from database.measurements import count_measurements, all_metric_measurements, measurements_by_metric
-from database.reports import latest_report_for_uuids, latest_reports, latest_reports_before_timestamp
+from database.measurements import count_measurements, all_metric_measurements, measurements_in_period
+from database.reports import latest_report_for_uuids, latest_reports
 from utils.functions import report_date_time
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
@@ -104,14 +103,7 @@ def get_measurements(database: Database):
     """Return all measurements (without details) for all reports between the date and the minimum date."""
     date_time = report_date_time()
     min_date_time = report_date_time("min_report_date")
-    data_model = latest_datamodel(database, date_time)
-    reports = latest_reports_before_timestamp(database, data_model, date_time)
-    metric_uuids: set[MetricId] = set()
-    for report in reports:
-        metric_uuids |= report.metric_uuids
-    measurements = list(
-        measurements_by_metric(database, *metric_uuids, min_iso_timestamp=min_date_time, max_iso_timestamp=date_time),
-    )
+    measurements = measurements_in_period(database, min_iso_timestamp=min_date_time, max_iso_timestamp=date_time)
     return {"measurements": measurements}
 
 
@@ -119,4 +111,4 @@ def get_measurements(database: Database):
 def get_metric_measurements(metric_uuid: MetricId, database: Database) -> dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])
-    return {"measurements": list(all_metric_measurements(database, metric_uuid, max_iso_timestamp=report_date_time()))}
+    return {"measurements": all_metric_measurements(database, metric_uuid, max_iso_timestamp=report_date_time())}

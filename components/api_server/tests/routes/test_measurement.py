@@ -33,8 +33,8 @@ class GetMetricMeasurementsTest(DatabaseTestCase):
 
         def find_side_effect(query, projection, sort=None) -> list[dict[str, str]]:  # noqa: ARG001
             """Side effect for mocking the database measurements."""
-            min_iso_timestamp = query["end"]["$gt"] if "end" in query else ""
-            max_iso_timestamp = query["start"]["$lt"] if "start" in query else ""
+            min_iso_timestamp = query["end"]["$gte"] if "end" in query else ""
+            max_iso_timestamp = query["start"]["$lte"] if "start" in query else ""
             return [
                 m
                 for m in database_entries
@@ -76,29 +76,8 @@ class GetMeasurementsTest(DataModelTestCase):
         }
         self.database.measurements.find.return_value = [self.measurement]
 
-    def test_no_reports(self):
-        """Test no reports."""
-        self.database.reports.distinct.return_value = []
-        self.assertEqual({"measurements": []}, get_measurements(self.database))
-
-    def test_with_report(self):
-        """Test a report with measurements."""
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = {
-            "report_uuid": REPORT_ID,
-            "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {}}}},
-        }
-        self.assertEqual({"measurements": [self.measurement]}, get_measurements(self.database))
-
-    @patch("bottle.request")
-    def test_with_report_and_time_travel(self, request):
-        """Test a report with measurements."""
-        request.query = {"report_date": "2022-04-19T23:59:59.000Z"}
-        self.database.reports.distinct.return_value = [REPORT_ID]
-        self.database.reports.find_one.return_value = {
-            "report_uuid": REPORT_ID,
-            "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {}}}},
-        }
+    def test_get_measurements(self):
+        """Test that measurements are returned."""
         self.assertEqual({"measurements": [self.measurement]}, get_measurements(self.database))
 
 

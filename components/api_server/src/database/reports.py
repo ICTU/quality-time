@@ -81,7 +81,7 @@ def latest_reports(database: Database) -> list[Report]:
 
 def latest_reports_before_timestamp(database: Database, data_model: dict, max_iso_timestamp: str) -> list[Report]:
     """Return the latest, undeleted, reports in the reports collection before the max timestamp."""
-    report_filter = {"timestamp": {"$lt": max_iso_timestamp}} if max_iso_timestamp else {}
+    report_filter = {"timestamp": {"$lte": max_iso_timestamp}} if max_iso_timestamp else {}
     report_uuids = database.reports.distinct("report_uuid", report_filter)
     report_dicts = []
     for report_uuid in report_uuids:
@@ -122,7 +122,7 @@ def insert_new_reports_overview(database: Database, delta_description: str, repo
 
 def latest_reports_overview(database: Database, max_iso_timestamp: str = "") -> dict:
     """Return the latest reports overview."""
-    timestamp_filter = {"timestamp": {"$lt": max_iso_timestamp}} if max_iso_timestamp else None
+    timestamp_filter = {"timestamp": {"$lte": max_iso_timestamp}} if max_iso_timestamp else None
     overview = database.reports_overviews.find_one(timestamp_filter, sort=TIMESTAMP_DESCENDING)
     if overview:  # pragma: no feature-test-cover
         overview["_id"] = str(overview["_id"])

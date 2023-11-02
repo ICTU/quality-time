@@ -3,7 +3,7 @@
 import json
 import time
 import urllib
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from asserts import assert_equal, assert_not_in
 from behave import then, when
@@ -137,6 +137,10 @@ def get_measurements(context: Context, has_or_had: str, expected_number: str) ->
     if has_or_had == "had":
         context.report_date = "2020-11-17T10:00:00Z"
         context.min_report_date = "2020-11-16T00:00:00Z"
+    else:
+        now = datetime.now(tz=UTC).replace(microsecond=0)
+        context.report_date = (now + timedelta(days=10)).isoformat()[: -len("+00:00")] + "Z"
+        context.min_report_date = (now - timedelta(days=10)).isoformat()[: -len("+00:00")] + "Z"
 
     response = context.get("measurements")
     report_measurements = [m for m in response["measurements"] if m["report_uuid"] == context.uuid["report"]]
