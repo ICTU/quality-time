@@ -90,6 +90,9 @@ export const issueStatusPropType = PropTypes.shape({
 })
 
 export const metricPropType = PropTypes.shape({
+    accept_debt: PropTypes.bool,
+    debt_end_date: PropTypes.string,
+    evaluate_targets: PropTypes.bool,
     issue_ids: stringsPropType,
     issue_status: PropTypes.arrayOf(issueStatusPropType)
 })
