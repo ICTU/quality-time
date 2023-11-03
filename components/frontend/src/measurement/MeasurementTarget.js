@@ -1,14 +1,15 @@
 import { useContext } from "react";
 import { Label, Popup } from '../semantic_ui_react_wrappers';
 import { DataModel } from "../context/DataModel";
-import { formatMetricDirection, formatMetricScale, formatMetricScaleAndUnit, get_metric_target } from '../utils';
+import { formatMetricDirection, formatMetricScale, formatMetricScaleAndUnit, get_metric_target, isValidDate_YYYYMMDD } from '../utils';
+import { metricPropType} from '../sharedPropTypes'
 
 function popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel) {
     const unit = formatMetricScaleAndUnit(dataModel.metrics[metric.type], metric)
     const metricDirection = formatMetricDirection(metric, dataModel)
     let debtEndDateText = ""
     let endDate;
-    if (metric.debt_end_date) {
+    if (metric.debt_end_date && isValidDate_YYYYMMDD(metric.debt_end_date)) {
         endDate = new Date(metric.debt_end_date);
         debtEndDateText = debtEndDateInThePast ? "" : ` until ${endDate.toLocaleDateString()}`
     }
@@ -35,7 +36,7 @@ export function MeasurementTarget({ metric }) {
     const target = `${metricDirection} ${get_metric_target(metric)}${formatMetricScale(metric)}`
     const allIssuesDone = metric.issue_status?.length > 0 ? metric.issue_status.every((status) => status.status_category === "done") : false
     let debtEndDateInThePast = false
-    if (metric.debt_end_date) {
+    if (metric.debt_end_date && isValidDate_YYYYMMDD(metric.debt_end_date)) {
         const endDate = new Date(metric.debt_end_date);
         const today = new Date();
         debtEndDateInThePast = endDate.toISOString().split("T")[0] < today.toISOString().split("T")[0];
@@ -49,4 +50,7 @@ export function MeasurementTarget({ metric }) {
         )
     }
     return target
+}
+MeasurementTarget.propTypes = {
+    metric: metricPropType
 }
