@@ -131,17 +131,12 @@ def import_failed(context: Context) -> None:
     assert_equal("application/json", context.response.headers["Content-Type"])
 
 
-@then('the report {has_or_had} "{expected_number}" measurements')
-def get_measurements(context: Context, has_or_had: str, expected_number: str) -> None:
+@then('the report has "{expected_number}" measurements')
+def get_measurements(context: Context, expected_number: str) -> None:
     """Get the recent measurements of a report."""
-    if has_or_had == "had":
-        context.report_date = "2020-11-17T10:00:00Z"
-        context.min_report_date = "2020-11-16T00:00:00Z"
-    else:
-        now = datetime.now(tz=UTC).replace(microsecond=0)
-        context.report_date = (now + timedelta(days=10)).isoformat()[: -len("+00:00")] + "Z"
-        context.min_report_date = (now - timedelta(days=10)).isoformat()[: -len("+00:00")] + "Z"
-
+    now = datetime.now(tz=UTC).replace(microsecond=0)
+    context.report_date = (now + timedelta(days=10)).isoformat()
+    context.min_report_date = (now - timedelta(days=10)).isoformat()
     response = context.get("measurements")
     report_measurements = [m for m in response["measurements"] if m["report_uuid"] == context.uuid["report"]]
     assert_equal(int(expected_number), len(report_measurements))
