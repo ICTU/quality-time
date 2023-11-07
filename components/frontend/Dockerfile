@@ -8,6 +8,7 @@ COPY package*.json /home/frontend
 COPY public /home/frontend/public
 COPY src /home/frontend/src
 COPY healthcheck.js /home/frontend
+COPY .env /home/frontend
 RUN npm install --ignore-scripts -g npm@10.2.3 && \
     npm install --ignore-scripts && \
     npm install --ignore-scripts -g serve@14.2.1 && \
