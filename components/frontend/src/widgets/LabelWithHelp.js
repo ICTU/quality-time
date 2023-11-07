@@ -9,6 +9,7 @@ export function LabelWithHelp({labelId, labelFor, label, help, hoverable}){
                 on={["hover", "focus"]}
                 content={help}
                 trigger={<Icon data-testid="help-icon" tabIndex="0" name="help circle" />}
+                wide
             />
         </label>
     )
