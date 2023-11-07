@@ -37,7 +37,9 @@ def count_measurements(database: Database) -> int:
 
 
 def measurements_in_period(database: Database, min_iso_timestamp: str, max_iso_timestamp: str):
-    """Return recent measurements for the specified metrics, without source details and issue status."""
+    """Return recent measurements within the specified period, without source details and issue status."""
+    # Return measurements that partially or completely overlap with the period, meaning they have their start before
+    # the end of the period (max_iso_timestamp) and their end after the start of the period (min_iso_timestamp):
     measurement_filter = {"start": {"$lte": max_iso_timestamp or iso_timestamp()}, "end": {"$gte": min_iso_timestamp}}
     return list(database.measurements.find(measurement_filter, sort=START_ASCENDING, projection=NO_MEASUREMENT_DETAILS))
 
@@ -53,7 +55,7 @@ def all_metric_measurements(database: Database, metric_uuid: MetricId, max_iso_t
     all_measurements_stripped = list(
         database.measurements.find(measurement_filter, sort=START_ASCENDING, projection=NO_MEASUREMENT_DETAILS),
     )
-    return list(all_measurements_stripped)[:-1] + [latest_measurement]
+    return all_measurements_stripped[:-1] + [latest_measurement]
 
 
 def recent_measurements(
@@ -70,6 +72,7 @@ def recent_measurements(
     measurements_by_metric_uuid: dict[MetricId, list] = {}
     for measurement_dict in measurements:
         metric_uuid = measurement_dict["metric_uuid"]
+        # Only process the measurement if its metric exists:
         if metric := metrics_dict.get(metric_uuid):  # pragma: no feature-test-cover
             measurement = Measurement(metric, measurement_dict)
             measurements_by_metric_uuid.setdefault(metric_uuid, []).append(measurement)
