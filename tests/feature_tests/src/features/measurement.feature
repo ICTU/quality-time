@@ -122,6 +122,11 @@ Feature: measurement
     Then the metric has 2 measurements
     And the metric had 0 measurements
 
+  Scenario: retrieve all measurements
+    Given an existing source
+    When the collector measures "0"
+    Then the report has "1" measurements
+
   Scenario: get the reports overview measurements
     When the client gets the current reports overview measurements
     Then the server returns the reports overview measurements

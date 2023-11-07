@@ -131,12 +131,14 @@ def check_nr_of_measurements_stream(context: Context, message_type: str) -> None
 @when("the client gets {the_current_or_past} reports overview measurements")
 def get_reports_overview_measurements(context: Context, the_current_or_past: str) -> None:
     """Get the reports overview measurements."""
+    now = datetime.now(tz=UTC)
+    last_week = now - timedelta(days=7)
+    context.min_report_date = last_week.isoformat()
     if the_current_or_past == "past":
-        now = datetime.now(tz=UTC)
         just_now = now - timedelta(seconds=1)
-        last_week = now - timedelta(days=7)
         context.report_date = just_now.isoformat()
-        context.min_report_date = last_week.isoformat()
+    else:
+        context.report_date = now.isoformat()
     context.get("measurements")
 
 

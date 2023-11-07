@@ -42,11 +42,11 @@ def set_feature_compatibility_version(admin_database: Database) -> None:
 def create_indexes(database: Database) -> None:
     """Create any indexes."""
     database.datamodels.create_index("timestamp")
-    database.reports.create_index("timestamp")
+    database.reports.create_index([("timestamp", pymongo.ASCENDING), ("report_uuid", pymongo.ASCENDING)])
     database.users.create_index("username", unique=True)
-    start_index = pymongo.IndexModel([("start", pymongo.ASCENDING)])
+    period_index = pymongo.IndexModel([("start", pymongo.ASCENDING), ("end", pymongo.DESCENDING)])
     latest_measurement_index = pymongo.IndexModel([("metric_uuid", pymongo.ASCENDING), ("start", pymongo.DESCENDING)])
     latest_successful_measurement_index = pymongo.IndexModel(
         [("metric_uuid", pymongo.ASCENDING), ("has_error", pymongo.ASCENDING), ("start", pymongo.DESCENDING)],
     )
-    database.measurements.create_indexes([start_index, latest_measurement_index, latest_successful_measurement_index])
+    database.measurements.create_indexes([period_index, latest_measurement_index, latest_successful_measurement_index])

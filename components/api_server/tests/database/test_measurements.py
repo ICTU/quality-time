@@ -1,6 +1,6 @@
 """Test the measurements collection."""
 
-from database.measurements import all_metric_measurements, measurements_by_metric, recent_measurements
+from database.measurements import all_metric_measurements, measurements_in_period, recent_measurements
 
 from shared.model.metric import Metric
 
@@ -27,26 +27,10 @@ class MeasurementsByMetricTest(DatabaseTestCase):
         ]
         self.database.measurements.find_one.return_value = self.measurements[0]
 
-    def test_recent_measurements_for_one_metric(self):
-        """Test that we get all three measurement fields."""
-        self.database.measurements.find.return_value = self.measurements[0:3]
-        measurements = measurements_by_metric(self.database, METRIC_ID)
-        self.assertEqual(len(measurements), 3)
-        for measurement in measurements:
-            self.assertEqual(measurement["metric_uuid"], METRIC_ID)
-
-    def test_get_recent_measurements_for_multiple_metrics(self):
-        """Test that we get all three measurement fields."""
-        self.database.measurements.find.return_value = self.measurements[0:6]
-        measurements = measurements_by_metric(self.database, *[METRIC_ID, METRIC_ID2])
-        self.assertEqual(len(measurements), 6)
-        for measurement in measurements:
-            self.assertIn(measurement["metric_uuid"], [METRIC_ID, METRIC_ID2])
-
-    def test_get_recent_measurements_with_timestamp_restriction(self):
-        """Test that we get all three measurement fields."""
+    def test_measurements_in_period(self):
+        """Test that all three measurements are returned."""
         self.database.measurements.find.return_value = self.measurements[0:2]
-        measurements = measurements_by_metric(self.database, METRIC_ID, min_iso_timestamp="0.5", max_iso_timestamp="4")
+        measurements = measurements_in_period(self.database, min_iso_timestamp="0.5", max_iso_timestamp="4")
         self.assertEqual(len(measurements), 2)
         for measurement in measurements:
             self.assertEqual(measurement["metric_uuid"], METRIC_ID)
@@ -55,14 +39,14 @@ class MeasurementsByMetricTest(DatabaseTestCase):
     def test_get_all_measurements_for_one_metric(self):
         """Test that we get all three measurement fields."""
         self.database.measurements.find.return_value = self.measurements[0:3]
-        measurements = all_metric_measurements(self.database, METRIC_ID)
+        measurements = all_metric_measurements(self.database, METRIC_ID, max_iso_timestamp="8")
         self.assertEqual(len(measurements), 3)
         for measurement in measurements:
             self.assertEqual(measurement["metric_uuid"], METRIC_ID)
 
     def test_recent_measurements(self):
         """Test that we get all measurements with all metric ids."""
-        self.database.measurements.find.return_value = self.measurements[0:6]
+        self.database.measurements.find.return_value = self.measurements
         metric_1 = Metric({}, {}, METRIC_ID)
         metric_2 = Metric({}, {}, METRIC_ID2)
         measurements = recent_measurements(self.database, metrics_dict={METRIC_ID: metric_1, METRIC_ID2: metric_2})
