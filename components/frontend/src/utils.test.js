@@ -264,7 +264,7 @@ it("hides metrics with hidden tags", () => {
     expect(visibleMetrics({}, false, ["hidden"])).toStrictEqual({})
     const metricWithoutTags = {"metric_uuid": {"tags": []}}
     expect(visibleMetrics(metricWithoutTags, false, [])).toStrictEqual(metricWithoutTags)
-    expect(visibleMetrics(metricWithoutTags, false, ["hidden"])).toStrictEqual(metricWithoutTags)
+    expect(visibleMetrics(metricWithoutTags, false, ["hidden"])).toStrictEqual({})
     const metricWithHiddenTag = {"metric_uuid": {"tags": ["hidden"]}}
     expect(visibleMetrics(metricWithHiddenTag, false, [])).toStrictEqual(metricWithHiddenTag)
     expect(visibleMetrics(metricWithHiddenTag, false, ["hidden"])).toStrictEqual({})
