@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Fixed
 
 - The example URL in the popup for the Azure DevOps Server URL parameter would overflow the popup. Fixes [#7144](https://github.com/ICTU/quality-time/issues/7144).
+- When selecting a tag, metrics without tags would not be hidden. Fixes [#7432](https://github.com/ICTU/quality-time/issues/7432).
 - When hiding tags on the homepage, not only hide the metrics with the selected tags from the subject tables, but also from the subject cards in the dashboard. Fixes [#7433](https://github.com/ICTU/quality-time/issues/7433).
 - When expanding a metric, use the latest measurement instead of the oldest to show the measurement entities. Fixes [#7435](https://github.com/ICTU/quality-time/issues/7435).
 

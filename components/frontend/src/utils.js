@@ -174,7 +174,7 @@ export function visibleMetrics(metrics, metricsToHide, hiddenTags) {
     const visible = {}
     Object.entries(metrics).forEach(([metric_uuid, metric]) => {
         if ((metricsToHide === "no_action_needed") && (["target_met", "debt_target_met", "informative"].includes(metric.status))) { return }
-        if (hiddenTags?.length > 0 && metric.tags?.length > 0 && hiddenTags?.filter(hiddenTag => metric.tags?.includes(hiddenTag)).length >= metric.tags?.length) { return }
+        if (hiddenTags?.length > 0 && hiddenTags?.filter(hiddenTag => metric.tags?.includes(hiddenTag)).length >= metric.tags?.length) { return }
         visible[metric_uuid] = metric
     })
     return visible
