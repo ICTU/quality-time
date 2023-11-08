@@ -7,7 +7,6 @@ import {
     reportsPropType,
     settingsPropType,
     stringsPropType,
-    stringsURLSearchQueryPropType
 } from '../sharedPropTypes';
 import { DataModel } from '../context/DataModel';
 import { Subjects } from '../subject/Subjects';
@@ -61,7 +60,7 @@ function ReportDashboard(
     const nrMetrics = Math.max(nrMetricsInReport(report), 1);
     const subjectCards = []
     Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-        const metrics = visibleMetrics(subject.metrics, "none", hiddenTags.value)
+        const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
         if (Object.keys(metrics).length > 0) {
             const summary = {}
             dates.forEach((date) => {
@@ -78,8 +77,8 @@ function ReportDashboard(
             )
         }
     })
-    const anyTagsHidden = hiddenTags.value.length > 0
-    const tagCards = getReportTags(report, hiddenTags.value).map((tag) => {
+    const anyTagsHidden = hiddenTags.length > 0
+    const tagCards = getReportTags(report, hiddenTags).map((tag) => {
         const summary = {}
         dates.forEach((date) => {
             summary[date] = summarizeTagOnDate(report, measurements, tag, date)
@@ -104,7 +103,7 @@ function ReportDashboard(
 }
 ReportDashboard.propTypes = {
     dates: datesPropType,
-    hiddenTags: stringsURLSearchQueryPropType,
+    hiddenTags: stringsPropType,
     measurements: PropTypes.array,
     onClick: PropTypes.func,
     onClickTag: PropTypes.func,
@@ -148,7 +147,7 @@ export function Report({
             <CommentSegment comment={report.comment} />
             <ReportDashboard
                 dates={dates}
-                hiddenTags={settings.hiddenTags}
+                hiddenTags={settings.hiddenTags.value}
                 measurements={reversedMeasurements}
                 onClick={(e, s) => navigate_to_subject(e, s)}
                 onClickTag={(tag) => {
