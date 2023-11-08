@@ -12,7 +12,7 @@ import { add_report, set_reports_attribute, copy_report } from '../api/report';
 import { ReportsOverviewTitle } from './ReportsOverviewTitle';
 import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
-import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum } from '../utils';
+import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum, visibleMetrics } from '../utils';
 import {
     datesPropType,
     optionalDatePropType,
@@ -23,10 +23,11 @@ import {
 import { ReportsOverviewErrorMessage } from './ReportErrorMessage';
 import { metricStatusOnDate } from './report_utils';
 
-function summarizeReportOnDate(report, measurements, date) {
+function summarizeReportOnDate(report, measurements, date, hiddenTags) {
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
     Object.values(report.subjects).forEach((subject) => {
-        Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+        const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
+        Object.entries(metrics).forEach(([metric_uuid, metric]) => {
             const status = metricStatusOnDate(metric_uuid, metric, measurements, date)
             summary[STATUS_COLORS[status]] += 1
         })
@@ -34,11 +35,12 @@ function summarizeReportOnDate(report, measurements, date) {
     return summary
 }
 
-function summarizeReportsOnDate(reports, measurements, date, tag) {
+function summarizeReportsOnDate(reports, measurements, date, tag, hiddenTags) {
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
     reports.forEach((report) => {
         Object.values(report.subjects).forEach(subject => {
-            Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
+            const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
+            Object.entries(metrics).forEach(([metric_uuid, metric]) => {
                 if (getMetricTags(metric).indexOf(tag) >= 0) {
                     const status = metricStatusOnDate(metric_uuid, metric, measurements, date)
                     summary[STATUS_COLORS[status]] += 1
@@ -50,14 +52,25 @@ function summarizeReportsOnDate(reports, measurements, date, tag) {
 }
 
 
-function ReportsDashboard({ dates, hiddenTags, reports, onClickTag, openReport, measurements, layout, reload }) {
+function ReportsDashboard(
+    {
+        dates,
+        hiddenTags,
+        layout,
+        measurements,
+        onClickTag,
+        openReport,
+        reports,
+        reload
+    }
+) {
     let nrMetrics = 0
     const reportSummary = {}
     reports.forEach((report) => {
         nrMetrics = Math.max(nrMetrics, nrMetricsInReport(report))
         reportSummary[report.report_uuid] = {}
         dates.forEach((date) => {
-            reportSummary[report.report_uuid][date] = summarizeReportOnDate(report, measurements, date)
+            reportSummary[report.report_uuid][date] = summarizeReportOnDate(report, measurements, date, hiddenTags)
         })
     })
     const tagSummary = {}
@@ -65,7 +78,7 @@ function ReportsDashboard({ dates, hiddenTags, reports, onClickTag, openReport, 
     tags.forEach((tag) => {
         tagSummary[tag] = {}
         dates.forEach((date) => {
-            tagSummary[tag][date] = summarizeReportsOnDate(reports, measurements, date, tag)
+            tagSummary[tag][date] = summarizeReportsOnDate(reports, measurements, date, tag, hiddenTags)
             nrMetrics = Math.max(nrMetrics, sum(tagSummary[tag][date]))
         })
     })
