@@ -49,7 +49,7 @@ def all_metric_measurements(database: Database, metric_uuid: MetricId, max_iso_t
     measurement_filter: dict[str, str | dict[str, str]] = {"metric_uuid": str(metric_uuid)}
     if max_iso_timestamp:
         measurement_filter["start"] = {"$lte": max_iso_timestamp}
-    latest_measurement = database.measurements.find_one(measurement_filter, sort=START_ASCENDING, projection=NO_ID)
+    latest_measurement = database.measurements.find_one(measurement_filter, sort=START_DESCENDING, projection=NO_ID)
     if not latest_measurement:
         return []
     all_measurements_stripped = list(
