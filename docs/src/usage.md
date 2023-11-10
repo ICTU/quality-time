@@ -592,3 +592,19 @@ DORA metrics are a set of four key metrics for measuring the performance of soft
 *Quality-time* can send notifications about metrics that change status to {index}`Microsoft Teams` channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
 
 If a {index}`webhook <Webhook>` has been configured, *Quality-time* will check for changes in the status of metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel configured by the webhook.
+
+## Monitoring metric statuses
+
+To enable monitoring metric statuses outside of *Quality-time*, the `api/v3/report/<report_uuid>/metric_status_summary` endpoint can be used. It returns a JSON response for the specified report in the following format:
+
+```json
+{
+    "report_uuid": "xyz",
+    "title": "Report title",
+    "red": 1,
+    "green": 4,
+    "...": ....
+}
+```
+
+The `report_uuid` is the unique identifier that *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `https://www.quality-time.example.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.

@@ -67,6 +67,11 @@ Feature: report
     When the client changes the report comment to "<a href='https://example-url.org' target='_top'>https://example-url.org</a>"
     Then the report comment is "<a href="https://example-url.org" target="_top">https://example-url.org</a>"
 
+  Scenario: get report metric status summary
+    Given an existing report
+    When the client gets the metric status summary
+    Then the report metric status summary is returned
+
   Scenario: export report as PDF
     When the client creates a report
     And the client downloads the report as PDF

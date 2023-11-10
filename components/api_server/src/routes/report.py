@@ -76,6 +76,15 @@ def get_report(database: Database, report_uuid: ReportId | None = None):
     return {"ok": True, "reports": summarized_reports}
 
 
+@bottle.get("/api/v3/report/<report_uuid>/metric_status_summary", authentication_required=False)
+@with_report
+def get_report_metric_status_summary(database: Database, report: Report, report_uuid: ReportId):
+    """Return a metric status summary of the report."""
+    measurements = recent_measurements(database, report.metrics_dict)
+    summarized_report = report.summarize(measurements)
+    return {"report_uuid": report_uuid, "title": summarized_report["title"], **summarized_report["summary"]}
+
+
 @bottle.post("/api/v3/report/import", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
