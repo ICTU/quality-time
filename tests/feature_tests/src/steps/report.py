@@ -10,6 +10,21 @@ from behave import then, when
 from behave.runner import Context
 
 
+@when("the client gets the metric status summary")
+def get_report_metric_status_summary(context: Context) -> None:
+    """Get the report metric status summary."""
+    report_uuid = context.uuid["report"]
+    context.get(f"report/{report_uuid}/metric_status_summary")
+
+
+@then("the report metric status summary is returned")
+def check_report_metric_status_summary(context: Context) -> None:
+    """Check the report metric status summary."""
+    summary = context.response.json()
+    for color in ("blue", "green", "grey", "red", "white", "yellow"):
+        assert_equal(0, summary[color])
+
+
 @when("the client downloads the report as PDF")
 @when("the client downloads the reports overview as PDF")
 def download_report_as_pdf(context: Context) -> None:

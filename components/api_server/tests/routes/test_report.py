@@ -14,6 +14,7 @@ from routes import (
     get_report,
     get_report_issue_tracker_suggestions,
     get_report_issue_tracker_options,
+    get_report_metric_status_summary,
     post_report_attribute,
     post_report_copy,
     post_report_import,
@@ -499,6 +500,22 @@ class ReportTest(ReportTestCase):
         self.assertEqual(
             {"ok": False, "error": f"Report with UUID {REPORT_ID} not found."},
             delete_report(self.database, REPORT_ID),
+        )
+
+    def test_get_report_metric_status_summary(self):
+        """Test retrieving a report metric status summary."""
+        self.assertDictEqual(
+            {
+                "report_uuid": REPORT_ID,
+                "title": "Report",
+                "blue": 0,
+                "green": 0,
+                "grey": 0,
+                "red": 0,
+                "white": 1,
+                "yellow": 0,
+            },
+            get_report_metric_status_summary(self.database, REPORT_ID),
         )
 
 
