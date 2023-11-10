@@ -49,107 +49,109 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
             onClose={() => setPopupTriggered(false)}
             open={!menuOpen && popupTriggered}
             trigger={
-                <Dropdown
-                    basic
-                    className="button icon primary"
-                    floating
-                    onBlur={() => setQuery("")}
-                    onClose={() => setMenuOpen(false)}
-                    onKeyDown={(event) => {
-                        if (!menuOpen) {
-                            return
-                        }
-                        if (event.key === "Escape") {
-                            setQuery("")
-                        }
-                        if (inputRef.current?.inputRef?.current !== document.activeElement) {
-                            // Allow for editing the query without the input having focus
-                            if (event.key === "Backspace") {
-                                setQuery(query.slice(0, query.length - 1))
-                            } else if (event.key.length === 1) {
-                                setQuery(query + event.key)
+                <div style={{ "display": "inline-block" }}>
+                    <Dropdown
+                        basic
+                        className="button icon primary"
+                        floating
+                        onBlur={() => setQuery("")}
+                        onClose={() => setMenuOpen(false)}
+                        onKeyDown={(event) => {
+                            if (!menuOpen) {
+                                return
                             }
-                        }
-                        if (options.length === 0) {
-                            return
-                        }
-                        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-                            let newIndex
-                            if (event.key === "ArrowUp") {
-                                newIndex = Math.max(selectedItem - 1, 0)
-                            } else {
-                                newIndex = Math.min(selectedItem + 1, options.length - 1)
+                            if (event.key === "Escape") {
+                                setQuery("")
                             }
-                            setSelectedItem(newIndex)
-                            event.target
-                                .querySelectorAll("[role='option']")
-                                [newIndex]?.scrollIntoView({ block: "nearest" })
-                        }
-                        if (event.key === "Enter") {
-                            onClick(options[selectedItem].value)
-                        }
-                    }}
-                    onOpen={() => setMenuOpen(true)}
-                    selectOnBlur={false}
-                    selectOnNavigation={false}
-                    trigger={
-                        <>
-                            <Icon name="add" /> {`Add ${itemType} `}
-                        </>
-                    }
-                    value={null} // Without this, a selected item becomes active (shown bold in the menu) and can't be selected again
-                >
-                    <Dropdown.Menu>
-                        <Dropdown.Header>{`Available ${itemType} types`}</Dropdown.Header>
-                        <Dropdown.Divider />
-                        <Input
-                            className="search"
-                            focus
-                            icon="search"
-                            iconPosition="left"
-                            onBlur={(event) => {
-                                if (allItemSubtypes) {
-                                    event.stopPropagation()
-                                } // Prevent tabbing to the checkbox from clearing the input
-                            }}
-                            onChange={(_event, { value }) => setQuery(value)}
-                            onClick={(event) => event.stopPropagation()}
-                            onKeyDown={(event) => {
-                                if (event.key === " ") {
-                                    event.stopPropagation() // Prevent space from closing menu
+                            if (inputRef.current?.inputRef?.current !== document.activeElement) {
+                                // Allow for editing the query without the input having focus
+                                if (event.key === "Backspace") {
+                                    setQuery(query.slice(0, query.length - 1))
+                                } else if (event.key.length === 1) {
+                                    setQuery(query + event.key)
                                 }
-                            }}
-                            ref={inputRef}
-                            placeholder={`Filter ${itemType} types`}
-                            value={query}
-                        />
-                        {allItemSubtypes && (
-                            <Checkbox
-                                label={`Select from all ${itemType} types`}
-                                onChange={() => setShowAllItems(!showAllItems)}
+                            }
+                            if (options.length === 0) {
+                                return
+                            }
+                            if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+                                let newIndex
+                                if (event.key === "ArrowUp") {
+                                    newIndex = Math.max(selectedItem - 1, 0)
+                                } else {
+                                    newIndex = Math.min(selectedItem + 1, options.length - 1)
+                                }
+                                setSelectedItem(newIndex)
+                                event.target
+                                    .querySelectorAll("[role='option']")
+                                [newIndex]?.scrollIntoView({ block: "nearest" })
+                            }
+                            if (event.key === "Enter") {
+                                onClick(options[selectedItem].value)
+                            }
+                        }}
+                        onOpen={() => setMenuOpen(true)}
+                        selectOnBlur={false}
+                        selectOnNavigation={false}
+                        trigger={
+                            <>
+                                <Icon name="add" /> {`Add ${itemType} `}
+                            </>
+                        }
+                        value={null} // Without this, a selected item becomes active (shown bold in the menu) and can't be selected again
+                    >
+                        <Dropdown.Menu>
+                            <Dropdown.Header>{`Available ${itemType} types`}</Dropdown.Header>
+                            <Dropdown.Divider />
+                            <Input
+                                className="search"
+                                focus
+                                icon="search"
+                                iconPosition="left"
+                                onBlur={(event) => {
+                                    if (allItemSubtypes) {
+                                        event.stopPropagation()
+                                    } // Prevent tabbing to the checkbox from clearing the input
+                                }}
+                                onChange={(_event, { value }) => setQuery(value)}
                                 onClick={(event) => event.stopPropagation()}
                                 onKeyDown={(event) => {
                                     if (event.key === " ") {
                                         event.stopPropagation() // Prevent space from closing menu
                                     }
                                 }}
-                                style={{ paddingLeft: "10pt", paddingBottom: "10pt" }}
-                                tabIndex={0}
-                                value={showAllItems ? 1 : 0}
+                                ref={inputRef}
+                                placeholder={`Filter ${itemType} types`}
+                                value={query}
                             />
-                        )}
-                        <Dropdown.Menu scrolling>
-                            {options.map((option, index) => (
-                                <Dropdown.Item
-                                    key={option.key}
-                                    onClick={(_event, { value }) => onClick(value)}
-                                    selected={selectedItem === index}
-                                    {...option}
+                            {allItemSubtypes && (
+                                <Checkbox
+                                    label={`Select from all ${itemType} types`}
+                                    onChange={() => setShowAllItems(!showAllItems)}
+                                    onClick={(event) => event.stopPropagation()}
+                                    onKeyDown={(event) => {
+                                        if (event.key === " ") {
+                                            event.stopPropagation() // Prevent space from closing menu
+                                        }
+                                    }}
+                                    style={{ paddingLeft: "10pt", paddingBottom: "10pt" }}
+                                    tabIndex={0}
+                                    value={showAllItems ? 1 : 0}
                                 />
-                            ))}
+                            )}
+                            <Dropdown.Menu scrolling>
+                                {options.map((option, index) => (
+                                    <Dropdown.Item
+                                        key={option.key}
+                                        onClick={(_event, { value }) => onClick(value)}
+                                        selected={selectedItem === index}
+                                        {...option}
+                                    />
+                                ))}
+                            </Dropdown.Menu>
                         </Dropdown.Menu>
-                    </Dropdown.Menu>
-                </Dropdown>
+                    </Dropdown>
+                </div>
             }
         />
     )

@@ -18,9 +18,9 @@ export function MeasurementValue({ metric, reportDate }) {
         const end = new Date(metric.latest_measurement.end)
         const now = reportDate ?? new Date()
         const staleMeasurementValue = now - end > MILLISECONDS_PER_HOUR // No new measurement for more than one hour means something is wrong
-        const trigger = staleMeasurementValue ? <Label color="red">{value}</Label> : <span>{value}</span>
+        const trigger = staleMeasurementValue ? <Label color="red">{value}</Label> : value
         return (
-            <Popup trigger={trigger} flowing hoverable>
+            <Popup trigger={<span>{trigger}</span>} flowing hoverable>
                 {staleMeasurementValue && (
                     <Message
                         negative

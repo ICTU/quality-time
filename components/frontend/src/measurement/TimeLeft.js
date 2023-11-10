@@ -10,15 +10,11 @@ export function TimeLeft({ metric, report }) {
     }
     const timeLeft = getMetricResponseTimeLeft(metric, report)
     const daysLeft = days(Math.max(0, timeLeft))
+    const deadlineLabel = timeLeft >= 0 ? "Time left to address this metric is" : "Deadline to address this metric was"
     const triggerText = `${daysLeft} ${pluralize("day", daysLeft)}`
-    let deadlineLabel = "Deadline to address this metric was"
-    let trigger = <Label color="red">{triggerText}</Label>
-    if (timeLeft >= 0) {
-        deadlineLabel = "Time left to address this metric is"
-        trigger = <span>{triggerText}</span>
-    }
+    const trigger = timeLeft >= 0 ? triggerText : <Label color="red">{triggerText}</Label>
     return (
-        <Popup flowing hoverable trigger={trigger}>
+        <Popup flowing hoverable trigger={<span>{trigger}</span>}>
             <TimeAgoWithDate date={deadline}>{deadlineLabel}</TimeAgoWithDate>.
         </Popup>
     )
