@@ -58,13 +58,15 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
         <Table.Row>
             <Table.HeaderCell collapsing textAlign="center">
                 <Popup trigger={
-                    <Button
-                        basic
-                        compact
-                        icon={hideIgnoredEntities ? 'unhide' : 'hide'}
-                        onClick={() => setHideIgnoredEntities(!hideIgnoredEntities)}
-                        primary
-                    />
+                    <span>
+                        <Button
+                            basic
+                            compact
+                            icon={hideIgnoredEntities ? 'unhide' : 'hide'}
+                            onClick={() => setHideIgnoredEntities(!hideIgnoredEntities)}
+                            primary
+                        />
+                    </span>
                 } content={hideIgnoredEntities ? `Show resolved ${entity_name_plural}` : `Hide resolved ${entity_name_plural}`} />
             </Table.HeaderCell>
             <Table.HeaderCell sorted={sorted("entity_status")} onClick={() => sort("entity_status")}>
@@ -91,7 +93,7 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
                     <span>{entity_attribute.name}</span>
                     {
                         entity_attribute.help ?
-                        <Popup on={['hover', 'focus']} trigger={<span>&nbsp;<Icon role="tooltip" aria-label="help" tabIndex="0" name="help circle" /></span>} content={entity_attribute.help}/> : null
+                            <Popup on={['hover', 'focus']} trigger={<span>&nbsp;<Icon role="tooltip" aria-label="help" tabIndex="0" name="help circle" /></span>} content={entity_attribute.help} /> : null
                     }
                 </Table.HeaderCell>)
             }
