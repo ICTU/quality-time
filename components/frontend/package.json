@@ -12,7 +12,7 @@
     "react-datepicker": "^4.21.0",
     "react-dom": "^18.2.0",
     "react-focus-lock": "^2.9.6",
-    "react-grid-layout": "^1.4.2",
+    "react-grid-layout": "^1.4.3",
     "react-hash-link": "1.0.2",
     "react-is": "^18.2.0",
     "react-timeago": "^7.2.0",
@@ -42,7 +42,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@testing-library/jest-dom": "^6.1.4",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^14.1.0",
     "@testing-library/user-event": "^14.5.1",
     "react-scripts": "5.0.1",
     "react-test-renderer": "^18.2.0"
