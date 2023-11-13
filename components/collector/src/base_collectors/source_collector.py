@@ -18,7 +18,7 @@ from collector_utilities.functions import (
     stable_traceback,
     tokenless,
 )
-from collector_utilities.type import URL, Response, Value
+from collector_utilities.type import URL, Response, Responses, Value
 from model import Entities, Entity, IssueStatus, SourceMeasurement, SourceParameters, SourceResponses
 
 from .config import MAX_SLEEP_DURATION
@@ -127,7 +127,7 @@ class SourceCollector(ABC):
         for response in responses:
             if isinstance(response, Exception):
                 raise response
-        return SourceResponses(responses=list(responses), api_url=urls[0])
+        return SourceResponses(responses=cast(Responses, responses), api_url=urls[0])
 
     def _basic_auth_credentials(self) -> tuple[str, str] | None:
         """Return the basic authentication credentials, if any."""
