@@ -4,9 +4,9 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes --output-file=requirements/requirements.txt pyproject.toml
 #
-aiogqlc==4.0.0 \
-    --hash=sha256:3048040e3b3cf69651493a9f8a5b6bde052fdf687f5564c235af812bc4c9b85e \
-    --hash=sha256:44b1170471c0512cb83fe75c346c818e0fdd714a9ade3768dcb2174f222346ef
+aiogqlc==4.1.0 \
+    --hash=sha256:901ab669742e4ad92ddc5d4f13fe2f74d8943329c2ae117dbf27315f68519abc \
+    --hash=sha256:b286f6875359b80e445c3b52b63383e0d109ba74029f9d54db2856227ec24de4
     # via collector (pyproject.toml)
 aiohttp==3.8.6 \
     --hash=sha256:002f23e6ea8d3dd8d149e569fd580c999232b5fbc601c48d55398fbc2e582e8c \
