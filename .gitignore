@@ -37,6 +37,8 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+components/collector/.mutmut-cache
+components/collector/html/
 components/frontend/coverage/
 
 # pyenv
