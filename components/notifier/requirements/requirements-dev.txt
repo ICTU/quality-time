@@ -537,9 +537,9 @@ pipx==1.2.1 \
     --hash=sha256:22fba63cffab0f009c7939449ec8dfe6a98f1b88b72ddd1ff05820bda56d5898 \
     --hash=sha256:698777c05a97cca81df4dc6a71d9ca4ece2184c6f91dc7a0e4802ac51d86d32a
     # via notifier (pyproject.toml)
-pydantic==2.5.0 \
-    --hash=sha256:69bd6fb62d2d04b7055f59a396993486a2ee586c43a0b89231ce0000de07627c \
-    --hash=sha256:7ce6e766c456ad026fe5712f7bcf036efc34bd5d107b3e669ef7ea01b3a9050c
+pydantic==2.5.1 \
+    --hash=sha256:0b8be5413c06aadfbe56f6dc1d45c9ed25fd43264414c571135c97dd77c2bedb \
+    --hash=sha256:dc5244a8939e0d9a68f1f1b5f550b2e1c879912033b1becbedb315accc75441b
     # via notifier (pyproject.toml)
 pydantic-core==2.14.1 \
     --hash=sha256:023b6d7ec4e97890b28eb2ee24413e69a6d48de4e8b75123957edd5432f4eeb3 \
