@@ -516,9 +516,9 @@ pydantic-core==2.14.3 \
     --hash=sha256:fe272a72c7ed29f84c42fedd2d06c2f9858dc0c00dae3b34ba15d6d8ae0fbaaf \
     --hash=sha256:fe863491664c6720d65ae438d4efaa5eca766565a53adb53bf14bc3246c72fe0
     # via pydantic
-pygments==2.17.1 \
-    --hash=sha256:1b37f1b1e1bff2af52ecaf28cc601e2ef7077000b227a0675da25aef85784bc4 \
-    --hash=sha256:e45a0e74bf9c530f564ca81b8952343be986a29f6afe7f5ad95c5f06b7bdf5e8
+pygments==2.17.2 \
+    --hash=sha256:b27c2826c47d0f3219f29554824c30c5e8945175d888647acd804ddd04af846c \
+    --hash=sha256:da46cec9fd2de5be3a8a784f434e4c4ab670b4ff54d605c4c2717e9d49c4c367
     # via
     #   furo
     #   sphinx
@@ -675,7 +675,7 @@ pip==23.3.1 \
     # via
     #   docs (pyproject.toml)
     #   pip-tools
-setuptools==69.0.0 \
-    --hash=sha256:4c65d4f7891e5b046e9146913b87098144de2ca2128fbc10135b8556a6ddd946 \
-    --hash=sha256:eb03b43f23910c5fd0909cb677ad017cd9531f493d27f8b3f5316ff1fb07390e
+setuptools==69.0.2 \
+    --hash=sha256:1e8fdff6797d3865f37397be788a4e3cba233608e9b509382a2777d25ebde7f2 \
+    --hash=sha256:735896e78a4742605974de002ac60562d286fa8051a7e2299445e8e8fbb01aa6
     # via pip-tools
