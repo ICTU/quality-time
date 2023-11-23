@@ -588,10 +588,12 @@ class MetricTest(DataModelTestCase):
         )
 
 
-@patch("bottle.request", Mock(json={"metric_url": "https://quality_time/metric42"}))
 @patch("model.issue_tracker.requests.post")
 class MetricIssueTest(DataModelTestCase):
     """Unit tests for metric issue routes."""
+
+    METRIC_URL = "https://quality_time/metric42"
+    ISSUE_URL = "https://tracker/browse/FOO-42"
 
     def setUp(self):
         """Extend to set up the report fixture."""
@@ -637,23 +639,29 @@ class MetricIssueTest(DataModelTestCase):
                 "from Source.\nPlease go to https://zap for more details.\n",
             },
         }
-        self.issue_api = "https://tracker/rest/api/2/issue"
-        self.issue_url = "https://tracker/browse/FOO-42"
 
+    def assert_issue_posted(self, method):
+        """Check that method is called to post the issue data to the issue tracker."""
+        issue_api = "https://tracker/rest/api/2/issue"
+        method.assert_called_once_with(issue_api, auth=None, headers={}, json=self.expected_json, timeout=10)
+
+    def assert_issue_inserted(self):
+        """Check that the issue is inserted in the database."""
+        inserted_report = self.database.reports.insert_one.call_args_list[0][0][0]
+        inserted_issue_ids = inserted_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["issue_ids"]
+        self.assertEqual(["FOO-42"], inserted_issue_ids)
+
+    @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
     def test_add_metric_issue(self, requests_post):
         """Test that an issue can be added to the issue tracker."""
         response = Mock()
         response.json.return_value = {"key": "FOO-42"}
         requests_post.return_value = response
-        self.assertEqual({"ok": True, "issue_url": self.issue_url}, add_metric_issue(METRIC_ID, self.database))
-        requests_post.assert_called_once_with(
-            self.issue_api,
-            auth=None,
-            headers={},
-            json=self.expected_json,
-            timeout=10,
-        )
+        self.assertEqual({"ok": True, "issue_url": self.ISSUE_URL}, add_metric_issue(METRIC_ID, self.database))
+        self.assert_issue_posted(requests_post)
+        self.assert_issue_inserted()
 
+    @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
     @patch("model.issue_tracker.requests.get")
     def test_add_metric_issue_with_labels(self, requests_get, requests_post):
         """Test that an issue can be added to the issue tracker."""
@@ -668,16 +676,12 @@ class MetricIssueTest(DataModelTestCase):
         response = Mock()
         response.json.return_value = {"key": "FOO-42"}
         requests_post.return_value = response
-        self.assertEqual({"ok": True, "issue_url": self.issue_url}, add_metric_issue(METRIC_ID, self.database))
+        self.assertEqual({"ok": True, "issue_url": self.ISSUE_URL}, add_metric_issue(METRIC_ID, self.database))
         self.expected_json["fields"]["labels"] = ["label", "label_with_spaces"]
-        requests_post.assert_called_once_with(
-            self.issue_api,
-            auth=None,
-            headers={},
-            json=self.expected_json,
-            timeout=10,
-        )
+        self.assert_issue_posted(requests_post)
+        self.assert_issue_inserted()
 
+    @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
     @disable_logging
     @patch("model.issue_tracker.requests.get")
     def test_add_metric_issue_with_epic_link(self, requests_get, requests_post):
@@ -697,16 +701,12 @@ class MetricIssueTest(DataModelTestCase):
         response = Mock()
         response.json.return_value = {"key": "FOO-42"}
         requests_post.return_value = response
-        self.assertEqual({"ok": True, "issue_url": self.issue_url}, add_metric_issue(METRIC_ID, self.database))
+        self.assertEqual({"ok": True, "issue_url": self.ISSUE_URL}, add_metric_issue(METRIC_ID, self.database))
         self.expected_json["fields"]["epic_link_field_id"] = "FOO-420"
-        requests_post.assert_called_once_with(
-            self.issue_api,
-            auth=None,
-            headers={},
-            json=self.expected_json,
-            timeout=10,
-        )
+        self.assert_issue_posted(requests_post)
+        self.assert_issue_inserted()
 
+    @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
     @disable_logging
     def test_add_metric_issue_failure(self, requests_post):
         """Test that an error message is returned if an issue cannot be added to the issue tracker."""
