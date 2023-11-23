@@ -89,6 +89,12 @@ export const issueStatusPropType = PropTypes.shape({
     updated: PropTypes.string
 })
 
+export const sourcePropType = PropTypes.shape({
+    entities: PropTypes.array,
+    entity_user_data: PropTypes.object,
+    source_uuid: PropTypes.string,
+})
+
 export const metricPropType = PropTypes.shape({
     accept_debt: PropTypes.bool,
     debt_end_date: PropTypes.string,

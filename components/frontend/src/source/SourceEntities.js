@@ -1,18 +1,24 @@
 import React, { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import { Button, Icon, Popup, Table } from '../semantic_ui_react_wrappers';
 import { SourceEntity } from './SourceEntity';
 import { capitalize } from '../utils';
 import { DataModel } from '../context/DataModel';
+import { metricPropType, reportPropType, sourcePropType } from '../sharedPropTypes';
 
-export function alignment(attribute_type, attribute_alignment) {
-    if (attribute_alignment === "left" || attribute_alignment === "right") {
-        return attribute_alignment
+export function alignment(attributeType, attributeAlignment) {
+    if (attributeAlignment === "left" || attributeAlignment === "right") {
+        return attributeAlignment
     }
     // The attribute has no explicitly set aligment, use the attribute type to determine the alignment
-    return { text: "left", integer: "right", float: "right", date: "left", datetime: "left", minutes: "right" }[attribute_type];
+    return { text: "left", integer: "right", float: "right", date: "left", datetime: "left", minutes: "right" }[attributeType];
+}
+alignment.propTypes = {
+    attributeType: PropTypes.string,
+    attributeAligment: PropTypes.string
 }
 
-export function SourceEntities({ metric, metric_uuid, report, source, reload }) {
+export function SourceEntities({ metric, metric_uuid, reload, report, source }) {
     const dataModel = useContext(DataModel)
     const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false);
     const [sortColumn, setSortColumn] = useState(null);
@@ -122,4 +128,11 @@ export function SourceEntities({ metric, metric_uuid, report, source, reload }) 
             </Table.Body>
         </Table>
     )
+}
+SourceEntities.propTypes = {
+    metric: metricPropType,
+    metric_uuid: PropTypes.string,
+    reload: PropTypes.func,
+    report: reportPropType,
+    source: sourcePropType
 }
