@@ -15,7 +15,7 @@ function IssueWithoutTracker({ issueId }) {
         />
     )
 }
-IssueWithoutTracker.propType = {
+IssueWithoutTracker.propTypes = {
     issueId: PropTypes.string
 }
 
