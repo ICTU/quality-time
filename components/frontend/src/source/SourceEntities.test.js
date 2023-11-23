@@ -81,8 +81,16 @@ function assertOrder(expected) {
     }
 }
 
+function renderSourceEntities() {
+    render(
+        <DataModel.Provider value={data_model}>
+            <SourceEntities metric={metric} report={{ issue_tracker: null }} source={source} />
+        </DataModel.Provider>
+    )
+}
+
 it('sorts the entities by status', async () => {
-    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Entity name status/))
     assertOrder(["C", "B", "A"])
@@ -91,7 +99,7 @@ it('sorts the entities by status', async () => {
 })
 
 it('sorts the entities by status end date', async () => {
-    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Status end date/))
     assertOrder(["C", "B", "A"])
@@ -100,7 +108,7 @@ it('sorts the entities by status end date', async () => {
 })
 
 it('sorts the entities by status rationale', async () => {
-    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Status rationale/))
     assertOrder(["C", "B", "A"])
@@ -109,7 +117,7 @@ it('sorts the entities by status rationale', async () => {
 })
 
 it('sorts the entities by first seen date', async () => {
-    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/first seen/))
     assertOrder(["C", "A", "B"])
@@ -118,7 +126,7 @@ it('sorts the entities by first seen date', async () => {
 })
 
 it('sorts the entities by integer', async () => {
-    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/integer/))
     assertOrder(["C", "A", "B"])
@@ -127,7 +135,7 @@ it('sorts the entities by integer', async () => {
 })
 
 it('sorts the entities by float', async () => {
-    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/float/))
     assertOrder(["A", "B", "C"])
@@ -136,7 +144,7 @@ it('sorts the entities by float', async () => {
 })
 
 it('sorts the entities by text', async () => {
-    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/text/))
     assertOrder(["A", "B", "C"])
@@ -145,7 +153,7 @@ it('sorts the entities by text', async () => {
 })
 
 it('sorts the entities by date', async () => {
-    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/date only/))
     assertOrder(["C", "A", "B"])
@@ -154,7 +162,7 @@ it('sorts the entities by date', async () => {
 })
 
 it('sorts the entities by datetime', async () => {
-    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/datetime/))
     assertOrder(["C", "A", "B"])
@@ -163,7 +171,7 @@ it('sorts the entities by datetime', async () => {
 })
 
 it('sorts the entities by minutes', async () => {
-    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/minutes/))
     assertOrder(["C", "B", "A"])
@@ -172,7 +180,7 @@ it('sorts the entities by minutes', async () => {
 })
 
 it('shows help', async () => {
-    render(<DataModel.Provider value={data_model}><SourceEntities metric={metric} source={source} /></DataModel.Provider>)
+    renderSourceEntities()
     await userEvent.hover(screen.queryByRole("tooltip", {name: /help/}))
     await waitFor(() => { expect(screen.queryByText(/help text/)).not.toBe(null) })
 })
