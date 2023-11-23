@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { Icon, Menu } from 'semantic-ui-react';
 import { Label, Tab } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
@@ -16,52 +17,65 @@ import { MetricConfigurationParameters } from './MetricConfigurationParameters';
 import { MetricDebtParameters } from './MetricDebtParameters';
 import { MetricTypeHeader } from './MetricTypeHeader';
 import { TrendGraph } from './TrendGraph';
-import { stringsURLSearchQueryPropType} from '../sharedPropTypes';
+import { datePropType, reportPropType, reportsPropType, stringsPropType, stringsURLSearchQueryPropType} from '../sharedPropTypes';
 
-function Buttons({ metric_uuid, first_metric, last_metric, stopSorting, reload }) {
+function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopSorting }) {
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <div style={{ marginTop: "20px" }}>
                 <ReorderButtonGroup
-                    first={first_metric} last={last_metric} moveable="metric" slot="row"
+                    first={isFirstMetric} last={isLastMetric} moveable="metric" slot="row"
                     onClick={(direction) => { stopSorting(); set_metric_attribute(metric_uuid, "position", direction, reload) }} />
                 <DeleteButton item_type="metric" onClick={() => delete_metric(metric_uuid, reload)} />
             </div>}
         />
     )
 }
+Buttons.propTypes = {
+    isFirstMetric: PropTypes.bool,
+    isLastMetric: PropTypes.bool,
+    metric_uuid: PropTypes.string,
+    reload: PropTypes.func,
+    stopSorting: PropTypes.func
+}
 
-function fetch_measurements(report_date, metric_uuid, setMeasurements) {
-    get_metric_measurements(metric_uuid, report_date)
+function fetchMeasurements(reportDate, metric_uuid, setMeasurements) {
+    get_metric_measurements(metric_uuid, reportDate)
         .then(function (json) {
             if (json.ok !== false) {
                 setMeasurements(json.measurements);
             }
         })
 }
+fetchMeasurements.propTypes = {
+    reportDate: datePropType,
+    metric_uuid: PropTypes.string,
+    setMeasurements: PropTypes.func
+}
+
 
 export function MetricDetails({
+    changed_fields,
+    isFirstMetric,
+    isLastMetric,
+    metric_uuid,
+    reload,
     report_date,
     reports,
     report,
-    subject_uuid,
-    metric_uuid,
-    first_metric,
-    last_metric,
     stopSorting,
-    changed_fields,
+    subject_uuid,
     visibleDetailsTabs,
-    reload
 }) {
     const dataModel = useContext(DataModel)
     const [measurements, setMeasurements] = useState([]);
     useEffect(() => {
-        fetch_measurements(report_date, metric_uuid, setMeasurements);
+        fetchMeasurements(report_date, metric_uuid, setMeasurements);
         // eslint-disable-next-line
     }, [metric_uuid, report_date]);
     function measurementsReload() {
         reload();
-        fetch_measurements(report_date, metric_uuid, setMeasurements)
+        fetchMeasurements(report_date, metric_uuid, setMeasurements)
     }
     const subject = report.subjects[subject_uuid];
     const metric = subject.metrics[metric_uuid];
@@ -145,10 +159,20 @@ export function MetricDetails({
         <>
             <MetricTypeHeader metricType={metricType} />
             <Tab panes={panes} defaultActiveIndex={defaultActiveTab} onTabChange={onTabChange} />
-            <Buttons metric_uuid={metric_uuid} first_metric={first_metric} last_metric={last_metric} stopSorting={stopSorting} reload={reload} />
+            <Buttons metric_uuid={metric_uuid} isFirstMetric={isFirstMetric} isLastMetric={isLastMetric} stopSorting={stopSorting} reload={reload} />
         </>
     );
 }
 MetricDetails.propTypes = {
+    changed_fields: stringsPropType,
+    isFirstMetric: PropTypes.bool,
+    isLastMetric: PropTypes.bool,
+    metric_uuid: PropTypes.string,
+    reload: PropTypes.func,
+    report_date: datePropType,
+    reports: reportsPropType,
+    report: reportPropType,
+    stopSorting: PropTypes.func,
+    subject_uuid: PropTypes.string,
     visibleDetailsTabs: stringsURLSearchQueryPropType
 }
