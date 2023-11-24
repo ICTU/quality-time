@@ -12,7 +12,7 @@ import { LabelWithHelp } from '../widgets/LabelWithHelp';
 import { LabelWithHyperLink } from '../widgets/LabelWithHyperLink';
 import { ErrorMessage } from '../errorMessage';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
-import { get_metric_issue_ids } from '../utils';
+import { getMetricIssueIds } from '../utils';
 import { Target } from './Target';
 
 function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
@@ -77,7 +77,7 @@ function IssueIdentifiers({ issue_tracker_instruction, metric, metric_uuid, repo
     )
     const [suggestions, setSuggestions] = useState([]);
     const labelId = `issue-identifiers-label-${metric_uuid}`
-    const issue_ids = get_metric_issue_ids(metric);
+    const issue_ids = getMetricIssueIds(metric);
     return (
         <MultipleChoiceInput
             aria-labelledby={labelId}
@@ -149,7 +149,7 @@ export function MetricDebtParameters({ report, metric, metric_uuid, reload }) {
                     }
                 />
             </Grid.Row>
-            {(get_metric_issue_ids(metric).length > 0 && !issueTrackerConfigured) &&
+            {(getMetricIssueIds(metric).length > 0 && !issueTrackerConfigured) &&
                 <Grid.Row>
                     <Grid.Column width={16}>
                         <ErrorMessage title="No issue tracker configured" message={issueTrackerInstruction} />

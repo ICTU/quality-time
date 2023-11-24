@@ -222,7 +222,7 @@ export function nrMetricsInReports(reports) {
     return nrMetrics
 }
 
-export function get_metric_issue_ids(metric) {
+export function getMetricIssueIds(metric) {
     let issue_ids = metric.issue_ids ?? [];
     issue_ids.sort();
     return issue_ids
