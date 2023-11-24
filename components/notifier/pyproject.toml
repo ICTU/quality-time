@@ -18,16 +18,12 @@ dev = [
 ]
 tools = [
     "bandit==1.7.5",
-    "black==23.11.0",
     "mypy==1.7.1",
     "pip-audit==2.6.1",
     "ruff==0.1.6",
     "safety==2.3.5",
     "vulture==2.10"
 ]
-
-[tool.black]
-line-length = 120
 
 [tool.mypy]
 ignore_missing_imports = false
@@ -49,11 +45,13 @@ line-length = 120
 src = ["src"]
 select = ["ALL"]
 ignore = [
-    "ANN101",  # https://beta.ruff.rs/docs/rules/missing-type-self/ - type checkers can infer the type of `self`, so annotating it is superfluous
-    "D203",    # https://beta.ruff.rs/docs/rules/#pydocstyle-d - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
-    "D213",    # https://beta.ruff.rs/docs/rules/#pydocstyle-d - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
-    "FBT",     # https://beta.ruff.rs/docs/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
-    "PT",      # https://beta.ruff.rs/docs/rules/#flake8-pytest-style-pt - pytest isn't used
+    "ANN101",  # https://docs.astral.sh/ruff/rules/missing-type-self/ - type checkers can infer the type of `self`, so annotating it is superfluous
+    "COM812",  # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
+    "D203",    # https://docs.astral.sh/ruff/rules/one-blank-line-before-class/ - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
+    "D213",    # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/ - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
+    "FBT",     # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
+    "ISC001",  # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
+    "PT",      # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
 ]
 
 [tool.ruff.isort]
@@ -66,11 +64,11 @@ section-order = ["future", "standard-library", "third-party", "second-party", "f
 [tool.ruff.per-file-ignores]
 ".vulture_ignore_list.py" = ["ALL"]
 "__init__.py" = [
-    "D104",  # https://beta.ruff.rs/docs/rules/#pydocstyle-d - don't require doc strings in __init__.py files
+    "D104",  # https://docs.astral.sh/ruff/rules/undocumented-public-package/ - don't require doc strings in __init__.py files
 ]
 "src/quality_time_notifier.py" = [
-    "INP001",  # https://beta.ruff.rs/docs/rules/implicit-namespace-package/ - false positive because this is the main script
+    "INP001",  # https://docs.astral.sh/ruff/rules/implicit-namespace-package/ - false positive because this is the main script
 ]
 "tests/**/*.py" = [
-    "ANN201",  # https://beta.ruff.rs/docs/rules/missing-return-type-undocumented-public-function/ - don't require test functions to have return types
+    "ANN201",  # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/ - don't require test functions to have return types
 ]
