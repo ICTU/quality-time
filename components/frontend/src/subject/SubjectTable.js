@@ -4,7 +4,7 @@ import { Table } from '../semantic_ui_react_wrappers';
 import { DataModel } from "../context/DataModel";
 import { DarkMode } from "../context/DarkMode";
 import { MetricDetails } from '../metric/MetricDetails';
-import { IssueStatus } from '../measurement/IssueStatus';
+import { IssueStatus } from '../issue/IssueStatus';
 import { MeasurementSources } from '../measurement/MeasurementSources';
 import { MeasurementTarget } from '../measurement/MeasurementTarget';
 import { MeasurementValue } from '../measurement/MeasurementValue';
