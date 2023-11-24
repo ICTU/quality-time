@@ -72,6 +72,18 @@ export const settingsPropType = PropTypes.shape({
     visibleDetailsTabs: stringsURLSearchQueryPropType
 })
 
+export const entityStatusPropType = PropTypes.oneOf(["unconfirmed", "confirmed", "fixed", "false_positive", "wont_fix"])
+
+export const entityPropType = PropTypes.shape({
+    key: PropTypes.string,
+})
+
+const entityAttributePropType = PropTypes.shape({
+    key: PropTypes.string,
+})
+
+export const entityAttributesPropType = PropTypes.arrayOf(entityAttributePropType)
+
 export const issueStatusPropType = PropTypes.shape({
     connection_error: PropTypes.string,
     created: PropTypes.string,
