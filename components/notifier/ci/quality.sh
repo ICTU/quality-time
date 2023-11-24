@@ -3,7 +3,8 @@
 source ../../ci/base.sh
 
 # Ruff
-run pipx run `spec ruff` .
+run pipx run `spec ruff` check .
+run pipx run `spec ruff` format --check .
 
 # Mypy
 run pipx run `spec mypy` --python-executable=$(which python) src
@@ -22,6 +23,3 @@ run pipx run `spec bandit` --quiet --recursive src/
 
 # Vulture
 run pipx run `spec vulture` --min-confidence 0 src/ tests/ .vulture_ignore_list.py
-
-# Black
-run pipx run `spec black` --check src tests

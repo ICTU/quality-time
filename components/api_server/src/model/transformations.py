@@ -141,11 +141,16 @@ def _reports_to_change(reports, report, scope: EditScope) -> Iterator:
 
 def _subjects_to_change(report, subject, scope: EditScope) -> Iterator:
     """Return the subjects to change, given the scope."""
-    yield from {subject.uuid: subject}.items() if scope in (
-        "subject",
-        "metric",
-        "source",
-    ) else report.subjects_dict.items()
+    yield from (
+        {subject.uuid: subject}.items()
+        if scope
+        in (
+            "subject",
+            "metric",
+            "source",
+        )
+        else report.subjects_dict.items()
+    )
 
 
 def _metrics_to_change(subject, metric, scope: EditScope) -> Iterator:
