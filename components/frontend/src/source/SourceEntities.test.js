@@ -181,6 +181,6 @@ it('sorts the entities by minutes', async () => {
 
 it('shows help', async () => {
     renderSourceEntities()
-    await userEvent.hover(screen.queryByRole("tooltip", {name: /help/}))
+    await userEvent.hover(screen.queryByRole("tooltip", { name: /help/ }))
     await waitFor(() => { expect(screen.queryByText(/help text/)).not.toBe(null) })
 })
