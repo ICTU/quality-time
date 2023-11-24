@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Table } from 'semantic-ui-react';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
@@ -6,16 +7,35 @@ import { SourceEntityDetails } from './SourceEntityDetails';
 import { SourceEntityAttribute } from './SourceEntityAttribute';
 import { source_entity_status_name } from './source_entity_status';
 import { alignment } from './SourceEntities';
+import { entityAttributesPropType, entityPropType, entityStatusPropType, reportPropType } from '../sharedPropTypes';
 import "./SourceEntity.css";
 
-function entityCanBeIgnored(status, status_end_date) {
-    const statusEndDate = new Date(status_end_date);
+function entityCanBeIgnored(status, statusEndDateString) {
+    const statusEndDate = new Date(statusEndDateString);
     const now = new Date();
     if (statusEndDate < now) { return false }
     return ["wont_fix", "fixed", "false_positive"].includes(status);
 }
+entityCanBeIgnored.propTypes = {
+    status: entityStatusPropType,
+    statusEndDateString: PropTypes.string
+}
 
-export function SourceEntity({ metric_uuid, source_uuid, hide_ignored_entities, entity, entity_name, entity_attributes, rationale, reload, report, status, status_end_date }) {
+export function SourceEntity(
+    {
+        metric_uuid,
+        source_uuid,
+        hide_ignored_entities,
+        entity,
+        entity_name,
+        entity_attributes,
+        rationale,
+        reload,
+        report,
+        status,
+        status_end_date
+    }
+) {
     const [expanded, setExpanded] = useState(false);
 
     const ignoredEntity = entityCanBeIgnored(status, status_end_date)
@@ -58,4 +78,17 @@ export function SourceEntity({ metric_uuid, source_uuid, hide_ignored_entities, 
                 </Table.Cell>)}
         </TableRowWithDetails>
     );
+}
+SourceEntity.propTypes = {
+    metric_uuid: PropTypes.string,
+    source_uuid: PropTypes.string,
+    hide_ignored_entities: PropTypes.bool,
+    entity: entityPropType,
+    entity_name: PropTypes.string,
+    entity_attributes: entityAttributesPropType,
+    rationale: PropTypes.string,
+    reload: PropTypes.func,
+    report: reportPropType,
+    status: entityStatusPropType,
+    status_end_date: PropTypes.string
 }
