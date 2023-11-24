@@ -113,7 +113,7 @@ export function Subject({
     const subject = report.subjects[subject_uuid];
     const metrics = visibleMetrics(subject.metrics, settings.metricsToHide.value, settings.hiddenTags.value)
     const dataModel = useContext(DataModel)
-    if (Object.keys(metrics).length === 0) { return null }
+    if ((!settings.metricsToHide.isDefault() || !settings.hiddenTags.isDefault()) && Object.keys(metrics).length === 0) { return null }
     let metricEntries = Object.entries(metrics);
     if (settings.sortColumn.value !== "") {
         sortMetrics(dataModel, metricEntries, settings.sortDirection.value, settings.sortColumn.value, report, measurements);

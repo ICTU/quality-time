@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is v4.10.0 or older, please read the v5.0.0 deployment notes first.
 
+### Fixed
+
+- Newly added subjects would not be visible. Fixes [#7552](https://github.com/ICTU/quality-time/issues/7552).
+
 ### Added
 
 - Add an endpoint `api/v3/report/<report_uuid>/metric_status_summary` that returns a summary of the metric statuses for the specified report in JSON format. Closes [#6146](https://github.com/ICTU/quality-time/issues/6146).
