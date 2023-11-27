@@ -37,6 +37,7 @@ ISSUE_ATTRIBUTES = [
 
 ALL_JIRA_METRICS = [
     "average_issue_lead_time",
+    "change_failure_rate",
     "issues",
     "manual_test_duration",
     "manual_test_execution",
@@ -78,6 +79,7 @@ JIRA = Source(
             ),
             metrics=[
                 "average_issue_lead_time",
+                "change_failure_rate",
                 "issues",
                 "manual_test_duration",
                 "manual_test_execution",
@@ -91,7 +93,7 @@ JIRA = Source(
             "configured.",
             short_name="number of days to look back",
             default_value="90",
-            metrics=["average_issue_lead_time"],
+            metrics=["change_failure_rate", "average_issue_lead_time"],
         ),
         "manual_test_duration_field": StringParameter(
             name="Manual test duration field (name or id)",
@@ -179,6 +181,7 @@ JIRA = Source(
                 EntityAttribute(name="Issue lead time in days", key="lead_time", type=EntityAttributeType.INTEGER),
             ],
         ),
+        "change_failure_rate": Entity(name="issue", attributes=ISSUE_ATTRIBUTES),
         "issues": Entity(name="issue", attributes=ISSUE_ATTRIBUTES),
         "manual_test_duration": Entity(
             name=TEST_CASE,

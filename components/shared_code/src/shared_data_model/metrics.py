@@ -44,6 +44,21 @@ METRICS = {
         sources=["azure_devops", "jira"],
         tags=[Tag.PROCESS_EFFICIENCY],
     ),
+    "change_failure_rate": Metric(
+        name="Change failure rate",
+        description="The percentage of deployments causing a failure in production.",
+        rationale="The change failure rate is an indicator of the DevOps effectiveness of a team.",
+        documentation="""Because this metric is a "rate", it needs a numerator (the number of failed deployments
+in the look back period) and a denominator (the number of deployments in the look back period). The metric can be
+configured with a combination of Jira, and either Jenkins or GitLab CI as source. Jira is used as source for the number
+of failures (numerator). Either Jenkins or GitLab CI is used as source for the number of deployments (denominator).""",
+        scales=["percentage"],
+        unit=Unit.FAILED_DEPLOYMENTS,
+        target="0",
+        near_target="5",
+        sources=["jenkins", "jira", "gitlab"],
+        tags=[Tag.PROCESS_EFFICIENCY],
+    ),
     "commented_out_code": Metric(
         name="Commented out code",
         description="The number of blocks of commented out lines of code.",

@@ -20,6 +20,7 @@ from shared_data_model.parameters import (
 )
 
 ALL_GITLAB_METRICS = [
+    "change_failure_rate",
     "failed_jobs",
     "job_runs_within_time_period",
     "merge_requests",
@@ -99,6 +100,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             mandatory=True,
             help_url=HttpUrl("https://docs.gitlab.com/ee/user/project/"),
             metrics=[
+                "change_failure_rate",
                 "failed_jobs",
                 "job_runs_within_time_period",
                 "merge_requests",
@@ -125,7 +127,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             name="Branches and tags to ignore (regular expressions, branch names or tag names)",
             short_name="branches and tags to ignore",
             help_url=GITLAB_BRANCH_HELP_URL,
-            metrics=["failed_jobs", "job_runs_within_time_period", "unused_jobs"],
+            metrics=["change_failure_rate", "failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
         "inactive_days": Days(
             name="Number of days since last commit after which to consider branches inactive",
@@ -144,13 +146,19 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             name="Jobs to ignore (regular expressions or job names)",
             short_name="jobs to ignore",
             help="Jobs to ignore can be specified by job name or by regular expression.",
-            metrics=["failed_jobs", "job_runs_within_time_period", "unused_jobs"],
+            metrics=["change_failure_rate", "failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
         "lookback_days": Days(
             name="Number of days to look back for selecting pipeline jobs",
             short_name="number of days to look back",
             default_value="90",
-            metrics=["failed_jobs", "job_runs_within_time_period", "source_up_to_dateness", "unused_jobs"],
+            metrics=[
+                "change_failure_rate",
+                "failed_jobs",
+                "job_runs_within_time_period",
+                "source_up_to_dateness",
+                "unused_jobs",
+            ],
         ),
         "merge_request_state": MergeRequestState(values=["opened", "locked", "merged", "closed"]),
         "approval_state": MultipleChoiceParameter(
@@ -216,6 +224,16 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         "target_branches_to_include": TargetBranchesToInclude(help_url=GITLAB_BRANCH_HELP_URL),
     },
     entities={
+        "change_failure_rate": Entity(
+            name="deployment",
+            attributes=[
+                EntityAttribute(name="Job name", key="name", url="url"),
+                EntityAttribute(name="Job stage", key="stage"),
+                EntityAttribute(name="Branch or tag", key="branch"),
+                EntityAttribute(name="Status of most recent build", key="build_status"),
+                EntityAttribute(name="Date of most recent build", key="build_date", type=EntityAttributeType.DATE),
+            ],
+        ),
         "failed_jobs": JOB_ENTITY,
         "job_runs_within_time_period": JOB_ENTITY,
         "merge_requests": Entity(

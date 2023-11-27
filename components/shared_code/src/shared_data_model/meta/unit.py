@@ -14,6 +14,7 @@ class Unit(StrEnum):
     DAYS = "days"
     DEPENDENCIES = "dependencies"
     DOWNVOTES = "downvotes"
+    FAILED_DEPLOYMENTS = "failed deployments"
     ISSUES = "issues"
     LINES = "lines"
     LONG_UNITS = "long units"

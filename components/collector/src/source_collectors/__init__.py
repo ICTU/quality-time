@@ -43,6 +43,7 @@ from .gatling.source_up_to_dateness import GatlingSourceUpToDateness
 from .gatling.source_version import GatlingLogCollector
 from .gatling.tests import GatlingTests
 from .generic_json.security_warnings import GenericJSONSecurityWarnings
+from .gitlab.change_failure_rate import GitLabChangeFailureRate
 from .gitlab.failed_jobs import GitLabFailedJobs
 from .gitlab.job_runs_within_time_period import GitLabJobRunsWithinTimePeriod
 from .gitlab.merge_requests import GitLabMergeRequests
@@ -58,6 +59,7 @@ from .jacoco.uncovered_lines import JacocoUncoveredLines
 from .jacoco_jenkins_plugin.source_up_to_dateness import JacocoJenkinsPluginSourceUpToDateness
 from .jacoco_jenkins_plugin.uncovered_branches import JacocoJenkinsPluginUncoveredBranches
 from .jacoco_jenkins_plugin.uncovered_lines import JacocoJenkinsPluginUncoveredLines
+from .jenkins.change_failure_rate import JenkinsChangeFailureRate
 from .jenkins.failed_jobs import JenkinsFailedJobs
 from .jenkins.job_runs_within_time_period import JenkinsJobRunsWithinTimePeriod
 from .jenkins.source_up_to_dateness import JenkinsSourceUpToDateness
@@ -67,6 +69,7 @@ from .jenkins_test_report.source_up_to_dateness import JenkinsTestReportSourceUp
 from .jenkins_test_report.test_cases import JenkinsTestReportTestCases
 from .jenkins_test_report.tests import JenkinsTestReportTests
 from .jira.average_issue_lead_time import JiraAverageIssueLeadTime
+from .jira.change_failure_rate import JiraChangeFailureRate
 from .jira.issue_status import JiraIssueStatus
 from .jira.issues import JiraIssues
 from .jira.manual_test_duration import JiraManualTestDuration
