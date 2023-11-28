@@ -213,13 +213,13 @@ greenlet==3.0.1 \
     --hash=sha256:f89e21afe925fcfa655965ca8ea10f24773a1791400989ff32f467badfe4a064 \
     --hash=sha256:fa24255ae3c0ab67e613556375a4341af04a084bd58764731972bcbc8baeba36
     # via gevent
-idna==3.4 \
-    --hash=sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4 \
-    --hash=sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2
+idna==3.6 \
+    --hash=sha256:9ecdbbd083b06798ae1e86adcbfe8ab1479cf864e4ee30fe4e46a003d12491ca \
+    --hash=sha256:c05567e9c24a6b9faaa835c4821bad0590fbb9d5779e7caa6e1cc4978e7eb24f
     # via requests
-parse==1.19.1 \
-    --hash=sha256:371ed3800dc63983832159cc9373156613947707bc448b5215473a219dbd4362 \
-    --hash=sha256:cc3a47236ff05da377617ddefa867b7ba983819c664e1afe46249e5b469be464
+parse==1.20.0 \
+    --hash=sha256:5e171b001452fa9f004c5a58a93525175468daf69b493e9fa915347ed7ff6968 \
+    --hash=sha256:bd28bae37714b45d5894d77160a16e2be36b64a3b618c81168b3684676aa498b
     # via
     #   behave
     #   parse-type
