@@ -7,7 +7,7 @@ dependencies = [
     "beautifulsoup4==4.12.2",
     "defusedxml==0.7.1",
     "packaging==23.2",
-    "pymongo==4.6.0",
+    "pymongo==4.6.1",
     "python-dateutil==2.8.2",
 ]
 
