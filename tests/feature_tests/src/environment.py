@@ -6,6 +6,7 @@ from behave.model import Step
 from behave.runner import Context
 
 JSON_CONTENT_TYPE = "application/json"
+JSON = dict | list
 
 
 def before_all(context: Context) -> None:  # noqa: C901
@@ -20,7 +21,7 @@ def before_all(context: Context) -> None:  # noqa: C901
         """Return the API URL."""
         return f"{context.base_api_url}/{api}"
 
-    def get(api: str, headers: dict[str, str] | None = None) -> requests.Response | dict | list:
+    def get(api: str, headers: dict[str, str] | None = None) -> requests.Response | JSON:
         """Get the resource."""
         url = api_url(api)
         for attribute in ("report_date", "min_report_date"):
@@ -30,7 +31,7 @@ def before_all(context: Context) -> None:  # noqa: C901
         context.response = response = requests.get(url, headers=headers, cookies=cookies(), timeout=timeout)
         return response.json() if response.headers.get("Content-Type") == JSON_CONTENT_TYPE else response
 
-    def post(api: str, json: dict | list | None = None) -> requests.Response | dict | list:
+    def post(api: str, json: JSON | None = None) -> requests.Response | JSON:
         """Post the resource."""
         url = api_url(api)
         response = requests.post(url, json=json, cookies=cookies(), timeout=timeout)
@@ -41,15 +42,15 @@ def before_all(context: Context) -> None:  # noqa: C901
             context.session_id = response.cookies["session_id"]
         return response.json() if response.headers.get("Content-Type") == JSON_CONTENT_TYPE else response
 
-    def put(api: str, json: dict | list | None = None) -> requests.Response | dict | list:
-        """Post the resource."""
+    def put(api: str, json: JSON | None = None) -> requests.Response | JSON:
+        """Put the resource."""
         url = api_url(api)
         response = requests.put(url, json=json, cookies=cookies(), timeout=timeout)
         context.put_response = context.response = response
         # Ignore non-ok responses for now since we don't have testcases where they apply
         return response.json() if response.headers.get("Content-Type") == JSON_CONTENT_TYPE else response
 
-    def delete(api: str) -> requests.Response | dict | list:
+    def delete(api: str) -> requests.Response | JSON:
         """Delete the resource."""
         context.response = response = requests.delete(api_url(api), cookies=cookies(), timeout=timeout)
         return response.json() if response.headers.get("Content-Type") == JSON_CONTENT_TYPE else response

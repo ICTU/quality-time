@@ -20,7 +20,8 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 ### Added
 
-- Add an endpoint `api/v3/report/<report_uuid>/metric_status_summary` that returns a summary of the metric statuses for the specified report in JSON format. Closes [#6146](https://github.com/ICTU/quality-time/issues/6146).
+- Add an endpoint `api/v3/report/<report_uuid>/metric_status_summary` that returns a summary of the metric statuses for the specified report in JSON format. See the [API-documentation](api.md#monitoring-metric-statuses). Closes [#6146](https://github.com/ICTU/quality-time/issues/6146).
+- Add endpoints `api/v3/<report|subject|metric|source>/search` that allow for search for objects by attribute value. See the [API-documentation](api.md#search). Closes [#7579](https://github.com/ICTU/quality-time/issues/7579).
 
 ## v5.3.1 - 2023-11-08
 

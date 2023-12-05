@@ -25,7 +25,7 @@ intro.md
 ````{grid-item-card}
 :class-card: sd-bg-transparent
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 1
 :caption: User documentation 📗
 usage.md
 reference.md
@@ -34,11 +34,12 @@ reference.md
 ````{grid-item-card}
 :class-card: sd-bg-transparent
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 1
 :caption: Technical documentation 🛠
 deployment.md
 development.md
 software.md
+api.md
 ```
 ````
 ````{grid-item-card}

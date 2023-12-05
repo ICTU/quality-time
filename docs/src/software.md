@@ -67,9 +67,7 @@ The frontend uses the following environment variables:
 
 ### API
 
-The API of the API-server is versioned. The version is not changed when backwards compatible changes are made, such as the addition of new endpoints.
-
-API documentation can be retrieved via http://www.quality-time.example.org/api (all versions, all routes), http://www.quality-time.example.org/api/v3 (all routes for a specific version, in this case version 3), and http://www.quality-time.example.org/api/v3/<route_fragment> (all routes matching a specific text fragment).
+The API of the API-server is versioned. The version is not changed when backwards compatible changes are made, such as the addition of new endpoints. The public [API](api.md) is documented separately.
 
 ### Health check
 
