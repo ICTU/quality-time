@@ -273,9 +273,9 @@ pip-tools==7.3.0 \
     --hash=sha256:8717693288720a8c6ebd07149c93ab0be1fced0b5191df9e9decd3263e20d85e \
     --hash=sha256:8e9c99127fe024c025b46a0b2d15c7bd47f18f33226cf7330d35493663fc1d1d
     # via shared-code (pyproject.toml)
-pipx==1.3.2 \
-    --hash=sha256:704d01d04c67c2dd0c776c5bf5ed35c7b249055b0174568b8507f07d72ed7a7f \
-    --hash=sha256:bb4bf6c052639f589901d7ae5a837a44bc09fa82c38b4f74a319d39cccc73b84
+pipx==1.3.3 \
+    --hash=sha256:6d5474e71e78c28d83570443e5418c56599aa8319a950ccf5984c5cb0a35f0a7 \
+    --hash=sha256:ce119a15f04da670d44ff1c493c7f9510639f610c720f0381abfed8aac5cef81
     # via shared-code (pyproject.toml)
 platformdirs==4.0.0 \
     --hash=sha256:118c954d7e949b35437270383a3f2531e99dd93cf7ce4dc8340d3356d30f173b \
