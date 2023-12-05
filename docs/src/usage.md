@@ -433,8 +433,6 @@ As *Quality-time* has to open the report in a (headless) browser and load all th
 The report title in the footer of the PDF will link to the online version of the same report.
 ```
 
-### Manually
-
 To manually download a PDF version of a report, navigate to the report and expand the report's title. Click the "Download report as PDF" button to create and download the PDF report.
 
 The exported PDF report has the same metric table rows and columns hidden as in the user interface, and has the same metrics expanded as in the user interface. The exported PDF report also has the same date as the report visible in the user interface.
@@ -443,32 +441,8 @@ The exported PDF report has the same metric table rows and columns hidden as in 
 It is also possible to download a PDF version of the reports overview. Navigate to the reports overview and expand the title of the reports overview. Click the "Download overview as PDF" button to create and download the PDF report.
 ```
 
-### Via the API
-
-If the PDF report needs to be downloaded programmatically, e.g. for inclusion in a release package, use the API: `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf`. No authorization is needed for this API.
-
-The `report_uuid` is the unique identifier that *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `https://www.quality-time.example.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.
-
-To hide metrics that do not need any action, set the `metrics_to_hide` parameter to `no_action_needed`, i.e. `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?metrics_to_hide=no_action_needed`. To hide all metrics and only export the report dashboard to PDF, set the `metrics_to_hide` parameter to `all`.
-
-To hide columns from the report, set the `hidden_columns` parameter, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hidden_columns=target,comment`. Possible options are `trend`, `status`, `measurement`, `target`, `source`, `comment`, `issues`, and `tags`.
-
-To hide tags from the report, set the `hidden_tags` parameter, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?hidden_tags=security,usability`.
-
-To expand metrics and set the active tab of the metric detail information, add the `tabs` parameter, i.e. `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?tabs=<metric_uuid>:<tab_index>,<metric_uuid>:<tab_index>,...`. The metric UUID can be found by navigating to a report in the browser, expanding the metric, and looking for the `tabs` parameter in the address bar. For example, when the URL in the browser's address bar is `https://www.quality-time.example.org/1d0e056-2440-43bd-b640-f6753ccf4496?tabs=d4c0dea1-b072-417f-804e-6045544748db:0`, the part between the equal sign and the colon is the metric UUID of the expanded metric. The number after the colon is the number of the active tab, e.g. 0 is the metrics configuration tab, 1 is the source configuration tab, 2 is the trend graph, etc.
-
-To show the measurement trend, add the `nr_dates` parameter and set it to more than 1, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?nr_dates=5`. The maximum supported value is 7 dates.
-
-To change the time between dates shown, use the `date_interval` parameter. The interval should be an integer and can have the value 1, 7, 14, 21, or 28. For example, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?date_interval=7`.
-
-To add issue attributes to the exported report, set the `show_issue_summary`, `show_issue_creation_date`, and/or `show_issue_update_date` parameters to `true`. For example, `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?show_issue_summary=true`.
-
-To export an older version of a report, add the `report_date` parameter with a date value in ISO-format (YYYY-MM-DD), for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_date=2020-09-01`.
-
-Reports contain the report URL in the footer of the report. When exporting PDFs manually, the *Quality-time* frontend supplies the report URL to the API. When using the API directly to export a report to PDF, the report URL needs to be supplied as parameter. Add the `report_url` parameter with the URL of the report, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_url=https://www.quality-time.example.org/<report_uuid>`.
-
-```{tip}
-It is also possible to download a PDF version of the reports overview via the API. Use the endpoint `https://www.quality-time.example.org/api/v3/reports_overview/pdf`. No authorization is needed for this API. The parameters for exporting a report, listed above, can also be used when exporting the reports overview.
+```{seealso}
+See the [API-documentation](api.md#export-pdf) for exporting reports via the API.
 ```
 
 ```{index} Export report
@@ -479,87 +453,7 @@ It is also possible to download a PDF version of the reports overview via the AP
 
 ## Export and import reports as JSON
 
-*Quality-time* provides functionality for importing and exporting reports in JSON format. This functionality can be used for backing up reports or for transferring reports from one *Quality-time* instance to another one. Currently, this functionality is only available via the API, with one endpoint for importing and one for exporting the JSON reports.
-
-A *Quality-time* report in JSON format contains the latest configuration of the report, with all its subjects, metrics and sources. It does not contain any actual measurements. The credentials of configured sources are encrypted on export to protect sensitive data.
-
-To use the import and export endpoints you need to be authenticated. For example, using curl:
-
-```console
-curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' https://quality-time.example.org/api/v3/login
-```
-
-### Exporting reports
-
-The exporting endpoint is available via `https://quality-time.source.org/api/v3/report/<report-uuid>/json?public_key=<public-key>`. The exporting endpoint returns JSON content only.
-
-For example, using curl, and assuming you have logged in as shown above:
-
-```console
-curl --cookie cookie.txt --output report.json https://quality-time.source.org/api/v3/report/97b2f341-45ce-4f2b-9a71-3675f2f54cf7/json
-```
-
-The `report_uuid` is the unique identifier that *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `https://quality-time.source.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.
-
-The {index}`public key <Public key>` argument is optional. If no public key is provided, the public key of the exporting *Quality-time* instance is used for encrypting the source credentials. If the report needs to be imported in a different *Quality-time* instance, the public key of that instance should be provided. It can be obtained at `https://quality-time.destination.org/api/v3/public_key`. The exported JSON report can only be imported into the *Quality-time* whose public key has been used for the encryption of credentials during the export.
-
-The public key endpoint returns a JSON like this:
-
-```json
-{
-  "public_key": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAtXvAeTqsgXIb98rGfZDk\n4ZUssjjrMOCOL7xuZh6lYwN41UP0Day78tbzMxCx8mLfT76DckK1xkeGkKpS/UYD\n2ooDXluplRDGxfebZg+qy54toW878rnYe4HJu6YoDaBnthr1Muy9ttHOVB+6ucXY\nX23uzOF6FD4rZZTn4uGpEF9qfpzaVZrSpqWy9YAfZEsNNjqmbPYR+H0WjdihIpgY\n3AabLHdw02VN8cIzgh1ILLPFcBo2CqNWpETNIGdlPORfDiUx6HVxSXt80xwxFpop\n9hXQDuKSDVGlpVl5YKTwRyqEcFvhbTEJ1gJ+FksCRfrZ/hdVlI5mlCyN/gi+k3gO\nErtN0kFlIwCPyLHw5hsi/f8rLGpG1MaXmtI4fBoTbnozwaTcmoO9GO/Ell3ITTBW\nJbS3fSqKDtTU3NhalnJk5h99yQc+tgHIc+y/odKcicTDw5ZvlNIsY/ig6Z1BqYOl\n3FEI9a+I/mhcynSM/30elGsi+j/ZrWyhD6uB3E9+UtL5l7FtDWyIIoE7DaMQJZxg\nDNLCHWKACjjE+Tjr4ExUEgtzcMMmRXL2QZkylxxT9WU0Qe0U3nwJWBj6h+3xJird\npJ3weRfCPwrZ/6SxWE19tmZiynNnvnywxTJKgT15/Qkv1T0QyVCH/UeyxAhAXqYc\nBulld6J57dZwlpfWtf/ua3cCAwEAAQ==\n-----END PUBLIC KEY-----\n"
-}
-```
-
-To be able to pass the public key as query parameter to the export endpoint, it needs to be encoded. Download the public key as file:
-
-```console
-curl --output public_key.json https://quality-time.destination.org/api/v3/public_key
-```
-
-And then encode the public key as follows:
-
-```console
-$ python3 -c 'import json; import urllib.parse; key = json.load(open("public_key.json"))["public_key"]; print(urllib.parse.quote_plus(key))'
------BEGIN+PUBLIC+KEY----- ... encoded public key ... -----END+PUBLIC+KEY-----%0A
-```
-
-### Importing reports
-
-The importing endpoint is available via `https://quality-time.destination.org/api/v3/report/import`. The import endpoint accepts JSON content only. See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared/example-reports) for the format.
-
-For example, using curl, and assuming you have logged in as shown above:
-
-```console
-$ curl --cookie cookie.txt --request POST --header "Content-Type: application/json" --data @report.json https://quality-time.destination.org/api/v3/report/import
-{"ok": true, "new_report_uuid": "97a3e341-44ce-4f2b-4471-36e5f2f34cf6"}
-```
-
-On import, all UUIDs contained in the report (UUIDs of the report, subjects, metrics and sources) will be replaced to prevent conflicts if the report already exists.
-
-If the report contains encrypted credentials, the importing *Quality-time* instance will decrypt the credentials using its public key. Note that if the credentials were encrypted using the public key of a different *Quality-time* instance, an error will occur, and the import will fail.
-
-To allow for seeding a *Quality-time* instance with default reports, imported reports may contain unencrypted credentials. These unencrypted credentials will be imported unchanged.
-
-### Copying reports from one *Quality-time* instance to another
-
-Tying the previous two sections together, these steps export a report from a source *Quality-time* instance and import it into a destination instance:
-
-```console
-# Get the public key of the destination Quality-time
-$ curl --output public_key.json https://quality-time.destination.org/api/v3/public_key
-# Encode the public key
-$ python3 -c 'import json; import urllib.parse; key = json.load(open("public_key.json"))["public_key"]; print(urllib.parse.quote_plus(key))'
------BEGIN+PUBLIC+KEY-----encoded-public-key-----END+PUBLIC+KEY-----%0A
-# Log in to the source Quality-time
-$ curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' https://quality-time.source.org/api/v3/login
-# Copy the public key and use it in the next line to export the report
-$ curl --cookie cookie.txt --output report.json https://quality-time.source.org/api/v3/report/1352450b-30fa-4a82-aec5-7b5d0017ee13/json?public_key=-----BEGIN+PUBLIC+KEY-----encoded-public-key-----END+PUBLIC+KEY-----%0A
-# Log in to the destination Quality-time
-$ curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' https://quality-time.destination.org/api/v3/login
-# Import the report in the destination Quality-time
-$ curl --cookie cookie.txt --request POST --header "Content-Type: application/json" --data @report.json https://quality-time.destination.org/api/v3/report/import
-```
+*Quality-time* provides functionality for importing and exporting reports in JSON format. This functionality can be used for backing up reports or for transferring reports from one *Quality-time* instance to another one. Currently, this functionality is only available via the [API](api.md#export-and-import-reports-as-json), with one endpoint for importing and one for exporting the JSON reports.
 
 ```{index} Issue tracker
 ```
@@ -592,19 +486,3 @@ DORA metrics are a set of four key metrics for measuring the performance of soft
 *Quality-time* can send notifications about metrics that change status to {index}`Microsoft Teams` channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
 
 If a {index}`webhook <Webhook>` has been configured, *Quality-time* will check for changes in the status of metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel configured by the webhook.
-
-## Monitoring metric statuses
-
-To enable monitoring metric statuses outside of *Quality-time*, the `api/v3/report/<report_uuid>/metric_status_summary` endpoint can be used. It returns a JSON response for the specified report in the following format:
-
-```json
-{
-    "report_uuid": "xyz",
-    "title": "Report title",
-    "red": 1,
-    "green": 4,
-    "...": ....
-}
-```
-
-The `report_uuid` is the unique identifier that *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `https://www.quality-time.example.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.

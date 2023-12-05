@@ -41,6 +41,7 @@ from .report import (
     post_report_new,
 )
 from .reports_overview import export_reports_overview_as_pdf, get_reports_overview, post_reports_overview_attribute
+from .search import search
 from .server import get_server, QUALITY_TIME_VERSION
 from .settings import get_settings, update_settings
 from .source import (
