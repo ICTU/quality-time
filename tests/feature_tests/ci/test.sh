@@ -15,6 +15,7 @@ python3 -m venv venv
 ci/pip-install.sh
 coverage erase
 RENDERER_HOST=localhost python tests/quality_time_api_server_under_coverage.py &> ../../build/quality_time_api_server.log &
+sleep 5  # Give server time to start up
 deactivate
 cd ../..
 # We need to start a second API-server for the renderer. We start it after the API-server under coverage so
@@ -25,7 +26,7 @@ python3 -m venv venv
 . venv/bin/activate
 ci/pip-install.sh
 cd ../..
-sleep 10  # Give server time to start up
+sleep 5  # Give components time to start up
 coverage erase
 coverage run -m behave --format pretty "${1:-tests/feature_tests/src/features}"
 result=$?
