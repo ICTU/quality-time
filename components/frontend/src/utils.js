@@ -223,9 +223,9 @@ export function nrMetricsInReports(reports) {
 }
 
 export function getMetricIssueIds(metric) {
-    let issue_ids = metric.issue_ids ?? [];
-    issue_ids.sort();
-    return issue_ids
+    let issueIds = metric.issue_ids ?? [];
+    issueIds.sort();
+    return issueIds
 }
 
 export function capitalize(string) {
