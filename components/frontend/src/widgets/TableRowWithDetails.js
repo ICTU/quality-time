@@ -7,6 +7,7 @@ export function TableRowWithDetails(props) {
         <>
             <Table.Row {...otherProps}>
                 <Table.Cell
+                    aria-label="Expand/collapse"
                     collapsing
                     onClick={() => onExpand(!expanded)}
                     onKeyPress={(event) => {event.preventDefault(); onExpand(!expanded)}}

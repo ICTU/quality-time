@@ -94,17 +94,17 @@ export function SubjectTable({
                             className={nrDates === 1 ? metric.status || "unknown" : ""}
                             details={
                                 <MetricDetails
+                                    changed_fields={changed_fields}
                                     first_metric={index === 0}
                                     last_metric={index === last_index}
+                                    metric_uuid={metric_uuid}
                                     report_date={reportDate}
                                     reports={reports}
                                     report={report}
                                     subject_uuid={subject_uuid}
-                                    metric_uuid={metric_uuid}
-                                    changed_fields={changed_fields}
-                                    visibleDetailsTabs={settings.visibleDetailsTabs}
-                                    stopSorting={() => handleSort(null)}
                                     reload={reload}
+                                    stopSorting={() => handleSort(null)}
+                                    visibleDetailsTabs={settings.visibleDetailsTabs}
                                 />
                             }
                             expanded={settings.visibleDetailsTabs.value.filter((tab) => tab?.startsWith(metric_uuid)).length > 0}

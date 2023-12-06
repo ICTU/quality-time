@@ -5,6 +5,7 @@ import { Label, Popup } from '../semantic_ui_react_wrappers';
 import { HyperLink } from '../widgets/HyperLink';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { issueStatusPropType, metricPropType, settingsPropType, stringsPropType } from '../sharedPropTypes';
+import { getMetricIssueIds } from '../utils';
 
 function IssueWithoutTracker({ issueId }) {
     return (
@@ -158,11 +159,13 @@ issuePopupContent.propTypes = {
 
 function IssuesWithTracker({ metric, settings }) {
     const issueStatuses = metric.issue_status || [];
-    return <>{issueStatuses.map((issueStatus) => <IssueWithTracker
-        key={issueStatus.issue_id}
-        issueStatus={issueStatus}
-        settings={settings}
-    />)}</>
+    return <>
+        {
+            issueStatuses.map((issueStatus) =>
+                <IssueWithTracker key={issueStatus.issue_id} issueStatus={issueStatus} settings={settings} />
+            )
+        }
+    </>
 }
 IssuesWithTracker.propTypes = {
     metric: metricPropType,
@@ -170,8 +173,9 @@ IssuesWithTracker.propTypes = {
 }
 
 export function IssueStatus({ metric, issueTrackerMissing, settings }) {
-    if (issueTrackerMissing && metric.issue_ids?.length > 0) {
-        return <IssuesWithoutTracker issueIds={metric.issue_ids} />
+    const issueIds = getMetricIssueIds(metric)
+    if (issueTrackerMissing && issueIds.length > 0) {
+        return <IssuesWithoutTracker issueIds={issueIds} />
     }
     return <IssuesWithTracker metric={metric} settings={settings} />
 }
