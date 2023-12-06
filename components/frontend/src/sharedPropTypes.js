@@ -116,7 +116,9 @@ export const metricPropType = PropTypes.shape({
 })
 
 export const reportPropType = PropTypes.shape({
+    desired_response_times: PropTypes.object,
     issue_tracker: PropTypes.object,
+    report_uuid: PropTypes.string
 })
 
 export const reportsPropType = PropTypes.arrayOf(reportPropType)
