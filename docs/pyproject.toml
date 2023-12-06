@@ -15,7 +15,7 @@ dependencies = [
 dev = [
     "coverage==7.3.2",
     "pip==23.3.1",
-    "pipx==1.3.2",
+    "pipx==1.3.3",
     "pip-tools==7.3.0",  # To add hashes to requirements
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
@@ -24,7 +24,7 @@ tools = [
     "mypy==1.7.1",
     "pip-audit==2.6.1",
     "pydantic==2.5.2",  # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
-    "ruff==0.1.6",
+    "ruff==0.1.7",
     "safety==2.3.5",
     "vulture==2.10"
 ]
