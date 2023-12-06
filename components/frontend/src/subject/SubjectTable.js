@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Table } from '../semantic_ui_react_wrappers';
 import { DataModel } from "../context/DataModel";
 import { DarkMode } from "../context/DarkMode";
-import { MetricDetails } from '../metric/MetricDetails';
 import { IssueStatus } from '../issue/IssueStatus';
+import { MetricDetails } from '../metric/MetricDetails';
 import { MeasurementSources } from '../measurement/MeasurementSources';
 import { MeasurementTarget } from '../measurement/MeasurementTarget';
 import { MeasurementValue } from '../measurement/MeasurementValue';
@@ -98,12 +98,12 @@ export function SubjectTable({
                                     first_metric={index === 0}
                                     last_metric={index === last_index}
                                     metric_uuid={metric_uuid}
+                                    reload={reload}
                                     report_date={reportDate}
                                     reports={reports}
                                     report={report}
-                                    subject_uuid={subject_uuid}
-                                    reload={reload}
                                     stopSorting={() => handleSort(null)}
+                                    subject_uuid={subject_uuid}
                                     visibleDetailsTabs={settings.visibleDetailsTabs}
                                 />
                             }

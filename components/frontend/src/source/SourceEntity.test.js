@@ -10,13 +10,13 @@ function renderSourceEntity(
         <Table>
             <Table.Body>
                 <SourceEntity
+                    entity={{ attr1: "good", attr2: "bad", first_seen: first_seen }}
+                    entity_attributes={[{ key: "attr1" }, { key: "attr2", color: { bad: "warning" } }]}
+                    entity_name="entity"
+                    hide_ignored_entities={hide_ignored_entities}
+                    rationale={rationale}
                     status={status}
                     status_end_date={status_end_date}
-                    hide_ignored_entities={hide_ignored_entities}
-                    entity_attributes={[{ key: "attr1" }, { key: "attr2", color: { bad: "warning" } }]}
-                    entity={{ attr1: "good", attr2: "bad", first_seen: first_seen }}
-                    entity_name="entity"
-                    rationale={rationale}
                 />
             </Table.Body>
         </Table>
