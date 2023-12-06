@@ -157,17 +157,18 @@ issuePopupContent.propTypes = {
     issueStatus: issueStatusPropType
 }
 
-function IssuesWithTracker({ metric, settings }) {
+function IssuesWithTracker({ issueIds, metric, settings }) {
     const issueStatuses = metric.issue_status || [];
     return <>
         {
-            issueStatuses.map((issueStatus) =>
+            issueStatuses.filter((issueStatus) => issueIds.indexOf(issueStatus.issue_id) > -1).map((issueStatus) =>
                 <IssueWithTracker key={issueStatus.issue_id} issueStatus={issueStatus} settings={settings} />
             )
         }
     </>
 }
 IssuesWithTracker.propTypes = {
+    issueIds: stringsPropType,
     metric: metricPropType,
     settings: settingsPropType
 }
@@ -177,7 +178,7 @@ export function IssueStatus({ metric, issueTrackerMissing, settings }) {
     if (issueTrackerMissing && issueIds.length > 0) {
         return <IssuesWithoutTracker issueIds={issueIds} />
     }
-    return <IssuesWithTracker metric={metric} settings={settings} />
+    return <IssuesWithTracker issueIds={issueIds} metric={metric} settings={settings} />
 }
 IssueStatus.propTypes = {
     issueTrackerMissing: PropTypes.bool,
