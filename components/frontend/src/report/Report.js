@@ -171,7 +171,7 @@ export function Report({
                 report_date={report_date}
                 settings={settings}
             />
-            <SubjectsButtonRow reload={reload} report={report} reports={reports} />
+            <SubjectsButtonRow reload={reload} report={report} reports={reports} settings={settings} />
         </div>
     )
 }

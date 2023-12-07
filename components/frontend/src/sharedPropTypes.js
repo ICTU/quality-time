@@ -107,6 +107,10 @@ export const sourcePropType = PropTypes.shape({
     source_uuid: PropTypes.string,
 })
 
+export const subjectPropType = PropTypes.shape({
+    type: PropTypes.string
+})
+
 export const metricPropType = PropTypes.shape({
     accept_debt: PropTypes.bool,
     debt_end_date: PropTypes.string,
@@ -114,6 +118,8 @@ export const metricPropType = PropTypes.shape({
     issue_ids: stringsPropType,
     issue_status: PropTypes.arrayOf(issueStatusPropType)
 })
+
+export const metricsPropType = PropTypes.arrayOf(metricPropType)
 
 export const reportPropType = PropTypes.shape({
     desired_response_times: PropTypes.object,

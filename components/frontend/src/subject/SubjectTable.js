@@ -102,7 +102,11 @@ export function SubjectTable({
                                     report_date={reportDate}
                                     reports={reports}
                                     report={report}
-                                    stopSorting={() => handleSort(null)}
+                                    stopFilteringAndSorting={() => {
+                                        handleSort(null)
+                                        settings.hiddenTags.reset()
+                                        settings.metricsToHide.reset()
+                                    }}
                                     subject_uuid={subject_uuid}
                                     visibleDetailsTabs={settings.visibleDetailsTabs}
                                 />
@@ -137,7 +141,12 @@ export function SubjectTable({
                 subject={subject}
                 reload={reload}
                 reports={reports}
-                stopSorting={() => handleSort(null)} />
+                stopFilteringAndSorting={() => {
+                    handleSort(null)
+                    settings.hiddenTags.reset()
+                    settings.metricsToHide.reset()
+                }}
+            />
         </Table>
     )
 }
