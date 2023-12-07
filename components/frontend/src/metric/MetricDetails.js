@@ -19,13 +19,13 @@ import { MetricTypeHeader } from './MetricTypeHeader';
 import { TrendGraph } from './TrendGraph';
 import { datePropType, reportPropType, reportsPropType, stringsPropType, stringsURLSearchQueryPropType} from '../sharedPropTypes';
 
-function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopSorting }) {
+function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopFilteringAndSorting }) {
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <div style={{ marginTop: "20px" }}>
                 <ReorderButtonGroup
                     first={isFirstMetric} last={isLastMetric} moveable="metric" slot="row"
-                    onClick={(direction) => { stopSorting(); set_metric_attribute(metric_uuid, "position", direction, reload) }} />
+                    onClick={(direction) => { stopFilteringAndSorting(); set_metric_attribute(metric_uuid, "position", direction, reload) }} />
                 <DeleteButton item_type="metric" onClick={() => delete_metric(metric_uuid, reload)} />
             </div>}
         />
@@ -36,7 +36,7 @@ Buttons.propTypes = {
     isLastMetric: PropTypes.bool,
     metric_uuid: PropTypes.string,
     reload: PropTypes.func,
-    stopSorting: PropTypes.func
+    stopFilteringAndSorting: PropTypes.func
 }
 
 function fetchMeasurements(reportDate, metric_uuid, setMeasurements) {
@@ -63,7 +63,7 @@ export function MetricDetails({
     report_date,
     reports,
     report,
-    stopSorting,
+    stopFilteringAndSorting,
     subject_uuid,
     visibleDetailsTabs,
 }) {
@@ -159,7 +159,13 @@ export function MetricDetails({
         <>
             <MetricTypeHeader metricType={metricType} />
             <Tab panes={panes} defaultActiveIndex={defaultActiveTab} onTabChange={onTabChange} />
-            <Buttons metric_uuid={metric_uuid} isFirstMetric={isFirstMetric} isLastMetric={isLastMetric} stopSorting={stopSorting} reload={reload} />
+            <Buttons
+                metric_uuid={metric_uuid}
+                isFirstMetric={isFirstMetric}
+                isLastMetric={isLastMetric}
+                reload={reload}
+                stopFilteringAndSorting={stopFilteringAndSorting}
+            />
         </>
     );
 }
@@ -172,7 +178,7 @@ MetricDetails.propTypes = {
     report_date: datePropType,
     reports: reportsPropType,
     report: reportPropType,
-    stopSorting: PropTypes.func,
+    stopFilteringAndSorting: PropTypes.func,
     subject_uuid: PropTypes.string,
     visibleDetailsTabs: stringsURLSearchQueryPropType
 }

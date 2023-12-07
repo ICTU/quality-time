@@ -4,6 +4,7 @@ import { DataModel } from '../context/DataModel';
 import {
     datesPropType,
     optionalDatePropType,
+    metricsPropType,
     reportPropType,
     reportsPropType,
     settingsPropType,
@@ -39,12 +40,12 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
         measurement: (m1, m2) => {
             const m1_measurement = get_metric_value(m1[1]);
             const m2_measurement = get_metric_value(m2[1]);
-            return m1_measurement.localeCompare(m2_measurement, undefined, {numeric: true})
+            return m1_measurement.localeCompare(m2_measurement, undefined, { numeric: true })
         },
         target: (m1, m2) => {
             const m1_target = get_metric_target(m1[1]);
             const m2_target = get_metric_target(m2[1]);
-            return m1_target.localeCompare(m2_target, undefined, {numeric: true})
+            return m1_target.localeCompare(m2_target, undefined, { numeric: true })
         },
         comment: (m1, m2) => {
             const m1_comment = get_metric_comment(m1[1]);
@@ -95,6 +96,30 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
     }
 }
 
+function subjectIsEmptyDueToFilters(atReportsOverview, filteredMetrics, metrics, settings) {
+    // Hide the subject if it has no metrics after filtering and at least one of the following conditions holds:
+    // - the user is at the reports overview page
+    // - the user is hiding all metrics or metrics that don't require action
+    // - the user is hiding metrics by tag
+    // - the subject has metrics before filtering
+    // This ensures (in combination with resetting the metricsToHide and hiddenTags settings after adding a subject)
+    // that newly added subjects are not immediately hidden
+    return (
+        Object.keys(filteredMetrics).length === 0 && (
+            atReportsOverview ||
+            !settings.metricsToHide.isDefault() ||
+            !settings.hiddenTags.isDefault() ||
+            Object.keys(metrics).length !== 0
+        )
+    )
+}
+subjectIsEmptyDueToFilters.propTypes = {
+    atReportsOverview: PropTypes.bool,
+    filteredMetrics: metricsPropType,
+    metrics: metricsPropType,
+    settings: settingsPropType,
+}
+
 export function Subject({
     atReportsOverview,
     changed_fields,
@@ -113,7 +138,9 @@ export function Subject({
     const subject = report.subjects[subject_uuid];
     const metrics = visibleMetrics(subject.metrics, settings.metricsToHide.value, settings.hiddenTags.value)
     const dataModel = useContext(DataModel)
-    if ((!settings.metricsToHide.isDefault() || !settings.hiddenTags.isDefault()) && Object.keys(metrics).length === 0) { return null }
+    if (subjectIsEmptyDueToFilters(atReportsOverview, metrics, subject.metrics, settings)) {
+        return null
+    }
     let metricEntries = Object.entries(metrics);
     if (settings.sortColumn.value !== "") {
         sortMetrics(dataModel, metricEntries, settings.sortDirection.value, settings.sortColumn.value, report, measurements);

@@ -16,7 +16,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 ### Fixed
 
-- Newly added subjects would not be visible. Fixes [#7552](https://github.com/ICTU/quality-time/issues/7552).
+- Newly added subjects would not be visible. Newly added metrics while filtering would not be visible. Fixes [#7552](https://github.com/ICTU/quality-time/issues/7552).
 
 ### Added
 

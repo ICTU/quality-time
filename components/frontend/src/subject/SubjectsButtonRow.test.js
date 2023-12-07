@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { SubjectsButtonRow } from './SubjectsButtonRow';
-import { datamodel, report } from "../__fixtures__/fixtures";
+import { createTestableSettings, datamodel, report } from "../__fixtures__/fixtures";
 import * as fetch_server_api from '../api/fetch_server_api';
 
 jest.mock("../api/fetch_server_api.js")
@@ -23,12 +23,13 @@ beforeEach(() => {
 });
 
 function renderSubjectsButtonRow(permissions = []) {
-    return render(
+    render(
         <Permissions.Provider value={permissions}>
             <DataModel.Provider value={datamodel}>
                 <SubjectsButtonRow
                     report={report}
                     reports={[report]}
+                    settings={createTestableSettings()}
                 />
             </DataModel.Provider>
         </Permissions.Provider>

@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import PropTypes from 'prop-types';
 import { Table } from "semantic-ui-react";
 import { add_metric, copy_metric, move_metric } from "../api/metric";
 import { DataModel } from "../context/DataModel";
@@ -6,8 +7,9 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissio
 import { AddDropdownButton, CopyButton, MoveButton } from "../widgets/Button";
 import { metric_options } from "../widgets/menu_options";
 import { metricTypeOptions } from "../metric/MetricType";
+import { reportsPropType, subjectPropType } from '../sharedPropTypes';
 
-export function SubjectTableFooter({ subject, subjectUuid, reload, reports, stopSorting }) {
+export function SubjectTableFooter({ subject, subjectUuid, reload, reports, stopFilteringAndSorting }) {
     const dataModel = useContext(DataModel)
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
@@ -18,14 +20,14 @@ export function SubjectTableFooter({ subject, subjectUuid, reload, reports, stop
                             item_type="metric"
                             item_subtypes={metricTypeOptions(dataModel, subject.type)}
                             onClick={(subtype) => {
-                                stopSorting()
+                                stopFilteringAndSorting()
                                 add_metric(subjectUuid, subtype, reload);
                             }}
                         />
                         <CopyButton
                             item_type="metric"
                             onChange={(source_metric_uuid) => {
-                                stopSorting()
+                                stopFilteringAndSorting()
                                 copy_metric(source_metric_uuid, subjectUuid, reload);
                             }}
                             get_options={() => metric_options(reports, dataModel, subject.type)}
@@ -33,7 +35,7 @@ export function SubjectTableFooter({ subject, subjectUuid, reload, reports, stop
                         <MoveButton
                             item_type="metric"
                             onChange={(source_metric_uuid) => {
-                                stopSorting()
+                                stopFilteringAndSorting()
                                 move_metric(source_metric_uuid, subjectUuid, reload);
                             }}
                             get_options={() => metric_options(reports, dataModel, subject.type, subjectUuid)}
@@ -43,4 +45,11 @@ export function SubjectTableFooter({ subject, subjectUuid, reload, reports, stop
             </Table.Footer>}
         />
     )
+}
+SubjectTableFooter.propTypes = {
+    subject: subjectPropType,
+    subjectUuid: PropTypes.string,
+    reload: PropTypes.func,
+    reports: reportsPropType,
+    stopFilteringAndSorting: PropTypes.func
 }
