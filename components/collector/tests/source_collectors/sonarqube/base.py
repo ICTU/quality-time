@@ -1,5 +1,7 @@
 """Base classes for SonarQube collector unit tests."""
 
+from shared_data_model import DATA_MODEL
+
 from model import Entity
 
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
@@ -57,3 +59,8 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         if hotspot_status is not None:
             entity["hotspot_status"] = hotspot_status
         return entity
+
+    @staticmethod
+    def sonar_rules(rules_id: str) -> str:
+        """Return the SonarQube rules as comma separated string."""
+        return ",".join(DATA_MODEL.sources["sonarqube"].configuration[f"{rules_id}_rules"].value)
