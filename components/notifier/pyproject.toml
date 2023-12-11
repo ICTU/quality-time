@@ -1,6 +1,6 @@
 [project]
 name = "notifier"
-version = "5.3.1"
+version = "5.4.0"
 dependencies = [
     "aiohttp==3.9.1",
     "pymsteams==0.2.2"
