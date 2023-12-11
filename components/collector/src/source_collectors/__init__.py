@@ -138,6 +138,7 @@ from .sonarqube.source_up_to_dateness import SonarQubeSourceUpToDateness
 from .sonarqube.source_version import SonarQubeSourceVersion
 from .sonarqube.suppressed_violations import SonarQubeSuppressedViolations
 from .sonarqube.tests import SonarQubeTests
+from .sonarqube.todo_and_fixme_comments import SonarQubeTodoAndFixmeComments
 from .sonarqube.uncovered_branches import SonarQubeUncoveredBranches
 from .sonarqube.uncovered_lines import SonarQubeUncoveredLines
 from .sonarqube.violations import SonarQubeViolations

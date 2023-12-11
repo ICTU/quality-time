@@ -609,6 +609,20 @@ skipped, and passed. Test cases not found in the test results are listed as unte
         near_target="14",
         sources=["calendar"],
     ),
+    "todo_and_fixme_comments": Metric(
+        name="Todo and fixme comments",
+        description="The number of todo and fixme comments in source code.",
+        rationale="Code should not contain traces of unfinished work. The presence of todo and fixme comments may "
+        "be indicative of technical debt or hidden defects.",
+        rationale_urls=[
+            "https://rules.sonarsource.com/python/RSPEC-1135/",
+            "https://cwe.mitre.org/data/definitions/546",
+        ],
+        unit=Unit.TODO_AND_FIXME_COMMENTS,
+        near_target="50",
+        sources=["manual_number", "sonarqube"],
+        tags=[Tag.MAINTAINABILITY],
+    ),
     "uncovered_branches": Metric(
         name="Test branch coverage",
         description="The number of code branches not covered by tests.",

@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is v4.10.0 or older, please read the v5.0.0 deployment notes first.
 
+### Added
+
+- Add a metric for tracking todo and fixme comments in source code. Closes [#5630](https://github.com/ICTU/quality-time/issues/5630).
+
 ### Changed
 
 - Update the SonarQube rules used to collect data for the long units, complex units, commented-out code, many parameters, and suppressed violations metrics. Note that this change may cause *Quality-time* to report more violations for these metrics. Closes [#7653](https://github.com/ICTU/quality-time/issues/7653).
