@@ -29,6 +29,7 @@ class Unit(StrEnum):
     SUPPRESSED_VIOLATIONS = "suppressed violations"
     TEST_CASES = "test cases"
     TESTS = "tests"
+    TODO_AND_FIXME_COMMENTS = "todo and fixme comments"
     TRANSACTIONS = "transactions"
     UNCOVERED_BRANCHES = "uncovered branches"
     UNCOVERED_LINES = "uncovered lines"

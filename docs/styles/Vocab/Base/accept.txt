@@ -33,6 +33,7 @@ discoverability
 donut
 errored
 favicon
+fixme
 hostnames?
 hotspots?
 lookback
@@ -48,6 +49,7 @@ sparkline
 subfolders
 submenus
 suppressions
+todo
 tooltips?
 tracebacks?
 unencrypted

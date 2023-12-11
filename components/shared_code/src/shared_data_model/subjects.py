@@ -72,6 +72,7 @@ SUBJECTS = {
             "suppressed_violations",
             "test_cases",
             "tests",
+            "todo_and_fixme_comments",
             "uncovered_branches",
             "uncovered_lines",
             "unmerged_branches",
