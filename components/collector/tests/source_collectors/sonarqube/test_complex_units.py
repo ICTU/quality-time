@@ -1,7 +1,5 @@
 """Unit tests for the SonarQube complex units collector."""
 
-from shared_data_model import DATA_MODEL
-
 from .base import SonarQubeTestCase
 
 
@@ -24,10 +22,9 @@ class SonarQubeComplexUnitsTest(SonarQubeTestCase):
                 complex_units_json,
             ],
         )
-        expected_rules = ",".join(sorted(DATA_MODEL.sources["sonarqube"].configuration["complex_unit_rules"].value))
         self.assert_measurement(
             response,
             value="2",
             total="4",
-            landing_url=f"{self.issues_landing_url}&rules={expected_rules}",
+            landing_url=f"{self.issues_landing_url}&rules={self.sonar_rules("complex_unit")}",
         )
