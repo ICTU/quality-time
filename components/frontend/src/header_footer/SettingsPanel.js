@@ -4,6 +4,7 @@ import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
 import { Icon } from '../semantic_ui_react_wrappers';
 import {
     boolURLSearchQueryPropType,
+    hiddenCardsPropType,
     integerURLSearchQueryPropType,
     metricsToHidePropType,
     metricsToHideURLSearchQueryPropType,
@@ -35,6 +36,7 @@ export function SettingsPanel({
         disabled: oneDateColumn,
         help: "The date interval can only be changed when at least two dates are shown",
     }
+    const cardsMenuItemProps = { hiddenCards: settings.hiddenCards }
     const metricMenuItemProps = { metricsToHide: settings.metricsToHide }
     const sortColumnMenuItemProps = { sortColumn: settings.sortColumn, sortDirection: settings.sortDirection, handleSort: handleSort }
     const sortOrderMenuItemProps = {
@@ -63,6 +65,13 @@ export function SettingsPanel({
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
+            </Segment>
+            <Segment inverted color="black">
+                <Header size='small'>Visible cards</Header>
+                <Menu {...menuProps}>
+                    <VisibleCardsMenuItem cards={atReportsOverview ? "reports" : "subjects"} {...cardsMenuItemProps} />
+                    <VisibleCardsMenuItem cards="tags" {...cardsMenuItemProps} />
+                </Menu>
             </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Visible metrics</Header>
@@ -247,6 +256,22 @@ SettingsPanel.propTypes = {
     ...ResetSettingsButton.propTypes,
 }
 
+function VisibleCardsMenuItem({ cards, hiddenCards }) {
+    return (
+        <SettingsMenuItem
+            active={!hiddenCards.includes(cards)}
+            onClick={hiddenCards.toggle}
+            onClickData={cards}
+        >
+            {capitalize(cards)}
+        </SettingsMenuItem>
+    )
+}
+VisibleCardsMenuItem.propTypes = {
+    cards: hiddenCardsPropType,
+    hiddenCards: stringsURLSearchQueryPropType,
+}
+
 function VisibleTagMenuItem({ tag, hiddenTags }) {
     return (
         <SettingsMenuItem
@@ -415,6 +440,7 @@ function ResetSettingsButton(
             disabled={
                 settings.dateInterval.isDefault() &&
                 settings.dateOrder.isDefault() &&
+                settings.hiddenCards.isDefault() &&
                 settings.hiddenColumns.isDefault() &&
                 settings.hiddenTags.isDefault() &&
                 settings.metricsToHide.equals(metricsToHideDefault) &&
@@ -434,6 +460,7 @@ function ResetSettingsButton(
                 handleDateChange(null);
                 settings.dateInterval.reset();
                 settings.dateOrder.reset();
+                settings.hiddenCards.reset();
                 settings.hiddenColumns.reset();
                 settings.hiddenTags.reset();
                 settings.metricsToHide.reset();

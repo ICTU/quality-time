@@ -47,40 +47,45 @@ export function ReportDashboard(
     const dataModel = useContext(DataModel)
     const nrMetrics = Math.max(nrMetricsInReport(report), 1);
     const subjectCards = []
-    Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-        const metrics = visibleMetrics(subject.metrics, "none", settings.hiddenTags.value)
-        if (Object.keys(metrics).length > 0) {
+    if (!settings.hiddenCards.includes("subjects")) {
+        Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
+            const metrics = visibleMetrics(subject.metrics, "none", settings.hiddenTags.value)
+            if (Object.keys(metrics).length > 0) {
+                const summary = {}
+                dates.forEach((date) => {
+                    summary[date] = summarizeMetricsOnDate(metrics, measurements, date)
+                })
+                subjectCards.push(
+                    <MetricSummaryCard
+                        header={get_subject_name(report.subjects[subject_uuid], dataModel)}
+                        key={subject_uuid}
+                        maxY={nrMetrics}
+                        onClick={(event) => onClick(event, subject_uuid)}
+                        summary={summary}
+                    />
+                )
+            }
+        })
+    }
+    let tagCards = [];
+    if (!settings.hiddenCards.includes("tags")) {
+        const anyTagsHidden = settings.hiddenTags.value.length > 0
+        tagCards = getReportTags(report, settings.hiddenTags.value).map((tag) => {
             const summary = {}
             dates.forEach((date) => {
-                summary[date] = summarizeMetricsOnDate(metrics, measurements, date)
+                summary[date] = summarizeTagOnDate(report, measurements, tag, date)
             })
-            subjectCards.push(
+            return (
                 <MetricSummaryCard
-                    header={get_subject_name(report.subjects[subject_uuid], dataModel)}
-                    key={subject_uuid}
+                    header={<Tag selected={anyTagsHidden} tag={tag} />}
+                    key={tag}
                     maxY={nrMetrics}
-                    onClick={(event) => onClick(event, subject_uuid)}
+                    onClick={() => onClickTag(tag)}
                     summary={summary}
                 />
             )
-        }
-    })
-    const anyTagsHidden = settings.hiddenTags.value.length > 0
-    const tagCards = getReportTags(report, settings.hiddenTags.value).map((tag) => {
-        const summary = {}
-        dates.forEach((date) => {
-            summary[date] = summarizeTagOnDate(report, measurements, tag, date)
         })
-        return (
-            <MetricSummaryCard
-                header={<Tag selected={anyTagsHidden} tag={tag} />}
-                key={tag}
-                maxY={nrMetrics}
-                onClick={() => onClickTag(tag)}
-                summary={summary}
-            />
-        )
-    })
+    }
     return (
         <CardDashboard
             cards={subjectCards.concat(tagCards.concat([<LegendCard key="legend" />]))}
