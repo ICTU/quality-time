@@ -52,7 +52,6 @@ export function Report({
             <CommentSegment comment={report.comment} />
             <ReportDashboard
                 dates={dates}
-                hiddenTags={settings.hiddenTags.value}
                 measurements={reversedMeasurements}
                 onClick={(e, s) => navigate_to_subject(e, s)}
                 onClickTag={(tag) => {
@@ -63,6 +62,7 @@ export function Report({
                 }}
                 report={report}
                 reload={reload}
+                settings={settings}
             />
             <Subjects
                 atReportsOverview={false}
