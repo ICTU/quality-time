@@ -1,10 +1,14 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, renderHook, screen } from '@testing-library/react';
+import history from 'history/browser';
+import { useHiddenTagsURLSearchQuery } from '../app_ui_settings';
 import { ReportDashboard } from './ReportDashboard';
 import { mockGetAnimations } from '../dashboard/MockAnimations';
+import { createTestableSettings } from '../__fixtures__/fixtures';
 
 beforeEach(() => {
     mockGetAnimations()
+    history.push("")
 });
 
 const report = {
@@ -21,15 +25,17 @@ const report = {
 
 function renderDashboard(
     {
-        hiddenTags = [],
+        hiddenTags = null,
         dates = [new Date()],
         onClick = jest.fn(),
         reportToRender = null,
     } = {}
 ) {
+    let settings = createTestableSettings()
+    if (hiddenTags) { settings.hiddenTags = hiddenTags }
     return render(
         <div id="dashboard">
-            <ReportDashboard dates={dates} hiddenTags={hiddenTags} onClick={onClick} report={reportToRender} />
+            <ReportDashboard dates={dates} onClick={onClick} report={reportToRender} settings={settings} />
         </div>
     )
 }
@@ -42,14 +48,18 @@ it('shows the dashboard', async () => {
 });
 
 it('hides tags', async () => {
-    renderDashboard({ reportToRender: report, hiddenTags: ["other"] })
+    history.push("?hidden_tags=other")
+    const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
+    renderDashboard({ reportToRender: report, hiddenTags: hiddenTags.result.current })
     expect(screen.getAllByText(/Subject title/).length).toBe(1)
     expect(screen.getAllByText(/tag/).length).toBe(1)
     expect(screen.queryAllByText(/other/).length).toBe(0)
 });
 
 it('hides a subject if all its tags are hidden', async () => {
-    renderDashboard({ reportToRender: report, hiddenTags: ["other", "tag"] })
+    history.push("?hidden_tags=other,tag")
+    const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
+    renderDashboard({ reportToRender: report, hiddenTags: hiddenTags.result.current })
     expect(screen.queryAllByText(/Subject title/).length).toBe(0)
     expect(screen.queryAllByText(/tag/).length).toBe(0)
     expect(screen.queryAllByText(/other/).length).toBe(0)

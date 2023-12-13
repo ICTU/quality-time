@@ -47,7 +47,7 @@ function renderReport(
     } = {}
 ) {
     let settings = createTestableSettings()
-    if (hiddenTags) { settings.hiddenTags = hiddenTags}
+    if (hiddenTags) { settings.hiddenTags = hiddenTags }
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
