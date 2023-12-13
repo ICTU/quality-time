@@ -72,3 +72,19 @@ it('calls the callback on click', async () => {
     fireEvent.click(screen.getByText(/Subject title/))
     expect(onClick).toHaveBeenCalledWith(expect.anything(), "subject_uuid")
 });
+
+it('hides the subject cards', async () => {
+    history.push("?hidden_cards=subjects")
+    renderDashboard({ reportToRender: report })
+    expect(screen.queryAllByText(/Subject title/).length).toBe(0)
+    expect(screen.getAllByText(/tag/).length).toBe(1)
+    expect(screen.getAllByText(/other/).length).toBe(1)
+});
+
+it('hides the tag cards', async () => {
+    history.push("?hidden_cards=tags")
+    renderDashboard({ reportToRender: report })
+    expect(screen.getAllByText(/Subject title/).length).toBe(1)
+    expect(screen.queryAllByText(/tag/).length).toBe(0)
+    expect(screen.queryAllByText(/other/).length).toBe(0)
+});

@@ -47,7 +47,6 @@ function renderReportsOverviewDashboard(
 }
 
 it('shows the reports overview dashboard', async () => {
-    const reports = [{ subjects: {} }]
     renderReportsOverviewDashboard()
     expect(screen.getAllByText(/Legend/).length).toBe(1);
 });
@@ -65,4 +64,20 @@ it('calls the callback on click', async () => {
     renderReportsOverviewDashboard({ openReport: openReport })
     fireEvent.click(screen.getByText(/Report/))
     expect(openReport).toHaveBeenCalledWith("report_uuid")
+});
+
+it('hides the report cards', async () => {
+    history.push("?hidden_cards=reports")
+    renderReportsOverviewDashboard()
+    expect(screen.queryAllByText(/Report/).length).toBe(0)
+    expect(screen.getAllByText(/tag/).length).toBe(1)
+    expect(screen.getAllByText(/other/).length).toBe(1)
+});
+
+it('hides the tag cards', async () => {
+    history.push("?hidden_cards=tags")
+    renderReportsOverviewDashboard()
+    expect(screen.getAllByText(/Report/).length).toBe(1)
+    expect(screen.queryAllByText(/tag/).length).toBe(0)
+    expect(screen.queryAllByText(/other/).length).toBe(0)
 });

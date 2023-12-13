@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react';
 import {
     useDateIntervalURLSearchQuery,
     useDateOrderURLSearchQuery,
+    useHiddenCardsURLSearchQuery,
     useHiddenColumnsURLSearchQuery,
     useHiddenTagsURLSearchQuery,
     useMetricsToHideURLSearchQuery,
@@ -71,6 +72,7 @@ export function createTestableSettings() {
     return {
         dateInterval: renderHook(() => useDateIntervalURLSearchQuery()).result.current,
         dateOrder: renderHook(() => useDateOrderURLSearchQuery()).result.current,
+        hiddenCards: renderHook(() => useHiddenCardsURLSearchQuery()).result.current,
         hiddenColumns: renderHook(() => useHiddenColumnsURLSearchQuery()).result.current,
         hiddenTags: renderHook(() => useHiddenTagsURLSearchQuery()).result.current,
         metricsToHide: renderHook(() => useMetricsToHideURLSearchQuery()).result.current,

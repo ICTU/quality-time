@@ -19,6 +19,10 @@ export function useDateOrderURLSearchQuery(report_uuid, defaultValue = "descendi
     return useStringURLSearchQuery(urlSearchQueryKey("date_order", report_uuid), defaultValue);
 }
 
+export function useHiddenCardsURLSearchQuery(report_uuid) {
+    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_cards", report_uuid));
+}
+
 export function useHiddenColumnsURLSearchQuery(report_uuid) {
     return useArrayURLSearchQuery(urlSearchQueryKey("hidden_columns", report_uuid));
 }
@@ -75,6 +79,7 @@ export function useSettings(report_uuid) {
     return {
         dateInterval: useDateIntervalURLSearchQuery(report_uuid),
         dateOrder: useDateOrderURLSearchQuery(report_uuid),
+        hiddenCards: useHiddenCardsURLSearchQuery(report_uuid),
         hiddenColumns: useHiddenColumnsURLSearchQuery(report_uuid),
         hiddenTags: useHiddenTagsURLSearchQuery(report_uuid),
         metricsToHide: useMetricsToHideURLSearchQuery(report_uuid, report_uuid === "" ? "all" : "none"),

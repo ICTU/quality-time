@@ -71,25 +71,31 @@ export function ReportsOverviewDashboard(
             nrMetrics = Math.max(nrMetrics, sum(tagSummary[tag][date]))
         })
     })
-    const report_cards = reports.map((report) =>
-        <MetricSummaryCard
-            key={report.report_uuid}
-            header={report.title}
-            maxY={nrMetrics}
-            onClick={(event) => { event.preventDefault(); openReport(report.report_uuid) }}
-            summary={reportSummary[report.report_uuid]}
-        />
-    );
-    const anyTagsHidden = settings.hiddenTags.value.length > 0
-    const tagCards = tags.filter((tag) => (!settings.hiddenTags.includes(tag))).map((tag) =>
-        <MetricSummaryCard
-            key={tag}
-            header={<Tag selected={anyTagsHidden} tag={tag} />}
-            maxY={nrMetrics}
-            onClick={() => onClickTag(tag)}
-            summary={tagSummary[tag]}
-        />
-    );
+    let report_cards = []
+    if (!settings.hiddenCards.includes("reports")) {
+        report_cards = reports.map((report) =>
+            <MetricSummaryCard
+                key={report.report_uuid}
+                header={report.title}
+                maxY={nrMetrics}
+                onClick={(event) => { event.preventDefault(); openReport(report.report_uuid) }}
+                summary={reportSummary[report.report_uuid]}
+            />
+        );
+    }
+    let tagCards = []
+    if (!settings.hiddenCards.includes("tags")) {
+        const anyTagsHidden = settings.hiddenTags.value.length > 0
+        tagCards = tags.filter((tag) => (!settings.hiddenTags.includes(tag))).map((tag) =>
+            <MetricSummaryCard
+                key={tag}
+                header={<Tag selected={anyTagsHidden} tag={tag} />}
+                maxY={nrMetrics}
+                onClick={() => onClickTag(tag)}
+                summary={tagSummary[tag]}
+            />
+        );
+    }
     return (
         <CardDashboard
             cards={report_cards.concat(tagCards).concat([<LegendCard key="legend" />])}

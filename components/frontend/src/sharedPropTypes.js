@@ -45,6 +45,8 @@ export const sortDirectionURLSearchQueryPropType = PropTypes.shape({
     value: sortDirectionPropType
 })
 
+export const hiddenCardsPropType = PropTypes.oneOf(["reports", "subjects", "tags"])
+
 export const metricsToHidePropType = PropTypes.oneOf(["none", "all", "no_action_needed"])
 
 export const metricsToHideURLSearchQueryPropType = PropTypes.shape({
