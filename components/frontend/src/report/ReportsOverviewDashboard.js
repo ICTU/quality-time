@@ -1,0 +1,110 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { CardDashboard } from '../dashboard/CardDashboard';
+import { LegendCard } from '../dashboard/LegendCard';
+import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
+import { Tag } from '../widgets/Tag';
+import { set_reports_attribute } from '../api/report';
+import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum, visibleMetrics } from '../utils';
+import {
+    datesPropType,
+    reportsPropType,
+    stringsPropType,
+} from '../sharedPropTypes';
+import { metricStatusOnDate } from './report_utils';
+
+function summarizeReportOnDate(report, measurements, date, hiddenTags) {
+    const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
+    Object.values(report.subjects).forEach((subject) => {
+        const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
+        Object.entries(metrics).forEach(([metric_uuid, metric]) => {
+            const status = metricStatusOnDate(metric_uuid, metric, measurements, date)
+            summary[STATUS_COLORS[status]] += 1
+        })
+    })
+    return summary
+}
+
+function summarizeReportsOnDate(reports, measurements, date, tag, hiddenTags) {
+    const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
+    reports.forEach((report) => {
+        Object.values(report.subjects).forEach(subject => {
+            const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
+            Object.entries(metrics).forEach(([metric_uuid, metric]) => {
+                if (getMetricTags(metric).indexOf(tag) >= 0) {
+                    const status = metricStatusOnDate(metric_uuid, metric, measurements, date)
+                    summary[STATUS_COLORS[status]] += 1
+                }
+            })
+        })
+    })
+    return summary
+}
+
+export function ReportsOverviewDashboard(
+    {
+        dates,
+        hiddenTags,
+        layout,
+        measurements,
+        onClickTag,
+        openReport,
+        reports,
+        reload
+    }
+) {
+    let nrMetrics = 0
+    const reportSummary = {}
+    reports.forEach((report) => {
+        nrMetrics = Math.max(nrMetrics, nrMetricsInReport(report))
+        reportSummary[report.report_uuid] = {}
+        dates.forEach((date) => {
+            reportSummary[report.report_uuid][date] = summarizeReportOnDate(report, measurements, date, hiddenTags)
+        })
+    })
+    const tagSummary = {}
+    const tags = getReportsTags(reports, hiddenTags)
+    tags.forEach((tag) => {
+        tagSummary[tag] = {}
+        dates.forEach((date) => {
+            tagSummary[tag][date] = summarizeReportsOnDate(reports, measurements, date, tag, hiddenTags)
+            nrMetrics = Math.max(nrMetrics, sum(tagSummary[tag][date]))
+        })
+    })
+    const report_cards = reports.map((report) =>
+        <MetricSummaryCard
+            key={report.report_uuid}
+            header={report.title}
+            maxY={nrMetrics}
+            onClick={(event) => { event.preventDefault(); openReport(report.report_uuid) }}
+            summary={reportSummary[report.report_uuid]}
+        />
+    );
+    const anyTagsHidden = hiddenTags.length > 0
+    const tagCards = tags.filter((tag) => (!hiddenTags?.includes(tag))).map((tag) =>
+        <MetricSummaryCard
+            key={tag}
+            header={<Tag selected={anyTagsHidden} tag={tag} />}
+            maxY={nrMetrics}
+            onClick={() => onClickTag(tag)}
+            summary={tagSummary[tag]}
+        />
+    );
+    return (
+        <CardDashboard
+            cards={report_cards.concat(tagCards).concat([<LegendCard key="legend" />])}
+            initialLayout={layout}
+            saveLayout={function (new_layout) { set_reports_attribute("layout", new_layout, reload) }}
+        />
+    )
+}
+ReportsOverviewDashboard.propTypes = {
+    dates: datesPropType,
+    hiddenTags: stringsPropType,
+    layout: PropTypes.array,
+    measurements: PropTypes.array,
+    onClickTag: PropTypes.func,
+    openReport: PropTypes.func,
+    reload: PropTypes.func,
+    reports: reportsPropType
+}

@@ -2,17 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Segment } from '../semantic_ui_react_wrappers';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
-import { CardDashboard } from '../dashboard/CardDashboard';
-import { LegendCard } from '../dashboard/LegendCard';
-import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
 import { Subjects } from '../subject/Subjects';
 import { CommentSegment } from '../widgets/CommentSegment';
-import { Tag } from '../widgets/Tag';
-import { add_report, set_reports_attribute, copy_report } from '../api/report';
+import { add_report, copy_report } from '../api/report';
 import { ReportsOverviewTitle } from './ReportsOverviewTitle';
 import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
-import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum, visibleMetrics } from '../utils';
+import { getReportsTags } from '../utils';
 import {
     datesPropType,
     optionalDatePropType,
@@ -21,104 +17,8 @@ import {
     stringsPropType,
 } from '../sharedPropTypes';
 import { ReportsOverviewErrorMessage } from './ReportErrorMessage';
-import { metricStatusOnDate } from './report_utils';
+import { ReportsOverviewDashboard } from './ReportsOverviewDashboard';
 
-function summarizeReportOnDate(report, measurements, date, hiddenTags) {
-    const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
-    Object.values(report.subjects).forEach((subject) => {
-        const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
-        Object.entries(metrics).forEach(([metric_uuid, metric]) => {
-            const status = metricStatusOnDate(metric_uuid, metric, measurements, date)
-            summary[STATUS_COLORS[status]] += 1
-        })
-    })
-    return summary
-}
-
-function summarizeReportsOnDate(reports, measurements, date, tag, hiddenTags) {
-    const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
-    reports.forEach((report) => {
-        Object.values(report.subjects).forEach(subject => {
-            const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
-            Object.entries(metrics).forEach(([metric_uuid, metric]) => {
-                if (getMetricTags(metric).indexOf(tag) >= 0) {
-                    const status = metricStatusOnDate(metric_uuid, metric, measurements, date)
-                    summary[STATUS_COLORS[status]] += 1
-                }
-            })
-        })
-    })
-    return summary
-}
-
-
-function ReportsDashboard(
-    {
-        dates,
-        hiddenTags,
-        layout,
-        measurements,
-        onClickTag,
-        openReport,
-        reports,
-        reload
-    }
-) {
-    let nrMetrics = 0
-    const reportSummary = {}
-    reports.forEach((report) => {
-        nrMetrics = Math.max(nrMetrics, nrMetricsInReport(report))
-        reportSummary[report.report_uuid] = {}
-        dates.forEach((date) => {
-            reportSummary[report.report_uuid][date] = summarizeReportOnDate(report, measurements, date, hiddenTags)
-        })
-    })
-    const tagSummary = {}
-    const tags = getReportsTags(reports, hiddenTags)
-    tags.forEach((tag) => {
-        tagSummary[tag] = {}
-        dates.forEach((date) => {
-            tagSummary[tag][date] = summarizeReportsOnDate(reports, measurements, date, tag, hiddenTags)
-            nrMetrics = Math.max(nrMetrics, sum(tagSummary[tag][date]))
-        })
-    })
-    const report_cards = reports.map((report) =>
-        <MetricSummaryCard
-            key={report.report_uuid}
-            header={report.title}
-            maxY={nrMetrics}
-            onClick={(event) => { event.preventDefault(); openReport(report.report_uuid) }}
-            summary={reportSummary[report.report_uuid]}
-        />
-    );
-    const anyTagsHidden = hiddenTags.length > 0
-    const tagCards = tags.filter((tag) => (!hiddenTags?.includes(tag))).map((tag) =>
-        <MetricSummaryCard
-            key={tag}
-            header={<Tag selected={anyTagsHidden} tag={tag} />}
-            maxY={nrMetrics}
-            onClick={() => onClickTag(tag)}
-            summary={tagSummary[tag]}
-        />
-    );
-    return (
-        <CardDashboard
-            cards={report_cards.concat(tagCards).concat([<LegendCard key="legend" />])}
-            initialLayout={layout}
-            saveLayout={function (new_layout) { set_reports_attribute("layout", new_layout, reload) }}
-        />
-    )
-}
-ReportsDashboard.propTypes = {
-    dates: datesPropType,
-    hiddenTags: stringsPropType,
-    layout: PropTypes.array,
-    measurements: PropTypes.array,
-    onClickTag: PropTypes.func,
-    openReport: PropTypes.func,
-    reload: PropTypes.func,
-    reports: reportsPropType
-}
 
 function ReportsOverviewButtonRow({ reload, reports }) {
     return (
@@ -166,7 +66,7 @@ export function ReportsOverview(
         <div id="dashboard">
             <ReportsOverviewTitle reports_overview={reports_overview} reload={reload} />
             <CommentSegment comment={reports_overview.comment} />
-            <ReportsDashboard
+            <ReportsOverviewDashboard
                 dates={dates}
                 hiddenTags={settings.hiddenTags.value}
                 layout={reports_overview.layout ?? []}
