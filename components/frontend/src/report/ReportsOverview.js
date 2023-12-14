@@ -68,7 +68,6 @@ export function ReportsOverview(
             <CommentSegment comment={reports_overview.comment} />
             <ReportsOverviewDashboard
                 dates={dates}
-                hiddenTags={settings.hiddenTags.value}
                 layout={reports_overview.layout ?? []}
                 measurements={reversedMeasurements}
                 onClickTag={(tag) => {
@@ -80,6 +79,7 @@ export function ReportsOverview(
                 openReport={openReport}
                 reload={reload}
                 reports={reports}
+                settings={settings}
             />
             <Subjects
                 atReportsOverview={true}
