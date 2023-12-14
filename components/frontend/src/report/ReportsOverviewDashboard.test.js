@@ -1,8 +1,10 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, renderHook, screen } from '@testing-library/react';
 import history from 'history/browser';
+import { useHiddenTagsURLSearchQuery } from '../app_ui_settings';
 import { mockGetAnimations } from '../dashboard/MockAnimations';
 import { ReportsOverviewDashboard } from './ReportsOverviewDashboard';
+import { createTestableSettings } from '../__fixtures__/fixtures';
 
 beforeEach(() => {
     mockGetAnimations()
@@ -25,17 +27,20 @@ const report = {
 function renderReportsOverviewDashboard(
     {
         dates = [new Date()],
+        hiddenTags = null,
         openReport = null,
         reports = [report],
     } = {}
 ) {
+    let settings = createTestableSettings()
+    if (hiddenTags) { settings.hiddenTags = hiddenTags }
     render(
         <div id="dashboard">
             <ReportsOverviewDashboard
                 dates={dates}
-                hiddenTags={[]}
                 openReport={openReport}
                 reports={reports}
+                settings={settings}
             />
         </div>
     )
@@ -45,6 +50,14 @@ it('shows the reports overview dashboard', async () => {
     const reports = [{ subjects: {} }]
     renderReportsOverviewDashboard()
     expect(screen.getAllByText(/Legend/).length).toBe(1);
+});
+
+it('hides tags', async () => {
+    history.push("?hidden_tags=other")
+    const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
+    renderReportsOverviewDashboard({ hiddenTags: hiddenTags.result.current })
+    expect(screen.getAllByText(/tag/).length).toBe(1)
+    expect(screen.queryAllByText(/other/).length).toBe(0)
 });
 
 it('calls the callback on click', async () => {

@@ -9,7 +9,7 @@ import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum, v
 import {
     datesPropType,
     reportsPropType,
-    stringsPropType,
+    settingsPropType,
 } from '../sharedPropTypes';
 import { metricStatusOnDate } from './report_utils';
 
@@ -44,13 +44,13 @@ function summarizeReportsOnDate(reports, measurements, date, tag, hiddenTags) {
 export function ReportsOverviewDashboard(
     {
         dates,
-        hiddenTags,
         layout,
         measurements,
         onClickTag,
         openReport,
         reports,
-        reload
+        reload,
+        settings
     }
 ) {
     let nrMetrics = 0
@@ -59,15 +59,15 @@ export function ReportsOverviewDashboard(
         nrMetrics = Math.max(nrMetrics, nrMetricsInReport(report))
         reportSummary[report.report_uuid] = {}
         dates.forEach((date) => {
-            reportSummary[report.report_uuid][date] = summarizeReportOnDate(report, measurements, date, hiddenTags)
+            reportSummary[report.report_uuid][date] = summarizeReportOnDate(report, measurements, date, settings.hiddenTags.value)
         })
     })
     const tagSummary = {}
-    const tags = getReportsTags(reports, hiddenTags)
+    const tags = getReportsTags(reports, settings.hiddenTags.value)
     tags.forEach((tag) => {
         tagSummary[tag] = {}
         dates.forEach((date) => {
-            tagSummary[tag][date] = summarizeReportsOnDate(reports, measurements, date, tag, hiddenTags)
+            tagSummary[tag][date] = summarizeReportsOnDate(reports, measurements, date, tag, settings.hiddenTags.value)
             nrMetrics = Math.max(nrMetrics, sum(tagSummary[tag][date]))
         })
     })
@@ -80,8 +80,8 @@ export function ReportsOverviewDashboard(
             summary={reportSummary[report.report_uuid]}
         />
     );
-    const anyTagsHidden = hiddenTags.length > 0
-    const tagCards = tags.filter((tag) => (!hiddenTags?.includes(tag))).map((tag) =>
+    const anyTagsHidden = settings.hiddenTags.value.length > 0
+    const tagCards = tags.filter((tag) => (!settings.hiddenTags.includes(tag))).map((tag) =>
         <MetricSummaryCard
             key={tag}
             header={<Tag selected={anyTagsHidden} tag={tag} />}
@@ -100,11 +100,11 @@ export function ReportsOverviewDashboard(
 }
 ReportsOverviewDashboard.propTypes = {
     dates: datesPropType,
-    hiddenTags: stringsPropType,
     layout: PropTypes.array,
     measurements: PropTypes.array,
     onClickTag: PropTypes.func,
     openReport: PropTypes.func,
     reload: PropTypes.func,
-    reports: reportsPropType
+    reports: reportsPropType,
+    settings: settingsPropType
 }
