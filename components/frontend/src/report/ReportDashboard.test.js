@@ -43,6 +43,7 @@ function renderDashboard(
 it('shows the dashboard', async () => {
     renderDashboard({ reportToRender: report })
     expect(screen.getAllByText(/Subject title/).length).toBe(1)
+    expect(screen.getAllByText(/Legend/).length).toBe(1)
     expect(screen.getAllByText(/tag/).length).toBe(1)
     expect(screen.getAllByText(/other/).length).toBe(1)
 });
