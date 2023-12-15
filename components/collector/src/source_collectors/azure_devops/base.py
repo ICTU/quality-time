@@ -57,16 +57,14 @@ class AzureDevopsJobs(SourceCollector):
                 continue  # The job has no completed builds
             name = self.__job_name(job)
             url = job["_links"]["web"]["href"]
+            build_dt = self._latest_build_date_time(job)
             build_status = self._latest_build_result(job)
-            build_dt_str = ""  # sadly, mypy does not understand short-circuiting this
-            if build_dt := self._latest_build_date_time(job):
-                build_dt_str = str(build_dt.date())
             entities.append(
                 Entity(
                     key=name,
                     name=name,
                     url=url,
-                    build_date=build_dt_str,
+                    build_date=str(build_dt) if build_dt else "",
                     build_status=build_status,
                 ),
             )
@@ -142,7 +140,7 @@ class AzureDevopsPipelines(SourceCollector):
                         name=pipeline_run["name"],
                         pipeline=pipeline_name,
                         url=pipeline_run["_links"]["web"]["href"],
-                        build_date=str(parse_datetime(pipeline_run["finishedDate"]).date()),
+                        build_date=str(parse_datetime(pipeline_run["finishedDate"])),
                         build_status=pipeline_run["state"],
                     ),
                 )

@@ -84,14 +84,14 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
             get_request_json_return_value=self.pipeline_runs,
             get_request_json_side_effect=[self.pipelines, self.pipeline_runs],
         )
-        now_date_str = now_dt.date().isoformat()
+        build_date_str = now_dt.strftime("%Y%m%d")
         expected_entities = [
             {
-                "name": f"{now_date_str.replace('-', '')}.1",
+                "name": f"{build_date_str}.1",
                 "pipeline": self.test_pipeline["name"],
-                "key": f"{self.test_pipeline['id']}-{now_date_str.replace('-', '')}_1",  # safe_entity_key
+                "key": f"{self.test_pipeline['id']}-{build_date_str}_1",  # safe_entity_key
                 "url": f"{self.url}/_build/results?buildId=6",
-                "build_date": now_date_str,
+                "build_date": str(now_dt),
                 "build_status": "completed",
             },
         ]
