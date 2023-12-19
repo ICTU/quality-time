@@ -1,5 +1,7 @@
 """SonarQube violations collector."""
 
+from typing import cast
+
 from shared_data_model import DATA_MODEL
 
 from collector_utilities.type import URL
@@ -22,8 +24,9 @@ class SonarQubeViolations(SonarQubeCollector):
         landing_url = f"{url}/project/issues?id={component}&branch={branch}&resolved=false"
         return URL(
             landing_url
-            + self._query_parameter("severities")
-            + self._query_parameter(self.types_parameter)
+            + self._query_parameter("severities", uppercase=True)
+            + self._query_parameter("tags")
+            + self._query_parameter(self.types_parameter, uppercase=True)
             + self.__rules_url_parameter(),
         )
 
@@ -37,15 +40,18 @@ class SonarQubeViolations(SonarQubeCollector):
         api = f"{url}/api/issues/search?componentKeys={component}&branch={branch}&resolved=false&ps=500"
         return URL(
             api
-            + self._query_parameter("severities")
-            + self._query_parameter(self.types_parameter)
+            + self._query_parameter("severities", uppercase=True)
+            + self._query_parameter("tags")
+            + self._query_parameter(self.types_parameter, uppercase=True)
             + self.__rules_url_parameter(),
         )
 
-    def _query_parameter(self, parameter_key: str) -> str:
+    def _query_parameter(self, parameter_key: str, uppercase: bool = False) -> str:
         """Return the multiple choice parameter as query parameter that can be passed to SonarQube."""
-        values = ",".join(value.upper() for value in sorted(self._parameter(parameter_key)))
-        return "" if values == self.__default_value(parameter_key) else f"&{parameter_key}={values}"
+        parameter_value = ",".join(sorted(cast(list[str], self._parameter(parameter_key))))
+        if uppercase:
+            parameter_value = parameter_value.upper()
+        return "" if parameter_value == self.__default_value(parameter_key) else f"&{parameter_key}={parameter_value}"
 
     def __rules_url_parameter(self) -> str:
         """Return the rules url parameter, if any."""
@@ -84,6 +90,7 @@ class SonarQubeViolations(SonarQubeCollector):
             component=issue["component"],
             creation_date=issue["creationDate"],
             update_date=issue["updateDate"],
+            tags=", ".join(sorted(issue.get("tags", []))),
         )
 
     def __default_value(self, parameter_key: str) -> str:

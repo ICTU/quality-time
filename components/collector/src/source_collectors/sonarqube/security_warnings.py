@@ -24,8 +24,12 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             landing_path = "dashboard"
         elif "vulnerability" in security_types:
             landing_path = "project/issues"
-            # We don't use self._query_parameter() because when we get here, the value of the types parameter is fixed
-            extra_url_parameters = f"{self._query_parameter('severities')}&resolved=false&types=VULNERABILITY"
+            # We don't use self._query_parameter() for the types parameter because when we get here,
+            # the value of the types parameter is fixed
+            extra_url_parameters = (
+                f"{self._query_parameter('severities', uppercase=True)}&resolved=false&types=VULNERABILITY"
+                f"{self._query_parameter('tags')}"
+            )
         else:
             landing_path = "project/security_hotspots"
         return URL(f"{base_landing_url}/{landing_path}{common_url_parameters}{extra_url_parameters}")
@@ -41,7 +45,8 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             api_urls.append(
                 URL(
                     f"{base_url}/api/issues/search?componentKeys={component}&resolved=false&ps=500"
-                    f"{self._query_parameter('severities')}&branch={branch}&types=VULNERABILITY",
+                    f"{self._query_parameter('severities', uppercase=True)}&branch={branch}&types=VULNERABILITY"
+                    f"{self._query_parameter('tags')}",
                 ),
             )
         if "security_hotspot" in security_types:
