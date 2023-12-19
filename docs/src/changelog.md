@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 ### Added
 
+- Add the possibility to include SonarQube violations by tag. Closes [#6967](https://github.com/ICTU/quality-time/issues/6967).
 - Allow for hiding report, subject and tag cards from dashboards via the settings panel. Closes [#7482](https://github.com/ICTU/quality-time/issues/7482).
 
 ## v5.5.0 - 2023-12-15

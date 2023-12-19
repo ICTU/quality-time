@@ -52,6 +52,7 @@ def violation_entity_attributes(
     attributes.extend(
         [
             EntityAttribute(name="Component", url="url"),
+            EntityAttribute(name="Tags"),
             EntityAttribute(name="Created", key="creation_date", type=EntityAttributeType.DATETIME),
             EntityAttribute(name="Updated", key="update_date", type=EntityAttributeType.DATETIME),
         ],
@@ -405,6 +406,13 @@ SONARQUBE = Source(
             default_value=["vulnerability"],
             values=["security_hotspot", "vulnerability"],
             metrics=["security_warnings"],
+        ),
+        "tags": MultipleChoiceWithAdditionParameter(
+            name="Tags to include",
+            short_name="tags",
+            placeholder="all tags",
+            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube/latest/user-guide/issues/"),
+            metrics=["security_warnings", "violations"],
         ),
     },
     entities={

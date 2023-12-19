@@ -53,6 +53,7 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
                 resolution="",
                 creation_date="2020-07-30T22:48:52+0200",
                 update_date="2020-09-30T21:48:52+0200",
+                tags="",
             ),
             self.entity(
                 key="violation2",
@@ -63,6 +64,7 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
                 resolution="won't fix",
                 creation_date="2019-08-15:50:52+0200",
                 update_date="2019-09-30T20:50:52+0200",
+                tags="",
             ),
         ]
         self.assert_measurement(
@@ -119,6 +121,7 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
                 rationale="test-user: *TEST*\ntest-user: comment2",
                 creation_date="2019-08-15:52:52+0200",
                 update_date="2019-09-30T20:52:52+0200",
+                tags="",
             ),
         ]
         self.assert_measurement(

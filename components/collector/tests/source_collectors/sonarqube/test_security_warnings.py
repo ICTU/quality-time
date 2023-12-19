@@ -7,6 +7,15 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     """Unit tests for the SonarQube security warnings collector."""
 
     METRIC_TYPE = "security_warnings"
+    SONARQUBE_URL = "https://sonarqube"
+    API_URL = f"{SONARQUBE_URL}/api"
+    LANDING_URL = f"{SONARQUBE_URL}/project"
+    BRANCH = "&branch=master"
+    DASHBOARD_URL = f"{SONARQUBE_URL}/dashboard?id=id{BRANCH}"
+    HOTSPOTS_API = f"{API_URL}/hotspots/search?projectKey=id{BRANCH}&ps=500"
+    HOTSPOTS_LANDING_URL = f"{LANDING_URL}/security_hotspots?id=id{BRANCH}"
+    VULNERABILITIES_API = f"{API_URL}/issues/search?componentKeys=id&resolved=false&ps=500{BRANCH}&types=VULNERABILITY"
+    VULNERABILITIES_LANDING_URL = f"{LANDING_URL}/issues?id=id{BRANCH}&resolved=false&types=VULNERABILITY"
 
     def setUp(self):
         """Extend to set up SonarQube security warnings."""
@@ -22,6 +31,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
                     "type": "VULNERABILITY",
                     "creationDate": "2020-08-30T22:48:52+0200",
                     "updateDate": "2020-09-30T22:48:52+0200",
+                    "tags": ["bug"],
                 },
                 {
                     "key": "vulnerability2",
@@ -31,6 +41,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
                     "type": "VULNERABILITY",
                     "creationDate": "2019-08-30T22:48:52+0200",
                     "updateDate": "2019-09-30T22:48:52+0200",
+                    "tags": ["bug", "other tag"],
                 },
             ],
         }
@@ -89,6 +100,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
                 severity="info",
                 creation_date="2020-08-30T22:48:52+0200",
                 update_date="2020-09-30T22:48:52+0200",
+                tags="bug",
             ),
             self.entity(
                 key="vulnerability2",
@@ -98,6 +110,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
                 creation_date="2019-08-30T22:48:52+0200",
                 update_date="2019-09-30T22:48:52+0200",
                 message="message2",
+                tags="bug, other tag",
             ),
         ]
 
@@ -105,49 +118,76 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         """Test that all security warnings are returned."""
         self.set_source_parameter("security_types", ["vulnerability", "security_hotspot"])
         show_component_json = {}
-        response = await self.collect(
+        response, get, post = await self.collect(
             get_request_json_side_effect=[show_component_json, self.vulnerabilities_json, self.hotspots_json],
+            return_mocks=True,
         )
+        get.assert_called_with(self.HOTSPOTS_API, allow_redirects=True)
+        post.assert_not_called()
         self.assert_measurement(
             response,
             value="3",
             total="100",
             entities=self.vulnerability_entities + self.hotspot_entities[:1],
-            landing_url="https://sonarqube/dashboard?id=id&branch=master",
+            landing_url=self.DASHBOARD_URL,
         )
 
     async def test_security_warnings_hotspots_only(self):
         """Test that only the security hotspots are returned."""
         self.set_source_parameter("security_types", ["security_hotspot"])
-        response = await self.collect(get_request_json_return_value=self.hotspots_json)
+        response, get, post = await self.collect(get_request_json_return_value=self.hotspots_json, return_mocks=True)
+        get.assert_called_with(self.HOTSPOTS_API, allow_redirects=True)
+        post.assert_not_called()
         self.assert_measurement(
             response,
             value="1",
             total="100",
             entities=self.hotspot_entities[:1],
-            landing_url="https://sonarqube/project/security_hotspots?id=id&branch=master",
+            landing_url=self.HOTSPOTS_LANDING_URL,
         )
 
     async def test_security_warnings_vulnerabilities_only(self):
         """Test that by default only the vulnerabilities are returned."""
-        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
+        response, get, post = await self.collect(
+            get_request_json_return_value=self.vulnerabilities_json, return_mocks=True
+        )
+        get.assert_called_with(self.VULNERABILITIES_API, allow_redirects=True)
+        post.assert_not_called()
         self.assert_measurement(
             response,
             value="2",
             total="100",
             entities=self.vulnerability_entities,
-            landing_url="https://sonarqube/project/issues?id=id&branch=master&resolved=false&types=VULNERABILITY",
+            landing_url=self.VULNERABILITIES_LANDING_URL,
         )
 
     async def test_filter_security_warnings_hotspots_by_status(self):
         """Test that the security hotspots can be filtered by status."""
         self.set_source_parameter("security_types", ["security_hotspot"])
         self.set_source_parameter("hotspot_statuses", ["to review", "fixed"])
-        response = await self.collect(get_request_json_return_value=self.hotspots_json)
+        response, get, post = await self.collect(get_request_json_return_value=self.hotspots_json, return_mocks=True)
+        get.assert_called_with(self.HOTSPOTS_API, allow_redirects=True)
+        post.assert_not_called()
         self.assert_measurement(
             response,
             value="2",
             total="100",
             entities=self.hotspot_entities,
-            landing_url="https://sonarqube/project/security_hotspots?id=id&branch=master",
+            landing_url=self.HOTSPOTS_LANDING_URL,
+        )
+
+    async def test_filter_security_warning_vulnerabilities_by_tag(self):
+        """Test that the security warning vulnerabilities can be filtered by tag."""
+        self.set_source_parameter("tags", ["bug"])
+        response, get, post = await self.collect(
+            get_request_json_return_value=self.vulnerabilities_json, return_mocks=True
+        )
+        get.assert_called_with(self.VULNERABILITIES_API + "&tags=bug", allow_redirects=True)
+        post.assert_not_called()
+        self.assert_measurement(
+            response,
+            value="2",
+            total="100",
+            entities=self.vulnerability_entities,
+            landing_url=self.VULNERABILITIES_LANDING_URL + "&tags=bug",
         )

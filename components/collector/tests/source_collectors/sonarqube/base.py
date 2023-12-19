@@ -32,6 +32,7 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         creation_date: str | None = None,
         update_date: str | None = None,
         hotspot_status: str | None = None,
+        tags: str | None = None,
     ) -> Entity:
         """Create an entity."""
         url = (
@@ -58,6 +59,8 @@ class SonarQubeTestCase(SourceCollectorTestCase):
             entity["review_priority"] = review_priority
         if hotspot_status is not None:
             entity["hotspot_status"] = hotspot_status
+        if tags is not None:
+            entity["tags"] = tags
         return entity
 
     @staticmethod
