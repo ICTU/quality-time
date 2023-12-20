@@ -118,7 +118,8 @@ export const metricPropType = PropTypes.shape({
     debt_end_date: PropTypes.string,
     evaluate_targets: PropTypes.bool,
     issue_ids: stringsPropType,
-    issue_status: PropTypes.arrayOf(issueStatusPropType)
+    issue_status: PropTypes.arrayOf(issueStatusPropType),
+    tags: stringsPropType
 })
 
 export const metricsPropType = PropTypes.arrayOf(metricPropType)

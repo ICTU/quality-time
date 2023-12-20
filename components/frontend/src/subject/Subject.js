@@ -22,6 +22,7 @@ import {
     getMetricUnit,
     get_metric_value,
     get_source_name,
+    sortWithLocaleCompare,
     visibleMetrics
 } from '../utils';
 import { SubjectTable } from './SubjectTable';
@@ -58,11 +59,11 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_status.localeCompare(m2_status)
         },
         source: (m1, m2) => {
-            let m1_sources = Object.values(m1[1].sources).map((source) => get_source_name(source, datamodel));
-            m1_sources.sort();
-            let m2_sources = Object.values(m2[1].sources).map((source) => get_source_name(source, datamodel));
-            m2_sources.sort();
-            return m1_sources.join().localeCompare(m2_sources.join())
+            let m1SourceNames = Object.values(m1[1].sources).map((source) => get_source_name(source, datamodel));
+            sortWithLocaleCompare(m1SourceNames);
+            let m2SourceNames = Object.values(m2[1].sources).map((source) => get_source_name(source, datamodel));
+            sortWithLocaleCompare(m2SourceNames);
+            return m1SourceNames.join().localeCompare(m2SourceNames.join())
         },
         issues: (m1, m2) => {
             const m1_issues = getMetricIssueIds(m1[1]).join();

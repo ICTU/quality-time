@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Form } from '../semantic_ui_react_wrappers';
 import { ReadOnlyOrEditable } from '../context/Permissions';
 import { Input } from './Input';
 import { ReadOnlyInput } from './ReadOnlyInput';
+import { sortWithLocaleCompare } from '../utils';
+import { stringsPropType } from '../sharedPropTypes';
 
 function StringInputWithSuggestions(props) {
     let { editableLabel, label, error, options, placeholder, required, set_value, warning, ...otherProps } = props;
@@ -32,7 +35,9 @@ function StringInputWithSuggestions(props) {
 
 export function StringInput(props) {
     const { requiredPermissions, options, ...otherProps } = props;
-    const optionMap = [...(options || [])].sort().map((value) => ({ key: value, value: value, text: value }));
+    const optionsArray = [...(options || [])]
+    sortWithLocaleCompare(optionsArray)
+    const optionMap = optionsArray.map((value) => ({ key: value, value: value, text: value }));
     const input = <Input {...otherProps} />
     const inputWithSuggestions = <StringInputWithSuggestions options={optionMap} {...otherProps} />;
     return (
@@ -43,4 +48,10 @@ export function StringInput(props) {
                 editableComponent={optionMap.length === 0 ? input : inputWithSuggestions} />
         </Form>
     )
+}
+StringInput.propTypes = {
+    props: PropTypes.shape({
+        requiredPermissions: stringsPropType,
+        options: stringsPropType
+    })
 }

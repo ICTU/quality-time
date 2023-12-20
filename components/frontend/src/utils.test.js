@@ -1,7 +1,22 @@
 import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from './context/Permissions';
 import {
-    capitalize, getUserPermissions, getMetricTags, get_metric_target, getReportTags, get_source_name, get_subject_name,
-    nice_number, scaled_number, userPrefersDarkMode, getMetricResponseOverrun, visibleMetrics
+    capitalize,
+    get_metric_target,
+    get_source_name,
+    get_subject_name,
+    getMetricResponseOverrun,
+    getMetricTags,
+    getReportTags,
+    getStatusName,
+    getUserPermissions,
+    nice_number,
+    nrMetricsInReport,
+    nrMetricsInReports,
+    scaled_number,
+    sortWithLocaleCompare,
+    sum,
+    userPrefersDarkMode,
+    visibleMetrics,
 } from './utils';
 
 let matchMediaMatches
@@ -272,4 +287,49 @@ it("hides metrics with hidden tags", () => {
     expect(visibleMetrics(metricWithMultipleTags, false, [])).toStrictEqual(metricWithMultipleTags)
     expect(visibleMetrics(metricWithMultipleTags, false, ["hidden"])).toStrictEqual(metricWithMultipleTags)
     expect(visibleMetrics(metricWithMultipleTags, false, ["hidden", "maybe hidden"])).toStrictEqual({})
+})
+
+it('sorts strings with locale compare', () => {
+    const strings = ["b", "a", "c"]
+    sortWithLocaleCompare(strings)
+    expect(strings).toStrictEqual(["a", "b", "c"])
+    const emptyArray = [];
+    sortWithLocaleCompare(emptyArray)
+    expect(emptyArray).toStrictEqual([])
+})
+
+it('gets the status name', () => {
+    expect(getStatusName("target_met")).toBe("Target met")
+    expect(getStatusName("near_target_met")).toBe("Near target met")
+    expect(getStatusName("debt_target_met")).toBe("Debt target met")
+    expect(getStatusName("target_not_met")).toBe("Target not met")
+    expect(getStatusName("informative")).toBe("Informative")
+    expect(getStatusName("unknown")).toBe("Unknown")
+    expect(getStatusName("")).toBe("Unknown")
+})
+
+it("gets the number of reports in a report", () => {
+    expect(nrMetricsInReport({subjects: {}})).toBe(0)
+    expect(nrMetricsInReport({subjects: {subject_uuid: {metrics: {}}}})).toBe(0)
+    expect(nrMetricsInReport({subjects: {subject_uuid: {metrics: {metric_uuid: {}}}}})).toBe(1)
+})
+
+it("gets the number of reports in reports", () => {
+    expect(nrMetricsInReports([{subjects: {}}])).toBe(0)
+    expect(nrMetricsInReports([{subjects: {subject_uuid: {metrics: {metric_uuid: {}}}}}])).toBe(1)
+})
+
+it("sums numbers", () => {
+    const array = new Array()
+    expect(sum(array)).toBe(0)
+    array.push(1)
+    expect(sum(array)).toBe(1)
+    array.push(2)
+    expect(sum(array)).toBe(3)
+    expect(sum([])).toBe(0)
+    expect(sum([1])).toBe(1)
+    expect(sum([1, 2])).toBe(3)
+    expect(sum({})).toBe(0)
+    expect(sum({a: 1})).toBe(1)
+    expect(sum({a: 1, b: 2})).toBe(3)
 })
