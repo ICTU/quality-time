@@ -1,6 +1,8 @@
+import { PropTypes } from 'prop-types'
 import { PERMISSIONS } from './context/Permissions';
 import { HyperLink } from './widgets/HyperLink';
 import { defaultDesiredResponseTimes } from './defaults';
+import { metricPropType, reportPropType, reportsPropType, stringsPropType } from './sharedPropTypes';
 
 export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
 const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR;
@@ -162,11 +164,24 @@ export function getStatusName(status) {
         target_not_met: 'Target not met', informative: 'Informative', unknown: 'Unknown'
     }[status || "unknown"];
 }
+getStatusName.propTypes = {
+    status: PropTypes.string
+}
 
 export function getMetricTags(metric) {
     const tags = metric.tags ?? [];
-    tags.sort((t1, t2) => t1.localeCompare(t2));
+    sortWithLocaleCompare(tags)
     return tags
+}
+getMetricTags.propTypes = {
+    metric: metricPropType
+}
+
+export function sortWithLocaleCompare(strings) {
+    strings.sort((string1, string2) => string1.localeCompare(string2))
+}
+sortWithLocaleCompare.propTypes = {
+    strings: stringsPropType
 }
 
 export function visibleMetrics(metrics, metricsToHide, hiddenTags) {
@@ -192,7 +207,7 @@ export function getReportTags(report, hiddenTags) {
         })
     })
     const sortedTags = Array.from(tags);
-    sortedTags.sort((t1, t2) => t1.localeCompare(t2));
+    sortWithLocaleCompare(sortedTags)
     return sortedTags
 }
 
@@ -202,16 +217,19 @@ export function getReportsTags(reports) {
         getReportTags(report).forEach((tag) => tags.add(tag))
     });
     const sortedTags = Array.from(tags);
-    sortedTags.sort((t1, t2) => t1.localeCompare(t2));
+    sortWithLocaleCompare(sortedTags)
     return sortedTags
 }
 
 export function nrMetricsInReport(report) {
     let nrMetrics = 0;
     Object.values(report.subjects).forEach((subject) => {
-        nrMetrics += Object.keys(subject.metrics).length ?? 0;
+        nrMetrics += Object.keys(subject.metrics).length;
     });
     return nrMetrics
+}
+nrMetricsInReport.propTypes = {
+    report: reportPropType
 }
 
 export function nrMetricsInReports(reports) {
@@ -221,11 +239,17 @@ export function nrMetricsInReports(reports) {
     })
     return nrMetrics
 }
+nrMetricsInReport.propTypes = {
+    reports: reportsPropType
+}
 
 export function getMetricIssueIds(metric) {
     let issueIds = metric.issue_ids ?? [];
-    issueIds.sort();
+    sortWithLocaleCompare(issueIds);
     return issueIds
+}
+getMetricIssueIds.propTypes = {
+    metric: metricPropType
 }
 
 export function capitalize(string) {
@@ -311,4 +335,7 @@ export function slugify(name) {
 export function sum(object) {
     const list = typeof object == Array ? object : Object.values(object)
     return list.reduce((a, b) => a + b, 0)
+}
+sum.propTypes = {
+    object: PropTypes.oneOf([PropTypes.arrayOf(PropTypes.number), PropTypes.objectOf(PropTypes.number)])
 }

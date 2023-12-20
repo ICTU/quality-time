@@ -10,7 +10,7 @@ export function Feed(props) {
     )
 }
 
-function Date(props) {
+function FeedDate(props) {
     return (
         <SemanticUIFeed.Date {...addInvertedClassNameWhenInDarkMode(props, useContext(DarkMode))} />
     )
@@ -23,7 +23,7 @@ function Summary(props) {
 }
 
 Feed.Content = SemanticUIFeed.Content
-Feed.Date = Date
+Feed.Date = FeedDate
 Feed.Event = SemanticUIFeed.Event
 Feed.Label = SemanticUIFeed.Label
 Feed.Summary = Summary
