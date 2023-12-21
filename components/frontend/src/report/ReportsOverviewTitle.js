@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Icon, Menu } from 'semantic-ui-react';
 import { Tab } from '../semantic_ui_react_wrappers';
+import { activeTabIndex, tabChangeHandler } from '../app_ui_settings';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { Comment } from '../fields/Comment';
@@ -12,8 +13,8 @@ import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from '../context/Permi
 import { DownloadAsPDFButton } from '../widgets/Button';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { dropdownOptions } from '../utils';
+import { reportsOverviewPropType, settingsPropType } from '../sharedPropTypes';
 import { setDocumentTitle } from './document_title';
-import { reportsOverviewPropType } from '../sharedPropTypes';
 
 function ReportsOverviewConfiguration({ reports_overview, reload }) {
     return (
@@ -95,16 +96,38 @@ function Permissions({ permissions, reload }) {
     )
 }
 
-export function ReportsOverviewTitle({ reports_overview, reload }) {
+export function ReportsOverviewTitle({ reports_overview, reload, settings }) {
+    const uuid = "reports_overview"
+    const tabIndex = activeTabIndex(settings.expandedItems, uuid)
     const panes = [
-        { menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ReportsOverviewConfiguration reports_overview={reports_overview} reload={reload} /></Tab.Pane> },
-        { menuItem: <Menu.Item key="permissions"><Icon name="lock" /><FocusableTab>{"Permissions"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><Permissions permissions={reports_overview.permissions ?? {}} reload={reload} /></Tab.Pane> },
-        { menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>, render: () => <Tab.Pane><ChangeLog/></Tab.Pane> }
+        {
+            menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane><ReportsOverviewConfiguration reports_overview={reports_overview} reload={reload} /></Tab.Pane>
+        },
+        {
+            menuItem: <Menu.Item key="permissions"><Icon name="lock" /><FocusableTab>{"Permissions"}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane><Permissions permissions={reports_overview.permissions ?? {}} reload={reload} /></Tab.Pane>
+        },
+        {
+            menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>,
+            render: () => <Tab.Pane><ChangeLog/></Tab.Pane>
+        },
     ]
     setDocumentTitle(reports_overview.title);
+
     return (
-        <HeaderWithDetails level="h1" header={reports_overview.title} subheader={reports_overview.subtitle}>
-            <Tab panes={panes} />
+        <HeaderWithDetails
+            header={reports_overview.title}
+            item_uuid={`${uuid}:${tabIndex}`}
+            level="h1"
+            settings={settings}
+            subheader={reports_overview.subtitle}
+        >
+            <Tab
+                defaultActiveIndex={tabIndex}
+                onTabChange={tabChangeHandler(settings.expandedItems, uuid)}
+                panes={panes}
+            />
             <div style={{ marginTop: "20px" }}>
                 <DownloadAsPDFButton />
             </div>
@@ -114,4 +137,5 @@ export function ReportsOverviewTitle({ reports_overview, reload }) {
 ReportsOverviewTitle.propTypes = {
     reports_overview: reportsOverviewPropType,
     reload: PropTypes.func,
+    settings: settingsPropType
 }

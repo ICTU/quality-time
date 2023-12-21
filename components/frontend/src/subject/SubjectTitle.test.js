@@ -1,10 +1,16 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import history from 'history/browser';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { SubjectTitle } from './SubjectTitle';
 import * as fetch_server_api from '../api/fetch_server_api';
+import { createTestableSettings } from '../__fixtures__/fixtures';
+
+beforeEach(() => {
+    history.push("?expanded=subject_uuid:0")
+});
 
 const datamodel = {
     subjects: {
@@ -25,12 +31,14 @@ const report = {
 };
 
 async function renderSubjectTitle(subject_type = "subject_type") {
+    const settings = createTestableSettings()
     await act(async () => {
         render(
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <DataModel.Provider value={datamodel}>
                     <SubjectTitle
                         report={report}
+                        settings={settings}
                         subject={{ type: subject_type }}
                         subject_uuid="subject_uuid"
                     />
@@ -38,7 +46,6 @@ async function renderSubjectTitle(subject_type = "subject_type") {
             </Permissions.Provider>
         )
     });
-    fireEvent.click(screen.getByTitle(/expand/));
 }
 
 it('changes the subject type', async () => {

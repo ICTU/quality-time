@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Icon, Menu } from 'semantic-ui-react';
 import { Label, Segment, Tab } from '../semantic_ui_react_wrappers';
+import { activeTabIndex, tabChangeHandler } from '../app_ui_settings';
 import { Comment } from '../fields/Comment';
 import { IntegerInput } from '../fields/IntegerInput';
 import { StringInput } from '../fields/StringInput';
@@ -16,7 +17,7 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissio
 import { NotificationDestinations } from '../notification/NotificationDestinations';
 import { defaultDesiredResponseTimes } from '../defaults';
 import { STATUS_DESCRIPTION, STATUS_NAME } from '../utils';
-import { reportPropType } from '../sharedPropTypes';
+import { reportPropType, settingsPropType } from '../sharedPropTypes';
 import { IssueTracker } from './IssueTracker';
 import { setDocumentTitle } from './document_title';
 
@@ -261,8 +262,9 @@ ButtonRow.propTypes = {
     openReportsOverview: PropTypes.func,
 }
 
-export function ReportTitle({ report, openReportsOverview, reload }) {
+export function ReportTitle({ report, openReportsOverview, reload, settings }) {
     const report_uuid = report.report_uuid;
+    const tabIndex = activeTabIndex(settings.expandedItems, report_uuid)
     const reportUrl = `${window.location}`;
     const panes = [
         {
@@ -291,9 +293,20 @@ export function ReportTitle({ report, openReportsOverview, reload }) {
         }
     ]
     setDocumentTitle(report.title);
+
     return (
-        <HeaderWithDetails level="h1" header={report.title} subheader={report.subtitle}>
-            <Tab panes={panes} />
+        <HeaderWithDetails
+            header={report.title}
+            item_uuid={`${report.report_uuid}:${tabIndex}`}
+            level="h1"
+            settings={settings}
+            subheader={report.subtitle}
+        >
+            <Tab
+                defaultActiveIndex={tabIndex}
+                onTabChange={tabChangeHandler(settings.expandedItems, report_uuid)}
+                panes={panes}
+            />
             <div style={{ marginTop: "20px" }}>
                 <ButtonRow report_uuid={report_uuid} openReportsOverview={openReportsOverview} />
             </div>
@@ -304,4 +317,5 @@ ReportTitle.propTypes = {
     openReportsOverview: PropTypes.func,
     reload: PropTypes.func,
     report: reportPropType,
+    settings: settingsPropType,
 }

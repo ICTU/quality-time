@@ -156,6 +156,7 @@ export function Subject({
                     lastSubject={lastSubject}
                     reload={reload}
                     report={report}
+                    settings={settings}
                     subject={subject}
                     subject_uuid={subject_uuid}
                 />

@@ -1,10 +1,9 @@
 import React from 'react';
-import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import history from 'history/browser';
 import { Menubar } from './Menubar';
 import * as auth from '../api/auth';
-import { useExpandedItemsSearchQuery } from '../app_ui_settings';
 import { createTestableSettings } from '../__fixtures__/fixtures';
 
 jest.mock("../api/auth.js")
@@ -20,7 +19,6 @@ function renderMenubar(
         user = null,
         openReportsOverview = null,
         panel = null,
-        expandedItems = null
     } = {}
 ) {
     const settings = createTestableSettings()
@@ -31,9 +29,9 @@ function renderMenubar(
             openReportsOverview={openReportsOverview}
             panel={panel}
             report_date_string="2019-10-10"
+            settings={settings}
             set_user={set_user}
             user={user}
-            expandedItems={expandedItems ?? settings.expandedItems}
         />
     );
 }
@@ -141,23 +139,4 @@ it('hides the view panel on escape', async () => {
     expect(screen.getAllByText(/Hello/).length).toBe(1)
     await userEvent.keyboard("{Escape}")
     expect(screen.queryAllByText(/Hello/).length).toBe(0)
-})
-
-it("resets the expanded items", () => {
-    history.push("?expanded=tab")
-    const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
-    expect(expandedItems.result.current.value).toStrictEqual(["tab"])
-    renderMenubar({ expandedItems: expandedItems.result.current })
-    fireEvent.click(screen.getByRole("button", { name: "Collapse all metrics" }))
-    expandedItems.rerender()
-    expect(expandedItems.result.current.value).toStrictEqual([])
-})
-
-it("doesn't change the expanded items if there are none", () => {
-    const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
-    expect(expandedItems.result.current.value).toStrictEqual([])
-    renderMenubar({ expandedItems: expandedItems.result.current })
-    fireEvent.click(screen.getByRole("button", { name: "Collapse all metrics" }))
-    expandedItems.rerender()
-    expect(expandedItems.result.current.value).toStrictEqual([])
 })

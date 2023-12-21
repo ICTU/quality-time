@@ -65,7 +65,7 @@ export function ReportsOverview(
     const reversedMeasurements = measurements.slice().sort((m1, m2) => m1.start < m2.start ? 1 : -1)
     return (
         <div id="dashboard">
-            <ReportsOverviewTitle reports_overview={reports_overview} reload={reload} />
+            <ReportsOverviewTitle reports_overview={reports_overview} reload={reload} settings={settings} />
             <CommentSegment comment={reports_overview.comment} />
             <ReportsOverviewDashboard
                 dates={dates}

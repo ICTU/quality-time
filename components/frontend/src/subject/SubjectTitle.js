@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Icon, Menu } from 'semantic-ui-react';
 import { Header, Tab } from '../semantic_ui_react_wrappers';
+import { activeTabIndex, tabChangeHandler } from '../app_ui_settings';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
@@ -13,7 +14,7 @@ import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { slugify } from '../utils';
 import { SubjectParameters } from './SubjectParameters';
-import { reportPropType } from '../sharedPropTypes';
+import { reportPropType, settingsPropType } from '../sharedPropTypes';
 
 function SubjectHeader({ subjectType }) {
     const url = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html${slugify(subjectType.name)}`
@@ -51,8 +52,9 @@ ButtonRow.propTypes = {
     reload: PropTypes.func
 }
 
-export function SubjectTitle({ atReportsOverview, report, subject, subject_uuid, firstSubject, lastSubject, reload }) {
+export function SubjectTitle({ atReportsOverview, report, subject, subject_uuid, firstSubject, lastSubject, reload, settings }) {
     const dataModel = useContext(DataModel)
+    const tabIndex = activeTabIndex(settings.expandedItems, subject_uuid)
     const subjectType = dataModel.subjects[subject.type] || { name: "Unknown subject type" };
     const subjectName = subject.name || subjectType.name;
     const subjectTitle = (atReportsOverview ? report.title + " ❯ " : "") + subjectName
@@ -71,16 +73,23 @@ export function SubjectTitle({ atReportsOverview, report, subject, subject_uuid,
             render: () => <Tab.Pane><Share title="Subject permanent link" url={subjectUrl} /></Tab.Pane>
         }
     ];
+
     return (
         <HeaderWithDetails
             className="sticky"
             header={subjectTitle}
+            item_uuid={`${subject_uuid}:${tabIndex}`}
             level="h2"
+            settings={settings}
             style={{ marginTop: 50 }}
             subheader={subject.subtitle}
         >
             <SubjectHeader subjectType={subjectType} />
-            <Tab panes={panes} />
+            <Tab
+                defaultActiveIndex={tabIndex}
+                onTabChange={tabChangeHandler(settings.expandedItems, subject_uuid)}
+                panes={panes}
+            />
             <div style={{ marginTop: "20px" }}>
                 <ButtonRow subject_uuid={subject_uuid} firstSubject={firstSubject} lastSubject={lastSubject} reload={reload} />
             </div>
@@ -93,6 +102,7 @@ SubjectTitle.propTypes = {
     lastSubject: PropTypes.bool,
     reload: PropTypes.func,
     report: reportPropType,
+    settings: settingsPropType,
     subject: PropTypes.object,
     subject_uuid: PropTypes.string,
 }

@@ -47,40 +47,6 @@ function renderSettingsPanel(
     )
 }
 
-it('resets the settings', async () => {
-    history.push(
-        "?date_interval=2&date_order=ascending&hidden_columns=comment&hidden_tags=tag&metrics_to_hide=none&" +
-        "nr_dates=2&show_issue_creation_date=true&show_issue_summary=true&show_issue_update_date=true&" +
-        "show_issue_due_date=true&show_issue_release=true&show_issue_sprint=true&sort_column=status&" +
-        "sort_direction=descending&expanded=tab:0&hidden_cards=tags"
-    )
-    const settings = createTestableSettings()
-    const handleDateChange = jest.fn()
-    renderSettingsPanel({
-        handleDateChange: handleDateChange,
-        reportDate: new Date("2023-01-01"),
-        ...settings
-    })
-    Object.values(settings).forEach((setting) => expect(setting.isDefault()).not)
-    fireEvent.click(screen.getByText(/Reset reports overview settings/))
-    Object.values(settings).forEach((setting) => expect(setting.isDefault()))
-    expect(handleDateChange).toHaveBeenCalledWith(null)
-})
-
-it('does not reset the settings when all have the default value', async () => {
-    const settings = createTestableSettings()
-    const handleDateChange = jest.fn()
-    renderSettingsPanel({
-        atReportsOverview: false,
-        handleDateChange: handleDateChange,
-        ...settings
-    })
-    Object.values(settings).forEach((setting) => expect(setting.isDefault()))
-    fireEvent.click(screen.getByText(/Reset this report's settings/))
-    Object.values(settings).forEach((setting) => expect(setting.isDefault()))
-    expect(handleDateChange).not.toHaveBeenCalled()
-})
-
 it("hides the metrics not requiring action", async () => {
     renderSettingsPanel()
     fireEvent.click(screen.getByText(/Metrics requiring action/))

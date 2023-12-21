@@ -61,6 +61,7 @@ export const metricsToHideURLSearchQueryPropType = PropTypes.shape({
 export const settingsPropType = PropTypes.shape({
     dateInterval: integerURLSearchQueryPropType,
     dateOrder: sortDirectionURLSearchQueryPropType,
+    expandedItems: stringsURLSearchQueryPropType,
     hiddenColumns: stringsURLSearchQueryPropType,
     hiddenTags: stringsURLSearchQueryPropType,
     metricsToHide: metricsToHideURLSearchQueryPropType,
@@ -73,7 +74,6 @@ export const settingsPropType = PropTypes.shape({
     showIssueUpdateDate: boolURLSearchQueryPropType,
     sortColumn: stringURLSearchQueryPropType,
     sortDirection: sortDirectionURLSearchQueryPropType,
-    expandedItems: stringsURLSearchQueryPropType
 })
 
 export const entityStatusPropType = PropTypes.oneOf(["unconfirmed", "confirmed", "fixed", "false_positive", "wont_fix"])

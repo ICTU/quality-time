@@ -1,5 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import {
+    allSettingsAreDefault,
+    resetSettings,
     useDateIntervalURLSearchQuery,
     useDateOrderURLSearchQuery,
     useHiddenCardsURLSearchQuery,
@@ -40,7 +42,7 @@ export const report = {
                     sources: {},
                     status: "target_not_met",
                     recent_measurements: [],
-                    latest_measurement: {count: 1},
+                    latest_measurement: { count: 1 },
                     comment: "Comment 1"
                 },
                 metric_uuid2: {
@@ -49,10 +51,10 @@ export const report = {
                     tags: ["tag"],
                     target: "2",
                     issue_ids: ["ABC-42"],
-                    sources: {source_uuid: {name: "Source"}},
+                    sources: { source_uuid: { name: "Source" } },
                     status: "informative",
                     recent_measurements: [],
-                    latest_measurement: {count: 2},
+                    latest_measurement: { count: 2 },
                     comment: "Comment 2"
                 }
             }
@@ -85,6 +87,8 @@ export function createTestableSettings() {
         showIssueSprint: renderHook(() => useShowIssueSprintURLSearchQuery()).result.current,
         sortColumn: renderHook(() => useSortColumnURLSearchQuery()).result.current,
         sortDirection: renderHook(() => useSortDirectionURLSearchQuery()).result.current,
-        expandedItems: renderHook(() => useExpandedItemsSearchQuery()).result.current
+        expandedItems: renderHook(() => useExpandedItemsSearchQuery()).result.current,
+        reset: function () { resetSettings(this) },
+        allDefault: function () { return allSettingsAreDefault(this) }
     }
 }

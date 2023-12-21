@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Grid, Header, Menu, Segment } from 'semantic-ui-react';
+import { Header, Menu, Segment } from 'semantic-ui-react';
 import { Icon } from '../semantic_ui_react_wrappers';
 import {
     boolURLSearchQueryPropType,
@@ -8,7 +8,6 @@ import {
     integerURLSearchQueryPropType,
     metricsToHidePropType,
     metricsToHideURLSearchQueryPropType,
-    optionalDatePropType,
     settingsPropType,
     sortDirectionPropType,
     sortDirectionURLSearchQueryPropType,
@@ -22,9 +21,7 @@ import './SettingsPanel.css';
 
 export function SettingsPanel({
     atReportsOverview,
-    handleDateChange,
     handleSort,
-    reportDate,
     settings,
     tags
 }) {
@@ -51,21 +48,6 @@ export function SettingsPanel({
             className='equal width'
             style={{ margin: "0px", border: "0px" }}
         >
-            <Segment inverted color="black">
-                <Grid padded>
-                    <Grid.Row>
-                        <Grid.Column>
-                            <ResetSettingsButton
-                                atReportsOverview={atReportsOverview}
-                                handleDateChange={handleDateChange}
-                                handleSort={handleSort}
-                                reportDate={reportDate}
-                                settings={settings}
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </Segment>
             <Segment inverted color="black">
                 <Header size='small'>Visible cards</Header>
                 <Menu {...menuProps}>
@@ -253,7 +235,8 @@ export function SettingsPanel({
 SettingsPanel.propTypes = {
     handleSort: PropTypes.func,
     tags: stringsPropType.isRequired,
-    ...ResetSettingsButton.propTypes,
+    atReportsOverview: PropTypes.bool,
+    settings: settingsPropType,
 }
 
 function VisibleCardsMenuItem({ cards, hiddenCards }) {
@@ -424,66 +407,4 @@ IssueAttributeMenuItem.propTypes = {
     help: PropTypes.string,
     issueAttributeName: PropTypes.string,
     issueAttribute: boolURLSearchQueryPropType
-}
-
-function ResetSettingsButton(
-    {
-        atReportsOverview,
-        handleDateChange,
-        reportDate,
-        settings
-    }
-) {
-    const metricsToHideDefault = atReportsOverview ? "all" : "none"
-    return (
-        <Button
-            disabled={
-                settings.dateInterval.isDefault() &&
-                settings.dateOrder.isDefault() &&
-                settings.hiddenCards.isDefault() &&
-                settings.hiddenColumns.isDefault() &&
-                settings.hiddenTags.isDefault() &&
-                settings.metricsToHide.equals(metricsToHideDefault) &&
-                settings.nrDates.isDefault() &&
-                settings.showIssueCreationDate.isDefault() &&
-                settings.showIssueDueDate.isDefault() &&
-                settings.showIssueRelease.isDefault() &&
-                settings.showIssueSprint.isDefault() &&
-                settings.showIssueSummary.isDefault() &&
-                settings.showIssueUpdateDate.isDefault() &&
-                settings.sortColumn.isDefault() &&
-                settings.sortDirection.isDefault() &&
-                settings.expandedItems.isDefault() &&
-                reportDate === null
-            }
-            onClick={() => {
-                handleDateChange(null);
-                settings.dateInterval.reset();
-                settings.dateOrder.reset();
-                settings.hiddenCards.reset();
-                settings.hiddenColumns.reset();
-                settings.hiddenTags.reset();
-                settings.metricsToHide.reset();
-                settings.nrDates.reset();
-                settings.showIssueCreationDate.reset();
-                settings.showIssueDueDate.reset()
-                settings.showIssueRelease.reset();
-                settings.showIssueSprint.reset();
-                settings.showIssueSummary.reset();
-                settings.showIssueUpdateDate.reset();
-                settings.sortColumn.reset();
-                settings.sortDirection.reset();
-                settings.expandedItems.reset();
-            }}
-            inverted
-        >
-            Reset {atReportsOverview ? "reports overview" : "this report's"} settings
-        </Button>
-    )
-}
-ResetSettingsButton.propTypes = {
-    atReportsOverview: PropTypes.bool,
-    handleDateChange: PropTypes.func,
-    reportDate: optionalDatePropType,
-    settings: settingsPropType
 }

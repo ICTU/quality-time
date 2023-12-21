@@ -1,4 +1,5 @@
 import React from 'react';
+import history from 'history/browser';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DataModel } from '../context/DataModel';
@@ -6,9 +7,14 @@ import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 import { ReportTitle } from './ReportTitle';
 import * as changelog_api from '../api/changelog';
 import * as report_api from '../api/report';
+import { createTestableSettings } from '../__fixtures__/fixtures';
 
 jest.mock("../api/changelog.js");
 jest.mock("../api/report.js")
+
+beforeEach(() => {
+    history.push("?expanded=report_uuid:0")
+});
 
 report_api.get_report_issue_tracker_options.mockImplementation(
     () => Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] })
@@ -25,6 +31,7 @@ function renderReportTitle() {
                 <ReportTitle
                     report={{ report_uuid: "report_uuid", title: "Report" }}
                     reload={reload}
+                    settings={createTestableSettings()}
                 />
             </Permissions.Provider>
         </DataModel.Provider>
