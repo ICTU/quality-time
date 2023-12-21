@@ -16,8 +16,13 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 ### Added
 
+- When collapsing metrics via the collapse button in the menu bar, also collapse expanded headers. Closes [#4790](https://github.com/ICTU/quality-time/issues/4790).
 - Add the possibility to include SonarQube violations by tag. Closes [#6967](https://github.com/ICTU/quality-time/issues/6967).
 - Allow for hiding report, subject and tag cards from dashboards via the settings panel. Closes [#7482](https://github.com/ICTU/quality-time/issues/7482).
+
+### Changed
+
+- Improve the icon for collapsing all expanded user interface controls and move the reset settings button from the settings panel to the menu bar so that it is easier to use. Closes [#4395](https://github.com/ICTU/quality-time/issues/4395).
 
 ## v5.5.0 - 2023-12-15
 

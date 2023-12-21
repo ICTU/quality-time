@@ -1,18 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Dropdown, Icon } from 'semantic-ui-react';
+import { Dropdown } from 'semantic-ui-react';
 import { uiModePropType } from '../sharedPropTypes';
+import { IconCombi } from '../widgets/IconCombi'
 
 export function UIModeMenu({ setUIMode, uiMode }) {
-    const style = { textShadow: "0px 0px" }
     return (
         <Dropdown
-            icon={
-                <Icon.Group aria-label="Dark/light mode" size="big">
-                    <Icon corner="top left" name="sun" style={style} />
-                    <Icon corner="bottom right" name="moon" style={style} />
-                </Icon.Group>
-            }
+            icon={<IconCombi iconBottomRight="moon" iconTopLeft="sun" label="Dark/light mode" />}
         >
             <Dropdown.Menu>
                 <Dropdown.Header>Dark/light mode</Dropdown.Header>

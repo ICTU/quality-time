@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon, Menu } from 'semantic-ui-react';
 import { Label, Tab } from '../semantic_ui_react_wrappers';
+import { activeTabIndex, tabChangeHandler } from '../app_ui_settings';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { Sources } from '../source/Sources';
@@ -83,6 +84,7 @@ export function MetricDetails({
     let any_error = last_measurement?.sources.some((source) => source.connection_error || source.parse_error);
     any_error = any_error || Object.values(metric.sources ?? {}).some((source) => !dataModel.metrics[metric.type].sources.includes(source.type))
     const sources_menu_item = any_error ? <Label color='red'>{"Sources"}</Label> : "Sources";
+    const metricUrl = `${window.location}#${metric_uuid}`
     let panes = [];
     panes.push(
         {
@@ -144,21 +146,15 @@ export function MetricDetails({
             });
         });
     }
-    const metricUrl = `${window.location}#${metric_uuid}`
 
-    function onTabChange(_event, data) {
-        const oldItem = expandedItems.value.filter((item) => item?.startsWith(metric_uuid))[0];
-        const newItem = `${metric_uuid}:${data.activeIndex}`;
-        expandedItems.toggle(oldItem, newItem);
-    }
-
-    const items = expandedItems.value.filter((item) => item?.startsWith(metric_uuid));
-    const defaultActiveTab = items.length > 0 ? Number(items[0].split(":")[1]) : 0;
-    const metricType = dataModel.metrics[metric.type];
     return (
         <>
-            <MetricTypeHeader metricType={metricType} />
-            <Tab panes={panes} defaultActiveIndex={defaultActiveTab} onTabChange={onTabChange} />
+            <MetricTypeHeader metricType={dataModel.metrics[metric.type]} />
+            <Tab
+                defaultActiveIndex={activeTabIndex(expandedItems, metric_uuid)}
+                onTabChange={tabChangeHandler(expandedItems, metric_uuid)}
+                panes={panes}
+            />
             <Buttons
                 metric_uuid={metric_uuid}
                 isFirstMetric={isFirstMetric}

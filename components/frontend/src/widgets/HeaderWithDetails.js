@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Header, Icon, Segment } from '../semantic_ui_react_wrappers';
-import { childrenPropType } from '../sharedPropTypes';
+import { childrenPropType, settingsPropType } from '../sharedPropTypes';
 import './HeaderWithDetails.css';
 
-export function HeaderWithDetails({ children, className, header, level, style, subheader }) {
-    const [showDetails, setShowDetails] = useState(false);
+export function HeaderWithDetails({ children, className, header, item_uuid, level, style, settings, subheader }) {
+    const showDetails = settings.expandedItems.includes(item_uuid)
     const segmentStyle = { paddingLeft: "0px", paddingRight: "0px" }
     return (
         <Segment basic aria-expanded={showDetails} className={className} style={segmentStyle}>
             <Header
                 as={level}
-                onClick={() => setShowDetails(!showDetails)}
-                onKeyPress={(event) => { event.preventDefault(); setShowDetails(!showDetails) }}
+                onClick={() => settings.expandedItems.toggle(item_uuid)}
+                onKeyPress={(event) => { event.preventDefault(); settings.expandedItems.toggle(item_uuid) }}
                 style={style}
                 tabIndex="0"
             >
@@ -30,7 +30,9 @@ HeaderWithDetails.propTypes = {
     children: childrenPropType,
     className: PropTypes.string,
     header: PropTypes.node,
+    item_uuid: PropTypes.string,
     level: PropTypes.string,
+    settings: settingsPropType,
     style: PropTypes.object,
-    subheader: PropTypes.element,
+    subheader: PropTypes.string,
 }

@@ -6,9 +6,11 @@ import FocusLock from 'react-focus-lock';
 import { login, logout } from '../api/auth';
 import { Avatar } from '../widgets/Avatar';
 import { DatePicker } from '../widgets/DatePicker';
-import { optionalDatePropType, stringsURLSearchQueryPropType, uiModePropType } from '../sharedPropTypes';
+import { optionalDatePropType, settingsPropType, uiModePropType } from '../sharedPropTypes';
+import { CollapseButton } from './CollapseButton';
 import { UIModeMenu } from './UIModeMenu';
 import './Menubar.css';
+import { ResetSettingsButton } from './ResetSettingsButton';
 
 function Login({ set_user }) {
     const [username, setUsername] = useState('');
@@ -67,15 +69,16 @@ function Logout({ user, email, set_user }) {
 export function Menubar({
     atReportsOverview,
     email,
+    handleDateChange,
     onDate,
     openReportsOverview,
     panel,
     report_date,
+    settings,
     set_user,
     setUIMode,
     uiMode,
     user,
-    expandedItems
 }) {
     const [settingsPanelVisible, setSettingsPanelVisible] = useState(false)
     useEffect(() => {
@@ -109,29 +112,15 @@ export function Menubar({
                         </div>
                     </FocusLock>
                     <Menu.Item>
-                        <Popup
-                            on={["hover", "focus"]}
-                            trigger={
-                                <span  // We need a span here to prevent the popup from becoming disabled whenever the button is disabled
-                                >
-                                    <Button
-                                        aria-label="Collapse all metrics"
-                                        basic
-                                        disabled={expandedItems.equals([])}
-                                        onClick={() => expandedItems.reset()}
-                                        icon={
-                                            <Icon
-                                                name={`caret ${expandedItems.equals([]) ? "right" : "down"}`}
-                                                size='large'
-                                            />
-                                        }
-                                        inverted
-                                        style={{ marginTop: -7, marginBottom: -7 }}  // Somehow the span removes the negative vertical margin the button has without the span, compensate
-                                    />
-                                </span>
-                            }
-                            content="Collapse all metrics"
+                        <ResetSettingsButton
+                            atReportsOverview={atReportsOverview}
+                            handleDateChange={handleDateChange}
+                            reportDate={report_date}
+                            settings={settings}
                         />
+                    </Menu.Item>
+                    <Menu.Item>
+                        <CollapseButton expandedItems={settings.expandedItems} />
                     </Menu.Item>
                 </Menu.Menu>
                 <Menu.Menu position='right'>
@@ -168,13 +157,14 @@ export function Menubar({
 Menubar.propTypes = {
     atReportsOverview: PropTypes.bool,
     email: PropTypes.string,
+    handleDateChange: PropTypes.func,
     onDate: PropTypes.func,
     openReportsOverview: PropTypes.func,
     panel: PropTypes.element,
     report_date: optionalDatePropType,
+    settings: settingsPropType,
     set_user: PropTypes.func,
     setUIMode: PropTypes.func,
     uiMode: uiModePropType,
     user: PropTypes.string,
-    expandedItems: stringsURLSearchQueryPropType
 }

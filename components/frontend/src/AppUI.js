@@ -77,20 +77,19 @@ export function AppUI({
                 <Menubar
                     atReportsOverview={atReportsOverview}
                     email={email}
+                    handleDateChange={handleDateChange}
                     openReportsOverview={openReportsOverview}
                     onDate={handleDateChange}
                     report_date={report_date}
                     set_user={set_user}
                     user={user}
-                    expandedItems={settings.expandedItems}
                     panel={<SettingsPanel
                         atReportsOverview={atReportsOverview}
-                        handleDateChange={handleDateChange}
                         handleSort={handleSort}
                         settings={settings}
-                        reportDate={report_date}
                         tags={getReportsTags(reports)}
                     />}
+                    settings={settings}
                     setUIMode={setUIMode}
                     uiMode={uiMode}
                 />

@@ -63,7 +63,11 @@ beforeAll(() => {
 });
 
 async function renderAppUI() {
-    return await act(async () => render(<AppUI report_uuid="" reports={[]} reports_overview={{}} />))
+    return (
+        await act(async () => render(
+            <AppUI handleDateChange={jest.fn} report_uuid="" reports={[]} reports_overview={{}} />)
+        )
+    )
 }
 
 it('supports dark mode', async () => {
@@ -108,4 +112,11 @@ it('ignores OS mode when mode explicitly set', async () => {
         changeMode({ matches: true })
     })
     expect(container.firstChild.style.background).toEqual("white")
+})
+
+it('resets all settings', async () => {
+    history.push("?date_interval=2")
+    await act(async () => await renderAppUI())
+    fireEvent.click(screen.getByLabelText("Reset reports overview settings"))
+    expect(history.location.search).toBe("")
 })

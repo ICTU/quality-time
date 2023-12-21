@@ -48,6 +48,7 @@ export function Report({
                 reload={reload}
                 report_date={report_date}
                 reports={reports}
+                settings={settings}
             />
             <CommentSegment comment={report.comment} />
             <ReportDashboard

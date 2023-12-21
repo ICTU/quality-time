@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+import { stringsURLSearchQueryPropType } from './sharedPropTypes';
 import {
     useArrayURLSearchQuery,
     useBooleanURLSearchQuery,
@@ -31,8 +33,8 @@ export function useHiddenTagsURLSearchQuery(report_uuid) {
     return useArrayURLSearchQuery(urlSearchQueryKey("hidden_tags", report_uuid));
 }
 
-export function useMetricsToHideURLSearchQuery(report_uuid, defaultValue = "none") {
-    return useStringURLSearchQuery(urlSearchQueryKey("metrics_to_hide", report_uuid), defaultValue);
+export function useMetricsToHideURLSearchQuery(report_uuid) {
+    return useStringURLSearchQuery(urlSearchQueryKey("metrics_to_hide", report_uuid), report_uuid === "" ? "all" : "none");
 }
 
 export function useNrDatesURLSearchQuery(report_uuid, defaultValue = 1) {
@@ -79,10 +81,11 @@ export function useSettings(report_uuid) {
     return {
         dateInterval: useDateIntervalURLSearchQuery(report_uuid),
         dateOrder: useDateOrderURLSearchQuery(report_uuid),
+        expandedItems: useExpandedItemsSearchQuery(report_uuid),
         hiddenCards: useHiddenCardsURLSearchQuery(report_uuid),
         hiddenColumns: useHiddenColumnsURLSearchQuery(report_uuid),
         hiddenTags: useHiddenTagsURLSearchQuery(report_uuid),
-        metricsToHide: useMetricsToHideURLSearchQuery(report_uuid, report_uuid === "" ? "all" : "none"),
+        metricsToHide: useMetricsToHideURLSearchQuery(report_uuid),
         nrDates: useNrDatesURLSearchQuery(report_uuid),
         showIssueSummary: useShowIssueSummaryURLSearchQuery(report_uuid),
         showIssueCreationDate: useShowIssueCreationDateURLSearchQuery(report_uuid),
@@ -92,6 +95,70 @@ export function useSettings(report_uuid) {
         showIssueSprint: useShowIssueSprintURLSearchQuery(report_uuid),
         sortColumn: useSortColumnURLSearchQuery(report_uuid),
         sortDirection: useSortDirectionURLSearchQuery(report_uuid),
-        expandedItems: useExpandedItemsSearchQuery(report_uuid)
+        reset: function () { resetSettings(this) },
+        allDefault: function () { return allSettingsAreDefault(this) },
     }
+}
+
+export function resetSettings(settings) {
+    settings.dateInterval.reset();
+    settings.dateOrder.reset();
+    settings.expandedItems.reset();
+    settings.hiddenCards.reset();
+    settings.hiddenColumns.reset();
+    settings.hiddenTags.reset();
+    settings.metricsToHide.reset();
+    settings.nrDates.reset();
+    settings.showIssueCreationDate.reset();
+    settings.showIssueDueDate.reset()
+    settings.showIssueRelease.reset();
+    settings.showIssueSprint.reset();
+    settings.showIssueSummary.reset();
+    settings.showIssueUpdateDate.reset();
+    settings.sortColumn.reset();
+    settings.sortDirection.reset();
+}
+
+export function allSettingsAreDefault(settings) {
+    return (
+        settings.dateInterval.isDefault() &&
+        settings.dateOrder.isDefault() &&
+        settings.expandedItems.isDefault() &&
+        settings.hiddenCards.isDefault() &&
+        settings.hiddenColumns.isDefault() &&
+        settings.hiddenTags.isDefault() &&
+        settings.metricsToHide.isDefault() &&
+        settings.nrDates.isDefault() &&
+        settings.showIssueCreationDate.isDefault() &&
+        settings.showIssueDueDate.isDefault() &&
+        settings.showIssueRelease.isDefault() &&
+        settings.showIssueSprint.isDefault() &&
+        settings.showIssueSummary.isDefault() &&
+        settings.showIssueUpdateDate.isDefault() &&
+        settings.sortColumn.isDefault() &&
+        settings.sortDirection.isDefault()
+    )
+}
+
+export function tabChangeHandler(expandedItems, uuid) {
+    // Return an event handler for Tab.onTabChange that updates the active tab
+    return function onTabChange(_event, data) {
+        const oldItem = expandedItems.value.filter((item) => item?.startsWith(uuid))[0];
+        const newItem = `${uuid}:${data.activeIndex}`;
+        expandedItems.toggle(oldItem, newItem);
+    }
+}
+tabChangeHandler.propTypes = {
+    expandedItems: stringsURLSearchQueryPropType,
+    uuid: PropTypes.string,
+}
+
+export function activeTabIndex(expandedItems, uuid) {
+    // Return the active tab index of the expanded item, defaults to 0
+    const item = expandedItems.value.filter((item) => item?.startsWith(uuid))[0] ?? `${uuid}:0`;
+    return Number(item.split(":")[1])
+}
+activeTabIndex.propTypes = {
+    expandedItems: stringsURLSearchQueryPropType,
+    uuid: PropTypes.string,
 }
