@@ -46,7 +46,7 @@ const report = {
     }
 }
 
-function render_sources(props) {
+function renderSources(props) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={dataModel}>
@@ -64,29 +64,29 @@ function render_sources(props) {
 }
 
 it('shows a source', () => {
-    render_sources()
+    renderSources()
     expect(screen.getAllByPlaceholderText(/Source type 1/).length).toBe(1);
 })
 
 it('shows a message if there are no sources', () => {
-    render_sources({ metric: report.subjects.subject_uuid.metrics.metric_without_sources, });
+    renderSources({ metric: report.subjects.subject_uuid.metrics.metric_without_sources, });
     expect(screen.getAllByText(/No sources have been configured/).length).toBe(1);
 })
 
 it("doesn't show sources not in the data model", () => {
-    render_sources()
+    renderSources()
     expect(screen.queryAllByDisplayValue(/Source 1/).length).toBe(1);
     expect(screen.queryAllByDisplayValue(/Source with non-existing source type/).length).toBe(0);
 })
 
 it('shows errored sources', () => {
-    render_sources()
+    renderSources()
     expect(screen.getAllByText(/Connection error/).length).toBe(1);
 })
 
 it('creates a new source', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    render_sources()
+    renderSources()
     await act(async () => { fireEvent.click(screen.getByText(/Add source/)) })
     await act(async () => { fireEvent.click(screen.getAllByText(/Source type 2/)[1]) })
     expect(fetch_server_api.fetch_server_api).toHaveBeenNthCalledWith(1, "post", "source/new/metric_uuid", {type: "source_type2"});
@@ -94,7 +94,7 @@ it('creates a new source', async () => {
 
 it('copies a source', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    render_sources()
+    renderSources()
     await act(async () => {
         fireEvent.click(screen.getByText(/Copy source/))
     })
@@ -106,7 +106,7 @@ it('copies a source', async () => {
 
 it('moves a source', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    render_sources()
+    renderSources()
     await act(async () => {
         fireEvent.click(screen.getByText(/Move source/))
     })
@@ -118,7 +118,7 @@ it('moves a source', async () => {
 
 it('updates a parameter of a source', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 0 });
-    render_sources()
+    renderSources()
     await userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), 'https://other{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 15 })
     await act(async () => {
         fireEvent.click(screen.getByDisplayValue('Source 1'))
@@ -130,7 +130,7 @@ it('updates a parameter of a source', async () => {
 
 it('mass updates a parameter of a source', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 });
-    render_sources()
+    renderSources()
     await act(async () => {
         fireEvent.click(screen.getByText(/Apply change to subject/))
     })

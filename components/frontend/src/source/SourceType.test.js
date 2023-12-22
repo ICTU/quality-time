@@ -31,7 +31,7 @@ const data_model = {
     }
 };
 
-function render_source_type(metricType, sourceType, mockSetSourceAttribute) {
+function renderSourceType(metricType, sourceType, mockSetSourceAttribute) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={data_model}>
@@ -47,12 +47,12 @@ function render_source_type(metricType, sourceType, mockSetSourceAttribute) {
 
 it('sets the source type', async () => {
     const mockSetSourceAttribute = jest.fn()
-    await act(async () => { render_source_type("violations", "sonarqube", mockSetSourceAttribute) });
+    await act(async () => { renderSourceType("violations", "sonarqube", mockSetSourceAttribute) });
     await userEvent.type(screen.getByRole("combobox"), 'GitLab{Enter}');
     expect(mockSetSourceAttribute).toHaveBeenLastCalledWith("type", "gitlab")
 });
 
 it('shows the metric type even when not supported by the subject type', async () => {
-    await act(async () => { render_source_type("violations", "unsupported") });
+    await act(async () => { renderSourceType("violations", "unsupported") });
     expect(screen.queryAllByText(/Unsupported/).length).toBe(2)
 });

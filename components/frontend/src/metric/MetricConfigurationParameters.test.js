@@ -25,7 +25,7 @@ const data_model = {
     }
 };
 
-function render_metric_parameters(scale = "count", issue_ids = [], report = { subjects: {} }, permissions=[EDIT_REPORT_PERMISSION]) {
+function renderMetricParameters(scale = "count", issue_ids = [], report = { subjects: {} }, permissions=[EDIT_REPORT_PERMISSION]) {
     render(
         <Permissions.Provider value={permissions}>
             <DataModel.Provider value={data_model}>
@@ -43,26 +43,26 @@ function render_metric_parameters(scale = "count", issue_ids = [], report = { su
 
 it('sets the metric name', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await act(async () => { render_metric_parameters() });
+    await act(async () => { renderMetricParameters() });
     await userEvent.type(screen.getByLabelText(/Metric name/), 'New metric name{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 11 });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/name", { name: "New metric name" });
 });
 
 it('adds a tag', async () => {
-    await act(async () => { render_metric_parameters() });
+    await act(async () => { renderMetricParameters() });
     await userEvent.type(screen.getByLabelText(/Tags/), 'New tag{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/tags", { tags: ["New tag"] });
 });
 
 it('changes the scale', async () => {
-    await act(async () => { render_metric_parameters() });
+    await act(async () => { renderMetricParameters() });
     fireEvent.click(screen.getByText(/Metric scale/))
     fireEvent.click(screen.getByText(/Percentage/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/scale", { scale: "percentage" });
 });
 
 it('changes the direction', async () => {
-    await act(async () => { render_metric_parameters() });
+    await act(async () => { renderMetricParameters() });
     fireEvent.click(screen.getByText(/direction/))
     fireEvent.click(screen.getByText(/More violations is better/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/direction", { direction: ">" });
@@ -70,14 +70,14 @@ it('changes the direction', async () => {
 
 it('sets the metric unit for metrics with the count scale', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await act(async () => { render_metric_parameters() });
+    await act(async () => { renderMetricParameters() });
     await userEvent.type(screen.getByLabelText(/Metric unit/), 'New metric unit{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 11 });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/unit", { unit: "New metric unit" });
 });
 
 it('sets the metric unit field for metrics with the percentage scale', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await act(async () => { render_metric_parameters("percentage") });
+    await act(async () => { renderMetricParameters("percentage") });
     await userEvent.type(screen.getByLabelText(/Metric unit/), 'New metric unit{Enter}', { initialSelectionStart: 0, initialSelectionEnd: 11 });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/unit", { unit: "New metric unit" });
 });
@@ -94,7 +94,7 @@ it('skips the metric unit field for metrics with the version number scale', () =
 
 it('turns off evaluation of targets', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await act(async () => { render_metric_parameters() });
+    await act(async () => { renderMetricParameters() });
     await userEvent.type(screen.getByLabelText(/Evaluate metric targets/), 'No{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/evaluate_targets", { evaluate_targets: false });
 });
