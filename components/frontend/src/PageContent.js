@@ -7,6 +7,7 @@ import { ReportsOverview } from './report/ReportsOverview';
 import { get_measurements } from './api/measurement';
 import {
     reportPropType,
+    reportsOverviewPropType,
     reportsPropType,
     settingsPropType,
     stringsPropType,
@@ -93,6 +94,6 @@ PageContent.propTypes = {
     report_date: optionalDatePropType,
     report_uuid: PropTypes.string,
     reports: reportsPropType,
-    reports_overview: PropTypes.object,
+    reports_overview: reportsOverviewPropType,
     settings: settingsPropType
 }

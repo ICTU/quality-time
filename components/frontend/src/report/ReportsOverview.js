@@ -12,6 +12,7 @@ import { getReportsTags } from '../utils';
 import {
     datesPropType,
     optionalDatePropType,
+    reportsOverviewPropType,
     reportsPropType,
     settingsPropType,
     stringsPropType,
@@ -106,6 +107,6 @@ ReportsOverview.propTypes = {
     openReport: PropTypes.func,
     reload: PropTypes.func,
     report_date: optionalDatePropType,
-    reports_overview: PropTypes.object,
+    reports_overview: reportsOverviewPropType,
     settings: settingsPropType
 }

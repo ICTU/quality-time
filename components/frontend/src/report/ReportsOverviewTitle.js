@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Grid, Icon, Menu } from 'semantic-ui-react';
 import { Tab } from '../semantic_ui_react_wrappers';
 import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
@@ -12,6 +13,7 @@ import { DownloadAsPDFButton } from '../widgets/Button';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { dropdownOptions } from '../utils';
 import { setDocumentTitle } from './document_title';
+import { reportsOverviewPropType } from '../sharedPropTypes';
 
 function ReportsOverviewConfiguration({ reports_overview, reload }) {
     return (
@@ -47,6 +49,10 @@ function ReportsOverviewConfiguration({ reports_overview, reload }) {
             </Grid.Row>
         </Grid>
     )
+}
+ReportsOverviewConfiguration.propTypes = {
+    reports_overview: reportsOverviewPropType,
+    reload: PropTypes.func,
 }
 
 function setPermissions(permissions, permission, value, reload) {
@@ -104,4 +110,8 @@ export function ReportsOverviewTitle({ reports_overview, reload }) {
             </div>
         </HeaderWithDetails>
     )
+}
+ReportsOverviewTitle.propTypes = {
+    reports_overview: reportsOverviewPropType,
+    reload: PropTypes.func,
 }

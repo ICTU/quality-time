@@ -7,7 +7,7 @@ import * as fetch_server_api from '../api/fetch_server_api';
 
 jest.mock("../api/fetch_server_api.js")
 
-function renderReportsTitle() {
+function renderReportsOverviewTitle() {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <ReportsOverviewTitle reports_overview={{}} />
@@ -17,7 +17,7 @@ function renderReportsTitle() {
 
 it('sets the title', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    renderReportsTitle();
+    renderReportsOverviewTitle();
     fireEvent.click(screen.getByTitle(/expand/));
     await userEvent.type(screen.getByLabelText(/Report overview title/), '{Delete}New title{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/title", { title: "New title" });
@@ -25,7 +25,7 @@ it('sets the title', async () => {
 
 it('sets the subtitle', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    renderReportsTitle();
+    renderReportsOverviewTitle();
     fireEvent.click(screen.getByTitle(/expand/));
     await userEvent.type(screen.getByLabelText(/Report overview subtitle/), '{Delete}New subtitle{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/subtitle", { subtitle: "New subtitle" });
@@ -33,7 +33,7 @@ it('sets the subtitle', async () => {
 
 it('sets the comment', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    renderReportsTitle();
+    renderReportsOverviewTitle();
     fireEvent.click(screen.getByTitle(/expand/));
     await userEvent.type(screen.getByLabelText(/Comment/), '{Delete}New comment{Shift>}{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/comment", { comment: "New comment" });
@@ -41,7 +41,7 @@ it('sets the comment', async () => {
 
 it('sets the edit report permission', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    renderReportsTitle();
+    renderReportsOverviewTitle();
     fireEvent.click(screen.getByTitle(/expand/));
     fireEvent.click(screen.getByText(/Permissions/));
     await userEvent.type(screen.getAllByText(/All authenticated users/)[0], 'jadoe{Enter}');
@@ -50,7 +50,7 @@ it('sets the edit report permission', async () => {
 
 it('sets the edit entities permission', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    renderReportsTitle();
+    renderReportsOverviewTitle();
     fireEvent.click(screen.getByTitle(/expand/));
     fireEvent.click(screen.getByText(/Permissions/));
     await userEvent.type(screen.getAllByText(/All authenticated users/)[1], 'jodoe{Enter}');
@@ -58,7 +58,7 @@ it('sets the edit entities permission', async () => {
 })
 
 it('loads the changelog', async () => {
-    renderReportsTitle();
+    renderReportsOverviewTitle();
     fireEvent.click(screen.getByTitle(/expand/));
     await act(async () => { fireEvent.click(screen.getByText(/Changelog/)); });
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/5");
