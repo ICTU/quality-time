@@ -20,7 +20,7 @@ import { reportPropType } from '../sharedPropTypes';
 import { IssueTracker } from './IssueTracker';
 import { setDocumentTitle } from './document_title';
 
-function ReportConfiguration({ report, reload }) {
+function ReportConfiguration({ reload, report }) {
     return (
         <Grid stackable>
             <Grid.Row columns={2}>
@@ -55,8 +55,12 @@ function ReportConfiguration({ report, reload }) {
         </Grid>
     )
 }
+ReportConfiguration.propTypes = {
+    reload: PropTypes.func,
+    report: reportPropType,
+}
 
-function ReactionTimes({ report, reload }) {
+function ReactionTimes({ reload, report }) {
     const desiredResponseTimes = report.desired_response_times ?? {}
     return (
         <>
@@ -234,6 +238,10 @@ function ReactionTimes({ report, reload }) {
         </>
     )
 }
+ReactionTimes.propTypes = {
+    reload: PropTypes.func,
+    report: reportPropType,
+}
 
 function ButtonRow({ report_uuid, openReportsOverview }) {
     return (
@@ -285,12 +293,10 @@ export function ReportTitle({ report, openReportsOverview, reload }) {
     setDocumentTitle(report.title);
     return (
         <HeaderWithDetails level="h1" header={report.title} subheader={report.subtitle}>
-            <>
-                <Tab panes={panes} />
-                <div style={{ marginTop: "20px" }}>
-                    <ButtonRow report_uuid={report_uuid} openReportsOverview={openReportsOverview} />
-                </div>
-            </>
+            <Tab panes={panes} />
+            <div style={{ marginTop: "20px" }}>
+                <ButtonRow report_uuid={report_uuid} openReportsOverview={openReportsOverview} />
+            </div>
         </HeaderWithDetails>
     )
 }

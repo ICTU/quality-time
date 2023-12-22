@@ -10,7 +10,8 @@ const datamodel = {
     subjects: {
         subject_type: { name: "Default subject type" },
         subject_type2: { name: "Other subject type" }
-    }, metrics: {
+    },
+    metrics: {
         metric_type: { tags: [] },
     }
 }
@@ -28,7 +29,11 @@ async function renderSubjectTitle(subject_type = "subject_type") {
         render(
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <DataModel.Provider value={datamodel}>
-                    <SubjectTitle report={report} subject={{ type: subject_type }} subject_uuid="subject_uuid" />
+                    <SubjectTitle
+                        report={report}
+                        subject={{ type: subject_type }}
+                        subject_uuid="subject_uuid"
+                    />
                 </DataModel.Provider>
             </Permissions.Provider>
         )

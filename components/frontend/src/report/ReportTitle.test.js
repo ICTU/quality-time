@@ -16,7 +16,7 @@ report_api.get_report_issue_tracker_options.mockImplementation(
 
 changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }));
 
-const reload = () => { /* Dummy implementation */ }
+const reload = jest.fn
 
 function renderReportTitle() {
     render(

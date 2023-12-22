@@ -14,7 +14,7 @@ import { Footer } from './header_footer/Footer';
 import { SettingsPanel } from './header_footer/SettingsPanel';
 import { PageContent } from './PageContent';
 import { getReportsTags, getUserPermissions, userPrefersDarkMode } from './utils'
-import { datePropType, optionalDatePropType, reportsPropType, stringsPropType } from './sharedPropTypes';
+import { datePropType, optionalDatePropType, reportsOverviewPropType, reportsPropType, stringsPropType } from './sharedPropTypes';
 import { useSettings } from './app_ui_settings';
 
 export function AppUI({
@@ -126,13 +126,14 @@ AppUI.propTypes = {
     handleDateChange: PropTypes.func,
     last_update: datePropType,
     loading: PropTypes.bool,
+    nrMeasurements: PropTypes.number,
     openReport: PropTypes.func,
     openReportsOverview: PropTypes.func,
     reload: PropTypes.func,
     report_date: optionalDatePropType,
     report_uuid: PropTypes.string,
     reports: reportsPropType,
-    reports_overview: PropTypes.object,
+    reports_overview: reportsOverviewPropType,
     set_user: PropTypes.func,
     user: PropTypes.string
 }

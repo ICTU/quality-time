@@ -152,12 +152,12 @@ export function Subject({
             <div className="sticky">
                 <SubjectTitle
                     atReportsOverview={atReportsOverview}
-                    report={report}
-                    subject={subject}
-                    subject_uuid={subject_uuid}
                     firstSubject={firstSubject}
                     lastSubject={lastSubject}
+                    subject={subject}
+                    subject_uuid={subject_uuid}
                     reload={reload}
+                    report={report}
                 />
             </div>
             <CommentSegment comment={subject.comment} />

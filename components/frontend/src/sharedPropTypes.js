@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 
+export const childrenPropType = PropTypes.node
+
 export const datePropType = PropTypes.instanceOf(Date)
 
 export const optionalDatePropType = datePropType
@@ -125,11 +127,19 @@ export const metricPropType = PropTypes.shape({
 export const metricsPropType = PropTypes.arrayOf(metricPropType)
 
 export const reportPropType = PropTypes.shape({
+    comment: PropTypes.string,
     desired_response_times: PropTypes.object,
     issue_tracker: PropTypes.object,
     report_uuid: PropTypes.string
 })
 
 export const reportsPropType = PropTypes.arrayOf(reportPropType)
+
+export const reportsOverviewPropType = PropTypes.shape({
+    comment: PropTypes.string,
+    permissions: PropTypes.object,
+    title: PropTypes.string,
+    subtitle: PropTypes.string
+})
 
 export const uiModePropType = PropTypes.oneOf(["dark", "light", "follow_os"])
