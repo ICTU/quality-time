@@ -20,7 +20,7 @@ report_api.get_report_issue_tracker_options.mockImplementation(
 
 const reload = () => { /* Dummy implementation */ }
 
-function render_issue_tracker({ report = { report_uuid: "report_uuid", title: "Report" }, help_url = "" } = {}) {
+function renderIssueTracker({ report = { report_uuid: "report_uuid", title: "Report" }, help_url = "" } = {}) {
     return render(
         <DataModel.Provider value={
             {
@@ -41,78 +41,78 @@ function render_issue_tracker({ report = { report_uuid: "report_uuid", title: "R
 }
 
 it('sets the issue tracker type', async () => {
-    render_issue_tracker();
+    renderIssueTracker();
     fireEvent.click(screen.getByText(/Issue tracker type/));
     await act(async () => { fireEvent.click(screen.getByText(/Jira/)) });
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "type", "jira", reload);
 });
 
 it('sets the issue tracker url', async () => {
-    render_issue_tracker();
+    renderIssueTracker();
     await userEvent.type(screen.getByText(/URL/), 'https://jira{Enter}');
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "url", "https://jira", reload);
 });
 
 it('sets the issue tracker username', async () => {
-    render_issue_tracker();
+    renderIssueTracker();
     await userEvent.type(screen.getByText(/Username/), 'janedoe{Enter}');
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "username", "janedoe", reload);
 });
 
 it('sets the issue tracker password', async () => {
-    render_issue_tracker();
+    renderIssueTracker();
     await userEvent.type(screen.getByText(/Password/), 'secret{Enter}');
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "password", "secret", reload);
 });
 
 it('sets the issue tracker private token', async () => {
-    render_issue_tracker();
+    renderIssueTracker();
     await userEvent.type(screen.getByText(/Private token/), 'secret{Enter}');
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "private_token", "secret", reload);
 });
 
 it('does not show the issue tracker private token help url if there is no issue tracker', async () => {
     await act(async () => {
-        const { container } = render_issue_tracker({ report: { report_uuid: "report_uuid", title: "Report", issue_tracker: {} }, help_url: "https://help" });
+        const { container } = renderIssueTracker({ report: { report_uuid: "report_uuid", title: "Report", issue_tracker: {} }, help_url: "https://help" });
         expect(container.querySelector("a")).toBe(null)
     });
 });
 
 it('does not show the issue tracker private token help url if the data model has no help url', async () => {
     await act(async () => {
-        const { container } = render_issue_tracker({ report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira" } });
+        const { container } = renderIssueTracker({ report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira" } });
         expect(container.querySelector("a")).toBe(null)
     });
 });
 
 it('shows the issue tracker private token help url', async () => {
     let result;
-    await act(async () => { result = render_issue_tracker({ report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira" } }, help_url: "https://help" }); });
+    await act(async () => { result = renderIssueTracker({ report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira" } }, help_url: "https://help" }); });
     expect(result.container.querySelector("a")).toHaveAttribute('href', 'https://help')
 });
 
 it('sets the issue tracker project', async () => {
-    render_issue_tracker();
+    renderIssueTracker();
     await act(async () => { fireEvent.click(screen.getByText(/Project for new issues/)) });
     await act(async () => { fireEvent.click(screen.getByText(/Project name/)) });
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "project_key", "PRJ", reload);
 });
 
 it('sets the issue tracker issue type', async () => {
-    render_issue_tracker()
+    renderIssueTracker()
     await act(async () => { fireEvent.click(screen.getByText(/Issue type/)) });
     await act(async () => { fireEvent.click(screen.getByText(/Bug/)) });
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "issue_type", "Bug", reload);
 });
 
 it('sets the issue tracker issue labels', async () => {
-    render_issue_tracker()
+    renderIssueTracker()
     await userEvent.type(screen.getByText(/Enter one or more labels here/), 'Label{Enter}');
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "issue_labels", ["Label"], reload);
 });
 
 it('sets the issue tracker epic link', async () => {
-    render_issue_tracker()
+    renderIssueTracker()
     await act(async () => { fireEvent.click(screen.getByText(/Epic link/)) });
     await act(async () => { fireEvent.click(screen.getByText(/FOO-420/)) });
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith("report_uuid", "epic_link", "FOO-420", reload);
@@ -120,7 +120,7 @@ it('sets the issue tracker epic link', async () => {
 
 it('does not show the issue labels warning without tracker project', async () => {
     await act(async () => {
-        render_issue_tracker(
+        renderIssueTracker(
             { report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira" } } }
         )
     });
@@ -129,7 +129,7 @@ it('does not show the issue labels warning without tracker project', async () =>
 
 it('does not show the issue labels warning without issue type', async () => {
     await act(async () => {
-        render_issue_tracker(
+        renderIssueTracker(
             { report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira", parameters: { project_key: "PRJ" } } } }
         )
     });
@@ -138,7 +138,7 @@ it('does not show the issue labels warning without issue type', async () => {
 
 it('does not show the issue labels warning with issue type that supports labels', async () => {
     await act(async () => {
-        render_issue_tracker(
+        renderIssueTracker(
             { report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira", parameters: { project_key: "PRJ", issue_type: "Bug" } } } }
         )
     });
@@ -157,7 +157,7 @@ it('does show the issue labels warning with issue type that does not support lab
         )
     )
     await act(async () => {
-        render_issue_tracker(
+        renderIssueTracker(
             { report: { report_uuid: "report_uuid", title: "Report", issue_tracker: { type: "jira", parameters: { project_key: "PRJ", issue_type: "Bug" } } } }
         )
     });

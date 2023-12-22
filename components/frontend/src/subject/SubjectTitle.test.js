@@ -23,7 +23,7 @@ const report = {
     }
 };
 
-async function render_subject_title(subject_type = "subject_type") {
+async function renderSubjectTitle(subject_type = "subject_type") {
     await act(async () => {
         render(
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
@@ -38,7 +38,7 @@ async function render_subject_title(subject_type = "subject_type") {
 
 it('changes the subject type', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await render_subject_title();
+    await renderSubjectTitle();
     await userEvent.click(screen.getAllByText(/Default subject type/)[1]);
     await userEvent.click(screen.getByText(/Other subject type/));
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/type", { type: "subject_type2" });
@@ -46,53 +46,53 @@ it('changes the subject type', async () => {
 
 it('deals with unknown subject types', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await render_subject_title("unknown_subject_type");
+    await renderSubjectTitle("unknown_subject_type");
     expect(screen.getAllByText("Unknown subject type").length).toBe(2);
 });
 
 it('changes the subject title', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await render_subject_title();
+    await renderSubjectTitle();
     await userEvent.type(screen.getByLabelText(/Subject title/), '{Delete}New title{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/name", { name: "New title" });
 });
 
 it('changes the subject subtitle', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await render_subject_title();
+    await renderSubjectTitle();
     await userEvent.type(screen.getByLabelText(/Subject subtitle/), '{Delete}New subtitle{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/subtitle", { subtitle: "New subtitle" });
 });
 
 it('changes the subject comment', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await render_subject_title();
+    await renderSubjectTitle();
     await userEvent.type(screen.getByLabelText(/Comment/), '{Delete}New comment{Shift>}{Enter}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/comment", { comment: "New comment" });
 });
 
 it('loads the changelog', async () => {
-    await render_subject_title();
+    await renderSubjectTitle();
     await act(async () => { fireEvent.click(screen.getByText(/Changelog/)); });
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/subject/subject_uuid/5");
 });
 
 it('shows the share tab', async () => {
-    await render_subject_title();
+    await renderSubjectTitle();
     await act(async () => { fireEvent.click(screen.getByText(/Share/)); });
     expect(screen.getAllByText(/Subject permanent link/).length).toBe(1);
 });
 
 it('moves the subject', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await render_subject_title();
+    await renderSubjectTitle();
     await act(async () => { fireEvent.click(screen.getByLabelText(/Move subject to the next position/)); });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/position", { position: "next" });
 });
 
 it('deletes the subject', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    await render_subject_title();
+    await renderSubjectTitle();
     await act(async () => { fireEvent.click(screen.getByText(/Delete subject/)); });
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("delete", "subject/subject_uuid", {});
 });

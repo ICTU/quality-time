@@ -15,7 +15,7 @@ const notification_destinations = {
     }
 };
 
-function render_notification_destinations(destinations) {
+function renderNotificationDestinations(destinations) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <NotificationDestinations destinations={destinations} report_uuid={"report_uuid"} reload={() => {/* No need to reload during tests */ }} />
@@ -26,7 +26,7 @@ function render_notification_destinations(destinations) {
 it('creates the first notification destination when the add notification destination button is clicked', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => {
-        render_notification_destinations({})
+        renderNotificationDestinations({})
     });
     await act(async () => {
         fireEvent.click(screen.getByText(/Add notification destination/));
@@ -37,7 +37,7 @@ it('creates the first notification destination when the add notification destina
 it('creates a new notification destination when the add notification destination button is clicked', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => {
-        render_notification_destinations(notification_destinations)
+        renderNotificationDestinations(notification_destinations)
     });
     await act(async () => {
         fireEvent.click(screen.getByText(/Add notification destination/));
@@ -48,7 +48,7 @@ it('creates a new notification destination when the add notification destination
 it('edits notification destination name attribute when it is changed in the input field', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => {
-        render_notification_destinations(notification_destinations)
+        renderNotificationDestinations(notification_destinations)
     });
     await userEvent.type(screen.getByLabelText(/Name/), ' changed{Enter}');
 
@@ -58,7 +58,7 @@ it('edits notification destination name attribute when it is changed in the inpu
 it('edits multiple notification destination attributes when they are changed in the input fields', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => {
-        render_notification_destinations(notification_destinations)
+        renderNotificationDestinations(notification_destinations)
     });
     await userEvent.type(screen.getByPlaceholderText(/https:\/\/example/), 'new.webhook.com{Enter}');
 
@@ -68,7 +68,7 @@ it('edits multiple notification destination attributes when they are changed in 
 it('removes the notification destination when the delete notification destination button is clicked', async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
     await act(async () => {
-        render_notification_destinations(notification_destinations)
+        renderNotificationDestinations(notification_destinations)
     });
     await act(async () => {
         fireEvent.click(screen.getByText(/Delete notification destination/));
