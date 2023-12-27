@@ -45,7 +45,7 @@ function MeasurementCells({ dates, metric, metric_uuid, measurements }) {
     )
 }
 
-function expandVisibleDetailsTab(expand, metric_uuid, expandedItems) {
+function expandOrCollapseItem(expand, metric_uuid, expandedItems) {
     if (expand) {
         expandedItems.toggle(`${metric_uuid}:0`)
     } else {
@@ -113,7 +113,7 @@ export function SubjectTable({
                             }
                             expanded={settings.expandedItems.value.filter((item) => item?.startsWith(metric_uuid)).length > 0}
                             id={metric_uuid}
-                            onExpand={(expand) => expandVisibleDetailsTab(expand, metric_uuid, settings.expandedItems)}
+                            onExpand={(expand) => expandOrCollapseItem(expand, metric_uuid, settings.expandedItems)}
                             style={style}
                         >
                             <Table.Cell style={style}>{metricName}</Table.Cell>
