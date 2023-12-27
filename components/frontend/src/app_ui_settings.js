@@ -48,7 +48,7 @@ export function useSortDirectionURLSearchQuery(report_uuid, defaultValue = "asce
 }
 
 export function useExpandedItemsSearchQuery(report_uuid) {
-    return useArrayURLSearchQuery(urlSearchQueryKey("tabs", report_uuid));
+    return useArrayURLSearchQuery(urlSearchQueryKey("expanded", report_uuid));
 }
 
 export function useShowIssueSummaryURLSearchQuery(report_uuid) {
