@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import history from 'history/browser';
 import { Menubar } from './Menubar';
 import * as auth from '../api/auth';
-import { useVisibleDetailsTabsSearchQuery } from '../app_ui_settings';
+import { useExpandedItemsSearchQuery } from '../app_ui_settings';
 import { createTestableSettings } from '../__fixtures__/fixtures';
 
 jest.mock("../api/auth.js")
@@ -20,7 +20,7 @@ function renderMenubar(
         user = null,
         openReportsOverview = null,
         panel = null,
-        visibleDetailsTabs = null
+        expandedItems = null
     } = {}
 ) {
     const settings = createTestableSettings()
@@ -33,7 +33,7 @@ function renderMenubar(
             report_date_string="2019-10-10"
             set_user={set_user}
             user={user}
-            visibleDetailsTabs={visibleDetailsTabs ?? settings.visibleDetailsTabs}
+            expandedItems={expandedItems ?? settings.expandedItems}
         />
     );
 }
@@ -145,19 +145,19 @@ it('hides the view panel on escape', async () => {
 
 it("resets the visible details tabs", () => {
     history.push("?tabs=tab")
-    const visibleDetailsTabs = renderHook(() => useVisibleDetailsTabsSearchQuery())
-    expect(visibleDetailsTabs.result.current.value).toStrictEqual(["tab"])
-    renderMenubar({ visibleDetailsTabs: visibleDetailsTabs.result.current })
+    const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
+    expect(expandedItems.result.current.value).toStrictEqual(["tab"])
+    renderMenubar({ expandedItems: expandedItems.result.current })
     fireEvent.click(screen.getByRole("button", { name: "Collapse all metrics" }))
-    visibleDetailsTabs.rerender()
-    expect(visibleDetailsTabs.result.current.value).toStrictEqual([])
+    expandedItems.rerender()
+    expect(expandedItems.result.current.value).toStrictEqual([])
 })
 
 it("doesn't change the visible details tabs if there are none", () => {
-    const visibleDetailsTabs = renderHook(() => useVisibleDetailsTabsSearchQuery())
-    expect(visibleDetailsTabs.result.current.value).toStrictEqual([])
-    renderMenubar({ visibleDetailsTabs: visibleDetailsTabs.result.current })
+    const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
+    expect(expandedItems.result.current.value).toStrictEqual([])
+    renderMenubar({ expandedItems: expandedItems.result.current })
     fireEvent.click(screen.getByRole("button", { name: "Collapse all metrics" }))
-    visibleDetailsTabs.rerender()
-    expect(visibleDetailsTabs.result.current.value).toStrictEqual([])
+    expandedItems.rerender()
+    expect(expandedItems.result.current.value).toStrictEqual([])
 })

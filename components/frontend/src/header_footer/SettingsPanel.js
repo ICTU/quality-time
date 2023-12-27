@@ -453,7 +453,7 @@ function ResetSettingsButton(
                 settings.showIssueUpdateDate.isDefault() &&
                 settings.sortColumn.isDefault() &&
                 settings.sortDirection.isDefault() &&
-                settings.visibleDetailsTabs.isDefault() &&
+                settings.expandedItems.isDefault() &&
                 reportDate === null
             }
             onClick={() => {
@@ -473,7 +473,7 @@ function ResetSettingsButton(
                 settings.showIssueUpdateDate.reset();
                 settings.sortColumn.reset();
                 settings.sortDirection.reset();
-                settings.visibleDetailsTabs.reset();
+                settings.expandedItems.reset();
             }}
             inverted
         >

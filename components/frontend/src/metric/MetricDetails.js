@@ -65,7 +65,7 @@ export function MetricDetails({
     report,
     stopFilteringAndSorting,
     subject_uuid,
-    visibleDetailsTabs,
+    expandedItems,
 }) {
     const dataModel = useContext(DataModel)
     const [measurements, setMeasurements] = useState([]);
@@ -147,12 +147,12 @@ export function MetricDetails({
     const metricUrl = `${window.location}#${metric_uuid}`
 
     function onTabChange(_event, data) {
-        const old_tab = visibleDetailsTabs.value.filter((tab) => tab?.startsWith(metric_uuid))[0];
+        const old_tab = expandedItems.value.filter((tab) => tab?.startsWith(metric_uuid))[0];
         const new_tab = `${metric_uuid}:${data.activeIndex}`;
-        visibleDetailsTabs.toggle(old_tab, new_tab);
+        expandedItems.toggle(old_tab, new_tab);
     }
 
-    const visible_tabs = visibleDetailsTabs.value.filter((tab) => tab?.startsWith(metric_uuid));
+    const visible_tabs = expandedItems.value.filter((tab) => tab?.startsWith(metric_uuid));
     const defaultActiveTab = visible_tabs.length > 0 ? Number(visible_tabs[0].split(":")[1]) : 0;
     const metricType = dataModel.metrics[metric.type];
     return (
@@ -180,5 +180,5 @@ MetricDetails.propTypes = {
     report: reportPropType,
     stopFilteringAndSorting: PropTypes.func,
     subject_uuid: PropTypes.string,
-    visibleDetailsTabs: stringsURLSearchQueryPropType
+    expandedItems: stringsURLSearchQueryPropType
 }

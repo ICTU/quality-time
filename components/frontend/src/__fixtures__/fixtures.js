@@ -9,7 +9,7 @@ import {
     useNrDatesURLSearchQuery,
     useSortColumnURLSearchQuery,
     useSortDirectionURLSearchQuery,
-    useVisibleDetailsTabsSearchQuery,
+    useExpandedItemsSearchQuery,
     useShowIssueSummaryURLSearchQuery,
     useShowIssueCreationDateURLSearchQuery,
     useShowIssueUpdateDateURLSearchQuery,
@@ -85,6 +85,6 @@ export function createTestableSettings() {
         showIssueSprint: renderHook(() => useShowIssueSprintURLSearchQuery()).result.current,
         sortColumn: renderHook(() => useSortColumnURLSearchQuery()).result.current,
         sortDirection: renderHook(() => useSortDirectionURLSearchQuery()).result.current,
-        visibleDetailsTabs: renderHook(() => useVisibleDetailsTabsSearchQuery()).result.current
+        expandedItems: renderHook(() => useExpandedItemsSearchQuery()).result.current
     }
 }

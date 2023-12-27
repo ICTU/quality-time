@@ -73,7 +73,7 @@ export const settingsPropType = PropTypes.shape({
     showIssueUpdateDate: boolURLSearchQueryPropType,
     sortColumn: stringURLSearchQueryPropType,
     sortDirection: sortDirectionURLSearchQueryPropType,
-    visibleDetailsTabs: stringsURLSearchQueryPropType
+    expandedItems: stringsURLSearchQueryPropType
 })
 
 export const entityStatusPropType = PropTypes.oneOf(["unconfirmed", "confirmed", "fixed", "false_positive", "wont_fix"])
