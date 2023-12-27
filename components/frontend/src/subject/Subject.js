@@ -154,10 +154,10 @@ export function Subject({
                     atReportsOverview={atReportsOverview}
                     firstSubject={firstSubject}
                     lastSubject={lastSubject}
-                    subject={subject}
-                    subject_uuid={subject_uuid}
                     reload={reload}
                     report={report}
+                    subject={subject}
+                    subject_uuid={subject_uuid}
                 />
             </div>
             <CommentSegment comment={subject.comment} />
