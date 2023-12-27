@@ -49,9 +49,9 @@ function expandVisibleDetailsTab(expand, metric_uuid, expandedItems) {
     if (expand) {
         expandedItems.toggle(`${metric_uuid}:0`)
     } else {
-        const tabs = expandedItems.value.filter((each) => each?.startsWith(metric_uuid));
-        if (tabs.length > 0) {
-            expandedItems.toggle(tabs[0])
+        const items = expandedItems.value.filter((each) => each?.startsWith(metric_uuid));
+        if (items.length > 0) {
+            expandedItems.toggle(items[0])
         }
     }
 }
@@ -111,7 +111,7 @@ export function SubjectTable({
                                     expandedItems={settings.expandedItems}
                                 />
                             }
-                            expanded={settings.expandedItems.value.filter((tab) => tab?.startsWith(metric_uuid)).length > 0}
+                            expanded={settings.expandedItems.value.filter((item) => item?.startsWith(metric_uuid)).length > 0}
                             id={metric_uuid}
                             onExpand={(expand) => expandVisibleDetailsTab(expand, metric_uuid, settings.expandedItems)}
                             style={style}

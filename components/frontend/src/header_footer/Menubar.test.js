@@ -143,8 +143,8 @@ it('hides the view panel on escape', async () => {
     expect(screen.queryAllByText(/Hello/).length).toBe(0)
 })
 
-it("resets the visible details tabs", () => {
-    history.push("?tabs=tab")
+it("resets the expanded items", () => {
+    history.push("?expanded=tab")
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
     expect(expandedItems.result.current.value).toStrictEqual(["tab"])
     renderMenubar({ expandedItems: expandedItems.result.current })
@@ -153,7 +153,7 @@ it("resets the visible details tabs", () => {
     expect(expandedItems.result.current.value).toStrictEqual([])
 })
 
-it("doesn't change the visible details tabs if there are none", () => {
+it("doesn't change the expanded items if there are none", () => {
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
     expect(expandedItems.result.current.value).toStrictEqual([])
     renderMenubar({ expandedItems: expandedItems.result.current })

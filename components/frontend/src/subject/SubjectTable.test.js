@@ -180,7 +180,7 @@ it('expands the details via the button', () => {
 })
 
 it('collapses the details via the button', () => {
-    history.push("?tabs=1:0")
+    history.push("?expanded=1:0")
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
     renderSubjectTable({ expandedItems: expandedItems.result.current })
     const expand = screen.getAllByRole("button")[0];
@@ -192,20 +192,20 @@ it('collapses the details via the button', () => {
 it('expands the details via the url', () => {
     renderSubjectTable()
     expect(screen.queryAllByText("Configuration").length).toBe(0)
-    history.push("?tabs=1:0")
+    history.push("?expanded=1:0")
     renderSubjectTable()
     expect(screen.queryAllByText("Configuration").length).toBe(1)
 })
 
 it('moves a metric', async () => {
-    history.push("?tabs=1:2")
+    history.push("?expanded=1:2")
     renderSubjectTable()
     await act(async () => fireEvent.click(await screen.findByLabelText("Move metric to the next row")))
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/1/attribute/position", { position: "next" });
 })
 
 it('adds a source', async () => {
-    history.push("?tabs=1:2")
+    history.push("?expanded=1:2")
     renderSubjectTable()
     const addButton = await screen.findByText("Add source")
     await act(async () => fireEvent.click(addButton))
