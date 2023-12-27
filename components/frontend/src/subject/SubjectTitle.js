@@ -72,7 +72,13 @@ export function SubjectTitle({ atReportsOverview, report, subject, subject_uuid,
         }
     ];
     return (
-        <HeaderWithDetails className="sticky" level="h2" header={subjectTitle} subheader={subject.subtitle} style={{ marginTop: 50 }}>
+        <HeaderWithDetails
+            className="sticky"
+            header={subjectTitle}
+            level="h2"
+            style={{ marginTop: 50 }}
+            subheader={subject.subtitle}
+        >
             <SubjectHeader subjectType={subjectType} />
             <Tab panes={panes} />
             <div style={{ marginTop: "20px" }}>
@@ -83,10 +89,10 @@ export function SubjectTitle({ atReportsOverview, report, subject, subject_uuid,
 }
 SubjectTitle.propTypes = {
     atReportsOverview: PropTypes.bool,
+    firstSubject: PropTypes.bool,
+    lastSubject: PropTypes.bool,
+    reload: PropTypes.func,
     report: reportPropType,
     subject: PropTypes.object,
     subject_uuid: PropTypes.string,
-    firstSubject: PropTypes.bool,
-    lastSubject: PropTypes.bool,
-    reload: PropTypes.func
 }

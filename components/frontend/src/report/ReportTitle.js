@@ -303,5 +303,5 @@ export function ReportTitle({ report, openReportsOverview, reload }) {
 ReportTitle.propTypes = {
     openReportsOverview: PropTypes.func,
     reload: PropTypes.func,
-    report: reportPropType
+    report: reportPropType,
 }

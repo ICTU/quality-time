@@ -147,9 +147,9 @@ export function MetricDetails({
     const metricUrl = `${window.location}#${metric_uuid}`
 
     function onTabChange(_event, data) {
-        const oldItems = expandedItems.value.filter((item) => item?.startsWith(metric_uuid))[0];
-        const newItems = `${metric_uuid}:${data.activeIndex}`;
-        expandedItems.toggle(oldItems, newItems);
+        const oldItem = expandedItems.value.filter((item) => item?.startsWith(metric_uuid))[0];
+        const newItem = `${metric_uuid}:${data.activeIndex}`;
+        expandedItems.toggle(oldItem, newItem);
     }
 
     const items = expandedItems.value.filter((item) => item?.startsWith(metric_uuid));
