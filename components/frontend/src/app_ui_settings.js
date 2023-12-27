@@ -47,7 +47,7 @@ export function useSortDirectionURLSearchQuery(report_uuid, defaultValue = "asce
     return useStringURLSearchQuery(urlSearchQueryKey("sort_direction", report_uuid), defaultValue);
 }
 
-export function useVisibleDetailsTabsSearchQuery(report_uuid) {
+export function useExpandedItemsSearchQuery(report_uuid) {
     return useArrayURLSearchQuery(urlSearchQueryKey("tabs", report_uuid));
 }
 
@@ -92,6 +92,6 @@ export function useSettings(report_uuid) {
         showIssueSprint: useShowIssueSprintURLSearchQuery(report_uuid),
         sortColumn: useSortColumnURLSearchQuery(report_uuid),
         sortDirection: useSortDirectionURLSearchQuery(report_uuid),
-        visibleDetailsTabs: useVisibleDetailsTabsSearchQuery(report_uuid)
+        expandedItems: useExpandedItemsSearchQuery(report_uuid)
     }
 }

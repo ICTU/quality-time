@@ -39,7 +39,7 @@ function renderSettingsPanel(
                 showIssueSprint: settings.showIssueSprint,
                 sortColumn: settings.sortColumn,
                 sortDirection: settings.sortDirection,
-                visibleDetailsTabs: settings.visibleDetailsTabs
+                expandedItems: settings.expandedItems
             }}
             reportDate={reportDate}
             tags={tags}

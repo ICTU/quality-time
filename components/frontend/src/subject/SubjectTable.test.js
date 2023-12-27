@@ -3,7 +3,7 @@ import { act, fireEvent, render, renderHook, screen } from '@testing-library/rea
 import history from 'history/browser';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions";
-import { useVisibleDetailsTabsSearchQuery } from '../app_ui_settings';
+import { useExpandedItemsSearchQuery } from '../app_ui_settings';
 import * as fetch_server_api from '../api/fetch_server_api';
 import { createTestableSettings } from '../__fixtures__/fixtures';
 import { SubjectTable } from './SubjectTable';
@@ -46,11 +46,11 @@ const dates = [
 function renderSubjectTable(
     {
         dates = [],
-        visibleDetailsTabs = null
+        expandedItems = null
     } = {}
 ) {
     let settings = createTestableSettings()
-    if (visibleDetailsTabs) { settings.visibleDetailsTabs = visibleDetailsTabs }
+    if (expandedItems) { settings.expandedItems = expandedItems }
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={datamodel}>
@@ -171,22 +171,22 @@ it('hides the tags column', () => {
 })
 
 it('expands the details via the button', () => {
-    const visibleDetailsTabs = renderHook(() => useVisibleDetailsTabsSearchQuery())
-    renderSubjectTable({ visibleDetailsTabs: visibleDetailsTabs.result.current })
+    const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
+    renderSubjectTable({ expandedItems: expandedItems.result.current })
     const expand = screen.getAllByRole("button")[0];
     fireEvent.click(expand);
-    visibleDetailsTabs.rerender()
-    expect(visibleDetailsTabs.result.current.value).toStrictEqual(["1:0"]);
+    expandedItems.rerender()
+    expect(expandedItems.result.current.value).toStrictEqual(["1:0"]);
 })
 
 it('collapses the details via the button', () => {
     history.push("?tabs=1:0")
-    const visibleDetailsTabs = renderHook(() => useVisibleDetailsTabsSearchQuery())
-    renderSubjectTable({ visibleDetailsTabs: visibleDetailsTabs.result.current })
+    const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
+    renderSubjectTable({ expandedItems: expandedItems.result.current })
     const expand = screen.getAllByRole("button")[0];
     fireEvent.click(expand);
-    visibleDetailsTabs.rerender()
-    expect(visibleDetailsTabs.result.current.value).toStrictEqual([]);
+    expandedItems.rerender()
+    expect(expandedItems.result.current.value).toStrictEqual([]);
 })
 
 it('expands the details via the url', () => {

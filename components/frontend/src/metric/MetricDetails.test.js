@@ -71,7 +71,7 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error) {
                     reports={[report]}
                     stopFilteringAndSorting={stopFilteringAndSorting}
                     subject_uuid="subject_uuid"
-                    visibleDetailsTabs={settings.visibleDetailsTabs}
+                    expandedItems={settings.expandedItems}
                 />
             </DataModel.Provider>
         </Permissions.Provider>

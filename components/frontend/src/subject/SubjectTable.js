@@ -45,13 +45,13 @@ function MeasurementCells({ dates, metric, metric_uuid, measurements }) {
     )
 }
 
-function expandVisibleDetailsTab(expand, metric_uuid, visibleDetailsTabs) {
+function expandVisibleDetailsTab(expand, metric_uuid, expandedItems) {
     if (expand) {
-        visibleDetailsTabs.toggle(`${metric_uuid}:0`)
+        expandedItems.toggle(`${metric_uuid}:0`)
     } else {
-        const tabs = visibleDetailsTabs.value.filter((each) => each?.startsWith(metric_uuid));
+        const tabs = expandedItems.value.filter((each) => each?.startsWith(metric_uuid));
         if (tabs.length > 0) {
-            visibleDetailsTabs.toggle(tabs[0])
+            expandedItems.toggle(tabs[0])
         }
     }
 }
@@ -108,12 +108,12 @@ export function SubjectTable({
                                         settings.metricsToHide.reset()
                                     }}
                                     subject_uuid={subject_uuid}
-                                    visibleDetailsTabs={settings.visibleDetailsTabs}
+                                    expandedItems={settings.expandedItems}
                                 />
                             }
-                            expanded={settings.visibleDetailsTabs.value.filter((tab) => tab?.startsWith(metric_uuid)).length > 0}
+                            expanded={settings.expandedItems.value.filter((tab) => tab?.startsWith(metric_uuid)).length > 0}
                             id={metric_uuid}
-                            onExpand={(expand) => expandVisibleDetailsTab(expand, metric_uuid, settings.visibleDetailsTabs)}
+                            onExpand={(expand) => expandVisibleDetailsTab(expand, metric_uuid, settings.expandedItems)}
                             style={style}
                         >
                             <Table.Cell style={style}>{metricName}</Table.Cell>

@@ -82,7 +82,7 @@ export function AppUI({
                     report_date={report_date}
                     set_user={set_user}
                     user={user}
-                    visibleDetailsTabs={settings.visibleDetailsTabs}
+                    expandedItems={settings.expandedItems}
                     panel={<SettingsPanel
                         atReportsOverview={atReportsOverview}
                         handleDateChange={handleDateChange}

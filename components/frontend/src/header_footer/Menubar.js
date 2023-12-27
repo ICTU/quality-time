@@ -75,7 +75,7 @@ export function Menubar({
     setUIMode,
     uiMode,
     user,
-    visibleDetailsTabs
+    expandedItems
 }) {
     const [settingsPanelVisible, setSettingsPanelVisible] = useState(false)
     useEffect(() => {
@@ -117,11 +117,11 @@ export function Menubar({
                                     <Button
                                         aria-label="Collapse all metrics"
                                         basic
-                                        disabled={visibleDetailsTabs.equals([])}
-                                        onClick={() => visibleDetailsTabs.reset()}
+                                        disabled={expandedItems.equals([])}
+                                        onClick={() => expandedItems.reset()}
                                         icon={
                                             <Icon
-                                                name={`caret ${visibleDetailsTabs.equals([]) ? "right" : "down"}`}
+                                                name={`caret ${expandedItems.equals([]) ? "right" : "down"}`}
                                                 size='large'
                                             />
                                         }
@@ -176,5 +176,5 @@ Menubar.propTypes = {
     setUIMode: PropTypes.func,
     uiMode: uiModePropType,
     user: PropTypes.string,
-    visibleDetailsTabs: stringsURLSearchQueryPropType
+    expandedItems: stringsURLSearchQueryPropType
 }
