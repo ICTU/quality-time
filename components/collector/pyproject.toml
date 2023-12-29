@@ -16,7 +16,7 @@ dev = [
     "coverage==7.4.0",
     "mongomock==4.1.2",
     "pip==23.3.2",
-    "pipx==1.3.3",
+    "pipx==1.4.0",
     "pip-tools==7.3.0",  # To add hashes to requirements
     "pydantic==2.5.3",  # Needed for importing the data model in the tests from the shared code component
     "types-beautifulsoup4==4.12.0.7",
