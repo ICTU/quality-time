@@ -123,6 +123,13 @@ it('switches tabs to the share tab', async () => {
     expect(screen.getAllByText(/Metric permanent link/).length).toBe(1);
 })
 
+it('removes the existing hashtag from the URL to share', async () => {
+    history.push("#hash_that_should_be_removed")
+    await renderMetricDetails();
+    fireEvent.click(screen.getByText(/Share/))
+    expect(screen.getByTestId("permlink").value).toBe("http://localhost/#metric_uuid")
+})
+
 it('displays whether sources have errors', async () => {
     await renderMetricDetails(null, "Connection error");
     expect(screen.getByText(/Sources/)).toHaveClass("red label");

@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { PropTypes } from 'prop-types';
 import { Icon, Input } from 'semantic-ui-react';
 import { Button, Dropdown, Label, Popup } from '../semantic_ui_react_wrappers';
 import { get_report_pdf } from '../api/report';
@@ -315,8 +316,11 @@ export function PermLinkButton({ url }) {
                     }}
                     style={{ fontWeight: "bold" }}
                 />
-                <input id="permlink" style={{ border: "1px solid rgb(143, 208, 255)", color: "rgb(143, 208, 255)", fontWeight: "bold" }} />
+                <input data-testid="permlink" id="permlink" style={{ border: "1px solid rgb(143, 208, 255)", color: "rgb(143, 208, 255)", fontWeight: "bold" }} />
             </Input>
         )
     }
+}
+PermLinkButton.propTypes = {
+    url: PropTypes.string
 }

@@ -84,7 +84,7 @@ export function MetricDetails({
     let any_error = last_measurement?.sources.some((source) => source.connection_error || source.parse_error);
     any_error = any_error || Object.values(metric.sources ?? {}).some((source) => !dataModel.metrics[metric.type].sources.includes(source.type))
     const sources_menu_item = any_error ? <Label color='red'>{"Sources"}</Label> : "Sources";
-    const metricUrl = `${window.location}#${metric_uuid}`
+    const metricUrl = `${window.location.href.split("#")[0]}#${metric_uuid}`
     let panes = [];
     panes.push(
         {
