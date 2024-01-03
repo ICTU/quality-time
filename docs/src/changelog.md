@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is v4.10.0 or older, please read the v5.0.0 deployment notes first.
 
+### Fixed
+
+- If a URL with a hashtag was used to navigate to *Quality-time*, shared URLs would get an additional hashtag. Fixes [#7761](https://github.com/ICTU/quality-time/issues/7761).
+
 ### Added
 
 - When collapsing metrics via the collapse button in the menu bar, also collapse expanded headers. Closes [#4790](https://github.com/ICTU/quality-time/issues/4790).
