@@ -14,16 +14,16 @@ dependencies = [
 dev = [
     "coverage==7.4.0",
     "pip==23.3.2",
-    "pipx==1.3.3",
+    "pipx==1.4.1",
     "pip-tools==7.3.0",  # To add hashes to requirements
-    "types-requests==2.31.0.10",
+    "types-requests==2.31.0.20231231",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
     "bandit==1.7.6",
     "mypy==1.8.0",
     "pip-audit==2.6.2",
-    "ruff==0.1.9",
+    "ruff==0.1.11",
     "safety==2.3.5",
     "vulture==2.10"
 ]
