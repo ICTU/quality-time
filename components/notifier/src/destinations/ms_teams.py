@@ -11,8 +11,7 @@ def notification_text(notification: Notification) -> str:
     """Create and format the contents of the notification."""
     nr_changed = len(notification.metrics)
     plural_s = "s" if nr_changed > 1 else ""
-    report_link = f"[{notification.report_title}]({notification.url})"
-    markdown = f"{report_link} has {nr_changed} metric{plural_s} that changed status:\n\n"
+    markdown = f"{notification.report_title} has {nr_changed} metric{plural_s} that changed status:\n\n"
     for subject_name in sorted({metric.subject_name for metric in notification.metrics}):
         markdown += _subject_notification_text(notification, subject_name)
     return markdown
@@ -39,12 +38,14 @@ def _metric_notification_text(metric: MetricNotificationData) -> str:
     )
 
 
-def send_notification(destination: str, text: str) -> None:
+def send_notification(destination: str, notification: Notification) -> None:
     """Send notification to Microsoft Teams using a Webhook."""
     logging.info("Sending notification to configured teams webhook")
-    my_teams_message = pymsteams.connectorcard(destination)
-    my_teams_message.text(text)
+    teams_message = pymsteams.connectorcard(destination)
+    teams_message.title("Quality-time notification")
+    teams_message.addLinkButton(f"Open the '{notification.report_title}' report", notification.report_url)
+    teams_message.text(notification_text(notification))
     try:
-        my_teams_message.send()
+        teams_message.send()
     except Exception:
         logging.exception("Could not deliver notification")

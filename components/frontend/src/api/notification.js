@@ -1,7 +1,8 @@
 import { fetch_server_api } from "./fetch_server_api";
 
 export function add_notification_destination(report_uuid, reload) {
-    return fetch_server_api('post', `report/${report_uuid}/notification_destination/new`, {}).then(reload)
+    const reportUrl = window.location.href.split("?")[0]
+    return fetch_server_api('post', `report/${report_uuid}/notification_destination/new`, {report_url: reportUrl}).then(reload)
 }
 
 export function delete_notification_destination(report_uuid, destination_uuid, reload) {

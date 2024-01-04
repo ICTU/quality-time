@@ -9,14 +9,16 @@ from behave.runner import Context
 def add_notification_destination(context: Context) -> None:
     """Add a notification destination to the report."""
     api = f"report/{context.uuid['report']}/notification_destination/new"
-    context.uuid["notification_destination"] = context.post(api)["new_destination_uuid"]
+    payload = {"report_url": "https://report"}
+    context.uuid["notification_destination"] = context.post(api, payload)["new_destination_uuid"]
 
 
 @when("the client adds a notification destination to a non-existing report")
 def add_notification_destination_to_non_existing_report(context: Context) -> None:
     """Add a notification destination to a non-existing report."""
     context.uuid["report"] = report_uuid = "report-does-not-exist"
-    context.post(f"report/{report_uuid}/notification_destination/new")
+    payload = {"report_url": "https://report-does-not-exist"}
+    context.post(f"report/{report_uuid}/notification_destination/new", payload)
 
 
 @when("the client deletes a notification destination of a non-existing report")

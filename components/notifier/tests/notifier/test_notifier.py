@@ -130,7 +130,13 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             "report_uuid": "report1",
             "title": self.title,
             "url": self.url,
-            "notification_destinations": {"destination1": {"name": "destination name", "webhook": "www.webhook.com"}},
+            "notification_destinations": {
+                "destination1": {
+                    "name": "destination name",
+                    "webhook": "www.webhook.com",
+                    "report_url": "https://report",
+                },
+            },
             "subjects": self.subjects,
         }
         now = datetime.now(tz=UTC).replace(microsecond=0).isoformat()

@@ -12,7 +12,7 @@ from pymongo.database import Database
 from shared.model.measurement import Measurement
 
 from database.reports import get_reports_and_measurements
-from destinations.ms_teams import notification_text, send_notification
+from destinations.ms_teams import send_notification
 from strategies.notification_strategy import NotificationFinder
 
 
@@ -31,7 +31,7 @@ async def notify(database: Database, sleep_duration: int = 60) -> NoReturn:
             measurements = []
 
         for notification in notification_finder.get_notifications(reports, measurements, most_recent_measurement_seen):
-            send_notification(str(notification.destination["webhook"]), notification_text(notification))
+            send_notification(str(notification.destination["webhook"]), notification)
         most_recent_measurement_seen = most_recent_measurement_timestamp(measurements)
         logging.info("Sleeping %.1f seconds...", sleep_duration)
         await asyncio.sleep(sleep_duration)

@@ -1,6 +1,6 @@
 """Unit tests for the notification routes."""
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from shared.model.report import Report
 from shared.utils.functions import first
@@ -89,6 +89,7 @@ class PostNotificationAttributesTest(NotificationTestCase):
 class NotificationDestinationTest(NotificationTestCase):
     """Unit tests for adding and deleting notification destinations."""
 
+    @patch("bottle.request", Mock(json={"report_url": "https://report"}))
     def test_add_new_notification_destination(self):
         """Test that a notification destination can be added."""
         self.assertTrue(post_new_notification_destination(self.database, REPORT_ID)["ok"])
@@ -100,6 +101,7 @@ class NotificationDestinationTest(NotificationTestCase):
             report=updated_report,
         )
 
+    @patch("bottle.request", Mock(json={"report_url": "https://report"}))
     def test_add_first_new_notification_destination(self):
         """Test that a notification destination can be added."""
         del self.report["notification_destinations"]

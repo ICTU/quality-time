@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 ### Fixed
 
+- Links in MS Teams notifications were incorrect. Note: the fix only works for new notification destinations. Please recreate existing notification destinations in *Quality-time* to get correct links in MS Teams notifications. Fixes [#7614](https://github.com/ICTU/quality-time/issues/7614).
 - If a URL with a hashtag was used to navigate to *Quality-time*, shared URLs would get an additional hashtag. Fixes [#7761](https://github.com/ICTU/quality-time/issues/7761).
 
 ### Added
