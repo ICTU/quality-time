@@ -32,7 +32,10 @@ class NotificationFinder:
             if notable_metrics:
                 destinations = report.get("notification_destinations", {}).values()
                 notifications.extend(
-                    [Notification(report, notable_metrics, destination) for destination in destinations],
+                    [
+                        Notification(report, destination.get("report_url", ""), notable_metrics, destination)
+                        for destination in destinations
+                    ],
                 )
         return notifications
 

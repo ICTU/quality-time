@@ -39,7 +39,9 @@ class StrategiesTests(unittest.TestCase):
                 "report_uuid": "report1",
                 "title": "Title",
                 "subjects": {"subject1": {"metrics": {"red_metric": self.red_metric}, "type": "software"}},
-                "notification_destinations": {"destination_uuid": {"name": "destination"}},
+                "notification_destinations": {
+                    "destination_uuid": {"name": "destination", "report_url": "https://report"}
+                },
             },
         ]
 
@@ -163,7 +165,7 @@ class StrategiesTests(unittest.TestCase):
             "report_uuid": "report2",
             "webhook": "webhook",
             "subjects": {"subject": subject2},
-            "notification_destinations": {"uuid1": {"url": "https://report2", "name": "destination2"}},
+            "notification_destinations": {"uuid1": {"report_url": "https://report2", "name": "destination2"}},
         }
         self.reports.append(report2)
         red_metric2_measurements = [

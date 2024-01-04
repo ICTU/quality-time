@@ -23,6 +23,7 @@ def post_new_notification_destination(database: Database, report: Report, report
         "webhook": "",
         "name": "Microsoft Teams webhook",
         "sleep_duration": 0,
+        "report_url": dict(bottle.request.json)["report_url"],
     }
     delta_description = f"{{user}} created a new destination for notifications in report '{report.name}'."
     uuids = [report_uuid, notification_destination_uuid]
