@@ -73,7 +73,6 @@ QUALITY_TIME = Source(
             help="If provided, only count metrics with the selected metric types.",
             placeholder="all metric types",
             values=[
-                "Accessibility violations",
                 "Average issue lead time",
                 "Change failure rate",
                 "Commented out code",
@@ -115,7 +114,6 @@ QUALITY_TIME = Source(
                 "Sentiment",
             ],
             api_values={
-                "Accessibility violations": "accessibility",
                 "Average issue lead time": "average_issue_lead_time",
                 "Change failure rate": "change_failure_rate",
                 "Commented out code": "commented_out_code",

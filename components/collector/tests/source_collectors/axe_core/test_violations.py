@@ -1,4 +1,4 @@
-"""Unit tests for the Axe-core accessibility collector."""
+"""Unit tests for the Axe-core accessibility violations collector."""
 
 import json
 
@@ -7,10 +7,10 @@ from collector_utilities.functions import md5_hash
 from .base import AxeCoreTestCase
 
 
-class AxeCoreAccessibilityTest(AxeCoreTestCase):
+class AxeCoreViolationsTest(AxeCoreTestCase):
     """Unit tests for the Axe-core collector for accessibility violations."""
 
-    METRIC_TYPE = "accessibility"
+    METRIC_TYPE = "violations"
 
     def setUp(self):
         """Extend to set up test data."""

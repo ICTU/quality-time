@@ -1,4 +1,4 @@
-"""Axe HTML reporter accessibility collector."""
+"""Axe HTML reporter accessibility violations collector."""
 
 from collections.abc import Iterator
 from typing import cast
@@ -8,10 +8,10 @@ from bs4 import Tag
 from base_collectors import HTMLFileSourceCollector
 from collector_utilities.functions import md5_hash
 from model import Entities, Entity, SourceResponses
-from source_collectors.axe_core.accessibility import AxeAccessibilityCollector
+from source_collectors.axe_core.violations import AxeViolationsCollector
 
 
-class AxeHTMLReporterAccessibility(HTMLFileSourceCollector, AxeAccessibilityCollector):
+class AxeHTMLReporterViolations(HTMLFileSourceCollector, AxeViolationsCollector):
     """Collector class to get accessibility violations."""
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:

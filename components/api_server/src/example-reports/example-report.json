@@ -862,7 +862,7 @@
                     ]
                 },
                 "88151acf-0977-4ec0-8093-e9e8f41f409c": {
-                    "type": "accessibility",
+                    "type": "violations",
                     "sources": {
                         "f2380a5e-aa3c-4252-8d80-2463fa322b9b": {
                             "type": "axecsv",

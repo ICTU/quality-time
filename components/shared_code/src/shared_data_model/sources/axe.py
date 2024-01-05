@@ -6,7 +6,7 @@ from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import MultipleChoiceParameter, MultipleChoiceWithAdditionParameter, access_parameters
 
-ALL_AXE_CORE_METRICS = ["accessibility", "source_up_to_dateness", "source_version"]
+ALL_AXE_CORE_METRICS = ["source_up_to_dateness", "source_version", "violations"]
 
 
 IMPACT = MultipleChoiceParameter(
@@ -14,7 +14,7 @@ IMPACT = MultipleChoiceParameter(
     help="If provided, only count accessibility violations with the selected impact levels.",
     placeholder="all impact levels",
     values=["minor", "moderate", "serious", "critical"],
-    metrics=["accessibility"],
+    metrics=["violations"],
 )
 
 TAGS_TO_INCLUDE = MultipleChoiceWithAdditionParameter(
@@ -22,14 +22,14 @@ TAGS_TO_INCLUDE = MultipleChoiceWithAdditionParameter(
     short_name="tags to include",
     help="Tags to include can be specified by tag or by regular expression.",
     placeholder="all",
-    metrics=["accessibility"],
+    metrics=["violations"],
 )
 
 TAGS_TO_IGNORE = MultipleChoiceWithAdditionParameter(
     name="Tags to ignore (regular expressions or tags)",
     short_name="tags to ignore",
     help="Tags to ignore can be specified by tag or by regular expression.",
-    metrics=["accessibility"],
+    metrics=["violations"],
 )
 
 ELEMENT_INCLUDE_FILTER = MultipleChoiceWithAdditionParameter(
@@ -37,7 +37,7 @@ ELEMENT_INCLUDE_FILTER = MultipleChoiceWithAdditionParameter(
     short_name="element include filter",
     help="Elements to include can be specified by regular expression.",
     placeholder="all",
-    metrics=["accessibility"],
+    metrics=["violations"],
 )
 
 ELEMENT_EXCLUDE_FILTER = MultipleChoiceWithAdditionParameter(
@@ -45,7 +45,7 @@ ELEMENT_EXCLUDE_FILTER = MultipleChoiceWithAdditionParameter(
     short_name="element exclude filter",
     help="Elements to exclude can be specified by regular expression.",
     placeholder="none",
-    metrics=["accessibility"],
+    metrics=["violations"],
 )
 
 RESULT_TYPES = MultipleChoiceParameter(
@@ -54,11 +54,11 @@ RESULT_TYPES = MultipleChoiceParameter(
     default_value=["violations"],
     placeholder="all result types",
     values=["inapplicable", "incomplete", "passes", "violations"],
-    metrics=["accessibility"],
+    metrics=["violations"],
 )
 
 ENTITIES = {
-    "accessibility": Entity(
+    "violations": Entity(
         name="accessibility violation",
         attributes=[
             EntityAttribute(name="Violation type", url="help"),
@@ -93,7 +93,7 @@ AXE_CORE = Source(
     description="Axe is an accessibility testing engine for websites and other HTML-based user interfaces.",
     url=HttpUrl("https://github.com/dequelabs/axe-core"),
     documentation={
-        "accessibility": AXE_CORE_DOCUMENTATION,
+        "violations": AXE_CORE_DOCUMENTATION,
         "source_up_to_dateness": AXE_CORE_DOCUMENTATION
         + """
 Axe-core adds a `timestamp` field to each results object. That field is used by *Quality-time* to determine the
@@ -138,7 +138,7 @@ AXE_HTML_REPORTER = Source(
         "element_exclude_filter": ELEMENT_EXCLUDE_FILTER,
         "impact": IMPACT,
         "result_types": RESULT_TYPES,
-        **access_parameters(["accessibility"], source_type="an Axe report", source_type_format="HTML"),
+        **access_parameters(["violations"], source_type="an Axe report", source_type_format="HTML"),
     },
     entities=ENTITIES,
 )
@@ -151,10 +151,10 @@ AXE_CSV = Source(
         "element_include_filter": ELEMENT_INCLUDE_FILTER,
         "element_exclude_filter": ELEMENT_EXCLUDE_FILTER,
         "impact": IMPACT,
-        **access_parameters(["accessibility"], source_type="an Axe report", source_type_format="CSV"),
+        **access_parameters(["violations"], source_type="an Axe report", source_type_format="CSV"),
     },
     entities={
-        "accessibility": Entity(
+        "violations": Entity(
             name="accessibility violation",
             attributes=[
                 EntityAttribute(name="Violation type", url="help"),

@@ -31,7 +31,7 @@ def add_item(  # noqa: PLR0913
         item_type = value
         attribute = value = None
     else:
-        item_type = {"source": "axe_core", "metric": "accessibility", "subject": "software"}.get(item)
+        item_type = {"source": "axe_core", "metric": "violations", "subject": "software"}.get(item)
     if "tries to" in context.step.name:
         context.post(api, {"type": item_type})
         return

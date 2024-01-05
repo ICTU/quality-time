@@ -76,7 +76,7 @@ class QualityTimeTestCase(SourceCollectorTestCase):
                                 "m5": {
                                     "tags": ["performance"],
                                     "scale": "count",
-                                    "type": "accessibility",
+                                    "type": "violations",
                                     "target": "5",
                                     "sources": {"s5": {"type": "sonarqube"}},
                                 },

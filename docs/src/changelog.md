@@ -27,6 +27,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 ### Changed
 
+- The violations metric can now also be used to measure accessibility violations. Existing accessibility violation metrics have been changed to the violations metrics. Closes [#562](https://github.com/ICTU/quality-time/issues/562).
 - Improve the icon for collapsing all expanded user interface controls and move the reset settings button from the settings panel to the menu bar so that it is easier to use. Closes [#4395](https://github.com/ICTU/quality-time/issues/4395).
 
 ## v5.5.0 - 2023-12-15

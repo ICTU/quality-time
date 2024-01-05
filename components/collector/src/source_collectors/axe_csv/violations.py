@@ -1,4 +1,4 @@
-"""Axe CSV accessibility collector."""
+"""Axe CSV accessibility violations collector."""
 
 import csv
 import re
@@ -9,7 +9,7 @@ from collector_utilities.functions import match_string_or_regular_expression, md
 from model import Entities, Entity, SourceResponses
 
 
-class AxeCSVAccessibility(CSVFileSourceCollector):
+class AxeCSVViolations(CSVFileSourceCollector):
     """Collector class to get accessibility violations."""
 
     def _include_entity(self, entity: Entity) -> bool:

@@ -1,4 +1,4 @@
-"""Axe-core accessibility analysis collectors."""
+"""Axe-core accessibility violations collectors."""
 
 from collections.abc import Generator
 from typing import Any
@@ -9,7 +9,7 @@ from collector_utilities.type import JSON
 from model import Entities, Entity
 
 
-class AxeAccessibilityCollector(SourceCollector):
+class AxeViolationsCollector(SourceCollector):
     """Collector base class for getting accessibility violations from Axe."""
 
     def _include_entity(self, entity: Entity) -> bool:
@@ -50,7 +50,7 @@ class AxeAccessibilityCollector(SourceCollector):
         return True
 
 
-class AxeCoreAccessibility(JSONFileSourceCollector, AxeAccessibilityCollector):
+class AxeCoreViolations(JSONFileSourceCollector, AxeViolationsCollector):
     """Collector class to get accessibility violations from Axe-core JSON output."""
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:

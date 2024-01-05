@@ -42,13 +42,6 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
                                 "target": "1",
                                 "sources": {"s1": {"type": "sonarqube"}},
                             },
-                            "m23": {
-                                "tags": ["security"],
-                                "scale": "count",
-                                "type": "accessibility",
-                                "target": "1",
-                                "sources": {"s1": {"type": "sonarqube"}},
-                            },
                         },
                     },
                 },
@@ -58,7 +51,7 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         for report in self.reports["reports"]:
             for subject_uuid, subject in report.get("subjects", {}).items():
                 for metric_type in self.data_model["subjects"]["software"]["metrics"]:
-                    if metric_type not in ["violations", "accessibility", "loc"]:
+                    if metric_type not in ["violations", "loc"]:
                         self.entities.append(
                             {
                                 "key": f"{report['report_uuid']}:{subject_uuid}:{metric_type}",
