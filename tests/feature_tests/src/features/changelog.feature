@@ -80,7 +80,7 @@ Feature: changelog
     And the client creates a source
     Then the changelog reads
       """
-      Jane Doe added a new source to metric 'Accessibility violations' of subject 'Software' in report 'New report'.
+      Jane Doe added a new source to metric 'Violations' of subject 'Software' in report 'New report'.
       Jane Doe added a new metric to subject 'Software' in report 'New report'.
       Jane Doe created a new subject in report 'New report'.
       Jane Doe created a new report.
@@ -88,23 +88,23 @@ Feature: changelog
       """
     And the report changelog reads
       """
-      Jane Doe added a new source to metric 'Accessibility violations' of subject 'Software' in report 'New report'.
+      Jane Doe added a new source to metric 'Violations' of subject 'Software' in report 'New report'.
       Jane Doe added a new metric to subject 'Software' in report 'New report'.
       Jane Doe created a new subject in report 'New report'.
       Jane Doe created a new report.
       """
     And the subject changelog reads
       """
-      Jane Doe added a new source to metric 'Accessibility violations' of subject 'Software' in report 'New report'.
+      Jane Doe added a new source to metric 'Violations' of subject 'Software' in report 'New report'.
       Jane Doe added a new metric to subject 'Software' in report 'New report'.
       Jane Doe created a new subject in report 'New report'.
       """
     And the metric changelog reads
       """
-      Jane Doe added a new source to metric 'Accessibility violations' of subject 'Software' in report 'New report'.
+      Jane Doe added a new source to metric 'Violations' of subject 'Software' in report 'New report'.
       Jane Doe added a new metric to subject 'Software' in report 'New report'.
       """
     And the source changelog reads
       """
-      Jane Doe added a new source to metric 'Accessibility violations' of subject 'Software' in report 'New report'.
+      Jane Doe added a new source to metric 'Violations' of subject 'Software' in report 'New report'.
       """

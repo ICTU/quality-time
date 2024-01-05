@@ -20,7 +20,6 @@ source.""",
             mandatory=True,
             unit=Unit.NONE,
             metrics=[
-                "accessibility",
                 "commented_out_code",
                 "complex_units",
                 "dependencies",

@@ -18,20 +18,6 @@ VERSION_NUMBER_EXPLANATION_URLS = [
 ]
 
 METRICS = {
-    "accessibility": Metric(
-        name="Accessibility violations",
-        description="The number of accessibility violations in the user interface of the software.",
-        rationale="According to the W3C, 'Accessibility is essential for developers and organisations that want "
-        "to create high-quality websites and web tools, and not exclude people from using their products and "
-        "services' (1). Web accessibility evaluation tools can help determine if web content meets accessibility "
-        "standards. Typically, these tools evaluate against one or more accessibility standards, such as the "
-        "W3C Web Content Accessibility Guidelines, and report on the accessibility guidelines that are being "
-        "violated.",
-        rationale_urls=["https://www.w3.org/standards/webdesign/accessibility"],
-        unit=Unit.VIOLATIONS,
-        sources=["axecsv", "axe_core", "axe_html_reporter", "manual_number"],
-        tags=[Tag.ACCESSIBILITY],
-    ),
     "average_issue_lead_time": Metric(
         name="Average issue lead time",
         description="The average lead time for changes completed in a certain time period.",
@@ -715,15 +701,18 @@ change-your-default-branch).""",
     ),
     "violations": Metric(
         name="Violations",
-        description="The number of violations of programming rules in the software.",
-        rationale="The more programming rules are violated, the harder it may be to understand and maintain the "
-        "software.",
+        description="The number of violations of rules in the software.",
+        rationale="""Depending on what kind of rules or guideliens the source checks, violations may pose a risk for
+different quality characteristics of the software. For example, the more programming rules are violated, the harder
+it may be to understand and maintain the software (1, 2). And the more accessibility guidelines are violated, the
+harder it may be for users to use the software (3).
+""",
         rationale_urls=[
             "https://docs.sonarqube.org/latest/user-guide/rules/",
             "https://martinfowler.com/bliki/CodeSmell.html",
+            "https://www.w3.org/standards/webdesign/accessibility",
         ],
         unit=Unit.VIOLATIONS,
-        sources=["manual_number", "ojaudit", "sarif_json", "sonarqube"],
-        tags=[Tag.MAINTAINABILITY],
+        sources=["axecsv", "axe_core", "axe_html_reporter", "manual_number", "ojaudit", "sarif_json", "sonarqube"],
     ),
 }

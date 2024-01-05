@@ -8,7 +8,7 @@ Feature: metric
 
   Scenario: add metric
     When the client creates a metric
-    Then the metric type is "accessibility"
+    Then the metric type is "violations"
 
   Scenario: delete metric
     Given an existing metric
@@ -18,13 +18,13 @@ Feature: metric
   Scenario: copy metric
     Given an existing metric
     When the client copies the metric
-    Then the metric name is "Accessibility violations (copy)"
+    Then the metric name is "Violations (copy)"
 
   Scenario: copy metric with source
     Given an existing metric
     And an existing source
     When the client copies the metric
-    Then the metric name is "Accessibility violations (copy)"
+    Then the metric name is "Violations (copy)"
     And the metric contains 1 source
 
   Scenario: move metric to another report
@@ -42,13 +42,13 @@ Feature: metric
 
   Scenario: change metric type
     Given an existing metric
-    When the client changes the metric type to "violations"
-    Then the metric type is "violations"
+    When the client changes the metric type to "security_warnings"
+    Then the metric type is "security_warnings"
 
   Scenario: change metric type of metric with source
     Given an existing metric
     And an existing source
-    When the client changes the metric type to "violations"
+    When the client changes the metric type to "security_warnings"
     Then the metric contains 1 source
 
   Scenario: change metric type of metric with source and measurement
@@ -56,7 +56,7 @@ Feature: metric
     And an existing source
     When the collector measures "100"
     And the client waits a second
-    And the client changes the metric type to "violations"
+    And the client changes the metric type to "security_warnings"
     Then the metric contains 1 source
     And the metric status is "None"
 
@@ -65,7 +65,7 @@ Feature: metric
     And an existing source
     When the collector measures "100"
     And the client waits a second
-    And the client changes the metric type to "violations"
+    And the client changes the metric type to "security_warnings"
     Then the metric contains 1 source
     And the metric status is "None"
     When the client changes the metric accept_debt to "True"

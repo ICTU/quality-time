@@ -26,7 +26,6 @@ class Direction(StrEnum):
 class Tag(StrEnum):
     """Metric tags."""
 
-    ACCESSIBILITY = "accessibility"
     CI = "ci"
     MAINTAINABILITY = "maintainability"
     PERFORMANCE = "performance"

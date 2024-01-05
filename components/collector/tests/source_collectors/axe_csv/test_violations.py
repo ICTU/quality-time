@@ -5,11 +5,11 @@ from collector_utilities.functions import md5_hash
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
-class AxeCSVAccessibilityTest(SourceCollectorTestCase):
+class AxeCSVViolationsTest(SourceCollectorTestCase):
     """Unit tests for the Axe CSV collector for accessibility violations."""
 
     SOURCE_TYPE = "axecsv"
-    METRIC_TYPE = "accessibility"
+    METRIC_TYPE = "violations"
 
     def setUp(self):
         """Extend to set up test data."""

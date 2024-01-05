@@ -45,7 +45,6 @@ SUBJECTS = {
         name="Software",
         description="A custom software application or component.",
         metrics=[
-            "accessibility",
             "average_issue_lead_time",
             "change_failure_rate",
             "commented_out_code",

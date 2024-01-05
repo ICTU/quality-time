@@ -7,10 +7,10 @@ from collector_utilities.functions import md5_hash
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
-class AxeHTMLAccessibilityTest(SourceCollectorTestCase):
+class AxeHTMLViolationsTest(SourceCollectorTestCase):
     """Unit tests for the Axe HTML reporter collector for accessibility violations."""
 
-    METRIC_TYPE = "accessibility"
+    METRIC_TYPE = "violations"
     SOURCE_TYPE = "axe_html_reporter"
 
     expected_entities: list[dict[str, str]]

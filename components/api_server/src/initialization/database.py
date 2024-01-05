@@ -26,6 +26,7 @@ def init_database() -> Database:  # pragma: no feature-test-cover
     import_datamodel(database)
     initialize_secrets(database)
     initialize_reports_overview(database)
+    perform_migrations(database)
     if os.environ.get("LOAD_EXAMPLE_REPORTS", "True").lower() == "true":
         import_example_reports(database)
     return database
@@ -50,3 +51,38 @@ def create_indexes(database: Database) -> None:
         [("metric_uuid", pymongo.ASCENDING), ("has_error", pymongo.ASCENDING), ("start", pymongo.DESCENDING)],
     )
     database.measurements.create_indexes([period_index, latest_measurement_index, latest_successful_measurement_index])
+
+
+def perform_migrations(database: Database) -> None:  # pragma: no cover-behave
+    """Perform database migrations."""
+    change_accessibility_violation_metrics_to_violations(database)
+
+
+def change_accessibility_violation_metrics_to_violations(database: Database) -> None:  # pragma: no cover-behave
+    """Replace accessibility metrics with the violations metric."""
+    # Added after Quality-time v5.5.0, see https://github.com/ICTU/quality-time/issues/562
+    for report in database.reports.find(filter={"last": True, "deleted": {"$exists": False}}):
+        report_uuid = report["report_uuid"]
+        logging.info("Checking report for accessibility metrics: %s", report_uuid)
+        changed = False
+        for subject in report["subjects"].values():
+            for metric in subject["metrics"].values():
+                if metric["type"] == "accessibility":
+                    change_accessibility_violations_metric_to_violations(metric)
+                    changed = True
+        if changed:
+            logging.info("Updating report to change its accessibility metrics to violations metrics: %s", report_uuid)
+            report_id = report["_id"]
+            del report["_id"]
+            database.reports.replace_one({"_id": report_id}, report)
+        else:
+            logging.info("No accessibility metrics found in report: %s", report_uuid)
+
+
+def change_accessibility_violations_metric_to_violations(metric: dict) -> None:  # pragma: no cover-behave
+    """Change the accessibility violations metric to violations metric."""
+    metric["type"] = "violations"
+    if not metric.get("name"):
+        metric["name"] = "Accessibility violations"
+    if not metric.get("unit"):
+        metric["unit"] = "accessibility violations"

@@ -4,11 +4,11 @@ from .anchore.security_warnings import AnchoreSecurityWarnings
 from .anchore.source_up_to_dateness import AnchoreSourceUpToDateness
 from .anchore_jenkins_plugin.security_warnings import AnchoreJenkinsPluginSecurityWarnings
 from .anchore_jenkins_plugin.source_up_to_dateness import AnchoreJenkinsPluginSourceUpToDateness
-from .axe_core.accessibility import AxeCoreAccessibility
 from .axe_core.source_up_to_dateness import AxeCoreSourceUpToDateness
 from .axe_core.source_version import AxeCoreSourceVersion
-from .axe_csv.accessibility import AxeCSVAccessibility
-from .axe_html_reporter.accessibility import AxeHTMLReporterAccessibility
+from .axe_core.violations import AxeCoreViolations
+from .axe_csv.violations import AxeCSVViolations
+from .axe_html_reporter.violations import AxeHTMLReporterViolations
 from .azure_devops.average_issue_lead_time import AzureDevopsAverageIssueLeadTime
 from .azure_devops.failed_jobs import AzureDevopsFailedJobs
 from .azure_devops.issues import AzureDevopsIssues
