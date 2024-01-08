@@ -698,9 +698,9 @@ types-ldap3==2.9.13.15 \
     --hash=sha256:5f4fe29f5a84c629a6631a18d1b34e5f7b0bf75463f7ccdccfed0071bdfdc577 \
     --hash=sha256:e6af9ad2be2bb826867e0524c2a9ff7230e83316a0f64941118f6d626ecf5604
     # via api_server (pyproject.toml)
-types-pyasn1==0.5.0.20231222 \
-    --hash=sha256:4140ac0c74cd82a65e900a6199fed2648314c670018a45dac977a33ee6419a8e \
-    --hash=sha256:b5d91bc5e002d7d69d37f857fcd8f364102c957385dffa54009657c40763b20c
+types-pyasn1==0.5.0.20240106 \
+    --hash=sha256:80e38befb1ddbf90c58b6f9e5ce158df66c42c87764a6564b1b7b6dd340535f7 \
+    --hash=sha256:e6ad48f5a58afb32019cba86a0529cdd52c315495a19122b4823ba4ad5f3c45b
     # via types-ldap3
 types-requests==2.31.0.20231231 \
     --hash=sha256:0f8c0c9764773384122813548d9eea92a5c4e1f33ed54556b508968ec5065cee \
