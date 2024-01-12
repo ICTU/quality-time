@@ -44,10 +44,10 @@ class EntityAttribute(NamedModel):
     model_config = ConfigDict(use_enum_values=True)
 
     key: str | None = None
-    help: str | None = None  # noqa: A003
+    help: str | None = None
     url: str | None = None  # Which key to use to get the URL for this attribute
     color: dict[str, Color] | None = None
-    type: EntityAttributeType | None = None  # noqa: A003
+    type: EntityAttributeType | None = None
     alignment: EntityAttributeAligment | None = None  # If not given, the aligment is based on the attribute type
     pre: bool | None = None  # Should the attribute be formatted using <pre></pre>? Defaults to False
     visible: bool | None = None  # Should this attribute be visible in the UI? Defaults to True
