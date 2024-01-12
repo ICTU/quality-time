@@ -26,9 +26,9 @@ class Parameter(NamedModel):
     model_config = ConfigDict(validate_default=True)
 
     short_name: str = ""
-    help: str | None = None  # noqa: A003
+    help: str | None = None
     help_url: HttpUrl | None = None
-    type: ParameterType  # noqa: A003
+    type: ParameterType
     placeholder: str | None = None
     mandatory: bool = False
     default_value: str | list[str] = ""

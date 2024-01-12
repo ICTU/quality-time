@@ -39,7 +39,7 @@ class Subject(dict):
         return metrics
 
     @property
-    def type(self) -> str | None:  # noqa: A003
+    def type(self) -> str | None:
         """Return the type of the subject."""
         return str(self["type"]) if "type" in self else None
 

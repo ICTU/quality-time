@@ -11,19 +11,19 @@ from .meta.unit import Unit
 class DateParameter(Parameter):
     """Date parameter."""
 
-    type: ParameterType = ParameterType.DATE  # noqa: A003
+    type: ParameterType = ParameterType.DATE
 
 
 class StringParameter(Parameter):
     """String parameter."""
 
-    type: ParameterType = ParameterType.STRING  # noqa: A003
+    type: ParameterType = ParameterType.STRING
 
 
 class IntegerParameter(Parameter):
     """Integer parameter."""
 
-    type: ParameterType = ParameterType.INTEGER  # noqa: A003
+    type: ParameterType = ParameterType.INTEGER
     default_value: str | list[str] = "0"
     min_value: str = "0"
 
@@ -43,7 +43,7 @@ class URL(Parameter):
     short_name: str = "URL"
     mandatory: bool = True
     validate_on: list[str] = ["username", "password", "private_token"]
-    type: ParameterType = ParameterType.URL  # noqa: A003
+    type: ParameterType = ParameterType.URL
 
 
 class LandingURL(StringParameter):
@@ -58,20 +58,20 @@ class LandingURL(StringParameter):
 class SingleChoiceParameter(Parameter):
     """Single choice parameter."""
 
-    type: ParameterType = ParameterType.SINGLE_CHOICE  # noqa: A003
+    type: ParameterType = ParameterType.SINGLE_CHOICE
 
 
 class MultipleChoiceParameter(Parameter):
     """Multiple choice parameter."""
 
-    type: ParameterType = ParameterType.MULTIPLE_CHOICE  # noqa: A003
+    type: ParameterType = ParameterType.MULTIPLE_CHOICE
     default_value: str | list[str] = []
 
 
 class MultipleChoiceWithAdditionParameter(MultipleChoiceParameter):
     """Multiple choice parameter that allows the user to add additional options."""
 
-    type: ParameterType = ParameterType.MULTIPLE_CHOICE_WITH_ADDITION  # noqa: A003
+    type: ParameterType = ParameterType.MULTIPLE_CHOICE_WITH_ADDITION
     placeholder: str = "none"
 
 
@@ -87,7 +87,7 @@ class Password(Parameter):
 
     name: str = "Password for basic authentication"
     short_name: str = "password"
-    type: ParameterType = ParameterType.PASSWORD  # noqa: A003
+    type: ParameterType = ParameterType.PASSWORD
 
 
 class PrivateToken(Password):
@@ -124,7 +124,7 @@ class TestResult(MultipleChoiceParameter):
     """Test result parameter."""
 
     name: str = "Test results"
-    help: str = (  # noqa: A003
+    help: str = (
         "Limit which test results to count. Note: depending on which results are selected, the direction of the "
         "metric may need to be adapted. For example, when counting passed tests, more is better, but when counting "
         "failed tests, fewer is better."
@@ -138,7 +138,7 @@ class Upvotes(IntegerParameter):
 
     name: str = "Minimum number of upvotes"
     short_name: str = "minimum upvotes"
-    help: str = "Only count merge requests with fewer than the minimum number of upvotes."  # noqa: A003
+    help: str = "Only count merge requests with fewer than the minimum number of upvotes."
     unit: Unit = Unit.UPVOTES
     metrics: list[str] = ["merge_requests"]
 
@@ -173,7 +173,7 @@ class MergeRequestState(MultipleChoiceParameter):
 
     name: str = "Merge request states"
     short_name: str = "states"
-    help: str = "Limit which merge request states to count."  # noqa: A003
+    help: str = "Limit which merge request states to count."
     placeholder: str = "all states"
     metrics: list[str] = ["merge_requests"]
 
@@ -182,7 +182,7 @@ class FailureType(MultipleChoiceParameter):
     """Failure type parameter."""
 
     name: str = "Failure types"
-    help: str = "Limit which failure types to count as failed."  # noqa: A003
+    help: str = "Limit which failure types to count as failed."
     placeholder: str = "all failure types"
     metrics: list[str] = ["failed_jobs"]
 
