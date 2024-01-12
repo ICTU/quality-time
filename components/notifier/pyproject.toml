@@ -20,7 +20,7 @@ tools = [
     "bandit==1.7.6",
     "mypy==1.8.0",
     "pip-audit==2.6.3",
-    "ruff==0.1.11",
+    "ruff==0.1.12",
     "safety==2.3.5",
     "vulture==2.10"
 ]
