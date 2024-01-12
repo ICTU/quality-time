@@ -15,15 +15,9 @@ run pipx install --force `spec mypy`  # --force works around this bug: https://g
 run pipx inject mypy `spec pydantic`
 run $PIPX_BIN_DIR/mypy src --python-executable=$(which python)
 
-# The vale Docker image doesn't support the linux/arm64/v8 architecture, so use a locally installed vale if possible
-if ! vale -v &> /dev/null
-then
-    run docker run --rm -v $(pwd)/styles:/styles -v $(pwd):/docs -w /docs jdkato/vale sync
-    run docker run --rm -v $(pwd)/styles:/styles -v $(pwd):/docs -w /docs jdkato/vale --no-wrap src/*.md
-else
-    run vale sync
-    run vale --no-wrap src/*.md
-fi
+# Vale
+run pipx run `spec vale` sync
+run pipx run `spec vale` --no-wrap src/*.md
 
 # pip-audit
 unset PYTHONDEVMODE  # Suppress ResourceWarnings given by pip-audit in dev mode
