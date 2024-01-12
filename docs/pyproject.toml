@@ -26,6 +26,7 @@ tools = [
     "pydantic==2.5.3",  # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "ruff==0.1.11",
     "safety==2.3.5",
+    "vale==3.0.3.0",  # Documentation grammar and style checker
     "vulture==2.10"
 ]
 
