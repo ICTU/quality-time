@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is v4.10.0 or older, please read the v5.0.0 deployment notes first.
+
+### Added
+
+- In MS Teams notifications, have the mentioned metrics link to the respective metrics in the quality report. Closes [#7615](https://github.com/ICTU/quality-time/issues/7615).
+
 ## v5.6.0 - 2024-01-12
 
 ### Deployment notes

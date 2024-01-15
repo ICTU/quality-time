@@ -6,46 +6,43 @@ import pymsteams
 
 from models.notification import MetricNotificationData, Notification
 
-
-def notification_text(notification: Notification) -> str:
-    """Create and format the contents of the notification."""
-    nr_changed = len(notification.metrics)
-    plural_s = "s" if nr_changed > 1 else ""
-    markdown = f"{notification.report_title} has {nr_changed} metric{plural_s} that changed status:\n\n"
-    for subject_name in sorted({metric.subject_name for metric in notification.metrics}):
-        markdown += _subject_notification_text(notification, subject_name)
-    return markdown
+ICON_URL = "https://raw.githubusercontent.com/ICTU/quality-time/master/resources/icons/%s.png"
 
 
-def _subject_notification_text(notification: Notification, subject_name: str) -> str:
-    """Return the notification text for the subject."""
-    markdown = f"* {subject_name}:\n"
-    subject_metrics = [metric for metric in notification.metrics if metric.subject_name == subject_name]
-    for metric in sorted(subject_metrics, key=lambda metric: metric.metric_name):
-        markdown += _metric_notification_text(metric)
-    return markdown
-
-
-def _metric_notification_text(metric: MetricNotificationData) -> str:
-    """Return the notification text for the metric."""
+def metric_section(metric: MetricNotificationData, report_url: str) -> pymsteams.cardsection:
+    """Create a section for a metric status change."""
+    section = pymsteams.cardsection()
+    section.activityTitle(metric.metric_name)
+    section.activitySubtitle(metric.subject_name)
+    section.activityImage(ICON_URL % metric.status)
+    old_status = metric.old_metric_status
+    old_status_text = " (unchanged)" if metric.new_metric_status == old_status else f", was {old_status}"
+    section.addFact("Status:", f"{metric.new_metric_status}{old_status_text}")
+    unit = metric.metric_unit
+    unit_text = unit if (not unit or unit.startswith("%")) else f" {unit}"
     new_value = "?" if metric.new_metric_value is None else metric.new_metric_value
     old_value = "?" if metric.old_metric_value is None else metric.old_metric_value
-    unit = metric.metric_unit if metric.metric_unit.startswith("%") else f" {metric.metric_unit}"
-    old_value_text = " (unchanged)" if new_value == old_value else f", was {old_value}{unit}"
-    return (
-        f"  * *{metric.metric_name}* status is {metric.new_metric_status}, was {metric.old_metric_status}. "
-        f"Value is {new_value}{unit}{old_value_text}.\n"
-    )
+    old_value_text = " (unchanged)" if new_value == old_value else f", was {old_value}{unit_text}"
+    section.addFact("Value:", f"{new_value}{unit_text}{old_value_text}")
+    section.linkButton("View metric", f"{report_url}#{metric.metric_uuid}")
+    return section
+
+
+def create_connector_card(destination: str, notification: Notification) -> pymsteams.connectorcard:
+    """Create a connector card with the notification."""
+    card = pymsteams.connectorcard(destination)
+    card.title(f"Quality-time notifications for {notification.report_title}")
+    card.summary(notification.summary)
+    for metric in sorted(notification.metrics, key=lambda metric: metric.metric_name):
+        card.addSection(metric_section(metric, notification.report_url))
+    return card
 
 
 def send_notification(destination: str, notification: Notification) -> None:
     """Send notification to Microsoft Teams using a Webhook."""
     logging.info("Sending notification to configured teams webhook")
-    teams_message = pymsteams.connectorcard(destination)
-    teams_message.title("Quality-time notification")
-    teams_message.addLinkButton(f"Open the '{notification.report_title}' report", notification.report_url)
-    teams_message.text(notification_text(notification))
+    card = create_connector_card(destination, notification)
     try:
-        teams_message.send()
+        card.send()
     except Exception:
         logging.exception("Could not deliver notification")

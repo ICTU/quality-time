@@ -19,3 +19,10 @@ class Notification:
     def report_title(self) -> str:
         """Return the title of the report."""
         return str(self.report["title"])
+
+    @property
+    def summary(self) -> str:
+        """Return a summary of the notification."""
+        nr_changed = len(self.metrics)
+        plural_s = "s" if nr_changed > 1 else ""
+        return f"{self.report_title} has {nr_changed} metric{plural_s} that changed status"
