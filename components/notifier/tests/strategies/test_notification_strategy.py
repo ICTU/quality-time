@@ -105,7 +105,7 @@ class StrategiesTests(unittest.TestCase):
         """Test that a metric that has become red is included."""
         notifications = self.get_notifications(self.red_metric_measurements)
         self.assertEqual(
-            ["metric1", "red (target not met)"],
+            ["metric1", "target not met (red)"],
             [notifications[0].metrics[0].metric_name, notifications[0].metrics[0].new_metric_status],
         )
 

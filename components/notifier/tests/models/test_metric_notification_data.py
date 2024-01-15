@@ -24,16 +24,16 @@ class MetricNotificationDataModelTestCase(unittest.TestCase):
 
     def test_new_status(self):
         """Test that the new status is set correctly."""
-        new_status = MetricNotificationData(self.metric, self.measurements, self.subject).new_metric_status
-        self.assertEqual("red (target not met)", new_status)
+        notification_data = MetricNotificationData(self.metric, "metric_uuid", self.measurements, self.subject)
+        self.assertEqual("target not met (red)", notification_data.new_metric_status)
 
     def test_unknown_status(self):
         """Test that a recent measurement without status works."""
         self.measurements[-1]["count"]["status"] = None
-        new_status = MetricNotificationData(self.metric, self.measurements, self.subject).new_metric_status
-        self.assertEqual("white (unknown)", new_status)
+        notification_data = MetricNotificationData(self.metric, "metric_uuid", self.measurements, self.subject)
+        self.assertEqual("unknown (white)", notification_data.new_metric_status)
 
     def test_unknown_status_without_recent_measurements(self):
         """Test that a metric without recent measurements works."""
-        new_status = MetricNotificationData(self.metric, [], self.subject).new_metric_status
-        self.assertEqual("white (unknown)", new_status)
+        notification_data = MetricNotificationData(self.metric, "metric_uuid", [], self.subject)
+        self.assertEqual("unknown (white)", notification_data.new_metric_status)

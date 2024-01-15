@@ -28,12 +28,13 @@ class NotificationFinder:
                 for metric_uuid, metric in subject["metrics"].items():
                     metric_measurements = [m for m in measurements if m["metric_uuid"] == metric_uuid]
                     if self.status_changed(metric, metric_measurements, most_recent_measurement_seen):
-                        notable_metrics.append(MetricNotificationData(metric, metric_measurements, subject))
+                        notification_data = MetricNotificationData(metric, metric_uuid, metric_measurements, subject)
+                        notable_metrics.append(notification_data)
             if notable_metrics:
                 destinations = report.get("notification_destinations", {}).values()
                 notifications.extend(
                     [
-                        Notification(report, destination.get("report_url", ""), notable_metrics, destination)
+                        Notification(report, destination.get("report_url", "").strip("/"), notable_metrics, destination)
                         for destination in destinations
                     ],
                 )
