@@ -45,7 +45,9 @@ class MetricNotificationData:
 
     def __status(self, index: int) -> str:
         """Return the measurement status."""
-        return str(measurement[self.scale]["status"]) if (measurement := self.__measurement(index)) else "unknown"
+        if (measurement := self.__measurement(index)) and (status := measurement[self.scale]["status"]):
+            return str(status)
+        return "unknown"
 
     def __value(self, index: int) -> str | None:
         """Return the measurement value."""
