@@ -320,6 +320,22 @@ class MeasurementTest(MeasurementTestCase):
         )
         self.assertEqual("informative", measurement.status())
 
+    def test_status_debt_target_with_failing_source(self):
+        """Test the measurement status is debt target met if the metric has failing sources and tech debt accepted."""
+        measurement = self.measurement(
+            self.metric(accept_debt=True, debt_target="100"),
+            sources=[
+                {
+                    "source_uuid": SOURCE_ID,
+                    "value": None,
+                    "total": None,
+                    "parse_error": "Failed!",
+                    "connection_error": None,
+                },
+            ],
+        )
+        self.assertEqual("debt_target_met", measurement.status())
+
     def test_debt_target_expired(self):
         """Test that the debt target is considered to be expired when all issues have been done."""
         measurement = self.measurement(

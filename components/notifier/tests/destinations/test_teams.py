@@ -133,7 +133,7 @@ class BuildNotificationMessageTests(MsTeamsTestCase):
                 "Metric",
                 "unknown",
                 "unknown (white), was near target met (yellow)",
-                "? units, was 0 units",
+                "unknown, was 0 units",
                 "metric_uuid",
             )
         )

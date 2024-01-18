@@ -96,11 +96,9 @@ class ScaleMeasurement(dict):
 
     def __calculate_status_without_measurement(self) -> Status | None:
         """Determine the status of the measurement if there is no measurement value."""
-        # Allow for accepted debt if there is no measurement yet so that the fact that a metric does not have a
-        # source can be accepted as technical debt
-        if not self._metric.sources and self._metric.accept_debt() and not self._metric.debt_end_date_passed():
-            return "debt_target_met"
-        return None
+        # Allow for accepted debt if there is no measurement so that the fact that a metric does not have a
+        # source, or has a source that's unavailable, can be accepted as technical debt
+        return "debt_target_met" if self._metric.accept_debt() and not self._metric.debt_end_date_passed() else None
 
     @abstractmethod
     def _better_or_equal(self, value1: str | None, value2: str | None) -> bool:
