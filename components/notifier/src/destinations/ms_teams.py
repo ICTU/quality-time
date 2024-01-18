@@ -20,10 +20,10 @@ def metric_section(metric: MetricNotificationData, report_url: str) -> pymsteams
     section.addFact("Status:", f"{metric.new_metric_status}{old_status_text}")
     unit = metric.metric_unit
     unit_text = unit if (not unit or unit.startswith("%")) else f" {unit}"
-    new_value = "?" if metric.new_metric_value is None else metric.new_metric_value
-    old_value = "?" if metric.old_metric_value is None else metric.old_metric_value
-    old_value_text = " (unchanged)" if new_value == old_value else f", was {old_value}{unit_text}"
-    section.addFact("Value:", f"{new_value}{unit_text}{old_value_text}")
+    new_value = "unknown" if metric.new_metric_value is None else f"{metric.new_metric_value}{unit_text}"
+    old_value = "unknown" if metric.old_metric_value is None else f"{metric.old_metric_value}{unit_text}"
+    old_value_text = " (unchanged)" if metric.new_metric_value == metric.old_metric_value else f", was {old_value}"
+    section.addFact("Value:", f"{new_value}{old_value_text}")
     section.linkButton("View metric", f"{report_url}#{metric.metric_uuid}")
     return section
 
