@@ -26,7 +26,7 @@ tools = [
     "pip-audit==2.7.0",
     "pydantic==2.5.3",  # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "ruff==0.1.13",
-    "safety==3.0.0",
+    "safety==3.0.1",
     "vulture==2.10"
 ]
 
