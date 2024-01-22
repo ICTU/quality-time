@@ -176,9 +176,9 @@ defusedxml==0.7.1 \
     --hash=sha256:1bb3032db185915b62d7c6209c5a8792be6a32ab2fedacc84e01b52c51aa3e69 \
     --hash=sha256:a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61
     # via collector (pyproject.toml)
-dnspython==2.4.2 \
-    --hash=sha256:57c6fbaaeaaf39c891292012060beb141791735dbb4004798328fc2c467402d8 \
-    --hash=sha256:8dcfae8c7460a2f84b4072e26f1c9f4101ca20c071649cb7c34e8b6a93d58984
+dnspython==2.5.0 \
+    --hash=sha256:6facdf76b73c742ccf2d07add296f178e629da60be23ce4b0a9c927b1e02c3a6 \
+    --hash=sha256:a0034815a59ba9ae888946be7ccca8f7c157b286f8455b379c692efb51022a15
     # via pymongo
 frozenlist==1.4.1 \
     --hash=sha256:04ced3e6a46b4cfffe20f9ae482818e34eba9b5fb0ce4056e4cc9b6e212d09b7 \
