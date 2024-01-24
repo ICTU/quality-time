@@ -6,9 +6,8 @@ export function get_metric_measurements(metric_uuid, date) {
     return fetch_server_api('get', api_with_report_date(`measurements/${metric_uuid}`, date))
 }
 
-export function get_measurements(date, minDate) {
-    const minReportDate = minDate.toISOString().split("T")[0] + "T00:00:00.000Z"; // Ignore the time so we get all measurements for the min date
-    const api = api_with_report_date("measurements", date);
+export function get_measurements(minDate, maxDate) {
+    const api = api_with_report_date("measurements", maxDate);
     const sep = api.indexOf("?") < 0 ? "?" : "&";
-    return fetch_server_api('get', api + `${sep}min_report_date=${minReportDate}`);
+    return fetch_server_api('get', api + `${sep}min_report_date=${minDate.toISOString()}`);
 }

@@ -20,7 +20,7 @@ function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
     nrDates = nrDates ?? 1;
     const columnDates = []
     for (let offset = 0; offset < nrDates * intervalLength; offset += intervalLength) {
-        let date = new Date(baseDate.getTime());
+        let date = new Date(baseDate);
         date.setDate(date.getDate() - offset);
         columnDates.push(date)
     }
@@ -46,8 +46,11 @@ export function PageContent({
     const dates = getColumnDates(report_date, settings.dateInterval.value, settings.dateOrder.value, settings.nrDates.value)
     const [measurements, setMeasurements] = useState([]);
     useEffect(() => {
-        const minReportDate = dates.slice().sort((d1, d2) => { return d1.getTime() - d2.getTime() }).at(0);
-        get_measurements(report_date, minReportDate).then(json => {
+        const minDate = dates.slice().sort((d1, d2) => { return d1.getTime() - d2.getTime() }).at(0);
+        minDate.setHours(0, 0, 0, 0)
+        const maxDate = report_date ? new Date(report_date) : new Date();
+        maxDate.setHours(23, 59, 59, 999)
+        get_measurements(minDate, maxDate).then(json => {
             setMeasurements(json.measurements ?? [])
         })
         // eslint-disable-next-line

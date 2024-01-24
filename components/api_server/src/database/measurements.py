@@ -40,7 +40,8 @@ def measurements_in_period(database: Database, min_iso_timestamp: str, max_iso_t
     """Return recent measurements within the specified period, without source details and issue status."""
     # Return measurements that partially or completely overlap with the period, meaning they have their start before
     # the end of the period (max_iso_timestamp) and their end after the start of the period (min_iso_timestamp):
-    measurement_filter = {"start": {"$lte": max_iso_timestamp or iso_timestamp()}, "end": {"$gte": min_iso_timestamp}}
+    now = iso_timestamp()
+    measurement_filter = {"start": {"$lte": max_iso_timestamp or now}, "end": {"$gte": min_iso_timestamp or now}}
     return list(database.measurements.find(measurement_filter, sort=START_ASCENDING, projection=NO_MEASUREMENT_DETAILS))
 
 
