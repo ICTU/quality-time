@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is v4.10.0 or older, please read the v5.0.0 deployment notes first.
 
+### Fixed
+
+- When time traveling, show the most recent measurements of the selected date instead of the earliest measurements of the selected date. Fixes [#7891](https://github.com/ICTU/quality-time/issues/7891).
+
 ### Added
 
 - In MS Teams notifications, have the mentioned metrics link to the respective metrics in the quality report. Closes [#7615](https://github.com/ICTU/quality-time/issues/7615).

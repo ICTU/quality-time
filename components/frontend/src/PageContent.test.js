@@ -18,9 +18,14 @@ jest.mock('./api/fetch_server_api', () => {
 
 beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers("modern");
     mockGetAnimations()
     history.push("")
 });
+
+afterEach(() => {
+    jest.useRealTimers();
+})
 
 async function renderPageContent(
     {
@@ -67,25 +72,55 @@ it('shows the loading spinner', async () => {
     expect(screen.getAllByLabelText(/Loading/).length).toBe(1)
 })
 
+function expectedReportDate(date) {
+    const reportDate = new Date(date)
+    reportDate.setHours(23, 59, 59, 999)
+    return reportDate
+}
+
+function expectedMinReportDate(date, offset) {
+    const minReportDate = new Date(date)
+    minReportDate.setDate(minReportDate.getDate() - offset)
+    minReportDate.setHours(0, 0, 0, 0)
+    return minReportDate
+}
+
+function checkMeasurementsCall(date, offset = 0) {
+    const reportDate = expectedReportDate(date)
+    const minReportDate = expectedMinReportDate(reportDate, offset)
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
+        "get", `measurements?report_date=${reportDate.toISOString()}&min_report_date=${minReportDate.toISOString()}`
+    );
+}
+
+it('fetches measurements', async () => {
+    const mockedDate = new Date("2022-04-27T16:00:05+0000");
+    jest.setSystemTime(mockedDate);
+    await renderPageContent({ report_date: null })
+    checkMeasurementsCall(mockedDate)
+})
+
 it('fetches measurements if nr dates > 1', async () => {
+    const mockedDate = new Date("2022-04-27T16:00:05+0000");
+    jest.setSystemTime(mockedDate);
     history.push("?date_interval=1&nr_dates=2")
     await renderPageContent()
-    const expectedDate = new Date()
-    expectedDate.setDate(expectedDate.getDate() - 1);
-    const expectedDateStr = expectedDate.toISOString().split("T")[0] + "T00:00:00.000Z"
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", `measurements?min_report_date=${expectedDateStr}`);
+    checkMeasurementsCall(mockedDate, 1)
+})
+
+it('fetches measurements if time traveling', async () => {
+    const mockedDate = new Date("2022-04-27T16:00:05+0000");
+    jest.setSystemTime(mockedDate);
+    const reportDate = new Date(2021, 3, 25)
+    await renderPageContent({ report_date: reportDate })
+    checkMeasurementsCall(reportDate)
 })
 
 it('fetches measurements if nr dates > 1 and time traveling', async () => {
+    const mockedDate = new Date("2022-04-27T16:00:05+0000");
+    jest.setSystemTime(mockedDate);
     history.push("?date_interval=1&nr_dates=2")
-    await renderPageContent({ report_date: new Date(Date.UTC(2022, 3, 26)) })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "measurements?report_date=2022-04-26T00:00:00.000Z&min_report_date=2022-04-25T00:00:00.000Z");
-})
-
-it('fetches measurements if nr dates == 1', async () => {
-    history.push("?nr_dates=1")
-    await renderPageContent()
-    const expectedDate = new Date()
-    const expectedDateStr = expectedDate.toISOString().split("T")[0] + "T00:00:00.000Z"
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", `measurements?min_report_date=${expectedDateStr}`);
+    const reportDate = new Date(2022, 3, 25)
+    await renderPageContent({ report_date: reportDate })
+    checkMeasurementsCall(reportDate, 1)
 })
