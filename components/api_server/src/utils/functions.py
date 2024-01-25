@@ -9,10 +9,8 @@ from typing import cast, TypeVar
 
 import bottle
 import requests
-from cryptography.hazmat.backends import default_backend, openssl
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from cryptography.fernet import Fernet
 
 # Bandit complains that "Using autolink_html to parse untrusted XML data is known to be vulnerable to XML attacks",
@@ -122,8 +120,8 @@ def asymmetric_encrypt(public_key: str, message: str) -> tuple[str, str]:
 
     fernet_key, fernet_token = symmetric_encrypt(message_bytes)
 
-    public_key_obj = serialization.load_pem_public_key(public_key_bytes, backend=default_backend())
-    public_key_obj = cast(openssl.rsa.RSAPublicKey, public_key_obj)
+    public_key_obj = serialization.load_pem_public_key(public_key_bytes)
+    public_key_obj = cast(rsa.RSAPublicKey, public_key_obj)
 
     encrypted_key = public_key_obj.encrypt(
         fernet_key,
@@ -142,8 +140,8 @@ def asymmetric_decrypt(private_key: str, fernet_key_message: tuple[str, str]) ->
     fernet_key_bytes = b64decode(fernet_key_message[0].encode())
     message_bytes = fernet_key_message[1].encode()
 
-    private_key_obj = serialization.load_pem_private_key(private_key_bytes, None, default_backend())
-    private_key_obj = cast(openssl.rsa.RSAPrivateKey, private_key_obj)
+    private_key_obj = serialization.load_pem_private_key(private_key_bytes, None)
+    private_key_obj = cast(rsa.RSAPrivateKey, private_key_obj)
 
     decrypted_key = private_key_obj.decrypt(
         fernet_key_bytes,

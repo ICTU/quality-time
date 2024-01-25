@@ -1,6 +1,5 @@
 """Generate a public and private key pair if it doesn't already exist."""
 
-from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from pymongo.database import Database
@@ -19,7 +18,7 @@ def initialize_secrets(database: Database) -> None:
         return  # Secrets already exist, no action necessary
 
     # Create a new public/private key pair, encode it, and insert it into the database
-    private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096, backend=default_backend())
+    private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
     public_key = private_key.public_key()
 
     private_key_bytes = private_key.private_bytes(
