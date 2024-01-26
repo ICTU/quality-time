@@ -47,9 +47,7 @@ export function PageContent({
     const [measurements, setMeasurements] = useState([]);
     useEffect(() => {
         const minDate = dates.slice().sort((d1, d2) => { return d1.getTime() - d2.getTime() }).at(0);
-        minDate.setHours(0, 0, 0, 0)
         const maxDate = report_date ? new Date(report_date) : new Date();
-        maxDate.setHours(23, 59, 59, 999)
         get_measurements(minDate, maxDate).then(json => {
             setMeasurements(json.measurements ?? [])
         })

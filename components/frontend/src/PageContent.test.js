@@ -72,24 +72,11 @@ it('shows the loading spinner', async () => {
     expect(screen.getAllByLabelText(/Loading/).length).toBe(1)
 })
 
-function expectedReportDate(date) {
-    const reportDate = new Date(date)
-    reportDate.setHours(23, 59, 59, 999)
-    return reportDate
-}
-
-function expectedMinReportDate(date, offset) {
+function checkMeasurementsCall(date, offset = 0) {
     const minReportDate = new Date(date)
     minReportDate.setDate(minReportDate.getDate() - offset)
-    minReportDate.setHours(0, 0, 0, 0)
-    return minReportDate
-}
-
-function checkMeasurementsCall(date, offset = 0) {
-    const reportDate = expectedReportDate(date)
-    const minReportDate = expectedMinReportDate(reportDate, offset)
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
-        "get", `measurements?report_date=${reportDate.toISOString()}&min_report_date=${minReportDate.toISOString()}`
+        "get", `measurements?report_date=${date.toISOString()}&min_report_date=${minReportDate.toISOString()}`
     );
 }
 
