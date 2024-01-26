@@ -23,6 +23,10 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 - In MS Teams notifications, have the mentioned metrics link to the respective metrics in the quality report. Closes [#7615](https://github.com/ICTU/quality-time/issues/7615).
 - When measuring security warnings with Cargo audit JSON reports as source, include warnings (unsound and yanked packages) in addition to vulnerabilities. Also add a parameter to select which warning types to count. Closes [#7889](https://github.com/ICTU/quality-time/issues/7889).
 
+### Removed
+
+- Don't load the Next-action example report and remove it from the code base; the Next-action project has been discontinued. Note, existing Next-action example reports are not deleted. Closes [#7936](https://github.com/ICTU/quality-time/issues/7936).
+
 ## v5.6.0 - 2024-01-12
 
 ### Deployment notes
