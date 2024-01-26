@@ -105,6 +105,8 @@ class App extends Component {
         if (date && toISODateStringInCurrentTZ(date) < toISODateStringInCurrentTZ(new Date())) {
             // We're time traveling, set the report_date query parameter
             parsed.set("report_date", toISODateStringInCurrentTZ(date));
+            const now = new Date()
+            date.setHours(now.getHours(), now.getMinutes())
             if (!this.state.report_date) {
                 // We're time traveling from the present, warn the user
                 showMessage(
