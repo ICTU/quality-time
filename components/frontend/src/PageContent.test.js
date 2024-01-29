@@ -75,6 +75,7 @@ it('shows the loading spinner', async () => {
 function checkMeasurementsCall(date, offset = 0) {
     const minReportDate = new Date(date)
     minReportDate.setDate(minReportDate.getDate() - offset)
+    minReportDate.setHours(minReportDate.getHours() - 1)
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
         "get", `measurements?report_date=${date.toISOString()}&min_report_date=${minReportDate.toISOString()}`
     );
