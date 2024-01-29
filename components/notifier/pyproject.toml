@@ -2,13 +2,13 @@
 name = "notifier"
 version = "5.7.0-rc.2"
 dependencies = [
-    "aiohttp==3.9.1",
+    "aiohttp==3.9.2",
     "pymsteams==0.2.2"
 ]
 
 [project.optional-dependencies]
 dev = [
-    "coverage==7.4.0",
+    "coverage==7.4.1",
     "mongomock==4.1.2",
     "pip==23.3.2",
     "pipx==1.4.3",
