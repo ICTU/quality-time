@@ -218,9 +218,9 @@ idna==3.6 \
     --hash=sha256:9ecdbbd083b06798ae1e86adcbfe8ab1479cf864e4ee30fe4e46a003d12491ca \
     --hash=sha256:c05567e9c24a6b9faaa835c4821bad0590fbb9d5779e7caa6e1cc4978e7eb24f
     # via requests
-parse==1.20.0 \
-    --hash=sha256:5e171b001452fa9f004c5a58a93525175468daf69b493e9fa915347ed7ff6968 \
-    --hash=sha256:bd28bae37714b45d5894d77160a16e2be36b64a3b618c81168b3684676aa498b
+parse==1.20.1 \
+    --hash=sha256:09002ca350ad42e76629995f71f7b518670bcf93548bdde3684fd55d2be51975 \
+    --hash=sha256:76ddd5214255ae711db4c512be636151fbabaa948c6f30115aecc440422ca82c
     # via
     #   behave
     #   parse-type
