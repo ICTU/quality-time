@@ -19,7 +19,7 @@
     "react-toastify": "^10.0.4",
     "semantic-ui-react": "^2.1.5",
     "use-local-storage-state": "^19.1.0",
-    "victory": "^36.8.2"
+    "victory": "^36.8.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -41,7 +41,7 @@
   ],
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@testing-library/jest-dom": "^6.3.0",
+    "@testing-library/jest-dom": "^6.4.0",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.2",
     "react-scripts": "5.0.1",
