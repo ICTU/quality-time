@@ -63,6 +63,7 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
         self.set_source_parameter("file_path", "")
         pipeline_json = [
             {
+                "created_at": "2020-11-24T10:00:00Z",
                 "updated_at": "2020-11-24T10:00:00Z",
                 "ref": "branch",
                 "status": "success",
@@ -90,5 +91,8 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
     async def test_pipeline_landing_url_on_failure(self):
         """Test that the landing url is the API url when GitLab cannot be reached."""
         self.set_source_parameter("file_path", "")
-        response = await self.collect(get_request_json_side_effect=[ConnectionError])
-        self.assert_measurement(response, landing_url="https://gitlab", parse_error="Traceback")
+        with patch("shared.utils.date_time.datetime", wraps=datetime) as mock_dt:
+            mock_dt.now.return_value = datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC)
+            response = await self.collect(get_request_json_side_effect=[ConnectionError])
+        api_url = "https://gitlab/api/v4/projects/namespace%2Fproject/pipelines?updated_after=2023-12-25&per_page=100"
+        self.assert_measurement(response, landing_url=api_url, parse_error="Traceback")

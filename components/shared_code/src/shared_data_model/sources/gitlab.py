@@ -7,6 +7,7 @@ from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     URL,
     Branch,
+    Branches,
     BranchesToIgnore,
     Days,
     FailureType,
@@ -24,6 +25,7 @@ ALL_GITLAB_METRICS = [
     "failed_jobs",
     "job_runs_within_time_period",
     "merge_requests",
+    "pipeline_duration",
     "source_up_to_dateness",
     "source_version",
     "unmerged_branches",
@@ -103,6 +105,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
                 "change_failure_rate",
                 "failed_jobs",
                 "job_runs_within_time_period",
+                "pipeline_duration",
                 "merge_requests",
                 "source_up_to_dateness",
                 "unmerged_branches",
@@ -122,6 +125,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             metrics=["source_up_to_dateness"],
         ),
         "branch": Branch(help_url=GITLAB_BRANCH_HELP_URL),
+        "branches": Branches(help_url=GITLAB_BRANCH_HELP_URL),
         "branches_to_ignore": BranchesToIgnore(help_url=GITLAB_BRANCH_HELP_URL),
         "refs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Branches and tags to ignore (regular expressions, branch names or tag names)",
@@ -160,6 +164,12 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
                 "unused_jobs",
             ],
         ),
+        "lookback_days_pipelines": Days(
+            name="Number of days to look back for selecting pipelines",
+            short_name="number of days to look back",
+            default_value="7",
+            metrics=["pipeline_duration"],
+        ),
         "merge_request_state": MergeRequestState(values=["opened", "locked", "merged", "closed"]),
         "approval_state": MultipleChoiceParameter(
             name="Approval states to include (requires GitLab Premium)",
@@ -188,7 +198,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             ],
             api_values={"waiting for resource": "waiting_for_resource"},
             placeholder="all pipeline statuses",
-            metrics=["source_up_to_dateness"],
+            metrics=["pipeline_duration", "source_up_to_dateness"],
         ),
         "pipeline_triggers_to_include": MultipleChoiceParameter(
             name="Pipeline triggers to include",
@@ -218,7 +228,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
                 "web-IDE": "webide",
             },
             placeholder="all pipeline triggers",
-            metrics=["source_up_to_dateness"],
+            metrics=["pipeline_duration", "source_up_to_dateness"],
         ),
         "upvotes": Upvotes(),
         "target_branches_to_include": TargetBranchesToInclude(help_url=GITLAB_BRANCH_HELP_URL),

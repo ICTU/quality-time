@@ -1,15 +1,17 @@
 """GitLab collector base classes."""
 
 from abc import ABC
+from dataclasses import dataclass, fields
 from datetime import date, datetime, timedelta
-from typing import TypedDict, cast
+from typing import cast
 
 from shared.utils.date_time import now
 
 from base_collectors import SourceCollector
 from collector_utilities.date_time import parse_datetime
+from collector_utilities.exceptions import CollectorError
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import URL, Job, Response
+from collector_utilities.type import URL, Job
 from model import Entities, Entity, SourceResponses
 
 
@@ -123,15 +125,31 @@ class GitLabJobsBase(GitLabProjectBase):
         return parse_datetime(job.get("finished_at") or job["created_at"]).date()
 
 
-class Pipeline(TypedDict):
-    """GitLab pipeline JSON."""
+@dataclass
+class Pipeline:
+    """GitLab pipeline JSON. See https://docs.gitlab.com/ee/api/pipelines.html."""
 
-    created_at: str
+    id: int
+    project_id: int
     ref: str
-    source: str
     status: str
+    source: str
+    created_at: str
     updated_at: str
     web_url: str
+    duration: int = 0  # Seconds
+
+    def __init__(self, **kwargs) -> None:
+        """Override to ignore unknown fields so the caller does not need to weed the GitLab pipeline JSON."""
+        field_names = [field.name for field in fields(self)]
+        for key, value in kwargs.items():
+            if key in field_names:
+                setattr(self, key, value)
+
+    @property
+    def datetime(self) -> datetime:
+        """Return the datetime of the pipeline."""
+        return parse_datetime(self.updated_at or self.created_at)
 
 
 class GitLabPipelineBase(GitLabProjectBase):
@@ -139,33 +157,34 @@ class GitLabPipelineBase(GitLabProjectBase):
 
     async def _api_url(self) -> URL:
         """Override to return the pipeline API."""
-        lookback_date = (now() - timedelta(days=int(cast(str, self._parameter("lookback_days"))))).date()
+        lookback_date = (now() - timedelta(days=int(cast(str, self._parameter("lookback_days_pipelines"))))).date()
         return await self._gitlab_api_url(f"pipelines?updated_after={lookback_date}")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
-        """Override to return a landing URL for the most recent pipeline."""
-        urls = []
+        """Override to return a landing URL for the first pipeline."""
+        pipelines = await self._pipelines(responses)
+        return URL(pipelines[0].web_url)
+
+    async def _pipelines(self, responses: SourceResponses) -> list[Pipeline]:
+        """Get the pipelines from the responses."""
+        pipelines = []
         try:
             for response in responses:
-                pipelines = await self._pipelines(response)
-                urls.extend([(self._datetime(pipeline), pipeline["web_url"]) for pipeline in pipelines])
+                json = await response.json()
+                # The GitLab pipelines endpoint returns a list or, if a pipeline id is passed, one pipeline. Harmonize:
+                json_list = json if isinstance(json, list) else [json]
+                pipelines.extend([Pipeline(**pipeline) for pipeline in json_list])
         except StopAsyncIteration:
             pass
-        return URL(max(urls, default=(None, await super()._landing_url(responses)))[1])
-
-    async def _pipelines(self, response: Response) -> list[Pipeline]:
-        """Get the pipelines from the response."""
-        return [pipeline for pipeline in await response.json() if self._include_pipeline(pipeline)]
+        if pipelines := [pipeline for pipeline in pipelines if self._include_pipeline(pipeline)]:
+            return pipelines
+        error_message = "No pipelines found within the lookback period"
+        raise CollectorError(error_message)
 
     def _include_pipeline(self, pipeline: Pipeline) -> bool:
         """Return whether this pipeline should be considered."""
-        return (
-            pipeline["ref"] == self._parameter("branch")
-            and pipeline["status"] in self._parameter("pipeline_statuses_to_include")
-            and pipeline["source"] in self._parameter("pipeline_triggers_to_include")
-        )
-
-    @staticmethod
-    def _datetime(pipeline: Pipeline) -> datetime:
-        """Return the datetime of the pipeline."""
-        return parse_datetime(pipeline.get("updated_at") or pipeline["created_at"])
+        branches = self._parameter("branches")
+        matches_branches = match_string_or_regular_expression(pipeline.ref, branches) if branches else True
+        matches_status = pipeline.status in self._parameter("pipeline_statuses_to_include")
+        matches_source = pipeline.source in self._parameter("pipeline_triggers_to_include")
+        return matches_branches and matches_status and matches_source

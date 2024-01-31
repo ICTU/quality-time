@@ -37,7 +37,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
     async def collect(  # noqa: PLR0913
         self,
         *,
-        get_request_json_return_value: dict | None = None,
+        get_request_json_return_value: dict | list | None = None,
         get_request_json_side_effect=None,
         get_request_side_effect=None,
         get_request_content="",
@@ -68,7 +68,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
 
     @staticmethod
     def __get_response(  # noqa: PLR0913
-        json_return_value: dict | None,
+        json_return_value: dict | list | None,
         json_side_effect,
         content,
         text: str,

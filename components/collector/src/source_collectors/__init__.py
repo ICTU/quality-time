@@ -47,6 +47,7 @@ from .gitlab.change_failure_rate import GitLabChangeFailureRate
 from .gitlab.failed_jobs import GitLabFailedJobs
 from .gitlab.job_runs_within_time_period import GitLabJobRunsWithinTimePeriod
 from .gitlab.merge_requests import GitLabMergeRequests
+from .gitlab.pipeline_duration import GitLabPipelineDuration
 from .gitlab.source_up_to_dateness import GitLabSourceUpToDateness
 from .gitlab.source_version import GitLabSourceVersion
 from .gitlab.unmerged_branches import GitLabUnmergedBranches
