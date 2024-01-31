@@ -20,6 +20,10 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 - When measuring source up-to-dateness with GitLab as pipelines, if there are no pipelines in the lookback period, don't show the number of days since 1-1-1970 as value, but show an error. Fixes [#7947](https://github.com/ICTU/quality-time/issues/7947).
 - When manually exporting a report to PDF, the report header would not be collapsed before generating the PDF. Prevent the need for collapsing the header by moving the PDF button to the menu bar. Fixes [#8054](https://github.com/ICTU/quality-time/issues/8054).
 
+### Added
+
+- Add a new metric 'CI-pipeline duration'. Supported source is GitLab CI (Jenkins and Azure DevOps will follow later). Partially implements [#6423](https://github.com/ICTU/quality-time/issues/6423).
+
 ## v5.7.0 - 2024-01-31
 
 ### Deployment notes

@@ -12,7 +12,6 @@ import aiohttp
 
 from base_collectors import SourceCollector, TimePassedCollector
 from collector_utilities.date_time import days_ago, parse_datetime
-from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL, Response, Value
 from model import SourceMeasurement, SourceResponses
 
@@ -81,17 +80,14 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabPipelineBase):
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to get the date and time of the pipeline."""
-        datetimes = [self._datetime(pipeline) for pipeline in await self._pipelines(response)]
+        pipelines = await self._pipelines(SourceResponses(responses=[response]))
+        datetimes = [pipeline.datetime for pipeline in pipelines]
         return self.mininum(datetimes)
 
     @staticmethod
     def mininum(date_times: Sequence[datetime]) -> datetime:
         """Override to return the newest datetime."""
-        try:
-            return max(date_times)
-        except ValueError:
-            message = "No pipelines found within the lookback period"
-            raise CollectorError(message) from None
+        return max(date_times)
 
 
 class GitLabSourceUpToDateness(SourceCollector, ABC):

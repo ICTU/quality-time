@@ -151,6 +151,15 @@ class Branch(StringParameter):
     metrics: list[str] = ["source_up_to_dateness"]
 
 
+class Branches(MultipleChoiceWithAdditionParameter):
+    """Branches parameter."""
+
+    name: str = "Branches (regular expressions or branch names)"
+    short_name: str = "branches"
+    placeholder: str = "all branches"
+    metrics: list[str] = ["pipeline_duration"]
+
+
 class BranchesToIgnore(MultipleChoiceWithAdditionParameter):
     """Branches to ignore parameter."""
 

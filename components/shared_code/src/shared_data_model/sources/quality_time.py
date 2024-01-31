@@ -75,6 +75,7 @@ QUALITY_TIME = Source(
             values=[
                 "Average issue lead time",
                 "Change failure rate",
+                "CI-pipeline duration",
                 "Commented out code",
                 "Complex units",
                 "Dependencies",
@@ -116,6 +117,7 @@ QUALITY_TIME = Source(
             api_values={
                 "Average issue lead time": "average_issue_lead_time",
                 "Change failure rate": "change_failure_rate",
+                "CI-pipeline duration": "pipeline_duration",
                 "Commented out code": "commented_out_code",
                 "Complex units": "complex_units",
                 "Dependencies": "dependencies",
