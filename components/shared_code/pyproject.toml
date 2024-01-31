@@ -1,6 +1,6 @@
 [project]
 name = "shared_code"
-version = "5.7.0-rc.3"
+version = "5.7.0"
 dependencies = [
     "bottle==0.12.25",
     "packaging==23.2",
