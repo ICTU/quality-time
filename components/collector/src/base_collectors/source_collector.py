@@ -168,7 +168,7 @@ class SourceCollector(ABC):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Parse the entities from the responses."""
-        return Entities()  # pragma: no cover
+        return Entities()
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the entity in the measurement."""
@@ -176,11 +176,11 @@ class SourceCollector(ABC):
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Parse the value from the responses."""
-        return None  # pragma: no cover
+        return None
 
     async def _parse_total(self, responses: SourceResponses) -> Value:
         """Parse the total from the responses."""
-        return "100"  # pragma: no cover
+        return "100"
 
     async def __safely_parse_issue_status(self, responses: SourceResponses) -> IssueStatus:
         """Parse the issue status from the source responses, without failing.
