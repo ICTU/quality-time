@@ -1,7 +1,7 @@
 """GitLab collector base classes."""
 
 from abc import ABC
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import cast
 
 from shared.utils.date_time import now
@@ -121,3 +121,42 @@ class GitLabJobsBase(GitLabProjectBase):
     def _build_date(job: Job) -> date:
         """Return the build date of the job."""
         return parse_datetime(job.get("finished_at") or job["created_at"]).date()
+
+
+class GitLabPipelineBase(GitLabProjectBase):
+    """Base class for GitLab pipeline collectors."""
+
+    async def _api_url(self) -> URL:
+        """Override to return the pipeline API."""
+        lookback_date = (now() - timedelta(days=int(cast(str, self._parameter("lookback_days"))))).date()
+        return await self._gitlab_api_url(f"pipelines?updated_after={lookback_date}")
+
+    async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Override to return a landing URL for the most recent pipeline."""
+        urls = []
+        try:
+            for response in responses:
+                pipelines = await response.json()
+                urls.extend(
+                    [
+                        (self._datetime(pipeline), pipeline["web_url"])
+                        for pipeline in pipelines
+                        if self._include_pipeline(pipeline)
+                    ],
+                )
+        except StopAsyncIteration:
+            pass
+        return max(urls, default=(None, await super()._landing_url(responses)))[1]
+
+    def _include_pipeline(self, pipeline) -> bool:
+        """Return whether this pipeline should be considered."""
+        return (
+            pipeline["ref"] == self._parameter("branch")
+            and pipeline["status"] in self._parameter("pipeline_statuses_to_include")
+            and pipeline["source"] in self._parameter("pipeline_triggers_to_include")
+        )
+
+    @staticmethod
+    def _datetime(pipeline) -> datetime:
+        """Return the datetime of the pipeline."""
+        return parse_datetime(pipeline.get("updated_at") or pipeline["created_at"])
