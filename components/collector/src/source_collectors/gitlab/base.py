@@ -2,14 +2,14 @@
 
 from abc import ABC
 from datetime import date, datetime, timedelta
-from typing import cast
+from typing import TypedDict, cast
 
 from shared.utils.date_time import now
 
 from base_collectors import SourceCollector
 from collector_utilities.date_time import parse_datetime
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import URL, Job
+from collector_utilities.type import URL, Job, Response
 from model import Entities, Entity, SourceResponses
 
 
@@ -123,6 +123,17 @@ class GitLabJobsBase(GitLabProjectBase):
         return parse_datetime(job.get("finished_at") or job["created_at"]).date()
 
 
+class Pipeline(TypedDict):
+    """GitLab pipeline JSON."""
+
+    created_at: str
+    ref: str
+    source: str
+    status: str
+    updated_at: str
+    web_url: str
+
+
 class GitLabPipelineBase(GitLabProjectBase):
     """Base class for GitLab pipeline collectors."""
 
@@ -136,19 +147,17 @@ class GitLabPipelineBase(GitLabProjectBase):
         urls = []
         try:
             for response in responses:
-                pipelines = await response.json()
-                urls.extend(
-                    [
-                        (self._datetime(pipeline), pipeline["web_url"])
-                        for pipeline in pipelines
-                        if self._include_pipeline(pipeline)
-                    ],
-                )
+                pipelines = await self._pipelines(response)
+                urls.extend([(self._datetime(pipeline), pipeline["web_url"]) for pipeline in pipelines])
         except StopAsyncIteration:
             pass
-        return max(urls, default=(None, await super()._landing_url(responses)))[1]
+        return URL(max(urls, default=(None, await super()._landing_url(responses)))[1])
 
-    def _include_pipeline(self, pipeline) -> bool:
+    async def _pipelines(self, response: Response) -> list[Pipeline]:
+        """Get the pipelines from the response."""
+        return [pipeline for pipeline in await response.json() if self._include_pipeline(pipeline)]
+
+    def _include_pipeline(self, pipeline: Pipeline) -> bool:
         """Return whether this pipeline should be considered."""
         return (
             pipeline["ref"] == self._parameter("branch")
@@ -157,6 +166,6 @@ class GitLabPipelineBase(GitLabProjectBase):
         )
 
     @staticmethod
-    def _datetime(pipeline) -> datetime:
+    def _datetime(pipeline: Pipeline) -> datetime:
         """Return the datetime of the pipeline."""
         return parse_datetime(pipeline.get("updated_at") or pipeline["created_at"])

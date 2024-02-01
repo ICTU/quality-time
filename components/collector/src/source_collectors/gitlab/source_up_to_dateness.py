@@ -80,8 +80,7 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabPipelineBase):
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to get the date and time of the pipeline."""
-        pipelines = await response.json()
-        datetimes = [self._datetime(pipeline) for pipeline in pipelines if self._include_pipeline(pipeline)]
+        datetimes = [self._datetime(pipeline) for pipeline in await self._pipelines(response)]
         return max(datetimes, default=MIN_DATETIME)
 
     @staticmethod
