@@ -4,20 +4,18 @@ import asyncio
 import itertools
 from abc import ABC
 from collections.abc import Sequence
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Self, cast
 from urllib.parse import quote
 
 import aiohttp
-
-from shared.utils.date_time import now
 
 from base_collectors import SourceCollector, TimePassedCollector
 from collector_utilities.date_time import MIN_DATETIME, days_ago, parse_datetime
 from collector_utilities.type import URL, Response, Value
 from model import SourceMeasurement, SourceResponses
 
-from .base import GitLabProjectBase
+from .base import GitLabPipelineBase, GitLabProjectBase
 
 
 class GitLabFileUpToDateness(GitLabProjectBase):
@@ -77,49 +75,14 @@ class GitLabFileUpToDateness(GitLabProjectBase):
         return str(days_ago(max(commit_dates)))
 
 
-class GitLabPipelineUpToDateness(TimePassedCollector, GitLabProjectBase):
+class GitLabPipelineUpToDateness(TimePassedCollector, GitLabPipelineBase):
     """Collector class to measure the up-to-dateness of a pipeline."""
-
-    async def _api_url(self) -> URL:
-        """Override to return the jobs API."""
-        lookback_date = (now() - timedelta(days=int(cast(str, self._parameter("lookback_days"))))).date()
-        return await self._gitlab_api_url(f"pipelines?updated_after={lookback_date}")
-
-    async def _landing_url(self, responses: SourceResponses) -> URL:
-        """Override to return a landing URL for the most recent pipeline."""
-        urls = []
-        try:
-            for response in responses:
-                pipelines = await response.json()
-                urls.extend(
-                    [
-                        (self._datetime(pipeline), pipeline["web_url"])
-                        for pipeline in pipelines
-                        if self._include_pipeline(pipeline)
-                    ],
-                )
-        except StopAsyncIteration:
-            pass
-        return max(urls, default=(None, await super()._landing_url(responses)))[1]
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to get the date and time of the pipeline."""
         pipelines = await response.json()
         datetimes = [self._datetime(pipeline) for pipeline in pipelines if self._include_pipeline(pipeline)]
         return max(datetimes, default=MIN_DATETIME)
-
-    def _include_pipeline(self, pipeline) -> bool:
-        """Return whether this pipeline should be considered."""
-        return (
-            pipeline["ref"] == self._parameter("branch")
-            and pipeline["status"] in self._parameter("pipeline_statuses_to_include")
-            and pipeline["source"] in self._parameter("pipeline_triggers_to_include")
-        )
-
-    @staticmethod
-    def _datetime(pipeline) -> datetime:
-        """Return the datetime of the pipeline."""
-        return parse_datetime(pipeline.get("updated_at") or pipeline["created_at"])
 
     @staticmethod
     def mininum(date_times: Sequence[datetime]) -> datetime:
