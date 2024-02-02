@@ -19,7 +19,7 @@
     "react-toastify": "^10.0.4",
     "semantic-ui-react": "^2.1.5",
     "use-local-storage-state": "^19.1.0",
-    "victory": "^36.8.5"
+    "victory": "^36.8.6"
   },
   "scripts": {
     "start": "react-scripts start",
