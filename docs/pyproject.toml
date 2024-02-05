@@ -14,7 +14,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "coverage==7.3.4",
-    "pip==23.3.2",
+    "pip==24.0",
     "pipx==1.4.3",
     "pip-tools==7.3.0",  # To add hashes to requirements
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
@@ -24,7 +24,7 @@ tools = [
     "mypy==1.8.0",
     "pip-audit==2.7.0",
     "pydantic==2.6.0",  # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
-    "ruff==0.1.15",
+    "ruff==0.2.0",
     "safety==3.0.1",
     "vale==3.0.3.0",  # Documentation grammar and style checker
     "vulture==2.11"
@@ -42,8 +42,10 @@ warn_unused_ignores = true
 [tool.ruff]
 target-version = "py311"
 line-length = 120
-select = ["ALL"]
 src = ["src"]
+
+[tool.ruff.lint]
+select = ["ALL"]
 ignore = [
     "ANN101",  # https://docs.astral.sh/ruff/rules/missing-type-function-argument/ - type checkers can infer the type of `self`, so annotating it is superfluous
     "COM812",  # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
@@ -55,14 +57,14 @@ ignore = [
     "PT",      # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 section-order = ["future", "standard-library", "third-party", "second-party", "first-party", "tests", "local-folder"]
 
-[tool.ruff.isort.sections]
+[tool.ruff.lint.isort.sections]
 "second-party" = ["shared", "shared_data_model"]
 "tests" = ["tests"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 ".vulture_ignore_list.py" = ["ALL"]
 "__init__.py" = [
     "D104",  # https://docs.astral.sh/ruff/rules/undocumented-public-package/ - don't require doc strings in __init__.py files
