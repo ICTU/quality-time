@@ -18,7 +18,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path().resolve()))
 
 # Build reference manual with overview of subjects, metrics, and sources.
-import create_reference_md  # noqa: E402
+import create_reference_md
 
 create_reference_md.main()
 

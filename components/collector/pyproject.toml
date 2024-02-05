@@ -15,7 +15,7 @@ dependencies = [
 dev = [
     "coverage==7.4.1",
     "mongomock==4.1.2",
-    "pip==23.3.2",
+    "pip==24.0",
     "pipx==1.4.3",
     "pip-tools==7.3.0",  # To add hashes to requirements
     "pydantic==2.6.0",  # Needed for importing the data model in the tests from the shared code component
@@ -27,7 +27,7 @@ tools = [
     "bandit==1.7.7",
     "mypy==1.8.0",
     "pip-audit==2.7.0",
-    "ruff==0.1.15",
+    "ruff==0.2.0",
     "safety==3.0.1",
     "vulture==2.11"
 ]
@@ -50,6 +50,8 @@ ignore_missing_imports = true
 target-version = "py311"
 line-length = 120
 src = ["src"]
+
+[tool.ruff.lint]
 select = ["ALL"]
 ignore = [
     "ANN001",  # https://docs.astral.sh/ruff/rules/missing-type-function-argument/ - too many untyped arguments atm to turn this rule on
@@ -69,14 +71,14 @@ ignore = [
     "PT",      # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 section-order = ["future", "standard-library", "third-party", "second-party", "first-party", "tests", "local-folder"]
 
-[tool.ruff.isort.sections]
+[tool.ruff.lint.isort.sections]
 "second-party" = ["shared", "shared_data_model"]
 "tests" = ["tests"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 ".vulture_ignore_list.py" = ["ALL"]
 "__init__.py" = [
     "D104",  # https://docs.astral.sh/ruff/rules/undocumented-public-package/ - don't require doc strings in __init__.py files

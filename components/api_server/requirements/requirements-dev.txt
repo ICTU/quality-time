@@ -20,9 +20,9 @@ build==1.0.3 \
     --hash=sha256:538aab1b64f9828977f84bc63ae570b060a8ed1be419e7870b8b4fc5e6ea553b \
     --hash=sha256:589bf99a67df7c9cf07ec0ac0e5e2ea5d4b37ac63301c4986d1acb126aa83f8f
     # via pip-tools
-certifi==2023.11.17 \
-    --hash=sha256:9b469f3a900bf28dc19b8cfbf8019bf47f7fdd1a65a1d4ffb98fc14166beb4d1 \
-    --hash=sha256:e036ab49d5b79556f99cfc2d9320b34cfbe5be05c5871b51de9329f0603b0474
+certifi==2024.2.2 \
+    --hash=sha256:0569859f95fc761b18b45ef421b1290a0f65f147e92a1e5eb3e635f9a5e4e66f \
+    --hash=sha256:dc383c07b76109f368f6106eee2b593b04a011ea4d55f652c6ca24a754d1cdd1
     # via requests
 cffi==1.16.0 \
     --hash=sha256:0c9ef6ff37e974b73c25eecc13952c55bceed9112be2d9d938ded8e856138bcc \
@@ -671,9 +671,9 @@ types-ldap3==2.9.13.20240119 \
     --hash=sha256:3f08d4635ab2c139bdcf9237be60303b2e878a61704f632c1e89f4fb64116c59 \
     --hash=sha256:512ae997c365d01b178aae3e862ef8b081ae3e29af1e4ecfd1f1e53189d6e433
     # via api_server (pyproject.toml)
-types-pyasn1==0.5.0.20240106 \
-    --hash=sha256:80e38befb1ddbf90c58b6f9e5ce158df66c42c87764a6564b1b7b6dd340535f7 \
-    --hash=sha256:e6ad48f5a58afb32019cba86a0529cdd52c315495a19122b4823ba4ad5f3c45b
+types-pyasn1==0.5.0.20240205 \
+    --hash=sha256:40b205856c6a01d2ce6fa47a0be2a238a5556b04f47a2875a2aba680a65a959f \
+    --hash=sha256:b42b4e967d2ad780bde2ce47d7627a00dfb11b37a451f3e73b264ec6e97e50c7
     # via types-ldap3
 types-requests==2.31.0.20240125 \
     --hash=sha256:03a28ce1d7cd54199148e043b2079cdded22d6795d19a2c2a6791a4b2b5e2eb5 \
@@ -747,9 +747,9 @@ zope-interface==6.1 \
     # via gevent
 
 # The following packages are considered to be unsafe in a requirements file:
-pip==23.3.2 \
-    --hash=sha256:5052d7889c1f9d05224cd41741acb7c5d6fa735ab34e339624a614eaaa7e7d76 \
-    --hash=sha256:7fd9972f96db22c8077a1ee2691b172c8089b17a5652a44494a9ecb0d78f9149
+pip==24.0 \
+    --hash=sha256:ba0d021a166865d2265246961bec0152ff124de910c5cc39f1156ce3fa7c69dc \
+    --hash=sha256:ea9bd1a847e8c5774a5777bb398c19e80bcd4e2aa16a4b301b718fe6f593aba2
     # via
     #   api_server (pyproject.toml)
     #   pip-tools
