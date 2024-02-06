@@ -121,7 +121,7 @@ it('handles the nr of measurements event source', async () => {
     await act(async () => eventListeners["delta"]({data: 42}))
     await act(async () => eventListeners["delta"]({data: 43}))
     await act(async () => eventListeners["error"]())
-    expect(showMessage).toHaveBeenCalledWith("error", "Server unreachable", "Trying to reconnect to server...")
+    expect(showMessage).toHaveBeenCalledWith("error", "Server unreachable", "Trying to reconnect to server...", "reconnecting")
     await act(async () => eventListeners["init"]({data: 43}))
     expect(showMessage).toHaveBeenCalledWith("success", "Connected to server", "Successfully reconnected to server.")
 });

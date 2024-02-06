@@ -161,7 +161,7 @@ class App extends Component {
             }
         });
         this.source.addEventListener("error", () => {
-            showMessage("error", "Server unreachable", "Trying to reconnect to server...")
+            showMessage("error", "Server unreachable", "Trying to reconnect to server...", "reconnecting")
             self.setState({ nrMeasurementsStreamConnected: false })
         });
     }
