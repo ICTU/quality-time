@@ -1,11 +1,13 @@
 import { toast } from 'react-toastify';
 import { registeredURLSearchParams } from '../hooks/url_search_query'
 
-export function showMessage(type, title, description) {
+export function showMessage(type, title, description, messageId) {
     const hideToasts = registeredURLSearchParams().get("hide_toasts");
     if (hideToasts !== "true") {
-        const toast_message = title && description ? <><h4>{title}</h4><p>{description}</p></> : title;
-        toast(toast_message, { type: type, autoClose: 20000 });
+        const toastMessage = title && description ? <><h4>{title}</h4><p>{description}</p></> : title;
+        const options = { type: type, autoClose: 20000 }
+        if (messageId) { options["toastId"] = messageId }
+        toast(toastMessage, options);
     }
 }
 
