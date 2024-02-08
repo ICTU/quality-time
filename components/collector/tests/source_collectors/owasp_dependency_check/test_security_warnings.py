@@ -116,8 +116,8 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
         response = await self.collect(get_request_text=xml)
         self.assert_measurement(
             response,
-            parse_error=f"""XMLRootElementError: The XML root element should be one of \
+            parse_error=f"""The XML root element should be one of \
 "{OWASPDependencyCheckBase.allowed_root_tags}" but is \
-"{{https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd}}analysis"
+"{{https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd}}analysis"\
 """,
         )
