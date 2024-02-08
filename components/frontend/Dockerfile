@@ -1,4 +1,4 @@
-FROM node:21.6.1-alpine3.18
+FROM node:21.6.1-alpine3.19
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"
@@ -9,7 +9,7 @@ COPY public /home/frontend/public
 COPY src /home/frontend/src
 COPY healthcheck.js /home/frontend
 COPY .env /home/frontend
-RUN npm install --ignore-scripts -g npm@10.2.3 && \
+RUN npm install --ignore-scripts -g npm@10.4.0 && \
     npm install --ignore-scripts && \
     npm install --ignore-scripts -g serve@14.2.1 && \
     npm run --ignore-scripts build

@@ -1,8 +1,8 @@
-FROM python:3.12.2-alpine3.18 AS compile-image
+FROM python:3.12.2-alpine3.19 AS compile-image
 
 WORKDIR /home/notifier
 
-RUN apk add --no-cache gcc=12.2.1_git20220924-r10 make=4.4.1-r1 libc-dev=0.7.2-r5 libffi-dev=3.4.4-r2
+RUN apk add --no-cache gcc=13.2.1_git20231014-r0 make=4.4.1-r2 libc-dev=0.7.2-r5 libffi-dev=3.4.4-r3
 # hadolint ignore=DL3059
 RUN python -m venv venv
 ENV PATH="/home/notifier/venv/bin:$PATH"
@@ -12,7 +12,7 @@ COPY shared_code /home/shared_code/
 COPY notifier/requirements/requirements-internal.txt /requirements-internal.txt
 RUN pip install --no-cache-dir --use-pep517 -r /requirements-internal.txt
 
-FROM python:3.12.2-alpine3.18
+FROM python:3.12.2-alpine3.19
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time notifier"
