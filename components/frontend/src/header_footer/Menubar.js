@@ -5,6 +5,7 @@ import { Form, Modal, Popup } from '../semantic_ui_react_wrappers';
 import FocusLock from 'react-focus-lock';
 import { login, logout } from '../api/auth';
 import { Avatar } from '../widgets/Avatar';
+import { DownloadAsPDFButton } from './DownloadAsPDFButton';
 import { DatePicker } from '../widgets/DatePicker';
 import { optionalDatePropType, settingsPropType, uiModePropType } from '../sharedPropTypes';
 import { CollapseButton } from './CollapseButton';
@@ -67,13 +68,13 @@ function Logout({ user, email, set_user }) {
 }
 
 export function Menubar({
-    atReportsOverview,
     email,
     handleDateChange,
     onDate,
     openReportsOverview,
     panel,
     report_date,
+    report_uuid,
     settings,
     set_user,
     setUIMode,
@@ -87,6 +88,7 @@ export function Menubar({
         return () => { window.removeEventListener('keydown', closePanels) };
     }, []);
 
+    const atReportsOverview = report_uuid === ""
     return (
         <>
             <Menu fluid className="menubar" inverted fixed="top">
@@ -122,6 +124,9 @@ export function Menubar({
                     <Menu.Item>
                         <CollapseButton expandedItems={settings.expandedItems} />
                     </Menu.Item>
+                    <Menu.Item>
+                        <DownloadAsPDFButton report_uuid={report_uuid} />
+                    </Menu.Item>
                 </Menu.Menu>
                 <Menu.Menu position='right'>
                     <Popup content="Show the report as it was on the selected date" position="left center" trigger={
@@ -155,13 +160,13 @@ export function Menubar({
     )
 }
 Menubar.propTypes = {
-    atReportsOverview: PropTypes.bool,
     email: PropTypes.string,
     handleDateChange: PropTypes.func,
     onDate: PropTypes.func,
     openReportsOverview: PropTypes.func,
     panel: PropTypes.element,
     report_date: optionalDatePropType,
+    report_uuid: PropTypes.string,
     settings: settingsPropType,
     set_user: PropTypes.func,
     setUIMode: PropTypes.func,

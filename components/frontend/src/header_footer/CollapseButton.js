@@ -19,7 +19,7 @@ export function CollapseButton({ expandedItems }) {
                         onClick={() => expandedItems.reset()}
                         inverted
                     >
-                        <Icon name="angle double up" />
+                        <Icon name="angle double up" /> Collapse all
                     </Button>
                 </span>
             }

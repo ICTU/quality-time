@@ -10,7 +10,6 @@ import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { set_reports_attribute } from '../api/report';
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { DownloadAsPDFButton } from '../widgets/Button';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { dropdownOptions } from '../utils';
 import { reportsOverviewPropType, settingsPropType } from '../sharedPropTypes';
@@ -128,9 +127,6 @@ export function ReportsOverviewTitle({ reports_overview, reload, settings }) {
                 onTabChange={tabChangeHandler(settings.expandedItems, uuid)}
                 panes={panes}
             />
-            <div style={{ marginTop: "20px" }}>
-                <DownloadAsPDFButton />
-            </div>
         </HeaderWithDetails>
     )
 }

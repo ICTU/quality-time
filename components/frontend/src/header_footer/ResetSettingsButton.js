@@ -27,6 +27,7 @@ export function ResetSettingsButton({ atReportsOverview, handleDateChange, repor
                             <Icon name="undo alternate" />
                             <Icon name="setting" size="tiny" />
                         </Icon.Group>
+                        Reset settings
                     </Button>
                 </span>
             }
