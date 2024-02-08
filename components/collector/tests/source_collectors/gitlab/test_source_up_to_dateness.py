@@ -75,6 +75,13 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
             response = await self.collect(get_request_json_return_value=pipeline_json)
         self.assert_measurement(response, value=str(expected_age), landing_url="https://gitlab/project/-/pipelines/1")
 
+    async def test_source_up_to_dateness_pipeline_missing(self):
+        """Test that the age of a pipeline results in an error message if no pipeline can be found."""
+        self.set_source_parameter("file_path", "")
+        with self.patched_client_session_head():
+            response = await self.collect(get_request_json_return_value=[])
+        self.assert_measurement(response, value=None, parse_error="No pipelines found within the lookback period")
+
     async def test_file_landing_url_on_failure(self):
         """Test that the landing url is the API url when GitLab cannot be reached."""
         response = await self.collect(get_request_json_side_effect=[ConnectionError])

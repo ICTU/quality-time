@@ -150,6 +150,9 @@ class SourceCollector(ABC):
             return SourceMeasurement(connection_error=responses.connection_error)
         try:
             return await self._parse_source_responses(responses)
+        except CollectorError as reason:
+            error = self.__logsafe_exception(reason)
+            return SourceMeasurement(parse_error=error)
         except Exception:
             return SourceMeasurement(parse_error=stable_traceback(traceback.format_exc()))
 
