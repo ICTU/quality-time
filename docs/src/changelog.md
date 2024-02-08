@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v5.8.0-rc.1 - 2024-02-06
+## [Unreleased]
 
 ### Deployment notes
 
@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Fixed
 
 - When showing many toaster messages, collapse similar messages to prevent a long list of messages. Fixes [#7625](https://github.com/ICTU/quality-time/issues/7625).
+- When manually exporting a report to PDF, the report header would not be collapsed before generating the PDF. Prevent the need for collapsing the header by moving the PDF button to the menu bar. Fixes [#8054](https://github.com/ICTU/quality-time/issues/8054).
 
 ## v5.7.0 - 2024-01-31
 

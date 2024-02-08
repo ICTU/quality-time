@@ -433,12 +433,12 @@ As *Quality-time* has to open the report in a (headless) browser and load all th
 The report title in the footer of the PDF will link to the online version of the same report.
 ```
 
-To manually download a PDF version of a report, navigate to the report and expand the report's title. Click the "Download report as PDF" button to create and download the PDF report.
+To manually download a PDF version of a report, navigate to the report and click the "Download report as PDF" button in the menu bar to create and download the PDF report.
 
 The exported PDF report has the same metric table rows and columns hidden as in the user interface, and has the same metrics expanded as in the user interface. The exported PDF report also has the same date as the report visible in the user interface.
 
 ```{tip}
-It is also possible to download a PDF version of the reports overview. Navigate to the reports overview and expand the title of the reports overview. Click the "Download overview as PDF" button to create and download the PDF report.
+It is also possible to download a PDF version of the reports overview. Navigate to the reports overview and click the "Download overview as PDF" button in the menu bar to create and download the PDF report.
 ```
 
 ```{seealso}

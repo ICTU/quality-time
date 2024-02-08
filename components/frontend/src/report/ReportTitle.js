@@ -11,7 +11,7 @@ import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
 import { LabelWithHelp } from '../widgets/LabelWithHelp';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { Share } from '../share/Share';
-import { DeleteButton, DownloadAsPDFButton } from '../widgets/Button';
+import { DeleteButton } from '../widgets/Button';
 import { delete_report, set_report_attribute } from '../api/report';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { NotificationDestinations } from '../notification/NotificationDestinations';
@@ -246,15 +246,12 @@ ReactionTimes.propTypes = {
 
 function ButtonRow({ report_uuid, openReportsOverview }) {
     return (
-        <>
-            <DownloadAsPDFButton report_uuid={report_uuid} />
-            <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
-                <DeleteButton
-                    item_type='report'
-                    onClick={() => delete_report(report_uuid, openReportsOverview)}
-                />}
-            />
-        </>
+        <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
+            <DeleteButton
+                item_type='report'
+                onClick={() => delete_report(report_uuid, openReportsOverview)}
+            />}
+        />
     )
 }
 ButtonRow.propTypes = {

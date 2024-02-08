@@ -75,12 +75,12 @@ export function AppUI({
             <DarkMode.Provider value={darkMode}>
                 <HashLinkObserver />
                 <Menubar
-                    atReportsOverview={atReportsOverview}
                     email={email}
                     handleDateChange={handleDateChange}
                     openReportsOverview={openReportsOverview}
                     onDate={handleDateChange}
                     report_date={report_date}
+                    report_uuid={report_uuid}
                     set_user={set_user}
                     user={user}
                     panel={<SettingsPanel

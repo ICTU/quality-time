@@ -14,21 +14,20 @@ beforeEach(() => {
 
 function renderMenubar(
     {
-        atReportsOverview = false,
-        set_user = null,
-        user = null,
         openReportsOverview = null,
         panel = null,
+        report_uuid = "report_uuid",
+        set_user = null,
+        user = null,
     } = {}
 ) {
     const settings = createTestableSettings()
     render(
         <Menubar
-            atReportsOverview={atReportsOverview}
             onDate={() => {/* Dummy handler */ }}
             openReportsOverview={openReportsOverview}
             panel={panel}
-            report_date_string="2019-10-10"
+            report_uuid={report_uuid}
             settings={settings}
             set_user={set_user}
             user={user}
@@ -94,7 +93,7 @@ it('logs out', async () => {
 
 it('does not go to home page if on reports overview', async () => {
     const openReportsOverview = jest.fn();
-    renderMenubar({ atReportsOverview: true, openReportsOverview: openReportsOverview })
+    renderMenubar({ report_uuid: "", openReportsOverview: openReportsOverview })
     act(() => { fireEvent.click(screen.getByAltText(/Go home/)) });
     expect(openReportsOverview).not.toHaveBeenCalled();
 });
@@ -120,7 +119,7 @@ it('shows the view panel on menu item click', () => {
 });
 
 it('shows the view panel on space', async () => {
-    renderMenubar({ atReportsOverview: true, panel: <div>Hello</div> })
+    renderMenubar({ report_uuid: "", panel: <div>Hello</div> })
     await userEvent.type(screen.getByText(/Settings/), " ")
     expect(screen.getAllByText(/Hello/).length).toBe(1)
 })
