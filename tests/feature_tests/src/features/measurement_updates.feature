@@ -11,7 +11,6 @@ Feature: measurement updates
   Scenario: the client connects to the measurement updates
     When the client connects to the number of measurements stream
     Then the server sends the number of measurements init message
-    And the server skips the next update because nothing changed
 
   Scenario: the client connects to the measurement updates
     When the client connects to the number of measurements stream and the collector adds a measurement

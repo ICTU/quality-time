@@ -42,7 +42,6 @@ export function DownloadAsPDFButton({ report_uuid }) {
                     icon
                     loading={loading}
                     onClick={() => {
-                        console.log(loading)
                         if (!loading) {
                             setLoading(true);
                             download_pdf(report_uuid, `?${query.toString()}`, () => { setLoading(false) })
