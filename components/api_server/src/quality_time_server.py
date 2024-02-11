@@ -20,7 +20,7 @@ def serve() -> None:  # pragma: no feature-test-cover
     logger.setLevel(log_level)
     database = init_database()
     init_bottle(database)
-    server_port = os.getenv("API_SERVER_PORT", "5001")
+    server_port = int(os.getenv("API_SERVER_PORT", "5001"))
     bottle.run(server="gevent", host="0.0.0.0", port=server_port, reloader=True, log=logger)  # nosec, # noqa: S104
 
 

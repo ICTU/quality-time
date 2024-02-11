@@ -60,7 +60,7 @@ def set_entity_attribute(
     return insert_new_measurement(database, new_measurement)
 
 
-def sse_pack(event_id: int, event: str, data: int, retry: str = "2000") -> str:
+def sse_pack(event_id: int, event: str, data: str, retry: str = "2000") -> str:
     """Pack data in Server-Sent Events (SSE) format."""
     return f"retry: {retry}\nid: {event_id}\nevent: {event}\ndata: {data}\n\n"
 
@@ -78,24 +78,23 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
     bottle.response.set_header("Cache-Control", "no-cache")
     bottle.response.set_header("X-Accel-Buffering", "no")
 
-    # Provide an initial data dump to each new client and set up our message payload with a retry value in case of
-    # connection failure
+    # Provide the current number of measurements and a retry value to use in case of connection failure
     nr_measurements = count_measurements(database)
-    logging.info("Initializing nr_measurements stream with %s measurements", nr_measurements)
-    yield sse_pack(event_id, "init", nr_measurements)
-    skipped = 0
-    max_skipped = 5
-    # Now give the client updates as they arrive
+    logging.info("Initializing nr_measurements stream with %d measurements (event id = %d)", nr_measurements, event_id)
+    yield sse_pack(event_id, "init", str(nr_measurements))
+    event_id += 1
+
+    # Flush the buffer that prevents messages from being sent immediately by sending a large message
+    # Who or what is causing the buffering (bottle?, gevent?, nginx?), is a mystery, unfortunately
+    yield sse_pack(event_id, "flush", "." * 256**2)
+
+    # Now send the client the number of measurements periodically
     while True:
         time.sleep(10)
-        if (new_nr_measurements := count_measurements(database)) > nr_measurements or skipped > max_skipped:
-            skipped = 0
-            nr_measurements = new_nr_measurements
-            event_id += 1
-            logging.info("Updating nr_measurements stream with %s measurements", nr_measurements)
-            yield sse_pack(event_id, "delta", nr_measurements)
-        else:
-            skipped += 1
+        nr_measurements = count_measurements(database)
+        event_id += 1
+        logging.info("Updating nr_measurements stream with %d measurements (event id = %d)", nr_measurements, event_id)
+        yield sse_pack(event_id, "delta", str(nr_measurements))
 
 
 @bottle.get("/api/v3/measurements", authentication_required=False)
