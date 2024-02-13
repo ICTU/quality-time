@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v5.8.0-rc.2 - 2024-02-11
+## [Unreleased]
 
 ### Deployment notes
 
@@ -18,6 +18,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 - When showing many toaster messages, collapse similar messages to prevent a long list of messages. Fixes [#7625](https://github.com/ICTU/quality-time/issues/7625).
 - When measuring source up-to-dateness with GitLab as pipelines, if there are no pipelines in the lookback period, don't show the number of days since 1-1-1970 as value, but show an error. Fixes [#7947](https://github.com/ICTU/quality-time/issues/7947).
+- Don't change the layout of the dashboard after filtering metrics by tags. Fixes [#8039](https://github.com/ICTU/quality-time/issues/8039).
 - When manually exporting a report to PDF, the report header would not be collapsed before generating the PDF. Prevent the need for collapsing the header by moving the PDF button to the menu bar. Fixes [#8054](https://github.com/ICTU/quality-time/issues/8054).
 
 ### Added
