@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import RGL, { WidthProvider } from "react-grid-layout";
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 
@@ -14,6 +15,11 @@ function cardDivs(cards, dragging, isDragging) {
             {card}
         </div>
     ));
+}
+cardDivs.propTypes = {
+    cards: PropTypes.array,
+    dragging: PropTypes.bool,
+    isDragging: PropTypes.func,
 }
 
 export function CardDashboard({ cards, initialLayout, saveLayout }) {
@@ -53,8 +59,8 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
         setMousePos([event.clientX, event.clientY, now.getTime()]);
     }
 
-    function onDragStop(newLayout, _oldItem, _newItem, _placeholder, _event) {
-        if (newLayout !== layout) {
+    function onDragStop(newLayout, _oldItem, _newItem, _placeholder, event) {
+        if (isDragging(event) && newLayout !== layout) {
             saveLayout(newLayout)
         }
         setTimeout(() => setDragging(false), 200);  // User was dragging, prevent click event propagation
@@ -90,4 +96,9 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
             </ReactGridLayout>)}
         </Permissions.Consumer>
     )
+}
+CardDashboard.propTypes = {
+    cards: PropTypes.array,
+    initialLayout: PropTypes.array,
+    saveLayout: PropTypes.func,
 }

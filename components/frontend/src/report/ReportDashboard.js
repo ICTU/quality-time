@@ -90,7 +90,7 @@ export function ReportDashboard(
         <CardDashboard
             cards={subjectCards.concat(tagCards.concat([<LegendCard key="legend" />]))}
             initialLayout={report.layout}
-            saveLayout={function (new_layout) { set_report_attribute(report.report_uuid, "layout", new_layout, reload) }}
+            saveLayout={function (newLayout) { set_report_attribute(report.report_uuid, "layout", newLayout, reload) }}
         />
     )
 }
