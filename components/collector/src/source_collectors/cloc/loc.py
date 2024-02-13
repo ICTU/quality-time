@@ -32,11 +32,11 @@ class ClocLOC(JSONFileSourceCollector):
                 for field, default_value in {"blank": 0, "comment": 0, "code": 0, "nFiles": 1}.items():
                     cloc_by_language[language][field] += value.get(field, default_value)
         loc = sum(value["code"] for value in cloc_by_language.values())
-        entities = Entities(self.create_entity(key, value) for key, value in cloc_by_language.items())
+        entities = Entities(self.create_entity(key, value, loc) for key, value in cloc_by_language.items())
         return SourceMeasurement(value=str(loc), total=str(total), entities=entities)
 
     @staticmethod
-    def create_entity(language: str, cloc: dict[str, int]) -> Entity:
+    def create_entity(language: str, cloc: dict[str, int], total: int) -> Entity:
         """Create an entity from a cloc programming language count."""
         return Entity(
             key=language,
@@ -44,6 +44,7 @@ class ClocLOC(JSONFileSourceCollector):
             blank=str(cloc["blank"]),
             comment=str(cloc["comment"]),
             code=str(cloc["code"]),
+            code_percentage=str(round(cloc["code"] / total * 100)),
             nr_files=str(cloc["nFiles"]),
         )
 
