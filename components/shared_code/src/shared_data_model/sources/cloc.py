@@ -39,6 +39,9 @@ CLOC = Source(
                 EntityAttribute(name="Number of blank lines", key="blank", type=EntityAttributeType.INTEGER),
                 EntityAttribute(name="Number of comment lines", key="comment", type=EntityAttributeType.INTEGER),
                 EntityAttribute(name="Number of code lines", key="code", type=EntityAttributeType.INTEGER),
+                EntityAttribute(
+                    name="Percentage of code lines", key="code_percentage", type=EntityAttributeType.INTEGER_PERCENTAGE
+                ),
             ],
         ),
     },

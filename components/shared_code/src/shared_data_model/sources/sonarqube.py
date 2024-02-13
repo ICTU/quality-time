@@ -424,7 +424,10 @@ SONARQUBE = Source(
             measured_attribute="ncloc",
             attributes=[
                 EntityAttribute(name="Language"),
-                EntityAttribute(name="Number of lines with code", key="ncloc", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Number of lines", key="ncloc", type=EntityAttributeType.INTEGER),
+                EntityAttribute(
+                    name="Percentage of lines", key="ncloc_percentage", type=EntityAttributeType.INTEGER_PERCENTAGE
+                ),
             ],
         ),
         "long_units": VIOLATION_ENTITY,

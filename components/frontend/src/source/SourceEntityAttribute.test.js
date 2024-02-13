@@ -23,6 +23,16 @@ it('renders a zero float', () => {
     expect(screen.getAllByText(/0/).length).toBe(1)
 })
 
+it('renders an integer', () => {
+    renderSourceEntityAttribute({ number: 42.0 }, { key: "number", type: "integer"})
+    expect(screen.getAllByText(/42/).length).toBe(1)
+})
+
+it('renders an integer percentage', () => {
+    renderSourceEntityAttribute({ number: 42.0 }, { key: "number", type: "integer_percentage"})
+    expect(screen.getAllByText(/42%/).length).toBe(1)
+})
+
 it('renders a datetime', () => {
     renderSourceEntityAttribute({ timestamp: "2021-10-10T10:10:10" }, { key: "timestamp", type: "datetime"})
     expect(screen.getAllByText(/ago/).length).toBe(1)

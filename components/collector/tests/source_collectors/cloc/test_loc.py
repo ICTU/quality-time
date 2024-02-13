@@ -25,7 +25,15 @@ class ClocLOCTest(SourceCollectorTestCase):
             "production_file": {"blank": 2, "comment": 0, "code": 30, "language": "JavaScript"},
         }
         self.expected_entities = [
-            {"key": "Python", "language": "Python", "nr_files": "1", "blank": "5", "comment": "10", "code": "60"},
+            {
+                "key": "Python",
+                "language": "Python",
+                "nr_files": "1",
+                "blank": "5",
+                "comment": "10",
+                "code": "60",
+                "code_percentage": "67",  # round(60 / (60 + 30))
+            },
             {
                 "key": "JavaScript",
                 "language": "JavaScript",
@@ -33,6 +41,7 @@ class ClocLOCTest(SourceCollectorTestCase):
                 "blank": "2",
                 "comment": "0",
                 "code": "30",
+                "code_percentage": "33",  # round(30 / (60 + 30))
             },
         ]
 
@@ -45,7 +54,9 @@ class ClocLOCTest(SourceCollectorTestCase):
         """Test that languages can be ignored."""
         self.set_source_parameter("languages_to_ignore", ["Java.*"])
         response = await self.collect(get_request_json_return_value=self.cloc_json)
-        self.assert_measurement(response, value="60", total="60", entities=self.expected_entities[:1])
+        expected_entities = self.expected_entities[:1]
+        expected_entities[0]["code_percentage"] = "100"
+        self.assert_measurement(response, value="60", total="60", entities=expected_entities)
 
     async def test_loc_by_file(self):
         """Test that the number of lines is returned and that the languages are returned as entities."""
@@ -56,4 +67,6 @@ class ClocLOCTest(SourceCollectorTestCase):
         """Test that the number of lines is returned and that the languages are returned as entities."""
         self.set_source_parameter("files_to_include", ["test.*"])
         response = await self.collect(get_request_json_return_value=self.cloc_by_file_json)
-        self.assert_measurement(response, value="60", total="90", entities=self.expected_entities[:1])
+        expected_entities = self.expected_entities[:1]
+        expected_entities[0]["code_percentage"] = "100"
+        self.assert_measurement(response, value="60", total="90", entities=expected_entities)

@@ -19,13 +19,16 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
         "cpp": "C++",
         "cobol": "COBOL",
         "css": "CSS",
+        "docker": "Docker",
         "flex": "Flex",
         "go": "Go",
         "web": "HTML",
+        "json": "JSON",
         "jsp": "JSP",
         "java": "Java",
         "js": "JavaScript",
         "kotlin": "Kotlin",
+        "kubernetes": "Kubernetes",
         "objc": "Objective-C",
         "php": "PHP",
         "plsql": "PL/SQL",
@@ -33,10 +36,12 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
         "ruby": "Ruby",
         "scala": "Scala",
         "swift": "Swift",
-        "tsql": "T-SQL",
+        "text": "Text",
         "ts": "TypeScript",
+        "tsql": "T-SQL",
         "vbnet": "VB.NET",
         "xml": "XML",
+        "yaml": "YAML",
     }  # https://sonarcloud.io/api/languages/list
 
     def _value_key(self) -> str:
@@ -55,7 +60,7 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
         if self._value_key() == "ncloc":
             # Our user picked non-commented lines of code (ncloc), so we can sum the ncloc per language, skipping
             # languages the user wants to ignore
-            return str(sum(int(ncloc) for _, ncloc in self.__language_ncloc(metrics)))
+            return str(self.__total(metrics))
         return super()._value(metrics)
 
     async def _entities(self, metrics: dict[str, str]) -> Entities:
@@ -63,18 +68,28 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
         if self._value_key() == "ncloc":
             # Our user picked non-commented lines of code (ncloc), so we can show the ncloc per language, skipping
             # languages the user wants to ignore
+            total = self.__total(metrics)
             return Entities(
-                Entity(key=language, language=self.LANGUAGES.get(language, language), ncloc=ncloc)
+                Entity(
+                    key=language,
+                    language=self.LANGUAGES.get(language, language),
+                    ncloc=str(ncloc),
+                    ncloc_percentage=str(round(int(ncloc) / total * 100)),
+                )
                 for language, ncloc in self.__language_ncloc(metrics)
             )
         return await super()._entities(metrics)
 
-    def __language_ncloc(self, metrics: dict[str, str]) -> list[list[str]]:
+    def __language_ncloc(self, metrics: dict[str, str]) -> list[tuple[str, int]]:
         """Return the languages and non-commented lines of code per language, ignoring languages if so specified."""
         languages_to_ignore = [language.lower() for language in self._parameter("languages_to_ignore")]
         keys_to_ignore = [key for key, language in self.LANGUAGES.items() if language.lower() in languages_to_ignore]
         return [
-            language_count.split("=")
+            (language_count.split("=")[0], int(language_count.split("=")[1]))
             for language_count in metrics["ncloc_language_distribution"].split(";")
             if not match_string_or_regular_expression(language_count.split("=")[0], keys_to_ignore)
         ]
+
+    def __total(self, metrics: dict[str, str]) -> int:
+        """Return the total LOC for the selected languages."""
+        return sum(ncloc for _, ncloc in self.__language_ncloc(metrics))

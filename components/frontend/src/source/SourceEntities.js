@@ -11,7 +11,15 @@ export function alignment(attributeType, attributeAlignment) {
         return attributeAlignment
     }
     // The attribute has no explicitly set aligment, use the attribute type to determine the alignment
-    return { text: "left", integer: "right", float: "right", date: "left", datetime: "left", minutes: "right" }[attributeType];
+    return {
+        date: "left",
+        datetime: "left",
+        float: "right",
+        integer: "right",
+        integer_percentage: "right",
+        minutes: "right",
+        text: "left",
+    }[attributeType];
 }
 alignment.propTypes = {
     attributeType: PropTypes.string,
@@ -92,6 +100,7 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
     if (sortColumn !== null) {
         const parse = {
             "integer": (value) => parseInt(value, 10),
+            "integer_percentage": (value) => parseInt(value, 10),
             "float": (value) => parseFloat(value),
             "date": (value) => Date.parse(value),
             "datetime": (value) => Date.parse(value),

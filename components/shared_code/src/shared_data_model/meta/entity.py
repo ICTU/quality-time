@@ -27,6 +27,7 @@ class EntityAttributeType(StrEnum):
     DATETIME = "datetime"
     FLOAT = "float"
     INTEGER = "integer"
+    INTEGER_PERCENTAGE = "integer_percentage"
     STATUS = "status"
 
 

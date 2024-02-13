@@ -13,6 +13,7 @@ const data_model = {
                     name: "entity name",
                     attributes: [
                         { key: "integer", type: "integer", name: "integer" },
+                        { key: "integer_percentage", type: "integer_percentage", name: "int percentage" },
                         { key: "float", type: "float", name: "float" },
                         { key: "text", type: "text", name: "text", help: "help text" },
                         { key: "rightalign", type: "text", name: "rightalign", alignment: "right" },
@@ -42,6 +43,7 @@ const source = {
             key: "1",
             first_seen: "2023-07-01",
             integer: "1",
+            integer_percentage: "1",
             float: "0.3",
             text: "CCC",
             rightalign: "right aligned",
@@ -52,7 +54,8 @@ const source = {
         {
             key: "2",
             first_seen: "2023-07-03",
-            integer: "3",
+            integer: "42",
+            integer_percentage: "42",
             float: "0.2",
             text: "BBB",
             rightalign: "right aligned",
@@ -63,7 +66,8 @@ const source = {
         {
             key: "3",
             first_seen: "2023-07-02",
-            integer: "2",
+            integer: "9",
+            integer_percentage: "9",
             float: "0.1",
             text: "AAA",
             rightalign: "right aligned",
@@ -131,6 +135,15 @@ it('sorts the entities by integer', async () => {
     await userEvent.click(screen.getByText(/integer/))
     assertOrder(["C", "A", "B"])
     await userEvent.click(screen.getByText(/integer/))
+    assertOrder(["B", "A", "C"])
+})
+
+it('sorts the entities by integer percentage', async () => {
+    renderSourceEntities()
+    assertOrder(["C", "B", "A"])
+    await userEvent.click(screen.getByText(/int percentage/))
+    assertOrder(["C", "A", "B"])
+    await userEvent.click(screen.getByText(/int percentage/))
     assertOrder(["B", "A", "C"])
 })
 

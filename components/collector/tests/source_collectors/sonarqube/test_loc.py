@@ -24,8 +24,8 @@ class SonarQubeLOCTest(SonarQubeTestCase):
             value="1234",
             total="100",
             entities=[
-                {"key": "py", "language": "Python", "ncloc": "1000"},
-                {"key": "js", "language": "JavaScript", "ncloc": "234"},
+                {"key": "py", "language": "Python", "ncloc": "1000", "ncloc_percentage": "81"},
+                {"key": "js", "language": "JavaScript", "ncloc": "234", "ncloc_percentage": "19"},
             ],
             landing_url=self.metric_landing_url.format("ncloc"),
         )
@@ -66,6 +66,6 @@ class SonarQubeLOCTest(SonarQubeTestCase):
             response,
             value="1000",
             total="100",
-            entities=[{"key": "py", "language": "Python", "ncloc": "1000"}],
+            entities=[{"key": "py", "language": "Python", "ncloc": "1000", "ncloc_percentage": "100"}],
             landing_url=self.metric_landing_url.format("ncloc"),
         )
