@@ -102,13 +102,24 @@ export const issueStatusPropType = PropTypes.shape({
     sprint_state: PropTypes.string,
     status_category: PropTypes.oneOf(["todo", "doing", "done"]),
     summary: PropTypes.string,
-    updated: PropTypes.string
+    updated: PropTypes.string,
+})
+
+export const measurementSourceType = PropTypes.shape({
+    connection_error: PropTypes.string,
+    parse_error: PropTypes.string,
 })
 
 export const sourcePropType = PropTypes.shape({
     entities: PropTypes.array,
     entity_user_data: PropTypes.object,
     source_uuid: PropTypes.string,
+})
+
+export const sourceTypePropType = PropTypes.shape({
+    description: PropTypes.string,
+    documentation: PropTypes.object,
+    name: PropTypes.string,
 })
 
 export const subjectPropType = PropTypes.shape({
@@ -125,6 +136,12 @@ export const metricPropType = PropTypes.shape({
 })
 
 export const metricsPropType = PropTypes.arrayOf(metricPropType)
+
+export const metricTypePropType = PropTypes.shape({
+    description: PropTypes.string,
+    documentation: PropTypes.string,
+    name: PropTypes.string,
+})
 
 export const reportPropType = PropTypes.shape({
     comment: PropTypes.string,

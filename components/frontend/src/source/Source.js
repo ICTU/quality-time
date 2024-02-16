@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { Grid, Menu } from 'semantic-ui-react';
-import { Header, Icon, Label, Tab } from '../semantic_ui_react_wrappers';
+import { Icon, Label, Tab } from '../semantic_ui_react_wrappers';
 import { StringInput } from '../fields/StringInput';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
@@ -8,32 +9,16 @@ import { HyperLink } from '../widgets/HyperLink';
 import { delete_source, set_source_attribute } from '../api/source';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
-import { Logo } from './Logo';
 import { SourceParameters } from './SourceParameters';
 import { SourceType } from './SourceType';
+import { SourceTypeHeader } from './SourceTypeHeader';
 import { ErrorMessage } from '../errorMessage';
 import { FocusableTab } from '../widgets/FocusableTab';
-import { get_metric_name, get_source_name, slugify } from '../utils';
+import { get_metric_name, get_source_name } from '../utils';
+import { measurementSourceType, metricPropType, reportPropType, stringsPropType } from '../sharedPropTypes';
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
-}
-
-function SourceHeader({ source }) {
-    const dataModel = useContext(DataModel)
-    const source_type = dataModel.sources[source.type];
-    const url = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html${slugify(source_type.name)}`
-    return (
-        <Header>
-            <Header.Content>
-                <Logo logo={source.type} alt={source_type.name} />
-                {source_type.name}
-                <Header.Subheader>
-                    {source_type.description} <HyperLink url={url}>Read the Docs <Icon name="external" link /></HyperLink>
-                </Header.Subheader>
-            </Header.Content>
-        </Header>
-    )
 }
 
 function ButtonGridRow({ first_source, last_source, source_uuid, reload }) {
@@ -97,6 +82,7 @@ function Parameters({ metric, source, source_uuid, config_error, connection_erro
 export function Source({ metric, source_uuid, first_source, last_source, measurement_source, report, changed_fields, reload }) {
     const dataModel = useContext(DataModel)
     const source = metric.sources[source_uuid];
+    const sourceType = dataModel.sources[source.type];
     const sourceName = get_source_name(source, dataModel);
     const metricName = get_metric_name(metric, dataModel);
     const connectionError = measurement_source?.connection_error || "";
@@ -141,9 +127,19 @@ export function Source({ metric, source_uuid, first_source, last_source, measure
     ];
     return (
         <>
-            <SourceHeader source={source} />
+            <SourceTypeHeader metricTypeId={metric.type} sourceTypeId={source.type} sourceType={sourceType} />
             <Tab panes={panes} />
             <ButtonGridRow first_source={first_source} last_source={last_source} reload={reload} source_uuid={source_uuid} />
         </>
     )
+}
+Source.propTypes = {
+    metric: metricPropType,
+    source_uuid: PropTypes.string,
+    first_source: PropTypes.bool,
+    last_source: PropTypes.bool,
+    measurement_source: measurementSourceType,
+    report: reportPropType,
+    changed_fields: stringsPropType,
+    reload: PropTypes.func,
 }
