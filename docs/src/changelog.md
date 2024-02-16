@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Added
 
 - If the documentation at Read-the-Docs has specific information on configuring a metric or source, point this out in Quality-time itself. Closes [#4445](https://github.com/ICTU/quality-time/issues/4445).
+- In the dashboard popups, show the percentage next to the number of metrics with a specific status. Closes [#7946](https://github.com/ICTU/quality-time/issues/7946).
 
 ## v5.8.0 - 2024-02-16
 
