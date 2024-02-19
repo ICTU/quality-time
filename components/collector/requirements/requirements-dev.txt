@@ -655,9 +655,9 @@ types-beautifulsoup4==4.12.0.20240106 \
     --hash=sha256:98d628985b71b140bd3bc22a8cb0ab603c2f2d08f20d37925965eb4a21739be8 \
     --hash=sha256:cbdd60ab8aeac737ac014431b6e921b43e84279c0405fdd25a6900bb0e71da5b
     # via collector (pyproject.toml)
-types-html5lib==1.1.11.20240106 \
-    --hash=sha256:61993cb89220107481e0f1da65c388ff8cf3d8c5f6e8483c97559639a596b697 \
-    --hash=sha256:fc3a1b18eb601b3eeaf92c900bd67675c0a4fa1dd1d2a2893ebdb46923547ee9
+types-html5lib==1.1.11.20240217 \
+    --hash=sha256:dd556a6ceb7b7ea3b1c0acc39aac76bd3d079da72b192f075d8b1453f17493b5 \
+    --hash=sha256:e7c609fc1cfd33b666c515d15ca28936359c5a56d0b38d5a6266bf2f51caf4ec
     # via types-beautifulsoup4
 types-python-dateutil==2.8.19.20240106 \
     --hash=sha256:1f8db221c3b98e6ca02ea83a58371b22c374f42ae5bbdf186db9c9a76581459f \
