@@ -22,7 +22,7 @@ it('shows the column dates and unit', () => {
     const date1 = new Date("2022-02-02");
     const date2 = new Date("2022-02-03");
     renderSubjectTableHeader([date1, date2]);
-    [date1.toLocaleDateString(), date2.toLocaleDateString(), "Unit", "Sources", "Time left", "Overrun", "Comment", "Issues", "Tags"].forEach(
+    [date1.toLocaleDateString(), "𝚫", date2.toLocaleDateString(), "Unit", "Sources", "Time left", "Overrun", "Comment", "Issues", "Tags"].forEach(
         header => expect(screen.getAllByText(header).length).toBe(1)
     );
     ["Trend (7 days)", "Status", "Measurement", "Target"].forEach(
@@ -48,4 +48,12 @@ it('hides columns', () => {
     ["Trend (7 days)", "Status", "Measurement", "Target", "Sources", "Comment", "Issues", "Tags"].forEach(
         header => expect(screen.queryAllByText(header).length).toBe(0)
     );
+})
+
+it('hides the delta columns', () => {
+    history.push("?hidden_columns=delta")
+    const date1 = new Date("2022-02-02")
+    const date2 = new Date("2022-02-03");
+    renderSubjectTableHeader([date1, date2]);
+    expect(screen.queryAllByText("𝚫").length).toBe(0)
 })

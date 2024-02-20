@@ -126,13 +126,16 @@ export const subjectPropType = PropTypes.shape({
     type: PropTypes.string
 })
 
+export const scalePropType = PropTypes.oneOf(["count", "percentage", "version_number"])
+
 export const metricPropType = PropTypes.shape({
     accept_debt: PropTypes.bool,
     debt_end_date: PropTypes.string,
     evaluate_targets: PropTypes.bool,
     issue_ids: stringsPropType,
     issue_status: PropTypes.arrayOf(issueStatusPropType),
-    tags: stringsPropType
+    scale: scalePropType,
+    tags: stringsPropType,
 })
 
 export const metricsPropType = PropTypes.arrayOf(metricPropType)

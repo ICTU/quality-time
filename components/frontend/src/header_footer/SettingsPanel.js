@@ -100,6 +100,12 @@ export function SettingsPanel({
                     <VisibleColumnMenuItem column="source" {...visibleColumnMenuItemProps} />
                     <VisibleColumnMenuItem column="time_left" {...visibleColumnMenuItemProps} />
                     <VisibleColumnMenuItem
+                        column="delta"
+                        disabled={oneDateColumn}
+                        help="The delta columns can only be made visible when at least two dates are shown"
+                        {...visibleColumnMenuItemProps}
+                    />
+                    <VisibleColumnMenuItem
                         column="overrun"
                         disabled={oneDateColumn}
                         help="The overrun column can only be made visible when at least two dates are shown"

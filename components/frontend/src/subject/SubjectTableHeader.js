@@ -225,6 +225,31 @@ const tagsHelp = <>
     </p>
 </>
 
+function MeasurementHeaderCells({ columnDates, showDeltaColumns }) {
+    const cells = []
+    columnDates.forEach((date, index) => {
+        if (showDeltaColumns && index > 0) {
+            cells.push(
+                <UnsortableTableHeaderCell
+                    key={`delta-${date}`}
+                    help="The difference between the measurement values on the previous and next date.
+                    A plus (+) sign indicates that the newer value is higher, a minus (-) sign that it is lower.
+                    A green outline indicates that the newer value is better, a red outline that it is worse."
+                    label="𝚫"
+                    textAlign="right"
+                />
+            )
+        }
+        cells.push(<UnsortableTableHeaderCell key={date} textAlign="right" label={date.toLocaleDateString()} />)
+    })
+    return cells
+}
+MeasurementHeaderCells.propTypes = {
+    columnDates: datesPropType,
+    showDeltaColumns: PropTypes.bool,
+}
+
+
 export function SubjectTableHeader(
     {
         columnDates,
@@ -238,7 +263,7 @@ export function SubjectTableHeader(
         <Table.Header>
             <Table.Row>
                 <SortableTableHeaderCell colSpan="2" column='name' label='Metric' help={metricHelp} {...sortProps} />
-                {nrDates > 1 && columnDates.map(date => <UnsortableTableHeaderCell key={date} textAlign="right" label={date.toLocaleDateString()} />)}
+                {nrDates > 1 && <MeasurementHeaderCells columnDates={columnDates} showDeltaColumns={!settings.hiddenColumns.includes("delta")} />}
                 {nrDates === 1 && !settings.hiddenColumns.includes("trend") && <UnsortableTableHeaderCell width="2" label="Trend (7 days)" help={trendHelp} />}
                 {nrDates === 1 && !settings.hiddenColumns.includes("status") && <SortableTableHeaderCell column='status' label='Status' textAlign='center' help={statusHelp(darkMode)} {...sortProps} />}
                 {nrDates === 1 && !settings.hiddenColumns.includes("measurement") && <SortableTableHeaderCell column='measurement' label='Measurement' textAlign="right" help={measurementHelp} {...sortProps} />}
@@ -257,5 +282,5 @@ export function SubjectTableHeader(
 SubjectTableHeader.propTypes = {
     columnDates: datesPropType,
     handleSort: PropTypes.func,
-    settings: settingsPropType
+    settings: settingsPropType,
 }
