@@ -16,18 +16,18 @@ dev = [
     "coverage==7.4.1",
     "pip==24.0",
     "pipx==1.4.3",
-    "pip-tools==7.3.0",  # To add hashes to requirements
+    "pip-tools==7.4.0",  # To add hashes to requirements
     "pydantic==2.6.1",  # Needed for importing the data model in the tests from the shared code component
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.20240205",
-    "types-requests==2.31.0.20240125",
+    "types-requests==2.31.0.20240218",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
     "bandit==1.7.7",
     "mypy==1.8.0",
     "pip-audit==2.7.1",
-    "ruff==0.2.1",
+    "ruff==0.2.2",
     "safety==3.0.1",
     "vulture==2.11"
 ]

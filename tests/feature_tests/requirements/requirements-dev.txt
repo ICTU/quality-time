@@ -176,9 +176,9 @@ coverage==7.4.1 \
     --hash=sha256:f90515974b39f4dea2f27c0959688621b46d96d5a626cf9c53dbc653a895c05c \
     --hash=sha256:fe558371c1bdf3b8fa03e097c523fb9645b8730399c14fe7721ee9c9e2a545d3
     # via feature_tests (pyproject.toml)
-dnspython==2.5.0 \
-    --hash=sha256:6facdf76b73c742ccf2d07add296f178e629da60be23ce4b0a9c927b1e02c3a6 \
-    --hash=sha256:a0034815a59ba9ae888946be7ccca8f7c157b286f8455b379c692efb51022a15
+dnspython==2.6.1 \
+    --hash=sha256:5ef3b9680161f6fa89daf8ad451b5f1a33b18ae8a1c6778cdf4b43f08c0a6e50 \
+    --hash=sha256:e8f0f9c23a7b7cb99ded64e6c3a6f3e701d78f50c55e002b839dea7225cff7cc
     # via pymongo
 gevent==24.2.1 \
     --hash=sha256:03aa5879acd6b7076f6a2a307410fb1e0d288b84b03cdfd8c74db8b4bc882fc5 \
@@ -383,9 +383,9 @@ parse-type==0.6.2 \
     --hash=sha256:06d39a8b70fde873eb2a131141a0e79bb34a432941fb3d66fad247abafc9766c \
     --hash=sha256:79b1f2497060d0928bc46016793f1fca1057c4aacdf15ef876aa48d75a73a355
     # via behave
-pip-tools==7.3.0 \
-    --hash=sha256:8717693288720a8c6ebd07149c93ab0be1fced0b5191df9e9decd3263e20d85e \
-    --hash=sha256:8e9c99127fe024c025b46a0b2d15c7bd47f18f33226cf7330d35493663fc1d1d
+pip-tools==7.4.0 \
+    --hash=sha256:a92a6ddfa86ff389fe6ace381d463bc436e2c705bd71d52117c25af5ce867bb7 \
+    --hash=sha256:b67432fd0759ed834c5367f9e0ce8c95441acecfec9c8e24b41aca166757adf0
     # via feature_tests (pyproject.toml)
 pipx==1.4.3 \
     --hash=sha256:aa25c7a7d455daed7597bb88c259389176680e2e7446fbdb6e6696cdd3a5090b \
@@ -482,7 +482,9 @@ pymongo==4.6.1 \
 pyproject-hooks==1.0.0 \
     --hash=sha256:283c11acd6b928d2f6a7c73fa0d01cb2bdc5f07c57a2eeb6e83d5e56b97976f8 \
     --hash=sha256:f271b298b97f5955d53fb12b72c1fb1948c22c1a6b70b315c54cedaca0264ef5
-    # via build
+    # via
+    #   build
+    #   pip-tools
 requests==2.31.0 \
     --hash=sha256:58cd2187c01e70e6e26505bca751777aa9f2ee0b7f4300988b709f44e013003f \
     --hash=sha256:942c5a758f98d790eaed1a29cb6eefc7ffb0d1cf7af05c3d2791656dbd6ad1e1
@@ -499,17 +501,17 @@ six==1.16.0 \
 sseclient==0.0.27 \
     --hash=sha256:b2fe534dcb33b1d3faad13d60c5a7c718e28f85987f2a034ecf5ec279918c11c
     # via feature_tests (pyproject.toml)
-types-requests==2.31.0.20240125 \
-    --hash=sha256:03a28ce1d7cd54199148e043b2079cdded22d6795d19a2c2a6791a4b2b5e2eb5 \
-    --hash=sha256:9592a9a4cb92d6d75d9b491a41477272b710e021011a2a3061157e2fb1f1a5d1
+types-requests==2.31.0.20240218 \
+    --hash=sha256:a82807ec6ddce8f00fe0e949da6d6bc1fbf1715420218a9640d695f70a9e5a9b \
+    --hash=sha256:f1721dba8385958f504a5386240b92de4734e047a08a40751c1654d1ac3349c5
     # via feature_tests (pyproject.toml)
 unittest-xml-reporting==3.2.0 \
     --hash=sha256:edd8d3170b40c3a81b8cf910f46c6a304ae2847ec01036d02e9c0f9b85762d28 \
     --hash=sha256:f3d7402e5b3ac72a5ee3149278339db1a8f932ee405f48bcb9c681372f2717d5
     # via feature_tests (pyproject.toml)
-urllib3==2.2.0 \
-    --hash=sha256:051d961ad0c62a94e50ecf1af379c3aba230c66c710493493560c0c223c49f20 \
-    --hash=sha256:ce3711610ddce217e6d113a2732fafad960a03fd0318c91faa79481e35c11224
+urllib3==2.2.1 \
+    --hash=sha256:450b20ec296a467077128bff42b73080516e71b56ff59a60a02bef2232c4fa9d \
+    --hash=sha256:d0570876c61ab9e520d776c38acbbb5b05a776d3f9ff98a5c8fd5162a444cf19
     # via
     #   requests
     #   types-requests
