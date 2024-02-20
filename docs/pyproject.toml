@@ -16,7 +16,7 @@ dev = [
     "coverage==7.3.4",
     "pip==24.0",
     "pipx==1.4.3",
-    "pip-tools==7.3.0",  # To add hashes to requirements
+    "pip-tools==7.4.0",  # To add hashes to requirements
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
@@ -24,7 +24,7 @@ tools = [
     "mypy==1.8.0",
     "pip-audit==2.7.1",
     "pydantic==2.6.1",  # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
-    "ruff==0.2.1",
+    "ruff==0.2.2",
     "safety==3.0.1",
     "vale==3.0.3.0",  # Documentation grammar and style checker
     "vulture==2.11"
