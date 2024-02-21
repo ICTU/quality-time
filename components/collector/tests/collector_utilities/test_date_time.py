@@ -12,6 +12,7 @@ from collector_utilities.date_time import (
     datetime_fromtimestamp,
     days_ago,
     days_to_go,
+    minutes,
     parse_datetime,
 )
 
@@ -89,8 +90,32 @@ class DateTimeFromPartsTest(unittest.TestCase):
 
 
 class DateTimeFromTimestampTest(unittest.TestCase):
-    """Unit tests for the datetime from timstamp function."""
+    """Unit tests for the datetime from timestamp function."""
 
     def test_timezone(self):
         """Test that the datetime has the local timezone."""
         self.assertEqual(tzlocal(), datetime_fromtimestamp(1000000).tzinfo)
+
+
+class MinutesTest(unittest.TestCase):
+    """Unit tests for the minutes function."""
+
+    def test_zero_minutes(self):
+        """Test that an empty timedelta is zero minutes."""
+        self.assertEqual(0, minutes(timedelta()))
+
+    def test_round_down(self):
+        """Test that 29 seconds is zero minutes."""
+        self.assertEqual(0, minutes(timedelta(seconds=29)))
+
+    def test_round_up(self):
+        """Test that 31 seconds is one minute."""
+        self.assertEqual(1, minutes(timedelta(seconds=31)))
+
+    def test_hours(self):
+        """Test that 2 hours seconds is 120 minutes."""
+        self.assertEqual(120, minutes(timedelta(hours=2)))
+
+    def test_days(self):
+        """Test multiple days."""
+        self.assertEqual(2 * 24 * 60, minutes(timedelta(days=2)))

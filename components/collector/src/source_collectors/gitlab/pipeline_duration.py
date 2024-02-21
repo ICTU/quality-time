@@ -1,5 +1,8 @@
 """GitLab CI-pipeline duration collector."""
 
+from datetime import timedelta
+
+from collector_utilities.date_time import minutes
 from collector_utilities.type import URL, Value
 from model import SourceResponses
 
@@ -18,5 +21,5 @@ class GitLabPipelineDuration(GitLabPipelineBase):
 
     async def _parse_value(self, responses: SourceResponses) -> Value:
         """Parse the value from the responses."""
-        durations = [pipeline.duration for pipeline in await self._pipelines(responses)]
-        return str(round(max(durations, default=0) / 60))
+        durations = [pipeline.pipeline_duration for pipeline in await self._pipelines(responses)]
+        return str(minutes(max(durations, default=timedelta())))
