@@ -1,6 +1,6 @@
 """Date and time utilities."""
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Final
 
 from dateutil.parser import parse
@@ -43,3 +43,8 @@ def datetime_fromparts(  # noqa: PLR0913
 def datetime_fromtimestamp(timestamp: float) -> datetime:
     """Create a datetime from a timestamp and add the local timezone."""
     return datetime.fromtimestamp(timestamp, tz=tzlocal())
+
+
+def minutes(duration: timedelta) -> int:
+    """Return the number of minutes in the duration."""
+    return duration.days * 24 * 60 + round(duration.seconds / 60)

@@ -2,7 +2,7 @@
 
 from abc import ABC
 from dataclasses import dataclass, fields
-from datetime import date, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from typing import cast
 
 from shared.utils.date_time import now
@@ -137,7 +137,9 @@ class Pipeline:
     created_at: str
     updated_at: str
     web_url: str
-    duration: int = 0  # Seconds
+    started_at: str | None = None
+    finished_at: str | None = None
+    duration: int | None = None  # Seconds
 
     def __init__(self, **kwargs) -> None:
         """Override to ignore unknown fields so the caller does not need to weed the GitLab pipeline JSON."""
@@ -147,9 +149,30 @@ class Pipeline:
                 setattr(self, key, value)
 
     @property
+    def start(self) -> datetime:
+        """Return the pipeline start time.
+
+        The started_at field may be empty, be prepared. See https://gitlab.com/gitlab-org/gitlab/-/issues/210353.
+        """
+        return parse_datetime(self.started_at or self.created_at)
+
+    @property
+    def end(self) -> datetime:
+        """Return the pipeline end time.
+
+        The finished_at field may empty if the pipeline hasn't finished yet. Use the current time as fallback.
+        """
+        return parse_datetime(self.finished_at) if self.finished_at else datetime.now(tz=UTC)
+
+    @property
     def datetime(self) -> datetime:
         """Return the datetime of the pipeline."""
         return parse_datetime(self.updated_at or self.created_at)
+
+    @property
+    def pipeline_duration(self) -> timedelta:
+        """Return the duration of the pipeline."""
+        return self.end - self.start if self.duration is None else timedelta(seconds=self.duration)
 
 
 class GitLabPipelineBase(GitLabProjectBase):
