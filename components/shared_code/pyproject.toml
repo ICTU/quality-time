@@ -4,7 +4,7 @@ version = "5.8.0"
 dependencies = [
     "bottle==0.12.25",
     "packaging==23.2",
-    "pydantic==2.6.1",
+    "pydantic==2.6.2",
     "pymongo==4.6.2",
     "python-dateutil==2.8.2",
 ]
@@ -23,7 +23,7 @@ tools = [
     "bandit==1.7.7",
     "mypy==1.8.0",
     "pip-audit==2.7.1",
-    "pydantic==2.6.1",  # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
+    "pydantic==2.6.2",  # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "ruff==0.2.2",
     "safety==3.0.1",
     "vulture==2.11"
