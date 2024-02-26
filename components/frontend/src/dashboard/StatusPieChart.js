@@ -1,12 +1,13 @@
-import PropTypes from 'prop-types';
+import { element, number, object } from 'prop-types';
 import { VictoryPie } from 'victory';
 import { pluralize, STATUSES, STATUS_COLORS, STATUS_NAME, sum } from '../utils';
+import { stringsPropType } from '../sharedPropTypes';
 
 function nrMetricsLabel(nrMetrics) {
     return nrMetrics === 0 ? "No metrics" : nrMetrics + pluralize(" metric", nrMetrics)
 }
 nrMetricsLabel.PropTypes = {
-    nrMetrics: PropTypes.number
+    nrMetrics: number
 }
 
 export function StatusPieChart({ animate, colors, label, tooltip, summary, style, maxY, width, height }) {
@@ -42,13 +43,13 @@ export function StatusPieChart({ animate, colors, label, tooltip, summary, style
     )
 }
 StatusPieChart.propTypes = {
-    animate: PropTypes.object,
-    colors: PropTypes.arrayOf(PropTypes.string),
-    height: PropTypes.number,
-    label: PropTypes.object,
-    maxY: PropTypes.number,
-    style: PropTypes.object,
-    summary: PropTypes.object,
-    tooltip: PropTypes.element,
-    width: PropTypes.number,
+    animate: object,
+    colors: stringsPropType,
+    height: number,
+    label: object,
+    maxY: number,
+    style: object,
+    summary: object,
+    tooltip: element,
+    width: number,
 }

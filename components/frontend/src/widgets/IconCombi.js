@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { string } from 'prop-types';
 import { Icon } from 'semantic-ui-react';
 
 export function IconCombi({ iconBottomRight, iconTopLeft, label }) {
@@ -11,7 +11,7 @@ export function IconCombi({ iconBottomRight, iconTopLeft, label }) {
     )
 }
 IconCombi.propTypes = {
-    iconBottomRight: PropTypes.string,
-    iconTopLeft: PropTypes.string,
-    label: PropTypes.string,
+    iconBottomRight: string,
+    iconTopLeft: string,
+    label: string,
 }

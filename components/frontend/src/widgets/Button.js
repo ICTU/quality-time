@@ -4,6 +4,7 @@ import { Icon, Input } from 'semantic-ui-react';
 import { Button, Dropdown, Label, Popup } from '../semantic_ui_react_wrappers';
 import { showMessage } from '../widgets/toast';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
+import { popupContentPropType } from '../sharedPropTypes';
 
 export function ActionButton(props) {
     const { action, disabled, icon, itemType, floated, fluid, popup, position, ...other } = props;
@@ -31,6 +32,7 @@ ActionButton.propTypes = {
     itemType: string,
     floated: string,
     fluid: bool,
+    popup: popupContentPropType,
     position: string,
 }
 
@@ -184,6 +186,14 @@ function ReorderButton(props) {
             />}
         />
     )
+}
+ReorderButton.propTypes = {
+    direction: string,
+    first: bool,
+    last: bool,
+    moveable: string,
+    onClick: func,
+    slot: string
 }
 
 export function ReorderButtonGroup(props) {

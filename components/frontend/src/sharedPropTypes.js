@@ -1,64 +1,74 @@
-import PropTypes from 'prop-types';
+import { array, arrayOf, bool, element, func, instanceOf, node, number, object, oneOf, oneOfType, shape, string } from 'prop-types';
 
-export const childrenPropType = PropTypes.node
+export const childrenPropType = node
 
-export const datePropType = PropTypes.instanceOf(Date)
+export const datePropType = instanceOf(Date)
 
 export const optionalDatePropType = datePropType
 
-export const datesPropType = PropTypes.arrayOf(datePropType)
+export const datesPropType = arrayOf(datePropType)
 
-export const stringsPropType = PropTypes.arrayOf(PropTypes.string)
+export const stringsPropType = arrayOf(string)
 
-export const boolURLSearchQueryPropType = PropTypes.shape({
-    isDefault: PropTypes.func,
-    reset: PropTypes.func,
-    set: PropTypes.func,
-    value: PropTypes.bool
+export const boolURLSearchQueryPropType = shape({
+    isDefault: func,
+    reset: func,
+    set: func,
+    value: bool,
 })
 
-export const integerURLSearchQueryPropType = PropTypes.shape({
-    isDefault: PropTypes.func,
-    reset: PropTypes.func,
-    set: PropTypes.func,
-    value: PropTypes.number
+export const integerURLSearchQueryPropType = shape({
+    isDefault: func,
+    reset: func,
+    set: func,
+    value: number,
 })
 
-export const stringURLSearchQueryPropType = PropTypes.shape({
-    isDefault: PropTypes.func,
-    reset: PropTypes.func,
-    set: PropTypes.func,
-    value: PropTypes.string
+export const stringURLSearchQueryPropType = shape({
+    isDefault: func,
+    reset: func,
+    set: func,
+    value: string,
 })
 
-export const stringsURLSearchQueryPropType = PropTypes.shape({
-    isDefault: PropTypes.func,
-    reset: PropTypes.func,
-    toggle: PropTypes.func,
-    value: stringsPropType
+export const stringsURLSearchQueryPropType = shape({
+    isDefault: func,
+    reset: func,
+    toggle: func,
+    value: stringsPropType,
 })
 
-export const sortDirectionPropType = PropTypes.oneOf(["ascending", "descending"])
+export const labelPropType = oneOfType([object, string])
 
-export const sortDirectionURLSearchQueryPropType = PropTypes.shape({
-    isDefault: PropTypes.func,
-    reset: PropTypes.func,
-    set: PropTypes.func,
-    value: sortDirectionPropType
+export const popupContentPropType = oneOfType([element, string])
+
+export const permissionsPropType = arrayOf(string)
+
+export const directionPropType = oneOf(["<", ">"])
+
+export const sortDirectionPropType = oneOf(["ascending", "descending"])
+
+export const statusPropType = oneOf(["target_met", "near_target_met", "debt_target_met", "target_not_met", "informative", "unknown"])
+
+export const sortDirectionURLSearchQueryPropType = shape({
+    isDefault: func,
+    reset: func,
+    set: func,
+    value: sortDirectionPropType,
 })
 
-export const hiddenCardsPropType = PropTypes.oneOf(["reports", "subjects", "tags"])
+export const hiddenCardsPropType = oneOf(["reports", "subjects", "tags"])
 
-export const metricsToHidePropType = PropTypes.oneOf(["none", "all", "no_action_needed"])
+export const metricsToHidePropType = oneOf(["none", "all", "no_action_needed"])
 
-export const metricsToHideURLSearchQueryPropType = PropTypes.shape({
-    isDefault: PropTypes.func,
-    reset: PropTypes.func,
-    set: PropTypes.func,
-    value: metricsToHidePropType
+export const metricsToHideURLSearchQueryPropType = shape({
+    isDefault: func,
+    reset: func,
+    set: func,
+    value: metricsToHidePropType,
 })
 
-export const settingsPropType = PropTypes.shape({
+export const settingsPropType = shape({
     dateInterval: integerURLSearchQueryPropType,
     dateOrder: sortDirectionURLSearchQueryPropType,
     expandedItems: stringsURLSearchQueryPropType,
@@ -76,90 +86,101 @@ export const settingsPropType = PropTypes.shape({
     sortDirection: sortDirectionURLSearchQueryPropType,
 })
 
-export const entityStatusPropType = PropTypes.oneOf(["unconfirmed", "confirmed", "fixed", "false_positive", "wont_fix"])
+export const entityStatusPropType = oneOf(["unconfirmed", "confirmed", "fixed", "false_positive", "wont_fix"])
 
-export const entityPropType = PropTypes.shape({
-    key: PropTypes.string,
+export const entityPropType = shape({
+    key: string,
 })
 
-const entityAttributePropType = PropTypes.shape({
-    key: PropTypes.string,
+const entityAttributePropType = shape({
+    key: string,
 })
 
-export const entityAttributesPropType = PropTypes.arrayOf(entityAttributePropType)
+export const entityAttributesPropType = arrayOf(entityAttributePropType)
 
-export const issueStatusPropType = PropTypes.shape({
-    connection_error: PropTypes.string,
-    created: PropTypes.string,
-    duedate: PropTypes.string,
-    issue_id: PropTypes.string,
-    landing_url: PropTypes.string,
-    parse_error: PropTypes.string,
-    release_name: PropTypes.string,
-    release_released: PropTypes.bool,
-    sprint_enddate: PropTypes.string,
-    sprint_name: PropTypes.string,
-    sprint_state: PropTypes.string,
-    status_category: PropTypes.oneOf(["todo", "doing", "done"]),
-    summary: PropTypes.string,
-    updated: PropTypes.string,
+export const issueStatusPropType = shape({
+    connection_error: string,
+    created: string,
+    duedate: string,
+    issue_id: string,
+    landing_url: string,
+    parse_error: string,
+    release_name: string,
+    release_released: bool,
+    sprint_enddate: string,
+    sprint_name: string,
+    sprint_state: string,
+    status_category: oneOf(["todo", "doing", "done"]),
+    summary: string,
+    updated: string,
 })
 
-export const measurementSourceType = PropTypes.shape({
-    connection_error: PropTypes.string,
-    parse_error: PropTypes.string,
+export const measurementSourcePropType = shape({
+    connection_error: string,
+    parse_error: string,
 })
 
-export const sourcePropType = PropTypes.shape({
-    entities: PropTypes.array,
-    entity_user_data: PropTypes.object,
-    source_uuid: PropTypes.string,
+export const measurementPropType = shape({
+    sources: arrayOf(measurementSourcePropType),
 })
 
-export const sourceTypePropType = PropTypes.shape({
-    description: PropTypes.string,
-    documentation: PropTypes.object,
-    name: PropTypes.string,
+export const measurementsPropType = arrayOf(measurementPropType)
+
+export const sourcePropType = shape({
+    entities: array,
+    entity_user_data: object,
+    source_uuid: string,
 })
 
-export const subjectPropType = PropTypes.shape({
-    type: PropTypes.string
+export const sourceTypePropType = shape({
+    description: string,
+    documentation: object,
+    name: string,
 })
 
-export const scalePropType = PropTypes.oneOf(["count", "percentage", "version_number"])
+export const subjectPropType = shape({
+    type: string,
+})
 
-export const metricPropType = PropTypes.shape({
-    accept_debt: PropTypes.bool,
-    debt_end_date: PropTypes.string,
-    evaluate_targets: PropTypes.bool,
+export const scalePropType = oneOf(["count", "percentage", "version_number"])
+
+export const metricPropType = shape({
+    accept_debt: bool,
+    debt_end_date: string,
+    evaluate_targets: bool,
     issue_ids: stringsPropType,
-    issue_status: PropTypes.arrayOf(issueStatusPropType),
+    issue_status: arrayOf(issueStatusPropType),
     scale: scalePropType,
     tags: stringsPropType,
 })
 
-export const metricsPropType = PropTypes.arrayOf(metricPropType)
+export const metricsPropType = arrayOf(metricPropType)
 
-export const metricTypePropType = PropTypes.shape({
-    description: PropTypes.string,
-    documentation: PropTypes.string,
-    name: PropTypes.string,
+export const metricTypePropType = shape({
+    description: string,
+    documentation: string,
+    name: string,
 })
 
-export const reportPropType = PropTypes.shape({
-    comment: PropTypes.string,
-    desired_response_times: PropTypes.object,
-    issue_tracker: PropTypes.object,
-    report_uuid: PropTypes.string
+export const destinationPropType = shape({
+    name: string,
+    webhook: string,
 })
 
-export const reportsPropType = PropTypes.arrayOf(reportPropType)
-
-export const reportsOverviewPropType = PropTypes.shape({
-    comment: PropTypes.string,
-    permissions: PropTypes.object,
-    title: PropTypes.string,
-    subtitle: PropTypes.string
+export const reportPropType = shape({
+    comment: string,
+    desired_response_times: object,
+    issue_tracker: object,
+    report_uuid: string,
 })
 
-export const uiModePropType = PropTypes.oneOf(["dark", "light", "follow_os"])
+export const reportsPropType = arrayOf(reportPropType)
+
+export const reportsOverviewPropType = shape({
+    comment: string,
+    permissions: object,
+    title: string,
+    subtitle: string
+})
+
+export const uiModePropType = oneOf(["dark", "light", "follow_os"])

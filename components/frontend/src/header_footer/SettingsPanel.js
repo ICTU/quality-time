@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { bool, func, number, string } from 'prop-types';
 import { Header, Menu, Segment } from 'semantic-ui-react';
 import { Icon } from '../semantic_ui_react_wrappers';
 import {
@@ -7,6 +7,7 @@ import {
     integerURLSearchQueryPropType,
     metricsToHidePropType,
     metricsToHideURLSearchQueryPropType,
+    popupContentPropType,
     settingsPropType,
     sortDirectionPropType,
     sortDirectionURLSearchQueryPropType,
@@ -239,9 +240,9 @@ export function SettingsPanel({
     )
 }
 SettingsPanel.propTypes = {
-    handleSort: PropTypes.func,
+    handleSort: func,
     tags: stringsPropType.isRequired,
-    atReportsOverview: PropTypes.bool,
+    atReportsOverview: bool,
     settings: settingsPropType,
 }
 
@@ -273,7 +274,7 @@ function VisibleTagMenuItem({ tag, hiddenTags }) {
     )
 }
 VisibleTagMenuItem.propTypes = {
-    tag: PropTypes.string,
+    tag: string,
     hiddenTags: stringsURLSearchQueryPropType,
 }
 
@@ -291,11 +292,11 @@ function VisibleColumnMenuItem({ column, disabled, hiddenColumns, help, itemText
     )
 }
 VisibleColumnMenuItem.propTypes = {
-    column: PropTypes.string,
-    disabled: PropTypes.bool,
+    column: string,
+    disabled: bool,
     hiddenColumns: stringsURLSearchQueryPropType,
-    help: PropTypes.string,
-    itemText: PropTypes.string
+    help: popupContentPropType,
+    itemText: string
 }
 
 function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handleSort, help }) {
@@ -318,12 +319,12 @@ function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handl
     )
 }
 SortColumnMenuItem.propTypes = {
-    column: PropTypes.string,
-    disabled: PropTypes.bool,
+    column: string,
+    disabled: bool,
     sortColumn: stringURLSearchQueryPropType,
     sortDirection: sortDirectionURLSearchQueryPropType,
-    handleSort: PropTypes.func,
-    help: PropTypes.string
+    handleSort: func,
+    help: popupContentPropType,
 }
 
 function NrOfDatesMenuItem({ nr, nrDates }) {
@@ -338,7 +339,7 @@ function NrOfDatesMenuItem({ nr, nrDates }) {
     )
 }
 NrOfDatesMenuItem.propTypes = {
-    nr: PropTypes.number,
+    nr: number,
     nrDates: integerURLSearchQueryPropType
 }
 
@@ -356,10 +357,10 @@ function DateIntervalMenuItem({ nr, dateInterval, disabled, help }) {
     )
 }
 DateIntervalMenuItem.propTypes = {
-    nr: PropTypes.number,
+    nr: number,
     dateInterval: integerURLSearchQueryPropType,
-    disabled: PropTypes.bool,
-    help: PropTypes.string
+    disabled: bool,
+    help: popupContentPropType,
 }
 
 function SortOrderMenuItem({ disabled, order, sortOrder, help }) {
@@ -376,10 +377,10 @@ function SortOrderMenuItem({ disabled, order, sortOrder, help }) {
     )
 }
 SortOrderMenuItem.propTypes = {
-    disabled: PropTypes.bool,
+    disabled: bool,
     order: sortDirectionPropType,
     sortOrder: sortDirectionURLSearchQueryPropType,
-    help: PropTypes.string
+    help: popupContentPropType,
 }
 
 function MetricMenuItem({ hide, metricsToHide }) {
@@ -411,7 +412,7 @@ function IssueAttributeMenuItem({ help, issueAttributeName, issueAttribute }) {
     )
 }
 IssueAttributeMenuItem.propTypes = {
-    help: PropTypes.string,
-    issueAttributeName: PropTypes.string,
+    help: popupContentPropType,
+    issueAttributeName: string,
     issueAttribute: boolURLSearchQueryPropType
 }

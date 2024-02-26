@@ -1,4 +1,6 @@
 import { Icon, Table } from '../semantic_ui_react_wrappers';
+import { bool, func, object } from 'prop-types';
+import { childrenPropType } from '../sharedPropTypes';
 
 export function TableRowWithDetails(props) {
     const { children, details, expanded, onExpand, style, ...otherProps } = props;
@@ -9,7 +11,7 @@ export function TableRowWithDetails(props) {
                     aria-label="Expand/collapse"
                     collapsing
                     onClick={() => onExpand(!expanded)}
-                    onKeyPress={(event) => {event.preventDefault(); onExpand(!expanded)}}
+                    onKeyPress={(event) => { event.preventDefault(); onExpand(!expanded) }}
                     tabIndex="0"
                     textAlign="center"
                     style={style}
@@ -27,4 +29,11 @@ export function TableRowWithDetails(props) {
                 </Table.Row>}
         </>
     );
+}
+TableRowWithDetails.propTypes = {
+    children: childrenPropType,
+    details: childrenPropType,
+    expanded: bool,
+    onExpand: func,
+    style: object,
 }

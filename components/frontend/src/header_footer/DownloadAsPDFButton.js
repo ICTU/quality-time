@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { string } from 'prop-types';
 import { Icon } from 'semantic-ui-react';
 import { Button, Popup } from '../semantic_ui_react_wrappers';
 import { get_report_pdf } from '../api/report';
@@ -57,5 +57,5 @@ export function DownloadAsPDFButton({ report_uuid }) {
     )
 }
 DownloadAsPDFButton.propTypes = {
-    report_uuid: PropTypes.string,
+    report_uuid: string,
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import { element, func, string } from 'prop-types';
 import { Button, Dropdown, Icon, Image, Menu, Message, Portal } from 'semantic-ui-react';
 import { Form, Modal, Popup } from '../semantic_ui_react_wrappers';
 import FocusLock from 'react-focus-lock';
@@ -56,6 +56,9 @@ function Login({ set_user }) {
         </Modal>
     )
 }
+Login.propTypes = {
+    set_user: func,
+}
 
 function Logout({ user, email, set_user }) {
     const trigger = <><Avatar email={email} /> {user}</>
@@ -65,6 +68,11 @@ function Logout({ user, email, set_user }) {
             options={[{ key: "logout", text: "Logout", icon: "log out", onClick: () => { logout().then(() => set_user(null)) } }]}
         />
     )
+}
+Logout.propTypes = {
+    user: string,
+    email: string,
+    set_user: func,
 }
 
 export function Menubar({
@@ -160,16 +168,16 @@ export function Menubar({
     )
 }
 Menubar.propTypes = {
-    email: PropTypes.string,
-    handleDateChange: PropTypes.func,
-    onDate: PropTypes.func,
-    openReportsOverview: PropTypes.func,
-    panel: PropTypes.element,
+    email: string,
+    handleDateChange: func,
+    onDate: func,
+    openReportsOverview: func,
+    panel: element,
     report_date: optionalDatePropType,
-    report_uuid: PropTypes.string,
+    report_uuid: string,
     settings: settingsPropType,
-    set_user: PropTypes.func,
-    setUIMode: PropTypes.func,
+    set_user: func,
+    setUIMode: func,
     uiMode: uiModePropType,
-    user: PropTypes.string,
+    user: string,
 }

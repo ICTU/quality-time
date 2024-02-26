@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { func, number, object, oneOfType, string } from 'prop-types'
 import { VictoryContainer, VictoryLabel, VictoryPortal, VictoryTooltip } from 'victory';
 import { Card } from '../semantic_ui_react_wrappers';
 import { DarkMode } from '../context/DarkMode';
@@ -88,4 +89,10 @@ export function MetricSummaryCard({ header, onClick, summary, maxY }) {
             </Card.Content>
         </Card>
     );
+}
+MetricSummaryCard.propTypes = {
+    header: oneOfType([object, string]),
+    onClick: func,
+    summary: object,
+    maxY : number,
 }

@@ -1,7 +1,8 @@
-import { useContext} from 'react';
+import { useContext } from 'react';
 import { VictoryGroup, VictoryLine, VictoryTheme } from 'victory';
 import { DarkMode } from '../context/DarkMode';
 import { pluralize } from '../utils';
+import { datePropType, measurementsPropType, scalePropType } from '../sharedPropTypes';
 
 export function TrendSparkline({ measurements, scale, report_date }) {
     const stroke = useContext(DarkMode) ? "rgba(255, 255, 255, 0.87)" : "black"
@@ -34,4 +35,9 @@ export function TrendSparkline({ measurements, scale, report_date }) {
             </VictoryGroup>
         </div>
     )
+}
+TrendSparkline.propTypes = {
+    measurements: measurementsPropType,
+    scale: scalePropType,
+    report_date: datePropType,
 }

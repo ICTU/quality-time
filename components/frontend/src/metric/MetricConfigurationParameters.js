@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { func, string } from 'prop-types';
 import { Grid, Header } from 'semantic-ui-react';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';
@@ -10,6 +11,7 @@ import { dropdownOptions, getMetricDirection, getMetricScale, getReportTags, get
 import { LabelWithHelp } from '../widgets/LabelWithHelp';
 import { MetricType } from './MetricType';
 import { Target } from './Target';
+import { metricPropType, metricTypePropType, reportPropType, scalePropType, subjectPropType } from '../sharedPropTypes';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];
@@ -40,6 +42,12 @@ function MetricName({ metric, metricType, metric_uuid, reload }) {
         />
     )
 }
+MetricName.propTypes = {
+    metric: metricPropType,
+    metricType: metricTypePropType,
+    metric_uuid: string,
+    reload: func,
+}
 
 function Tags({ metric, metric_uuid, reload, report }) {
     const tags = getReportTags(report)
@@ -55,6 +63,12 @@ function Tags({ metric, metric_uuid, reload, report }) {
             value={getMetricTags(metric)}
         />
     )
+}
+Tags.propTypes = {
+    metric: metricPropType,
+    metric_uuid: string,
+    reload: func,
+    report: reportPropType,
 }
 
 function Scale({ metricType, metric_scale, metric_uuid, reload }) {
@@ -72,6 +86,12 @@ function Scale({ metricType, metric_scale, metric_uuid, reload }) {
             value={metric_scale}
         />
     )
+}
+Scale.propTypes = {
+    metric_scale: scalePropType,
+    metric_uuid: string,
+    metricType: metricTypePropType,
+    reload: func,
 }
 
 function Direction({ metric, metric_scale, metric_uuid, metricType, reload }) {
@@ -95,6 +115,13 @@ function Direction({ metric, metric_scale, metric_uuid, metricType, reload }) {
         />
     )
 }
+Direction.propTypes = {
+    metric: metricPropType,
+    metric_scale: scalePropType,
+    metric_uuid: string,
+    metricType: metricTypePropType,
+    reload: func,
+}
 
 function Unit({ metric, metric_scale, metric_uuid, metricType, reload }) {
     const labelId = `unit-${metric_uuid}`
@@ -109,6 +136,13 @@ function Unit({ metric, metric_scale, metric_uuid, metricType, reload }) {
             value={metric.unit ?? ""}
         />
     )
+}
+Unit.propTypes = {
+    metric: metricPropType,
+    metric_scale: scalePropType,
+    metric_uuid: string,
+    metricType: metricTypePropType,
+    reload: func,
 }
 
 function EvaluateTargets({ metric, metric_uuid, reload }) {
@@ -127,8 +161,13 @@ function EvaluateTargets({ metric, metric_uuid, reload }) {
         />
     )
 }
+EvaluateTargets.propTypes = {
+    metric: metricPropType,
+    metric_uuid: string,
+    reload: func,
+}
 
-export function MetricConfigurationParameters({ report, subject, metric, metric_uuid, reload }) {
+export function MetricConfigurationParameters({ metric, metric_uuid, reload, report, subject }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metric_scale = getMetricScale(metric, dataModel);
@@ -170,4 +209,11 @@ export function MetricConfigurationParameters({ report, subject, metric, metric_
             </Grid.Row>
         </Grid>
     );
+}
+MetricConfigurationParameters.propTypes = {
+    metric: metricPropType,
+    metric_uuid: string,
+    reload: func,
+    report: reportPropType,
+    subject: subjectPropType,
 }

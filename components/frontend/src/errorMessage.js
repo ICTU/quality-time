@@ -1,7 +1,7 @@
+import { bool, object, oneOfType, string } from 'prop-types';
 import { Grid, Message } from "semantic-ui-react";
 
-
-export function ErrorMessage({ title, message, formatAsText }) {
+export function ErrorMessage({ formatAsText, message, title }) {
     return (
         <Grid.Row>
             <Grid.Column>
@@ -12,4 +12,9 @@ export function ErrorMessage({ title, message, formatAsText }) {
             </Grid.Column>
         </Grid.Row>
     )
+}
+ErrorMessage.propTypes = {
+    formatAsText: bool,
+    message: oneOfType([object, string]),
+    title: string,
 }

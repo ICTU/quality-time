@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import { bool, string, func } from 'prop-types';
 import { Icon, Menu } from 'semantic-ui-react';
 import { Label, Tab } from '../semantic_ui_react_wrappers';
 import { activeTabIndex, tabChangeHandler } from '../app_ui_settings';
@@ -33,11 +33,11 @@ function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopFilteri
     )
 }
 Buttons.propTypes = {
-    isFirstMetric: PropTypes.bool,
-    isLastMetric: PropTypes.bool,
-    metric_uuid: PropTypes.string,
-    reload: PropTypes.func,
-    stopFilteringAndSorting: PropTypes.func
+    isFirstMetric: bool,
+    isLastMetric: bool,
+    metric_uuid: string,
+    reload: func,
+    stopFilteringAndSorting: func
 }
 
 function fetchMeasurements(reportDate, metric_uuid, setMeasurements) {
@@ -50,8 +50,8 @@ function fetchMeasurements(reportDate, metric_uuid, setMeasurements) {
 }
 fetchMeasurements.propTypes = {
     reportDate: datePropType,
-    metric_uuid: PropTypes.string,
-    setMeasurements: PropTypes.func
+    metric_uuid: string,
+    setMeasurements: func
 }
 
 
@@ -167,14 +167,14 @@ export function MetricDetails({
 }
 MetricDetails.propTypes = {
     changed_fields: stringsPropType,
-    isFirstMetric: PropTypes.bool,
-    isLastMetric: PropTypes.bool,
-    metric_uuid: PropTypes.string,
-    reload: PropTypes.func,
+    isFirstMetric: bool,
+    isLastMetric: bool,
+    metric_uuid: string,
+    reload: func,
     report_date: datePropType,
     reports: reportsPropType,
     report: reportPropType,
-    stopFilteringAndSorting: PropTypes.func,
-    subject_uuid: PropTypes.string,
+    stopFilteringAndSorting: func,
+    subject_uuid: string,
     expandedItems: stringsURLSearchQueryPropType
 }

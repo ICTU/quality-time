@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { bool, func, number, object, string } from 'prop-types';
 import { ToastContainer } from 'react-toastify';
 import HashLinkObserver from "react-hash-link";
 import useLocalStorageState from 'use-local-storage-state';
@@ -120,19 +120,19 @@ export function AppUI({
 }
 AppUI.propTypes = {
     changed_fields: stringsPropType,
-    datamodel: PropTypes.object,
-    email: PropTypes.string,
-    handleDateChange: PropTypes.func,
+    datamodel: object,
+    email: string,
+    handleDateChange: func,
     last_update: datePropType,
-    loading: PropTypes.bool,
-    nrMeasurements: PropTypes.number,
-    openReport: PropTypes.func,
-    openReportsOverview: PropTypes.func,
-    reload: PropTypes.func,
+    loading: bool,
+    nrMeasurements: number,
+    openReport: func,
+    openReportsOverview: func,
+    reload: func,
     report_date: optionalDatePropType,
-    report_uuid: PropTypes.string,
+    report_uuid: string,
     reports: reportsPropType,
     reports_overview: reportsOverviewPropType,
-    set_user: PropTypes.func,
-    user: PropTypes.string
+    set_user: func,
+    user: string
 }

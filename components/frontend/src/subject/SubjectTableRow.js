@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { array, bool, func, number, object, oneOf, string } from 'prop-types';
+import { array, bool, func, number, object, string } from 'prop-types';
 import { Label, Popup, Table } from '../semantic_ui_react_wrappers';
 import { DataModel } from "../context/DataModel";
 import { DarkMode } from "../context/DarkMode";
@@ -17,6 +17,7 @@ import { Tag } from '../widgets/Tag';
 import { formatMetricScale, formatMetricScaleAndUnit, get_metric_name, getMetricDirection, getMetricScale, getMetricTags, getMetricUnit } from '../utils';
 import {
     datesPropType,
+    directionPropType,
     metricPropType,
     optionalDatePropType,
     reportPropType,
@@ -47,7 +48,7 @@ function didValueImprove(didValueIncrease, direction) {
 }
 didValueImprove.propTypes = {
     didValueIncrease: bool,
-    direction: oneOf(["<", ">"]),
+    direction: directionPropType,
 }
 
 function deltaColor(metric, improved) {

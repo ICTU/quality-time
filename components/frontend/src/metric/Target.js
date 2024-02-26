@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { bool, func, oneOf, string } from 'prop-types';
 import { Segment } from 'semantic-ui-react';
 import { Header, Icon, Popup } from '../semantic_ui_react_wrappers';
 import { IntegerInput } from '../fields/IntegerInput';
@@ -9,6 +10,7 @@ import { DarkMode } from '../context/DarkMode';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { StatusIcon } from '../measurement/StatusIcon';
 import { capitalize, formatMetricDirection, formatMetricScaleAndUnit, getMetricScale, getStatusName } from '../utils';
+import { childrenPropType, labelPropType, metricPropType, statusPropType } from '../sharedPropTypes';
 
 function smallerThan(target1, target2) {
     const t1 = target1 ?? `${Number.POSITIVE_INFINITY}`
@@ -46,17 +48,32 @@ function ColoredSegment({ children, color, show, status }) {
         </Segment>
     )
 }
+ColoredSegment.propTypes = {
+    children: childrenPropType,
+    color: string,
+    show: bool,
+    status: statusPropType,
+}
 
 function BlueSegment({ unit }) {
     return (
         <ColoredSegment color="blue" status="informative">{`${unit} are not evaluated`}</ColoredSegment>
     )
 }
+BlueSegment.propTypes = {
+    unit: string,
+}
 
 function GreenSegment({ direction, target, show, unit }) {
     return (
         <ColoredSegment color="green" show={show} status="target_met">{`${direction} ${target}${unit}`}</ColoredSegment>
     )
+}
+GreenSegment.propTypes = {
+    direction: oneOf(["≦", "≧"]),
+    target: string,
+    show: bool,
+    unit: string,
 }
 
 function RedSegment({ direction, target, show, unit }) {
@@ -67,11 +84,23 @@ function RedSegment({ direction, target, show, unit }) {
         <ColoredSegment color="red" show={show} status="target_not_met">{`${direction} ${target}${unit}`}</ColoredSegment>
     )
 }
+RedSegment.propTypes = {
+    direction: oneOf(["<", ">"]),
+    target: string,
+    show: bool,
+    unit: string,
+}
 
 function GreySegment({ lowTarget, highTarget, show, unit }) {
     return (
         <ColoredSegment color="grey" show={show} status="debt_target_met">{`${lowTarget} - ${highTarget}${unit}`}</ColoredSegment>
     )
+}
+GreySegment.propTypes = {
+    lowTarget: string,
+    highTarget: string,
+    show: bool,
+    unit: string,
 }
 
 function YellowSegment({ lowTarget, highTarget, show, unit }) {
@@ -82,6 +111,12 @@ function YellowSegment({ lowTarget, highTarget, show, unit }) {
         <ColoredSegment color="yellow" show={show} status="near_target_met">{`${lowTarget} - ${highTarget}${unit}`}</ColoredSegment>
     )
 }
+YellowSegment.propTypes = {
+    lowTarget: string,
+    highTarget: string,
+    show: bool,
+    unit: string,
+}
 
 function ColoredSegments({ children }) {
     return (
@@ -89,6 +124,9 @@ function ColoredSegments({ children }) {
             {children}
         </Segment.Group>
     )
+}
+ColoredSegments.propTypes = {
+    children: childrenPropType,
 }
 
 function TargetVisualiser({ metric }) {
@@ -143,6 +181,9 @@ function TargetVisualiser({ metric }) {
         )
     }
 }
+TargetVisualiser.propTypes = {
+    metric: metricPropType,
+}
 
 function TargetLabel({ label, metric, position, targetType }) {
     const dataModel = useContext(DataModel);
@@ -162,8 +203,14 @@ function TargetLabel({ label, metric, position, targetType }) {
         </label>
     )
 }
+TargetLabel.propTypes = {
+    label: labelPropType,
+    metric: metricPropType,
+    position: string,
+    targetType: string,
+}
 
-export function Target({ metric, metric_uuid, target_type, label, labelPosition, reload }) {
+export function Target({ label, labelPosition, metric, metric_uuid, reload, target_type }) {
     const dataModel = useContext(DataModel)
     const metricScale = getMetricScale(metric, dataModel)
     const metricDirectionPrefix = formatMetricDirection(metric, dataModel)
@@ -194,4 +241,12 @@ export function Target({ metric, metric_uuid, target_type, label, labelPosition,
             />
         );
     }
+}
+Target.propTypes = {
+    label: labelPropType,
+    labelPosition: string,
+    metric: metricPropType,
+    metric_uuid: string,
+    reload: func,
+    target_type: string,
 }

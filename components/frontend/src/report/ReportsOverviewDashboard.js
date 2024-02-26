@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { array, func } from 'prop-types';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
@@ -105,11 +105,11 @@ export function ReportsOverviewDashboard(
 }
 ReportsOverviewDashboard.propTypes = {
     dates: datesPropType,
-    layout: PropTypes.array,
-    measurements: PropTypes.array,
-    onClickTag: PropTypes.func,
-    openReport: PropTypes.func,
-    reload: PropTypes.func,
+    layout: array,
+    measurements: array,
+    onClickTag: func,
+    openReport: func,
+    reload: func,
     reports: reportsPropType,
     settings: settingsPropType
 }

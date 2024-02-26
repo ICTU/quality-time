@@ -1,5 +1,7 @@
 import { VictoryBar, VictoryStack } from 'victory';
+import { number, object } from 'prop-types'
 import { pluralize, STATUSES, STATUS_COLORS, STATUS_NAME, sum } from '../utils';
+import { labelPropType, stringsPropType } from '../sharedPropTypes';
 
 function nrMetricsLabel(nrMetrics) {
     return nrMetrics === 0 ? "No metrics" : nrMetrics + pluralize(" metric", nrMetrics)
@@ -54,4 +56,15 @@ export function StatusBarChart({ animate, colors, label, tooltip, summary, maxY,
                 {bars}
             </VictoryStack>
     )
+}
+StatusBarChart.propTypes = {
+    animate: object,
+    colors: stringsPropType,
+    label: labelPropType,
+    tooltip: object,
+    summary: object,
+    maxY: number,
+    style: object,
+    width: number,
+    height: number,
 }

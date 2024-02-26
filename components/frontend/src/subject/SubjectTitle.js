@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import PropTypes from 'prop-types';
+import { bool, func, object, string } from 'prop-types';
 import { Icon, Menu } from 'semantic-ui-react';
 import { Header, Tab } from '../semantic_ui_react_wrappers';
 import { activeTabIndex, tabChangeHandler } from '../app_ui_settings';
@@ -30,7 +30,7 @@ function SubjectHeader({ subjectType }) {
     )
 }
 SubjectHeader.propTypes = {
-    subjectType: PropTypes.object
+    subjectType: object,
 }
 
 function ButtonRow({ subject_uuid, firstSubject, lastSubject, reload }) {
@@ -46,10 +46,10 @@ function ButtonRow({ subject_uuid, firstSubject, lastSubject, reload }) {
     )
 }
 ButtonRow.propTypes = {
-    subject_uuid: PropTypes.string,
-    firstSubject: PropTypes.bool,
-    lastSubject: PropTypes.bool,
-    reload: PropTypes.func
+    subject_uuid: string,
+    firstSubject: bool,
+    lastSubject: bool,
+    reload: func,
 }
 
 export function SubjectTitle({ atReportsOverview, report, subject, subject_uuid, firstSubject, lastSubject, reload, settings }) {
@@ -97,12 +97,12 @@ export function SubjectTitle({ atReportsOverview, report, subject, subject_uuid,
     )
 }
 SubjectTitle.propTypes = {
-    atReportsOverview: PropTypes.bool,
-    firstSubject: PropTypes.bool,
-    lastSubject: PropTypes.bool,
-    reload: PropTypes.func,
+    atReportsOverview: bool,
+    firstSubject: bool,
+    lastSubject: bool,
+    reload: func,
     report: reportPropType,
     settings: settingsPropType,
-    subject: PropTypes.object,
-    subject_uuid: PropTypes.string,
+    subject: object,
+    subject_uuid: string,
 }

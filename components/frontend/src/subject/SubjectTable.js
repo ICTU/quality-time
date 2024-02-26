@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { array, func, object, string } from 'prop-types';
 import { Table } from '../semantic_ui_react_wrappers';
 import { SubjectTableBody } from './SubjectTableBody';
 import { SubjectTableFooter } from './SubjectTableFooter';
@@ -25,7 +25,7 @@ export function SubjectTable({
     reports,
     settings,
     subject,
-    subject_uuid
+    subject_uuid,
 }) {
     const className = "stickyHeader" + (subject.subtitle ? " subjectHasSubTitle" : "")
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
@@ -68,14 +68,14 @@ export function SubjectTable({
 SubjectTable.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
-    handleSort: PropTypes.func,
-    measurements: PropTypes.array,
-    metricEntries: PropTypes.array,
-    reload: PropTypes.func,
+    handleSort: func,
+    measurements: array,
+    metricEntries: array,
+    reload: func,
     report: reportPropType,
     reportDate: optionalDatePropType,
     reports: reportsPropType,
     settings: settingsPropType,
-    subject: PropTypes.object,
-    subject_uuid: PropTypes.string
+    subject: object,
+    subject_uuid: string,
 }

@@ -1,6 +1,6 @@
 
 import { useContext } from 'react';
-import PropTypes from 'prop-types';
+import { array, func } from 'prop-types';
 import { datesPropType, reportPropType, settingsPropType } from '../sharedPropTypes';
 import { DataModel } from '../context/DataModel';
 import { Tag } from '../widgets/Tag';
@@ -96,10 +96,10 @@ export function ReportDashboard(
 }
 ReportDashboard.propTypes = {
     dates: datesPropType,
-    measurements: PropTypes.array,
-    onClick: PropTypes.func,
-    onClickTag: PropTypes.func,
-    reload: PropTypes.func,
+    measurements: array,
+    onClick: func,
+    onClickTag: func,
+    reload: func,
     report: reportPropType,
     settings: settingsPropType
 }

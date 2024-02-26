@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { func, string } from 'prop-types';
 import { Header } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
@@ -40,4 +41,9 @@ export function SourceType({metric_type, set_source_attribute, source_type}) {
             value={source_type}
         />
     )
+}
+SourceType.propTypes = {
+    metric_type: string,
+    set_source_attribute: func,
+    source_type: string,
 }

@@ -1,9 +1,11 @@
+import { bool, func, string} from 'prop-types';
 import { Icon, Label, Form } from '../semantic_ui_react_wrappers';
 import { DatePicker } from '../widgets/DatePicker';
 import { ReadOnlyOrEditable } from '../context/Permissions';
 import { ReadOnlyInput } from './ReadOnlyInput';
 import { toISODateStringInCurrentTZ } from '../utils';
 import './DateInput.css';
+import { labelPropType, permissionsPropType } from '../sharedPropTypes';
 
 function EditableDateInput({ ariaLabelledBy, label, placeholder, required, set_value, value }) {
     value = value ? new Date(value) : null
@@ -31,6 +33,14 @@ function EditableDateInput({ ariaLabelledBy, label, placeholder, required, set_v
         </Form.Input>
     )
 }
+EditableDateInput.propTypes = {
+    ariaLabelledBy: string,
+    label: labelPropType,
+    placeholder: string,
+    required: bool,
+    set_value: func,
+    value: string,
+}
 
 export function DateInput(props) {
     return (
@@ -42,4 +52,9 @@ export function DateInput(props) {
             />
         </Form>
     )
+}
+DateInput.propTypes = {
+    editableLabel: labelPropType,
+    label: labelPropType,
+    requiredPermissions: permissionsPropType,
 }

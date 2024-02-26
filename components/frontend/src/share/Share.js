@@ -1,4 +1,5 @@
 import { Header } from '../semantic_ui_react_wrappers';
+import { string } from 'prop-types';
 import { PermLinkButton } from '../widgets/Button';
 
 export function Share({ title, url }) {
@@ -10,4 +11,8 @@ export function Share({ title, url }) {
             <PermLinkButton url={url} />
         </>
     )
+}
+Share.propTypes = {
+    title: string,
+    url: string,
 }

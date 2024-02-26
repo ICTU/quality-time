@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { bool, func, number, oneOfType, string } from 'prop-types';
 import { StringInput } from '../fields/StringInput';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { DateInput } from '../fields/DateInput';
@@ -11,14 +12,15 @@ import { LabelWithHelp } from '../widgets/LabelWithHelp';
 import { LabelWithHyperLink } from '../widgets/LabelWithHyperLink';
 import { LabelDate } from '../widgets/LabelWithDate';
 import { dropdownOptions } from '../utils';
+import { labelPropType, permissionsPropType, popupContentPropType, reportPropType, sourcePropType, stringsPropType } from '../sharedPropTypes';
 
 function SourceParameterLabel({
-    source_type_name,
-    parameter_short_name,
     edit_scope,
-    setEditScope,
     index,
     label,
+    parameter_short_name,
+    setEditScope,
+    source_type_name,
 }) {
     const scope_options = [
         { key: "source", value: "source", text: "Apply change to source", description: `Change the ${parameter_short_name} of this ${source_type_name} source only`, label: { color: 'grey', empty: true, circular: true } },
@@ -36,30 +38,38 @@ function SourceParameterLabel({
             value={edit_scope} />
     )
 }
+SourceParameterLabel.propTypes = {
+    edit_scope: string,
+    index: number,
+    label: labelPropType,
+    parameter_short_name: string,
+    setEditScope: func,
+    source_type_name: string,
+}
 
 export function SourceParameter({
-        report,
-        source,
-        source_uuid,
-        source_type_name,
-        parameter_key,
-        parameter_type,
-        parameter_name,
-        parameter_short_name,
-        parameter_unit,
-        parameter_min,
-        parameter_max,
-        parameter_value,
-        parameter_values,
-        help_url,
-        help,
-        requiredPermissions,
-        placeholder,
-        required,
-        warning,
-        reload,
-        index,
-    }) {
+    help,
+    help_url,
+    index,
+    parameter_key,
+    parameter_type,
+    parameter_name,
+    parameter_short_name,
+    parameter_unit,
+    parameter_min,
+    parameter_max,
+    parameter_value,
+    parameter_values,
+    placeholder,
+    reload,
+    report,
+    required,
+    requiredPermissions,
+    source,
+    source_type_name,
+    source_uuid,
+    warning,
+}) {
     const [edit_scope, setEditScope] = useState("source");
     function options() {
         let values = new Set();
@@ -91,7 +101,7 @@ export function SourceParameter({
     }
     if (parameter_type === "date") {
         const date = new Date(Date.parse(parameter_value))
-        label=<span>{label}<LabelDate date={date} /></span>
+        label = <span>{label}<LabelDate date={date} /></span>
     }
     let parameter_props = {
         requiredPermissions: requiredPermissions,
@@ -101,7 +111,7 @@ export function SourceParameter({
             setEditScope={setEditScope}
             source_type_name={source_type_name}
             parameter_short_name={parameter_short_name}
-            index={index}/>,
+            index={index} />,
         label: label,
         placeholder: placeholder,
         required: required,
@@ -137,4 +147,27 @@ export function SourceParameter({
         return (<StringInput {...parameter_props} error={warning} />)
     }
     return null;
+}
+SourceParameter.propTypes = {
+    help: popupContentPropType,
+    help_url: string,
+    index: number,
+    parameter_key: string,
+    parameter_type: string,
+    parameter_name: string,
+    parameter_short_name: string,
+    parameter_unit: string,
+    parameter_min: number,
+    parameter_max: number,
+    parameter_value: oneOfType([string, stringsPropType]),
+    parameter_values: stringsPropType,
+    placeholder: string,
+    reload: func,
+    report: reportPropType,
+    required: bool,
+    requiredPermissions: permissionsPropType,
+    source: sourcePropType,
+    source_type_name: string,
+    source_uuid: string,
+    warning: bool,
 }

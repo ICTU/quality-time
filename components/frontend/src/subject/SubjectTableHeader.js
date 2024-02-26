@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { PropTypes } from 'prop-types';
+import { bool, func } from 'prop-types';
 import { List, Table } from "semantic-ui-react";
 import { Icon, Label } from "../semantic_ui_react_wrappers";
 import { DarkMode } from "../context/DarkMode";
@@ -72,9 +72,9 @@ const measurementHelp = <>
         The latest measurement value. Metrics are measured periodically.
     </p>
     <p>
-        If the measurement value is '?', no sources have been configured for the metric yet or the measurement data
-        could not be collected. Expand the metric (click <Icon fitted name="triangle right" />) and navigate to the
-        sources tab to add sources or see the error details.
+        If the measurement value is &lsquo?&rsquo, no sources have been configured for the metric yet or the
+        measurement data could not be collected. Expand the metric (click <Icon fitted name="triangle right" />)
+        and navigate to the sources tab to add sources or see the error details.
     </p>
     <p>
         If the measurement value has a <Label as="span" horizontal color="red">red background</Label>, the metric has
@@ -268,7 +268,7 @@ function MeasurementHeaderCells({ columnDates, showDeltaColumns }) {
 }
 MeasurementHeaderCells.propTypes = {
     columnDates: datesPropType,
-    showDeltaColumns: PropTypes.bool,
+    showDeltaColumns: bool,
 }
 
 
@@ -303,6 +303,6 @@ export function SubjectTableHeader(
 }
 SubjectTableHeader.propTypes = {
     columnDates: datesPropType,
-    handleSort: PropTypes.func,
+    handleSort: func,
     settings: settingsPropType,
 }

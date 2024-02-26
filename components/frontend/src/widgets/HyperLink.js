@@ -1,6 +1,8 @@
 import { useContext } from 'react';
+import { bool, string } from 'prop-types';
 import { DarkMode } from '../context/DarkMode';
 import './HyperLink.css';
+import { childrenPropType } from '../sharedPropTypes';
 
 export function HyperLink({ url, children, error }) {
     let className = useContext(DarkMode) ? "inverted" : ""
@@ -19,4 +21,9 @@ export function HyperLink({ url, children, error }) {
             {children}
         </a>
     )
+}
+HyperLink.propTypes = {
+    url: string,
+    children: childrenPropType,
+    error: bool,
 }

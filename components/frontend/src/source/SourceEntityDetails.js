@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { func, node, string } from 'prop-types';
 import { Grid, Header } from 'semantic-ui-react';
 import { DateInput } from '../fields/DateInput';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
@@ -17,9 +17,9 @@ function entityStatusOption(status, text, content, subheader) {
 }
 entityStatusOption.propTypes = {
     status: entityStatusPropType,
-    text: PropTypes.string,
-    content: PropTypes.node,
-    subheader: PropTypes.node
+    text: string,
+    content: node,
+    subheader: node,
 }
 
 function entityStatusOptions(entityType, report) {
@@ -38,8 +38,8 @@ function entityStatusOptions(entityType, report) {
     ]
 }
 entityStatusOptions.propTypes = {
-    entityType: PropTypes.string,
-    report: reportPropType
+    entityType: string,
+    report: reportPropType,
 }
 
 export function SourceEntityDetails(
@@ -100,12 +100,12 @@ export function SourceEntityDetails(
 }
 SourceEntityDetails.propTypes = {
     entity: entityPropType,
-    metric_uuid: PropTypes.string,
-    name: PropTypes.string,
-    rationale: PropTypes.string,
-    reload: PropTypes.func,
+    metric_uuid: string,
+    name: string,
+    rationale: string,
+    reload: func,
     report: reportPropType,
     status: entityStatusPropType,
-    status_end_date: PropTypes.string,
-    source_uuid: PropTypes.string
+    status_end_date: string,
+    source_uuid: string,
 }

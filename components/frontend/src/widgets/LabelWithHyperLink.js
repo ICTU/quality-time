@@ -1,7 +1,9 @@
+import { string } from 'prop-types';
 import { Icon } from '../semantic_ui_react_wrappers';
 import { HyperLink } from './HyperLink';
+import { labelPropType } from '../sharedPropTypes';
 
-export function LabelWithHyperLink({labelId, label, url }){
+export function LabelWithHyperLink({ labelId, label, url }) {
     return (
         <label id={labelId}>
             {label}{" "}
@@ -10,4 +12,9 @@ export function LabelWithHyperLink({labelId, label, url }){
             </HyperLink>
         </label>
     )
+}
+LabelWithHyperLink.propTypes = {
+    labelId: string,
+    label: labelPropType,
+    url: string,
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import { bool, func, number, string } from 'prop-types';
 import { Container, Loader } from 'semantic-ui-react';
 import { Segment } from './semantic_ui_react_wrappers';
 import { Report } from './report/Report';
@@ -87,14 +87,14 @@ export function PageContent({
 PageContent.propTypes = {
     changed_fields: stringsPropType,
     current_report: reportPropType,
-    handleSort: PropTypes.func,
-    loading: PropTypes.bool,
-    nrMeasurements: PropTypes.number,
-    openReport: PropTypes.func,
-    openReportsOverview: PropTypes.func,
-    reload: PropTypes.func,
+    handleSort: func,
+    loading: bool,
+    nrMeasurements: number,
+    openReport: func,
+    openReportsOverview: func,
+    reload: func,
     report_date: optionalDatePropType,
-    report_uuid: PropTypes.string,
+    report_uuid: string,
     reports: reportsPropType,
     reports_overview: reportsOverviewPropType,
     settings: settingsPropType

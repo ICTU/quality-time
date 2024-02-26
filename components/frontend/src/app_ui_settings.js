@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { string } from 'prop-types';
 import { stringsURLSearchQueryPropType } from './sharedPropTypes';
 import {
     useArrayURLSearchQuery,
@@ -150,7 +150,7 @@ export function tabChangeHandler(expandedItems, uuid) {
 }
 tabChangeHandler.propTypes = {
     expandedItems: stringsURLSearchQueryPropType,
-    uuid: PropTypes.string,
+    uuid: string,
 }
 
 export function activeTabIndex(expandedItems, uuid) {
@@ -160,5 +160,5 @@ export function activeTabIndex(expandedItems, uuid) {
 }
 activeTabIndex.propTypes = {
     expandedItems: stringsURLSearchQueryPropType,
-    uuid: PropTypes.string,
+    uuid: string,
 }

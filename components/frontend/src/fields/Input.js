@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { bool, func, string } from 'prop-types';
 import { Form, Label } from '../semantic_ui_react_wrappers';
+import { labelPropType } from '../sharedPropTypes';
 
 export function Input(props) {
     let { editableLabel, label, error, prefix, required, set_value, warning, ...otherProps } = props;
@@ -30,4 +32,14 @@ export function Input(props) {
             <input />
         </Form.Input>
     )
+}
+Input.propTypes = {
+    editableLabel: labelPropType,
+    label: labelPropType,
+    error: bool,
+    prefix: string,
+    required: bool,
+    set_value: func,
+    warning: bool,
+    value: string,
 }

@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { array, func, string } from 'prop-types';
 import { Table } from '../semantic_ui_react_wrappers';
 import { SubjectTableRow } from './SubjectTableRow';
 import {
@@ -57,14 +57,14 @@ export function SubjectTableBody(
 SubjectTableBody.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
-    handleSort: PropTypes.func,
-    measurements: PropTypes.array,
-    metricEntries: PropTypes.array,
-    reload: PropTypes.func,
+    handleSort: func,
+    measurements: array,
+    metricEntries: array,
+    reload: func,
     report: reportPropType,
     reportDate: optionalDatePropType,
     reports: reportsPropType,
-    reversedMeasurements: PropTypes.array,
+    reversedMeasurements: array,
     settings: settingsPropType,
-    subject_uuid: PropTypes.string,
+    subject_uuid: string,
 }

@@ -1,4 +1,5 @@
 import { Breadcrumb } from '../semantic_ui_react_wrappers';
+import { string } from 'prop-types';
 
 export function ItemBreadcrumb(props) {
     return (
@@ -24,4 +25,11 @@ export function ItemBreadcrumb(props) {
             }
         </Breadcrumb>
     )
+}
+ItemBreadcrumb.propTypes = {
+    metric: string,
+    report: string,
+    size: string,
+    source: string,
+    subject: string,
 }

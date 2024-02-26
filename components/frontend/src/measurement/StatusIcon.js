@@ -1,8 +1,10 @@
+import { instanceOf, oneOfType, string } from 'prop-types';
 import { Icon } from 'semantic-ui-react';
 import { Popup } from '../semantic_ui_react_wrappers';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { getStatusName } from '../utils'
 import './StatusIcon.css';
+import { statusPropType } from '../sharedPropTypes';
 
 export function StatusIcon({ status, status_start, size }) {
     status = status || "unknown";
@@ -13,4 +15,9 @@ export function StatusIcon({ status, status_start, size }) {
     const statusName = getStatusName(status)
     const icon = <Icon aria-label={statusName} className={status} inverted circular name={icon_name} size={size} />;
     return (status_start ? <Popup trigger={icon} flowing hoverable><TimeAgoWithDate date={status_start}>{`${statusName} since`}</TimeAgoWithDate></Popup> : icon);
+}
+StatusIcon.propTypes = {
+    status: statusPropType,
+    status_start: oneOfType([string, instanceOf(Date)]),
+    size: string,
 }

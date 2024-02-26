@@ -1,6 +1,8 @@
 import { Header, Popup, Table } from '../semantic_ui_react_wrappers';
+import { string } from 'prop-types';
 import { StatusIcon } from './StatusIcon';
 import { getMetricResponseOverrun, pluralize } from '../utils';
+import { datesPropType, measurementsPropType, metricPropType, reportPropType } from '../sharedPropTypes';
 
 function formatDays(days) {
     return `${days} ${pluralize("day", days)}`
@@ -64,4 +66,11 @@ export function Overrun({ metric_uuid, metric, report, measurements, dates }) {
             trigger={trigger}
         />
     )
+}
+Overrun.propTypes = {
+    dates: datesPropType,
+    measurements: measurementsPropType,
+    metric: metricPropType,
+    metric_uuid: string,
+    report: reportPropType,
 }

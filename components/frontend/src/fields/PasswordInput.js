@@ -1,7 +1,9 @@
 import { Form } from '../semantic_ui_react_wrappers';
+import { string } from 'prop-types';
 import { ReadOnlyOrEditable } from '../context/Permissions';
 import { Input } from './Input';
 import { ReadOnlyInput } from './ReadOnlyInput';
+import { permissionsPropType } from '../sharedPropTypes';
 
 export function PasswordInput(props) {
     // We shouldn't have received a real password from the backend, but ignore the password value anyway to be sure
@@ -16,4 +18,8 @@ export function PasswordInput(props) {
             />
         </Form>
     )
+}
+PasswordInput.propTypes = {
+    requiredPermissions: permissionsPropType,
+    value: string,
 }

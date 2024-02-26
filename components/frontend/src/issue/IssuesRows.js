@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { bool, func, node, string } from 'prop-types';
 import { Grid } from 'semantic-ui-react';
 import { set_metric_attribute, add_metric_issue } from '../api/metric';
 import { get_report_issue_tracker_suggestions } from '../api/report';
@@ -26,11 +26,11 @@ function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, me
     )
 }
 CreateIssueButton.propTypes = {
-    issueTrackerConfigured: PropTypes.bool,
-    issueTrackerInstruction: PropTypes.node,
-    metric_uuid: PropTypes.string,
-    target: PropTypes.string,
-    reload: PropTypes.func
+    issueTrackerConfigured: bool,
+    issueTrackerInstruction: node,
+    metric_uuid: string,
+    target: string,
+    reload: func
 }
 
 function IssueIdentifiers({ entityKey, issueTrackerInstruction, metric, metric_uuid, report_uuid, target, reload }) {
@@ -68,19 +68,19 @@ function IssueIdentifiers({ entityKey, issueTrackerInstruction, metric, metric_u
     )
 }
 IssueIdentifiers.propTypes = {
-    entityKey: PropTypes.string,
-    issueTrackerInstruction: PropTypes.node,
+    entityKey: string,
+    issueTrackerInstruction: node,
     metric: metricPropType,
-    metric_uuid: PropTypes.string,
-    report_uuid: PropTypes.string,
-    target: PropTypes.string,
-    reload: PropTypes.func
+    metric_uuid: string,
+    report_uuid: string,
+    target: string,
+    reload: func
 }
 
 export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
     const parameters = report?.issue_tracker?.parameters;
     const issueTrackerConfigured = Boolean(report?.issue_tracker?.type && parameters?.url && parameters?.project_key && parameters?.issue_type);
-    const issueTrackerInstruction = issueTrackerConfigured ? null : <p>Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker.</p>;
+    const issueTrackerInstruction = issueTrackerConfigured ? null : <p>Please configure an issue tracker by expanding the report title, selecting the &apos;Issue tracker&apos; tab, and configuring an issue tracker.</p>;
     const issueIdentifiersProps = {
         issueTrackerInstruction: issueTrackerInstruction,
         metric: metric,
@@ -150,10 +150,10 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
     )
 }
 IssuesRows.propTypes = {
-    entityKey: PropTypes.string,
+    entityKey: string,
     metric: metricPropType,
-    metric_uuid: PropTypes.string,
-    reload: PropTypes.func,
+    metric_uuid: string,
+    reload: func,
     report: reportPropType,
-    target: PropTypes.string,
+    target: string,
 }

@@ -2,6 +2,7 @@ import { Message } from 'semantic-ui-react';
 import { Label, Popup } from "../semantic_ui_react_wrappers";
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { get_metric_value, MILLISECONDS_PER_HOUR } from '../utils';
+import { datePropType, metricPropType } from '../sharedPropTypes';
 
 export function MeasurementValue({ metric, reportDate }) {
     const metricValue = get_metric_value(metric)
@@ -27,4 +28,8 @@ export function MeasurementValue({ metric, reportDate }) {
         )
     }
     return <span>{value}</span>;
+}
+MeasurementValue.propTypes = {
+    metric: metricPropType,
+    reportDate: datePropType,
 }

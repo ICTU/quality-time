@@ -3,14 +3,14 @@ import { Permissions } from '../context/Permissions';
 import { SingleChoiceInput } from './SingleChoiceInput';
 
 it('renders the value read only', () => {
-    render(<SingleChoiceInput requiredPermissions={'testPermission'} value="hello" options={[{ text: "hello", value: "hello" }]} />);
+    render(<SingleChoiceInput requiredPermissions={["testPermission"]} value="hello" options={[{ text: "hello", value: "hello" }]} />);
     expect(screen.getByDisplayValue(/hello/)).not.toBe(null)
 })
 
 it('renders the editable value', () => {
     render(
         <Permissions.Provider value={false}>
-            <SingleChoiceInput requiredPermissions={'testPermission'} value="hello" options={[{ text: "hello", value: "hello" }]} />
+            <SingleChoiceInput requiredPermissions={["testPermission"]} value="hello" options={[{ text: "hello", value: "hello" }]} />
         </Permissions.Provider>
     )
     expect(screen.getByDisplayValue(/hello/)).not.toBe(null)

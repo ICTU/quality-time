@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { array, bool, func } from 'prop-types';
 import { Form } from '../semantic_ui_react_wrappers';
 import { ReadOnlyOrEditable } from '../context/Permissions';
 import { ReadOnlyInput } from './ReadOnlyInput';
+import { labelPropType, permissionsPropType, stringsPropType } from '../sharedPropTypes';
 
 function assembleOptions(optionList, values) {
     // Create a sorted list of unique options. Also include the current values, or they won't be displayed for some reason
@@ -60,4 +62,15 @@ export function MultipleChoiceInput(props) {
             />
         </Form>
     )
+}
+MultipleChoiceInput.propTypes = {
+    allowAdditions: bool,
+    editableLabel: labelPropType,
+    label: labelPropType,
+    onSearchChange: func,
+    options: array,
+    required: bool,
+    requiredPermissions: permissionsPropType,
+    set_value: func,
+    value: stringsPropType,
 }

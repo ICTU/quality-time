@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { func } from 'prop-types';
 import { Dropdown } from 'semantic-ui-react';
 import { uiModePropType } from '../sharedPropTypes';
 import { IconCombi } from '../widgets/IconCombi'
@@ -24,6 +24,6 @@ export function UIModeMenu({ setUIMode, uiMode }) {
     )
 }
 UIModeMenu.propTypes = {
-    setUIMode: PropTypes.func,
+    setUIMode: func,
     uiMode: uiModePropType
 }
