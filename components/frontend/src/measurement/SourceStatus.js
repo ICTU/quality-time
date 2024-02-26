@@ -3,6 +3,7 @@ import { Label, Popup } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { HyperLink } from '../widgets/HyperLink';
 import { get_metric_name, get_source_name } from '../utils';
+import { measurementSourcePropType, metricPropType } from '../sharedPropTypes';
 
 export function SourceStatus({ metric, measurement_source }) {
     const dataModel = useContext(DataModel)
@@ -33,4 +34,8 @@ export function SourceStatus({ metric, measurement_source }) {
     } else {
         return source_label()
     }
+}
+SourceStatus.propTypes = {
+    metric: metricPropType,
+    measurement_source: measurementSourcePropType,
 }

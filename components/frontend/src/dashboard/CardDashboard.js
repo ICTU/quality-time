@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import { array, bool, func } from 'prop-types';
 import RGL, { WidthProvider } from "react-grid-layout";
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';
 
@@ -17,9 +17,9 @@ function cardDivs(cards, dragging, isDragging) {
     ));
 }
 cardDivs.propTypes = {
-    cards: PropTypes.array,
-    dragging: PropTypes.bool,
-    isDragging: PropTypes.func,
+    cards: array,
+    dragging: bool,
+    isDragging: func,
 }
 
 export function CardDashboard({ cards, initialLayout, saveLayout }) {
@@ -98,7 +98,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
     )
 }
 CardDashboard.propTypes = {
-    cards: PropTypes.array,
-    initialLayout: PropTypes.array,
-    saveLayout: PropTypes.func,
+    cards: array,
+    initialLayout: array,
+    saveLayout: func,
 }

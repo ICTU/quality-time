@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { string } from 'prop-types';
 import { datePropType, optionalDatePropType } from '../sharedPropTypes';
 import { Message } from 'semantic-ui-react';
 
@@ -12,7 +12,7 @@ function ErrorMessage({ children }) {
     )
 }
 ErrorMessage.propTypes = {
-    children: PropTypes.string
+    children: string
 }
 
 export function ReportErrorMessage({ reportDate }) {

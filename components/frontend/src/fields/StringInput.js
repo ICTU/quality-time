@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { array, bool, func, string } from 'prop-types';
 import { Form } from '../semantic_ui_react_wrappers';
 import { ReadOnlyOrEditable } from '../context/Permissions';
 import { Input } from './Input';
 import { ReadOnlyInput } from './ReadOnlyInput';
 import { sortWithLocaleCompare } from '../utils';
-import { stringsPropType } from '../sharedPropTypes';
+import { labelPropType, permissionsPropType, stringsPropType } from '../sharedPropTypes';
 
 function StringInputWithSuggestions(props) {
     let { editableLabel, label, error, options, placeholder, required, set_value, warning, ...otherProps } = props;
     placeholder = placeholder || "none"
     const initialValue = props.value || "";
-    const [string_options, setOptions] = useState([...options, { text: <font color="lightgrey">{placeholder}</font>, value: "", key: ""}]);
+    const [string_options, setOptions] = useState([...options, { text: <font color="lightgrey">{placeholder}</font>, value: "", key: "" }]);
     const [searchQuery, setSearchQuery] = useState(initialValue);
     return (
         <Form.Dropdown
@@ -32,6 +32,17 @@ function StringInputWithSuggestions(props) {
         />
     )
 }
+StringInputWithSuggestions.propTypes = {
+    editableLabel: labelPropType,
+    label: labelPropType,
+    error: bool,
+    options: array,
+    placeholder: string,
+    required: bool,
+    set_value: func,
+    value: string,
+    warning: bool,
+}
 
 export function StringInput(props) {
     const { requiredPermissions, options, ...otherProps } = props;
@@ -50,8 +61,6 @@ export function StringInput(props) {
     )
 }
 StringInput.propTypes = {
-    props: PropTypes.shape({
-        requiredPermissions: stringsPropType,
-        options: stringsPropType
-    })
+    requiredPermissions: permissionsPropType,
+    options: stringsPropType
 }

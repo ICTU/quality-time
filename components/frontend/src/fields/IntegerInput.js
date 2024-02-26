@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { func, number, oneOfType, string } from 'prop-types';
 import { Form, Label } from '../semantic_ui_react_wrappers';
 import { ReadOnlyOrEditable } from '../context/Permissions';
 import { ReadOnlyInput } from './ReadOnlyInput';
+import { labelPropType, permissionsPropType } from '../sharedPropTypes';
 
 function EditableIntegerInput(props) {
     let { editableLabel, label, min, prefix, set_value, unit, ...otherProps } = props;
@@ -55,6 +57,16 @@ function EditableIntegerInput(props) {
         </Form>
     )
 }
+EditableIntegerInput.propTypes = {
+    editableLabel: labelPropType,
+    label: labelPropType,
+    max: oneOfType([number, string]),
+    min: oneOfType([number, string]),
+    prefix: string,
+    set_value: func,
+    unit: string,
+    value: oneOfType([number, string]),
+}
 
 export function IntegerInput(props) {
     let { requiredPermissions, ...otherProps } = props;
@@ -64,4 +76,7 @@ export function IntegerInput(props) {
             readOnlyComponent={<Form><ReadOnlyInput {...otherProps} /></Form>}
             editableComponent={<EditableIntegerInput {...otherProps} />} />
     )
+}
+IntegerInput.propTypes = {
+    requiredPermissions: permissionsPropType,
 }

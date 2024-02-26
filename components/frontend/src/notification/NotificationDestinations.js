@@ -1,3 +1,4 @@
+import { func, objectOf, string } from 'prop-types';
 import { Grid, Message } from 'semantic-ui-react';
 import { Segment } from '../semantic_ui_react_wrappers';
 import { StringInput } from '../fields/StringInput';
@@ -6,8 +7,9 @@ import { LabelWithHelp } from '../widgets/LabelWithHelp';
 import { add_notification_destination, delete_notification_destination, set_notification_destination_attributes } from '../api/notification'
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { HyperLink } from '../widgets/HyperLink';
+import { destinationPropType } from '../sharedPropTypes';
 
-function NotificationDestination({ report_uuid, destination_uuid, destination, reload }) {
+function NotificationDestination({ destination, destination_uuid, reload, report_uuid }) {
     const help_url = "https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook";
     const teams_hyperlink = <HyperLink url={help_url}>Microsoft Teams</HyperLink>
     return (
@@ -57,8 +59,14 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
         </Segment>
     )
 }
+NotificationDestination.propTypes = {
+    destination: destinationPropType,
+    destination_uuid: string,
+    reload: func,
+    report_uuid: string
+}
 
-export function NotificationDestinations({ destinations, report_uuid, reload }) {
+export function NotificationDestinations({ destinations, reload, report_uuid }) {
     const notification_destinations = [];
     Object.entries(destinations).forEach(([destination_uuid, destination]) => {
         notification_destinations.push(
@@ -78,4 +86,9 @@ export function NotificationDestinations({ destinations, report_uuid, reload }) 
             />
         </>
     )
+}
+NotificationDestinations.propTypes = {
+    destinations: objectOf(destinationPropType),
+    reload: func,
+    report_uuid: string,
 }

@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { bool, func, string } from 'prop-types'
 import { Form } from '../semantic_ui_react_wrappers';
 import { ReadOnlyOrEditable } from '../context/Permissions';
+import { labelPropType, permissionsPropType } from '../sharedPropTypes';
 
 function ReadOnlyTextInput({ label, required, value }) {
     return (
@@ -14,6 +16,11 @@ function ReadOnlyTextInput({ label, required, value }) {
             />
         </Form>
     )
+}
+ReadOnlyTextInput.propTypes = {
+    label: labelPropType,
+    required: bool,
+    value: string,
 }
 
 function EditableTextInput(props) {
@@ -52,6 +59,13 @@ function EditableTextInput(props) {
         </Form>
     )
 }
+EditableTextInput.propTypes = {
+    editableLabel: labelPropType,
+    label: labelPropType,
+    required: bool,
+    set_value: func,
+    value: string,
+}
 
 export function TextInput(props) {
     let { requiredPermissions, ...otherProps } = props;
@@ -61,4 +75,7 @@ export function TextInput(props) {
             readOnlyComponent={<ReadOnlyTextInput {...otherProps} />}
             editableComponent={<EditableTextInput {...otherProps} />} />
     )
+}
+TextInput.propTypes = {
+    requiredPermissions: permissionsPropType,
 }

@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import PropTypes from 'prop-types';
+import { func, string } from 'prop-types';
 import { Button, Icon, Popup, Table } from '../semantic_ui_react_wrappers';
 import { SourceEntity } from './SourceEntity';
 import { capitalize } from '../utils';
@@ -22,8 +22,8 @@ export function alignment(attributeType, attributeAlignment) {
     }[attributeType];
 }
 alignment.propTypes = {
-    attributeType: PropTypes.string,
-    attributeAligment: PropTypes.string
+    attributeType: string,
+    attributeAligment: string
 }
 
 export function SourceEntities({ metric, metric_uuid, reload, report, source }) {
@@ -140,8 +140,8 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
 }
 SourceEntities.propTypes = {
     metric: metricPropType,
-    metric_uuid: PropTypes.string,
-    reload: PropTypes.func,
+    metric_uuid: string,
+    reload: func,
     report: reportPropType,
     source: sourcePropType
 }

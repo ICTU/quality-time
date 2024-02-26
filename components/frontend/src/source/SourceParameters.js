@@ -1,11 +1,13 @@
 import { useContext } from 'react';
+import { func, string } from 'prop-types';
 import { Grid } from 'semantic-ui-react';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { SourceParameter } from './SourceParameter';
 import { formatMetricScaleAndUnit } from '../utils';
+import { metricPropType, reportPropType, sourcePropType, stringsPropType } from '../sharedPropTypes';
 
-export function SourceParameters({report, metric, source_uuid, source, changed_param_keys, reload}) {
+export function SourceParameters({changed_param_keys, metric, reload, report, source, source_uuid}) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metricUnit = formatMetricScaleAndUnit(metricType, metric);
@@ -44,4 +46,12 @@ export function SourceParameters({report, metric, source_uuid, source, changed_p
     )
     );
     return (<>{parameters}</>)
+}
+SourceParameters.propTypes = {
+    changed_param_keys: stringsPropType,
+    metric: metricPropType,
+    reload: func,
+    report: reportPropType,
+    source: sourcePropType,
+    source_uuid: string,
 }

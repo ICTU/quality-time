@@ -1,4 +1,4 @@
-import { PropTypes } from 'prop-types'
+import { arrayOf, number, objectOf, oneOf, string } from 'prop-types'
 import { PERMISSIONS } from './context/Permissions';
 import { HyperLink } from './widgets/HyperLink';
 import { defaultDesiredResponseTimes } from './defaults';
@@ -165,7 +165,7 @@ export function getStatusName(status) {
     }[status || "unknown"];
 }
 getStatusName.propTypes = {
-    status: PropTypes.string
+    status: string,
 }
 
 export function getMetricTags(metric) {
@@ -271,7 +271,7 @@ export function nice_number(number) {
         }
         rounded_numbers = rounded_numbers.map((value) => { return value * 10 });
     }
-    while (true);
+    while (true);  // eslint-disable-line no-constant-condition
 }
 
 export function scaled_number(number) {
@@ -337,5 +337,5 @@ export function sum(object) {
     return list.reduce((a, b) => a + b, 0)
 }
 sum.propTypes = {
-    object: PropTypes.oneOf([PropTypes.arrayOf(PropTypes.number), PropTypes.objectOf(PropTypes.number)])
+    object: oneOf([arrayOf(number), objectOf(number)]),
 }

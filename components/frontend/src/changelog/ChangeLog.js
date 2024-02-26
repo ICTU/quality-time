@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { string } from 'prop-types'
 import { Icon } from 'semantic-ui-react';
 import { Button, Feed, Form, Header, Segment } from '../semantic_ui_react_wrappers';
 import { get_changelog } from '../api/changelog';
@@ -18,6 +19,11 @@ function Event({ description, email, timestamp }) {
             </Feed.Content>
         </Feed.Event>
     )
+}
+Event.propTypes = {
+    description: string,
+    email: string,
+    timestamp: string,
 }
 
 function ChangeLogWithoutMemo({ report_uuid, subject_uuid, metric_uuid, source_uuid, timestamp }) {
@@ -62,6 +68,13 @@ function ChangeLogWithoutMemo({ report_uuid, subject_uuid, metric_uuid, source_u
         </Form>
     )
 }
+ChangeLogWithoutMemo.propTypes = {
+    report_uuid: string,
+    subject_uuid: string,
+    metric_uuid: string,
+    source_uuid: string,
+    timestamp: string,
+}
 
 // Use React.memo so the ChangeLog is not re-rendered on reload, but only when one of its props change
-export const ChangeLog = React.memo(props => <ChangeLogWithoutMemo {...props} />)
+export const ChangeLog = React.memo(function ChangeLog(props) {return <ChangeLogWithoutMemo {...props} />})

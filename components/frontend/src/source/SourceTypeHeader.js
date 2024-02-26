@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { string } from 'prop-types';
 import { Header, Icon } from '../semantic_ui_react_wrappers';
 import { HyperLink } from '../widgets/HyperLink';
 import { Logo } from './Logo';
@@ -24,7 +24,7 @@ export function SourceTypeHeader({ metricTypeId, sourceTypeId, sourceType }) {
     )
 }
 SourceTypeHeader.propTypes = {
-    metricTypeId: PropTypes.string,
-    sourceTypeId: PropTypes.string,
+    metricTypeId: string,
+    sourceTypeId: string,
     sourceType: sourceTypePropType,
 }

@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { func, string } from 'prop-types';
 import { Header } from '../semantic_ui_react_wrappers';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { set_metric_attribute } from '../api/metric';
@@ -17,7 +18,7 @@ export function metricTypeOptions(dataModel, subjectType) {
     return dataModel.subjects[subjectType].metrics.map((key) => metricTypeOption(key, dataModel.metrics[key]));
 }
 
-export function MetricType({subjectType, metricType, metric_uuid, reload}) {
+export function MetricType({ subjectType, metricType, metric_uuid, reload }) {
     const dataModel = useContext(DataModel);
     const options = metricTypeOptions(dataModel, subjectType)
     const metricTypes = options.map(option => option.key)
@@ -33,4 +34,10 @@ export function MetricType({subjectType, metricType, metric_uuid, reload}) {
             value={metricType}
         />
     )
+}
+MetricType.propTypes = {
+    subjectType: string,
+    metricType: string,
+    metric_uuid: string,
+    reload: func,
 }

@@ -3,6 +3,7 @@ import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme } fr
 import { DarkMode } from "../context/DarkMode";
 import { DataModel } from "../context/DataModel";
 import { capitalize, formatMetricScaleAndUnit, get_metric_name, nice_number, scaled_number } from '../utils';
+import { measurementsPropType, metricPropType } from '../sharedPropTypes';
 
 function measurementAttributeAsNumber(metric, measurement, field) {
     const value = (measurement[metric.scale] && measurement[metric.scale][field]) || null;
@@ -63,4 +64,8 @@ export function TrendGraph({ metric, measurements }) {
                 style={{ data: { stroke: darkMode ? "rgba(255, 255, 255, 0.87) " : "black", strokeWidth: 2 } }} />
         </VictoryChart>
     )
+}
+TrendGraph.propTypes = {
+    metric: metricPropType,
+    measurements: measurementsPropType,
 }

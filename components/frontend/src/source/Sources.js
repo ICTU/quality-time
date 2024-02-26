@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { func, number, string } from 'prop-types';
 import { Message } from 'semantic-ui-react';
 import { Segment } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
@@ -10,8 +11,9 @@ import { showMessage } from '../widgets/toast';
 import { pluralize } from '../utils';
 import { Source } from './Source';
 import { sourceTypeOptions } from './SourceType';
+import { measurementPropType, measurementSourcePropType, metricPropType, reportPropType, reportsPropType, stringsPropType } from '../sharedPropTypes';
 
-function ButtonSegment({ reports, metric_uuid, metric, reload }) {
+function ButtonSegment({ metric, metric_uuid, reload, reports }) {
     const dataModel = useContext(DataModel);
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
@@ -35,8 +37,14 @@ function ButtonSegment({ reports, metric_uuid, metric, reload }) {
         />
     )
 }
+ButtonSegment.propTypes = {
+    metric: metricPropType,
+    metric_uuid: string,
+    reload: func,
+    reports: reportsPropType,
+}
 
-function SourceSegment({ report, metric, sourceUuid, index, last_index, measurement_source, changed_fields, reload} ) {
+function SourceSegment({ changed_fields, index, last_index, measurement_source, metric, reload, report, sourceUuid }) {
     return (
         <Segment vertical id={sourceUuid}>
             <Source
@@ -51,6 +59,16 @@ function SourceSegment({ report, metric, sourceUuid, index, last_index, measurem
             />
         </Segment>
     )
+}
+SourceSegment.propTypes = {
+    changed_fields: stringsPropType,
+    index: number,
+    last_index: number,
+    measurement_source: measurementSourcePropType,
+    metric: metricPropType,
+    reload: func,
+    report: reportPropType,
+    sourceUuid: string,
 }
 
 export function Sources({ reports, report, metric, metric_uuid, measurement, changed_fields, reload }) {
@@ -90,4 +108,13 @@ export function Sources({ reports, report, metric, metric_uuid, measurement, cha
             <ButtonSegment reports={reports} metric_uuid={metric_uuid} metric={metric} reload={reload} />
         </>
     )
+}
+Sources.propTypes = {
+    changed_fields: stringsPropType,
+    reports: reportsPropType,
+    report: reportPropType,
+    metric: metricPropType,
+    metric_uuid: string,
+    measurement: measurementPropType,
+    reload: func,
 }

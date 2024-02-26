@@ -96,7 +96,7 @@ it('renders a password parameter', () => {
 it('renders a date parameter', () => {
     renderSourceParameter({ parameter_name: "Date", parameter_type: "date", parameter_value: "2021-10-10" });
     expect(screen.queryAllByText(/Date/).length).toBe(1);
-    expect(screen.queryAllByDisplayValue(/2021\-10\-10/).length).toBe(1);
+    expect(screen.queryAllByDisplayValue("2021-10-10").length).toBe(1);
 });
 
 it('renders an integer parameter', () => {

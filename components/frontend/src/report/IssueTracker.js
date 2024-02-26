@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import { func } from 'prop-types';
 import { Grid, Header, Message } from 'semantic-ui-react';
 import { LabelWithHelp } from '../widgets/LabelWithHelp';
 import { LabelWithHyperLink } from '../widgets/LabelWithHyperLink';
@@ -10,6 +11,7 @@ import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { PasswordInput } from '../fields/PasswordInput';
 import { Logo } from '../source/Logo';
 import { DataModel } from '../context/DataModel';
+import { reportPropType } from '../sharedPropTypes';
 
 const NONE_OPTION = {
     key: null, text: "None", value: null, content:
@@ -93,7 +95,7 @@ export function IssueTracker({ report, reload }) {
                 <Grid.Column>
                     <StringInput
                         id="tracker-url"
-                        required={report.issue_tracker?.type}
+                        required={!!report.issue_tracker?.type}
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Issue tracker URL"
                         set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "url", value, reload)}
@@ -220,4 +222,8 @@ export function IssueTracker({ report, reload }) {
             </Grid.Row>
         </Grid>
     )
+}
+IssueTracker.propTypes = {
+    reload: func,
+    report: reportPropType,
 }

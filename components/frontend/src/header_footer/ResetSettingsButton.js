@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { bool, func } from 'prop-types';
 import { Button, Icon } from 'semantic-ui-react';
 import { Popup } from '../semantic_ui_react_wrappers';
 import { optionalDatePropType, settingsPropType } from '../sharedPropTypes';
@@ -35,8 +35,8 @@ export function ResetSettingsButton({ atReportsOverview, handleDateChange, repor
     )
 }
 ResetSettingsButton.propTypes = {
-    atReportsOverview: PropTypes.bool,
-    handleDateChange: PropTypes.func,
+    atReportsOverview: bool,
+    handleDateChange: func,
     reportDate: optionalDatePropType,
     settings: settingsPropType,
 }

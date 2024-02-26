@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import PropTypes from 'prop-types';
+import { func } from 'prop-types';
 import { Segment } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
@@ -38,7 +38,7 @@ export function SubjectsButtonRow({ reload, report, reports, settings }) {
     )
 }
 SubjectsButtonRow.propTypes = {
-    reload: PropTypes.func,
+    reload: func,
     report: reportPropType,
     reports: reportsPropType,
     settings: settingsPropType

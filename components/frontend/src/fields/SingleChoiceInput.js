@@ -1,6 +1,8 @@
 import { Form } from '../semantic_ui_react_wrappers';
+import { array, bool, func, number, oneOfType, string } from 'prop-types';
 import { ReadOnlyOrEditable } from '../context/Permissions';
 import { ReadOnlyInput } from './ReadOnlyInput';
+import { labelPropType, permissionsPropType } from '../sharedPropTypes';
 
 export function SingleChoiceInput(props) {
     const option_value = props.options.filter(({ value }) => value === props.value)[0];
@@ -36,4 +38,13 @@ export function SingleChoiceInput(props) {
                 editableComponent={<Dropdown />} />
         </Form>
     )
+}
+SingleChoiceInput.propTypes = {
+    editableLabel: labelPropType,
+    label: labelPropType,
+    options: array,
+    requiredPermissions: permissionsPropType,
+    set_value: func,
+    sort: bool,
+    value: oneOfType([bool, number, string]),
 }

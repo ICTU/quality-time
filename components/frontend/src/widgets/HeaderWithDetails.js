@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { node, object, string } from 'prop-types';
 import { Header, Icon, Segment } from '../semantic_ui_react_wrappers';
 import { childrenPropType, settingsPropType } from '../sharedPropTypes';
 import './HeaderWithDetails.css';
@@ -27,11 +27,11 @@ export function HeaderWithDetails({ children, className, header, item_uuid, leve
 }
 HeaderWithDetails.propTypes = {
     children: childrenPropType,
-    className: PropTypes.string,
-    header: PropTypes.node,
-    item_uuid: PropTypes.string,
-    level: PropTypes.string,
+    className: string,
+    header: node,
+    item_uuid: string,
+    level: string,
     settings: settingsPropType,
-    style: PropTypes.object,
-    subheader: PropTypes.string,
+    style: object,
+    subheader: string,
 }

@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { bool, string } from 'prop-types';
 import TimeAgo from 'react-timeago';
 import { Label, Popup } from '../semantic_ui_react_wrappers';
 import { HyperLink } from '../widgets/HyperLink';
@@ -16,7 +16,7 @@ function IssueWithoutTracker({ issueId }) {
     )
 }
 IssueWithoutTracker.propTypes = {
-    issueId: PropTypes.string
+    issueId: string
 }
 
 function IssuesWithoutTracker({ issueIds }) {
@@ -89,8 +89,8 @@ function prefixName(name, prefix) {
     return name.toLowerCase().indexOf(prefix.toLowerCase()) < 0 ? `${prefix} ${name}` : name;
 }
 prefixName.propType = {
-    name: PropTypes.string,
-    prefix: PropTypes.string
+    name: string,
+    prefix: string
 }
 
 function issueLabel(issueStatus, settings, error) {
@@ -105,7 +105,7 @@ function issueLabel(issueStatus, settings, error) {
 issueLabel.propTypes = {
     issueStatus: issueStatusPropType,
     settings: settingsPropType,
-    error: PropTypes.string
+    error: string
 }
 
 function IssueWithTracker({ issueStatus, settings }) {
@@ -180,7 +180,7 @@ export function IssueStatus({ metric, issueTrackerMissing, settings }) {
     return <IssuesWithTracker issueIds={issueIds} metric={metric} settings={settings} />
 }
 IssueStatus.propTypes = {
-    issueTrackerMissing: PropTypes.bool,
+    issueTrackerMissing: bool,
     metric: metricPropType,
     settings: settingsPropType
 }

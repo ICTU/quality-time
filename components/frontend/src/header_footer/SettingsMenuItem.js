@@ -1,6 +1,7 @@
 import { Menu } from 'semantic-ui-react';
 import { Popup } from '../semantic_ui_react_wrappers';
-import PropTypes from 'prop-types';
+import { bool, func, number, oneOfType, string } from 'prop-types';
+import { childrenPropType, popupContentPropType } from '../sharedPropTypes';
 
 const activeColor = "grey"
 
@@ -29,11 +30,11 @@ export function SettingsMenuItem({ active, children, disabled, disabledHelp, hel
     return <Menu.Item {...props} >{children}</Menu.Item>
 }
 SettingsMenuItem.propTypes = {
-    active: PropTypes.bool,
-    children: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-    disabled: PropTypes.bool,
-    disabledHelp: PropTypes.string,
-    help: PropTypes.string,
-    onClick: PropTypes.func,
-    onClickData: PropTypes.oneOfType([PropTypes.bool, PropTypes.number, PropTypes.string])
+    active: bool,
+    children: childrenPropType,
+    disabled: bool,
+    disabledHelp: popupContentPropType,
+    help: popupContentPropType,
+    onClick: func,
+    onClickData: oneOfType([bool, number, string]),
 }

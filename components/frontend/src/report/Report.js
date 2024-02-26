@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { array, func } from 'prop-types';
 import {
     datesPropType,
     optionalDatePropType,
@@ -83,10 +83,10 @@ export function Report({
 Report.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
-    handleSort: PropTypes.func,
-    measurements: PropTypes.array,
-    openReportsOverview: PropTypes.func,
-    reload: PropTypes.func,
+    handleSort: func,
+    measurements: array,
+    openReportsOverview: func,
+    reload: func,
     report: reportPropType,
     report_date: optionalDatePropType,
     reports: reportsPropType,

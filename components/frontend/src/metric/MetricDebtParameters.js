@@ -1,4 +1,5 @@
 import { Grid } from 'semantic-ui-react';
+import { func, string } from 'prop-types';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { Comment } from '../fields/Comment';
 import { set_metric_attribute, set_metric_debt } from '../api/metric';
@@ -8,6 +9,7 @@ import { LabelWithHyperLink } from '../widgets/LabelWithHyperLink';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { IssuesRows } from '../issue/IssuesRows';
 import { Target } from './Target';
+import { metricPropType, reportPropType } from '../sharedPropTypes';
 
 function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
     const labelId = `accept-debt-label-${metric_uuid}`
@@ -40,6 +42,11 @@ function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
         />
     )
 }
+AcceptTechnicalDebt.propTypes = {
+    metric: metricPropType,
+    metric_uuid: string,
+    reload: func,
+}
 
 function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
     const labelId = `technical-debt-end-date-label-${metric_uuid}`
@@ -53,15 +60,20 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
         <DateInput
             ariaLabelledBy={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<LabelWithDate date={metric.debt_end_date} labelId={labelId} help={help} label="Technical debt end date" />}
+            label={<LabelWithDate date={Date(metric.debt_end_date)} labelId={labelId} help={help} label="Technical debt end date" />}
             placeholder="YYYY-MM-DD"
             set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
             value={metric.debt_end_date ?? ""}
         />
     )
 }
+TechnicalDebtEndDate.propTypes = {
+    metric: metricPropType,
+    metric_uuid: string,
+    reload: func,
+}
 
-export function MetricDebtParameters({ report, metric, metric_uuid, reload }) {
+export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
     return (
         <Grid stackable columns={3}>
             <Grid.Row>
@@ -86,4 +98,10 @@ export function MetricDebtParameters({ report, metric, metric_uuid, reload }) {
             </Grid.Row>
         </Grid>
     );
+}
+MetricDebtParameters.propTypes = {
+    metric: metricPropType,
+    metric_uuid: string,
+    reload: func,
+    report: reportPropType,
 }

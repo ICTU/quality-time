@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { array, func } from 'prop-types';
 import { Segment } from '../semantic_ui_react_wrappers';
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
 import { Subjects } from '../subject/Subjects';
@@ -39,7 +39,7 @@ function ReportsOverviewButtonRow({ reload, reports }) {
     )
 }
 ReportsOverviewButtonRow.propTypes = {
-    reload: PropTypes.func,
+    reload: func,
     reports: reportsPropType
 }
 
@@ -100,11 +100,11 @@ export function ReportsOverview(
 ReportsOverview.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
-    handleSort: PropTypes.func,
-    measurements: PropTypes.array,
+    handleSort: func,
+    measurements: array,
     reports: reportsPropType,
-    openReport: PropTypes.func,
-    reload: PropTypes.func,
+    openReport: func,
+    reload: func,
     report_date: optionalDatePropType,
     reports_overview: reportsOverviewPropType,
     settings: settingsPropType

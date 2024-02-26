@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import PropTypes from 'prop-types';
+import { bool, func, object, oneOfType, string } from 'prop-types';
 import { Grid, Menu } from 'semantic-ui-react';
 import { Icon, Label, Tab } from '../semantic_ui_react_wrappers';
 import { StringInput } from '../fields/StringInput';
@@ -15,13 +15,13 @@ import { SourceTypeHeader } from './SourceTypeHeader';
 import { ErrorMessage } from '../errorMessage';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { get_metric_name, get_source_name } from '../utils';
-import { measurementSourceType, metricPropType, reportPropType, stringsPropType } from '../sharedPropTypes';
+import { measurementSourcePropType, metricPropType, reportPropType, sourcePropType, stringsPropType } from '../sharedPropTypes';
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key) : []
 }
 
-function ButtonGridRow({ first_source, last_source, source_uuid, reload }) {
+function ButtonGridRow({ first_source, last_source, reload, source_uuid }) {
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <div style={{ marginTop: "20px" }}>
@@ -36,8 +36,14 @@ function ButtonGridRow({ first_source, last_source, source_uuid, reload }) {
         />
     )
 }
+ButtonGridRow.propTypes = {
+    first_source: bool,
+    last_source: bool,
+    reload: func,
+    source_uuid: string,
+}
 
-function Parameters({ metric, source, source_uuid, config_error, connection_error, parse_error, report, changed_fields, reload }) {
+function Parameters({ changed_fields, config_error, connection_error, metric, parse_error, reload, report, source, source_uuid }) {
     const dataModel = useContext(DataModel)
     const source_type = dataModel.sources[source.type];
     return (
@@ -78,8 +84,19 @@ function Parameters({ metric, source, source_uuid, config_error, connection_erro
         </Grid>
     )
 }
+Parameters.propTypes = {
+    changed_fields: stringsPropType,
+    config_error: oneOfType([object, string]),
+    connection_error: string,
+    metric: metricPropType,
+    parse_error: string,
+    reload: func,
+    report: reportPropType,
+    source: sourcePropType,
+    source_uuid: string,
+}
 
-export function Source({ metric, source_uuid, first_source, last_source, measurement_source, report, changed_fields, reload }) {
+export function Source({ changed_fields, first_source, last_source, measurement_source, metric, reload, report, source_uuid }) {
     const dataModel = useContext(DataModel)
     const source = metric.sources[source_uuid];
     const sourceType = dataModel.sources[source.type];
@@ -134,12 +151,12 @@ export function Source({ metric, source_uuid, first_source, last_source, measure
     )
 }
 Source.propTypes = {
-    metric: metricPropType,
-    source_uuid: PropTypes.string,
-    first_source: PropTypes.bool,
-    last_source: PropTypes.bool,
-    measurement_source: measurementSourceType,
-    report: reportPropType,
     changed_fields: stringsPropType,
-    reload: PropTypes.func,
+    first_source: bool,
+    last_source: bool,
+    measurement_source: measurementSourcePropType,
+    metric: metricPropType,
+    reload: func,
+    report: reportPropType,
+    source_uuid: string,
 }

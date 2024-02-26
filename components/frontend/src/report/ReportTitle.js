@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { func, string } from 'prop-types';
 import { Grid, Icon, Menu } from 'semantic-ui-react';
 import { Label, Segment, Tab } from '../semantic_ui_react_wrappers';
 import { activeTabIndex, tabChangeHandler } from '../app_ui_settings';
@@ -56,7 +56,7 @@ function ReportConfiguration({ reload, report }) {
     )
 }
 ReportConfiguration.propTypes = {
-    reload: PropTypes.func,
+    reload: func,
     report: reportPropType,
 }
 
@@ -239,7 +239,7 @@ function ReactionTimes({ reload, report }) {
     )
 }
 ReactionTimes.propTypes = {
-    reload: PropTypes.func,
+    reload: func,
     report: reportPropType,
 }
 
@@ -254,8 +254,8 @@ function ButtonRow({ report_uuid, openReportsOverview }) {
     )
 }
 ButtonRow.propTypes = {
-    report_uuid: PropTypes.string,
-    openReportsOverview: PropTypes.func,
+    report_uuid: string,
+    openReportsOverview: func,
 }
 
 export function ReportTitle({ report, openReportsOverview, reload, settings }) {
@@ -310,8 +310,8 @@ export function ReportTitle({ report, openReportsOverview, reload, settings }) {
     )
 }
 ReportTitle.propTypes = {
-    openReportsOverview: PropTypes.func,
-    reload: PropTypes.func,
+    openReportsOverview: func,
+    reload: func,
     report: reportPropType,
     settings: settingsPropType,
 }

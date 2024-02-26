@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { array, bool, func } from 'prop-types';
 import {
     datesPropType,
     optionalDatePropType,
@@ -52,12 +52,12 @@ export function Subjects({
     return subjects
 }
 Subjects.propTypes = {
-    atReportsOverview: PropTypes.bool,
+    atReportsOverview: bool,
     changed_fields: stringsPropType,
     dates: datesPropType,
-    handleSort: PropTypes.func,
-    measurements: PropTypes.array,
-    reload: PropTypes.func,
+    handleSort: func,
+    measurements: array,
+    reload: func,
     reports: reportsPropType,
     reportsToShow: reportsPropType,
     report_date: optionalDatePropType,

@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { string } from 'prop-types';
 import { Image, Icon } from 'semantic-ui-react';
 import MD5 from 'crypto-js/md5';
 import { DarkMode } from '../context/DarkMode';
@@ -8,4 +9,7 @@ export function Avatar({ email }) {
     return (
         email ? <Image avatar src={`https://www.gravatar.com/avatar/${MD5(email)}?d=identicon`} alt="Avatar" /> : <Icon color={color} name="user" />
     )
+}
+Avatar.propTypes = {
+    email: string,
 }

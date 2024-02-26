@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import PropTypes from 'prop-types';
+import { array, bool, func, string } from 'prop-types';
 import { DataModel } from '../context/DataModel';
 import {
     datesPropType,
@@ -115,7 +115,7 @@ function subjectIsEmptyDueToFilters(atReportsOverview, filteredMetrics, metrics,
     )
 }
 subjectIsEmptyDueToFilters.propTypes = {
-    atReportsOverview: PropTypes.bool,
+    atReportsOverview: bool,
     filteredMetrics: metricsPropType,
     metrics: metricsPropType,
     settings: settingsPropType,
@@ -180,17 +180,17 @@ export function Subject({
     )
 }
 Subject.propTypes = {
-    atReportsOverview: PropTypes.bool,
+    atReportsOverview: bool,
     changed_fields: stringsPropType,
     dates: datesPropType,
-    firstSubject: PropTypes.bool,
-    handleSort: PropTypes.func,
-    lastSubject: PropTypes.bool,
-    measurements: PropTypes.array,
+    firstSubject: bool,
+    handleSort: func,
+    lastSubject: bool,
+    measurements: array,
     report: reportPropType,
     report_date: optionalDatePropType,
     reports: reportsPropType,
     settings: settingsPropType,
-    subject_uuid: PropTypes.string,
-    reload: PropTypes.func
+    subject_uuid: string,
+    reload: func
 }

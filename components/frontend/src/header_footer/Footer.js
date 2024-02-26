@@ -1,8 +1,15 @@
 import { Container, Divider, Grid, Header, Icon, Image, List, Segment } from 'semantic-ui-react';
+import { childrenPropType, datePropType, reportPropType } from '../sharedPropTypes';
+import { number, object, oneOfType, string } from 'prop-types';
 
 function FooterItem({ children, icon, url }) {
     const item = icon ? <><Icon name={icon} /> {children}</> : children;
     return url ? <List.Item as="a" href={url}>{item}</List.Item> : <List.Item>{item}</List.Item>;
+}
+FooterItem.propTypes = {
+    children: childrenPropType,
+    icon: string,
+    url: string,
 }
 
 function FooterColumn({ children, header, textAlign, width }) {
@@ -15,6 +22,12 @@ function FooterColumn({ children, header, textAlign, width }) {
         </Grid.Column>
     )
 }
+FooterColumn.propTypes = {
+    children: childrenPropType,
+    header: oneOfType([object, string]),
+    textAlign: string,
+    width: number,
+}
 
 function FooterCenterColumn({ header, children }) {
     return (
@@ -23,6 +36,10 @@ function FooterCenterColumn({ header, children }) {
         </FooterColumn>
     )
 }
+FooterCenterColumn.propTypes = {
+    header: oneOfType([object, string]),
+    children: childrenPropType,
+}
 
 function FooterSideColumn({ header, children }) {
     return (
@@ -30,6 +47,10 @@ function FooterSideColumn({ header, children }) {
             {children}
         </FooterColumn>
     )
+}
+FooterSideColumn.propTypes = {
+    header: oneOfType([object, string]),
+    children: childrenPropType,
 }
 
 function AboutAppColumn() {
@@ -68,6 +89,10 @@ function AboutReportColumn({ report, last_update }) {
         </FooterCenterColumn>
     )
 }
+AboutReportColumn.propTypes = {
+    report: reportPropType,
+    last_update: datePropType,
+}
 
 function QuoteColumn() {
     const quotes = [
@@ -105,4 +130,8 @@ export function Footer({ report, last_update }) {
             </Container>
         </Segment>
     )
+}
+Footer.propTypes = {
+    report: reportPropType,
+    last_update: datePropType,
 }

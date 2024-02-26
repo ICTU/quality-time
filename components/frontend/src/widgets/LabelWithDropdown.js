@@ -1,4 +1,6 @@
+import { array, func, oneOf, string } from 'prop-types';
 import { Dropdown } from '../semantic_ui_react_wrappers';
+import { labelPropType } from '../sharedPropTypes';
 
 export function LabelWithDropdown({ color, direction, label, onChange, options, value}) {
     return (
@@ -17,4 +19,12 @@ export function LabelWithDropdown({ color, direction, label, onChange, options, 
             </span>
         </label>
     );
+}
+LabelWithDropdown.propTypes = {
+    color: string,
+    direction: oneOf(["left", "right"]),
+    label: labelPropType,
+    onChange: func,
+    options: array,
+    value: string,
 }

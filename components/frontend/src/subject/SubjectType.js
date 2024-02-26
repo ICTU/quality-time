@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { func, string } from 'prop-types';
 import { Header } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
@@ -26,4 +27,8 @@ export function SubjectType({ subject_type, set_value }) {
             value={subject_type}
         />
     );
+}
+SubjectType.propTypes = {
+    subject_type: string,
+    set_value: func,
 }

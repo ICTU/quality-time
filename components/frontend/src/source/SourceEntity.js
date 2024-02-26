@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { bool, func, string } from 'prop-types';
 import { Table } from 'semantic-ui-react';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
@@ -18,7 +18,7 @@ function entityCanBeIgnored(status, statusEndDateString) {
 }
 entityCanBeIgnored.propTypes = {
     status: entityStatusPropType,
-    statusEndDateString: PropTypes.string
+    statusEndDateString: string
 }
 
 export function SourceEntity(
@@ -80,15 +80,15 @@ export function SourceEntity(
     );
 }
 SourceEntity.propTypes = {
-    metric_uuid: PropTypes.string,
-    source_uuid: PropTypes.string,
-    hide_ignored_entities: PropTypes.bool,
+    metric_uuid: string,
+    source_uuid: string,
+    hide_ignored_entities: bool,
     entity: entityPropType,
-    entity_name: PropTypes.string,
+    entity_name: string,
     entity_attributes: entityAttributesPropType,
-    rationale: PropTypes.string,
-    reload: PropTypes.func,
+    rationale: string,
+    reload: func,
     report: reportPropType,
     status: entityStatusPropType,
-    status_end_date: PropTypes.string
+    status_end_date: string,
 }

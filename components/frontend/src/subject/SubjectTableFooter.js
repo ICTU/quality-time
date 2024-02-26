@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import PropTypes from 'prop-types';
+import { func, string } from 'prop-types';
 import { Table } from "semantic-ui-react";
 import { add_metric, copy_metric, move_metric } from "../api/metric";
 import { DataModel } from "../context/DataModel";
@@ -48,8 +48,8 @@ export function SubjectTableFooter({ subject, subjectUuid, reload, reports, stop
 }
 SubjectTableFooter.propTypes = {
     subject: subjectPropType,
-    subjectUuid: PropTypes.string,
-    reload: PropTypes.func,
+    subjectUuid: string,
+    reload: func,
     reports: reportsPropType,
-    stopFilteringAndSorting: PropTypes.func
+    stopFilteringAndSorting: func,
 }

@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { func, shape } from 'prop-types';
 import { Grid, Icon, Menu } from 'semantic-ui-react';
 import { Tab } from '../semantic_ui_react_wrappers';
 import { activeTabIndex, tabChangeHandler } from '../app_ui_settings';
@@ -11,7 +11,7 @@ import { set_reports_attribute } from '../api/report';
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { FocusableTab } from '../widgets/FocusableTab';
 import { dropdownOptions } from '../utils';
-import { reportsOverviewPropType, settingsPropType } from '../sharedPropTypes';
+import { permissionsPropType, reportsOverviewPropType, settingsPropType } from '../sharedPropTypes';
 import { setDocumentTitle } from './document_title';
 
 function ReportsOverviewConfiguration({ reports_overview, reload }) {
@@ -51,7 +51,7 @@ function ReportsOverviewConfiguration({ reports_overview, reload }) {
 }
 ReportsOverviewConfiguration.propTypes = {
     reports_overview: reportsOverviewPropType,
-    reload: PropTypes.func,
+    reload: func,
 }
 
 function setPermissions(permissions, permission, value, reload) {
@@ -93,6 +93,10 @@ function Permissions({ permissions, reload }) {
         </Grid>
     )
 }
+Permissions.propTypes = {
+    permissions: shape({EDIT_REPORT_PERMISSION: permissionsPropType, EDIT_ENTITY_PERMISSION: permissionsPropType}),
+    reload: func,
+}
 
 export function ReportsOverviewTitle({ reports_overview, reload, settings }) {
     const uuid = "reports_overview"
@@ -108,7 +112,7 @@ export function ReportsOverviewTitle({ reports_overview, reload, settings }) {
         },
         {
             menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane><ChangeLog/></Tab.Pane>
+            render: () => <Tab.Pane><ChangeLog /></Tab.Pane>
         },
     ]
     setDocumentTitle(reports_overview.title);
@@ -131,6 +135,6 @@ export function ReportsOverviewTitle({ reports_overview, reload, settings }) {
 }
 ReportsOverviewTitle.propTypes = {
     reports_overview: reportsOverviewPropType,
-    reload: PropTypes.func,
+    reload: func,
     settings: settingsPropType
 }
