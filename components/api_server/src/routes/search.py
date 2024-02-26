@@ -75,6 +75,7 @@ def match_attribute(
     return attribute_name in domain_object and domain_object[attribute_name] == attribute_value
 
 
+@bottle.post("/api/internal/<domain_object_type>/search", authentication_required=False)
 @bottle.post("/api/v3/<domain_object_type>/search", authentication_required=False)
 def search(domain_object_type: DomainObjectType, database: Database) -> SearchResults | ParseError | SearchError:
     """Search for domain objects of the specified type by attribute value."""

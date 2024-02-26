@@ -18,7 +18,7 @@ class QualityTimeSourceUpToDatenessTest(QualityTimeTestCase):
     def setUp(self):
         """Set up test data."""
         super().setUp()
-        self.api_url = f"{self.url}/api/v3/reports"
+        self.api_url = f"{self.url}/api/internal/reports"
 
     async def test_source_up_to_dateness(self):
         """Test that the source up-to-dateness of all reports can be measured."""

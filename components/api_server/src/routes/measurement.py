@@ -24,7 +24,7 @@ from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
 
 
 @bottle.post(
-    "/api/v3/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>",
+    "/api/internal/measurement/<metric_uuid>/source/<source_uuid>/entity/<entity_key>/<attribute>",
     permissions_required=[EDIT_ENTITY_PERMISSION],
 )
 def set_entity_attribute(
@@ -65,7 +65,7 @@ def sse_pack(event_id: int, event: str, data: str, retry: str = "2000") -> str:
     return f"retry: {retry}\nid: {event_id}\nevent: {event}\ndata: {data}\n\n"
 
 
-@bottle.get("/api/v3/nr_measurements", authentication_required=False)
+@bottle.get("/api/internal/nr_measurements", authentication_required=False)
 def stream_nr_measurements(database: Database) -> Iterator[str]:
     """Return the number of measurements as server sent events."""
     # Keep event IDs consistent
@@ -97,7 +97,7 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
         yield sse_pack(event_id, "delta", str(nr_measurements))
 
 
-@bottle.get("/api/v3/measurements", authentication_required=False)
+@bottle.get("/api/internal/measurements", authentication_required=False)
 def get_measurements(database: Database):
     """Return all measurements (without details) for all reports between the date and the minimum date."""
     date_time = report_date_time()
@@ -106,7 +106,7 @@ def get_measurements(database: Database):
     return {"measurements": measurements}
 
 
-@bottle.get("/api/v3/measurements/<metric_uuid>", authentication_required=False)
+@bottle.get("/api/internal/measurements/<metric_uuid>", authentication_required=False)
 def get_metric_measurements(metric_uuid: MetricId, database: Database) -> dict:
     """Return the measurements for the metric."""
     metric_uuid = cast(MetricId, metric_uuid.split("&")[0])

@@ -13,7 +13,7 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
     def setUp(self):
         """Set up test data."""
         super().setUp()
-        self.api_url = f"{self.url}/api/v3/report"
+        self.api_url = f"{self.url}/api/internal/report"
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: list | str | None) -> None:
         """Override to pass the api and landing URLs."""

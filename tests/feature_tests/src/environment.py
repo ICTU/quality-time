@@ -55,7 +55,7 @@ def before_all(context: Context) -> None:  # noqa: C901
         context.response = response = requests.delete(api_url(api), cookies=cookies(), timeout=timeout)
         return response.json() if response.headers.get("Content-Type") == JSON_CONTENT_TYPE else response
 
-    context.base_api_url = "http://localhost:5001/api/v3"
+    context.base_api_url = "http://localhost:5001/api/internal"
     context.database = pymongo.MongoClient("mongodb://root:root@localhost:27017")["quality_time_db"]
     context.session_id = None
     context.report_date = None

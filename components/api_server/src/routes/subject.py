@@ -16,7 +16,7 @@ from utils.functions import sanitize_html, uuid
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
-@bottle.post("/api/v3/subject/new/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/internal/subject/new/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_new_subject(report_uuid: ReportId, database: Database):
     """Create a new subject."""
     reports = latest_reports(database)
@@ -31,9 +31,9 @@ def post_new_subject(report_uuid: ReportId, database: Database):
     return result
 
 
-@bottle.post("/api/v3/subject/<subject_uuid>/copy/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/internal/subject/<subject_uuid>/copy/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: Database):
-    """Add a copy of the subject to the report (new in v3)."""
+    """Add a copy of the subject to the report."""
     reports = latest_reports(database)
     source_and_target_reports = latest_report_for_uuids(reports, subject_uuid, report_uuid)
     source_report = source_and_target_reports[0]
@@ -51,7 +51,9 @@ def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: 
     return result
 
 
-@bottle.post("/api/v3/subject/<subject_uuid>/move/<target_report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post(
+    "/api/internal/subject/<subject_uuid>/move/<target_report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION]
+)
 def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, database: Database):
     """Move the subject to another report."""
     reports = latest_reports(database)
@@ -69,7 +71,7 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
     return insert_new_report(database, delta_description, uuids, source_report, target_report)
 
 
-@bottle.delete("/api/v3/subject/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.delete("/api/internal/subject/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def delete_subject(subject_uuid: SubjectId, database: Database):
     """Delete the subject."""
     reports = latest_reports(database)
@@ -82,7 +84,7 @@ def delete_subject(subject_uuid: SubjectId, database: Database):
 
 
 @bottle.post(
-    "/api/v3/subject/<subject_uuid>/attribute/<subject_attribute>",
+    "/api/internal/subject/<subject_uuid>/attribute/<subject_attribute>",
     permissions_required=[EDIT_REPORT_PERMISSION],
 )
 def post_subject_attribute(subject_uuid: SubjectId, subject_attribute: str, database: Database):
