@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dropdown } from '../semantic_ui_react_wrappers';
 
 export function LabelWithDropdown({ color, direction, label, onChange, options, value}) {

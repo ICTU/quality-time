@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Header, Menu, Segment } from 'semantic-ui-react';
 import { Icon } from '../semantic_ui_react_wrappers';

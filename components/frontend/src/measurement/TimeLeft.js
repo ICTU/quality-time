@@ -1,4 +1,3 @@
-import React from 'react';
 import { Label, Popup } from '../semantic_ui_react_wrappers';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
 import { days, getMetricResponseDeadline, getMetricResponseTimeLeft, pluralize } from '../utils';

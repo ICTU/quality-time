@@ -1,4 +1,3 @@
-import React from 'react';
 import { VictoryBar, VictoryStack } from 'victory';
 import { pluralize, STATUSES, STATUS_COLORS, STATUS_NAME, sum } from '../utils';
 

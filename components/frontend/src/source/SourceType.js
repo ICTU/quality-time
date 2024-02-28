@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Header } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';

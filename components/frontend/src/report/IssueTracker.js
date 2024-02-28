@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Grid, Header, Message } from 'semantic-ui-react';
 import { LabelWithHelp } from '../widgets/LabelWithHelp';
 import { LabelWithHyperLink } from '../widgets/LabelWithHyperLink';

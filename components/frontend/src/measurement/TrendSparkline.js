@@ -1,4 +1,4 @@
-import React, { useContext} from 'react';
+import { useContext} from 'react';
 import { VictoryGroup, VictoryLine, VictoryTheme } from 'victory';
 import { DarkMode } from '../context/DarkMode';
 import { pluralize } from '../utils';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Popup, Table } from '../semantic_ui_react_wrappers';
 import { sortDirectionURLSearchQueryPropType, stringURLSearchQueryPropType } from '../sharedPropTypes';
 

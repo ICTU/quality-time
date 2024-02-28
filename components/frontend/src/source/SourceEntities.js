@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Popup, Table } from '../semantic_ui_react_wrappers';
 import { SourceEntity } from './SourceEntity';

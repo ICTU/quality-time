@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Grid } from 'semantic-ui-react';
 import { set_metric_attribute, add_metric_issue } from '../api/metric';

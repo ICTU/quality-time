@@ -1,4 +1,3 @@
-import React from 'react';
 import { Icon, Table } from '../semantic_ui_react_wrappers';
 
 export function TableRowWithDetails(props) {

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Menu } from 'semantic-ui-react';
 import { Icon, Label, Tab } from '../semantic_ui_react_wrappers';

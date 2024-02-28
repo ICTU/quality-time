@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Grid, Header } from 'semantic-ui-react';
 import { MultipleChoiceInput } from '../fields/MultipleChoiceInput';
 import { StringInput } from '../fields/StringInput';

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { DarkMode } from '../context/DarkMode';
 import './FocusableTab.css';
 

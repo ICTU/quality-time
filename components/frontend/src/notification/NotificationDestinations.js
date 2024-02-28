@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grid, Message } from 'semantic-ui-react';
 import { Segment } from '../semantic_ui_react_wrappers';
 import { StringInput } from '../fields/StringInput';

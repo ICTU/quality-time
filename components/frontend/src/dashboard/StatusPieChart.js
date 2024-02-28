@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { VictoryPie } from 'victory';
 import { pluralize, STATUSES, STATUS_COLORS, STATUS_NAME, sum } from '../utils';

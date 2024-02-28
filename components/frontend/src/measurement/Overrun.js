@@ -1,4 +1,3 @@
-import React from 'react';
 import { Header, Popup, Table } from '../semantic_ui_react_wrappers';
 import { StatusIcon } from './StatusIcon';
 import { getMetricResponseOverrun, pluralize } from '../utils';

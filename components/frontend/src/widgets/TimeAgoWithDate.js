@@ -1,4 +1,3 @@
-import React from 'react';
 import TimeAgo from 'react-timeago';
 
 function toLocaleString(date, noTime) {

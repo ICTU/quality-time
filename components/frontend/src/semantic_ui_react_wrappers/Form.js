@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Form as SemanticUIForm } from 'semantic-ui-react';
 import { DarkMode } from '../context/DarkMode';
 import './Form.css';

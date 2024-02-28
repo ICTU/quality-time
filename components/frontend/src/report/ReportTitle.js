@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Icon, Menu } from 'semantic-ui-react';
 import { Label, Segment, Tab } from '../semantic_ui_react_wrappers';

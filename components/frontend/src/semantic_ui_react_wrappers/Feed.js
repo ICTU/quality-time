@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Feed as SemanticUIFeed } from 'semantic-ui-react';
 import { DarkMode } from '../context/DarkMode';
 import { addInvertedClassNameWhenInDarkMode } from './dark_mode';

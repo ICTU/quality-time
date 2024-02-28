@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import RGL, { WidthProvider } from "react-grid-layout";
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';

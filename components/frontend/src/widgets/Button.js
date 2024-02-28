@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon, Input } from 'semantic-ui-react';
 import { Button, Dropdown, Label, Popup } from '../semantic_ui_react_wrappers';

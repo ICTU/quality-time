@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { DarkMode } from '../context/DarkMode';
 import { MetricSummaryCard } from './MetricSummaryCard';

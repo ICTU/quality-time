@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { SourceEntities } from './SourceEntities';
 import { DataModel } from '../context/DataModel';

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Label, Table } from '../semantic_ui_react_wrappers';
 import { DataModel } from "../context/DataModel";

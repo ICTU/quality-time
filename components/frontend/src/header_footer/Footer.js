@@ -1,4 +1,3 @@
-import React from 'react';
 import { Container, Divider, Grid, Header, Icon, Image, List, Segment } from 'semantic-ui-react';
 
 function FooterItem({ children, icon, url }) {

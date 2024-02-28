@@ -1,4 +1,3 @@
-import React from 'react';
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION, Permissions } from '../context/Permissions';

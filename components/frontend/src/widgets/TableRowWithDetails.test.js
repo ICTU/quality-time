@@ -1,4 +1,3 @@
-import React from 'react';
 import { Table } from 'semantic-ui-react'
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'

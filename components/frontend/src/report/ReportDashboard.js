@@ -1,5 +1,5 @@
 
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { datesPropType, reportPropType, settingsPropType } from '../sharedPropTypes';
 import { DataModel } from '../context/DataModel';

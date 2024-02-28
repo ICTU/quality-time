@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form } from '../semantic_ui_react_wrappers';
 import { ReadOnlyOrEditable } from '../context/Permissions';

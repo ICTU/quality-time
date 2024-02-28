@@ -1,4 +1,3 @@
-import React from 'react';
 import { Breadcrumb } from '../semantic_ui_react_wrappers';
 
 export function ItemBreadcrumb(props) {

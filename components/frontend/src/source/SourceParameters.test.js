@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { DataModel } from '../context/DataModel';
 import { SourceParameters } from './SourceParameters';

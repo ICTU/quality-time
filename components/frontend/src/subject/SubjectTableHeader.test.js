@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import history from 'history/browser';
 import { Table } from 'semantic-ui-react';
