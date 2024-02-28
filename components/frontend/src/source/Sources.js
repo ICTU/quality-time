@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Message } from 'semantic-ui-react';
 import { Segment } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';

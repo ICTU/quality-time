@@ -1,4 +1,3 @@
-import React from 'react';
 import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
 import history from 'history/browser';
 import { DataModel } from '../context/DataModel';

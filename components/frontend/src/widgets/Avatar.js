@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Image, Icon } from 'semantic-ui-react';
 import MD5 from 'crypto-js/md5';
 import { DarkMode } from '../context/DarkMode';

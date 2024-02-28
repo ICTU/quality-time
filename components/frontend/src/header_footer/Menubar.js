@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Dropdown, Icon, Image, Menu, Message, Portal } from 'semantic-ui-react';
 import { Form, Modal, Popup } from '../semantic_ui_react_wrappers';

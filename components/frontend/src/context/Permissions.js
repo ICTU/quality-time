@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React from "react";
 
 export const EDIT_REPORT_PERMISSION = "edit_reports"
 export const EDIT_ENTITY_PERMISSION = "edit_entities"

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Image } from 'semantic-ui-react';
 import { api_version } from '../api/fetch_server_api';
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Container, Loader } from 'semantic-ui-react';
 import { Segment } from './semantic_ui_react_wrappers';

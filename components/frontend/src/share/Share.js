@@ -1,4 +1,3 @@
-import React from 'react';
 import { Header } from '../semantic_ui_react_wrappers';
 import { PermLinkButton } from '../widgets/Button';
 

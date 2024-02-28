@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Segment } from 'semantic-ui-react';
 import { Header, Icon, Popup } from '../semantic_ui_react_wrappers';
 import { IntegerInput } from '../fields/IntegerInput';

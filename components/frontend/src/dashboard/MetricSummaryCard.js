@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { VictoryContainer, VictoryLabel, VictoryPortal, VictoryTooltip } from 'victory';
 import { Card } from '../semantic_ui_react_wrappers';
 import { DarkMode } from '../context/DarkMode';

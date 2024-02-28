@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { PropTypes } from 'prop-types';
 import { List, Table } from "semantic-ui-react";
 import { Icon, Label } from "../semantic_ui_react_wrappers";

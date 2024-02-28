@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import history from 'history/browser';
 import { Action } from 'history';
 import { get_datamodel } from './api/datamodel';

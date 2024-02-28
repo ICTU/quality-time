@@ -1,4 +1,3 @@
-import React from 'react';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 import { get_metric_name, get_source_name, get_subject_name } from '../utils';
 

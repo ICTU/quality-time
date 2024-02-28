@@ -1,4 +1,3 @@
-import React from 'react';
 import { Form, Label } from '../semantic_ui_react_wrappers';
 
 export function ReadOnlyInput({ error, label, placeholder, prefix, required, value, type, unit }) {

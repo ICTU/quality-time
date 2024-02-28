@@ -1,4 +1,3 @@
-import React from 'react';
 import { Icon } from 'semantic-ui-react';
 import { Popup } from '../semantic_ui_react_wrappers';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';

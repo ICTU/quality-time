@@ -1,4 +1,3 @@
-import React from 'react';
 import { Icon, Label, Form } from '../semantic_ui_react_wrappers';
 import { DatePicker } from '../widgets/DatePicker';
 import { ReadOnlyOrEditable } from '../context/Permissions';

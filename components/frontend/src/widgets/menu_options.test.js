@@ -1,4 +1,3 @@
-import React from 'react';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 import { metric_options, report_options, source_options, subject_options } from './menu_options';
 

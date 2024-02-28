@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { datePropType, optionalDatePropType } from '../sharedPropTypes';
 import { Message } from 'semantic-ui-react';

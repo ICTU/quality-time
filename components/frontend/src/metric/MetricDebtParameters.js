@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grid } from 'semantic-ui-react';
 import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { Comment } from '../fields/Comment';

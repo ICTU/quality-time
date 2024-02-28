@@ -1,4 +1,3 @@
-import React from 'react';
 import { act, render } from '@testing-library/react';
 import { ChangeLog } from './ChangeLog';
 import * as changelog_api from '../api/changelog';

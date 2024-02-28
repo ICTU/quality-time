@@ -1,4 +1,3 @@
-import React from 'react';
 import { default as ReactDatePicker } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { isValidDate_YYYYMMDD } from '../utils';

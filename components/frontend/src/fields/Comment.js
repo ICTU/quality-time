@@ -1,4 +1,4 @@
-import React, { useId } from 'react';
+import { useId } from 'react';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { TextInput } from './TextInput';
 
