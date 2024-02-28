@@ -127,7 +127,6 @@ def verify_user(database: Database, username: str, password: str) -> User:
     return user
 
 
-@bottle.post("/api/internal/login", authentication_required=False)
 @bottle.post("/api/v3/login", authentication_required=False)
 def login(database: Database) -> dict[str, bool | str]:
     """Log the user in. Add credentials as JSON payload, e.g. {username: 'user', password: 'pass'}."""
@@ -146,7 +145,6 @@ def login(database: Database) -> dict[str, bool | str]:
     }
 
 
-@bottle.post("/api/internal/logout", authentication_required=True)
 @bottle.post("/api/v3/logout", authentication_required=True)
 def logout(database: Database) -> dict[str, bool]:
     """Log the user out."""
@@ -154,7 +152,6 @@ def logout(database: Database) -> dict[str, bool]:
     return {"ok": True}
 
 
-@bottle.get("/api/internal/public_key", authentication_required=False)
 @bottle.get("/api/v3/public_key", authentication_required=False)
 def get_public_key(database: Database) -> dict:
     """Return a serialized version of the public key."""

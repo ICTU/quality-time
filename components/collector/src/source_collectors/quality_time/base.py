@@ -14,7 +14,7 @@ class QualityTimeCollector(SourceCollector, ABC):
     async def _api_url(self) -> URL:
         """Get the api url for this api version."""
         api_url = await super()._api_url()
-        return URL(f"{api_url}/api/internal")
+        return URL(f"{api_url}/api/v3")
 
     async def _get_reports(self, response: Response) -> list[dict[str, Any]]:
         """Get the relevant reports from the reports response."""

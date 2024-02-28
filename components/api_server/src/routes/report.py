@@ -73,7 +73,6 @@ def get_report(database: Database, report_uuid: ReportId | None = None):
     return {"ok": True, "reports": summarized_reports}
 
 
-@bottle.get("/api/internal/report/<report_uuid>/metric_status_summary", authentication_required=False)
 @bottle.get("/api/v3/report/<report_uuid>/metric_status_summary", authentication_required=False)
 @with_report
 def get_report_metric_status_summary(database: Database, report: Report, report_uuid: ReportId):
@@ -83,7 +82,6 @@ def get_report_metric_status_summary(database: Database, report: Report, report_
     return {"report_uuid": report_uuid, "title": summarized_report["title"], **summarized_report["summary"]}
 
 
-@bottle.post("/api/internal/report/import", permissions_required=[EDIT_REPORT_PERMISSION])
 @bottle.post("/api/v3/report/import", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
@@ -142,7 +140,6 @@ def export_report_as_pdf(report_uuid: ReportId):
     return export_as_pdf(report_uuid)
 
 
-@bottle.get("/api/internal/report/<report_uuid>/json", authentication_required=True)
 @bottle.get("/api/v3/report/<report_uuid>/json", authentication_required=True)
 @with_report(pass_report_uuid=False)
 def export_report_as_json(database: Database, report: Report):
