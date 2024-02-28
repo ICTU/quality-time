@@ -64,15 +64,20 @@ it('unaccepts technical debt and resets target and end date', async () => {
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/debt", { accept_debt: false });
 });
 
-it('sets the technical debt end date', async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
-    renderMetricDebtParameters()
-    await userEvent.type(screen.getByPlaceholderText(/YYYY-MM-DD/), '2022-12-31{Tab}', { initialSelectionStart: 0, initialSelectionEnd: 10 })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/debt_end_date", { debt_end_date: "2022-12-31" });
-});
-
 it('adds a comment', async () => {
     renderMetricDebtParameters()
     await userEvent.type(screen.getByLabelText(/Comment/), 'Keep cool{Tab}');
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/comment", { comment: "Keep cool" });
+});
+
+it('sets the technical debt end date', async () => {
+    // Suppress "Warning: An update to t inside a test was not wrapped in act(...)." caused by interacting with
+    // the date picker.
+    const consoleLog = console.log;
+    console.error = jest.fn();
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true });
+    renderMetricDebtParameters()
+    await userEvent.type(screen.getByPlaceholderText(/YYYY-MM-DD/), '2022-12-31{Tab}', { initialSelectionStart: 0, initialSelectionEnd: 10 })
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/debt_end_date", { debt_end_date: "2022-12-31" });
+    console.log = consoleLog;
 });
