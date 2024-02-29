@@ -232,9 +232,31 @@ function MeasurementHeaderCells({ columnDates, showDeltaColumns }) {
             cells.push(
                 <UnsortableTableHeaderCell
                     key={`delta-${date}`}
-                    help="The difference between the measurement values on the previous and next date.
-                    A plus (+) sign indicates that the newer value is higher, a minus (-) sign that it is lower.
-                    A green outline indicates that the newer value is better, a red outline that it is worse."
+                    help={
+                        <>
+                            <p>
+                                The delta (𝚫) column shows the difference between the measurement values on the
+                                previous and next date.
+                            </p>
+                            <p>
+                                A plus sign <Label basic color="blue">+</Label> indicates that the newer value is
+                                higher.
+                                A minus sign <Label basic color="blue">-</Label> indicates that the newer value
+                                is lower.
+                            </p>
+                            <p>
+                                A <Label basic color="green">green outline</Label> indicates that the newer value is
+                                better.
+                                A <Label basic color="red">red outline</Label> indicates that the newer value is worse.
+                                A <Label basic color="blue">blue outline</Label> is used for metrics that are
+                                informative.
+                            </p>
+                            <p>
+                                Note: if the value on the previous date is unknown, the value on the next date is
+                                compared with the most recent known value.
+                            </p>
+                        </>
+                    }
                     label="𝚫"
                     textAlign="right"
                 />

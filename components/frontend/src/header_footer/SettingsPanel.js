@@ -101,7 +101,8 @@ export function SettingsPanel({
                     <VisibleColumnMenuItem
                         column="delta"
                         disabled={oneDateColumn}
-                        help="The delta columns can only be made visible when at least two dates are shown"
+                        help="The delta column(s) can only be made visible when at least two dates are shown"
+                        itemText="Delta (𝚫)"
                         {...visibleColumnMenuItemProps}
                     />
                     <VisibleColumnMenuItem
@@ -276,7 +277,7 @@ VisibleTagMenuItem.propTypes = {
     hiddenTags: stringsURLSearchQueryPropType,
 }
 
-function VisibleColumnMenuItem({ column, disabled, hiddenColumns, help }) {
+function VisibleColumnMenuItem({ column, disabled, hiddenColumns, help, itemText }) {
     return (
         <SettingsMenuItem
             active={disabled ? false : !hiddenColumns.includes(column)}
@@ -285,7 +286,7 @@ function VisibleColumnMenuItem({ column, disabled, hiddenColumns, help }) {
             onClick={hiddenColumns.toggle}
             onClickData={column}
         >
-            {capitalize(column).replaceAll('_', ' ')}
+            {itemText ?? capitalize(column).replaceAll('_', ' ')}
         </SettingsMenuItem>
     )
 }
@@ -293,7 +294,8 @@ VisibleColumnMenuItem.propTypes = {
     column: PropTypes.string,
     disabled: PropTypes.bool,
     hiddenColumns: stringsURLSearchQueryPropType,
-    help: PropTypes.string
+    help: PropTypes.string,
+    itemText: PropTypes.string
 }
 
 function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handleSort, help }) {

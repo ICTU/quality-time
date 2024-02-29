@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import PropTypes from 'prop-types';
-import { Label, Table } from '../semantic_ui_react_wrappers';
+import { array, bool, func, number, object, oneOf, string } from 'prop-types';
+import { Label, Popup, Table } from '../semantic_ui_react_wrappers';
 import { DataModel } from "../context/DataModel";
 import { DarkMode } from "../context/DarkMode";
 import { IssueStatus } from '../issue/IssueStatus';
@@ -14,7 +14,7 @@ import { TimeLeft } from '../measurement/TimeLeft';
 import { TrendSparkline } from '../measurement/TrendSparkline';
 import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
 import { Tag } from '../widgets/Tag';
-import { formatMetricScale, get_metric_name, getMetricDirection, getMetricScale, getMetricTags, getMetricUnit } from '../utils';
+import { formatMetricScale, formatMetricScaleAndUnit, get_metric_name, getMetricDirection, getMetricScale, getMetricTags, getMetricUnit } from '../utils';
 import {
     datesPropType,
     metricPropType,
@@ -36,9 +36,9 @@ function didValueIncrease(dateOrderAscending, metricValue, previousValue, scale)
     return (dateOrderAscending && value > previous) || (!dateOrderAscending && value < previous)
 }
 didValueIncrease.propTypes = {
-    dateOrderAscending: PropTypes.bool,
-    metricValue: PropTypes.string,
-    previousValue: PropTypes.string,
+    dateOrderAscending: bool,
+    metricValue: string,
+    previousValue: string,
     scale: scalePropType,
 }
 
@@ -46,8 +46,59 @@ function didValueImprove(didValueIncrease, direction) {
     return (didValueIncrease && direction === ">") || (!didValueIncrease && direction === "<")
 }
 didValueImprove.propTypes = {
-    didValueIncrease: PropTypes.bool,
-    direction: PropTypes.oneOf(["<", ">"]),
+    didValueIncrease: bool,
+    direction: oneOf(["<", ">"]),
+}
+
+function deltaColor(metric, improved) {
+    const evaluateTarget = metric.evaluate_targets ?? true
+    if (evaluateTarget) {
+        return improved ? "green" : "red"
+    }
+    return "blue"
+}
+deltaColor.propTypes = {
+    metric: metricPropType,
+    improved: bool,
+}
+
+function deltaDescription(dataModel, metric, scale, delta, improved, oldValue, newValue) {
+    let description = `${get_metric_name(metric, dataModel)} `;
+    const evaluateTarget = metric.evaluate_targets ?? true
+    if (evaluateTarget) {
+        description += improved ? "improved" : "worsened";
+    } else {
+        description += `changed`
+    }
+    description += ` from ${oldValue} to ${newValue}`
+    if (scale !== "version_number") {
+        const unit = formatMetricScaleAndUnit(dataModel.metrics[metric.type], metric)
+        description += `${unit} by ${delta}${unit}`
+    }
+    return description
+}
+deltaDescription.propTypes = {
+    dataModel: object,
+    metric: metricPropType,
+    scale: string,
+    delta: string,
+    improved: bool,
+    oldValue: string,
+    newValue: string,
+}
+
+function deltaLabel(increased, scale, metricValue, previousValue) {
+    let delta = increased ? "+" : "-"
+    if (scale !== "version_number") {
+        delta += `${Math.abs(metricValue - previousValue)}`
+    }
+    return delta
+}
+deltaLabel.propTypes = {
+    increased: bool,
+    scale: string,
+    metricValue: string,
+    previousValue: string,
 }
 
 function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousValue, status }) {
@@ -57,25 +108,14 @@ function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousVal
         // Note that the delta cell only gets content if the previous and current values are both available and unequal
         const scale = getMetricScale(metric, dataModel)
         const increased = didValueIncrease(dateOrderAscending, metricValue, previousValue, scale)
+        const delta = deltaLabel(increased, scale, metricValue, previousValue)
+        const oldValue = dateOrderAscending ? previousValue : metricValue
+        const newValue = dateOrderAscending ? metricValue : previousValue
         const direction = getMetricDirection(metric, dataModel)
         const improved = didValueImprove(increased, direction)
-        const evaluateTarget = metric.evaluate_targets ?? true
-        let alt = "The measurement value changed";
-        let color = "blue";
-        if (evaluateTarget && improved) {
-            alt = "The measurement value improved";
-            color = "green"
-        }
-        if (evaluateTarget && !improved) {
-            alt = "The measurement value worsened";
-            color = "red"
-        }
-        let delta = increased ? "+" : "-"
-        if (getMetricScale(metric) !== "version_number") {
-            delta += `${Math.abs(metricValue - previousValue)}`
-            alt += ` by ${delta}`
-        }
-        label = <Label aria-label={alt} basic color={color}>{delta}</Label>
+        const description = deltaDescription(dataModel, metric, scale, delta, improved, oldValue, newValue)
+        const color = deltaColor(metric, improved)
+        label = <Popup content={description} trigger={<Label aria-label={description} basic color={color}>{delta}</Label>} />
     }
     return (
         <Table.Cell className={status} singleLine textAlign="right">
@@ -84,12 +124,12 @@ function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousVal
     )
 }
 DeltaCell.propTypes = {
-    dateOrderAscending: PropTypes.bool,
+    dateOrderAscending: bool,
     metric: metricPropType,
-    index: PropTypes.number,
-    metricValue: PropTypes.string,
-    previousValue: PropTypes.string,
-    status: PropTypes.string,
+    index: number,
+    metricValue: string,
+    previousValue: string,
+    status: string,
 }
 
 function MeasurementCells({ dates, metric, metric_uuid, measurements, settings }) {
@@ -124,8 +164,8 @@ function MeasurementCells({ dates, metric, metric_uuid, measurements, settings }
 }
 MeasurementCells.propTypes = {
     dates: datesPropType,
-    measurements: PropTypes.array,
-    metric_uuid: PropTypes.string,
+    measurements: array,
+    metric_uuid: string,
     metric: metricPropType,
     settings: settingsPropType,
 }
@@ -213,17 +253,17 @@ export function SubjectTableRow(
 SubjectTableRow.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
-    handleSort: PropTypes.func,
-    index: PropTypes.number,
-    lastIndex: PropTypes.number,
-    measurements: PropTypes.array,
-    metric_uuid: PropTypes.string,
+    handleSort: func,
+    index: number,
+    lastIndex: number,
+    measurements: array,
+    metric_uuid: string,
     metric: metricPropType,
-    reload: PropTypes.func,
+    reload: func,
     report: reportPropType,
     reportDate: optionalDatePropType,
     reports: reportsPropType,
-    reversedMeasurements: PropTypes.array,
+    reversedMeasurements: array,
     settings: settingsPropType,
-    subject_uuid: PropTypes.string,
+    subject_uuid: string,
 }
