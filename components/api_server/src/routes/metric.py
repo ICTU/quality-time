@@ -4,16 +4,18 @@ from datetime import UTC, datetime, timedelta
 from typing import Any, cast
 
 import bottle
-from model.actions import copy_metric, move_item
-from model.defaults import default_metric_attributes
 from pymongo.database import Database
 
-from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from shared.database.measurements import insert_new_measurement, latest_measurement, latest_successful_measurement
 from shared.model.metric import Metric
 from shared.utils.type import MetricId, SubjectId, Value
 from shared_data_model import DATA_MODEL
+
+from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
+from model.actions import copy_metric, move_item
+from model.defaults import default_metric_attributes
 from utils.functions import sanitize_html, uuid
+
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 

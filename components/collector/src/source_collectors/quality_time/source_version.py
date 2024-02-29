@@ -9,9 +9,11 @@ from collector_utilities.type import URL, Response
 class QualityTimeSourceVersion(VersionCollector):
     """Collector to get the source version from Quality-time."""
 
+    EXTERNAL_API_VERSION = "v3"
+
     async def _api_url(self) -> URL:
         """Extend to add the reports API path."""
-        return URL(f"{await super()._api_url()}/api/v3/server")
+        return URL(f"{await super()._api_url()}/api/{self.EXTERNAL_API_VERSION}/server")
 
     async def _parse_source_response_version(self, response: Response) -> Version:
         """Override to parse the version from the response."""

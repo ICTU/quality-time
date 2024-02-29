@@ -1,5 +1,8 @@
 """Code to run before and after certain events during testing."""
 
+from collections.abc import Iterator
+from contextlib import contextmanager
+
 import pymongo
 import requests
 from behave.model import Step
@@ -20,6 +23,13 @@ def before_all(context: Context) -> None:  # noqa: C901
     def api_url(api: str) -> str:
         """Return the API URL."""
         return f"{context.base_api_url}/{api}"
+
+    @contextmanager
+    def external_api() -> Iterator[None]:
+        """Route all calls to external API URL instead of internal."""
+        context.base_api_url = context.base_api_url.replace("/internal", "/v3")
+        yield context
+        context.base_api_url = context.base_api_url.replace("/v3", "/internal")
 
     def get(api: str, headers: dict[str, str] | None = None) -> requests.Response | JSON:
         """Get the resource."""
@@ -64,6 +74,7 @@ def before_all(context: Context) -> None:  # noqa: C901
     context.post_response = None  # Most recent post response
     # Create a typed local variable to prevent mypy error: Type cannot be declared in assignment to non-self attribute
     uuid: dict[str, str] = {}
+    context.external_api = external_api
     context.uuid = uuid  # Keep track of the most recent uuid per item type
     context.get = get
     context.post = post

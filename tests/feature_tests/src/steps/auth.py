@@ -47,7 +47,8 @@ def check_unauthorized(context: Context) -> None:
 @when("the client requests the public key")
 def get_public_key(context: Context) -> None:
     """Get the public key."""
-    context.public_key = context.get("public_key")
+    with context.external_api():
+        context.public_key = context.get("public_key")
 
 
 @then("the client receives the public key")

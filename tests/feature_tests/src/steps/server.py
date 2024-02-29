@@ -8,7 +8,8 @@ from behave.runner import Context
 @when("the client gets the server information")
 def get_server_info(context: Context) -> None:
     """Get the server info."""
-    context.server_info = context.get("server")
+    with context.external_api():
+        context.server_info = context.get("server")
 
 
 @then("the server information is returned")

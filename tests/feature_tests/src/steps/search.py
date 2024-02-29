@@ -8,13 +8,15 @@ from behave.runner import Context
 @when('the client searches a {domain_object_type} with {attribute_name} "{attribute_value}"')
 def search(context: Context, domain_object_type: str, attribute_name: str, attribute_value: str) -> None:
     """Search for domain objects of the specified type with the specified attribute."""
-    context.post(f"{domain_object_type}/search", json={attribute_name: attribute_value})
+    with context.external_api():
+        context.post(f"{domain_object_type}/search", json={attribute_name: attribute_value})
 
 
 @when("the client searches a report without query parameters")
 def search_invalid(context: Context) -> None:
     """Search with invalid query parameters."""
-    context.post("report/search", json={})
+    with context.external_api():
+        context.post("report/search", json={})
 
 
 @then("the search results contain the uuid of the {domain_object_type}")
