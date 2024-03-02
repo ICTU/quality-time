@@ -617,9 +617,9 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_post_report_import(self, request):
         """Test that a report is imported correctly."""
         mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"][
-            "password"
-        ] = asymmetric_encrypt(self.public_key, "test_message")
+        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"] = (
+            asymmetric_encrypt(self.public_key, "test_message")
+        )
         request.json = mocked_report
         post_report_import(self.database)
         inserted = self.database.reports.insert_one.call_args_list[0][0][0]
@@ -631,9 +631,9 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_post_report_import_without_encrypted_credentials(self, request):
         """Test that a report is imported correctly."""
         mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"][
-            "password"
-        ] = "unencrypted_password"
+        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"] = (
+            "unencrypted_password"
+        )
         request.json = mocked_report
         post_report_import(self.database)
         inserted_report = self.database.reports.insert_one.call_args_list[0][0][0]
@@ -659,9 +659,9 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         """Test that a report cannot be imported if the Quality-time instance has no private key."""
         self.database.secrets.find_one.return_value = None
         mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"][
-            "password"
-        ] = "unencrypted_password"
+        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"] = (
+            "unencrypted_password"
+        )
         request.json = mocked_report
         response = post_report_import(self.database)
         self.assertIn("error", response)

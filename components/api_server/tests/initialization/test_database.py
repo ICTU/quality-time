@@ -28,11 +28,15 @@ class DatabaseInitTest(DataModelTestCase):
 
     def init_database(self, data_model_json: str, assert_glob_called: bool = True) -> None:
         """Initialize the database."""
-        with patch.object(pathlib.Path, "glob", Mock(return_value=[])) as glob_mock, patch.object(
-            pathlib.Path,
-            "open",
-            mock_open(read_data=data_model_json),
-        ), patch("pymongo.MongoClient", self.mongo_client):
+        with (
+            patch.object(pathlib.Path, "glob", Mock(return_value=[])) as glob_mock,
+            patch.object(
+                pathlib.Path,
+                "open",
+                mock_open(read_data=data_model_json),
+            ),
+            patch("pymongo.MongoClient", self.mongo_client),
+        ):
             init_database()
         if assert_glob_called:
             glob_mock.assert_called()

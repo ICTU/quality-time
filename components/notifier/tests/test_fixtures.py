@@ -1,4 +1,5 @@
 """Fixture for reports."""
+
 import unittest
 
 from .fixtures import create_report

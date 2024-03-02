@@ -124,11 +124,15 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_fetch_with_get_error(self):
         """Test fetching measurement when getting the metrics fails."""
-        with patch(self.create_measurement) as post, patch(
-            "base_collectors.collector.get_metrics_from_reports",
-            return_value={},
-            side_effect=RuntimeError,
-        ) as _, self.assertRaises(RuntimeError):
+        with (
+            patch(self.create_measurement) as post,
+            patch(
+                "base_collectors.collector.get_metrics_from_reports",
+                return_value={},
+                side_effect=RuntimeError,
+            ) as _,
+            self.assertRaises(RuntimeError),
+        ):
             await self._fetch_measurements(AsyncMock())
         post.assert_not_called()
 
@@ -180,10 +184,15 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Test the collect method."""
         mock_async_get_request = AsyncMock()
         mock_async_get_request.json.side_effect = [self.pip_json]
-        with self._patched_get(mock_async_get_request), patch(
-            "quality_time_collector.database_connection",
-            return_value=self.database,
-        ), patch(self.create_measurement) as post, self.assertRaises(RuntimeError):
+        with (
+            self._patched_get(mock_async_get_request),
+            patch(
+                "quality_time_collector.database_connection",
+                return_value=self.database,
+            ),
+            patch(self.create_measurement) as post,
+            self.assertRaises(RuntimeError),
+        ):
             await quality_time_collector.collect()
         post.assert_called_once_with(
             self.database,

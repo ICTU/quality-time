@@ -108,10 +108,13 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
         # Instead of instantiating the ChangeFailureRate collector directly, we look up the collector by the metric type
         # to get full coverage. Note that the order of response.json.side_effects is important, due to mixed async calls
         change_failure_rate_collector_class = MetricCollector.get_subclass(metric["type"])
-        with patch.object(JiraChangeFailureRate, "max_results", 500), patch(
-            "collector_utilities.date_time.datetime",
-            wraps=datetime,
-        ) as mock_dt:
+        with (
+            patch.object(JiraChangeFailureRate, "max_results", 500),
+            patch(
+                "collector_utilities.date_time.datetime",
+                wraps=datetime,
+            ) as mock_dt,
+        ):
             mock_dt.now.return_value = self.COLLECT_DT
             measurement = await change_failure_rate_collector_class(self.session, metric).collect()
 

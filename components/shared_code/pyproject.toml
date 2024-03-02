@@ -22,9 +22,9 @@ dev = [
 tools = [
     "bandit==1.7.7",
     "mypy==1.8.0",
-    "pip-audit==2.7.1",
+    "pip-audit==2.7.2",
     "pydantic==2.6.3",  # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
-    "ruff==0.2.2",
+    "ruff==0.3.0",
     "safety==3.0.1",
     "vulture==2.11"
 ]

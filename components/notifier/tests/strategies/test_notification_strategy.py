@@ -1,4 +1,4 @@
-""""Unit tests for the notification strategies."""
+"""Unit tests for the notification strategies."""
 
 import unittest
 from datetime import UTC, datetime

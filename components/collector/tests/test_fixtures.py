@@ -1,4 +1,5 @@
 """Fixture for reports."""
+
 import unittest
 from typing import cast
 
