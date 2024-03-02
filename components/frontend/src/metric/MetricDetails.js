@@ -27,7 +27,7 @@ function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopFilteri
                 <ReorderButtonGroup
                     first={isFirstMetric} last={isLastMetric} moveable="metric" slot="row"
                     onClick={(direction) => { stopFilteringAndSorting(); set_metric_attribute(metric_uuid, "position", direction, reload) }} />
-                <DeleteButton item_type="metric" onClick={() => delete_metric(metric_uuid, reload)} />
+                <DeleteButton itemType="metric" onClick={() => delete_metric(metric_uuid, reload)} />
             </div>}
         />
     )

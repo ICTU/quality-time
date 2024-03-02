@@ -47,7 +47,7 @@ function NotificationDestination({ report_uuid, destination_uuid, destination, r
                     <Grid.Row>
                         <Grid.Column>
                             <DeleteButton
-                                item_type='notification destination'
+                                itemType='notification destination'
                                 onClick={() => delete_notification_destination(report_uuid, destination_uuid, reload)}
                             />
                         </Grid.Column>
@@ -71,7 +71,7 @@ export function NotificationDestinations({ destinations, report_uuid, reload }) 
             <ReadOnlyOrEditable key="1" requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
                 <Segment vertical>
                     <AddButton
-                        item_type="notification destination"
+                        itemType="notification destination"
                         onClick={() => add_notification_destination(report_uuid, reload)}
                     />
                 </Segment>}

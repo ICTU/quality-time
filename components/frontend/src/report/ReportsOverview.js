@@ -25,11 +25,11 @@ function ReportsOverviewButtonRow({ reload, reports }) {
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Segment basic>
                 <AddButton
-                    item_type={"report"}
+                    itemType={"report"}
                     onClick={() => add_report(reload)}
                 />
                 <CopyButton
-                    item_type={"report"}
+                    itemType={"report"}
                     get_options={() => report_options(reports)}
                     onChange={(source_report_uuid) => copy_report(source_report_uuid, reload)}
                 />

@@ -29,7 +29,7 @@ function ButtonGridRow({ first_source, last_source, source_uuid, reload }) {
                     <Grid.Column>
                         <ReorderButtonGroup first={first_source} last={last_source} moveable="source"
                             onClick={(direction) => { set_source_attribute(source_uuid, "position", direction, reload) }} />
-                        <DeleteButton item_type="source" onClick={() => delete_source(source_uuid, reload)} />
+                        <DeleteButton itemType="source" onClick={() => delete_source(source_uuid, reload)} />
                     </Grid.Column>
                 </Grid.Row>
             </div>}

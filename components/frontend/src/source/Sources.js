@@ -17,17 +17,17 @@ function ButtonSegment({ reports, metric_uuid, metric, reload }) {
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Segment vertical>
                 <AddDropdownButton
-                    item_type="source"
-                    item_subtypes={sourceTypeOptions(dataModel, metric.type)}
+                    itemType="source"
+                    itemSubtypes={sourceTypeOptions(dataModel, metric.type)}
                     onClick={(subtype) => add_source(metric_uuid, subtype, reload)}
                 />
                 <CopyButton
-                    item_type="source"
+                    itemType="source"
                     onChange={(source_uuid) => copy_source(source_uuid, metric_uuid, reload)}
                     get_options={() => source_options(reports, dataModel, metric.type)}
                 />
                 <MoveButton
-                    item_type="source"
+                    itemType="source"
                     onChange={(source_uuid) => move_source(source_uuid, metric_uuid, reload)}
                     get_options={() => source_options(reports, dataModel, metric.type, metric_uuid)}
                 />
