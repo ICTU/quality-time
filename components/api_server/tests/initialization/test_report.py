@@ -54,10 +54,13 @@ class ReportInitTest(DataModelTestCase):
 
     def test_import_example_report(self):
         """Test that the example reports are imported."""
-        with patch.object(pathlib.Path, "glob", Mock(return_value=[pathlib.Path("example-report.json")])), patch.object(
-            pathlib.Path,
-            "open",
-            mock_open(read_data=self.report_json),
+        with (
+            patch.object(pathlib.Path, "glob", Mock(return_value=[pathlib.Path("example-report.json")])),
+            patch.object(
+                pathlib.Path,
+                "open",
+                mock_open(read_data=self.report_json),
+            ),
         ):
             import_example_reports(self.database)
         self.database.reports.insert_one.assert_called_once()
