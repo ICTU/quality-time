@@ -19,17 +19,17 @@ export function SubjectsButtonRow({ reload, report, reports, settings }) {
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <Segment basic>
                 <AddDropdownButton
-                    item_type="subject"
-                    item_subtypes={subjectTypes(dataModel)}
+                    itemType="subject"
+                    itemSubtypes={subjectTypes(dataModel)}
                     onClick={(subtype) => { stopFiltering(); add_subject(report.report_uuid, subtype, reload) }}
                 />
                 <CopyButton
-                    item_type="subject"
+                    itemType="subject"
                     onChange={(source_subject_uuid) => { stopFiltering(); copy_subject(source_subject_uuid, report.report_uuid, reload) }}
                     get_options={() => subject_options(reports, dataModel)}
                 />
                 <MoveButton
-                    item_type="subject"
+                    itemType="subject"
                     onChange={(source_subject_uuid) => { stopFiltering(); move_subject(source_subject_uuid, report.report_uuid, reload) }}
                     get_options={() => subject_options(reports, dataModel, report.report_uuid)}
                 />

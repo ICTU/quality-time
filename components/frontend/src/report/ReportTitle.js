@@ -247,7 +247,7 @@ function ButtonRow({ report_uuid, openReportsOverview }) {
     return (
         <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
             <DeleteButton
-                item_type='report'
+                itemType='report'
                 onClick={() => delete_report(report_uuid, openReportsOverview)}
             />}
         />

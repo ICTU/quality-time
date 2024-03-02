@@ -5,16 +5,16 @@ import * as toast from './toast';
 
 function renderAddDropdownButton(nr_items = 2) {
     const mockCallback = jest.fn();
-    const item_subtypes = [];
+    const itemSubtypes = [];
     for (const index of Array(nr_items).keys()) {
         const text = `Sub ${index + 1}`;
         const key = text.toLowerCase();
-        item_subtypes.push({ key: key, text: text, value: key })
+        itemSubtypes.push({ key: key, text: text, value: key })
     }
     render(
         <AddDropdownButton
-            item_type="foo"
-            item_subtypes={item_subtypes}
+            itemType="foo"
+            itemSubtypes={itemSubtypes}
             onClick={mockCallback}
         />
     );
@@ -92,26 +92,26 @@ test('AddDropdownButton does not add selected item on enter when menu is closed'
 });
 
 test('AddButton has the correct label', () => {
-    render(<AddButton item_type="bar" />);
+    render(<AddButton itemType="bar" />);
     expect(screen.getAllByText(/bar/).length).toBe(1);
 });
 
 test('DeleteButton has the correct label', () => {
-    render(<DeleteButton item_type="bar" />);
+    render(<DeleteButton itemType="bar" />);
     expect(screen.getAllByText(/bar/).length).toBe(1);
 });
 
-["report", "subject", "metric", "source"].forEach((item_type) => {
+["report", "subject", "metric", "source"].forEach((itemType) => {
     test('CopyButton has the correct label', () => {
-        render(<CopyButton item_type={item_type} />);
-        expect(screen.getAllByText(new RegExp(`Copy ${item_type}`)).length).toBe(1);
+        render(<CopyButton itemType={itemType} />);
+        expect(screen.getAllByText(new RegExp(`Copy ${itemType}`)).length).toBe(1);
     });
 
     test('CopyButton can be used to select an item', async () => {
         const mockCallBack = jest.fn();
-        render(<CopyButton item_type={item_type} onChange={mockCallBack} get_options={() => { return [{ key: "1", text: "Item", value: "1" }] }} />);
+        render(<CopyButton itemType={itemType} onChange={mockCallBack} get_options={() => { return [{ key: "1", text: "Item", value: "1" }] }} />);
         await act(async () => {
-            fireEvent.click(screen.getByText(new RegExp(`Copy ${item_type}`)));
+            fireEvent.click(screen.getByText(new RegExp(`Copy ${itemType}`)));
         });
         await act(async () => {
             fireEvent.click(screen.getByText(/Item/));
@@ -122,27 +122,27 @@ test('DeleteButton has the correct label', () => {
     test("CopyButton loads the options every time the menu is opened", async () => {
         const mockCallBack = jest.fn();
         let get_options_called = 0;
-        render(<CopyButton item_type={item_type} onChange={mockCallBack} get_options={() => { get_options_called++; return [{ key: "1", text: "Item", value: "1" }] }} />);
+        render(<CopyButton itemType={itemType} onChange={mockCallBack} get_options={() => { get_options_called++; return [{ key: "1", text: "Item", value: "1" }] }} />);
         await act(async () => {
-            fireEvent.click(screen.getByText(new RegExp(`Copy ${item_type}`)));
+            fireEvent.click(screen.getByText(new RegExp(`Copy ${itemType}`)));
         });
         fireEvent.click(screen.getByText(/Item/));
         await act(async () => {
-            fireEvent.click(screen.getByText(new RegExp(`Copy ${item_type}`)));
+            fireEvent.click(screen.getByText(new RegExp(`Copy ${itemType}`)));
         });
         expect(get_options_called).toBe(2);
     });
 
     test('MoveButton has the correct label', () => {
-        render(<MoveButton item_type={item_type} />);
-        expect(screen.getAllByText(new RegExp(`Move ${item_type}`)).length).toBe(1);
+        render(<MoveButton itemType={itemType} />);
+        expect(screen.getAllByText(new RegExp(`Move ${itemType}`)).length).toBe(1);
     });
 
     test('MoveButton can be used to select an item', async () => {
         const mockCallBack = jest.fn();
-        render(<MoveButton item_type={item_type} onChange={mockCallBack} get_options={() => { return [{ key: "1", text: "Item", value: "1" }] }} />);
+        render(<MoveButton itemType={itemType} onChange={mockCallBack} get_options={() => { return [{ key: "1", text: "Item", value: "1" }] }} />);
         await act(async () => {
-            fireEvent.click(screen.getByText(new RegExp(`Move ${item_type}`)));
+            fireEvent.click(screen.getByText(new RegExp(`Move ${itemType}`)));
         });
         await act(async () => {
             fireEvent.click(screen.getByText(/Item/));

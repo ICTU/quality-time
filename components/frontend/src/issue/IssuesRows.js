@@ -18,7 +18,7 @@ function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, me
             disabled={!issueTrackerConfigured}
             fluid
             icon='plus'
-            item_type='issue'
+            itemType='issue'
             onClick={() => add_metric_issue(metric_uuid, reload)}
             popup={<>Create a new issue for this {target} in the configured issue tracker and add its identifier to the tracked issue identifiers.{issueTrackerInstruction}</>}
             position='top center'

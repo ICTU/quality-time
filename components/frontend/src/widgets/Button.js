@@ -1,13 +1,13 @@
 import { useRef, useState } from 'react';
-import PropTypes from 'prop-types';
+import { array, bool, func, string } from 'prop-types';
 import { Icon, Input } from 'semantic-ui-react';
 import { Button, Dropdown, Label, Popup } from '../semantic_ui_react_wrappers';
 import { showMessage } from '../widgets/toast';
 import { ItemBreadcrumb } from './ItemBreadcrumb';
 
 export function ActionButton(props) {
-    const { action, disabled, icon, item_type, floated, fluid, popup, position, ...other } = props;
-    const label = `${action} ${item_type}`
+    const { action, disabled, icon, itemType, floated, fluid, popup, position, ...other } = props;
+    const label = `${action} ${itemType}`
     // Put the button in a span so that a disabled button can still have a popup
     // See https://github.com/Semantic-Org/Semantic-UI-React/issues/2804
     const button = (
@@ -24,17 +24,26 @@ export function ActionButton(props) {
         />
     )
 }
+ActionButton.propTypes = {
+    action: string,
+    disabled: bool,
+    icon: string,
+    itemType: string,
+    floated: string,
+    fluid: bool,
+    position: string,
+}
 
-export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
+export function AddDropdownButton({ itemSubtypes, itemType, onClick }) {
     const [selectedItem, setSelectedItem] = useState(0);  // Index of selected item in the dropdown
     const [query, setQuery] = useState("");  // Search query to filter item subtypes
     const [menuOpen, setMenuOpen] = useState(false);  // Is the menu open?
     const [popupTriggered, setPopupTriggered] = useState(false);  // Is the popup triggered by hover or focus?
-    const options = item_subtypes.filter((item_subtype) => (item_subtype.text.toLowerCase().includes(query.toLowerCase())));
+    const options = itemSubtypes.filter((itemSubtype) => (itemSubtype.text.toLowerCase().includes(query.toLowerCase())));
     const inputRef = useRef(null)
     return (
         <Popup
-            content={`Add a new ${item_type} here`}
+            content={`Add a new ${itemType} here`}
             on={["focus", "hover"]}
             onOpen={() => setPopupTriggered(true)}
             onClose={() => setPopupTriggered(false)}
@@ -77,12 +86,12 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
                     onOpen={() => setMenuOpen(true)}
                     selectOnBlur={false}
                     selectOnNavigation={false}
-                    trigger={<><Icon name="add" /> {`Add ${item_type} `}</>}
+                    trigger={<><Icon name="add" /> {`Add ${itemType} `}</>}
                     value={null}  // Without this, a selected item becomes active (shown bold in the menu) and can't be selected again
                 >
                     <Dropdown.Menu>
-                        <Dropdown.Header>{`Available ${item_type} types`}</Dropdown.Header>
-                        {item_subtypes.length > 5 &&
+                        <Dropdown.Header>{`Available ${itemType} types`}</Dropdown.Header>
+                        {itemSubtypes.length > 5 &&
                             <>
                                 <Dropdown.Divider />
                                 <Input
@@ -98,7 +107,7 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
                                         }
                                     }}
                                     ref={inputRef}
-                                    placeholder={`Filter available ${item_type} types`}
+                                    placeholder={`Filter available ${itemType} types`}
                                     value={query}
                                 />
                             </>
@@ -119,17 +128,26 @@ export function AddDropdownButton({ item_subtypes, item_type, onClick }) {
         />
     )
 }
+AddDropdownButton.propTypes = {
+    itemSubtypes: array,
+    itemType: string,
+    onClick: func,
+}
 
-export function AddButton({ item_type, onClick }) {
+export function AddButton({ itemType, onClick }) {
     return (
         <ActionButton
             action='Add'
             icon='plus'
-            item_type={item_type}
+            itemType={itemType}
             onClick={() => onClick()}
-            popup={`Add a new ${item_type} here`}
+            popup={`Add a new ${itemType} here`}
         />
     )
+}
+AddButton.propTypes = {
+    itemType: string,
+    onClick: func,
 }
 
 export function DeleteButton(props) {
@@ -139,11 +157,14 @@ export function DeleteButton(props) {
             floated='right'
             icon='trash'
             negative
-            popup={`Delete this ${props.item_type}. Careful, this can only be undone by a system administrator!`}
+            popup={`Delete this ${props.itemType}. Careful, this can only be undone by a system administrator!`}
             position='top right'
             {...props}
         />
     )
+}
+DeleteButton.propTypes = {
+    itemType: string,
 }
 
 function ReorderButton(props) {
@@ -176,39 +197,46 @@ export function ReorderButtonGroup(props) {
     )
 }
 
-function ActionAndItemPickerButton({ action, item_type, onChange, get_options, icon }) {
+function ActionAndItemPickerButton({ action, itemType, onChange, get_options, icon }) {
     const [options, setOptions] = useState([]);
 
-    const breadcrumb_props = { report: "report" };
-    if (item_type !== 'report') {
-        breadcrumb_props.subject = 'subject';
-        if (item_type !== 'subject') {
-            breadcrumb_props.metric = 'metric';
-            if (item_type !== 'metric') {
-                breadcrumb_props.source = 'source';
+    const breadcrumbProps = { report: "report" };
+    if (itemType !== 'report') {
+        breadcrumbProps.subject = 'subject';
+        if (itemType !== 'subject') {
+            breadcrumbProps.metric = 'metric';
+            if (itemType !== 'metric') {
+                breadcrumbProps.source = 'source';
             }
         }
     }
     return (
         <Popup
-            content={`${action} an existing ${item_type} here`}
+            content={`${action} an existing ${itemType} here`}
             trigger={
                 <Dropdown
                     basic
                     className='button icon primary'
                     floating
-                    header={<Dropdown.Header><ItemBreadcrumb size='tiny' {...breadcrumb_props} /></Dropdown.Header>}
+                    header={<Dropdown.Header><ItemBreadcrumb size='tiny' {...breadcrumbProps} /></Dropdown.Header>}
                     options={options}
                     onChange={(_event, { value }) => onChange(value)}
                     onOpen={() => setOptions(get_options())}
                     scrolling
                     selectOnBlur={false}
                     selectOnNavigation={false}
-                    trigger={<><Icon name={icon} /> {`${action} ${item_type} `}</>}
+                    trigger={<><Icon name={icon} /> {`${action} ${itemType} `}</>}
                     value={null}  // Without this, a selected item becomes active (shown bold in the menu) and can't be selected again
                 />}
         />
     )
+}
+ActionAndItemPickerButton.propTypes = {
+    action: string,
+    itemType: string,
+    onChange: func,
+    get_options: func,
+    icon: string,
 }
 
 export function CopyButton(props) {
@@ -278,5 +306,5 @@ export function PermLinkButton({ url }) {
     }
 }
 PermLinkButton.propTypes = {
-    url: PropTypes.string
+    url: string,
 }

@@ -17,15 +17,15 @@ export function SubjectTableFooter({ subject, subjectUuid, reload, reports, stop
                 <Table.Row>
                     <Table.HeaderCell colSpan='99'>
                         <AddDropdownButton
-                            item_type="metric"
-                            item_subtypes={metricTypeOptions(dataModel, subject.type)}
+                            itemType="metric"
+                            itemSubtypes={metricTypeOptions(dataModel, subject.type)}
                             onClick={(subtype) => {
                                 stopFilteringAndSorting()
                                 add_metric(subjectUuid, subtype, reload);
                             }}
                         />
                         <CopyButton
-                            item_type="metric"
+                            itemType="metric"
                             onChange={(source_metric_uuid) => {
                                 stopFilteringAndSorting()
                                 copy_metric(source_metric_uuid, subjectUuid, reload);
@@ -33,7 +33,7 @@ export function SubjectTableFooter({ subject, subjectUuid, reload, reports, stop
                             get_options={() => metric_options(reports, dataModel, subject.type)}
                         />
                         <MoveButton
-                            item_type="metric"
+                            itemType="metric"
                             onChange={(source_metric_uuid) => {
                                 stopFilteringAndSorting()
                                 move_metric(source_metric_uuid, subjectUuid, reload);

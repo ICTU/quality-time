@@ -40,7 +40,7 @@ function ButtonRow({ subject_uuid, firstSubject, lastSubject, reload }) {
                 <ReorderButtonGroup
                     first={firstSubject} last={lastSubject} moveable="subject"
                     onClick={(direction) => { set_subject_attribute(subject_uuid, "position", direction, reload) }} />
-                <DeleteButton item_type="subject" onClick={() => delete_subject(subject_uuid, reload)} />
+                <DeleteButton itemType="subject" onClick={() => delete_subject(subject_uuid, reload)} />
             </>
         } />
     )
