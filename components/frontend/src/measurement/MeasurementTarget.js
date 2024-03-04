@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Label, Popup } from '../semantic_ui_react_wrappers';
 import { DataModel } from "../context/DataModel";
 import { formatMetricDirection, formatMetricScale, formatMetricScaleAndUnit, get_metric_target, isValidDate_YYYYMMDD } from '../utils';
-import { metricPropType} from '../sharedPropTypes'
+import { metricPropType } from '../sharedPropTypes'
 
 function popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel) {
     const unit = formatMetricScaleAndUnit(dataModel.metrics[metric.type], metric)
@@ -34,6 +34,9 @@ export function MeasurementTarget({ metric }) {
     if (metric?.evaluate_targets === false) { return null }
     const metricDirection = formatMetricDirection(metric, dataModel)
     const target = `${metricDirection} ${get_metric_target(metric)}${formatMetricScale(metric)}`
+    if (!metric.accept_debt) {
+        return <>{target}</>
+    }
     const allIssuesDone = metric.issue_status?.length > 0 ? metric.issue_status.every((status) => status.status_category === "done") : false
     let debtEndDateInThePast = false
     if (metric.debt_end_date && isValidDate_YYYYMMDD(metric.debt_end_date)) {
@@ -42,14 +45,11 @@ export function MeasurementTarget({ metric }) {
         debtEndDateInThePast = endDate.toISOString().split("T")[0] < today.toISOString().split("T")[0];
     }
     const label = allIssuesDone || debtEndDateInThePast ? <Label color="grey">{target}</Label> : <span>{target}</span>
-    if (metric.accept_debt) {
-        return (
-            <Popup hoverable on={['hover', 'focus']} trigger={label}>
-                {popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel)}
-            </Popup>
-        )
-    }
-    return target
+    return (
+        <Popup hoverable on={['hover', 'focus']} trigger={label}>
+            {popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel)}
+        </Popup>
+    )
 }
 MeasurementTarget.propTypes = {
     metric: metricPropType

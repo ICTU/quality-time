@@ -158,5 +158,4 @@ class MetricTest(unittest.TestCase):
     def test___eq__(self):
         """Tests that __eq__ returns false if Object is not eq."""
         metric = Metric(self.DATA_MODEL, {"type": "fixture_metric_type"}, METRIC_ID)
-
-        self.assertFalse(metric == "foo")
+        self.assertNotEqual(metric, "foo")

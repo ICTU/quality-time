@@ -46,7 +46,7 @@ export function SourceEntity(
     let statusClassName = "unknown_status";
     for (let entity_attribute of entity_attributes) {
         let cell_contents = entity[entity_attribute.key];
-        if (entity_attribute.color && entity_attribute.color[cell_contents]) {
+        if (entity_attribute.color?.[cell_contents]) {
             statusClassName = entity_attribute.color[cell_contents] + '_status';
             break
         }

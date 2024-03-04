@@ -137,7 +137,7 @@ export function MetricDetails({
         last_measurement.sources.forEach((source) => {
             const report_source = metric.sources[source.source_uuid];
             if (!report_source) { return }  // source was deleted, continue
-            const nr_entities = (source.entities && source.entities.length) || 0;
+            const nr_entities = source.entities?.length ?? 0;
             if (nr_entities === 0) { return } // no entities to show, continue
             const source_name = get_source_name(report_source, dataModel);
             panes.push({

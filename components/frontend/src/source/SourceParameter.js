@@ -70,7 +70,7 @@ export function SourceParameter({
     source_uuid,
     warning,
 }) {
-    const [edit_scope, setEditScope] = useState("source");
+    const [editScope, setEditScope] = useState("source");
     function options() {
         let values = new Set();
         // Collect all values in the current report used for this parameter, for this source type:
@@ -106,7 +106,7 @@ export function SourceParameter({
     let parameter_props = {
         requiredPermissions: requiredPermissions,
         editableLabel: <SourceParameterLabel
-            edit_scope={edit_scope}
+            edit_scope={editScope}
             label={label}
             setEditScope={setEditScope}
             source_type_name={source_type_name}
@@ -116,7 +116,7 @@ export function SourceParameter({
         placeholder: placeholder,
         required: required,
         set_value: ((value) => {
-            set_source_parameter(source_uuid, parameter_key, value, edit_scope, reload)
+            set_source_parameter(source_uuid, parameter_key, value, editScope, reload)
             setEditScope("source")  // Reset the edit scope of the parameter to source only
         }),
         value: parameter_value
