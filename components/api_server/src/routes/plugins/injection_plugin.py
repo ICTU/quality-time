@@ -2,15 +2,11 @@
 
 import inspect
 from collections.abc import Callable
-from typing import TypeVar
 
 from bottle import Bottle, Route
 
-ValueType = TypeVar("ValueType")
-ReturnType = TypeVar("ReturnType")
 
-
-class InjectionPlugin:
+class InjectionPlugin[ValueType]:
     """Plugin to pass a value to route callbacks that accept a specific keyword argument.
 
     If a callback does not expect such a parameter, no value is passed.
@@ -18,7 +14,7 @@ class InjectionPlugin:
 
     api = 2
 
-    def __init__(self, value: ValueType, keyword: str) -> None:
+    def __init__(self, value: ValueType, keyword: str) -> None:  # type: ignore[name-defined]  # mypy does not yet support PEP 695, Type Parameter Syntax. See https://github.com/python/mypy/issues/15238
         self.value = value
         self.keyword = keyword
         self.name = f"{keyword}-injection"
@@ -30,7 +26,7 @@ class InjectionPlugin:
                 msg = "InjectionPlugin found another plugin with the same keyword."
                 raise RuntimeError(msg)
 
-    def apply(self, callback: Callable[..., ReturnType], context: Route) -> Callable[..., ReturnType]:
+    def apply[ReturnType](self, callback: Callable[..., ReturnType], context: Route) -> Callable[..., ReturnType]:  # type: ignore[name-defined]
         """Apply the plugin to the route."""
         # Override global configuration with route-specific values.
         configuration = context.config.get("injection") or {}
@@ -43,7 +39,7 @@ class InjectionPlugin:
         if keyword not in parameter_names:
             return callback
 
-        def wrapper(*args, **kwargs) -> ReturnType:
+        def wrapper(*args, **kwargs) -> ReturnType:  # type: ignore[name-defined]
             """Wrap the route."""
             kwargs[keyword] = value
             return callback(*args, **kwargs)

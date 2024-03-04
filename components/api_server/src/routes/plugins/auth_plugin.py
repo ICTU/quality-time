@@ -2,7 +2,6 @@
 
 import logging
 from collections.abc import Callable
-from typing import TypeVar
 
 import bottle
 
@@ -16,9 +15,6 @@ EDIT_REPORT_PERMISSION = "edit_reports"
 EDIT_ENTITY_PERMISSION = "edit_entities"
 
 
-ReturnType = TypeVar("ReturnType")
-
-
 class AuthPlugin:
     """Plugin to check authentication and authorization for post and delete routes."""
 
@@ -28,7 +24,7 @@ class AuthPlugin:
         self.name = "route-auth"
 
     @classmethod
-    def apply(cls, callback: Callable[..., ReturnType], context) -> Callable[..., ReturnType]:
+    def apply[ReturnType](cls, callback: Callable[..., ReturnType], context) -> Callable[..., ReturnType]:  # type: ignore[name-defined]  # mypy does not yet support PEP 695, Type Parameter Syntax. See https://github.com/python/mypy/issues/15238
         """Apply the plugin to the route."""
         config = context.config
 
@@ -43,7 +39,7 @@ class AuthPlugin:
 
         required_permissions = config.get("permissions_required", [])
 
-        def wrapper(*args, **kwargs) -> ReturnType:
+        def wrapper(*args, **kwargs) -> ReturnType:  # type: ignore[name-defined]
             """Wrap the route."""
             database = kwargs["database"]
             session_id = SessionId(bottle.request.get_cookie("session_id"))
