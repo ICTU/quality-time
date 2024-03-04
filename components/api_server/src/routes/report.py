@@ -227,6 +227,8 @@ def post_report_issue_tracker_attribute(
 def get_report_issue_tracker_suggestions(database: Database, report: Report, query: str):  # noqa: ARG001
     """Get suggestions for issue ids from the issue tracker using the query string."""
     issue_tracker = report.issue_tracker()
+    # Sanitize the query. Not really needed for JQL, but can't hurt
+    query = "".join(char for char in query if char.isalnum() or char.isspace())
     return {"ok": True, "suggestions": [issue.as_dict() for issue in issue_tracker.get_suggestions(query)]}
 
 

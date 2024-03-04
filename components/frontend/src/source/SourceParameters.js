@@ -30,7 +30,7 @@ export function SourceParameters({changed_param_keys, metric, reload, report, so
                 parameter_unit={all_parameters[parameter_key].unit || metricUnit}
                 parameter_min={all_parameters[parameter_key].min_value || null}
                 parameter_max={all_parameters[parameter_key].max_value || null}
-                parameter_value={source.parameters && source.parameters[parameter_key] ?
+                parameter_value={source.parameters?.[parameter_key] ?
                     source.parameters[parameter_key] : all_parameters[parameter_key].default_value}
                 parameter_values={all_parameters[parameter_key].values || []}
                 help_url={all_parameters[parameter_key].help_url}

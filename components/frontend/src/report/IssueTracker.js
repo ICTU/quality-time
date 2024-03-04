@@ -28,7 +28,7 @@ export function IssueTracker({ report, reload }) {
     const [issueTypeValid, setIssueTypeValid] = useState(true)  // Is the current issue type a possible issue type?
     const [labelFieldSupported, setLabelFieldSupported] = useState(false)  // Does the current issue type support labels?
     const [issueEpicOptions, setIssueEpicOptions] = useState([])  // Possible epic links for new issues in the current project
-    const [issueEpicFieldSupported, setEpicFieldSupported] = useState(false)  // Does the current project and issue type support epic links?
+    const [issueEpicFieldSupported, setIssueEpicFieldSupported] = useState(false)  // Does the current project and issue type support epic links?
     useEffect(() => {
         let didCancel = false;
         get_report_issue_tracker_options(report.report_uuid).then(function (json) {
@@ -43,7 +43,7 @@ export function IssueTracker({ report, reload }) {
                 const fieldKeys = json.fields.map((field) => field.key);
                 setLabelFieldSupported(fieldKeys.includes("labels"))
                 const fieldNames = json.fields.map((field) => field.name.toLowerCase());
-                setEpicFieldSupported(fieldNames.includes("epic link"))
+                setIssueEpicFieldSupported(fieldNames.includes("epic link"))
             }
         });
         return () => { didCancel = true; };

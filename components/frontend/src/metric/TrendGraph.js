@@ -6,7 +6,7 @@ import { capitalize, formatMetricScaleAndUnit, get_metric_name, nice_number, sca
 import { measurementsPropType, metricPropType } from '../sharedPropTypes';
 
 function measurementAttributeAsNumber(metric, measurement, field) {
-    const value = (measurement[metric.scale] && measurement[metric.scale][field]) || null;
+    const value = measurement[metric.scale]?.[field] ?? null;
     return value !== null ? Number(value) : null;
 }
 

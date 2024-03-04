@@ -14,6 +14,22 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
         """Set up test data."""
         super().setUp()
         self.api_url = f"{self.url}/api/v3/report"
+        self.entities = [
+            {
+                "key": "m2",
+                "report": "R1",
+                "subject": "S1",
+                "metric": "Violations",
+                "report_url": f"{self.url}/r1",
+                "subject_url": f"{self.url}/r1#s1",
+                "metric_url": f"{self.url}/r1#m2",
+                "measurement": "20",
+                "target": "≦ 2",
+                "unit": "violations",
+                "status": "target_not_met",
+                "status_start_date": "2020-05-23T07:53:17+00:00",
+            },
+        ]
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: list | str | None) -> None:
         """Override to pass the api and landing URLs."""
@@ -26,27 +42,7 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
         # The count should be one because the user selected metrics from report "r1", with status "target_not_met",
         # metric type "tests" or "violations", source type "sonarqube" or "junit", and tag "security".
         # Only m2 matches those criteria.
-        self.assert_measurement(
-            response,
-            value="1",
-            total="3",
-            entities=[
-                {
-                    "key": "m2",
-                    "report": "R1",
-                    "subject": "S1",
-                    "metric": "Violations",
-                    "report_url": f"{self.url}/r1",
-                    "subject_url": f"{self.url}/r1#s1",
-                    "metric_url": f"{self.url}/r1#m2",
-                    "measurement": "20",
-                    "target": "≦ 2",
-                    "unit": "violations",
-                    "status": "target_not_met",
-                    "status_start_date": "2020-05-23T07:53:17+00:00",
-                },
-            ],
-        )
+        self.assert_measurement(response, value="1", total="3", entities=self.entities)
 
     async def test_nr_of_metrics_without_reports(self):
         """Test that the number of metrics is returned."""
@@ -70,24 +66,4 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
         # Give m3 a status but no change date to test that it will be ignored
         metrics["m3"]["recent_measurements"].append({"count": {"status": "target_met"}})
         response = await self.collect(get_request_json_return_value=self.reports)
-        self.assert_measurement(
-            response,
-            value="1",
-            total="3",
-            entities=[
-                {
-                    "key": "m2",
-                    "report": "R1",
-                    "subject": "S1",
-                    "metric": "Violations",
-                    "report_url": f"{self.url}/r1",
-                    "subject_url": f"{self.url}/r1#s1",
-                    "metric_url": f"{self.url}/r1#m2",
-                    "measurement": "20",
-                    "target": "≦ 2",
-                    "unit": "violations",
-                    "status": "target_not_met",
-                    "status_start_date": "2020-05-23T07:53:17+00:00",
-                },
-            ],
-        )
+        self.assert_measurement(response, value="1", total="3", entities=self.entities)

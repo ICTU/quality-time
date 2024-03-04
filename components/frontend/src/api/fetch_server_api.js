@@ -15,5 +15,11 @@ export function fetch_server_api(method, api, body, content_type) {
         options['body'] = JSON.stringify(body)
     }
     return fetch(`/api/internal/${api}`, options).then(
-        (response) => { return response.ok ? (content_type ? response.blob() : response.json()) : response })
+        (response) => {
+            if (response.ok) {
+                return content_type ? response.blob() : response.json()
+            }
+            return response
+        }
+    )
 }
