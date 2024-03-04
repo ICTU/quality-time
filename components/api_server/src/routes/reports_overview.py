@@ -11,19 +11,22 @@ from .pdf import export_as_pdf
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
-@bottle.get("/api/v3/reports_overview", authentication_required=False)
+@bottle.get("/api/internal/reports_overview", authentication_required=False)
 def get_reports_overview(database: Database):
     """Return all the quality reports."""
     return latest_reports_overview(database, report_date_time())
 
 
+@bottle.get("/api/internal/reports_overview/pdf", authentication_required=False)
 @bottle.get("/api/v3/reports_overview/pdf", authentication_required=False)
 def export_reports_overview_as_pdf():
     """Download the reports overview as PDF."""
     return export_as_pdf()
 
 
-@bottle.post("/api/v3/reports_overview/attribute/<reports_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post(
+    "/api/internal/reports_overview/attribute/<reports_attribute>", permissions_required=[EDIT_REPORT_PERMISSION]
+)
 def post_reports_overview_attribute(reports_attribute: str, database: Database):
     """Set a reports overview attribute."""
     new_value = dict(bottle.request.json)[reports_attribute]

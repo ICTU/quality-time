@@ -199,3 +199,14 @@ To enable monitoring metric statuses outside of *Quality-time*, the `api/v3/repo
 ```
 
 The `report_uuid` is the unique identifier that *Quality-time* assigns to a report. It can be found by navigating to a report in the browser and looking for the `report_uuid` in the address bar. For example, when the URL in the browser's address bar is `https://www.quality-time.example.org/f1d0e056-2440-43bd-b640-f6753ccf4496?hidden_columns=comment`, the part between the last slash and the question mark is the `report_uuid`.
+
+## Monitoring *Quality-time* version
+
+To externally retrieve the version of a *Quality-time* instance, the `https://www.quality-time.example.org/api/v3/server` endpoint can be used.
+It returns a JSON response of the specified *Quality-time* instance in the following format:
+
+```json
+{
+  "version": "v5.8.0"
+}
+```

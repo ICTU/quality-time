@@ -19,7 +19,7 @@ from utils.functions import sanitize_html, uuid
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
-@bottle.post("/api/v3/metric/new/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/internal/metric/new/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_metric_new(subject_uuid: SubjectId, database: Database):
     """Add a new metric."""
     all_reports = latest_reports(database)
@@ -35,9 +35,9 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
     return result
 
 
-@bottle.post("/api/v3/metric/<metric_uuid>/copy/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/internal/metric/<metric_uuid>/copy/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: Database):
-    """Add a copy of the metric to the subject (new in v3)."""
+    """Add a copy of the metric to the subject."""
     all_reports = latest_reports(database)
     source_and_target_reports = latest_report_for_uuids(all_reports, metric_uuid, subject_uuid)
     source_report = source_and_target_reports[0]
@@ -56,7 +56,9 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
     return result
 
 
-@bottle.post("/api/v3/metric/<metric_uuid>/move/<target_subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post(
+    "/api/internal/metric/<metric_uuid>/move/<target_subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION]
+)
 def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, database: Database):
     """Move the metric to another subject."""
     all_reports = latest_reports(database)
@@ -82,7 +84,7 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
     return insert_new_report(database, delta_description, uuids, *reports_to_insert)
 
 
-@bottle.delete("/api/v3/metric/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.delete("/api/internal/metric/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def delete_metric(metric_uuid: MetricId, database: Database):
     """Delete a metric."""
     all_reports = latest_reports(database)
@@ -107,7 +109,9 @@ ATTRIBUTES_IMPACTING_STATUS = (
 )
 
 
-@bottle.post("/api/v3/metric/<metric_uuid>/attribute/<metric_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post(
+    "/api/internal/metric/<metric_uuid>/attribute/<metric_attribute>", permissions_required=[EDIT_REPORT_PERMISSION]
+)
 def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database: Database):
     """Set the metric attribute."""
     new_value = dict(bottle.request.json)[metric_attribute]
@@ -142,7 +146,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     return {"ok": True}
 
 
-@bottle.post("/api/v3/metric/<metric_uuid>/debt", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/internal/metric/<metric_uuid>/debt", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_metric_debt(metric_uuid: MetricId, database: Database):
     """Turn the technical debt on or off, including technical debt target and end date."""
     new_accept_debt = dict(bottle.request.json)["accept_debt"]
@@ -180,7 +184,7 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
     return {"ok": True}
 
 
-@bottle.post("/api/v3/metric/<metric_uuid>/issue/new", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/internal/metric/<metric_uuid>/issue/new", permissions_required=[EDIT_REPORT_PERMISSION])
 def add_metric_issue(metric_uuid: MetricId, database: Database):
     """Add a new issue to the metric using the configured issue tracker."""
     report = latest_report_for_uuids(latest_reports(database), metric_uuid)[0]

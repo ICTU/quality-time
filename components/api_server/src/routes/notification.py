@@ -13,7 +13,9 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from .report import with_report
 
 
-@bottle.post("/api/v3/report/<report_uuid>/notification_destination/new", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post(
+    "/api/internal/report/<report_uuid>/notification_destination/new", permissions_required=[EDIT_REPORT_PERMISSION]
+)
 @with_report
 def post_new_notification_destination(database: Database, report: Report, report_uuid: ReportId):
     """Create a new notification destination."""
@@ -33,7 +35,7 @@ def post_new_notification_destination(database: Database, report: Report, report
 
 
 @bottle.delete(
-    "/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>",
+    "/api/internal/report/<report_uuid>/notification_destination/<notification_destination_uuid>",
     permissions_required=[EDIT_REPORT_PERMISSION],
 )
 @with_report
@@ -52,7 +54,7 @@ def delete_notification_destination(
 
 
 @bottle.post(
-    "/api/v3/report/<report_uuid>/notification_destination/<notification_destination_uuid>/attributes",
+    "/api/internal/report/<report_uuid>/notification_destination/<notification_destination_uuid>/attributes",
     permissions_required=[EDIT_REPORT_PERMISSION],
 )
 @with_report

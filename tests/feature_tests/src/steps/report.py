@@ -14,7 +14,8 @@ from behave.runner import Context
 def get_report_metric_status_summary(context: Context) -> None:
     """Get the report metric status summary."""
     report_uuid = context.uuid["report"]
-    context.get(f"report/{report_uuid}/metric_status_summary")
+    with context.external_api():
+        context.get(f"report/{report_uuid}/metric_status_summary")
 
 
 @then("the report metric status summary is returned")
@@ -39,7 +40,8 @@ def download_report_as_json(context: Context, report_uuid: str | None = None) ->
     """Download the report as JSON."""
     if report_uuid is None:
         report_uuid = context.uuid["report"]
-    report = context.get(f"report/{report_uuid}/json")
+    with context.external_api():
+        report = context.get(f"report/{report_uuid}/json")
     context.exported_report = report
 
 
@@ -47,20 +49,23 @@ def download_report_as_json(context: Context, report_uuid: str | None = None) ->
 def download_report_as_json_with_key(context: Context) -> None:
     """Download the report as JSON with public key."""
     public_key = urllib.parse.quote_plus(context.public_key)
-    context.get(f"report/{context.uuid['report']}/json?public_key={public_key}")
+    with context.external_api():
+        context.get(f"report/{context.uuid['report']}/json?public_key={public_key}")
 
 
 @when("the client re-imports a report")
 def re_import_report(context: Context) -> None:
     """Import a JSON report."""
-    response = context.post("report/import", json=context.exported_report)
+    with context.external_api():
+        response = context.post("report/import", json=context.exported_report)
     context.uuid["report"] = response["new_report_uuid"]
 
 
 @when("the client imports a report")
 def import_report(context: Context) -> None:
     """Import a JSON report."""
-    response = context.post("report/import", json=json.loads(context.text))
+    with context.external_api():
+        response = context.post("report/import", json=json.loads(context.text))
     if "new_report_uuid" in response:
         context.uuid["report"] = response["new_report_uuid"]
 

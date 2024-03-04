@@ -53,9 +53,9 @@ def with_report[ReturnType](
     return wrapper
 
 
-@bottle.get("/api/v3/report", authentication_required=False)
-@bottle.get("/api/v3/report/", authentication_required=False)
-@bottle.get("/api/v3/report/<report_uuid>", authentication_required=False)
+@bottle.get("/api/internal/report", authentication_required=False)
+@bottle.get("/api/internal/report/", authentication_required=False)
+@bottle.get("/api/internal/report/<report_uuid>", authentication_required=False)
 def get_report(database: Database, report_uuid: ReportId | None = None):
     """Return the quality report, including information about other reports needed for move/copy actions."""
     date_time = report_date_time()
@@ -110,7 +110,7 @@ def post_report_import(database: Database):
     return result
 
 
-@bottle.post("/api/v3/report/new", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/internal/report/new", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_new(database: Database):
     """Add a new report."""
     report_uuid = uuid()
@@ -121,7 +121,7 @@ def post_report_new(database: Database):
     return result
 
 
-@bottle.post("/api/v3/report/<report_uuid>/copy", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/internal/report/<report_uuid>/copy", permissions_required=[EDIT_REPORT_PERMISSION])
 @with_report
 def post_report_copy(database: Database, report: Report, report_uuid: ReportId):
     """Copy a report."""
@@ -133,6 +133,7 @@ def post_report_copy(database: Database, report: Report, report_uuid: ReportId):
     return result
 
 
+@bottle.get("/api/internal/report/<report_uuid>/pdf", authentication_required=False)
 @bottle.get("/api/v3/report/<report_uuid>/pdf", authentication_required=False)
 def export_report_as_pdf(report_uuid: ReportId):
     """Download the report as PDF."""
@@ -156,7 +157,7 @@ def export_report_as_json(database: Database, report: Report):
     return report
 
 
-@bottle.delete("/api/v3/report/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.delete("/api/internal/report/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 @with_report
 def delete_report(database: Database, report: Report, report_uuid: ReportId):
     """Delete a report."""
@@ -165,7 +166,9 @@ def delete_report(database: Database, report: Report, report_uuid: ReportId):
     return insert_new_report(database, delta_description, [report_uuid], report)
 
 
-@bottle.post("/api/v3/report/<report_uuid>/attribute/<report_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post(
+    "/api/internal/report/<report_uuid>/attribute/<report_attribute>", permissions_required=[EDIT_REPORT_PERMISSION]
+)
 @with_report
 def post_report_attribute(database: Database, report: Report, report_uuid: ReportId, report_attribute: str):
     """Set a report attribute."""
@@ -180,7 +183,7 @@ def post_report_attribute(database: Database, report: Report, report_uuid: Repor
 
 
 @bottle.post(
-    "/api/v3/report/<report_uuid>/issue_tracker/<tracker_attribute>",
+    "/api/internal/report/<report_uuid>/issue_tracker/<tracker_attribute>",
     permissions_required=[EDIT_REPORT_PERMISSION],
 )
 @with_report
@@ -219,7 +222,7 @@ def post_report_issue_tracker_attribute(
     return result
 
 
-@bottle.get("/api/v3/report/<report_uuid>/issue_tracker/suggestions/<query>", authentication_required=True)
+@bottle.get("/api/internal/report/<report_uuid>/issue_tracker/suggestions/<query>", authentication_required=True)
 @with_report(pass_report_uuid=False)
 def get_report_issue_tracker_suggestions(database: Database, report: Report, query: str):  # noqa: ARG001
     """Get suggestions for issue ids from the issue tracker using the query string."""
@@ -227,7 +230,7 @@ def get_report_issue_tracker_suggestions(database: Database, report: Report, que
     return {"ok": True, "suggestions": [issue.as_dict() for issue in issue_tracker.get_suggestions(query)]}
 
 
-@bottle.get("/api/v3/report/<report_uuid>/issue_tracker/options", authentication_required=False)
+@bottle.get("/api/internal/report/<report_uuid>/issue_tracker/options", authentication_required=False)
 @with_report(pass_report_uuid=False)
 def get_report_issue_tracker_options(database: Database, report: Report):  # noqa: ARG001
     """Get options for the issue tracker attributes such as project key and issue type."""

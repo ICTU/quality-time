@@ -75,7 +75,7 @@ ci/pip-install.sh
 python src/quality_time_server.py
 ```
 
-The API of the API-server is served at [http://localhost:5001](http://localhost:5001), e.g. access [http://localhost:5001/api/v3/report](http://localhost:5001/api/v3/report) to get the available reports combined with their recent measurements.
+The API of the API-server is served at [http://localhost:5001](http://localhost:5001), e.g. access [http://localhost:5001/api/internal/report](http://localhost:5001/api/internal/report) to get the available reports combined with their recent measurements.
 
 ```{note}
 If you're new to Python virtual environments, note that:
@@ -233,7 +233,7 @@ To add a new source you need to make three changes to the data model:
 
 1. Add a specification of the source to the data model. See the documentation of the [shared data model](software.md#shared-data-model) component for a description of the data model and the different source fields.
 2. Update the `source_type` parameter of the `quality_time` source in the data model. You need to add the human readable name of the new source to the `values` list of the `source_type` parameter and you need to add a key-value pair to the `api_values` mapping of the `source_type` parameter, where the key is the human readable name of the source and the value is the metric source key (`cloc` in the example below).
-3. Add a small PNG file of the logo in [`components/shared_code/src/shared_data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared_data_model/logos). Make sure the filename of the logo is `<source_type>.png`. The frontend will use the `api/v3/logo/<source_type>` endpoint to retrieve the logo.
+3. Add a small PNG file of the logo in [`components/shared_code/src/shared_data_model/logos`](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared_data_model/logos). Make sure the filename of the logo is `<source_type>.png`. The frontend will use the `api/internal/logo/<source_type>` endpoint to retrieve the logo.
 
 Be sure to run the unit tests of the shared data model component after adding a source to the data model, to check the integrity of the data model. If you forget to do step 2 above, one of the tests will fail.
 

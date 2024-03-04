@@ -19,7 +19,7 @@ def find_user(database: Database) -> User | None:
     return get_user(database, username)
 
 
-@bottle.get("/api/v3/settings", authentication_required=True)
+@bottle.get("/api/internal/settings", authentication_required=True)
 def get_settings(database: Database) -> dict:
     """Retrieve settings for user."""
     user = find_user(database)
@@ -27,7 +27,7 @@ def get_settings(database: Database) -> dict:
     return {"settings": user.settings}  # type: ignore[union-attr]
 
 
-@bottle.put("/api/v3/settings", authentication_required=True)
+@bottle.put("/api/internal/settings", authentication_required=True)
 def update_settings(database: Database) -> dict[str, bool]:
     """Update the settings for the logged-in user."""
     new_settings = dict(bottle.request.json)

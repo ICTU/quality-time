@@ -21,7 +21,7 @@ from utils.type import EditScope
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
-@bottle.post("/api/v3/source/new/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/internal/source/new/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_source_new(metric_uuid: MetricId, database: Database):
     """Add a new source."""
     all_reports = latest_reports(database)
@@ -40,9 +40,9 @@ def post_source_new(metric_uuid: MetricId, database: Database):
     return result
 
 
-@bottle.post("/api/v3/source/<source_uuid>/copy/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/internal/source/<source_uuid>/copy/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Database):
-    """Add a copy of the source to the metric (new in v3)."""
+    """Add a copy of the source to the metric."""
     all_reports = latest_reports(database)
     reports = latest_report_for_uuids(all_reports, source_uuid, metric_uuid)
     source, source_metric, source_subject = reports[0].instance_and_parents_for_uuid(source_uuid=source_uuid)
@@ -61,7 +61,9 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
     return result
 
 
-@bottle.post("/api/v3/source/<source_uuid>/move/<target_metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post(
+    "/api/internal/source/<source_uuid>/move/<target_metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION]
+)
 def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, database: Database):
     """Move the source to another metric."""
     all_reports = latest_reports(database)
@@ -96,7 +98,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
     return insert_new_report(database, delta_description, uuids, *reports_to_insert)
 
 
-@bottle.delete("/api/v3/source/<source_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.delete("/api/internal/source/<source_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
 def delete_source(source_uuid: SourceId, database: Database):
     """Delete a source."""
     reports = latest_reports(database)
@@ -111,7 +113,9 @@ def delete_source(source_uuid: SourceId, database: Database):
     return insert_new_report(database, delta_description, uuids, report)
 
 
-@bottle.post("/api/v3/source/<source_uuid>/attribute/<source_attribute>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post(
+    "/api/internal/source/<source_uuid>/attribute/<source_attribute>", permissions_required=[EDIT_REPORT_PERMISSION]
+)
 def post_source_attribute(source_uuid: SourceId, source_attribute: str, database: Database):
     """Set a source attribute."""
     reports = latest_reports(database)
@@ -137,7 +141,9 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
     return insert_new_report(database, delta_description, uuids, report)
 
 
-@bottle.post("/api/v3/source/<source_uuid>/parameter/<parameter_key>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post(
+    "/api/internal/source/<source_uuid>/parameter/<parameter_key>", permissions_required=[EDIT_REPORT_PERMISSION]
+)
 def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
     reports = latest_reports(database)
