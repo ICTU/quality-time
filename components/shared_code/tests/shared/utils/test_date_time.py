@@ -17,4 +17,4 @@ class NowTest(unittest.TestCase):
 
     def test_now_equals_datetime_now(self):
         """Test that now is equal to datetime.now() with the local timezone."""
-        self.assertTrue(now() - datetime.now(tz=tzlocal()) < timedelta(seconds=1))
+        self.assertLess(now() - datetime.now(tz=tzlocal()), timedelta(seconds=1))

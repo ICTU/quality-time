@@ -6,7 +6,6 @@ import logging
 import unittest
 from collections.abc import Callable
 from unittest.mock import Mock
-from typing import TypeVar
 
 from shared_data_model import DATA_MODEL_JSON
 
@@ -41,14 +40,11 @@ class DataModelTestCase(DatabaseTestCase):
         return data_model
 
 
-ReturnType = TypeVar("ReturnType")
-
-
-def disable_logging(func: Callable[..., ReturnType]):
+def disable_logging[ReturnType](func: Callable[..., ReturnType]):  # type: ignore[name-defined]  # mypy does not yet support PEP 695, Type Parameter Syntax. See https://github.com/python/mypy/issues/15238
     """Temporarily disable logging."""
 
     @functools.wraps(func)
-    def wrapper_decorator(*args, **kwargs) -> ReturnType:
+    def wrapper_decorator(*args, **kwargs) -> ReturnType:  # type: ignore[name-defined]
         """Disable logging before calling func and reenable it afterwards."""
         logging.disable(logging.CRITICAL)
         result = func(*args, **kwargs)

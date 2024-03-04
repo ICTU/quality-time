@@ -96,7 +96,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_missing_sources(self):
         """Test missing sources."""
-        self.assertEqual(None, await self.collect({}))
+        self.assertIsNone(await self.collect({}))
 
     async def test_no_test_report(self):
         """Test missing test report."""

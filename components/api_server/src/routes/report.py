@@ -3,7 +3,7 @@
 from collections.abc import Callable
 from functools import partial, wraps
 from http import HTTPStatus
-from typing import TypeVar, cast
+from typing import cast
 
 import bottle
 from pymongo.database import Database
@@ -30,11 +30,8 @@ from .pdf import export_as_pdf
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
-ReturnType = TypeVar("ReturnType")
-
-
-def with_report(
-    route: Callable[..., ReturnType] | None = None,
+def with_report[ReturnType](
+    route: Callable[..., ReturnType] | None = None,  # type: ignore[name-defined]  # mypy does not yet support PEP 695, Type Parameter Syntax. See https://github.com/python/mypy/issues/15238
     pass_report_uuid: bool = True,
 ):
     """Return a decorator to fetch a report from the database and pass it to the route, or bail if it can't be found."""
@@ -42,7 +39,7 @@ def with_report(
         return partial(with_report, pass_report_uuid=pass_report_uuid)
 
     @wraps(route)
-    def wrapper(database: Database, report_uuid: ReportId, *args, **kwargs) -> ReturnType | dict[str, str | bool]:
+    def wrapper(database: Database, report_uuid: ReportId, *args, **kwargs) -> ReturnType | dict[str, str | bool]:  # type: ignore[name-defined]
         report = latest_report(database, report_uuid)
         if report is None:
             bottle.response.status = HTTPStatus.NOT_FOUND
