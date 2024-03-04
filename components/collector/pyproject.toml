@@ -8,7 +8,7 @@ dependencies = [
     "defusedxml==0.7.1",
     "packaging==23.2",
     "pymongo==4.6.2",
-    "python-dateutil==2.8.2",
+    "python-dateutil==2.9.0.post0",
 ]
 
 [project.optional-dependencies]
