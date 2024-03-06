@@ -201,7 +201,10 @@ test("PermLinkButton shows success message if in a secure context", async () => 
 
 test("PermLinkButton shows error message if in a secure context", async () => {
     toast.showMessage = jest.fn();
-    Object.assign(navigator, { clipboard: { writeText: jest.fn().mockImplementation(() => Promise.reject()) } });
+    Object.assign(
+        navigator,
+        { clipboard: { writeText: jest.fn().mockImplementation(() => Promise.reject(new Error("fail"))) } }
+    );
     render(<PermLinkButton url="https://example.org" />)
     await act(async () => { fireEvent.click(screen.getByText(/example.org/)) })
     expect(toast.showMessage).toHaveBeenCalledWith("error", "Failed to copy URL to clipboard")

@@ -19,7 +19,7 @@ it('is can be in error mode', () => {
 
 it('does not propagate a click event', () => {
     const eventHandler = jest.fn()
-    render(<div onClick={() => eventHandler()}><HyperLink url="https://url">Link</HyperLink></div>)
+    render(<button onClick={() => eventHandler()}><HyperLink url="https://url">Link</HyperLink></button>)
     fireEvent.click(screen.getByText(/Link/))
     expect(eventHandler).not.toBeCalled()
 })
