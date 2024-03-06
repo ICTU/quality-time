@@ -33,23 +33,23 @@ export function report_options(reports) {
     return options;
 }
 
-export function source_options(reports, datamodel, current_metric_type, current_metric_uuid) {
-    const metric_sources = datamodel.metrics[current_metric_type].sources;
+export function source_options(reports, dataModel, currentMetricType, currentMetricUuid) {
+    const metricSources = dataModel.metrics[currentMetricType].sources;
     let options = [];
     reports.forEach((report) => {
         Object.values(report.subjects).forEach((subject) => {
-            const subject_name = get_subject_name(subject, datamodel);
-            Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
-                if (metric_uuid === current_metric_uuid) { return }
-                const metric_name = get_metric_name(metric, datamodel);
-                Object.entries(metric.sources).forEach(([source_uuid, source]) => {
-                    if (!metric_sources.includes(source.type)) { return }
-                    const source_name = get_source_name(source, datamodel);
+            const subjectName = get_subject_name(subject, dataModel);
+            Object.entries(subject.metrics).forEach(([metricUuid, metric]) => {
+                if (metricUuid === currentMetricUuid) { return }
+                const metricName = get_metric_name(metric, dataModel);
+                Object.entries(metric.sources).forEach(([sourceUuid, source]) => {
+                    if (!metricSources.includes(source.type)) { return }
+                    const sourceName = get_source_name(source, dataModel);
                     options.push({
-                        content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} source={source_name} />,
-                        key: source_uuid,
-                        text: report.title + subject_name + metric_name + source_name,
-                        value: source_uuid
+                        content: <ItemBreadcrumb report={report.title} subject={subjectName} metric={metricName} source={sourceName} />,
+                        key: sourceUuid,
+                        text: report.title + subjectName + metricName + sourceName,
+                        value: sourceUuid
                     })
                 })
             })
