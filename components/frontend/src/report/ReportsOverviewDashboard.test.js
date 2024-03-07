@@ -1,6 +1,7 @@
 import { fireEvent, render, renderHook, screen } from '@testing-library/react';
 import history from 'history/browser';
 import { useHiddenTagsURLSearchQuery } from '../app_ui_settings';
+import { DataModel } from '../context/DataModel';
 import { mockGetAnimations } from '../dashboard/MockAnimations';
 import { ReportsOverviewDashboard } from './ReportsOverviewDashboard';
 import { createTestableSettings } from '../__fixtures__/fixtures';
@@ -10,13 +11,19 @@ beforeEach(() => {
     history.push("")
 });
 
+const dataModel = {
+    metrics: {
+        metric_type: { default_scale: "count"},
+    }
+};
+
 const report = {
     report_uuid: "report_uuid",
     subjects: {
         subject_uuid: {
-            type: "subject_type", name: "Subject title", metrics: {
-                metric_uuid: { name: "Metric name", type: "metric_type", tags: ["tag"], recent_measurements: [] },
-                another_metric_uuid: { name: "Metric name", type: "metric_type", tags: ["other"], recent_measurements: [] },
+            metrics: {
+                metric_uuid: { type: "metric_type", tags: ["tag"], recent_measurements: [] },
+                another_metric_uuid: { type: "metric_type", tags: ["other"], recent_measurements: [] },
             }
         }
     },
@@ -34,14 +41,16 @@ function renderReportsOverviewDashboard(
     let settings = createTestableSettings()
     if (hiddenTags) { settings.hiddenTags = hiddenTags }
     render(
-        <div id="dashboard">
-            <ReportsOverviewDashboard
-                dates={dates}
-                openReport={openReport}
-                reports={reports}
-                settings={settings}
-            />
-        </div>
+        <DataModel.Provider value={dataModel}>
+            <div id="dashboard">
+                <ReportsOverviewDashboard
+                    dates={dates}
+                    openReport={openReport}
+                    reports={reports}
+                    settings={settings}
+                />
+            </div>
+        </DataModel.Provider>
     )
 }
 

@@ -7,11 +7,11 @@ import { SingleChoiceInput } from '../fields/SingleChoiceInput';
 import { set_metric_attribute } from '../api/metric';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { dropdownOptions, getMetricDirection, getMetricScale, getReportTags, getMetricTags } from '../utils';
+import { dropdownOptions, formatMetricScale, getMetricDirection, getMetricScale, getReportTags, getMetricTags } from '../utils';
 import { LabelWithHelp } from '../widgets/LabelWithHelp';
 import { MetricType } from './MetricType';
 import { Target } from './Target';
-import { metricPropType, metricTypePropType, reportPropType, scalePropType, subjectPropType } from '../sharedPropTypes';
+import { metricPropType, reportPropType, subjectPropType } from '../sharedPropTypes';
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = [];
@@ -29,7 +29,9 @@ function metric_scale_options(metric_scales, datamodel) {
     return scale_options;
 }
 
-function MetricName({ metric, metricType, metric_uuid, reload }) {
+function MetricName({ metric, metric_uuid, reload }) {
+    const dataModel = useContext(DataModel)
+    const metricType = dataModel.metrics[metric.type];
     const labelId = `metric-name-${metric_uuid}`
     return (
         <StringInput
@@ -44,7 +46,6 @@ function MetricName({ metric, metricType, metric_uuid, reload }) {
 }
 MetricName.propTypes = {
     metric: metricPropType,
-    metricType: metricTypePropType,
     metric_uuid: string,
     reload: func,
 }
@@ -71,8 +72,10 @@ Tags.propTypes = {
     report: reportPropType,
 }
 
-function Scale({ metricType, metric_scale, metric_uuid, reload }) {
+function Scale({ metric, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
+    const scale = getMetricScale(metric, dataModel)
+    const metricType = dataModel.metrics[metric.type];
     const scale_options = metric_scale_options(metricType.scales || ["count"], dataModel);
     const labelId = `scale-${metric_uuid}`
     return (
@@ -83,23 +86,24 @@ function Scale({ metricType, metric_scale, metric_uuid, reload }) {
             options={scale_options}
             placeholder={metricType.default_scale || "Count"}
             set_value={(value) => set_metric_attribute(metric_uuid, "scale", value, reload)}
-            value={metric_scale}
+            value={scale}
         />
     )
 }
 Scale.propTypes = {
-    metric_scale: scalePropType,
+    metric: metricPropType,
     metric_uuid: string,
-    metricType: metricTypePropType,
     reload: func,
 }
 
-function Direction({ metric, metric_scale, metric_uuid, metricType, reload }) {
+function Direction({ metric, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
+    const scale = getMetricScale(metric, dataModel)
+    const metricType = dataModel.metrics[metric.type];
     const metricUnitWithoutPercentage = metric.unit || metricType.unit;
-    const metricUnit = `${metric_scale === "percentage" ? "% " : ""}${metricUnitWithoutPercentage}`;
-    const fewer = { count: `Fewer ${metricUnit}`, percentage: `A lower percentage of ${metricUnitWithoutPercentage}`, version_number: "A lower version number" }[metric_scale];
-    const more = { count: `More ${metricUnit}`, percentage: `A higher percentage of ${metricUnitWithoutPercentage}`, version_number: "A higher version number" }[metric_scale];
+    const metricUnit = `${scale === "percentage" ? "% " : ""}${metricUnitWithoutPercentage}`;
+    const fewer = { count: `Fewer ${metricUnit}`, percentage: `A lower percentage of ${metricUnitWithoutPercentage}`, version_number: "A lower version number" }[scale];
+    const more = { count: `More ${metricUnit}`, percentage: `A higher percentage of ${metricUnitWithoutPercentage}`, version_number: "A higher version number" }[scale];
     const metricDirection = getMetricDirection(metric, dataModel) ?? "<"
     const labelId = `direction-${metric_uuid}`
     return (
@@ -117,20 +121,20 @@ function Direction({ metric, metric_scale, metric_uuid, metricType, reload }) {
 }
 Direction.propTypes = {
     metric: metricPropType,
-    metric_scale: scalePropType,
     metric_uuid: string,
-    metricType: metricTypePropType,
     reload: func,
 }
 
-function Unit({ metric, metric_scale, metric_uuid, metricType, reload }) {
+function Unit({ metric, metric_uuid, reload }) {
+    const dataModel = useContext(DataModel)
+    const metricType = dataModel.metrics[metric.type];
     const labelId = `unit-${metric_uuid}`
     return (
         <StringInput
             aria-labelledby={labelId}
             label={<label id={labelId}>Metric unit</label>}
             placeholder={metricType.unit}
-            prefix={metric_scale === "percentage" ? "%" : ""}
+            prefix={formatMetricScale(metric, dataModel)}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             set_value={(value) => set_metric_attribute(metric_uuid, "unit", value, reload)}
             value={metric.unit ?? ""}
@@ -139,9 +143,7 @@ function Unit({ metric, metric_scale, metric_uuid, metricType, reload }) {
 }
 Unit.propTypes = {
     metric: metricPropType,
-    metric_scale: scalePropType,
     metric_uuid: string,
-    metricType: metricTypePropType,
     reload: func,
 }
 
@@ -169,8 +171,7 @@ EvaluateTargets.propTypes = {
 
 export function MetricConfigurationParameters({ metric, metric_uuid, reload, report, subject }) {
     const dataModel = useContext(DataModel)
-    const metricType = dataModel.metrics[metric.type];
-    const metric_scale = getMetricScale(metric, dataModel);
+    const metricScale = getMetricScale(metric, dataModel);
     return (
         <Grid stackable columns={3}>
             <Grid.Row>
@@ -178,22 +179,22 @@ export function MetricConfigurationParameters({ metric, metric_uuid, reload, rep
                     <MetricType subjectType={subject.type} metricType={metric.type} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <MetricName metric={metric} metricType={metricType} metric_uuid={metric_uuid} reload={reload} />
+                    <MetricName metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Tags key={metric.type} metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
+                    <Tags metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column>
-                    <Scale metricType={metricType} metric_scale={metric_scale} metric_uuid={metric_uuid} reload={reload} />
+                    <Scale metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Direction metric={metric} metric_scale={metric_scale} metric_uuid={metric_uuid} metricType={metricType} reload={reload} />
+                    <Direction metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
-                {metric_scale !== "version_number" &&
+                {metricScale !== "version_number" &&
                     <Grid.Column>
-                        <Unit metric={metric} metric_scale={metric_scale} metric_uuid={metric_uuid} metricType={metricType} reload={reload} />
+                        <Unit metric={metric} metric_uuid={metric_uuid} reload={reload} />
                     </Grid.Column>}
             </Grid.Row>
             <Grid.Row>

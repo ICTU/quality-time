@@ -67,8 +67,7 @@ export function get_metric_target(metric) {
 }
 
 export function getMetricUnit(metric, dataModel) {
-    const metricType = dataModel.metrics[metric.type];
-    return formatMetricUnit(metricType, metric)
+    return metric.unit || dataModel.metrics[metric.type].unit || "";
 }
 
 export function getMetricResponseDeadline(metric, report) {
@@ -91,8 +90,8 @@ export function getMetricResponseTimeLeft(metric, report) {
     return deadline === null ? null : deadline.getTime() - now.getTime()
 }
 
-function getMetricResponseOverruns(metric_uuid, metric, measurements) {
-    const scale = metric?.scale ?? "count"
+function getMetricResponseOverruns(metric_uuid, metric, measurements, dataModel) {
+    const scale = getMetricScale(metric, dataModel)
     let previousStatus;
     const consolidatedMeasurements = [];
     const filteredMeasurements = measurements.filter((measurement) => measurement.metric_uuid === metric_uuid)
@@ -108,9 +107,9 @@ function getMetricResponseOverruns(metric_uuid, metric, measurements) {
     return consolidatedMeasurements
 }
 
-export function getMetricResponseOverrun(metric_uuid, metric, report, measurements) {
-    const consolidatedMeasurements = getMetricResponseOverruns(metric_uuid, metric, measurements)
-    const scale = metric?.scale ?? "count"
+export function getMetricResponseOverrun(metric_uuid, metric, report, measurements, dataModel) {
+    const consolidatedMeasurements = getMetricResponseOverruns(metric_uuid, metric, measurements, dataModel)
+    const scale = getMetricScale(metric, dataModel)
     let totalOverrun = 0;  // Amount of time the desired response time was not achieved for this metric
     const overruns = []
     consolidatedMeasurements.forEach((measurement) => {
@@ -142,8 +141,9 @@ function getMetricDesiredResponseTime(report, status) {
     return report?.desired_response_times?.[status] ?? defaultDesiredResponseTimes[status]
 }
 
-export function get_metric_value(metric) {
-    return metric?.latest_measurement?.[metric.scale]?.value ?? '';
+export function getMetricValue(metric, dataModel) {
+    const scale = getMetricScale(metric, dataModel)
+    return metric?.latest_measurement?.[scale]?.value ?? '';
 }
 
 export function get_metric_comment(metric) {
@@ -280,17 +280,14 @@ export function scaled_number(number) {
     return (number / Math.pow(1000, exponent)).toFixed(0) + scale[exponent];
 }
 
-function formatMetricUnit(metricType, metric) {
-    return `${metric.unit || metricType.unit}`;
+export function formatMetricScale(metric, dataModel) {
+    const scale = getMetricScale(metric, dataModel)
+    return scale === "percentage" ? "%" : "";
 }
 
-export function formatMetricScale(metric) {
-    return metric.scale === "percentage" ? "%" : "";
-}
-
-export function formatMetricScaleAndUnit(metricType, metric) {
-    const scale = formatMetricScale(metric);
-    const unit = formatMetricUnit(metricType, metric);
+export function formatMetricScaleAndUnit(metric, dataModel) {
+    const scale = formatMetricScale(metric, dataModel);
+    const unit = getMetricUnit(metric, dataModel);
     const sep = unit ? " " : "";
     return `${scale}${sep}${unit}`;
 }

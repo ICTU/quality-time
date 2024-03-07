@@ -131,7 +131,7 @@ ColoredSegments.propTypes = {
 
 function TargetVisualiser({ metric }) {
     const dataModel = useContext(DataModel);
-    const unit = formatMetricScaleAndUnit(dataModel.metrics[metric.type], metric)
+    const unit = formatMetricScaleAndUnit(metric, dataModel)
     if (metric.evaluate_targets === false) {
         return (
             <ColoredSegments>
@@ -189,7 +189,7 @@ function TargetLabel({ label, metric, position, targetType }) {
     const dataModel = useContext(DataModel);
     const metricType = dataModel.metrics[metric.type];
     const defaultTarget = metricType[targetType];
-    const unit = formatMetricScaleAndUnit(dataModel.metrics[metric.type], metric);
+    const unit = formatMetricScaleAndUnit(metric, dataModel);
     const defaultTargetLabel = defaultTarget === metric[targetType] || defaultTarget === undefined ? '' : ` (default: ${defaultTarget} ${unit})`;
     return (
         <label>{label + defaultTargetLabel} <Popup
@@ -215,7 +215,7 @@ export function Target({ label, labelPosition, metric, metric_uuid, reload, targ
     const metricScale = getMetricScale(metric, dataModel)
     const metricDirectionPrefix = formatMetricDirection(metric, dataModel)
     const targetValue = metric[target_type];
-    const unit = formatMetricScaleAndUnit(dataModel.metrics[metric.type], metric);
+    const unit = formatMetricScaleAndUnit(metric, dataModel);
     const targetLabel = <TargetLabel label={label} metric={metric} position={labelPosition} targetType={target_type} />
     if (metricScale === "version_number") {
         return (

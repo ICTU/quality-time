@@ -33,8 +33,7 @@ function applicableParameters(allParameters, remainingParameters, parameterGroup
 
 export function SourceParameters({ changed_param_keys, metric, reload, report, source, source_uuid }) {
     const dataModel = useContext(DataModel)
-    const metricType = dataModel.metrics[metric.type];
-    const metricUnit = formatMetricScaleAndUnit(metricType, metric);
+    const metricUnit = formatMetricScaleAndUnit(metric, dataModel);
     const allParameters = dataModel.sources[source.type].parameters;
     const parameterLayout = dataModel.sources[source.type].parameter_layout ?? DEFAULT_LAYOUT;
     const groupedParameters = collectGroupedParameters(parameterLayout)

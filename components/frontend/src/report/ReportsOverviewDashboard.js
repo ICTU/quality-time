@@ -1,4 +1,6 @@
+import { useContext } from 'react';
 import { array, func } from 'prop-types';
+import { DataModel } from '../context/DataModel';
 import { CardDashboard } from '../dashboard/CardDashboard';
 import { LegendCard } from '../dashboard/LegendCard';
 import { MetricSummaryCard } from '../dashboard/MetricSummaryCard';
@@ -12,26 +14,26 @@ import {
 } from '../sharedPropTypes';
 import { metricStatusOnDate } from './report_utils';
 
-function summarizeReportOnDate(report, measurements, date, hiddenTags) {
+function summarizeReportOnDate(report, measurements, date, hiddenTags, dataModel) {
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
     Object.values(report.subjects).forEach((subject) => {
         const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
         Object.entries(metrics).forEach(([metric_uuid, metric]) => {
-            const status = metricStatusOnDate(metric_uuid, metric, measurements, date)
+            const status = metricStatusOnDate(metric_uuid, metric, measurements, date, dataModel)
             summary[STATUS_COLORS[status]] += 1
         })
     })
     return summary
 }
 
-function summarizeReportsOnDate(reports, measurements, date, tag, hiddenTags) {
+function summarizeReportsOnDate(reports, measurements, date, tag, hiddenTags, dataModel) {
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
     reports.forEach((report) => {
         Object.values(report.subjects).forEach(subject => {
             const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
             Object.entries(metrics).forEach(([metric_uuid, metric]) => {
                 if (getMetricTags(metric).indexOf(tag) >= 0) {
-                    const status = metricStatusOnDate(metric_uuid, metric, measurements, date)
+                    const status = metricStatusOnDate(metric_uuid, metric, measurements, date, dataModel)
                     summary[STATUS_COLORS[status]] += 1
                 }
             })
@@ -52,13 +54,14 @@ export function ReportsOverviewDashboard(
         settings
     }
 ) {
+    const dataModel = useContext(DataModel);
     let nrMetrics = 0
     const reportSummary = {}
     reports.forEach((report) => {
         nrMetrics = Math.max(nrMetrics, nrMetricsInReport(report))
         reportSummary[report.report_uuid] = {}
         dates.forEach((date) => {
-            reportSummary[report.report_uuid][date] = summarizeReportOnDate(report, measurements, date, settings.hiddenTags.value)
+            reportSummary[report.report_uuid][date] = summarizeReportOnDate(report, measurements, date, settings.hiddenTags.value, dataModel)
         })
     })
     const tagSummary = {}
@@ -66,7 +69,7 @@ export function ReportsOverviewDashboard(
     tags.forEach((tag) => {
         tagSummary[tag] = {}
         dates.forEach((date) => {
-            tagSummary[tag][date] = summarizeReportsOnDate(reports, measurements, date, tag, settings.hiddenTags.value)
+            tagSummary[tag][date] = summarizeReportsOnDate(reports, measurements, date, tag, settings.hiddenTags.value, dataModel)
             nrMetrics = Math.max(nrMetrics, sum(tagSummary[tag][date]))
         })
     })

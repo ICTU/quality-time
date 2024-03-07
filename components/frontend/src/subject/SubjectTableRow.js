@@ -73,7 +73,7 @@ function deltaDescription(dataModel, metric, scale, delta, improved, oldValue, n
     }
     description += ` from ${oldValue} to ${newValue}`
     if (scale !== "version_number") {
-        const unit = formatMetricScaleAndUnit(dataModel.metrics[metric.type], metric)
+        const unit = formatMetricScaleAndUnit(metric, dataModel)
         description += `${unit} by ${delta}${unit}`
     }
     return description
@@ -158,7 +158,7 @@ function MeasurementCells({ dates, metric, metric_uuid, measurements, settings }
                 />
             )
         }
-        cells.push(<Table.Cell className={status} key={date} textAlign="right">{metricValue}{formatMetricScale(metric)}</Table.Cell>)
+        cells.push(<Table.Cell className={status} key={date} textAlign="right">{metricValue}{formatMetricScale(metric, dataModel)}</Table.Cell>)
         previousValue = metricValue === "?" ? previousValue : metricValue;
     })
     return cells
