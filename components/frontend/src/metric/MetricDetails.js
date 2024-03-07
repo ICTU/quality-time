@@ -11,7 +11,7 @@ import { FocusableTab } from '../widgets/FocusableTab';
 import { DeleteButton, ReorderButtonGroup } from '../widgets/Button';
 import { delete_metric, set_metric_attribute } from '../api/metric';
 import { get_metric_measurements } from '../api/measurement';
-import { get_source_name } from '../utils';
+import { getMetricScale, get_source_name } from '../utils';
 import { ChangeLog } from '../changelog/ChangeLog';
 import { Share } from '../share/Share';
 import { MetricConfigurationParameters } from './MetricConfigurationParameters';
@@ -126,7 +126,7 @@ export function MetricDetails({
         }
     );
     if (measurements.length > 0) {
-        if (metric.scale !== "version_number") {
+        if (getMetricScale(metric, dataModel) !== "version_number") {
             panes.push(
                 {
                     menuItem: <Menu.Item key='trend_graph'><Icon name="line graph" /><FocusableTab>{'Trend graph'}</FocusableTab></Menu.Item>,

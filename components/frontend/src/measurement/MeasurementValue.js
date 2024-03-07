@@ -1,13 +1,16 @@
+import { useContext } from 'react';
 import { Message } from 'semantic-ui-react';
 import { Label, Popup } from "../semantic_ui_react_wrappers";
+import { DataModel } from '../context/DataModel';
 import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
-import { get_metric_value, MILLISECONDS_PER_HOUR } from '../utils';
+import { getMetricScale, getMetricValue, MILLISECONDS_PER_HOUR } from '../utils';
 import { datePropType, metricPropType } from '../sharedPropTypes';
 
 export function MeasurementValue({ metric, reportDate }) {
-    const metricValue = get_metric_value(metric)
+    const dataModel = useContext(DataModel);
+    const metricValue = getMetricValue(metric, dataModel)
     let value = metricValue || "?";
-    if (metric.scale === "percentage") { value += "%" }
+    if (getMetricScale(metric, dataModel) === "percentage") { value += "%" }
     if (metric.latest_measurement) {
         const end = new Date(metric.latest_measurement.end)
         const now = reportDate ?? new Date()

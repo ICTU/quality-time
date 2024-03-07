@@ -2,11 +2,12 @@ import { useContext } from 'react';
 import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme } from 'victory';
 import { DarkMode } from "../context/DarkMode";
 import { DataModel } from "../context/DataModel";
-import { capitalize, formatMetricScaleAndUnit, get_metric_name, nice_number, scaled_number } from '../utils';
+import { capitalize, formatMetricScaleAndUnit, get_metric_name, getMetricScale, nice_number, scaled_number } from '../utils';
 import { measurementsPropType, metricPropType } from '../sharedPropTypes';
 
-function measurementAttributeAsNumber(metric, measurement, field) {
-    const value = measurement[metric.scale]?.[field] ?? null;
+function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
+    const scale = getMetricScale(metric, dataModel)
+    const value = measurement[scale]?.[field] ?? null;
     return value !== null ? Number(value) : null;
 }
 
@@ -14,9 +15,8 @@ export function TrendGraph({ metric, measurements }) {
     const dataModel = useContext(DataModel)
     const darkMode = useContext(DarkMode)
     const metricName = get_metric_name(metric, dataModel);
-    const metricType = dataModel.metrics[metric.type];
-    const unit = capitalize(formatMetricScaleAndUnit(metricType, metric));
-    const measurementValues = measurements.map((measurement) => measurementAttributeAsNumber(metric, measurement, "value"));
+    const unit = capitalize(formatMetricScaleAndUnit(metric, dataModel));
+    const measurementValues = measurements.map((measurement) => measurementAttributeAsNumber(metric, measurement, "value", dataModel));
     let max_y = nice_number(Math.max(...measurementValues));
     let measurementPoints = [];  // The measurement values as (x, y) coordinates
     let previousX2 = new Date("2000-01-01");

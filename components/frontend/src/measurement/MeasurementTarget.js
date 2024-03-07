@@ -5,7 +5,7 @@ import { formatMetricDirection, formatMetricScale, formatMetricScaleAndUnit, get
 import { metricPropType } from '../sharedPropTypes'
 
 function popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel) {
-    const unit = formatMetricScaleAndUnit(dataModel.metrics[metric.type], metric)
+    const unit = formatMetricScaleAndUnit(metric, dataModel)
     const metricDirection = formatMetricDirection(metric, dataModel)
     let debtEndDateText = ""
     let endDate;
@@ -33,7 +33,7 @@ export function MeasurementTarget({ metric }) {
     const dataModel = useContext(DataModel)
     if (metric?.evaluate_targets === false) { return null }
     const metricDirection = formatMetricDirection(metric, dataModel)
-    const target = `${metricDirection} ${get_metric_target(metric)}${formatMetricScale(metric)}`
+    const target = `${metricDirection} ${get_metric_target(metric)}${formatMetricScale(metric, dataModel)}`
     if (!metric.accept_debt) {
         return <>{target}</>
     }

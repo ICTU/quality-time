@@ -11,21 +11,21 @@ import { set_report_attribute } from '../api/report';
 import { getReportTags, getMetricTags, nrMetricsInReport, get_subject_name, STATUS_COLORS, visibleMetrics } from '../utils';
 import { metricStatusOnDate } from './report_utils';
 
-function summarizeMetricsOnDate(metrics, measurements, date) {
+function summarizeMetricsOnDate(metrics, measurements, date, dataModel) {
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
     Object.entries(metrics).forEach(([metric_uuid, metric]) => {
-        const status = metricStatusOnDate(metric_uuid, metric, measurements, date);
+        const status = metricStatusOnDate(metric_uuid, metric, measurements, date, dataModel);
         summary[STATUS_COLORS[status]] += 1
     })
     return summary
 }
 
-function summarizeTagOnDate(report, measurements, tag, date) {
+function summarizeTagOnDate(report, measurements, tag, date, dataModel) {
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
     Object.values(report.subjects).forEach(subject => {
         Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
             if (getMetricTags(metric).indexOf(tag) >= 0) {
-                const status = metricStatusOnDate(metric_uuid, metric, measurements, date);
+                const status = metricStatusOnDate(metric_uuid, metric, measurements, date, dataModel);
                 summary[STATUS_COLORS[status]] += 1
             }
         })
@@ -53,7 +53,7 @@ export function ReportDashboard(
             if (Object.keys(metrics).length > 0) {
                 const summary = {}
                 dates.forEach((date) => {
-                    summary[date] = summarizeMetricsOnDate(metrics, measurements, date)
+                    summary[date] = summarizeMetricsOnDate(metrics, measurements, date, dataModel)
                 })
                 subjectCards.push(
                     <MetricSummaryCard
@@ -73,7 +73,7 @@ export function ReportDashboard(
         tagCards = getReportTags(report, settings.hiddenTags.value).map((tag) => {
             const summary = {}
             dates.forEach((date) => {
-                summary[date] = summarizeTagOnDate(report, measurements, tag, date)
+                summary[date] = summarizeTagOnDate(report, measurements, tag, date, dataModel)
             })
             return (
                 <MetricSummaryCard

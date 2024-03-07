@@ -1,5 +1,7 @@
+import { useContext } from 'react';
 import { Header, Popup, Table } from '../semantic_ui_react_wrappers';
 import { string } from 'prop-types';
+import { DataModel } from '../context/DataModel';
 import { StatusIcon } from './StatusIcon';
 import { getMetricResponseOverrun, pluralize } from '../utils';
 import { datesPropType, measurementsPropType, metricPropType, reportPropType } from '../sharedPropTypes';
@@ -9,7 +11,8 @@ function formatDays(days) {
 }
 
 export function Overrun({ metric_uuid, metric, report, measurements, dates }) {
-    const { totalOverrun, overruns } = getMetricResponseOverrun(metric_uuid, metric, report, measurements);
+    const dataModel = useContext(DataModel)
+    const { totalOverrun, overruns } = getMetricResponseOverrun(metric_uuid, metric, report, measurements, dataModel);
     if (totalOverrun === 0) { return null }
     const triggerText = formatDays(totalOverrun)
     let trigger = <span>{triggerText}</span>

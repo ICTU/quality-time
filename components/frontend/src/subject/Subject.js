@@ -20,7 +20,7 @@ import {
     getMetricResponseOverrun,
     getMetricResponseTimeLeft,
     getMetricUnit,
-    get_metric_value,
+    getMetricValue,
     get_source_name,
     sortWithLocaleCompare,
     visibleMetrics
@@ -39,8 +39,8 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_name.localeCompare(m2_name)
         },
         measurement: (m1, m2) => {
-            const m1_measurement = get_metric_value(m1[1]);
-            const m2_measurement = get_metric_value(m2[1]);
+            const m1_measurement = getMetricValue(m1[1], datamodel);
+            const m2_measurement = getMetricValue(m2[1], datamodel);
             return m1_measurement.localeCompare(m2_measurement, undefined, { numeric: true })
         },
         target: (m1, m2) => {
@@ -86,8 +86,8 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_time_left - m2_time_left
         },
         overrun: (m1, m2) => {
-            const m1_overrun = getMetricResponseOverrun(m1[0], m1[1], report, measurements);
-            const m2_overrun = getMetricResponseOverrun(m2[0], m2[1], report, measurements);
+            const m1_overrun = getMetricResponseOverrun(m1[0], m1[1], report, measurements, datamodel);
+            const m2_overrun = getMetricResponseOverrun(m2[0], m2[1], report, measurements, datamodel);
             return m1_overrun.totalOverrun - m2_overrun.totalOverrun;
         }
     }

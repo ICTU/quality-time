@@ -21,6 +21,18 @@ import {
 
 let matchMediaMatches
 
+const dataModel = {
+    metrics: {
+        metric_type: {
+            default_scale: "count",
+        }
+    }
+}
+
+const metric = {
+    type: "metric_type",
+}
+
 beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
         value: jest.fn().mockImplementation(_query => ({
@@ -146,18 +158,19 @@ it("returns false when the user prefers light mode", () => {
 })
 
 it("returns the metric response overrun when there are no measurements", () => {
-    expect(getMetricResponseOverrun("uuid", {}, {}, [])).toStrictEqual({"overruns": [], "totalOverrun": 0})
+    expect(getMetricResponseOverrun("uuid", metric, {}, [], dataModel)).toStrictEqual({"overruns": [], "totalOverrun": 0})
 })
 
 it("returns the metric response overrun when there is no overrun", () => {
-    expect(getMetricResponseOverrun("uuid", {}, {}, [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-04"}])).toStrictEqual(
+    const measurements = [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-04"}]
+    expect(getMetricResponseOverrun("uuid", metric, {}, measurements, dataModel)).toStrictEqual(
         {"overruns": [], "totalOverrun": 0}
     )
 })
 
 it("returns the metric response overrun when there is one long measurement", () => {
     const measurements = [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31"}]
-    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual(
+    expect(getMetricResponseOverrun("uuid", metric, {}, measurements, dataModel)).toStrictEqual(
         {
             "overruns": [
                 {
@@ -177,7 +190,7 @@ it("returns the metric response overrun when there is one long measurement", () 
 it("returns the metric response overrun when there is one long measurement and the report has desired response times", () => {
     const report = {"desired_response_times": {"unknown": 10}}
     const measurements = [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31"}]
-    expect(getMetricResponseOverrun("uuid", {}, report, measurements)).toStrictEqual(
+    expect(getMetricResponseOverrun("uuid", metric, report, measurements, dataModel)).toStrictEqual(
         {
             "overruns": [
                 {
@@ -196,12 +209,12 @@ it("returns the metric response overrun when there is one long measurement and t
 
 it("returns the metric response overrun when the metric status is target met", () => {
     const measurements = [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31", "count": {"status": "target_met"}}]
-    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual({"overruns": [], "totalOverrun": 0})
+    expect(getMetricResponseOverrun("uuid", metric, {}, measurements, dataModel)).toStrictEqual({"overruns": [], "totalOverrun": 0})
 })
 
 it("returns the metric response overrun when the metric status is target not met", () => {
     const measurements = [{metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31", "count": {"status": "target_not_met"}}]
-    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual(
+    expect(getMetricResponseOverrun("uuid", metric, {}, measurements, dataModel)).toStrictEqual(
         {
             "overruns": [
                 {
@@ -223,7 +236,7 @@ it("returns the metric response overrun when there are two consecutive measureme
         {metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-03"},
         {metric_uuid: "uuid", start: "2000-01-03", end: "2000-01-05"}
     ]
-    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual(
+    expect(getMetricResponseOverrun("uuid", metric, {}, measurements, dataModel)).toStrictEqual(
         {
             "overruns": [
                 {
@@ -245,7 +258,7 @@ it("returns the metric response overrun when there are two measurements with dif
         {metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-03"},
         {metric_uuid: "uuid", start: "2000-01-03", end: "2000-01-05", count: {status: "target_met"}}
     ]
-    expect(getMetricResponseOverrun("uuid", {}, {}, measurements)).toStrictEqual({"overruns": [], "totalOverrun": 0})
+    expect(getMetricResponseOverrun("uuid", metric, {}, measurements, dataModel)).toStrictEqual({"overruns": [], "totalOverrun": 0})
 })
 
 it("returns the tags of an empty report", () => {
