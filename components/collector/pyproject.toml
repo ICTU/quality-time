@@ -6,7 +6,7 @@ dependencies = [
     "aiohttp==3.9.3",
     "beautifulsoup4==4.12.3",
     "defusedxml==0.7.1",
-    "packaging==23.2",
+    "packaging==24.0",
     "pymongo==4.6.2",
     "python-dateutil==2.9.0.post0",
 ]
