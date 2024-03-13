@@ -36,7 +36,7 @@ jobs:
             docker_file: Dockerfile
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.2
 
       - name: Build image from Dockerfile
         run: |
