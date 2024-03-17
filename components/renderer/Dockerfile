@@ -1,4 +1,4 @@
-FROM node:21.7.0-alpine3.19
+FROM node:21.7.1-alpine3.19
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
@@ -12,7 +12,7 @@ RUN apk add --no-cache \
     ttf-droid=20200215-r2 \
     ttf-freefont=20120503-r4 \
     ttf-liberation=2.1.5-r2 \
-    chromium=122.0.6261.94-r0 && \
+    chromium=122.0.6261.111-r0 && \
     rm -rf /var/cache/apk/* /tmp/*
 
 RUN update-ms-fonts \
