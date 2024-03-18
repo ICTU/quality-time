@@ -18,4 +18,4 @@ See the *Quality-time* [documentation](https://quality-time.readthedocs.io/en/la
 
 ## Get in touch
 
-Point of contact for this repository is [Frank Niessink](@fniessink).
+Point of contact for this repository is [Frank Niessink](https://github.com/fniessink).
