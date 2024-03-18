@@ -16,7 +16,7 @@
     "react-hash-link": "1.0.2",
     "react-is": "^18.2.0",
     "react-timeago": "^7.2.0",
-    "react-toastify": "^10.0.4",
+    "react-toastify": "^10.0.5",
     "semantic-ui-react": "^2.1.5",
     "use-local-storage-state": "^19.1.0",
     "victory": "^36.9.2"
