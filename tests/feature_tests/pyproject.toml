@@ -2,7 +2,7 @@
 name = "feature_tests"
 version = "5.9.0-rc.1"
 dependencies = [
-    "asserts==0.12.0",
+    "asserts==0.13.0",
     "behave==1.2.6",
     "gevent==24.2.1",
     "pymongo==4.6.2",
@@ -12,7 +12,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "coverage==7.4.3",
+    "coverage==7.4.4",
     "pip==24.0",
     "pipx==1.4.3",
     "pip-tools==7.4.1",  # To add hashes to requirements

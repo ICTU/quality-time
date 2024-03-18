@@ -4,9 +4,9 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes --output-file=requirements/requirements.txt pyproject.toml
 #
-asserts==0.12.0 \
-    --hash=sha256:7009950d1baa3238862ee8410b1fd2842993982e7d8d15fc4b8e1a40f5211469 \
-    --hash=sha256:fbf0143dc12132f043ac8296fce6e0a5ab72dbaa0b7369cdd33868426f2487f9
+asserts==0.13.0 \
+    --hash=sha256:57f365b7bb4dbff640e5e4b1c1ccec6b5e6181cee9b4e42fea15428a86cc9541 \
+    --hash=sha256:b598b12fde1d2c6296cf5a14bfa2c20c42344eaa66779dca113b5960a4288612
     # via feature_tests (pyproject.toml)
 behave==1.2.6 \
     --hash=sha256:b9662327aa53294c1351b0a9c369093ccec1d21026f050c3bd9b3e5cccf81a86 \
@@ -329,6 +329,10 @@ six==1.16.0 \
 sseclient==0.0.27 \
     --hash=sha256:b2fe534dcb33b1d3faad13d60c5a7c718e28f85987f2a034ecf5ec279918c11c
     # via feature_tests (pyproject.toml)
+typing-extensions==4.10.0 \
+    --hash=sha256:69b1a937c3a517342112fb4c6df7e72fc39a38e7891a5730ed4985b5214b5475 \
+    --hash=sha256:b0abd7c89e8fb96f98db18d86106ff1d90ab692004eb746cf6eda2682f91b3cb
+    # via asserts
 urllib3==2.2.1 \
     --hash=sha256:450b20ec296a467077128bff42b73080516e71b56ff59a60a02bef2232c4fa9d \
     --hash=sha256:d0570876c61ab9e520d776c38acbbb5b05a776d3f9ff98a5c8fd5162a444cf19
