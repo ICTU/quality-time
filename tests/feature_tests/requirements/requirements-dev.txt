@@ -8,9 +8,9 @@ argcomplete==3.2.3 \
     --hash=sha256:bf7900329262e481be5a15f56f19736b376df6f82ed27576fa893652c5de6c23 \
     --hash=sha256:c12355e0494c76a2a7b73e3a59b09024ca0ba1e279fb9ed6c1b82d5b74b6a70c
     # via pipx
-asserts==0.12.0 \
-    --hash=sha256:7009950d1baa3238862ee8410b1fd2842993982e7d8d15fc4b8e1a40f5211469 \
-    --hash=sha256:fbf0143dc12132f043ac8296fce6e0a5ab72dbaa0b7369cdd33868426f2487f9
+asserts==0.13.0 \
+    --hash=sha256:57f365b7bb4dbff640e5e4b1c1ccec6b5e6181cee9b4e42fea15428a86cc9541 \
+    --hash=sha256:b598b12fde1d2c6296cf5a14bfa2c20c42344eaa66779dca113b5960a4288612
     # via feature_tests (pyproject.toml)
 behave==1.2.6 \
     --hash=sha256:b9662327aa53294c1351b0a9c369093ccec1d21026f050c3bd9b3e5cccf81a86 \
