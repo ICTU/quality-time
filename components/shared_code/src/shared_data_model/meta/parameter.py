@@ -103,3 +103,26 @@ class Parameter(NamedModel):
     def is_multiple_choice_with_addition(self) -> bool:
         """Return whether the parameter is multiple choice with addition."""
         return bool(self.type == ParameterType.MULTIPLE_CHOICE_WITH_ADDITION)
+
+
+class ParameterGroup(NamedModel):
+    """Group of parameters, used for laying out the source parameters in the source configuration tabs.
+
+    If the list of parameters is empty, all applicable parameters that are not part of another group will be displayed
+    as part of the group without parameters. This means that parameter layouts should have at most one group without
+    explictly listed parameters.
+    """
+
+    parameters: list[str] = Field(default_factory=list)
+
+
+# Define a default parameter layout that works for most sources. It consists of a group of location parameters and
+# a second group without an explicit list of parameters, meaning it contains all the other parameters for the source.
+
+DEFAULT_PARAMETER_LAYOUT = {
+    "location": ParameterGroup(
+        name="Source location and credentials",
+        parameters=["url", "landing_url", "username", "password", "private_token"],
+    ),
+    "filter": ParameterGroup(name="Source filters"),
+}

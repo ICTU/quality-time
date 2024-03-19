@@ -14,11 +14,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is v4.10.0 or older, please read the v5.0.0 deployment notes first.
 
-### Changed
-
-- Make internal endpoints explicitly internal instead of versioned, see the [API-documentation](api.md) for external API endpoints. Closes [#5791](https://github.com/ICTU/quality-time/issues/5791).
-- Change the default user session duration to 120 hours. Closes [#8177](https://github.com/ICTU/quality-time/issues/8177).
-
 ### Fixed
 
 - When measuring the duration of a running pipeline with GitLab as source, an error would be reported. Fixes [#8123](https://github.com/ICTU/quality-time/issues/8123).
@@ -29,6 +24,12 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 - When showing measurements on multiple dates, also show columns with the delta between dates. The delta columns can be turned on and off via the Settings panel. Closes [#7039](https://github.com/ICTU/quality-time/issues/7039).
 - In the dashboard popups, show the percentage next to the number of metrics with a specific status. Closes [#7946](https://github.com/ICTU/quality-time/issues/7946).
 - Make user session duration configurable. See the [deployment instructions](deployment.md#configuring-user-session-duration-optional). Partly realizes [#8177](https://github.com/ICTU/quality-time/issues/8177).
+
+### Changed
+
+- Make internal endpoints explicitly internal instead of versioned, see the [API-documentation](api.md) for external API endpoints. Closes [#5791](https://github.com/ICTU/quality-time/issues/5791).
+- Group source parameters so they are easier to distinguish. Groups are "Source location and credentials", "Source filters", and "Manual source data". Note that not all parameter groups are displayed for each source as the applicability of parameters depends on the combination of metric and source type. Closes [#7489](https://github.com/ICTU/quality-time/issues/7489).
+- Change the default user session duration to 120 hours. Closes [#8177](https://github.com/ICTU/quality-time/issues/8177).
 
 ## v5.8.0 - 2024-02-16
 

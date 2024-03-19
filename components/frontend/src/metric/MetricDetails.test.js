@@ -37,7 +37,19 @@ const report = {
 };
 
 const data_model = {
-    sources: { source_type: { name: "The source", parameters: {}, entities: { violations: { name: "Attribute", attributes: [] } } } },
+    sources: {
+        source_type: {
+            name: "The source",
+            parameters: {},
+            parameter_layout: {
+                "all": {
+                    "name": "All parameters",
+                    "parameters": []
+                }
+            },
+            entities: { violations: { name: "Attribute", attributes: [] } }
+        }
+    },
     metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } },
     subjects: { subject_type: { metrics: ["violations"] } }
 }

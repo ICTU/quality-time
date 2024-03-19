@@ -1,5 +1,6 @@
 """Manual number source."""
 
+from shared_data_model.meta.parameter import ParameterGroup
 from shared_data_model.meta.source import Source
 from shared_data_model.meta.unit import Unit
 from shared_data_model.parameters import IntegerParameter
@@ -56,5 +57,8 @@ source.""",
                 "violations",
             ],
         ),
+    },
+    parameter_layout={
+        "number": ParameterGroup(name="Manual source data"),
     },
 )

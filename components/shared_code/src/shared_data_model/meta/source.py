@@ -6,7 +6,7 @@ from pydantic import Field, HttpUrl, SerializeAsAny, model_validator
 
 from .base import DescribedModel, NamedModel
 from .entity import Entity
-from .parameter import Parameter
+from .parameter import DEFAULT_PARAMETER_LAYOUT, Parameter, ParameterGroup
 
 
 class Configuration(NamedModel):
@@ -23,6 +23,7 @@ class Source(DescribedModel):
     documentation: dict[str, str] | None = None  # Documentation in Markdown format
     configuration: dict[str, Configuration] = {}
     parameters: dict[str, SerializeAsAny[Parameter]]
+    parameter_layout: dict[str, ParameterGroup] = DEFAULT_PARAMETER_LAYOUT
     entities: dict[str, Entity] = {}
     issue_tracker: bool | None = False
 

@@ -2,6 +2,7 @@
 
 from datetime import date
 
+from shared_data_model.meta.parameter import ParameterGroup
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import DateParameter
 
@@ -16,5 +17,8 @@ CALENDAR = Source(
             default_value=date.today().strftime("%Y-%m-%d"),  # noqa: DTZ011
             metrics=["source_up_to_dateness", "time_remaining"],
         ),
+    },
+    parameter_layout={
+        "date": ParameterGroup(name="Manual source data"),
     },
 )

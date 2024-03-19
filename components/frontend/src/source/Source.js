@@ -68,15 +68,17 @@ function Parameters({ changed_fields, config_error, connection_error, metric, pa
                     />
                 </Grid.Column>
             </Grid.Row>
-            <Grid.Row columns={2}>
-                <SourceParameters
-                    changed_param_keys={select_sources_parameter_keys(changed_fields, source_uuid)}
-                    metric={metric}
-                    reload={reload}
-                    report={report}
-                    source={source}
-                    source_uuid={source_uuid}
-                />
+            <Grid.Row columns={1}>
+                <Grid.Column>
+                    <SourceParameters
+                        changed_param_keys={select_sources_parameter_keys(changed_fields, source_uuid)}
+                        metric={metric}
+                        reload={reload}
+                        report={report}
+                        source={source}
+                        source_uuid={source_uuid}
+                    />
+                </Grid.Column>
             </Grid.Row>
             {connection_error && <ErrorMessage title="Connection error" message={connection_error} />}
             {parse_error && <ErrorMessage title="Parse error" message={parse_error} />}
