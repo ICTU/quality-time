@@ -1,51 +1,87 @@
 import { useContext } from 'react';
 import { func, string } from 'prop-types';
 import { Grid } from 'semantic-ui-react';
+import { Header, Segment } from '../semantic_ui_react_wrappers';
 import { DataModel } from '../context/DataModel';
 import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
 import { SourceParameter } from './SourceParameter';
 import { formatMetricScaleAndUnit } from '../utils';
 import { metricPropType, reportPropType, sourcePropType, stringsPropType } from '../sharedPropTypes';
 
-export function SourceParameters({changed_param_keys, metric, reload, report, source, source_uuid}) {
+// Default layout to be used when the user is time traveling to a version of the data model that has no parameter layouts
+const DEFAULT_LAYOUT = {"all": {"name": "Source parameters", "parameters": []}};
+
+function collectGroupedParameters(parameterLayout) {
+    // Grouped parameters are source parameters that are explicitly part of a group
+    let parameters = []
+    Object.values(parameterLayout).forEach((parameterGroup) => {
+        parameters.push(...parameterGroup.parameters)
+    })
+    return parameters
+}
+
+function collectRemainingParameters(allParameters, groupedParameters) {
+    // Remaining parameters are source parameters that are not explicitly part of a group
+    return Object.keys(allParameters).filter((parameterKey) => !groupedParameters.includes(parameterKey))
+}
+
+function applicableParameters(allParameters, remainingParameters, parameterGroup, metric) {
+    // Return the applicable parameters for a parameter group
+    const parameterKeys = parameterGroup.parameters.length > 0 ? parameterGroup.parameters : remainingParameters
+    return parameterKeys.filter((parameterKey) => allParameters[parameterKey]?.metrics?.includes(metric.type))
+}
+
+export function SourceParameters({ changed_param_keys, metric, reload, report, source, source_uuid }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type];
     const metricUnit = formatMetricScaleAndUnit(metricType, metric);
-    const all_parameters = dataModel.sources[source.type].parameters;
-    const parameter_keys = Object.keys(all_parameters).filter((parameter_key) =>
-        all_parameters[parameter_key].metrics.includes(metric.type)
-    );
-    const parameters = parameter_keys.map((parameter_key, index) =>
-    (
-        <Grid.Column key={parameter_key} style={{ paddingTop: '10px' }}>
-            <SourceParameter
-                report={report}
-                source={source}
-                source_uuid={source_uuid}
-                source_type_name={dataModel.sources[source.type].name}
-                parameter_key={parameter_key}
-                parameter_type={all_parameters[parameter_key].type}
-                parameter_name={all_parameters[parameter_key].name}
-                parameter_short_name={all_parameters[parameter_key].short_name}
-                parameter_unit={all_parameters[parameter_key].unit || metricUnit}
-                parameter_min={all_parameters[parameter_key].min_value || null}
-                parameter_max={all_parameters[parameter_key].max_value || null}
-                parameter_value={source.parameters?.[parameter_key] ?
-                    source.parameters[parameter_key] : all_parameters[parameter_key].default_value}
-                parameter_values={all_parameters[parameter_key].values || []}
-                help_url={all_parameters[parameter_key].help_url}
-                help={all_parameters[parameter_key].help}
-                requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                placeholder={all_parameters[parameter_key].placeholder || ""}
-                required={all_parameters[parameter_key].mandatory}
-                warning={changed_param_keys?.indexOf(parameter_key) !== -1}
-                reload={reload}
-                index={index}
-            />
-        </Grid.Column>
-    )
-    );
-    return (<>{parameters}</>)
+    const allParameters = dataModel.sources[source.type].parameters;
+    const parameterLayout = dataModel.sources[source.type].parameter_layout ?? DEFAULT_LAYOUT;
+    const groupedParameters = collectGroupedParameters(parameterLayout)
+    const remainingParameters = collectRemainingParameters(allParameters, groupedParameters)
+    const groups = Object.values(parameterLayout).map((parameterGroup) => {
+        const parameterKeys = applicableParameters(allParameters, remainingParameters, parameterGroup, metric)
+        if (parameterKeys.length === 0) {
+            return null
+        }
+        const parameters = parameterKeys.map((parameterKey, index) => (
+            <div key={parameterKey} style={{ paddingTop: '10px' }}>
+                <SourceParameter
+                    report={report}
+                    source={source}
+                    source_uuid={source_uuid}
+                    source_type_name={dataModel.sources[source.type].name}
+                    parameter_key={parameterKey}
+                    parameter_type={allParameters[parameterKey].type}
+                    parameter_name={allParameters[parameterKey].name}
+                    parameter_short_name={allParameters[parameterKey].short_name}
+                    parameter_unit={allParameters[parameterKey].unit || metricUnit}
+                    parameter_min={allParameters[parameterKey].min_value || null}
+                    parameter_max={allParameters[parameterKey].max_value || null}
+                    parameter_value={source.parameters?.[parameterKey] ?
+                        source.parameters[parameterKey] : allParameters[parameterKey].default_value}
+                    parameter_values={allParameters[parameterKey].values || []}
+                    help_url={allParameters[parameterKey].help_url}
+                    help={allParameters[parameterKey].help}
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    placeholder={allParameters[parameterKey].placeholder || ""}
+                    required={allParameters[parameterKey].mandatory}
+                    warning={changed_param_keys?.indexOf(parameterKey) !== -1}
+                    reload={reload}
+                    index={index}
+                />
+            </div>
+        ));
+        return (
+            <Grid.Column key={parameterGroup.name}>
+                <Segment>
+                    <Header as="h5" color="grey">{parameterGroup.name}</Header>
+                    {parameters}
+                </Segment>
+            </Grid.Column>
+        )
+    })
+    return <Grid><Grid.Row columns={2}>{groups}</Grid.Row></Grid>
 }
 SourceParameters.propTypes = {
     changed_param_keys: stringsPropType,
