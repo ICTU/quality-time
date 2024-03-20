@@ -68,6 +68,7 @@ services:
       - FORWARD_AUTH_HEADER=${FORWARD_AUTH_HEADER:-X-Forwarded-User}
       - RENDERER_HOST=${RENDERER_HOST:-renderer}
       - RENDERER_PORT=${RENDERER_PORT:-9000}
+      - USER_SESSION_DURATION=${USER_SESSION_DURATION:-120}
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
     depends_on:

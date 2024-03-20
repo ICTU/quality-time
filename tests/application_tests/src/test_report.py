@@ -86,7 +86,7 @@ class OpenReportTest(unittest.TestCase):
         self.assertTrue(self.driver.find_element(By.XPATH, '//button[text()="Login"]'))
 
     def test_add_report(self):
-        """Test that a logged in user can add a report."""
+        """Test that a logged-in user can add a report."""
         self.login()
         nr_reports = len(self.driver.find_elements(By.CLASS_NAME, "card"))
         self.driver.find_element(By.CLASS_NAME, "button.primary").click()

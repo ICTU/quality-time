@@ -29,7 +29,8 @@ def create_session(database: Database, user: User) -> datetime:
     database and the session cookie.
     """
     session_id = cast(SessionId, uuid())
-    session_expiration_datetime = datetime.now(UTC) + timedelta(hours=24)
+    session_duration = int(os.getenv("USER_SESSION_DURATION", "120"))
+    session_expiration_datetime = datetime.now(UTC) + timedelta(hours=session_duration)
     sessions.upsert(database, user, session_id, session_expiration_datetime)
     set_session_cookie(session_id, session_expiration_datetime)
     return session_expiration_datetime

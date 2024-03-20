@@ -81,6 +81,16 @@ By default, the server will check for the presence of example reports in the dat
       - LOAD_EXAMPLE_REPORTS=False
 ```
 
+## Configuring user session duration (optional)
+
+By default, the server will log out logged-in users after 120 hours. To change the default user session duration, set the `USER_SESSION_DURATION` environment variable to the desired session duration (in hours):
+
+```yaml
+  api_server:
+    environment:
+      - USER_SESSION_DURATION=48
+```
+
 ## Configuring measurement frequency (optional)
 
 The collector component is responsible for collecting measurement data from sources. It wakes up periodically and gets a list of all metrics from the database. For each metric, the collector gets the measurement data from each of its sources and stores a new measurement in the database.
