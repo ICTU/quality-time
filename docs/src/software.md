@@ -90,6 +90,7 @@ The API-server uses the following environment variables:
 | `LOAD_EXAMPLE_REPORTS`      | `True`                                    | Whether or not to import example reports in the database on start up.                                                                                                                                                                                                       |
 | `FORWARD_AUTH_ENABLED`      | `False`                                   | Whether or not to enable forward authentication.                                                                                                                                                                                                                            |
 | `FORWARD_AUTH_HEADER`       | `X-Forwarded-User`                        | Header to use for getting the username if forward authentication is turned on.                                                                                                                                                                                              |
+| `USER_SESSION_DURATION`     | `120`                                     | Duration of user session in number of hours.                                                                                                                                                                                                                                |
 
 ## Collector
 
@@ -400,8 +401,8 @@ The renderer uses the following environment variables:
 | Name             | Default value | Description                                                                                                      |
 |:-----------------|:--------------|:-----------------------------------------------------------------------------------------------------------------|
 | `PROXY_HOST`     | `www`         | Hostname of the proxy. The renderer uses this to access the reports that need to be exported to PDF.             |
-| `PROXY_PORT`     | `80`          | Port of the proxy. The renderer uses this to access the reports that need to be exported to PDF.                    |
-| `PROXY_PROTOCOL` | `http`        | Protocol of the proxy. The renderer uses this to access the reports that need to be exported to PDF.                 |
+| `PROXY_PORT`     | `80`          | Port of the proxy. The renderer uses this to access the reports that need to be exported to PDF.                 |
+| `PROXY_PROTOCOL` | `http`        | Protocol of the proxy. The renderer uses this to access the reports that need to be exported to PDF.             |
 | `LC_ALL`         |               | Set the date format in the PDF export. For example, to get DD-MM-YYYY use: `en_GB.UTF-8`.                        |
 | `TZ`             |               | Make the PDF export use the correct timezone. For example, to get Central European Time use: `Europe/Amsterdam`. |
 

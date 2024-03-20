@@ -37,6 +37,8 @@ spec:
               value: {{ .Values.ldap.url }}
             - name: LOAD_EXAMPLE_REPORTS
               value: "True"
+            - name: USER_SESSION_DURATION
+              value: "120"
           image: {{ .Values.api_server.image }}
           imagePullPolicy: Always
           name: {{ .Values.api_server.name }}

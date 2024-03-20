@@ -72,7 +72,7 @@ class LoginTests(AuthTestCase):
         self.login_ok = {
             "ok": True,
             "email": self.USER_EMAIL,
-            "session_expiration_datetime": (self.NOW + timedelta(hours=24)).isoformat(),
+            "session_expiration_datetime": (self.NOW + timedelta(hours=120)).isoformat(),
         }
         self.login_nok = {
             "ok": False,
@@ -225,7 +225,7 @@ class LoginTests(AuthTestCase):
         login_ok = {
             "ok": True,
             "email": "some_other@email.com",
-            "session_expiration_datetime": (self.NOW + timedelta(hours=24)).isoformat(),
+            "session_expiration_datetime": (self.NOW + timedelta(hours=120)).isoformat(),
         }
 
         connection_mock.return_value = None

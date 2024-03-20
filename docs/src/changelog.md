@@ -17,12 +17,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Changed
 
 - Make internal endpoints explicitly internal instead of versioned, see the [API-documentation](api.md) for external API endpoints. Closes [#5791](https://github.com/ICTU/quality-time/issues/5791).
-
-## v5.9.0-rc.1 - 2024-02-27
-
-### Deployment notes
-
-If your currently installed *Quality-time* version is v4.10.0 or older, please read the v5.0.0 deployment notes first.
+- Change the default user session duration to 120 hours. Closes [#8177](https://github.com/ICTU/quality-time/issues/8177).
 
 ### Fixed
 
@@ -33,6 +28,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 - If the documentation at Read-the-Docs has specific information on configuring a metric or source, point this out in Quality-time itself. Closes [#4445](https://github.com/ICTU/quality-time/issues/4445).
 - When showing measurements on multiple dates, also show columns with the delta between dates. The delta columns can be turned on and off via the Settings panel. Closes [#7039](https://github.com/ICTU/quality-time/issues/7039).
 - In the dashboard popups, show the percentage next to the number of metrics with a specific status. Closes [#7946](https://github.com/ICTU/quality-time/issues/7946).
+- Make user session duration configurable. See the [deployment instructions](deployment.md#configuring-user-session-duration-optional). Partly realizes [#8177](https://github.com/ICTU/quality-time/issues/8177).
 
 ## v5.8.0 - 2024-02-16
 
