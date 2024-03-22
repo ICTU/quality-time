@@ -29,7 +29,7 @@ export function SourceStatus({ metric, measurement_source }) {
             header = 'Parse error'
         }
         return (
-            <Popup content={content} flowing header={header} hoverable trigger={<Label color='red'>{source_label(true)}</Label>} />
+            <Popup content={content} flowing header={header} hoverable trigger={<span><Label color='red'>{source_label(true)}</Label></span>} />
         )
     } else {
         return source_label()

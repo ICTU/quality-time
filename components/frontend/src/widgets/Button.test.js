@@ -52,7 +52,7 @@ test('AddDropdownButton hides popup when dropdown is shown', async () => {
 test('AddDropdownButton filter one item', async () => {
     const mockCallback = renderAddDropdownButton(6)
     await act(async () => { fireEvent.click(screen.getByText(/Add foo/)) });
-    await userEvent.type(screen.getByPlaceholderText(/Filter/), "Sub 6{Enter}");
+    await act(async() => userEvent.type(screen.getByPlaceholderText(/Filter/), "Sub 6{Enter}"));
     expect(mockCallback).toHaveBeenCalledWith("sub 6")
 });
 
