@@ -219,6 +219,7 @@ export function SubjectTableRow(
                     report_date={reportDate}
                     reports={reports}
                     report={report}
+                    settings={settings}
                     stopFilteringAndSorting={() => {
                         handleSort(null)
                         settings.hiddenTags.reset()

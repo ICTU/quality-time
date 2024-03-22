@@ -243,8 +243,15 @@ nrMetricsInReport.propTypes = {
     reports: reportsPropType
 }
 
-export function getMetricIssueIds(metric) {
-    let issueIds = metric.issue_ids ?? [];
+export function getMetricIssueIds(metric, entityKey) {
+    let issueIds = [];
+    if (entityKey) {
+        issueIds = metric.entity_issue_ids?.[entityKey] ?? [];
+    } else {
+        issueIds = metric.issue_ids ?? [];
+        Object.values(metric?.entity_issue_ids ?? {}).forEach((entityIssueIds) => issueIds.push(...entityIssueIds))
+    }
+    issueIds = [...new Set(issueIds)];
     sortWithLocaleCompare(issueIds);
     return issueIds
 }

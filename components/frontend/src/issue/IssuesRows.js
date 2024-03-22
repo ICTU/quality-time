@@ -11,7 +11,7 @@ import { ErrorMessage } from '../errorMessage';
 import { getMetricIssueIds } from '../utils';
 import { metricPropType, reportPropType } from '../sharedPropTypes';
 
-function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, metric_uuid, target, reload }) {
+function CreateIssueButton({ entityKey, issueTrackerConfigured, issueTrackerInstruction, metric_uuid, target, reload }) {
     return (
         <ActionButton
             action='Create new'
@@ -19,13 +19,14 @@ function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, me
             fluid
             icon='plus'
             itemType='issue'
-            onClick={() => add_metric_issue(metric_uuid, reload)}
+            onClick={() => add_metric_issue(entityKey, metric_uuid, reload)}
             popup={<>Create a new issue for this {target} in the configured issue tracker and add its identifier to the tracked issue identifiers.{issueTrackerInstruction}</>}
             position='top center'
         />
     )
 }
 CreateIssueButton.propTypes = {
+    entityKey: string,
     issueTrackerConfigured: bool,
     issueTrackerInstruction: node,
     metric_uuid: string,
@@ -77,11 +78,12 @@ IssueIdentifiers.propTypes = {
     reload: func
 }
 
-export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
+export function IssuesRows({ entityKey, metric, metric_uuid, reload, report, target }) {
     const parameters = report?.issue_tracker?.parameters;
     const issueTrackerConfigured = Boolean(report?.issue_tracker?.type && parameters?.url && parameters?.project_key && parameters?.issue_type);
     const issueTrackerInstruction = issueTrackerConfigured ? null : <p>Please configure an issue tracker by expanding the report title, selecting the &apos;Issue tracker&apos; tab, and configuring an issue tracker.</p>;
     const issueIdentifiersProps = {
+        entityKey: entityKey,
         issueTrackerInstruction: issueTrackerInstruction,
         metric: metric,
         metric_uuid: metric_uuid,
@@ -103,6 +105,7 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
                         <>
                             <Grid.Column width={3} verticalAlign="bottom">
                                 <CreateIssueButton
+                                    entityKey={entityKey}
                                     issueTrackerConfigured={issueTrackerConfigured}
                                     issueTrackerInstruction={issueTrackerInstruction}
                                     metric_uuid={metric_uuid}
@@ -117,7 +120,7 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
                     }
                 />
             </Grid.Row>
-            {(getMetricIssueIds(metric).length > 0 && !issueTrackerConfigured) &&
+            {(getMetricIssueIds(metric, entityKey).length > 0 && !issueTrackerConfigured) &&
                 <Grid.Row>
                     <Grid.Column width={16}>
                         <ErrorMessage title="No issue tracker configured" message={issueTrackerInstruction} />

@@ -14,9 +14,11 @@ function renderSourceEntityDetails() {
     render(
         <Permissions.Provider value={[EDIT_ENTITY_PERMISSION]}>
             <SourceEntityDetails
+                metric={{}}
                 metric_uuid="metric_uuid"
                 source_uuid="source_uuid"
                 entity={{ key: "key" }}
+                report={{ report_uuid: "report_uuid" }}
                 status="unconfirmed"
                 name="violation"
                 reload={reload}

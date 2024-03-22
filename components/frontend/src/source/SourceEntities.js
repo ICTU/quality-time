@@ -4,7 +4,7 @@ import { Button, Icon, Popup, Table } from '../semantic_ui_react_wrappers';
 import { SourceEntity } from './SourceEntity';
 import { capitalize } from '../utils';
 import { DataModel } from '../context/DataModel';
-import { metricPropType, reportPropType, sourcePropType } from '../sharedPropTypes';
+import { metricPropType, reportPropType, settingsPropType, sourcePropType } from '../sharedPropTypes';
 
 export function alignment(attributeType, attributeAlignment) {
     if (attributeAlignment === "left" || attributeAlignment === "right") {
@@ -26,7 +26,7 @@ alignment.propTypes = {
     attributeAligment: string
 }
 
-export function SourceEntities({ metric, metric_uuid, reload, report, source }) {
+export function SourceEntities({ metric, metric_uuid, reload, report, settings, source }) {
     const dataModel = useContext(DataModel)
     const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false);
     const [sortColumn, setSortColumn] = useState(null);
@@ -81,6 +81,9 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
             >
                 {capitalize(entity_name)} first seen
             </Table.HeaderCell>
+            <Table.HeaderCell>
+                Issues
+            </Table.HeaderCell>
             {entity_attributes.map((entity_attribute) =>
                 <Table.HeaderCell
                     key={entity_attribute.key}
@@ -119,9 +122,11 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
             entity_name={entity_name}
             hide_ignored_entities={hideIgnoredEntities}
             key={entity.key}
+            metric={metric}
             metric_uuid={metric_uuid}
             reload={reload}
             report={report}
+            settings={settings}
             status={source.entity_user_data?.[entity.key]?.status ?? "unconfirmed"}
             status_end_date={source.entity_user_data?.[entity.key]?.status_end_date ?? ""}
             rationale={source.entity_user_data?.[entity.key]?.rationale ?? ""}
@@ -143,5 +148,6 @@ SourceEntities.propTypes = {
     metric_uuid: string,
     reload: func,
     report: reportPropType,
+    settings: settingsPropType,
     source: sourcePropType
 }

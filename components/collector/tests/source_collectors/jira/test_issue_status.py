@@ -84,6 +84,16 @@ class JiraIssuesTest(JiraTestCase):
         response = await self.collect(get_request_json_return_value=issue_status_json)
         self.assert_issue_status(response)
 
+    async def test_entity_issue_status(self):
+        """Test that the issue status is returned for a measurement entity."""
+        self.metric["issue_ids"] = []
+        self.metric["entity_issue_ids"] = {"entity key": ["FOO-42"]}
+        issue_status_json = {
+            "fields": {"status": {"name": self.ISSUE_NAME, "statusCategory": {"key": "new"}}, "created": self.CREATED},
+        }
+        response = await self.collect(get_request_json_return_value=issue_status_json)
+        self.assert_issue_status(response)
+
     async def test_issue_status_doing(self):
         """Test that the issue status is returned."""
         issue_status_json = {

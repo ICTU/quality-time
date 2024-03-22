@@ -100,6 +100,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Added
 
 - Add a metric for tracking todo and fixme comments in source code. Closes [#5630](https://github.com/ICTU/quality-time/issues/5630).
+- Support creating issues for specific measurement entities. Closes [#5955](https://github.com/ICTU/quality-time/issues/5955).
 - Support version 4.0 of the OWASP Dependency Check DTD (OWASP Dependency Check version 9). Closes [#7655](https://github.com/ICTU/quality-time/issues/7655).
 
 ### Changed

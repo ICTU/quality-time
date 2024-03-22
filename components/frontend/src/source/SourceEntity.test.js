@@ -13,7 +13,9 @@ function renderSourceEntity(
                     entity_attributes={[{ key: "attr1" }, { key: "attr2", color: { bad: "warning" } }]}
                     entity_name="entity"
                     hide_ignored_entities={hide_ignored_entities}
+                    metric={{}}
                     rationale={rationale}
+                    report={{report_uuid: "report_uuid"}}
                     status={status}
                     status_end_date={status_end_date}
                 />
