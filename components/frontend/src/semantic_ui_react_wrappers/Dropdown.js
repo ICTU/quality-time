@@ -1,7 +1,7 @@
-import { useContext } from 'react';
-import { Dropdown as SemanticUIDropdown } from 'semantic-ui-react';
-import { DarkMode } from '../context/DarkMode';
-import { addInvertedClassNameWhenInDarkMode } from './dark_mode';
+import { useContext } from "react"
+import { Dropdown as SemanticUIDropdown } from "semantic-ui-react"
+import { DarkMode } from "../context/DarkMode"
+import { addInvertedClassNameWhenInDarkMode } from "./dark_mode"
 
 export function Dropdown(props) {
     return (

@@ -1,6 +1,6 @@
-import { bool, number, oneOfType, string } from 'prop-types';
-import { Form, Label } from '../semantic_ui_react_wrappers';
-import { labelPropType } from '../sharedPropTypes';
+import { bool, number, oneOfType, string } from "prop-types"
+import { Form, Label } from "../semantic_ui_react_wrappers"
+import { labelPropType } from "../sharedPropTypes"
 
 export function ReadOnlyInput({ error, label, placeholder, prefix, required, value, type, unit }) {
     return (

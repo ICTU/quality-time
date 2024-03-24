@@ -1,5 +1,5 @@
-import { Image } from 'semantic-ui-react';
-import { string } from 'prop-types';
+import { Image } from "semantic-ui-react"
+import { string } from "prop-types"
 
 export function Logo({ alt, logo }) {
     return (

@@ -1,12 +1,10 @@
-import { useContext } from 'react';
-import { Table as SemanticUITable } from 'semantic-ui-react';
-import { DarkMode } from '../context/DarkMode';
-import './Table.css';
+import { useContext } from "react"
+import { Table as SemanticUITable } from "semantic-ui-react"
+import { DarkMode } from "../context/DarkMode"
+import "./Table.css"
 
 export function Table(props) {
-    return (
-        <SemanticUITable inverted={useContext(DarkMode)} {...props} />
-    )
+    return <SemanticUITable inverted={useContext(DarkMode)} {...props} />
 }
 
 Table.Body = SemanticUITable.Body

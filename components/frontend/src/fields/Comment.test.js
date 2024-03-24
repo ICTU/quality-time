@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import { Comment } from './Comment';
+import { render, screen } from "@testing-library/react"
+import { Comment } from "./Comment"
 
 it("has the comment label", () => {
     render(<Comment />)

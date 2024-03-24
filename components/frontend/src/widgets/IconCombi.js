@@ -1,5 +1,5 @@
-import { string } from 'prop-types';
-import { Icon } from 'semantic-ui-react';
+import { string } from "prop-types"
+import { Icon } from "semantic-ui-react"
 
 export function IconCombi({ iconBottomRight, iconTopLeft, label }) {
     const style = { textShadow: "0px 0px" }

@@ -1,6 +1,6 @@
-import { array, func, string } from 'prop-types';
-import { Table } from '../semantic_ui_react_wrappers';
-import { SubjectTableRow } from './SubjectTableRow';
+import { array, func, string } from "prop-types"
+import { Table } from "../semantic_ui_react_wrappers"
+import { SubjectTableRow } from "./SubjectTableRow"
 import {
     datesPropType,
     optionalDatePropType,
@@ -8,25 +8,23 @@ import {
     reportsPropType,
     settingsPropType,
     stringsPropType,
-} from '../sharedPropTypes';
+} from "../sharedPropTypes"
 
-export function SubjectTableBody(
-    {
-        changed_fields,
-        dates,
-        handleSort,
-        measurements,
-        metricEntries,
-        reload,
-        report,
-        reportDate,
-        reports,
-        reversedMeasurements,
-        settings,
-        subject_uuid
-    }
-) {
-    const lastIndex = metricEntries.length - 1;
+export function SubjectTableBody({
+    changed_fields,
+    dates,
+    handleSort,
+    measurements,
+    metricEntries,
+    reload,
+    report,
+    reportDate,
+    reports,
+    reversedMeasurements,
+    settings,
+    subject_uuid,
+}) {
+    const lastIndex = metricEntries.length - 1
     return (
         <Table.Body>
             {metricEntries.map(([metric_uuid, metric], index) => {

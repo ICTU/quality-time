@@ -1,15 +1,21 @@
-import { useContext } from "react";
-import { func, string } from 'prop-types';
-import { Table } from "semantic-ui-react";
-import { add_metric, copy_metric, move_metric } from "../api/metric";
-import { DataModel } from "../context/DataModel";
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions";
-import { AddDropdownButton, CopyButton, MoveButton } from "../widgets/Button";
-import { metric_options } from "../widgets/menu_options";
-import { metricTypeOptions } from "../metric/MetricType";
-import { reportsPropType, subjectPropType } from '../sharedPropTypes';
+import { useContext } from "react"
+import { func, string } from "prop-types"
+import { Table } from "semantic-ui-react"
+import { add_metric, copy_metric, move_metric } from "../api/metric"
+import { DataModel } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
+import { AddDropdownButton, CopyButton, MoveButton } from "../widgets/Button"
+import { metric_options } from "../widgets/menu_options"
+import { metricTypeOptions } from "../metric/MetricType"
+import { reportsPropType, subjectPropType } from "../sharedPropTypes"
 
-function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, reports, stopFilteringAndSorting }) {
+function SubjectTableFooterButtonRow({
+    subject,
+    subjectUuid,
+    reload,
+    reports,
+    stopFilteringAndSorting,
+}) {
     const dataModel = useContext(DataModel)
     return (
         <Table.Row>
@@ -19,14 +25,14 @@ function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, reports, st
                     itemSubtypes={metricTypeOptions(dataModel, subject.type)}
                     onClick={(subtype) => {
                         stopFilteringAndSorting()
-                        add_metric(subjectUuid, subtype, reload);
+                        add_metric(subjectUuid, subtype, reload)
                     }}
                 />
                 <CopyButton
                     itemType="metric"
                     onChange={(source_metric_uuid) => {
                         stopFilteringAndSorting()
-                        copy_metric(source_metric_uuid, subjectUuid, reload);
+                        copy_metric(source_metric_uuid, subjectUuid, reload)
                     }}
                     get_options={() => metric_options(reports, dataModel, subject.type)}
                 />
@@ -34,9 +40,11 @@ function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, reports, st
                     itemType="metric"
                     onChange={(source_metric_uuid) => {
                         stopFilteringAndSorting()
-                        move_metric(source_metric_uuid, subjectUuid, reload);
+                        move_metric(source_metric_uuid, subjectUuid, reload)
                     }}
-                    get_options={() => metric_options(reports, dataModel, subject.type, subjectUuid)}
+                    get_options={() =>
+                        metric_options(reports, dataModel, subject.type, subjectUuid)
+                    }
                 />
             </Table.HeaderCell>
         </Table.Row>
@@ -52,10 +60,13 @@ SubjectTableFooterButtonRow.propTypes = {
 
 export function SubjectTableFooter(props) {
     return (
-        <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
-            <Table.Footer>
-                <SubjectTableFooterButtonRow {...props} />
-            </Table.Footer>}
+        <ReadOnlyOrEditable
+            requiredPermissions={[EDIT_REPORT_PERMISSION]}
+            editableComponent={
+                <Table.Footer>
+                    <SubjectTableFooterButtonRow {...props} />
+                </Table.Footer>
+            }
         />
     )
 }

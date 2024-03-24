@@ -1,38 +1,41 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import { SourceEntities } from './SourceEntities';
-import { DataModel } from '../context/DataModel';
-import userEvent from '@testing-library/user-event';
+import { render, screen, waitFor } from "@testing-library/react"
+import { SourceEntities } from "./SourceEntities"
+import { DataModel } from "../context/DataModel"
+import userEvent from "@testing-library/user-event"
 
 const data_model = {
     sources: {
         source_type: {
             entities: {
-                metric_type:
-                {
+                metric_type: {
                     name: "entity name",
                     attributes: [
                         { key: "integer", type: "integer", name: "integer" },
-                        { key: "integer_percentage", type: "integer_percentage", name: "int percentage" },
+                        {
+                            key: "integer_percentage",
+                            type: "integer_percentage",
+                            name: "int percentage",
+                        },
                         { key: "float", type: "float", name: "float" },
                         { key: "text", type: "text", name: "text", help: "help text" },
                         { key: "rightalign", type: "text", name: "rightalign", alignment: "right" },
                         { key: "date", type: "date", name: "date only" },
                         { key: "datetime", type: "datetime", name: "datetime" },
-                        { key: "minutes", type: "minutes", name: "minutes" }
-                    ]
-                }
-            }
-        }
-    }
+                        { key: "minutes", type: "minutes", name: "minutes" },
+                    ],
+                },
+            },
+        },
+    },
 }
 
 const metric = {
     type: "metric_type",
     sources: {
         source_uuid: {
-            type: "source_type"
-        }
-    }
+            type: "source_type",
+        },
+    },
 }
 
 const source = {
@@ -48,7 +51,7 @@ const source = {
             rightalign: "right aligned",
             date: "01-01-2000",
             datetime: "2000-01-01T10:00:00Z",
-            minutes: "1"
+            minutes: "1",
         },
         {
             key: "2",
@@ -60,7 +63,7 @@ const source = {
             rightalign: "right aligned",
             date: "01-01-2002",
             datetime: "2002-01-01T10:00:00Z",
-            minutes: "2"
+            minutes: "2",
         },
         {
             key: "3",
@@ -72,9 +75,9 @@ const source = {
             rightalign: "right aligned",
             date: "01-01-2001",
             datetime: "2001-01-01T10:00:00Z",
-            minutes: "3"
-        }
-    ]
+            minutes: "3",
+        },
+    ],
 }
 
 function assertOrder(expected) {
@@ -88,11 +91,11 @@ function renderSourceEntities() {
     render(
         <DataModel.Provider value={data_model}>
             <SourceEntities metric={metric} report={{ issue_tracker: null }} source={source} />
-        </DataModel.Provider>
+        </DataModel.Provider>,
     )
 }
 
-it('sorts the entities by status', async () => {
+it("sorts the entities by status", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Entity name status/))
@@ -101,7 +104,7 @@ it('sorts the entities by status', async () => {
     assertOrder(["A", "B", "C"])
 })
 
-it('sorts the entities by status end date', async () => {
+it("sorts the entities by status end date", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Status end date/))
@@ -110,7 +113,7 @@ it('sorts the entities by status end date', async () => {
     assertOrder(["A", "B", "C"])
 })
 
-it('sorts the entities by status rationale', async () => {
+it("sorts the entities by status rationale", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Status rationale/))
@@ -119,7 +122,7 @@ it('sorts the entities by status rationale', async () => {
     assertOrder(["A", "B", "C"])
 })
 
-it('sorts the entities by first seen date', async () => {
+it("sorts the entities by first seen date", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/first seen/))
@@ -128,7 +131,7 @@ it('sorts the entities by first seen date', async () => {
     assertOrder(["B", "A", "C"])
 })
 
-it('sorts the entities by integer', async () => {
+it("sorts the entities by integer", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/integer/))
@@ -137,7 +140,7 @@ it('sorts the entities by integer', async () => {
     assertOrder(["B", "A", "C"])
 })
 
-it('sorts the entities by integer percentage', async () => {
+it("sorts the entities by integer percentage", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/int percentage/))
@@ -146,7 +149,7 @@ it('sorts the entities by integer percentage', async () => {
     assertOrder(["B", "A", "C"])
 })
 
-it('sorts the entities by float', async () => {
+it("sorts the entities by float", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/float/))
@@ -155,7 +158,7 @@ it('sorts the entities by float', async () => {
     assertOrder(["C", "B", "A"])
 })
 
-it('sorts the entities by text', async () => {
+it("sorts the entities by text", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/text/))
@@ -164,7 +167,7 @@ it('sorts the entities by text', async () => {
     assertOrder(["C", "B", "A"])
 })
 
-it('sorts the entities by date', async () => {
+it("sorts the entities by date", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/date only/))
@@ -173,7 +176,7 @@ it('sorts the entities by date', async () => {
     assertOrder(["B", "A", "C"])
 })
 
-it('sorts the entities by datetime', async () => {
+it("sorts the entities by datetime", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/datetime/))
@@ -182,7 +185,7 @@ it('sorts the entities by datetime', async () => {
     assertOrder(["B", "A", "C"])
 })
 
-it('sorts the entities by minutes', async () => {
+it("sorts the entities by minutes", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/minutes/))
@@ -191,8 +194,10 @@ it('sorts the entities by minutes', async () => {
     assertOrder(["A", "B", "C"])
 })
 
-it('shows help', async () => {
+it("shows help", async () => {
     renderSourceEntities()
     await userEvent.hover(screen.queryByRole("tooltip", { name: /help/ }))
-    await waitFor(() => { expect(screen.queryByText(/help text/)).not.toBe(null) })
+    await waitFor(() => {
+        expect(screen.queryByText(/help text/)).not.toBe(null)
+    })
 })

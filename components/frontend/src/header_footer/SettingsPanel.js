@@ -1,6 +1,6 @@
-import { bool, func, number, string } from 'prop-types';
-import { Header, Menu, Segment } from 'semantic-ui-react';
-import { Icon } from '../semantic_ui_react_wrappers';
+import { bool, func, number, string } from "prop-types"
+import { Header, Menu, Segment } from "semantic-ui-react"
+import { Icon } from "../semantic_ui_react_wrappers"
 import {
     boolURLSearchQueryPropType,
     hiddenCardsPropType,
@@ -13,18 +13,13 @@ import {
     sortDirectionURLSearchQueryPropType,
     stringURLSearchQueryPropType,
     stringsPropType,
-    stringsURLSearchQueryPropType
-} from '../sharedPropTypes';
-import { capitalize, pluralize } from "../utils";
-import { SettingsMenuItem } from "./SettingsMenuItem";
-import './SettingsPanel.css';
+    stringsURLSearchQueryPropType,
+} from "../sharedPropTypes"
+import { capitalize, pluralize } from "../utils"
+import { SettingsMenuItem } from "./SettingsMenuItem"
+import "./SettingsPanel.css"
 
-export function SettingsPanel({
-    atReportsOverview,
-    handleSort,
-    settings,
-    tags
-}) {
+export function SettingsPanel({ atReportsOverview, handleSort, settings, tags }) {
     const oneDateColumn = settings.nrDates.equals(1)
     const multipleDateColumns = !oneDateColumn
     const menuProps = { compact: true, vertical: true, inverted: true, secondary: true }
@@ -35,7 +30,11 @@ export function SettingsPanel({
     }
     const cardsMenuItemProps = { hiddenCards: settings.hiddenCards }
     const metricMenuItemProps = { metricsToHide: settings.metricsToHide }
-    const sortColumnMenuItemProps = { sortColumn: settings.sortColumn, sortDirection: settings.sortDirection, handleSort: handleSort }
+    const sortColumnMenuItemProps = {
+        sortColumn: settings.sortColumn,
+        sortDirection: settings.sortDirection,
+        handleSort: handleSort,
+    }
     const sortOrderMenuItemProps = {
         disabled: oneDateColumn,
         help: "The date order can only be changed when at least two dates are shown",
@@ -43,20 +42,19 @@ export function SettingsPanel({
     }
     const visibleColumnMenuItemProps = { hiddenColumns: settings.hiddenColumns }
     return (
-        <Segment.Group
-            horizontal
-            className='equal width'
-            style={{ margin: "0px", border: "0px" }}
-        >
+        <Segment.Group horizontal className="equal width" style={{ margin: "0px", border: "0px" }}>
             <Segment inverted color="black">
-                <Header size='small'>Visible cards</Header>
+                <Header size="small">Visible cards</Header>
                 <Menu {...menuProps}>
-                    <VisibleCardsMenuItem cards={atReportsOverview ? "reports" : "subjects"} {...cardsMenuItemProps} />
+                    <VisibleCardsMenuItem
+                        cards={atReportsOverview ? "reports" : "subjects"}
+                        {...cardsMenuItemProps}
+                    />
                     <VisibleCardsMenuItem cards="tags" {...cardsMenuItemProps} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
-                <Header size='small'>Visible metrics</Header>
+                <Header size="small">Visible metrics</Header>
                 <Menu {...menuProps}>
                     <MetricMenuItem hide="none" {...metricMenuItemProps} />
                     <MetricMenuItem hide="no_action_needed" {...metricMenuItemProps} />
@@ -64,13 +62,15 @@ export function SettingsPanel({
                 </Menu>
             </Segment>
             <Segment inverted color="black">
-                <Header size='small'>Visible tags</Header>
+                <Header size="small">Visible tags</Header>
                 <Menu style={{ maxHeight: "450px", overflow: "auto" }} {...menuProps}>
-                    {tags.map((tag) => <VisibleTagMenuItem key={tag} tag={tag} hiddenTags={settings.hiddenTags} />)}
+                    {tags.map((tag) => (
+                        <VisibleTagMenuItem key={tag} tag={tag} hiddenTags={settings.hiddenTags} />
+                    ))}
                 </Menu>
             </Segment>
             <Segment inverted color="black">
-                <Header size='small'>Visible columns</Header>
+                <Header size="small">Visible columns</Header>
                 <Menu {...menuProps}>
                     <VisibleColumnMenuItem
                         column="trend"
@@ -129,7 +129,9 @@ export function SettingsPanel({
                     />
                     <SortColumnMenuItem
                         column="measurement"
-                        disabled={multipleDateColumns || settings.hiddenColumns.includes("measurement")}
+                        disabled={
+                            multipleDateColumns || settings.hiddenColumns.includes("measurement")
+                        }
                         help="The measurement column can only be selected for sorting when it is visible"
                         {...sortColumnMenuItemProps}
                     />
@@ -156,7 +158,9 @@ export function SettingsPanel({
                     />
                     <SortColumnMenuItem
                         column="overrun"
-                        disabled={settings.nrDates.equals(1) || settings.hiddenColumns.includes("overrun")}
+                        disabled={
+                            settings.nrDates.equals(1) || settings.hiddenColumns.includes("overrun")
+                        }
                         help="The overrun column can only be selected for sorting when it is visible"
                         {...sortColumnMenuItemProps}
                     />
@@ -178,31 +182,31 @@ export function SettingsPanel({
                 </Menu>
             </Segment>
             <Segment inverted color="black">
-                <Header size='small'>Number of dates</Header>
+                <Header size="small">Number of dates</Header>
                 <Menu {...menuProps}>
-                    {[1, 2, 3, 4, 5, 6, 7].map((nr) =>
+                    {[1, 2, 3, 4, 5, 6, 7].map((nr) => (
                         <NrOfDatesMenuItem key={nr} nr={nr} nrDates={settings.nrDates} />
-                    )}
+                    ))}
                 </Menu>
             </Segment>
             <Segment inverted color="black">
-                <Header size='small'>Time between dates</Header>
+                <Header size="small">Time between dates</Header>
                 <Menu {...menuProps}>
                     <DateIntervalMenuItem key={1} nr={1} {...dateIntervalMenuItemProps} />
-                    {[7, 14, 21, 28].map((nr) =>
+                    {[7, 14, 21, 28].map((nr) => (
                         <DateIntervalMenuItem key={nr} nr={nr} {...dateIntervalMenuItemProps} />
-                    )}
+                    ))}
                 </Menu>
             </Segment>
             <Segment inverted color="black">
-                <Header size='small'>Date order</Header>
+                <Header size="small">Date order</Header>
                 <Menu {...menuProps}>
                     <SortOrderMenuItem order="ascending" {...sortOrderMenuItemProps} />
                     <SortOrderMenuItem order="descending" {...sortOrderMenuItemProps} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
-                <Header size='small'>Visible issue details</Header>
+                <Header size="small">Visible issue details</Header>
                 <Menu {...menuProps}>
                     <IssueAttributeMenuItem
                         issueAttributeName="Summary"
@@ -287,7 +291,7 @@ function VisibleColumnMenuItem({ column, disabled, hiddenColumns, help, itemText
             onClick={hiddenColumns.toggle}
             onClickData={column}
         >
-            {itemText ?? capitalize(column).replaceAll('_', ' ')}
+            {itemText ?? capitalize(column).replaceAll("_", " ")}
         </SettingsMenuItem>
     )
 }
@@ -296,15 +300,21 @@ VisibleColumnMenuItem.propTypes = {
     disabled: bool,
     hiddenColumns: stringsURLSearchQueryPropType,
     help: popupContentPropType,
-    itemText: string
+    itemText: string,
 }
 
 function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handleSort, help }) {
-    let sortIndicator = null;
+    let sortIndicator = null
     if (sortColumn.equals(column) && sortDirection.value) {
         // We use a triangle because the sort down and up icons are not at the same height
         const iconDirection = sortDirection.equals("ascending") ? "up" : "down"
-        sortIndicator = <Icon disabled={disabled} name={`triangle ${iconDirection}`} aria-label={`sorted ${sortDirection.value}`} />
+        sortIndicator = (
+            <Icon
+                disabled={disabled}
+                name={`triangle ${iconDirection}`}
+                aria-label={`sorted ${sortDirection.value}`}
+            />
+        )
     }
     return (
         <SettingsMenuItem
@@ -314,7 +324,8 @@ function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handl
             onClick={handleSort}
             onClickData={column}
         >
-            {capitalize(column === "name" ? "metric" : column).replaceAll('_', ' ')} <span>{sortIndicator}</span>
+            {capitalize(column === "name" ? "metric" : column).replaceAll("_", " ")}{" "}
+            <span>{sortIndicator}</span>
         </SettingsMenuItem>
     )
 }
@@ -329,18 +340,14 @@ SortColumnMenuItem.propTypes = {
 
 function NrOfDatesMenuItem({ nr, nrDates }) {
     return (
-        <SettingsMenuItem
-            active={nrDates.equals(nr)}
-            onClick={nrDates.set}
-            onClickData={nr}
-        >
+        <SettingsMenuItem active={nrDates.equals(nr)} onClick={nrDates.set} onClickData={nr}>
             {`${nr} ${pluralize("date", nr)}`}
         </SettingsMenuItem>
     )
 }
 NrOfDatesMenuItem.propTypes = {
     nr: number,
-    nrDates: integerURLSearchQueryPropType
+    nrDates: integerURLSearchQueryPropType,
 }
 
 function DateIntervalMenuItem({ nr, dateInterval, disabled, help }) {
@@ -390,7 +397,13 @@ function MetricMenuItem({ hide, metricsToHide }) {
             onClick={metricsToHide.set}
             onClickData={hide}
         >
-            {{ "none": "All metrics", "no_action_needed": "Metrics requiring action", "all": "No metrics" }[hide]}
+            {
+                {
+                    none: "All metrics",
+                    no_action_needed: "Metrics requiring action",
+                    all: "No metrics",
+                }[hide]
+            }
         </SettingsMenuItem>
     )
 }
@@ -414,5 +427,5 @@ function IssueAttributeMenuItem({ help, issueAttributeName, issueAttribute }) {
 IssueAttributeMenuItem.propTypes = {
     help: popupContentPropType,
     issueAttributeName: string,
-    issueAttribute: boolURLSearchQueryPropType
+    issueAttribute: boolURLSearchQueryPropType,
 }

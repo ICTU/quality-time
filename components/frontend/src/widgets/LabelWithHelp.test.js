@@ -1,6 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { LabelWithHelp } from './LabelWithHelp';
+import { render, screen, waitFor } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import { LabelWithHelp } from "./LabelWithHelp"
 
 it("shows the label", () => {
     render(<LabelWithHelp label="Hello" />)

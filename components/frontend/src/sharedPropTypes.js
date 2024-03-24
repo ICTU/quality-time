@@ -1,4 +1,18 @@
-import { array, arrayOf, bool, element, func, instanceOf, node, number, object, oneOf, oneOfType, shape, string } from 'prop-types';
+import {
+    array,
+    arrayOf,
+    bool,
+    element,
+    func,
+    instanceOf,
+    node,
+    number,
+    object,
+    oneOf,
+    oneOfType,
+    shape,
+    string,
+} from "prop-types"
 
 export const childrenPropType = node
 
@@ -48,7 +62,14 @@ export const directionPropType = oneOf(["<", ">"])
 
 export const sortDirectionPropType = oneOf(["ascending", "descending"])
 
-export const statusPropType = oneOf(["target_met", "near_target_met", "debt_target_met", "target_not_met", "informative", "unknown"])
+export const statusPropType = oneOf([
+    "target_met",
+    "near_target_met",
+    "debt_target_met",
+    "target_not_met",
+    "informative",
+    "unknown",
+])
 
 export const sortDirectionURLSearchQueryPropType = shape({
     isDefault: func,
@@ -86,7 +107,13 @@ export const settingsPropType = shape({
     sortDirection: sortDirectionURLSearchQueryPropType,
 })
 
-export const entityStatusPropType = oneOf(["unconfirmed", "confirmed", "fixed", "false_positive", "wont_fix"])
+export const entityStatusPropType = oneOf([
+    "unconfirmed",
+    "confirmed",
+    "fixed",
+    "false_positive",
+    "wont_fix",
+])
 
 export const entityPropType = shape({
     key: string,
@@ -180,7 +207,7 @@ export const reportsOverviewPropType = shape({
     comment: string,
     permissions: object,
     title: string,
-    subtitle: string
+    subtitle: string,
 })
 
 export const uiModePropType = oneOf(["dark", "light", "follow_os"])
