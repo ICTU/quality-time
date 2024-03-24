@@ -23,5 +23,6 @@ jobs:
         npm ci
         npm run --ignore-scripts build --if-present
         npm test
+        npx prettier --check src
       env:
         CI: true
