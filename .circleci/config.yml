@@ -49,6 +49,7 @@ jobs:
           cd components/frontend
           npm install --ignore-scripts
           npm test
+          npx prettier --check src
 
   unittest_docs:
     machine:
