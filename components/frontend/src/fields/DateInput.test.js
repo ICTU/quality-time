@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
 import { Permissions } from "../context/Permissions"
 import { DateInput } from "./DateInput"
 
@@ -30,9 +31,7 @@ it("clears the value", () => {
 
 it("renders in error state if a value is missing and required", () => {
     renderDateInput({ value: "", required: true })
-    expect(
-        screen.getByDisplayValue("").parentElement.parentElement.parentElement.parentElement,
-    ).toHaveClass("error")
+    expect(screen.getByDisplayValue("").parentElement.parentElement.parentElement.parentElement).toHaveClass("error")
 })
 
 it("submits the value when changed", async () => {

@@ -1,6 +1,7 @@
 import { string } from "prop-types"
-import { datePropType, optionalDatePropType } from "../sharedPropTypes"
 import { Message } from "semantic-ui-react"
+
+import { datePropType, optionalDatePropType } from "../sharedPropTypes"
 
 function ErrorMessage({ children }) {
     return (
@@ -16,9 +17,7 @@ ErrorMessage.propTypes = {
 export function ReportErrorMessage({ reportDate }) {
     return (
         <ErrorMessage>
-            {reportDate
-                ? `Sorry, this report didn't exist at ${reportDate}`
-                : "Sorry, this report doesn't exist"}
+            {reportDate ? `Sorry, this report didn't exist at ${reportDate}` : "Sorry, this report doesn't exist"}
         </ErrorMessage>
     )
 }

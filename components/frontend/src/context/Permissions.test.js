@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react"
+
 import { Permissions, ReadOnlyOrEditable } from "./Permissions"
 
 function MockComponent1() {

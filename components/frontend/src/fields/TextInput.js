@@ -1,19 +1,14 @@
-import { useState } from "react"
 import { bool, func, string } from "prop-types"
-import { Form } from "../semantic_ui_react_wrappers"
+import { useState } from "react"
+
 import { ReadOnlyOrEditable } from "../context/Permissions"
+import { Form } from "../semantic_ui_react_wrappers"
 import { labelPropType, permissionsPropType } from "../sharedPropTypes"
 
 function ReadOnlyTextInput({ label, required, value }) {
     return (
         <Form>
-            <Form.TextArea
-                error={required && value === ""}
-                label={label}
-                readOnly
-                tabIndex={-1}
-                value={value}
-            />
+            <Form.TextArea error={required && value === ""} label={label} readOnly tabIndex={-1} value={value} />
         </Form>
     )
 }

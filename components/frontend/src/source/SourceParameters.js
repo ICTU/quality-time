@@ -1,12 +1,13 @@
-import { useContext } from "react"
 import { func, string } from "prop-types"
+import { useContext } from "react"
 import { Grid } from "semantic-ui-react"
-import { Header, Segment } from "../semantic_ui_react_wrappers"
+
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
-import { SourceParameter } from "./SourceParameter"
-import { formatMetricScaleAndUnit } from "../utils"
+import { Header, Segment } from "../semantic_ui_react_wrappers"
 import { metricPropType, reportPropType, sourcePropType, stringsPropType } from "../sharedPropTypes"
+import { formatMetricScaleAndUnit } from "../utils"
+import { SourceParameter } from "./SourceParameter"
 
 // Default layout to be used when the user is time traveling to a version of the data model that has no parameter layouts
 const DEFAULT_LAYOUT = { all: { name: "Source parameters", parameters: [] } }
@@ -22,28 +23,16 @@ function collectGroupedParameters(parameterLayout) {
 
 function collectRemainingParameters(allParameters, groupedParameters) {
     // Remaining parameters are source parameters that are not explicitly part of a group
-    return Object.keys(allParameters).filter(
-        (parameterKey) => !groupedParameters.includes(parameterKey),
-    )
+    return Object.keys(allParameters).filter((parameterKey) => !groupedParameters.includes(parameterKey))
 }
 
 function applicableParameters(allParameters, remainingParameters, parameterGroup, metric) {
     // Return the applicable parameters for a parameter group
-    const parameterKeys =
-        parameterGroup.parameters.length > 0 ? parameterGroup.parameters : remainingParameters
-    return parameterKeys.filter((parameterKey) =>
-        allParameters[parameterKey]?.metrics?.includes(metric.type),
-    )
+    const parameterKeys = parameterGroup.parameters.length > 0 ? parameterGroup.parameters : remainingParameters
+    return parameterKeys.filter((parameterKey) => allParameters[parameterKey]?.metrics?.includes(metric.type))
 }
 
-export function SourceParameters({
-    changed_param_keys,
-    metric,
-    reload,
-    report,
-    source,
-    source_uuid,
-}) {
+export function SourceParameters({ changed_param_keys, metric, reload, report, source, source_uuid }) {
     const dataModel = useContext(DataModel)
     const metricUnit = formatMetricScaleAndUnit(metric, dataModel)
     const allParameters = dataModel.sources[source.type].parameters
@@ -51,12 +40,7 @@ export function SourceParameters({
     const groupedParameters = collectGroupedParameters(parameterLayout)
     const remainingParameters = collectRemainingParameters(allParameters, groupedParameters)
     const groups = Object.values(parameterLayout).map((parameterGroup) => {
-        const parameterKeys = applicableParameters(
-            allParameters,
-            remainingParameters,
-            parameterGroup,
-            metric,
-        )
+        const parameterKeys = applicableParameters(allParameters, remainingParameters, parameterGroup, metric)
         if (parameterKeys.length === 0) {
             return null
         }

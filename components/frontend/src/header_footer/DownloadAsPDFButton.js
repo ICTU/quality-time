@@ -1,9 +1,10 @@
-import { useState } from "react"
 import { string } from "prop-types"
+import { useState } from "react"
 import { Icon } from "semantic-ui-react"
-import { Button, Popup } from "../semantic_ui_react_wrappers"
+
 import { get_report_pdf } from "../api/report"
 import { registeredURLSearchParams } from "../hooks/url_search_query"
+import { Button, Popup } from "../semantic_ui_react_wrappers"
 import { showMessage } from "../widgets/toast"
 
 function download_pdf(report_uuid, query_string, callback) {
@@ -34,10 +35,7 @@ export function DownloadAsPDFButton({ report_uuid }) {
     // Make sure the report_url contains only registered query parameters
     const query = registeredURLSearchParams()
     const queryString = query.toString() ? "?" + query.toString() : ""
-    query.set(
-        "report_url",
-        window.location.origin + window.location.pathname + queryString + window.location.hash,
-    )
+    query.set("report_url", window.location.origin + window.location.pathname + queryString + window.location.hash)
     const itemType = report_uuid ? "report" : "reports overview"
     const label = `Download ${itemType} as PDF`
     return (

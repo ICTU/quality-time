@@ -16,7 +16,8 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "simple-import-sort"
     ],
     "rules": {
         "no-unused-vars": [
@@ -24,7 +25,9 @@
             {
                 "argsIgnorePattern": "^_"
             }
-        ]
+        ],
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error"
     },
     "overrides": [
         {

@@ -1,14 +1,15 @@
 import { func, node, string } from "prop-types"
 import { Grid, Header } from "semantic-ui-react"
+
+import { set_source_entity_attribute } from "../api/source"
+import { EDIT_ENTITY_PERMISSION } from "../context/Permissions"
 import { DateInput } from "../fields/DateInput"
 import { SingleChoiceInput } from "../fields/SingleChoiceInput"
 import { TextInput } from "../fields/TextInput"
-import { set_source_entity_attribute } from "../api/source"
-import { capitalize } from "../utils"
-import { source_entity_status_name as status_name } from "./source_entity_status"
-import { EDIT_ENTITY_PERMISSION } from "../context/Permissions"
-import { LabelWithDate } from "../widgets/LabelWithDate"
 import { entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
+import { capitalize } from "../utils"
+import { LabelWithDate } from "../widgets/LabelWithDate"
+import { source_entity_status_name as status_name } from "./source_entity_status"
 
 function entityStatusOption(status, text, content, subheader) {
     return {
@@ -33,12 +34,7 @@ function entityStatusOptions(entityType, report) {
     const falsePositiveSubheader = `Ignore this ${entityType} for ${desiredResponseTimes["false_positive"]} days because it's been incorrectly identified as ${entityType}.`
     const wontFixSubheader = `Ignore this ${entityType} for ${desiredResponseTimes["wont_fix"]} days because it will not be fixed.`
     return [
-        entityStatusOption(
-            "unconfirmed",
-            status_name.unconfirmed,
-            "Unconfirm",
-            unconfirmedSubheader,
-        ),
+        entityStatusOption("unconfirmed", status_name.unconfirmed, "Unconfirm", unconfirmedSubheader),
         entityStatusOption("confirmed", status_name.confirmed, "Confirm", confirmedSubheader),
         entityStatusOption("fixed", status_name.fixed, "Resolve as fixed", fixedSubheader),
         entityStatusOption(
@@ -47,12 +43,7 @@ function entityStatusOptions(entityType, report) {
             "Resolve as false positive",
             falsePositiveSubheader,
         ),
-        entityStatusOption(
-            "wont_fix",
-            status_name.wont_fix,
-            "Resolve as won't fix",
-            wontFixSubheader,
-        ),
+        entityStatusOption("wont_fix", status_name.wont_fix, "Resolve as won't fix", wontFixSubheader),
     ]
 }
 entityStatusOptions.propTypes = {
@@ -80,14 +71,7 @@ export function SourceEntityDetails({
                         label={`${capitalize(name)} status`}
                         options={entityStatusOptions(name, report)}
                         set_value={(value) =>
-                            set_source_entity_attribute(
-                                metric_uuid,
-                                source_uuid,
-                                entity.key,
-                                "status",
-                                value,
-                                reload,
-                            )
+                            set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "status", value, reload)
                         }
                         value={status}
                         sort={false}

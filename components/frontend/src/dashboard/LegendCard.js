@@ -1,10 +1,12 @@
+import "./LegendCard.css"
+
 import { useContext } from "react"
 import { List } from "semantic-ui-react"
-import { Card } from "../semantic_ui_react_wrappers"
+
 import { DarkMode } from "../context/DarkMode"
 import { StatusIcon } from "../measurement/StatusIcon"
+import { Card } from "../semantic_ui_react_wrappers"
 import { getStatusName, STATUSES } from "../utils"
-import "./LegendCard.css"
 
 export function LegendCard() {
     const darkMode = useContext(DarkMode)

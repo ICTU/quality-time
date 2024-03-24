@@ -10,9 +10,7 @@ export function ErrorMessage({ formatAsText, message, title }) {
                     {formatAsText ? (
                         message
                     ) : (
-                        <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-all" }}>
-                            {message}
-                        </pre>
+                        <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{message}</pre>
                     )}
                 </Message>
             </Grid.Column>

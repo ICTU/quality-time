@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react"
+import "./ChangeLog.css"
+
 import { string } from "prop-types"
+import React, { useEffect, useState } from "react"
 import { Icon } from "semantic-ui-react"
-import { Button, Feed, Form, Header, Segment } from "../semantic_ui_react_wrappers"
+
 import { get_changelog } from "../api/changelog"
+import { Button, Feed, Form, Header, Segment } from "../semantic_ui_react_wrappers"
 import { Avatar } from "../widgets/Avatar"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
-import "./ChangeLog.css"
 
 function Event({ description, email, timestamp }) {
     return (
@@ -89,13 +91,7 @@ function ChangeLogWithoutMemo({ report_uuid, subject_uuid, metric_uuid, source_u
                         />
                     ))}
                 </Feed>
-                <Button
-                    basic
-                    icon
-                    primary
-                    size="small"
-                    onClick={() => setNrChanges(nrChanges + 10)}
-                >
+                <Button basic icon primary size="small" onClick={() => setNrChanges(nrChanges + 10)}>
                     <Icon name="refresh" /> Load more changes
                 </Button>
             </Segment>

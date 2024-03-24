@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react"
+
 import { SourceTypeHeader } from "./SourceTypeHeader"
 
 function renderSourceTypeHeader(documentation, metricTypeId) {

@@ -1,19 +1,20 @@
-import { useEffect } from "react"
-import { bool, func, number, object, string } from "prop-types"
-import { ToastContainer } from "react-toastify"
-import HashLinkObserver from "react-hash-link"
-import useLocalStorageState from "use-local-storage-state"
 import "react-toastify/dist/ReactToastify.css"
 import "./App.css"
 
-import { DataModel } from "./context/DataModel"
+import { bool, func, number, object, string } from "prop-types"
+import { useEffect } from "react"
+import HashLinkObserver from "react-hash-link"
+import { ToastContainer } from "react-toastify"
+import useLocalStorageState from "use-local-storage-state"
+
+import { useSettings } from "./app_ui_settings"
 import { DarkMode } from "./context/DarkMode"
+import { DataModel } from "./context/DataModel"
 import { Permissions } from "./context/Permissions"
-import { Menubar } from "./header_footer/Menubar"
 import { Footer } from "./header_footer/Footer"
+import { Menubar } from "./header_footer/Menubar"
 import { SettingsPanel } from "./header_footer/SettingsPanel"
 import { PageContent } from "./PageContent"
-import { getReportsTags, getUserPermissions, userPrefersDarkMode } from "./utils"
 import {
     datePropType,
     optionalDatePropType,
@@ -21,7 +22,7 @@ import {
     reportsPropType,
     stringsPropType,
 } from "./sharedPropTypes"
-import { useSettings } from "./app_ui_settings"
+import { getReportsTags, getUserPermissions, userPrefersDarkMode } from "./utils"
 
 export function AppUI({
     changed_fields,
@@ -55,16 +56,9 @@ export function AppUI({
         return () => mediaQueryList.removeEventListener("change", changeMode)
     }, [uiMode, setUIMode])
 
-    const user_permissions = getUserPermissions(
-        user,
-        email,
-        report_date,
-        reports_overview.permissions || {},
-    )
+    const user_permissions = getUserPermissions(user, email, report_date, reports_overview.permissions || {})
     const atReportsOverview = report_uuid === ""
-    const current_report = atReportsOverview
-        ? null
-        : reports.filter((report) => report.report_uuid === report_uuid)[0]
+    const current_report = atReportsOverview ? null : reports.filter((report) => report.report_uuid === report_uuid)[0]
     const settings = useSettings(report_uuid)
 
     function handleSort(column) {
@@ -76,9 +70,7 @@ export function AppUI({
             if (settings.sortDirection.equals("descending")) {
                 settings.sortColumn.set("") // Cycle through ascending->descending->no sort as long as the user clicks the same column
             }
-            settings.sortDirection.set(
-                settings.sortDirection.equals("ascending") ? "descending" : "ascending",
-            )
+            settings.sortDirection.set(settings.sortDirection.equals("ascending") ? "descending" : "ascending")
         } else {
             settings.sortColumn.set(column)
         }

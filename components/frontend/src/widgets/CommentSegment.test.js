@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react"
+
 import { CommentSegment } from "./CommentSegment"
 
 it("shows the comment", () => {

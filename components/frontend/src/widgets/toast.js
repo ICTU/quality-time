@@ -1,4 +1,5 @@
 import { toast } from "react-toastify"
+
 import { registeredURLSearchParams } from "../hooks/url_search_query"
 
 export function showMessage(type, title, description, messageId) {
@@ -26,8 +27,7 @@ export function showConnectionMessage(json) {
         if (status_code === 200) {
             showMessage("success", "URL connection OK")
         } else {
-            const status_code_text =
-                status_code >= 0 ? "[HTTP status code " + status_code + "] " : ""
+            const status_code_text = status_code >= 0 ? "[HTTP status code " + status_code + "] " : ""
             showMessage("warning", "URL connection error", status_code_text + reason)
         }
     })

@@ -1,17 +1,18 @@
 import { func, shape } from "prop-types"
 import { Grid, Icon, Menu } from "semantic-ui-react"
-import { Tab } from "../semantic_ui_react_wrappers"
-import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
-import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
-import { ChangeLog } from "../changelog/ChangeLog"
-import { Comment } from "../fields/Comment"
-import { StringInput } from "../fields/StringInput"
-import { MultipleChoiceInput } from "../fields/MultipleChoiceInput"
+
 import { set_reports_attribute } from "../api/report"
+import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
+import { ChangeLog } from "../changelog/ChangeLog"
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from "../context/Permissions"
-import { FocusableTab } from "../widgets/FocusableTab"
-import { dropdownOptions } from "../utils"
+import { Comment } from "../fields/Comment"
+import { MultipleChoiceInput } from "../fields/MultipleChoiceInput"
+import { StringInput } from "../fields/StringInput"
+import { Tab } from "../semantic_ui_react_wrappers"
 import { permissionsPropType, reportsOverviewPropType, settingsPropType } from "../sharedPropTypes"
+import { dropdownOptions } from "../utils"
+import { FocusableTab } from "../widgets/FocusableTab"
+import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { setDocumentTitle } from "./document_title"
 
 function ReportsOverviewConfiguration({ reports_overview, reload }) {
@@ -71,9 +72,7 @@ function Permissions({ permissions, reload }) {
                         options={dropdownOptions(permissions[EDIT_REPORT_PERMISSION] || [])}
                         placeholder="All authenticated users"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        set_value={(value) =>
-                            setPermissions(permissions, EDIT_REPORT_PERMISSION, value, reload)
-                        }
+                        set_value={(value) => setPermissions(permissions, EDIT_REPORT_PERMISSION, value, reload)}
                         value={permissions[EDIT_REPORT_PERMISSION]}
                     />
                 </Grid.Column>
@@ -87,9 +86,7 @@ function Permissions({ permissions, reload }) {
                         options={dropdownOptions(permissions[EDIT_ENTITY_PERMISSION] || [])}
                         placeholder="All authenticated users"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        set_value={(value) =>
-                            setPermissions(permissions, EDIT_ENTITY_PERMISSION, value, reload)
-                        }
+                        set_value={(value) => setPermissions(permissions, EDIT_ENTITY_PERMISSION, value, reload)}
                         value={permissions[EDIT_ENTITY_PERMISSION]}
                     />
                 </Grid.Column>
@@ -118,10 +115,7 @@ export function ReportsOverviewTitle({ reports_overview, reload, settings }) {
             ),
             render: () => (
                 <Tab.Pane>
-                    <ReportsOverviewConfiguration
-                        reports_overview={reports_overview}
-                        reload={reload}
-                    />
+                    <ReportsOverviewConfiguration reports_overview={reports_overview} reload={reload} />
                 </Tab.Pane>
             ),
         },

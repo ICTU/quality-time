@@ -1,7 +1,9 @@
-import { useContext } from "react"
-import { bool, string } from "prop-types"
-import { DarkMode } from "../context/DarkMode"
 import "./HyperLink.css"
+
+import { bool, string } from "prop-types"
+import { useContext } from "react"
+
+import { DarkMode } from "../context/DarkMode"
 import { childrenPropType } from "../sharedPropTypes"
 
 export function HyperLink({ url, children, error }) {

@@ -1,22 +1,10 @@
 import { render, screen } from "@testing-library/react"
+
 import { ReadOnlyInput } from "./ReadOnlyInput"
 
-function renderReadOnlyInput({
-    value = "value",
-    prefix = "",
-    error = false,
-    required = false,
-    unit = "",
-} = {}) {
+function renderReadOnlyInput({ value = "value", prefix = "", error = false, required = false, unit = "" } = {}) {
     return render(
-        <ReadOnlyInput
-            label={"Label"}
-            value={value}
-            prefix={prefix}
-            required={required}
-            error={error}
-            unit={unit}
-        />,
+        <ReadOnlyInput label={"Label"} value={value} prefix={prefix} required={required} error={error} unit={unit} />,
     )
 }
 

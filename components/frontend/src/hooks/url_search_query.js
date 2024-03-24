@@ -1,5 +1,5 @@
-import { useState } from "react"
 import history from "history/browser"
+import { useState } from "react"
 
 const registeredURLSearchQueryKeys = new Set(["report_date", "report_url", "hide_toasts"])
 
@@ -80,8 +80,7 @@ export function useBooleanURLSearchQuery(key) {
 
 export function useIntegerURLSearchQuery(key, defaultValue) {
     const searchQueryValue = parseURLSearchQuery().get(key)
-    const parsedValue =
-        typeof searchQueryValue === "string" ? parseInt(searchQueryValue, 10) : defaultValue
+    const parsedValue = typeof searchQueryValue === "string" ? parseInt(searchQueryValue, 10) : defaultValue
     const [value, setValue] = useState(parsedValue)
     return createHook(key, value, defaultValue, setValue)
 }

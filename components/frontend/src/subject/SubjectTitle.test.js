@@ -1,11 +1,12 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
+
+import { createTestableSettings } from "../__fixtures__/fixtures"
+import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { SubjectTitle } from "./SubjectTitle"
-import * as fetch_server_api from "../api/fetch_server_api"
-import { createTestableSettings } from "../__fixtures__/fixtures"
 
 beforeEach(() => {
     history.push("?expanded=subject_uuid:0")
@@ -54,11 +55,9 @@ it("changes the subject type", async () => {
     await renderSubjectTitle()
     await userEvent.click(screen.getAllByText(/Default subject type/)[1])
     await userEvent.click(screen.getByText(/Other subject type/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "subject/subject_uuid/attribute/type",
-        { type: "subject_type2" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/type", {
+        type: "subject_type2",
+    })
 })
 
 it("deals with unknown subject types", async () => {
@@ -71,11 +70,9 @@ it("changes the subject title", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     await renderSubjectTitle()
     await userEvent.type(screen.getByLabelText(/Subject title/), "{Delete}New title{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "subject/subject_uuid/attribute/name",
-        { name: "New title" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/name", {
+        name: "New title",
+    })
 })
 
 it("changes the subject subtitle", async () => {
@@ -105,10 +102,7 @@ it("loads the changelog", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Changelog/))
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
-        "get",
-        "changelog/subject/subject_uuid/5",
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/subject/subject_uuid/5")
 })
 
 it("shows the share tab", async () => {
@@ -138,9 +132,5 @@ it("deletes the subject", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Delete subject/))
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "delete",
-        "subject/subject_uuid",
-        {},
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("delete", "subject/subject_uuid", {})
 })

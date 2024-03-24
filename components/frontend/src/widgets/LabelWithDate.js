@@ -1,7 +1,8 @@
-import TimeAgo from "react-timeago"
 import { oneOfType, string } from "prop-types"
-import { LabelWithHelp } from "./LabelWithHelp"
+import TimeAgo from "react-timeago"
+
 import { datePropType, labelPropType, popupContentPropType } from "../sharedPropTypes"
+import { LabelWithHelp } from "./LabelWithHelp"
 
 export function LabelWithDate({ date, labelId, label, help }) {
     return (

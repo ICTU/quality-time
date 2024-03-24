@@ -1,5 +1,6 @@
 import { render, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
 import { StatusIcon } from "./StatusIcon"
 
 it("renders a checkmark if the status is target met", () => {
@@ -20,9 +21,7 @@ it("renders a question mark if the status is missing", () => {
 it("renders a popup with the date the status started", async () => {
     let startDate = new Date()
     startDate.setDate(startDate.getDate() - 4)
-    const { queryByLabelText, queryByText } = render(
-        <StatusIcon status="target_met" status_start={startDate} />,
-    )
+    const { queryByLabelText, queryByText } = render(<StatusIcon status="target_met" status_start={startDate} />)
     await userEvent.hover(queryByLabelText(/Target met/))
     await waitFor(() => {
         expect(queryByText("4 days ago")).not.toBe(null)

@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
+import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { MetricDebtParameters } from "./MetricDebtParameters"
-import * as fetch_server_api from "../api/fetch_server_api"
 
 jest.mock("../api/fetch_server_api.js")
 
@@ -68,32 +69,26 @@ it("accepts technical debt and sets target and end date", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderMetricDebtParameters()
     await userEvent.type(screen.getByLabelText(/Accept technical debt/), "Yes, and{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/debt",
-        { accept_debt: true },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/debt", {
+        accept_debt: true,
+    })
 })
 
 it("unaccepts technical debt and resets target and end date", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderMetricDebtParameters({ accept_debt: true })
     await userEvent.type(screen.getByLabelText(/Accept technical debt/), "No, and{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/debt",
-        { accept_debt: false },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/debt", {
+        accept_debt: false,
+    })
 })
 
 it("adds a comment", async () => {
     renderMetricDebtParameters()
     await userEvent.type(screen.getByLabelText(/Comment/), "Keep cool{Tab}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/attribute/comment",
-        { comment: "Keep cool" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/comment", {
+        comment: "Keep cool",
+    })
 })
 
 it("sets the technical debt end date", async () => {

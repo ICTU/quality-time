@@ -1,5 +1,6 @@
-import { renderHook, act } from "@testing-library/react"
+import { act, renderHook } from "@testing-library/react"
 import history from "history/browser"
+
 import {
     registeredURLSearchParams,
     useArrayURLSearchQuery,

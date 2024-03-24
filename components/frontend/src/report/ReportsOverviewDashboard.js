@@ -1,20 +1,14 @@
-import { useContext } from "react"
 import { array, func } from "prop-types"
+import { useContext } from "react"
+
+import { set_reports_attribute } from "../api/report"
 import { DataModel } from "../context/DataModel"
 import { CardDashboard } from "../dashboard/CardDashboard"
 import { LegendCard } from "../dashboard/LegendCard"
 import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
-import { Tag } from "../widgets/Tag"
-import { set_reports_attribute } from "../api/report"
-import {
-    getMetricTags,
-    getReportsTags,
-    nrMetricsInReport,
-    STATUS_COLORS,
-    sum,
-    visibleMetrics,
-} from "../utils"
 import { datesPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
+import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum, visibleMetrics } from "../utils"
+import { Tag } from "../widgets/Tag"
 import { metricStatusOnDate } from "./report_utils"
 
 function summarizeReportOnDate(report, measurements, date, hiddenTags, dataModel) {
@@ -36,13 +30,7 @@ function summarizeReportsOnDate(reports, measurements, date, tag, hiddenTags, da
             const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
             Object.entries(metrics).forEach(([metric_uuid, metric]) => {
                 if (getMetricTags(metric).indexOf(tag) >= 0) {
-                    const status = metricStatusOnDate(
-                        metric_uuid,
-                        metric,
-                        measurements,
-                        date,
-                        dataModel,
-                    )
+                    const status = metricStatusOnDate(metric_uuid, metric, measurements, date, dataModel)
                     summary[STATUS_COLORS[status]] += 1
                 }
             })

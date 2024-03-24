@@ -1,12 +1,13 @@
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
+
+import { createTestableSettings } from "../__fixtures__/fixtures"
+import * as fetch_server_api from "../api/fetch_server_api"
+import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import * as fetch_server_api from "../api/fetch_server_api"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
 import { ReportsOverview } from "./ReportsOverview"
-import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
-import { createTestableSettings } from "../__fixtures__/fixtures"
 
 beforeEach(() => {
     fetch_server_api.fetch_server_api = jest
@@ -27,12 +28,7 @@ const datamodel = {
     },
 }
 
-function renderReportsOverview({
-    hiddenTags = null,
-    reportDate = null,
-    reports = [],
-    reportsOverview = {},
-} = {}) {
+function renderReportsOverview({ hiddenTags = null, reportDate = null, reports = [], reportsOverview = {} } = {}) {
     let settings = createTestableSettings()
     if (hiddenTags) {
         settings.hiddenTags = hiddenTags
@@ -63,8 +59,8 @@ it("shows the reports overview", async () => {
     const reports = [{ subjects: {} }]
     const reportsOverview = { title: "Overview", permissions: {} }
     renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
-    expect(screen.getAllByText(/Overview/).length).toBe(2);
-});
+    expect(screen.getAllByText(/Overview/).length).toBe(2)
+})
 
 it("shows the comment", async () => {
     const reports = [{ subjects: {} }]
@@ -140,9 +136,5 @@ it("copies a report", async () => {
     await act(async () => {
         fireEvent.click(screen.getByRole("option"))
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "report/uuid/copy",
-        {},
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/uuid/copy", {})
 })

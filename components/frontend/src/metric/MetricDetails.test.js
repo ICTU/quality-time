@@ -1,12 +1,13 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
+
+import { createTestableSettings } from "../__fixtures__/fixtures"
+import * as changelog_api from "../api/changelog"
+import * as measurement_api from "../api/measurement"
+import * as metric_api from "../api/metric"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { MetricDetails } from "./MetricDetails"
-import * as changelog_api from "../api/changelog"
-import * as metric_api from "../api/metric"
-import * as measurement_api from "../api/measurement"
-import { createTestableSettings } from "../__fixtures__/fixtures"
 
 jest.mock("../api/changelog.js")
 jest.mock("../api/metric.js")

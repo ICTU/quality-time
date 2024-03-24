@@ -1,12 +1,13 @@
-import history from "history/browser"
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import history from "history/browser"
+
+import { createTestableSettings } from "../__fixtures__/fixtures"
+import * as changelog_api from "../api/changelog"
+import * as report_api from "../api/report"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { ReportTitle } from "./ReportTitle"
-import * as changelog_api from "../api/changelog"
-import * as report_api from "../api/report"
-import { createTestableSettings } from "../__fixtures__/fixtures"
 
 jest.mock("../api/changelog.js")
 jest.mock("../api/report.js")
@@ -54,12 +55,7 @@ it("sets the title", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 12,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "title",
-        "New title",
-        reload,
-    )
+    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "title", "New title", reload)
 })
 
 it("sets the subtitle", async () => {
@@ -69,12 +65,7 @@ it("sets the subtitle", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 12,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "subtitle",
-        "New subtitle",
-        reload,
-    )
+    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "subtitle", "New subtitle", reload)
 })
 
 it("sets the comment", async () => {
@@ -84,12 +75,7 @@ it("sets the comment", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 8,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "comment",
-        "New comment",
-        reload,
-    )
+    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "comment", "New comment", reload)
 })
 
 it("sets the unknown status reaction time", async () => {

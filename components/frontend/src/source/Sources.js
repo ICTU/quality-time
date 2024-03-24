@@ -1,16 +1,11 @@
-import { useContext } from "react"
 import { func, number, string } from "prop-types"
+import { useContext } from "react"
 import { Message } from "semantic-ui-react"
-import { Segment } from "../semantic_ui_react_wrappers"
+
+import { add_source, copy_source, move_source } from "../api/source"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { add_source, copy_source, move_source } from "../api/source"
-import { AddDropdownButton, CopyButton, MoveButton } from "../widgets/Button"
-import { source_options } from "../widgets/menu_options"
-import { showMessage } from "../widgets/toast"
-import { pluralize } from "../utils"
-import { Source } from "./Source"
-import { sourceTypeOptions } from "./SourceType"
+import { Segment } from "../semantic_ui_react_wrappers"
 import {
     measurementPropType,
     measurementSourcePropType,
@@ -19,6 +14,12 @@ import {
     reportsPropType,
     stringsPropType,
 } from "../sharedPropTypes"
+import { pluralize } from "../utils"
+import { AddDropdownButton, CopyButton, MoveButton } from "../widgets/Button"
+import { source_options } from "../widgets/menu_options"
+import { showMessage } from "../widgets/toast"
+import { Source } from "./Source"
+import { sourceTypeOptions } from "./SourceType"
 
 function ButtonSegment({ metric, metric_uuid, reload, reports }) {
     const dataModel = useContext(DataModel)
@@ -40,9 +41,7 @@ function ButtonSegment({ metric, metric_uuid, reload, reports }) {
                     <MoveButton
                         itemType="source"
                         onChange={(source_uuid) => move_source(source_uuid, metric_uuid, reload)}
-                        get_options={() =>
-                            source_options(reports, dataModel, metric.type, metric_uuid)
-                        }
+                        get_options={() => source_options(reports, dataModel, metric.type, metric_uuid)}
                     />
                 </Segment>
             }
@@ -56,16 +55,7 @@ ButtonSegment.propTypes = {
     reports: reportsPropType,
 }
 
-function SourceSegment({
-    changed_fields,
-    index,
-    last_index,
-    measurement_source,
-    metric,
-    reload,
-    report,
-    sourceUuid,
-}) {
+function SourceSegment({ changed_fields, index, last_index, measurement_source, metric, reload, report, sourceUuid }) {
     return (
         <Segment vertical id={sourceUuid}>
             <Source
@@ -92,15 +82,7 @@ SourceSegment.propTypes = {
     sourceUuid: string,
 }
 
-export function Sources({
-    reports,
-    report,
-    metric,
-    metric_uuid,
-    measurement,
-    changed_fields,
-    reload,
-}) {
+export function Sources({ reports, report, metric, metric_uuid, measurement, changed_fields, reload }) {
     const dataModel = useContext(DataModel)
     const measurementSources = measurement?.sources ?? []
     const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
@@ -125,9 +107,7 @@ export function Sources({
                 sourceUuid={sourceUuid}
                 index={index}
                 last_index={lastIndex}
-                measurement_source={measurementSources.find(
-                    (source) => source.source_uuid === sourceUuid,
-                )}
+                measurement_source={measurementSources.find((source) => source.source_uuid === sourceUuid)}
                 changed_fields={changed_fields}
                 reload={reload_source}
             />
@@ -143,12 +123,7 @@ export function Sources({
             ) : (
                 sourceSegments
             )}
-            <ButtonSegment
-                reports={reports}
-                metric_uuid={metric_uuid}
-                metric={metric}
-                reload={reload}
-            />
+            <ButtonSegment reports={reports} metric_uuid={metric_uuid} metric={metric} reload={reload} />
         </>
     )
 }

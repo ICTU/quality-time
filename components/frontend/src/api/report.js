@@ -39,8 +39,7 @@ export function set_reports_attribute(attribute, value, reload) {
 }
 
 export function get_report_pdf(report_uuid, query_string) {
-    const endpoint =
-        (report_uuid ? `report/${report_uuid}` : "reports_overview") + `/pdf${query_string}`
+    const endpoint = (report_uuid ? `report/${report_uuid}` : "reports_overview") + `/pdf${query_string}`
     return fetch_server_api("get", endpoint, {}, "application/pdf")
 }
 

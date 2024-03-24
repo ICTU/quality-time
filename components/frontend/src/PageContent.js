@@ -1,23 +1,20 @@
-import { useEffect, useState } from "react"
 import { bool, func, number, string } from "prop-types"
+import { useEffect, useState } from "react"
 import { Container, Loader } from "semantic-ui-react"
-import { Segment } from "./semantic_ui_react_wrappers"
+
+import { get_measurements } from "./api/measurement"
 import { Report } from "./report/Report"
 import { ReportsOverview } from "./report/ReportsOverview"
-import { get_measurements } from "./api/measurement"
+import { Segment } from "./semantic_ui_react_wrappers"
 import {
+    datePropType,
+    optionalDatePropType,
     reportPropType,
     reportsOverviewPropType,
     reportsPropType,
     settingsPropType,
     stringsPropType,
-    optionalDatePropType,
-<<<<<<< HEAD
-    datePropType,
-} from './sharedPropTypes';
-=======
 } from "./sharedPropTypes"
->>>>>>> 5f931684 (Format code.)
 
 function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
     const baseDate = reportDate ? new Date(reportDate) : new Date()
@@ -91,19 +88,23 @@ export function PageContent({
             settings: settings,
         }
         if (report_uuid) {
-            content = <Report
-                lastUpdate={lastUpdate}
-                openReportsOverview={openReportsOverview}
-                report={current_report}
-                {...commonProps}
-            />
+            content = (
+                <Report
+                    lastUpdate={lastUpdate}
+                    openReportsOverview={openReportsOverview}
+                    report={current_report}
+                    {...commonProps}
+                />
+            )
         } else {
-            content = <ReportsOverview
-                lastUpdate={lastUpdate}
-                openReport={openReport}
-                reports_overview={reports_overview}
-                {...commonProps}
-            />
+            content = (
+                <ReportsOverview
+                    lastUpdate={lastUpdate}
+                    openReport={openReport}
+                    reports_overview={reports_overview}
+                    {...commonProps}
+                />
+            )
         }
     }
     return (

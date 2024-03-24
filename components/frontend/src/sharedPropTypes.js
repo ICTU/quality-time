@@ -107,13 +107,7 @@ export const settingsPropType = shape({
     sortDirection: sortDirectionURLSearchQueryPropType,
 })
 
-export const entityStatusPropType = oneOf([
-    "unconfirmed",
-    "confirmed",
-    "fixed",
-    "false_positive",
-    "wont_fix",
-])
+export const entityStatusPropType = oneOf(["unconfirmed", "confirmed", "fixed", "false_positive", "wont_fix"])
 
 export const entityPropType = shape({
     key: string,

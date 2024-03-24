@@ -29,14 +29,7 @@ export function set_source_parameter(source_uuid, key, value, edit_scope, reload
     }).then(reload)
 }
 
-export function set_source_entity_attribute(
-    metric_uuid,
-    source_uuid,
-    entity_key,
-    attribute,
-    value,
-    reload,
-) {
+export function set_source_entity_attribute(metric_uuid, source_uuid, entity_key, attribute, value, reload) {
     return fetch_server_api(
         "post",
         `measurement/${metric_uuid}/source/${source_uuid}/entity/${entity_key}/${attribute}`,

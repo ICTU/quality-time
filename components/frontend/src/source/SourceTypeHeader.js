@@ -1,9 +1,10 @@
 import { string } from "prop-types"
+
 import { Header, Icon } from "../semantic_ui_react_wrappers"
+import { sourceTypePropType } from "../sharedPropTypes"
+import { slugify } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 import { Logo } from "./Logo"
-import { slugify } from "../utils"
-import { sourceTypePropType } from "../sharedPropTypes"
 
 export function SourceTypeHeader({ metricTypeId, sourceTypeId, sourceType }) {
     let howToConfigure = ""

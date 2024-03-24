@@ -1,7 +1,9 @@
+import "./Form.css"
+
 import { useContext } from "react"
 import { Form as SemanticUIForm } from "semantic-ui-react"
+
 import { DarkMode } from "../context/DarkMode"
-import "./Form.css"
 
 export function Form(props) {
     return <SemanticUIForm inverted={useContext(DarkMode)} {...props} />
@@ -12,9 +14,7 @@ function Input(props) {
 }
 
 function Dropdown(props) {
-    return (
-        <SemanticUIForm.Dropdown inverted={useContext(DarkMode) ? "true" : undefined} {...props} />
-    )
+    return <SemanticUIForm.Dropdown inverted={useContext(DarkMode) ? "true" : undefined} {...props} />
 }
 
 Form.Button = SemanticUIForm.Button

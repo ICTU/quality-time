@@ -1,13 +1,15 @@
-import { useContext } from "react"
+import "./MetricSummaryCard.css"
+
 import { func, number, object, oneOfType, string } from "prop-types"
+import { useContext } from "react"
 import { VictoryContainer, VictoryLabel, VictoryPortal, VictoryTooltip } from "victory"
-import { Card } from "../semantic_ui_react_wrappers"
+
 import { DarkMode } from "../context/DarkMode"
+import { useBoundingBox } from "../hooks/boundingbox"
+import { Card } from "../semantic_ui_react_wrappers"
+import { pluralize, STATUS_COLORS_RGB, STATUSES, sum } from "../utils"
 import { StatusBarChart } from "./StatusBarChart"
 import { StatusPieChart } from "./StatusPieChart"
-import { pluralize, STATUSES, STATUS_COLORS_RGB, sum } from "../utils"
-import { useBoundingBox } from "../hooks/boundingbox"
-import "./MetricSummaryCard.css"
 
 function nrMetricsLabel(nrMetrics) {
     return nrMetrics === 0 ? "No\nmetrics" : pluralize(`${nrMetrics}\nmetric`, nrMetrics)
@@ -17,8 +19,7 @@ function ariaChartLabel(summary) {
     let label = ""
     Object.entries(summary).forEach(([date, count]) => {
         const nrMetrics = sum(count)
-        const nrMetricsLabel =
-            nrMetrics === 0 ? "no metrics" : pluralize(`${nrMetrics} metric`, nrMetrics)
+        const nrMetricsLabel = nrMetrics === 0 ? "no metrics" : pluralize(`${nrMetrics} metric`, nrMetrics)
         const dateString = new Date(date).toLocaleDateString()
         label += `Status on ${dateString}: ${nrMetricsLabel}`
         if (count.green > 0) {
@@ -88,11 +89,7 @@ export function MetricSummaryCard({ header, onClick, summary, maxY }) {
     }
     return (
         <Card style={{ height: "100%" }} onClick={onClick} onKeyPress={onClick} tabIndex="0">
-            <div
-                ref={ref}
-                style={{ width: "100%", height: "72%" }}
-                aria-label={ariaChartLabel(summary)}
-            >
+            <div ref={ref} style={{ width: "100%", height: "72%" }} aria-label={ariaChartLabel(summary)}>
                 <VictoryContainer width={bbWidth} height={bbHeight}>
                     {dates.length > 1 ? (
                         <StatusBarChart summary={summary} nrdates={dates.length} {...chartProps} />

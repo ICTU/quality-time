@@ -1,20 +1,14 @@
 import { arrayOf, number, objectOf, oneOf, string } from "prop-types"
+
 import { PERMISSIONS } from "./context/Permissions"
-import { HyperLink } from "./widgets/HyperLink"
 import { defaultDesiredResponseTimes } from "./defaults"
 import { metricPropType, reportPropType, reportsPropType, stringsPropType } from "./sharedPropTypes"
+import { HyperLink } from "./widgets/HyperLink"
 
 export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000
 const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR
 
-export const STATUSES = [
-    "unknown",
-    "target_not_met",
-    "near_target_met",
-    "target_met",
-    "debt_target_met",
-    "informative",
-]
+export const STATUSES = ["unknown", "target_not_met", "near_target_met", "target_met", "debt_target_met", "informative"]
 export const STATUS_COLORS = {
     informative: "blue",
     target_met: "green",
@@ -56,9 +50,7 @@ export const STATUS_DESCRIPTION = {
 
 export function getMetricDirection(metric, dataModel) {
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
-    return { "≦": "<", "≧": ">", "<": "<", ">": ">" }[
-        metric.direction || dataModel.metrics[metric.type].direction
-    ]
+    return { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || dataModel.metrics[metric.type].direction]
 }
 
 export function formatMetricDirection(metric, dataModel) {
@@ -109,9 +101,7 @@ function getMetricResponseOverruns(metric_uuid, metric, measurements, dataModel)
     const scale = getMetricScale(metric, dataModel)
     let previousStatus
     const consolidatedMeasurements = []
-    const filteredMeasurements = measurements.filter(
-        (measurement) => measurement.metric_uuid === metric_uuid,
-    )
+    const filteredMeasurements = measurements.filter((measurement) => measurement.metric_uuid === metric_uuid)
     filteredMeasurements.forEach((measurement) => {
         const status = measurement?.[scale]?.status || "unknown"
         if (status === previousStatus) {
@@ -125,22 +115,15 @@ function getMetricResponseOverruns(metric_uuid, metric, measurements, dataModel)
 }
 
 export function getMetricResponseOverrun(metric_uuid, metric, report, measurements, dataModel) {
-    const consolidatedMeasurements = getMetricResponseOverruns(
-        metric_uuid,
-        metric,
-        measurements,
-        dataModel,
-    )
+    const consolidatedMeasurements = getMetricResponseOverruns(metric_uuid, metric, measurements, dataModel)
     const scale = getMetricScale(metric, dataModel)
     let totalOverrun = 0 // Amount of time the desired response time was not achieved for this metric
     const overruns = []
     consolidatedMeasurements.forEach((measurement) => {
         const status = measurement?.[scale]?.status || "unknown"
         if (status in defaultDesiredResponseTimes) {
-            const desiredResponseTime =
-                getMetricDesiredResponseTime(report, status) * MILLISECONDS_PER_DAY
-            const actualResponseTime =
-                new Date(measurement.end).getTime() - new Date(measurement.start).getTime()
+            const desiredResponseTime = getMetricDesiredResponseTime(report, status) * MILLISECONDS_PER_DAY
+            const actualResponseTime = new Date(measurement.end).getTime() - new Date(measurement.start).getTime()
             const overrun = Math.max(0, actualResponseTime - desiredResponseTime)
             if (overrun > 0) {
                 overruns.push({
@@ -224,8 +207,7 @@ export function visibleMetrics(metrics, metricsToHide, hiddenTags) {
         }
         if (
             hiddenTags?.length > 0 &&
-            hiddenTags?.filter((hiddenTag) => metric.tags?.includes(hiddenTag)).length >=
-                metric.tags?.length
+            hiddenTags?.filter((hiddenTag) => metric.tags?.includes(hiddenTag)).length >= metric.tags?.length
         ) {
             return
         }
@@ -355,17 +337,12 @@ export function getUserPermissions(username, email, report_date, permissions) {
     }
     return PERMISSIONS.filter((permission) => {
         const permittedUsers = permissions?.[permission] ?? []
-        return permittedUsers.length === 0
-            ? true
-            : permittedUsers.includes(username) || permittedUsers.includes(email)
+        return permittedUsers.length === 0 ? true : permittedUsers.includes(username) || permittedUsers.includes(email)
     })
 }
 
 export function userPrefersDarkMode(uiMode) {
-    return (
-        uiMode === "dark" ||
-        (uiMode === "follow_os" && window.matchMedia?.("(prefers-color-scheme: dark)").matches)
-    )
+    return uiMode === "dark" || (uiMode === "follow_os" && window.matchMedia?.("(prefers-color-scheme: dark)").matches)
 }
 
 export function dropdownOptions(options) {

@@ -1,5 +1,6 @@
-import React from "react"
 import { element } from "prop-types"
+import React from "react"
+
 import { permissionsPropType } from "../sharedPropTypes"
 
 export const EDIT_REPORT_PERMISSION = "edit_reports"
@@ -25,11 +26,7 @@ accessGranted.propTypes = {
 export function ReadOnlyOrEditable({ requiredPermissions, readOnlyComponent, editableComponent }) {
     return (
         <Permissions.Consumer>
-            {(permissions) =>
-                accessGranted(permissions, requiredPermissions)
-                    ? editableComponent
-                    : readOnlyComponent
-            }
+            {(permissions) => (accessGranted(permissions, requiredPermissions) ? editableComponent : readOnlyComponent)}
         </Permissions.Consumer>
     )
 }

@@ -1,7 +1,8 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
-import { DownloadAsPDFButton } from "./DownloadAsPDFButton"
+
 import * as fetch_server_api from "../api/fetch_server_api"
+import { DownloadAsPDFButton } from "./DownloadAsPDFButton"
 
 test("DownloadAsPDFButton has the correct label for reports overview", () => {
     render(<DownloadAsPDFButton />)

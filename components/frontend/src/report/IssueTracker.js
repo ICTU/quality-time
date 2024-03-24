@@ -1,17 +1,18 @@
-import { useContext, useEffect, useState } from "react"
 import { func } from "prop-types"
+import { useContext, useEffect, useState } from "react"
 import { Grid, Header, Message } from "semantic-ui-react"
+
+import { get_report_issue_tracker_options, set_report_issue_tracker_attribute } from "../api/report"
+import { DataModel } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
+import { MultipleChoiceInput } from "../fields/MultipleChoiceInput"
+import { PasswordInput } from "../fields/PasswordInput"
+import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+import { StringInput } from "../fields/StringInput"
+import { reportPropType } from "../sharedPropTypes"
+import { Logo } from "../source/Logo"
 import { LabelWithHelp } from "../widgets/LabelWithHelp"
 import { LabelWithHyperLink } from "../widgets/LabelWithHyperLink"
-import { get_report_issue_tracker_options, set_report_issue_tracker_attribute } from "../api/report"
-import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
-import { StringInput } from "../fields/StringInput"
-import { MultipleChoiceInput } from "../fields/MultipleChoiceInput"
-import { SingleChoiceInput } from "../fields/SingleChoiceInput"
-import { PasswordInput } from "../fields/PasswordInput"
-import { Logo } from "../source/Logo"
-import { DataModel } from "../context/DataModel"
-import { reportPropType } from "../sharedPropTypes"
 
 const NONE_OPTION = {
     key: null,
@@ -38,14 +39,8 @@ export function IssueTracker({ report, reload }) {
         get_report_issue_tracker_options(report.report_uuid).then(function (json) {
             if (!didCancel) {
                 // For projects, use the project key as value to store because that's what users entered when this wasn't a single choice option yet
-                setProjectOptions(
-                    json.projects.map(({ key, name }) => ({ key: key, value: key, text: name })),
-                )
-                setProjectValid(
-                    json.projects.some(
-                        ({ key }) => key === report.issue_tracker?.parameters?.project_key,
-                    ),
-                )
+                setProjectOptions(json.projects.map(({ key, name }) => ({ key: key, value: key, text: name })))
+                setProjectValid(json.projects.some(({ key }) => key === report.issue_tracker?.parameters?.project_key))
                 // For issue types, use the name as value to store because that's what users entered when this wasn't a single choice option yet
                 setIssueTypeOptions(
                     json.issue_types.map(({ key, name }) => ({
@@ -55,13 +50,9 @@ export function IssueTracker({ report, reload }) {
                     })),
                 )
                 setIssueTypeValid(
-                    json.issue_types.some(
-                        ({ name }) => name === report.issue_tracker?.parameters?.issue_type,
-                    ),
+                    json.issue_types.some(({ name }) => name === report.issue_tracker?.parameters?.issue_type),
                 )
-                setIssueEpicOptions(
-                    json.epic_links.map(({ key, name }) => ({ key: key, value: key, text: name })),
-                )
+                setIssueEpicOptions(json.epic_links.map(({ key, name }) => ({ key: key, value: key, text: name })))
                 const fieldKeys = json.fields.map((field) => field.key)
                 setLabelFieldSupported(fieldKeys.includes("labels"))
                 const fieldNames = json.fields.map((field) => field.name.toLowerCase())
@@ -95,8 +86,7 @@ export function IssueTracker({ report, reload }) {
     trackerSources.push(NONE_OPTION)
     let privateTokenLabel = "Private token"
     if (report.issue_tracker) {
-        const help_url =
-            dataModel.sources[report.issue_tracker?.type]?.parameters?.private_token?.help_url
+        const help_url = dataModel.sources[report.issue_tracker?.type]?.parameters?.private_token?.help_url
         if (help_url) {
             privateTokenLabel = <LabelWithHyperLink label={privateTokenLabel} url={help_url} />
         }
@@ -116,9 +106,7 @@ export function IssueTracker({ report, reload }) {
                         placeholder="None"
                         label="Issue tracker type"
                         options={trackerSources}
-                        set_value={(value) =>
-                            set_report_issue_tracker_attribute(report_uuid, "type", value, reload)
-                        }
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "type", value, reload)}
                         value={report.issue_tracker?.type}
                     />
                 </Grid.Column>
@@ -128,9 +116,7 @@ export function IssueTracker({ report, reload }) {
                         required={!!report.issue_tracker?.type}
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Issue tracker URL"
-                        set_value={(value) =>
-                            set_report_issue_tracker_attribute(report_uuid, "url", value, reload)
-                        }
+                        set_value={(value) => set_report_issue_tracker_attribute(report_uuid, "url", value, reload)}
                         value={report.issue_tracker?.parameters?.url}
                     />
                 </Grid.Column>
@@ -142,12 +128,7 @@ export function IssueTracker({ report, reload }) {
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Username for basic authentication"
                         set_value={(value) =>
-                            set_report_issue_tracker_attribute(
-                                report_uuid,
-                                "username",
-                                value,
-                                reload,
-                            )
+                            set_report_issue_tracker_attribute(report_uuid, "username", value, reload)
                         }
                         value={report.issue_tracker?.parameters?.username}
                     />
@@ -158,12 +139,7 @@ export function IssueTracker({ report, reload }) {
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Password for basic authentication"
                         set_value={(value) =>
-                            set_report_issue_tracker_attribute(
-                                report_uuid,
-                                "password",
-                                value,
-                                reload,
-                            )
+                            set_report_issue_tracker_attribute(report_uuid, "password", value, reload)
                         }
                         value={report.issue_tracker?.parameters?.password}
                     />
@@ -176,12 +152,7 @@ export function IssueTracker({ report, reload }) {
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label={privateTokenLabel}
                         set_value={(value) =>
-                            set_report_issue_tracker_attribute(
-                                report_uuid,
-                                "private_token",
-                                value,
-                                reload,
-                            )
+                            set_report_issue_tracker_attribute(report_uuid, "private_token", value, reload)
                         }
                         value={report.issue_tracker?.parameters?.private_token}
                     />
@@ -203,12 +174,7 @@ export function IssueTracker({ report, reload }) {
                         options={projectOptions}
                         placeholder="None"
                         set_value={(value) =>
-                            set_report_issue_tracker_attribute(
-                                report_uuid,
-                                "project_key",
-                                value,
-                                reload,
-                            )
+                            set_report_issue_tracker_attribute(report_uuid, "project_key", value, reload)
                         }
                         value={project_key}
                     />
@@ -228,12 +194,7 @@ export function IssueTracker({ report, reload }) {
                         options={issueTypeOptions}
                         placeholder="None"
                         set_value={(value) =>
-                            set_report_issue_tracker_attribute(
-                                report_uuid,
-                                "issue_type",
-                                value,
-                                reload,
-                            )
+                            set_report_issue_tracker_attribute(report_uuid, "issue_type", value, reload)
                         }
                         value={issue_type}
                     />
@@ -253,12 +214,7 @@ export function IssueTracker({ report, reload }) {
                         placeholder="None"
                         options={issueEpicOptions}
                         set_value={(value) =>
-                            set_report_issue_tracker_attribute(
-                                report_uuid,
-                                "epic_link",
-                                value,
-                                reload,
-                            )
+                            set_report_issue_tracker_attribute(report_uuid, "epic_link", value, reload)
                         }
                         value={epic_link}
                     />
@@ -283,12 +239,7 @@ export function IssueTracker({ report, reload }) {
                         }
                         placeholder="Enter one or more labels here"
                         set_value={(value) =>
-                            set_report_issue_tracker_attribute(
-                                report_uuid,
-                                "issue_labels",
-                                value,
-                                reload,
-                            )
+                            set_report_issue_tracker_attribute(report_uuid, "issue_labels", value, reload)
                         }
                         value={report.issue_tracker?.parameters?.issue_labels}
                     />

@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react"
+
 import { SourceEntityAttribute } from "./SourceEntityAttribute"
 
 function renderSourceEntityAttribute(entity, entity_attribute) {
@@ -31,10 +32,7 @@ it("renders an integer percentage", () => {
 })
 
 it("renders a datetime", () => {
-    renderSourceEntityAttribute(
-        { timestamp: "2021-10-10T10:10:10" },
-        { key: "timestamp", type: "datetime" },
-    )
+    renderSourceEntityAttribute({ timestamp: "2021-10-10T10:10:10" }, { key: "timestamp", type: "datetime" })
     expect(screen.getAllByText(/ago/).length).toBe(1)
 })
 

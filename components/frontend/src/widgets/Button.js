@@ -1,10 +1,11 @@
-import { useRef, useState } from "react"
 import { array, bool, func, string } from "prop-types"
+import { useRef, useState } from "react"
 import { Icon, Input } from "semantic-ui-react"
+
 import { Button, Dropdown, Label, Popup } from "../semantic_ui_react_wrappers"
+import { popupContentPropType } from "../sharedPropTypes"
 import { showMessage } from "../widgets/toast"
 import { ItemBreadcrumb } from "./ItemBreadcrumb"
-import { popupContentPropType } from "../sharedPropTypes"
 
 export function ActionButton(props) {
     const { action, disabled, icon, itemType, floated, fluid, popup, position, ...other } = props
@@ -18,14 +19,7 @@ export function ActionButton(props) {
             </Button>
         </span>
     )
-    return (
-        <Popup
-            content={popup}
-            on={["focus", "hover"]}
-            position={position || "top left"}
-            trigger={button}
-        />
-    )
+    return <Popup content={popup} on={["focus", "hover"]} position={position || "top left"} trigger={button} />
 }
 ActionButton.propTypes = {
     action: string,
@@ -43,9 +37,7 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick }) {
     const [query, setQuery] = useState("") // Search query to filter item subtypes
     const [menuOpen, setMenuOpen] = useState(false) // Is the menu open?
     const [popupTriggered, setPopupTriggered] = useState(false) // Is the popup triggered by hover or focus?
-    const options = itemSubtypes.filter((itemSubtype) =>
-        itemSubtype.text.toLowerCase().includes(query.toLowerCase()),
-    )
+    const options = itemSubtypes.filter((itemSubtype) => itemSubtype.text.toLowerCase().includes(query.toLowerCase()))
     const inputRef = useRef(null)
     return (
         <Popup
@@ -187,9 +179,7 @@ DeleteButton.propTypes = {
 
 function ReorderButton(props) {
     const label = `Move ${props.moveable} to the ${props.direction} ${props.slot || "position"}`
-    const icon = { first: "double up", last: "double down", previous: "up", next: "down" }[
-        props.direction
-    ]
+    const icon = { first: "double up", last: "double down", previous: "up", next: "down" }[props.direction]
     const disabled =
         (props.first && (props.direction === "first" || props.direction === "previous")) ||
         (props.last && (props.direction === "last" || props.direction === "next"))

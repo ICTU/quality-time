@@ -1,5 +1,5 @@
-import { fetch_server_api } from "./fetch_server_api"
 import { showMessage } from "../widgets/toast"
+import { fetch_server_api } from "./fetch_server_api"
 
 export function add_metric(subject_uuid, metricType, reload) {
     fetch_server_api("post", `metric/new/${subject_uuid}`, { type: metricType }).then(reload)

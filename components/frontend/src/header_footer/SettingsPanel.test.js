@@ -1,8 +1,9 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
-import { SettingsPanel } from "./SettingsPanel"
+
 import { createTestableSettings } from "../__fixtures__/fixtures"
+import { SettingsPanel } from "./SettingsPanel"
 
 beforeEach(() => {
     history.push("")

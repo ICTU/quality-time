@@ -1,7 +1,9 @@
-import { Container, Divider, Grid, Header, Icon, Image, List, Segment } from "semantic-ui-react"
-import { childrenPropType, datePropType, reportPropType } from "../sharedPropTypes"
+import "./Footer.css"
+
 import { number, object, oneOfType, string } from "prop-types"
-import './Footer.css';
+import { Container, Divider, Grid, Header, Icon, Image, List, Segment } from "semantic-ui-react"
+
+import { childrenPropType, datePropType, reportPropType } from "../sharedPropTypes"
 
 function FooterItem({ children, icon, url }) {
     const item = icon ? (
@@ -80,10 +82,7 @@ function AboutAppColumn() {
             <FooterItem icon="flask" url="https://www.ictu.nl/about-us">
                 Created by ICTU
             </FooterItem>
-            <FooterItem
-                icon="copyright outline"
-                url="https://github.com/ICTU/quality-time/blob/master/LICENSE"
-            >
+            <FooterItem icon="copyright outline" url="https://github.com/ICTU/quality-time/blob/master/LICENSE">
                 License
             </FooterItem>
             <FooterItem
@@ -102,10 +101,7 @@ function AboutAppColumn() {
 function SupportColumn() {
     return (
         <FooterSideColumn header="Support">
-            <FooterItem
-                icon="book"
-                url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/`}
-            >
+            <FooterItem icon="book" url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/`}>
                 Documentation
             </FooterItem>
             <FooterItem
@@ -117,10 +113,7 @@ function SupportColumn() {
             <FooterItem icon="bug" url="https://github.com/ICTU/quality-time/issues">
                 Known issues
             </FooterItem>
-            <FooterItem
-                icon="comment outline"
-                url="https://github.com/ICTU/quality-time/issues/new"
-            >
+            <FooterItem icon="comment outline" url="https://github.com/ICTU/quality-time/issues/new">
                 Report an issue
             </FooterItem>
         </FooterSideColumn>
@@ -128,11 +121,10 @@ function SupportColumn() {
 }
 
 function AboutReportColumn({ lastUpdate, report }) {
-    lastUpdate = lastUpdate ?? new Date();
+    lastUpdate = lastUpdate ?? new Date()
     // When exporting to PDF, window.location.href may not be the correct URL. This is fixed by having the user's
     // browser pass the correct URL as search parameter and use that instead:
-    const reportURL =
-        new URLSearchParams(window.location.search).get("report_url") ?? window.location.href
+    const reportURL = new URLSearchParams(window.location.search).get("report_url") ?? window.location.href
     return (
         <FooterCenterColumn header="About this report">
             <FooterItem url={reportURL}>{report.title}</FooterItem>
@@ -150,16 +142,8 @@ AboutReportColumn.propTypes = {
 function QuoteColumn() {
     const quotes = [
         ["If it hurts, do it more frequently,", "and bring the pain forward.", "Jez Humble"],
-        [
-            "Quality without results is pointless.",
-            "Results without quality is boring.",
-            "Johan Cruyff",
-        ],
-        [
-            "Quality is free,",
-            "but only to those who are willing to pay heavily for it.",
-            "DeMarco and Lister",
-        ],
+        ["Quality without results is pointless.", "Results without quality is boring.", "Johan Cruyff"],
+        ["Quality is free,", "but only to those who are willing to pay heavily for it.", "DeMarco and Lister"],
         ["Quality means doing it right", "even when no one is looking.", "Henry Ford"],
         ["Quality... you know what it is,", "yet you don't know what it is.", "Robert M. Pirsig"],
     ]
@@ -179,7 +163,11 @@ function QuoteColumn() {
 
 export function Footer({ lastUpdate, report }) {
     return (
-        <Segment inverted id="Footer" style={{ margin: '5em 0em 0em', padding: '5em 0em 3em', backgroundColor: "#1b1c1d" }}>
+        <Segment
+            inverted
+            id="Footer"
+            style={{ margin: "5em 0em 0em", padding: "5em 0em 3em", backgroundColor: "#1b1c1d" }}
+        >
             <Container>
                 <Grid>
                     <Grid.Row>

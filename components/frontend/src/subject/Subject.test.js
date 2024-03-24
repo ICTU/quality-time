@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react"
 import history from "history/browser"
-import { Subject } from "./Subject"
-import { DataModel } from "../context/DataModel"
+
 import { createTestableSettings, datamodel, report } from "../__fixtures__/fixtures"
+import { DataModel } from "../context/DataModel"
+import { Subject } from "./Subject"
 
 function renderSubject({
     atReportsOverview = false,
@@ -78,9 +79,7 @@ it("hides an empty subject if metrics with tags are hidden", async () => {
 })
 
 function expectOrder(metricNames) {
-    expect(screen.getAllByText(/M\d/).map((element) => element.innerHTML)).toStrictEqual(
-        metricNames,
-    )
+    expect(screen.getAllByText(/M\d/).map((element) => element.innerHTML)).toStrictEqual(metricNames)
 }
 
 for (const attribute of [

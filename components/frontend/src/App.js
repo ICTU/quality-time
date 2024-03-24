@@ -1,16 +1,18 @@
-import { Component } from "react"
-import history from "history/browser"
-import { Action } from "history"
-import { get_datamodel } from "./api/datamodel"
-import { get_report, get_reports_overview } from "./api/report"
-import { nr_measurements_api } from "./api/measurement"
-import { login } from "./api/auth"
-import { registeredURLSearchParams } from "./hooks/url_search_query"
-import { showMessage, showConnectionMessage } from "./widgets/toast"
-import { isValidDate_YYYYMMDD, toISODateStringInCurrentTZ } from "./utils"
-import { AppUI } from "./AppUI"
 import "react-toastify/dist/ReactToastify.css"
 import "./App.css"
+
+import { Action } from "history"
+import history from "history/browser"
+import { Component } from "react"
+
+import { login } from "./api/auth"
+import { get_datamodel } from "./api/datamodel"
+import { nr_measurements_api } from "./api/measurement"
+import { get_report, get_reports_overview } from "./api/report"
+import { AppUI } from "./AppUI"
+import { registeredURLSearchParams } from "./hooks/url_search_query"
+import { isValidDate_YYYYMMDD, toISODateStringInCurrentTZ } from "./utils"
+import { showConnectionMessage, showMessage } from "./widgets/toast"
 
 class App extends Component {
     constructor(props) {
@@ -27,8 +29,8 @@ class App extends Component {
             loading: true,
             user: null,
             email: null,
-        };
-        history.listen(({ location, action }) => this.on_history({ location, action }));
+        }
+        history.listen(({ location, action }) => this.on_history({ location, action }))
     }
 
     on_history({ location, action }) {
@@ -51,9 +53,7 @@ class App extends Component {
         this.login_forwardauth()
         this.initUserSession()
         this.connectToNrMeasurementsEventSource()
-        this.setState({ report_uuid: report_uuid, report_date: reportDate, loading: true }, () =>
-            this.reload(),
-        )
+        this.setState({ report_uuid: report_uuid, report_date: reportDate, loading: true }, () => this.reload())
     }
 
     componentWillUnmount() {
@@ -68,19 +68,14 @@ class App extends Component {
                 : null
             this.check_session(json)
         }
-        const show_error = () =>
-            showMessage("error", "Server unreachable", "Couldn't load data from the server.")
+        const show_error = () => showMessage("error", "Server unreachable", "Couldn't load data from the server.")
         this.loadAndSetState(show_error)
     }
 
     loadAndSetState(show_error) {
         const report_uuid = this.state.report_uuid
         const reportDate = this.state.report_date
-        Promise.all([
-            get_datamodel(reportDate),
-            get_reports_overview(reportDate),
-            get_report(report_uuid, reportDate),
-        ])
+        Promise.all([get_datamodel(reportDate), get_reports_overview(reportDate), get_report(report_uuid, reportDate)])
             .then(([data_model, reports_overview, reports]) => {
                 if (this.state.report_uuid !== report_uuid) {
                     return // User navigated to a different report or to the overview page, cancel update
@@ -95,7 +90,7 @@ class App extends Component {
                         loading: false,
                         reports: reports.reports || [],
                         reports_overview: reports_overview,
-                    });
+                    })
                 }
             })
             .catch(show_error)
@@ -105,11 +100,7 @@ class App extends Component {
         if (json.ok === false && json.status === 401) {
             this.setUserSession()
             if (this.login_forwardauth() === false) {
-                showMessage(
-                    "warning",
-                    "Your session expired",
-                    "Please log in to renew your session",
-                )
+                showMessage("warning", "Your session expired", "Please log in to renew your session")
             }
         }
     }
@@ -163,9 +154,8 @@ class App extends Component {
             const newNrMeasurements = Number(message.data)
             if (!self.state.nrMeasurementsStreamConnected) {
                 showMessage("success", "Connected to server", "Successfully reconnected to server.")
-                self.setState(
-                    { nrMeasurements: newNrMeasurements, nrMeasurementsStreamConnected: true },
-                    () => self.reload(),
+                self.setState({ nrMeasurements: newNrMeasurements, nrMeasurementsStreamConnected: true }, () =>
+                    self.reload(),
                 )
             } else {
                 self.setState({ nrMeasurements: newNrMeasurements })
@@ -178,12 +168,7 @@ class App extends Component {
             }
         })
         this.source.addEventListener("error", () => {
-            showMessage(
-                "error",
-                "Server unreachable",
-                "Trying to reconnect to server...",
-                "reconnecting",
-            )
+            showMessage("error", "Server unreachable", "Trying to reconnect to server...", "reconnecting")
             self.setState({ nrMeasurementsStreamConnected: false })
         })
     }
@@ -192,11 +177,7 @@ class App extends Component {
         let self = this
         login("", "").then(function (json) {
             if (json.ok) {
-                self.setUserSession(
-                    json.email,
-                    json.email,
-                    new Date(json.session_expiration_datetime),
-                )
+                self.setUserSession(json.email, json.email, new Date(json.session_expiration_datetime))
                 return true
             }
         })
@@ -206,9 +187,7 @@ class App extends Component {
     initUserSession() {
         // Check if there is a session expiration datetime in the local storage. If so, restore the session as long as
         // it has not expired. Otherwise, nothing needs to be done.
-        const sessionExpirationDateTimeISOString = localStorage.getItem(
-            "session_expiration_datetime",
-        )
+        const sessionExpirationDateTimeISOString = localStorage.getItem("session_expiration_datetime")
         if (sessionExpirationDateTimeISOString) {
             const sessionExpirationDateTime = new Date(sessionExpirationDateTimeISOString)
             if (sessionExpirationDateTime < new Date()) {
@@ -223,11 +202,7 @@ class App extends Component {
                 )
             }
         } else {
-            showMessage(
-                "info",
-                "Not logged in",
-                "You are not logged in. Editing is not possible until you are.",
-            )
+            showMessage("info", "Not logged in", "You are not logged in. Editing is not possible until you are.")
         }
     }
 
@@ -237,10 +212,7 @@ class App extends Component {
             this.setState({ user: username, email: emailAddress })
             localStorage.setItem("user", username)
             localStorage.setItem("email", emailAddress)
-            localStorage.setItem(
-                "session_expiration_datetime",
-                sessionExpirationDateTime.toISOString(),
-            )
+            localStorage.setItem("session_expiration_datetime", sessionExpirationDateTime.toISOString())
             this.sessionExpirationTimeoutId = setTimeout(
                 () => this.onUserSessionExpiration(),
                 sessionExpirationDateTime - new Date(),
@@ -267,7 +239,7 @@ class App extends Component {
                 email={this.state.email}
                 openReportsOverview={() => this.openReportsOverview()}
                 handleDateChange={(date) => this.handleDateChange(date)}
-                key={this.state.report_uuid}  // Make sure the AppUI is refreshed whenever the current report changes
+                key={this.state.report_uuid} // Make sure the AppUI is refreshed whenever the current report changes
                 lastUpdate={this.state.lastUpdate}
                 loading={this.state.loading}
                 nrMeasurements={this.state.nrMeasurements}

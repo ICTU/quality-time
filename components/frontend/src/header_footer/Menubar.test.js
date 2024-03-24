@@ -1,9 +1,10 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
-import { Menubar } from "./Menubar"
-import * as auth from "../api/auth"
+
 import { createTestableSettings } from "../__fixtures__/fixtures"
+import * as auth from "../api/auth"
+import { Menubar } from "./Menubar"
 
 jest.mock("../api/auth.js")
 

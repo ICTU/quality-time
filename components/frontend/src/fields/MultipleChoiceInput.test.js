@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
 import { Permissions } from "../context/Permissions"
-import { MultipleChoiceInput } from "./MultipleChoiceInput"
 import { dropdownOptions } from "../utils"
+import { MultipleChoiceInput } from "./MultipleChoiceInput"
 
 const defaultOptions = dropdownOptions(["hello", "again"])
 
@@ -18,13 +19,7 @@ it("renders the value read only", () => {
 })
 
 it("renders an empty read only value", () => {
-    render(
-        <MultipleChoiceInput
-            requiredPermissions={["testPermission"]}
-            value={[]}
-            options={defaultOptions}
-        />,
-    )
+    render(<MultipleChoiceInput requiredPermissions={["testPermission"]} value={[]} options={defaultOptions} />)
     expect(screen.queryByDisplayValue(/hello/)).toBe(null)
 })
 
@@ -42,12 +37,7 @@ function renderMultipleChoiceInput(options = [], value = ["hello"]) {
     let mockSetValue = jest.fn()
     render(
         <Permissions.Provider value={false}>
-            <MultipleChoiceInput
-                value={value}
-                options={options}
-                set_value={mockSetValue}
-                allowAdditions={true}
-            />
+            <MultipleChoiceInput value={value} options={options} set_value={mockSetValue} allowAdditions={true} />
         </Permissions.Provider>,
     )
     return mockSetValue

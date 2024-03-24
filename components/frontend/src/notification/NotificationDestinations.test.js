@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
+import * as fetch_server_api from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { NotificationDestinations } from "./NotificationDestinations"
-import * as fetch_server_api from "../api/fetch_server_api"
 
 jest.mock("../api/fetch_server_api.js")
 

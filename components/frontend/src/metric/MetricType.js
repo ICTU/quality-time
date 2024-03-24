@@ -1,10 +1,11 @@
-import { useContext } from "react"
 import { func, string } from "prop-types"
-import { Header } from "../semantic_ui_react_wrappers"
-import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+import { useContext } from "react"
+
 import { set_metric_attribute } from "../api/metric"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
+import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+import { Header } from "../semantic_ui_react_wrappers"
 
 export function metricTypeOption(key, metricType) {
     return {
@@ -17,9 +18,7 @@ export function metricTypeOption(key, metricType) {
 
 export function metricTypeOptions(dataModel, subjectType) {
     // Return menu options for all metric that support the subject type
-    return dataModel.subjects[subjectType].metrics.map((key) =>
-        metricTypeOption(key, dataModel.metrics[key]),
-    )
+    return dataModel.subjects[subjectType].metrics.map((key) => metricTypeOption(key, dataModel.metrics[key]))
 }
 
 export function MetricType({ subjectType, metricType, metric_uuid, reload }) {

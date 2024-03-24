@@ -1,9 +1,10 @@
-import { useContext } from "react"
 import { func, string } from "prop-types"
-import { Header } from "../semantic_ui_react_wrappers"
+import { useContext } from "react"
+
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+import { Header } from "../semantic_ui_react_wrappers"
 import { Logo } from "./Logo"
 
 function sourceTypeOption(key, sourceType) {
@@ -25,9 +26,7 @@ function sourceTypeOption(key, sourceType) {
 
 export function sourceTypeOptions(dataModel, metricType) {
     // Return menu options for all sources that support the metric type
-    return dataModel.metrics[metricType].sources.map((key) =>
-        sourceTypeOption(key, dataModel.sources[key]),
-    )
+    return dataModel.metrics[metricType].sources.map((key) => sourceTypeOption(key, dataModel.sources[key]))
 }
 
 export function SourceType({ metric_type, set_source_attribute, source_type }) {

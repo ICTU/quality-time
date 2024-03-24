@@ -1,15 +1,16 @@
-import { Grid } from "semantic-ui-react"
 import { func, string } from "prop-types"
-import { SingleChoiceInput } from "../fields/SingleChoiceInput"
-import { Comment } from "../fields/Comment"
+import { Grid } from "semantic-ui-react"
+
 import { set_metric_attribute, set_metric_debt } from "../api/metric"
+import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
+import { Comment } from "../fields/Comment"
 import { DateInput } from "../fields/DateInput"
+import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+import { IssuesRows } from "../issue/IssuesRows"
+import { metricPropType, reportPropType } from "../sharedPropTypes"
 import { LabelWithDate } from "../widgets/LabelWithDate"
 import { LabelWithHyperLink } from "../widgets/LabelWithHyperLink"
-import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
-import { IssuesRows } from "../issue/IssuesRows"
 import { Target } from "./Target"
-import { metricPropType, reportPropType } from "../sharedPropTypes"
 
 function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
     const labelId = `accept-debt-label-${metric_uuid}`
@@ -62,9 +63,8 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
         <>
             <p>Accept technical debt until this date.</p>
             <p>
-                After this date, or when the issues below have all been resolved, whichever happens
-                first, the technical debt should be resolved and the technical debt target is no
-                longer evaluated.
+                After this date, or when the issues below have all been resolved, whichever happens first, the technical
+                debt should be resolved and the technical debt target is no longer evaluated.
             </p>
         </>
     )
@@ -97,11 +97,7 @@ export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
         <Grid stackable columns={3}>
             <Grid.Row>
                 <Grid.Column>
-                    <AcceptTechnicalDebt
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
+                    <AcceptTechnicalDebt metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
                     <Target
@@ -115,20 +111,14 @@ export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
                     />
                 </Grid.Column>
                 <Grid.Column>
-                    <TechnicalDebtEndDate
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
+                    <TechnicalDebtEndDate metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
             </Grid.Row>
             <IssuesRows metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
             <Grid.Row>
                 <Grid.Column width={16}>
                     <Comment
-                        set_value={(value) =>
-                            set_metric_attribute(metric_uuid, "comment", value, reload)
-                        }
+                        set_value={(value) => set_metric_attribute(metric_uuid, "comment", value, reload)}
                         value={metric.comment}
                     />
                 </Grid.Column>

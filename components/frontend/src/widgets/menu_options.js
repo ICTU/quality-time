@@ -1,5 +1,5 @@
-import { ItemBreadcrumb } from "./ItemBreadcrumb"
 import { get_metric_name, get_source_name, get_subject_name } from "../utils"
+import { ItemBreadcrumb } from "./ItemBreadcrumb"
 
 export function metric_options(reports, datamodel, current_subject_type, current_subject_uuid) {
     const subject_metrics = datamodel.subjects[current_subject_type].metrics
@@ -16,13 +16,7 @@ export function metric_options(reports, datamodel, current_subject_type, current
                 }
                 const metric_name = get_metric_name(metric, datamodel)
                 options.push({
-                    content: (
-                        <ItemBreadcrumb
-                            report={report.title}
-                            subject={subject_name}
-                            metric={metric_name}
-                        />
-                    ),
+                    content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} />,
                     key: metric_uuid,
                     text: report.title + subject_name + metric_name,
                     value: metric_uuid,

@@ -1,16 +1,13 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
 import { Permissions } from "../context/Permissions"
 import { StringInput } from "./StringInput"
 
 function renderStringInput(set_value) {
     return render(
         <Permissions.Provider value={false}>
-            <StringInput
-                options={["Option 1", "Option 2"]}
-                set_value={set_value}
-                value="Option 1"
-            />
+            <StringInput options={["Option 1", "Option 2"]} set_value={set_value} value="Option 1" />
         </Permissions.Provider>,
     )
 }

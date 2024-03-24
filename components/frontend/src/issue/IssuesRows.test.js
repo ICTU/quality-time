@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
+import * as fetch_server_api from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { IssuesRows } from "./IssuesRows"
-import * as fetch_server_api from "../api/fetch_server_api"
 
 jest.mock("../api/fetch_server_api.js")
 
@@ -82,24 +83,18 @@ it("creates an issue", () => {
         .mockResolvedValue({ ok: true, error: "", issue_url: "https://tracker/foo-42" })
     renderIssuesRow({ report: reportWithIssueTracker })
     fireEvent.click(screen.getByText(/Create new issue/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/issue/new",
-        { metric_url: "http://localhost/#metric_uuid" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", {
+        metric_url: "http://localhost/#metric_uuid",
+    })
 })
 
 it("tries to create an issue", () => {
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockResolvedValue({ ok: false, error: "Dummy", issue_url: "" })
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false, error: "Dummy", issue_url: "" })
     renderIssuesRow({ report: reportWithIssueTracker })
     fireEvent.click(screen.getByText(/Create new issue/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/issue/new",
-        { metric_url: "http://localhost/#metric_uuid" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", {
+        metric_url: "http://localhost/#metric_uuid",
+    })
 })
 
 it("does not show the create issue button if the user has no permissions", () => {

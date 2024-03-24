@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
 import { DataModel } from "../context/DataModel"
 import { MeasurementValue } from "./MeasurementValue"
 
@@ -38,9 +39,7 @@ it("renders an unkown value", () => {
 it("renders a value that has not been measured yet", () => {
     render(
         <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
-            <MeasurementValue
-                metric={{ type: "violations", scale: "count", unit: null, latest_measurement: {} }}
-            />
+            <MeasurementValue metric={{ type: "violations", scale: "count", unit: null, latest_measurement: {} }} />
         </DataModel.Provider>,
     )
     expect(screen.getAllByText(/\?/).length).toBe(1)

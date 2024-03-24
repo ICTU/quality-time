@@ -1,8 +1,9 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
+
 import { datamodel, report } from "./__fixtures__/fixtures"
-import { AppUI } from "./AppUI"
 import * as fetch_server_api from "./api/fetch_server_api"
+import { AppUI } from "./AppUI"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 
 beforeEach(() => {
@@ -39,9 +40,7 @@ it("handles sorting", async () => {
     fireEvent.click(screen.getAllByText("Status")[0])
     expect(history.location.search).toEqual("?sort_column_report_uuid=status")
     fireEvent.click(screen.getAllByText("Status")[0])
-    expect(history.location.search).toEqual(
-        "?sort_column_report_uuid=status&sort_direction_report_uuid=descending",
-    )
+    expect(history.location.search).toEqual("?sort_column_report_uuid=status&sort_direction_report_uuid=descending")
     fireEvent.click(screen.getAllByText("Status")[0])
     expect(history.location.search).toEqual("")
     fireEvent.click(screen.getAllByText("Comment")[0])
@@ -72,9 +71,7 @@ beforeAll(() => {
 
 async function renderAppUI() {
     return await act(async () =>
-        render(
-            <AppUI handleDateChange={jest.fn} report_uuid="" reports={[]} reports_overview={{}} />,
-        ),
+        render(<AppUI handleDateChange={jest.fn} report_uuid="" reports={[]} reports_overview={{}} />),
     )
 }
 

@@ -1,9 +1,10 @@
 import { useContext } from "react"
-import { Label, Popup } from "../semantic_ui_react_wrappers"
+
 import { DataModel } from "../context/DataModel"
-import { HyperLink } from "../widgets/HyperLink"
-import { get_metric_name, get_source_name } from "../utils"
+import { Label, Popup } from "../semantic_ui_react_wrappers"
 import { measurementSourcePropType, metricPropType } from "../sharedPropTypes"
+import { get_metric_name, get_source_name } from "../utils"
+import { HyperLink } from "../widgets/HyperLink"
 
 export function SourceStatus({ metric, measurement_source }) {
     const dataModel = useContext(DataModel)

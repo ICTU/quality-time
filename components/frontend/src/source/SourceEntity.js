@@ -1,19 +1,16 @@
-import { useState } from "react"
+import "./SourceEntity.css"
+
 import { bool, func, string } from "prop-types"
+import { useState } from "react"
 import { Table } from "semantic-ui-react"
+
+import { entityAttributesPropType, entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
-import { SourceEntityDetails } from "./SourceEntityDetails"
-import { SourceEntityAttribute } from "./SourceEntityAttribute"
 import { source_entity_status_name } from "./source_entity_status"
 import { alignment } from "./SourceEntities"
-import {
-    entityAttributesPropType,
-    entityPropType,
-    entityStatusPropType,
-    reportPropType,
-} from "../sharedPropTypes"
-import "./SourceEntity.css"
+import { SourceEntityAttribute } from "./SourceEntityAttribute"
+import { SourceEntityDetails } from "./SourceEntityDetails"
 
 function entityCanBeIgnored(status, statusEndDateString) {
     const statusEndDate = new Date(statusEndDateString)

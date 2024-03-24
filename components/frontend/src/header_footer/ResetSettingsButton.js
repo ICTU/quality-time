@@ -1,5 +1,6 @@
 import { bool, func } from "prop-types"
 import { Button, Icon } from "semantic-ui-react"
+
 import { Popup } from "../semantic_ui_react_wrappers"
 import { optionalDatePropType, settingsPropType } from "../sharedPropTypes"
 

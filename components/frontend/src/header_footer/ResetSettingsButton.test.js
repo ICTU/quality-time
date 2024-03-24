@@ -1,7 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
-import { ResetSettingsButton } from "./ResetSettingsButton"
+
 import { createTestableSettings } from "../__fixtures__/fixtures"
+import { ResetSettingsButton } from "./ResetSettingsButton"
 
 beforeEach(() => {
     history.push("")

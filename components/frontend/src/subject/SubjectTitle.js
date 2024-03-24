@@ -1,20 +1,21 @@
-import { useContext } from "react"
 import { bool, func, object, string } from "prop-types"
+import { useContext } from "react"
 import { Icon, Menu } from "semantic-ui-react"
-import { Header, Tab } from "../semantic_ui_react_wrappers"
+
+import { delete_subject, set_subject_attribute } from "../api/subject"
 import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
+import { ChangeLog } from "../changelog/ChangeLog"
+import { DataModel } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
+import { Header, Tab } from "../semantic_ui_react_wrappers"
+import { Share } from "../share/Share"
+import { reportPropType, settingsPropType } from "../sharedPropTypes"
+import { slugify } from "../utils"
 import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
 import { FocusableTab } from "../widgets/FocusableTab"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { HyperLink } from "../widgets/HyperLink"
-import { ChangeLog } from "../changelog/ChangeLog"
-import { Share } from "../share/Share"
-import { delete_subject, set_subject_attribute } from "../api/subject"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { slugify } from "../utils"
 import { SubjectParameters } from "./SubjectParameters"
-import { reportPropType, settingsPropType } from "../sharedPropTypes"
 
 function SubjectHeader({ subjectType }) {
     const url = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html${slugify(subjectType.name)}`
@@ -50,10 +51,7 @@ function ButtonRow({ subject_uuid, firstSubject, lastSubject, reload }) {
                             set_subject_attribute(subject_uuid, "position", direction, reload)
                         }}
                     />
-                    <DeleteButton
-                        itemType="subject"
-                        onClick={() => delete_subject(subject_uuid, reload)}
-                    />
+                    <DeleteButton itemType="subject" onClick={() => delete_subject(subject_uuid, reload)} />
                 </>
             }
         />

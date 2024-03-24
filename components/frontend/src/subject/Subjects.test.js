@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react"
 import history from "history/browser"
+
+import { createTestableSettings, datamodel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
 import { Subjects } from "./Subjects"
-import { createTestableSettings, datamodel, report } from "../__fixtures__/fixtures"
 
 function renderSubjects(reports) {
     const settings = createTestableSettings()

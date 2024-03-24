@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react"
 import { array, bool, func } from "prop-types"
+import { useEffect, useState } from "react"
 import RGL, { WidthProvider } from "react-grid-layout"
+
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 
 const ReactGridLayout = WidthProvider(RGL)
