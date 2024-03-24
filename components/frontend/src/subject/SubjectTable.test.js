@@ -1,10 +1,11 @@
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
+
+import { createTestableSettings } from "../__fixtures__/fixtures"
+import * as fetch_server_api from "../api/fetch_server_api"
+import { useExpandedItemsSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { useExpandedItemsSearchQuery } from "../app_ui_settings"
-import * as fetch_server_api from "../api/fetch_server_api"
-import { createTestableSettings } from "../__fixtures__/fixtures"
 import { SubjectTable } from "./SubjectTable"
 
 jest.mock("../api/fetch_server_api.js")
@@ -227,14 +228,10 @@ it("expands the details via the url", () => {
 it("moves a metric", async () => {
     history.push("?expanded=1:2")
     renderSubjectTable()
-    await act(async () =>
-        fireEvent.click(await screen.findByLabelText("Move metric to the next row")),
-    )
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
-        "post",
-        "metric/1/attribute/position",
-        { position: "next" },
-    )
+    await act(async () => fireEvent.click(await screen.findByLabelText("Move metric to the next row")))
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/1/attribute/position", {
+        position: "next",
+    })
 })
 
 it("adds a source", async () => {

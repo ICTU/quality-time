@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react"
-import { element, func, string } from "prop-types"
-import { Button, Dropdown, Icon, Image, Menu, Message, Portal } from "semantic-ui-react"
-import { Form, Modal, Popup } from "../semantic_ui_react_wrappers"
-import FocusLock from "react-focus-lock"
-import { login, logout } from "../api/auth"
-import { Avatar } from "../widgets/Avatar"
-import { DownloadAsPDFButton } from "./DownloadAsPDFButton"
-import { DatePicker } from "../widgets/DatePicker"
-import { optionalDatePropType, settingsPropType, uiModePropType } from "../sharedPropTypes"
-import { CollapseButton } from "./CollapseButton"
-import { UIModeMenu } from "./UIModeMenu"
 import "./Menubar.css"
+
+import { element, func, string } from "prop-types"
+import { useEffect, useState } from "react"
+import FocusLock from "react-focus-lock"
+import { Button, Dropdown, Icon, Image, Menu, Message, Portal } from "semantic-ui-react"
+
+import { login, logout } from "../api/auth"
+import { Form, Modal, Popup } from "../semantic_ui_react_wrappers"
+import { optionalDatePropType, settingsPropType, uiModePropType } from "../sharedPropTypes"
+import { Avatar } from "../widgets/Avatar"
+import { DatePicker } from "../widgets/DatePicker"
+import { CollapseButton } from "./CollapseButton"
+import { DownloadAsPDFButton } from "./DownloadAsPDFButton"
 import { ResetSettingsButton } from "./ResetSettingsButton"
+import { UIModeMenu } from "./UIModeMenu"
 
 function Login({ set_user }) {
     const [username, setUsername] = useState("")
@@ -22,11 +24,7 @@ function Login({ set_user }) {
         login(username, password)
             .then(function (json) {
                 if (json.ok) {
-                    set_user(
-                        username,
-                        json.email,
-                        new Date(Date.parse(json.session_expiration_datetime)),
-                    )
+                    set_user(username, json.email, new Date(Date.parse(json.session_expiration_datetime)))
                 } else {
                     setError("credentials")
                 }
@@ -75,12 +73,7 @@ function Login({ set_user }) {
                         label="Password"
                         onChange={(_event, { value }) => setPassword(value)}
                     />
-                    <Message
-                        error={!!error}
-                        warning={!error}
-                        header={messageHeader}
-                        content={messageContent}
-                    />
+                    <Message error={!!error} warning={!error} header={messageHeader} content={messageContent} />
                     <Form.Button>Submit</Form.Button>
                 </Form>
             </Modal.Content>
@@ -175,18 +168,12 @@ export function Menubar({
                                     }
                                 >
                                     <Image size="mini" src="/favicon.ico" alt="Go home" />
-                                    <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>
-                                        Quality-time
-                                    </span>
+                                    <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
                                 </Menu.Item>
                             </div>
                         }
                     />
-                    <FocusLock
-                        group="settingsPanel"
-                        disabled={!settingsPanelVisible}
-                        className="center"
-                    >
+                    <FocusLock group="settingsPanel" disabled={!settingsPanelVisible} className="center">
                         <div
                             onBeforeInput={(event) => {
                                 event.preventDefault()
@@ -200,10 +187,7 @@ export function Menubar({
                                     setSettingsPanelVisible(!settingsPanelVisible)
                                 }}
                             >
-                                <Icon
-                                    size="large"
-                                    name={`caret ${settingsPanelVisible ? "down" : "right"}`}
-                                />
+                                <Icon size="large" name={`caret ${settingsPanelVisible ? "down" : "right"}`} />
                                 Settings
                             </Menu.Item>
                         </div>

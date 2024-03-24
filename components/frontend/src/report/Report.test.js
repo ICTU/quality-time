@@ -1,12 +1,13 @@
 import { fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
+
+import { createTestableSettings } from "../__fixtures__/fixtures"
+import * as fetch_server_api from "../api/fetch_server_api"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
-import { Report } from "./Report"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import * as fetch_server_api from "../api/fetch_server_api"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
-import { createTestableSettings } from "../__fixtures__/fixtures"
+import { Report } from "./Report"
 
 beforeEach(() => {
     fetch_server_api.fetch_server_api = jest

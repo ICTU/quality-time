@@ -389,23 +389,16 @@ This section assumes you have created a Python virtual environment, activated it
 To run the unit tests and measure unit test coverage of the backend components (this assumes you have created a Python virtual environment, activated it, and installed the requirements as described [above](#developing)):
 
 ```console
-cd components/api_server  # or components/collector, components/notifier, components/shared_code
+cd components/api_server  # or components/collector, components/notifier, components/shared_code, components/frontend
 ci/unittest.sh
-```
-
-To run the frontend unit tests:
-
-```console
-cd compontents/frontend
-npm run test
 ```
 
 ### Quality checks
 
-To run ruff, mypy, and some other security and quality checks on the backend components:
+To run Ruff, mypy, and some other security and quality checks on the backend components, or ESLint and Prettier on the frontend component:
 
 ```console
-cd components/api_server  # or components/collector, components/notifier, components/shared_code
+cd components/api_server  # or components/collector, components/notifier, components/shared_code, components/frontend
 ci/quality.sh
 ```
 

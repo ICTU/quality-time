@@ -1,8 +1,9 @@
 import { Icon } from "semantic-ui-react"
+
 import { Header } from "../semantic_ui_react_wrappers"
-import { HyperLink } from "../widgets/HyperLink"
 import { metricTypePropType } from "../sharedPropTypes"
 import { slugify } from "../utils"
+import { HyperLink } from "../widgets/HyperLink"
 
 export function MetricTypeHeader({ metricType }) {
     const url = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html${slugify(metricType.name)}`

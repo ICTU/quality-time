@@ -1,10 +1,13 @@
-import { useContext } from "react"
+import "./Subject.css"
+
 import { array, bool, func, string } from "prop-types"
+import { useContext } from "react"
+
 import { DataModel } from "../context/DataModel"
 import {
     datesPropType,
-    optionalDatePropType,
     metricsPropType,
+    optionalDatePropType,
     reportPropType,
     reportsPropType,
     settingsPropType,
@@ -12,23 +15,22 @@ import {
 } from "../sharedPropTypes"
 import {
     get_metric_comment,
-    getMetricIssueIds,
     get_metric_name,
     get_metric_status,
-    getMetricTags,
     get_metric_target,
+    get_source_name,
+    getMetricIssueIds,
     getMetricResponseOverrun,
     getMetricResponseTimeLeft,
+    getMetricTags,
     getMetricUnit,
     getMetricValue,
-    get_source_name,
     sortWithLocaleCompare,
     visibleMetrics,
 } from "../utils"
-import { SubjectTable } from "./SubjectTable"
 import { CommentSegment } from "../widgets/CommentSegment"
+import { SubjectTable } from "./SubjectTable"
 import { SubjectTitle } from "./SubjectTitle"
-import "./Subject.css"
 
 function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, measurements) {
     const status_order = {
@@ -66,13 +68,9 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_status.localeCompare(m2_status)
         },
         source: (m1, m2) => {
-            let m1SourceNames = Object.values(m1[1].sources).map((source) =>
-                get_source_name(source, datamodel),
-            )
+            let m1SourceNames = Object.values(m1[1].sources).map((source) => get_source_name(source, datamodel))
             sortWithLocaleCompare(m1SourceNames)
-            let m2SourceNames = Object.values(m2[1].sources).map((source) =>
-                get_source_name(source, datamodel),
-            )
+            let m2SourceNames = Object.values(m2[1].sources).map((source) => get_source_name(source, datamodel))
             sortWithLocaleCompare(m2SourceNames)
             return m1SourceNames.join().localeCompare(m2SourceNames.join())
         },
@@ -97,20 +95,8 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_time_left - m2_time_left
         },
         overrun: (m1, m2) => {
-            const m1_overrun = getMetricResponseOverrun(
-                m1[0],
-                m1[1],
-                report,
-                measurements,
-                datamodel,
-            )
-            const m2_overrun = getMetricResponseOverrun(
-                m2[0],
-                m2[1],
-                report,
-                measurements,
-                datamodel,
-            )
+            const m1_overrun = getMetricResponseOverrun(m1[0], m1[1], report, measurements, datamodel)
+            const m2_overrun = getMetricResponseOverrun(m2[0], m2[1], report, measurements, datamodel)
             return m1_overrun.totalOverrun - m2_overrun.totalOverrun
         },
     }
@@ -159,11 +145,7 @@ export function Subject({
     reload,
 }) {
     const subject = report.subjects[subject_uuid]
-    const metrics = visibleMetrics(
-        subject.metrics,
-        settings.metricsToHide.value,
-        settings.hiddenTags.value,
-    )
+    const metrics = visibleMetrics(subject.metrics, settings.metricsToHide.value, settings.hiddenTags.value)
     const dataModel = useContext(DataModel)
     if (subjectIsEmptyDueToFilters(atReportsOverview, metrics, subject.metrics, settings)) {
         return null

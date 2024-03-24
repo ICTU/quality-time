@@ -1,10 +1,11 @@
-import { useContext, useState } from "react"
 import { func, string } from "prop-types"
-import { Button, Icon, Popup, Table } from "../semantic_ui_react_wrappers"
-import { SourceEntity } from "./SourceEntity"
-import { capitalize } from "../utils"
+import { useContext, useState } from "react"
+
 import { DataModel } from "../context/DataModel"
+import { Button, Icon, Popup, Table } from "../semantic_ui_react_wrappers"
 import { metricPropType, reportPropType, sourcePropType } from "../sharedPropTypes"
+import { capitalize } from "../utils"
+import { SourceEntity } from "./SourceEntity"
 
 export function alignment(attributeType, attributeAlignment) {
     if (attributeAlignment === "left" || attributeAlignment === "right") {
@@ -76,25 +77,16 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
                     }
                 />
             </Table.HeaderCell>
-            <Table.HeaderCell
-                sorted={sorted("entity_status")}
-                onClick={() => sort("entity_status")}
-            >
+            <Table.HeaderCell sorted={sorted("entity_status")} onClick={() => sort("entity_status")}>
                 {`${capitalize(entity_name)} status`}
             </Table.HeaderCell>
-            <Table.HeaderCell
-                sorted={sorted("status_end_date")}
-                onClick={() => sort("status_end_date")}
-            >
+            <Table.HeaderCell sorted={sorted("status_end_date")} onClick={() => sort("status_end_date")}>
                 Status end date
             </Table.HeaderCell>
             <Table.HeaderCell sorted={sorted("rationale")} onClick={() => sort("rationale")}>
                 Status rationale
             </Table.HeaderCell>
-            <Table.HeaderCell
-                onClick={() => sort("first_seen", "datetime")}
-                sorted={sorted("first_seen")}
-            >
+            <Table.HeaderCell onClick={() => sort("first_seen", "datetime")} sorted={sorted("first_seen")}>
                 {capitalize(entity_name)} first seen
             </Table.HeaderCell>
             {entity_attributes.map((entity_attribute) => (
@@ -111,12 +103,7 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
                             trigger={
                                 <span>
                                     &nbsp;
-                                    <Icon
-                                        role="tooltip"
-                                        aria-label="help"
-                                        tabIndex="0"
-                                        name="help circle"
-                                    />
+                                    <Icon role="tooltip" aria-label="help" tabIndex="0" name="help circle" />
                                 </span>
                             }
                             content={entity_attribute.help}

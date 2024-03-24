@@ -1,8 +1,9 @@
-import history from "history/browser"
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { IssueStatus } from "./IssueStatus"
+import history from "history/browser"
+
 import { createTestableSettings } from "../__fixtures__/fixtures"
+import { IssueStatus } from "./IssueStatus"
 
 function renderIssueStatus({
     connectionError = false,
@@ -52,13 +53,7 @@ function renderIssueStatus({
         issue_ids: ["123"],
         issue_status: [issueStatus],
     }
-    return render(
-        <IssueStatus
-            metric={metric}
-            issueTrackerMissing={issueTrackerMissing}
-            settings={settings}
-        />,
-    )
+    return render(<IssueStatus metric={metric} issueTrackerMissing={issueTrackerMissing} settings={settings} />)
 }
 
 beforeEach(() => {

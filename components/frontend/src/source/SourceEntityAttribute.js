@@ -6,25 +6,12 @@ export function SourceEntityAttribute({ entity, entity_attribute }) {
     let cell_contents = entity[entity_attribute.key] ?? ""
     const type = entity_attribute.type ?? ""
     cell_contents =
-        cell_contents && type === "datetime" ? (
-            <TimeAgoWithDate dateFirst date={cell_contents} />
-        ) : (
-            cell_contents
-        )
+        cell_contents && type === "datetime" ? <TimeAgoWithDate dateFirst date={cell_contents} /> : cell_contents
     cell_contents =
-        cell_contents && type === "date" ? (
-            <TimeAgoWithDate dateFirst noTime date={cell_contents} />
-        ) : (
-            cell_contents
-        )
-    cell_contents =
-        cell_contents && type.includes("integer")
-            ? Math.round(cell_contents).toString()
-            : cell_contents
-    cell_contents =
-        cell_contents && type.includes("percentage") ? cell_contents + "%" : cell_contents
-    cell_contents =
-        cell_contents && type === "status" ? <StatusIcon status={cell_contents} /> : cell_contents
+        cell_contents && type === "date" ? <TimeAgoWithDate dateFirst noTime date={cell_contents} /> : cell_contents
+    cell_contents = cell_contents && type.includes("integer") ? Math.round(cell_contents).toString() : cell_contents
+    cell_contents = cell_contents && type.includes("percentage") ? cell_contents + "%" : cell_contents
+    cell_contents = cell_contents && type === "status" ? <StatusIcon status={cell_contents} /> : cell_contents
     cell_contents = entity[entity_attribute.url] ? (
         <HyperLink url={entity[entity_attribute.url]}>{cell_contents}</HyperLink>
     ) : (

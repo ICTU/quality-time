@@ -1,11 +1,12 @@
 import { string } from "prop-types"
-import { stringsURLSearchQueryPropType } from "./sharedPropTypes"
+
 import {
     useArrayURLSearchQuery,
     useBooleanURLSearchQuery,
     useIntegerURLSearchQuery,
     useStringURLSearchQuery,
 } from "./hooks/url_search_query"
+import { stringsURLSearchQueryPropType } from "./sharedPropTypes"
 
 function urlSearchQueryKey(key, report_uuid) {
     // Make the settings changeable per report (and separately for the reports overview) by adding the report UUID as

@@ -53,12 +53,13 @@
         "eslint-plugin-n": "^16.6.2",
         "eslint-plugin-promise": "^6.1.1",
         "eslint-plugin-react": "^7.34.1",
+        "eslint-plugin-simple-import-sort": "^12.0.0",
         "prettier": "3.2.5",
         "react-scripts": "5.0.1",
         "react-test-renderer": "^18.2.0"
     },
     "prettier": {
-        "printWidth": 100,
+        "printWidth": 120,
         "semi": false,
         "tabWidth": 4
     }

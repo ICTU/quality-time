@@ -1,8 +1,10 @@
-import { default as ReactDatePicker } from "react-datepicker"
-import { func } from "prop-types"
 import "react-datepicker/dist/react-datepicker.css"
-import { isValidDate_YYYYMMDD } from "../utils"
 import "./DatePicker.css"
+
+import { func } from "prop-types"
+import { default as ReactDatePicker } from "react-datepicker"
+
+import { isValidDate_YYYYMMDD } from "../utils"
 
 export function DatePicker(props) {
     const { onChange, ...otherProps } = props

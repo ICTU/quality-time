@@ -1,15 +1,11 @@
-import { useContext } from "react"
-import { Header, Popup, Table } from "../semantic_ui_react_wrappers"
 import { string } from "prop-types"
+import { useContext } from "react"
+
 import { DataModel } from "../context/DataModel"
-import { StatusIcon } from "./StatusIcon"
+import { Header, Popup, Table } from "../semantic_ui_react_wrappers"
+import { datesPropType, measurementsPropType, metricPropType, reportPropType } from "../sharedPropTypes"
 import { getMetricResponseOverrun, pluralize } from "../utils"
-import {
-    datesPropType,
-    measurementsPropType,
-    metricPropType,
-    reportPropType,
-} from "../sharedPropTypes"
+import { StatusIcon } from "./StatusIcon"
 
 function formatDays(days) {
     return `${days} ${pluralize("day", days)}`
@@ -17,13 +13,7 @@ function formatDays(days) {
 
 export function Overrun({ metric_uuid, metric, report, measurements, dates }) {
     const dataModel = useContext(DataModel)
-    const { totalOverrun, overruns } = getMetricResponseOverrun(
-        metric_uuid,
-        metric,
-        report,
-        measurements,
-        dataModel,
-    )
+    const { totalOverrun, overruns } = getMetricResponseOverrun(metric_uuid, metric, report, measurements, dataModel)
     if (totalOverrun === 0) {
         return null
     }
@@ -66,12 +56,8 @@ export function Overrun({ metric_uuid, metric, report, measurements, dates }) {
                             </Table.Cell>
                             <Table.Cell>{overrun.start.split("T")[0]}</Table.Cell>
                             <Table.Cell>{overrun.end.split("T")[0]}</Table.Cell>
-                            <Table.Cell textAlign="right">
-                                {formatDays(overrun.actual_response_time)}
-                            </Table.Cell>
-                            <Table.Cell textAlign="right">
-                                {formatDays(overrun.desired_response_time)}
-                            </Table.Cell>
+                            <Table.Cell textAlign="right">{formatDays(overrun.actual_response_time)}</Table.Cell>
+                            <Table.Cell textAlign="right">{formatDays(overrun.desired_response_time)}</Table.Cell>
                             <Table.Cell textAlign="right">{formatDays(overrun.overrun)}</Table.Cell>
                         </Table.Row>
                     ))}

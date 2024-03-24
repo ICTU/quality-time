@@ -1,5 +1,6 @@
-import { Popup, Table } from "../semantic_ui_react_wrappers"
 import { func, string } from "prop-types"
+
+import { Popup, Table } from "../semantic_ui_react_wrappers"
 import {
     labelPropType,
     popupContentPropType,
@@ -9,14 +10,7 @@ import {
 
 function TableHeaderCellContents({ help, label }) {
     return help ? (
-        <Popup
-            wide="very"
-            trigger={<span>{label}</span>}
-            header={label}
-            hoverable
-            content={help}
-            on={["hover"]}
-        />
+        <Popup wide="very" trigger={<span>{label}</span>} header={label} hoverable content={help} on={["hover"]} />
     ) : (
         label
     )

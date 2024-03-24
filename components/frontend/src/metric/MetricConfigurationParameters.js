@@ -1,24 +1,25 @@
-import { useContext } from "react"
 import { func, string } from "prop-types"
+import { useContext } from "react"
 import { Grid, Header } from "semantic-ui-react"
-import { MultipleChoiceInput } from "../fields/MultipleChoiceInput"
-import { StringInput } from "../fields/StringInput"
-import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+
 import { set_metric_attribute } from "../api/metric"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
+import { MultipleChoiceInput } from "../fields/MultipleChoiceInput"
+import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+import { StringInput } from "../fields/StringInput"
+import { metricPropType, reportPropType, subjectPropType } from "../sharedPropTypes"
 import {
     dropdownOptions,
     formatMetricScale,
     getMetricDirection,
     getMetricScale,
-    getReportTags,
     getMetricTags,
+    getReportTags,
 } from "../utils"
 import { LabelWithHelp } from "../widgets/LabelWithHelp"
 import { MetricType } from "./MetricType"
 import { Target } from "./Target"
-import { metricPropType, reportPropType, subjectPropType } from "../sharedPropTypes"
 
 function metric_scale_options(metric_scales, datamodel) {
     let scale_options = []
@@ -176,9 +177,7 @@ function EvaluateTargets({ metric, metric_uuid, reload }) {
                 { key: true, text: "Yes", value: true },
                 { key: false, text: "No", value: false },
             ]}
-            set_value={(value) =>
-                set_metric_attribute(metric_uuid, "evaluate_targets", value, reload)
-            }
+            set_value={(value) => set_metric_attribute(metric_uuid, "evaluate_targets", value, reload)}
         />
     )
 }
@@ -206,12 +205,7 @@ export function MetricConfigurationParameters({ metric, metric_uuid, reload, rep
                     <MetricName metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Tags
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                        report={report}
-                    />
+                    <Tags metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>

@@ -1,4 +1,5 @@
 import { bool, number, oneOfType, string } from "prop-types"
+
 import { Form, Label } from "../semantic_ui_react_wrappers"
 import { labelPropType } from "../sharedPropTypes"
 

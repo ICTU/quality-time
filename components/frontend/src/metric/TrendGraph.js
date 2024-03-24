@@ -1,7 +1,9 @@
 import { useContext } from "react"
 import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme } from "victory"
+
 import { DarkMode } from "../context/DarkMode"
 import { DataModel } from "../context/DataModel"
+import { measurementsPropType, metricPropType } from "../sharedPropTypes"
 import {
     capitalize,
     formatMetricScaleAndUnit,
@@ -10,7 +12,6 @@ import {
     nice_number,
     scaled_number,
 } from "../utils"
-import { measurementsPropType, metricPropType } from "../sharedPropTypes"
 
 function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
     const scale = getMetricScale(metric, dataModel)
@@ -40,10 +41,7 @@ export function TrendGraph({ metric, measurements }) {
             x2.setSeconds(x2.getSeconds() + (x1.getSeconds() - x2.getSeconds()) + 1)
         }
         previousX2 = x2
-        measurementPoints.push(
-            { y: measurementValues[index], x: x1 },
-            { y: measurementValues[index], x: x2 },
-        )
+        measurementPoints.push({ y: measurementValues[index], x: x1 }, { y: measurementValues[index], x: x2 })
     })
     const softWhite = "rgba(255, 255, 255, 0.8)"
     const softerWhite = "rgba(255, 255, 255, 0.7)"

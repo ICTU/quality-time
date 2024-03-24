@@ -1,5 +1,6 @@
-import { useState } from "react"
 import { bool, func, string } from "prop-types"
+import { useState } from "react"
+
 import { Form, Label } from "../semantic_ui_react_wrappers"
 import { labelPropType } from "../sharedPropTypes"
 

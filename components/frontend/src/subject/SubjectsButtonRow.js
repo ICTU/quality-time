@@ -1,13 +1,14 @@
-import { useContext } from "react"
 import { func } from "prop-types"
-import { Segment } from "../semantic_ui_react_wrappers"
+import { useContext } from "react"
+
+import { add_subject, copy_subject, move_subject } from "../api/subject"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
+import { Segment } from "../semantic_ui_react_wrappers"
+import { reportPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
 import { AddDropdownButton, CopyButton, MoveButton } from "../widgets/Button"
-import { add_subject, copy_subject, move_subject } from "../api/subject"
 import { subject_options } from "../widgets/menu_options"
 import { subjectTypes } from "./SubjectType"
-import { reportPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
 
 export function SubjectsButtonRow({ reload, report, reports, settings }) {
     const dataModel = useContext(DataModel)

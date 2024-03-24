@@ -1,10 +1,11 @@
 import { fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
+
+import { createTestableSettings } from "../__fixtures__/fixtures"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
 import { ReportsOverviewDashboard } from "./ReportsOverviewDashboard"
-import { createTestableSettings } from "../__fixtures__/fixtures"
 
 beforeEach(() => {
     mockGetAnimations()
@@ -47,12 +48,7 @@ function renderReportsOverviewDashboard({
     render(
         <DataModel.Provider value={dataModel}>
             <div id="dashboard">
-                <ReportsOverviewDashboard
-                    dates={dates}
-                    openReport={openReport}
-                    reports={reports}
-                    settings={settings}
-                />
+                <ReportsOverviewDashboard dates={dates} openReport={openReport} reports={reports} settings={settings} />
             </div>
         </DataModel.Provider>,
     )

@@ -1,10 +1,11 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
+
+import { createTestableSettings } from "../__fixtures__/fixtures"
+import * as fetch_server_api from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { ReportsOverviewTitle } from "./ReportsOverviewTitle"
-import * as fetch_server_api from "../api/fetch_server_api"
-import { createTestableSettings } from "../__fixtures__/fixtures"
 
 jest.mock("../api/fetch_server_api.js")
 
@@ -24,36 +25,27 @@ it("sets the title", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderReportsOverviewTitle()
     await userEvent.type(screen.getByLabelText(/Report overview title/), "{Delete}New title{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "reports_overview/attribute/title",
-        { title: "New title" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/title", {
+        title: "New title",
+    })
 })
 
 it("sets the subtitle", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderReportsOverviewTitle()
-    await userEvent.type(
-        screen.getByLabelText(/Report overview subtitle/),
-        "{Delete}New subtitle{Enter}",
-    )
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "reports_overview/attribute/subtitle",
-        { subtitle: "New subtitle" },
-    )
+    await userEvent.type(screen.getByLabelText(/Report overview subtitle/), "{Delete}New subtitle{Enter}")
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/subtitle", {
+        subtitle: "New subtitle",
+    })
 })
 
 it("sets the comment", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderReportsOverviewTitle()
     await userEvent.type(screen.getByLabelText(/Comment/), "{Delete}New comment{Shift>}{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "reports_overview/attribute/comment",
-        { comment: "New comment" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/comment", {
+        comment: "New comment",
+    })
 })
 
 it("sets the edit report permission", async () => {

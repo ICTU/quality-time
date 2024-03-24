@@ -1,20 +1,14 @@
-import { useContext } from "react"
 import { bool, func, object, oneOfType, string } from "prop-types"
+import { useContext } from "react"
 import { Grid, Menu } from "semantic-ui-react"
-import { Icon, Label, Tab } from "../semantic_ui_react_wrappers"
-import { StringInput } from "../fields/StringInput"
-import { ChangeLog } from "../changelog/ChangeLog"
-import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
-import { HyperLink } from "../widgets/HyperLink"
+
 import { delete_source, set_source_attribute } from "../api/source"
+import { ChangeLog } from "../changelog/ChangeLog"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { SourceParameters } from "./SourceParameters"
-import { SourceType } from "./SourceType"
-import { SourceTypeHeader } from "./SourceTypeHeader"
 import { ErrorMessage } from "../errorMessage"
-import { FocusableTab } from "../widgets/FocusableTab"
-import { get_metric_name, get_source_name } from "../utils"
+import { StringInput } from "../fields/StringInput"
+import { Icon, Label, Tab } from "../semantic_ui_react_wrappers"
 import {
     measurementSourcePropType,
     metricPropType,
@@ -22,12 +16,17 @@ import {
     sourcePropType,
     stringsPropType,
 } from "../sharedPropTypes"
+import { get_metric_name, get_source_name } from "../utils"
+import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
+import { FocusableTab } from "../widgets/FocusableTab"
+import { HyperLink } from "../widgets/HyperLink"
+import { SourceParameters } from "./SourceParameters"
+import { SourceType } from "./SourceType"
+import { SourceTypeHeader } from "./SourceTypeHeader"
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields
-        ? changed_fields
-              .filter((field) => field.source_uuid === source_uuid)
-              .map((field) => field.parameter_key)
+        ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key)
         : []
 }
 
@@ -47,10 +46,7 @@ function ButtonGridRow({ first_source, last_source, reload, source_uuid }) {
                                     set_source_attribute(source_uuid, "position", direction, reload)
                                 }}
                             />
-                            <DeleteButton
-                                itemType="source"
-                                onClick={() => delete_source(source_uuid, reload)}
-                            />
+                            <DeleteButton itemType="source" onClick={() => delete_source(source_uuid, reload)} />
                         </Grid.Column>
                     </Grid.Row>
                 </div>
@@ -84,9 +80,7 @@ function Parameters({
                 <Grid.Column>
                     <SourceType
                         metric_type={metric.type}
-                        set_source_attribute={(a, v) =>
-                            set_source_attribute(source_uuid, a, v, reload)
-                        }
+                        set_source_attribute={(a, v) => set_source_attribute(source_uuid, a, v, reload)}
                         source_uuid={source_uuid}
                         source_type={source.type}
                     />
@@ -97,9 +91,7 @@ function Parameters({
                         id="source-name"
                         label="Source name"
                         placeholder={source_type.name}
-                        set_value={(value) =>
-                            set_source_attribute(source_uuid, "name", value, reload)
-                        }
+                        set_value={(value) => set_source_attribute(source_uuid, "name", value, reload)}
                         value={source.name}
                     />
                 </Grid.Column>
@@ -107,10 +99,7 @@ function Parameters({
             <Grid.Row columns={1}>
                 <Grid.Column>
                     <SourceParameters
-                        changed_param_keys={select_sources_parameter_keys(
-                            changed_fields,
-                            source_uuid,
-                        )}
+                        changed_param_keys={select_sources_parameter_keys(changed_fields, source_uuid)}
                         metric={metric}
                         reload={reload}
                         report={report}
@@ -119,17 +108,9 @@ function Parameters({
                     />
                 </Grid.Column>
             </Grid.Row>
-            {connection_error && (
-                <ErrorMessage title="Connection error" message={connection_error} />
-            )}
+            {connection_error && <ErrorMessage title="Connection error" message={connection_error} />}
             {parse_error && <ErrorMessage title="Parse error" message={parse_error} />}
-            {config_error && (
-                <ErrorMessage
-                    title="Configuration error"
-                    message={config_error}
-                    formatAsText={true}
-                />
-            )}
+            {config_error && <ErrorMessage title="Configuration error" message={config_error} formatAsText={true} />}
         </Grid>
     )
 }
@@ -166,41 +147,32 @@ export function Source({
     const configErrorMessage = (
         <>
             <p>
-                {sourceName} cannot be used to measure {metricName}. This configuration error occurs
-                if the type of a metric is changed to a metric type that is not supported by the
-                configured source type(s).
+                {sourceName} cannot be used to measure {metricName}. This configuration error occurs if the type of a
+                metric is changed to a metric type that is not supported by the configured source type(s).
             </p>
             <p>There are several ways to fix this:</p>
             <ul>
                 <li>
                     Change the type of the metric (back) to a type that is supported by{" "}
-                    <HyperLink url={`${referenceManualURL}#${source.type}`}>{sourceName}</HyperLink>
-                    .
+                    <HyperLink url={`${referenceManualURL}#${source.type}`}>{sourceName}</HyperLink>.
                 </li>
                 <li>
                     Change the type of this source to a type that supports{" "}
-                    <HyperLink url={`${referenceManualURL}#${metric.type}`}>{metricName}</HyperLink>
-                    .
+                    <HyperLink url={`${referenceManualURL}#${metric.type}`}>{metricName}</HyperLink>.
                 </li>
                 <li>Move this source to another metric.</li>
                 <li>Remove this source altogether.</li>
             </ul>
             <p>
-                As {sourceName} cannot be used to measure {metricName}, no source parameters are
-                currently visible. Any source parameters configured previously will become visible
-                again when the metric type is changed back to the previous metric type.
+                As {sourceName} cannot be used to measure {metricName}, no source parameters are currently visible. Any
+                source parameters configured previously will become visible again when the metric type is changed back
+                to the previous metric type.
             </p>
         </>
     )
-    const configError = dataModel.metrics[metric.type].sources.includes(source.type)
-        ? ""
-        : configErrorMessage
+    const configError = dataModel.metrics[metric.type].sources.includes(source.type) ? "" : configErrorMessage
     const configurationTabLabel =
-        configError || connectionError || parseError ? (
-            <Label color="red">{"Configuration"}</Label>
-        ) : (
-            "Configuration"
-        )
+        configError || connectionError || parseError ? <Label color="red">{"Configuration"}</Label> : "Configuration"
     const panes = [
         {
             menuItem: (
@@ -241,11 +213,7 @@ export function Source({
     ]
     return (
         <>
-            <SourceTypeHeader
-                metricTypeId={metric.type}
-                sourceTypeId={source.type}
-                sourceType={sourceType}
-            />
+            <SourceTypeHeader metricTypeId={metric.type} sourceTypeId={source.type} sourceType={sourceType} />
             <Tab panes={panes} />
             <ButtonGridRow
                 first_source={first_source}

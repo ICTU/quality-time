@@ -1,7 +1,8 @@
 import { element, number, object } from "prop-types"
 import { VictoryPie } from "victory"
-import { pluralize, STATUSES, STATUS_COLORS, STATUS_NAME, sum } from "../utils"
+
 import { stringsPropType } from "../sharedPropTypes"
+import { pluralize, STATUS_COLORS, STATUS_NAME, STATUSES, sum } from "../utils"
 
 function nrMetricsLabel(nrMetrics) {
     return nrMetrics === 0 ? "No metrics" : nrMetrics + pluralize(" metric", nrMetrics)
@@ -10,17 +11,7 @@ nrMetricsLabel.PropTypes = {
     nrMetrics: number,
 }
 
-export function StatusPieChart({
-    animate,
-    colors,
-    label,
-    tooltip,
-    summary,
-    style,
-    maxY,
-    width,
-    height,
-}) {
+export function StatusPieChart({ animate, colors, label, tooltip, summary, style, maxY, width, height }) {
     const nrMetrics = sum(summary)
     const outerRadius = 0.4 * Math.min(height, width)
     const minInnerRadius = 0.4 * outerRadius

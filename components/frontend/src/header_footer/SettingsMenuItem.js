@@ -1,19 +1,12 @@
-import { Menu } from "semantic-ui-react"
-import { Popup } from "../semantic_ui_react_wrappers"
 import { bool, func, number, oneOfType, string } from "prop-types"
+import { Menu } from "semantic-ui-react"
+
+import { Popup } from "../semantic_ui_react_wrappers"
 import { childrenPropType, popupContentPropType } from "../sharedPropTypes"
 
 const activeColor = "grey"
 
-export function SettingsMenuItem({
-    active,
-    children,
-    disabled,
-    disabledHelp,
-    help,
-    onClick,
-    onClickData,
-}) {
+export function SettingsMenuItem({ active, children, disabled, disabledHelp, help, onClick, onClickData }) {
     // A menu item that can can show help when disabled so users can see why the menu item is disabled
     const props = {
         active: active,

@@ -1,8 +1,9 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
+import * as report_api from "../api/report"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import * as report_api from "../api/report"
 import { IssueTracker } from "./IssueTracker"
 
 jest.mock("../api/report.js")
@@ -19,10 +20,7 @@ const reload = () => {
     /* Dummy implementation */
 }
 
-function renderIssueTracker({
-    report = { report_uuid: "report_uuid", title: "Report" },
-    help_url = "",
-} = {}) {
+function renderIssueTracker({ report = { report_uuid: "report_uuid", title: "Report" }, help_url = "" } = {}) {
     return render(
         <DataModel.Provider
             value={{

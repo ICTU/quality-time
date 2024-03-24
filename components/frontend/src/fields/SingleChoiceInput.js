@@ -1,8 +1,9 @@
-import { Form } from "../semantic_ui_react_wrappers"
 import { array, bool, func, number, oneOfType, string } from "prop-types"
+
 import { ReadOnlyOrEditable } from "../context/Permissions"
-import { ReadOnlyInput } from "./ReadOnlyInput"
+import { Form } from "../semantic_ui_react_wrappers"
 import { labelPropType, permissionsPropType } from "../sharedPropTypes"
+import { ReadOnlyInput } from "./ReadOnlyInput"
 
 function SingleChoiceDropdown(props) {
     let { editableLabel, options, setValue, ...otherProps } = props

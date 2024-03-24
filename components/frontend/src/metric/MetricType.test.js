@@ -1,9 +1,10 @@
 import { act, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
+import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { MetricType } from "./MetricType"
-import * as fetch_server_api from "../api/fetch_server_api"
 
 jest.mock("../api/fetch_server_api.js")
 
@@ -61,11 +62,9 @@ it("sets the metric type", async () => {
         renderMetricType("violations")
     })
     await userEvent.type(screen.getByRole("combobox"), "Source version{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/attribute/type",
-        { type: "source_version" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/type", {
+        type: "source_version",
+    })
 })
 
 it("shows the metric type even when not supported by the subject type", async () => {

@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react"
+
+import { DarkMode } from "../context/DarkMode"
 import { DataModel } from "../context/DataModel"
 import { TrendGraph } from "./TrendGraph"
-import { DarkMode } from "../context/DarkMode"
 
 const dataModel = {
     metrics: {
@@ -14,10 +15,7 @@ function renderTrendgraph({ measurements = [], darkMode = false } = {}) {
     return render(
         <DarkMode.Provider value={darkMode}>
             <DataModel.Provider value={dataModel}>
-                <TrendGraph
-                    metric={{ type: "violations", scale: "count" }}
-                    measurements={measurements}
-                />
+                <TrendGraph metric={{ type: "violations", scale: "count" }} measurements={measurements} />
             </DataModel.Provider>
         </DarkMode.Provider>,
     )

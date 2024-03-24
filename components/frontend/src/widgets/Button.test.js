@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
 import {
     AddButton,
     AddDropdownButton,
@@ -232,9 +233,7 @@ test("DeleteButton has the correct label", () => {
 
     test("ReorderButtonGroup does not call the callback on click direction when the button group is already there", () => {
         const mockCallBack = jest.fn()
-        render(
-            <ReorderButtonGroup onClick={mockCallBack} first={true} last={true} moveable="item" />,
-        )
+        render(<ReorderButtonGroup onClick={mockCallBack} first={true} last={true} moveable="item" />)
         fireEvent.click(screen.getByLabelText(`Move item to the ${direction} position`))
         expect(mockCallBack).not.toHaveBeenCalled()
     })

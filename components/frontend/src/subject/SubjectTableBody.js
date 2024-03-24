@@ -1,6 +1,6 @@
 import { array, func, string } from "prop-types"
+
 import { Table } from "../semantic_ui_react_wrappers"
-import { SubjectTableRow } from "./SubjectTableRow"
 import {
     datesPropType,
     optionalDatePropType,
@@ -9,6 +9,7 @@ import {
     settingsPropType,
     stringsPropType,
 } from "../sharedPropTypes"
+import { SubjectTableRow } from "./SubjectTableRow"
 
 export function SubjectTableBody({
     changed_fields,

@@ -1,5 +1,6 @@
-import { Icon, Table } from "../semantic_ui_react_wrappers"
 import { bool, func, object } from "prop-types"
+
+import { Icon, Table } from "../semantic_ui_react_wrappers"
 import { childrenPropType } from "../sharedPropTypes"
 
 export function TableRowWithDetails(props) {

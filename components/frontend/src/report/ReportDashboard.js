@@ -1,20 +1,21 @@
-import { useContext } from "react"
 import { array, func } from "prop-types"
-import { datesPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
+import { useContext } from "react"
+
+import { set_report_attribute } from "../api/report"
 import { DataModel } from "../context/DataModel"
-import { Tag } from "../widgets/Tag"
 import { CardDashboard } from "../dashboard/CardDashboard"
 import { LegendCard } from "../dashboard/LegendCard"
 import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
-import { set_report_attribute } from "../api/report"
+import { datesPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
 import {
-    getReportTags,
-    getMetricTags,
-    nrMetricsInReport,
     get_subject_name,
+    getMetricTags,
+    getReportTags,
+    nrMetricsInReport,
     STATUS_COLORS,
     visibleMetrics,
 } from "../utils"
+import { Tag } from "../widgets/Tag"
 import { metricStatusOnDate } from "./report_utils"
 
 function summarizeMetricsOnDate(metrics, measurements, date, dataModel) {
@@ -31,13 +32,7 @@ function summarizeTagOnDate(report, measurements, tag, date, dataModel) {
     Object.values(report.subjects).forEach((subject) => {
         Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
             if (getMetricTags(metric).indexOf(tag) >= 0) {
-                const status = metricStatusOnDate(
-                    metric_uuid,
-                    metric,
-                    measurements,
-                    date,
-                    dataModel,
-                )
+                const status = metricStatusOnDate(metric_uuid, metric, measurements, date, dataModel)
                 summary[STATUS_COLORS[status]] += 1
             }
         })
@@ -45,15 +40,7 @@ function summarizeTagOnDate(report, measurements, tag, date, dataModel) {
     return summary
 }
 
-export function ReportDashboard({
-    dates,
-    measurements,
-    onClick,
-    onClickTag,
-    reload,
-    report,
-    settings,
-}) {
+export function ReportDashboard({ dates, measurements, onClick, onClickTag, reload, report, settings }) {
     const dataModel = useContext(DataModel)
     const nrMetrics = Math.max(nrMetricsInReport(report), 1)
     const subjectCards = []

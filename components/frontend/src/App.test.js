@@ -1,9 +1,10 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
-import App from "./App"
+
 import * as auth from "./api/auth"
 import * as fetch_server_api from "./api/fetch_server_api"
+import App from "./App"
 import * as toast from "./widgets/toast"
 
 function set_user_in_local_storage(session_expiration_datetime, email) {
@@ -153,9 +154,5 @@ it("handles the nr of measurements event source", async () => {
         "reconnecting",
     )
     await act(async () => eventListeners["init"]({ data: 43 }))
-    expect(showMessage).toHaveBeenCalledWith(
-        "success",
-        "Connected to server",
-        "Successfully reconnected to server.",
-    )
+    expect(showMessage).toHaveBeenCalledWith("success", "Connected to server", "Successfully reconnected to server.")
 })

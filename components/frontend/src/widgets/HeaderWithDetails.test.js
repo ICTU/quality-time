@@ -1,8 +1,9 @@
-import history from "history/browser"
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { HeaderWithDetails } from "./HeaderWithDetails"
+import history from "history/browser"
+
 import { createTestableSettings } from "../__fixtures__/fixtures"
+import { HeaderWithDetails } from "./HeaderWithDetails"
 
 beforeEach(() => {
     history.push("")

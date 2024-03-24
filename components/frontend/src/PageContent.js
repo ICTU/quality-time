@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react"
 import { bool, func, number, string } from "prop-types"
+import { useEffect, useState } from "react"
 import { Container, Loader } from "semantic-ui-react"
-import { Segment } from "./semantic_ui_react_wrappers"
+
+import { get_measurements } from "./api/measurement"
 import { Report } from "./report/Report"
 import { ReportsOverview } from "./report/ReportsOverview"
-import { get_measurements } from "./api/measurement"
+import { Segment } from "./semantic_ui_react_wrappers"
 import {
+    optionalDatePropType,
     reportPropType,
     reportsOverviewPropType,
     reportsPropType,
     settingsPropType,
     stringsPropType,
-    optionalDatePropType,
 } from "./sharedPropTypes"
 
 function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
@@ -85,21 +86,9 @@ export function PageContent({
             settings: settings,
         }
         if (report_uuid) {
-            content = (
-                <Report
-                    openReportsOverview={openReportsOverview}
-                    report={current_report}
-                    {...commonProps}
-                />
-            )
+            content = <Report openReportsOverview={openReportsOverview} report={current_report} {...commonProps} />
         } else {
-            content = (
-                <ReportsOverview
-                    openReport={openReport}
-                    reports_overview={reports_overview}
-                    {...commonProps}
-                />
-            )
+            content = <ReportsOverview openReport={openReport} reports_overview={reports_overview} {...commonProps} />
         }
     }
     return (

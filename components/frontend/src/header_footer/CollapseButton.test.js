@@ -1,8 +1,9 @@
 import { fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
-import { CollapseButton } from "./CollapseButton"
-import { useExpandedItemsSearchQuery } from "../app_ui_settings"
+
 import { createTestableSettings } from "../__fixtures__/fixtures"
+import { useExpandedItemsSearchQuery } from "../app_ui_settings"
+import { CollapseButton } from "./CollapseButton"
 
 beforeEach(() => {
     history.push("")

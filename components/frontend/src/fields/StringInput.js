@@ -1,24 +1,15 @@
-import { useState } from "react"
 import { array, bool, func, string } from "prop-types"
-import { Form } from "../semantic_ui_react_wrappers"
+import { useState } from "react"
+
 import { ReadOnlyOrEditable } from "../context/Permissions"
+import { Form } from "../semantic_ui_react_wrappers"
+import { labelPropType, permissionsPropType, stringsPropType } from "../sharedPropTypes"
+import { sortWithLocaleCompare } from "../utils"
 import { Input } from "./Input"
 import { ReadOnlyInput } from "./ReadOnlyInput"
-import { sortWithLocaleCompare } from "../utils"
-import { labelPropType, permissionsPropType, stringsPropType } from "../sharedPropTypes"
 
 function StringInputWithSuggestions(props) {
-    let {
-        editableLabel,
-        label,
-        error,
-        options,
-        placeholder,
-        required,
-        set_value,
-        warning,
-        ...otherProps
-    } = props
+    let { editableLabel, label, error, options, placeholder, required, set_value, warning, ...otherProps } = props
     placeholder = placeholder || "none"
     const initialValue = props.value || ""
     const [stringOptions, setStringOptions] = useState([
@@ -35,10 +26,7 @@ function StringInputWithSuggestions(props) {
             fluid
             label={editableLabel || label}
             onAddItem={(_event, { value }) => {
-                setStringOptions((prev_options) => [
-                    { text: value, value: value, key: value },
-                    ...prev_options,
-                ])
+                setStringOptions((prev_options) => [{ text: value, value: value, key: value }, ...prev_options])
             }}
             onChange={(_event, { value }) => {
                 setSearchQuery(value)

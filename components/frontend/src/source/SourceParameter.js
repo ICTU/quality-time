@@ -1,17 +1,13 @@
-import { useState } from "react"
 import { bool, func, number, oneOfType, string } from "prop-types"
-import { StringInput } from "../fields/StringInput"
-import { MultipleChoiceInput } from "../fields/MultipleChoiceInput"
+import { useState } from "react"
+
+import { set_source_parameter } from "../api/source"
 import { DateInput } from "../fields/DateInput"
 import { IntegerInput } from "../fields/IntegerInput"
+import { MultipleChoiceInput } from "../fields/MultipleChoiceInput"
 import { PasswordInput } from "../fields/PasswordInput"
-import { set_source_parameter } from "../api/source"
 import { SingleChoiceInput } from "../fields/SingleChoiceInput"
-import { LabelWithDropdown } from "../widgets/LabelWithDropdown"
-import { LabelWithHelp } from "../widgets/LabelWithHelp"
-import { LabelWithHyperLink } from "../widgets/LabelWithHyperLink"
-import { LabelDate } from "../widgets/LabelWithDate"
-import { dropdownOptions } from "../utils"
+import { StringInput } from "../fields/StringInput"
 import {
     labelPropType,
     permissionsPropType,
@@ -20,15 +16,13 @@ import {
     sourcePropType,
     stringsPropType,
 } from "../sharedPropTypes"
+import { dropdownOptions } from "../utils"
+import { LabelDate } from "../widgets/LabelWithDate"
+import { LabelWithDropdown } from "../widgets/LabelWithDropdown"
+import { LabelWithHelp } from "../widgets/LabelWithHelp"
+import { LabelWithHyperLink } from "../widgets/LabelWithHyperLink"
 
-function SourceParameterLabel({
-    edit_scope,
-    index,
-    label,
-    parameter_short_name,
-    setEditScope,
-    source_type_name,
-}) {
+function SourceParameterLabel({ edit_scope, index, label, parameter_short_name, setEditScope, source_type_name }) {
     const scope_options = [
         {
             key: "source",
@@ -183,33 +177,16 @@ export function SourceParameter({
         return <PasswordInput {...parameter_props} />
     }
     if (parameter_type === "integer") {
-        return (
-            <IntegerInput
-                {...parameter_props}
-                max={parameter_max}
-                min={parameter_min}
-                unit={parameter_unit}
-            />
-        )
+        return <IntegerInput {...parameter_props} max={parameter_max} min={parameter_min} unit={parameter_unit} />
     }
     if (parameter_type === "single_choice") {
-        return (
-            <SingleChoiceInput {...parameter_props} options={dropdownOptions(parameter_values)} />
-        )
+        return <SingleChoiceInput {...parameter_props} options={dropdownOptions(parameter_values)} />
     }
     if (parameter_type === "multiple_choice") {
-        return (
-            <MultipleChoiceInput {...parameter_props} options={dropdownOptions(parameter_values)} />
-        )
+        return <MultipleChoiceInput {...parameter_props} options={dropdownOptions(parameter_values)} />
     }
     if (parameter_type === "multiple_choice_with_addition") {
-        return (
-            <MultipleChoiceInput
-                {...parameter_props}
-                options={dropdownOptions(parameter_values)}
-                allowAdditions
-            />
-        )
+        return <MultipleChoiceInput {...parameter_props} options={dropdownOptions(parameter_values)} allowAdditions />
     }
     parameter_props["options"] = options()
     if (parameter_type === "string") {

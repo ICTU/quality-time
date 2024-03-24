@@ -1,9 +1,10 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import { Table } from "semantic-ui-react"
+
+import { datamodel, report } from "../__fixtures__/fixtures"
+import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import * as fetch_server_api from "../api/fetch_server_api"
-import { datamodel, report } from "../__fixtures__/fixtures"
 import { SubjectTableFooter } from "./SubjectTableFooter"
 
 const stopFilteringAndSorting = jest.fn()
@@ -28,11 +29,9 @@ it("shows the add metric button and adds a metric when clicked", () => {
     fireEvent.click(getByText(/Add metric/))
     fireEvent.click(screen.getByText(/Metric type/))
     expect(stopFilteringAndSorting).toBeCalled()
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
-        "post",
-        "metric/new/subject_uuid",
-        { type: "metric_type" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", {
+        type: "metric_type",
+    })
 })
 
 it("copies a metric when the copy button is clicked and a metric is selected", async () => {
@@ -54,11 +53,7 @@ it("copies a metric when the copy button is clicked and a metric is selected", a
     await act(async () => {
         fireEvent.click(screen.getAllByText(/M1/)[0])
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
-        "post",
-        "metric/metric_uuid/copy/subject_uuid",
-        {},
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid/copy/subject_uuid", {})
 })
 
 it("moves a metric when the move button is clicked and a metric is selected", async () => {
@@ -80,9 +75,5 @@ it("moves a metric when the move button is clicked and a metric is selected", as
     await act(async () => {
         fireEvent.click(screen.getByText(/Subject 2 title/))
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
-        "post",
-        "metric/metric_uuid3/move/subject_uuid",
-        {},
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid3/move/subject_uuid", {})
 })

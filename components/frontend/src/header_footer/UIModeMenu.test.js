@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
 import { UIModeMenu } from "./UIModeMenu"
 
 it("sets dark mode", () => {
@@ -14,6 +15,13 @@ it("sets light mode", () => {
     render(<UIModeMenu setUIMode={setUIMode} uiMode="dark" />)
     fireEvent.click(screen.getByText(/Light mode/))
     expect(setUIMode).toHaveBeenCalledWith("light")
+})
+
+it("sets follows os mode", () => {
+    const setUIMode = jest.fn()
+    render(<UIModeMenu setUIMode={setUIMode} uiMode="dark" />)
+    fireEvent.click(screen.getByText(/Follow OS/))
+    expect(setUIMode).toHaveBeenCalledWith("follow_os")
 })
 
 it("sets dark mode on keypress", async () => {

@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react"
+
 import { DataModel } from "../context/DataModel"
 import { Overrun } from "./Overrun"
 
@@ -15,12 +16,7 @@ const dataModel = {
 function renderOverrun({ measurements = [], dates = [] } = {}) {
     render(
         <DataModel.Provider value={dataModel}>
-            <Overrun
-                dates={dates}
-                metric={{ type: "metric_type" }}
-                metric_uuid="uuid"
-                measurements={measurements}
-            />
+            <Overrun dates={dates} metric={{ type: "metric_type" }} metric_uuid="uuid" measurements={measurements} />
         </DataModel.Provider>,
     )
 }

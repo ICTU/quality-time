@@ -1,9 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
+import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { Target } from "./Target"
-import * as fetch_server_api from "../api/fetch_server_api"
 
 jest.mock("../api/fetch_server_api.js")
 
@@ -59,11 +60,9 @@ it("sets the metric integer target", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 2,
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/attribute/target",
-        { target: "42" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/target", {
+        target: "42",
+    })
 })
 
 it("sets the metric version target", async () => {
@@ -73,11 +72,9 @@ it("sets the metric version target", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 2,
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/attribute/target",
-        { target: "4.2" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/target", {
+        target: "4.2",
+    })
 })
 
 it("displays the default target if changed", () => {

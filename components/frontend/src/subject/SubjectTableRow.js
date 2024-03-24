@@ -1,19 +1,29 @@
-import { useContext } from "react"
 import { array, bool, func, number, object, string } from "prop-types"
-import { Label, Popup, Table } from "../semantic_ui_react_wrappers"
-import { DataModel } from "../context/DataModel"
+import { useContext } from "react"
+
 import { DarkMode } from "../context/DarkMode"
+import { DataModel } from "../context/DataModel"
 import { IssueStatus } from "../issue/IssueStatus"
-import { MetricDetails } from "../metric/MetricDetails"
 import { MeasurementSources } from "../measurement/MeasurementSources"
 import { MeasurementTarget } from "../measurement/MeasurementTarget"
 import { MeasurementValue } from "../measurement/MeasurementValue"
-import { StatusIcon } from "../measurement/StatusIcon"
 import { Overrun } from "../measurement/Overrun"
+import { StatusIcon } from "../measurement/StatusIcon"
 import { TimeLeft } from "../measurement/TimeLeft"
 import { TrendSparkline } from "../measurement/TrendSparkline"
-import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
-import { Tag } from "../widgets/Tag"
+import { MetricDetails } from "../metric/MetricDetails"
+import { Label, Popup, Table } from "../semantic_ui_react_wrappers"
+import {
+    datesPropType,
+    directionPropType,
+    metricPropType,
+    optionalDatePropType,
+    reportPropType,
+    reportsPropType,
+    scalePropType,
+    settingsPropType,
+    stringsPropType,
+} from "../sharedPropTypes"
 import {
     formatMetricScale,
     formatMetricScaleAndUnit,
@@ -23,17 +33,8 @@ import {
     getMetricTags,
     getMetricUnit,
 } from "../utils"
-import {
-    datesPropType,
-    directionPropType,
-    metricPropType,
-    optionalDatePropType,
-    reportPropType,
-    reportsPropType,
-    settingsPropType,
-    scalePropType,
-    stringsPropType,
-} from "../sharedPropTypes"
+import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
+import { Tag } from "../widgets/Tag"
 
 function didValueIncrease(dateOrderAscending, metricValue, previousValue, scale) {
     let value = metricValue
@@ -113,12 +114,7 @@ deltaLabel.propTypes = {
 function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousValue, status }) {
     const dataModel = useContext(DataModel)
     let label = null
-    if (
-        index > 0 &&
-        previousValue !== "?" &&
-        metricValue !== "?" &&
-        previousValue !== metricValue
-    ) {
+    if (index > 0 && previousValue !== "?" && metricValue !== "?" && previousValue !== metricValue) {
         // Note that the delta cell only gets content if the previous and current values are both available and unequal
         const scale = getMetricScale(metric, dataModel)
         const increased = didValueIncrease(dateOrderAscending, metricValue, previousValue, scale)
@@ -127,15 +123,7 @@ function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousVal
         const newValue = dateOrderAscending ? metricValue : previousValue
         const direction = getMetricDirection(metric, dataModel)
         const improved = didValueImprove(increased, direction)
-        const description = deltaDescription(
-            dataModel,
-            metric,
-            scale,
-            delta,
-            improved,
-            oldValue,
-            newValue,
-        )
+        const description = deltaDescription(dataModel, metric, scale, delta, improved, oldValue, newValue)
         const color = deltaColor(metric, improved)
         label = (
             <Popup
@@ -267,10 +255,7 @@ export function SubjectTableRow({
                     expandedItems={settings.expandedItems}
                 />
             }
-            expanded={
-                settings.expandedItems.value.filter((item) => item?.startsWith(metric_uuid))
-                    .length > 0
-            }
+            expanded={settings.expandedItems.value.filter((item) => item?.startsWith(metric_uuid)).length > 0}
             id={metric_uuid}
             onExpand={(expand) => expandOrCollapseItem(expand, metric_uuid, settings.expandedItems)}
             style={style}
@@ -287,11 +272,7 @@ export function SubjectTableRow({
             )}
             {nrDates === 1 && !settings.hiddenColumns.includes("trend") && (
                 <Table.Cell>
-                    <TrendSparkline
-                        measurements={metric.recent_measurements}
-                        report_date={reportDate}
-                        scale={scale}
-                    />
+                    <TrendSparkline measurements={metric.recent_measurements} report_date={reportDate} scale={scale} />
                 </Table.Cell>
             )}
             {nrDates === 1 && !settings.hiddenColumns.includes("status") && (
@@ -309,9 +290,7 @@ export function SubjectTableRow({
                     <MeasurementTarget metric={metric} />
                 </Table.Cell>
             )}
-            {!settings.hiddenColumns.includes("unit") && (
-                <Table.Cell style={style}>{unit}</Table.Cell>
-            )}
+            {!settings.hiddenColumns.includes("unit") && <Table.Cell style={style}>{unit}</Table.Cell>}
             {!settings.hiddenColumns.includes("source") && (
                 <Table.Cell style={style}>
                     <MeasurementSources metric={metric} />
@@ -335,19 +314,12 @@ export function SubjectTableRow({
             )}
             {!settings.hiddenColumns.includes("comment") && (
                 <Table.Cell style={style}>
-                    <div
-                        style={{ wordBreak: "break-word" }}
-                        dangerouslySetInnerHTML={{ __html: metric.comment }}
-                    />
+                    <div style={{ wordBreak: "break-word" }} dangerouslySetInnerHTML={{ __html: metric.comment }} />
                 </Table.Cell>
             )}
             {!settings.hiddenColumns.includes("issues") && (
                 <Table.Cell style={style}>
-                    <IssueStatus
-                        metric={metric}
-                        issueTrackerMissing={!report.issue_tracker}
-                        settings={settings}
-                    />
+                    <IssueStatus metric={metric} issueTrackerMissing={!report.issue_tracker} settings={settings} />
                 </Table.Cell>
             )}
             {!settings.hiddenColumns.includes("tags") && (

@@ -1,23 +1,15 @@
+import { bool, func, string } from "prop-types"
 import { useContext, useEffect, useState } from "react"
-import { bool, string, func } from "prop-types"
 import { Icon, Menu } from "semantic-ui-react"
-import { Label, Tab } from "../semantic_ui_react_wrappers"
+
+import { get_metric_measurements } from "../api/measurement"
+import { delete_metric, set_metric_attribute } from "../api/metric"
 import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
+import { ChangeLog } from "../changelog/ChangeLog"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { Sources } from "../source/Sources"
-import { SourceEntities } from "../source/SourceEntities"
-import { FocusableTab } from "../widgets/FocusableTab"
-import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
-import { delete_metric, set_metric_attribute } from "../api/metric"
-import { get_metric_measurements } from "../api/measurement"
-import { getMetricScale, get_source_name } from "../utils"
-import { ChangeLog } from "../changelog/ChangeLog"
+import { Label, Tab } from "../semantic_ui_react_wrappers"
 import { Share } from "../share/Share"
-import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
-import { MetricDebtParameters } from "./MetricDebtParameters"
-import { MetricTypeHeader } from "./MetricTypeHeader"
-import { TrendGraph } from "./TrendGraph"
 import {
     datePropType,
     reportPropType,
@@ -25,6 +17,15 @@ import {
     stringsPropType,
     stringsURLSearchQueryPropType,
 } from "../sharedPropTypes"
+import { SourceEntities } from "../source/SourceEntities"
+import { Sources } from "../source/Sources"
+import { get_source_name, getMetricScale } from "../utils"
+import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
+import { FocusableTab } from "../widgets/FocusableTab"
+import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
+import { MetricDebtParameters } from "./MetricDebtParameters"
+import { MetricTypeHeader } from "./MetricTypeHeader"
+import { TrendGraph } from "./TrendGraph"
 
 function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopFilteringAndSorting }) {
     return (
@@ -42,10 +43,7 @@ function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopFilteri
                             set_metric_attribute(metric_uuid, "position", direction, reload)
                         }}
                     />
-                    <DeleteButton
-                        itemType="metric"
-                        onClick={() => delete_metric(metric_uuid, reload)}
-                    />
+                    <DeleteButton itemType="metric" onClick={() => delete_metric(metric_uuid, reload)} />
                 </div>
             }
         />
@@ -98,9 +96,7 @@ export function MetricDetails({
     const subject = report.subjects[subject_uuid]
     const metric = subject.metrics[metric_uuid]
     const last_measurement = measurements[measurements.length - 1]
-    let any_error = last_measurement?.sources.some(
-        (source) => source.connection_error || source.parse_error,
-    )
+    let any_error = last_measurement?.sources.some((source) => source.connection_error || source.parse_error)
     any_error =
         any_error ||
         Object.values(metric.sources ?? {}).some(
@@ -138,12 +134,7 @@ export function MetricDetails({
             ),
             render: () => (
                 <Tab.Pane>
-                    <MetricDebtParameters
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        report={report}
-                        reload={reload}
-                    />
+                    <MetricDebtParameters metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />
                 </Tab.Pane>
             ),
         },

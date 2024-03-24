@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react"
+
 import { MetricSummaryCard } from "./MetricSummaryCard"
 
 function renderBarChart(maxY, red) {
@@ -13,16 +14,12 @@ const dateString = new Date("2023-01-02").toLocaleDateString()
 
 it("shows the number of metrics per status when the total is zero", () => {
     renderBarChart(0, 0)
-    expect(
-        screen.queryAllByLabelText(`Status on ${dateString}: no metrics`, { exact: false }).length,
-    ).toBe(1)
+    expect(screen.queryAllByLabelText(`Status on ${dateString}: no metrics`, { exact: false }).length).toBe(1)
 })
 
 it("shows the number of metrics per status when the total is not zero", () => {
     renderBarChart(10, 0)
-    expect(
-        screen.queryAllByLabelText(`Status on ${dateString}: no metrics`, { exact: false }).length,
-    ).toBe(1)
+    expect(screen.queryAllByLabelText(`Status on ${dateString}: no metrics`, { exact: false }).length).toBe(1)
 })
 
 it("shows the number of metrics per status", () => {

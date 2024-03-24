@@ -1,9 +1,10 @@
-import { useContext } from "react"
 import { func, string } from "prop-types"
-import { Header } from "../semantic_ui_react_wrappers"
+import { useContext } from "react"
+
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+import { Header } from "../semantic_ui_react_wrappers"
 
 export function subjectTypes(dataModel) {
     let options = []
@@ -13,13 +14,7 @@ export function subjectTypes(dataModel) {
             key: key,
             text: option_subject_type.name,
             value: key,
-            content: (
-                <Header
-                    as="h4"
-                    content={option_subject_type.name}
-                    subheader={option_subject_type.description}
-                />
-            ),
+            content: <Header as="h4" content={option_subject_type.name} subheader={option_subject_type.description} />,
         })
     })
     return options

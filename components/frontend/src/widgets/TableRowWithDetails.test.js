@@ -1,6 +1,7 @@
-import { Table } from "semantic-ui-react"
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { Table } from "semantic-ui-react"
+
 import { TableRowWithDetails } from "./TableRowWithDetails"
 
 function renderTableRowWithDetails(expanded, onExpand) {

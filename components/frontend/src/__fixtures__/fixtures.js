@@ -1,23 +1,24 @@
 import { renderHook } from "@testing-library/react"
+
 import {
     allSettingsAreDefault,
     resetSettings,
     useDateIntervalURLSearchQuery,
     useDateOrderURLSearchQuery,
+    useExpandedItemsSearchQuery,
     useHiddenCardsURLSearchQuery,
     useHiddenColumnsURLSearchQuery,
     useHiddenTagsURLSearchQuery,
     useMetricsToHideURLSearchQuery,
     useNrDatesURLSearchQuery,
-    useSortColumnURLSearchQuery,
-    useSortDirectionURLSearchQuery,
-    useExpandedItemsSearchQuery,
-    useShowIssueSummaryURLSearchQuery,
     useShowIssueCreationDateURLSearchQuery,
-    useShowIssueUpdateDateURLSearchQuery,
     useShowIssueDueDateURLSearchQuery,
     useShowIssueReleaseURLSearchQuery,
     useShowIssueSprintURLSearchQuery,
+    useShowIssueSummaryURLSearchQuery,
+    useShowIssueUpdateDateURLSearchQuery,
+    useSortColumnURLSearchQuery,
+    useSortDirectionURLSearchQuery,
 } from "../app_ui_settings"
 
 export const datamodel = {
@@ -41,7 +42,7 @@ export const report = {
                     type: "metric_type",
                     tags: ["other tag"],
                     target: "1",
-                    sources: {},
+                    sources: { source_uuid: { name: "Source" } },
                     status: "target_not_met",
                     recent_measurements: [],
                     latest_measurement: { count: 1 },
@@ -53,7 +54,7 @@ export const report = {
                     tags: ["tag"],
                     target: "2",
                     issue_ids: ["ABC-42"],
-                    sources: { source_uuid: { name: "Source" } },
+                    sources: { source_uuid2: { name: "Source 2" } },
                     status: "informative",
                     recent_measurements: [],
                     latest_measurement: { count: 2 },
@@ -78,26 +79,28 @@ export const report = {
     title: "Report title",
 }
 
+function testableQuery(query) {
+    return renderHook(() => query()).result.current
+}
+
 export function createTestableSettings() {
     return {
-        dateInterval: renderHook(() => useDateIntervalURLSearchQuery()).result.current,
-        dateOrder: renderHook(() => useDateOrderURLSearchQuery()).result.current,
-        hiddenCards: renderHook(() => useHiddenCardsURLSearchQuery()).result.current,
-        hiddenColumns: renderHook(() => useHiddenColumnsURLSearchQuery()).result.current,
-        hiddenTags: renderHook(() => useHiddenTagsURLSearchQuery()).result.current,
-        metricsToHide: renderHook(() => useMetricsToHideURLSearchQuery()).result.current,
-        nrDates: renderHook(() => useNrDatesURLSearchQuery()).result.current,
-        showIssueCreationDate: renderHook(() => useShowIssueCreationDateURLSearchQuery()).result
-            .current,
-        showIssueSummary: renderHook(() => useShowIssueSummaryURLSearchQuery()).result.current,
-        showIssueUpdateDate: renderHook(() => useShowIssueUpdateDateURLSearchQuery()).result
-            .current,
-        showIssueDueDate: renderHook(() => useShowIssueDueDateURLSearchQuery()).result.current,
-        showIssueRelease: renderHook(() => useShowIssueReleaseURLSearchQuery()).result.current,
-        showIssueSprint: renderHook(() => useShowIssueSprintURLSearchQuery()).result.current,
-        sortColumn: renderHook(() => useSortColumnURLSearchQuery()).result.current,
-        sortDirection: renderHook(() => useSortDirectionURLSearchQuery()).result.current,
-        expandedItems: renderHook(() => useExpandedItemsSearchQuery()).result.current,
+        dateInterval: testableQuery(useDateIntervalURLSearchQuery),
+        dateOrder: testableQuery(useDateOrderURLSearchQuery),
+        hiddenCards: testableQuery(useHiddenCardsURLSearchQuery),
+        hiddenColumns: testableQuery(useHiddenColumnsURLSearchQuery),
+        hiddenTags: testableQuery(useHiddenTagsURLSearchQuery),
+        metricsToHide: testableQuery(useMetricsToHideURLSearchQuery),
+        nrDates: testableQuery(useNrDatesURLSearchQuery),
+        showIssueCreationDate: testableQuery(useShowIssueCreationDateURLSearchQuery),
+        showIssueSummary: testableQuery(useShowIssueSummaryURLSearchQuery),
+        showIssueUpdateDate: testableQuery(useShowIssueUpdateDateURLSearchQuery),
+        showIssueDueDate: testableQuery(useShowIssueDueDateURLSearchQuery),
+        showIssueRelease: testableQuery(useShowIssueReleaseURLSearchQuery),
+        showIssueSprint: testableQuery(useShowIssueSprintURLSearchQuery),
+        sortColumn: testableQuery(useSortColumnURLSearchQuery),
+        sortDirection: testableQuery(useSortDirectionURLSearchQuery),
+        expandedItems: testableQuery(useExpandedItemsSearchQuery),
         reset: function () {
             resetSettings(this)
         },

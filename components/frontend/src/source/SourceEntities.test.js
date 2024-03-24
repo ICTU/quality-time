@@ -1,7 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react"
-import { SourceEntities } from "./SourceEntities"
-import { DataModel } from "../context/DataModel"
 import userEvent from "@testing-library/user-event"
+
+import { DataModel } from "../context/DataModel"
+import { SourceEntities } from "./SourceEntities"
 
 const data_model = {
     sources: {

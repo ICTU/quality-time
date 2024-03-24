@@ -1,15 +1,11 @@
 import { bool, string } from "prop-types"
 import TimeAgo from "react-timeago"
+
 import { Label, Popup } from "../semantic_ui_react_wrappers"
+import { issueStatusPropType, metricPropType, settingsPropType, stringsPropType } from "../sharedPropTypes"
+import { getMetricIssueIds } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
-import {
-    issueStatusPropType,
-    metricPropType,
-    settingsPropType,
-    stringsPropType,
-} from "../sharedPropTypes"
-import { getMetricIssueIds } from "../utils"
 
 function IssueWithoutTracker({ issueId }) {
     return (
@@ -123,9 +119,7 @@ prefixName.propType = {
 }
 
 function issueLabel(issueStatus, settings, error) {
-    const color = error
-        ? "red"
-        : { todo: "grey", doing: "blue", done: "green" }[issueStatus.status_category ?? "todo"]
+    const color = error ? "red" : { todo: "grey", doing: "blue", done: "green" }[issueStatus.status_category ?? "todo"]
     const label = (
         <Label basic={!error} color={color}>
             {issueStatus.issue_id}
@@ -165,9 +159,7 @@ function IssueWithTracker({ issueStatus, settings }) {
         popupContent = issuePopupContent(issueStatus)
     }
     if (popupContent) {
-        label = (
-            <Popup header={popupHeader} content={popupContent} flowing hoverable trigger={label} />
-        )
+        label = <Popup header={popupHeader} content={popupContent} flowing hoverable trigger={label} />
     }
     return label
 }
@@ -198,9 +190,7 @@ function issuePopupContent(issueStatus) {
     }
     if (issueStatus.release_name) {
         const releaseDate = issueStatus.release_date ? (
-            <TimeAgoWithDate date={issueStatus.release_date}>
-                {releaseStatus(issueStatus)}
-            </TimeAgoWithDate>
+            <TimeAgoWithDate date={issueStatus.release_date}>{releaseStatus(issueStatus)}</TimeAgoWithDate>
         ) : null
         popupContent = (
             <>
@@ -218,8 +208,7 @@ function issuePopupContent(issueStatus) {
             <>
                 {popupContent}
                 <br />
-                {prefixName(issueStatus.sprint_name, "Sprint")} ({issueStatus.sprint_state}){" "}
-                {sprintEnd}
+                {prefixName(issueStatus.sprint_name, "Sprint")} ({issueStatus.sprint_state}) {sprintEnd}
             </>
         )
     }
@@ -236,11 +225,7 @@ function IssuesWithTracker({ issueIds, metric, settings }) {
             {issueStatuses
                 .filter((issueStatus) => issueIds.indexOf(issueStatus.issue_id) > -1)
                 .map((issueStatus) => (
-                    <IssueWithTracker
-                        key={issueStatus.issue_id}
-                        issueStatus={issueStatus}
-                        settings={settings}
-                    />
+                    <IssueWithTracker key={issueStatus.issue_id} issueStatus={issueStatus} settings={settings} />
                 ))}
         </>
     )

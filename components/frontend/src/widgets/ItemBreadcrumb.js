@@ -1,5 +1,6 @@
-import { Breadcrumb } from "../semantic_ui_react_wrappers"
 import { string } from "prop-types"
+
+import { Breadcrumb } from "../semantic_ui_react_wrappers"
 
 export function ItemBreadcrumb(props) {
     return (

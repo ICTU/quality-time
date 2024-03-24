@@ -1,6 +1,7 @@
-import userEvent from "@testing-library/user-event"
 import { render, screen, waitFor } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { Table } from "semantic-ui-react"
+
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import { SortableTableHeaderCell, UnsortableTableHeaderCell } from "./TableHeaderCell"
 

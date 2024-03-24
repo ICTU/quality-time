@@ -1,6 +1,8 @@
 import { useContext } from "react"
-import { Label, Popup } from "../semantic_ui_react_wrappers"
+
 import { DataModel } from "../context/DataModel"
+import { Label, Popup } from "../semantic_ui_react_wrappers"
+import { metricPropType } from "../sharedPropTypes"
 import {
     formatMetricDirection,
     formatMetricScale,
@@ -8,7 +10,6 @@ import {
     get_metric_target,
     isValidDate_YYYYMMDD,
 } from "../utils"
-import { metricPropType } from "../sharedPropTypes"
 
 function popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel) {
     const unit = formatMetricScaleAndUnit(metric, dataModel)
@@ -53,15 +54,9 @@ export function MeasurementTarget({ metric }) {
     if (metric.debt_end_date && isValidDate_YYYYMMDD(metric.debt_end_date)) {
         const endDate = new Date(metric.debt_end_date)
         const today = new Date()
-        debtEndDateInThePast =
-            endDate.toISOString().split("T")[0] < today.toISOString().split("T")[0]
+        debtEndDateInThePast = endDate.toISOString().split("T")[0] < today.toISOString().split("T")[0]
     }
-    const label =
-        allIssuesDone || debtEndDateInThePast ? (
-            <Label color="grey">{target}</Label>
-        ) : (
-            <span>{target}</span>
-        )
+    const label = allIssuesDone || debtEndDateInThePast ? <Label color="grey">{target}</Label> : <span>{target}</span>
     return (
         <Popup hoverable on={["hover", "focus"]} trigger={label}>
             {popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel)}

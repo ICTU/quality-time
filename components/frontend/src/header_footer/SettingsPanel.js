@@ -1,5 +1,8 @@
+import "./SettingsPanel.css"
+
 import { bool, func, number, string } from "prop-types"
 import { Header, Menu, Segment } from "semantic-ui-react"
+
 import { Icon } from "../semantic_ui_react_wrappers"
 import {
     boolURLSearchQueryPropType,
@@ -11,13 +14,12 @@ import {
     settingsPropType,
     sortDirectionPropType,
     sortDirectionURLSearchQueryPropType,
-    stringURLSearchQueryPropType,
     stringsPropType,
     stringsURLSearchQueryPropType,
+    stringURLSearchQueryPropType,
 } from "../sharedPropTypes"
 import { capitalize, pluralize } from "../utils"
 import { SettingsMenuItem } from "./SettingsMenuItem"
-import "./SettingsPanel.css"
 
 export function SettingsPanel({ atReportsOverview, handleSort, settings, tags }) {
     const oneDateColumn = settings.nrDates.equals(1)
@@ -46,10 +48,7 @@ export function SettingsPanel({ atReportsOverview, handleSort, settings, tags })
             <Segment inverted color="black">
                 <Header size="small">Visible cards</Header>
                 <Menu {...menuProps}>
-                    <VisibleCardsMenuItem
-                        cards={atReportsOverview ? "reports" : "subjects"}
-                        {...cardsMenuItemProps}
-                    />
+                    <VisibleCardsMenuItem cards={atReportsOverview ? "reports" : "subjects"} {...cardsMenuItemProps} />
                     <VisibleCardsMenuItem cards="tags" {...cardsMenuItemProps} />
                 </Menu>
             </Segment>
@@ -129,9 +128,7 @@ export function SettingsPanel({ atReportsOverview, handleSort, settings, tags })
                     />
                     <SortColumnMenuItem
                         column="measurement"
-                        disabled={
-                            multipleDateColumns || settings.hiddenColumns.includes("measurement")
-                        }
+                        disabled={multipleDateColumns || settings.hiddenColumns.includes("measurement")}
                         help="The measurement column can only be selected for sorting when it is visible"
                         {...sortColumnMenuItemProps}
                     />
@@ -158,9 +155,7 @@ export function SettingsPanel({ atReportsOverview, handleSort, settings, tags })
                     />
                     <SortColumnMenuItem
                         column="overrun"
-                        disabled={
-                            settings.nrDates.equals(1) || settings.hiddenColumns.includes("overrun")
-                        }
+                        disabled={settings.nrDates.equals(1) || settings.hiddenColumns.includes("overrun")}
                         help="The overrun column can only be selected for sorting when it is visible"
                         {...sortColumnMenuItemProps}
                     />
@@ -252,11 +247,7 @@ SettingsPanel.propTypes = {
 
 function VisibleCardsMenuItem({ cards, hiddenCards }) {
     return (
-        <SettingsMenuItem
-            active={!hiddenCards.includes(cards)}
-            onClick={hiddenCards.toggle}
-            onClickData={cards}
-        >
+        <SettingsMenuItem active={!hiddenCards.includes(cards)} onClick={hiddenCards.toggle} onClickData={cards}>
             {capitalize(cards)}
         </SettingsMenuItem>
     )
@@ -268,11 +259,7 @@ VisibleCardsMenuItem.propTypes = {
 
 function VisibleTagMenuItem({ tag, hiddenTags }) {
     return (
-        <SettingsMenuItem
-            active={!hiddenTags.includes(tag)}
-            onClick={hiddenTags.toggle}
-            onClickData={tag}
-        >
+        <SettingsMenuItem active={!hiddenTags.includes(tag)} onClick={hiddenTags.toggle} onClickData={tag}>
             {tag}
         </SettingsMenuItem>
     )
@@ -309,11 +296,7 @@ function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handl
         // We use a triangle because the sort down and up icons are not at the same height
         const iconDirection = sortDirection.equals("ascending") ? "up" : "down"
         sortIndicator = (
-            <Icon
-                disabled={disabled}
-                name={`triangle ${iconDirection}`}
-                aria-label={`sorted ${sortDirection.value}`}
-            />
+            <Icon disabled={disabled} name={`triangle ${iconDirection}`} aria-label={`sorted ${sortDirection.value}`} />
         )
     }
     return (
@@ -324,8 +307,7 @@ function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handl
             onClick={handleSort}
             onClickData={column}
         >
-            {capitalize(column === "name" ? "metric" : column).replaceAll("_", " ")}{" "}
-            <span>{sortIndicator}</span>
+            {capitalize(column === "name" ? "metric" : column).replaceAll("_", " ")} <span>{sortIndicator}</span>
         </SettingsMenuItem>
     )
 }
@@ -392,11 +374,7 @@ SortOrderMenuItem.propTypes = {
 
 function MetricMenuItem({ hide, metricsToHide }) {
     return (
-        <SettingsMenuItem
-            active={metricsToHide.equals(hide)}
-            onClick={metricsToHide.set}
-            onClickData={hide}
-        >
+        <SettingsMenuItem active={metricsToHide.equals(hide)} onClick={metricsToHide.set} onClickData={hide}>
             {
                 {
                     none: "All metrics",

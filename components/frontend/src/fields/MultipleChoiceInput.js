@@ -1,9 +1,10 @@
-import { useState } from "react"
 import { array, bool, func } from "prop-types"
-import { Form } from "../semantic_ui_react_wrappers"
+import { useState } from "react"
+
 import { ReadOnlyOrEditable } from "../context/Permissions"
-import { ReadOnlyInput } from "./ReadOnlyInput"
+import { Form } from "../semantic_ui_react_wrappers"
 import { labelPropType, permissionsPropType, stringsPropType } from "../sharedPropTypes"
+import { ReadOnlyInput } from "./ReadOnlyInput"
 
 function assembleOptions(optionList, values) {
     // Create a sorted list of unique options. Also include the current values, or they won't be displayed for some reason
@@ -20,15 +21,8 @@ function assembleOptions(optionList, values) {
 }
 
 export function MultipleChoiceInput(props) {
-    let {
-        allowAdditions,
-        editableLabel,
-        onSearchChange,
-        required,
-        set_value,
-        requiredPermissions,
-        ...otherProps
-    } = props
+    let { allowAdditions, editableLabel, onSearchChange, required, set_value, requiredPermissions, ...otherProps } =
+        props
     const [values, setValues] = useState(props.value || [])
     const [searchQuery, setSearchQuery] = useState("")
     return (

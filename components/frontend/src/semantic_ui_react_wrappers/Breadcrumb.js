@@ -1,7 +1,9 @@
+import "./Breadcrumb.css"
+
 import { useContext } from "react"
 import { Breadcrumb as SemanticUIBreadcrumb } from "semantic-ui-react"
+
 import { DarkMode } from "../context/DarkMode"
-import "./Breadcrumb.css"
 
 export function Breadcrumb(props) {
     return <SemanticUIBreadcrumb {...props} />

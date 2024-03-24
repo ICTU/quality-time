@@ -1,9 +1,10 @@
 import { act, render, screen } from "@testing-library/react"
 import history from "history/browser"
-import { PageContent } from "./PageContent"
+
+import { createTestableSettings } from "./__fixtures__/fixtures"
 import * as fetch_server_api from "./api/fetch_server_api"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
-import { createTestableSettings } from "./__fixtures__/fixtures"
+import { PageContent } from "./PageContent"
 
 jest.mock("./api/fetch_server_api", () => {
     const originalModule = jest.requireActual("./api/fetch_server_api")
@@ -26,12 +27,7 @@ afterEach(() => {
     jest.useRealTimers()
 })
 
-async function renderPageContent({
-    loading = false,
-    reports = [],
-    report_date = null,
-    report_uuid = "",
-} = {}) {
+async function renderPageContent({ loading = false, reports = [], report_date = null, report_uuid = "" } = {}) {
     const settings = createTestableSettings()
     await act(async () =>
         render(

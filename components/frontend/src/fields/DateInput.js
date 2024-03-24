@@ -1,11 +1,13 @@
-import { bool, func, string } from "prop-types"
-import { Icon, Label, Form } from "../semantic_ui_react_wrappers"
-import { DatePicker } from "../widgets/DatePicker"
-import { ReadOnlyOrEditable } from "../context/Permissions"
-import { ReadOnlyInput } from "./ReadOnlyInput"
-import { toISODateStringInCurrentTZ } from "../utils"
 import "./DateInput.css"
+
+import { bool, func, string } from "prop-types"
+
+import { ReadOnlyOrEditable } from "../context/Permissions"
+import { Form, Icon, Label } from "../semantic_ui_react_wrappers"
 import { labelPropType, permissionsPropType } from "../sharedPropTypes"
+import { toISODateStringInCurrentTZ } from "../utils"
+import { DatePicker } from "../widgets/DatePicker"
+import { ReadOnlyInput } from "./ReadOnlyInput"
 
 function EditableDateInput({ ariaLabelledBy, label, placeholder, required, set_value, value }) {
     value = value ? new Date(value) : null
@@ -50,9 +52,7 @@ export function DateInput(props) {
             <ReadOnlyOrEditable
                 requiredPermissions={props.requiredPermissions}
                 readOnlyComponent={<ReadOnlyInput {...props} />}
-                editableComponent={
-                    <EditableDateInput {...props} label={props.editableLabel || props.label} />
-                }
+                editableComponent={<EditableDateInput {...props} label={props.editableLabel || props.label} />}
             />
         </Form>
     )

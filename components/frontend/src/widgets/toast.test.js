@@ -1,6 +1,7 @@
-import * as react_toastify from "react-toastify"
 import history from "history/browser"
-import { showMessage, showConnectionMessage } from "./toast"
+import * as react_toastify from "react-toastify"
+
+import { showConnectionMessage, showMessage } from "./toast"
 
 jest.mock("react-toastify")
 

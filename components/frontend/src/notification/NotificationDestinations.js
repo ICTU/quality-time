@@ -1,17 +1,18 @@
 import { func, objectOf, string } from "prop-types"
 import { Grid, Message } from "semantic-ui-react"
-import { Segment } from "../semantic_ui_react_wrappers"
-import { StringInput } from "../fields/StringInput"
-import { AddButton, DeleteButton } from "../widgets/Button"
-import { LabelWithHelp } from "../widgets/LabelWithHelp"
+
 import {
     add_notification_destination,
     delete_notification_destination,
     set_notification_destination_attributes,
 } from "../api/notification"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { HyperLink } from "../widgets/HyperLink"
+import { StringInput } from "../fields/StringInput"
+import { Segment } from "../semantic_ui_react_wrappers"
 import { destinationPropType } from "../sharedPropTypes"
+import { AddButton, DeleteButton } from "../widgets/Button"
+import { HyperLink } from "../widgets/HyperLink"
+import { LabelWithHelp } from "../widgets/LabelWithHelp"
 
 function NotificationDestination({ destination, destination_uuid, reload, report_uuid }) {
     const help_url =
@@ -68,11 +69,7 @@ function NotificationDestination({ destination, destination_uuid, reload, report
                                 <DeleteButton
                                     itemType="notification destination"
                                     onClick={() =>
-                                        delete_notification_destination(
-                                            report_uuid,
-                                            destination_uuid,
-                                            reload,
-                                        )
+                                        delete_notification_destination(report_uuid, destination_uuid, reload)
                                     }
                                 />
                             </Grid.Column>

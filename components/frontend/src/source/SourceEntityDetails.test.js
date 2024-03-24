@@ -1,7 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { EDIT_ENTITY_PERMISSION, Permissions } from "../context/Permissions"
+
 import * as source from "../api/source"
+import { EDIT_ENTITY_PERMISSION, Permissions } from "../context/Permissions"
 import { SourceEntityDetails } from "./SourceEntityDetails"
 
 jest.mock("../api/source.js")

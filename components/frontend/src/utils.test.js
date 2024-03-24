@@ -1,4 +1,4 @@
-import { EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION } from "./context/Permissions"
+import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from "./context/Permissions"
 import {
     capitalize,
     get_metric_target,
@@ -134,9 +134,9 @@ it("gets the source name", () => {
 })
 
 it("gets the source name from the data model if the source has no name", () => {
-    expect(
-        get_source_name({ type: "source_type" }, { sources: { source_type: { name: "source" } } }),
-    ).toStrictEqual("source")
+    expect(get_source_name({ type: "source_type" }, { sources: { source_type: { name: "source" } } })).toStrictEqual(
+        "source",
+    )
 })
 
 it("gets the subject name", () => {
@@ -145,10 +145,7 @@ it("gets the subject name", () => {
 
 it("gets the subject name from the data model if the subject has no name", () => {
     expect(
-        get_subject_name(
-            { type: "subject_type" },
-            { subjects: { subject_type: { name: "subject" } } },
-        ),
+        get_subject_name({ type: "subject_type" }, { subjects: { subject_type: { name: "subject" } } }),
     ).toStrictEqual("subject")
 })
 
@@ -205,21 +202,19 @@ it("returns the metric response overrun when there is one long measurement", () 
 it("returns the metric response overrun when there is one long measurement and the report has desired response times", () => {
     const report = { desired_response_times: { unknown: 10 } }
     const measurements = [{ metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31" }]
-    expect(getMetricResponseOverrun("uuid", metric, report, measurements, dataModel)).toStrictEqual(
-        {
-            overruns: [
-                {
-                    status: "unknown",
-                    start: "2000-01-01",
-                    end: "2000-01-31",
-                    actual_response_time: 30,
-                    desired_response_time: 10,
-                    overrun: 20,
-                },
-            ],
-            totalOverrun: 20,
-        },
-    )
+    expect(getMetricResponseOverrun("uuid", metric, report, measurements, dataModel)).toStrictEqual({
+        overruns: [
+            {
+                status: "unknown",
+                start: "2000-01-01",
+                end: "2000-01-31",
+                actual_response_time: 30,
+                desired_response_time: 10,
+                overrun: 20,
+            },
+        ],
+        totalOverrun: 20,
+    })
 })
 
 it("returns the metric response overrun when the metric status is target met", () => {
@@ -329,13 +324,9 @@ it("hides metrics not requiring action", () => {
     const metricNotRequiringAction = { metric_uuid: { status: "informative" } }
     expect(visibleMetrics(metricNotRequiringAction, "no_action_needed", [])).toStrictEqual({})
     expect(visibleMetrics(metricNotRequiringAction, "all", [])).toStrictEqual({})
-    expect(visibleMetrics(metricNotRequiringAction, "none", [])).toStrictEqual(
-        metricNotRequiringAction,
-    )
+    expect(visibleMetrics(metricNotRequiringAction, "none", [])).toStrictEqual(metricNotRequiringAction)
     const metricRequiringAction = { metric_uuid: { status: "target_not_met" } }
-    expect(visibleMetrics(metricRequiringAction, "no_action_needed", [])).toStrictEqual(
-        metricRequiringAction,
-    )
+    expect(visibleMetrics(metricRequiringAction, "no_action_needed", [])).toStrictEqual(metricRequiringAction)
     expect(visibleMetrics(metricRequiringAction, "none", [])).toStrictEqual(metricRequiringAction)
     expect(visibleMetrics(metricRequiringAction, "all", [])).toStrictEqual({})
 })
@@ -351,12 +342,8 @@ it("hides metrics with hidden tags", () => {
     expect(visibleMetrics(metricWithHiddenTag, false, ["hidden"])).toStrictEqual({})
     const metricWithMultipleTags = { metric_uuid: { tags: ["hidden", "maybe hidden"] } }
     expect(visibleMetrics(metricWithMultipleTags, false, [])).toStrictEqual(metricWithMultipleTags)
-    expect(visibleMetrics(metricWithMultipleTags, false, ["hidden"])).toStrictEqual(
-        metricWithMultipleTags,
-    )
-    expect(visibleMetrics(metricWithMultipleTags, false, ["hidden", "maybe hidden"])).toStrictEqual(
-        {},
-    )
+    expect(visibleMetrics(metricWithMultipleTags, false, ["hidden"])).toStrictEqual(metricWithMultipleTags)
+    expect(visibleMetrics(metricWithMultipleTags, false, ["hidden", "maybe hidden"])).toStrictEqual({})
 })
 
 it("sorts strings with locale compare", () => {
@@ -381,16 +368,12 @@ it("gets the status name", () => {
 it("gets the number of reports in a report", () => {
     expect(nrMetricsInReport({ subjects: {} })).toBe(0)
     expect(nrMetricsInReport({ subjects: { subject_uuid: { metrics: {} } } })).toBe(0)
-    expect(
-        nrMetricsInReport({ subjects: { subject_uuid: { metrics: { metric_uuid: {} } } } }),
-    ).toBe(1)
+    expect(nrMetricsInReport({ subjects: { subject_uuid: { metrics: { metric_uuid: {} } } } })).toBe(1)
 })
 
 it("gets the number of reports in reports", () => {
     expect(nrMetricsInReports([{ subjects: {} }])).toBe(0)
-    expect(
-        nrMetricsInReports([{ subjects: { subject_uuid: { metrics: { metric_uuid: {} } } } }]),
-    ).toBe(1)
+    expect(nrMetricsInReports([{ subjects: { subject_uuid: { metrics: { metric_uuid: {} } } } }])).toBe(1)
 })
 
 it("sums numbers", () => {

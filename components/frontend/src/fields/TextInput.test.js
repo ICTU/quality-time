@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
 import { TextInput } from "./TextInput"
 
 it("renders the value read only", () => {
@@ -45,9 +46,7 @@ it("shows an error for required empty fields, when read only", () => {
 })
 
 it("does not show an error for required non-empty fields, when read only", () => {
-    const { container } = render(
-        <TextInput requiredPermissions={["test"]} value="Hello" required />,
-    )
+    const { container } = render(<TextInput requiredPermissions={["test"]} value="Hello" required />)
     expect(container.getElementsByTagName("textarea")[0]).toBeValid()
 })
 

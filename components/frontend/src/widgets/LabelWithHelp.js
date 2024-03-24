@@ -1,4 +1,5 @@
 import { bool, string } from "prop-types"
+
 import { Icon, Popup } from "../semantic_ui_react_wrappers"
 import { labelPropType, popupContentPropType } from "../sharedPropTypes"
 

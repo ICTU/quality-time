@@ -1,13 +1,12 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
 import { DataModel } from "../context/DataModel"
 import { MeasurementTarget } from "./MeasurementTarget"
 
 it("renders the target", () => {
     render(
-        <DataModel.Provider
-            value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}
-        >
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
             <MeasurementTarget metric={{ type: "violations" }} />
         </DataModel.Provider>,
     )
@@ -16,9 +15,7 @@ it("renders the target", () => {
 
 it("does not render the target if the metric is informative", () => {
     render(
-        <DataModel.Provider
-            value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}
-        >
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
             <MeasurementTarget metric={{ type: "violations", evaluate_targets: false }} />
         </DataModel.Provider>,
     )
@@ -45,12 +42,8 @@ it("renders the target with minutes percentage", () => {
 
 it("does not render the technical debt popup if technical debt is not accepted", async () => {
     render(
-        <DataModel.Provider
-            value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}
-        >
-            <MeasurementTarget
-                metric={{ type: "violations", target: "100", debt_end_date: "2022-12-31" }}
-            />
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
+            <MeasurementTarget metric={{ type: "violations", target: "100", debt_end_date: "2022-12-31" }} />
         </DataModel.Provider>,
     )
     await userEvent.hover(screen.queryByText(/100/))
@@ -61,9 +54,7 @@ it("does not render the technical debt popup if technical debt is not accepted",
 
 it("renders the technical debt popup if technical debt is accepted", async () => {
     render(
-        <DataModel.Provider
-            value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}
-        >
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
             <MeasurementTarget
                 metric={{
                     type: "violations",
@@ -82,9 +73,7 @@ it("renders the technical debt popup if technical debt is accepted", async () =>
 
 it("renders the technical debt popup if technical debt is accepted with a future end date", async () => {
     render(
-        <DataModel.Provider
-            value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}
-        >
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
             <MeasurementTarget
                 metric={{
                     type: "violations",
@@ -103,9 +92,7 @@ it("renders the technical debt popup if technical debt is accepted with a future
 
 it("renders the issue status if all issues are done", async () => {
     render(
-        <DataModel.Provider
-            value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}
-        >
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
             <MeasurementTarget
                 metric={{
                     type: "violations",
@@ -118,17 +105,13 @@ it("renders the issue status if all issues are done", async () => {
     )
     await userEvent.hover(screen.queryByText(/100/))
     await waitFor(() => {
-        expect(
-            screen.queryAllByText(/all issues for this metric have been marked done/).length,
-        ).toBe(1)
+        expect(screen.queryAllByText(/all issues for this metric have been marked done/).length).toBe(1)
     })
 })
 
 it("does not render the issue status if technical debt is not accepted", async () => {
     render(
-        <DataModel.Provider
-            value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}
-        >
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
             <MeasurementTarget
                 metric={{
                     type: "violations",
@@ -140,17 +123,13 @@ it("does not render the issue status if technical debt is not accepted", async (
     )
     await userEvent.hover(screen.queryByText(/100/))
     await waitFor(() => {
-        expect(
-            screen.queryAllByText(/all issues for this metric have been marked done/).length,
-        ).toBe(0)
+        expect(screen.queryAllByText(/all issues for this metric have been marked done/).length).toBe(0)
     })
 })
 
 it("renders both the issue status and the technical debt end date", async () => {
     render(
-        <DataModel.Provider
-            value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}
-        >
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
             <MeasurementTarget
                 metric={{
                     type: "violations",
@@ -165,18 +144,15 @@ it("renders both the issue status and the technical debt end date", async () => 
     await userEvent.hover(screen.queryByText(/100/))
     await waitFor(() => {
         expect(
-            screen.queryAllByText(
-                /all issues for this metric have been marked done and technical debt was accepted/,
-            ).length,
+            screen.queryAllByText(/all issues for this metric have been marked done and technical debt was accepted/)
+                .length,
         ).toBe(1)
     })
 })
 
 it("does not crash when the technical end date is invalid", async () => {
     render(
-        <DataModel.Provider
-            value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}
-        >
+        <DataModel.Provider value={{ metrics: { violations: { direction: "<", unit: "violations" } } }}>
             <MeasurementTarget
                 metric={{
                     type: "violations",
@@ -189,9 +165,6 @@ it("does not crash when the technical end date is invalid", async () => {
     )
     await userEvent.hover(screen.queryByText(/100/))
     await waitFor(() => {
-        expect(
-            screen.queryAllByText(/Measurements ≦ 0 violations are accepted as technical debt/)
-                .length,
-        ).toBe(1)
+        expect(screen.queryAllByText(/Measurements ≦ 0 violations are accepted as technical debt/).length).toBe(1)
     })
 })

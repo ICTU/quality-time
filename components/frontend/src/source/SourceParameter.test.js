@@ -1,8 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { SourceParameter } from "./SourceParameter"
+
 import * as fetch_server_api from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { SourceParameter } from "./SourceParameter"
 
 jest.mock("../api/fetch_server_api.js")
 
@@ -161,11 +162,10 @@ it("changes the value", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderSourceParameter({})
     await userEvent.type(screen.queryByText(/test/), "/new{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "source/source_uuid/parameter/key1",
-        { key1: "https://test/new", edit_scope: "source" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", {
+        key1: "https://test/new",
+        edit_scope: "source",
+    })
 })
 
 it("changes the value via mass edit", async () => {
@@ -173,9 +173,8 @@ it("changes the value via mass edit", async () => {
     renderSourceParameter({})
     await userEvent.click(screen.queryByText(/Apply change to subject/))
     await userEvent.type(screen.queryByText(/test/), "/new{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "source/source_uuid/parameter/key1",
-        { key1: "https://test/new", edit_scope: "subject" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", {
+        key1: "https://test/new",
+        edit_scope: "subject",
+    })
 })

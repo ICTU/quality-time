@@ -1,4 +1,6 @@
 import { array, bool, func } from "prop-types"
+
+import { useDelayedRender } from "../hooks/delayed_render"
 import {
     datesPropType,
     optionalDatePropType,
@@ -6,7 +8,6 @@ import {
     settingsPropType,
     stringsPropType,
 } from "../sharedPropTypes"
-import { useDelayedRender } from "../hooks/delayed_render"
 import { Subject } from "./Subject"
 
 export function Subjects({

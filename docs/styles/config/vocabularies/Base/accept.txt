@@ -6,6 +6,7 @@ Cobertura
 Dependabot
 Dockerfile
 DTDs
+ESLint
 Gravatar
 Jira
 JMeter

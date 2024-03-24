@@ -1,10 +1,11 @@
 import { fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
+
+import { createTestableSettings } from "../__fixtures__/fixtures"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
-import { ReportDashboard } from "./ReportDashboard"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
-import { createTestableSettings } from "../__fixtures__/fixtures"
+import { ReportDashboard } from "./ReportDashboard"
 
 beforeEach(() => {
     mockGetAnimations()
@@ -34,12 +35,7 @@ const report = {
     },
 }
 
-function renderDashboard({
-    hiddenTags = null,
-    dates = [new Date()],
-    onClick = jest.fn(),
-    reportToRender = null,
-} = {}) {
+function renderDashboard({ hiddenTags = null, dates = [new Date()], onClick = jest.fn(), reportToRender = null } = {}) {
     let settings = createTestableSettings()
     if (hiddenTags) {
         settings.hiddenTags = hiddenTags
@@ -47,12 +43,7 @@ function renderDashboard({
     return render(
         <DataModel.Provider value={dataModel}>
             <div id="dashboard">
-                <ReportDashboard
-                    dates={dates}
-                    onClick={onClick}
-                    report={reportToRender}
-                    settings={settings}
-                />
+                <ReportDashboard dates={dates} onClick={onClick} report={reportToRender} settings={settings} />
             </div>
         </DataModel.Provider>,
     )

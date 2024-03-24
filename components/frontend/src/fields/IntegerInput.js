@@ -1,9 +1,10 @@
-import { useState } from "react"
 import { func, number, oneOfType, string } from "prop-types"
-import { Form, Label } from "../semantic_ui_react_wrappers"
+import { useState } from "react"
+
 import { ReadOnlyOrEditable } from "../context/Permissions"
-import { ReadOnlyInput } from "./ReadOnlyInput"
+import { Form, Label } from "../semantic_ui_react_wrappers"
 import { labelPropType, permissionsPropType } from "../sharedPropTypes"
+import { ReadOnlyInput } from "./ReadOnlyInput"
 
 function EditableIntegerInput(props) {
     let { editableLabel, label, min, prefix, set_value, unit, ...otherProps } = props

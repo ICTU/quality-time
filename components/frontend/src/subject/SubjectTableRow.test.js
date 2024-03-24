@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react"
 import history from "history/browser"
-import { Table } from "../semantic_ui_react_wrappers"
-import { DataModel } from "../context/DataModel"
-import { SubjectTableRow } from "./SubjectTableRow"
+
 import { createTestableSettings, datamodel, report } from "../__fixtures__/fixtures"
+import { DataModel } from "../context/DataModel"
+import { Table } from "../semantic_ui_react_wrappers"
+import { SubjectTableRow } from "./SubjectTableRow"
 
 beforeEach(() => {
     history.push("")
@@ -72,13 +73,9 @@ it("shows the delta column", () => {
     history.push("?nr_dates=3&date_interval=1")
     renderSubjectTableRow()
     expect(screen.getAllByText("+2").length).toBe(1)
-    expect(
-        screen.getAllByLabelText("Metric type worsened from 10 to 12 things by +2 things").length,
-    ).toBe(1)
+    expect(screen.getAllByLabelText("Metric type worsened from 10 to 12 things by +2 things").length).toBe(1)
     expect(screen.getAllByText("-4").length).toBe(1)
-    expect(
-        screen.getAllByLabelText("Metric type improved from 12 to 8 things by -4 things").length,
-    ).toBe(1)
+    expect(screen.getAllByLabelText("Metric type improved from 12 to 8 things by -4 things").length).toBe(1)
 })
 
 it("hides the delta column", () => {
@@ -91,39 +88,27 @@ it("takes the metric direction into account", () => {
     history.push("?nr_dates=3&date_interval=1")
     renderSubjectTableRow({ direction: ">" })
     expect(screen.getAllByText("+2").length).toBe(1)
-    expect(
-        screen.getAllByLabelText("Metric type improved from 10 to 12 things by +2 things").length,
-    ).toBe(1)
+    expect(screen.getAllByLabelText("Metric type improved from 10 to 12 things by +2 things").length).toBe(1)
     expect(screen.getAllByText("-4").length).toBe(1)
-    expect(
-        screen.getAllByLabelText("Metric type worsened from 12 to 8 things by -4 things").length,
-    ).toBe(1)
+    expect(screen.getAllByLabelText("Metric type worsened from 12 to 8 things by -4 things").length).toBe(1)
 })
 
 it("works for informative metrics", () => {
     history.push("?nr_dates=3&date_interval=1")
     renderSubjectTableRow({ evaluate_targets: false })
     expect(screen.getAllByText("+2").length).toBe(1)
-    expect(
-        screen.getAllByLabelText("Metric type changed from 10 to 12 things by +2 things").length,
-    ).toBe(1)
+    expect(screen.getAllByLabelText("Metric type changed from 10 to 12 things by +2 things").length).toBe(1)
     expect(screen.getAllByText("-4").length).toBe(1)
-    expect(
-        screen.getAllByLabelText("Metric type changed from 12 to 8 things by -4 things").length,
-    ).toBe(1)
+    expect(screen.getAllByLabelText("Metric type changed from 12 to 8 things by -4 things").length).toBe(1)
 })
 
 it("takes the date order into account", () => {
     history.push("?nr_dates=3&date_interval=1&date_order=ascending")
     renderSubjectTableRow({ ascending: true })
     expect(screen.getAllByText("+2").length).toBe(1)
-    expect(
-        screen.getAllByLabelText("Metric type worsened from 10 to 12 things by +2 things").length,
-    ).toBe(1)
+    expect(screen.getAllByLabelText("Metric type worsened from 10 to 12 things by +2 things").length).toBe(1)
     expect(screen.getAllByText("-4").length).toBe(1)
-    expect(
-        screen.getAllByLabelText("Metric type improved from 12 to 8 things by -4 things").length,
-    ).toBe(1)
+    expect(screen.getAllByLabelText("Metric type improved from 12 to 8 things by -4 things").length).toBe(1)
 })
 
 it("shows the delta column for the version scale", () => {

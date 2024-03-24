@@ -1,9 +1,10 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+
+import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
-import * as fetch_server_api from "../api/fetch_server_api"
 
 jest.mock("../api/fetch_server_api.js")
 
@@ -74,11 +75,9 @@ it("sets the metric name", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 11,
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/attribute/name",
-        { name: "New metric name" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/name", {
+        name: "New metric name",
+    })
 })
 
 it("adds a tag", async () => {
@@ -86,11 +85,9 @@ it("adds a tag", async () => {
         renderMetricParameters()
     })
     await userEvent.type(screen.getByLabelText(/Tags/), "New tag{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/attribute/tags",
-        { tags: ["New tag"] },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/tags", {
+        tags: ["New tag"],
+    })
 })
 
 it("changes the scale", async () => {
@@ -99,11 +96,9 @@ it("changes the scale", async () => {
     })
     fireEvent.click(screen.getByText(/Metric scale/))
     fireEvent.click(screen.getByText(/Percentage/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/attribute/scale",
-        { scale: "percentage" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/scale", {
+        scale: "percentage",
+    })
 })
 
 it("changes the direction", async () => {
@@ -128,11 +123,9 @@ it("sets the metric unit for metrics with the count scale", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 11,
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/attribute/unit",
-        { unit: "New metric unit" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/unit", {
+        unit: "New metric unit",
+    })
 })
 
 it("sets the metric unit field for metrics with the percentage scale", async () => {
@@ -144,11 +137,9 @@ it("sets the metric unit field for metrics with the percentage scale", async () 
         initialSelectionStart: 0,
         initialSelectionEnd: 11,
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/attribute/unit",
-        { unit: "New metric unit" },
-    )
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/unit", {
+        unit: "New metric unit",
+    })
 })
 
 it("skips the metric unit field for metrics with the version number scale", () => {
