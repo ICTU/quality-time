@@ -1,22 +1,20 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import history from 'history/browser';
-import { SettingsPanel } from './SettingsPanel';
-import { createTestableSettings } from '../__fixtures__/fixtures';
+import { act, fireEvent, render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import history from "history/browser"
+import { SettingsPanel } from "./SettingsPanel"
+import { createTestableSettings } from "../__fixtures__/fixtures"
 
 beforeEach(() => {
     history.push("")
-});
+})
 
-function renderSettingsPanel(
-    {
-        atReportsOverview = true,
-        handleDateChange = jest.fn(),
-        handleSort = jest.fn(),
-        reportDate = null,
-        tags = [],
-    } = {}
-) {
+function renderSettingsPanel({
+    atReportsOverview = true,
+    handleDateChange = jest.fn(),
+    handleSort = jest.fn(),
+    reportDate = null,
+    tags = [],
+} = {}) {
     const settings = createTestableSettings()
     render(
         <SettingsPanel
@@ -39,11 +37,11 @@ function renderSettingsPanel(
                 showIssueSprint: settings.showIssueSprint,
                 sortColumn: settings.sortColumn,
                 sortDirection: settings.sortDirection,
-                expandedItems: settings.expandedItems
+                expandedItems: settings.expandedItems,
             }}
             reportDate={reportDate}
             tags={tags}
-        />
+        />,
     )
 }
 
@@ -106,24 +104,23 @@ it("shows a column", async () => {
 })
 
 it("changes the sorting of an unsorted column", async () => {
-    const handleSort = jest.fn();
+    const handleSort = jest.fn()
     renderSettingsPanel({ handleSort: handleSort })
     fireEvent.click(screen.getAllByText(/Comment/)[1])
     expect(handleSort).toHaveBeenCalledWith("comment")
-});
-
-["ascending", "descending"].forEach((sortOrder) => {
+})
+;["ascending", "descending"].forEach((sortOrder) => {
     it("changes the sorting of a column", async () => {
         history.push(`?sort_column=comment&sort_direction=${sortOrder}`)
-        const handleSort = jest.fn();
+        const handleSort = jest.fn()
         renderSettingsPanel({ handleSort: handleSort })
         fireEvent.click(screen.getAllByText(/Comment/)[1])
         expect(handleSort).toHaveBeenCalledWith("comment")
     })
-});
+})
 
 it("sorts a column by keypress", async () => {
-    const handleSort = jest.fn();
+    const handleSort = jest.fn()
     renderSettingsPanel({ handleSort: handleSort })
     await userEvent.type(screen.getAllByText(/Comment/)[1], " ")
     expect(handleSort).toHaveBeenCalledWith("comment")
@@ -131,7 +128,7 @@ it("sorts a column by keypress", async () => {
 
 it("ignores a keypress if the menu item is disabled", async () => {
     history.push("?hidden_columns=comment")
-    const handleSort = jest.fn();
+    const handleSort = jest.fn()
     renderSettingsPanel({ handleSort: handleSort })
     await userEvent.type(screen.getAllByText(/Comment/)[1], " ")
     expect(handleSort).not.toHaveBeenCalledWith("comment")
@@ -187,7 +184,9 @@ it("sorts the dates ascending by keypress", async () => {
 
 it("shows issue summaries", async () => {
     renderSettingsPanel()
-    await act(async () => { fireEvent.click(screen.getAllByText(/Summary/)[0]) });
+    await act(async () => {
+        fireEvent.click(screen.getAllByText(/Summary/)[0])
+    })
     expect(history.location.search).toBe("?show_issue_summary=true")
 })
 

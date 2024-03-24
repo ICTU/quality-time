@@ -1,9 +1,9 @@
-import { string } from 'prop-types';
-import { Header, Icon } from '../semantic_ui_react_wrappers';
-import { HyperLink } from '../widgets/HyperLink';
-import { Logo } from './Logo';
-import { slugify } from '../utils';
-import { sourceTypePropType } from '../sharedPropTypes';
+import { string } from "prop-types"
+import { Header, Icon } from "../semantic_ui_react_wrappers"
+import { HyperLink } from "../widgets/HyperLink"
+import { Logo } from "./Logo"
+import { slugify } from "../utils"
+import { sourceTypePropType } from "../sharedPropTypes"
 
 export function SourceTypeHeader({ metricTypeId, sourceTypeId, sourceType }) {
     let howToConfigure = ""
@@ -17,7 +17,11 @@ export function SourceTypeHeader({ metricTypeId, sourceTypeId, sourceType }) {
                 <Logo logo={sourceTypeId} alt={sourceType.name} />
                 {sourceType.name}
                 <Header.Subheader>
-                    {sourceType.description} <HyperLink url={url}>Read the Docs <Icon name="external" link /></HyperLink>{howToConfigure}
+                    {sourceType.description}{" "}
+                    <HyperLink url={url}>
+                        Read the Docs <Icon name="external" link />
+                    </HyperLink>
+                    {howToConfigure}
                 </Header.Subheader>
             </Header.Content>
         </Header>

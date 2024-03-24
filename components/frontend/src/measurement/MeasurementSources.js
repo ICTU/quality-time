@@ -1,8 +1,9 @@
-import { SourceStatus } from './SourceStatus';
+import { SourceStatus } from "./SourceStatus"
 
 export function MeasurementSources({ metric }) {
-    const sources = metric.latest_measurement?.sources ?? [];
-    return sources.map(
-        (source, index) => [index > 0 && ", ", <SourceStatus key={source.source_uuid} metric={metric} measurement_source={source} />]
-    );
+    const sources = metric.latest_measurement?.sources ?? []
+    return sources.map((source, index) => [
+        index > 0 && ", ",
+        <SourceStatus key={source.source_uuid} metric={metric} measurement_source={source} />,
+    ])
 }

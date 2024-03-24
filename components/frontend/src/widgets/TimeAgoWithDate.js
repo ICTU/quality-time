@@ -1,5 +1,5 @@
-import { bool, instanceOf, oneOfType, string } from 'prop-types'
-import TimeAgo from 'react-timeago'
+import { bool, instanceOf, oneOfType, string } from "prop-types"
+import TimeAgo from "react-timeago"
 
 function toLocaleString(date, noTime) {
     let options = { dateStyle: "short" }
@@ -10,12 +10,22 @@ function toLocaleString(date, noTime) {
 }
 
 export function TimeAgoWithDate({ children, date, dateFirst, noTime }) {
-    const the_date = new Date(date);
+    const the_date = new Date(date)
     const prefix = children ? children + " " : ""
     if (dateFirst) {
-        return <>{prefix}{toLocaleString(the_date, noTime)} (<TimeAgo date={the_date} />)</>
+        return (
+            <>
+                {prefix}
+                {toLocaleString(the_date, noTime)} (<TimeAgo date={the_date} />)
+            </>
+        )
     }
-    return <>{prefix}<TimeAgo date={the_date} /> ({toLocaleString(the_date, noTime)})</>
+    return (
+        <>
+            {prefix}
+            <TimeAgo date={the_date} /> ({toLocaleString(the_date, noTime)})
+        </>
+    )
 }
 TimeAgoWithDate.propTypes = {
     children: string,

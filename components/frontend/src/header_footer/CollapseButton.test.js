@@ -1,24 +1,16 @@
-import { fireEvent, render, renderHook, screen } from '@testing-library/react';
-import history from 'history/browser';
-import { CollapseButton } from './CollapseButton';
-import { useExpandedItemsSearchQuery } from '../app_ui_settings';
-import { createTestableSettings } from '../__fixtures__/fixtures';
+import { fireEvent, render, renderHook, screen } from "@testing-library/react"
+import history from "history/browser"
+import { CollapseButton } from "./CollapseButton"
+import { useExpandedItemsSearchQuery } from "../app_ui_settings"
+import { createTestableSettings } from "../__fixtures__/fixtures"
 
 beforeEach(() => {
     history.push("")
-});
+})
 
-function renderCollapseButton(
-    {
-        expandedItems = null
-    } = {}
-) {
+function renderCollapseButton({ expandedItems = null } = {}) {
     const settings = createTestableSettings()
-    render(
-        <CollapseButton
-            expandedItems={expandedItems ?? settings.expandedItems}
-        />
-    );
+    render(<CollapseButton expandedItems={expandedItems ?? settings.expandedItems} />)
 }
 
 it("resets the expanded items", () => {

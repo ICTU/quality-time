@@ -1,28 +1,28 @@
-import { Breadcrumb } from '../semantic_ui_react_wrappers';
-import { string } from 'prop-types';
+import { Breadcrumb } from "../semantic_ui_react_wrappers"
+import { string } from "prop-types"
 
 export function ItemBreadcrumb(props) {
     return (
-        <Breadcrumb size={props.size || 'small'}>
+        <Breadcrumb size={props.size || "small"}>
             <Breadcrumb.Section>{props.report}</Breadcrumb.Section>
-            {props.subject &&
+            {props.subject && (
                 <>
-                    <Breadcrumb.Divider icon='right chevron' />
+                    <Breadcrumb.Divider icon="right chevron" />
                     <Breadcrumb.Section>{props.subject}</Breadcrumb.Section>
-                    {props.metric &&
+                    {props.metric && (
                         <>
-                            <Breadcrumb.Divider icon='right chevron' />
+                            <Breadcrumb.Divider icon="right chevron" />
                             <Breadcrumb.Section>{props.metric}</Breadcrumb.Section>
-                            {props.source &&
+                            {props.source && (
                                 <>
-                                    <Breadcrumb.Divider icon='right chevron' />
+                                    <Breadcrumb.Divider icon="right chevron" />
                                     <Breadcrumb.Section>{props.source}</Breadcrumb.Section>
                                 </>
-                            }
+                            )}
                         </>
-                    }
+                    )}
                 </>
-            }
+            )}
         </Breadcrumb>
     )
 }

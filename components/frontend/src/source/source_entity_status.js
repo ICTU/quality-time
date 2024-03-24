@@ -3,5 +3,5 @@ export const source_entity_status_name = {
     confirmed: "Confirmed",
     fixed: "Fixed",
     false_positive: "False positive",
-    wont_fix: "Won't fix"
+    wont_fix: "Won't fix",
 }

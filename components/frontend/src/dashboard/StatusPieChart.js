@@ -1,30 +1,40 @@
-import { element, number, object } from 'prop-types';
-import { VictoryPie } from 'victory';
-import { pluralize, STATUSES, STATUS_COLORS, STATUS_NAME, sum } from '../utils';
-import { stringsPropType } from '../sharedPropTypes';
+import { element, number, object } from "prop-types"
+import { VictoryPie } from "victory"
+import { pluralize, STATUSES, STATUS_COLORS, STATUS_NAME, sum } from "../utils"
+import { stringsPropType } from "../sharedPropTypes"
 
 function nrMetricsLabel(nrMetrics) {
     return nrMetrics === 0 ? "No metrics" : nrMetrics + pluralize(" metric", nrMetrics)
 }
 nrMetricsLabel.PropTypes = {
-    nrMetrics: number
+    nrMetrics: number,
 }
 
-export function StatusPieChart({ animate, colors, label, tooltip, summary, style, maxY, width, height }) {
+export function StatusPieChart({
+    animate,
+    colors,
+    label,
+    tooltip,
+    summary,
+    style,
+    maxY,
+    width,
+    height,
+}) {
     const nrMetrics = sum(summary)
-    const outerRadius = 0.4 * Math.min(height, width);
+    const outerRadius = 0.4 * Math.min(height, width)
     const minInnerRadius = 0.4 * outerRadius
     const maxInnerRadius = 0.7 * outerRadius
     const innerRadius = maxInnerRadius - (maxInnerRadius - minInnerRadius) * (nrMetrics / maxY)
     const data = STATUSES.map((status) => {
         const y = summary[STATUS_COLORS[status]]
-        const yPercentage = Math.round(y / nrMetrics * 100)
+        const yPercentage = Math.round((y / nrMetrics) * 100)
         return { y: y, label: `${STATUS_NAME[status]}: ${nrMetricsLabel(y)} (${yPercentage}%)` }
     })
     return (
         <>
             {label}
-            {nrMetrics > 0 &&
+            {nrMetrics > 0 && (
                 <VictoryPie
                     animate={animate}
                     colorScale={colors}
@@ -38,7 +48,7 @@ export function StatusPieChart({ animate, colors, label, tooltip, summary, style
                     width={width}
                     height={height}
                 />
-            }
+            )}
         </>
     )
 }

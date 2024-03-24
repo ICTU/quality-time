@@ -1,7 +1,7 @@
-import { Label, Popup } from '../semantic_ui_react_wrappers';
-import { TimeAgoWithDate } from '../widgets/TimeAgoWithDate';
-import { days, getMetricResponseDeadline, getMetricResponseTimeLeft, pluralize } from '../utils';
-import { metricPropType, reportPropType } from '../sharedPropTypes';
+import { Label, Popup } from "../semantic_ui_react_wrappers"
+import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
+import { days, getMetricResponseDeadline, getMetricResponseTimeLeft, pluralize } from "../utils"
+import { metricPropType, reportPropType } from "../sharedPropTypes"
 
 export function TimeLeft({ metric, report }) {
     const deadline = getMetricResponseDeadline(metric, report)

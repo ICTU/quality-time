@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { bool, func, string } from 'prop-types'
-import { Form } from '../semantic_ui_react_wrappers';
-import { ReadOnlyOrEditable } from '../context/Permissions';
-import { labelPropType, permissionsPropType } from '../sharedPropTypes';
+import { useState } from "react"
+import { bool, func, string } from "prop-types"
+import { Form } from "../semantic_ui_react_wrappers"
+import { ReadOnlyOrEditable } from "../context/Permissions"
+import { labelPropType, permissionsPropType } from "../sharedPropTypes"
 
 function ReadOnlyTextInput({ label, required, value }) {
     return (
@@ -24,9 +24,9 @@ ReadOnlyTextInput.propTypes = {
 }
 
 function EditableTextInput(props) {
-    let { editableLabel, label, required, set_value, ...otherProps } = props;
+    let { editableLabel, label, required, set_value, ...otherProps } = props
     const initialValue = props.value || ""
-    const [text, setText] = useState(initialValue);
+    const [text, setText] = useState(initialValue)
 
     function onKeyDown(event) {
         if (event.key === "Escape") {
@@ -35,7 +35,7 @@ function EditableTextInput(props) {
     }
     function onKeyPress(event) {
         if (event.key === "Enter" && event.shiftKey) {
-            event.preventDefault();
+            event.preventDefault()
             submit()
         }
     }
@@ -68,12 +68,13 @@ EditableTextInput.propTypes = {
 }
 
 export function TextInput(props) {
-    let { requiredPermissions, ...otherProps } = props;
+    let { requiredPermissions, ...otherProps } = props
     return (
         <ReadOnlyOrEditable
             requiredPermissions={requiredPermissions}
             readOnlyComponent={<ReadOnlyTextInput {...otherProps} />}
-            editableComponent={<EditableTextInput {...otherProps} />} />
+            editableComponent={<EditableTextInput {...otherProps} />}
+        />
     )
 }
 TextInput.propTypes = {

@@ -1,19 +1,25 @@
-import { useState } from 'react';
-import { bool, func, string } from 'prop-types';
-import { Form, Label } from '../semantic_ui_react_wrappers';
-import { labelPropType } from '../sharedPropTypes';
+import { useState } from "react"
+import { bool, func, string } from "prop-types"
+import { Form, Label } from "../semantic_ui_react_wrappers"
+import { labelPropType } from "../sharedPropTypes"
 
 export function Input(props) {
-    let { editableLabel, label, error, prefix, required, set_value, warning, ...otherProps } = props;
-    const initialValue = props.value || "";
-    const [value, setValue] = useState(initialValue);
+    let { editableLabel, label, error, prefix, required, set_value, warning, ...otherProps } = props
+    const initialValue = props.value || ""
+    const [value, setValue] = useState(initialValue)
 
     function submit_if_changed() {
-        if (value !== initialValue) { set_value(value) }
+        if (value !== initialValue) {
+            set_value(value)
+        }
     }
     function onKeyDown(event) {
-        if (event.key === "Escape") { setValue(initialValue) }
-        if (event.key === "Enter") { submit_if_changed() }
+        if (event.key === "Escape") {
+            setValue(initialValue)
+        }
+        if (event.key === "Enter") {
+            submit_if_changed()
+        }
     }
     return (
         <Form.Input
@@ -23,7 +29,9 @@ export function Input(props) {
             focus
             label={editableLabel || label}
             labelPosition="left"
-            onBlur={() => { submit_if_changed() }}
+            onBlur={() => {
+                submit_if_changed()
+            }}
             onChange={(event) => setValue(event.target.value)}
             onKeyDown={onKeyDown}
             value={value}

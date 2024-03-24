@@ -1,11 +1,11 @@
-import { Grid } from 'semantic-ui-react';
-import { func, string } from 'prop-types';
-import { Comment } from '../fields/Comment';
-import { StringInput } from '../fields/StringInput';
-import { SubjectType } from './SubjectType';
-import { set_subject_attribute } from '../api/subject';
-import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { subjectPropType } from '../sharedPropTypes';
+import { Grid } from "semantic-ui-react"
+import { func, string } from "prop-types"
+import { Comment } from "../fields/Comment"
+import { StringInput } from "../fields/StringInput"
+import { SubjectType } from "./SubjectType"
+import { set_subject_attribute } from "../api/subject"
+import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
+import { subjectPropType } from "../sharedPropTypes"
 
 export function SubjectParameters({ subject, subject_uuid, subject_name, reload }) {
     return (
@@ -14,7 +14,9 @@ export function SubjectParameters({ subject, subject_uuid, subject_name, reload 
                 <Grid.Column>
                     <SubjectType
                         id={`${subject_uuid}-type`}
-                        set_value={(value) => set_subject_attribute(subject_uuid, "type", value, reload)}
+                        set_value={(value) =>
+                            set_subject_attribute(subject_uuid, "type", value, reload)
+                        }
                         subject_type={subject.type}
                     />
                 </Grid.Column>
@@ -24,7 +26,9 @@ export function SubjectParameters({ subject, subject_uuid, subject_name, reload 
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
                         label="Subject title"
                         placeholder={subject_name}
-                        set_value={(value) => set_subject_attribute(subject_uuid, "name", value, reload)}
+                        set_value={(value) =>
+                            set_subject_attribute(subject_uuid, "name", value, reload)
+                        }
                         value={subject.name}
                     />
                 </Grid.Column>
@@ -33,7 +37,9 @@ export function SubjectParameters({ subject, subject_uuid, subject_name, reload 
                         id={`${subject_uuid}-subtitle`}
                         label="Subject subtitle"
                         requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        set_value={(value) => set_subject_attribute(subject_uuid, "subtitle", value, reload)}
+                        set_value={(value) =>
+                            set_subject_attribute(subject_uuid, "subtitle", value, reload)
+                        }
                         value={subject.subtitle}
                     />
                 </Grid.Column>
@@ -42,7 +48,9 @@ export function SubjectParameters({ subject, subject_uuid, subject_name, reload 
                 <Grid.Column>
                     <Comment
                         id={`${subject_uuid}-comment`}
-                        set_value={(value) => set_subject_attribute(subject_uuid, "comment", value, reload)}
+                        set_value={(value) =>
+                            set_subject_attribute(subject_uuid, "comment", value, reload)
+                        }
                         value={subject.comment}
                     />
                 </Grid.Column>

@@ -1,4 +1,4 @@
-import { array, func } from 'prop-types';
+import { array, func } from "prop-types"
 import {
     datePropType,
     datesPropType,
@@ -31,16 +31,18 @@ export function Report({
     settings,
 }) {
     function navigate_to_subject(event, subject_uuid) {
-        event.preventDefault();
-        document.getElementById(subject_uuid).scrollIntoView();
-        window.scrollBy(0, 163);  // Correct for menubar and subject title margin
+        event.preventDefault()
+        document.getElementById(subject_uuid).scrollIntoView()
+        window.scrollBy(0, 163) // Correct for menubar and subject title margin
     }
 
     if (!report) {
         return <ReportErrorMessage reportDate={report_date} />
     }
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
-    const reversedMeasurements = measurements.slice().sort((m1, m2) => m1.start < m2.start ? 1 : -1)
+    const reversedMeasurements = measurements
+        .slice()
+        .sort((m1, m2) => (m1.start < m2.start ? 1 : -1))
     return (
         <div id="dashboard">
             <div className="reportHeader">
@@ -63,8 +65,13 @@ export function Report({
                 onClickTag={(tag) => {
                     // If there are hidden tags (hiddenTags.length > 0), show the hidden tags.
                     // Otherwise, hide all tags in this report except the one clicked on.
-                    const tagsToToggle = settings.hiddenTags.value.length > 0 ? settings.hiddenTags.value : getReportTags(report)
-                    settings.hiddenTags.toggle(...tagsToToggle.filter((visibleTag) => visibleTag !== tag))
+                    const tagsToToggle =
+                        settings.hiddenTags.value.length > 0
+                            ? settings.hiddenTags.value
+                            : getReportTags(report)
+                    settings.hiddenTags.toggle(
+                        ...tagsToToggle.filter((visibleTag) => visibleTag !== tag),
+                    )
                 }}
                 report={report}
                 reload={reload}
@@ -82,7 +89,12 @@ export function Report({
                 report_date={report_date}
                 settings={settings}
             />
-            <SubjectsButtonRow reload={reload} report={report} reports={reports} settings={settings} />
+            <SubjectsButtonRow
+                reload={reload}
+                report={report}
+                reports={reports}
+                settings={settings}
+            />
         </div>
     )
 }
