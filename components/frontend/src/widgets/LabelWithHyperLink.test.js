@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import { LabelWithHyperLink } from './LabelWithHyperLink';
+import { render, screen } from "@testing-library/react"
+
+import { LabelWithHyperLink } from "./LabelWithHyperLink"
 
 it("shows the label", () => {
     render(<LabelWithHyperLink label="Hello" />)

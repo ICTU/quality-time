@@ -1,7 +1,8 @@
-import { VictoryBar, VictoryStack } from 'victory';
-import { number, object } from 'prop-types'
-import { pluralize, STATUSES, STATUS_COLORS, STATUS_NAME, sum } from '../utils';
-import { labelPropType, stringsPropType } from '../sharedPropTypes';
+import { number, object } from "prop-types"
+import { VictoryBar, VictoryStack } from "victory"
+
+import { labelPropType, stringsPropType } from "../sharedPropTypes"
+import { pluralize, STATUS_COLORS, STATUS_NAME, STATUSES, sum } from "../utils"
 
 function nrMetricsLabel(nrMetrics) {
     return nrMetrics === 0 ? "No metrics" : nrMetrics + pluralize(" metric", nrMetrics)
@@ -19,11 +20,15 @@ export function StatusBarChart({ animate, colors, label, tooltip, summary, maxY,
     const barRatio = maxY > 0 ? (nrMetrics + maxY) / (2 * maxY) : 1
     // Create a VictoryBar for each status
     const bars = STATUSES.map((status) => {
-        const data = [];
+        const data = []
         Object.entries(summary).forEach(([date, count]) => {
-            const dateString = new Date(date).toLocaleDateString();
-            const y = count[STATUS_COLORS[status]];
-            data.push({ x: date, y: y, label: `${dateString}\n${STATUS_NAME[status]}: ${nrMetricsLabel(y)}` })
+            const dateString = new Date(date).toLocaleDateString()
+            const y = count[STATUS_COLORS[status]]
+            data.push({
+                x: date,
+                y: y,
+                label: `${dateString}\n${STATUS_NAME[status]}: ${nrMetricsLabel(y)}`,
+            })
         })
         return (
             <VictoryBar
@@ -36,25 +41,31 @@ export function StatusBarChart({ animate, colors, label, tooltip, summary, maxY,
                 animate={animate}
             />
         )
-    });
+    })
     // Reverse the order of the bars and the colors because apparently VictoryStack reverses the order (again)
-    bars.reverse();
-    colors.reverse();
+    bars.reverse()
+    colors.reverse()
     // Because the bars are wider if the chart is wider, horizontal padding needs to be relative to chart width
     const horizontalPadding = width / 8
     const verticalPadding = 10
-    return (
-        nrMetrics === 0 ? label :
-            <VictoryStack
-                colorScale={colors}
-                key={nrDates}  // Make sure the stack is redrawn when the users changes the number of dates to display
-                padding={{ left: horizontalPadding, right: horizontalPadding, top: verticalPadding, bottom: verticalPadding }}
-                width={width}
-                height={height}
-                standalone={false}
-            >
-                {bars}
-            </VictoryStack>
+    return nrMetrics === 0 ? (
+        label
+    ) : (
+        <VictoryStack
+            colorScale={colors}
+            key={nrDates} // Make sure the stack is redrawn when the users changes the number of dates to display
+            padding={{
+                left: horizontalPadding,
+                right: horizontalPadding,
+                top: verticalPadding,
+                bottom: verticalPadding,
+            }}
+            width={width}
+            height={height}
+            standalone={false}
+        >
+            {bars}
+        </VictoryStack>
     )
 }
 StatusBarChart.propTypes = {

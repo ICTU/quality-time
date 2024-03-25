@@ -1,3 +1,3 @@
-import React from "react";
+import React from "react"
 
-export const DataModel = React.createContext(null);
+export const DataModel = React.createContext(null)

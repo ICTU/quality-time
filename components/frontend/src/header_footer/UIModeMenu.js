@@ -1,13 +1,12 @@
-import { func } from 'prop-types';
-import { Dropdown } from 'semantic-ui-react';
-import { uiModePropType } from '../sharedPropTypes';
-import { IconCombi } from '../widgets/IconCombi'
+import { func } from "prop-types"
+import { Dropdown } from "semantic-ui-react"
+
+import { uiModePropType } from "../sharedPropTypes"
+import { IconCombi } from "../widgets/IconCombi"
 
 export function UIModeMenu({ setUIMode, uiMode }) {
     return (
-        <Dropdown
-            icon={<IconCombi iconBottomRight="moon" iconTopLeft="sun" label="Dark/light mode" />}
-        >
+        <Dropdown icon={<IconCombi iconBottomRight="moon" iconTopLeft="sun" label="Dark/light mode" />}>
             <Dropdown.Menu>
                 <Dropdown.Header>Dark/light mode</Dropdown.Header>
                 <Dropdown.Item active={uiMode === "follow_os"} onClick={() => setUIMode("follow_os")}>
@@ -25,5 +24,5 @@ export function UIModeMenu({ setUIMode, uiMode }) {
 }
 UIModeMenu.propTypes = {
     setUIMode: func,
-    uiMode: uiModePropType
+    uiMode: uiModePropType,
 }

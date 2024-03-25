@@ -1,18 +1,17 @@
-import { string } from 'prop-types';
-import { datePropType, optionalDatePropType } from '../sharedPropTypes';
-import { Message } from 'semantic-ui-react';
+import { string } from "prop-types"
+import { Message } from "semantic-ui-react"
+
+import { datePropType, optionalDatePropType } from "../sharedPropTypes"
 
 function ErrorMessage({ children }) {
     return (
-        <Message warning size='huge'>
-            <Message.Header>
-                {children}
-            </Message.Header>
+        <Message warning size="huge">
+            <Message.Header>{children}</Message.Header>
         </Message>
     )
 }
 ErrorMessage.propTypes = {
-    children: string
+    children: string,
 }
 
 export function ReportErrorMessage({ reportDate }) {
@@ -23,16 +22,12 @@ export function ReportErrorMessage({ reportDate }) {
     )
 }
 ReportErrorMessage.propTypes = {
-    reportDate: optionalDatePropType
+    reportDate: optionalDatePropType,
 }
 
 export function ReportsOverviewErrorMessage({ reportDate }) {
-    return (
-        <ErrorMessage>
-            {`Sorry, no reports existed at ${reportDate}`}
-        </ErrorMessage>
-    )
+    return <ErrorMessage>{`Sorry, no reports existed at ${reportDate}`}</ErrorMessage>
 }
 ReportsOverviewErrorMessage.propTypes = {
-    reportDate: datePropType
+    reportDate: datePropType,
 }

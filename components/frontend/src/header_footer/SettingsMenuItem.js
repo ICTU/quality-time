@@ -1,7 +1,8 @@
-import { Menu } from 'semantic-ui-react';
-import { Popup } from '../semantic_ui_react_wrappers';
-import { bool, func, number, oneOfType, string } from 'prop-types';
-import { childrenPropType, popupContentPropType } from '../sharedPropTypes';
+import { bool, func, number, oneOfType, string } from "prop-types"
+import { Menu } from "semantic-ui-react"
+
+import { Popup } from "../semantic_ui_react_wrappers"
+import { childrenPropType, popupContentPropType } from "../sharedPropTypes"
 
 const activeColor = "grey"
 
@@ -11,23 +12,35 @@ export function SettingsMenuItem({ active, children, disabled, disabledHelp, hel
         active: active,
         color: activeColor,
         disabled: disabled,
-        onBeforeInput: (event) => { event.preventDefault(); if (!disabled) { onClick(onClickData) } },  // Uncovered, see https://github.com/testing-library/react-testing-library/issues/1152
-        onClick: (event) => { event.preventDefault(); onClick(onClickData) },
-        tabIndex: 0
+        onBeforeInput: (event) => {
+            event.preventDefault()
+            if (!disabled) {
+                onClick(onClickData)
+            }
+        }, // Uncovered, see https://github.com/testing-library/react-testing-library/issues/1152
+        onClick: (event) => {
+            event.preventDefault()
+            onClick(onClickData)
+        },
+        tabIndex: 0,
     }
     if (help || (disabledHelp && disabled)) {
-        props["style"] = { marginLeft: 0, marginRight: 0, marginBottom: 5 }  // Compensate for the span
+        props["style"] = { marginLeft: 0, marginRight: 0, marginBottom: 5 } // Compensate for the span
         return (
             <Popup
                 content={disabledHelp || help}
                 inverted
                 position="left center"
                 // We need a span here to prevent the popup from becoming disabled when the menu item is disabled:
-                trigger={<span><Menu.Item {...props}>{children}</Menu.Item></span>}
+                trigger={
+                    <span>
+                        <Menu.Item {...props}>{children}</Menu.Item>
+                    </span>
+                }
             />
         )
     }
-    return <Menu.Item {...props} >{children}</Menu.Item>
+    return <Menu.Item {...props}>{children}</Menu.Item>
 }
 SettingsMenuItem.propTypes = {
     active: bool,

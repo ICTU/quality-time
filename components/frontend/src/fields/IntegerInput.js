@@ -1,15 +1,16 @@
-import { useState } from 'react';
-import { func, number, oneOfType, string } from 'prop-types';
-import { Form, Label } from '../semantic_ui_react_wrappers';
-import { ReadOnlyOrEditable } from '../context/Permissions';
-import { ReadOnlyInput } from './ReadOnlyInput';
-import { labelPropType, permissionsPropType } from '../sharedPropTypes';
+import { func, number, oneOfType, string } from "prop-types"
+import { useState } from "react"
+
+import { ReadOnlyOrEditable } from "../context/Permissions"
+import { Form, Label } from "../semantic_ui_react_wrappers"
+import { labelPropType, permissionsPropType } from "../sharedPropTypes"
+import { ReadOnlyInput } from "./ReadOnlyInput"
 
 function EditableIntegerInput(props) {
-    let { editableLabel, label, min, prefix, set_value, unit, ...otherProps } = props;
-    const initialValue = props.value || 0;
+    let { editableLabel, label, min, prefix, set_value, unit, ...otherProps } = props
+    const initialValue = props.value || 0
     const [value, setValue] = useState(initialValue)
-    const minValue = min || 0;
+    const minValue = min || 0
 
     function isValid(aValue) {
         if (Number.isNaN(parseInt(aValue))) {
@@ -40,11 +41,21 @@ function EditableIntegerInput(props) {
                 label={editableLabel || label}
                 labelPosition={unit ? "right" : "left"}
                 min={minValue}
-                onBlur={() => { submitIfChangedAndValid() }}
-                onChange={(event) => { if (isValid(event.target.value)) { setValue(event.target.value) } }}
+                onBlur={() => {
+                    submitIfChangedAndValid()
+                }}
+                onChange={(event) => {
+                    if (isValid(event.target.value)) {
+                        setValue(event.target.value)
+                    }
+                }}
                 onKeyDown={(event) => {
-                    if (event.key === "Enter") { submitIfChangedAndValid() }
-                    if (event.key === "Escape") { setValue(initialValue) }
+                    if (event.key === "Enter") {
+                        submitIfChangedAndValid()
+                    }
+                    if (event.key === "Escape") {
+                        setValue(initialValue)
+                    }
                 }}
                 type="number"
                 value={value}
@@ -69,12 +80,17 @@ EditableIntegerInput.propTypes = {
 }
 
 export function IntegerInput(props) {
-    let { requiredPermissions, ...otherProps } = props;
+    let { requiredPermissions, ...otherProps } = props
     return (
         <ReadOnlyOrEditable
             requiredPermissions={requiredPermissions}
-            readOnlyComponent={<Form><ReadOnlyInput {...otherProps} /></Form>}
-            editableComponent={<EditableIntegerInput {...otherProps} />} />
+            readOnlyComponent={
+                <Form>
+                    <ReadOnlyInput {...otherProps} />
+                </Form>
+            }
+            editableComponent={<EditableIntegerInput {...otherProps} />}
+        />
     )
 }
 IntegerInput.propTypes = {

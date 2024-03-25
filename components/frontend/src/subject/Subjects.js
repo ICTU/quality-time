@@ -1,13 +1,14 @@
-import { array, bool, func } from 'prop-types';
+import { array, bool, func } from "prop-types"
+
+import { useDelayedRender } from "../hooks/delayed_render"
 import {
     datesPropType,
     optionalDatePropType,
     reportsPropType,
     settingsPropType,
     stringsPropType,
-} from '../sharedPropTypes';
-import { useDelayedRender } from '../hooks/delayed_render';
-import { Subject } from './Subject';
+} from "../sharedPropTypes"
+import { Subject } from "./Subject"
 
 export function Subjects({
     atReportsOverview,
@@ -19,16 +20,18 @@ export function Subjects({
     reports,
     reportsToShow,
     report_date,
-    settings
+    settings,
 }) {
     // Assume max 3 subjects are visible below the dashboard when the page is initially rendered
     const nrSubjectsVisibleOnInitialRender = 3
-    const visible = useDelayedRender();
+    const visible = useDelayedRender()
     const subjects = []
     reportsToShow.forEach((report) => {
-        const lastIndex = Object.keys(report.subjects).length - 1;
+        const lastIndex = Object.keys(report.subjects).length - 1
         Object.keys(report.subjects).forEach((subject_uuid, index) => {
-            if (!visible && subjects.length > nrSubjectsVisibleOnInitialRender) { return }
+            if (!visible && subjects.length > nrSubjectsVisibleOnInitialRender) {
+                return
+            }
             subjects.push(
                 <Subject
                     atReportsOverview={atReportsOverview}
@@ -45,7 +48,7 @@ export function Subjects({
                     report_date={report_date}
                     settings={settings}
                     subject_uuid={subject_uuid}
-                />
+                />,
             )
         })
     })
@@ -61,5 +64,5 @@ Subjects.propTypes = {
     reports: reportsPropType,
     reportsToShow: reportsPropType,
     report_date: optionalDatePropType,
-    settings: settingsPropType
+    settings: settingsPropType,
 }

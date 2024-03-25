@@ -1,15 +1,16 @@
-import { Grid } from 'semantic-ui-react';
-import { func, string } from 'prop-types';
-import { SingleChoiceInput } from '../fields/SingleChoiceInput';
-import { Comment } from '../fields/Comment';
-import { set_metric_attribute, set_metric_debt } from '../api/metric';
-import { DateInput } from '../fields/DateInput';
-import { LabelWithDate } from '../widgets/LabelWithDate';
-import { LabelWithHyperLink } from '../widgets/LabelWithHyperLink';
-import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { IssuesRows } from '../issue/IssuesRows';
-import { Target } from './Target';
-import { metricPropType, reportPropType } from '../sharedPropTypes';
+import { func, string } from "prop-types"
+import { Grid } from "semantic-ui-react"
+
+import { set_metric_attribute, set_metric_debt } from "../api/metric"
+import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
+import { Comment } from "../fields/Comment"
+import { DateInput } from "../fields/DateInput"
+import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+import { IssuesRows } from "../issue/IssuesRows"
+import { metricPropType, reportPropType } from "../sharedPropTypes"
+import { LabelWithDate } from "../widgets/LabelWithDate"
+import { LabelWithHyperLink } from "../widgets/LabelWithHyperLink"
+import { Target } from "./Target"
 
 function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
     const labelId = `accept-debt-label-${metric_uuid}`
@@ -27,9 +28,17 @@ function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
             value={metric.accept_debt ? "yes" : "no"}
             options={[
                 { key: "yes", text: "Yes", value: "yes" },
-                { key: "yes_completely", text: "Yes, and also set technical debt target and end date", value: "yes_completely" },
+                {
+                    key: "yes_completely",
+                    text: "Yes, and also set technical debt target and end date",
+                    value: "yes_completely",
+                },
                 { key: "no", text: "No", value: "no" },
-                { key: "no_completely", text: "No, and also clear technical debt target and end date", value: "no_completely" }
+                {
+                    key: "no_completely",
+                    text: "No, and also clear technical debt target and end date",
+                    value: "no_completely",
+                },
             ]}
             set_value={(value) => {
                 const acceptDebt = value.startsWith("yes")
@@ -53,14 +62,24 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
     const help = (
         <>
             <p>Accept technical debt until this date.</p>
-            <p>After this date, or when the issues below have all been resolved, whichever happens first, the technical debt should be resolved and the technical debt target is no longer evaluated.</p>
+            <p>
+                After this date, or when the issues below have all been resolved, whichever happens first, the technical
+                debt should be resolved and the technical debt target is no longer evaluated.
+            </p>
         </>
     )
     return (
         <DateInput
             ariaLabelledBy={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<LabelWithDate date={Date(metric.debt_end_date)} labelId={labelId} help={help} label="Technical debt end date" />}
+            label={
+                <LabelWithDate
+                    date={Date(metric.debt_end_date)}
+                    labelId={labelId}
+                    help={help}
+                    label="Technical debt end date"
+                />
+            }
             placeholder="YYYY-MM-DD"
             set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
             value={metric.debt_end_date ?? ""}
@@ -81,7 +100,15 @@ export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
                     <AcceptTechnicalDebt metric={metric} metric_uuid={metric_uuid} reload={reload} />
                 </Grid.Column>
                 <Grid.Column>
-                    <Target key={metric.debt_target} label="Technical debt target" labelPosition='top center' target_type="debt_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
+                    <Target
+                        key={metric.debt_target}
+                        label="Technical debt target"
+                        labelPosition="top center"
+                        target_type="debt_target"
+                        metric={metric}
+                        metric_uuid={metric_uuid}
+                        reload={reload}
+                    />
                 </Grid.Column>
                 <Grid.Column>
                     <TechnicalDebtEndDate metric={metric} metric_uuid={metric_uuid} reload={reload} />
@@ -97,7 +124,7 @@ export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
                 </Grid.Column>
             </Grid.Row>
         </Grid>
-    );
+    )
 }
 MetricDebtParameters.propTypes = {
     metric: metricPropType,

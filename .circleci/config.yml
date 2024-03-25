@@ -48,7 +48,8 @@ jobs:
       - run: |
           cd components/frontend
           npm install --ignore-scripts
-          npm test
+          ci/unittest.sh
+          ci/quality.sh
 
   unittest_docs:
     machine:

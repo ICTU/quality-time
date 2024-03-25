@@ -1,20 +1,18 @@
-import { useContext } from 'react';
-import { array, bool, func, number, object, string } from 'prop-types';
-import { Label, Popup, Table } from '../semantic_ui_react_wrappers';
-import { DataModel } from "../context/DataModel";
-import { DarkMode } from "../context/DarkMode";
-import { IssueStatus } from '../issue/IssueStatus';
-import { MetricDetails } from '../metric/MetricDetails';
-import { MeasurementSources } from '../measurement/MeasurementSources';
-import { MeasurementTarget } from '../measurement/MeasurementTarget';
-import { MeasurementValue } from '../measurement/MeasurementValue';
-import { StatusIcon } from '../measurement/StatusIcon';
-import { Overrun } from '../measurement/Overrun';
-import { TimeLeft } from '../measurement/TimeLeft';
-import { TrendSparkline } from '../measurement/TrendSparkline';
-import { TableRowWithDetails } from '../widgets/TableRowWithDetails';
-import { Tag } from '../widgets/Tag';
-import { formatMetricScale, formatMetricScaleAndUnit, get_metric_name, getMetricDirection, getMetricScale, getMetricTags, getMetricUnit } from '../utils';
+import { array, bool, func, number, object, string } from "prop-types"
+import { useContext } from "react"
+
+import { DarkMode } from "../context/DarkMode"
+import { DataModel } from "../context/DataModel"
+import { IssueStatus } from "../issue/IssueStatus"
+import { MeasurementSources } from "../measurement/MeasurementSources"
+import { MeasurementTarget } from "../measurement/MeasurementTarget"
+import { MeasurementValue } from "../measurement/MeasurementValue"
+import { Overrun } from "../measurement/Overrun"
+import { StatusIcon } from "../measurement/StatusIcon"
+import { TimeLeft } from "../measurement/TimeLeft"
+import { TrendSparkline } from "../measurement/TrendSparkline"
+import { MetricDetails } from "../metric/MetricDetails"
+import { Label, Popup, Table } from "../semantic_ui_react_wrappers"
 import {
     datesPropType,
     directionPropType,
@@ -22,10 +20,21 @@ import {
     optionalDatePropType,
     reportPropType,
     reportsPropType,
-    settingsPropType,
     scalePropType,
+    settingsPropType,
     stringsPropType,
-} from '../sharedPropTypes';
+} from "../sharedPropTypes"
+import {
+    formatMetricScale,
+    formatMetricScaleAndUnit,
+    get_metric_name,
+    getMetricDirection,
+    getMetricScale,
+    getMetricTags,
+    getMetricUnit,
+} from "../utils"
+import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
+import { Tag } from "../widgets/Tag"
 
 function didValueIncrease(dateOrderAscending, metricValue, previousValue, scale) {
     let value = metricValue
@@ -64,10 +73,10 @@ deltaColor.propTypes = {
 }
 
 function deltaDescription(dataModel, metric, scale, delta, improved, oldValue, newValue) {
-    let description = `${get_metric_name(metric, dataModel)} `;
+    let description = `${get_metric_name(metric, dataModel)} `
     const evaluateTarget = metric.evaluate_targets ?? true
     if (evaluateTarget) {
-        description += improved ? "improved" : "worsened";
+        description += improved ? "improved" : "worsened"
     } else {
         description += `changed`
     }
@@ -103,8 +112,8 @@ deltaLabel.propTypes = {
 }
 
 function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousValue, status }) {
-    const dataModel = useContext(DataModel);
-    let label = null;
+    const dataModel = useContext(DataModel)
+    let label = null
     if (index > 0 && previousValue !== "?" && metricValue !== "?" && previousValue !== metricValue) {
         // Note that the delta cell only gets content if the previous and current values are both available and unequal
         const scale = getMetricScale(metric, dataModel)
@@ -116,7 +125,16 @@ function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousVal
         const improved = didValueImprove(increased, direction)
         const description = deltaDescription(dataModel, metric, scale, delta, improved, oldValue, newValue)
         const color = deltaColor(metric, improved)
-        label = <Popup content={description} trigger={<Label aria-label={description} basic color={color}>{delta}</Label>} />
+        label = (
+            <Popup
+                content={description}
+                trigger={
+                    <Label aria-label={description} basic color={color}>
+                        {delta}
+                    </Label>
+                }
+            />
+        )
     }
     return (
         <Table.Cell className={status} singleLine textAlign="right">
@@ -139,12 +157,18 @@ function MeasurementCells({ dates, metric, metric_uuid, measurements, settings }
     const dateOrderAscending = settings.dateOrder.value === "ascending"
     const scale = getMetricScale(metric, dataModel)
     const cells = []
-    let previousValue = "?";
+    let previousValue = "?"
     dates.forEach((date, index) => {
-        const isoDateString = date.toISOString().split("T")[0];
-        const measurement = measurements?.find((m) => { return m.metric_uuid === metric_uuid && m.start.split("T")[0] <= isoDateString && isoDateString <= m.end.split("T")[0] })
-        let metricValue = measurement?.[scale]?.value ?? "?";
-        const status = measurement?.[scale]?.status ?? "unknown";
+        const isoDateString = date.toISOString().split("T")[0]
+        const measurement = measurements?.find((m) => {
+            return (
+                m.metric_uuid === metric_uuid &&
+                m.start.split("T")[0] <= isoDateString &&
+                isoDateString <= m.end.split("T")[0]
+            )
+        })
+        let metricValue = measurement?.[scale]?.value ?? "?"
+        const status = measurement?.[scale]?.status ?? "unknown"
         if (showDeltaColumns && index > 0) {
             cells.push(
                 <DeltaCell
@@ -155,11 +179,16 @@ function MeasurementCells({ dates, metric, metric_uuid, measurements, settings }
                     metricValue={metricValue}
                     previousValue={previousValue}
                     status={status}
-                />
+                />,
             )
         }
-        cells.push(<Table.Cell className={status} key={date} textAlign="right">{metricValue}{formatMetricScale(metric, dataModel)}</Table.Cell>)
-        previousValue = metricValue === "?" ? previousValue : metricValue;
+        cells.push(
+            <Table.Cell className={status} key={date} textAlign="right">
+                {metricValue}
+                {formatMetricScale(metric, dataModel)}
+            </Table.Cell>,
+        )
+        previousValue = metricValue === "?" ? previousValue : metricValue
     })
     return cells
 }
@@ -175,36 +204,34 @@ function expandOrCollapseItem(expand, metric_uuid, expandedItems) {
     if (expand) {
         expandedItems.toggle(`${metric_uuid}:0`)
     } else {
-        const items = expandedItems.value.filter((each) => each?.startsWith(metric_uuid));
+        const items = expandedItems.value.filter((each) => each?.startsWith(metric_uuid))
         expandedItems.toggle(items[0])
     }
 }
 
-export function SubjectTableRow(
-    {
-        changed_fields,
-        dates,
-        handleSort,
-        index,
-        lastIndex,
-        measurements,
-        metric_uuid,
-        metric,
-        reload,
-        report,
-        reportDate,
-        reports,
-        reversedMeasurements,
-        settings,
-        subject_uuid
-    }
-) {
-    const dataModel = useContext(DataModel);
+export function SubjectTableRow({
+    changed_fields,
+    dates,
+    handleSort,
+    index,
+    lastIndex,
+    measurements,
+    metric_uuid,
+    metric,
+    reload,
+    report,
+    reportDate,
+    reports,
+    reversedMeasurements,
+    settings,
+    subject_uuid,
+}) {
+    const dataModel = useContext(DataModel)
     const darkMode = useContext(DarkMode)
-    const metricName = get_metric_name(metric, dataModel);
+    const metricName = get_metric_name(metric, dataModel)
     const scale = getMetricScale(metric, dataModel)
-    const unit = getMetricUnit(metric, dataModel);
-    const nrDates = dates.length;
+    const unit = getMetricUnit(metric, dataModel)
+    const nrDates = dates.length
     const style = nrDates > 1 ? { background: darkMode ? "rgba(60, 60, 60, 1)" : "#f9fafb" } : {}
     return (
         <TableRowWithDetails
@@ -234,20 +261,74 @@ export function SubjectTableRow(
             style={style}
         >
             <Table.Cell style={style}>{metricName}</Table.Cell>
-            {nrDates > 1 && <MeasurementCells dates={dates} metric={metric} metric_uuid={metric_uuid} measurements={reversedMeasurements} settings={settings} />}
-            {nrDates === 1 && !settings.hiddenColumns.includes("trend") && <Table.Cell><TrendSparkline measurements={metric.recent_measurements} report_date={reportDate} scale={scale} /></Table.Cell>}
-            {nrDates === 1 && !settings.hiddenColumns.includes("status") && <Table.Cell textAlign='center'><StatusIcon status={metric.status} status_start={metric.status_start} /></Table.Cell>}
-            {nrDates === 1 && !settings.hiddenColumns.includes("measurement") && <Table.Cell textAlign="right"><MeasurementValue metric={metric} reportDate={reportDate} /></Table.Cell>}
-            {nrDates === 1 && !settings.hiddenColumns.includes("target") && <Table.Cell textAlign="right"><MeasurementTarget metric={metric} /></Table.Cell>}
+            {nrDates > 1 && (
+                <MeasurementCells
+                    dates={dates}
+                    metric={metric}
+                    metric_uuid={metric_uuid}
+                    measurements={reversedMeasurements}
+                    settings={settings}
+                />
+            )}
+            {nrDates === 1 && !settings.hiddenColumns.includes("trend") && (
+                <Table.Cell>
+                    <TrendSparkline measurements={metric.recent_measurements} report_date={reportDate} scale={scale} />
+                </Table.Cell>
+            )}
+            {nrDates === 1 && !settings.hiddenColumns.includes("status") && (
+                <Table.Cell textAlign="center">
+                    <StatusIcon status={metric.status} status_start={metric.status_start} />
+                </Table.Cell>
+            )}
+            {nrDates === 1 && !settings.hiddenColumns.includes("measurement") && (
+                <Table.Cell textAlign="right">
+                    <MeasurementValue metric={metric} reportDate={reportDate} />
+                </Table.Cell>
+            )}
+            {nrDates === 1 && !settings.hiddenColumns.includes("target") && (
+                <Table.Cell textAlign="right">
+                    <MeasurementTarget metric={metric} />
+                </Table.Cell>
+            )}
             {!settings.hiddenColumns.includes("unit") && <Table.Cell style={style}>{unit}</Table.Cell>}
-            {!settings.hiddenColumns.includes("source") && <Table.Cell style={style}><MeasurementSources metric={metric} /></Table.Cell>}
-            {!settings.hiddenColumns.includes("time_left") && <Table.Cell style={style}><TimeLeft metric={metric} report={report} /></Table.Cell>}
-            {nrDates > 1 && !settings.hiddenColumns.includes("overrun") && <Table.Cell style={style}><Overrun metric={metric} metric_uuid={metric_uuid} report={report} measurements={measurements} dates={dates} /></Table.Cell>}
-            {!settings.hiddenColumns.includes("comment") && <Table.Cell style={style}><div style={{ wordBreak: "break-word" }} dangerouslySetInnerHTML={{ __html: metric.comment }} /></Table.Cell>}
-            {!settings.hiddenColumns.includes("issues") && <Table.Cell style={style}>
-                <IssueStatus metric={metric} issueTrackerMissing={!report.issue_tracker} settings={settings} />
-            </Table.Cell>}
-            {!settings.hiddenColumns.includes("tags") && <Table.Cell style={style}>{getMetricTags(metric).map((tag) => <Tag key={tag} tag={tag} />)}</Table.Cell>}
+            {!settings.hiddenColumns.includes("source") && (
+                <Table.Cell style={style}>
+                    <MeasurementSources metric={metric} />
+                </Table.Cell>
+            )}
+            {!settings.hiddenColumns.includes("time_left") && (
+                <Table.Cell style={style}>
+                    <TimeLeft metric={metric} report={report} />
+                </Table.Cell>
+            )}
+            {nrDates > 1 && !settings.hiddenColumns.includes("overrun") && (
+                <Table.Cell style={style}>
+                    <Overrun
+                        metric={metric}
+                        metric_uuid={metric_uuid}
+                        report={report}
+                        measurements={measurements}
+                        dates={dates}
+                    />
+                </Table.Cell>
+            )}
+            {!settings.hiddenColumns.includes("comment") && (
+                <Table.Cell style={style}>
+                    <div style={{ wordBreak: "break-word" }} dangerouslySetInnerHTML={{ __html: metric.comment }} />
+                </Table.Cell>
+            )}
+            {!settings.hiddenColumns.includes("issues") && (
+                <Table.Cell style={style}>
+                    <IssueStatus metric={metric} issueTrackerMissing={!report.issue_tracker} settings={settings} />
+                </Table.Cell>
+            )}
+            {!settings.hiddenColumns.includes("tags") && (
+                <Table.Cell style={style}>
+                    {getMetricTags(metric).map((tag) => (
+                        <Tag key={tag} tag={tag} />
+                    ))}
+                </Table.Cell>
+            )}
         </TableRowWithDetails>
     )
 }

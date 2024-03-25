@@ -1,7 +1,8 @@
-import { bool, func } from 'prop-types';
-import { Button, Icon } from 'semantic-ui-react';
-import { Popup } from '../semantic_ui_react_wrappers';
-import { optionalDatePropType, settingsPropType } from '../sharedPropTypes';
+import { bool, func } from "prop-types"
+import { Button, Icon } from "semantic-ui-react"
+
+import { Popup } from "../semantic_ui_react_wrappers"
+import { optionalDatePropType, settingsPropType } from "../sharedPropTypes"
 
 export function ResetSettingsButton({ atReportsOverview, handleDateChange, reportDate, settings }) {
     const label = `Reset ${atReportsOverview ? "reports overview" : "this report's"} settings`
@@ -9,7 +10,7 @@ export function ResetSettingsButton({ atReportsOverview, handleDateChange, repor
         <Popup
             on={["hover", "focus"]}
             trigger={
-                <span  // We need a span here to prevent the popup from becoming disabled whenever the button is disabled
+                <span // We need a span here to prevent the popup from becoming disabled whenever the button is disabled
                 >
                     <Button
                         aria-label={label}
@@ -17,7 +18,7 @@ export function ResetSettingsButton({ atReportsOverview, handleDateChange, repor
                         disabled={settings.allDefault() && reportDate === null}
                         icon
                         onClick={() => {
-                            handleDateChange(null);
+                            handleDateChange(null)
                             settings.reset()
                         }}
                         inverted

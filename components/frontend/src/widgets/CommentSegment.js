@@ -1,5 +1,6 @@
-import { Segment } from '../semantic_ui_react_wrappers';
-import { string } from 'prop-types';
+import { string } from "prop-types"
+
+import { Segment } from "../semantic_ui_react_wrappers"
 
 export function CommentSegment({ comment }) {
     if (comment) {

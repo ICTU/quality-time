@@ -1,10 +1,11 @@
-import { useId } from 'react';
-import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { TextInput } from './TextInput';
-import { permissionsPropType } from '../sharedPropTypes';
+import { useId } from "react"
+
+import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
+import { permissionsPropType } from "../sharedPropTypes"
+import { TextInput } from "./TextInput"
 
 export function Comment(props) {
-    const labelId = useId();
+    const labelId = useId()
     return (
         <TextInput
             aria-labelledby={labelId}

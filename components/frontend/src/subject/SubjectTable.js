@@ -1,9 +1,8 @@
-import { array, func, object, string } from 'prop-types';
-import { Table } from '../semantic_ui_react_wrappers';
-import { SubjectTableBody } from './SubjectTableBody';
-import { SubjectTableFooter } from './SubjectTableFooter';
-import { SubjectTableHeader } from './SubjectTableHeader';
 import "./SubjectTable.css"
+
+import { array, func, object, string } from "prop-types"
+
+import { Table } from "../semantic_ui_react_wrappers"
 import {
     datesPropType,
     optionalDatePropType,
@@ -11,7 +10,10 @@ import {
     reportsPropType,
     settingsPropType,
     stringsPropType,
-} from '../sharedPropTypes';
+} from "../sharedPropTypes"
+import { SubjectTableBody } from "./SubjectTableBody"
+import { SubjectTableFooter } from "./SubjectTableFooter"
+import { SubjectTableHeader } from "./SubjectTableHeader"
 
 export function SubjectTable({
     changed_fields,
@@ -29,14 +31,10 @@ export function SubjectTable({
 }) {
     const className = "stickyHeader" + (subject.subtitle ? " subjectHasSubTitle" : "")
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
-    const reversedMeasurements = measurements.slice().sort((m1, m2) => m1.start < m2.start ? 1 : -1)
+    const reversedMeasurements = measurements.slice().sort((m1, m2) => (m1.start < m2.start ? 1 : -1))
     return (
         <Table sortable className={className} style={{ marginTop: "0px" }}>
-            <SubjectTableHeader
-                columnDates={dates}
-                handleSort={handleSort}
-                settings={settings}
-            />
+            <SubjectTableHeader columnDates={dates} handleSort={handleSort} settings={settings} />
             <SubjectTableBody
                 changed_fields={changed_fields}
                 dates={dates}

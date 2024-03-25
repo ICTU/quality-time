@@ -1,5 +1,6 @@
-.react-datepicker__input-container > input, .react-datepicker-wrapper {
-    width: 100% !important;  /* Unfortunately, the date picker does not support fluid, so use this as a work-around */
+.react-datepicker__input-container > input,
+.react-datepicker-wrapper {
+    width: 100% !important; /* Unfortunately, the date picker does not support fluid, so use this as a work-around */
 }
 
 /* Make sure there are no rounded corners where the label with the calendar icon and the input field touch */
