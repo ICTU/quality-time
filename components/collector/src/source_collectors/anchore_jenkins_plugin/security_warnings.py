@@ -1,12 +1,12 @@
 """Anchore Jenkins plugin security warnings collector."""
 
-from base_collectors import SourceCollector
+from base_collectors import SecurityWarningsSourceCollector
 from collector_utilities.functions import md5_hash
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
 
-class AnchoreJenkinsPluginSecurityWarnings(SourceCollector):
+class AnchoreJenkinsPluginSecurityWarnings(SecurityWarningsSourceCollector):
     """Anchore Jenkins plugin security warnings collector."""
 
     TAG, CVE, SEVERITY, PACKAGE, FIX, CVE_URL = range(6)  # Column indices
@@ -34,10 +34,6 @@ class AnchoreJenkinsPluginSecurityWarnings(SourceCollector):
             json = await response.json(content_type=None)
             entities.extend([self._create_entity(vulnerability) for vulnerability in json.get("data", [])])
         return entities
-
-    def _include_entity(self, entity: Entity) -> bool:
-        """Include the entity in the measurement, if the severity was selected."""
-        return entity["severity"] in self._parameter("severities")
 
     def _create_entity(self, vulnerability: list[str]) -> Entity:
         """Create an entity from the vulnerability."""

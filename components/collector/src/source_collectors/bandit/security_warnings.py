@@ -2,13 +2,16 @@
 
 from typing import cast
 
-from base_collectors import JSONFileSourceCollector
+from base_collectors import JSONFileSourceCollector, SecurityWarningsSourceCollector
 from collector_utilities.type import JSON, JSONDict
 from model import Entities, Entity
 
 
-class BanditSecurityWarnings(JSONFileSourceCollector):
+class BanditSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceCollector):
     """Bandit collector for security warnings."""
+
+    ENTITY_SEVERITY_ATTRIBUTE = "issue_severity"
+    MAKE_ENTITY_SEVERITY_VALUE_LOWER_CASE = True
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the security warnings."""
@@ -28,6 +31,8 @@ class BanditSecurityWarnings(JSONFileSourceCollector):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the warning in the measurement."""
-        return entity["issue_severity"].lower() in self._parameter("severities") and entity[
-            "issue_confidence"
-        ].lower() in self._parameter("confidence_levels")
+        return super()._include_entity(entity) and self.__entity_has_configured_confidence_level(entity)
+
+    def __entity_has_configured_confidence_level(self, entity: Entity) -> bool:
+        """Return whether the entity has one of the configured confidence levels."""
+        return entity["issue_confidence"].lower() in self._parameter("confidence_levels")

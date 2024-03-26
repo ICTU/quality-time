@@ -2,7 +2,7 @@
 
 from typing import TypedDict, cast
 
-from base_collectors import JSONFileSourceCollector
+from base_collectors import JSONFileSourceCollector, SecurityWarningsSourceCollector
 from collector_utilities.type import JSON
 from model import Entities, Entity
 
@@ -36,8 +36,12 @@ class TrivyJSONDependencyRepository(TypedDict):
 TrivyJSON = list[TrivyJSONDependencyRepository]
 
 
-class TrivyJSONSecurityWarnings(JSONFileSourceCollector):
+class TrivyJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceCollector):
     """Trivy JSON collector for security warnings."""
+
+    SEVERITY_PARAMETER = "levels"
+    ENTITY_SEVERITY_ATTRIBUTE = "level"
+    MAKE_ENTITY_SEVERITY_VALUE_LOWER_CASE = True
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the vulnerabilities from the Trivy JSON."""
@@ -61,8 +65,3 @@ class TrivyJSONSecurityWarnings(JSONFileSourceCollector):
                     ),
                 )
         return entities
-
-    def _include_entity(self, entity: Entity) -> bool:
-        """Return whether to include the entity in the measurement."""
-        levels = self._parameter("levels")
-        return entity["level"].lower() in levels

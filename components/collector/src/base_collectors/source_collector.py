@@ -253,6 +253,21 @@ class UnmergedBranchesSourceCollector(SourceCollector, ABC):
         """Return the landing url of the branch."""
 
 
+class SecurityWarningsSourceCollector(SourceCollector):
+    """Base class for security warnings source collectors."""
+
+    SEVERITY_PARAMETER = "severities"
+    ENTITY_SEVERITY_ATTRIBUTE = "severity"
+    MAKE_ENTITY_SEVERITY_VALUE_LOWER_CASE = False
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether to include the security warning in the measurement."""
+        severity = str(entity[self.ENTITY_SEVERITY_ATTRIBUTE])
+        if self.MAKE_ENTITY_SEVERITY_VALUE_LOWER_CASE:
+            severity = severity.lower()
+        return severity in self._parameter(self.SEVERITY_PARAMETER)
+
+
 class TimeCollector(SourceCollector):
     """Base class for time collectors."""
 
