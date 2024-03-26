@@ -38,6 +38,10 @@ from .composer.dependencies import ComposerDependencies
 from .cxsast.security_warnings import CxSASTSecurityWarnings
 from .cxsast.source_up_to_dateness import CxSASTSourceUpToDateness
 from .cxsast.source_version import CxSASTSourceVersion
+from .dependency_track.dependencies import DependencyTrackDependencies
+from .dependency_track.security_warnings import DependencyTrackSecurityWarnings
+from .dependency_track.source_up_to_dateness import DependencyTrackSourceUpToDateness
+from .dependency_track.source_version import DependencyTrackSourceVersion
 from .gatling.performancetest_duration import GatlingPerformanceTestDuration
 from .gatling.slow_transactions import GatlingSlowTransactions
 from .gatling.source_up_to_dateness import GatlingSourceUpToDateness

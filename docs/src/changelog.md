@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v5.11.0-rc.1 - 2024-04-18
+## [Unreleased]
 
 ### Deployment notes
 
@@ -17,6 +17,10 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Changed
 
 - When accessing a source takes more than the collection interval (20 seconds by default), a timeout would occur and the metric could not be measured. This happened mostly with sources that have a paginated API and a lot of data. Prevent the timeout by allowing data collection to take more than the collection interval. Closes [#8503](https://github.com/ICTU/quality-time/issues/8503).
+
+### Added
+
+- Add support for using Dependency-Track as source for the source version metric, the source up-to-dateness metric, the security warnings metric, and the dependencies metric. Closes [#7171](https://github.com/ICTU/quality-time/issues/7171).
 
 ## v5.10.0 - 2024-04-15
 

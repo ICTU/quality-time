@@ -10,6 +10,7 @@ from .cloc import CLOC
 from .cobertura import COBERTURA, COBERTURA_JENKINS_PLUGIN
 from .composer import COMPOSER
 from .cxsast import CXSAST
+from .dependency_track import DEPENDENCY_TRACK
 from .gatling import GATLING
 from .generic_json import GENERIC_JSON
 from .gitlab import GITLAB
@@ -53,6 +54,7 @@ SOURCES = {
     "cobertura_jenkins_plugin": COBERTURA_JENKINS_PLUGIN,
     "composer": COMPOSER,
     "cxsast": CXSAST,
+    "dependency_track": DEPENDENCY_TRACK,
     "gatling": GATLING,
     "generic_json": GENERIC_JSON,
     "gitlab": GITLAB,
