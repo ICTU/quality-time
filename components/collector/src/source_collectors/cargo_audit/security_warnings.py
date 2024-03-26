@@ -2,7 +2,7 @@
 
 from typing import Literal, TypedDict, cast
 
-from base_collectors import JSONFileSourceCollector
+from base_collectors import JSONFileSourceCollector, SecurityWarningsSourceCollector
 from collector_utilities.type import JSON
 from model import Entities, Entity
 
@@ -49,8 +49,11 @@ class CargoAuditJSON(TypedDict):
     warnings: dict[CargoAuditWarningKind, list[CargoAuditWarning]]
 
 
-class CargoAuditSecurityWarnings(JSONFileSourceCollector):
+class CargoAuditSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceCollector):
     """Cargo Audit collector for security warnings."""
+
+    SEVERITY_PARAMETER = "warning_types"
+    ENTITY_SEVERITY_ATTRIBUTE = "warning_type"
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the security warnings from the JSON."""
@@ -84,7 +87,3 @@ class CargoAuditSecurityWarnings(JSONFileSourceCollector):
         for warnings_list in json_dict["warnings"].values():
             findings.extend(warnings_list)
         return findings
-
-    def _include_entity(self, entity: Entity) -> bool:
-        """Return whether to include the warning in the measurement."""
-        return entity["warning_type"] in self._parameter("warning_types")

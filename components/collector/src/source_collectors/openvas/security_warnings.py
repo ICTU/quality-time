@@ -1,15 +1,17 @@
 """OpenVAS security warnings collector."""
 
-from typing import ClassVar, cast
+from typing import ClassVar
 from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
-from base_collectors import XMLFileSourceCollector
+from base_collectors import SecurityWarningsSourceCollector, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
 from model import Entities, Entity, SourceResponses
 
 
-class OpenVASSecurityWarnings(XMLFileSourceCollector):
+class OpenVASSecurityWarnings(SecurityWarningsSourceCollector, XMLFileSourceCollector):
     """Collector to get security warnings from OpenVAS."""
+
+    MAKE_ENTITY_SEVERITY_VALUE_LOWER_CASE = True
 
     # Mapping of OpenVAS attribute names to the measurement entity attribute names:
     ATTRIBUTES: ClassVar[dict[str, str]] = {
@@ -36,8 +38,3 @@ class OpenVASSecurityWarnings(XMLFileSourceCollector):
         oid = result.findall("nvt")[0].attrib["oid"]  # Object identifier of the network vulnerability test
         key = f"{kwargs['host']}:{kwargs['port']}:{oid}"
         return Entity(key=key, **kwargs)
-
-    def _include_entity(self, entity: Entity) -> bool:
-        """Return whether to include the entity in the measurement."""
-        severities = cast(list[str], self._parameter("severities"))
-        return entity[self.ATTRIBUTES["threat"]].lower() in severities

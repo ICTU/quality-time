@@ -2,7 +2,7 @@
 
 from typing import Final, TypedDict, cast
 
-from base_collectors import JSONFileSourceCollector
+from base_collectors import JSONFileSourceCollector, SecurityWarningsSourceCollector
 from collector_utilities.type import JSON
 from model import Entities, Entity
 
@@ -33,8 +33,10 @@ HarborJSON = TypedDict(
 )
 
 
-class HarborJSONSecurityWarnings(JSONFileSourceCollector):
+class HarborJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceCollector):
     """Harbor JSON collector for security warnings."""
+
+    MAKE_ENTITY_SEVERITY_VALUE_LOWER_CASE = True
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the vulnerabilities from the Harbor JSON."""
@@ -56,8 +58,3 @@ class HarborJSONSecurityWarnings(JSONFileSourceCollector):
                 ),
             )
         return entities
-
-    def _include_entity(self, entity: Entity) -> bool:
-        """Return whether to include the entity in the measurement."""
-        severities = self._parameter("severities")
-        return entity["severity"].lower() in severities
