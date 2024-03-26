@@ -110,6 +110,7 @@ export function AppUI({
                             reports={reports}
                             reports_overview={reports_overview}
                             settings={settings}
+                            last_update={last_update}
                         />
                     </DataModel.Provider>
                 </Permissions.Provider>

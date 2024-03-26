@@ -1,6 +1,7 @@
 import { Container, Divider, Grid, Header, Icon, Image, List, Segment } from 'semantic-ui-react';
 import { childrenPropType, datePropType, reportPropType } from '../sharedPropTypes';
 import { number, object, oneOfType, string } from 'prop-types';
+import './Footer.css';
 
 function FooterItem({ children, icon, url }) {
     const item = icon ? <><Icon name={icon} /> {children}</> : children;
@@ -114,7 +115,7 @@ function QuoteColumn() {
 
 export function Footer({ report, last_update }) {
     return (
-        <Segment inverted style={{ margin: '5em 0em 0em', padding: '5em 0em 3em', backgroundColor: "#1b1c1d" }}>
+        <Segment inverted className="Footer" id="Footer" style={{ margin: '5em 0em 0em', padding: '5em 0em 3em', backgroundColor: "#1b1c1d" }}>
             <Container>
                 <Grid>
                     <Grid.Row>
