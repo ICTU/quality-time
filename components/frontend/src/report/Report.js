@@ -1,5 +1,6 @@
 import { array, func } from 'prop-types';
 import {
+    datePropType,
     datesPropType,
     optionalDatePropType,
     reportPropType,
@@ -14,6 +15,7 @@ import { getReportTags } from '../utils';
 import { ReportDashboard } from './ReportDashboard';
 import { ReportErrorMessage } from './ReportErrorMessage';
 import { ReportTitle } from './ReportTitle';
+import { ExportCard } from '../dashboard/ExportCard';
 
 export function Report({
     changed_fields,
@@ -25,7 +27,8 @@ export function Report({
     report,
     report_date,
     reports,
-    settings
+    settings,
+    last_update
 }) {
     function navigate_to_subject(event, subject_uuid) {
         event.preventDefault();
@@ -40,15 +43,18 @@ export function Report({
     const reversedMeasurements = measurements.slice().sort((m1, m2) => m1.start < m2.start ? 1 : -1)
     return (
         <div id="dashboard">
-            <ReportTitle
-                openReportsOverview={openReportsOverview}
-                report={report}
-                changed_fields={changed_fields}
-                reload={reload}
-                report_date={report_date}
-                reports={reports}
-                settings={settings}
-            />
+            <div className="reportHeader">
+                <ReportTitle
+                    openReportsOverview={openReportsOverview}
+                    report={report}
+                    changed_fields={changed_fields}
+                    reload={reload}
+                    report_date={report_date}
+                    reports={reports}
+                    settings={settings}
+                />
+                <ExportCard report={report} last_update={last_update} report_date={report_date}/>
+            </div>
             <CommentSegment comment={report.comment} />
             <ReportDashboard
                 dates={dates}
@@ -90,5 +96,6 @@ Report.propTypes = {
     report: reportPropType,
     report_date: optionalDatePropType,
     reports: reportsPropType,
-    settings: settingsPropType
+    settings: settingsPropType,
+    last_update: datePropType
 }
