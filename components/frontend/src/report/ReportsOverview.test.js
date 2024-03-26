@@ -45,6 +45,7 @@ function renderReportsOverview(
                     reports={reports}
                     reports_overview={reportsOverview}
                     settings={settings}
+                    last_update={new Date()}
                 />
             </DataModel.Provider>
         </Permissions.Provider>
@@ -60,7 +61,7 @@ it('shows the reports overview', async () => {
     const reports = [{ subjects: {} }]
     const reportsOverview = { title: "Overview", permissions: {} }
     renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
-    expect(screen.getAllByText(/Overview/).length).toBe(1);
+    expect(screen.getAllByText(/Overview/).length).toBe(2);
 });
 
 it('shows the comment', async () => {
