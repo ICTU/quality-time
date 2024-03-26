@@ -16,7 +16,7 @@
         flex-shrink: 0;
     }
 
-    .ui.list .item {
+    .ui.card.export-data-card.list .item {
         display: flex;
         overflow: hidden;
         white-space: normal;

@@ -45,6 +45,7 @@ async function renderPageContent(
                     report_date={report_date}
                     report_uuid={report_uuid}
                     settings={settings}
+                    last_update={new Date()}
                 />
             </div>
         )

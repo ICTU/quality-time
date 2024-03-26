@@ -58,6 +58,7 @@ function renderReport(
                     report={reportToRender}
                     report_date={report_date}
                     settings={settings}
+                    last_update={new Date()}
                 />
             </DataModel.Provider>
         </Permissions.Provider>
