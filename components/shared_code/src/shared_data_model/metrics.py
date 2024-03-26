@@ -486,6 +486,7 @@ have 2.9.3 and the version available is 3.9.1, then the metric will turn red.
             "cloc",
             "cobertura",
             "cxsast",
+            "dependency_track",
             "gatling",
             "gitlab",
             "jenkins",
