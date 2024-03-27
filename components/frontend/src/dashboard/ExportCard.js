@@ -2,8 +2,6 @@ import { Card, List } from 'semantic-ui-react';
 import { childrenPropType, datePropType, reportPropType } from '../sharedPropTypes';
 import { bool, string } from 'prop-types';
 import './ExportCard.css';
-import { useContext } from 'react';
-import { DarkMode } from '../context/DarkMode';
 
 function ExportCardItem({ children, url }) {
     const item = children;
@@ -21,7 +19,7 @@ export function ExportCard({ report, last_update, report_date, is_overview = fal
         report_date = new Date();
     }
     const listItems = [
-        <List.Item key={"reportURL"}>
+        <List.Item key={"reportURL"} data-testid={"reportUrl"}>
             <List.Content verticalAlign={"middle"}>
                 <ExportCardItem url={reportURL}>{report.title}</ExportCardItem>
             </List.Content>
@@ -36,8 +34,8 @@ export function ExportCard({ report, last_update, report_date, is_overview = fal
                 <ExportCardItem>{"Generated: " + formatDate(last_update) + ", " + formatTime(last_update)}</ExportCardItem>
             </List.Content>
         </List.Item>,
-        <List.Item key={"version"}>
-            <List.Content verticalAlign={"middle"}>
+        <List.Item key={"version"} data-testid={"version"}>
+            <List.Content verticalAlign={"middle"} >
                 <ExportCardItem url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/changelog.html`}><em>Quality-time</em> v{process.env.REACT_APP_VERSION}</ExportCardItem>
             </List.Content>
         </List.Item>
@@ -61,7 +59,7 @@ ExportCard.propTypes = {
 }
 
 function formatDate(date) {
-    return date.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+    return date.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit'}).replace(/\//g, '-');
 }
 
 function formatTime(date) {
