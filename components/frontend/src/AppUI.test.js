@@ -28,6 +28,7 @@ it('handles sorting', async () => {
                 reports={[report]}
                 reports_overview={{}}
                 user="xxx"
+                last_update={new Date()}
             />
         )
     )

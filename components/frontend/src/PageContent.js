@@ -12,6 +12,7 @@ import {
     settingsPropType,
     stringsPropType,
     optionalDatePropType,
+    datePropType,
 } from './sharedPropTypes';
 
 function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
@@ -41,7 +42,8 @@ export function PageContent({
     report_uuid,
     reports,
     reports_overview,
-    settings
+    settings,
+    last_update
 }) {
     const dates = getColumnDates(report_date, settings.dateInterval.value, settings.dateOrder.value, settings.nrDates.value)
     const [measurements, setMeasurements] = useState([]);
@@ -72,12 +74,14 @@ export function PageContent({
             content = <Report
                 openReportsOverview={openReportsOverview}
                 report={current_report}
+                last_update={last_update}
                 {...commonProps}
             />
         } else {
             content = <ReportsOverview
                 openReport={openReport}
                 reports_overview={reports_overview}
+                last_update={last_update}
                 {...commonProps}
             />
         }
@@ -97,5 +101,6 @@ PageContent.propTypes = {
     report_uuid: string,
     reports: reportsPropType,
     reports_overview: reportsOverviewPropType,
-    settings: settingsPropType
+    settings: settingsPropType,
+    last_update: datePropType
 }

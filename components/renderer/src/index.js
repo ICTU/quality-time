@@ -28,6 +28,7 @@ app.get("/api/render", async (req, res) => {
         console.log(`URL ${url}: opened`);
         await webPage.waitForSelector(".loader", { hidden: true });
         await webPage.waitForSelector("#dashboard.animated");
+        await webPage.waitForSelector(".export-data-card");
         console.log(`URL ${url}: loader hidden and animations finished`);
         const pdf = await webPage.pdf({
             printBackground: true,
