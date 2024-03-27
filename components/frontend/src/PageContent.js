@@ -33,6 +33,7 @@ export function PageContent({
     changed_fields,
     current_report,
     handleSort,
+    lastUpdate,
     loading,
     nrMeasurements,
     openReport,
@@ -43,7 +44,6 @@ export function PageContent({
     reports,
     reports_overview,
     settings,
-    last_update
 }) {
     const dates = getColumnDates(report_date, settings.dateInterval.value, settings.dateOrder.value, settings.nrDates.value)
     const [measurements, setMeasurements] = useState([]);
@@ -72,16 +72,16 @@ export function PageContent({
         }
         if (report_uuid) {
             content = <Report
+                lastUpdate={lastUpdate}
                 openReportsOverview={openReportsOverview}
                 report={current_report}
-                last_update={last_update}
                 {...commonProps}
             />
         } else {
             content = <ReportsOverview
+                lastUpdate={lastUpdate}
                 openReport={openReport}
                 reports_overview={reports_overview}
-                last_update={last_update}
                 {...commonProps}
             />
         }
@@ -92,6 +92,7 @@ PageContent.propTypes = {
     changed_fields: stringsPropType,
     current_report: reportPropType,
     handleSort: func,
+    lastUpdate: datePropType,
     loading: bool,
     nrMeasurements: number,
     openReport: func,
@@ -102,5 +103,4 @@ PageContent.propTypes = {
     reports: reportsPropType,
     reports_overview: reportsOverviewPropType,
     settings: settingsPropType,
-    last_update: datePropType
 }

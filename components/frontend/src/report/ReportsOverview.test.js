@@ -40,12 +40,12 @@ function renderReportsOverview(
             <DataModel.Provider value={datamodel}>
                 <ReportsOverview
                     dates={[reportDate || new Date()]}
+                    lastUpdate={new Date()}
                     measurements={[{ status: "target_met" }]}
                     report_date={reportDate}
                     reports={reports}
                     reports_overview={reportsOverview}
                     settings={settings}
-                    last_update={new Date()}
                 />
             </DataModel.Provider>
         </Permissions.Provider>

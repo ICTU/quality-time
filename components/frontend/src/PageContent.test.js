@@ -39,13 +39,13 @@ async function renderPageContent(
         async () => render(
             <div id="dashboard">
                 <PageContent
+                    lastUpdate={new Date()}
                     loading={loading}
                     reports={reports}
                     reports_overview={{}}
                     report_date={report_date}
                     report_uuid={report_uuid}
                     settings={settings}
-                    last_update={new Date()}
                 />
             </div>
         )

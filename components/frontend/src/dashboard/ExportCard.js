@@ -12,12 +12,9 @@ ExportCardItem.propTypes = {
     url: string,
 }
 
-export function ExportCard({ report, last_update, report_date, is_overview = false }) {
+export function ExportCard({ lastUpdate, report, reportDate, isOverview = false }) {
     const reportURL = new URLSearchParams(window.location.search).get("report_url") ?? window.location.href;
-    const title = is_overview ? "About these reports" : "About this report";
-    if (report_date === null) {
-        report_date = new Date();
-    }
+    const title = isOverview ? "About these reports" : "About this report";
     const listItems = [
         <List.Item key={"reportURL"} data-testid={"reportUrl"}>
             <List.Content verticalAlign={"middle"}>
@@ -26,12 +23,12 @@ export function ExportCard({ report, last_update, report_date, is_overview = fal
         </List.Item>,
         <List.Item key={"date"}>
             <List.Content verticalAlign={"middle"}>
-                <ExportCardItem>{"Report date: " + formatDate(report_date)}</ExportCardItem>
+                <ExportCardItem>{"Report date: " + formatDate(reportDate ?? new Date())}</ExportCardItem>
             </List.Content>
         </List.Item>,
         <List.Item key={"generated"}>
             <List.Content verticalAlign={"middle"}>
-                <ExportCardItem>{"Generated: " + formatDate(last_update) + ", " + formatTime(last_update)}</ExportCardItem>
+                <ExportCardItem>{"Generated: " + formatDate(lastUpdate) + ", " + formatTime(lastUpdate)}</ExportCardItem>
             </List.Content>
         </List.Item>,
         <List.Item key={"version"} data-testid={"version"}>
@@ -52,16 +49,18 @@ export function ExportCard({ report, last_update, report_date, is_overview = fal
     )
 }
 ExportCard.propTypes = {
+    isOverview: bool,
+    lastUpdate: datePropType,
     report: reportPropType,
-    last_update: datePropType,
-    report_date: datePropType,
-    is_overview: bool,
+    reportDate: datePropType,
 }
 
+// Hard code en-GB to get European style dates and times. See https://github.com/ICTU/quality-time/issues/8381.
+
 function formatDate(date) {
-    return date.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit'}).replace(/\//g, '-');
+    return date.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
 }
 
 function formatTime(date) {
-    return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit'});
+    return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 }

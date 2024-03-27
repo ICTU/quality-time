@@ -50,6 +50,7 @@ export function ReportsOverview(
         changed_fields,
         dates,
         handleSort,
+        lastUpdate,
         measurements,
         openReport,
         reload,
@@ -57,7 +58,6 @@ export function ReportsOverview(
         report_date,
         reports_overview,
         settings,
-        last_update
     }
 ) {
     if (reports.length === 0 && report_date !== null) {
@@ -72,7 +72,7 @@ export function ReportsOverview(
                     reports_overview={reports_overview}
                     reload={reload} settings={settings}
                 />
-                <ExportCard report={reports_overview} last_update={last_update} report_date={report_date} is_overview={true}/>
+                <ExportCard isOverview={true} lastUpdate={lastUpdate} report={reports_overview} reportDate={report_date} />
             </div>
             <CommentSegment comment={reports_overview.comment} />
             <ReportsOverviewDashboard
@@ -110,6 +110,7 @@ ReportsOverview.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
     handleSort: func,
+    lastUpdate: datePropType,
     measurements: array,
     reports: reportsPropType,
     openReport: func,
@@ -117,5 +118,4 @@ ReportsOverview.propTypes = {
     report_date: optionalDatePropType,
     reports_overview: reportsOverviewPropType,
     settings: settingsPropType,
-    last_update: datePropType
 }

@@ -76,8 +76,8 @@ function SupportColumn() {
     )
 }
 
-function AboutReportColumn({ report, last_update }) {
-    last_update = last_update ?? new Date();
+function AboutReportColumn({ lastUpdate, report }) {
+    lastUpdate = lastUpdate ?? new Date();
     // When exporting to PDF, window.location.href may not be the correct URL. This is fixed by having the user's
     // browser pass the correct URL as search parameter and use that instead:
     const reportURL = new URLSearchParams(window.location.search).get("report_url") ?? window.location.href;
@@ -85,14 +85,14 @@ function AboutReportColumn({ report, last_update }) {
         <FooterCenterColumn header="About this report">
             <FooterItem url={reportURL}>{report.title}</FooterItem>
             <FooterItem>{report.subtitle}</FooterItem>
-            <FooterItem>{last_update.toLocaleDateString()}</FooterItem>
-            <FooterItem>{last_update.toLocaleTimeString()}</FooterItem>
+            <FooterItem>{lastUpdate.toLocaleDateString()}</FooterItem>
+            <FooterItem>{lastUpdate.toLocaleTimeString()}</FooterItem>
         </FooterCenterColumn>
     )
 }
 AboutReportColumn.propTypes = {
+    lastUpdate: datePropType,
     report: reportPropType,
-    last_update: datePropType,
 }
 
 function QuoteColumn() {
@@ -113,7 +113,7 @@ function QuoteColumn() {
     )
 }
 
-export function Footer({ report, last_update }) {
+export function Footer({ lastUpdate, report }) {
     return (
         <Segment inverted id="Footer" style={{ margin: '5em 0em 0em', padding: '5em 0em 3em', backgroundColor: "#1b1c1d" }}>
             <Container>
@@ -121,7 +121,7 @@ export function Footer({ report, last_update }) {
                     <Grid.Row>
                         <Grid.Column width={1} />
                         <AboutAppColumn />
-                        {report ? <AboutReportColumn report={report} last_update={last_update} /> : <QuoteColumn />}
+                        {report ? <AboutReportColumn report={report} lastUpdate={lastUpdate} /> : <QuoteColumn />}
                         <Grid.Column width={1} />
                         <SupportColumn />
                     </Grid.Row>
@@ -133,6 +133,6 @@ export function Footer({ report, last_update }) {
     )
 }
 Footer.propTypes = {
+    lastUpdate: datePropType,
     report: reportPropType,
-    last_update: datePropType,
 }

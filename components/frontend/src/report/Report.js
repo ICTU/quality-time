@@ -21,6 +21,7 @@ export function Report({
     changed_fields,
     dates,
     handleSort,
+    lastUpdate,
     measurements,
     openReportsOverview,
     reload,
@@ -28,7 +29,6 @@ export function Report({
     report_date,
     reports,
     settings,
-    last_update
 }) {
     function navigate_to_subject(event, subject_uuid) {
         event.preventDefault();
@@ -53,7 +53,7 @@ export function Report({
                     reports={reports}
                     settings={settings}
                 />
-                <ExportCard report={report} last_update={last_update} report_date={report_date}/>
+                <ExportCard lastUpdate={lastUpdate} report={report} reportDate={report_date} />
             </div>
             <CommentSegment comment={report.comment} />
             <ReportDashboard
@@ -90,6 +90,7 @@ Report.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
     handleSort: func,
+    lastUpdate: datePropType,
     measurements: array,
     openReportsOverview: func,
     reload: func,
@@ -97,5 +98,4 @@ Report.propTypes = {
     report_date: optionalDatePropType,
     reports: reportsPropType,
     settings: settingsPropType,
-    last_update: datePropType
 }
