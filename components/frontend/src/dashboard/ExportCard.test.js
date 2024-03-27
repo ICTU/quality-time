@@ -1,7 +1,6 @@
-import { screen } from '@testing-library/react';
+import { screen, render } from '@testing-library/react';
 import { mockGetAnimations } from './MockAnimations';
 import { ExportCard } from './ExportCard';
-import { render } from '@testing-library/react';
 
 beforeEach(() => mockGetAnimations());
 
