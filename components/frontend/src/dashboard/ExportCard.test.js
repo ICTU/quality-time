@@ -9,6 +9,7 @@ afterEach(() => jest.restoreAllMocks());
 
 const mockReportDate = new Date('2024-03-24T12:34:56');
 const mockLastUpdate = new Date('2024-03-26T12:34:56');
+const mockDateOfToday = new Date().toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit'}).replace(/\//g, '-');
 
 const report = {
     report_uuid: "report_uuid",
@@ -54,5 +55,20 @@ it('displays dates in en-GB format', () => {
     renderExportCard({report: report, last_update: mockLastUpdate, report_date: mockReportDate});
     expect(screen.getByText(/Report date: 24-03-2024/)).toBeInTheDocument();
     expect(screen.getByText(/Generated: 26-03-2024, 12:34:56/)).toBeInTheDocument();
+});
+
+it('displays report URL', () => {
+    renderExportCard({report: report});
+    expect(screen.getByTestId('reportUrl')).toBeInTheDocument();
+});
+
+it('displays version link', () => {
+    renderExportCard({report: report, last_update: mockLastUpdate});
+    expect(screen.getByTestId('version')).toBeInTheDocument();
+});
+
+it('displays today as report date if no report date is provided', () => {
+    renderExportCard({report: report, last_update: mockLastUpdate});
+    expect(screen.getByText(`Report date: ${mockDateOfToday}`)).toBeInTheDocument();
 });
 
