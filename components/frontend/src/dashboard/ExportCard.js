@@ -15,9 +15,6 @@ ExportCardItem.propTypes = {
 }
 
 export function ExportCard({ report, last_update, report_date, is_overview = false }) {
-    const darkMode = useContext(DarkMode)
-    const color = darkMode ? "white" : "black"
-    const backgroundColor = darkMode ? "rgb(40, 40, 40)" : "white";
     const reportURL = new URLSearchParams(window.location.search).get("report_url") ?? window.location.href;
     const title = is_overview ? "About these reports" : "About this report";
     if (report_date === null) {
@@ -25,30 +22,30 @@ export function ExportCard({ report, last_update, report_date, is_overview = fal
     }
     const listItems = [
         <List.Item key={"reportURL"}>
-            <List.Content verticalAlign={"middle"} style={{ color: color }}>
+            <List.Content verticalAlign={"middle"}>
                 <ExportCardItem url={reportURL}>{report.title}</ExportCardItem>
             </List.Content>
         </List.Item>,
         <List.Item key={"date"}>
-            <List.Content verticalAlign={"middle"} style={{ color: color }}>
+            <List.Content verticalAlign={"middle"}>
                 <ExportCardItem>{"Report date: " + formatDate(report_date)}</ExportCardItem>
             </List.Content>
         </List.Item>,
         <List.Item key={"generated"}>
-            <List.Content verticalAlign={"middle"} style={{ color: color }}>
+            <List.Content verticalAlign={"middle"}>
                 <ExportCardItem>{"Generated: " + formatDate(last_update) + ", " + formatTime(last_update)}</ExportCardItem>
             </List.Content>
         </List.Item>,
         <List.Item key={"version"}>
-            <List.Content verticalAlign={"middle"} style={{ color: color }}>
+            <List.Content verticalAlign={"middle"}>
                 <ExportCardItem url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/changelog.html`}><em>Quality-time</em> v{process.env.REACT_APP_VERSION}</ExportCardItem>
             </List.Content>
         </List.Item>
     ];
     return (
         <Card tabIndex="0" className="export-data-card">
-            <Card.Content style={{ backgroundColor: backgroundColor }}>
-                <Card.Header title={title} textAlign='center' style={{ color: color }}>{title}</Card.Header>
+            <Card.Content>
+                <Card.Header title={title} textAlign='center'>{title}</Card.Header>
                 <List size="small">
                     {listItems}
                 </List>
