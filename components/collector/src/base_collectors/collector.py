@@ -38,8 +38,8 @@ class Collector:
         try:
             with filename.open("w", encoding="utf-8") as health_check:
                 health_check.write(datetime.now(tz=UTC).isoformat())
-        except OSError:
-            logging.exception("Could not write health check time stamp to %s", filename)
+        except OSError as reason:
+            logging.error("Could not write health check time stamp to %s: %s", filename, reason)  # noqa: TRY400
 
     async def start(self) -> NoReturn:
         """Start fetching measurements indefinitely."""
