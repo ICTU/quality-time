@@ -101,6 +101,13 @@ ci/pip-install.sh
 python src/quality_time_collector.py
 ```
 
+on macOS, you'll have to point the `HEALTH_CHECK_FILE` environment variable to a file that exists on your machine, instead of the default `/home/collector/health_check.txt`:
+```shell
+export HEALTH_CHECK_FILE=/Users/yourusername/collector/health_check.txt
+```
+
+```console
+
 ##### Start the {index}`frontend <Frontend component>`
 
 Open another terminal and run the frontend:
@@ -123,6 +130,11 @@ python3 -m venv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
 python src/quality_time_notifier.py
+```
+
+on macOS, you'll have to point the `HEALTH_CHECK_FILE` environment variable to a file that exists on your machine, instead of the default `/home/notifier/health_check.txt`:
+```shell
+export HEALTH_CHECK_FILE=/Users/yourusername/notifier/health_check.txt
 ```
 
 #### Preparing the shared component
