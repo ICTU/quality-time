@@ -102,6 +102,7 @@ python src/quality_time_collector.py
 ```
 
 on macOS, you'll have to point the `HEALTH_CHECK_FILE` environment variable to a file that exists on your machine, instead of the default `/home/collector/health_check.txt`:
+
 ```console
 export HEALTH_CHECK_FILE=/Users/yourusername/collector/health_check.txt
 ```
@@ -131,6 +132,7 @@ python src/quality_time_notifier.py
 ```
 
 on macOS, you'll have to point the `HEALTH_CHECK_FILE` environment variable to a file that exists on your machine, instead of the default `/home/notifier/health_check.txt`:
+
 ```console
 export HEALTH_CHECK_FILE=/Users/yourusername/notifier/health_check.txt
 ```
