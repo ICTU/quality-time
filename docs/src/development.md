@@ -107,7 +107,7 @@ By default, the collector attempts to write a health check time stamp to `/home/
 ERROR:root:Could not write health check time stamp to /home/collector/health_check.txt: [Errno 2] No such file or directory: '/home/collector/health_check.txt'
 ```
 
-To prevent the error, you can set the `HEALTH_CHECK_FILE` environment variable to a location that can be written on your machine, for example:
+To prevent the error and the resulting log messages, you can set the `HEALTH_CHECK_FILE` environment variable to a location that can be written on your machine, for example:
 
 ```console
 export HEALTH_CHECK_FILE=/tmp/health_check.txt
@@ -137,22 +137,10 @@ ci/pip-install.sh
 python src/quality_time_notifier.py
 ```
 
-<<<<<<< HEAD
 ##### Running the proxy component
 
 The `proxy` component is mapped to the `www` service in the docker compose file, which runs on port 80 by default.
 This container runs an unprivileged version of Nginx, which will not require additional capabilities when ran on a higher port by specifying `PROXY_PORT`.
-||||||| parent of 446409da6 (change shell to console, remove redundant console tag)
-on macOS, you'll have to point the `HEALTH_CHECK_FILE` environment variable to a file that exists on your machine, instead of the default `/home/notifier/health_check.txt`:
-```shell
-export HEALTH_CHECK_FILE=/Users/yourusername/notifier/health_check.txt
-```
-=======
-on macOS, you'll have to point the `HEALTH_CHECK_FILE` environment variable to a file that exists on your machine, instead of the default `/home/notifier/health_check.txt`:
-```console
-export HEALTH_CHECK_FILE=/Users/yourusername/notifier/health_check.txt
-```
->>>>>>> 446409da6 (change shell to console, remove redundant console tag)
 
 #### Preparing the shared component
 
