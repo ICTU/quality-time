@@ -53,6 +53,7 @@ function renderReport(
                 <Report
                     dates={dates}
                     handleSort={handleSort}
+                    lastUpdate={new Date()}
                     measurements={[]}
                     reports={[reportToRender]}
                     report={reportToRender}

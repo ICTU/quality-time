@@ -22,7 +22,7 @@ export function AppUI({
     datamodel,
     email,
     handleDateChange,
-    last_update,
+    lastUpdate,
     loading,
     nrMeasurements,
     openReportsOverview,
@@ -100,6 +100,7 @@ export function AppUI({
                             changed_fields={changed_fields}
                             current_report={current_report}
                             handleSort={handleSort}
+                            lastUpdate={lastUpdate}
                             loading={loading}
                             nrMeasurements={nrMeasurements}
                             openReportsOverview={openReportsOverview}
@@ -113,7 +114,7 @@ export function AppUI({
                         />
                     </DataModel.Provider>
                 </Permissions.Provider>
-                <Footer last_update={last_update} report={current_report} />
+                <Footer lastUpdate={lastUpdate} report={current_report} />
             </DarkMode.Provider>
         </div>
     )
@@ -123,7 +124,7 @@ AppUI.propTypes = {
     datamodel: object,
     email: string,
     handleDateChange: func,
-    last_update: datePropType,
+    lastUpdate: datePropType,
     loading: bool,
     nrMeasurements: number,
     openReport: func,

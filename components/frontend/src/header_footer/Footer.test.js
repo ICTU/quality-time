@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { Footer } from './Footer';
 
 it('renders the report title when there is a report', () => {
-    const last_update = new Date();
-    render(<Footer report={{ title: "Report title" }} last_update={last_update} />)
+    const lastUpdate = new Date();
+    render(<Footer lastUpdate={lastUpdate} report={{ title: "Report title" }}  />)
     expect(screen.findByText("Report")).not.toBe(null)
 })
 

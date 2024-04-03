@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is v4.10.0 or older, please read the v5.0.0 deployment notes first.
+
+### Changed
+
+- In PDF-exports, don't include the footer but put the report metadata (report date, date the PDF was generated, and Quality-time version) in a card at the top. Closes [#3156](https://github.com/ICTU/quality-time/issues/3156).
+
 ## v5.9.0 - 2024-03-22
 
 ### Deployment notes

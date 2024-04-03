@@ -9,6 +9,7 @@ import { AddButton, CopyButton } from '../widgets/Button';
 import { report_options } from '../widgets/menu_options';
 import { getReportsTags } from '../utils';
 import {
+    datePropType,
     datesPropType,
     optionalDatePropType,
     reportsOverviewPropType,
@@ -18,6 +19,7 @@ import {
 } from '../sharedPropTypes';
 import { ReportsOverviewErrorMessage } from './ReportErrorMessage';
 import { ReportsOverviewDashboard } from './ReportsOverviewDashboard';
+import { ExportCard } from '../dashboard/ExportCard';
 
 
 function ReportsOverviewButtonRow({ reload, reports }) {
@@ -48,13 +50,14 @@ export function ReportsOverview(
         changed_fields,
         dates,
         handleSort,
+        lastUpdate,
         measurements,
         openReport,
         reload,
         reports,
         report_date,
         reports_overview,
-        settings
+        settings,
     }
 ) {
     if (reports.length === 0 && report_date !== null) {
@@ -64,7 +67,13 @@ export function ReportsOverview(
     const reversedMeasurements = measurements.slice().sort((m1, m2) => m1.start < m2.start ? 1 : -1)
     return (
         <div id="dashboard">
-            <ReportsOverviewTitle reports_overview={reports_overview} reload={reload} settings={settings} />
+            <div className="reportHeader">
+                <ReportsOverviewTitle
+                    reports_overview={reports_overview}
+                    reload={reload} settings={settings}
+                />
+                <ExportCard isOverview={true} lastUpdate={lastUpdate} report={reports_overview} reportDate={report_date} />
+            </div>
             <CommentSegment comment={reports_overview.comment} />
             <ReportsOverviewDashboard
                 dates={dates}
@@ -101,11 +110,12 @@ ReportsOverview.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
     handleSort: func,
+    lastUpdate: datePropType,
     measurements: array,
     reports: reportsPropType,
     openReport: func,
     reload: func,
     report_date: optionalDatePropType,
     reports_overview: reportsOverviewPropType,
-    settings: settingsPropType
+    settings: settingsPropType,
 }

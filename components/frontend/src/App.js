@@ -17,6 +17,7 @@ class App extends Component {
         super(props);
         this.state = {
             datamodel: {},
+            lastUpdate: new Date(),
             reports: [],
             report_uuid: '',
             report_date: null,
@@ -26,7 +27,6 @@ class App extends Component {
             loading: true,
             user: null,
             email: null,
-            last_update: new Date()
         };
         history.listen(({ location, action }) => this.on_history({ location, action }));
     }
@@ -81,11 +81,11 @@ class App extends Component {
                 } else {
                     const now = new Date();
                     this.setState({
-                        loading: false,
                         datamodel: data_model,
-                        reports_overview: reports_overview,
+                        lastUpdate: now,
+                        loading: false,
                         reports: reports.reports || [],
-                        last_update: now
+                        reports_overview: reports_overview,
                     });
                 }
             }).catch(show_error);
@@ -233,7 +233,7 @@ class App extends Component {
                 openReportsOverview={() => this.openReportsOverview()}
                 handleDateChange={(date) => this.handleDateChange(date)}
                 key={this.state.report_uuid}  // Make sure the AppUI is refreshed whenever the current report changes
-                last_update={this.state.last_update}
+                lastUpdate={this.state.lastUpdate}
                 loading={this.state.loading}
                 nrMeasurements={this.state.nrMeasurements}
                 openReport={(report_uuid) => this.openReport(report_uuid)}

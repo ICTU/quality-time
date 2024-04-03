@@ -23,6 +23,7 @@ it('handles sorting', async () => {
         async () => render(
             <AppUI
                 datamodel={datamodel}
+                lastUpdate={new Date()}
                 report_date={null}
                 report_uuid="report_uuid"
                 reports={[report]}

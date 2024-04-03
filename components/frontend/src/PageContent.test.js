@@ -39,6 +39,7 @@ async function renderPageContent(
         async () => render(
             <div id="dashboard">
                 <PageContent
+                    lastUpdate={new Date()}
                     loading={loading}
                     reports={reports}
                     reports_overview={{}}

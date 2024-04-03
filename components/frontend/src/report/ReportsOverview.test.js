@@ -40,6 +40,7 @@ function renderReportsOverview(
             <DataModel.Provider value={datamodel}>
                 <ReportsOverview
                     dates={[reportDate || new Date()]}
+                    lastUpdate={new Date()}
                     measurements={[{ status: "target_met" }]}
                     report_date={reportDate}
                     reports={reports}
@@ -60,7 +61,7 @@ it('shows the reports overview', async () => {
     const reports = [{ subjects: {} }]
     const reportsOverview = { title: "Overview", permissions: {} }
     renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
-    expect(screen.getAllByText(/Overview/).length).toBe(1);
+    expect(screen.getAllByText(/Overview/).length).toBe(2);
 });
 
 it('shows the comment', async () => {
