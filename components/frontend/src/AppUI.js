@@ -1,21 +1,28 @@
-import { useEffect } from 'react';
-import { bool, func, number, object, string } from 'prop-types';
-import { ToastContainer } from 'react-toastify';
-import HashLinkObserver from "react-hash-link";
-import useLocalStorageState from 'use-local-storage-state';
-import 'react-toastify/dist/ReactToastify.css';
-import './App.css';
+import "react-toastify/dist/ReactToastify.css"
+import "./App.css"
 
-import { DataModel } from './context/DataModel';
-import { DarkMode } from './context/DarkMode';
-import { Permissions } from './context/Permissions';
-import { Menubar } from './header_footer/Menubar';
-import { Footer } from './header_footer/Footer';
-import { SettingsPanel } from './header_footer/SettingsPanel';
-import { PageContent } from './PageContent';
-import { getReportsTags, getUserPermissions, userPrefersDarkMode } from './utils'
-import { datePropType, optionalDatePropType, reportsOverviewPropType, reportsPropType, stringsPropType } from './sharedPropTypes';
-import { useSettings } from './app_ui_settings';
+import { bool, func, number, object, string } from "prop-types"
+import { useEffect } from "react"
+import HashLinkObserver from "react-hash-link"
+import { ToastContainer } from "react-toastify"
+import useLocalStorageState from "use-local-storage-state"
+
+import { useSettings } from "./app_ui_settings"
+import { DarkMode } from "./context/DarkMode"
+import { DataModel } from "./context/DataModel"
+import { Permissions } from "./context/Permissions"
+import { Footer } from "./header_footer/Footer"
+import { Menubar } from "./header_footer/Menubar"
+import { SettingsPanel } from "./header_footer/SettingsPanel"
+import { PageContent } from "./PageContent"
+import {
+    datePropType,
+    optionalDatePropType,
+    reportsOverviewPropType,
+    reportsPropType,
+    stringsPropType,
+} from "./sharedPropTypes"
+import { getReportsTags, getUserPermissions, userPrefersDarkMode } from "./utils"
 
 export function AppUI({
     changed_fields,
@@ -33,45 +40,53 @@ export function AppUI({
     reports,
     reports_overview,
     set_user,
-    user
+    user,
 }) {
-    const [uiMode, setUIMode] = useLocalStorageState("ui_mode", { "defaultValue": "follow_os" })
+    const [uiMode, setUIMode] = useLocalStorageState("ui_mode", { defaultValue: "follow_os" })
     useEffect(() => {
-        const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
-        mediaQueryList.addEventListener("change", changeMode);
+        const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)")
+        mediaQueryList.addEventListener("change", changeMode)
         function changeMode(e) {
-            if (uiMode === "follow_os") {  // Only update if the user is following the OS mode setting
-                setUIMode(e.matches ? "dark" : "light")  // Force redraw
-                setTimeout(() => setUIMode("follow_os"))  // Reset setting
+            if (uiMode === "follow_os") {
+                // Only update if the user is following the OS mode setting
+                setUIMode(e.matches ? "dark" : "light") // Force redraw
+                setTimeout(() => setUIMode("follow_os")) // Reset setting
             }
         }
-        return () => mediaQueryList.removeEventListener("change", changeMode);
-    }, [uiMode, setUIMode]);
+        return () => mediaQueryList.removeEventListener("change", changeMode)
+    }, [uiMode, setUIMode])
 
     const user_permissions = getUserPermissions(user, email, report_date, reports_overview.permissions || {})
     const atReportsOverview = report_uuid === ""
-    const current_report = atReportsOverview ? null : reports.filter((report) => report.report_uuid === report_uuid)[0];
+    const current_report = atReportsOverview ? null : reports.filter((report) => report.report_uuid === report_uuid)[0]
     const settings = useSettings(report_uuid)
 
     function handleSort(column) {
         if (column === null) {
-            settings.sortColumn.set("")  // Stop sorting
+            settings.sortColumn.set("") // Stop sorting
             return
         }
         if (settings.sortColumn.equals(column)) {
-            if (settings.sortDirection.equals('descending')) {
-                settings.sortColumn.set("")  // Cycle through ascending->descending->no sort as long as the user clicks the same column
+            if (settings.sortDirection.equals("descending")) {
+                settings.sortColumn.set("") // Cycle through ascending->descending->no sort as long as the user clicks the same column
             }
-            settings.sortDirection.set(settings.sortDirection.equals('ascending') ? 'descending' : 'ascending')
+            settings.sortDirection.set(settings.sortDirection.equals("ascending") ? "descending" : "ascending")
         } else {
             settings.sortColumn.set(column)
         }
     }
 
-    const darkMode = userPrefersDarkMode(uiMode);
+    const darkMode = userPrefersDarkMode(uiMode)
     const backgroundColor = darkMode ? "rgb(40, 40, 40)" : "white"
     return (
-        <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column", backgroundColor: backgroundColor }}>
+        <div
+            style={{
+                display: "flex",
+                minHeight: "100vh",
+                flexDirection: "column",
+                backgroundColor: backgroundColor,
+            }}
+        >
             <DarkMode.Provider value={darkMode}>
                 <HashLinkObserver />
                 <Menubar
@@ -83,12 +98,14 @@ export function AppUI({
                     report_uuid={report_uuid}
                     set_user={set_user}
                     user={user}
-                    panel={<SettingsPanel
-                        atReportsOverview={atReportsOverview}
-                        handleSort={handleSort}
-                        settings={settings}
-                        tags={getReportsTags(reports)}
-                    />}
+                    panel={
+                        <SettingsPanel
+                            atReportsOverview={atReportsOverview}
+                            handleSort={handleSort}
+                            settings={settings}
+                            tags={getReportsTags(reports)}
+                        />
+                    }
                     settings={settings}
                     setUIMode={setUIMode}
                     uiMode={uiMode}
@@ -135,5 +152,5 @@ AppUI.propTypes = {
     reports: reportsPropType,
     reports_overview: reportsOverviewPropType,
     set_user: func,
-    user: string
+    user: string,
 }

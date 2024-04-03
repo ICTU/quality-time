@@ -1,39 +1,50 @@
-import { useContext } from 'react';
-import { func, number, string } from 'prop-types';
-import { Message } from 'semantic-ui-react';
-import { Segment } from '../semantic_ui_react_wrappers';
-import { DataModel } from '../context/DataModel';
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
-import { add_source, copy_source, move_source } from '../api/source';
-import { AddDropdownButton, CopyButton, MoveButton } from '../widgets/Button';
-import { source_options } from '../widgets/menu_options';
-import { showMessage } from '../widgets/toast';
-import { pluralize } from '../utils';
-import { Source } from './Source';
-import { sourceTypeOptions } from './SourceType';
-import { measurementPropType, measurementSourcePropType, metricPropType, reportPropType, reportsPropType, stringsPropType } from '../sharedPropTypes';
+import { func, number, string } from "prop-types"
+import { useContext } from "react"
+import { Message } from "semantic-ui-react"
+
+import { add_source, copy_source, move_source } from "../api/source"
+import { DataModel } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
+import { Segment } from "../semantic_ui_react_wrappers"
+import {
+    measurementPropType,
+    measurementSourcePropType,
+    metricPropType,
+    reportPropType,
+    reportsPropType,
+    stringsPropType,
+} from "../sharedPropTypes"
+import { pluralize } from "../utils"
+import { AddDropdownButton, CopyButton, MoveButton } from "../widgets/Button"
+import { source_options } from "../widgets/menu_options"
+import { showMessage } from "../widgets/toast"
+import { Source } from "./Source"
+import { sourceTypeOptions } from "./SourceType"
 
 function ButtonSegment({ metric, metric_uuid, reload, reports }) {
-    const dataModel = useContext(DataModel);
+    const dataModel = useContext(DataModel)
     return (
-        <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
-            <Segment vertical>
-                <AddDropdownButton
-                    itemType="source"
-                    itemSubtypes={sourceTypeOptions(dataModel, metric.type)}
-                    onClick={(subtype) => add_source(metric_uuid, subtype, reload)}
-                />
-                <CopyButton
-                    itemType="source"
-                    onChange={(source_uuid) => copy_source(source_uuid, metric_uuid, reload)}
-                    get_options={() => source_options(reports, dataModel, metric.type)}
-                />
-                <MoveButton
-                    itemType="source"
-                    onChange={(source_uuid) => move_source(source_uuid, metric_uuid, reload)}
-                    get_options={() => source_options(reports, dataModel, metric.type, metric_uuid)}
-                />
-            </Segment>}
+        <ReadOnlyOrEditable
+            requiredPermissions={[EDIT_REPORT_PERMISSION]}
+            editableComponent={
+                <Segment vertical>
+                    <AddDropdownButton
+                        itemType="source"
+                        itemSubtypes={sourceTypeOptions(dataModel, metric.type)}
+                        onClick={(subtype) => add_source(metric_uuid, subtype, reload)}
+                    />
+                    <CopyButton
+                        itemType="source"
+                        onChange={(source_uuid) => copy_source(source_uuid, metric_uuid, reload)}
+                        get_options={() => source_options(reports, dataModel, metric.type)}
+                    />
+                    <MoveButton
+                        itemType="source"
+                        onChange={(source_uuid) => move_source(source_uuid, metric_uuid, reload)}
+                        get_options={() => source_options(reports, dataModel, metric.type, metric_uuid)}
+                    />
+                </Segment>
+            }
         />
     )
 }
@@ -73,10 +84,10 @@ SourceSegment.propTypes = {
 
 export function Sources({ reports, report, metric, metric_uuid, measurement, changed_fields, reload }) {
     const dataModel = useContext(DataModel)
-    const measurementSources = measurement?.sources ?? [];
+    const measurementSources = measurement?.sources ?? []
     const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
-        Object.keys(dataModel.sources).includes(metric.sources[sourceUuid].type)
-    );
+        Object.keys(dataModel.sources).includes(metric.sources[sourceUuid].type),
+    )
 
     const reload_source = (json) => {
         const nr_sources = json.nr_sources_mass_edited
@@ -86,7 +97,7 @@ export function Sources({ reports, report, metric, metric_uuid, measurement, cha
         reload(json)
     }
 
-    const lastIndex = sourceUuids.length - 1;
+    const lastIndex = sourceUuids.length - 1
     const sourceSegments = sourceUuids.map((sourceUuid, index) => {
         return (
             <SourceSegment
@@ -101,10 +112,17 @@ export function Sources({ reports, report, metric, metric_uuid, measurement, cha
                 reload={reload_source}
             />
         )
-    });
+    })
     return (
         <>
-            {sourceSegments.length === 0 ? <Message><Message.Header>No sources</Message.Header><p>No sources have been configured yet.</p></Message> : sourceSegments}
+            {sourceSegments.length === 0 ? (
+                <Message>
+                    <Message.Header>No sources</Message.Header>
+                    <p>No sources have been configured yet.</p>
+                </Message>
+            ) : (
+                sourceSegments
+            )}
             <ButtonSegment reports={reports} metric_uuid={metric_uuid} metric={metric} reload={reload} />
         </>
     )

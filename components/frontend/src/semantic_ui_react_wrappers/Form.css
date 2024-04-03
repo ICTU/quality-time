@@ -3,7 +3,7 @@ form.ui.inverted.form input {
     color: rgba(255, 255, 255, 0.87) !important;
 }
 
-form.ui.inverted.form .ui.search.dropdown:not(.multiple)>input.search {
+form.ui.inverted.form .ui.search.dropdown:not(.multiple) > input.search {
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -39,11 +39,11 @@ form.ui.inverted.form div.menu .item {
 }
 
 form.ui.inverted.form div.menu .active.selected.item {
-    background: rgba(255,255,255,.15);
+    background: rgba(255, 255, 255, 0.15);
 }
 
 form.ui.inverted.form div.menu .item:hover {
-    background: rgba(255,255,255,.05);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 form.ui.inverted.form .ui.header {

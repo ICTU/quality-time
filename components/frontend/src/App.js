@@ -1,110 +1,115 @@
-import { Component } from 'react';
-import history from 'history/browser';
-import { Action } from 'history';
-import { get_datamodel } from './api/datamodel';
-import { get_report, get_reports_overview } from './api/report';
-import { nr_measurements_api } from './api/measurement';
-import { login } from './api/auth';
-import { registeredURLSearchParams } from './hooks/url_search_query';
-import { showMessage, showConnectionMessage } from './widgets/toast';
-import { isValidDate_YYYYMMDD, toISODateStringInCurrentTZ } from './utils'
-import { AppUI } from './AppUI';
-import 'react-toastify/dist/ReactToastify.css';
-import './App.css';
+import "react-toastify/dist/ReactToastify.css"
+import "./App.css"
+
+import { Action } from "history"
+import history from "history/browser"
+import { Component } from "react"
+
+import { login } from "./api/auth"
+import { get_datamodel } from "./api/datamodel"
+import { nr_measurements_api } from "./api/measurement"
+import { get_report, get_reports_overview } from "./api/report"
+import { AppUI } from "./AppUI"
+import { registeredURLSearchParams } from "./hooks/url_search_query"
+import { isValidDate_YYYYMMDD, toISODateStringInCurrentTZ } from "./utils"
+import { showConnectionMessage, showMessage } from "./widgets/toast"
 
 class App extends Component {
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             datamodel: {},
             lastUpdate: new Date(),
             reports: [],
-            report_uuid: '',
+            report_uuid: "",
             report_date: null,
             reports_overview: {},
             nrMeasurements: 0,
-            nrMeasurementsStreamConnected: true,  // Assume initial connection will be successful
+            nrMeasurementsStreamConnected: true, // Assume initial connection will be successful
             loading: true,
             user: null,
             email: null,
-        };
-        history.listen(({ location, action }) => this.on_history({ location, action }));
+        }
+        history.listen(({ location, action }) => this.on_history({ location, action }))
     }
 
     on_history({ location, action }) {
         if (action === Action.Pop) {
-            const pathname = location.pathname;
-            const report_uuid = pathname.slice(1, pathname.length);
-            this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
+            const pathname = location.pathname
+            const report_uuid = pathname.slice(1, pathname.length)
+            this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload())
         }
     }
 
     componentDidMount() {
-        const pathname = history.location.pathname;
-        const report_uuid = decodeURI(pathname.slice(1, pathname.length));
-        const report_date_iso_string = registeredURLSearchParams().get("report_date") || "";
-        let reportDate = null;
+        const pathname = history.location.pathname
+        const report_uuid = decodeURI(pathname.slice(1, pathname.length))
+        const report_date_iso_string = registeredURLSearchParams().get("report_date") || ""
+        let reportDate = null
         if (isValidDate_YYYYMMDD(report_date_iso_string)) {
-            reportDate = new Date(report_date_iso_string);
-            reportDate.setHours(23, 59, 59);
+            reportDate = new Date(report_date_iso_string)
+            reportDate.setHours(23, 59, 59)
         }
-        this.login_forwardauth();
+        this.login_forwardauth()
         this.initUserSession()
-        this.connectToNrMeasurementsEventSource();
-        this.setState({ report_uuid: report_uuid, report_date: reportDate, loading: true }, () => this.reload());
+        this.connectToNrMeasurementsEventSource()
+        this.setState({ report_uuid: report_uuid, report_date: reportDate, loading: true }, () => this.reload())
     }
 
     componentWillUnmount() {
-        this.source.close();
+        this.source.close()
     }
 
     reload(json) {
         if (json) {
-            showConnectionMessage(json);
-            this.changed_fields = json.availability ? json.availability.filter((url_key) => url_key.status_code !== 200) : null;
+            showConnectionMessage(json)
+            this.changed_fields = json.availability
+                ? json.availability.filter((url_key) => url_key.status_code !== 200)
+                : null
             this.check_session(json)
         }
-        const show_error = () => showMessage("error", "Server unreachable", "Couldn't load data from the server.");
+        const show_error = () => showMessage("error", "Server unreachable", "Couldn't load data from the server.")
         this.loadAndSetState(show_error)
     }
 
     loadAndSetState(show_error) {
-        const report_uuid = this.state.report_uuid;
+        const report_uuid = this.state.report_uuid
         const reportDate = this.state.report_date
-        Promise.all([get_datamodel(reportDate), get_reports_overview(reportDate), get_report(report_uuid, reportDate)]).then(
-            ([data_model, reports_overview, reports]) => {
+        Promise.all([get_datamodel(reportDate), get_reports_overview(reportDate), get_report(report_uuid, reportDate)])
+            .then(([data_model, reports_overview, reports]) => {
                 if (this.state.report_uuid !== report_uuid) {
-                    return  // User navigated to a different report or to the overview page, cancel update
+                    return // User navigated to a different report or to the overview page, cancel update
                 }
                 if (data_model.ok === false || reports.ok === false) {
-                    show_error();
+                    show_error()
                 } else {
-                    const now = new Date();
+                    const now = new Date()
                     this.setState({
                         datamodel: data_model,
                         lastUpdate: now,
                         loading: false,
                         reports: reports.reports || [],
                         reports_overview: reports_overview,
-                    });
+                    })
                 }
-            }).catch(show_error);
+            })
+            .catch(show_error)
     }
 
     check_session(json) {
         if (json.ok === false && json.status === 401) {
-            this.setUserSession();
+            this.setUserSession()
             if (this.login_forwardauth() === false) {
-                showMessage("warning", "Your session expired", "Please log in to renew your session");
+                showMessage("warning", "Your session expired", "Please log in to renew your session")
             }
         }
     }
 
     handleDateChange(date) {
-        let parsed = registeredURLSearchParams();
+        let parsed = registeredURLSearchParams()
         if (date && toISODateStringInCurrentTZ(date) < toISODateStringInCurrentTZ(new Date())) {
             // We're time traveling, set the report_date query parameter
-            parsed.set("report_date", toISODateStringInCurrentTZ(date));
+            parsed.set("report_date", toISODateStringInCurrentTZ(date))
             const now = new Date()
             date.setHours(now.getHours(), now.getMinutes())
             if (!this.state.report_date) {
@@ -112,7 +117,7 @@ class App extends Component {
                 showMessage(
                     "info",
                     "Historic information is read-only",
-                    "You are viewing historic information. Editing is not possible."
+                    "You are viewing historic information. Editing is not possible.",
                 )
             }
         } else {
@@ -120,7 +125,7 @@ class App extends Component {
             parsed.delete("report_date")
             date = null
         }
-        const search = parsed.toString().replace(/%2C/g, ",")  // No need to encode commas
+        const search = parsed.toString().replace(/%2C/g, ",") // No need to encode commas
         history.replace({ search: search.length > 0 ? "?" + search : "" })
         this.setState({ report_date: date, loading: true }, () => this.reload())
     }
@@ -128,54 +133,55 @@ class App extends Component {
     openReportsOverview() {
         if (history.location.pathname !== "/") {
             this.history_push("/")
-            this.setState({ report_uuid: "", loading: true }, () => this.reload());
+            this.setState({ report_uuid: "", loading: true }, () => this.reload())
         }
     }
 
     openReport(report_uuid) {
         this.history_push(encodeURI(report_uuid))
-        this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload());
+        this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload())
     }
 
     history_push(target) {
-        const search = registeredURLSearchParams().toString().replace(/%2C/g, ",")  // No need to encode commas
-        history.push(target + (search.length > 0 ? "?" + search : ""));
+        const search = registeredURLSearchParams().toString().replace(/%2C/g, ",") // No need to encode commas
+        history.push(target + (search.length > 0 ? "?" + search : ""))
     }
 
     connectToNrMeasurementsEventSource() {
-        this.source = new EventSource(nr_measurements_api);
-        let self = this;
+        this.source = new EventSource(nr_measurements_api)
+        let self = this
         this.source.addEventListener("init", (message) => {
-            const newNrMeasurements = Number(message.data);
+            const newNrMeasurements = Number(message.data)
             if (!self.state.nrMeasurementsStreamConnected) {
                 showMessage("success", "Connected to server", "Successfully reconnected to server.")
-                self.setState({ nrMeasurements: newNrMeasurements, nrMeasurementsStreamConnected: true }, () => self.reload());
+                self.setState({ nrMeasurements: newNrMeasurements, nrMeasurementsStreamConnected: true }, () =>
+                    self.reload(),
+                )
             } else {
-                self.setState({ nrMeasurements: newNrMeasurements });
+                self.setState({ nrMeasurements: newNrMeasurements })
             }
-        });
+        })
         this.source.addEventListener("delta", (message) => {
-            const newNrMeasurements = Number(message.data);
+            const newNrMeasurements = Number(message.data)
             if (newNrMeasurements !== self.state.nrMeasurements) {
-                self.setState({ nrMeasurements: newNrMeasurements }, () => self.reload());
+                self.setState({ nrMeasurements: newNrMeasurements }, () => self.reload())
             }
-        });
+        })
         this.source.addEventListener("error", () => {
             showMessage("error", "Server unreachable", "Trying to reconnect to server...", "reconnecting")
             self.setState({ nrMeasurementsStreamConnected: false })
-        });
+        })
     }
 
     login_forwardauth() {
-        let self = this;
-        login("", "")
-            .then(function (json) {
-                if (json.ok) {
-                    self.setUserSession(json.email, json.email, new Date(json.session_expiration_datetime));
-                    return true;
-                }
-            });
-        return false;
+        let self = this
+        login("", "").then(function (json) {
+            if (json.ok) {
+                self.setUserSession(json.email, json.email, new Date(json.session_expiration_datetime))
+                return true
+            }
+        })
+        return false
     }
 
     initUserSession() {
@@ -189,39 +195,40 @@ class App extends Component {
                 this.onUserSessionExpiration()
             } else {
                 // Session is still active, restore it from local storage.
-                this.setUserSession(localStorage.getItem("user"), localStorage.getItem("email"), sessionExpirationDateTime)
+                this.setUserSession(
+                    localStorage.getItem("user"),
+                    localStorage.getItem("email"),
+                    sessionExpirationDateTime,
+                )
             }
         } else {
-            showMessage(
-                "info",
-                "Not logged in",
-                "You are not logged in. Editing is not possible until you are."
-            )
+            showMessage("info", "Not logged in", "You are not logged in. Editing is not possible until you are.")
         }
     }
 
     setUserSession(username, email, sessionExpirationDateTime) {
         if (username) {
-            const emailAddress = email && email.indexOf("@") > -1 ? email : null;
-            this.setState({ user: username, email: emailAddress });
-            localStorage.setItem("user", username);
-            localStorage.setItem("email", emailAddress);
-            localStorage.setItem("session_expiration_datetime", sessionExpirationDateTime.toISOString());
+            const emailAddress = email && email.indexOf("@") > -1 ? email : null
+            this.setState({ user: username, email: emailAddress })
+            localStorage.setItem("user", username)
+            localStorage.setItem("email", emailAddress)
+            localStorage.setItem("session_expiration_datetime", sessionExpirationDateTime.toISOString())
             this.sessionExpirationTimeoutId = setTimeout(
-                () => this.onUserSessionExpiration(), sessionExpirationDateTime - new Date()
+                () => this.onUserSessionExpiration(),
+                sessionExpirationDateTime - new Date(),
             )
         } else {
-            this.setState({ user: null, email: null });
-            localStorage.removeItem("user");
-            localStorage.removeItem("email");
-            localStorage.removeItem("session_expiration_datetime");
+            this.setState({ user: null, email: null })
+            localStorage.removeItem("user")
+            localStorage.removeItem("email")
+            localStorage.removeItem("session_expiration_datetime")
             clearTimeout(this.sessionExpirationTimeoutId)
         }
     }
 
     onUserSessionExpiration() {
-        this.setUserSession();
-        showMessage("warning", "Your session expired", "Please log in to renew your session.");
+        this.setUserSession()
+        showMessage("warning", "Your session expired", "Please log in to renew your session.")
     }
 
     render() {
@@ -232,7 +239,7 @@ class App extends Component {
                 email={this.state.email}
                 openReportsOverview={() => this.openReportsOverview()}
                 handleDateChange={(date) => this.handleDateChange(date)}
-                key={this.state.report_uuid}  // Make sure the AppUI is refreshed whenever the current report changes
+                key={this.state.report_uuid} // Make sure the AppUI is refreshed whenever the current report changes
                 lastUpdate={this.state.lastUpdate}
                 loading={this.state.loading}
                 nrMeasurements={this.state.nrMeasurements}
@@ -242,11 +249,13 @@ class App extends Component {
                 report_uuid={this.state.report_uuid}
                 reports={this.state.reports}
                 reports_overview={this.state.reports_overview}
-                set_user={(username, email, sessionExpirationDateTime) => this.setUserSession(username, email, sessionExpirationDateTime)}
+                set_user={(username, email, sessionExpirationDateTime) =>
+                    this.setUserSession(username, email, sessionExpirationDateTime)
+                }
                 user={this.state.user}
             />
-        );
+        )
     }
 }
 
-export default App;
+export default App

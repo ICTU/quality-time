@@ -1,20 +1,23 @@
-import { useContext } from 'react';
-import { func, string } from 'prop-types';
-import { Header } from '../semantic_ui_react_wrappers';
-import { DataModel } from '../context/DataModel';
-import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { SingleChoiceInput } from '../fields/SingleChoiceInput';
+import { func, string } from "prop-types"
+import { useContext } from "react"
+
+import { DataModel } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
+import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+import { Header } from "../semantic_ui_react_wrappers"
 
 export function subjectTypes(dataModel) {
-    let options = [];
+    let options = []
     Object.keys(dataModel.subjects).forEach((key) => {
-        const option_subject_type = dataModel.subjects[key];
+        const option_subject_type = dataModel.subjects[key]
         options.push({
-            key: key, text: option_subject_type.name, value: key,
-            content: <Header as="h4" content={option_subject_type.name} subheader={option_subject_type.description} />
-        });
-    });
-    return options;
+            key: key,
+            text: option_subject_type.name,
+            value: key,
+            content: <Header as="h4" content={option_subject_type.name} subheader={option_subject_type.description} />,
+        })
+    })
+    return options
 }
 
 export function SubjectType({ subject_type, set_value }) {
@@ -26,7 +29,7 @@ export function SubjectType({ subject_type, set_value }) {
             set_value={(value) => set_value(value)}
             value={subject_type}
         />
-    );
+    )
 }
 SubjectType.propTypes = {
     subject_type: string,

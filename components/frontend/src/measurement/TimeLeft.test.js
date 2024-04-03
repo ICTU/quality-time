@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import { TimeLeft } from './TimeLeft';
+import { render, screen } from "@testing-library/react"
+
+import { TimeLeft } from "./TimeLeft"
 
 it("does not render the time left if the status does not demand action", () => {
     render(<TimeLeft metric={{ status: "target_met" }} report={{}} />)
@@ -12,7 +13,16 @@ it("does not render the time left if there is no status start date", () => {
 })
 
 it("does render the time left if technical debt is accepted with an end date", () => {
-    render(<TimeLeft metric={{ status: "debt_target_met", status_start: "2022-01-01", debt_end_date: "3000-01-01" }} report={{}} />)
+    render(
+        <TimeLeft
+            metric={{
+                status: "debt_target_met",
+                status_start: "2022-01-01",
+                debt_end_date: "3000-01-01",
+            }}
+            report={{}}
+        />,
+    )
     expect(screen.queryAllByText(/day/).length).toBe(1)
 })
 

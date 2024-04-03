@@ -1,15 +1,16 @@
-import { useContext } from 'react';
-import { func, string } from 'prop-types';
-import { Grid } from 'semantic-ui-react';
-import { Header, Segment } from '../semantic_ui_react_wrappers';
-import { DataModel } from '../context/DataModel';
-import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { SourceParameter } from './SourceParameter';
-import { formatMetricScaleAndUnit } from '../utils';
-import { metricPropType, reportPropType, sourcePropType, stringsPropType } from '../sharedPropTypes';
+import { func, string } from "prop-types"
+import { useContext } from "react"
+import { Grid } from "semantic-ui-react"
+
+import { DataModel } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
+import { Header, Segment } from "../semantic_ui_react_wrappers"
+import { metricPropType, reportPropType, sourcePropType, stringsPropType } from "../sharedPropTypes"
+import { formatMetricScaleAndUnit } from "../utils"
+import { SourceParameter } from "./SourceParameter"
 
 // Default layout to be used when the user is time traveling to a version of the data model that has no parameter layouts
-const DEFAULT_LAYOUT = {"all": {"name": "Source parameters", "parameters": []}};
+const DEFAULT_LAYOUT = { all: { name: "Source parameters", parameters: [] } }
 
 function collectGroupedParameters(parameterLayout) {
     // Grouped parameters are source parameters that are explicitly part of a group
@@ -33,9 +34,9 @@ function applicableParameters(allParameters, remainingParameters, parameterGroup
 
 export function SourceParameters({ changed_param_keys, metric, reload, report, source, source_uuid }) {
     const dataModel = useContext(DataModel)
-    const metricUnit = formatMetricScaleAndUnit(metric, dataModel);
-    const allParameters = dataModel.sources[source.type].parameters;
-    const parameterLayout = dataModel.sources[source.type].parameter_layout ?? DEFAULT_LAYOUT;
+    const metricUnit = formatMetricScaleAndUnit(metric, dataModel)
+    const allParameters = dataModel.sources[source.type].parameters
+    const parameterLayout = dataModel.sources[source.type].parameter_layout ?? DEFAULT_LAYOUT
     const groupedParameters = collectGroupedParameters(parameterLayout)
     const remainingParameters = collectRemainingParameters(allParameters, groupedParameters)
     const groups = Object.values(parameterLayout).map((parameterGroup) => {
@@ -44,7 +45,7 @@ export function SourceParameters({ changed_param_keys, metric, reload, report, s
             return null
         }
         const parameters = parameterKeys.map((parameterKey, index) => (
-            <div key={parameterKey} style={{ paddingTop: '10px' }}>
+            <div key={parameterKey} style={{ paddingTop: "10px" }}>
                 <SourceParameter
                     report={report}
                     source={source}
@@ -57,8 +58,11 @@ export function SourceParameters({ changed_param_keys, metric, reload, report, s
                     parameter_unit={allParameters[parameterKey].unit || metricUnit}
                     parameter_min={allParameters[parameterKey].min_value || null}
                     parameter_max={allParameters[parameterKey].max_value || null}
-                    parameter_value={source.parameters?.[parameterKey] ?
-                        source.parameters[parameterKey] : allParameters[parameterKey].default_value}
+                    parameter_value={
+                        source.parameters?.[parameterKey]
+                            ? source.parameters[parameterKey]
+                            : allParameters[parameterKey].default_value
+                    }
                     parameter_values={allParameters[parameterKey].values || []}
                     help_url={allParameters[parameterKey].help_url}
                     help={allParameters[parameterKey].help}
@@ -70,17 +74,23 @@ export function SourceParameters({ changed_param_keys, metric, reload, report, s
                     index={index}
                 />
             </div>
-        ));
+        ))
         return (
             <Grid.Column key={parameterGroup.name}>
                 <Segment>
-                    <Header as="h5" color="grey">{parameterGroup.name}</Header>
+                    <Header as="h5" color="grey">
+                        {parameterGroup.name}
+                    </Header>
                     {parameters}
                 </Segment>
             </Grid.Column>
         )
     })
-    return <Grid><Grid.Row columns={2}>{groups}</Grid.Row></Grid>
+    return (
+        <Grid>
+            <Grid.Row columns={2}>{groups}</Grid.Row>
+        </Grid>
+    )
 }
 SourceParameters.propTypes = {
     changed_param_keys: stringsPropType,

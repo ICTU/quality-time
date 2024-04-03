@@ -1,6 +1,7 @@
-import { Button, Icon } from 'semantic-ui-react';
-import { Popup } from '../semantic_ui_react_wrappers';
-import { stringsURLSearchQueryPropType } from '../sharedPropTypes';
+import { Button, Icon } from "semantic-ui-react"
+
+import { Popup } from "../semantic_ui_react_wrappers"
+import { stringsURLSearchQueryPropType } from "../sharedPropTypes"
 
 export function CollapseButton({ expandedItems }) {
     const label = "Collapse all headers and metrics"
@@ -8,7 +9,7 @@ export function CollapseButton({ expandedItems }) {
         <Popup
             on={["hover", "focus"]}
             trigger={
-                <span  // We need a span here to prevent the popup from becoming disabled whenever the button is disabled
+                <span // We need a span here to prevent the popup from becoming disabled whenever the button is disabled
                 >
                     <Button
                         aria-label={label}
@@ -27,5 +28,5 @@ export function CollapseButton({ expandedItems }) {
     )
 }
 CollapseButton.propTypes = {
-    expandedItems: stringsURLSearchQueryPropType
+    expandedItems: stringsURLSearchQueryPropType,
 }

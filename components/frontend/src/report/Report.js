@@ -1,4 +1,6 @@
-import { array, func } from 'prop-types';
+import { array, func } from "prop-types"
+
+import { ExportCard } from "../dashboard/ExportCard"
 import {
     datePropType,
     datesPropType,
@@ -7,15 +9,14 @@ import {
     reportsPropType,
     settingsPropType,
     stringsPropType,
-} from '../sharedPropTypes';
-import { Subjects } from '../subject/Subjects';
-import { SubjectsButtonRow } from '../subject/SubjectsButtonRow';
-import { CommentSegment } from '../widgets/CommentSegment';
-import { getReportTags } from '../utils';
-import { ReportDashboard } from './ReportDashboard';
-import { ReportErrorMessage } from './ReportErrorMessage';
-import { ReportTitle } from './ReportTitle';
-import { ExportCard } from '../dashboard/ExportCard';
+} from "../sharedPropTypes"
+import { Subjects } from "../subject/Subjects"
+import { SubjectsButtonRow } from "../subject/SubjectsButtonRow"
+import { getReportTags } from "../utils"
+import { CommentSegment } from "../widgets/CommentSegment"
+import { ReportDashboard } from "./ReportDashboard"
+import { ReportErrorMessage } from "./ReportErrorMessage"
+import { ReportTitle } from "./ReportTitle"
 
 export function Report({
     changed_fields,
@@ -31,16 +32,16 @@ export function Report({
     settings,
 }) {
     function navigate_to_subject(event, subject_uuid) {
-        event.preventDefault();
-        document.getElementById(subject_uuid).scrollIntoView();
-        window.scrollBy(0, 163);  // Correct for menubar and subject title margin
+        event.preventDefault()
+        document.getElementById(subject_uuid).scrollIntoView()
+        window.scrollBy(0, 163) // Correct for menubar and subject title margin
     }
 
     if (!report) {
         return <ReportErrorMessage reportDate={report_date} />
     }
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
-    const reversedMeasurements = measurements.slice().sort((m1, m2) => m1.start < m2.start ? 1 : -1)
+    const reversedMeasurements = measurements.slice().sort((m1, m2) => (m1.start < m2.start ? 1 : -1))
     return (
         <div id="dashboard">
             <div className="reportHeader">
@@ -63,7 +64,8 @@ export function Report({
                 onClickTag={(tag) => {
                     // If there are hidden tags (hiddenTags.length > 0), show the hidden tags.
                     // Otherwise, hide all tags in this report except the one clicked on.
-                    const tagsToToggle = settings.hiddenTags.value.length > 0 ? settings.hiddenTags.value : getReportTags(report)
+                    const tagsToToggle =
+                        settings.hiddenTags.value.length > 0 ? settings.hiddenTags.value : getReportTags(report)
                     settings.hiddenTags.toggle(...tagsToToggle.filter((visibleTag) => visibleTag !== tag))
                 }}
                 report={report}

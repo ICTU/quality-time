@@ -8,14 +8,16 @@
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
-        "plugin:react/jsx-runtime"
+        "plugin:react/jsx-runtime",
+        "prettier"
     ],
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "simple-import-sort"
     ],
     "rules": {
         "no-unused-vars": [
@@ -23,7 +25,9 @@
             {
                 "argsIgnorePattern": "^_"
             }
-        ]
+        ],
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error"
     },
     "overrides": [
         {

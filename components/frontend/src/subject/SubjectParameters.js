@@ -1,11 +1,12 @@
-import { Grid } from 'semantic-ui-react';
-import { func, string } from 'prop-types';
-import { Comment } from '../fields/Comment';
-import { StringInput } from '../fields/StringInput';
-import { SubjectType } from './SubjectType';
-import { set_subject_attribute } from '../api/subject';
-import { EDIT_REPORT_PERMISSION } from '../context/Permissions';
-import { subjectPropType } from '../sharedPropTypes';
+import { func, string } from "prop-types"
+import { Grid } from "semantic-ui-react"
+
+import { set_subject_attribute } from "../api/subject"
+import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
+import { Comment } from "../fields/Comment"
+import { StringInput } from "../fields/StringInput"
+import { subjectPropType } from "../sharedPropTypes"
+import { SubjectType } from "./SubjectType"
 
 export function SubjectParameters({ subject, subject_uuid, subject_name, reload }) {
     return (

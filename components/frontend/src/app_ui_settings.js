@@ -1,11 +1,12 @@
-import { string } from 'prop-types';
-import { stringsURLSearchQueryPropType } from './sharedPropTypes';
+import { string } from "prop-types"
+
 import {
     useArrayURLSearchQuery,
     useBooleanURLSearchQuery,
     useIntegerURLSearchQuery,
-    useStringURLSearchQuery
-} from './hooks/url_search_query';
+    useStringURLSearchQuery,
+} from "./hooks/url_search_query"
+import { stringsURLSearchQueryPropType } from "./sharedPropTypes"
 
 function urlSearchQueryKey(key, report_uuid) {
     // Make the settings changeable per report (and separately for the reports overview) by adding the report UUID as
@@ -14,67 +15,70 @@ function urlSearchQueryKey(key, report_uuid) {
 }
 
 export function useDateIntervalURLSearchQuery(report_uuid, defaultValue = 7) {
-    return useIntegerURLSearchQuery(urlSearchQueryKey("date_interval", report_uuid), defaultValue);
+    return useIntegerURLSearchQuery(urlSearchQueryKey("date_interval", report_uuid), defaultValue)
 }
 
 export function useDateOrderURLSearchQuery(report_uuid, defaultValue = "descending") {
-    return useStringURLSearchQuery(urlSearchQueryKey("date_order", report_uuid), defaultValue);
+    return useStringURLSearchQuery(urlSearchQueryKey("date_order", report_uuid), defaultValue)
 }
 
 export function useHiddenCardsURLSearchQuery(report_uuid) {
-    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_cards", report_uuid));
+    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_cards", report_uuid))
 }
 
 export function useHiddenColumnsURLSearchQuery(report_uuid) {
-    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_columns", report_uuid));
+    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_columns", report_uuid))
 }
 
 export function useHiddenTagsURLSearchQuery(report_uuid) {
-    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_tags", report_uuid));
+    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_tags", report_uuid))
 }
 
 export function useMetricsToHideURLSearchQuery(report_uuid) {
-    return useStringURLSearchQuery(urlSearchQueryKey("metrics_to_hide", report_uuid), report_uuid === "" ? "all" : "none");
+    return useStringURLSearchQuery(
+        urlSearchQueryKey("metrics_to_hide", report_uuid),
+        report_uuid === "" ? "all" : "none",
+    )
 }
 
 export function useNrDatesURLSearchQuery(report_uuid, defaultValue = 1) {
-    return useIntegerURLSearchQuery(urlSearchQueryKey("nr_dates", report_uuid), defaultValue);
+    return useIntegerURLSearchQuery(urlSearchQueryKey("nr_dates", report_uuid), defaultValue)
 }
 
 export function useSortColumnURLSearchQuery(report_uuid, defaultValue = "") {
-    return useStringURLSearchQuery(urlSearchQueryKey("sort_column", report_uuid), defaultValue);
+    return useStringURLSearchQuery(urlSearchQueryKey("sort_column", report_uuid), defaultValue)
 }
 
 export function useSortDirectionURLSearchQuery(report_uuid, defaultValue = "ascending") {
-    return useStringURLSearchQuery(urlSearchQueryKey("sort_direction", report_uuid), defaultValue);
+    return useStringURLSearchQuery(urlSearchQueryKey("sort_direction", report_uuid), defaultValue)
 }
 
 export function useExpandedItemsSearchQuery(report_uuid) {
-    return useArrayURLSearchQuery(urlSearchQueryKey("expanded", report_uuid));
+    return useArrayURLSearchQuery(urlSearchQueryKey("expanded", report_uuid))
 }
 
 export function useShowIssueSummaryURLSearchQuery(report_uuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_summary", report_uuid));
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_summary", report_uuid))
 }
 
 export function useShowIssueCreationDateURLSearchQuery(report_uuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_creation_date", report_uuid));
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_creation_date", report_uuid))
 }
 
 export function useShowIssueUpdateDateURLSearchQuery(report_uuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_update_date", report_uuid));
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_update_date", report_uuid))
 }
 
 export function useShowIssueDueDateURLSearchQuery(report_uuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_due_date", report_uuid));
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_due_date", report_uuid))
 }
 
 export function useShowIssueReleaseURLSearchQuery(report_uuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_release", report_uuid));
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_release", report_uuid))
 }
 
 export function useShowIssueSprintURLSearchQuery(report_uuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_sprint", report_uuid));
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_sprint", report_uuid))
 }
 
 export function useSettings(report_uuid) {
@@ -95,28 +99,32 @@ export function useSettings(report_uuid) {
         showIssueSprint: useShowIssueSprintURLSearchQuery(report_uuid),
         sortColumn: useSortColumnURLSearchQuery(report_uuid),
         sortDirection: useSortDirectionURLSearchQuery(report_uuid),
-        reset: function () { resetSettings(this) },
-        allDefault: function () { return allSettingsAreDefault(this) },
+        reset: function () {
+            resetSettings(this)
+        },
+        allDefault: function () {
+            return allSettingsAreDefault(this)
+        },
     }
 }
 
 export function resetSettings(settings) {
-    settings.dateInterval.reset();
-    settings.dateOrder.reset();
-    settings.expandedItems.reset();
-    settings.hiddenCards.reset();
-    settings.hiddenColumns.reset();
-    settings.hiddenTags.reset();
-    settings.metricsToHide.reset();
-    settings.nrDates.reset();
-    settings.showIssueCreationDate.reset();
+    settings.dateInterval.reset()
+    settings.dateOrder.reset()
+    settings.expandedItems.reset()
+    settings.hiddenCards.reset()
+    settings.hiddenColumns.reset()
+    settings.hiddenTags.reset()
+    settings.metricsToHide.reset()
+    settings.nrDates.reset()
+    settings.showIssueCreationDate.reset()
     settings.showIssueDueDate.reset()
-    settings.showIssueRelease.reset();
-    settings.showIssueSprint.reset();
-    settings.showIssueSummary.reset();
-    settings.showIssueUpdateDate.reset();
-    settings.sortColumn.reset();
-    settings.sortDirection.reset();
+    settings.showIssueRelease.reset()
+    settings.showIssueSprint.reset()
+    settings.showIssueSummary.reset()
+    settings.showIssueUpdateDate.reset()
+    settings.sortColumn.reset()
+    settings.sortDirection.reset()
 }
 
 export function allSettingsAreDefault(settings) {
@@ -143,9 +151,9 @@ export function allSettingsAreDefault(settings) {
 export function tabChangeHandler(expandedItems, uuid) {
     // Return an event handler for Tab.onTabChange that updates the active tab
     return function onTabChange(_event, data) {
-        const oldItem = expandedItems.value.filter((item) => item?.startsWith(uuid))[0];
-        const newItem = `${uuid}:${data.activeIndex}`;
-        expandedItems.toggle(oldItem, newItem);
+        const oldItem = expandedItems.value.filter((item) => item?.startsWith(uuid))[0]
+        const newItem = `${uuid}:${data.activeIndex}`
+        expandedItems.toggle(oldItem, newItem)
     }
 }
 tabChangeHandler.propTypes = {
@@ -155,7 +163,7 @@ tabChangeHandler.propTypes = {
 
 export function activeTabIndex(expandedItems, uuid) {
     // Return the active tab index of the expanded item, defaults to 0
-    const item = expandedItems.value.filter((item) => item?.startsWith(uuid))[0] ?? `${uuid}:0`;
+    const item = expandedItems.value.filter((item) => item?.startsWith(uuid))[0] ?? `${uuid}:0`
     return Number(item.split(":")[1])
 }
 activeTabIndex.propTypes = {

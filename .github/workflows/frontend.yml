@@ -22,6 +22,7 @@ jobs:
         cd components/frontend
         npm ci
         npm run --ignore-scripts build --if-present
-        npm test
+        ci/unittest.sh
+        ci/quality.sh
       env:
         CI: true

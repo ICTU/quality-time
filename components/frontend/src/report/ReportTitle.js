@@ -1,24 +1,25 @@
-import { func, string } from 'prop-types';
-import { Grid, Icon, Menu } from 'semantic-ui-react';
-import { Label, Segment, Tab } from '../semantic_ui_react_wrappers';
-import { activeTabIndex, tabChangeHandler } from '../app_ui_settings';
-import { Comment } from '../fields/Comment';
-import { IntegerInput } from '../fields/IntegerInput';
-import { StringInput } from '../fields/StringInput';
-import { FocusableTab } from '../widgets/FocusableTab';
-import { HeaderWithDetails } from '../widgets/HeaderWithDetails';
-import { LabelWithHelp } from '../widgets/LabelWithHelp';
-import { ChangeLog } from '../changelog/ChangeLog';
-import { Share } from '../share/Share';
-import { DeleteButton } from '../widgets/Button';
-import { delete_report, set_report_attribute } from '../api/report';
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from '../context/Permissions';
-import { NotificationDestinations } from '../notification/NotificationDestinations';
-import { defaultDesiredResponseTimes } from '../defaults';
-import { STATUS_DESCRIPTION, STATUS_NAME } from '../utils';
-import { reportPropType, settingsPropType } from '../sharedPropTypes';
-import { IssueTracker } from './IssueTracker';
-import { setDocumentTitle } from './document_title';
+import { func, string } from "prop-types"
+import { Grid, Icon, Menu } from "semantic-ui-react"
+
+import { delete_report, set_report_attribute } from "../api/report"
+import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
+import { ChangeLog } from "../changelog/ChangeLog"
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
+import { defaultDesiredResponseTimes } from "../defaults"
+import { Comment } from "../fields/Comment"
+import { IntegerInput } from "../fields/IntegerInput"
+import { StringInput } from "../fields/StringInput"
+import { NotificationDestinations } from "../notification/NotificationDestinations"
+import { Label, Segment, Tab } from "../semantic_ui_react_wrappers"
+import { Share } from "../share/Share"
+import { reportPropType, settingsPropType } from "../sharedPropTypes"
+import { STATUS_DESCRIPTION, STATUS_NAME } from "../utils"
+import { DeleteButton } from "../widgets/Button"
+import { FocusableTab } from "../widgets/FocusableTab"
+import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
+import { LabelWithHelp } from "../widgets/LabelWithHelp"
+import { setDocumentTitle } from "./document_title"
+import { IssueTracker } from "./IssueTracker"
 
 function ReportConfiguration({ reload, report }) {
     return (
@@ -83,7 +84,12 @@ function ReactionTimes({ reload, report }) {
                                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
                                     desiredResponseTimes["unknown"] = parseInt(value)
-                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                    set_report_attribute(
+                                        report.report_uuid,
+                                        "desired_response_times",
+                                        desiredResponseTimes,
+                                        reload,
+                                    )
                                 }}
                                 unit="days"
                                 value={desiredResponseTimes["unknown"] ?? defaultDesiredResponseTimes["unknown"]}
@@ -102,10 +108,18 @@ function ReactionTimes({ reload, report }) {
                                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
                                     desiredResponseTimes["target_not_met"] = parseInt(value)
-                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                    set_report_attribute(
+                                        report.report_uuid,
+                                        "desired_response_times",
+                                        desiredResponseTimes,
+                                        reload,
+                                    )
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["target_not_met"] ?? defaultDesiredResponseTimes["target_not_met"]}
+                                value={
+                                    desiredResponseTimes["target_not_met"] ??
+                                    defaultDesiredResponseTimes["target_not_met"]
+                                }
                             />
                         </Grid.Column>
                         <Grid.Column>
@@ -121,10 +135,18 @@ function ReactionTimes({ reload, report }) {
                                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
                                     desiredResponseTimes["near_target_met"] = parseInt(value)
-                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                    set_report_attribute(
+                                        report.report_uuid,
+                                        "desired_response_times",
+                                        desiredResponseTimes,
+                                        reload,
+                                    )
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["near_target_met"] ?? defaultDesiredResponseTimes["near_target_met"]}
+                                value={
+                                    desiredResponseTimes["near_target_met"] ??
+                                    defaultDesiredResponseTimes["near_target_met"]
+                                }
                             />
                         </Grid.Column>
                         <Grid.Column>
@@ -141,10 +163,18 @@ function ReactionTimes({ reload, report }) {
                                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
                                     desiredResponseTimes["debt_target_met"] = parseInt(value)
-                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                    set_report_attribute(
+                                        report.report_uuid,
+                                        "desired_response_times",
+                                        desiredResponseTimes,
+                                        reload,
+                                    )
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["debt_target_met"] ?? defaultDesiredResponseTimes["debt_target_met"]}
+                                value={
+                                    desiredResponseTimes["debt_target_met"] ??
+                                    defaultDesiredResponseTimes["debt_target_met"]
+                                }
                             />
                         </Grid.Column>
                     </Grid.Row>
@@ -169,7 +199,12 @@ function ReactionTimes({ reload, report }) {
                                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
                                     desiredResponseTimes["confirmed"] = parseInt(value)
-                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                    set_report_attribute(
+                                        report.report_uuid,
+                                        "desired_response_times",
+                                        desiredResponseTimes,
+                                        reload,
+                                    )
                                 }}
                                 unit="days"
                                 value={desiredResponseTimes["confirmed"] ?? defaultDesiredResponseTimes["confirmed"]}
@@ -188,7 +223,12 @@ function ReactionTimes({ reload, report }) {
                                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
                                     desiredResponseTimes["fixed"] = parseInt(value)
-                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                    set_report_attribute(
+                                        report.report_uuid,
+                                        "desired_response_times",
+                                        desiredResponseTimes,
+                                        reload,
+                                    )
                                 }}
                                 unit="days"
                                 value={desiredResponseTimes["fixed"] ?? defaultDesiredResponseTimes["fixed"]}
@@ -207,10 +247,18 @@ function ReactionTimes({ reload, report }) {
                                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
                                     desiredResponseTimes["false_positive"] = parseInt(value)
-                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                    set_report_attribute(
+                                        report.report_uuid,
+                                        "desired_response_times",
+                                        desiredResponseTimes,
+                                        reload,
+                                    )
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["false_positive"] ?? defaultDesiredResponseTimes["false_positive"]}
+                                value={
+                                    desiredResponseTimes["false_positive"] ??
+                                    defaultDesiredResponseTimes["false_positive"]
+                                }
                             />
                         </Grid.Column>
                         <Grid.Column>
@@ -226,7 +274,12 @@ function ReactionTimes({ reload, report }) {
                                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
                                 set_value={(value) => {
                                     desiredResponseTimes["wont_fix"] = parseInt(value)
-                                    set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                                    set_report_attribute(
+                                        report.report_uuid,
+                                        "desired_response_times",
+                                        desiredResponseTimes,
+                                        reload,
+                                    )
                                 }}
                                 unit="days"
                                 value={desiredResponseTimes["wont_fix"] ?? defaultDesiredResponseTimes["wont_fix"]}
@@ -245,11 +298,11 @@ ReactionTimes.propTypes = {
 
 function ButtonRow({ report_uuid, openReportsOverview }) {
     return (
-        <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={
-            <DeleteButton
-                itemType='report'
-                onClick={() => delete_report(report_uuid, openReportsOverview)}
-            />}
+        <ReadOnlyOrEditable
+            requiredPermissions={[EDIT_REPORT_PERMISSION]}
+            editableComponent={
+                <DeleteButton itemType="report" onClick={() => delete_report(report_uuid, openReportsOverview)} />
+            }
         />
     )
 }
@@ -259,36 +312,94 @@ ButtonRow.propTypes = {
 }
 
 export function ReportTitle({ report, openReportsOverview, reload, settings }) {
-    const report_uuid = report.report_uuid;
+    const report_uuid = report.report_uuid
     const tabIndex = activeTabIndex(settings.expandedItems, report_uuid)
-    const reportUrl = `${window.location}`;
+    const reportUrl = `${window.location}`
     const panes = [
         {
-            menuItem: <Menu.Item key="configuration"><Icon name="settings" /><FocusableTab>{"Configuration"}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane><ReportConfiguration report={report} reload={reload} /></Tab.Pane>
+            menuItem: (
+                <Menu.Item key="configuration">
+                    <Icon name="settings" />
+                    <FocusableTab>{"Configuration"}</FocusableTab>
+                </Menu.Item>
+            ),
+            render: () => (
+                <Tab.Pane>
+                    <ReportConfiguration report={report} reload={reload} />
+                </Tab.Pane>
+            ),
         },
         {
-            menuItem: <Menu.Item key="reaction_times"><Icon name="time" /><FocusableTab>{"Desired reaction times"}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane><ReactionTimes report={report} reload={reload} /></Tab.Pane>
+            menuItem: (
+                <Menu.Item key="reaction_times">
+                    <Icon name="time" />
+                    <FocusableTab>{"Desired reaction times"}</FocusableTab>
+                </Menu.Item>
+            ),
+            render: () => (
+                <Tab.Pane>
+                    <ReactionTimes report={report} reload={reload} />
+                </Tab.Pane>
+            ),
         },
         {
-            menuItem: <Menu.Item key="notifications"><Icon name="feed" /><FocusableTab>{"Notifications"}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane><NotificationDestinations destinations={report.notification_destinations || {}} report_uuid={report_uuid} reload={reload} /></Tab.Pane>
+            menuItem: (
+                <Menu.Item key="notifications">
+                    <Icon name="feed" />
+                    <FocusableTab>{"Notifications"}</FocusableTab>
+                </Menu.Item>
+            ),
+            render: () => (
+                <Tab.Pane>
+                    <NotificationDestinations
+                        destinations={report.notification_destinations || {}}
+                        report_uuid={report_uuid}
+                        reload={reload}
+                    />
+                </Tab.Pane>
+            ),
         },
         {
-            menuItem: <Menu.Item key="issue_tracker"><Icon name="tasks" /><FocusableTab>{"Issue tracker"}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane><IssueTracker report={report} reload={reload} /></Tab.Pane>
+            menuItem: (
+                <Menu.Item key="issue_tracker">
+                    <Icon name="tasks" />
+                    <FocusableTab>{"Issue tracker"}</FocusableTab>
+                </Menu.Item>
+            ),
+            render: () => (
+                <Tab.Pane>
+                    <IssueTracker report={report} reload={reload} />
+                </Tab.Pane>
+            ),
         },
         {
-            menuItem: <Menu.Item key="changelog"><Icon name="history" /><FocusableTab>{"Changelog"}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane><ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} /></Tab.Pane>
+            menuItem: (
+                <Menu.Item key="changelog">
+                    <Icon name="history" />
+                    <FocusableTab>{"Changelog"}</FocusableTab>
+                </Menu.Item>
+            ),
+            render: () => (
+                <Tab.Pane>
+                    <ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} />
+                </Tab.Pane>
+            ),
         },
         {
-            menuItem: <Menu.Item key="share"><Icon name="share square" /><FocusableTab>{'Share'}</FocusableTab></Menu.Item>,
-            render: () => <Tab.Pane><Share title="Report permanent link" url={reportUrl} /></Tab.Pane>
-        }
+            menuItem: (
+                <Menu.Item key="share">
+                    <Icon name="share square" />
+                    <FocusableTab>{"Share"}</FocusableTab>
+                </Menu.Item>
+            ),
+            render: () => (
+                <Tab.Pane>
+                    <Share title="Report permanent link" url={reportUrl} />
+                </Tab.Pane>
+            ),
+        },
     ]
-    setDocumentTitle(report.title);
+    setDocumentTitle(report.title)
 
     return (
         <HeaderWithDetails

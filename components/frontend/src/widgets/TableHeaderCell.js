@@ -1,19 +1,43 @@
-import { Popup, Table } from '../semantic_ui_react_wrappers';
-import { func, string } from 'prop-types';
-import { labelPropType, popupContentPropType, sortDirectionURLSearchQueryPropType, stringURLSearchQueryPropType } from '../sharedPropTypes';
+import { func, string } from "prop-types"
+
+import { Popup, Table } from "../semantic_ui_react_wrappers"
+import {
+    labelPropType,
+    popupContentPropType,
+    sortDirectionURLSearchQueryPropType,
+    stringURLSearchQueryPropType,
+} from "../sharedPropTypes"
 
 function TableHeaderCellContents({ help, label }) {
-    return help ? <Popup wide="very" trigger={<span>{label}</span>} header={label} hoverable content={help} on={["hover"]} /> : label
+    return help ? (
+        <Popup wide="very" trigger={<span>{label}</span>} header={label} hoverable content={help} on={["hover"]} />
+    ) : (
+        label
+    )
 }
 TableHeaderCellContents.propTypes = {
     help: popupContentPropType,
     label: labelPropType,
 }
 
-export function SortableTableHeaderCell({ colSpan, column, sortColumn, sortDirection, handleSort, label, textAlign, help }) {
-    const sorted = sortColumn.value === column ? sortDirection.value : null;
+export function SortableTableHeaderCell({
+    colSpan,
+    column,
+    sortColumn,
+    sortDirection,
+    handleSort,
+    label,
+    textAlign,
+    help,
+}) {
+    const sorted = sortColumn.value === column ? sortDirection.value : null
     return (
-        <Table.HeaderCell colSpan={colSpan} onClick={() => handleSort(column)} sorted={sorted} textAlign={textAlign || 'left'}>
+        <Table.HeaderCell
+            colSpan={colSpan}
+            onClick={() => handleSort(column)}
+            sorted={sorted}
+            textAlign={textAlign || "left"}
+        >
             <TableHeaderCellContents help={help} label={label} />
         </Table.HeaderCell>
     )
