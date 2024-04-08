@@ -1,4 +1,4 @@
-FROM node:21.7.1-alpine3.19
+FROM node:21.7.2-alpine3.19
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
@@ -12,13 +12,13 @@ RUN apk add --no-cache \
     ttf-droid=20200215-r2 \
     ttf-freefont=20120503-r4 \
     ttf-liberation=2.1.5-r2 \
-    chromium=123.0.6312.86-r0 && \
+    chromium=123.0.6312.105-r0 && \
     rm -rf /var/cache/apk/* /tmp/*
 
 RUN update-ms-fonts \
     && fc-cache -f
 
-RUN npm install --ignore-scripts -g npm@10.5.0
+RUN npm install --ignore-scripts -g npm@10.5.1
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
