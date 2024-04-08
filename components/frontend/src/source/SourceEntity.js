@@ -45,11 +45,12 @@ export function SourceEntity({
         return null
     }
     const style = ignoredEntity ? { textDecoration: "line-through" } : {}
+    style["maxWidth"] = "60em"
     let statusClassName = "unknown_status"
     for (let entity_attribute of entity_attributes) {
-        let cell_contents = entity[entity_attribute.key]
-        if (entity_attribute.color?.[cell_contents]) {
-            statusClassName = entity_attribute.color[cell_contents] + "_status"
+        let cellContents = entity[entity_attribute.key]
+        if (entity_attribute.color?.[cellContents]) {
+            statusClassName = entity_attribute.color[cellContents] + "_status"
             break
         }
     }
