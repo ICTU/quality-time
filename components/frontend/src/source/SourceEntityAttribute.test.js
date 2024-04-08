@@ -6,6 +6,18 @@ function renderSourceEntityAttribute(entity, entity_attribute) {
     return render(<SourceEntityAttribute entity={entity} entity_attribute={entity_attribute} />)
 }
 
+it("renders a short string", () => {
+    renderSourceEntityAttribute({ text: "short text" }, { key: "text" })
+    expect(screen.queryAllByText(/short text/).length).toBe(1)
+})
+
+it("renders a long string", () => {
+    const longText = "long text ".repeat(100)
+    renderSourceEntityAttribute({ text: longText }, { key: "text" })
+    const expectedText = longText.slice(0, 247) + "..."
+    expect(screen.queryAllByText(expectedText).length).toBe(1)
+})
+
 it("renders an empty string", () => {
     renderSourceEntityAttribute({ other: "will not be shown" }, { key: "missing" })
     expect(screen.queryAllByText(/will not be shown/).length).toBe(0)

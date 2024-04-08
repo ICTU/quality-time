@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Changed
 
 - In PDF-exports, don't include the footer but put the report metadata (report date, date the PDF was generated, and Quality-time version) in a card at the top. Closes [#3156](https://github.com/ICTU/quality-time/issues/3156).
+- In measurement detail tables, prevent columns from getting too wide and cut off values that are longer than 250 characters.
 
 ## v5.9.0 - 2024-03-22
 
