@@ -115,7 +115,7 @@ class JSONFileSourceCollector(FileSourceCollector, ABC):
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Parse the entities from the JSON."""
-        raise NotImplementedError  # pragma: no cover
+        return Entities()  # Override in subclasses that return entities
 
 
 class XMLFileSourceCollector(FileSourceCollector, ABC):
