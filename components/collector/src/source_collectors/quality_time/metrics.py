@@ -2,7 +2,6 @@
 
 from datetime import datetime
 from typing import cast
-from urllib import parse
 
 from shared.utils.date_time import now
 from shared_data_model import DATA_MODEL
@@ -21,9 +20,7 @@ class QualityTimeMetrics(QualityTimeCollector):
 
     async def _api_url(self) -> URL:
         """Extend to add the reports API path."""
-        parts = parse.urlsplit(await super()._api_url())
-        netloc = f"{parts.netloc.split(':')[0]}"
-        return URL(parse.urlunsplit((parts.scheme, netloc, f"{parts.path}/report", "", "")))
+        return URL(await super()._api_url() + "/api/internal/report")
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Get the metric entities from the responses."""

@@ -5,18 +5,11 @@ from typing import Any
 
 from base_collectors import SourceCollector
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.type import URL, Response
+from collector_utilities.type import Response
 
 
 class QualityTimeCollector(SourceCollector, ABC):
     """Base collector for Quality-time metrics."""
-
-    EXTERNAL_API_VERSION = "v3"
-
-    async def _api_url(self) -> URL:
-        """Get the api url for this api version."""
-        api_url = await super()._api_url()
-        return URL(f"{api_url}/api/{self.EXTERNAL_API_VERSION}")
 
     async def _get_reports(self, response: Response) -> list[dict[str, Any]]:
         """Get the relevant reports from the reports response."""

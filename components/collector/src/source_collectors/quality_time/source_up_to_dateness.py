@@ -1,7 +1,6 @@
 """Quality-time source up-to-dateness collector."""
 
 from datetime import datetime
-from urllib import parse
 
 from base_collectors import TimePassedCollector
 from collector_utilities.date_time import MIN_DATETIME, parse_datetime
@@ -15,9 +14,7 @@ class QualityTimeSourceUpToDateness(QualityTimeCollector, TimePassedCollector):
 
     async def _api_url(self) -> URL:
         """Extend to add the reports API path."""
-        parts = parse.urlsplit(await super()._api_url())
-        netloc = f"{parts.netloc.split(':')[0]}"
-        return URL(parse.urlunsplit((parts.scheme, netloc, f"{parts.path}/reports", "", "")))
+        return URL(await super()._api_url() + "/api/internal/report")
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to parse the oldest datetime from the recent measurements."""
