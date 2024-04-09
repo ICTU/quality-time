@@ -13,6 +13,10 @@ from .base import QualityTimeCollector
 class QualityTimeMissingMetrics(QualityTimeCollector):
     """Collector to get the number of missing metrics from Quality-time."""
 
+    async def _api_url(self) -> URL:
+        """Extend to add the reports API path."""
+        return URL(await super()._api_url() + "/api/internal")
+
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Get responses for reports and the datamodel."""
         api_url = urls[0]
