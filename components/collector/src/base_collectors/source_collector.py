@@ -271,10 +271,10 @@ class SecurityWarningsSourceCollector(SourceCollector):
 class TimeCollector(SourceCollector):
     """Base class for time collectors."""
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        """Override to get the datetime from the parse data time method that subclasses should implement."""
+    async def _parse_value(self, responses: SourceResponses) -> Value:
+        """Parse the value from the responses."""
         date_times = await self._parse_source_response_date_times(responses)
-        return SourceMeasurement(value=str(self.days(self.mininum(date_times))))
+        return str(self.days(self.mininum(date_times)))
 
     async def _parse_source_response_date_times(self, responses: SourceResponses) -> Sequence[datetime]:
         """Parse the source update datetimes from the responses and return the datetimes."""
