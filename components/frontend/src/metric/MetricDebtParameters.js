@@ -74,7 +74,7 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             label={
                 <LabelWithDate
-                    date={Date(metric.debt_end_date)}
+                    date={metric.debt_end_date}
                     labelId={labelId}
                     help={help}
                     label="Technical debt end date"

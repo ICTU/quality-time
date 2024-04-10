@@ -12,17 +12,12 @@ import { ReadOnlyInput } from "./ReadOnlyInput"
 function EditableDateInput({ ariaLabelledBy, label, placeholder, required, set_value, value }) {
     value = value ? new Date(value) : null
     return (
-        <Form.Input
-            aria-labelledby={ariaLabelledBy}
-            error={required && !value}
-            label={label}
-            labelPosition="left"
-            required={required}
-        >
+        <Form.Input error={required && !value} label={label} labelPosition="left" required={required}>
             <Label>
                 <Icon fitted name="calendar" />
             </Label>
             <DatePicker
+                ariaLabelledBy={ariaLabelledBy}
                 selected={value}
                 isClearable={!required}
                 onChange={(newDate) => {

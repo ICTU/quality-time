@@ -18,6 +18,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 - The "Missing metrics" and "Metrics" metrics were broken due to the change to the API in [#5791](https://github.com/ICTU/quality-time/issues/5791). Fixes [#8357](https://github.com/ICTU/quality-time/issues/8357).
 - The delete button for reports was not positioned correctly. Fixes [#8338](https://github.com/ICTU/quality-time/issues/8338).
+- The time ago or to go, shown in the labels of date fields, would be incorrect. Fixes [#8440](https://github.com/ICTU/quality-time/issues/8440).
 
 ### Changed
 

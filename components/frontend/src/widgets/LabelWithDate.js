@@ -7,7 +7,7 @@ import { LabelWithHelp } from "./LabelWithHelp"
 export function LabelWithDate({ date, labelId, label, help }) {
     return (
         <LabelWithHelp
-            id={labelId}
+            labelId={labelId}
             label={
                 <>
                     {label}
