@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is v4.10.0 or older, please read the v5.0.0 deployment notes first.
 
+### Fixed
+
+- The delete button for reports was not positioned correctly. Fixes [#8338](https://github.com/ICTU/quality-time/issues/8338).
+
 ### Changed
 
 - In PDF-exports, don't include the footer but put the report metadata (report date, date the PDF was generated, and Quality-time version) in a card at the top. Closes [#3156](https://github.com/ICTU/quality-time/issues/3156).

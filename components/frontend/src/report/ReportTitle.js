@@ -301,7 +301,15 @@ function ButtonRow({ report_uuid, openReportsOverview }) {
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <DeleteButton itemType="report" onClick={() => delete_report(report_uuid, openReportsOverview)} />
+                <span
+                    /* The delete button needs to be in a span with an explicit height because otherwise it is
+                       considered to have a height of zero. Maybe because it is floated right? Button rows that have
+                       buttons on the left-hand side don't have this problem.
+                    */
+                    style={{ height: "36px", width: "100%", display: "block" }}
+                >
+                    <DeleteButton itemType="report" onClick={() => delete_report(report_uuid, openReportsOverview)} />
+                </span>
             }
         />
     )
