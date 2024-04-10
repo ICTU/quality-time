@@ -32,18 +32,19 @@ const data_model = {
     },
 }
 
-function renderMetricDebtParameters({ accept_debt = false } = {}) {
+function renderMetricDebtParameters({ accept_debt = false, debt_end_date = null } = {}) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={data_model}>
                 <MetricDebtParameters
                     metric={{
-                        type: "violations",
-                        tags: [],
                         accept_debt: accept_debt,
-                        scale: "count",
+                        debt_end_date: debt_end_date,
                         issue_ids: [],
                         issue_status: [],
+                        scale: "count",
+                        tags: [],
+                        type: "violations",
                     }}
                     metric_uuid="metric_uuid"
                     reload={jest.fn()}
@@ -108,4 +109,9 @@ it("sets the technical debt end date", async () => {
         { debt_end_date: "2022-12-31" },
     )
     console.log = consoleLog
+})
+
+it("shows days ago for the technical debt end date", () => {
+    renderMetricDebtParameters({ debt_end_date: "2000-01-01" })
+    expect(screen.getAllByLabelText(/years ago/).length).toBe(1)
 })
