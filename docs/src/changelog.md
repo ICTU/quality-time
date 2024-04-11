@@ -16,9 +16,10 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 ### Fixed
 
-- The "Missing metrics" and "Metrics" metrics were broken due to the change to the API in [#5791](https://github.com/ICTU/quality-time/issues/5791). Fixes [#8357](https://github.com/ICTU/quality-time/issues/8357).
 - The delete button for reports was not positioned correctly. Fixes [#8338](https://github.com/ICTU/quality-time/issues/8338).
+- The "Missing metrics" and "Metrics" metrics were broken due to the change to the API in [#5791](https://github.com/ICTU/quality-time/issues/5791). Fixes [#8357](https://github.com/ICTU/quality-time/issues/8357).
 - The time ago or to go, shown in the labels of date fields, would be incorrect. Fixes [#8440](https://github.com/ICTU/quality-time/issues/8440).
+- When measuring failed CI-jobs with GitLab as source, don't download all jobs and then filter them by failure status (canceled, failed, and/or skipped), but rather pass the failure states to the GitLab API endpoint so the filtering is done by GitLab. Fixes [#8444](https://github.com/ICTU/quality-time/issues/8444).
 
 ### Changed
 

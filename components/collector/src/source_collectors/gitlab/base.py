@@ -72,11 +72,10 @@ class GitLabJobsBase(GitLabProjectBase):
         # created or by date run, so we're going to assume that descending order of IDs is roughly equal to descending
         # order of date created and date run. As soon as all jobs on a page have a build date that is outside the
         # lookback period we stop the pagination.
-        today = now().date()
-        lookback_date = today - timedelta(days=int(cast(str, self._parameter("lookback_days"))))
+        lookback_date = self._lookback_date()
         for response in responses:
             for job in await response.json():
-                if self._build_date(job) > lookback_date:
+                if self._build_date(job) >= lookback_date:
                     return await super()._next_urls(responses)
         return []
 
@@ -114,15 +113,25 @@ class GitLabJobsBase(GitLabProjectBase):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to count the job."""
-        return not match_string_or_regular_expression(
-            entity["name"],
-            self._parameter("jobs_to_ignore"),
-        ) and not match_string_or_regular_expression(entity["branch"], self._parameter("refs_to_ignore"))
+        lookback_date = self._lookback_date()
+        return (
+            not match_string_or_regular_expression(
+                entity["name"],
+                self._parameter("jobs_to_ignore"),
+            )
+            and not match_string_or_regular_expression(entity["branch"], self._parameter("refs_to_ignore"))
+            and parse_datetime(entity["build_date"]).date() >= lookback_date
+        )
 
     @staticmethod
     def _build_date(job: Job) -> date:
         """Return the build date of the job."""
         return parse_datetime(job.get("finished_at") or job["created_at"]).date()
+
+    def _lookback_date(self) -> date:
+        """Return the lookback cut-off date."""
+        today = now().date()
+        return today - timedelta(days=int(cast(str, self._parameter("lookback_days"))))
 
 
 @dataclass

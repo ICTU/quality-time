@@ -20,6 +20,12 @@ class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
         response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="0", entities=[])
 
+    async def test_no_jobs_in_lookback_period(self):
+        """Test that the number of failed jobs is returned."""
+        self.set_source_parameter("lookback_days", "3")
+        response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value="0", entities=[])
+
     async def test_ignore_previous_runs_of_jobs(self):
         """Test that previous runs of the same job are ignored."""
         self.gitlab_jobs_json.extend(
@@ -54,5 +60,8 @@ class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabTestCase):
         self.assert_measurement(
             response,
             value="2",
-            api_url="https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100",
+            api_url=(
+                "https://gitlab/api/v4/projects/namespace%2Fproject/jobs?per_page=100&"
+                "scope[]=canceled&scope[]=failed&scope[]=skipped"
+            ),
         )
