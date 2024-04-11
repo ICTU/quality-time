@@ -7,13 +7,15 @@ class GitLabTestCase(SourceCollectorTestCase):
     """Base class for testing GitLab collectors."""
 
     SOURCE_TYPE = "gitlab"
+    LOOKBACK_DAYS = "100000"
 
     def setUp(self):
         """Extend to add generic test fixtures."""
         super().setUp()
-        self.set_source_parameter("project", "namespace/project")
-        self.set_source_parameter("file_path", "file")
         self.set_source_parameter("branch", "branch")
+        self.set_source_parameter("file_path", "file")
+        self.set_source_parameter("lookback_days", self.LOOKBACK_DAYS)
+        self.set_source_parameter("project", "namespace/project")
         self.gitlab_jobs_json = [
             {
                 "id": "1",

@@ -61,7 +61,10 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
         self.jenkins_url = "https://jenkins"
         self.jira_url = "https://jira"
         self.tickets_json = {"total": 1, "issues": [self.jira_issue()]}
-        self.gitlab_source_config = {"type": "gitlab", "parameters": {"url": self.gitlab_url, "project": "project"}}
+        self.gitlab_source_config = {
+            "type": "gitlab",
+            "parameters": {"url": self.gitlab_url, "project": "project", "lookback_days": "100000"},
+        }
         self.jenkins_source_config = {"type": "jenkins", "parameters": {"url": self.jenkins_url}}
         self.jira_source_config = {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql"}}
 

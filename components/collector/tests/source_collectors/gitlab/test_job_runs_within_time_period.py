@@ -8,6 +8,7 @@ from .base import GitLabTestCase
 class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
     """Unit tests for the GitLab job runs within time period collector."""
 
+    LOOKBACK_DAYS = "3"
     METRIC_TYPE = "job_runs_within_time_period"
 
     _job3_url = "https://gitlab/job3"  # extending gitlab_jobs_json which already includes job 1 and job 2
@@ -15,8 +16,6 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
 
     async def test_job_lookback_days(self):
         """Test that the job lookback_days are verified."""
-        self.set_source_parameter("lookback_days", "3")
-
         now_dt = datetime.now(tz=UTC)
         now_timestamp = now_dt.isoformat()
         last_week_timestamp = (now_dt - timedelta(weeks=1)).isoformat()
@@ -78,10 +77,10 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
                 {
                     "id": "4",
                     "status": "failed",
-                    "name": "job4",
+                    "name": "job3",
                     "stage": "stage",
                     "created_at": yesterday_timestamp,
-                    "web_url": self._job4_url,
+                    "web_url": self._job3_url,
                     "ref": "main",
                 },
             ],
@@ -100,8 +99,8 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
             },
             {
                 "key": "4",
-                "name": "job4",
-                "url": self._job4_url,
+                "name": "job3",
+                "url": self._job3_url,
                 "build_status": "failed",
                 "branch": "main",
                 "stage": "stage",
