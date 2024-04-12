@@ -2,7 +2,7 @@
 name = "notifier"
 version = "5.9.0"
 dependencies = [
-    "aiohttp==3.9.3",
+    "aiohttp==3.9.4",
     "pymsteams==0.2.2"
 ]
 
@@ -13,14 +13,14 @@ dev = [
     "pip==24.0",
     "pipx==1.5.0",
     "pip-tools==7.4.1",  # To add hashes to requirements
-    "pydantic==2.6.4",  # Needed for importing the data model in the tests from the shared code component
+    "pydantic==2.7.0",  # Needed for importing the data model in the tests from the shared code component
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
     "bandit==1.7.8",
     "mypy==1.9.0",
     "pip-audit==2.7.2",
-    "ruff==0.3.5",
+    "ruff==0.3.6",
     "safety==3.1.0",
     "vulture==2.11"
 ]

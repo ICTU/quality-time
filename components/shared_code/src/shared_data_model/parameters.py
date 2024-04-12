@@ -31,7 +31,7 @@ class IntegerParameter(Parameter):
     def check_unit(self) -> Self:
         """Check that integer-type parameters have a unit."""
         if self.unit is None:
-            msg = f"Parameter {self.name} has no unit"  # type: ignore[unreachable]
+            msg = f"Parameter {self.name} has no unit"
             raise ValueError(msg)
         return self
 

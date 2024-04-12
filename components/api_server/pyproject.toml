@@ -17,7 +17,7 @@ dev = [
     "pip==24.0",
     "pipx==1.5.0",
     "pip-tools==7.4.1",  # To add hashes to requirements
-    "pydantic==2.6.4",  # Needed for importing the data model in the tests from the shared code component
+    "pydantic==2.7.0",  # Needed for importing the data model in the tests from the shared code component
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.20240205",
     "types-requests==2.31.0.20240406",
@@ -27,7 +27,7 @@ tools = [
     "bandit==1.7.8",
     "mypy==1.9.0",
     "pip-audit==2.7.2",
-    "ruff==0.3.5",
+    "ruff==0.3.6",
     "safety==3.1.0",
     "vulture==2.11"
 ]
