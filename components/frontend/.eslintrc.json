@@ -16,10 +16,14 @@
         "sourceType": "module"
     },
     "plugins": [
+        "import",
         "react",
         "simple-import-sort"
     ],
     "rules": {
+        "import/first": "error",
+        "import/newline-after-import": "error",
+        "import/no-duplicates": "error",
         "no-unused-vars": [
             "error",
             {
