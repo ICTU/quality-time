@@ -13,7 +13,7 @@ dev = [
     "pip==24.0",
     "pipx==1.5.0",
     "pip-tools==7.4.1",  # To add hashes to requirements
-    "pydantic==2.6.4",  # Needed for importing the data model in the tests from the shared code component
+    "pydantic==2.7.0",  # Needed for importing the data model in the tests from the shared code component
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
