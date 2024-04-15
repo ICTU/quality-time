@@ -4,7 +4,7 @@ import asyncio
 import logging
 import pathlib
 from datetime import UTC, datetime, timedelta
-from typing import TYPE_CHECKING, Any, NoReturn, cast
+from typing import Any, NoReturn, cast
 
 import aiohttp
 from pymongo.database import Database
@@ -12,15 +12,11 @@ from pymongo.database import Database
 from shared.database.reports import get_reports
 from shared.model.report import get_metrics_from_reports
 
-from collector_utilities.functions import timer
 from collector_utilities.type import JSONDict
 from database.measurements import create_measurement
 
 from . import config
 from .metric_collector import MetricCollector
-
-if TYPE_CHECKING:
-    from collections.abc import Coroutine
 
 
 class Collector:
@@ -30,6 +26,7 @@ class Collector:
         self.__previous_metrics: dict[str, Any] = {}
         self.next_fetch: dict[str, datetime] = {}
         self.database: Database = database
+        self.running_tasks: set[asyncio.Task] = set()
 
     @staticmethod
     def record_health() -> None:
@@ -43,41 +40,38 @@ class Collector:
 
     async def start(self) -> NoReturn:
         """Start fetching measurements indefinitely."""
-        timeout = aiohttp.ClientTimeout(total=120)
-        while True:
-            self.record_health()
-            # The TCPConnector has limit 0, meaning unlimited, because aiohttp only closes connections when the response
-            # is closed. But due to the architecture of the collector (first collect all the responses, then parse them)
-            # the responses are kept around relatively long, and hence the connections too. To prevent time-outs while
-            # aiohttp waits for connections to become available we don't limit the connection pool size.
-            async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(limit=0, ssl=False),
-                raise_for_status=True,
-                timeout=timeout,
-                trust_env=True,
-            ) as session:
-                with timer() as collection_timer:
-                    await self.collect_metrics(session)
-            sleep_duration = max(0, config.MAX_SLEEP_DURATION - collection_timer.duration)
-            logging.info(
-                "Collecting took %.1f seconds. Sleeping %.1f seconds...",
-                collection_timer.duration,
-                sleep_duration,
-            )
-            await asyncio.sleep(sleep_duration)
+        # The TCPConnector has limit 0, meaning unlimited, because aiohttp only closes connections when the response
+        # is closed. But due to the architecture of the collector (first collect all the responses, then parse them)
+        # the responses are kept around relatively long, and hence the connections too. To prevent time-outs while
+        # aiohttp waits for connections to become available we don't limit the connection pool size.
+        async with aiohttp.ClientSession(
+            connector=aiohttp.TCPConnector(limit=0, ssl=False),
+            raise_for_status=True,
+            timeout=aiohttp.ClientTimeout(total=config.MEASUREMENT_TIMEOUT),
+            trust_env=True,
+        ) as session:
+            while True:
+                self.__log_tasks("Waking up")
+                self.record_health()
+                await self.collect_metrics(session)
+                self.__log_tasks(f"Going to sleep for {config.SLEEP_DURATION} seconds", config.MEASUREMENT_LIMIT)
+                await asyncio.sleep(config.SLEEP_DURATION)
 
     async def collect_metrics(self, session: aiohttp.ClientSession) -> None:
         """Collect measurements for metrics, prioritizing edited metrics."""
         reports = get_reports(self.database)
         metrics = get_metrics_from_reports(reports)
         next_fetch = datetime.now(tz=UTC) + timedelta(seconds=config.MEASUREMENT_FREQUENCY)
-        tasks: list[Coroutine] = []
+        nr_created_tasks = 0
         for metric_uuid, metric in self.__sorted_by_edit_status(cast(JSONDict, metrics)):
-            if len(tasks) >= config.MEASUREMENT_LIMIT:
+            if not self.__should_collect(metric_uuid, metric):
+                continue
+            task = asyncio.create_task(self.collect_metric(session, metric_uuid, metric, next_fetch))
+            self.running_tasks.add(task)  # Keep a reference to the task to prevent it from being garbage collected
+            task.add_done_callback(self.running_tasks.discard)  # Remove the task from the running tasks when done
+            nr_created_tasks += 1
+            if nr_created_tasks >= config.MEASUREMENT_LIMIT:
                 break
-            if self.__should_collect(metric_uuid, metric):
-                tasks.append(self.collect_metric(session, metric_uuid, metric, next_fetch))
-        await asyncio.gather(*tasks)
 
     async def collect_metric(
         self,
@@ -108,3 +102,8 @@ class Collector:
         metric_edited = self.__previous_metrics.get(metric_uuid) != metric
         metric_due = self.next_fetch.get(metric_uuid, datetime.min.replace(tzinfo=UTC)) <= datetime.now(tz=UTC)
         return metric_edited or metric_due
+
+    def __log_tasks(self, event: str, warning_threshold: int = 0) -> None:
+        """Log the number of running tasks."""
+        level = logging.WARNING if len(self.running_tasks) > warning_threshold else logging.INFO
+        logging.log(level, "%s: %d task(s) currently running", event, len(self.running_tasks))

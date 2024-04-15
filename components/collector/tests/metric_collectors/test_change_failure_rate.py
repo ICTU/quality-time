@@ -8,6 +8,7 @@ from unittest.mock import AsyncMock, patch
 
 from dateutil.tz import tzlocal, tzutc
 
+from base_collectors import config
 from base_collectors.metric_collector import MetricCollector
 from model import MetricMeasurement
 from source_collectors.jira.change_failure_rate import JiraChangeFailureRate
@@ -53,6 +54,7 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
         """Extend to set up test fixtures."""
         super().setUp()
         self.session = AsyncMock()
+        self.session.timeout.total = config.MEASUREMENT_TIMEOUT
         self.response = self.session.get.return_value = AsyncMock()
         self.response.json = AsyncMock()
         self.response.links = {}  # unset for pagination lookup

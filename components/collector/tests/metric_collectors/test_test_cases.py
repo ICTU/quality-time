@@ -3,6 +3,7 @@
 import unittest
 from unittest.mock import AsyncMock, patch
 
+from base_collectors import config
 from base_collectors.metric_collector import MetricCollector
 from model import MetricMeasurement
 from source_collectors.jira.issues import JiraIssues
@@ -54,6 +55,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         """Extend to set up test fixtures."""
         super().setUp()
         self.session = AsyncMock()
+        self.session.timeout.total = config.MEASUREMENT_TIMEOUT
         self.response = self.session.get.return_value = AsyncMock()
         self.test_cases_json = {"total": 2, "issues": [self.jira_issue(), self.jira_issue("key-2")]}
         self.response.json = AsyncMock(side_effect=[[], self.test_cases_json, self.test_cases_json])
