@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import pathlib
 import unittest
@@ -62,6 +63,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             async with aiohttp.ClientSession() as session:
                 for _ in range(number):
                     await self.collector.collect_metrics(session)
+                    await asyncio.gather(*self.collector.running_tasks)  # Wait for the running tasks to finish
 
     def _source(self, **kwargs: str) -> dict[str, str | None | list[dict[str, str]]]:
         """Create a source."""
@@ -178,26 +180,21 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             {"has_error": False, "sources": [self._source()], "metric_uuid": "metric_uuid", "report_uuid": "report1"},
         )
 
-    @patch("asyncio.sleep", Mock(side_effect=RuntimeError))
-    @patch("builtins.open", mock_open())
+    @patch("asyncio.sleep", AsyncMock(side_effect=[RuntimeError]))
     async def test_collect(self):
         """Test the collect method."""
-        mock_async_get_request = AsyncMock()
-        mock_async_get_request.json.side_effect = [self.pip_json]
         with (
-            self._patched_get(mock_async_get_request),
-            patch(
-                "quality_time_collector.database_connection",
-                return_value=self.database,
-            ),
-            patch(self.create_measurement) as post,
+            patch("quality_time_collector.database_connection", return_value=self.database),
             self.assertRaises(RuntimeError),
         ):
             await quality_time_collector.collect()
-        post.assert_called_once_with(
-            self.database,
-            {"has_error": False, "sources": [self._source()], "metric_uuid": "metric_uuid", "report_uuid": "report1"},
-        )
+        # Wait for the created tasks to finish. As we don't have access to Collector.running_tasks, we wait for all
+        # runnings tasks, except the one where this test is running:
+        await asyncio.gather(*asyncio.all_tasks() - {asyncio.current_task()})
+        measurement = next(self.database["measurements"].find({"metric_uuid": "metric_uuid"}))
+        # Expect a measurement with a connection error because the runtime error thrown by ascyncio.sleep causes the
+        # session to be closed before the measurement can be completed:
+        self.assertIn("RuntimeError: Session is closed", measurement["sources"][0]["connection_error"])
 
     async def test_fetch_twice(self):
         """Test that the metric is skipped on the second fetch."""

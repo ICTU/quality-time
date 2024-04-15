@@ -1,11 +1,9 @@
 """Utility functions."""
 
-import contextlib
 import hashlib
 import re
-import time
 import urllib
-from collections.abc import Collection, Generator, Iterable
+from collections.abc import Collection, Iterable
 from decimal import ROUND_HALF_UP, Decimal
 from itertools import islice
 from typing import cast
@@ -101,23 +99,3 @@ def iterable_to_batches(iterable: Iterable, batch_size: int) -> Iterable:
 def decimal_round_half_up(dec: Decimal | float) -> int:
     """Round decimal or float to nearest integer, with ties going away from zero."""
     return int(Decimal(dec).to_integral_value(ROUND_HALF_UP))
-
-
-class Clock:
-    """Class to keep track of time."""
-
-    def __init__(self) -> None:
-        self.start = time.perf_counter()
-        self.duration = 0.0
-
-    def stop(self) -> None:
-        """Stop the clock."""
-        self.duration = time.perf_counter() - self.start
-
-
-@contextlib.contextmanager
-def timer() -> Generator[Clock, None, None]:
-    """Timer context manager."""
-    clock = Clock()
-    yield clock
-    clock.stop()

@@ -97,14 +97,15 @@ The collector component is responsible for collecting measurement data from sour
 
 If a metric has been recently measured and its parameters haven't been changed, the collector skips the metric.
 
-By default, the collector measures metrics whose configuration hasn't been changed every 15 minutes, sleeps 60 seconds in between measurements, and measures at most 30 metrics every time it wakes up. The defaults can be changed as follows:
+By default, the collector measures metrics whose configuration hasn't been changed every 15 minutes, sleeps 20 seconds in between measurements, measures at most 30 metrics every time it wakes up, and times out connections to sources after 2 minutes. The defaults can be changed as follows:
 
 ```yaml
   collector:
     environment:
       - COLLECTOR_SLEEP_DURATION=10  # Wake up every 10 seconds
-      - COLLECTOR_MEASUREMENT_LIMIT=25  # Measure at most 25 metrics on every wake up
       - COLLECTOR_MEASUREMENT_FREQUENCY=600  # Measure metrics at least every 10 minutes
+      - COLLECTOR_MEASUREMENT_LIMIT=25  # Measure at most 25 metrics on every wake up
+      - COLLECTOR_MEASUREMENT_TIMEOUT=180  # Timeout connections to sources after 3 minutes
 ```
 
 ```{warning}

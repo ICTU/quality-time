@@ -84,7 +84,7 @@ class GitLabMergeRequests(GitLabBase):
         API, so before we query for merge requests, we first have to find out whether the approved field is supported.
         """
         api_url = await self._api_url()
-        timeout = aiohttp.ClientTimeout(total=120)
+        timeout = aiohttp.ClientTimeout(total=self._session.timeout.total)
         # We need to create a new session because the GraphQLClient expects the session to provide the headers:
         async with aiohttp.ClientSession(raise_for_status=True, timeout=timeout, headers=self._headers()) as session:
             client = GraphQLClient(f"{api_url}/api/graphql", session=session)
