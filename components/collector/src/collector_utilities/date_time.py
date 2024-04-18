@@ -28,7 +28,7 @@ def parse_datetime(text: str) -> datetime:
     return date_time.replace(tzinfo=tzlocal()) if date_time.tzinfo is None else date_time
 
 
-def datetime_fromparts(  # noqa: PLR0913
+def datetime_from_parts(  # noqa: PLR0913
     year: int,
     month: int,
     day: int,
@@ -40,9 +40,9 @@ def datetime_fromparts(  # noqa: PLR0913
     return datetime(year, month, day, hour, minute, second, tzinfo=tzlocal())
 
 
-def datetime_fromtimestamp(timestamp: float) -> datetime:
-    """Create a datetime from a timestamp and add the local timezone."""
-    return datetime.fromtimestamp(timestamp, tz=tzlocal())
+def datetime_from_timestamp(timestamp: float) -> datetime:
+    """Create a datetime from a timestamp in milliseconds and add the local timezone."""
+    return datetime.fromtimestamp(timestamp / 1000.0, tz=tzlocal())
 
 
 def minutes(duration: timedelta) -> int:

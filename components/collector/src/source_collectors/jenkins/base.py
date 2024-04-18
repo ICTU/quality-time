@@ -3,7 +3,7 @@
 from collections.abc import Iterator
 
 from base_collectors import SourceCollector
-from collector_utilities.date_time import datetime_fromtimestamp
+from collector_utilities.date_time import datetime_from_timestamp
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Builds, Job, Jobs
 from model import Entities, Entity, SourceResponses
@@ -53,7 +53,7 @@ class JenkinsJobs(SourceCollector):
         """Return the date of the most recent build of the job."""
         builds = self._builds(job)
         if builds:
-            build_datetime = datetime_fromtimestamp(int(builds[0]["timestamp"]) / 1000.0)
+            build_datetime = datetime_from_timestamp(int(builds[0]["timestamp"]))
             return str(build_datetime.date())
         return ""
 

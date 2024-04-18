@@ -2,7 +2,7 @@
 
 from typing import cast
 
-from collector_utilities.date_time import datetime_fromtimestamp, days_ago
+from collector_utilities.date_time import datetime_from_timestamp, days_ago
 from collector_utilities.type import Job
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
@@ -14,7 +14,7 @@ class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
 
     def _include_build(self, build) -> bool:
         """Return whether to include this build or not."""
-        build_datetime = datetime_fromtimestamp(int(build["timestamp"] / 1000.0))
+        build_datetime = datetime_from_timestamp(int(build["timestamp"]))
         return days_ago(build_datetime) <= int(cast(str, self._parameter("lookback_days")))
 
     def _builds_within_timeperiod(self, job: Job) -> int:

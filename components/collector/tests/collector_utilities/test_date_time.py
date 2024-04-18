@@ -8,8 +8,8 @@ from dateutil.tz import tzlocal, tzutc
 from shared.utils.date_time import now
 
 from collector_utilities.date_time import (
-    datetime_fromparts,
-    datetime_fromtimestamp,
+    datetime_from_parts,
+    datetime_from_timestamp,
     days_ago,
     days_to_go,
     minutes,
@@ -82,11 +82,11 @@ class DateTimeFromPartsTest(unittest.TestCase):
 
     def test_datetime_with_time(self):
         """Test that the time can be passed."""
-        self.assertEqual(datetime(2023, 5, 25, 23, 24, 0, tzinfo=tzlocal()), datetime_fromparts(2023, 5, 25, 23, 24))
+        self.assertEqual(datetime(2023, 5, 25, 23, 24, 0, tzinfo=tzlocal()), datetime_from_parts(2023, 5, 25, 23, 24))
 
     def test_datetime_without_time(self):
         """Test that the time can be left out."""
-        self.assertEqual(datetime(2023, 5, 25, 0, 0, 0, tzinfo=tzlocal()), datetime_fromparts(2023, 5, 25))
+        self.assertEqual(datetime(2023, 5, 25, 0, 0, 0, tzinfo=tzlocal()), datetime_from_parts(2023, 5, 25))
 
 
 class DateTimeFromTimestampTest(unittest.TestCase):
@@ -94,7 +94,7 @@ class DateTimeFromTimestampTest(unittest.TestCase):
 
     def test_timezone(self):
         """Test that the datetime has the local timezone."""
-        self.assertEqual(tzlocal(), datetime_fromtimestamp(1000000).tzinfo)
+        self.assertEqual(tzlocal(), datetime_from_timestamp(1_000_000_000).tzinfo)
 
 
 class MinutesTest(unittest.TestCase):

@@ -1,6 +1,6 @@
 """Unit tests for the Jenkins source up-to-dateness collector."""
 
-from collector_utilities.date_time import datetime_fromparts, days_ago
+from collector_utilities.date_time import datetime_from_parts, days_ago
 
 from .base import JenkinsTestCase
 
@@ -17,7 +17,7 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
             "jobs": [{"name": "job", "url": self.job_url, "buildable": True, "color": "red", "builds": self.builds}],
         }
         response = await self.collect(get_request_json_return_value=jenkins_json)
-        expected_value = str(days_ago(datetime_fromparts(2019, 3, 15)))
+        expected_value = str(days_ago(datetime_from_parts(2019, 3, 15)))
         expected_entities = [
             {"build_date": "2019-03-15", "build_status": "Failure", "key": "job", "name": "job", "url": self.job_url},
         ]
@@ -40,7 +40,7 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
             "jobs": [{"name": "job", "url": self.job_url, "buildable": True, "color": "red", "builds": self.builds}],
         }
         response = await self.collect(get_request_json_return_value=jenkins_json)
-        expected_value = str(days_ago(datetime_fromparts(2019, 3, 27)))
+        expected_value = str(days_ago(datetime_from_parts(2019, 3, 27)))
         expected_entities = [
             {"build_date": "2019-03-27", "build_status": "Success", "key": "job", "name": "job", "url": self.job_url},
         ]
