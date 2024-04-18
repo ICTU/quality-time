@@ -3,7 +3,7 @@
 from collections.abc import Iterator
 from typing import cast
 
-from collector_utilities.date_time import datetime_fromtimestamp, days_ago, parse_datetime
+from collector_utilities.date_time import datetime_from_timestamp, days_ago, parse_datetime
 from collector_utilities.type import Build, Job, Jobs
 from model import Entities, Entity, SourceResponses
 
@@ -29,7 +29,7 @@ class JenkinsChangeFailureRate(JenkinsJobs):
                     name=job["name"],
                     url=job["url"],
                     build_status=str(build.get("result", "")).capitalize().replace("_", " "),
-                    build_date=str(datetime_fromtimestamp(int(cast(int, build["timestamp"]) / 1000.0))),
+                    build_date=str(datetime_from_timestamp(int(cast(int, build["timestamp"])))),
                 )
                 for build, job in self._builds_with_jobs((await responses[0].json())["jobs"])
             ],

@@ -1,6 +1,6 @@
 """Unit tests for the JMeter CSV source-up-to-dateness collector."""
 
-from collector_utilities.date_time import datetime_fromtimestamp, days_ago
+from collector_utilities.date_time import datetime_from_timestamp, days_ago
 
 from .base import JMeterCSVTestCase
 
@@ -19,5 +19,5 @@ class PerformanceTestRunnerSourceUpToDatenessTest(JMeterCSVTestCase):
     async def test_source_up_to_dateness(self):
         """Test that the test age is returned."""
         response = await self.collect(get_request_text=self.JMETER_CSV)
-        expected_age = days_ago(datetime_fromtimestamp(1638325618779 / 1000.0))
+        expected_age = days_ago(datetime_from_timestamp(1638325618779))
         self.assert_measurement(response, value=str(expected_age))
