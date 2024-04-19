@@ -1,6 +1,6 @@
 [project]
 name = "collector"
-version = "5.11.0-rc.1"
+version = "5.11.0-rc.2"
 dependencies = [
     "aiogqlc==5.1.0",
     "aiohttp==3.9.5",
