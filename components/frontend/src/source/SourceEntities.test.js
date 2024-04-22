@@ -79,6 +79,10 @@ const source = {
             minutes: "3",
         },
     ],
+    entity_user_data: {
+        1: { status: "confirmed", status_end_date: "2020-01-01", rationale: "R1" },
+        2: { status: "fixed", status_end_date: "2020-01-02", rationale: "R2" },
+    },
 }
 
 function assertOrder(expected) {
@@ -109,18 +113,18 @@ it("sorts the entities by status end date", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Status end date/))
-    assertOrder(["C", "B", "A"])
+    assertOrder(["A", "C", "B"])
     await userEvent.click(screen.getByText(/Status end date/))
-    assertOrder(["A", "B", "C"])
+    assertOrder(["B", "C", "A"])
 })
 
 it("sorts the entities by status rationale", async () => {
     renderSourceEntities()
     assertOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Status rationale/))
-    assertOrder(["C", "B", "A"])
+    assertOrder(["A", "C", "B"])
     await userEvent.click(screen.getByText(/Status rationale/))
-    assertOrder(["A", "B", "C"])
+    assertOrder(["B", "C", "A"])
 })
 
 it("sorts the entities by first seen date", async () => {
