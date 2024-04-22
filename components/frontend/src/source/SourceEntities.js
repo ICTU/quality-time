@@ -3,9 +3,33 @@ import { useContext, useState } from "react"
 
 import { DataModel } from "../context/DataModel"
 import { Button, Icon, Popup, Table } from "../semantic_ui_react_wrappers"
-import { metricPropType, reportPropType, sourcePropType } from "../sharedPropTypes"
+import { entityPropType, metricPropType, reportPropType, sourcePropType } from "../sharedPropTypes"
 import { capitalize } from "../utils"
 import { SourceEntity } from "./SourceEntity"
+
+function entityStatus(source, entity) {
+    return source.entity_user_data?.[entity.key]?.status ?? "unconfirmed"
+}
+entityStatus.propTypes = {
+    source: sourcePropType,
+    entity: entityPropType,
+}
+
+function entityStatusEndDate(source, entity) {
+    return source.entity_user_data?.[entity.key]?.status_end_date ?? ""
+}
+entityStatusEndDate.propTypes = {
+    source: sourcePropType,
+    entity: entityPropType,
+}
+
+function entityStatusRationale(source, entity) {
+    return source.entity_user_data?.[entity.key]?.rationale ?? ""
+}
+entityStatusRationale.propTypes = {
+    source: sourcePropType,
+    entity: entityPropType,
+}
 
 export function alignment(attributeType, attributeAlignment) {
     if (attributeAlignment === "left" || attributeAlignment === "right") {
@@ -115,16 +139,27 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
     )
     let entities = Array.from(source.entities)
     if (sortColumn !== null) {
-        const parse = {
-            integer: (value) => parseInt(value, 10),
-            integer_percentage: (value) => parseInt(value, 10),
-            float: (value) => parseFloat(value),
-            date: (value) => Date.parse(value),
-            datetime: (value) => Date.parse(value),
-            minutes: (value) => parseInt(value, 10),
-            text: (value) => value,
-        }[columnType]
-        entities.sort((a, b) => (parse(a[sortColumn]) < parse(b[sortColumn]) ? -1 : 1))
+        let parse
+        if (sortColumn === "entity_status") {
+            parse = (entity) => entityStatus(source, entity)
+        } else if (sortColumn === "status_end_date") {
+            parse = (entity) =>
+                entityStatus(source, entity) === "unconfirmed" ? "" : entityStatusEndDate(source, entity)
+        } else if (sortColumn === "rationale") {
+            parse = (entity) =>
+                entityStatus(source, entity) === "unconfirmed" ? "" : entityStatusRationale(source, entity)
+        } else {
+            parse = {
+                integer: (entity) => parseInt(entity[sortColumn], 10),
+                integer_percentage: (entity) => parseInt(entity[sortColumn], 10),
+                float: (entity) => parseFloat(entity[sortColumn]),
+                date: (entity) => Date.parse(entity[sortColumn]),
+                datetime: (entity) => Date.parse(entity[sortColumn]),
+                minutes: (entity) => parseInt(entity[sortColumn], 10),
+                text: (entity) => entity[sortColumn],
+            }[columnType]
+        }
+        entities.sort((a, b) => (parse(a) < parse(b) ? -1 : 1))
         if (sortDirection === "descending") {
             entities.reverse()
         }
@@ -139,9 +174,9 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
             metric_uuid={metric_uuid}
             reload={reload}
             report={report}
-            status={source.entity_user_data?.[entity.key]?.status ?? "unconfirmed"}
-            status_end_date={source.entity_user_data?.[entity.key]?.status_end_date ?? ""}
-            rationale={source.entity_user_data?.[entity.key]?.rationale ?? ""}
+            status={entityStatus(source, entity)}
+            status_end_date={entityStatusEndDate(source, entity)}
+            rationale={entityStatusRationale(source, entity)}
             source_uuid={source.source_uuid}
         />
     ))

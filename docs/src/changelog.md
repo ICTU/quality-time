@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is v4.10.0 or older, please read the v5.0.0 deployment notes first.
+
+### Fixed
+
+- Sorting measurement entities by status, status end date, and status rationale did not work. Fixes [#8508](https://github.com/ICTU/quality-time/issues/8508).
+
 ## v5.11.0 - 2024-04-22
 
 ### Deployment notes
