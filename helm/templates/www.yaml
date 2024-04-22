@@ -1,0 +1,111 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ template "www_name" . }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "www_name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Chart.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: {{ template "www_name" . }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: {{ template "www_name" . }}
+    spec:
+      containers:
+        - name: {{ template "www_name" . }}
+          image: "{{ .Values.www.image.repository }}:{{ .Values.www.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ template "www_name" . }}-env
+            - configMapRef:
+                name: {{ .Release.Name }}-shared-env
+          env:
+            - name: API_SERVER_HOST
+              value: "{{ .Release.Name }}-{{ template "api_server_name" . }}"
+            - name: FRONTEND_HOST
+              value: "{{ .Release.Name }}-{{ template "frontend_name" . }}"
+          ports:
+            - containerPort: 80
+          resources: {}
+          securityContext:
+            capabilities:
+              add:
+                - CHOWN
+              drop:
+                - ALL
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ template "www_name" . }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "www_name" . }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "www_name" . }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  sessionAffinity: None
+---
+{{- if .Values.www.ingress -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-{{ template "www_name" . }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "www_name" . }}
+  annotations:
+    {{- range $key, $value := .Values.www.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.www.ingress.ingressClassName }}
+  rules:
+    - host: {{ printf "%s" $.Values.www.ingress.hostname }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ .Release.Name }}-{{ template "www_name" . }}
+                port:
+                  number: 80
+            path: /
+            pathType: ImplementationSpecific
+  tls:
+{{ toYaml .Values.www.ingress.tls | indent 4 }}
+{{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ template "www_name" . }}-env
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "www_name" . }}
+data:
+{{- range $key, $val := .Values.www.env }}
+  {{ $key }}: "{{ $val }}"
+{{- end }}
