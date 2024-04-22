@@ -1,0 +1,114 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ template "database_name" . }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "database_name" }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Chart.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: {{ template "database_name" . }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: {{ template "database_name" . }}
+    spec:
+      volumes:
+        - name: {{ .Release.Name }}-{{ template "database_name" . }}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-{{ template "database_name" . }}
+      containers:
+        - name: {{ template "database_name" . }}
+          image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ template "database_name" . }}-env
+          env:
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: "root"
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: "root"
+          resources:
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+            requests:
+              cpu: "1"
+              memory: "1Gi"
+          securityContext:
+            capabilities:
+              add:
+                - CHOWN
+                - DAC_OVERRIDE
+                - SETGID
+                - SETUID
+              drop:
+                - ALL
+          volumeMounts:
+            - mountPath: /data/db
+              name: {{ .Release.Name }}-{{ template "database_name" . }}
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-{{ template "database_name" . }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "database_name" }}
+  annotations:
+    helm.sh/resource-policy: "keep"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.database.storageSize | default "1Gi" | quote }}
+{{- if .Values.database.storageClassName }}
+  storageClassName: {{ .Values.database.storageClassName | quote }}
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ template "database_name" . }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "database_name" }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "database_name" . }}
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+  sessionAffinity: None
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ template "database_name" . }}-env
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "database_name" . }}
+data:
+{{- range $key, $val := .Values.database.env }}
+  {{ $key }}: "{{ $val }}"
+{{- end }}

@@ -1,0 +1,87 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ template "api_server_name" . }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "api_server_name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Chart.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: {{ template "api_server_name" . }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: {{ template "api_server_name" . }}
+    spec:
+      containers:
+        - name: {{ template "api_server_name" . }}
+          image: "{{ .Values.api_server.image.repository }}:{{ .Values.api_server.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ template "api_server_name" . }}-env
+            - configMapRef:
+                name: {{ .Release.Name }}-shared-env
+          env:
+            - name: DATABASE_URL
+              value: "mongodb://root:root@{{ .Release.Name }}-{{ template "database_name" . }}:27017"
+{{- if .Values.ldap }}
+            - name: LDAP_LOOKUP_USER_DN
+              value: "{{ .Values.ldap.lookupUserDN }}"
+            - name: LDAP_LOOKUP_USER_PASSWORD
+              value: "{{ .Values.ldap.lookupUserPassword }}"
+            - name: LDAP_ROOT_DN
+              value: "{{ .Values.ldap.rootDN }}"
+            - name: LDAP_SEARCH_FILTER
+              value: "{{ .Values.ldap.search }}"
+            - name: LDAP_URL
+              value: "{{ .Values.ldap.url }}"
+{{- end }}
+          resources: {}
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ template "api_server_name" . }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "api_server_name" . }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "api_server_name" . }}
+  ports:
+    - protocol: TCP
+      port: 5001
+      targetPort: 5001
+  sessionAffinity: None
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ template "api_server_name" . }}-env
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "api_server_name" . }}
+data:
+{{- range $key, $val := .Values.api_server.env }}
+  {{ $key }}: "{{ $val }}"
+{{- end }}

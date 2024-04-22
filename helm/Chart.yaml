@@ -1,0 +1,9 @@
+---
+apiVersion: v2
+name: Quality-time
+version: 1.0.0
+appVersion: "v5.11.0"
+description: Helm chart for Quality-time, an automated quality system for software development and maintenance
+type: application
+home: https://github.com/ICTU/Quality-time
+icon: https://raw.githubusercontent.com/ICTU/quality-time/master/docs/src/_static/Quality-time.png

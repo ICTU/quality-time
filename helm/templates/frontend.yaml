@@ -1,0 +1,72 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ template "frontend_name" . }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "frontend_name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Chart.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: {{ template "frontend_name" . }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: {{ template "frontend_name" . }}
+    spec:
+      containers:
+        - name: {{ template "frontend_name" . }}
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ template "frontend_name" . }}-env
+            - configMapRef:
+                name: {{ .Release.Name }}-shared-env
+          resources: {}
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ template "frontend_name" . }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "frontend_name" . }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "frontend_name" . }}
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+  sessionAffinity: None
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ template "frontend_name" . }}-env
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "frontend_name" . }}
+data:
+{{- range $key, $val := .Values.frontend.env }}
+  {{ $key }}: "{{ $val }}"
+{{- end }}
