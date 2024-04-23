@@ -5,7 +5,7 @@ import { Table } from "semantic-ui-react"
 import { add_metric, copy_metric, move_metric } from "../api/metric"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { metricTypeOptions } from "../metric/MetricType"
+import { allMetricTypeOptions, metricTypeOptions } from "../metric/MetricType"
 import { reportsPropType, subjectPropType } from "../sharedPropTypes"
 import { AddDropdownButton, CopyButton, MoveButton } from "../widgets/Button"
 import { metric_options } from "../widgets/menu_options"
@@ -16,6 +16,7 @@ function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, reports, st
         <Table.Row>
             <Table.HeaderCell colSpan="99">
                 <AddDropdownButton
+                    allItemSubtypes={allMetricTypeOptions(dataModel)}
                     itemType="metric"
                     itemSubtypes={metricTypeOptions(dataModel, subject.type)}
                     onClick={(subtype) => {

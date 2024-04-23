@@ -1,6 +1,7 @@
 export { Breadcrumb } from "./semantic_ui_react_wrappers/Breadcrumb"
 export { Button } from "./semantic_ui_react_wrappers/Button"
 export { Card } from "./semantic_ui_react_wrappers/Card"
+export { Checkbox } from "./semantic_ui_react_wrappers/Checkbox"
 export { Dropdown } from "./semantic_ui_react_wrappers/Dropdown"
 export { Feed } from "./semantic_ui_react_wrappers/Feed"
 export { Form } from "./semantic_ui_react_wrappers/Form"

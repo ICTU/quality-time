@@ -2,7 +2,7 @@ import { array, bool, func, string } from "prop-types"
 import { useRef, useState } from "react"
 import { Icon, Input } from "semantic-ui-react"
 
-import { Button, Dropdown, Label, Popup } from "../semantic_ui_react_wrappers"
+import { Button, Checkbox, Dropdown, Label, Popup } from "../semantic_ui_react_wrappers"
 import { popupContentPropType } from "../sharedPropTypes"
 import { showMessage } from "../widgets/toast"
 import { ItemBreadcrumb } from "./ItemBreadcrumb"
@@ -32,12 +32,14 @@ ActionButton.propTypes = {
     position: string,
 }
 
-export function AddDropdownButton({ itemSubtypes, itemType, onClick }) {
+export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubtypes }) {
     const [selectedItem, setSelectedItem] = useState(0) // Index of selected item in the dropdown
     const [query, setQuery] = useState("") // Search query to filter item subtypes
     const [menuOpen, setMenuOpen] = useState(false) // Is the menu open?
     const [popupTriggered, setPopupTriggered] = useState(false) // Is the popup triggered by hover or focus?
-    const options = itemSubtypes.filter((itemSubtype) => itemSubtype.text.toLowerCase().includes(query.toLowerCase()))
+    const [showAllItems, setShowAllItems] = useState(false) // Show all itemSubTypes or only supported itemSubTypes?
+    const items = showAllItems ? allItemSubtypes : itemSubtypes
+    const options = items.filter((itemSubtype) => itemSubtype.text.toLowerCase().includes(query.toLowerCase()))
     const inputRef = useRef(null)
     return (
         <Popup
@@ -99,28 +101,42 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick }) {
                 >
                     <Dropdown.Menu>
                         <Dropdown.Header>{`Available ${itemType} types`}</Dropdown.Header>
-                        {itemSubtypes.length > 5 && (
-                            <>
-                                <Dropdown.Divider />
-                                <Input
-                                    className="search"
-                                    focus
-                                    icon="search"
-                                    iconPosition="left"
-                                    onChange={(_event, { value }) => setQuery(value)}
-                                    onClick={(event) => {
-                                        event.stopPropagation()
-                                    }}
-                                    onKeyDown={(event) => {
-                                        if (event.key === " ") {
-                                            event.stopPropagation() // Prevent space from closing menu
-                                        }
-                                    }}
-                                    ref={inputRef}
-                                    placeholder={`Filter available ${itemType} types`}
-                                    value={query}
-                                />
-                            </>
+                        <Dropdown.Divider />
+                        <Input
+                            className="search"
+                            focus
+                            icon="search"
+                            iconPosition="left"
+                            onBlur={(event) => {
+                                if (allItemSubtypes) {
+                                    event.stopPropagation()
+                                } // Prevent tabbing to the checkbox from clearing the input
+                            }}
+                            onChange={(_event, { value }) => setQuery(value)}
+                            onClick={(event) => event.stopPropagation()}
+                            onKeyDown={(event) => {
+                                if (event.key === " ") {
+                                    event.stopPropagation() // Prevent space from closing menu
+                                }
+                            }}
+                            ref={inputRef}
+                            placeholder={`Filter ${itemType} types`}
+                            value={query}
+                        />
+                        {allItemSubtypes && (
+                            <Checkbox
+                                label={`Select from all ${itemType} types`}
+                                onChange={() => setShowAllItems(!showAllItems)}
+                                onClick={(event) => event.stopPropagation()}
+                                onKeyDown={(event) => {
+                                    if (event.key === " ") {
+                                        event.stopPropagation() // Prevent space from closing menu
+                                    }
+                                }}
+                                style={{ paddingLeft: "10pt", paddingBottom: "10pt" }}
+                                tabIndex={0}
+                                value={showAllItems ? 1 : 0}
+                            />
                         )}
                         <Dropdown.Menu scrolling>
                             {options.map((option, index) => (
@@ -139,6 +155,7 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick }) {
     )
 }
 AddDropdownButton.propTypes = {
+    allItemSubtypes: array,
     itemSubtypes: array,
     itemType: string,
     onClick: func,
