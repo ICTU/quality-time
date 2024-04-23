@@ -12,31 +12,46 @@ import {
 } from "./Button"
 import * as toast from "./toast"
 
-function renderAddDropdownButton(nr_items = 2) {
+function renderAddDropdownButton(nrItems = 2, totalItems = 10) {
     const mockCallback = jest.fn()
     const itemSubtypes = []
-    for (const index of Array(nr_items).keys()) {
-        const text = `Sub ${index + 1}`
-        const key = text.toLowerCase()
-        itemSubtypes.push({ key: key, text: text, value: key })
+    let allItemSubtypes
+    if (nrItems < totalItems) {
+        allItemSubtypes = []
+        for (const index of Array(totalItems).keys()) {
+            const text = `Sub ${index + 1}`
+            const key = text.toLowerCase()
+            const option = { key: key, text: text, value: key }
+            allItemSubtypes.push(option)
+            if (index < nrItems) {
+                itemSubtypes.push(option)
+            }
+        }
     }
-    render(<AddDropdownButton itemType="foo" itemSubtypes={itemSubtypes} onClick={mockCallback} />)
+    render(
+        <AddDropdownButton
+            allItemSubtypes={allItemSubtypes}
+            itemType="foo"
+            itemSubtypes={itemSubtypes}
+            onClick={mockCallback}
+        />,
+    )
     return mockCallback
 }
 
 test("AddDropdownButton mouse navigation", async () => {
-    const mockCallBack = renderAddDropdownButton()
+    const mockCallback = renderAddDropdownButton()
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
     await act(async () => {
         fireEvent.click(screen.getByText(/Sub 2/))
     })
-    expect(mockCallBack).toHaveBeenCalledWith("sub 2")
+    expect(mockCallback).toHaveBeenCalledWith("sub 2")
 })
 
 test("AddDropdownButton keyboard navigation", async () => {
-    const mockCallBack = renderAddDropdownButton()
+    const mockCallback = renderAddDropdownButton()
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
@@ -52,7 +67,7 @@ test("AddDropdownButton keyboard navigation", async () => {
     await act(async () => {
         fireEvent.keyDown(screen.getByText(/Sub 2/), { key: "Enter" })
     })
-    expect(mockCallBack).toHaveBeenCalledWith("sub 2")
+    expect(mockCallback).toHaveBeenCalledWith("sub 2")
 })
 
 test("AddDropdownButton hides popup when dropdown is shown", async () => {
@@ -111,6 +126,34 @@ test("AddDropdownButton filter zero items", async () => {
     expect(mockCallback).not.toHaveBeenCalled()
 })
 
+test("AddDropdownButton add all items", async () => {
+    const mockCallback = renderAddDropdownButton()
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Add foo/))
+    })
+    await act(async () => {
+        fireEvent.click(screen.getByRole("checkbox"))
+    })
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Sub 3/))
+    })
+    expect(mockCallback).toHaveBeenCalledWith("sub 3")
+})
+
+test("AddDropdownButton add all items by keyboard", async () => {
+    const mockCallback = renderAddDropdownButton()
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Add foo/))
+    })
+    await userEvent.type(screen.getByRole("checkbox"), " ")
+    // Somehow the space does not trigger the checkbox, so hit Enter as well
+    await userEvent.type(screen.getByRole("checkbox"), "{Enter}")
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Sub 3/))
+    })
+    expect(mockCallback).toHaveBeenCalledWith("sub 3")
+})
+
 test("AddDropdownButton resets query on escape", async () => {
     const mockCallback = renderAddDropdownButton(6)
     await act(async () => {
@@ -124,6 +167,24 @@ test("AddDropdownButton resets query on escape", async () => {
         fireEvent.keyDown(screen.getByText(/Sub 1/), { key: "Enter" })
     })
     expect(mockCallback).toHaveBeenCalledWith("sub 1")
+})
+
+test("AddDropdownButton does not reset query on blur when it has checkbox", async () => {
+    renderAddDropdownButton()
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Add foo/))
+    })
+    await userEvent.type(screen.getByPlaceholderText(/Filter/), "Sub 3{Tab}")
+    expect(screen.queryAllByText(/Sub 1/).length).toBe(0)
+})
+
+test("AddDropdownButton does reset query on blur when it has no checkbox", async () => {
+    renderAddDropdownButton(10)
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Add foo/))
+    })
+    await userEvent.type(screen.getByPlaceholderText(/Filter/), "Sub 3{Tab}")
+    expect(screen.queryAllByText(/Sub 3/).length).toBe(0)
 })
 
 test("AddDropdownButton does not add selected item on enter when menu is closed", async () => {
@@ -147,18 +208,19 @@ test("DeleteButton has the correct label", () => {
     render(<DeleteButton itemType="bar" />)
     expect(screen.getAllByText(/bar/).length).toBe(1)
 })
-;["report", "subject", "metric", "source"].forEach((itemType) => {
+
+Array("report", "subject", "metric", "source").forEach((itemType) => {
     test("CopyButton has the correct label", () => {
         render(<CopyButton itemType={itemType} />)
         expect(screen.getAllByText(new RegExp(`Copy ${itemType}`)).length).toBe(1)
     })
 
     test("CopyButton can be used to select an item", async () => {
-        const mockCallBack = jest.fn()
+        const mockCallback = jest.fn()
         render(
             <CopyButton
                 itemType={itemType}
-                onChange={mockCallBack}
+                onChange={mockCallback}
                 get_options={() => {
                     return [{ key: "1", text: "Item", value: "1" }]
                 }}
@@ -170,16 +232,16 @@ test("DeleteButton has the correct label", () => {
         await act(async () => {
             fireEvent.click(screen.getByText(/Item/))
         })
-        expect(mockCallBack).toHaveBeenCalledWith("1")
+        expect(mockCallback).toHaveBeenCalledWith("1")
     })
 
     test("CopyButton loads the options every time the menu is opened", async () => {
-        const mockCallBack = jest.fn()
+        const mockCallback = jest.fn()
         let get_options_called = 0
         render(
             <CopyButton
                 itemType={itemType}
-                onChange={mockCallBack}
+                onChange={mockCallback}
                 get_options={() => {
                     get_options_called++
                     return [{ key: "1", text: "Item", value: "1" }]
@@ -202,11 +264,11 @@ test("DeleteButton has the correct label", () => {
     })
 
     test("MoveButton can be used to select an item", async () => {
-        const mockCallBack = jest.fn()
+        const mockCallback = jest.fn()
         render(
             <MoveButton
                 itemType={itemType}
-                onChange={mockCallBack}
+                onChange={mockCallback}
                 get_options={() => {
                     return [{ key: "1", text: "Item", value: "1" }]
                 }}
@@ -218,24 +280,25 @@ test("DeleteButton has the correct label", () => {
         await act(async () => {
             fireEvent.click(screen.getByText(/Item/))
         })
-        expect(mockCallBack).toHaveBeenCalledWith("1")
+        expect(mockCallback).toHaveBeenCalledWith("1")
     })
 })
-;["first", "last", "previous", "next"].forEach((direction) => {
+
+Array("first", "last", "previous", "next").forEach((direction) => {
     test("ReorderButtonGroup calls the callback on click direction", async () => {
-        const mockCallBack = jest.fn()
-        render(<ReorderButtonGroup onClick={mockCallBack} moveable="item" />)
+        const mockCallback = jest.fn()
+        render(<ReorderButtonGroup onClick={mockCallback} moveable="item" />)
         await act(async () => {
             fireEvent.click(screen.getByLabelText(`Move item to the ${direction} position`))
         })
-        expect(mockCallBack).toHaveBeenCalledWith(direction)
+        expect(mockCallback).toHaveBeenCalledWith(direction)
     })
 
     test("ReorderButtonGroup does not call the callback on click direction when the button group is already there", () => {
-        const mockCallBack = jest.fn()
-        render(<ReorderButtonGroup onClick={mockCallBack} first={true} last={true} moveable="item" />)
+        const mockCallback = jest.fn()
+        render(<ReorderButtonGroup onClick={mockCallback} first={true} last={true} moveable="item" />)
         fireEvent.click(screen.getByLabelText(`Move item to the ${direction} position`))
-        expect(mockCallBack).not.toHaveBeenCalled()
+        expect(mockCallback).not.toHaveBeenCalled()
     })
 })
 
