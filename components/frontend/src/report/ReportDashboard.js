@@ -4,6 +4,7 @@ import { useContext } from "react"
 import { set_report_attribute } from "../api/report"
 import { DataModel } from "../context/DataModel"
 import { CardDashboard } from "../dashboard/CardDashboard"
+import { IssuesCard } from "../dashboard/IssuesCard"
 import { LegendCard } from "../dashboard/LegendCard"
 import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
 import { datesPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
@@ -44,7 +45,7 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
     const dataModel = useContext(DataModel)
     const nrMetrics = Math.max(nrMetricsInReport(report), 1)
     const subjectCards = []
-    if (!settings.hiddenCards.includes("subjects")) {
+    if (settings.hiddenCards.excludes("subjects")) {
         Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
             const metrics = visibleMetrics(subject.metrics, "none", settings.hiddenTags.value)
             if (Object.keys(metrics).length > 0) {
@@ -65,7 +66,7 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
         })
     }
     let tagCards = []
-    if (!settings.hiddenCards.includes("tags")) {
+    if (settings.hiddenCards.excludes("tags")) {
         const anyTagsHidden = settings.hiddenTags.value.length > 0
         tagCards = getReportTags(report, settings.hiddenTags.value).map((tag) => {
             const summary = {}
@@ -78,14 +79,30 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
                     key={tag}
                     maxY={nrMetrics}
                     onClick={() => onClickTag(tag)}
+                    selected={anyTagsHidden}
                     summary={summary}
                 />
             )
         })
     }
+    const extraCards = []
+    if (report.issue_tracker?.type && settings.hiddenCards.excludes("issues")) {
+        const selected = settings.metricsToHide.value === "no_issues"
+        extraCards.push(
+            <IssuesCard
+                key="issues"
+                onClick={() => settings.metricsToHide.set(selected ? "none" : "no_issues")}
+                report={report}
+                selected={selected}
+            />,
+        )
+    }
+    if (settings.hiddenCards.excludes("legend")) {
+        extraCards.push(<LegendCard key="legend" />)
+    }
     return (
         <CardDashboard
-            cards={subjectCards.concat(tagCards.concat([<LegendCard key="legend" />]))}
+            cards={subjectCards.concat(tagCards.concat(extraCards))}
             initialLayout={report.layout}
             saveLayout={function (newLayout) {
                 set_report_attribute(report.report_uuid, "layout", newLayout, reload)

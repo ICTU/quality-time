@@ -1,6 +1,6 @@
 import "./MetricSummaryCard.css"
 
-import { func, number, object, oneOfType, string } from "prop-types"
+import { bool, func, number, object, oneOfType, string } from "prop-types"
 import { useContext } from "react"
 import { VictoryContainer, VictoryLabel, VictoryPortal, VictoryTooltip } from "victory"
 
@@ -45,7 +45,7 @@ function ariaChartLabel(summary) {
     return label
 }
 
-export function MetricSummaryCard({ header, onClick, summary, maxY }) {
+export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) {
     const [boundingBox, ref] = useBoundingBox()
     const animate = { duration: 0, onLoad: { duration: 0 } }
     const colors = STATUSES.map((status) => STATUS_COLORS_RGB[status])
@@ -87,8 +87,9 @@ export function MetricSummaryCard({ header, onClick, summary, maxY }) {
         tooltip: tooltip,
         width: Math.max(bbWidth, 1), // Prevent "Failed prop type: Invalid prop range supplied to VictoryBar"
     }
+    const color = selected ? "blue" : null
     return (
-        <Card style={{ height: "100%" }} onClick={onClick} onKeyPress={onClick} tabIndex="0">
+        <Card color={color} style={{ height: "100%" }} onClick={onClick} onKeyPress={onClick} tabIndex="0">
             <div ref={ref} style={{ width: "100%", height: "72%" }} aria-label={ariaChartLabel(summary)}>
                 <VictoryContainer width={bbWidth} height={bbHeight}>
                     {dates.length > 1 ? (
@@ -107,6 +108,7 @@ export function MetricSummaryCard({ header, onClick, summary, maxY }) {
 MetricSummaryCard.propTypes = {
     header: oneOfType([object, string]),
     onClick: func,
+    selected: bool,
     summary: object,
     maxY: number,
 }

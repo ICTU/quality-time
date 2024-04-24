@@ -286,13 +286,13 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
                 {nrDates > 1 && (
                     <MeasurementHeaderCells
                         columnDates={columnDates}
-                        showDeltaColumns={!settings.hiddenColumns.includes("delta")}
+                        showDeltaColumns={settings.hiddenColumns.excludes("delta")}
                     />
                 )}
-                {nrDates === 1 && !settings.hiddenColumns.includes("trend") && (
+                {nrDates === 1 && settings.hiddenColumns.excludes("trend") && (
                     <UnsortableTableHeaderCell width="2" label="Trend (7 days)" help={trendHelp} />
                 )}
-                {nrDates === 1 && !settings.hiddenColumns.includes("status") && (
+                {nrDates === 1 && settings.hiddenColumns.excludes("status") && (
                     <SortableTableHeaderCell
                         column="status"
                         label="Status"
@@ -301,7 +301,7 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
                         {...sortProps}
                     />
                 )}
-                {nrDates === 1 && !settings.hiddenColumns.includes("measurement") && (
+                {nrDates === 1 && settings.hiddenColumns.excludes("measurement") && (
                     <SortableTableHeaderCell
                         column="measurement"
                         label="Measurement"
@@ -310,7 +310,7 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
                         {...sortProps}
                     />
                 )}
-                {nrDates === 1 && !settings.hiddenColumns.includes("target") && (
+                {nrDates === 1 && settings.hiddenColumns.excludes("target") && (
                     <SortableTableHeaderCell
                         column="target"
                         label="Target"
@@ -319,25 +319,25 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
                         {...sortProps}
                     />
                 )}
-                {!settings.hiddenColumns.includes("unit") && (
+                {settings.hiddenColumns.excludes("unit") && (
                     <SortableTableHeaderCell column="unit" label="Unit" help={unitHelp} {...sortProps} />
                 )}
-                {!settings.hiddenColumns.includes("source") && (
+                {settings.hiddenColumns.excludes("source") && (
                     <SortableTableHeaderCell column="source" label="Sources" help={sourcesHelp} {...sortProps} />
                 )}
-                {!settings.hiddenColumns.includes("time_left") && (
+                {settings.hiddenColumns.excludes("time_left") && (
                     <SortableTableHeaderCell column="time_left" label="Time left" help={timeLeftHelp} {...sortProps} />
                 )}
-                {nrDates > 1 && !settings.hiddenColumns.includes("overrun") && (
+                {nrDates > 1 && settings.hiddenColumns.excludes("overrun") && (
                     <SortableTableHeaderCell column="overrun" label="Overrun" help={overrunHelp} {...sortProps} />
                 )}
-                {!settings.hiddenColumns.includes("comment") && (
+                {settings.hiddenColumns.excludes("comment") && (
                     <SortableTableHeaderCell column="comment" label="Comment" help={commentHelp} {...sortProps} />
                 )}
-                {!settings.hiddenColumns.includes("issues") && (
+                {settings.hiddenColumns.excludes("issues") && (
                     <SortableTableHeaderCell column="issues" label="Issues" help={issuesHelp} {...sortProps} />
                 )}
-                {!settings.hiddenColumns.includes("tags") && (
+                {settings.hiddenColumns.excludes("tags") && (
                     <SortableTableHeaderCell column="tags" label="Tags" help={tagsHelp} {...sortProps} />
                 )}
             </Table.Row>

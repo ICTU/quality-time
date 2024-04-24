@@ -1,8 +1,9 @@
-import { array, bool, func } from "prop-types"
+import { array, arrayOf, bool, func } from "prop-types"
 import { useEffect, useState } from "react"
 import RGL, { WidthProvider } from "react-grid-layout"
 
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { Card } from "../semantic_ui_react_wrappers"
 
 const ReactGridLayout = WidthProvider(RGL)
 
@@ -22,7 +23,7 @@ function cardDivs(cards, dragging, isDragging) {
     ))
 }
 cardDivs.propTypes = {
-    cards: array,
+    cards: arrayOf(Card),
     dragging: bool,
     isDragging: func,
 }
@@ -105,7 +106,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
     )
 }
 CardDashboard.propTypes = {
-    cards: array,
+    cards: arrayOf(Card),
     initialLayout: array,
     saveLayout: func,
 }

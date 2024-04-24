@@ -7,31 +7,32 @@ import { DataModel } from "../context/DataModel"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
 import { ReportDashboard } from "./ReportDashboard"
 
+let report
+
 beforeEach(() => {
     mockGetAnimations()
     history.push("")
+    report = {
+        report_uuid: "report_uuid",
+        subjects: {
+            subject_uuid: {
+                name: "Subject title",
+                metrics: {
+                    metric_uuid: { type: "metric_type", tags: ["tag"], recent_measurements: [] },
+                    another_metric_uuid: {
+                        type: "metric_type",
+                        tags: ["other"],
+                        recent_measurements: [],
+                    },
+                },
+            },
+        },
+    }
 })
 
 const dataModel = {
     metrics: {
         metric_type: { default_scale: "count" },
-    },
-}
-
-const report = {
-    report_uuid: "report_uuid",
-    subjects: {
-        subject_uuid: {
-            name: "Subject title",
-            metrics: {
-                metric_uuid: { type: "metric_type", tags: ["tag"], recent_measurements: [] },
-                another_metric_uuid: {
-                    type: "metric_type",
-                    tags: ["other"],
-                    recent_measurements: [],
-                },
-            },
-        },
     },
 }
 
@@ -96,4 +97,43 @@ it("hides the tag cards", async () => {
     expect(screen.getAllByText(/Subject title/).length).toBe(1)
     expect(screen.queryAllByText(/tag/).length).toBe(0)
     expect(screen.queryAllByText(/other/).length).toBe(0)
+})
+
+it("hides the legend card", async () => {
+    history.push("?hidden_cards=legend")
+    renderDashboard({ reportToRender: report })
+    expect(screen.queryAllByText(/Legend/).length).toBe(0)
+})
+
+it("does not show the issues card without issue tracker", async () => {
+    renderDashboard({ reportToRender: report })
+    expect(screen.queryAllByText(/Issues/).length).toBe(0)
+})
+
+it("does show the issues card with issue tracker", async () => {
+    report["issue_tracker"] = { type: "jira" }
+    renderDashboard({ reportToRender: report })
+    expect(screen.queryAllByText(/Issues/).length).toBe(1)
+})
+
+it("hides the issues card ", async () => {
+    history.push("?hidden_cards=issues")
+    report["issue_tracker"] = { type: "jira" }
+    renderDashboard({ reportToRender: report })
+    expect(screen.queryAllByText(/Issues/).length).toBe(0)
+})
+
+it("hides metrics without issues", async () => {
+    report["issue_tracker"] = { type: "jira" }
+    renderDashboard({ reportToRender: report })
+    fireEvent.click(screen.getByText(/Issues/))
+    expect(history.location.search).toEqual("?metrics_to_hide=no_issues")
+})
+
+it("unhides metrics without issues", async () => {
+    report["issue_tracker"] = { type: "jira" }
+    history.push("?metrics_to_hide=no_issues")
+    renderDashboard({ reportToRender: report })
+    fireEvent.click(screen.getByText(/Issues/))
+    expect(history.location.search).toEqual("")
 })

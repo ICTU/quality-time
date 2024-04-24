@@ -3,7 +3,7 @@ import TimeAgo from "react-timeago"
 
 import { Label, Popup } from "../semantic_ui_react_wrappers"
 import { issueStatusPropType, metricPropType, settingsPropType, stringsPropType } from "../sharedPropTypes"
-import { getMetricIssueIds } from "../utils"
+import { getMetricIssueIds, ISSUE_STATUS_COLORS } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 
@@ -119,7 +119,8 @@ prefixName.propType = {
 }
 
 function issueLabel(issueStatus, settings, error) {
-    const color = error ? "red" : { todo: "grey", doing: "blue", done: "green" }[issueStatus.status_category ?? "todo"]
+    // The issue status can be unknown when the issue was added recently and the status hasn't been collected yet
+    const color = error ? "red" : ISSUE_STATUS_COLORS[issueStatus.status_category ?? "unknown"]
     const label = (
         <Label basic={!error} color={color}>
             {issueStatus.issue_id}

@@ -67,6 +67,7 @@ export function useArrayURLSearchQuery(key) {
     }
 
     let hook = createHook(key, value, defaultValue, setValue)
+    hook.excludes = (item) => !value.includes(item)
     hook.includes = (item) => value.includes(item)
     hook.toggle = toggleURLSearchQuery
     return hook

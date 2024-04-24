@@ -164,3 +164,26 @@ it("hides subjects if empty", async () => {
     renderReport({ reportToRender: report })
     expect(screen.queryAllByText(/Subject title/).length).toBe(0)
 })
+
+it("navigates to subject", async () => {
+    const mockScroll = jest.fn()
+    window.HTMLElement.prototype.scrollIntoView = mockScroll
+    const mockScrollBy = jest.fn()
+    window.scrollBy = mockScrollBy
+    renderReport({ reportToRender: report })
+    fireEvent.click(screen.getAllByText(/Subject title/)[0])
+    expect(mockScroll).toHaveBeenCalledWith()
+    expect(mockScrollBy).toHaveBeenCalledWith(0, 163)
+})
+
+it("does not navigate to a subject that is hidden", async () => {
+    history.push("?metrics_to_hide=no_issues")
+    const mockScroll = jest.fn()
+    window.HTMLElement.prototype.scrollIntoView = mockScroll
+    const mockScrollBy = jest.fn()
+    window.scrollBy = mockScrollBy
+    renderReport({ reportToRender: report })
+    fireEvent.click(screen.getAllByText(/Subject title/)[0])
+    expect(mockScroll).not.toHaveBeenCalled()
+    expect(mockScrollBy).not.toHaveBeenCalled()
+})
