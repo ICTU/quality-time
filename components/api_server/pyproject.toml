@@ -13,11 +13,11 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "coverage==7.4.4",
+    "coverage==7.5.0",
     "pip==24.0",
     "pipx==1.5.0",
     "pip-tools==7.4.1",  # To add hashes to requirements
-    "pydantic==2.7.0",  # Needed for importing the data model in the tests from the shared code component
+    "pydantic==2.7.1",  # Needed for importing the data model in the tests from the shared code component
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.20240205",
     "types-requests==2.31.0.20240406",
