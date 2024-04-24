@@ -50,6 +50,8 @@ export function SettingsPanel({ atReportsOverview, handleSort, settings, tags })
                 <Menu {...menuProps}>
                     <VisibleCardsMenuItem cards={atReportsOverview ? "reports" : "subjects"} {...cardsMenuItemProps} />
                     <VisibleCardsMenuItem cards="tags" {...cardsMenuItemProps} />
+                    <VisibleCardsMenuItem cards="issues" {...cardsMenuItemProps} />
+                    <VisibleCardsMenuItem cards="legend" {...cardsMenuItemProps} />
                 </Menu>
             </Segment>
             <Segment inverted color="black">
@@ -57,6 +59,7 @@ export function SettingsPanel({ atReportsOverview, handleSort, settings, tags })
                 <Menu {...menuProps}>
                     <MetricMenuItem hide="none" {...metricMenuItemProps} />
                     <MetricMenuItem hide="no_action_needed" {...metricMenuItemProps} />
+                    <MetricMenuItem hide="no_issues" {...metricMenuItemProps} />
                     <MetricMenuItem hide="all" {...metricMenuItemProps} />
                 </Menu>
             </Segment>
@@ -247,7 +250,7 @@ SettingsPanel.propTypes = {
 
 function VisibleCardsMenuItem({ cards, hiddenCards }) {
     return (
-        <SettingsMenuItem active={!hiddenCards.includes(cards)} onClick={hiddenCards.toggle} onClickData={cards}>
+        <SettingsMenuItem active={hiddenCards.excludes(cards)} onClick={hiddenCards.toggle} onClickData={cards}>
             {capitalize(cards)}
         </SettingsMenuItem>
     )
@@ -259,7 +262,7 @@ VisibleCardsMenuItem.propTypes = {
 
 function VisibleTagMenuItem({ tag, hiddenTags }) {
     return (
-        <SettingsMenuItem active={!hiddenTags.includes(tag)} onClick={hiddenTags.toggle} onClickData={tag}>
+        <SettingsMenuItem active={hiddenTags.excludes(tag)} onClick={hiddenTags.toggle} onClickData={tag}>
             {tag}
         </SettingsMenuItem>
     )
@@ -272,7 +275,7 @@ VisibleTagMenuItem.propTypes = {
 function VisibleColumnMenuItem({ column, disabled, hiddenColumns, help, itemText }) {
     return (
         <SettingsMenuItem
-            active={disabled ? false : !hiddenColumns.includes(column)}
+            active={disabled ? false : hiddenColumns.excludes(column)}
             disabled={disabled}
             disabledHelp={help}
             onClick={hiddenColumns.toggle}
@@ -379,6 +382,7 @@ function MetricMenuItem({ hide, metricsToHide }) {
                 {
                     none: "All metrics",
                     no_action_needed: "Metrics requiring action",
+                    no_issues: "Metrics with issues",
                     all: "No metrics",
                 }[hide]
             }

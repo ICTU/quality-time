@@ -78,9 +78,9 @@ export const sortDirectionURLSearchQueryPropType = shape({
     value: sortDirectionPropType,
 })
 
-export const hiddenCardsPropType = oneOf(["reports", "subjects", "tags"])
+export const hiddenCardsPropType = oneOf(["reports", "subjects", "tags", "issues", "legend"])
 
-export const metricsToHidePropType = oneOf(["none", "all", "no_action_needed"])
+export const metricsToHidePropType = oneOf(["all", "none", "no_action_needed", "no_issues"])
 
 export const metricsToHideURLSearchQueryPropType = shape({
     isDefault: func,

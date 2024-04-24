@@ -317,18 +317,26 @@ it("does not return hidden tags", () => {
     ).toStrictEqual(["tag"])
 })
 
-it("hides metrics not requiring action", () => {
+it("hides metrics not requiring action or without issues", () => {
     expect(visibleMetrics({}, "no_action_needed", [])).toStrictEqual({})
+    expect(visibleMetrics({}, "no_issues", [])).toStrictEqual({})
     expect(visibleMetrics({}, "all", [])).toStrictEqual({})
     expect(visibleMetrics({}, "none", [])).toStrictEqual({})
     const metricNotRequiringAction = { metric_uuid: { status: "informative" } }
     expect(visibleMetrics(metricNotRequiringAction, "no_action_needed", [])).toStrictEqual({})
+    expect(visibleMetrics(metricNotRequiringAction, "no_issues", [])).toStrictEqual({})
     expect(visibleMetrics(metricNotRequiringAction, "all", [])).toStrictEqual({})
     expect(visibleMetrics(metricNotRequiringAction, "none", [])).toStrictEqual(metricNotRequiringAction)
     const metricRequiringAction = { metric_uuid: { status: "target_not_met" } }
     expect(visibleMetrics(metricRequiringAction, "no_action_needed", [])).toStrictEqual(metricRequiringAction)
+    expect(visibleMetrics(metricRequiringAction, "no_issues", [])).toStrictEqual({})
     expect(visibleMetrics(metricRequiringAction, "none", [])).toStrictEqual(metricRequiringAction)
     expect(visibleMetrics(metricRequiringAction, "all", [])).toStrictEqual({})
+    const metricWithIssue = { metric_uuid: { status: "target_met", issue_ids: ["ID-1"] } }
+    expect(visibleMetrics(metricWithIssue, "no_action_needed", [])).toStrictEqual({})
+    expect(visibleMetrics(metricWithIssue, "no_issues", [])).toStrictEqual(metricWithIssue)
+    expect(visibleMetrics(metricWithIssue, "none", [])).toStrictEqual(metricWithIssue)
+    expect(visibleMetrics(metricWithIssue, "all", [])).toStrictEqual({})
 })
 
 it("hides metrics with hidden tags", () => {

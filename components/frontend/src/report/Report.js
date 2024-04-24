@@ -33,8 +33,11 @@ export function Report({
 }) {
     function navigate_to_subject(event, subject_uuid) {
         event.preventDefault()
-        document.getElementById(subject_uuid).scrollIntoView()
-        window.scrollBy(0, 163) // Correct for menubar and subject title margin
+        const element = document.getElementById(subject_uuid)
+        if (element) {
+            element.scrollIntoView()
+            window.scrollBy(0, 163) // Correct for menubar and subject title margin
+        }
     }
 
     if (!report) {

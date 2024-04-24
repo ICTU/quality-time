@@ -2,7 +2,14 @@ import { arrayOf, number, objectOf, oneOf, string } from "prop-types"
 
 import { PERMISSIONS } from "./context/Permissions"
 import { defaultDesiredResponseTimes } from "./defaults"
-import { metricPropType, reportPropType, reportsPropType, stringsPropType } from "./sharedPropTypes"
+import {
+    metricPropType,
+    metricsPropType,
+    metricsToHidePropType,
+    reportPropType,
+    reportsPropType,
+    stringsPropType,
+} from "./sharedPropTypes"
 import { HyperLink } from "./widgets/HyperLink"
 
 export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000
@@ -47,6 +54,8 @@ export const STATUS_DESCRIPTION = {
     ),
     unknown: `${STATUS_NAME.unknown}: the status could not be determined because no sources have\nbeen configured for the metric yet or the measurement data could not\nbe collected.`,
 }
+
+export const ISSUE_STATUS_COLORS = { todo: "grey", doing: "blue", done: "green", unknown: null }
 
 export function getMetricDirection(metric, dataModel) {
     // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
@@ -193,27 +202,38 @@ sortWithLocaleCompare.propTypes = {
     strings: stringsPropType,
 }
 
+function hideMetric(metric, metricsToHide, hiddenTags) {
+    const hideBecauseNoActionNeeded =
+        metricsToHide === "no_action_needed" && ["target_met", "debt_target_met", "informative"].includes(metric.status)
+    const hideBecauseNoIssues = metricsToHide === "no_issues" && !metric.issue_ids
+    const hideBecauseTagIsHidden =
+        hiddenTags?.length > 0 &&
+        hiddenTags?.filter((hiddenTag) => metric.tags?.includes(hiddenTag)).length >= metric.tags?.length
+    return hideBecauseNoActionNeeded || hideBecauseNoIssues || hideBecauseTagIsHidden
+}
+hideMetric.propTypes = {
+    metric: metricPropType,
+    metricsToHide: metricsToHidePropType,
+    hiddenTags: stringsPropType,
+}
+
 export function visibleMetrics(metrics, metricsToHide, hiddenTags) {
     if (metricsToHide === "all") {
         return {}
     }
     const visible = {}
     Object.entries(metrics).forEach(([metric_uuid, metric]) => {
-        if (
-            metricsToHide === "no_action_needed" &&
-            ["target_met", "debt_target_met", "informative"].includes(metric.status)
-        ) {
-            return
-        }
-        if (
-            hiddenTags?.length > 0 &&
-            hiddenTags?.filter((hiddenTag) => metric.tags?.includes(hiddenTag)).length >= metric.tags?.length
-        ) {
+        if (hideMetric(metric, metricsToHide, hiddenTags)) {
             return
         }
         visible[metric_uuid] = metric
     })
     return visible
+}
+visibleMetrics.propTypes = {
+    metrics: metricsPropType,
+    metricsToHide: metricsToHidePropType,
+    hiddenTags: stringsPropType,
 }
 
 export function getReportTags(report, hiddenTags) {

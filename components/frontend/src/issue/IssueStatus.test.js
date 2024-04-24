@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
+import { ISSUE_STATUS_COLORS } from "../utils"
 import { IssueStatus } from "./IssueStatus"
 
 function renderIssueStatus({
@@ -85,9 +86,13 @@ it("displays the status category done", () => {
     expect(screen.getByText(/123/).className).toContain("green")
 })
 
-it("displays a missing status category as todo", () => {
+it("displays a missing status category as unknown", () => {
     renderIssueStatus()
-    expect(screen.getByText(/123/).className).toContain("grey")
+    Object.values(ISSUE_STATUS_COLORS)
+        .filter((color) => color !== null)
+        .forEach((color) => {
+            expect(screen.getByText(/123/).className).not.toContain(color)
+        })
 })
 
 it("displays the issue landing url", async () => {

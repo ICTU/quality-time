@@ -82,7 +82,7 @@ export function ReportsOverviewDashboard({
         })
     })
     let report_cards = []
-    if (!settings.hiddenCards.includes("reports")) {
+    if (settings.hiddenCards.excludes("reports")) {
         report_cards = reports.map((report) => (
             <MetricSummaryCard
                 key={report.report_uuid}
@@ -97,10 +97,10 @@ export function ReportsOverviewDashboard({
         ))
     }
     let tagCards = []
-    if (!settings.hiddenCards.includes("tags")) {
+    if (settings.hiddenCards.excludes("tags")) {
         const anyTagsHidden = settings.hiddenTags.value.length > 0
         tagCards = tags
-            .filter((tag) => !settings.hiddenTags.includes(tag))
+            .filter((tag) => settings.hiddenTags.excludes(tag))
             .map((tag) => (
                 <MetricSummaryCard
                     key={tag}
