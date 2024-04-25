@@ -18,7 +18,7 @@ dev = [
 ]
 tools = [
     "bandit==1.7.8",
-    "mypy==1.9.0",
+    "mypy==1.10.0",
     "pip-audit==2.7.2",
     "ruff==0.4.1",
     "safety==3.1.0",
