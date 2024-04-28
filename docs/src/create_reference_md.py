@@ -23,6 +23,7 @@ def markdown_paragraph(text: str) -> str:
 def markdown_link(url: HttpUrl | str, anchor: HttpUrl | str | None = None) -> str:
     """Return a Markdown link."""
     anchor = anchor or url
+    # When the URL is relative, no anchor is needed as ReadTheDocs will magically use the title of the page as anchor:
     return f"[{anchor}]({url})" if str(url).startswith("http") else f"[]({url})"
 
 
