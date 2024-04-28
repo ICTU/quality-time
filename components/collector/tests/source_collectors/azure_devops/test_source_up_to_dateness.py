@@ -37,7 +37,7 @@ class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
         self.assert_measurement(
             response,
             value=self.expected_age,
-            landing_url=f"{self.url}/_git/repo?path=README.md&version=GBmaster",
+            landing_url=f"{self.url}/_git/repo?path=README.md&version=GBmain",
         )
 
     async def test_age_of_pipeline(self):

@@ -16,8 +16,8 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         """Extend to set up the SonarQube source fixture and some URLs."""
         super().setUp()
         self.set_source_parameter("component", "id")
-        self.issues_landing_url = "https://sonarqube/project/issues?id=id&branch=master&resolved=false"
-        self.metric_landing_url = "https://sonarqube/component_measures?id=id&branch=master&metric={0}"
+        self.issues_landing_url = "https://sonarqube/project/issues?id=id&branch=main&resolved=false"
+        self.metric_landing_url = "https://sonarqube/component_measures?id=id&branch=main&metric={0}"
 
     @staticmethod
     def entity(  # noqa: PLR0913
@@ -36,9 +36,9 @@ class SonarQubeTestCase(SourceCollectorTestCase):
     ) -> Entity:
         """Create an entity."""
         url = (
-            f"https://sonarqube/security_hotspots?id=id&branch=master&hotspots={key}"
+            f"https://sonarqube/security_hotspots?id=id&branch=main&hotspots={key}"
             if entity_type == "security_hotspot"
-            else f"https://sonarqube/project/issues?id=id&branch=master&issues={key}&open={key}"
+            else f"https://sonarqube/project/issues?id=id&branch=main&issues={key}&open={key}"
         )
         entity = Entity(
             key=key,

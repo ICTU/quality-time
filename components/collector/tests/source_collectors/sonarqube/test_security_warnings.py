@@ -10,7 +10,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     SONARQUBE_URL = "https://sonarqube"
     API_URL = f"{SONARQUBE_URL}/api"
     LANDING_URL = f"{SONARQUBE_URL}/project"
-    BRANCH = "&branch=master"
+    BRANCH = "&branch=main"
     DASHBOARD_URL = f"{SONARQUBE_URL}/dashboard?id=id{BRANCH}"
     HOTSPOTS_API = f"{API_URL}/hotspots/search?projectKey=id{BRANCH}&ps=500"
     HOTSPOTS_LANDING_URL = f"{LANDING_URL}/security_hotspots?id=id{BRANCH}"

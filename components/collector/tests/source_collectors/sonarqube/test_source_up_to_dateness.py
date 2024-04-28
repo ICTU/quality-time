@@ -22,5 +22,5 @@ class SonarQubeSourceUpToDatenessTest(SonarQubeTestCase):
         self.assert_measurement(
             response,
             value=str(expected_age),
-            landing_url="https://sonarqube/project/activity?id=id&branch=master",
+            landing_url="https://sonarqube/project/activity?id=id&branch=main",
         )

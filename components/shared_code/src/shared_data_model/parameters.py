@@ -147,7 +147,7 @@ class Branch(StringParameter):
     """Branch name parameter."""
 
     name: str = "Branch"
-    default_value: str | list[str] = "master"
+    default_value: str | list[str] = "main"
     metrics: list[str] = ["source_up_to_dateness"]
 
 
