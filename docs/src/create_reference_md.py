@@ -23,7 +23,7 @@ def markdown_paragraph(text: str) -> str:
 def markdown_link(url: HttpUrl | str, anchor: HttpUrl | str | None = None) -> str:
     """Return a Markdown link."""
     anchor = anchor or url
-    return f"[{anchor}]({url})"
+    return f"[{anchor}]({url})" if str(url).startswith("http") else f"[]({url})"
 
 
 def definition_list(term: str, *definitions: str) -> str:
