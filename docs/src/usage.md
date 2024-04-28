@@ -442,7 +442,7 @@ It is also possible to download a PDF version of the reports overview. Navigate 
 ```
 
 ```{seealso}
-See the [API-documentation](api.md#export-pdf) for exporting reports via the API.
+See the [API-documentation](api.md#export-to-pdf) for exporting reports via the API.
 ```
 
 ```{index} Export report

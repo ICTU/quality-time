@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Fixed
 
 - Sorting measurement entities by status, status end date, and status rationale did not work. Fixes [#8508](https://github.com/ICTU/quality-time/issues/8508).
+- Include outside connections made by the API-server in the software documentation. Fixes [#8553](https://github.com/ICTU/quality-time/issues/8553).
 
 ### Added
 
