@@ -28,6 +28,7 @@ intro.md
 :maxdepth: 1
 :caption: User documentation 📗
 usage.md
+faq.md
 reference.md
 ```
 ````

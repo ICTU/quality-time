@@ -348,6 +348,9 @@ report(s).
         description="The number of security warnings about the software.",
         rationale="Monitor security warnings about the software, its source code, dependencies, or "
         "infrastructure so vulnerabilities can be fixed before they end up in production.",
+        rationale_urls=[
+            "faq.md#what-is-the-difference-between-violations-and-warnings",
+        ],
         unit=Unit.SECURITY_WARNINGS,
         near_target="5",
         sources=[
@@ -729,6 +732,7 @@ harder it may be for users to use the software (3).
             "https://docs.sonarqube.org/latest/user-guide/rules/",
             "https://martinfowler.com/bliki/CodeSmell.html",
             "https://www.w3.org/standards/webdesign/accessibility",
+            "faq.md#what-is-the-difference-between-violations-and-warnings",
         ],
         unit=Unit.VIOLATIONS,
         sources=["axecsv", "axe_core", "axe_html_reporter", "manual_number", "ojaudit", "sarif_json", "sonarqube"],
