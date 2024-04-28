@@ -332,7 +332,7 @@ SONARQUBE = Source(
             name="Branch (only supported by commercial SonarQube editions)",
             short_name="branch",
             help_url=HttpUrl("https://docs.sonarqube.org/latest/branches/overview/"),
-            default_value="master",
+            default_value="main",
             metrics=PROJECT_METRICS,
         ),
         "languages_to_ignore": MultipleChoiceWithAdditionParameter(

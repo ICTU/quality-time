@@ -16,5 +16,5 @@ class SonarQubeSoftwareVersionTest(SonarQubeTestCase):
         self.assert_measurement(
             response,
             value="1.2.1",
-            landing_url="https://sonarqube/project/activity?id=id&branch=master",
+            landing_url="https://sonarqube/project/activity?id=id&branch=main",
         )

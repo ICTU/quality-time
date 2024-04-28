@@ -72,7 +72,7 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
             value="2",
             total="4",
             entities=expected_entities,
-            landing_url="https://sonarqube/project/issues?id=id&branch=master",
+            landing_url="https://sonarqube/project/issues?id=id&branch=main",
         )
 
     async def test_suppressed_with_rationale_violations(self):
@@ -129,5 +129,5 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
             value="1",
             total="1",
             entities=expected_entities,
-            landing_url="https://sonarqube/project/issues?id=id&branch=master",
+            landing_url="https://sonarqube/project/issues?id=id&branch=main",
         )

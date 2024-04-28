@@ -26,6 +26,10 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 - When adding a metric to a subject, add an option to choose from all metric types in addition to the metric types officially supported by the subject type. Closes [#8176](https://github.com/ICTU/quality-time/issues/8176).
 - When a report has a configured issue tracker, show a card in the dashboard with the number of issues per issue status (open, in progress, done). The card can be hidden via the Settings panel. Clicking the card or setting "Visible metrics" to "Metrics with issues" in the Settings panel hides metrics without issues. Closes [#8222](https://github.com/ICTU/quality-time/issues/8222).
 
+### Changed
+
+- Make the default value of branch parameters `main` instead of `master`. Closes [#8045](https://github.com/ICTU/quality-time/issues/8045).
+
 ## v5.11.0 - 2024-04-22
 
 ### Deployment notes
