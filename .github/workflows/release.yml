@@ -65,4 +65,4 @@ jobs:
           tags: ictu/quality-time_frontend:${{ github.ref_name }}
           push: true
       - name: Anchore SBOM Action
-        uses: anchore/sbom-action@v0.15.10
+        uses: anchore/sbom-action@v0.15.11
