@@ -5,26 +5,33 @@
 import datetime
 import os
 import pathlib
+import re
 import subprocess
 import sys
+import tomllib
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 import git
 
-PART = "part-is-a-mandatory-bump2version-argument-even-when-not-used"
+
+def get_release_folder() -> pathlib.Path:
+    """Return the release folder."""
+    return pathlib.Path(__file__).resolve().parent
 
 
 def get_version() -> str:
     """Return the current version."""
-    command = f"bump2version --list --dry-run --allow-dirty --no-configured-files {PART} .bumpversion.cfg"
-    try:
-        output = subprocess.check_output(command.split(" "), stderr=subprocess.STDOUT, text=True)
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        return "<unknown>"
-    return [line for line in output.split("\n") if line.startswith("current_version")][0].split("=")[1]
+    release_folder = get_release_folder()
+    repo = git.Repo(release_folder.parent)
+    with pathlib.Path(release_folder / "pyproject.toml").open(mode="rb") as py_project_toml_fp:
+        py_project_toml = tomllib.load(py_project_toml_fp)
+    version_re = py_project_toml["tool"]["bumpversion"]["parse"]
+    version_tags = [tag for tag in repo.tags if re.match(version_re, tag.tag.tag.strip("v"), re.MULTILINE)]
+    latest_tag = sorted(version_tags, key=lambda tag: tag.commit.committed_datetime)[-1]
+    return latest_tag.tag.tag.strip("v")
 
 
-def parse_arguments() -> tuple[str, str, bool]:
+def parse_arguments() -> tuple[str, bool]:
     """Return the command line arguments."""
     current_version = get_version()
     description = f"Release Quality-time. Current version is {current_version}."
@@ -45,13 +52,13 @@ def parse_arguments() -> tuple[str, str, bool]:
         "-c", "--check-preconditions-only", action="store_true", help="only check the preconditions and then exit"
     )
     arguments = parser.parse_args()
-    return current_version, arguments.bump, arguments.check_preconditions_only
+    return arguments.bump, arguments.check_preconditions_only
 
 
 def check_preconditions(bump: str) -> None:
     """Check preconditions for version bump."""
     messages = []
-    release_folder = pathlib.Path(__file__).resolve().parent
+    release_folder = get_release_folder()
     if pathlib.Path.cwd() != release_folder:
         messages.append(f"The current folder is not the release folder. Please change directory to {release_folder}.")
     root = release_folder.parent
@@ -100,37 +107,20 @@ def failed_preconditions_changelog(bump: str, root: pathlib.Path) -> list[str]:
 
 def main() -> None:
     """Create the release."""
-    os.environ["RELEASE_DATE"] = datetime.date.today().isoformat()  # Used by bump2version to update CHANGELOG.md
-    current_version, bump, check_preconditions_only = parse_arguments()
+    os.environ["RELEASE_DATE"] = datetime.date.today().isoformat()  # Used by bump-my-version to update CHANGELOG.md
+    bump, check_preconditions_only = parse_arguments()
     check_preconditions(bump)
     if check_preconditions_only:
-        return
-    commands = []
+       return
+    # See https://github.com/callowayproject/bump-my-version?tab=readme-ov-file#add-support-for-pre-release-versions
+    # for how bump-my-version deals with pre-release versions
     if bump.startswith("rc-"):
-        rc_bump, non_rc_bump = bump.split("-")
-        commands.append(["bump2version", "--no-tag", "--no-commit", non_rc_bump])
-        message = f"Bump version: {current_version} → {{new_version}}"
-        # Previous command makes the work space dirty, so allow dirty in the next version bump
-        commands.append(
-            [
-                "bump2version",
-                "--config-file",
-                ".bumpversion-rc.cfg",
-                "--message",
-                message,
-                "--tag-message",
-                message,
-                "--allow-dirty",
-                rc_bump,
-            ]
-        )
+        bump = bump.split("-", maxsplit=1)[1]  # Create a patch, minor, or major release candidate
     elif bump == "drop-rc":
-        new_version = current_version.split("-")[0]
-        commands.append(["bump2version", "--new-version", new_version, PART])
-    else:
-        commands.append(["bump2version", bump])
-    for command in commands:
-        subprocess.run(tuple(command), check=True)
+        bump = "pre_release_label"  # Bump the pre-release label from "rc" to "final" (which is optional and omitted)
+    elif bump == "rc":
+        bump = "pre_release_number"  # Bump the release candidate number
+    subprocess.run(("bump-my-version", "bump", bump), check=True)
     subprocess.run(("git", "push", "--follow-tags"), check=True)
 
 

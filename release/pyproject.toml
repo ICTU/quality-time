@@ -2,7 +2,7 @@
 name = "release"
 version = "5.12.0-rc.1"
 dependencies = [
-    "bump2version==1.0.1",
+    "bump-my-version==0.20.3",
     "gitpython==3.1.43",
 ]
 
@@ -11,3 +11,67 @@ dev = [
     "pip==24.0",
     "pip-tools==7.4.1"  # To add hashes to requirements
 ]
+
+[tool.bumpversion]
+current_version = "5.12.0-rc.1"
+parse = """(?x)
+    (?P<major>0|[1-9]\\d*)\\.
+    (?P<minor>0|[1-9]\\d*)\\.
+    (?P<patch>0|[1-9]\\d*)
+    (?:
+        -                                    # dash separator for pre-release section
+        (?P<pre_release_label>[a-zA-Z-]+)    # pre-release label
+        \\.
+        (?P<pre_release_number>0|[1-9]\\d*)  # pre-release version number
+    )?                                       # pre-release section is optional
+"""
+serialize = [
+    "{major}.{minor}.{patch}-{pre_release_label}.{pre_release_number}",
+    "{major}.{minor}.{patch}",
+]
+commit = true
+tag = true
+
+[tool.bumpversion.parts.pre_release_label]
+values = ["rc", "final"]
+optional_value = "final"
+
+[[tool.bumpversion.files]]
+glob = "../components/*/package.json"
+search = '"version": "{current_version}",'
+replace = '"version": "{new_version}",'
+
+[[tool.bumpversion.files]]
+filename = "../sonar-project.properties"
+search = "sonar.projectVersion={current_version}"
+replace = "sonar.projectVersion={new_version}"
+
+[[tool.bumpversion.files]]
+filename = "../docs/src/changelog.md"
+search = "[Unreleased]"
+replace = "v{new_version} - {$RELEASE_DATE}"
+
+[[tool.bumpversion.files]]
+filename = "../.env"
+search = "v{current_version}"
+replace = "v{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "../.circleci/config.yml"
+search = "v{current_version}"
+replace = "v{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "../.github/workflows/application-tests.yml"
+search = "v{current_version}"
+replace = "v{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "../components/api_server/src/routes/server.py"
+search = 'QUALITY_TIME_VERSION = "{current_version}"'
+replace = 'QUALITY_TIME_VERSION = "{new_version}"'
+
+[[tool.bumpversion.files]]
+glob = "../**/pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
