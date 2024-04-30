@@ -12,7 +12,7 @@ This document describes the *Quality-time* software. It is aimed at *Quality-tim
    :class: only-light
 ```
 
-*Quality-time* consists of eight Docker components, as depicted above.
+*Quality-time* consists of seven Docker components, as depicted above. Each oval is a Docker component.
 
 ### Bespoke components
 
