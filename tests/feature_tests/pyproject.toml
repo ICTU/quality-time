@@ -2,7 +2,7 @@
 name = "feature_tests"
 version = "5.12.0-rc.1"
 dependencies = [
-    "asserts==0.13.0",
+    "asserts==0.13.1",
     "behave==1.2.6",
     "gevent==24.2.1",
     "pymongo==4.7.0",
