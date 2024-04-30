@@ -4,9 +4,9 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes --output-file=requirements/requirements.txt pyproject.toml
 #
-asserts==0.13.0 \
-    --hash=sha256:57f365b7bb4dbff640e5e4b1c1ccec6b5e6181cee9b4e42fea15428a86cc9541 \
-    --hash=sha256:b598b12fde1d2c6296cf5a14bfa2c20c42344eaa66779dca113b5960a4288612
+asserts==0.13.1 \
+    --hash=sha256:958a69024f9c95905d1391bfede613e9fef987dbf74a399ef3952836c2c2a3bd \
+    --hash=sha256:f76aa6cc9950326801a4c0ecc2fcc57af2e604effe8fb7136d2802aec0b8f7b3
     # via feature_tests (pyproject.toml)
 behave==1.2.6 \
     --hash=sha256:b9662327aa53294c1351b0a9c369093ccec1d21026f050c3bd9b3e5cccf81a86 \
