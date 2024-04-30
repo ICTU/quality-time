@@ -8,9 +8,9 @@ argcomplete==3.3.0 \
     --hash=sha256:c168c3723482c031df3c207d4ba8fa702717ccb9fc0bfe4117166c1f537b4a54 \
     --hash=sha256:fd03ff4a5b9e6580569d34b273f741e85cd9e072f3feeeee3eba4891c70eda62
     # via pipx
-asserts==0.13.0 \
-    --hash=sha256:57f365b7bb4dbff640e5e4b1c1ccec6b5e6181cee9b4e42fea15428a86cc9541 \
-    --hash=sha256:b598b12fde1d2c6296cf5a14bfa2c20c42344eaa66779dca113b5960a4288612
+asserts==0.13.1 \
+    --hash=sha256:958a69024f9c95905d1391bfede613e9fef987dbf74a399ef3952836c2c2a3bd \
+    --hash=sha256:f76aa6cc9950326801a4c0ecc2fcc57af2e604effe8fb7136d2802aec0b8f7b3
     # via feature_tests (pyproject.toml)
 behave==1.2.6 \
     --hash=sha256:b9662327aa53294c1351b0a9c369093ccec1d21026f050c3bd9b3e5cccf81a86 \
@@ -534,9 +534,9 @@ pymongo==4.7.0 \
     --hash=sha256:f8c4cbe5a1258b9f3a49f83781c8b2fb58f39a682779a3c81dc444a609cb15ba \
     --hash=sha256:fbad9290b32ff1fc38bcac42699b8ea6a7c49cab081ba54761f3109bc5703248
     # via feature_tests (pyproject.toml)
-pyproject-hooks==1.0.0 \
-    --hash=sha256:283c11acd6b928d2f6a7c73fa0d01cb2bdc5f07c57a2eeb6e83d5e56b97976f8 \
-    --hash=sha256:f271b298b97f5955d53fb12b72c1fb1948c22c1a6b70b315c54cedaca0264ef5
+pyproject-hooks==1.1.0 \
+    --hash=sha256:4b37730834edbd6bd37f26ece6b44802fb1c1ee2ece0e54ddff8bfc06db86965 \
+    --hash=sha256:7ceeefe9aec63a1064c18d939bdc3adf2d8aa1988a510afec15151578b232aa2
     # via
     #   build
     #   pip-tools
