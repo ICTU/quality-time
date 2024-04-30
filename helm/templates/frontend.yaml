@@ -29,9 +29,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-{{ template "frontend_name" . }}-env
-            - configMapRef:
-                name: {{ .Release.Name }}-shared-env
-          resources: {}
+                optional: true
+{{- with .Values.frontend.resources }}
+          resources: {{- toYaml . | nindent 12 }}
+{{- end }}
           securityContext:
             capabilities:
               drop:

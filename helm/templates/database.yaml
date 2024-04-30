@@ -27,6 +27,11 @@ spec:
         - name: {{ .Release.Name }}-{{ template "database_name" . }}
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-{{ template "database_name" . }}
+        {{- if .Values.database.backupVol }}
+        - name: backups
+          persistentVolumeClaim:
+            claimName: {{ .Values.database.backupVol.claimName }}
+        {{- end }}
       containers:
         - name: {{ template "database_name" . }}
           image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag | default .Chart.AppVersion }}"
@@ -34,18 +39,23 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-{{ template "database_name" . }}-env
+                optional: true
           env:
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              value: "root"
             - name: MONGO_INITDB_ROOT_USERNAME
-              value: "root"
-          resources:
-            limits:
-              cpu: "2"
-              memory: "2Gi"
-            requests:
-              cpu: "1"
-              memory: "1Gi"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.dbCredential }}
+                  key: DATABASE_USERNAME
+                  optional: true
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.dbCredential }}
+                  key: DATABASE_PASSWORD
+                  optional: true
+{{- with .Values.database.resources }}
+          resources: {{- toYaml . | nindent 12 }}
+{{- end }}
           securityContext:
             capabilities:
               add:
@@ -58,6 +68,10 @@ spec:
           volumeMounts:
             - mountPath: /data/db
               name: {{ .Release.Name }}-{{ template "database_name" . }}
+            {{- if .Values.database.backupVol }}
+            - mountPath: {{ .Values.database.backupVol.mountPath }}
+              name: backups
+            {{- end }}
       restartPolicy: Always
 ---
 apiVersion: v1

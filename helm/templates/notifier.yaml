@@ -29,10 +29,25 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-{{ template "notifier_name" . }}-env
+                optional: true
           env:
-            - name: DATABASE_URL
-              value: "mongodb://root:root@{{ .Release.Name }}-{{ template "database_name" . }}:27017"
-          resources: {}
+            - name: DATABASE_HOST
+              value: {{ .Release.Name }}-{{ template "database_name" . }}
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.dbCredential }}
+                  key: DATABASE_USERNAME
+                  optional: true
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.dbCredential }}
+                  key: DATABASE_PASSWORD
+                  optional: true
+{{- with .Values.notifier.resources }}
+          resources: {{- toYaml . | nindent 12 }}
+{{- end }}
           securityContext:
             capabilities:
               drop:
