@@ -73,3 +73,8 @@ jobs:
           push: true
       - name: Anchore SBOM Action
         uses: anchore/sbom-action@v0.16.1
+      - name: Package and push Helm chart to Docker Hub
+        run: |
+          cd helm
+          helm package .
+          helm push quality-time-*.tgz oci://registry-1.docker.io/ictu

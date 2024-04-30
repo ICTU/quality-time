@@ -29,14 +29,15 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-{{ template "renderer_name" . }}-env
+                optional: true
           env:
-            - name: LC_ALL
-              value: "en_GB.UTF-8"
             - name: PROXY_HOST
-              value: "{{ .Release.Name }}-{{ template "www_name" . }}"
-            - name: TZ
-              value: "Europe/Amsterdam"
-          resources: {}
+              value: {{ .Release.Name }}-{{ template "www_name" . }}
+            - name: PROXY_PORT
+              value: "8080"
+{{- with .Values.renderer.resources }}
+          resources: {{- toYaml . | nindent 12 }}
+{{- end }}
           securityContext:
             capabilities:
               drop:

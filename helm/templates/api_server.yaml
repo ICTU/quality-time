@@ -29,24 +29,39 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-{{ template "api_server_name" . }}-env
-            - configMapRef:
-                name: {{ .Release.Name }}-shared-env
+                optional: true
           env:
-            - name: DATABASE_URL
-              value: "mongodb://root:root@{{ .Release.Name }}-{{ template "database_name" . }}:27017"
-{{- if .Values.ldap }}
+            - name: DATABASE_HOST
+              value: {{ .Release.Name }}-{{ template "database_name" . }}
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.dbCredential }}
+                  key: DATABASE_USERNAME
+                  optional: true
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.dbCredential }}
+                  key: DATABASE_PASSWORD
+                  optional: true
             - name: LDAP_LOOKUP_USER_DN
-              value: "{{ .Values.ldap.lookupUserDN }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.ldapCredential }}
+                  key: LDAP_LOOKUP_USER_DN
+                  optional: true
             - name: LDAP_LOOKUP_USER_PASSWORD
-              value: "{{ .Values.ldap.lookupUserPassword }}"
-            - name: LDAP_ROOT_DN
-              value: "{{ .Values.ldap.rootDN }}"
-            - name: LDAP_SEARCH_FILTER
-              value: "{{ .Values.ldap.search }}"
-            - name: LDAP_URL
-              value: "{{ .Values.ldap.url }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.ldapCredential }}
+                  key: LDAP_LOOKUP_USER_PASSWORD
+                  optional: true
+            - name: LDAP_SEARCH_FILTER  # override to make sure that double dollar signs are processed like in docker
+              value: {{ .Values.api_server.env.LDAP_SEARCH_FILTER }}
+{{- with .Values.api_server.resources }}
+          resources: {{- toYaml . | nindent 12 }}
 {{- end }}
-          resources: {}
           securityContext:
             capabilities:
               drop:

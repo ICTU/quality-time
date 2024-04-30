@@ -40,6 +40,12 @@ For example:
       - "1080:${PROXY_PORT:-80}"
 ```
 
+## Kubernetes
+
+The helm chart for deploying on Kubernetes does not support overriding port numbers.
+Setting port environment variables in the `values.yaml` will not change the service port mapping, while the app within the pod will listen on the altered port.
+Instead, only the ingress should be configured.
+
 ## Configuring authentication (mandatory)
 
 You need to either configure an LDAP server to authenticate users with or configure forwarded authentication.
@@ -48,6 +54,7 @@ You need to either configure an LDAP server to authenticate users with or config
 
 To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDAP_ROOT_DN`, `LDAP_LOOKUP_USER_DN`, `LDAP_LOOKUP_USER_PASSWORD`, and `LDAP_SEARCH_FILTER` environment variables.
 Note that `LDAP_URL` may be a comma-separated list of LDAP connection URL(s).
+
 Add the LDAP environment variables to the API-server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
 
 ```yaml
@@ -58,6 +65,18 @@ Add the LDAP environment variables to the API-server service in the [compose fil
       - LDAP_LOOKUP_USER_DN=cn=admin,dc=example,dc=org
       - LDAP_LOOKUP_USER_PASSWORD=admin
       - LDAP_SEARCH_FILTER=(|(uid=$username)(cn=$username))
+```
+
+Alternatively, for a Kubernetes deployment, add the LDAP environment variables to the API-server service in the [Helm values.yaml](https://github.com/ICTU/quality-time/blob/master/helm/values.yaml):
+
+```yaml
+api_server:
+  env:
+    LDAP_URL: "ldap://host.docker.internal:389"
+    LDAP_ROOT_DN: "dc=example,dc=org"
+    LDAP_LOOKUP_USER_DN: "cn=admin,dc=example,dc=org"
+    LDAP_LOOKUP_USER_PASSWORD: "admin"
+    LDAP_SEARCH_FILTER: "(|(uid=$$username)(cn=$$username))"
 ```
 
 When using the `LDAP_SEARCH_FILTER` as shown above, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box.
