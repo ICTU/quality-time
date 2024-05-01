@@ -5,7 +5,7 @@ dependencies = [
     "asserts==0.13.1",
     "behave==1.2.6",
     "gevent==24.2.1",
-    "pymongo==4.7.0",
+    "pymongo==4.7.1",
     "requests==2.31.0",
     "sseclient==0.0.27"
 ]
@@ -22,7 +22,7 @@ dev = [
 tools = [
     "bandit==1.7.8",
     "mypy==1.10.0",
-    "pip-audit==2.7.2",
+    "pip-audit==2.7.3",
     "ruff==0.4.2",
     "safety==3.1.0",
     "vulture==2.11"
