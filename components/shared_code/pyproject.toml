@@ -5,7 +5,7 @@ dependencies = [
     "bottle==0.12.25",
     "packaging==24.0",
     "pydantic==2.7.1",
-    "pymongo==4.7.0",
+    "pymongo==4.7.1",
     "python-dateutil==2.9.0.post0",
 ]
 
@@ -22,7 +22,7 @@ dev = [
 tools = [
     "bandit==1.7.8",
     "mypy==1.10.0",
-    "pip-audit==2.7.2",
+    "pip-audit==2.7.3",
     "pydantic==2.7.1",  # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "ruff==0.4.2",
     "safety==3.1.0",
