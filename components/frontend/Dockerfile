@@ -9,9 +9,9 @@ COPY public /home/frontend/public
 COPY src /home/frontend/src
 COPY healthcheck.js /home/frontend
 COPY .env /home/frontend
-RUN npm install --ignore-scripts -g npm@10.5.2 && \
+RUN npm install --ignore-scripts -g npm@10.7.0 && \
     npm install --ignore-scripts && \
-    npm install --ignore-scripts -g serve@14.2.1 && \
+    npm install --ignore-scripts -g serve@14.2.3 && \
     npm run --ignore-scripts build
 
 RUN adduser frontend --disabled-password

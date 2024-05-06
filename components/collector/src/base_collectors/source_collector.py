@@ -22,7 +22,7 @@ from collector_utilities.type import URL, Response, Responses, Value
 from model import Entities, Entity, IssueStatus, SourceMeasurement, SourceParameters, SourceResponses
 
 
-class SourceCollector(ABC):
+class SourceCollector:
     """Base class for source collectors.
 
     Source collectors are subclasses of this class that know how to collect the
