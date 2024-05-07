@@ -25,6 +25,12 @@ export function allMetricTypeOptions(dataModel) {
     return Object.keys(dataModel.metrics).map((key) => metricTypeOption(key, dataModel.metrics[key]))
 }
 
+export function usedMetricTypes(subject) {
+    const metricTypes = new Set()
+    Object.values(subject.metrics).forEach((metric) => metricTypes.add(metric.type))
+    return Array.from(metricTypes)
+}
+
 export function MetricType({ subjectType, metricType, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
     const options = metricTypeOptions(dataModel, subjectType)

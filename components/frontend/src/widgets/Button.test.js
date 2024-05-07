@@ -12,7 +12,7 @@ import {
 } from "./Button"
 import * as toast from "./toast"
 
-function renderAddDropdownButton(nrItems = 2, totalItems = 10) {
+function renderAddDropdownButton(nrItems = 2, totalItems = 10, usedItemKeys = []) {
     const mockCallback = jest.fn()
     const itemSubtypes = []
     let allItemSubtypes
@@ -34,6 +34,7 @@ function renderAddDropdownButton(nrItems = 2, totalItems = 10) {
             itemType="foo"
             itemSubtypes={itemSubtypes}
             onClick={mockCallback}
+            usedItemSubtypeKeys={usedItemKeys}
         />,
     )
     return mockCallback
@@ -138,6 +139,17 @@ test("AddDropdownButton add all items", async () => {
         fireEvent.click(screen.getByText(/Sub 3/))
     })
     expect(mockCallback).toHaveBeenCalledWith("sub 3")
+})
+
+test("AddDropdownButton hide used items", async () => {
+    renderAddDropdownButton(2, 3, ["sub 1"])
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Add foo/))
+    })
+    await act(async () => {
+        fireEvent.click(screen.getAllByRole("checkbox")[1])
+    })
+    expect(screen.queryAllByText(/Sub 1/).length).toBe(0)
 })
 
 test("AddDropdownButton add all items by keyboard", async () => {
