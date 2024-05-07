@@ -1,6 +1,5 @@
 # Extra services and overridden parameters for development
 
-version: "3"
 services:
   www:
     build: ../components/proxy
