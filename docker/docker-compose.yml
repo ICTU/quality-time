@@ -1,6 +1,5 @@
 # Base docker composition. For development, this composition is augmented in docker-compose.override.yml.
 
-version: '3'
 services:
   www:
     image: ictu/quality-time_proxy:${QUALITY_TIME_VERSION}
