@@ -1,4 +1,4 @@
-import { array, bool, func, string } from "prop-types"
+import { array, arrayOf, bool, func, string } from "prop-types"
 import { useRef, useState } from "react"
 import { Icon, Input } from "semantic-ui-react"
 
@@ -6,6 +6,35 @@ import { Button, Checkbox, Dropdown, Label, Popup } from "../semantic_ui_react_w
 import { popupContentPropType } from "../sharedPropTypes"
 import { showMessage } from "../widgets/toast"
 import { ItemBreadcrumb } from "./ItemBreadcrumb"
+
+function stopEventPropagation(event) {
+    event.stopPropagation()
+}
+
+function stopEventPropagationOnSpace(event) {
+    if (event.key === " ") {
+        event.stopPropagation() // Prevent space from closing menu
+    }
+}
+
+function FilterCheckbox({ label, filter, setFilter }) {
+    return (
+        <Checkbox
+            label={label}
+            onChange={() => setFilter(!filter)}
+            onClick={stopEventPropagation}
+            onKeyDown={stopEventPropagationOnSpace}
+            style={{ paddingLeft: "10pt", paddingBottom: "10pt" }}
+            tabIndex={0}
+            value={filter ? 1 : 0}
+        />
+    )
+}
+FilterCheckbox.propTypes = {
+    label: string,
+    filter: bool,
+    setFilter: func,
+}
 
 export function ActionButton(props) {
     const { action, disabled, icon, itemType, floated, fluid, popup, position, ...other } = props
@@ -32,13 +61,17 @@ ActionButton.propTypes = {
     position: string,
 }
 
-export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubtypes }) {
+export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubtypes, usedItemSubtypeKeys }) {
     const [selectedItem, setSelectedItem] = useState(0) // Index of selected item in the dropdown
     const [query, setQuery] = useState("") // Search query to filter item subtypes
     const [menuOpen, setMenuOpen] = useState(false) // Is the menu open?
     const [popupTriggered, setPopupTriggered] = useState(false) // Is the popup triggered by hover or focus?
-    const [showAllItems, setShowAllItems] = useState(false) // Show all itemSubTypes or only supported itemSubTypes?
-    const items = showAllItems ? allItemSubtypes : itemSubtypes
+    const [showUnsupportedItems, setShowUnsupportedItems] = useState(false) // Show only supported itemSubTypes or also unsupported itemSubTypes?
+    const [hideUsedItems, setHideUsedItems] = useState(false) // Hide itemSubTypes already used?
+    let items = showUnsupportedItems ? allItemSubtypes : itemSubtypes
+    if (hideUsedItems) {
+        items = items.filter((item) => !usedItemSubtypeKeys.includes(item.key))
+    }
     const options = items.filter((itemSubtype) => itemSubtype.text.toLowerCase().includes(query.toLowerCase()))
     const inputRef = useRef(null)
     return (
@@ -113,38 +146,35 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
                                 } // Prevent tabbing to the checkbox from clearing the input
                             }}
                             onChange={(_event, { value }) => setQuery(value)}
-                            onClick={(event) => event.stopPropagation()}
-                            onKeyDown={(event) => {
-                                if (event.key === " ") {
-                                    event.stopPropagation() // Prevent space from closing menu
-                                }
-                            }}
+                            onClick={stopEventPropagation}
+                            onKeyDown={stopEventPropagationOnSpace}
                             ref={inputRef}
                             placeholder={`Filter ${itemType} types`}
                             value={query}
                         />
-                        {allItemSubtypes && (
-                            <Checkbox
+                        {allItemSubtypes?.length > 0 && (
+                            <FilterCheckbox
                                 label={`Select from all ${itemType} types`}
-                                onChange={() => setShowAllItems(!showAllItems)}
-                                onClick={(event) => event.stopPropagation()}
-                                onKeyDown={(event) => {
-                                    if (event.key === " ") {
-                                        event.stopPropagation() // Prevent space from closing menu
-                                    }
-                                }}
-                                style={{ paddingLeft: "10pt", paddingBottom: "10pt" }}
-                                tabIndex={0}
-                                value={showAllItems ? 1 : 0}
+                                filter={showUnsupportedItems}
+                                setFilter={setShowUnsupportedItems}
+                            />
+                        )}
+                        {usedItemSubtypeKeys?.length > 0 && (
+                            <FilterCheckbox
+                                label={`Hide ${itemType} types already used`}
+                                filter={hideUsedItems}
+                                setFilter={setHideUsedItems}
                             />
                         )}
                         <Dropdown.Menu scrolling>
                             {options.map((option, index) => (
                                 <Dropdown.Item
+                                    content={option.content}
                                     key={option.key}
                                     onClick={(_event, { value }) => onClick(value)}
                                     selected={selectedItem === index}
-                                    {...option}
+                                    text={option.text}
+                                    value={option.value}
                                 />
                             ))}
                         </Dropdown.Menu>
@@ -159,6 +189,7 @@ AddDropdownButton.propTypes = {
     itemSubtypes: array,
     itemType: string,
     onClick: func,
+    usedItemSubtypeKeys: arrayOf(string),
 }
 
 export function AddButton({ itemType, onClick }) {
