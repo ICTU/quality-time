@@ -3,7 +3,7 @@ name = "api_server"
 version = "5.12.0-rc.1"
 dependencies = [
     "bottle==0.12.25",
-    "cryptography==42.0.6",
+    "cryptography==42.0.7",
     "gevent==24.2.1",
     "ldap3==2.9.1",
     "lxml[html_clean]==5.2.1",
