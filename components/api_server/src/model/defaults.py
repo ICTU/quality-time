@@ -6,7 +6,7 @@ from shared_data_model import DATA_MODEL
 
 
 def default_source_parameters(metric_type: str, source_type: str):
-    """Return the source parameters with their default values for the specified metric."""
+    """Return the source parameters with their default values for the specified metric type."""
     parameters = DATA_MODEL.sources[source_type].parameters.items()
     return {key: value.default_value for key, value in parameters if metric_type in value.metrics}
 
@@ -30,7 +30,12 @@ def default_metric_attributes(metric_type: str):
     }
 
 
+def default_report_attributes() -> dict[str, str | dict]:
+    """Return the default attributes with their default values for a new report."""
+    return {"title": "New report", "subjects": {}}
+
+
 def default_subject_attributes(subject_type: str) -> dict[str, Any]:
-    """Return the default attributes for the subject."""
+    """Return the default attributes with their default values for the specified subject type."""
     subject = DATA_MODEL.subjects[subject_type]
     return {"type": subject_type, "name": None, "description": subject.description, "metrics": {}}

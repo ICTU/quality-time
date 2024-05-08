@@ -17,6 +17,7 @@ from database.measurements import recent_measurements
 from database.reports import insert_new_report, latest_report, latest_reports_before_timestamp
 from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
+from model.defaults import default_report_attributes
 from model.report import Report
 from model.transformations import (
     decrypt_credentials,
@@ -115,7 +116,7 @@ def post_report_new(database: Database):
     """Add a new report."""
     report_uuid = uuid()
     delta_description = "{user} created a new report."
-    report = {"report_uuid": report_uuid, "title": "New report", "subjects": {}}
+    report = {"report_uuid": report_uuid, **default_report_attributes()}
     result = insert_new_report(database, delta_description, [report_uuid], report)
     result["new_report_uuid"] = report_uuid
     return result
