@@ -45,6 +45,31 @@ it("renders a value that has not been measured yet", () => {
     expect(screen.getAllByText(/\?/).length).toBe(1)
 })
 
+it("renders an outdated value", async () => {
+    render(
+        <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
+            <MeasurementValue
+                metric={{
+                    type: "violations",
+                    scale: "count",
+                    unit: null,
+                    latest_measurement: { count: { value: 1 }, outdated: true },
+                }}
+            />
+        </DataModel.Provider>,
+    )
+    const measurementValue = screen.getByText(/1/)
+    expect(measurementValue.className).toContain("yellow")
+    expect(measurementValue.children[0].className).toContain("loading")
+    await userEvent.hover(measurementValue)
+    await waitFor(() => {
+        expect(screen.queryByText(/Latest measurement out of date/)).not.toBe(null)
+        expect(
+            screen.queryByText(/The source configuration of this metric was changed after the latest measurement/),
+        ).not.toBe(null)
+    })
+})
+
 it("renders a minutes value", () => {
     render(
         <DataModel.Provider value={{ metrics: { duration: { unit: "minutes" } } }}>

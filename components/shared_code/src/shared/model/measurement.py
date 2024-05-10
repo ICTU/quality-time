@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, ClassVar, cast
+from typing import TYPE_CHECKING, ClassVar, Self, cast
 
 from packaging.version import InvalidVersion, Version
 
@@ -294,3 +294,11 @@ class Measurement(dict):
             "start": self["start"],
             "end": self["end"],
         }
+
+    def summarize_latest(self) -> Self:
+        """Return a summary of this measurement, given that it is the latest measurement."""
+        if parameter_hash := self.get("source_parameter_hash"):  # pragma: no feature-test-cover
+            if parameter_hash != self.metric.source_parameter_hash():
+                self["outdated"] = True
+            del self["source_parameter_hash"]
+        return self

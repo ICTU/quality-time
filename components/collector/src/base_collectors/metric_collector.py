@@ -52,7 +52,7 @@ class MetricCollector:
                 source_measurement.source_uuid = source_uuid
         if issue_status_collectors:
             issue_statuses = await asyncio.gather(*issue_status_collectors)
-        return MetricMeasurement(measurements, issue_statuses)
+        return MetricMeasurement(self._metric, measurements, issue_statuses)
 
     def __source_collectors(self) -> list[Coroutine]:
         """Create the source collectors for the metric."""

@@ -94,6 +94,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     def expected_measurement(
         self,
         *,
+        source_parameter_hash: str = "0f6df164677525409f6269ec97e4118d",
         metric_uuid: str = "metric_uuid",
         **expected_source_kwargs,
     ) -> dict[str, bool | list | str]:
@@ -103,6 +104,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             "sources": [self.expected_source(**expected_source_kwargs)],
             "metric_uuid": metric_uuid,
             "report_uuid": "report1",
+            "source_parameter_hash": source_parameter_hash,
         }
 
     async def test_fetch_successful(self):
@@ -228,6 +230,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         expected_call2 = call(
             self.database,
             self.expected_measurement(
+                source_parameter_hash="ebfcffc74dc017799cb4da33090a9867",
                 metric_uuid="metric_uuid2",
                 api_url=edited_url,
                 landing_url=edited_url,
@@ -261,6 +264,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         post.assert_called_once_with(
             self.database,
             self.expected_measurement(
+                source_parameter_hash="8c3b464958e9ad0f20fb2e3b74c80519",
                 value="0",
                 entities=[],
                 api_url="",
