@@ -52,17 +52,21 @@ class SourceMeasurement:
 class MetricMeasurement:
     """Class to hold measurements from one or more sources for one metric."""
 
-    def __init__(self, sources: Sequence[SourceMeasurement], issue_statuses: Sequence[IssueStatus]) -> None:
-        self.sources = sources
+    def __init__(
+        self,
+        source_measurements: Sequence[SourceMeasurement],
+        issue_statuses: Sequence[IssueStatus],
+    ) -> None:
+        self.sources = source_measurements
         self.issue_statuses = issue_statuses
-        self.has_error = any(source.has_error() for source in sources)
+        self.has_error = any(source_measurement.has_error() for source_measurement in source_measurements)
         self.metric_uuid: str | None = None
         self.report_uuid: str | None = None
 
     def as_dict(self) -> dict:
         """Return the metric measurement as dict."""
         measurement = {
-            "sources": [source.as_dict() for source in self.sources],
+            "sources": [source_measurement.as_dict() for source_measurement in self.sources],
             "has_error": self.has_error,
             "metric_uuid": self.metric_uuid,
             "report_uuid": self.report_uuid,
