@@ -2,8 +2,9 @@
 
 from typing import cast
 
+from shared.utils.functions import md5_hash
+
 from base_collectors import JSONFileSourceCollector
-from collector_utilities.functions import md5_hash
 from collector_utilities.type import JSON, JSONDict
 from model import Entities, Entity
 

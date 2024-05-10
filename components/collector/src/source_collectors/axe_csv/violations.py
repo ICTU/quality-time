@@ -4,8 +4,10 @@ import csv
 import re
 from io import StringIO
 
+from shared.utils.functions import md5_hash
+
 from base_collectors import CSVFileSourceCollector
-from collector_utilities.functions import match_string_or_regular_expression, md5_hash
+from collector_utilities.functions import match_string_or_regular_expression
 from model import Entities, Entity, SourceResponses
 
 

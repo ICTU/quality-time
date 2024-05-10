@@ -1,6 +1,6 @@
 """Unit tests for the OWASP ZAP security warnings collector."""
 
-from collector_utilities.functions import md5_hash
+from shared.utils.functions import md5_hash
 
 from .base import OWASPZAPTestCase
 

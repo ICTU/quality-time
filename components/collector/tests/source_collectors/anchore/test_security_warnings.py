@@ -2,7 +2,7 @@
 
 import json
 
-from collector_utilities.functions import md5_hash
+from shared.utils.functions import md5_hash
 
 from .base import AnchoreTestCase
 

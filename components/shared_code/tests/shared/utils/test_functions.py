@@ -4,7 +4,7 @@ import unittest
 from datetime import UTC, datetime
 from unittest.mock import patch
 
-from shared.utils.functions import first, iso_timestamp
+from shared.utils.functions import first, iso_timestamp, md5_hash
 
 
 class IsoTimestampTest(unittest.TestCase):
@@ -32,3 +32,11 @@ class FirstTest(unittest.TestCase):
     def test_empty_sequence(self):
         """Test that StopIteration is thrown when the sequence is empty."""
         self.assertRaises(StopIteration, first, [])
+
+
+class MD5HashTest(unittest.TestCase):
+    """Unit tests for the md5_hash function."""
+
+    def test_hash(self):
+        """Test that the md5 hash is returned."""
+        self.assertEqual("acbd18db4cc2f85cedef654fccc4a4d8", md5_hash("foo"))

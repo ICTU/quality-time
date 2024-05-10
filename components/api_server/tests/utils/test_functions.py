@@ -10,10 +10,11 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
 
+from shared.utils.functions import md5_hash
+
 from utils.functions import (
     asymmetric_decrypt,
     asymmetric_encrypt,
-    md5_hash,
     report_date_time,
     sanitize_html,
     symmetric_decrypt,
