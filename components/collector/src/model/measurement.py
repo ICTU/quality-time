@@ -2,6 +2,8 @@
 
 from collections.abc import Sequence
 
+from shared.model.metric import Metric
+
 from collector_utilities.type import URL, ErrorMessage, Value
 
 from .entity import Entities
@@ -54,9 +56,11 @@ class MetricMeasurement:
 
     def __init__(
         self,
+        metric: Metric,
         source_measurements: Sequence[SourceMeasurement],
         issue_statuses: Sequence[IssueStatus],
     ) -> None:
+        self.metric = metric
         self.sources = source_measurements
         self.issue_statuses = issue_statuses
         self.has_error = any(source_measurement.has_error() for source_measurement in source_measurements)
@@ -70,6 +74,7 @@ class MetricMeasurement:
             "has_error": self.has_error,
             "metric_uuid": self.metric_uuid,
             "report_uuid": self.report_uuid,
+            "source_parameter_hash": self.metric.source_parameter_hash(),
         }
         if self.issue_statuses:
             measurement["issue_status"] = [issue_status.as_dict() for issue_status in self.issue_statuses]

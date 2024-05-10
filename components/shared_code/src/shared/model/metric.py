@@ -6,6 +6,7 @@ from collections.abc import Callable, Sequence
 from datetime import date
 from typing import TYPE_CHECKING, cast
 
+from shared.utils.functions import md5_hash
 from shared.utils.type import (
     Direction,
     MetricId,
@@ -159,9 +160,15 @@ class Metric(dict):
         summary["scale"] = self.scale()
         summary["status"] = self.status(latest_measurement)
         summary["status_start"] = latest_measurement.status_start() if latest_measurement else None
-        summary["latest_measurement"] = latest_measurement
+        summary["latest_measurement"] = latest_measurement.summarize_latest() if latest_measurement else None
         summary["recent_measurements"] = [measurement.summarize() for measurement in measurements]
         if latest_measurement:
             summary["issue_status"] = self.issue_statuses(latest_measurement)
         summary.update(kwargs)
         return summary
+
+    def source_parameter_hash(self) -> str:  # pragma: no feature-test-cover
+        """Return a hash of the source parameters that can be used to check for changed parameters."""
+        sources = [source for _, source in sorted(self.sources_dict.items())]  # Make hash independent of source order
+        source_parameters = [source.get("parameters") for source in sources]
+        return md5_hash(str(source_parameters))

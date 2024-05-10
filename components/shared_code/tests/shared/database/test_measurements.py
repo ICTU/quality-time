@@ -23,6 +23,7 @@ class MeasurementsTest(DataModelTestCase):
         """Set up fixtures for measurements."""
         super().setUp()
         self.database_mock = Mock()
+        self.database_mock.measurements.find_one.return_value = None
         self.database_mock.measurements.insert_one = self.insert_one_measurement
         self.metric = Metric(self.DATA_MODEL, {"type": "violations"}, "metric_uuid")
         self.measurements = [
@@ -71,6 +72,16 @@ class MeasurementsTest(DataModelTestCase):
         measurement = Measurement(self.metric, {"_id": "measurement_id"})
         inserted_measurement = insert_new_measurement(self.database_mock, measurement)
         self.assertFalse("_id" in inserted_measurement)
+
+    def test_insert_new_measurement_removes_source_parameter_hash_from_previous_measurement(self):
+        """Test that inserting a measurement also removes the source parameter hash from the previous measurement."""
+        latest_measurement = Measurement(self.metric, {"_id": "measurement_id", "source_parameter_hash": "hash"})
+        self.database_mock.measurements.find_one.return_value = latest_measurement
+        new_measurement = Measurement(self.metric)
+        insert_new_measurement(self.database_mock, new_measurement)
+        self.database_mock.measurements.update_one.assert_called_once_with(
+            {"_id": "measurement_id"}, {"$unset": {"source_parameter_hash": ""}}
+        )
 
     def test_get_reports(self):
         """Test that the reports are returned."""

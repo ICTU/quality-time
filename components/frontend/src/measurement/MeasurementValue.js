@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { Message } from "semantic-ui-react"
+import { Icon, Message } from "semantic-ui-react"
 
 import { DataModel } from "../context/DataModel"
 import { Label, Popup } from "../semantic_ui_react_wrappers"
@@ -18,7 +18,18 @@ export function MeasurementValue({ metric, reportDate }) {
         const end = new Date(metric.latest_measurement.end)
         const now = reportDate ?? new Date()
         const staleMeasurementValue = now - end > MILLISECONDS_PER_HOUR // No new measurement for more than one hour means something is wrong
-        const trigger = staleMeasurementValue ? <Label color="red">{value}</Label> : <span>{value}</span>
+        let trigger
+        if (staleMeasurementValue) {
+            trigger = <Label color="red">{value}</Label>
+        } else if (metric.latest_measurement.outdated) {
+            trigger = (
+                <Label color="yellow">
+                    <Icon loading name="hourglass" /> {value}
+                </Label>
+            )
+        } else {
+            trigger = <span>{value}</span>
+        }
         return (
             <Popup trigger={trigger} flowing hoverable>
                 {staleMeasurementValue && (
@@ -26,6 +37,13 @@ export function MeasurementValue({ metric, reportDate }) {
                         negative
                         header="This metric was not recently measured"
                         content="This may indicate a problem with Quality-time itself. Please contact a system administrator."
+                    />
+                )}
+                {metric.latest_measurement.outdated && (
+                    <Message
+                        warning
+                        header="Latest measurement out of date"
+                        content="The source configuration of this metric was changed after the latest measurement."
                     />
                 )}
                 <TimeAgoWithDate date={metric.latest_measurement.end}>
