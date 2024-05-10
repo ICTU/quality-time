@@ -8,10 +8,14 @@ from unittest.mock import AsyncMock, patch
 
 from dateutil.tz import tzlocal, tzutc
 
+from shared.model.metric import Metric
+
 from base_collectors import config
 from base_collectors.metric_collector import MetricCollector
 from model import MetricMeasurement
 from source_collectors.jira.change_failure_rate import JiraChangeFailureRate
+
+from tests.fixtures import METRIC_ID
 
 
 class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
@@ -109,7 +113,7 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
     async def collect(self, sources) -> MetricMeasurement | None:
         """Collect the measurement."""
         side_effects = list(deepcopy(self.response.json.side_effect)) if self.response.json.side_effect else []
-        metric = {"type": "change_failure_rate", "sources": sources}
+        metric = Metric({}, {"type": "change_failure_rate", "sources": sources}, METRIC_ID)
         # Instead of instantiating the ChangeFailureRate collector directly, we look up the collector by the metric type
         # to get full coverage. Note that the order of response.json.side_effects is important, due to mixed async calls
         change_failure_rate_collector_class = MetricCollector.get_subclass(metric["type"])

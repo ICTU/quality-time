@@ -6,6 +6,7 @@ from typing import ClassVar
 
 import aiohttp
 
+from shared.model.metric import Metric
 from shared_data_model import DATA_MODEL
 
 from model import MetricMeasurement
@@ -18,7 +19,7 @@ class MetricCollector:
 
     subclasses: ClassVar[set[type["MetricCollector"]]] = set()
 
-    def __init__(self, session: aiohttp.ClientSession, metric) -> None:
+    def __init__(self, session: aiohttp.ClientSession, metric: Metric) -> None:
         self.__session = session
         self._metric = metric
         self._parameters = {
