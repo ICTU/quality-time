@@ -4,8 +4,10 @@ import re
 from typing import cast
 from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
+from shared.utils.functions import md5_hash
+
 from base_collectors import XMLFileSourceCollector
-from collector_utilities.functions import hashless, md5_hash, parse_source_response_xml
+from collector_utilities.functions import hashless, parse_source_response_xml
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 

@@ -1,7 +1,8 @@
 """Anchore Jenkins plugin security warnings collector."""
 
+from shared.utils.functions import md5_hash
+
 from base_collectors import SecurityWarningsSourceCollector
-from collector_utilities.functions import md5_hash
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 

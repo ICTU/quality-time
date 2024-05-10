@@ -62,12 +62,6 @@ def hashless(url: URL) -> URL:
     return URL(urllib.parse.urlunsplit((scheme, netloc, path, query, fragment)))
 
 
-def md5_hash(string: str) -> str:
-    """Return a md5 hash of the string."""
-    md5 = hashlib.md5(string.encode("utf-8"), usedforsecurity=False)  # noqa: DUO130,RUF100
-    return md5.hexdigest()
-
-
 def sha1_hash(string: str) -> str:
     """Return a sha1 hash of the string."""
     sha1 = hashlib.sha1(string.encode("utf-8"), usedforsecurity=False)  # noqa: DUO130,RUF100

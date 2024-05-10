@@ -5,8 +5,9 @@ from unittest.mock import patch
 
 import bottle
 
+from shared.utils.functions import md5_hash
+
 from routes import get_data_model
-from utils.functions import md5_hash
 
 from tests.base import DataModelTestCase
 
