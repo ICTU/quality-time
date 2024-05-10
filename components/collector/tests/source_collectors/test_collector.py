@@ -33,14 +33,17 @@ class CollectorTest(SourceCollectorTestCase):
     async def test_multiple_sources(self):
         """Test that the measurement for the source is returned."""
         junit_url2 = "https://junit2"
-        self.sources["junit2"] = {"type": "junit", "parameters": {"url": junit_url2}}
+        self.metric["sources"]["junit2"] = {"type": "junit", "parameters": {"url": junit_url2}}
         response = await self.collect(get_request_text=self.JUNIT_XML)
         self.assert_measurement(response, value="2", api_url=junit_url2, landing_url=junit_url2, source_index=1)
 
     async def test_multiple_source_types(self):
         """Test that the measurement for the source is returned."""
         sonarqube_url = "https://sonarqube"
-        self.sources["sonarqube"] = {"type": "sonarqube", "parameters": {"url": sonarqube_url, "component": "id"}}
+        self.metric["sources"]["sonarqube"] = {
+            "type": "sonarqube",
+            "parameters": {"url": sonarqube_url, "component": "id"},
+        }
         json = {"component": {"measures": [{"metric": "tests", "value": "88"}]}}
         response = await self.collect(get_request_json_return_value=json, get_request_text=self.JUNIT_XML)
         self.assert_measurement(response, value="2", url=self.JUNIT_XML, source_index=0)

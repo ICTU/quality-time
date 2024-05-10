@@ -3,10 +3,14 @@
 import unittest
 from unittest.mock import AsyncMock, patch
 
+from shared.model.metric import Metric
+
 from base_collectors import config
 from base_collectors.metric_collector import MetricCollector
 from model import MetricMeasurement
 from source_collectors.jira.issues import JiraIssues
+
+from tests.fixtures import METRIC_ID
 
 
 class TestCasesTest(unittest.IsolatedAsyncioTestCase):
@@ -83,7 +87,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
 
     async def collect(self, sources) -> MetricMeasurement | None:
         """Collect the measurement."""
-        metric = {"type": "test_cases", "sources": sources}
+        metric = Metric({}, {"type": "test_cases", "sources": sources}, METRIC_ID)
         # Instead of instantiating the TestCases collector directly, we look up the collector by the metric type
         # to get full coverage:
         test_cases_collector_class = MetricCollector.get_subclass(metric["type"])

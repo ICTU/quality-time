@@ -9,8 +9,12 @@ from unittest.mock import AsyncMock, PropertyMock, patch
 
 import aiohttp
 
+from shared.model.metric import Metric
+
 from base_collectors import MetricCollector
 from model import MetricMeasurement
+
+from tests.fixtures import METRIC_ID
 
 
 class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
@@ -32,7 +36,9 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
         """Extend to set up the source and metric under test."""
         self.sources = {"source_id": {"type": self.SOURCE_TYPE, "parameters": {"url": f"https://{self.SOURCE_TYPE}"}}}
-        self.metric = {"type": self.METRIC_TYPE, "sources": self.sources, "addition": self.METRIC_ADDITION}
+        self.metric = Metric(
+            {}, {"type": self.METRIC_TYPE, "sources": self.sources, "addition": self.METRIC_ADDITION}, METRIC_ID
+        )
 
     async def collect(  # noqa: PLR0913
         self,
