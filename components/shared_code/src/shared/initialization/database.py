@@ -5,12 +5,17 @@ import os
 import pymongo
 from pymongo import database
 
-DEFAULT_DATABASE_URL = "mongodb://root:root@localhost:27017"
-
 
 def client() -> pymongo.MongoClient:  # pragma: no feature-test-cover
     """Return a pymongo client."""
-    database_url = os.environ.get("DATABASE_URL", DEFAULT_DATABASE_URL)
+    database_url = os.environ.get("DATABASE_URL")
+    if not database_url:
+        _db_user = os.environ.get("DATABASE_USERNAME", "root")
+        _db_pass = os.environ.get("DATABASE_PASSWORD", "root")
+        _db_host = os.environ.get("DATABASE_HOST", "localhost")
+        _db_port = os.environ.get("DATABASE_PORT", "27017")
+        database_url = f"mongodb://{_db_user}:{_db_pass}@{_db_host}:{_db_port}"
+
     return pymongo.MongoClient(database_url)
 
 
