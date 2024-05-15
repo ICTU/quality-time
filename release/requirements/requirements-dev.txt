@@ -8,13 +8,17 @@ annotated-types==0.6.0 \
     --hash=sha256:0641064de18ba7a25dee8f96403ebc39113d0cb953a01429249d5c7564666a43 \
     --hash=sha256:563339e807e53ffd9c267e99fc6d9ea23eb8443c08f112651963e24e22f84a5d
     # via pydantic
+bracex==2.4 \
+    --hash=sha256:a27eaf1df42cf561fed58b7a8f3fdf129d1ea16a81e1fadd1d17989bc6384beb \
+    --hash=sha256:efdc71eff95eaff5e0f8cfebe7d01adf2c8637c8c92edaf63ef348c241a82418
+    # via wcmatch
 build==1.2.1 \
     --hash=sha256:526263f4870c26f26c433545579475377b2b7588b6f1eac76a001e873ae3e19d \
     --hash=sha256:75e10f767a433d9a86e50d83f418e83efc18ede923ee5ff7df93b6cb0306c5d4
     # via pip-tools
-bump-my-version==0.20.3 \
-    --hash=sha256:282acd1167913f3e5e24a10ceab9b14d027aadc1355fdbb1e3d1f2c2bd4b2130 \
-    --hash=sha256:4246395a8676f850fe3d2ef843f9ab071ce772f16d609729a1ffcbd03f430ecb
+bump-my-version==0.21.0 \
+    --hash=sha256:a614d8176b5ac0e644239c9a8a246b696d316f68406fd78b8486a9e13fc93266 \
+    --hash=sha256:c3f1a31e32345679b517cbba99a0875457ee45d7ba6189fcd2a74d3ddae41515
     # via release (pyproject.toml)
 click==8.1.7 \
     --hash=sha256:ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28 \
@@ -185,6 +189,10 @@ typing-extensions==4.11.0 \
     #   pydantic
     #   pydantic-core
     #   rich-click
+wcmatch==8.5.2 \
+    --hash=sha256:17d3ad3758f9d0b5b4dedc770b65420d4dac62e680229c287bf24c9db856a478 \
+    --hash=sha256:a70222b86dea82fb382dd87b73278c10756c138bd6f8f714e2183128887b9eb2
+    # via bump-my-version
 wcwidth==0.2.13 \
     --hash=sha256:3da69048e4540d84af32131829ff948f1e022c1c6bdb8d6102117aac784f6859 \
     --hash=sha256:72ea0c06399eb286d978fdedb6923a9eb47e1c486ce63e9b4e64fc18303972b5
