@@ -29,19 +29,15 @@ class TestConnectionParams(unittest.TestCase):
     def test_partial_url_override(self):
         """Test setting partial url with env var overrides."""
 
-        def _os_environ_get(value, default=None):  # noqa: ANN202
+        def _os_environ_get(variable_name, default=None):  # noqa: ANN202
             """Mock method for os.environ.get calls in shared.initialization.database."""
-            match value:
-                case "DATABASE_USERNAME":
-                    return "user"
-                case "DATABASE_PASSWORD":
-                    return "pass"
-                case "DATABASE_HOST":
-                    return "host"
-                case "DATABASE_PORT":
-                    return 4242
-                case _:
-                    return default
+            values = {
+                "DATABASE_USERNAME": "user",
+                "DATABASE_PASSWORD": "pass",
+                "DATABASE_HOST": "host",
+                "DATABASE_PORT": 4242,
+            }
+            return values.get(variable_name, default)
 
         with patch("shared.initialization.database.os.environ.get", Mock(side_effect=_os_environ_get)):
             db = client()
