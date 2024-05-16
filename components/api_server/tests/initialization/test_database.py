@@ -6,15 +6,25 @@ from unittest.mock import Mock, mock_open, patch
 from initialization.database import init_database, perform_migrations
 
 from tests.base import DataModelTestCase
+from tests.fixtures import REPORT_ID, SUBJECT_ID, METRIC_ID, METRIC_ID2, METRIC_ID3, SOURCE_ID, SOURCE_ID2
 
 
-class DatabaseInitTest(DataModelTestCase):
+class DatabaseInitializationTestCase(DataModelTestCase):
+    """Base class for database unittests."""
+
+    def setUp(self):
+        """Extend to set up the database fixture."""
+        super().setUp()
+        self.database = Mock()
+
+
+class DatabaseInitTest(DatabaseInitializationTestCase):
     """Unit tests for database initialization."""
 
     def setUp(self):
-        """Override to set up the database fixture."""
+        """Extend to set up the Mongo client and database contents."""
+        super().setUp()
         self.mongo_client = Mock()
-        self.database = Mock()
         self.database.reports.find.return_value = []
         self.database.reports.distinct.return_value = []
         self.database.datamodels.find_one.return_value = None
@@ -67,12 +77,8 @@ class DatabaseInitTest(DataModelTestCase):
         self.database.reports_overviews.insert_one.assert_called_once()
 
 
-class DatabaseMigrationsTest(DataModelTestCase):
-    """Unit tests for the database migration."""
-
-    def setUp(self):
-        """Override to set up the database fixture."""
-        self.database = Mock()
+class DatabaseMigrationsChangeAccessibilityViolationsTest(DatabaseInitializationTestCase):
+    """Unit tests for the accessibility violations database migration."""
 
     def test_change_accessibility_violations_to_violations_without_reports(self):
         """Test that the migration succeeds without reports."""
@@ -83,7 +89,7 @@ class DatabaseMigrationsTest(DataModelTestCase):
     def test_change_accessibility_violations_to_violations_when_report_has_no_accessibility_metrics(self):
         """Test that the migration succeeds wtih reports, but without accessibility metrics."""
         self.database.reports.find.return_value = [
-            {"report_uuid": "report_uuid", "subjects": {"subject_uuid": {"metrics": {"metric_uuid": {"type": "loc"}}}}}
+            {"report_uuid": REPORT_ID, "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {"type": "loc"}}}}}
         ]
         perform_migrations(self.database)
         self.database.reports.replace_one.assert_not_called()
@@ -93,22 +99,52 @@ class DatabaseMigrationsTest(DataModelTestCase):
         self.database.reports.find.return_value = [
             {
                 "_id": "id",
-                "report_uuid": "report_uuid",
-                "subjects": {"subject_uuid": {"metrics": {"metric_uuid": {"type": "accessibility"}}}},
+                "report_uuid": REPORT_ID,
+                "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {"type": "accessibility"}}}},
             },
         ]
         perform_migrations(self.database)
         self.database.reports.replace_one.assert_called_once_with(
             {"_id": "id"},
             {
-                "report_uuid": "report_uuid",
+                "report_uuid": REPORT_ID,
                 "subjects": {
-                    "subject_uuid": {
+                    SUBJECT_ID: {
                         "metrics": {
-                            "metric_uuid": {
+                            METRIC_ID: {
                                 "type": "violations",
                                 "name": "Accessibility violations",
                                 "unit": "accessibility violations",
+                            }
+                        }
+                    }
+                },
+            },
+        )
+
+    def test_change_accessibility_violations_to_violations_when_metric_has_name_and_unit(self):
+        """Test that the migration succeeds with an accessibility metric, and existing name and unit are kept."""
+        self.database.reports.find.return_value = [
+            {
+                "_id": "id",
+                "report_uuid": REPORT_ID,
+                "subjects": {
+                    SUBJECT_ID: {"metrics": {METRIC_ID: {"type": "accessibility", "name": "name", "unit": "unit"}}},
+                },
+            },
+        ]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_called_once_with(
+            {"_id": "id"},
+            {
+                "report_uuid": REPORT_ID,
+                "subjects": {
+                    SUBJECT_ID: {
+                        "metrics": {
+                            METRIC_ID: {
+                                "type": "violations",
+                                "name": "name",
+                                "unit": "unit",
                             }
                         }
                     }
@@ -121,13 +157,13 @@ class DatabaseMigrationsTest(DataModelTestCase):
         self.database.reports.find.return_value = [
             {
                 "_id": "id",
-                "report_uuid": "report_uuid",
+                "report_uuid": REPORT_ID,
                 "subjects": {
-                    "subject_uuid": {
+                    SUBJECT_ID: {
                         "metrics": {
-                            "metric_uuid": {"type": "accessibility"},
-                            "metric_uuid2": {"type": "violations"},
-                            "metric_uuid3": {"type": "security_warnings"},
+                            METRIC_ID: {"type": "accessibility"},
+                            METRIC_ID2: {"type": "violations"},
+                            METRIC_ID3: {"type": "security_warnings"},
                         }
                     }
                 },
@@ -137,23 +173,113 @@ class DatabaseMigrationsTest(DataModelTestCase):
         self.database.reports.replace_one.assert_called_once_with(
             {"_id": "id"},
             {
-                "report_uuid": "report_uuid",
+                "report_uuid": REPORT_ID,
                 "subjects": {
-                    "subject_uuid": {
+                    SUBJECT_ID: {
                         "metrics": {
-                            "metric_uuid": {
+                            METRIC_ID: {
                                 "type": "violations",
                                 "name": "Accessibility violations",
                                 "unit": "accessibility violations",
                             },
-                            "metric_uuid2": {
+                            METRIC_ID2: {
                                 "type": "violations",
                             },
-                            "metric_uuid3": {
+                            METRIC_ID3: {
                                 "type": "security_warnings",
                             },
                         }
                     }
+                },
+            },
+        )
+
+
+class DatabaseMigrationsBranchParameterTest(DatabaseInitializationTestCase):
+    """Unit tests for the branch parameter database migration."""
+
+    def test_migration_without_reports(self):
+        """Test that the migration succeeds without reports."""
+        self.database.reports.find.return_value = []
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_migration_when_report_has_no_metrics_with_sources_with_branch_parameter(self):
+        """Test that the migration succeeds with reports, but without metrics with a branch parameter."""
+        self.database.reports.find.return_value = [
+            {
+                "report_uuid": REPORT_ID,
+                "subjects": {
+                    SUBJECT_ID: {
+                        "metrics": {
+                            METRIC_ID: {"type": "issues"},
+                            METRIC_ID2: {"type": "loc"},
+                        },
+                    },
+                },
+            },
+        ]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_migration_when_report_has_source_with_branch(self):
+        """Test that the migration succeeds when the branch parameter is not empty."""
+        self.database.reports.find.return_value = [
+            {
+                "report_uuid": REPORT_ID,
+                "subjects": {
+                    SUBJECT_ID: {
+                        "metrics": {
+                            METRIC_ID: {
+                                "type": "loc",
+                                "sources": {SOURCE_ID: {"type": "sonarqube", "parameters": {"branch": "main"}}},
+                            },
+                        },
+                    },
+                },
+            },
+        ]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_migration_when_report_has_sonarqube_metric_with_branch_without_value(self):
+        """Test that the migration succeeds when a source has an empty branch parameter."""
+        self.database.reports.find.return_value = [
+            {
+                "_id": "id",
+                "report_uuid": REPORT_ID,
+                "subjects": {
+                    SUBJECT_ID: {
+                        "metrics": {
+                            METRIC_ID: {
+                                "type": "source_up_to_dateness",
+                                "sources": {
+                                    SOURCE_ID: {"type": "gitlab", "parameters": {"branch": ""}},
+                                    SOURCE_ID2: {"type": "cloc", "parameters": {"branch": ""}},
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        ]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_called_once_with(
+            {"_id": "id"},
+            {
+                "report_uuid": REPORT_ID,
+                "subjects": {
+                    SUBJECT_ID: {
+                        "metrics": {
+                            METRIC_ID: {
+                                "type": "source_up_to_dateness",
+                                "sources": {
+                                    SOURCE_ID: {"type": "gitlab", "parameters": {"branch": "master"}},
+                                    SOURCE_ID2: {"type": "cloc", "parameters": {"branch": ""}},
+                                },
+                            },
+                        },
+                    },
                 },
             },
         )
