@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## v5.12.0-rc.3 - 2024-05-16
+## [Unreleased]
 
 ### Deployment notes
 
@@ -22,7 +22,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Added
 
 - Allow for hiding the legend card via the Settings panel.
-- Explain difference between security warnings and violations in a new FAQ section of the documentation. Closes [#7797](https://github.com/ICTU/quality-time/issues/7797).
+- Explain the difference between security warnings and violations in a new FAQ section of the documentation. Closes [#7797](https://github.com/ICTU/quality-time/issues/7797).
 - When adding a metric to a subject, add an option to hide metric types already used. Closes [#7992](https://github.com/ICTU/quality-time/issues/7992).
 - When adding a metric to a subject, add an option to choose from all metric types in addition to the metric types officially supported by the subject type. Closes [#8176](https://github.com/ICTU/quality-time/issues/8176).
 - When a report has a configured issue tracker, show a card in the dashboard with the number of issues per issue status (open, in progress, done). The card can be hidden via the Settings panel. Clicking the card or setting "Visible metrics" to "Metrics with issues" in the Settings panel hides metrics without issues. Closes [#8222](https://github.com/ICTU/quality-time/issues/8222).
