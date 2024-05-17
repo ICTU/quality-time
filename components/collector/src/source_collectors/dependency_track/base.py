@@ -1,8 +1,23 @@
 """Dependency-Track base collector."""
 
+from collections.abc import AsyncIterator
+from typing import TypedDict, cast
+
 from base_collectors import SourceCollector
-from collector_utilities.type import URL
+from collector_utilities.functions import match_string_or_regular_expression
+from collector_utilities.type import URL, Response
 from model import SourceResponses
+
+
+class DependencyTrackProject(TypedDict):
+    """Project as returned by Dependency-Track."""
+
+    # Last BOM import is a Unix timestamp, despite the Dependency-Tracker Swagger docs saying it's a datetime string
+    # See https://github.com/DependencyTrack/dependency-track/issues/840
+    lastBomImport: int
+    name: str
+    uuid: str
+    version: str
 
 
 class DependencyTrackBase(SourceCollector):
@@ -40,9 +55,28 @@ class DependencyTrackBase(SourceCollector):
 
     async def _get_project_uuids(self) -> dict[str, str]:
         """Return a mapping of project UUIDs to project names."""
+        return {project["uuid"]: project["name"] async for project in self._get_projects()}
+
+    async def _get_projects(self) -> AsyncIterator[DependencyTrackProject]:
+        """Return the Dependency-Track projects."""
         projects_api = URL(await self._api_url() + "/project")
-        project_uuids = {}
         for response in await DependencyTrackBase._get_source_responses(self, projects_api):
-            projects = await response.json(content_type=None)
-            project_uuids.update({project["uuid"]: project["name"] for project in projects})
-        return project_uuids
+            # We need an async for-loop and yield projects one by one because Python has no `async yield from`,
+            # see https://peps.python.org/pep-0525/#asynchronous-yield-from
+            async for project in self._get_projects_from_response(response):
+                yield project
+
+    async def _get_projects_from_response(self, response: Response) -> AsyncIterator[DependencyTrackProject]:
+        """Return the projects from the response that match the configured project names and versions."""
+        project_names = cast(list, self._parameter("project_names"))
+        project_versions = cast(list, self._parameter("project_versions"))
+        for project in await response.json(content_type=None):
+            if self._project_matches(project, project_names, project_versions):
+                yield project
+
+    @staticmethod
+    def _project_matches(project: DependencyTrackProject, names: list[str], versions: list[str]) -> bool:
+        """Return whether the project name matches the project names and versions."""
+        project_matches_name = match_string_or_regular_expression(project["name"], names) if names else True
+        project_matches_version = match_string_or_regular_expression(project["version"], versions) if versions else True
+        return project_matches_name and project_matches_version

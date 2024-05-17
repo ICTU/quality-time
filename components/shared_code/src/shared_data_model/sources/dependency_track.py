@@ -4,7 +4,14 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import URL, LandingURL, MultipleChoiceParameter, PrivateToken, Severities
+from shared_data_model.parameters import (
+    URL,
+    LandingURL,
+    MultipleChoiceParameter,
+    MultipleChoiceWithAdditionParameter,
+    PrivateToken,
+    Severities,
+)
 
 ALL_DEPENDENCY_TRACK_METRICS = ["dependencies", "security_warnings", "source_up_to_dateness", "source_version"]
 DEPENDENCY_TRACK_URL = HttpUrl("https://dependencytrack.org")
@@ -36,6 +43,18 @@ DEPENDENCY_TRACK = Source(
             name="API key",
             help_url=HttpUrl("https://docs.dependencytrack.org/integrations/rest-api/"),
             metrics=["dependencies", "source_up_to_dateness", "security_warnings"],
+        ),
+        "project_names": MultipleChoiceWithAdditionParameter(
+            name="Project names (regular expressions or project names)",
+            placeholder="all project names",
+            short_name="project names",
+            metrics=["dependencies", "security_warnings", "source_up_to_dateness"],
+        ),
+        "project_versions": MultipleChoiceWithAdditionParameter(
+            name="Project versions (regular expressions or versions)",
+            placeholder="all project versions",
+            short_name="project versions",
+            metrics=["dependencies", "security_warnings", "source_up_to_dateness"],
         ),
         "latest_version_status": MultipleChoiceParameter(
             name="Latest version statuses",

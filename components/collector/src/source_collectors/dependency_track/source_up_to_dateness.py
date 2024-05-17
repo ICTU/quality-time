@@ -1,22 +1,14 @@
 """Dependency-Track source up-to-dateness collector."""
 
 from datetime import datetime
-from typing import TypedDict
 
 from base_collectors import TimePassedCollector
 from collector_utilities.date_time import datetime_from_timestamp
+from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL, Response
 from model import Entities, Entity, SourceResponses
 
-from .base import DependencyTrackBase
-
-
-class DependencyTrackProject(TypedDict):
-    """Project as returned by Dependency-Track."""
-
-    lastBomImport: int  # Timestamp
-    name: str
-    uuid: str
+from .base import DependencyTrackBase, DependencyTrackProject
 
 
 class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector):
@@ -28,16 +20,19 @@ class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to parse the timestamp from the response."""
-        projects = await response.json(content_type=None)
-        datetimes = [self._last_bom_import_datetime(project) for project in projects]
-        return self.minimum(datetimes)
+        if datetimes := [
+            self._last_bom_import_datetime(project) async for project in self._get_projects_from_response(response)
+        ]:
+            return self.minimum(datetimes)
+        error_message = "No projects found"
+        raise CollectorError(error_message)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Parse the entities from the responses."""
         landing_url = str(self._parameter("landing_url")).strip("/")
         entities = Entities()
         for response in responses:
-            for project in await response.json(content_type=None):
+            async for project in self._get_projects_from_response(response):
                 uuid = project["uuid"]
                 entity = Entity(
                     key=uuid,
