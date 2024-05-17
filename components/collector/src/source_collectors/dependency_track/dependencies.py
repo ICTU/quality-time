@@ -5,14 +5,7 @@ from typing import Literal, TypedDict
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
-from .base import DependencyTrackBase
-
-
-class DependencyTrackProject(TypedDict):
-    """Project as returned by Dependency-Track."""
-
-    name: str
-    uuid: str
+from .base import DependencyTrackBase, DependencyTrackProject
 
 
 class DependencyTrackRepositoryMetaData(TypedDict):

@@ -2,6 +2,13 @@
 
 from aiohttp import BasicAuth
 
+from source_collectors.dependency_track.base import DependencyTrackProject
+from source_collectors.dependency_track.security_warnings import (
+    DependencyTrackComponent,
+    DependencyTrackFinding,
+    DependencyTrackVulnerability,
+)
+
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -11,22 +18,29 @@ class DependencyTrackSecurityWarningsTest(SourceCollectorTestCase):
     METRIC_TYPE = "security_warnings"
     SOURCE_TYPE = "dependency_track"
 
-    def setUp(self) -> None:
-        """Extend to set up Dependency-Track responses and expected measurement entities."""
-        super().setUp()
-        self.projects = [{"uuid": "project uuid", "name": "project name"}]
-        self.vulnerabilities = [
-            {
-                "component": {"name": "component name", "project": "project uuid", "uuid": "component-uuid"},
-                "matrix": "matrix",
-                "vulnerability": {
-                    "description": "vulnerability description",
-                    "severity": "UNASSIGNED",
-                    "vulnId": "CVE-123",
-                },
-            },
+    def projects(self) -> list[DependencyTrackProject]:
+        """Create the Dependency-Track projects fixture."""
+        return [DependencyTrackProject(name="project name", uuid="project uuid", version="1.4", lastBomImport=0)]
+
+    def findings(self) -> list[DependencyTrackFinding]:
+        """Create the Dependency-Track findings fixture."""
+        return [
+            DependencyTrackFinding(
+                component=DependencyTrackComponent(
+                    name="component name", project="project uuid", uuid="component-uuid"
+                ),
+                matrix="matrix",
+                vulnerability=DependencyTrackVulnerability(
+                    description="vulnerability description",
+                    severity="UNASSIGNED",
+                    vulnId="CVE-123",
+                ),
+            ),
         ]
-        self.entities = [
+
+    def entities(self) -> list[dict[str, str]]:
+        """Create the expected entities."""
+        return [
             {
                 "component": "component name",
                 "component_landing_url": "/components/component-uuid",
@@ -46,19 +60,44 @@ class DependencyTrackSecurityWarningsTest(SourceCollectorTestCase):
 
     async def test_one_project_without_vulnerabilities(self):
         """Test one project without vulnerabilities."""
-        response = await self.collect(get_request_json_side_effect=[self.projects, []])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), []])
         self.assert_measurement(response, value="0", entities=[])
 
     async def test_one_project_with_vulnerabilities(self):
         """Test one project with vulnerabilities."""
-        response = await self.collect(get_request_json_side_effect=[self.projects, self.vulnerabilities])
-        self.assert_measurement(response, value="1", entities=self.entities)
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(response, value="1", entities=self.entities())
 
-    async def test_filter_vulnerabilities(self):
+    async def test_filter_by_severity(self):
         """Test that vulnerabilities can be filtered."""
         self.set_source_parameter("severities", ["High", "Critical"])
-        response = await self.collect(get_request_json_side_effect=[self.projects, self.vulnerabilities])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
         self.assert_measurement(response, value="0", entities=[])
+
+    async def test_filter_by_project_name(self):
+        """Test filtering projects by name."""
+        self.set_source_parameter("project_names", ["other project"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(response, value="0", entities=[])
+
+    async def test_filter_by_project_regular_expression(self):
+        """Test filtering projects by regular expression."""
+        self.set_source_parameter("project_names", ["project .*"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(response, value="1", entities=self.entities())
+
+    async def test_filter_by_project_version(self):
+        """Test filtering projects by version."""
+        self.set_source_parameter("project_versions", ["1.2", "1.3"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(response, value="0", entities=[])
+
+    async def test_filter_by_project_name_and_version(self):
+        """Test filtering projects by name and version."""
+        self.set_source_parameter("project_names", ["project .*"])
+        self.set_source_parameter("project_versions", ["1.3", "1.4"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(response, value="1", entities=self.entities())
 
     async def test_api_key(self):
         """Test that the API key is passed as header."""
