@@ -52,7 +52,7 @@ it("does not submit a value that is too small", async () => {
     expect(setValue).not.toHaveBeenCalled()
 })
 
-it("has a default mininum of zero", async () => {
+it("has a default minimum of zero", async () => {
     let setValue = jest.fn()
     render(<IntegerInput value="-1" set_value={setValue} />)
     await userEvent.type(screen.getByDisplayValue(/-1/), "{Enter}")

@@ -82,10 +82,10 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabPipelineBase):
         """Override to get the date and time of the pipeline."""
         pipelines = await self._pipelines(SourceResponses(responses=[response]))
         datetimes = [pipeline.datetime for pipeline in pipelines]
-        return self.mininum(datetimes)
+        return self.minimum(datetimes)
 
     @staticmethod
-    def mininum(date_times: Sequence[datetime]) -> datetime:
+    def minimum(date_times: Sequence[datetime]) -> datetime:
         """Override to return the newest datetime."""
         return max(date_times)
 

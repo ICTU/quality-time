@@ -30,7 +30,7 @@ class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector
         """Override to parse the timestamp from the response."""
         projects = await response.json(content_type=None)
         datetimes = [self._last_bom_import_datetime(project) for project in projects]
-        return self.mininum(datetimes)
+        return self.minimum(datetimes)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Parse the entities from the responses."""
