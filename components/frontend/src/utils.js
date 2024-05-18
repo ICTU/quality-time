@@ -205,7 +205,7 @@ sortWithLocaleCompare.propTypes = {
 function hideMetric(metric, metricsToHide, hiddenTags) {
     const hideBecauseNoActionNeeded =
         metricsToHide === "no_action_needed" && ["target_met", "debt_target_met", "informative"].includes(metric.status)
-    const hideBecauseNoIssues = metricsToHide === "no_issues" && !metric.issue_ids
+    const hideBecauseNoIssues = metricsToHide === "no_issues" && !metric?.issue_ids?.length
     const hideBecauseTagIsHidden =
         hiddenTags?.length > 0 &&
         hiddenTags?.filter((hiddenTag) => metric.tags?.includes(hiddenTag)).length >= metric.tags?.length
