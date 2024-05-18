@@ -216,7 +216,8 @@ class Measurement(dict):
         scales_equal = all(self[scale] == other[scale] for scale in self.metric.scales())
         issues_statuses_equal = other.get("issue_status") == self.get("issue_status")
         sources_equal = other.sources() == self.sources()
-        return scales_equal and issues_statuses_equal and sources_equal
+        source_parameter_hashes_equal = other.source_parameter_hash() == self.source_parameter_hash()
+        return scales_equal and issues_statuses_equal and sources_equal and source_parameter_hashes_equal
 
     def debt_target_expired(self) -> bool:
         """Return whether the technical debt target is expired.
@@ -297,8 +298,12 @@ class Measurement(dict):
 
     def summarize_latest(self) -> Self:
         """Return a summary of this measurement, given that it is the latest measurement."""
-        if parameter_hash := self.get("source_parameter_hash"):  # pragma: no feature-test-cover
+        if parameter_hash := self.source_parameter_hash():  # pragma: no feature-test-cover
             if parameter_hash != self.metric.source_parameter_hash():
                 self["outdated"] = True
             del self["source_parameter_hash"]
         return self
+
+    def source_parameter_hash(self) -> str:
+        """Return the source parameter hash of this measurement."""
+        return str(self.get("source_parameter_hash", ""))
