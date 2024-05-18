@@ -337,6 +337,11 @@ it("hides metrics not requiring action or without issues", () => {
     expect(visibleMetrics(metricWithIssue, "no_issues", [])).toStrictEqual(metricWithIssue)
     expect(visibleMetrics(metricWithIssue, "none", [])).toStrictEqual(metricWithIssue)
     expect(visibleMetrics(metricWithIssue, "all", [])).toStrictEqual({})
+    const metricWithRemovedIssue = { metric_uuid: { status: "target_met", issue_ids: [] } }
+    expect(visibleMetrics(metricWithRemovedIssue, "no_action_needed", [])).toStrictEqual({})
+    expect(visibleMetrics(metricWithRemovedIssue, "no_issues", [])).toStrictEqual({})
+    expect(visibleMetrics(metricWithRemovedIssue, "none", [])).toStrictEqual(metricWithRemovedIssue)
+    expect(visibleMetrics(metricWithRemovedIssue, "all", [])).toStrictEqual({})
 })
 
 it("hides metrics with hidden tags", () => {
