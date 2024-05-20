@@ -127,8 +127,9 @@ class IssueTracker:
         try:
             response_json = self.__post_json(api_url, json)
         except Exception as reason:
-            logging.warning("Creating a new issue at %s failed: %s", api_url, reason)
-            return "", str(reason)
+            error = str(reason) if str(reason) else reason.__class__.__name__
+            logging.warning("Creating a new issue at %s failed: %s", api_url, error)
+            return "", error
         return response_json["key"], ""  # pragma: no feature-test-cover
 
     def get_options(self) -> Options:  # pragma: no feature-test-cover
