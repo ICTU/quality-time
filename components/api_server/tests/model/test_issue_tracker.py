@@ -96,3 +96,17 @@ class IssueTrackerTest(unittest.TestCase):
         """Test that without a URL an error message is returned."""
         issue_tracker = IssueTracker("", self.issue_parameters)
         self.assertEqual(("", "Issue tracker has no URL configured."), issue_tracker.create_issue(self.ISSUE_SUMMARY))
+
+    @disable_logging
+    @patch("requests.post")
+    def test_create_issue_with_exception(self, requests_post):
+        """Test that the exception is returned when something goes wrong."""
+        requests_post.side_effect = [OSError("Something went wrong")]
+        self.assertEqual(("", "Something went wrong"), self.issue_tracker.create_issue(self.ISSUE_SUMMARY))
+
+    @disable_logging
+    @patch("requests.post")
+    def test_create_issue_with_empty_exception(self, requests_post):
+        """Test that the exception is returned when something goes wrong."""
+        requests_post.side_effect = [OSError]
+        self.assertEqual(("", "OSError"), self.issue_tracker.create_issue(self.ISSUE_SUMMARY))
