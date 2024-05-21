@@ -40,6 +40,10 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 - When using Dependency-Track as source for dependencies, security warnings, or source-up-to-dateness, allow for filtering by project name and version. Closes [#8686](https://github.com/ICTU/quality-time/issues/8686).
 
+### Changed
+
+- Rename the "CI-environment" subject type to "Development environment". Prepares for [#3130](https://github.com/ICTU/quality-time/issues/3130).
+
 ## v5.12.0 - 2024-05-17
 
 ### Deployment notes

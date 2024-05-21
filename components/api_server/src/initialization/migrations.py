@@ -12,55 +12,50 @@ from shared.model.metric import Metric
 def perform_migrations(database: Database) -> None:  # pragma: no feature-test-cover
     """Perform database migrations."""
     for report in database.reports.find(filter={"last": True, "deleted": {"$exists": False}}):
-        change_accessibility_violation_metrics_to_violations(database, report)
-        fix_branch_parameters_without_value(database, report)
-        add_source_parameter_hash(database, report)
+        report_uuid = report["report_uuid"]
+        logging.info("Checking report for necessary updates: %s", report_uuid)
+        if any(
+            changes := [
+                change_accessibility_violation_metrics_to_violations(report),
+                fix_branch_parameters_without_value(report),
+                change_ci_subject_types_to_development_environment(report),
+            ]
+        ):
+            logging.info("Updating report %s to %s", report_uuid, " and to ".join(changes))
+            replace_document(database.reports, report)
+        logging.info("Checking report for necessary measurement updates: %s", report_uuid)
+        count = add_source_parameter_hash_to_latest_measurement(database, report)
+        logging.info("Updated %s measurements: %s", count, report_uuid)
 
 
-def change_accessibility_violation_metrics_to_violations(  # pragma: no feature-test-cover
-    database: Database, report
-) -> None:
-    """Replace accessibility metrics with the violations metric."""
+def change_accessibility_violation_metrics_to_violations(report) -> str:  # pragma: no feature-test-cover
+    """Replace accessibility metrics with violations metrics. Return a description of the change, if any."""
     # Added after Quality-time v5.5.0, see https://github.com/ICTU/quality-time/issues/562
-    report_uuid = report["report_uuid"]
-    logging.info("Checking report for accessibility metrics: %s", report_uuid)
-    changed = False
+    change = ""
     for subject in report["subjects"].values():
         for metric in subject["metrics"].values():
             if metric["type"] == "accessibility":
-                change_accessibility_violations_metric_to_violations(metric)
-                changed = True
-    if changed:
-        logging.info("Updating report to change its accessibility metrics to violations metrics: %s", report_uuid)
-        replace_document(database.reports, report)
-    else:
-        logging.info("No accessibility metrics found in report: %s", report_uuid)
+                metric["type"] = "violations"
+                if not metric.get("name"):
+                    metric["name"] = "Accessibility violations"
+                if not metric.get("unit"):
+                    metric["unit"] = "accessibility violations"
+                change = "change its accessibility metrics to violations metrics"
+    return change
 
 
-def change_accessibility_violations_metric_to_violations(metric: dict) -> None:  # pragma: no feature-test-cover
-    """Change the accessibility violations metric to violations metric."""
-    metric["type"] = "violations"
-    if not metric.get("name"):
-        metric["name"] = "Accessibility violations"
-    if not metric.get("unit"):
-        metric["unit"] = "accessibility violations"
+def fix_branch_parameters_without_value(report) -> str:  # pragma: no feature-test-cover
+    """Set the branch parameter of sources to 'master' (the previous default) if they have no value.
 
-
-def fix_branch_parameters_without_value(database: Database, report) -> None:  # pragma: no feature-test-cover
-    """Set the branch parameter of sources to 'master' (the previous default) if they have no value."""
+    Return a description of the change, if any.
+    """
     # Added after Quality-time v5.11.0, see https://github.com/ICTU/quality-time/issues/8045
-    report_uuid = report["report_uuid"]
-    logging.info("Checking report for sources with empty branch parameters: %s", report_uuid)
-    changed = False
+    change = ""
     for source in sources_with_branch_parameter(report):
         if not source["parameters"].get("branch"):
             source["parameters"]["branch"] = "master"
-            changed = True
-    if changed:
-        logging.info("Updating report to change sources with empty branch parameter: %s", report_uuid)
-        replace_document(database.reports, report)
-    else:
-        logging.info("No sources with empty branch parameters found in report: %s", report_uuid)
+            change = "change sources with empty branch parameter"
+    return change
 
 
 METRICS_WITH_SOURCES_WITH_BRANCH_PARAMETER = {
@@ -93,9 +88,25 @@ def sources_with_branch_parameter(report: dict):  # pragma: no feature-test-cove
                         yield source
 
 
-def add_source_parameter_hash(database: Database, report) -> None:  # pragma: no feature-test-cover
-    """Add source parameter hashes to the latest measurements."""
+def change_ci_subject_types_to_development_environment(report) -> str:  # pragma: no feature-test-cover
+    """Change the CI subject type to development environment. Return a description of the change, if any."""
+    # Added after Quality-time v5.13.0, see https://github.com/ICTU/quality-time/issues/3130
+    change = ""
+    for subject in report["subjects"].values():
+        if subject["type"] == "ci":
+            subject["type"] = "development_environment"
+            if not subject.get("name"):
+                subject["name"] = "CI-environment"
+            if not subject.get("description"):
+                subject["description"] = "A continuous integration environment."
+            change = "change subjects with type 'ci'"
+    return change
+
+
+def add_source_parameter_hash_to_latest_measurement(database: Database, report) -> int:  # pragma: no feature-test-cover
+    """Add source parameter hashes to the latest measurements. Return the number of measurements changed."""
     # Added after Quality-time v5.12.0, see https://github.com/ICTU/quality-time/issues/8736
+    count = 0
     for subject in report["subjects"].values():
         for metric_uuid, metric in subject["metrics"].items():
             latest_measurement = database.measurements.find_one(
@@ -108,6 +119,8 @@ def add_source_parameter_hash(database: Database, report) -> None:  # pragma: no
                 continue
             latest_measurement["source_parameter_hash"] = Metric({}, metric, metric_uuid).source_parameter_hash()
             replace_document(database.measurements, latest_measurement)
+            count += 1
+    return count
 
 
 def replace_document(collection: Collection, document) -> None:  # pragma: no feature-test-cover
