@@ -3,9 +3,10 @@
 from .meta.subject import Subject
 
 SUBJECTS = {
-    "ci": Subject(
-        name="CI-environment",
-        description="A continuous integration environment.",
+    "development_environment": Subject(
+        name="Development environment",
+        description="A software development and/or maintenance environment, consisting of infrastructure, pipelines, "
+        "and tools needed to build, test, and deploy software.",
         metrics=[
             "failed_jobs",
             "job_runs_within_time_period",

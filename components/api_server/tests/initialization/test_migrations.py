@@ -14,7 +14,7 @@ class MigrationTestCase(DataModelTestCase):
         return {
             "_id": "id",
             "report_uuid": REPORT_ID,
-            "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: {"type": metric_type}}}},
+            "subjects": {SUBJECT_ID: {"type": "software", "metrics": {METRIC_ID: {"type": metric_type}}}},
         }
 
     def inserted_report(self, **kwargs):
@@ -71,6 +71,12 @@ class ChangeAccessibilityViolationsTest(MigrationTestCase):
             metric_type="violations", metric_name=metric_name, metric_unit=metric_unit, **kwargs
         )
 
+    def test_report_without_accessibility_metrics(self):
+        """Test that the migration succeeds with reports, but without accessibility metrics."""
+        self.database.reports.find.return_value = [self.existing_report(metric_type="loc")]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
     def test_report_with_accessibility_metric(self):
         """Test that the migration succeeds with an accessibility metric."""
         self.database.reports.find.return_value = [self.existing_report()]
@@ -105,8 +111,14 @@ class BranchParameterTest(MigrationTestCase):
         """Extend to add sources and an extra metric without sources."""
         report = super().existing_report(metric_type=metric_type)
         report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {"type": "issues"}
-        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = sources
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = sources or {}
         return report
+
+    def test_report_without_branch_parameter(self):
+        """Test that the migration succeeds with reports, but without metrics with a branch parameter."""
+        self.database.reports.find.return_value = [self.existing_report()]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
 
     def test_report_with_non_empty_branch_parameter(self):
         """Test that the migration succeeds when the branch parameter is not empty."""
@@ -164,3 +176,49 @@ class SourceParameterHashMigrationTest(MigrationTestCase):
         self.database.reports.find.return_value = [self.existing_report(sources={SOURCE_ID: {"type": "cloc"}})]
         perform_migrations(self.database)
         self.database.measurements.replace_one.assert_not_called()
+
+
+class CIEnvironmentTest(MigrationTestCase):
+    """Unit tests for the CI-environment subject type database migration."""
+
+    def existing_report(self, subject_type: str = "", subject_name: str = "", subject_description: str = ""):
+        """Extend to set the subject type to CI-environment."""
+        report = super().existing_report(metric_type="issues")
+        if subject_type:
+            report["subjects"][SUBJECT_ID]["type"] = subject_type
+        if subject_name:
+            report["subjects"][SUBJECT_ID]["name"] = subject_name
+        if subject_description:
+            report["subjects"][SUBJECT_ID]["description"] = subject_description
+        return report
+
+    def inserted_report(self, **kwargs):
+        """Extend to set the subject type to development environment."""
+        report = super().inserted_report(**kwargs)
+        report["subjects"][SUBJECT_ID]["type"] = "development_environment"
+        return report
+
+    def test_report_without_ci_environment(self):
+        """Test that the migration succeeds without CI-environment subject."""
+        self.database.reports.find.return_value = [self.existing_report()]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_report_with_ci_environment(self):
+        """Test that the migration succeeds with CI-environment subject."""
+        self.database.reports.find.return_value = [self.existing_report(subject_type="ci")]
+        perform_migrations(self.database)
+        inserted_report = self.inserted_report(
+            subject_name="CI-environment",
+            subject_description="A continuous integration environment.",
+        )
+        self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
+
+    def test_ci_environment_with_title_and_subtitle(self):
+        """Test that the migration succeeds with an CI-environment subject, and existing title and subtitle are kept."""
+        self.database.reports.find.return_value = [
+            self.existing_report(subject_type="ci", subject_name="CI", subject_description="My CI")
+        ]
+        perform_migrations(self.database)
+        inserted_report = self.inserted_report(subject_name="CI", subject_description="My CI")
+        self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
