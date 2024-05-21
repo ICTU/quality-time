@@ -1,6 +1,6 @@
 """Unit tests for database migrations."""
 
-from initialization.database import perform_migrations
+from initialization.migrations import perform_migrations
 
 from tests.base import DataModelTestCase
 from tests.fixtures import REPORT_ID, SUBJECT_ID, METRIC_ID, METRIC_ID2, METRIC_ID3, SOURCE_ID, SOURCE_ID2
