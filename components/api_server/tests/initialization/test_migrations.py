@@ -27,6 +27,22 @@ class MigrationTestCase(DataModelTestCase):
         return report
 
 
+class NoOpMigrationTest(MigrationTestCase):
+    """Unit tests for empty database and empty reports."""
+
+    def test_no_reports(self):
+        """Test that the migration succeeds without reports."""
+        self.database.reports.find.return_value = []
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_empty_reports(self):
+        """Test that the migration succeeds when the report does not have anything to migrate."""
+        self.database.reports.find.return_value = [self.existing_report("issues")]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+
 class ChangeAccessibilityViolationsTest(MigrationTestCase):
     """Unit tests for the accessibility violations database migration."""
 
@@ -54,18 +70,6 @@ class ChangeAccessibilityViolationsTest(MigrationTestCase):
         return super().inserted_report(
             metric_type="violations", metric_name=metric_name, metric_unit=metric_unit, **kwargs
         )
-
-    def test_no_reports(self):
-        """Test that the migration succeeds without reports."""
-        self.database.reports.find.return_value = []
-        perform_migrations(self.database)
-        self.database.reports.replace_one.assert_not_called()
-
-    def test_report_without_accessibility_metrics(self):
-        """Test that the migration succeeds with reports, but without accessibility metrics."""
-        self.database.reports.find.return_value = [self.existing_report(metric_type="loc")]
-        perform_migrations(self.database)
-        self.database.reports.replace_one.assert_not_called()
 
     def test_report_with_accessibility_metric(self):
         """Test that the migration succeeds with an accessibility metric."""
@@ -101,21 +105,8 @@ class BranchParameterTest(MigrationTestCase):
         """Extend to add sources and an extra metric without sources."""
         report = super().existing_report(metric_type=metric_type)
         report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {"type": "issues"}
-        if sources:
-            report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = sources
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = sources
         return report
-
-    def test_no_reports(self):
-        """Test that the migration succeeds without reports."""
-        self.database.reports.find.return_value = []
-        perform_migrations(self.database)
-        self.database.reports.replace_one.assert_not_called()
-
-    def test_report_without_branch_parameter(self):
-        """Test that the migration succeeds with reports, but without metrics with a branch parameter."""
-        self.database.reports.find.return_value = [self.existing_report()]
-        perform_migrations(self.database)
-        self.database.reports.replace_one.assert_not_called()
 
     def test_report_with_non_empty_branch_parameter(self):
         """Test that the migration succeeds when the branch parameter is not empty."""
@@ -140,3 +131,36 @@ class BranchParameterTest(MigrationTestCase):
         }
         inserted_report = self.inserted_report(metric_type="source_up_to_dateness", sources=inserted_sources)
         self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
+
+
+class SourceParameterHashMigrationTest(MigrationTestCase):
+    """Unit tests for the source parameter hash database migration."""
+
+    def existing_report(self, sources: dict[SourceId, dict[str, str | dict[str, str]]] | None = None):
+        """Extend to add sources and an extra metric without sources."""
+        report = super().existing_report(metric_type="loc")
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {"type": "issues"}
+        if sources:
+            report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = sources
+        return report
+
+    def test_report_with_sources_without_source_parameter_hash(self):
+        """Test a report with sources and measurements."""
+        self.database.measurements.find_one.return_value = {"_id": "id", "metric_uuid": METRIC_ID}
+        self.database.reports.find.return_value = [self.existing_report(sources={SOURCE_ID: {"type": "cloc"}})]
+        perform_migrations(self.database)
+        inserted_measurement = {"metric_uuid": METRIC_ID, "source_parameter_hash": "8c3b464958e9ad0f20fb2e3b74c80519"}
+        self.database.measurements.replace_one.assert_called_once_with({"_id": "id"}, inserted_measurement)
+
+    def test_report_without_sources(self):
+        """Test a report without sources."""
+        self.database.reports.find.return_value = [self.existing_report()]
+        perform_migrations(self.database)
+        self.database.measurements.replace_one.assert_not_called()
+
+    def test_metric_without_measurement(self):
+        """Test a metric without measurements."""
+        self.database.measurements.find_one.return_value = None
+        self.database.reports.find.return_value = [self.existing_report(sources={SOURCE_ID: {"type": "cloc"}})]
+        perform_migrations(self.database)
+        self.database.measurements.replace_one.assert_not_called()

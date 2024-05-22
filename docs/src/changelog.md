@@ -19,6 +19,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 - When creating an issue fails, show the reason in the toaster message instead of "undefined". Fixes [#8567](https://github.com/ICTU/quality-time/issues/8567).
 - Hiding metrics without issues would not hide metrics with deleted issues. Fixes [#8699](https://github.com/ICTU/quality-time/issues/8699).
 - The spinner indicating that the latest measurement of a metric is not up-to-date with the latest source configuration would not disappear if the measurement value made with the latest source configuration was equal to the measurement value made with the previous source configuration. Fixes [#8702](https://github.com/ICTU/quality-time/issues/8702).
+- The spinner indicating that the latest measurement of a metric is not up-to-date with the latest source configuration would not appear on the first edit of a metric after upgrading to v5.12.0. Fixes [#8736](https://github.com/ICTU/quality-time/issues/8736).
 
 ### Added
 
