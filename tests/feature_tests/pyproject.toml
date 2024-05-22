@@ -6,7 +6,7 @@ dependencies = [
     "behave==1.2.6",
     "gevent==24.2.1",
     "pymongo==4.7.2",
-    "requests==2.32.1",
+    "requests==2.32.2",
     "sseclient==0.0.27"
 ]
 
@@ -16,7 +16,7 @@ dev = [
     "pip==24.0",
     "pipx==1.5.0",
     "pip-tools==7.4.1",  # To add hashes to requirements
-    "types-requests==2.31.0.20240406",
+    "types-requests==2.32.0.20240521",
     "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 tools = [
