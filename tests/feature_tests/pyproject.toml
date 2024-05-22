@@ -6,7 +6,7 @@ dependencies = [
     "behave==1.2.6",
     "gevent==24.2.1",
     "pymongo==4.7.2",
-    "requests==2.32.1",
+    "requests==2.32.2",
     "sseclient==0.0.27"
 ]
 
