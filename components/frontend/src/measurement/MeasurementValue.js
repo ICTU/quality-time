@@ -18,7 +18,7 @@ export function MeasurementValue({ metric, reportDate }) {
         const end = new Date(metric.latest_measurement.end)
         const now = reportDate ?? new Date()
         const staleMeasurementValue = now - end > MILLISECONDS_PER_HOUR // No new measurement for more than one hour means something is wrong
-        let trigger
+        let trigger = value
         if (staleMeasurementValue) {
             trigger = <Label color="red">{value}</Label>
         } else if (metric.latest_measurement.outdated) {
@@ -27,11 +27,9 @@ export function MeasurementValue({ metric, reportDate }) {
                     <Icon loading name="hourglass" /> {value}
                 </Label>
             )
-        } else {
-            trigger = <span>{value}</span>
         }
         return (
-            <Popup trigger={trigger} flowing hoverable>
+            <Popup trigger={<span>{trigger}</span>} flowing hoverable>
                 {staleMeasurementValue && (
                     <Message
                         negative

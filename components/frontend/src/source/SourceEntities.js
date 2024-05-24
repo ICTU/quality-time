@@ -86,13 +86,15 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
             <Table.HeaderCell collapsing textAlign="center">
                 <Popup
                     trigger={
-                        <Button
-                            basic
-                            compact
-                            icon={hideIgnoredEntities ? "unhide" : "hide"}
-                            onClick={() => setHideIgnoredEntities(!hideIgnoredEntities)}
-                            primary
-                        />
+                        <span>
+                            <Button
+                                basic
+                                compact
+                                icon={hideIgnoredEntities ? "unhide" : "hide"}
+                                onClick={() => setHideIgnoredEntities(!hideIgnoredEntities)}
+                                primary
+                            />
+                        </span>
                     }
                     content={
                         hideIgnoredEntities
