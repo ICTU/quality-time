@@ -116,110 +116,112 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
     }
     const options = items.filter((itemSubtype) => itemSubtype.text.toLowerCase().includes(query.toLowerCase()))
     return (
-        <Popup
-            content={`Add a new ${itemType} here`}
-            on={["focus", "hover"]}
-            onOpen={() => setPopupTriggered(true)}
-            onClose={() => setPopupTriggered(false)}
-            open={!menuOpen && popupTriggered}
-            trigger={
-                <Dropdown
-                    basic
-                    className="button icon primary"
-                    floating
-                    onClose={() => setMenuOpen(false)}
-                    onKeyDown={(event) => {
-                        if (!menuOpen) {
-                            return
-                        }
-                        if (event.key === "Escape") {
-                            setQuery("")
-                        }
-                        if (!inputHasFocus) {
-                            // Allow for editing the query without the input having focus
-                            if (event.key === "Backspace") {
-                                setQuery(query.slice(0, query.length - 1))
-                            } else if (event.key.length === 1) {
-                                setQuery(query + event.key)
+        <div style={{ display: "inline-block" }}>
+            <Popup
+                content={`Add a new ${itemType} here`}
+                on={["focus", "hover"]}
+                onOpen={() => setPopupTriggered(true)}
+                onClose={() => setPopupTriggered(false)}
+                open={!menuOpen && popupTriggered}
+                trigger={
+                    <Dropdown
+                        basic
+                        className="button icon primary"
+                        floating
+                        onClose={() => setMenuOpen(false)}
+                        onKeyDown={(event) => {
+                            if (!menuOpen) {
+                                return
                             }
-                        }
-                        if (options.length === 0) {
-                            return
-                        }
-                        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-                            let newIndex
-                            if (event.key === "ArrowUp") {
-                                newIndex = Math.max(selectedItem - 1, 0)
-                            } else {
-                                newIndex = Math.min(selectedItem + 1, options.length - 1)
+                            if (event.key === "Escape") {
+                                setQuery("")
                             }
-                            setSelectedItem(newIndex)
-                            const activeMenuItem = event.target.querySelectorAll("[role='option']")[newIndex]
-                            activeMenuItem?.scrollIntoView({ block: "nearest" })
+                            if (!inputHasFocus) {
+                                // Allow for editing the query without the input having focus
+                                if (event.key === "Backspace") {
+                                    setQuery(query.slice(0, query.length - 1))
+                                } else if (event.key.length === 1) {
+                                    setQuery(query + event.key)
+                                }
+                            }
+                            if (options.length === 0) {
+                                return
+                            }
+                            if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+                                let newIndex
+                                if (event.key === "ArrowUp") {
+                                    newIndex = Math.max(selectedItem - 1, 0)
+                                } else {
+                                    newIndex = Math.min(selectedItem + 1, options.length - 1)
+                                }
+                                setSelectedItem(newIndex)
+                                const activeMenuItem = event.target.querySelectorAll("[role='option']")[newIndex]
+                                activeMenuItem?.scrollIntoView({ block: "nearest" })
+                            }
+                            if (event.key === "Enter") {
+                                onClick(options[selectedItem].value)
+                            }
+                        }}
+                        onOpen={() => setMenuOpen(true)}
+                        selectOnBlur={false}
+                        selectOnNavigation={false}
+                        trigger={
+                            <>
+                                <Icon name="add" /> {`Add ${itemType} `}
+                            </>
                         }
-                        if (event.key === "Enter") {
-                            onClick(options[selectedItem].value)
-                        }
-                    }}
-                    onOpen={() => setMenuOpen(true)}
-                    selectOnBlur={false}
-                    selectOnNavigation={false}
-                    trigger={
-                        <>
-                            <Icon name="add" /> {`Add ${itemType} `}
-                        </>
-                    }
-                    value={null} // Without this, a selected item becomes active (shown bold in the menu) and can't be selected again
-                >
-                    <Dropdown.Menu style={{ minWidth: "50em" }}>
-                        <Dropdown.Header>{`Available ${itemType} types`}</Dropdown.Header>
-                        <Dropdown.Divider />
-                        <Input
-                            className="search"
-                            focus
-                            icon="search"
-                            iconPosition="left"
-                            onBlur={(event) => {
-                                setInputHasFocus(false)
-                                if (allItemSubtypes) {
-                                    event.stopPropagation()
-                                } // Prevent tabbing to the checkbox from clearing the input
-                            }}
-                            onChange={(_event, { value }) => setQuery(value)}
-                            onClick={stopEventPropagation}
-                            onFocus={() => {
-                                setInputHasFocus(true)
-                            }}
-                            onKeyDown={stopEventPropagationOnSpace}
-                            placeholder={`Filter ${itemType} types`}
-                            value={query}
-                        />
-                        <FilterCheckboxes
-                            itemType={itemType}
-                            allowHidingUnsupportedItems={allItemSubtypes?.length > 0}
-                            showUnsupportedItems={showUnsupportedItems}
-                            setShowUnsupportedItems={setShowUnsupportedItems}
-                            allowHidingUsedItems={usedItemSubtypeKeys?.length > 0}
-                            hideUsedItems={hideUsedItems}
-                            setHideUsedItems={setHideUsedItems}
-                        />
-                        <Dropdown.Menu scrolling>
-                            {options.map((option, index) => (
-                                <Dropdown.Item
-                                    content={option.content}
-                                    key={option.key}
-                                    onClick={(_event, { value }) => onClick(value)}
-                                    selected={selectedItem === index}
-                                    style={{ whiteSpace: "wrap" }}
-                                    text={option.text}
-                                    value={option.value}
-                                />
-                            ))}
+                        value={null} // Without this, a selected item becomes active (shown bold in the menu) and can't be selected again
+                    >
+                        <Dropdown.Menu style={{ minWidth: "50em" }}>
+                            <Dropdown.Header>{`Available ${itemType} types`}</Dropdown.Header>
+                            <Dropdown.Divider />
+                            <Input
+                                className="search"
+                                focus
+                                icon="search"
+                                iconPosition="left"
+                                onBlur={(event) => {
+                                    setInputHasFocus(false)
+                                    if (allItemSubtypes) {
+                                        event.stopPropagation()
+                                    } // Prevent tabbing to the checkbox from clearing the input
+                                }}
+                                onChange={(_event, { value }) => setQuery(value)}
+                                onClick={stopEventPropagation}
+                                onFocus={() => {
+                                    setInputHasFocus(true)
+                                }}
+                                onKeyDown={stopEventPropagationOnSpace}
+                                placeholder={`Filter ${itemType} types`}
+                                value={query}
+                            />
+                            <FilterCheckboxes
+                                itemType={itemType}
+                                allowHidingUnsupportedItems={allItemSubtypes?.length > 0}
+                                showUnsupportedItems={showUnsupportedItems}
+                                setShowUnsupportedItems={setShowUnsupportedItems}
+                                allowHidingUsedItems={usedItemSubtypeKeys?.length > 0}
+                                hideUsedItems={hideUsedItems}
+                                setHideUsedItems={setHideUsedItems}
+                            />
+                            <Dropdown.Menu scrolling>
+                                {options.map((option, index) => (
+                                    <Dropdown.Item
+                                        content={option.content}
+                                        key={option.key}
+                                        onClick={(_event, { value }) => onClick(value)}
+                                        selected={selectedItem === index}
+                                        style={{ whiteSpace: "wrap" }}
+                                        text={option.text}
+                                        value={option.value}
+                                    />
+                                ))}
+                            </Dropdown.Menu>
                         </Dropdown.Menu>
-                    </Dropdown.Menu>
-                </Dropdown>
-            }
-        />
+                    </Dropdown>
+                }
+            />
+        </div>
     )
 }
 AddDropdownButton.propTypes = {

@@ -15,10 +15,10 @@ export function TimeLeft({ metric, report }) {
     let trigger = <Label color="red">{triggerText}</Label>
     if (timeLeft >= 0) {
         deadlineLabel = "Time left to address this metric is"
-        trigger = <span>{triggerText}</span>
+        trigger = triggerText
     }
     return (
-        <Popup flowing hoverable trigger={trigger}>
+        <Popup flowing hoverable trigger={<span>{trigger}</span>}>
             <TimeAgoWithDate date={deadline}>{deadlineLabel}</TimeAgoWithDate>.
         </Popup>
     )
