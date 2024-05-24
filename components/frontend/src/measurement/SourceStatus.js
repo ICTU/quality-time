@@ -43,7 +43,11 @@ export function SourceStatus({ metric, measurement_source }) {
                 flowing
                 header={header}
                 hoverable
-                trigger={<Label color="red">{source_label(true)}</Label>}
+                trigger={
+                    <span>
+                        <Label color="red">{source_label(true)}</Label>
+                    </span>
+                }
             />
         )
     } else {

@@ -56,9 +56,9 @@ export function MeasurementTarget({ metric }) {
         const today = new Date()
         debtEndDateInThePast = endDate.toISOString().split("T")[0] < today.toISOString().split("T")[0]
     }
-    const label = allIssuesDone || debtEndDateInThePast ? <Label color="grey">{target}</Label> : <span>{target}</span>
+    const label = allIssuesDone || debtEndDateInThePast ? <Label color="grey">{target}</Label> : target
     return (
-        <Popup hoverable on={["hover", "focus"]} trigger={label}>
+        <Popup hoverable on={["hover", "focus"]} trigger={<span>{label}</span>}>
             {popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel)}
         </Popup>
     )
