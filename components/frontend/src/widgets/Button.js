@@ -1,5 +1,5 @@
 import { array, arrayOf, bool, func, string } from "prop-types"
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { Icon, Input } from "semantic-ui-react"
 
 import { Button, Checkbox, Dropdown, Label, Popup } from "../semantic_ui_react_wrappers"
@@ -66,6 +66,7 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
     const [query, setQuery] = useState("") // Search query to filter item subtypes
     const [menuOpen, setMenuOpen] = useState(false) // Is the menu open?
     const [popupTriggered, setPopupTriggered] = useState(false) // Is the popup triggered by hover or focus?
+    const [inputHasFocus, setInputHasFocus] = useState(false) // Does the input have focus?
     const [showUnsupportedItems, setShowUnsupportedItems] = useState(false) // Show only supported itemSubTypes or also unsupported itemSubTypes?
     const [hideUsedItems, setHideUsedItems] = useState(false) // Hide itemSubTypes already used?
     let items = showUnsupportedItems ? allItemSubtypes : itemSubtypes
@@ -73,7 +74,6 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
         items = items.filter((item) => !usedItemSubtypeKeys.includes(item.key))
     }
     const options = items.filter((itemSubtype) => itemSubtype.text.toLowerCase().includes(query.toLowerCase()))
-    const inputRef = useRef(null)
     return (
         <Popup
             content={`Add a new ${itemType} here`}
@@ -86,7 +86,7 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
                     basic
                     className="button icon primary"
                     floating
-                    onBlur={() => setQuery("")}
+                    //onBlur={() => setQuery("")}
                     onClose={() => setMenuOpen(false)}
                     onKeyDown={(event) => {
                         if (!menuOpen) {
@@ -95,7 +95,7 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
                         if (event.key === "Escape") {
                             setQuery("")
                         }
-                        if (inputRef.current?.inputRef?.current !== document.activeElement) {
+                        if (!inputHasFocus) {
                             // Allow for editing the query without the input having focus
                             if (event.key === "Backspace") {
                                 setQuery(query.slice(0, query.length - 1))
@@ -141,14 +141,17 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
                             icon="search"
                             iconPosition="left"
                             onBlur={(event) => {
+                                setInputHasFocus(false)
                                 if (allItemSubtypes) {
                                     event.stopPropagation()
                                 } // Prevent tabbing to the checkbox from clearing the input
                             }}
                             onChange={(_event, { value }) => setQuery(value)}
                             onClick={stopEventPropagation}
+                            onFocus={() => {
+                                setInputHasFocus(true)
+                            }}
                             onKeyDown={stopEventPropagationOnSpace}
-                            ref={inputRef}
                             placeholder={`Filter ${itemType} types`}
                             value={query}
                         />
