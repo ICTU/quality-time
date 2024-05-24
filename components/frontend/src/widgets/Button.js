@@ -36,6 +36,47 @@ FilterCheckbox.propTypes = {
     setFilter: func,
 }
 
+function FilterCheckboxes({
+    itemType,
+    allowHidingUnsupportedItems,
+    showUnsupportedItems,
+    setShowUnsupportedItems,
+    allowHidingUsedItems,
+    hideUsedItems,
+    setHideUsedItems,
+}) {
+    if (!allowHidingUnsupportedItems && !allowHidingUsedItems) {
+        return null
+    }
+    return (
+        <span style={{ paddingRight: "12px" }}>
+            {allowHidingUnsupportedItems && (
+                <FilterCheckbox
+                    label={`Select from all ${itemType} types`}
+                    filter={showUnsupportedItems}
+                    setFilter={setShowUnsupportedItems}
+                />
+            )}
+            {allowHidingUsedItems && (
+                <FilterCheckbox
+                    label={`Hide ${itemType} types already used`}
+                    filter={hideUsedItems}
+                    setFilter={setHideUsedItems}
+                />
+            )}
+        </span>
+    )
+}
+FilterCheckboxes.propTypes = {
+    itemType: string,
+    allowHidingUnsupportedItems: bool,
+    showUnsupportedItems: bool,
+    setShowUnsupportedItems: func,
+    allowHidingUsedItems: bool,
+    hideUsedItems: bool,
+    setHideUsedItems: func,
+}
+
 export function ActionButton(props) {
     const { action, disabled, icon, itemType, floated, fluid, popup, position, ...other } = props
     const label = `${action} ${itemType}`
@@ -86,7 +127,6 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
                     basic
                     className="button icon primary"
                     floating
-                    //onBlur={() => setQuery("")}
                     onClose={() => setMenuOpen(false)}
                     onKeyDown={(event) => {
                         if (!menuOpen) {
@@ -155,20 +195,15 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
                             placeholder={`Filter ${itemType} types`}
                             value={query}
                         />
-                        {allItemSubtypes?.length > 0 && (
-                            <FilterCheckbox
-                                label={`Select from all ${itemType} types`}
-                                filter={showUnsupportedItems}
-                                setFilter={setShowUnsupportedItems}
-                            />
-                        )}
-                        {usedItemSubtypeKeys?.length > 0 && (
-                            <FilterCheckbox
-                                label={`Hide ${itemType} types already used`}
-                                filter={hideUsedItems}
-                                setFilter={setHideUsedItems}
-                            />
-                        )}
+                        <FilterCheckboxes
+                            itemType={itemType}
+                            allowHidingUnsupportedItems={allItemSubtypes?.length > 0}
+                            showUnsupportedItems={showUnsupportedItems}
+                            setShowUnsupportedItems={setShowUnsupportedItems}
+                            allowHidingUsedItems={usedItemSubtypeKeys?.length > 0}
+                            hideUsedItems={hideUsedItems}
+                            setHideUsedItems={setHideUsedItems}
+                        />
                         <Dropdown.Menu scrolling>
                             {options.map((option, index) => (
                                 <Dropdown.Item
