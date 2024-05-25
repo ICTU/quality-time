@@ -72,7 +72,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             hotspots = []
         return SourceMeasurement(
             value=str(int(vulnerabilities.value or 0) + len(hotspots)),
-            entities=vulnerabilities.entities + hotspots,
+            entities=vulnerabilities.get_entities() + hotspots,
         )
 
     def __include_hotspot(self, hotspot: dict[str, str]) -> bool:
