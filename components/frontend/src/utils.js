@@ -8,6 +8,7 @@ import {
     metricsToHidePropType,
     reportPropType,
     reportsPropType,
+    scalePropType,
     stringsPropType,
 } from "./sharedPropTypes"
 import { HyperLink } from "./widgets/HyperLink"
@@ -320,6 +321,21 @@ export function scaled_number(number) {
     const scale = ["", "k", "m"]
     const exponent = Math.floor(Math.log(number) / Math.log(1000))
     return (number / Math.pow(1000, exponent)).toFixed(0) + scale[exponent]
+}
+
+export function formatMetricValue(scale, value) {
+    if (value === "?") {
+        return value
+    }
+    if (scale === "count") {
+        const number = Math.round(Number(value))
+        return number.toLocaleString(undefined, { useGrouping: true })
+    }
+    return value
+}
+formatMetricValue.propTypes = {
+    scale: scalePropType,
+    value: string,
 }
 
 export function formatMetricScale(metric, dataModel) {

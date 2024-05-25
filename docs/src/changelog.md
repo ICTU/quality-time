@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 - In the dropdown of the "Add metric" button, keep the two checkboxes next to each other regardless of the width of the menu. Fixes [#8745](https://github.com/ICTU/quality-time/issues/8745).
 
+### Added
+
+- Group digits in numbers. Closes [#8076](https://github.com/ICTU/quality-time/issues/8076).
+
 ## v5.13.0 - 2024-05-23
 
 ### Deployment notes
