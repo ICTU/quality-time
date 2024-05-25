@@ -13,7 +13,7 @@ from shared.utils.type import MetricId
 
 # Projection options
 NO_ID = {"_id": False}
-NO_SOURCE_DETAILS = NO_ID | {"sources.entities": False, "sources.entity_user_data": False}
+NO_SOURCE_DETAILS = NO_ID | {"sources.entities": False}
 NO_MEASUREMENT_DETAILS = NO_SOURCE_DETAILS | {"issue_status": False}
 
 # Sort optins

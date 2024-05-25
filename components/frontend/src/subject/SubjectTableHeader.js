@@ -64,9 +64,9 @@ const measurementHelp = (
     <>
         <p>The latest measurement value. Metrics are measured periodically.</p>
         <p>
-            If the measurement value is &lsquo?&rsquo, no sources have been configured for the metric yet or the
-            measurement data could not be collected. Expand the metric (click <Icon fitted name="triangle right" />) and
-            navigate to the sources tab to add sources or see the error details.
+            If the measurement value is ?, no sources have been configured for the metric yet or the measurement data
+            could not be collected. Expand the metric (click <Icon fitted name="triangle right" />) and navigate to the
+            sources tab to add sources or see the error details.
         </p>
         <p>
             If the measurement value has a{" "}
@@ -75,6 +75,12 @@ const measurementHelp = (
             </Label>
             , the metric has not been measured recently. This indicates a problem with <em>Quality-time</em> itself, and
             a system administrator should be notified.
+        </p>
+        <p>
+            If there is a <Icon name="hide" /> before the measurement value, it means one or more measurement entities
+            are being ignored. Hover over the measurement value to see how many entities are ignored. Expand the metric
+            (click <Icon fitted name="triangle right" />) and navigate to the entities tab to see why individual
+            entities are ignored.
         </p>
         <p>Hover over the measurement value to see when the metric was last measured.</p>
         <p>Click the column header to sort the metrics by measurement value.</p>

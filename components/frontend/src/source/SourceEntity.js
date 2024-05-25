@@ -7,7 +7,7 @@ import { Table } from "semantic-ui-react"
 import { entityAttributesPropType, entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
-import { SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
+import { IGNORABLE_SOURCE_ENTITY_STATUSES, SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
 import { alignment } from "./SourceEntities"
 import { SourceEntityAttribute } from "./SourceEntityAttribute"
 import { SourceEntityDetails } from "./SourceEntityDetails"
@@ -18,7 +18,7 @@ function entityCanBeIgnored(status, statusEndDateString) {
     if (statusEndDate < now) {
         return false
     }
-    return ["wont_fix", "fixed", "false_positive"].includes(status)
+    return IGNORABLE_SOURCE_ENTITY_STATUSES.includes(status)
 }
 entityCanBeIgnored.propTypes = {
     status: entityStatusPropType,
