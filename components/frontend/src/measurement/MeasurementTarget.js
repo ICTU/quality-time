@@ -7,7 +7,9 @@ import {
     formatMetricDirection,
     formatMetricScale,
     formatMetricScaleAndUnit,
+    formatMetricValue,
     get_metric_target,
+    getMetricScale,
     isValidDate_YYYYMMDD,
 } from "../utils"
 
@@ -42,7 +44,8 @@ export function MeasurementTarget({ metric }) {
         return null
     }
     const metricDirection = formatMetricDirection(metric, dataModel)
-    const target = `${metricDirection} ${get_metric_target(metric)}${formatMetricScale(metric, dataModel)}`
+    const scale = getMetricScale(metric, dataModel)
+    const target = `${metricDirection} ${formatMetricValue(scale, get_metric_target(metric))}${formatMetricScale(metric, dataModel)}`
     if (!metric.accept_debt) {
         return <>{target}</>
     }

@@ -27,6 +27,7 @@ import {
 import {
     formatMetricScale,
     formatMetricScaleAndUnit,
+    formatMetricValue,
     get_metric_name,
     getMetricDirection,
     getMetricScale,
@@ -80,7 +81,7 @@ function deltaDescription(dataModel, metric, scale, delta, improved, oldValue, n
     } else {
         description += `changed`
     }
-    description += ` from ${oldValue} to ${newValue}`
+    description += ` from ${formatMetricValue(scale, oldValue)} to ${formatMetricValue(scale, newValue)}`
     if (scale !== "version_number") {
         const unit = formatMetricScaleAndUnit(metric, dataModel)
         description += `${unit} by ${delta}${unit}`
@@ -100,7 +101,7 @@ deltaDescription.propTypes = {
 function deltaLabel(increased, scale, metricValue, previousValue) {
     let delta = increased ? "+" : "-"
     if (scale !== "version_number") {
-        delta += `${Math.abs(metricValue - previousValue)}`
+        delta += `${formatMetricValue(scale, Math.abs(metricValue - previousValue))}`
     }
     return delta
 }
@@ -184,7 +185,7 @@ function MeasurementCells({ dates, metric, metric_uuid, measurements, settings }
         }
         cells.push(
             <Table.Cell className={status} key={date} textAlign="right">
-                {metricValue}
+                {formatMetricValue(scale, metricValue)}
                 {formatMetricScale(metric, dataModel)}
             </Table.Cell>,
         )

@@ -10,8 +10,15 @@ import { IntegerInput } from "../fields/IntegerInput"
 import { StringInput } from "../fields/StringInput"
 import { StatusIcon } from "../measurement/StatusIcon"
 import { Header, Icon, Popup } from "../semantic_ui_react_wrappers"
-import { childrenPropType, labelPropType, metricPropType, statusPropType } from "../sharedPropTypes"
-import { capitalize, formatMetricDirection, formatMetricScaleAndUnit, getMetricScale, getStatusName } from "../utils"
+import { childrenPropType, labelPropType, metricPropType, scalePropType, statusPropType } from "../sharedPropTypes"
+import {
+    capitalize,
+    formatMetricDirection,
+    formatMetricScaleAndUnit,
+    formatMetricValue,
+    getMetricScale,
+    getStatusName,
+} from "../utils"
 
 function smallerThan(target1, target2) {
     const t1 = target1 ?? `${Number.POSITIVE_INFINITY}`
@@ -73,19 +80,24 @@ BlueSegment.propTypes = {
     unit: string,
 }
 
-function GreenSegment({ direction, target, show, unit }) {
+function GreenSegment({ direction, scale, target, show, unit }) {
     return (
-        <ColoredSegment color="green" show={show} status="target_met">{`${direction} ${target}${unit}`}</ColoredSegment>
+        <ColoredSegment
+            color="green"
+            show={show}
+            status="target_met"
+        >{`${direction} ${formatMetricValue(scale, target)}${unit}`}</ColoredSegment>
     )
 }
 GreenSegment.propTypes = {
     direction: oneOf(["≦", "≧"]),
+    scale: scalePropType,
     target: string,
     show: bool,
     unit: string,
 }
 
-function RedSegment({ direction, target, show, unit }) {
+function RedSegment({ direction, scale, target, show, unit }) {
     if (direction === "<" && target === "0") {
         return null
     }
@@ -94,33 +106,35 @@ function RedSegment({ direction, target, show, unit }) {
             color="red"
             show={show}
             status="target_not_met"
-        >{`${direction} ${target}${unit}`}</ColoredSegment>
+        >{`${direction} ${formatMetricValue(scale, target)}${unit}`}</ColoredSegment>
     )
 }
 RedSegment.propTypes = {
     direction: oneOf(["<", ">"]),
+    scale: scalePropType,
     target: string,
     show: bool,
     unit: string,
 }
 
-function GreySegment({ lowTarget, highTarget, show, unit }) {
+function GreySegment({ lowTarget, highTarget, scale, show, unit }) {
     return (
         <ColoredSegment
             color="grey"
             show={show}
             status="debt_target_met"
-        >{`${lowTarget} - ${highTarget}${unit}`}</ColoredSegment>
+        >{`${formatMetricValue(scale, lowTarget)} - ${formatMetricValue(scale, highTarget)}${unit}`}</ColoredSegment>
     )
 }
 GreySegment.propTypes = {
     lowTarget: string,
     highTarget: string,
+    scale: scalePropType,
     show: bool,
     unit: string,
 }
 
-function YellowSegment({ lowTarget, highTarget, show, unit }) {
+function YellowSegment({ lowTarget, highTarget, scale, show, unit }) {
     if (!smallerThan(lowTarget, highTarget)) {
         return null
     }
@@ -129,12 +143,13 @@ function YellowSegment({ lowTarget, highTarget, show, unit }) {
             color="yellow"
             show={show}
             status="near_target_met"
-        >{`${lowTarget} - ${highTarget}${unit}`}</ColoredSegment>
+        >{`${formatMetricValue(scale, lowTarget)} - ${formatMetricValue(scale, highTarget)}${unit}`}</ColoredSegment>
     )
 }
 YellowSegment.propTypes = {
     lowTarget: string,
     highTarget: string,
+    scale: scalePropType,
     show: bool,
     unit: string,
 }
@@ -161,6 +176,7 @@ function TargetVisualiser({ metric }) {
         )
     }
     const direction = formatMetricDirection(metric, dataModel)
+    const scale = getMetricScale(metric, dataModel)
     const oppositeDirection = { "≦": ">", "≧": "<" }[direction]
     const target = metric.target
     const nearTarget = metric.near_target
@@ -169,16 +185,24 @@ function TargetVisualiser({ metric }) {
     if (direction === "≦") {
         return (
             <ColoredSegments>
-                <GreenSegment direction={direction} target={target} unit={unit} />
-                <GreySegment lowTarget={target} highTarget={debtTarget} unit={unit} show={debtTargetApplies} />
+                <GreenSegment direction={direction} scale={scale} target={target} unit={unit} />
+                <GreySegment
+                    lowTarget={target}
+                    highTarget={debtTarget}
+                    scale={scale}
+                    unit={unit}
+                    show={debtTargetApplies}
+                />
                 <YellowSegment
                     lowTarget={debtTargetApplies ? maxTarget(debtTarget, target) : target}
                     highTarget={nearTarget}
+                    scale={scale}
                     unit={unit}
                 />
                 <RedSegment
                     direction={oppositeDirection}
                     target={debtTargetApplies ? maxTarget(nearTarget, debtTarget) : maxTarget(nearTarget, target)}
+                    scale={scale}
                     unit={unit}
                 />
             </ColoredSegments>
@@ -189,15 +213,23 @@ function TargetVisualiser({ metric }) {
                 <RedSegment
                     direction={oppositeDirection}
                     target={debtTargetApplies ? minTarget(debtTarget, nearTarget) : minTarget(nearTarget, target)}
+                    scale={scale}
                     unit={unit}
                 />
                 <YellowSegment
                     lowTarget={nearTarget}
                     highTarget={debtTargetApplies ? debtTarget : target}
+                    scale={scale}
                     unit={unit}
                 />
-                <GreySegment lowTarget={debtTarget} highTarget={target} unit={unit} show={debtTargetApplies} />
-                <GreenSegment direction={direction} target={target} unit={unit} />
+                <GreySegment
+                    lowTarget={debtTarget}
+                    highTarget={target}
+                    scale={scale}
+                    unit={unit}
+                    show={debtTargetApplies}
+                />
+                <GreenSegment direction={direction} scale={scale} target={target} unit={unit} />
             </ColoredSegments>
         )
     }
@@ -210,11 +242,12 @@ function TargetLabel({ label, metric, position, targetType }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type]
     const defaultTarget = metricType[targetType]
+    const scale = getMetricScale(metric, dataModel)
     const unit = formatMetricScaleAndUnit(metric, dataModel)
     const defaultTargetLabel =
         defaultTarget === metric[targetType] || defaultTarget === undefined
             ? ""
-            : ` (default: ${defaultTarget} ${unit})`
+            : ` (default: ${formatMetricValue(scale, defaultTarget)} ${unit})`
     return (
         <label>
             {label + defaultTargetLabel}{" "}

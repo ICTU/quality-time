@@ -2,8 +2,8 @@ import { render, screen } from "@testing-library/react"
 
 import { SourceEntityAttribute } from "./SourceEntityAttribute"
 
-function renderSourceEntityAttribute(entity, entity_attribute) {
-    return render(<SourceEntityAttribute entity={entity} entity_attribute={entity_attribute} />)
+function renderSourceEntityAttribute(entity, entityAttribute) {
+    return render(<SourceEntityAttribute entity={entity} entityAttribute={entityAttribute} />)
 }
 
 it("renders a short string", () => {

@@ -87,7 +87,7 @@ export function SourceEntity({
                     style={style}
                     textAlign={alignment(entity_attribute.type, entity_attribute.alignment)}
                 >
-                    <SourceEntityAttribute entity={entity} entity_attribute={entity_attribute} />
+                    <SourceEntityAttribute entity={entity} entityAttribute={entity_attribute} />
                 </Table.Cell>
             ))}
         </TableRowWithDetails>
