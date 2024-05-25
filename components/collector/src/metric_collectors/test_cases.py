@@ -66,8 +66,9 @@ class TestCases(MetricCollector):
             source.value = "0"
         # Filter the test cases by test result
         for source in self.test_case_sources(measurement.sources):
+            entities = source.get_entities()
             source.entities = Entities(
-                entity for entity in source.entities if entity["test_result"] in self.test_results_to_count(source)
+                entity for entity in entities if entity["test_result"] in self.test_results_to_count(source)
             )
             source.value = str(len(source.entities))
         return measurement
@@ -75,7 +76,9 @@ class TestCases(MetricCollector):
     def test_cases(self, sources: Sequence[SourceMeasurement]) -> dict[str, Entity]:
         """Return the test cases, indexed by their keys, with test result initialized to untested."""
         test_cases = {
-            entity["issue_key"]: entity for source in self.test_case_sources(sources) for entity in source.entities
+            entity["issue_key"]: entity
+            for source in self.test_case_sources(sources)
+            for entity in source.get_entities()
         }
         for entity in test_cases.values():
             entity.setdefault("test_result", "untested")
@@ -87,7 +90,7 @@ class TestCases(MetricCollector):
 
     def test_report_entities(self, sources: Sequence[SourceMeasurement]) -> list[Entity]:
         """Return the test entities."""
-        return [entity for source in self.test_report_sources(sources) for entity in source.entities]
+        return [entity for source in self.test_report_sources(sources) for entity in source.get_entities()]
 
     def test_report_sources(self, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
         """Return the test report sources."""

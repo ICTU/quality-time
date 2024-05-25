@@ -39,10 +39,10 @@ class ChangeFailureRate(MetricCollector):
                 # Set the values to zero as this metric only counts failed deployments
                 source.total = source.value = "0"
             if self.source_type(source) in self.DEPLOYMENT_SOURCE_TYPES:
-                source.total = str(len(source.entities))
+                source.total = str(len(source.get_entities()))
                 # Only select failed deployments
                 source.entities = Entities(
-                    entity for entity in source.entities if self._include_entity(entity, deployments)
+                    entity for entity in source.get_entities() if self._include_entity(entity, deployments)
                 )
                 source.value = str(len(source.entities))
         return measurement
@@ -61,7 +61,7 @@ class ChangeFailureRate(MetricCollector):
 
     def issue_entities(self, sources: Sequence[SourceMeasurement]) -> Entities:
         """Return the entities from sources of failed deployments."""
-        return Entities(entity for source in self.issue_sources(sources) for entity in source.entities)
+        return Entities(entity for source in self.issue_sources(sources) for entity in source.get_entities())
 
     def deployment_sources(self, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
         """Return the sources of total deployments."""
@@ -69,7 +69,7 @@ class ChangeFailureRate(MetricCollector):
 
     def deployment_entities(self, sources: Sequence[SourceMeasurement]) -> Entities:
         """Return the entities from sources of total deployments."""
-        return Entities(entity for source in self.deployment_sources(sources) for entity in source.entities)
+        return Entities(entity for source in self.deployment_sources(sources) for entity in source.get_entities())
 
     @staticmethod
     def issue_timestamp(issue: Entity) -> datetime:
