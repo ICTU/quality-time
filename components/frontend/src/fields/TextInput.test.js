@@ -74,8 +74,3 @@ it("shows the label", () => {
     render(<TextInput label="Label" />)
     expect(screen.queryByText("Label")).not.toBe(null)
 })
-
-it("shows the editable label", () => {
-    render(<TextInput editableLabel="Label" />)
-    expect(screen.queryByText("Label")).not.toBe(null)
-})

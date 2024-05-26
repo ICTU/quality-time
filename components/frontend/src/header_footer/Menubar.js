@@ -179,13 +179,13 @@ export function Menubar({
                                 event.preventDefault()
                                 setSettingsPanelVisible(!settingsPanelVisible)
                             }}
-                            tabIndex={0}
                         >
                             <Menu.Item
                                 onClick={(event) => {
                                     event.stopPropagation()
                                     setSettingsPanelVisible(!settingsPanelVisible)
                                 }}
+                                tabIndex={0}
                             >
                                 <Icon size="large" name={`caret ${settingsPanelVisible ? "down" : "right"}`} />
                                 Settings
