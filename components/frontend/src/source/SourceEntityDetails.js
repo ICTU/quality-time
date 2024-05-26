@@ -7,7 +7,7 @@ import { DateInput } from "../fields/DateInput"
 import { SingleChoiceInput } from "../fields/SingleChoiceInput"
 import { TextInput } from "../fields/TextInput"
 import { entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
-import { capitalize } from "../utils"
+import { capitalize, getDesiredResponseTime } from "../utils"
 import { LabelWithDate } from "../widgets/LabelWithDate"
 import { source_entity_status_name as status_name } from "./source_entity_status"
 
@@ -27,12 +27,11 @@ entityStatusOption.propTypes = {
 }
 
 function entityStatusOptions(entityType, report) {
-    const desiredResponseTimes = report?.desired_response_times ?? {}
     const unconfirmedSubheader = `This ${entityType} should be reviewed to decide what to do with it.`
-    const confirmedSubheader = `This ${entityType} has been reviewed and should be dealt with within ${desiredResponseTimes["confirmed"]} days.`
-    const fixedSubheader = `Ignore this ${entityType} for ${desiredResponseTimes["fixed"]} days because it has been fixed or will be fixed shortly.`
-    const falsePositiveSubheader = `Ignore this ${entityType} for ${desiredResponseTimes["false_positive"]} days because it's been incorrectly identified as ${entityType}.`
-    const wontFixSubheader = `Ignore this ${entityType} for ${desiredResponseTimes["wont_fix"]} days because it will not be fixed.`
+    const confirmedSubheader = `This ${entityType} has been reviewed and should be addressed within ${getDesiredResponseTime(report, "confirmed")} days.`
+    const fixedSubheader = `Ignore this ${entityType} for ${getDesiredResponseTime(report, "fixed")} days because it has been fixed or will be fixed shortly.`
+    const falsePositiveSubheader = `Ignore this "${entityType}" for ${getDesiredResponseTime(report, "false_positive")} days because it has been incorrectly identified as ${entityType}.`
+    const wontFixSubheader = `Ignore this ${entityType} for ${getDesiredResponseTime(report, "wont_fix")} days because it will not be fixed.`
     return [
         entityStatusOption("unconfirmed", status_name.unconfirmed, "Unconfirm", unconfirmedSubheader),
         entityStatusOption("confirmed", status_name.confirmed, "Confirm", confirmedSubheader),

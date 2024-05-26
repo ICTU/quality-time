@@ -5,7 +5,6 @@ import { delete_report, set_report_attribute } from "../api/report"
 import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { defaultDesiredResponseTimes } from "../defaults"
 import { Comment } from "../fields/Comment"
 import { IntegerInput } from "../fields/IntegerInput"
 import { StringInput } from "../fields/StringInput"
@@ -13,7 +12,7 @@ import { NotificationDestinations } from "../notification/NotificationDestinatio
 import { Label, Segment, Tab } from "../semantic_ui_react_wrappers"
 import { Share } from "../share/Share"
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
-import { STATUS_DESCRIPTION, STATUS_NAME } from "../utils"
+import { getDesiredResponseTime, STATUS_DESCRIPTION, STATUS_NAME } from "../utils"
 import { DeleteButton } from "../widgets/Button"
 import { FocusableTab } from "../widgets/FocusableTab"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
@@ -92,7 +91,7 @@ function ReactionTimes({ reload, report }) {
                                     )
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["unknown"] ?? defaultDesiredResponseTimes["unknown"]}
+                                value={getDesiredResponseTime(report, "unknown")}
                             />
                         </Grid.Column>
                         <Grid.Column>
@@ -116,10 +115,7 @@ function ReactionTimes({ reload, report }) {
                                     )
                                 }}
                                 unit="days"
-                                value={
-                                    desiredResponseTimes["target_not_met"] ??
-                                    defaultDesiredResponseTimes["target_not_met"]
-                                }
+                                value={getDesiredResponseTime(report, "target_not_met")}
                             />
                         </Grid.Column>
                         <Grid.Column>
@@ -143,10 +139,7 @@ function ReactionTimes({ reload, report }) {
                                     )
                                 }}
                                 unit="days"
-                                value={
-                                    desiredResponseTimes["near_target_met"] ??
-                                    defaultDesiredResponseTimes["near_target_met"]
-                                }
+                                value={getDesiredResponseTime(report, "near_target_met")}
                             />
                         </Grid.Column>
                         <Grid.Column>
@@ -171,10 +164,7 @@ function ReactionTimes({ reload, report }) {
                                     )
                                 }}
                                 unit="days"
-                                value={
-                                    desiredResponseTimes["debt_target_met"] ??
-                                    defaultDesiredResponseTimes["debt_target_met"]
-                                }
+                                value={getDesiredResponseTime(report, "debt_target_met")}
                             />
                         </Grid.Column>
                     </Grid.Row>
@@ -207,7 +197,7 @@ function ReactionTimes({ reload, report }) {
                                     )
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["confirmed"] ?? defaultDesiredResponseTimes["confirmed"]}
+                                value={getDesiredResponseTime(report, "confirmed")}
                             />
                         </Grid.Column>
                         <Grid.Column>
@@ -231,7 +221,7 @@ function ReactionTimes({ reload, report }) {
                                     )
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["fixed"] ?? defaultDesiredResponseTimes["fixed"]}
+                                value={getDesiredResponseTime(report, "fixed")}
                             />
                         </Grid.Column>
                         <Grid.Column>
@@ -255,10 +245,7 @@ function ReactionTimes({ reload, report }) {
                                     )
                                 }}
                                 unit="days"
-                                value={
-                                    desiredResponseTimes["false_positive"] ??
-                                    defaultDesiredResponseTimes["false_positive"]
-                                }
+                                value={getDesiredResponseTime(report, "false_positive")}
                             />
                         </Grid.Column>
                         <Grid.Column>
@@ -282,7 +269,7 @@ function ReactionTimes({ reload, report }) {
                                     )
                                 }}
                                 unit="days"
-                                value={desiredResponseTimes["wont_fix"] ?? defaultDesiredResponseTimes["wont_fix"]}
+                                value={getDesiredResponseTime(report, "wont_fix")}
                             />
                         </Grid.Column>
                     </Grid.Row>
