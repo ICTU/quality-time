@@ -26,6 +26,20 @@ function renderSourceEntityDetails() {
     )
 }
 
+it("shows the default desired response times when the report has no desired response times", () => {
+    renderSourceEntityDetails()
+    fireEvent.click(screen.getByText(/Unconfirmed/))
+    const expectedMenuItemDescriptions = [
+        "This violation has been reviewed and should be addressed within 180 days.",
+        "Ignore this violation for 7 days because it has been fixed or will be fixed shortly.",
+        'Ignore this "violation" for 180 days because it has been incorrectly identified as violation.',
+        "Ignore this violation for 180 days because it will not be fixed.",
+    ]
+    expectedMenuItemDescriptions.forEach((description) => {
+        expect(screen.queryAllByText(description).length).toBe(1)
+    })
+})
+
 it("changes the entity status", () => {
     source.set_source_entity_attribute = jest.fn()
     renderSourceEntityDetails()

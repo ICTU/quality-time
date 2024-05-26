@@ -96,7 +96,7 @@ export function getMetricResponseDeadline(metric, report) {
         }
     } else if (status in defaultDesiredResponseTimes && metric.status_start) {
         deadline = new Date(metric.status_start)
-        deadline.setDate(deadline.getDate() + getMetricDesiredResponseTime(report, status))
+        deadline.setDate(deadline.getDate() + getDesiredResponseTime(report, status))
     }
     return deadline
 }
@@ -132,7 +132,7 @@ export function getMetricResponseOverrun(metric_uuid, metric, report, measuremen
     consolidatedMeasurements.forEach((measurement) => {
         const status = measurement?.[scale]?.status || "unknown"
         if (status in defaultDesiredResponseTimes) {
-            const desiredResponseTime = getMetricDesiredResponseTime(report, status) * MILLISECONDS_PER_DAY
+            const desiredResponseTime = getDesiredResponseTime(report, status) * MILLISECONDS_PER_DAY
             const actualResponseTime = new Date(measurement.end).getTime() - new Date(measurement.start).getTime()
             const overrun = Math.max(0, actualResponseTime - desiredResponseTime)
             if (overrun > 0) {
@@ -151,7 +151,7 @@ export function getMetricResponseOverrun(metric_uuid, metric, report, measuremen
     return { totalOverrun: days(totalOverrun), overruns: overruns }
 }
 
-function getMetricDesiredResponseTime(report, status) {
+export function getDesiredResponseTime(report, status) {
     // Precondition: status is a key of defaultDesiredResponseTimes
     return report?.desired_response_times?.[status] ?? defaultDesiredResponseTimes[status]
 }
