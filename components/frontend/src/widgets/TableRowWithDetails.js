@@ -1,6 +1,8 @@
+import "./TableRowWithDetails.css"
+
 import { bool, func, object } from "prop-types"
 
-import { Icon, Table } from "../semantic_ui_react_wrappers"
+import { Button, Icon, Table } from "../semantic_ui_react_wrappers"
 import { childrenPropType } from "../sharedPropTypes"
 
 export function TableRowWithDetails(props) {
@@ -8,20 +10,14 @@ export function TableRowWithDetails(props) {
     return (
         <>
             <Table.Row {...otherProps}>
-                <Table.Cell
-                    aria-label="Expand/collapse"
-                    collapsing
-                    onClick={() => onExpand(!expanded)}
-                    onKeyPress={(event) => {
-                        event.preventDefault()
-                        onExpand(!expanded)
-                    }}
-                    tabIndex="0"
-                    textAlign="center"
-                    style={style}
-                    role="button"
-                >
-                    <Icon size="large" name={expanded ? "caret down" : "caret right"} />
+                <Table.Cell collapsing textAlign="center" style={style}>
+                    <Button
+                        aria-label="Expand/collapse"
+                        basic
+                        className="expandcollapse"
+                        icon={<Icon name={expanded ? "caret down" : "caret right"} size="large" />}
+                        onClick={() => onExpand(!expanded)}
+                    />
                 </Table.Cell>
                 {children}
             </Table.Row>

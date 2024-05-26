@@ -19,7 +19,7 @@ ReadOnlyTextInput.propTypes = {
 }
 
 function EditableTextInput(props) {
-    let { editableLabel, label, required, set_value, ...otherProps } = props
+    let { label, required, set_value, ...otherProps } = props
     const initialValue = props.value || ""
     const [text, setText] = useState(initialValue)
 
@@ -44,7 +44,7 @@ function EditableTextInput(props) {
             <Form.TextArea
                 {...otherProps}
                 error={required && text === ""}
-                label={editableLabel || label}
+                label={label}
                 onBlur={submit}
                 onChange={(event) => setText(event.target.value)}
                 onKeyDown={onKeyDown}
@@ -55,7 +55,6 @@ function EditableTextInput(props) {
     )
 }
 EditableTextInput.propTypes = {
-    editableLabel: labelPropType,
     label: labelPropType,
     required: bool,
     set_value: func,
