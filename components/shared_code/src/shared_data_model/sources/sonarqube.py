@@ -25,29 +25,34 @@ class Lines(StrEnum):
 
 
 def violation_entity_attributes(
-    include_review_priority=False,
-    include_resolution=False,
-    include_rationale=False,
-    include_status=False,
+    include_security_warning_attributes=False,
+    include_suppressed_violation_attributes=False,
 ) -> list[EntityAttribute]:
     """Return the violation entity attributes."""
     attributes = [
         EntityAttribute(name="Message"),
         EntityAttribute(
-            name="Severity",
-            color={"blocker": Color.NEGATIVE, "critical": Color.NEGATIVE, "major": Color.WARNING},
+            name="Impact",
+            key="impacts",
+            color={
+                "high impact on maintainability": Color.NEGATIVE,
+                "high impact on reliability": Color.NEGATIVE,
+                "high impact on security": Color.NEGATIVE,
+                "medium impact on maintainability": Color.WARNING,
+                "medium impact on reliability": Color.WARNING,
+                "medium impact on security": Color.WARNING,
+            },
         ),
+        EntityAttribute(name="Clean code attribute", key="clean_code_attribute_category"),
     ]
-    if include_review_priority:
+    if include_security_warning_attributes:
+        attributes.append(EntityAttribute(name="Warning type", key="security_type"))
+        attributes.append(EntityAttribute(name="Hotspot status"))
         attributes.append(
             EntityAttribute(name="Review priority", color={"high": Color.NEGATIVE, "medium": Color.WARNING}),
         )
-    attributes.append(EntityAttribute(name="Warning type", key="type"))
-    if include_status:
-        attributes.append(EntityAttribute(name="Hotspot status"))
-    if include_resolution:
+    if include_suppressed_violation_attributes:
         attributes.append(EntityAttribute(name="Resolution"))
-    if include_rationale:
         attributes.append(EntityAttribute(name="Rationale"))
     attributes.extend(
         [
@@ -81,14 +86,16 @@ PROJECT_METRICS = [
 
 ALL_SONARQUBE_METRICS = sorted([*PROJECT_METRICS, "source_version"], key=str)
 
-
 VIOLATION_ENTITY = Entity(name="violation", attributes=violation_entity_attributes())
+
+ISSUE_SECURITY_TYPE = "issue with security impact"
 
 SONARQUBE = Source(
     name="SonarQube",
     description="SonarQube is an open-source platform for continuous inspection of code quality to perform automatic "
     "reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming "
     "languages.",
+    supported_versions_description=">=10.2",
     url=HttpUrl("https://www.sonarqube.org"),
     configuration={
         "commented_out_rules": Configuration(
@@ -352,16 +359,32 @@ SONARQUBE = Source(
             metrics=["loc"],
         ),
         "test_result": TestResult(values=["errored", "failed", "passed", "skipped"]),
-        "severities": Severities(
-            help_url=HttpUrl("https://docs.sonarqube.org/latest/user-guide/issues/"),
-            values=["info", "minor", "major", "critical", "blocker"],
+        "impact_severities": Severities(
+            name="Impact severities",
+            placeholder="all impact severities",
+            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube/latest/user-guide/issues/#issue-severity"),
+            values=["low", "medium", "high"],
             metrics=["security_warnings", "suppressed_violations", "violations"],
+        ),
+        "impacted_software_qualities": MultipleChoiceParameter(
+            name="Impacted software qualities",
+            placeholder="all impacted software qualities",
+            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube/latest/user-guide/clean-code/software-qualities/"),
+            values=["maintainability", "reliability", "security"],
+            metrics=["suppressed_violations", "violations"],
+        ),
+        "clean_code_attribute_categories": MultipleChoiceParameter(
+            name="Clean code attribute categories",
+            placeholder="all clean code attribute categories",
+            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube/latest/user-guide/clean-code/definition/"),
+            values=["adaptable", "consistent", "intentional", "responsible"],
+            metrics=["suppressed_violations", "violations"],
         ),
         "hotspot_statuses": MultipleChoiceParameter(
             name="Security hotspot statuses",
             short_name="hotspot statuses",
             help_url=HttpUrl("https://docs.sonarqube.org/latest/user-guide/security-hotspots/"),
-            placeholder="all hotspot statuses",
+            placeholder="acknowledged, to review",
             values=["to review", "acknowledged", "safe", "fixed"],
             default_value=["to review", "acknowledged"],
             metrics=["security_warnings"],
@@ -391,20 +414,12 @@ SONARQUBE = Source(
             },
             metrics=["remediation_effort"],
         ),
-        "types": MultipleChoiceParameter(
-            name="Types",
-            placeholder="all violation types",
-            help_url=HttpUrl("https://docs.sonarqube.org/latest/user-guide/rules/"),
-            values=["code_smell", "bug", "vulnerability"],
-            metrics=["suppressed_violations", "violations"],
-        ),
         "security_types": MultipleChoiceParameter(
-            name="Security issue types (measuring security hotspots requires SonarQube 8.2 or newer)",
-            short_name="types",
-            placeholder="vulnerability",
+            name="Security issue types",
+            placeholder=ISSUE_SECURITY_TYPE,
             help_url=HttpUrl("https://docs.sonarqube.org/latest/user-guide/rules/"),
-            default_value=["vulnerability"],
-            values=["security_hotspot", "vulnerability"],
+            default_value=[ISSUE_SECURITY_TYPE],
+            values=["security hotspot", ISSUE_SECURITY_TYPE],
             metrics=["security_warnings"],
         ),
         "tags": MultipleChoiceWithAdditionParameter(
@@ -441,11 +456,11 @@ SONARQUBE = Source(
         ),
         "security_warnings": Entity(
             name="security warning",
-            attributes=violation_entity_attributes(include_review_priority=True, include_status=True),
+            attributes=violation_entity_attributes(include_security_warning_attributes=True),
         ),
         "suppressed_violations": Entity(
             name="violation",
-            attributes=violation_entity_attributes(include_resolution=True, include_rationale=True),
+            attributes=violation_entity_attributes(include_suppressed_violation_attributes=True),
         ),
         "todo_and_fixme_comments": VIOLATION_ENTITY,
         "violations": VIOLATION_ENTITY,

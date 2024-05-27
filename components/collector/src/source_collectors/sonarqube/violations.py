@@ -14,7 +14,6 @@ class SonarQubeViolations(SonarQubeCollector):
     """SonarQube violations metric. Also base class for metrics that measure specific rules."""
 
     rules_configuration = ""  # Subclass responsibility
-    types_parameter = "types"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the issues path and parameters."""
@@ -22,13 +21,7 @@ class SonarQubeViolations(SonarQubeCollector):
         component = self._parameter("component")
         branch = self._parameter("branch")
         landing_url = f"{url}/project/issues?id={component}&branch={branch}&resolved=false"
-        return URL(
-            landing_url
-            + self._query_parameter("severities", uppercase=True)
-            + self._query_parameter("tags")
-            + self._query_parameter(self.types_parameter, uppercase=True)
-            + self.__rules_url_parameter(),
-        )
+        return URL(landing_url + self._url_parameters())
 
     async def _api_url(self) -> URL:
         """Extend to add the issue search path and parameters."""
@@ -37,13 +30,17 @@ class SonarQubeViolations(SonarQubeCollector):
         branch = self._parameter("branch")
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 100 currently).
-        api = f"{url}/api/issues/search?componentKeys={component}&branch={branch}&resolved=false&ps=500"
-        return URL(
-            api
-            + self._query_parameter("severities", uppercase=True)
+        api = f"{url}/api/issues/search?componentKeys={component}&branch={branch}&resolved=false&ps={self.PAGE_SIZE}"
+        return URL(api + self._url_parameters())
+
+    def _url_parameters(self) -> str:
+        """Return the parameters common to the API URL and the landing URL."""
+        return (
+            self._query_parameter("impact_severities", uppercase=True)
+            + self._query_parameter("impacted_software_qualities", uppercase=True)
+            + self._query_parameter("clean_code_attribute_categories", uppercase=True)
             + self._query_parameter("tags")
-            + self._query_parameter(self.types_parameter, uppercase=True)
-            + self.__rules_url_parameter(),
+            + self.__rules_url_parameter()
         )
 
     def _query_parameter(self, parameter_key: str, uppercase: bool = False) -> str:
@@ -51,7 +48,13 @@ class SonarQubeViolations(SonarQubeCollector):
         parameter_value = ",".join(sorted(cast(list[str], self._parameter(parameter_key))))
         if uppercase:
             parameter_value = parameter_value.upper()
-        return "" if parameter_value == self.__default_value(parameter_key) else f"&{parameter_key}={parameter_value}"
+        quality_time_parameter_to_sonarqube_query_parameter_mapping = {
+            "impact_severities": "impactSeverities",
+            "impacted_software_qualities": "impactSoftwareQualities",
+            "clean_code_attribute_categories": "cleanCodeAttributeCategories",
+        }
+        query_parameter = quality_time_parameter_to_sonarqube_query_parameter_mapping.get(parameter_key, parameter_key)
+        return "" if parameter_value == self.__default_value(parameter_key) else f"&{query_parameter}={parameter_value}"
 
     def __rules_url_parameter(self) -> str:
         """Return the rules url parameter, if any."""
@@ -81,12 +84,15 @@ class SonarQubeViolations(SonarQubeCollector):
 
     async def _entity(self, issue) -> Entity:
         """Create an entity from an issue."""
+        impacts = [
+            f"{impact['severity']} impact on {impact['softwareQuality']}".lower() for impact in issue.get("impacts", [])
+        ]
         return Entity(
             key=issue["key"],
             url=await self.__issue_landing_url(issue["key"]),
             message=issue["message"],
-            severity=issue.get("severity", "no severity").lower(),
-            type=issue["type"].lower(),
+            impacts=", ".join(impacts),
+            clean_code_attribute_category=issue["cleanCodeAttributeCategory"].lower(),
             component=issue["component"],
             creation_date=issue["creationDate"],
             update_date=issue["updateDate"],

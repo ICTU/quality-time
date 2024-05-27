@@ -20,6 +20,7 @@ def perform_migrations(database: Database) -> None:
                 change_accessibility_violation_metrics_to_violations(report),
                 fix_branch_parameters_without_value(report),
                 change_ci_subject_types_to_development_environment(report),
+                change_sonarqube_parameters(report),
             ]
         ):
             change_description = " and to ".join([change for change in changes if change])
@@ -118,6 +119,76 @@ def add_source_parameter_hash_to_latest_measurement(database: Database, report) 
             replace_document(database.measurements, latest_measurement)
             count += 1
     return count
+
+
+def change_sonarqube_parameters(report) -> str:
+    """Replace the SonarQube parameters to adapt to the new (SonarQube 10.2) issue structure.
+
+    Return a description of the change, if any.
+    """
+    # Added after Quality-time v5.13.0, see https://github.com/ICTU/quality-time/issues/8354
+    if change_sonarqube_severities(report) or change_sonarqube_types(report) or change_sonarqube_security_types(report):
+        return "change the SonarQube parameters"
+    return ""
+
+
+def change_sonarqube_severities(report) -> bool:
+    """Change the SonarQube severities parameter to the new values and rename it to impact_severities."""
+    # Severity mapping conform https://docs.sonarsource.com/sonarqube/latest/user-guide/issues/#severity-mapping:
+    value_mapping = {"blocker": "high", "critical": "high", "major": "medium", "minor": "low", "info": "low"}
+    metric_types = ("security_warnings", "suppressed_violations", "violations")
+    return change_sonarqube_parameter(report, metric_types, "severities", "impact_severities", value_mapping)
+
+
+def change_sonarqube_types(report) -> bool:
+    """Change the SonarQube types parameter to the new values and rename it to impacted_software_qualities."""
+    value_mapping = {"bug": "reliability", "vulnerability": "security", "code_smell": "maintainability"}
+    metric_types = ("suppressed_violations", "violations")
+    return change_sonarqube_parameter(report, metric_types, "types", "impacted_software_qualities", value_mapping)
+
+
+def change_sonarqube_security_types(report) -> bool:
+    """Change the SonarQube security types parameter to the new values."""
+    value_mapping = {"security_hotspot": "security hotspot", "vulnerability": "issue with security impact"}
+    metric_types = ("security_warnings",)
+    return change_sonarqube_parameter(report, metric_types, "security_types", "security_types", value_mapping)
+
+
+def change_sonarqube_parameter(
+    report, metric_types: Sequence[str], old_parameter_name: str, new_parameter_name: str, value_mapping: dict[str, str]
+) -> bool:
+    """Change the values of the specified parameter. Also rename the parameter if the old and new name differ."""
+    changed = False
+    for source in sources(report, metric_types=metric_types, source_type="sonarqube", parameter=old_parameter_name):
+        old_values = source["parameters"][old_parameter_name]
+        log_unknown_parameter_values(value_mapping, old_values, old_parameter_name, report)
+        if new_values := new_parameter_values(value_mapping, old_values):
+            source["parameters"][new_parameter_name] = new_values
+            changed = True
+        if new_parameter_name != old_parameter_name:
+            del source["parameters"][old_parameter_name]
+            changed = True
+    return changed
+
+
+def log_unknown_parameter_values(value_mapping: dict[str, str], old_values: list[str], value_type: str, report) -> None:
+    """Log old parameter values that do not exist in the mapping."""
+    if unknown_values := [old_value for old_value in old_values if old_value not in value_mapping]:
+        message = "Ignoring one or more unknown SonarQube parameter values of type '%s' in report %s: %s"
+        logging.warning(message, value_type, report["report_uuid"], ", ".join(unknown_values))
+
+
+def new_parameter_values(value_mapping: dict[str, str], old_values: list[str]) -> list[str]:
+    """Return the new values for each of the old values that exist in the mapping."""
+    return sorted({value_mapping[old_value] for old_value in old_values if old_value in value_mapping})
+
+
+def sources(report, metric_types: Sequence[str], source_type: str, parameter: str):
+    """Yield the sources in the report, filtered by metric type, source type, and parameter."""
+    for metric in metrics(report, metric_types):
+        for source in metric.get("sources", {}).values():
+            if source["type"] == source_type and parameter in source["parameters"]:
+                yield source
 
 
 def metrics(report, metric_types: Sequence[str] | None = None):

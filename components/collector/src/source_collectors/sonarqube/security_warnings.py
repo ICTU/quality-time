@@ -9,27 +9,19 @@ from .violations import SonarQubeViolations
 
 
 class SonarQubeSecurityWarnings(SonarQubeViolations):
-    """SonarQube security warnings. The security warnings are a sum of the vulnerabilities and security hotspots."""
-
-    types_parameter = "security_types"
+    """SonarQube security warnings, which are a combination of issues with security impact and security hotspots."""
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to return the correct landing url depending on the selected security types."""
-        security_types = self._parameter(self.types_parameter)
         base_landing_url = await SourceCollector._landing_url(self, responses)  # noqa: SLF001
         component = self._parameter("component")
         branch = self._parameter("branch")
         common_url_parameters, extra_url_parameters = f"?id={component}&branch={branch}", ""
-        if "vulnerability" in security_types and "security_hotspot" in security_types:
+        if self.__issues_with_security_impact_selected() and self.__security_hotspots_selected():
             landing_path = "dashboard"
-        elif "vulnerability" in security_types:
+        elif self.__issues_with_security_impact_selected():
             landing_path = "project/issues"
-            # We don't use self._query_parameter() for the types parameter because when we get here,
-            # the value of the types parameter is fixed
-            extra_url_parameters = (
-                f"{self._query_parameter('severities', uppercase=True)}&resolved=false&types=VULNERABILITY"
-                f"{self._query_parameter('tags')}"
-            )
+            extra_url_parameters = f"&resolved=false{self._url_parameters()}"
         else:
             landing_path = "project/security_hotspots"
         return URL(f"{base_landing_url}/{landing_path}{common_url_parameters}{extra_url_parameters}")
@@ -37,31 +29,39 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to add urls for the selected security types."""
         api_urls = []
-        security_types = self._parameter(self.types_parameter)
         component = self._parameter("component")
         branch = self._parameter("branch")
-        base_url = await SonarQubeCollector._api_url(self)  # noqa: SLF001
-        if "vulnerability" in security_types:
+        if self.__issues_with_security_impact_selected():
+            api_urls.append(await super()._api_url())
+        if self.__security_hotspots_selected():
+            base_url = await SonarQubeCollector._api_url(self)  # noqa: SLF001
             api_urls.append(
-                URL(
-                    f"{base_url}/api/issues/search?componentKeys={component}&resolved=false&ps=500"
-                    f"{self._query_parameter('severities', uppercase=True)}&branch={branch}&types=VULNERABILITY"
-                    f"{self._query_parameter('tags')}",
-                ),
+                URL(f"{base_url}/api/hotspots/search?projectKey={component}&branch={branch}&ps={self.PAGE_SIZE}")
             )
-        if "security_hotspot" in security_types:
-            api_urls.append(URL(f"{base_url}/api/hotspots/search?projectKey={component}&branch={branch}&ps=500"))
         return await super()._get_source_responses(*api_urls)
+
+    def _url_parameters(self) -> str:
+        """Override to return parameters needed for issues with security impact, common to API URL and landing URL."""
+        return (
+            self._query_parameter("impact_severities", uppercase=True)
+            + "&impactSoftwareQualities=SECURITY"
+            + self._query_parameter("tags")
+        )
+
+    async def _entity(self, issue) -> Entity:
+        """Extend to set the entity security type."""
+        entity = await super()._entity(issue)
+        entity["security_type"] = "issue with security impact"
+        return entity
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the selected security types."""
-        security_types = self._parameter(self.types_parameter)
         vulnerabilities = (
             await super()._parse_source_responses(SourceResponses(responses=[responses[0]]))
-            if "vulnerability" in security_types
+            if self.__issues_with_security_impact_selected()
             else SourceMeasurement()
         )
-        if "security_hotspot" in security_types:
+        if self.__security_hotspots_selected():
             json = await responses[-1].json()
             hotspots = [
                 await self.__hotspot_entity(hotspot)
@@ -89,7 +89,7 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             key=hotspot["key"],
             component=hotspot["component"],
             message=hotspot["message"],
-            type="security_hotspot",
+            security_type="security hotspot",
             url=await self.__hotspot_landing_url(hotspot["key"]),
             review_priority=hotspot["vulnerabilityProbability"].lower(),
             creation_date=hotspot["creationDate"],
@@ -113,3 +113,11 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
         component = self._parameter("component")
         branch = self._parameter("branch")
         return URL(f"{url}/security_hotspots?id={component}&branch={branch}&hotspots={hotspot_key}")
+
+    def __issues_with_security_impact_selected(self) -> bool:
+        """Return whether the user selected issues with security impact."""
+        return "issue with security impact" in self._parameter("security_types")
+
+    def __security_hotspots_selected(self) -> bool:
+        """Return whether the user selected security hotspots."""
+        return "security hotspot" in self._parameter("security_types")

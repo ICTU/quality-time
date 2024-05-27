@@ -23,9 +23,10 @@ class SonarQubeTestCase(SourceCollectorTestCase):
     def entity(  # noqa: PLR0913
         key: str,
         component: str,
-        entity_type: str,
         message: str,
-        severity: str | None = None,
+        security_type: str | None = None,
+        impacts: str | None = None,
+        clean_code_attribute_category: str | None = None,
         resolution: str | None = None,
         rationale: str | None = None,
         review_priority: str | None = None,
@@ -37,20 +38,23 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         """Create an entity."""
         url = (
             f"https://sonarqube/security_hotspots?id=id&branch=main&hotspots={key}"
-            if entity_type == "security_hotspot"
+            if security_type == "security hotspot"
             else f"https://sonarqube/project/issues?id=id&branch=main&issues={key}&open={key}"
         )
         entity = Entity(
             key=key,
             component=component,
-            type=entity_type,
             message=message,
             url=url,
             creation_date=creation_date,
             update_date=update_date,
         )
-        if severity is not None:
-            entity["severity"] = severity
+        if security_type is not None:
+            entity["security_type"] = security_type
+        if impacts is not None:
+            entity["impacts"] = impacts
+        if clean_code_attribute_category is not None:
+            entity["clean_code_attribute_category"] = clean_code_attribute_category
         if resolution is not None:
             entity["resolution"] = resolution
         if rationale is not None:

@@ -2,7 +2,7 @@
 
 from initialization.migrations import perform_migrations
 
-from tests.base import DataModelTestCase
+from tests.base import DataModelTestCase, disable_logging
 from tests.fixtures import SourceId, REPORT_ID, SUBJECT_ID, METRIC_ID, METRIC_ID2, METRIC_ID3, SOURCE_ID, SOURCE_ID2
 
 
@@ -222,3 +222,94 @@ class CIEnvironmentTest(MigrationTestCase):
         perform_migrations(self.database)
         inserted_report = self.inserted_report(subject_name="CI", subject_description="My CI")
         self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
+
+
+class SonarQubeParameterTest(MigrationTestCase):
+    """Unit tests for the SonarQube parameter database migration."""
+
+    def existing_report(
+        self,
+        metric_type: str = "violations",
+        sources: dict[SourceId, dict[str, str | dict[str, str | list[str]]]] | None = None,
+    ):
+        """Extend to add sources."""
+        report = super().existing_report(metric_type=metric_type)
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = sources
+        return report
+
+    def sources(self, source_type: str = "sonarqube", **parameters):
+        """Create the sources fixture."""
+        return {SOURCE_ID: {"type": source_type, "parameters": {"branch": "main", **parameters}}}
+
+    def test_report_without_severity_or_types_parameter(self):
+        """Test that the migration succeeds when the SonarQube source has no severity or types parameter."""
+        self.database.reports.find.return_value = [self.existing_report(sources=self.sources())]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_report_with_violation_metric_but_no_sonarqube(self):
+        """Test that the migration succeeds when a violations metric has no SonarQube sources."""
+        self.database.reports.find.return_value = [self.existing_report(sources=self.sources("sarif"))]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_report_with_severity_parameter(self):
+        """Test that the migration succeeds when the SonarQube source has a severity parameter."""
+        self.database.reports.find.return_value = [self.existing_report(sources=self.sources(severities=["info"]))]
+        perform_migrations(self.database)
+        inserted_report = self.inserted_report(sources=self.sources(impact_severities=["low"]))
+        self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
+
+    def test_report_with_multiple_old_severity_values_that_map_to_the_same_new_value(self):
+        """Test a severity parameter with multiple old values that map to the same new value."""
+        reports = [self.existing_report(sources=self.sources(severities=["info", "minor"]))]
+        self.database.reports.find.return_value = reports
+        perform_migrations(self.database)
+        inserted_report = self.inserted_report(sources=self.sources(impact_severities=["low"]))
+        self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
+
+    @disable_logging
+    def test_report_with_unknown_old_severity_values(self):
+        """Test that unknown severity parameter values are ignored."""
+        sources = self.sources(severities=["info", ""])
+        sources[SOURCE_ID2] = {"type": "sonarqube", "parameters": {"branch": "main", "severities": ["foo"]}}
+        self.database.reports.find.return_value = [self.existing_report(sources=sources)]
+        perform_migrations(self.database)
+        inserted_sources = self.sources(impact_severities=["low"])
+        inserted_sources[SOURCE_ID2] = {"type": "sonarqube", "parameters": {"branch": "main"}}
+        inserted_report = self.inserted_report(sources=inserted_sources)
+        self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
+
+    def test_report_with_types_parameter(self):
+        """Test that the migration succeeds when the SonarQube source has a types parameter."""
+        self.database.reports.find.return_value = [self.existing_report(sources=self.sources(types=["bug"]))]
+        perform_migrations(self.database)
+        inserted_report = self.inserted_report(sources=self.sources(impacted_software_qualities=["reliability"]))
+        self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
+
+    def test_report_with_types_parameter_without_values(self):
+        """Test that the migration succeeds when the SonarQube source has a types parameter without values."""
+        self.database.reports.find.return_value = [self.existing_report(sources=self.sources(types=[]))]
+        perform_migrations(self.database)
+        inserted_report = self.inserted_report(sources=self.sources())
+        self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
+
+    def test_report_with_security_types_parameter(self):
+        """Test that the migration succeeds when the SonarQube source has a security types parameter."""
+        self.database.reports.find.return_value = [
+            self.existing_report(
+                metric_type="security_warnings",
+                sources=self.sources(security_types=["security_hotspot", "vulnerability"]),
+            ),
+        ]
+        perform_migrations(self.database)
+        inserted_sources = self.sources(security_types=["issue with security impact", "security hotspot"])
+        inserted_report = self.inserted_report(metric_type="security_warnings", sources=inserted_sources)
+        self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
+
+    def test_report_with_security_types_parameter_without_values(self):
+        """Test that the migration succeeds when the SonarQube source has a security types parameter without values."""
+        reports = [self.existing_report(metric_type="security_warnings", sources=self.sources(security_types=[]))]
+        self.database.reports.find.return_value = reports
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
