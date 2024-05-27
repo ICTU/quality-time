@@ -8,7 +8,7 @@ run () {
     # Show the invoked command using a subdued text color so it's clear which tool is running.
     header='\033[95m'
     endstyle='\033[0m'
-    echo -e "${header}$*${endstyle}"
+    echo "${header}$*${endstyle}"
     eval "$*"
 }
 
@@ -21,11 +21,12 @@ spec () {
     python $SCRIPT_DIR/spec.py $*
 }
 
-# Turn on development mode, see https://docs.python.org/3/library/devmode.html
-export PYTHONDEVMODE=1
 # Don't install tools in the global pipx home folder, but locally for each component:
 export PIPX_HOME=.pipx
 export PIPX_BIN_DIR=$PIPX_HOME/bin
 
 # For Windows compatibility; prevent path from ending with a ':'
 export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
+
+# Insert a custom compile command in generated requirements file, so it's clear how they are generated:
+export CUSTOM_COMPILE_COMMAND="ci/pip-compile.sh"

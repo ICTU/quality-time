@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cd tests/application_tests
 python3 -m venv venv

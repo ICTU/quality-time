@@ -50,6 +50,13 @@ module = [
 ]
 ignore_missing_imports = true
 
+[tool.pip-tools]
+allow_unsafe = true
+generate_hashes = true
+quiet = true
+strip_extras = false  # Needed for lxml[html-clean]
+upgrade = true
+
 [tool.ruff]
 target-version = "py312"
 line-length = 120

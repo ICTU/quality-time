@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../ci/base.sh
+source ../ci/unittest-base.sh
 
 export COVERAGE_RCFILE=../.coveragerc
 

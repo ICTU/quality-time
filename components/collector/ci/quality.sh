@@ -10,10 +10,8 @@ run pipx run `spec ruff` format --check .
 run pipx run `spec mypy` --python-executable=$(which python) src tests
 
 # pip-audit
-unset PYTHONDEVMODE  # Suppress ResourceWarnings given by pip-audit in dev mode
 # See https://github.com/aio-libs/aiohttp/issues/6772 for why we ignore the CVE
 run pipx run `spec pip-audit` --strict --progress-spinner=off -r requirements/requirements.txt -r requirements/requirements-dev.txt
-export PYTHONDEVMODE=1
 
 # Safety
 # Vulnerability ID: 67599
