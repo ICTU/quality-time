@@ -24,6 +24,16 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 - In the measurement entity status menu, the description of the menu items would say "undefined days" if the desired response time for the status had not been changed from its default value. Fixes [#8284](https://github.com/ICTU/quality-time/issues/8284).
 - Allow for specifying supported source versions in the data model. Show the supported source version in the UI and the reference documentation. Closes [#8786](https://github.com/ICTU/quality-time/issues/8786).
 
+### Changed
+
+- Migrate to the new SonarQube issue structure introduced in SonarQube 10.2. See the [release 10.2 upgrade notes](https://docs.sonarsource.com/sonarqube/latest/setup-and-upgrade/release-upgrade-notes/#release-10.2-upgrade-notes). Closes [#8354](https://github.com/ICTU/quality-time/issues/8354).  Where possible, SonarQube parameters and parameter values are migrated automatically:
+  - The 'severities' parameter is changed into 'impact severities' and the severity values are changed ('blocker' and 'critical' become 'high', 'major' becomes 'medium', and 'minor' and 'info' become 'low').
+  - The 'types' parameter is changed into 'impacted software qualities' and the types are changed ('code smell' becomes 'maintainability', 'vulnerability' becomes 'security', and 'bug' becomes 'reliability').
+  - The 'security types' parameter values are changed ('security_hotspot' becomes 'security hotspot' and 'vulnerability' becomes 'issue with security impact').
+
+  In addition:
+  - A new parameter 'clean code attributes category' is added.
+
 ## v5.13.0 - 2024-05-23
 
 ### Deployment notes

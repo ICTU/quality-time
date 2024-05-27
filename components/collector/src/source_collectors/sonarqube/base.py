@@ -11,6 +11,8 @@ from model import Entities, SourceMeasurement, SourceResponses
 class SonarQubeCollector(SourceCollector, ABC):
     """Base class for SonarQube collectors."""
 
+    PAGE_SIZE = 500  # 500 is the maximum. See e.g. https://next.sonarqube.com/sonarqube/web_api/api/issues/search
+
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to check the component exists before getting data about it."""
         # SonarQube sometimes gives results (e.g. zero violations) even if the component does not exist, so we
