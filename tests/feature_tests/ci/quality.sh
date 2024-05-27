@@ -10,9 +10,7 @@ run pipx run `spec ruff` format --check .
 run pipx run `spec mypy` --python-executable=$(which python) src
 
 # pip-audit
-unset PYTHONDEVMODE  # Suppress ResourceWarnings given by pip-audit in dev mode
 run pipx run `spec pip-audit` --strict --progress-spinner=off -r requirements/requirements-dev.txt
-export PYTHONDEVMODE=1
 
 # Safety
 # Vulnerability ID: 67599

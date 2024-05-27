@@ -12,3 +12,10 @@ dev = [
     "pip==24.0",
     "pip-tools==7.4.1"  # To add hashes to requirements
 ]
+
+[tool.pip-tools]
+allow_unsafe = true
+generate_hashes = true
+quiet = true
+strip_extras = true
+upgrade = true

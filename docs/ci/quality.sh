@@ -20,9 +20,7 @@ run pipx run `spec vale` sync
 run pipx run `spec vale` --no-wrap src/*.md
 
 # pip-audit
-unset PYTHONDEVMODE  # Suppress ResourceWarnings given by pip-audit in dev mode
 run pipx run `spec pip-audit` --strict --progress-spinner=off -r requirements/requirements.txt -r requirements/requirements-dev.txt
-export PYTHONDEVMODE=1
 
 # Safety
 run pipx run `spec bandit` --quiet --recursive src/

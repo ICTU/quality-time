@@ -75,3 +75,10 @@ replace = 'QUALITY_TIME_VERSION = "{new_version}"'
 glob = "../**/pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
+
+[tool.pip-tools]
+allow_unsafe = true
+generate_hashes = true
+quiet = true
+strip_extras = true
+upgrade = true
