@@ -19,7 +19,7 @@ import {
 } from "../sharedPropTypes"
 import { SourceEntities } from "../source/SourceEntities"
 import { Sources } from "../source/Sources"
-import { get_source_name, getMetricScale } from "../utils"
+import { getMetricScale, getSourceName } from "../utils"
 import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
 import { FocusableTab } from "../widgets/FocusableTab"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
@@ -211,7 +211,7 @@ export function MetricDetails({
             if (nr_entities === 0) {
                 return
             } // no entities to show, continue
-            const source_name = get_source_name(report_source, dataModel)
+            const source_name = getSourceName(report_source, dataModel)
             panes.push({
                 menuItem: (
                     <Menu.Item key={source.source_uuid}>

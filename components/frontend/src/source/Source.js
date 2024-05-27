@@ -16,7 +16,7 @@ import {
     sourcePropType,
     stringsPropType,
 } from "../sharedPropTypes"
-import { get_metric_name, get_source_name } from "../utils"
+import { getMetricName, getSourceName } from "../utils"
 import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
 import { FocusableTab } from "../widgets/FocusableTab"
 import { HyperLink } from "../widgets/HyperLink"
@@ -139,8 +139,8 @@ export function Source({
     const dataModel = useContext(DataModel)
     const source = metric.sources[source_uuid]
     const sourceType = dataModel.sources[source.type]
-    const sourceName = get_source_name(source, dataModel)
-    const metricName = get_metric_name(metric, dataModel)
+    const sourceName = getSourceName(source, dataModel)
+    const metricName = getMetricName(metric, dataModel)
     const connectionError = measurement_source?.connection_error || ""
     const parseError = measurement_source?.parse_error || ""
     const referenceManualURL = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html`

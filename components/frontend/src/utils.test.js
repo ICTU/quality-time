@@ -1,18 +1,18 @@
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from "./context/Permissions"
 import {
     capitalize,
-    get_metric_target,
-    get_source_name,
-    get_subject_name,
     getMetricResponseOverrun,
     getMetricTags,
+    getMetricTarget,
     getReportTags,
+    getSourceName,
     getStatusName,
+    getSubjectName,
     getUserPermissions,
-    nice_number,
+    niceNumber,
     nrMetricsInReport,
     nrMetricsInReports,
-    scaled_number,
+    scaledNumber,
     sortWithLocaleCompare,
     sum,
     userPrefersDarkMode,
@@ -51,35 +51,35 @@ it("capitalizes strings", () => {
 })
 
 it("rounds numbers nicely", () => {
-    expect(nice_number(0)).toBe(10)
-    expect(nice_number(1)).toBe(10)
-    expect(nice_number(9)).toBe(10)
-    expect(nice_number(10)).toBe(12)
-    expect(nice_number(12)).toBe(15)
-    expect(nice_number(15)).toBe(20)
-    expect(nice_number(16)).toBe(20)
-    expect(nice_number(17)).toBe(20)
-    expect(nice_number(39)).toBe(50)
-    expect(nice_number(40)).toBe(50)
-    expect(nice_number(41)).toBe(50)
-    expect(nice_number(79)).toBe(100)
-    expect(nice_number(80)).toBe(100)
-    expect(nice_number(81)).toBe(100)
-    expect(nice_number(90)).toBe(100)
-    expect(nice_number(100)).toBe(120)
-    expect(nice_number(125)).toBe(150)
+    expect(niceNumber(0)).toBe(10)
+    expect(niceNumber(1)).toBe(10)
+    expect(niceNumber(9)).toBe(10)
+    expect(niceNumber(10)).toBe(12)
+    expect(niceNumber(12)).toBe(15)
+    expect(niceNumber(15)).toBe(20)
+    expect(niceNumber(16)).toBe(20)
+    expect(niceNumber(17)).toBe(20)
+    expect(niceNumber(39)).toBe(50)
+    expect(niceNumber(40)).toBe(50)
+    expect(niceNumber(41)).toBe(50)
+    expect(niceNumber(79)).toBe(100)
+    expect(niceNumber(80)).toBe(100)
+    expect(niceNumber(81)).toBe(100)
+    expect(niceNumber(90)).toBe(100)
+    expect(niceNumber(100)).toBe(120)
+    expect(niceNumber(125)).toBe(150)
 })
 
 it("adds a scale", () => {
-    expect(scaled_number(1)).toBe("1")
-    expect(scaled_number(12)).toBe("12")
-    expect(scaled_number(123)).toBe("123")
-    expect(scaled_number(1234)).toBe("1k")
-    expect(scaled_number(12345)).toBe("12k")
-    expect(scaled_number(123456)).toBe("123k")
-    expect(scaled_number(1234567)).toBe("1m")
-    expect(scaled_number(12345678)).toBe("12m")
-    expect(scaled_number(123456789)).toBe("123m")
+    expect(scaledNumber(1)).toBe("1")
+    expect(scaledNumber(12)).toBe("12")
+    expect(scaledNumber(123)).toBe("123")
+    expect(scaledNumber(1234)).toBe("1k")
+    expect(scaledNumber(12345)).toBe("12k")
+    expect(scaledNumber(123456)).toBe("123k")
+    expect(scaledNumber(1234567)).toBe("1m")
+    expect(scaledNumber(12345678)).toBe("12m")
+    expect(scaledNumber(123456789)).toBe("123m")
 })
 
 it("gives users all permissions if permissions have not been limited", () => {
@@ -122,31 +122,31 @@ it("gets the metric tags even if there are none", () => {
 })
 
 it("gets the metric target", () => {
-    expect(get_metric_target({ target: "2" })).toStrictEqual("2")
+    expect(getMetricTarget({ target: "2" })).toStrictEqual("2")
 })
 
 it("gets the metric target, even if the target is missing", () => {
-    expect(get_metric_target({})).toStrictEqual("0")
+    expect(getMetricTarget({})).toStrictEqual("0")
 })
 
 it("gets the source name", () => {
-    expect(get_source_name({ name: "source" }, {})).toStrictEqual("source")
+    expect(getSourceName({ name: "source" }, {})).toStrictEqual("source")
 })
 
 it("gets the source name from the data model if the source has no name", () => {
-    expect(get_source_name({ type: "source_type" }, { sources: { source_type: { name: "source" } } })).toStrictEqual(
+    expect(getSourceName({ type: "source_type" }, { sources: { source_type: { name: "source" } } })).toStrictEqual(
         "source",
     )
 })
 
 it("gets the subject name", () => {
-    expect(get_subject_name({ name: "subject" }, {})).toStrictEqual("subject")
+    expect(getSubjectName({ name: "subject" }, {})).toStrictEqual("subject")
 })
 
 it("gets the subject name from the data model if the subject has no name", () => {
-    expect(
-        get_subject_name({ type: "subject_type" }, { subjects: { subject_type: { name: "subject" } } }),
-    ).toStrictEqual("subject")
+    expect(getSubjectName({ type: "subject_type" }, { subjects: { subject_type: { name: "subject" } } })).toStrictEqual(
+        "subject",
+    )
 })
 
 it("returns true when the user sets dark mode", () => {
