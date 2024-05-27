@@ -67,19 +67,19 @@ export function formatMetricDirection(metric, dataModel) {
     return { "<": "≦", ">": "≧" }[getMetricDirection(metric, dataModel)]
 }
 
-export function get_metric_name(metric, datamodel) {
+export function getMetricName(metric, datamodel) {
     return metric.name || datamodel.metrics[metric.type].name
 }
 
-export function get_source_name(source, datamodel) {
+export function getSourceName(source, datamodel) {
     return source.name || datamodel.sources[source.type].name
 }
 
-export function get_subject_name(subject, datamodel) {
+export function getSubjectName(subject, datamodel) {
     return subject.name || datamodel.subjects[subject.type].name
 }
 
-export function get_metric_target(metric) {
+export function getMetricTarget(metric) {
     return metric.target || "0"
 }
 
@@ -161,7 +161,7 @@ export function getMetricValue(metric, dataModel) {
     return metric?.latest_measurement?.[scale]?.value ?? ""
 }
 
-export function get_metric_comment(metric) {
+export function getMetricComment(metric) {
     return metric.comment ?? ""
 }
 
@@ -169,7 +169,7 @@ export function getMetricScale(metric, dataModel) {
     return metric.scale || dataModel.metrics[metric.type].default_scale || "count"
 }
 
-export function get_metric_status(metric) {
+export function getMetricStatus(metric) {
     return metric.status ?? ""
 }
 
@@ -303,7 +303,7 @@ export function pluralize(word, count) {
     return word + (count === 1 ? "" : "s")
 }
 
-export function nice_number(number) {
+export function niceNumber(number) {
     let rounded_numbers = [10, 12, 15, 20, 30, 50, 75]
     do {
         for (let rounded_number of rounded_numbers) {
@@ -317,7 +317,7 @@ export function nice_number(number) {
     } while (true) // eslint-disable-line no-constant-condition
 }
 
-export function scaled_number(number) {
+export function scaledNumber(number) {
     const scale = ["", "k", "m"]
     const exponent = Math.floor(Math.log(number) / Math.log(1000))
     return (number / Math.pow(1000, exponent)).toFixed(0) + scale[exponent]

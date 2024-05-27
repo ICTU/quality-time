@@ -9,9 +9,9 @@ import { LegendCard } from "../dashboard/LegendCard"
 import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
 import { datesPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
 import {
-    get_subject_name,
     getMetricTags,
     getReportTags,
+    getSubjectName,
     nrMetricsInReport,
     STATUS_COLORS,
     visibleMetrics,
@@ -55,7 +55,7 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
                 })
                 subjectCards.push(
                     <MetricSummaryCard
-                        header={get_subject_name(report.subjects[subject_uuid], dataModel)}
+                        header={getSubjectName(report.subjects[subject_uuid], dataModel)}
                         key={subject_uuid}
                         maxY={nrMetrics}
                         onClick={(event) => onClick(event, subject_uuid)}

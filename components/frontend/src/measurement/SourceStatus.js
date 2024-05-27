@@ -3,7 +3,7 @@ import { useContext } from "react"
 import { DataModel } from "../context/DataModel"
 import { Label, Popup } from "../semantic_ui_react_wrappers"
 import { measurementSourcePropType, metricPropType } from "../sharedPropTypes"
-import { get_metric_name, get_source_name } from "../utils"
+import { getMetricName, getSourceName } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 
 export function SourceStatus({ metric, measurement_source }) {
@@ -13,7 +13,7 @@ export function SourceStatus({ metric, measurement_source }) {
         return null
     }
     const source = metric.sources[measurement_source.source_uuid]
-    const source_name = get_source_name(source, dataModel)
+    const source_name = getSourceName(source, dataModel)
     const configError = !dataModel.metrics[metric.type].sources.includes(source.type)
     function source_label(error) {
         return measurement_source.landing_url ? (
@@ -28,7 +28,7 @@ export function SourceStatus({ metric, measurement_source }) {
         let content
         let header
         if (configError) {
-            content = `${source_name} cannot be used to measure ${get_metric_name(metric, dataModel)}.`
+            content = `${source_name} cannot be used to measure ${getMetricName(metric, dataModel)}.`
             header = "Configuration error"
         } else if (measurement_source.connection_error) {
             content = "Quality-time could not retrieve data from the source."

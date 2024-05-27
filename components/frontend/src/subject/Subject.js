@@ -14,17 +14,17 @@ import {
     stringsPropType,
 } from "../sharedPropTypes"
 import {
-    get_metric_comment,
-    get_metric_name,
-    get_metric_status,
-    get_metric_target,
-    get_source_name,
+    getMetricComment,
     getMetricIssueIds,
+    getMetricName,
     getMetricResponseOverrun,
     getMetricResponseTimeLeft,
+    getMetricStatus,
     getMetricTags,
+    getMetricTarget,
     getMetricUnit,
     getMetricValue,
+    getSourceName,
     sortWithLocaleCompare,
     visibleMetrics,
 } from "../utils"
@@ -43,8 +43,8 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
     }
     const sorters = {
         name: (m1, m2) => {
-            const m1_name = get_metric_name(m1[1], datamodel)
-            const m2_name = get_metric_name(m2[1], datamodel)
+            const m1_name = getMetricName(m1[1], datamodel)
+            const m2_name = getMetricName(m2[1], datamodel)
             return m1_name.localeCompare(m2_name)
         },
         measurement: (m1, m2) => {
@@ -53,24 +53,24 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_measurement.localeCompare(m2_measurement, undefined, { numeric: true })
         },
         target: (m1, m2) => {
-            const m1_target = get_metric_target(m1[1])
-            const m2_target = get_metric_target(m2[1])
+            const m1_target = getMetricTarget(m1[1])
+            const m2_target = getMetricTarget(m2[1])
             return m1_target.localeCompare(m2_target, undefined, { numeric: true })
         },
         comment: (m1, m2) => {
-            const m1_comment = get_metric_comment(m1[1])
-            const m2_comment = get_metric_comment(m2[1])
+            const m1_comment = getMetricComment(m1[1])
+            const m2_comment = getMetricComment(m2[1])
             return m1_comment.localeCompare(m2_comment)
         },
         status: (m1, m2) => {
-            const m1_status = status_order[get_metric_status(m1[1])]
-            const m2_status = status_order[get_metric_status(m2[1])]
+            const m1_status = status_order[getMetricStatus(m1[1])]
+            const m2_status = status_order[getMetricStatus(m2[1])]
             return m1_status.localeCompare(m2_status)
         },
         source: (m1, m2) => {
-            let m1SourceNames = Object.values(m1[1].sources).map((source) => get_source_name(source, datamodel))
+            let m1SourceNames = Object.values(m1[1].sources).map((source) => getSourceName(source, datamodel))
             sortWithLocaleCompare(m1SourceNames)
-            let m2SourceNames = Object.values(m2[1].sources).map((source) => get_source_name(source, datamodel))
+            let m2SourceNames = Object.values(m2[1].sources).map((source) => getSourceName(source, datamodel))
             sortWithLocaleCompare(m2SourceNames)
             return m1SourceNames.join().localeCompare(m2SourceNames.join())
         },

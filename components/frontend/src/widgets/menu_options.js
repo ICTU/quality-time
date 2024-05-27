@@ -1,4 +1,4 @@
-import { get_metric_name, get_source_name, get_subject_name } from "../utils"
+import { getMetricName, getSourceName, getSubjectName } from "../utils"
 import { ItemBreadcrumb } from "./ItemBreadcrumb"
 
 export function metric_options(reports, datamodel, current_subject_type, current_subject_uuid) {
@@ -9,12 +9,12 @@ export function metric_options(reports, datamodel, current_subject_type, current
             if (subject_uuid === current_subject_uuid) {
                 return
             }
-            const subject_name = get_subject_name(subject, datamodel)
+            const subject_name = getSubjectName(subject, datamodel)
             Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
                 if (!subject_metrics.includes(metric.type)) {
                     return
                 }
-                const metric_name = get_metric_name(metric, datamodel)
+                const metric_name = getMetricName(metric, datamodel)
                 options.push({
                     content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} />,
                     key: metric_uuid,
@@ -42,17 +42,17 @@ export function source_options(reports, dataModel, currentMetricType, currentMet
     let options = []
     reports.forEach((report) => {
         Object.values(report.subjects).forEach((subject) => {
-            const subjectName = get_subject_name(subject, dataModel)
+            const subjectName = getSubjectName(subject, dataModel)
             Object.entries(subject.metrics).forEach(([metricUuid, metric]) => {
                 if (metricUuid === currentMetricUuid) {
                     return
                 }
-                const metricName = get_metric_name(metric, dataModel)
+                const metricName = getMetricName(metric, dataModel)
                 Object.entries(metric.sources).forEach(([sourceUuid, source]) => {
                     if (!metricSources.includes(source.type)) {
                         return
                     }
-                    const sourceName = get_source_name(source, dataModel)
+                    const sourceName = getSourceName(source, dataModel)
                     options.push({
                         content: (
                             <ItemBreadcrumb
@@ -81,7 +81,7 @@ export function subject_options(reports, datamodel, current_report_uuid) {
             return
         }
         Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-            const subject_name = get_subject_name(subject, datamodel)
+            const subject_name = getSubjectName(subject, datamodel)
             options.push({
                 content: <ItemBreadcrumb report={report.title} subject={subject_name} />,
                 key: subject_uuid,

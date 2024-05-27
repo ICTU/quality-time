@@ -28,8 +28,8 @@ import {
     formatMetricScale,
     formatMetricScaleAndUnit,
     formatMetricValue,
-    get_metric_name,
     getMetricDirection,
+    getMetricName,
     getMetricScale,
     getMetricTags,
     getMetricUnit,
@@ -74,7 +74,7 @@ deltaColor.propTypes = {
 }
 
 function deltaDescription(dataModel, metric, scale, delta, improved, oldValue, newValue) {
-    let description = `${get_metric_name(metric, dataModel)} `
+    let description = `${getMetricName(metric, dataModel)} `
     const evaluateTarget = metric.evaluate_targets ?? true
     if (evaluateTarget) {
         description += improved ? "improved" : "worsened"
@@ -229,7 +229,7 @@ export function SubjectTableRow({
 }) {
     const dataModel = useContext(DataModel)
     const darkMode = useContext(DarkMode)
-    const metricName = get_metric_name(metric, dataModel)
+    const metricName = getMetricName(metric, dataModel)
     const scale = getMetricScale(metric, dataModel)
     const unit = getMetricUnit(metric, dataModel)
     const nrDates = dates.length

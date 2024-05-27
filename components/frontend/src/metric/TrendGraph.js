@@ -4,14 +4,7 @@ import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme } fr
 import { DarkMode } from "../context/DarkMode"
 import { DataModel } from "../context/DataModel"
 import { measurementsPropType, metricPropType } from "../sharedPropTypes"
-import {
-    capitalize,
-    formatMetricScaleAndUnit,
-    get_metric_name,
-    getMetricScale,
-    nice_number,
-    scaled_number,
-} from "../utils"
+import { capitalize, formatMetricScaleAndUnit, getMetricName, getMetricScale, niceNumber, scaledNumber } from "../utils"
 
 function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
     const scale = getMetricScale(metric, dataModel)
@@ -22,12 +15,12 @@ function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
 export function TrendGraph({ metric, measurements }) {
     const dataModel = useContext(DataModel)
     const darkMode = useContext(DarkMode)
-    const metricName = get_metric_name(metric, dataModel)
+    const metricName = getMetricName(metric, dataModel)
     const unit = capitalize(formatMetricScaleAndUnit(metric, dataModel))
     const measurementValues = measurements.map((measurement) =>
         measurementAttributeAsNumber(metric, measurement, "value", dataModel),
     )
-    let max_y = nice_number(Math.max(...measurementValues))
+    let max_y = niceNumber(Math.max(...measurementValues))
     let measurementPoints = [] // The measurement values as (x, y) coordinates
     let previousX2 = new Date("2000-01-01")
     measurements.forEach((measurement, index) => {
@@ -72,7 +65,7 @@ export function TrendGraph({ metric, measurements }) {
                 domain={[0, max_y]}
                 label={unit}
                 style={axisStyle}
-                tickFormat={(t) => `${scaled_number(t)}`}
+                tickFormat={(t) => `${scaledNumber(t)}`}
             />
             <VictoryLine
                 data={measurementPoints}
