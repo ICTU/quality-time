@@ -8,7 +8,7 @@ run () {
     # Show the invoked command using a subdued text color so it's clear which tool is running.
     header='\033[95m'
     endstyle='\033[0m'
-    echo "${header}$*${endstyle}"
+    echo -e "${header}$*${endstyle}"
     eval "$*"
 }
 
