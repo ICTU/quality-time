@@ -51,9 +51,9 @@ pip-tools==7.4.1 \
     --hash=sha256:4c690e5fbae2f21e87843e89c26191f0d9454f362d8acdbd695716493ec8b3a9 \
     --hash=sha256:864826f5073864450e24dbeeb85ce3920cdfb09848a3d69ebf537b521f14bcc9
     # via release (pyproject.toml)
-prompt-toolkit==3.0.36 \
-    --hash=sha256:3e163f254bef5a03b146397d7c1963bd3e2812f0964bb9a24e6ec761fd28db63 \
-    --hash=sha256:aa64ad242a462c5ff0363a7b9cfe696c20d55d9fc60c11fd8e632d064804d305
+prompt-toolkit==3.0.44 \
+    --hash=sha256:205a20669633d042d3722a528b8e7cd3f4dbd9e1450935f596c2cc61166762dd \
+    --hash=sha256:c1dfd082c4259964bc8bcce1f8460d9dbeb5d4a37bfc25b8082bc02cd41c8af6
     # via questionary
 pydantic==2.7.1 \
     --hash=sha256:e029badca45266732a9a79898a15ae2e8b14840b1eabbb25844be28f0b33f3d5 \
