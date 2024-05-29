@@ -13,7 +13,7 @@ def perform_migrations(database: Database) -> None:  # pragma: no feature-test-c
     """Perform database migrations."""
     for report in database.reports.find(filter={"last": True, "deleted": {"$exists": False}}):
         report_uuid = report["report_uuid"]
-        logging.info("Checking report for necessary updates: %s", report_uuid)
+        logging.info("Checking report %s for necessary updates", report_uuid)
         if any(
             changes := [
                 change_accessibility_violation_metrics_to_violations(report),
@@ -21,11 +21,12 @@ def perform_migrations(database: Database) -> None:  # pragma: no feature-test-c
                 change_ci_subject_types_to_development_environment(report),
             ]
         ):
-            logging.info("Updating report %s to %s", report_uuid, " and to ".join(changes))
+            change_description = " and to ".join([change for change in changes if change])
+            logging.info("Updating report %s to %s", report_uuid, change_description)
             replace_document(database.reports, report)
-        logging.info("Checking report for necessary measurement updates: %s", report_uuid)
+        logging.info("Checking report %s for necessary measurement updates", report_uuid)
         count = add_source_parameter_hash_to_latest_measurement(database, report)
-        logging.info("Updated %s measurements: %s", count, report_uuid)
+        logging.info("Updated %s measurements for report %s", count, report_uuid)
 
 
 def change_accessibility_violation_metrics_to_violations(report) -> str:  # pragma: no feature-test-cover
