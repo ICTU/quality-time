@@ -26,6 +26,7 @@ class Source(DescribedModel):
     parameter_layout: dict[str, ParameterGroup] = DEFAULT_PARAMETER_LAYOUT
     entities: dict[str, Entity] = {}
     issue_tracker: bool | None = False
+    supported_versions_description: str | None = None  # The source versions that Quality-time supports, e.g. ">=10.2"
 
     @model_validator(mode="after")
     def check_parameters(self) -> Self:

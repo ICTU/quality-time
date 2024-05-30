@@ -2,11 +2,28 @@
 
 import pathlib
 import re
+from typing import Literal
 
 from pydantic import HttpUrl
 
 from shared_data_model import DATA_MODEL
 from shared_data_model.meta import Metric, NamedModel, Parameter, Source, Subject
+
+# See https://pradyunsg.me/furo/reference/admonitions/
+AdmonitionType = Literal[
+    "admonition",
+    "attention",
+    "caution",
+    "danger",
+    "error",
+    "hint",
+    "important",
+    "note",
+    "seealso",
+    "tip",
+    "todo",
+    "warning",
+]
 
 
 def get_model_name(model: NamedModel) -> str:
@@ -51,11 +68,11 @@ def subject_section(subject: Subject, level: int) -> str:
     """Return the subject as Markdown section."""
     markdown = markdown_header(subject.name, level=level, index=True)
     markdown += markdown_paragraph(subject.description)
-    markdown += "```{admonition} Supporting metrics\n"
+    supporting_metrics_markdown = ""
     for metric in subject.metrics:
         metric_name = DATA_MODEL.metrics[metric].name
-        markdown += f"- [{metric_name}]({slugify(metric_name)})\n"
-    markdown += "```\n"
+        supporting_metrics_markdown += f"- [{metric_name}]({slugify(metric_name)})\n"
+    markdown += admonition(supporting_metrics_markdown, "Supporting metrics")
     return markdown
 
 
@@ -84,26 +101,22 @@ def metric_section(metric_key: str, metric: Metric, level: int) -> str:
     markdown += definition_list("Default target", metric_target(metric))
     markdown += definition_list("Scales", *metric_scales(metric))
     markdown += definition_list("Default tags", *[tag.value for tag in metric.tags])
-    markdown += "```{admonition} Supported subjects\n"
+    supported_subjects_markdown = ""
     subjects = [subject for subject in DATA_MODEL.subjects.values() if metric_key in subject.metrics]
     for subject in subjects:
-        markdown += f"- [{subject.name}]({slugify(subject.name)})\n"
-    markdown += "```\n\n"
-    markdown += "```{admonition} Supporting sources\n"
+        supported_subjects_markdown += f"- [{subject.name}]({slugify(subject.name)})\n"
+    markdown += admonition(supported_subjects_markdown, "Supported subjects")
+    supporting_sources_markdown = ""
     for source in metric.sources:
         source_name = DATA_MODEL.sources[source].name
-        markdown += f"- [{source_name}]({metric_source_slug(metric.name, source_name)})\n"
-    markdown += "```\n"
+        supporting_sources_markdown += f"- [{source_name}]({metric_source_slug(metric.name, source_name)})\n"
+    markdown += admonition(supporting_sources_markdown, "Supporting sources")
     return markdown
 
 
 def see_also_links(urls: list[str]) -> str:
-    """Return a see also section with a list of URLs."""
-    markdown = "```{seealso}\n"
-    for url in urls:
-        markdown += f"1. {markdown_link(url)}\n"
-    markdown += "```\n\n"
-    return markdown
+    """Return a "see also" section with a list of URLs."""
+    return admonition("".join([f"1. {markdown_link(url)}\n" for url in urls]), admonition="seealso")
 
 
 def metric_target(metric: Metric) -> str:
@@ -141,15 +154,28 @@ def source_section(source: Source, source_key: str, level: int) -> str:
         # Add generic documentation, meaning documentation that applies to all metrics that the source supports, here.
         # Documentation for specific metrics is added in the metric-source sections, see metric_source_section() below.
         markdown += markdown_paragraph(documentation)
-    markdown += "```{admonition} Supported metrics\n"
+    if source.supported_versions_description:
+        title = f"Supported {source.name} versions"
+        markdown += admonition(source.supported_versions_description, title, "important")
+    supported_metrics_markdown = ""
     metrics = [metric for metric in DATA_MODEL.metrics.values() if source_key in metric.sources]
     for metric in metrics:
         source_name = DATA_MODEL.sources[source_key].name
-        markdown += f"- [{metric.name}]({metric_source_slug(metric.name, source_name)})\n"
-    markdown += "```\n\n"
+        supported_metrics_markdown += f"- [{metric.name}]({metric_source_slug(metric.name, source_name)})\n"
+    markdown += admonition(supported_metrics_markdown, "Supported metrics")
     if source.url:
-        markdown += f"```{{seealso}}\n{markdown_link(source.url)}\n```\n\n"
+        markdown += admonition(markdown_link(source.url), admonition="seealso")
     return markdown
+
+
+def admonition(text: str, title: str = "", admonition: AdmonitionType = "admonition", indent: str = "") -> str:
+    """Return an admonition."""
+    # Only admonitions with type "admonition" support a custom title, so when a title is provided we use a class
+    # to set the type:
+    admonition_type = "admonition" if title else admonition
+    admonition_title = f" {title}" if title else ""
+    admonition_class = f"{indent}:class: {admonition}\n" if title else ""
+    return f"{indent}```{{{admonition_type}}}{admonition_title}\n{admonition_class}{indent}{text}\n{indent}```\n\n"
 
 
 def slugify(name: str) -> str:
@@ -213,7 +239,10 @@ def parameter_description(parameter: Parameter) -> str:
     elif default_value:
         default_value = [f"`{default_value}`"]
     default_value_text = f" The default value is: {', '.join(sorted(default_value))}." if default_value else ""
-    help_url = f"\n\n  ```{{seealso}}\n  {markdown_link(parameter.help_url)}\n  ```\n\n" if parameter.help_url else ""
+    if parameter.help_url:
+        help_url = admonition(markdown_link(parameter.help_url), admonition="seealso", indent="  ")
+    else:
+        help_url = ""
     return f"- **{parameter.name}**.{help_text}{values_text}{default_value_text}\n{help_url}"
 
 

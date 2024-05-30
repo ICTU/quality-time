@@ -172,7 +172,7 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
                     }
                     value={null} // Without this, a selected item becomes active (shown bold in the menu) and can't be selected again
                 >
-                    <Dropdown.Menu>
+                    <Dropdown.Menu style={{ minWidth: "50em" }}>
                         <Dropdown.Header>{`Available ${itemType} types`}</Dropdown.Header>
                         <Dropdown.Divider />
                         <Input
@@ -211,6 +211,7 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
                                     key={option.key}
                                     onClick={(_event, { value }) => onClick(value)}
                                     selected={selectedItem === index}
+                                    style={{ whiteSpace: "wrap" }}
                                     text={option.text}
                                     value={option.value}
                                 />
