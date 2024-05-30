@@ -8,6 +8,7 @@ import {
     node,
     number,
     object,
+    objectOf,
     oneOf,
     oneOfType,
     shape,
@@ -181,6 +182,11 @@ export const metricTypePropType = shape({
     description: string,
     documentation: string,
     name: string,
+})
+
+export const dataModelPropType = shape({
+    metrics: objectOf(metricTypePropType),
+    sources: objectOf(sourceTypePropType),
 })
 
 export const destinationPropType = shape({

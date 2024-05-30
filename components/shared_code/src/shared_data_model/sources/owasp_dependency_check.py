@@ -30,6 +30,7 @@ OWASP_DEPENDENCY_CHECK = Source(
     name="OWASP Dependency-Check",
     description="OWASP Dependency-Check is a utility that identifies project dependencies and checks if there are any "
     "known, publicly disclosed, vulnerabilities.",
+    supported_versions_description=">=9.0, <=9.2",
     url=HttpUrl("https://owasp.org/www-project-dependency-check/"),
     parameters={
         "severities": Severities(values=["low", "moderate", "medium", "high", "critical"]),

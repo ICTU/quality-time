@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 - Group digits in numbers. Closes [#8076](https://github.com/ICTU/quality-time/issues/8076).
 - In the measurement entity status menu, the description of the menu items would say "undefined days" if the desired response time for the status had not been changed from its default value. Fixes [#8284](https://github.com/ICTU/quality-time/issues/8284).
+- Allow for specifying supported source versions in the data model. Show the supported source version in the UI and the reference documentation. Closes [#8786](https://github.com/ICTU/quality-time/issues/8786).
 
 ## v5.13.0 - 2024-05-23
 

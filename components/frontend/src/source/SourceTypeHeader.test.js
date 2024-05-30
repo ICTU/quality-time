@@ -10,6 +10,7 @@ function renderSourceTypeHeader(documentation, metricTypeId) {
                 name: "Source type",
                 description: "Description",
                 documentation: documentation,
+                supported_versions_description: ">=1.0",
             }}
         />,
     )
@@ -35,4 +36,9 @@ it("does not point users to specific information in the docs if the information 
 it("points users to specific information in the docs if the information is for the current metric type", () => {
     renderSourceTypeHeader({ metric_type: "Generic documentation" }, "metric_type")
     expect(screen.getAllByText(/specific information/).length).toBe(1)
+})
+
+it("shows the supported source versions", () => {
+    renderSourceTypeHeader()
+    expect(screen.getAllByText(/Supported Source type versions: >=1.0/).length).toBe(1)
 })

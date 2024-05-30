@@ -5,6 +5,7 @@ import { sourceTypePropType } from "../sharedPropTypes"
 import { slugify } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 import { Logo } from "./Logo"
+import { sourceTypeDescription } from "./SourceType"
 
 export function SourceTypeHeader({ metricTypeId, sourceTypeId, sourceType }) {
     let howToConfigure = ""
@@ -18,7 +19,7 @@ export function SourceTypeHeader({ metricTypeId, sourceTypeId, sourceType }) {
                 <Logo logo={sourceTypeId} alt={sourceType.name} />
                 {sourceType.name}
                 <Header.Subheader>
-                    {sourceType.description}{" "}
+                    {`${sourceTypeDescription(sourceType)} `}
                     <HyperLink url={url}>
                         Read the Docs <Icon name="external" link />
                     </HyperLink>

@@ -21,6 +21,7 @@ const data_model = {
     sources: {
         sonarqube: {
             name: "SonarQube",
+            supported_versions_description: ">=8.2",
         },
         gitlab: {
             name: "GitLab",
@@ -59,4 +60,11 @@ it("shows the metric type even when not supported by the subject type", async ()
         renderSourceType("violations", "unsupported")
     })
     expect(screen.queryAllByText(/Unsupported/).length).toBe(2)
+})
+
+it("shows the supported source versions", async () => {
+    await act(async () => {
+        renderSourceType("violations", "sonarqube")
+    })
+    expect(screen.queryAllByText(/Supported SonarQube versions: >=8.2/).length).toBe(1)
 })
