@@ -8,7 +8,7 @@ dependencies = [
     "ldap3==2.9.1",
     "lxml[html_clean]==5.2.2",
     "pymongo==4.7.2",
-    "requests==2.32.2"
+    "requests==2.32.3"
 ]
 
 [project.optional-dependencies]
