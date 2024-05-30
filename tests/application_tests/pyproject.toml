@@ -3,7 +3,7 @@ name = "application_tests"
 version = "5.13.0"
 dependencies = [
     "axe-selenium-python==2.1.6",
-    "requests==2.32.2",
+    "requests==2.32.3",
     "selenium==4.21.0"
 ]
 
