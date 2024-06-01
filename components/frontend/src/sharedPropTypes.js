@@ -184,9 +184,19 @@ export const metricTypePropType = shape({
     name: string,
 })
 
+// Construct a recursive prop type for the subject type
+const subjectTypeShape = {
+    description: string,
+    metrics: stringsPropType,
+    name: string,
+}
+subjectTypeShape.subjects = arrayOf(shape(subjectTypeShape))
+export const subjectTypePropType = shape(subjectTypeShape)
+
 export const dataModelPropType = shape({
     metrics: objectOf(metricTypePropType),
     sources: objectOf(sourceTypePropType),
+    subjects: objectOf(subjectTypePropType),
 })
 
 export const destinationPropType = shape({

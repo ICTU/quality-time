@@ -1,8 +1,8 @@
-import { getMetricName, getSourceName, getSubjectName } from "../utils"
+import { getMetricName, getSourceName, getSubjectName, getSubjectTypeMetrics } from "../utils"
 import { ItemBreadcrumb } from "./ItemBreadcrumb"
 
 export function metric_options(reports, dataModel, current_subject_type, current_subject_uuid) {
-    const subject_metrics = dataModel.subjects[current_subject_type].metrics
+    const subject_metrics = getSubjectTypeMetrics(current_subject_type, dataModel.subjects)
     let options = []
     reports.forEach((report) => {
         Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {

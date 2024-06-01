@@ -13,7 +13,6 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
     def setUp(self):
         """Set up test data."""
         super().setUp()
-        self.api_url = f"{self.url}/api/internal/report"
         self.entities = [
             {
                 "key": "m2",
@@ -33,11 +32,15 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: list | str | None) -> None:
         """Override to pass the api and landing URLs."""
-        attributes["api_url"] = self.api_url
+        attributes["api_url"] = f"{self.url}/api/internal/report"
         super().assert_measurement(measurement, source_index=source_index, **attributes)
 
     async def test_nr_of_metrics(self):
         """Test that the number of metrics is returned."""
+        self.set_source_parameter("metric_type", ["Tests", "Violations"])
+        self.set_source_parameter("source_type", ["SonarQube"])
+        self.set_source_parameter("tags", ["security"])
+        self.set_source_parameter("status", ["target not met (red)"])
         response = await self.collect(get_request_json_return_value=self.reports)
         # The count should be one because the user selected metrics from report "r1", with status "target_not_met",
         # metric type "tests" or "violations", source type "sonarqube" or "junit", and tag "security".
@@ -45,21 +48,23 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
         self.assert_measurement(response, value="1", total="3", entities=self.entities)
 
     async def test_nr_of_metrics_without_reports(self):
-        """Test that the number of metrics is returned."""
-        self.set_source_parameter("reports", [])
+        """Test that an error is thrown if no reports exist."""
         response = await self.collect(get_request_json_return_value={"reports": []})
         self.assert_measurement(response, parse_error="No reports found")
 
     async def test_nr_of_metrics_without_correct_report(self):
-        """Test that the number of metrics is returned."""
-        self.reports["reports"].pop(0)
+        """Test that an error is thrown for reports that don't exist."""
+        self.set_source_parameter("reports", ["r42"])
         response = await self.collect(get_request_json_return_value=self.reports)
         self.assert_measurement(response, parse_error="No reports found with title or id")
 
     async def test_nr_of_metrics_with_min_status_duration(self):
         """Test that metrics with a recently changed status are ignored."""
-        self.set_source_parameter("min_status_duration", "5")
+        self.set_source_parameter("metric_type", ["Tests", "Violations"])
+        self.set_source_parameter("source_type", ["SonarQube"])
+        self.set_source_parameter("tags", ["security"])
         self.set_source_parameter("status", ["target not met (red)", "target met (green)"])
+        self.set_source_parameter("min_status_duration", "5")
         metrics = self.reports["reports"][0]["subjects"]["s1"]["metrics"]
         # Give m1 a recently changed status to test that it will be ignored
         metrics["m1"]["status_start"] = now().isoformat()

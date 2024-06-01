@@ -8,6 +8,8 @@ import {
     getSourceName,
     getStatusName,
     getSubjectName,
+    getSubjectType,
+    getSubjectTypeMetrics,
     getUserPermissions,
     niceNumber,
     nrMetricsInReport,
@@ -137,6 +139,61 @@ it("gets the source name from the data model if the source has no name", () => {
     expect(getSourceName({ type: "source_type" }, { sources: { source_type: { name: "source" } } })).toStrictEqual(
         "source",
     )
+})
+
+it("gets the subject type", () => {
+    const subject = { name: "Subject" }
+    expect(getSubjectType("subject", { subject: subject })).toStrictEqual({ name: "Subject" })
+})
+
+it("gets the subject type recursively", () => {
+    const subject = { name: "Subject" }
+    expect(getSubjectType("subject", { parent: { subjects: { subject: subject } } })).toStrictEqual({
+        name: "Subject",
+    })
+})
+
+it("gets the subject type recursively from the second subject type", () => {
+    const subject = { name: "Subject" }
+    expect(
+        getSubjectType("subject", {
+            first: { subjects: { foo: { name: "Foo" } } },
+            second: { subjects: { subject: subject } },
+        }),
+    ).toStrictEqual(subject)
+})
+
+it("gets the subject type metrics", () => {
+    expect(getSubjectTypeMetrics("subject", { subject: { metrics: ["metric"] } })).toStrictEqual(["metric"])
+})
+
+it("gets the subject type metrics recursively", () => {
+    const metrics = getSubjectTypeMetrics("child", {
+        parent: { metrics: ["parent metric"], subjects: { child: { metrics: ["child metric"] } } },
+    })
+    expect(metrics).toStrictEqual(["child metric"])
+})
+
+it("gets the subject type metrics recursively, including child metrics", () => {
+    const metrics = getSubjectTypeMetrics("parent", {
+        parent: { metrics: ["parent metric"], subjects: { child: { metrics: ["child metric"] } } },
+    })
+    expect(metrics).toStrictEqual(["parent metric", "child metric"])
+})
+
+it("gets the subject type metrics recursively from the second subject type", () => {
+    const metrics = getSubjectTypeMetrics("child", {
+        first: { subjects: { foo: { metrics: ["foo metric"] } } },
+        second: { metrics: ["second metric"], subjects: { child: { metrics: ["child metric"] } } },
+    })
+    expect(metrics).toStrictEqual(["child metric"])
+})
+
+it("gets the subject type metrics deduplicated", () => {
+    const metrics = getSubjectTypeMetrics("parent", {
+        parent: { subjects: { child1: { metrics: ["child metric"] }, child2: { metrics: ["child metric"] } } },
+    })
+    expect(metrics).toStrictEqual(["child metric"])
 })
 
 it("gets the subject name", () => {

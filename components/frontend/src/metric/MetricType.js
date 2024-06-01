@@ -6,6 +6,7 @@ import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { SingleChoiceInput } from "../fields/SingleChoiceInput"
 import { Header } from "../semantic_ui_react_wrappers"
+import { getSubjectTypeMetrics } from "../utils"
 
 export function metricTypeOption(key, metricType) {
     return {
@@ -18,7 +19,9 @@ export function metricTypeOption(key, metricType) {
 
 export function metricTypeOptions(dataModel, subjectType) {
     // Return menu options for all metric that support the subject type
-    return dataModel.subjects[subjectType].metrics.map((key) => metricTypeOption(key, dataModel.metrics[key]))
+    return getSubjectTypeMetrics(subjectType, dataModel.subjects).map((key) =>
+        metricTypeOption(key, dataModel.metrics[key]),
+    )
 }
 
 export function allMetricTypeOptions(dataModel) {

@@ -471,12 +471,12 @@ Multiple issues can be linked to one metric. At most one issue tracker can be co
 
 DORA metrics are a set of four key metrics for measuring the performance of software delivery, first described by the DevOps Research & Assessment (DORA) team in the 2016 State of DevOps report. See the [DORA research program](https://www.devops-research.com/research.html) for more information.
 
-*Quality-time* can monitor these metrics in the following manner:
+*Quality-time* can monitor these metrics in the following manner. Add a subject of type [Operations](reference.md#operations) and add the following metrics to the subject:
 
-- Deployment Frequency: measure "Job runs within time period" filtered on deployment jobs.
-- Lead Time for Changes: measure "Average issue lead time" filtered on issues marked as change.
-- Time to Restore Services: measure "Average issue lead time" filtered on issues marked as failure.
-- Change Failure Rate: measure "Issues" filtered on issues marked as failure in production.
+- Deployment Frequency: measure [job runs within time period](reference.md#job-runs-within-time-period) filtered on deployment jobs.
+- Lead Time for Changes: measure [average issue lead time](reference.md#average-issue-lead-time) filtered on issues marked as change.
+- Time to Restore Services: measure [average issue lead time](reference.md#average-issue-lead-time) filtered on issues marked as failure.
+- Change Failure Rate: measure [change failure rate](reference.md#change-failure-rate).
 
 ```{index} Notification
 ```
