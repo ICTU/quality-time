@@ -15,8 +15,8 @@ export function SubjectParameters({ subject, subject_uuid, subject_name, reload 
                 <Grid.Column>
                     <SubjectType
                         id={`${subject_uuid}-type`}
-                        set_value={(value) => set_subject_attribute(subject_uuid, "type", value, reload)}
-                        subject_type={subject.type}
+                        setValue={(value) => set_subject_attribute(subject_uuid, "type", value, reload)}
+                        subjectType={subject.type}
                     />
                 </Grid.Column>
                 <Grid.Column>

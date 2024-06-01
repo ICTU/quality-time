@@ -5,33 +5,36 @@ import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { SingleChoiceInput } from "../fields/SingleChoiceInput"
 import { Header } from "../semantic_ui_react_wrappers"
+import { dataModelPropType } from "../sharedPropTypes"
 
 export function subjectTypes(dataModel) {
-    let options = []
-    Object.keys(dataModel.subjects).forEach((key) => {
-        const option_subject_type = dataModel.subjects[key]
+    const options = []
+    Object.entries(dataModel.subjects).forEach(([key, subjectType]) => {
         options.push({
             key: key,
-            text: option_subject_type.name,
+            text: subjectType.name,
             value: key,
-            content: <Header as="h4" content={option_subject_type.name} subheader={option_subject_type.description} />,
+            content: <Header as="h4" content={subjectType.name} subheader={subjectType.description} />,
         })
     })
     return options
 }
+subjectTypes.propTypes = {
+    dataModel: dataModelPropType,
+}
 
-export function SubjectType({ subject_type, set_value }) {
+export function SubjectType({ subjectType, setValue }) {
     return (
         <SingleChoiceInput
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             label="Subject type"
             options={subjectTypes(useContext(DataModel))}
-            set_value={(value) => set_value(value)}
-            value={subject_type}
+            set_value={(value) => setValue(value)}
+            value={subjectType}
         />
     )
 }
 SubjectType.propTypes = {
-    subject_type: string,
-    set_value: func,
+    subjectType: string,
+    setValue: func,
 }
