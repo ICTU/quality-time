@@ -1,15 +1,15 @@
-import { func, string } from "prop-types"
+import { func, objectOf, string } from "prop-types"
 import { useContext } from "react"
 
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { SingleChoiceInput } from "../fields/SingleChoiceInput"
 import { Header } from "../semantic_ui_react_wrappers"
-import { dataModelPropType } from "../sharedPropTypes"
+import { subjectPropType } from "../sharedPropTypes"
 
-export function subjectTypes(dataModel) {
+export function subjectTypes(subjectTypesMapping) {
     const options = []
-    Object.entries(dataModel.subjects).forEach(([key, subjectType]) => {
+    Object.entries(subjectTypesMapping).forEach(([key, subjectType]) => {
         options.push({
             key: key,
             text: subjectType.name,
@@ -20,7 +20,7 @@ export function subjectTypes(dataModel) {
     return options
 }
 subjectTypes.propTypes = {
-    dataModel: dataModelPropType,
+    subjectTypesMapping: objectOf(subjectPropType),
 }
 
 export function SubjectType({ subjectType, setValue }) {
@@ -28,7 +28,7 @@ export function SubjectType({ subjectType, setValue }) {
         <SingleChoiceInput
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             label="Subject type"
-            options={subjectTypes(useContext(DataModel))}
+            options={subjectTypes(useContext(DataModel).subjects)}
             set_value={(value) => setValue(value)}
             value={subjectType}
         />

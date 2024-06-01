@@ -23,7 +23,7 @@ export function SubjectsButtonRow({ reload, report, reports, settings }) {
                 <Segment basic>
                     <AddDropdownButton
                         itemType="subject"
-                        itemSubtypes={subjectTypes(dataModel)}
+                        itemSubtypes={subjectTypes(dataModel.subjects)}
                         onClick={(subtype) => {
                             stopFiltering()
                             add_subject(report.report_uuid, subtype, reload)
