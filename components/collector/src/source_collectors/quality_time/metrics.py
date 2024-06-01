@@ -61,7 +61,7 @@ class QualityTimeMetrics(QualityTimeCollector):
                     if self.__metric_is_to_be_measured(metric, metric_types, source_types, tags):
                         metric["report_uuid"] = report["report_uuid"]
                         metric["subject_uuid"] = subject_uuid
-                        subject_name = str(subject.get("name") or DATA_MODEL.subjects[subject["type"]].name)
+                        subject_name = str(subject.get("name") or DATA_MODEL.all_subjects[subject["type"]].name)
                         entity = Entity(key=metric_uuid, report=report["title"], subject=subject_name)
                         metrics_and_entities.append((metric, entity))
         return metrics_and_entities

@@ -15,13 +15,9 @@ class QualityTimeSourceUpToDatenessTest(QualityTimeTestCase):
     METRIC_TYPE = "source_up_to_dateness"
     METRIC_ADDITION = "max"
 
-    def setUp(self):
-        """Set up test data."""
-        super().setUp()
-        self.api_url = f"{self.url}/api/internal/report"
-
     async def test_source_up_to_dateness(self):
         """Test that the source up-to-dateness of all reports can be measured."""
+        self.set_source_parameter("reports", ["r1"])
         response = await self.collect(get_request_json_return_value=self.reports)
         expected_age = days_ago(parse("2020-06-24T07:53:17+00:00"))
         self.assert_measurement(response, value=str(expected_age), total="100", entities=[])
@@ -35,5 +31,5 @@ class QualityTimeSourceUpToDatenessTest(QualityTimeTestCase):
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: list | str | None) -> None:
         """Override to pass the api URLs."""
-        attributes["api_url"] = self.api_url
+        attributes["api_url"] = f"{self.url}/api/internal/report"
         super().assert_measurement(measurement, source_index=source_index, **attributes)

@@ -10,7 +10,7 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissio
 import { Header, Tab } from "../semantic_ui_react_wrappers"
 import { Share } from "../share/Share"
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
-import { slugify } from "../utils"
+import { getSubjectType, slugify } from "../utils"
 import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
 import { FocusableTab } from "../widgets/FocusableTab"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
@@ -76,7 +76,7 @@ export function SubjectTitle({
 }) {
     const dataModel = useContext(DataModel)
     const tabIndex = activeTabIndex(settings.expandedItems, subject_uuid)
-    const subjectType = dataModel.subjects[subject.type] || { name: "Unknown subject type" }
+    const subjectType = getSubjectType(subject.type, dataModel.subjects) || { name: "Unknown subject type" }
     const subjectName = subject.name || subjectType.name
     const subjectTitle = (atReportsOverview ? report.title + " ❯ " : "") + subjectName
     const subjectUrl = `${window.location}#${subject_uuid}`

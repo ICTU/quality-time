@@ -46,7 +46,7 @@ def copy_subject(subject, change_name: bool = True):
         "metrics": {uuid(): copy_metric(metric, change_name=False) for metric in subject["metrics"].values()},
     }
     if change_name:
-        kwargs["name"] = f"{subject.get('name') or DATA_MODEL.subjects[subject['type']].name} (copy)"
+        kwargs["name"] = f"{subject.get('name') or DATA_MODEL.all_subjects[subject['type']].name} (copy)"
     return copy_item(subject, **kwargs)
 
 

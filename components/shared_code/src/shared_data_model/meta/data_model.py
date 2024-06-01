@@ -3,21 +3,20 @@
 import pathlib
 from typing import Self
 
-from pydantic import BaseModel, model_validator
+from pydantic import model_validator
 
 from .metric import Metric
 from .scale import Scale
 from .source import Source
-from .subject import Subject
+from .subject import SubjectContainer
 
 
-class DataModel(BaseModel):
+class DataModel(SubjectContainer):
     """Data model model."""
 
     scales: dict[str, Scale]
     metrics: dict[str, Metric]
     sources: dict[str, Source]
-    subjects: dict[str, Subject]
 
     @model_validator(mode="after")
     def check_scales(self) -> Self:
@@ -137,7 +136,7 @@ class DataModel(BaseModel):
     def check_subjects(self) -> Self:
         """Check that each metric belongs to at least one subject."""
         for metric_key in self.metrics:
-            for subject in self.subjects.values():
+            for subject in self.all_subjects.values():
                 if metric_key in subject.metrics:
                     break
             else:

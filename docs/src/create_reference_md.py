@@ -69,10 +69,13 @@ def subject_section(subject: Subject, level: int) -> str:
     markdown = markdown_header(subject.name, level=level, index=True)
     markdown += markdown_paragraph(subject.description)
     supporting_metrics_markdown = ""
-    for metric in subject.metrics:
-        metric_name = DATA_MODEL.metrics[metric].name
-        supporting_metrics_markdown += f"- [{metric_name}]({slugify(metric_name)})\n"
+    subject_metrics = [DATA_MODEL.metrics[metric] for metric in subject.all_metrics]
+    for metric in sorted(subject_metrics, key=get_model_name):
+        supporting_metrics_markdown += f"- [{metric.name}]({slugify(metric.name)})\n"
     markdown += admonition(supporting_metrics_markdown, "Supporting metrics")
+    child_subjects = [DATA_MODEL.all_subjects[child_subject] for child_subject in subject.subjects]
+    for child_subject in sorted(child_subjects, key=get_model_name):
+        markdown += subject_section(child_subject, level + 1)
     return markdown
 
 
@@ -102,7 +105,7 @@ def metric_section(metric_key: str, metric: Metric, level: int) -> str:
     markdown += definition_list("Scales", *metric_scales(metric))
     markdown += definition_list("Default tags", *[tag.value for tag in metric.tags])
     supported_subjects_markdown = ""
-    subjects = [subject for subject in DATA_MODEL.subjects.values() if metric_key in subject.metrics]
+    subjects = [subject for subject in DATA_MODEL.all_subjects.values() if metric_key in subject.all_metrics]
     for subject in subjects:
         supported_subjects_markdown += f"- [{subject.name}]({slugify(subject.name)})\n"
     markdown += admonition(supported_subjects_markdown, "Supported subjects")
@@ -180,7 +183,10 @@ def admonition(text: str, title: str = "", admonition: AdmonitionType = "admonit
 
 def slugify(name: str) -> str:
     """Return a slugified version of the name."""
-    return f'#{name.lower().replace(" ", "-").replace("(", "").replace(")", "")}'
+    # Add type to prevent mypy complaining that 'Argument 1 to "maketrans" of "str" has incompatible type...'
+    char_mapping: dict[str, str | int | None] = {" ": "-", "(": "", ")": "", "/": ""}
+    slug = name.lower().translate(str.maketrans(char_mapping))
+    return f"#{slug}"  # The hash isn't really part of the slug, but to prevent duplication it is included anyway
 
 
 def decapitalize(name: str) -> str:

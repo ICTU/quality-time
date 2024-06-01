@@ -10,6 +10,7 @@ import {
     reportsPropType,
     scalePropType,
     stringsPropType,
+    subjectTypePropType,
 } from "./sharedPropTypes"
 import { HyperLink } from "./widgets/HyperLink"
 
@@ -75,8 +76,56 @@ export function getSourceName(source, dataModel) {
     return source.name || dataModel.sources[source.type].name
 }
 
+function allMetrics(subject) {
+    // Return all metrics of the subject, recursively
+    const metrics = [...(subject.metrics ?? [])]
+    Object.values(subject.subjects ?? {}).forEach((childSubject) => metrics.push(...allMetrics(childSubject)))
+    return metrics
+}
+
+export function getSubjectTypeMetrics(subjectTypeKey, subjects) {
+    // Return the metric types supported by the specified subject type
+    const metrics = []
+    Object.entries(subjects ?? {}).forEach(([key, subject]) => {
+        if (key === subjectTypeKey) {
+            metrics.push(...allMetrics(subject))
+        } else {
+            metrics.push(...getSubjectTypeMetrics(subjectTypeKey, subject.subjects))
+        }
+    })
+    return Array.from(new Set(metrics))
+}
+getSubjectTypeMetrics.propTypes = {
+    subjectTypeKey: string,
+    subjects: objectOf(subjectTypePropType),
+}
+
+function childSubjects(subjects) {
+    return Object.values(subjects).filter((subject) => !!subject.subjects)
+}
+childSubjects.propTypes = {
+    subjects: objectOf(subjectTypePropType),
+}
+
+export function getSubjectType(subjectTypeKey, subjects) {
+    // Return the subject type object
+    if (Object.keys(subjects).includes(subjectTypeKey)) {
+        return subjects[subjectTypeKey]
+    }
+    for (const childSubject of childSubjects(subjects)) {
+        const result = getSubjectType(subjectTypeKey, childSubject.subjects)
+        if (result) {
+            return result
+        }
+    }
+}
+getSubjectType.propTypes = {
+    subjectTypeKey: string,
+    subjects: objectOf(subjectTypePropType),
+}
+
 export function getSubjectName(subject, dataModel) {
-    return subject.name || dataModel.subjects[subject.type].name
+    return subject.name || getSubjectType(subject.type, dataModel.subjects).name
 }
 
 export function getMetricTarget(metric) {
@@ -386,7 +435,8 @@ export function dropdownOptions(options) {
 }
 
 export function slugify(name) {
-    return `#${name?.toLowerCase().replaceAll(" ", "-").replaceAll("(", "").replaceAll(")", "")}`
+    // The hash isn't really part of the slug, but to prevent duplication it is included anyway
+    return `#${name?.toLowerCase().replaceAll(" ", "-").replaceAll("(", "").replaceAll(")", "").replaceAll("/", "")}`
 }
 
 export function sum(object) {

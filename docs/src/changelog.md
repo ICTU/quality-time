@@ -21,6 +21,7 @@ If your currently installed *Quality-time* version is not v5.13.0, please first 
 
 ### Added
 
+- Add more subject types. Closes [#3130](https://github.com/ICTU/quality-time/issues/3130).
 - Group digits in numbers. Closes [#8076](https://github.com/ICTU/quality-time/issues/8076).
 - In the measurement entity status menu, the description of the menu items would say "undefined days" if the desired response time for the status had not been changed from its default value. Fixes [#8284](https://github.com/ICTU/quality-time/issues/8284).
 - Added a [versioning policy](versioning.md) to the documentation. Closes [#8748](https://github.com/ICTU/quality-time/issues/8748).
@@ -28,6 +29,7 @@ If your currently installed *Quality-time* version is not v5.13.0, please first 
 
 ### Changed
 
+- Rename the "CI-environment" subject type to "Development environment". Prepares for [#3130](https://github.com/ICTU/quality-time/issues/3130).
 - Use unprivileged container `nginxinc/nginx-unprivileged` as base for the proxy component, so that it does not require additional capabilities. Closes [#8857](https://github.com/ICTU/quality-time/issues/8857).
 - Migrate to the new SonarQube issue structure introduced in SonarQube 10.2. See the [release 10.2 upgrade notes](https://docs.sonarsource.com/sonarqube/latest/setup-and-upgrade/release-upgrade-notes/#release-10.2-upgrade-notes). Closes [#8354](https://github.com/ICTU/quality-time/issues/8354). Where possible, SonarQube parameters and parameter values are migrated automatically:
   - The 'severities' parameter is changed into 'impact severities' and the severity values are changed ('blocker' and 'critical' become 'high', 'major' becomes 'medium', and 'minor' and 'info' become 'low'). If a report contained separate metrics for e.g. 'blocker' and 'critical' violations before the upgrade to this version of *Quality-time*, then these metrics will both measure the number of issue with 'high' impact after the upgrade. Since these metrics probably still differ in other aspects (comments, tags, linked issues, etc.) it is up to the user to resolve this manually.
@@ -54,10 +56,6 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Added
 
 - When using Dependency-Track as source for dependencies, security warnings, or source-up-to-dateness, allow for filtering by project name and version. Closes [#8686](https://github.com/ICTU/quality-time/issues/8686).
-
-### Changed
-
-- Rename the "CI-environment" subject type to "Development environment". Prepares for [#3130](https://github.com/ICTU/quality-time/issues/3130).
 
 ## v5.12.0 - 2024-05-17
 

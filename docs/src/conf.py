@@ -51,7 +51,7 @@ latex_engine = "xelatex"
 # -- Options for MyST parser -------------------------------------------------
 
 # See https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#auto-generated-header-anchors
-myst_heading_anchors = 3
+myst_heading_anchors = 4
 
 # -- Options for HTML output -------------------------------------------------
 

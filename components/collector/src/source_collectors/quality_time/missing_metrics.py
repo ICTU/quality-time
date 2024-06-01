@@ -1,7 +1,5 @@
 """Quality-time missing metrics collector."""
 
-from typing import cast
-
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
 from model import SourceMeasurement, SourceResponses
@@ -103,4 +101,8 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
     @staticmethod
     def __subject_possible_metric_types(data_model: dict, subject: dict) -> list[str]:
         """Return the subject's possible metric types."""
-        return cast(list[str], data_model["subjects"][subject["type"]]["metrics"])
+        subject_type = data_model["subjects"][subject["type"]]
+        metric_types = set(subject_type.get("metrics", []))
+        for child_subject in subject_type.get("subjects", {}).values():
+            metric_types |= set(child_subject.get("metrics", []))
+        return sorted(metric_types)

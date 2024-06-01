@@ -12,11 +12,6 @@ class QualityTimeTestCase(SourceCollectorTestCase):
         """Extend to set up fixtures for Quality-time metrics unit tests."""
         super().setUp()
         self.url = "https://quality_time"
-        self.set_source_parameter("reports", ["r1"])
-        self.set_source_parameter("status", ["target not met (red)"])
-        self.set_source_parameter("tags", ["security"])
-        self.set_source_parameter("metric_type", ["Tests", "Violations"])
-        self.set_source_parameter("source_type", ["SonarQube"])
         self.reports = {
             "reports": [
                 {
