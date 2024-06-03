@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import history from "history/browser"
 
-import { createTestableSettings, datamodel, report } from "../__fixtures__/fixtures"
+import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
 import { Table } from "../semantic_ui_react_wrappers"
 import { SubjectTableRow } from "./SubjectTableRow"
@@ -44,7 +44,7 @@ function renderSubjectTableRow({
         dates.reverse()
     }
     render(
-        <DataModel.Provider value={datamodel}>
+        <DataModel.Provider value={dataModel}>
             <Table>
                 <Table.Body>
                     <SubjectTableRow

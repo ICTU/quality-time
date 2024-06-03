@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import history from "history/browser"
 
-import { createTestableSettings, datamodel, report } from "../__fixtures__/fixtures"
+import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
 import { Subject } from "./Subject"
 
@@ -13,7 +13,7 @@ function renderSubject({
 } = {}) {
     const settings = createTestableSettings()
     render(
-        <DataModel.Provider value={datamodel}>
+        <DataModel.Provider value={dataModel}>
             <Subject
                 atReportsOverview={atReportsOverview}
                 dates={dates}

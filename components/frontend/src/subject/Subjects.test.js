@@ -1,14 +1,14 @@
 import { render, screen } from "@testing-library/react"
 import history from "history/browser"
 
-import { createTestableSettings, datamodel, report } from "../__fixtures__/fixtures"
+import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
 import { Subjects } from "./Subjects"
 
 function renderSubjects(reports) {
     const settings = createTestableSettings()
     return render(
-        <DataModel.Provider value={datamodel}>
+        <DataModel.Provider value={dataModel}>
             <Subjects
                 dates={[]}
                 history={history}

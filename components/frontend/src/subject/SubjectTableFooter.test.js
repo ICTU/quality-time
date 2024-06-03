@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import { Table } from "semantic-ui-react"
 
-import { datamodel, report } from "../__fixtures__/fixtures"
+import { dataModel, report } from "../__fixtures__/fixtures"
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
@@ -15,7 +15,7 @@ fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
 it("shows the add metric button and adds a metric when clicked", () => {
     const { getByText } = render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={datamodel}>
+            <DataModel.Provider value={dataModel}>
                 <Table>
                     <SubjectTableFooter
                         subjectUuid="subject_uuid"
@@ -37,7 +37,7 @@ it("shows the add metric button and adds a metric when clicked", () => {
 it("copies a metric when the copy button is clicked and a metric is selected", async () => {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={datamodel}>
+            <DataModel.Provider value={dataModel}>
                 <Table>
                     <SubjectTableFooter
                         subjectUuid="subject_uuid"
@@ -58,7 +58,7 @@ it("copies a metric when the copy button is clicked and a metric is selected", a
 
 it("moves a metric when the move button is clicked and a metric is selected", async () => {
     render(
-        <DataModel.Provider value={datamodel}>
+        <DataModel.Provider value={dataModel}>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <Table>
                     <SubjectTableFooter

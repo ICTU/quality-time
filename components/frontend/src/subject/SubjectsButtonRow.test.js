@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 
-import { createTestableSettings, datamodel, report } from "../__fixtures__/fixtures"
+import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
@@ -31,7 +31,7 @@ beforeEach(() => {
 function renderSubjectsButtonRow(permissions = []) {
     render(
         <Permissions.Provider value={permissions}>
-            <DataModel.Provider value={datamodel}>
+            <DataModel.Provider value={dataModel}>
                 <SubjectsButtonRow report={report} reports={[report]} settings={createTestableSettings()} />
             </DataModel.Provider>
         </Permissions.Provider>,

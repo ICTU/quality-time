@@ -8,7 +8,7 @@ import { Source } from "./Source"
 
 jest.mock("../api/fetch_server_api.js")
 
-const datamodel = {
+const dataModel = {
     metrics: {
         metric_type: { sources: ["source_type1", "source_type2"] },
         unsupported_metric: { sources: [] },
@@ -25,7 +25,7 @@ const report = { report_uuid: "report_uuid", subjects: {} }
 function renderSource(metric, props) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={datamodel}>
+            <DataModel.Provider value={dataModel}>
                 <Source metric={metric} report={report} source_uuid="source_uuid" {...props} />
             </DataModel.Provider>
         </Permissions.Provider>,

@@ -25,7 +25,7 @@ const metric2 = {
     name: "name_2",
     type: "metric_type",
 }
-const datamodel = {
+const dataModel = {
     metrics: {
         metric_type: { name: "Metric type", sources: ["source_type"], tags: [] },
     },
@@ -50,7 +50,7 @@ function renderSubjectTable({ dates = [], expandedItems = null } = {}) {
     }
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={datamodel}>
+            <DataModel.Provider value={dataModel}>
                 <SubjectTable
                     dates={dates}
                     handleSort={jest.fn()}

@@ -37,7 +37,7 @@ const report = {
     },
 }
 
-const data_model = {
+const dataModel = {
     sources: {
         source_type: {
             name: "The source",
@@ -83,7 +83,7 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error) {
     await act(async () =>
         render(
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <DataModel.Provider value={data_model}>
+                <DataModel.Provider value={dataModel}>
                     <MetricDetails
                         metric_uuid="metric_uuid"
                         report={report}

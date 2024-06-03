@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { DataModel } from "../context/DataModel"
 import { SourceEntities } from "./SourceEntities"
 
-const data_model = {
+const dataModel = {
     sources: {
         source_type: {
             entities: {
@@ -94,7 +94,7 @@ function assertOrder(expected) {
 
 function renderSourceEntities() {
     render(
-        <DataModel.Provider value={data_model}>
+        <DataModel.Provider value={dataModel}>
             <SourceEntities metric={metric} report={{ issue_tracker: null }} source={source} />
         </DataModel.Provider>,
     )

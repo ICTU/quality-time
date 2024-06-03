@@ -12,7 +12,7 @@ beforeEach(() => {
     history.push("?expanded=subject_uuid:0")
 })
 
-const datamodel = {
+const dataModel = {
     subjects: {
         subject_type: { name: "Default subject type" },
         subject_type2: { name: "Other subject type" },
@@ -37,7 +37,7 @@ async function renderSubjectTitle(subject_type = "subject_type") {
     await act(async () => {
         render(
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <DataModel.Provider value={datamodel}>
+                <DataModel.Provider value={dataModel}>
                     <SubjectTitle
                         report={report}
                         settings={settings}

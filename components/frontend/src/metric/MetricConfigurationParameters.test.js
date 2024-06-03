@@ -8,7 +8,7 @@ import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
 
 jest.mock("../api/fetch_server_api.js")
 
-const data_model = {
+const dataModel = {
     scales: {
         count: { name: "Count" },
         percentage: { name: "Percentage" },
@@ -45,7 +45,7 @@ function renderMetricParameters(
 ) {
     render(
         <Permissions.Provider value={permissions}>
-            <DataModel.Provider value={data_model}>
+            <DataModel.Provider value={dataModel}>
                 <MetricConfigurationParameters
                     subject={{ type: "subject_type" }}
                     metric={{
@@ -144,7 +144,7 @@ it("sets the metric unit field for metrics with the percentage scale", async () 
 
 it("skips the metric unit field for metrics with the version number scale", () => {
     render(
-        <DataModel.Provider value={data_model}>
+        <DataModel.Provider value={dataModel}>
             <MetricConfigurationParameters
                 report={{ subjects: {} }}
                 subject={{ type: "subject_type" }}

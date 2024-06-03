@@ -21,11 +21,11 @@ import { LabelWithHelp } from "../widgets/LabelWithHelp"
 import { MetricType } from "./MetricType"
 import { Target } from "./Target"
 
-function metric_scale_options(metric_scales, datamodel) {
+function metric_scale_options(metric_scales, dataModel) {
     let scale_options = []
     metric_scales.forEach((scale) => {
-        let scale_name = datamodel.scales ? datamodel.scales[scale].name : "Count"
-        let scale_description = datamodel.scales ? datamodel.scales[scale].description : ""
+        let scale_name = dataModel.scales ? dataModel.scales[scale].name : "Count"
+        let scale_description = dataModel.scales ? dataModel.scales[scale].description : ""
         scale_options.push({
             content: <Header as="h4" content={scale_name} subheader={scale_description} />,
             key: scale,

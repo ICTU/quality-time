@@ -1,20 +1,20 @@
 import { getMetricName, getSourceName, getSubjectName } from "../utils"
 import { ItemBreadcrumb } from "./ItemBreadcrumb"
 
-export function metric_options(reports, datamodel, current_subject_type, current_subject_uuid) {
-    const subject_metrics = datamodel.subjects[current_subject_type].metrics
+export function metric_options(reports, dataModel, current_subject_type, current_subject_uuid) {
+    const subject_metrics = dataModel.subjects[current_subject_type].metrics
     let options = []
     reports.forEach((report) => {
         Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
             if (subject_uuid === current_subject_uuid) {
                 return
             }
-            const subject_name = getSubjectName(subject, datamodel)
+            const subject_name = getSubjectName(subject, dataModel)
             Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
                 if (!subject_metrics.includes(metric.type)) {
                     return
                 }
-                const metric_name = getMetricName(metric, datamodel)
+                const metric_name = getMetricName(metric, dataModel)
                 options.push({
                     content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} />,
                     key: metric_uuid,
@@ -74,14 +74,14 @@ export function source_options(reports, dataModel, currentMetricType, currentMet
     return options
 }
 
-export function subject_options(reports, datamodel, current_report_uuid) {
+export function subject_options(reports, dataModel, current_report_uuid) {
     let options = []
     reports.forEach((report) => {
         if (report.report_uuid === current_report_uuid) {
             return
         }
         Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-            const subject_name = getSubjectName(subject, datamodel)
+            const subject_name = getSubjectName(subject, dataModel)
             options.push({
                 content: <ItemBreadcrumb report={report.title} subject={subject_name} />,
                 key: subject_uuid,

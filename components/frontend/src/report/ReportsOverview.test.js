@@ -1,7 +1,7 @@
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
+import { createTestableSettings, dataModel } from "../__fixtures__/fixtures"
 import * as fetch_server_api from "../api/fetch_server_api"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
@@ -19,15 +19,6 @@ beforeEach(() => {
 
 afterEach(() => jest.restoreAllMocks())
 
-const datamodel = {
-    subjects: {
-        subject_type: { name: "Subject type", metrics: ["metric_type"] },
-    },
-    metrics: {
-        metric_type: { name: "Metric type", tags: [] },
-    },
-}
-
 function renderReportsOverview({ hiddenTags = null, reportDate = null, reports = [], reportsOverview = {} } = {}) {
     let settings = createTestableSettings()
     if (hiddenTags) {
@@ -35,7 +26,7 @@ function renderReportsOverview({ hiddenTags = null, reportDate = null, reports =
     }
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={datamodel}>
+            <DataModel.Provider value={dataModel}>
                 <ReportsOverview
                     dates={[reportDate || new Date()]}
                     lastUpdate={new Date()}
