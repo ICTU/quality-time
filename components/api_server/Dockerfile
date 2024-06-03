@@ -2,7 +2,7 @@ FROM python:3.12.3-alpine3.20 AS compile-image
 
 WORKDIR /home/server
 
-RUN apk add --no-cache gcc=13.2.1_git20231014-r0 g++=13.2.1_git20231014-r0 make=4.4.1-r2 libc-dev=0.7.2-r5 libffi-dev=3.4.4-r3
+RUN apk add --no-cache gcc=13.2.1_git20240309-r0 g++=13.2.1_git20240309-r0 make=4.4.1-r2 libffi-dev=3.4.6-r0
 # hadolint ignore=DL3059
 RUN python -m venv venv
 ENV PATH="/home/server/venv/bin:$PATH"
