@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
 
-import { datamodel, report } from "./__fixtures__/fixtures"
+import { dataModel, report } from "./__fixtures__/fixtures"
 import * as fetch_server_api from "./api/fetch_server_api"
 import { AppUI } from "./AppUI"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
@@ -25,7 +25,7 @@ it("handles sorting", async () => {
     await act(async () =>
         render(
             <AppUI
-                datamodel={datamodel}
+                dataModel={dataModel}
                 lastUpdate={new Date()}
                 report_date={null}
                 report_uuid="report_uuid"

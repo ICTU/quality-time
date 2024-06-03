@@ -8,7 +8,7 @@ import { MetricDebtParameters } from "./MetricDebtParameters"
 
 jest.mock("../api/fetch_server_api.js")
 
-const data_model = {
+const dataModel = {
     subjects: {
         subject_type: {
             metrics: ["violations", "source_version"],
@@ -35,7 +35,7 @@ const data_model = {
 function renderMetricDebtParameters({ accept_debt = false, debt_end_date = null } = {}) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={data_model}>
+            <DataModel.Provider value={dataModel}>
                 <MetricDebtParameters
                     metric={{
                         accept_debt: accept_debt,

@@ -59,7 +59,7 @@ export const STATUS_DESCRIPTION = {
 export const ISSUE_STATUS_COLORS = { todo: "grey", doing: "blue", done: "green", unknown: null }
 
 export function getMetricDirection(metric, dataModel) {
-    // Old versions of the datamodel may contain the unicode version of the direction, be prepared:
+    // Old versions of the data model may contain the unicode version of the direction, be prepared:
     return { "≦": "<", "≧": ">", "<": "<", ">": ">" }[metric.direction || dataModel.metrics[metric.type].direction]
 }
 
@@ -67,16 +67,16 @@ export function formatMetricDirection(metric, dataModel) {
     return { "<": "≦", ">": "≧" }[getMetricDirection(metric, dataModel)]
 }
 
-export function getMetricName(metric, datamodel) {
-    return metric.name || datamodel.metrics[metric.type].name
+export function getMetricName(metric, dataModel) {
+    return metric.name || dataModel.metrics[metric.type].name
 }
 
-export function getSourceName(source, datamodel) {
-    return source.name || datamodel.sources[source.type].name
+export function getSourceName(source, dataModel) {
+    return source.name || dataModel.sources[source.type].name
 }
 
-export function getSubjectName(subject, datamodel) {
-    return subject.name || datamodel.subjects[subject.type].name
+export function getSubjectName(subject, dataModel) {
+    return subject.name || dataModel.subjects[subject.type].name
 }
 
 export function getMetricTarget(metric) {

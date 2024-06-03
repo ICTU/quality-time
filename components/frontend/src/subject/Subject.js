@@ -32,7 +32,7 @@ import { CommentSegment } from "../widgets/CommentSegment"
 import { SubjectTable } from "./SubjectTable"
 import { SubjectTitle } from "./SubjectTitle"
 
-function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, measurements) {
+function sortMetrics(dataModel, metrics, sortDirection, sortColumn, report, measurements) {
     const status_order = {
         "": "0",
         target_not_met: "1",
@@ -43,13 +43,13 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
     }
     const sorters = {
         name: (m1, m2) => {
-            const m1_name = getMetricName(m1[1], datamodel)
-            const m2_name = getMetricName(m2[1], datamodel)
+            const m1_name = getMetricName(m1[1], dataModel)
+            const m2_name = getMetricName(m2[1], dataModel)
             return m1_name.localeCompare(m2_name)
         },
         measurement: (m1, m2) => {
-            const m1_measurement = getMetricValue(m1[1], datamodel)
-            const m2_measurement = getMetricValue(m2[1], datamodel)
+            const m1_measurement = getMetricValue(m1[1], dataModel)
+            const m2_measurement = getMetricValue(m2[1], dataModel)
             return m1_measurement.localeCompare(m2_measurement, undefined, { numeric: true })
         },
         target: (m1, m2) => {
@@ -68,9 +68,9 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_status.localeCompare(m2_status)
         },
         source: (m1, m2) => {
-            let m1SourceNames = Object.values(m1[1].sources).map((source) => getSourceName(source, datamodel))
+            let m1SourceNames = Object.values(m1[1].sources).map((source) => getSourceName(source, dataModel))
             sortWithLocaleCompare(m1SourceNames)
-            let m2SourceNames = Object.values(m2[1].sources).map((source) => getSourceName(source, datamodel))
+            let m2SourceNames = Object.values(m2[1].sources).map((source) => getSourceName(source, dataModel))
             sortWithLocaleCompare(m2SourceNames)
             return m1SourceNames.join().localeCompare(m2SourceNames.join())
         },
@@ -85,8 +85,8 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_tags.localeCompare(m2_tags)
         },
         unit: (m1, m2) => {
-            const m1_unit = getMetricUnit(m1[1], datamodel)
-            const m2_unit = getMetricUnit(m2[1], datamodel)
+            const m1_unit = getMetricUnit(m1[1], dataModel)
+            const m2_unit = getMetricUnit(m2[1], dataModel)
             return m1_unit.localeCompare(m2_unit)
         },
         time_left: (m1, m2) => {
@@ -95,8 +95,8 @@ function sortMetrics(datamodel, metrics, sortDirection, sortColumn, report, meas
             return m1_time_left - m2_time_left
         },
         overrun: (m1, m2) => {
-            const m1_overrun = getMetricResponseOverrun(m1[0], m1[1], report, measurements, datamodel)
-            const m2_overrun = getMetricResponseOverrun(m2[0], m2[1], report, measurements, datamodel)
+            const m1_overrun = getMetricResponseOverrun(m1[0], m1[1], report, measurements, dataModel)
+            const m2_overrun = getMetricResponseOverrun(m2[0], m2[1], report, measurements, dataModel)
             return m1_overrun.totalOverrun - m2_overrun.totalOverrun
         },
     }

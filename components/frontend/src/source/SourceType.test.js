@@ -7,7 +7,7 @@ import { SourceType } from "./SourceType"
 
 jest.mock("../api/fetch_server_api.js")
 
-const data_model = {
+const dataModel = {
     metrics: {
         violations: {
             sources: ["sonarqube", "gitlab"],
@@ -35,7 +35,7 @@ const data_model = {
 function renderSourceType(metricType, sourceType, mockSetSourceAttribute) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={data_model}>
+            <DataModel.Provider value={dataModel}>
                 <SourceType
                     metric_type={metricType}
                     source_type={sourceType}

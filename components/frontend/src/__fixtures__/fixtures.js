@@ -21,7 +21,7 @@ import {
     useSortDirectionURLSearchQuery,
 } from "../app_ui_settings"
 
-export const datamodel = {
+export const dataModel = {
     subjects: {
         subject_type: { name: "Subject type", metrics: ["metric_type"] },
     },

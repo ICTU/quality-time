@@ -8,7 +8,7 @@ import { MetricType } from "./MetricType"
 
 jest.mock("../api/fetch_server_api.js")
 
-const data_model = {
+const dataModel = {
     subjects: {
         subject_type: {
             metrics: ["violations", "source_version"],
@@ -42,7 +42,7 @@ const data_model = {
 function renderMetricType(metricType) {
     render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={data_model}>
+            <DataModel.Provider value={dataModel}>
                 <MetricType
                     subjectType="subject_type"
                     metricType={metricType}

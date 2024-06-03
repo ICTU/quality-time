@@ -26,7 +26,7 @@ import { getReportsTags, getUserPermissions, userPrefersDarkMode } from "./utils
 
 export function AppUI({
     changed_fields,
-    datamodel,
+    dataModel,
     email,
     handleDateChange,
     lastUpdate,
@@ -112,7 +112,7 @@ export function AppUI({
                 />
                 <ToastContainer theme="colored" />
                 <Permissions.Provider value={user_permissions}>
-                    <DataModel.Provider value={datamodel}>
+                    <DataModel.Provider value={dataModel}>
                         <PageContent
                             changed_fields={changed_fields}
                             current_report={current_report}
@@ -138,7 +138,7 @@ export function AppUI({
 }
 AppUI.propTypes = {
     changed_fields: stringsPropType,
-    datamodel: object,
+    dataModel: object,
     email: string,
     handleDateChange: func,
     lastUpdate: datePropType,

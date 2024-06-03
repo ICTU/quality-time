@@ -6,7 +6,7 @@ import history from "history/browser"
 import { Component } from "react"
 
 import { login } from "./api/auth"
-import { get_datamodel } from "./api/datamodel"
+import { getDataModel } from "./api/datamodel"
 import { nr_measurements_api } from "./api/measurement"
 import { get_report, get_reports_overview } from "./api/report"
 import { AppUI } from "./AppUI"
@@ -18,7 +18,7 @@ class App extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            datamodel: {},
+            dataModel: {},
             lastUpdate: new Date(),
             reports: [],
             report_uuid: "",
@@ -75,17 +75,17 @@ class App extends Component {
     loadAndSetState(show_error) {
         const report_uuid = this.state.report_uuid
         const reportDate = this.state.report_date
-        Promise.all([get_datamodel(reportDate), get_reports_overview(reportDate), get_report(report_uuid, reportDate)])
-            .then(([data_model, reports_overview, reports]) => {
+        Promise.all([getDataModel(reportDate), get_reports_overview(reportDate), get_report(report_uuid, reportDate)])
+            .then(([dataModel, reports_overview, reports]) => {
                 if (this.state.report_uuid !== report_uuid) {
                     return // User navigated to a different report or to the overview page, cancel update
                 }
-                if (data_model.ok === false || reports.ok === false) {
+                if (dataModel.ok === false || reports.ok === false) {
                     show_error()
                 } else {
                     const now = new Date()
                     this.setState({
-                        datamodel: data_model,
+                        dataModel: dataModel,
                         lastUpdate: now,
                         loading: false,
                         reports: reports.reports || [],
@@ -235,7 +235,7 @@ class App extends Component {
         return (
             <AppUI
                 changed_fields={this.changed_fields}
-                datamodel={this.state.datamodel}
+                dataModel={this.state.dataModel}
                 email={this.state.email}
                 openReportsOverview={() => this.openReportsOverview()}
                 handleDateChange={(date) => this.handleDateChange(date)}
