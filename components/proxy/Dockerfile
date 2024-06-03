@@ -1,4 +1,4 @@
-ARG IMAGE_NAME=nginx
+ARG IMAGE_NAME=nginxinc/nginx-unprivileged
 ARG IMAGE_VERSION=1.27.0-alpine3.19-slim
 FROM $IMAGE_NAME:$IMAGE_VERSION
 

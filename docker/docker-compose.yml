@@ -4,7 +4,7 @@ services:
   www:
     image: ictu/quality-time_proxy:${QUALITY_TIME_VERSION}
     ports:
-      - "${PROXY_PORT:-80}:80"
+      - "80:8080"
     environment:
       - FRONTEND_HOST=${FRONTEND_HOST:-frontend}
       - FRONTEND_PORT=${FRONTEND_PORT:-5000}
@@ -89,7 +89,7 @@ services:
     image: ictu/quality-time_renderer:${QUALITY_TIME_VERSION}
     environment:
       - PROXY_HOST=${PROXY_HOST:-www}
-      - PROXY_PORT=${PROXY_PORT:-80}
+      - PROXY_PORT=${PROXY_PORT:-8080}
       - LC_ALL=${LC_ALL:-en_GB.UTF-8}  # Set the date format in the PDF export to DD-MM-YYYY
       - TZ=${TZ:-Europe/Amsterdam}  # Make the PDF export use the correct timezone
     volumes:
