@@ -95,7 +95,7 @@ SONARQUBE = Source(
     description="SonarQube is an open-source platform for continuous inspection of code quality to perform automatic "
     "reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming "
     "languages.",
-    supported_versions_description=">=10.2",
+    supported_versions_description="≥10.2",
     url=HttpUrl("https://www.sonarqube.org"),
     configuration={
         "commented_out_rules": Configuration(
