@@ -27,12 +27,17 @@ To deploy *Quality-time* locally, follow these steps:
 5. Go to http://localhost to access the application.
 6. To log in, use one of the default users available in the [test LDAP server](software.md#test-ldap-server).
 
-```{note}
-By default, the application listens internally on port 8080.
+Internally, the application listens on port 80 by default.
 To change this, set the `PROXY_PORT` environment variable to a different port before starting the application.
-For example: `export PROXY_PORT=8000`.
-Externally, the application listens on port 80.
-This can be changed in the default port mapping of the `www` service in the compose file.
+For example: `export PROXY_PORT=8080`.
+Externally, the application listens on port 80 by default.
+To changes this, adapt the default port mapping of the `www` service in the compose file.
+For example:
+
+```yaml
+  www:
+    ports:
+      - "1080:${PROXY_PORT:-80}"
 ```
 
 ## Configuring authentication (mandatory)
@@ -166,7 +171,7 @@ The date/time format and timezone of the reports that a user sees are determined
   renderer:
     environment:
       - PROXY_HOST=www  # Hostname of service
-      - PROXY_PORT=8080  # Port of service
+      - PROXY_PORT=80  # Port of service
       - PROXY_PROTOCOL=http  # http/https
 ```
 

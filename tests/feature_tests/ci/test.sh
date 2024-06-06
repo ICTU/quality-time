@@ -7,6 +7,7 @@
 
 mkdir -p build
 export COVERAGE_RCFILE="$(pwd)"/tests/feature_tests/.coveragerc
+export PROXY_PORT=8080
 docker compose build --progress quiet database api_server renderer frontend www
 docker compose up --detach database ldap
 cd components/api_server || exit

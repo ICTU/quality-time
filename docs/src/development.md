@@ -127,9 +127,8 @@ python src/quality_time_notifier.py
 
 ##### Running the proxy component
 
-The `proxy` component is mapped to the `www` service in the docker compose file.
-This container runs an unprivileged version of Nginx on port 8080, so it does not require additional capabilities.
-Because the base image assumes it is internally running on port 8080, this is not configurable.
+The `proxy` component is mapped to the `www` service in the docker compose file, which runs on port 80 by default.
+This container runs an unprivileged version of Nginx, which will not require additional capabilities when ran on a higher port by specifying `PROXY_PORT`.
 
 #### Preparing the shared component
 
