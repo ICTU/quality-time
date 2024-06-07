@@ -3,11 +3,11 @@ name = "api_server"
 version = "5.13.0"
 dependencies = [
     "bottle==0.12.25",
-    "cryptography==42.0.7",
+    "cryptography==42.0.8",
     "gevent==24.2.1",
     "ldap3==2.9.1",
     "lxml[html_clean]==5.2.2",
-    "pymongo==4.7.2",
+    "pymongo==4.7.3",
     "requests==2.32.3"
 ]
 
@@ -27,8 +27,8 @@ tools = [
     "bandit==1.7.8",
     "mypy==1.10.0",
     "pip-audit==2.7.3",
-    "ruff==0.4.7",
-    "safety==3.2.0",
+    "ruff==0.4.8",
+    "safety==3.2.1",
     "vulture==2.11"
 ]
 
