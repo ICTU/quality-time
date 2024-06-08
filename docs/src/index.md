@@ -37,6 +37,7 @@ reference.md
 ```{toctree}
 :maxdepth: 1
 :caption: Technical documentation 🛠
+versioning.md
 deployment.md
 development.md
 software.md

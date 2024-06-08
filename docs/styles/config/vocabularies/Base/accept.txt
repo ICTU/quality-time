@@ -4,6 +4,7 @@ Caddy
 Checkmarx
 Cobertura
 Dependabot
+Docker-composition
 Dockerfile
 DTDs
 ESLint

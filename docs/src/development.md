@@ -471,13 +471,15 @@ python release.py --help
 
 ### Decide the release type
 
-*Quality-time* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html), so first you need to decide on the type of release you want to create:
+*Quality-time* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html), so first you need to decide on the type of release you want to create, conform the [release policy](versioning.md#major-minor-and-patch-releases).
 
-- Create a **major** release if the next release contains backwards incompatible changes, and optionally other changes and bug fixes.
-- Create a **minor** release if the next release contains non-breaking changes, and optionally bug fixes.
-- Create a **patch** release if the next release contains bug fixes only.
+- Create a **major** release if an operator needs to make manual changes to the Docker-composition before deploying the next release.
+- Create a **minor** release if the next release contains new or changed functionality.
+- Create a **patch** release if the next release contains only bug fixes.
 
 If you want to test the release (for example, deploy it to a test environment, or roll out a release to early adopters), it's possible to create a **release candidate** for a major, minor, or patch release.
+
+If the release type is major, minor, or patch, update the [version overview](versioning.md#version-overview).
 
 ```{important}
 To determine whether a release is major, minor, or patch, compare the changes to the [previous most recent release](changelog.md), excluding release candidates.
@@ -534,7 +536,7 @@ Base images used in the Docker containers, and additionally installed software, 
 - [Collector](https://github.com/ICTU/quality-time/blob/master/components/collector/Dockerfile): the Python base image.
 - [Notifier](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile): the Python base image.
 - [Frontend](https://github.com/ICTU/quality-time/blob/master/components/frontend/Dockerfile): the Node base image, the curl version, the npm version, and the serve version.
-- [Database](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile): the MongoDB base image.
+- [Database](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile): the {index}`MongoDB` base image.
 - [Proxy](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile): the Nginx base image.
 - [Renderer](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile): the Node base image, the curl version, the Chromium version, and the npm version.
 - [Test data](https://github.com/ICTU/quality-time/blob/master/components/testdata/Dockerfile): the Python base image.

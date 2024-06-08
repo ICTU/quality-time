@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Deployment notes
 
-If your currently installed *Quality-time* version is v4.10.0 or older, please read the v5.0.0 deployment notes first.
+If your currently installed *Quality-time* version is not v5.13.0, please first check the upgrade path in the [versioning policy](versioning.md).
 
 ### Fixed
 
@@ -23,6 +23,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 - Group digits in numbers. Closes [#8076](https://github.com/ICTU/quality-time/issues/8076).
 - In the measurement entity status menu, the description of the menu items would say "undefined days" if the desired response time for the status had not been changed from its default value. Fixes [#8284](https://github.com/ICTU/quality-time/issues/8284).
+- Added a [versioning policy](versioning.md) to the documentation. Closes [#8748](https://github.com/ICTU/quality-time/issues/8748).
 - Allow for specifying supported source versions in the data model. Show the supported source version in the UI and the reference documentation. Closes [#8786](https://github.com/ICTU/quality-time/issues/8786).
 
 ### Changed
@@ -338,7 +339,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 
 If your currently installed *Quality-time* version is v4.0.0 or older, please read the v4.0.0 deployment notes first.
 
-In this version of *Quality-time* the internal server component is no longer used. The notifier and collector components talk directly to the database, instead of using the internal server. This means that the docker composition **must** be changed:
+In this version of *Quality-time* the internal server component is no longer used. The notifier and collector components talk directly to the database, instead of using the internal server. This means that the Docker-composition **must** be changed:
 
 - Remove the `internal_server` section.
 - Rename the `external_server` section to `api_server` and make the following changes in that section:
@@ -646,7 +647,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 
 If your currently installed *Quality-time* version is not v3.37.0, please read the v3.37.0 deployment notes first.
 
-This version of *Quality-time* splits the server component into two: an external server component serving the external API and an internal server component serving the collector and notifier components. This means that the docker composition **must** be changed:
+This version of *Quality-time* splits the server component into two: an external server component serving the external API and an internal server component serving the collector and notifier components. This means that the Docker-composition **must** be changed:
 
 - Rename the `server` service to `external_server`.
   - Use the image `ictu/quality-time_external_server`.
@@ -1153,7 +1154,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Changed
 
-- Wrap the database (MongoDB), proxy (Caddy) and renderer (url-to-pdf-api) in *Quality-time* images, so these components have the same version number as the other components and don't need to be updated by downstream maintainers separately. Note that your Docker composition needs to be changed once to use these new *Quality-time* images. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml). Closes [#1770](https://github.com/ICTU/quality-time/issues/1770).
+- Wrap the database (MongoDB), proxy (Caddy) and renderer (url-to-pdf-api) in *Quality-time* images, so these components have the same version number as the other components and don't need to be updated by downstream maintainers separately. Note that your Docker-composition needs to be changed once to use these new *Quality-time* images. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml). Closes [#1770](https://github.com/ICTU/quality-time/issues/1770).
 - Increase render timeout so that larger reports can be exported to PDF. Closes [#1771](https://github.com/ICTU/quality-time/issues/1771).
 - Add no-cache option for /api/v3/logo to the Caddy configuration.
 
@@ -1273,7 +1274,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 ### Added
 
 - Support for Forwarded Authentication in a situation where *Quality-time* is behind a reverse proxy that is responsible for authentication. See the [deployment instructions](deployment.md#forwarded-authentication).
-- Notifications of new red metrics to Microsoft Teams, using webhooks. See the [user manual](usage.md#notifications). Note that your Docker composition needs to be changed to include the new notifier component. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) and the [deployment instructions](deployment.md). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
+- Notifications of new red metrics to Microsoft Teams, using webhooks. See the [user manual](usage.md#notifications). Note that your Docker-composition needs to be changed to include the new notifier component. See the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml) and the [deployment instructions](deployment.md). Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 
 ## v3.9.0 - 2020-10-11
 
@@ -1482,7 +1483,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Changed
 
-- Moved the Copy and Move buttons next to the Add buttons, making the UI more consistent. This also allows the user to copy an existing item to the right position in one go, instead of having to copy and then move it. To support adding items by copying an existing item, the API has been updated to version 3. Version 2 of the API is deprecated. See <http://quality-time.example.org/api/>, <http://quality-time.example.org/api/v2>, and <http://quality-time.example.org/api/v3>. Note that your Docker composition may need to be changed to use the new API version. See the Caddy proxy configuration in the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml). Closes [#1197](https://github.com/ICTU/quality-time/issues/1197).
+- Moved the Copy and Move buttons next to the Add buttons, making the UI more consistent. This also allows the user to copy an existing item to the right position in one go, instead of having to copy and then move it. To support adding items by copying an existing item, the API has been updated to version 3. Version 2 of the API is deprecated. See <http://quality-time.example.org/api/>, <http://quality-time.example.org/api/v2>, and <http://quality-time.example.org/api/v3>. Note that your Docker-composition may need to be changed to use the new API version. See the Caddy proxy configuration in the example [docker-compose.yml](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml). Closes [#1197](https://github.com/ICTU/quality-time/issues/1197).
 
 ### Fixed
 

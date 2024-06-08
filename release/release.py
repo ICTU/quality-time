@@ -31,7 +31,7 @@ def get_version() -> str:
     return latest_tag.tag.tag.strip("v")
 
 
-def parse_arguments() -> tuple[str, bool]:
+def parse_arguments() -> tuple[str, str, bool]:
     """Return the command line arguments."""
     current_version = get_version()
     description = f"Release Quality-time. Current version is {current_version}."
@@ -42,7 +42,8 @@ def parse_arguments() -> tuple[str, bool]:
   - the workspace has no uncommitted changes
   - the workspace has no untracked files
   - the changelog has an '[Unreleased]' header
-  - the changelog contains no release candidates"""
+  - the changelog contains no release candidates
+  - the new release has been added to the version overview"""
     parser = ArgumentParser(description=description, epilog=epilog, formatter_class=RawDescriptionHelpFormatter)
     allowed_bumps_in_rc_mode = ["rc", "rc-major", "rc-minor", "rc-patch", "drop-rc"]  # rc = release candidate
     allowed_bumps = ["rc-patch", "rc-minor", "rc-major", "patch", "minor", "major"]
@@ -52,10 +53,10 @@ def parse_arguments() -> tuple[str, bool]:
         "-c", "--check-preconditions-only", action="store_true", help="only check the preconditions and then exit"
     )
     arguments = parser.parse_args()
-    return arguments.bump, arguments.check_preconditions_only
+    return arguments.bump, current_version, arguments.check_preconditions_only
 
 
-def check_preconditions(bump: str) -> None:
+def check_preconditions(bump: str, current_version: str) -> None:
     """Check preconditions for version bump."""
     messages = []
     release_folder = get_release_folder()
@@ -64,6 +65,7 @@ def check_preconditions(bump: str) -> None:
     root = release_folder.parent
     messages.extend(failed_preconditions_repo(root))
     messages.extend(failed_preconditions_changelog(bump, root))
+    messages.extend(failed_preconditions_version_overview(current_version, root))
     if messages:
         formatted_messages = "\n".join([f"- {message}" for message in messages])
         sys.exit(f"Please fix these issues before releasing Quality-time:\n{formatted_messages}\n")
@@ -105,11 +107,31 @@ def failed_preconditions_changelog(bump: str, root: pathlib.Path) -> list[str]:
     return messages
 
 
+def failed_preconditions_version_overview(current_version: str, root: pathlib.Path) -> list[str]:
+    """Check that the version overview is properly prepared."""
+    version_overview = root / "docs" / "src" / "versioning.md"
+    with version_overview.open() as version_overview_file:
+        version_overview_lines = version_overview_file.readlines()
+    missing = f"The version overview ({version_overview}) does not contain"
+    previous_line = ""
+    for line in version_overview_lines:
+        if line.startswith(f"| v{current_version} "):
+            if previous_line.startswith("| v"):
+                today = datetime.date.today().isoformat()
+                release_date = previous_line.split(" | ")[1].strip()
+                if release_date != today:  # Second column is the release date column
+                    return [f"{missing} the release date. Expected today: '{today}', found: '{release_date}'."]
+                return []  # All good: current version, next version, and release date found
+            return [f"{missing}) the new version."]
+        previous_line = line
+    return [f"{missing} the current version ({current_version})."]
+
+
 def main() -> None:
     """Create the release."""
     os.environ["RELEASE_DATE"] = datetime.date.today().isoformat()  # Used by bump-my-version to update CHANGELOG.md
-    bump, check_preconditions_only = parse_arguments()
-    check_preconditions(bump)
+    bump, current_version, check_preconditions_only = parse_arguments()
+    check_preconditions(bump, current_version)
     if check_preconditions_only:
        return
     # See https://github.com/callowayproject/bump-my-version?tab=readme-ov-file#add-support-for-pre-release-versions
