@@ -35,6 +35,7 @@ If your currently installed *Quality-time* version is not v5.13.0, please first 
 
   In addition:
   - A new parameter 'clean code attributes category' is added.
+- Set the MongoDB feature compatibility version to v7. Closes [#8896](https://github.com/ICTU/quality-time/issues/8896).
 
 ## v5.13.0 - 2024-05-23
 
