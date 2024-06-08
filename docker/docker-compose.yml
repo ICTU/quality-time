@@ -1,4 +1,4 @@
-# Base docker composition. For development, this composition is augmented in docker-compose.override.yml.
+# Base Docker-composition. For development, this composition is augmented in docker-compose.override.yml.
 
 services:
   www:

@@ -378,13 +378,11 @@ The proxy uses the following environment variables:
 
 ## Database
 
-The database component consists of a [Mongo](https://www.mongodb.com) database to store reports and measurements.
+The database component consists of a [MongoDB](https://www.mongodb.com) database to store reports and measurements.
 
-The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile) wraps the MongoDB image in a *Quality-time* image so the MongoDB version number can be changed when needed.
+The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile) wraps the {index}`MongoDB` image in a *Quality-time* image so the MongoDB version number can be changed when needed.
 
 *Quality-time* stores its data in a Mongo database using the following collections: `datamodels`, `measurements`, `reports`, `reports_overviews`, and `sessions`.
-
-The two server components are the only components that directly interacts with the database.
 
 Data models, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the data model is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the API-server to retrieve the documents as they were at a specific moment in time and provide time-travel functionality.
 
@@ -425,7 +423,7 @@ This component contains test data for the example reports. The Docker image is p
 
 ### Running the test data component
 
-The test data component is started as part of the [docker composition](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.override.yml) for development, see the [developer manual](development.md).
+The test data component is started as part of the [Docker-composition](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.override.yml) for development, see the [developer manual](development.md).
 
 To serve the test data locally, you can also start a web server from a console, for example:
 

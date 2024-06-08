@@ -2,13 +2,21 @@
 
 This document describes how to deploy, and if needed move, the *Quality-time* application. It is aimed at *Quality-time* operators.
 
-*Quality-time* consists of a set of Docker containers that together form the application. See the [software documentation](software.md) for an overview of the different containers. It is assumed the containers are deployed using a docker-composition. An alternative deployment based on a Helm chart and intended for an OpenShift (Kubernetes) cluster is described in the [Helm for OpenShift README](https://github.com/ICTU/quality-time/tree/master/openshift/helm/README.md).
+*Quality-time* consists of a set of Docker containers that together form the application. See the [software documentation](software.md) for an overview of the different containers. It is assumed the containers are deployed using a Docker-composition. An alternative deployment based on a Helm chart and intended for an OpenShift (Kubernetes) cluster is described in the [Helm for OpenShift README](https://github.com/ICTU/quality-time/tree/master/openshift/helm/README.md).
 
 *Quality-time* furthermore assumes an LDAP service is available to authenticate users or that forwarded authentication is used.
+
+```{warning}
+Before skipping versions or downgrading, see the [version policy](versioning.md).
+```
 
 ## Docker-composition
 
 This document assumes docker-compose is used to deploy the containers. The [docker folder](https://github.com/ICTU/quality-time/tree/master/docker) of the *Quality-time* repository contains different compose files for running *Quality-time* in development and continuous integration mode. You can use these compose files as basis for your own deployment configuration.
+
+```{note}
+Per the [version policy](versioning.md), if the Docker-composition needs changes, this will be indicated by a new major release of *Quality-time*.
+```
 
 To deploy *Quality-time* locally, follow these steps:
 
@@ -126,7 +134,7 @@ By default, the notifier wakes up every minute to check for changed metric statu
 
 ## Configuring MongoDB credentials (optional)
 
-The default MongoDB credentials can be changed as follows:
+The default {index}`MongoDB` credentials can be changed as follows:
 
 ```yaml
   database:
@@ -139,7 +147,7 @@ See the [documentation on the MongoDB image](https://hub.docker.com/_/mongo) for
 
 ## Configuring renderer localisation (optional)
 
-The date/time format and timezone of the reports that user sees are determined by the user's browser. To configure the date/time format and timezone of exported PDFs, the renderer can be configured as follows:
+The date/time format and timezone of the reports that a user sees are determined by the user's browser. To configure the date/time format and timezone of exported PDFs, the renderer can be configured as follows:
 
 ```yaml
   renderer:
