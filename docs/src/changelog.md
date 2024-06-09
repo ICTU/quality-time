@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Fixed
 
 - In the dropdown of the "Add metric" button, keep the two checkboxes next to each other regardless of the width of the menu. Fixes [#8745](https://github.com/ICTU/quality-time/issues/8745).
+- The icon of the trend graph tab would not be shown. Closes [#8822](https://github.com/ICTU/quality-time/issues/8822).
 
 ### Added
 

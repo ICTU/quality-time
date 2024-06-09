@@ -191,7 +191,7 @@ export function MetricDetails({
             panes.push({
                 menuItem: (
                     <Menu.Item key="trend_graph">
-                        <Icon name="line graph" />
+                        <Icon name="linegraph" />
                         <FocusableTab>{"Trend graph"}</FocusableTab>
                     </Menu.Item>
                 ),
