@@ -587,7 +587,7 @@ class SourceTest(SourceTestCase):
         self.assertEqual((SOURCE_ID, source), next(iter(target_metric["sources"].items())))
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, METRIC_ID2, SOURCE_ID]
         description = (
-            f"Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report 'Report' to metric "
+            "Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report 'Report' to metric "
             f"'{self.target_metric_name}' of subject 'Subject' in report 'Report'."
         )
         updated_report = self.database.reports.insert_one.call_args[0][0]
@@ -604,7 +604,7 @@ class SourceTest(SourceTestCase):
         self.assertEqual((SOURCE_ID, source), next(iter(target_metric["sources"].items())))
         uuids = [REPORT_ID, SUBJECT_ID, SUBJECT_ID2, METRIC_ID, METRIC_ID2, SOURCE_ID]
         description = (
-            f"Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report 'Report' to metric "
+            "Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report 'Report' to metric "
             f"'{self.target_metric_name}' of subject 'Target subject' in report 'Report'."
         )
         updated_report = self.database.reports.insert_one.call_args[0][0]

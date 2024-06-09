@@ -6,6 +6,9 @@ source ../../ci/base.sh
 run pipx run `spec ruff` check .
 run pipx run `spec ruff` format --check .
 
+# Fixit
+run pipx run `spec fixit` lint src tests
+
 # Mypy
 # pipx run can't be used because mypy needs the pydantic plugin to be installed in the same venv (using pipx inject)
 run pipx install --force `spec mypy`  # --force works around this bug: https://github.com/pypa/pipx/issues/795

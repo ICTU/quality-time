@@ -65,13 +65,13 @@ class MeasurementsTest(DataModelTestCase):
         """Test inserting a measurement without id."""
         measurement = Measurement(self.metric)
         inserted_measurement = insert_new_measurement(self.database_mock, measurement)
-        self.assertFalse("_id" in inserted_measurement)
+        self.assertNotIn("_id", inserted_measurement)
 
     def test_insert_new_measurement_with_id(self):
         """Test inserting a measurement with id."""
         measurement = Measurement(self.metric, {"_id": "measurement_id"})
         inserted_measurement = insert_new_measurement(self.database_mock, measurement)
-        self.assertFalse("_id" in inserted_measurement)
+        self.assertNotIn("_id", inserted_measurement)
 
     def test_insert_new_measurement_removes_source_parameter_hash_from_previous_measurement(self):
         """Test that inserting a measurement also removes the source parameter hash from the previous measurement."""
