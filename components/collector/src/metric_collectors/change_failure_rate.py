@@ -25,7 +25,7 @@ class ChangeFailureRate(MetricCollector):
         issues = self.issue_entities(measurement.sources)
         deployments = self.deployment_entities(measurement.sources)
         if deployments:
-            deployments.sort(key=lambda d: self.deployment_timestamp(d))  # oldest to newest
+            deployments.sort(key=self.deployment_timestamp)  # oldest to newest
             for this_dep, next_dep in pairwise(deployments):  # only iterate if there are at least two deployments
                 this_dep["failed"] = self.issues_in_interval(
                     issues,

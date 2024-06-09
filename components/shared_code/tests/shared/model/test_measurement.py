@@ -248,7 +248,7 @@ class MeasurementTest(MeasurementTestCase):
         measurement_2.copy_entity_user_data(measurement_1)
         for source in measurement_2.sources():
             if source["source_uuid"] == SOURCE_ID:
-                self.assertTrue("entity_user_data" in source)
+                self.assertIn("entity_user_data", source)
 
     def test_copy_first_seen_timestamps(self):
         """Test that the first seen timestamps can be copied."""

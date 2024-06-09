@@ -128,7 +128,7 @@ class DataModel(BaseModel):
         quality_time_source_names = set(self.sources["quality_time"].parameters["source_type"].values or [])
         if all_source_names != quality_time_source_names:
             msg = (
-                f"Parameter source_type of source quality_time doesn't list source types: "
+                "Parameter source_type of source quality_time doesn't list source types: "
                 f"{', '.join(all_source_names - quality_time_source_names)}"
             )
             raise ValueError(msg)

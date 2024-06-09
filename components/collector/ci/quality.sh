@@ -6,6 +6,9 @@ source ../../ci/base.sh
 run pipx run `spec ruff` check .
 run pipx run `spec ruff` format --check .
 
+# Fixit
+run pipx run `spec fixit` lint src tests
+
 # Mypy
 run pipx run `spec mypy` --python-executable=$(which python) src tests
 
