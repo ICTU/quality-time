@@ -50,7 +50,7 @@ class App extends Component {
             reportDate = new Date(report_date_iso_string)
             reportDate.setHours(23, 59, 59)
         }
-        this.login_forwardauth()
+        this.loginForwardAuth()
         this.initUserSession()
         this.connectToNrMeasurementsEventSource()
         this.setState({ report_uuid: report_uuid, report_date: reportDate, loading: true }, () => this.reload())
@@ -92,6 +92,7 @@ class App extends Component {
                         reports_overview: reports_overview,
                     })
                 }
+                return null
             })
             .catch(show_error)
     }
@@ -99,7 +100,7 @@ class App extends Component {
     check_session(json) {
         if (json.ok === false && json.status === 401) {
             this.setUserSession()
-            if (this.login_forwardauth() === false) {
+            if (this.loginForwardAuth() === false) {
                 showMessage("warning", "Your session expired", "Please log in to renew your session")
             }
         }
@@ -173,14 +174,17 @@ class App extends Component {
         })
     }
 
-    login_forwardauth() {
+    loginForwardAuth() {
         let self = this
-        login("", "").then(function (json) {
-            if (json.ok) {
-                self.setUserSession(json.email, json.email, new Date(json.session_expiration_datetime))
-                return true
-            }
-        })
+        login("", "")
+            .then(function (json) {
+                if (json.ok) {
+                    self.setUserSession(json.email, json.email, new Date(json.session_expiration_datetime))
+                    return true
+                }
+                return false
+            })
+            .catch((error) => showMessage("error", "Login with forward authentication failed", `${error}`))
         return false
     }
 

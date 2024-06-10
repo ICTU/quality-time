@@ -34,5 +34,5 @@ it("does not propagate a click event", () => {
         </button>,
     )
     fireEvent.click(screen.getByText(/Link/))
-    expect(eventHandler).not.toBeCalled()
+    expect(eventHandler).not.toHaveBeenCalled()
 })

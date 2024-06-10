@@ -9,7 +9,7 @@ import { showMessage } from "../widgets/toast"
 
 function download_pdf(report_uuid, query_string, callback) {
     const reportId = report_uuid ? `report-${report_uuid}` : "reports-overview"
-    get_report_pdf(report_uuid, query_string)
+    return get_report_pdf(report_uuid, query_string)
         .then((response) => {
             if (response.ok === false) {
                 showMessage(
@@ -26,7 +26,9 @@ function download_pdf(report_uuid, query_string, callback) {
                 a.download = `Quality-time-${reportId}-${local_now.toISOString().split(".")[0]}.pdf`
                 a.click()
             }
+            return null
         })
+        .catch((error) => showMessage("error", "Could not fetch PDF report", `${error}`))
         .finally(() => callback())
 }
 

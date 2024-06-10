@@ -28,6 +28,7 @@ function Login({ set_user }) {
                 } else {
                     setError("credentials")
                 }
+                return null
             })
             .catch(function (_error) {
                 setError("connection")
@@ -99,7 +100,8 @@ function Logout({ user, email, set_user }) {
                     text: "Logout",
                     icon: "log out",
                     onClick: () => {
-                        logout().then(() => set_user(null))
+                        logout()
+                        set_user(null)
                     },
                 },
             ]}

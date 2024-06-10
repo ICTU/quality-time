@@ -7,9 +7,9 @@ import { AppUI } from "./AppUI"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 
 beforeEach(() => {
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) })
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({
+        then: jest.fn().mockReturnValue({ catch: jest.fn().mockReturnValue({ finally: jest.fn() }) }),
+    })
     mockGetAnimations()
     history.push("")
 })

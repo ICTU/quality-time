@@ -90,11 +90,11 @@ it("shows help", async () => {
     })
 })
 
-function assertVisible(...matchers) {
+function expectVisible(...matchers) {
     matchers.forEach((matcher) => expect(screen.queryAllByText(matcher).length).toBe(1))
 }
 
-function assertNotVisible(...matchers) {
+function expectNotVisible(...matchers) {
     matchers.forEach((matcher) => expect(screen.queryAllByText(matcher).length).toBe(0))
 }
 
@@ -102,7 +102,7 @@ it("shows help for evaluated metric without tech debt", async () => {
     renderMetricTarget({ type: "violations", target: "10", near_target: "15" })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(
+        expectVisible(
             /Target met/,
             /≦ 10 violations/,
             /Near target met/,
@@ -110,7 +110,7 @@ it("shows help for evaluated metric without tech debt", async () => {
             /Target not met/,
             /> 15 violations/,
         )
-        assertNotVisible(/Debt target met/)
+        expectNotVisible(/Debt target met/)
     })
 })
 
@@ -124,7 +124,7 @@ it("shows help for evaluated metric with tech debt", async () => {
     })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(
+        expectVisible(
             /Target met/,
             /≦ 10 violations/,
             /Debt target met/,
@@ -141,7 +141,7 @@ it("shows help for evaluated metric with tech debt if debt target is missing", a
     renderMetricTarget({ type: "violations", target: "10", near_target: "20", accept_debt: true })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(
+        expectVisible(
             /Target met/,
             /≦ 10 violations/,
             /Near target met/,
@@ -149,7 +149,7 @@ it("shows help for evaluated metric with tech debt if debt target is missing", a
             /Target not met/,
             /> 20 violations/,
         )
-        assertNotVisible(/Debt target met/)
+        expectNotVisible(/Debt target met/)
     })
 })
 
@@ -164,7 +164,7 @@ it("shows help for evaluated metric with tech debt with end date", async () => {
     })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(
+        expectVisible(
             /Target met/,
             /≦ 10 violations/,
             /Debt target met/,
@@ -188,7 +188,7 @@ it("shows help for evaluated metric with tech debt with end date in the past", a
     })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(
+        expectVisible(
             /Target met/,
             /≦ 10 violations/,
             /Near target met/,
@@ -196,7 +196,7 @@ it("shows help for evaluated metric with tech debt with end date in the past", a
             /Target not met/,
             /> 20 violations/,
         )
-        assertNotVisible(/Debt target met/)
+        expectNotVisible(/Debt target met/)
     })
 })
 
@@ -210,7 +210,7 @@ it("shows help for evaluated metric with tech debt completely overlapping near t
     })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(
+        expectVisible(
             /Target met/,
             /≦ 10 violations/,
             /Debt target met/,
@@ -218,7 +218,7 @@ it("shows help for evaluated metric with tech debt completely overlapping near t
             /Target not met/,
             /> 20 violations/,
         )
-        assertNotVisible(/Near target met/)
+        expectNotVisible(/Near target met/)
     })
 })
 
@@ -226,8 +226,8 @@ it("shows help for evaluated metric without tech debt and target completely over
     renderMetricTarget({ type: "violations", target: "10", near_target: "10" })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(/Target met/, /≦ 10 violations/, /Target not met/, /> 10 violations/)
-        assertNotVisible(/Debt target met/, /Near target met/)
+        expectVisible(/Target met/, /≦ 10 violations/, /Target not met/, /> 10 violations/)
+        expectNotVisible(/Debt target met/, /Near target met/)
     })
 })
 
@@ -235,7 +235,7 @@ it("shows help for evaluated more-is-better metric without tech debt", async () 
     renderMetricTarget({ type: "violations", target: "15", near_target: "10", direction: ">" })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(
+        expectVisible(
             /Target not met/,
             /< 10 violations/,
             /Near target met/,
@@ -243,7 +243,7 @@ it("shows help for evaluated more-is-better metric without tech debt", async () 
             /Target met/,
             /≧ 15 violations/,
         )
-        assertNotVisible(/Debt target met/)
+        expectNotVisible(/Debt target met/)
     })
 })
 
@@ -258,7 +258,7 @@ it("shows help for evaluated more-is-better metric with tech debt", async () => 
     })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(
+        expectVisible(
             /Target not met/,
             /< 5 violations/,
             /Near target met/,
@@ -281,7 +281,7 @@ it("shows help for evaluated more-is-better metric with tech debt and missing de
     })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(
+        expectVisible(
             /Target not met/,
             /< 5 violations/,
             /Near target met/,
@@ -289,7 +289,7 @@ it("shows help for evaluated more-is-better metric with tech debt and missing de
             /Target met/,
             /≧ 15 violations/,
         )
-        assertNotVisible(/Debt target met/)
+        expectNotVisible(/Debt target met/)
     })
 })
 
@@ -304,7 +304,7 @@ it("shows help for evaluated more-is-better metric with tech debt completely ove
     })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(
+        expectVisible(
             /Target not met/,
             /< 5 violations/,
             /Debt target met/,
@@ -312,7 +312,7 @@ it("shows help for evaluated more-is-better metric with tech debt completely ove
             /Target met/,
             /≧ 15 violations/,
         )
-        assertNotVisible(/Near target met/)
+        expectNotVisible(/Near target met/)
     })
 })
 
@@ -320,8 +320,8 @@ it("shows help for evaluated more-is-better metric without tech debt and target 
     renderMetricTarget({ type: "violations", target: "15", near_target: "15", direction: ">" })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(/Target not met/, /< 15 violations/, /Target met/, /≧ 15 violations/)
-        assertNotVisible(/Near target met/, /Debt target met/)
+        expectVisible(/Target not met/, /< 15 violations/, /Target met/, /≧ 15 violations/)
+        expectNotVisible(/Near target met/, /Debt target met/)
     })
 })
 
@@ -329,8 +329,8 @@ it("shows help for evaluated metric without tech debt and zero target completely
     renderMetricTarget({ type: "violations", target: "0", near_target: "0", direction: ">" })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(/Target met/, /≧ 0 violations/)
-        assertNotVisible(/Debt target met/, /Near target met/, /Target not met/)
+        expectVisible(/Target met/, /≧ 0 violations/)
+        expectNotVisible(/Debt target met/, /Near target met/, /Target not met/)
     })
 })
 
@@ -338,7 +338,7 @@ it("shows help for informative metric", async () => {
     renderMetricTarget({ type: "violations", evaluate_targets: false })
     await userEvent.tab()
     await waitFor(() => {
-        assertVisible(/Informative/, /violations are not evaluated/)
-        assertNotVisible(/Target met/, /Debt target met/, /Near target met/, /Target not met/)
+        expectVisible(/Informative/, /violations are not evaluated/)
+        expectNotVisible(/Target met/, /Debt target met/, /Near target met/, /Target not met/)
     })
 })

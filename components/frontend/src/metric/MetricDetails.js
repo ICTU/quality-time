@@ -22,6 +22,7 @@ import { Sources } from "../source/Sources"
 import { getMetricScale, getSourceName } from "../utils"
 import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
 import { FocusableTab } from "../widgets/FocusableTab"
+import { showMessage } from "../widgets/toast"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
 import { MetricDebtParameters } from "./MetricDebtParameters"
 import { MetricTypeHeader } from "./MetricTypeHeader"
@@ -58,11 +59,14 @@ Buttons.propTypes = {
 }
 
 function fetchMeasurements(reportDate, metric_uuid, setMeasurements) {
-    get_metric_measurements(metric_uuid, reportDate).then(function (json) {
-        if (json.ok !== false) {
-            setMeasurements(json.measurements)
-        }
-    })
+    get_metric_measurements(metric_uuid, reportDate)
+        .then(function (json) {
+            if (json.ok !== false) {
+                setMeasurements(json.measurements)
+            }
+            return null
+        })
+        .catch((error) => showMessage("error", "Could not fetch measurements", `${error}`))
 }
 fetchMeasurements.propTypes = {
     reportDate: datePropType,

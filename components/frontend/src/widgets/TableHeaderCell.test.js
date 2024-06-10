@@ -23,12 +23,12 @@ function renderSortableTableHeaderCell(help) {
     )
 }
 
-it("shows the label", () => {
+it("shows the label of the sortable header", () => {
     renderSortableTableHeaderCell()
     expect(screen.queryAllByText(/Header/).length).toBe(1)
 })
 
-it("shows the help", async () => {
+it("shows the help of the sortable header", async () => {
     renderSortableTableHeaderCell("Help")
     await userEvent.hover(screen.queryByText(/Header/))
     await waitFor(() => {
@@ -48,12 +48,12 @@ function renderUnsortableTableHeaderCell(help) {
     )
 }
 
-it("shows the label", () => {
+it("shows the label of the unsortable header", () => {
     renderUnsortableTableHeaderCell()
     expect(screen.queryAllByText(/Header/).length).toBe(1)
 })
 
-it("shows the help", async () => {
+it("shows the help of the unsortable header", async () => {
     renderUnsortableTableHeaderCell("Help")
     await userEvent.hover(screen.queryByText(/Header/))
     await waitFor(() => {

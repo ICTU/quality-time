@@ -85,7 +85,7 @@ const source = {
     },
 }
 
-function assertOrder(expected) {
+function expectOrder(expected) {
     const rows = screen.getAllByText(/AAA|BBB|CCC/)
     for (let index = 0; index < expected.length; index++) {
         expect(rows[index]).toHaveTextContent(expected[index].repeat(3))
@@ -102,101 +102,101 @@ function renderSourceEntities() {
 
 it("sorts the entities by status", async () => {
     renderSourceEntities()
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Entity name status/))
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Entity name status/))
-    assertOrder(["A", "B", "C"])
+    expectOrder(["A", "B", "C"])
 })
 
 it("sorts the entities by status end date", async () => {
     renderSourceEntities()
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Status end date/))
-    assertOrder(["A", "C", "B"])
+    expectOrder(["A", "C", "B"])
     await userEvent.click(screen.getByText(/Status end date/))
-    assertOrder(["B", "C", "A"])
+    expectOrder(["B", "C", "A"])
 })
 
 it("sorts the entities by status rationale", async () => {
     renderSourceEntities()
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/Status rationale/))
-    assertOrder(["A", "C", "B"])
+    expectOrder(["A", "C", "B"])
     await userEvent.click(screen.getByText(/Status rationale/))
-    assertOrder(["B", "C", "A"])
+    expectOrder(["B", "C", "A"])
 })
 
 it("sorts the entities by first seen date", async () => {
     renderSourceEntities()
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/first seen/))
-    assertOrder(["C", "A", "B"])
+    expectOrder(["C", "A", "B"])
     await userEvent.click(screen.getByText(/first seen/))
-    assertOrder(["B", "A", "C"])
+    expectOrder(["B", "A", "C"])
 })
 
 it("sorts the entities by integer", async () => {
     renderSourceEntities()
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/integer/))
-    assertOrder(["C", "A", "B"])
+    expectOrder(["C", "A", "B"])
     await userEvent.click(screen.getByText(/integer/))
-    assertOrder(["B", "A", "C"])
+    expectOrder(["B", "A", "C"])
 })
 
 it("sorts the entities by integer percentage", async () => {
     renderSourceEntities()
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/int percentage/))
-    assertOrder(["C", "A", "B"])
+    expectOrder(["C", "A", "B"])
     await userEvent.click(screen.getByText(/int percentage/))
-    assertOrder(["B", "A", "C"])
+    expectOrder(["B", "A", "C"])
 })
 
 it("sorts the entities by float", async () => {
     renderSourceEntities()
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/float/))
-    assertOrder(["A", "B", "C"])
+    expectOrder(["A", "B", "C"])
     await userEvent.click(screen.getByText(/float/))
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
 })
 
 it("sorts the entities by text", async () => {
     renderSourceEntities()
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/text/))
-    assertOrder(["A", "B", "C"])
+    expectOrder(["A", "B", "C"])
     await userEvent.click(screen.getByText(/text/))
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
 })
 
 it("sorts the entities by date", async () => {
     renderSourceEntities()
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/date only/))
-    assertOrder(["C", "A", "B"])
+    expectOrder(["C", "A", "B"])
     await userEvent.click(screen.getByText(/date only/))
-    assertOrder(["B", "A", "C"])
+    expectOrder(["B", "A", "C"])
 })
 
 it("sorts the entities by datetime", async () => {
     renderSourceEntities()
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/datetime/))
-    assertOrder(["C", "A", "B"])
+    expectOrder(["C", "A", "B"])
     await userEvent.click(screen.getByText(/datetime/))
-    assertOrder(["B", "A", "C"])
+    expectOrder(["B", "A", "C"])
 })
 
 it("sorts the entities by minutes", async () => {
     renderSourceEntities()
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/minutes/))
-    assertOrder(["C", "B", "A"])
+    expectOrder(["C", "B", "A"])
     await userEvent.click(screen.getByText(/minutes/))
-    assertOrder(["A", "B", "C"])
+    expectOrder(["A", "B", "C"])
 })
 
 it("shows help", async () => {

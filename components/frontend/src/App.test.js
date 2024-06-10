@@ -33,6 +33,9 @@ beforeAll(() => {
 
 beforeEach(() => {
     history.push("")
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({
+        then: jest.fn().mockReturnValue({ catch: jest.fn().mockReturnValue({ finally: jest.fn() }) }),
+    })
 })
 
 afterEach(() => {
@@ -40,9 +43,6 @@ afterEach(() => {
 })
 
 it("shows spinner", async () => {
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) })
     render(<App />)
     expect(screen.getAllByLabelText(/Loading/).length).toBe(1)
 })
@@ -81,18 +81,12 @@ it("resets the user when the user clicks logout", async () => {
 })
 
 it("handles a date change", async () => {
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) })
     render(<App />)
     await userEvent.type(screen.getByPlaceholderText("YYYY-MM-DD"), "2020-03-13")
     expect(screen.getAllByDisplayValue("2020-03-13").length).toBe(1)
 })
 
 it("handles a date change between two dates in the past", async () => {
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) })
     history.push("/?report_date=2022-03-13")
     render(<App />)
     await userEvent.type(screen.getByPlaceholderText("YYYY-MM-DD"), "{Backspace}4")
@@ -100,18 +94,12 @@ it("handles a date change between two dates in the past", async () => {
 })
 
 it("reads the report date query parameter", () => {
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) })
     history.push("/?report_date=2020-03-13")
     render(<App />)
     expect(screen.getAllByDisplayValue("2020-03-13").length).toBe(1)
 })
 
 it("handles a date reset", async () => {
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) })
     history.push("/?report_date=2020-03-13")
     render(<App />)
     await act(async () => {
@@ -134,9 +122,6 @@ it("handles the nr of measurements event source", async () => {
     const showMessage = jest.spyOn(toast, "showMessage")
     global.EventSource = jest.fn(() => eventSourceInstance)
 
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) })
     render(<App />)
     await act(async () => eventListeners["init"]({ data: 42 }))
     expect(showMessage).toHaveBeenCalledWith(

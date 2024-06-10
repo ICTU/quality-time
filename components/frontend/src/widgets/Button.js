@@ -154,9 +154,8 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
                                 newIndex = Math.min(selectedItem + 1, options.length - 1)
                             }
                             setSelectedItem(newIndex)
-                            event.target
-                                .querySelectorAll("[role='option']")
-                                [newIndex]?.scrollIntoView({ block: "nearest" })
+                            const activeMenuItem = event.target.querySelectorAll("[role='option']")[newIndex]
+                            activeMenuItem?.scrollIntoView({ block: "nearest" })
                         }
                         if (event.key === "Enter") {
                             onClick(options[selectedItem].value)
@@ -373,14 +372,10 @@ export function PermLinkButton({ url }) {
                 as="div"
                 labelPosition="right"
                 onClick={() =>
-                    navigator.clipboard.writeText(url).then(
-                        function () {
-                            showMessage("success", "Copied URL to clipboard")
-                        },
-                        function () {
-                            showMessage("error", "Failed to copy URL to clipboard")
-                        },
-                    )
+                    navigator.clipboard
+                        .writeText(url)
+                        .then(() => showMessage("success", "Copied URL to clipboard"))
+                        .catch((error) => showMessage("error", "Could not copy URL to clipboard", `${error}`))
                 }
             >
                 <Button basic content="Copy" icon="copy" primary />
