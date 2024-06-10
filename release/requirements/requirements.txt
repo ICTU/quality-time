@@ -151,9 +151,9 @@ rich==13.7.1 \
     # via
     #   bump-my-version
     #   rich-click
-rich-click==1.8.2 \
-    --hash=sha256:8e29bdede858b59aa2859a1ab1c4ccbd39ed7ed5870262dae756fba6b5dc72e8 \
-    --hash=sha256:b57856f304e4fe0394b82d7ce0784450758f8c8b4e201ccc4320501cc201806b
+rich-click==1.8.3 \
+    --hash=sha256:636d9c040d31c5eee242201b5bf4f2d358bfae4db14bb22ec1cafa717cfd02cd \
+    --hash=sha256:6d75bdfa7aa9ed2c467789a0688bc6da23fbe3a143e19aa6ad3f8bac113d2ab3
     # via bump-my-version
 smmap==5.0.1 \
     --hash=sha256:dceeb6c0028fdb6734471eb07c0cd2aae706ccaecab45965ee83f11c8d3b1f62 \
@@ -163,9 +163,9 @@ tomlkit==0.12.5 \
     --hash=sha256:af914f5a9c59ed9d0762c7b64d3b5d5df007448eb9cd2edc8a46b1eafead172f \
     --hash=sha256:eef34fba39834d4d6b73c9ba7f3e4d1c417a4e56f89a7e96e090dd0d24b8fb3c
     # via bump-my-version
-typing-extensions==4.12.1 \
-    --hash=sha256:6024b58b69089e5a89c347397254e35f1bf02a907728ec7fee9bf0fe837d203a \
-    --hash=sha256:915f5e35ff76f56588223f15fdd5938f9a1cf9195c0de25130c627e4d597f6d1
+typing-extensions==4.12.2 \
+    --hash=sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d \
+    --hash=sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8
     # via
     #   pydantic
     #   pydantic-core
