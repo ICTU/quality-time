@@ -3,7 +3,7 @@ name = "shared_code"
 version = "5.13.0"
 dependencies = [
     "bottle==0.12.25",
-    "packaging==24.0",
+    "packaging==24.1",
     "pydantic==2.7.3",
     "pymongo==4.7.3",
     "python-dateutil==2.9.0.post0",
