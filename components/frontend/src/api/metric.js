@@ -2,7 +2,7 @@ import { showMessage } from "../widgets/toast"
 import { fetch_server_api } from "./fetch_server_api"
 
 export function add_metric(subject_uuid, metricType, reload) {
-    fetch_server_api("post", `metric/new/${subject_uuid}`, { type: metricType }).then(reload)
+    return fetch_server_api("post", `metric/new/${subject_uuid}`, { type: metricType }).then(reload)
 }
 
 export function copy_metric(metric_uuid, subject_uuid, reload) {
@@ -14,17 +14,17 @@ export function move_metric(metric_uuid, subject_uuid, reload) {
 }
 
 export function delete_metric(metric_uuid, reload) {
-    fetch_server_api("delete", `metric/${metric_uuid}`, {}).then(reload)
+    return fetch_server_api("delete", `metric/${metric_uuid}`, {}).then(reload)
 }
 
 export function set_metric_attribute(metric_uuid, attribute, value, reload) {
-    fetch_server_api("post", `metric/${metric_uuid}/attribute/${attribute}`, {
+    return fetch_server_api("post", `metric/${metric_uuid}/attribute/${attribute}`, {
         [attribute]: value,
     }).then(reload)
 }
 
 export function set_metric_debt(metric_uuid, value, reload) {
-    fetch_server_api("post", `metric/${metric_uuid}/debt`, { accept_debt: value }).then(reload)
+    return fetch_server_api("post", `metric/${metric_uuid}/debt`, { accept_debt: value }).then(reload)
 }
 
 export function add_metric_issue(metric_uuid, reload) {
@@ -34,8 +34,9 @@ export function add_metric_issue(metric_uuid, reload) {
             if (json.ok) {
                 window.open(json.issue_url)
             } else {
-                showMessage("error", `Error creating issue: ${json.error}`)
+                showMessage("error", "Could not create issue", json.error)
             }
+            return null
         })
         .then(reload)
 }

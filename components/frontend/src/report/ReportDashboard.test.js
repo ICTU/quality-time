@@ -116,7 +116,7 @@ it("does show the issues card with issue tracker", async () => {
     expect(screen.queryAllByText(/Issues/).length).toBe(1)
 })
 
-it("hides the issues card ", async () => {
+it("hides the issues card", async () => {
     history.push("?hidden_cards=issues")
     report["issue_tracker"] = { type: "jira" }
     renderDashboard({ reportToRender: report })

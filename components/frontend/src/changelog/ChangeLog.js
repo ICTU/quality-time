@@ -8,6 +8,7 @@ import { get_changelog } from "../api/changelog"
 import { Button, Feed, Form, Header, Segment } from "../semantic_ui_react_wrappers"
 import { Avatar } from "../widgets/Avatar"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
+import { showMessage } from "../widgets/toast"
 
 function Event({ description, email, timestamp }) {
     return (
@@ -50,11 +51,14 @@ function ChangeLogWithoutMemo({ report_uuid, subject_uuid, metric_uuid, source_u
         if (source_uuid) {
             uuids.source_uuid = source_uuid
         }
-        get_changelog(nrChanges, uuids).then(function (json) {
-            if (!didCancel) {
-                setChanges(json.changelog || [])
-            }
-        })
+        get_changelog(nrChanges, uuids)
+            .then(function (json) {
+                if (!didCancel) {
+                    setChanges(json.changelog || [])
+                }
+                return null
+            })
+            .catch((error) => showMessage("error", "Could not fetch changes", `${error}`))
         return () => {
             didCancel = true
         }

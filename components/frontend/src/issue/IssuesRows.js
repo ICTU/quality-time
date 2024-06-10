@@ -11,6 +11,7 @@ import { metricPropType, reportPropType } from "../sharedPropTypes"
 import { getMetricIssueIds } from "../utils"
 import { ActionButton } from "../widgets/Button"
 import { LabelWithHelp } from "../widgets/LabelWithHelp"
+import { showMessage } from "../widgets/toast"
 
 function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, metric_uuid, target, reload }) {
     return (
@@ -61,14 +62,17 @@ function IssueIdentifiers({ entityKey, issueTrackerInstruction, metric, metric_u
             allowAdditions
             onSearchChange={(query) => {
                 if (query) {
-                    get_report_issue_tracker_suggestions(report_uuid, query).then((suggestionsResponse) => {
-                        const suggestionOptions = suggestionsResponse.suggestions.map((s) => ({
-                            key: s.key,
-                            text: `${s.key}: ${s.text}`,
-                            value: s.key,
-                        }))
-                        setSuggestions(suggestionOptions)
-                    })
+                    get_report_issue_tracker_suggestions(report_uuid, query)
+                        .then((suggestionsResponse) => {
+                            const suggestionOptions = suggestionsResponse.suggestions.map((s) => ({
+                                key: s.key,
+                                text: `${s.key}: ${s.text}`,
+                                value: s.key,
+                            }))
+                            setSuggestions(suggestionOptions)
+                            return null
+                        })
+                        .catch((error) => showMessage("error", "Could not fetch issue identifiers", `${error}`))
                 } else {
                     setSuggestions([])
                 }

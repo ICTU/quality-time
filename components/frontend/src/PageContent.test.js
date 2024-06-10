@@ -70,7 +70,7 @@ it("shows the loading spinner", async () => {
     expect(screen.getAllByLabelText(/Loading/).length).toBe(1)
 })
 
-function checkMeasurementsCall(date, offset = 0) {
+function expectMeasurementsCall(date, offset = 0) {
     const minReportDate = new Date(date)
     minReportDate.setDate(minReportDate.getDate() - offset)
     minReportDate.setHours(minReportDate.getHours() - 1)
@@ -84,7 +84,7 @@ it("fetches measurements", async () => {
     const mockedDate = new Date("2022-04-27T16:00:05+0000")
     jest.setSystemTime(mockedDate)
     await renderPageContent({ report_date: null })
-    checkMeasurementsCall(mockedDate)
+    expectMeasurementsCall(mockedDate)
 })
 
 it("fetches measurements if nr dates > 1", async () => {
@@ -92,7 +92,7 @@ it("fetches measurements if nr dates > 1", async () => {
     jest.setSystemTime(mockedDate)
     history.push("?date_interval=1&nr_dates=2")
     await renderPageContent()
-    checkMeasurementsCall(mockedDate, 1)
+    expectMeasurementsCall(mockedDate, 1)
 })
 
 it("fetches measurements if time traveling", async () => {
@@ -100,7 +100,7 @@ it("fetches measurements if time traveling", async () => {
     jest.setSystemTime(mockedDate)
     const reportDate = new Date(2021, 3, 25)
     await renderPageContent({ report_date: reportDate })
-    checkMeasurementsCall(reportDate)
+    expectMeasurementsCall(reportDate)
 })
 
 it("fetches measurements if nr dates > 1 and time traveling", async () => {
@@ -109,5 +109,5 @@ it("fetches measurements if nr dates > 1 and time traveling", async () => {
     history.push("?date_interval=1&nr_dates=2")
     const reportDate = new Date(2022, 3, 25)
     await renderPageContent({ report_date: reportDate })
-    checkMeasurementsCall(reportDate, 1)
+    expectMeasurementsCall(reportDate, 1)
 })

@@ -28,7 +28,7 @@ it("shows the add metric button and adds a metric when clicked", () => {
     )
     fireEvent.click(getByText(/Add metric/))
     fireEvent.click(screen.getByText(/Metric type/))
-    expect(stopFilteringAndSorting).toBeCalled()
+    expect(stopFilteringAndSorting).toHaveBeenCalled()
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", {
         type: "metric_type",
     })

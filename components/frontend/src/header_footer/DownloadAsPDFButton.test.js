@@ -4,6 +4,12 @@ import history from "history/browser"
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DownloadAsPDFButton } from "./DownloadAsPDFButton"
 
+beforeEach(() => {
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({
+        then: jest.fn().mockReturnValue({ catch: jest.fn().mockReturnValue({ finally: jest.fn() }) }),
+    })
+})
+
 test("DownloadAsPDFButton has the correct label for reports overview", () => {
     render(<DownloadAsPDFButton />)
     expect(screen.getAllByLabelText(/reports overview as PDF/).length).toBe(1)
@@ -17,9 +23,6 @@ test("DownloadAsPDFButton has the correct label for a report", () => {
 const test_report = { report_uuid: "report_uuid" }
 
 test("DownloadAsPDFButton indicates loading on click", async () => {
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) })
     render(<DownloadAsPDFButton report={test_report} report_uuid="report_uuid" />)
     await act(async () => {
         fireEvent.click(screen.getByLabelText(/Download/))
@@ -34,9 +37,6 @@ test("DownloadAsPDFButton indicates loading on click", async () => {
 })
 
 test("DownloadAsPDFButton ignores unregistered query parameters", async () => {
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) })
     history.push("?unregister_key=value&nr_dates=4")
     render(<DownloadAsPDFButton report={test_report} report_uuid="report_uuid" />)
     await act(async () => {
@@ -51,9 +51,6 @@ test("DownloadAsPDFButton ignores unregistered query parameters", async () => {
 })
 
 test("DownloadAsPDFButton ignores a second click", async () => {
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) })
     render(<DownloadAsPDFButton report={test_report} />)
     await act(async () => {
         fireEvent.click(screen.getByLabelText(/Download/))

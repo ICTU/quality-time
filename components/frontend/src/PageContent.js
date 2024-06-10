@@ -15,6 +15,7 @@ import {
     settingsPropType,
     stringsPropType,
 } from "./sharedPropTypes"
+import { showMessage } from "./widgets/toast"
 
 function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
     const baseDate = reportDate ? new Date(reportDate) : new Date()
@@ -64,9 +65,9 @@ export function PageContent({
             })
             .at(0)
         minDate.setHours(minDate.getHours() - 1) // Get at least one hour of measurements
-        get_measurements(minDate, maxDate).then((json) => {
-            setMeasurements(json.measurements ?? [])
-        })
+        get_measurements(minDate, maxDate)
+            .then((json) => setMeasurements(json.measurements ?? []))
+            .catch((error) => showMessage("error", "Could not fetch measurements", `${error}`))
         // eslint-disable-next-line
     }, [report_date, nrMeasurements, settings.dateInterval.value, settings.nrDates.value])
     let content

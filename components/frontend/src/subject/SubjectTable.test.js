@@ -168,7 +168,7 @@ it("shows the comment column", () => {
     expect(screen.queryAllByText(/Comment/).length).toBe(1)
 })
 
-it("hides the source column", () => {
+it("hides the comment column", () => {
     history.push("?hidden_columns=comment")
     renderSubjectTable()
     expect(screen.queryAllByText(/Comment/).length).toBe(0)

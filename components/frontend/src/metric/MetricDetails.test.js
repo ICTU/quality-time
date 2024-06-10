@@ -3,14 +3,14 @@ import history from "history/browser"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as changelog_api from "../api/changelog"
+import * as fetch_server_api from "../api/fetch_server_api"
 import * as measurement_api from "../api/measurement"
-import * as metric_api from "../api/metric"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { MetricDetails } from "./MetricDetails"
 
+jest.mock("../api/fetch_server_api")
 jest.mock("../api/changelog.js")
-jest.mock("../api/metric.js")
 jest.mock("../api/measurement.js")
 
 const report = {
@@ -100,6 +100,11 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error) {
 
 beforeEach(() => {
     history.push("")
+    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({
+        then: jest.fn().mockReturnValue({
+            catch: jest.fn().mockReturnValue({ finally: jest.fn() }),
+        }),
+    })
 })
 
 it("switches tabs", async () => {
@@ -172,5 +177,5 @@ it("loads the changelog", async () => {
 it("calls the callback on delete", async () => {
     await renderMetricDetails()
     fireEvent.click(screen.getByText(/Delete metric/))
-    expect(metric_api.delete_metric).toHaveBeenCalled()
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("delete", "metric/metric_uuid", {})
 })
