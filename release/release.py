@@ -71,7 +71,7 @@ def parse_arguments() -> tuple[str, str, bool]:
     return arguments.bump, current_version, arguments.check_preconditions_only
 
 
-def check_preconditions(bump: str, current_version: str) -> None:
+def check_preconditions(bump: str, current_version: str, rc: bool = False) -> None:
     """Check preconditions for version bump."""
     messages = []
     release_folder = get_release_folder()
@@ -79,8 +79,9 @@ def check_preconditions(bump: str, current_version: str) -> None:
         messages.append(f"The current folder is not the release folder. Please change directory to {release_folder}.")
     root = release_folder.parent
     messages.extend(failed_preconditions_repo(root))
-    messages.extend(failed_preconditions_changelog(bump, root))
-    messages.extend(failed_preconditions_version_overview(current_version, root))
+    if not rc:
+        messages.extend(failed_preconditions_changelog(bump, root))
+        messages.extend(failed_preconditions_version_overview(current_version, root))
     if messages:
         formatted_messages = "\n".join([f"- {message}" for message in messages])
         sys.exit(f"Please fix these issues before releasing Quality-time:\n{formatted_messages}\n")
@@ -151,17 +152,19 @@ def main() -> None:
     """Create the release."""
     os.environ["RELEASE_DATE"] = utc_today().isoformat()  # Used by bump-my-version to update CHANGELOG.md
     bump, current_version, check_preconditions_only = parse_arguments()
-    check_preconditions(bump, current_version)
-    if check_preconditions_only:
-        return
     # See https://github.com/callowayproject/bump-my-version?tab=readme-ov-file#add-support-for-pre-release-versions
     # for how bump-my-version deals with pre-release versions
+    create_rc = False
     if bump.startswith("rc-"):
+        create_rc = True
         bump = bump.split("-", maxsplit=1)[1]  # Create a patch, minor, or major release candidate
     elif bump == "drop-rc":
         bump = "pre_release_label"  # Bump the pre-release label from "rc" to "final" (which is optional and omitted)
     elif bump == "rc":
         bump = "pre_release_number"  # Bump the release candidate number
+    check_preconditions(bump, current_version, create_rc)
+    if check_preconditions_only:
+        return
     subprocess.run(("bump-my-version", "bump", bump), check=True)  # noqa: S603
     subprocess.run(("git", "push", "--follow-tags"), check=True)  # noqa: S603
 
