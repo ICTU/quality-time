@@ -158,14 +158,26 @@ def main() -> None:
     if bump.startswith("rc-"):
         create_rc = True
         bump = bump.split("-", maxsplit=1)[1]  # Create a patch, minor, or major release candidate
-    elif bump == "drop-rc":
-        bump = "pre_release_label"  # Bump the pre-release label from "rc" to "final" (which is optional and omitted)
-    elif bump == "rc":
-        bump = "pre_release_number"  # Bump the release candidate number
     check_preconditions(bump, current_version, create_rc)
     if check_preconditions_only:
         return
-    subprocess.run(("bump-my-version", "bump", bump), check=True)  # noqa: S603
+    cmd = ["bump-my-version", "bump"]
+    if bump == "drop-rc":
+        cmd.append("pre_release_label")  # Bump the pre-release label from "rc" to "final" (being optional and omitted)
+    elif bump == "rc":
+        cmd.append("pre_release_number")  # Bump the release candidate number, when already on a -rc version
+    else:
+        cmd.append(bump)
+    if create_rc:
+        cmd.append("--no-tag")  # Don't tag last commit, because it will be amended
+    subprocess.run(cmd, check=True)  # noqa: S603
+    if create_rc:
+        changelog_path = "../docs/src/changelog.md"
+        subprocess.run(("git", "checkout", "HEAD~1", "--", changelog_path), check=True)
+        subprocess.run(("git", "add", changelog_path), check=True)
+        amend_output = subprocess.run(("git", "commit", "--amend", "--no-edit"), check=True, capture_output=True)
+        rc_tag_name = amend_output.stdout.split(b"\n")[0].split(b" ")[-1]  # the last word of the first output line
+        subprocess.run(("git", "tag", rc_tag_name), check=True)  # set the rc tag on the amended commit
     subprocess.run(("git", "push", "--follow-tags"), check=True)  # noqa: S603
 
 
