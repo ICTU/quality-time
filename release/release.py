@@ -79,8 +79,8 @@ def check_preconditions(bump: str, current_version: str, rc: bool = False) -> No
         messages.append(f"The current folder is not the release folder. Please change directory to {release_folder}.")
     root = release_folder.parent
     messages.extend(failed_preconditions_repo(root))
+    messages.extend(failed_preconditions_changelog(bump, root))
     if not rc:
-        messages.extend(failed_preconditions_changelog(bump, root))
         messages.extend(failed_preconditions_version_overview(current_version, root))
     if messages:
         formatted_messages = "\n".join([f"- {message}" for message in messages])
@@ -154,9 +154,8 @@ def main() -> None:
     bump, current_version, check_preconditions_only = parse_arguments()
     # See https://github.com/callowayproject/bump-my-version?tab=readme-ov-file#add-support-for-pre-release-versions
     # for how bump-my-version deals with pre-release versions
-    create_rc = False
+    create_rc = bump.startswith("rc")  # needs to be True for case "rc", and "rc-*"
     if bump.startswith("rc-"):
-        create_rc = True
         bump = bump.split("-", maxsplit=1)[1]  # Create a patch, minor, or major release candidate
     check_preconditions(bump, current_version, create_rc)
     if check_preconditions_only:
@@ -168,16 +167,12 @@ def main() -> None:
         cmd.append("pre_release_number")  # Bump the release candidate number, when already on a -rc version
     else:
         cmd.append(bump)
-    if create_rc:
-        cmd.append("--no-tag")  # Don't tag last commit, because it will be amended
     subprocess.run(cmd, check=True)  # noqa: S603
     if create_rc:
-        changelog_path = "../docs/src/changelog.md"
+        changelog_path = get_release_folder().parent / "docs" / "src" / "changelog.md"
         subprocess.run(("git", "checkout", "HEAD~1", "--", changelog_path), check=True)
         subprocess.run(("git", "add", changelog_path), check=True)
-        amend_output = subprocess.run(("git", "commit", "--amend", "--no-edit"), check=True, capture_output=True)
-        rc_tag_name = amend_output.stdout.split(b"\n")[0].split(b" ")[-1]  # the last word of the first output line
-        subprocess.run(("git", "tag", rc_tag_name), check=True)  # set the rc tag on the amended commit
+        subprocess.run(("git", "commit", "-m", "Reset changelog after producing release candidate"), check=True)
     subprocess.run(("git", "push", "--follow-tags"), check=True)  # noqa: S603
 
 
