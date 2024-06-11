@@ -107,7 +107,7 @@
                             "type": "testng",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/testng/testng-results.xml",
-                                "landing_url": "http://testdata:8000/reports/testng/testng-results.xml",
+                                "landing_url": "http://localhost:8000/reports/testng/testng-results.xml",
                                 "username": "",
                                 "password": "",
                                 "private_token": "",
@@ -167,7 +167,7 @@
                             "type": "testng",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/testng/testng-results.xml",
-                                "landing_url": "http://testdata:8000/reports/testng/testng-results.xml",
+                                "landing_url": "http://localhost:8000/reports/testng/testng-results.xml",
                                 "username": "",
                                 "password": "",
                                 "private_token": ""

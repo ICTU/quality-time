@@ -369,12 +369,13 @@ The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/componen
 
 The proxy uses the following environment variables:
 
-| Name              | Default value | Description                         |
-|:------------------|:--------------|:------------------------------------|
-| `FRONTEND_HOST`   | `frontend`    | The host name of the frontend.      |
-| `FRONTEND_PORT`   | `5000`        | The port the frontend listens on.   |
-| `API_SERVER_HOST` | `api_server`  | The hostname of the API-server.     |
-| `API_SERVER_PORT` | `5001`        | The port the API-server listens on. |
+| Name              | Default value | Description                                              |
+|:------------------|:--------------|:---------------------------------------------------------|
+| `PROXY_PORT`      | `80`          | Port of the proxy, within the internal (Docker) network. |
+| `FRONTEND_HOST`   | `frontend`    | The host name of the frontend.                           |
+| `FRONTEND_PORT`   | `5000`        | The port the frontend listens on.                        |
+| `API_SERVER_HOST` | `api_server`  | The hostname of the API-server.                          |
+| `API_SERVER_PORT` | `5001`        | The port the API-server listens on.                      |
 
 ## Database
 
@@ -409,13 +410,13 @@ The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/ren
 
 The renderer uses the following environment variables:
 
-| Name             | Default value | Description                                                                                                      |
-|:-----------------|:--------------|:-----------------------------------------------------------------------------------------------------------------|
-| `PROXY_HOST`     | `www`         | Hostname of the proxy. The renderer uses this to access the reports that need to be exported to PDF.             |
-| `PROXY_PORT`     | `80`          | Port of the proxy. The renderer uses this to access the reports that need to be exported to PDF.                 |
-| `PROXY_PROTOCOL` | `http`        | Protocol of the proxy. The renderer uses this to access the reports that need to be exported to PDF.             |
-| `LC_ALL`         |               | Set the date format in the PDF export. For example, to get DD-MM-YYYY use: `en_GB.UTF-8`.                        |
-| `TZ`             |               | Make the PDF export use the correct timezone. For example, to get Central European Time use: `Europe/Amsterdam`. |
+| Name             | Default value | Description                                                                                                                            |
+|:-----------------|:--------------|:---------------------------------------------------------------------------------------------------------------------------------------|
+| `PROXY_HOST`     | `www`         | Hostname of the proxy. The renderer uses this to access the reports that need to be exported to PDF.                                   |
+| `PROXY_PORT`     | `80`          | Port of the proxy, within the internal (Docker) network. The renderer uses this to access the reports that need to be exported to PDF. |
+| `PROXY_PROTOCOL` | `http`        | Protocol of the proxy. The renderer uses this to access the reports that need to be exported to PDF.                                   |
+| `LC_ALL`         |               | Set the date format in the PDF export. For example, to get DD-MM-YYYY use: `en_GB.UTF-8`.                                              |
+| `TZ`             |               | Make the PDF export use the correct timezone. For example, to get Central European Time use: `Europe/Amsterdam`.                       |
 
 ## Test data
 

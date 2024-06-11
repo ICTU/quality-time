@@ -56,7 +56,7 @@ docker compose up database ldap phpldapadmin mongo-express testdata
 
 {index}`Mongo-express` is served at [http://localhost:8081](http://localhost:8081) and can be used to inspect and edit the database contents.
 
-The test data is served at [http://localhost:8080](http://localhost:8080).
+The test data is served at [http://localhost:8000](http://localhost:8000).
 
 There are two users defined in the LDAP database:
 
@@ -124,6 +124,11 @@ python3 -m venv venv
 ci/pip-install.sh
 python src/quality_time_notifier.py
 ```
+
+##### Running the proxy component
+
+The `proxy` component is mapped to the `www` service in the docker compose file, which runs on port 80 by default.
+This container runs an unprivileged version of Nginx, which will not require additional capabilities when ran on a higher port by specifying `PROXY_PORT`.
 
 #### Preparing the shared component
 
