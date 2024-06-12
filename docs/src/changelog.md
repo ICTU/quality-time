@@ -57,6 +57,7 @@ If your currently installed *Quality-time* version is not v5.16.2, please first 
 
 ### Changed
 
+- When showing multiple dates while the "Metrics requiring action" setting is on, show metrics that required action on all visible dates, not just the most recent one. Closes [#6578](https://github.com/ICTU/quality-time/issues/6578).
 - Upgrade MongoDB from v7.0 to v8.0. Closes [#9960](https://github.com/ICTU/quality-time/issues/9960).
 
 ## v5.16.2 - 2024-10-03
