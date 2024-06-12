@@ -1,4 +1,4 @@
-import { array, bool, func, number, object, string } from "prop-types"
+import { bool, func, number, object, string } from "prop-types"
 import { useContext } from "react"
 
 import { DarkMode } from "../context/DarkMode"
@@ -16,6 +16,7 @@ import { Label, Popup, Table } from "../semantic_ui_react_wrappers"
 import {
     datesPropType,
     directionPropType,
+    measurementsPropType,
     metricPropType,
     optionalDatePropType,
     reportPropType,
@@ -195,7 +196,7 @@ function MeasurementCells({ dates, metric, metric_uuid, measurements, settings }
 }
 MeasurementCells.propTypes = {
     dates: datesPropType,
-    measurements: array,
+    measurements: measurementsPropType,
     metric_uuid: string,
     metric: metricPropType,
     settings: settingsPropType,
@@ -339,14 +340,14 @@ SubjectTableRow.propTypes = {
     handleSort: func,
     index: number,
     lastIndex: number,
-    measurements: array,
+    measurements: measurementsPropType,
     metric_uuid: string,
     metric: metricPropType,
     reload: func,
     report: reportPropType,
     reportDate: optionalDatePropType,
     reports: reportsPropType,
-    reversedMeasurements: array,
+    reversedMeasurements: measurementsPropType,
     settings: settingsPropType,
     subject_uuid: string,
 }

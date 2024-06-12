@@ -6,7 +6,7 @@ import { DataModel } from "../context/DataModel"
 import { CardDashboard } from "../dashboard/CardDashboard"
 import { LegendCard } from "../dashboard/LegendCard"
 import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
-import { datesPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
+import { datesPropType, measurementPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
 import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum, visibleMetrics } from "../utils"
 import { Tag } from "../widgets/Tag"
 import { metricStatusOnDate } from "./report_utils"
@@ -124,7 +124,7 @@ export function ReportsOverviewDashboard({
 ReportsOverviewDashboard.propTypes = {
     dates: datesPropType,
     layout: array,
-    measurements: array,
+    measurements: measurementPropType,
     onClickTag: func,
     openReport: func,
     reload: func,

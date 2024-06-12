@@ -1,4 +1,4 @@
-import { array, func } from "prop-types"
+import { func } from "prop-types"
 
 import { add_report, copy_report } from "../api/report"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
@@ -7,6 +7,7 @@ import { Segment } from "../semantic_ui_react_wrappers"
 import {
     datePropType,
     datesPropType,
+    measurementPropType,
     optionalDatePropType,
     reportsOverviewPropType,
     reportsPropType,
@@ -111,7 +112,7 @@ ReportsOverview.propTypes = {
     dates: datesPropType,
     handleSort: func,
     lastUpdate: datePropType,
-    measurements: array,
+    measurements: measurementPropType,
     reports: reportsPropType,
     openReport: func,
     reload: func,

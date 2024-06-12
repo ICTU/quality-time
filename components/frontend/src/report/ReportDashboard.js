@@ -1,4 +1,4 @@
-import { array, func } from "prop-types"
+import { func } from "prop-types"
 import { useContext } from "react"
 
 import { set_report_attribute } from "../api/report"
@@ -7,7 +7,7 @@ import { CardDashboard } from "../dashboard/CardDashboard"
 import { IssuesCard } from "../dashboard/IssuesCard"
 import { LegendCard } from "../dashboard/LegendCard"
 import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
-import { datesPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
+import { datesPropType, measurementPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
 import {
     getMetricTags,
     getReportTags,
@@ -112,7 +112,7 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
 }
 ReportDashboard.propTypes = {
     dates: datesPropType,
-    measurements: array,
+    measurements: measurementPropType,
     onClick: func,
     onClickTag: func,
     reload: func,
