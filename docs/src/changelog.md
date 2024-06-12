@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v5.14.0, please first check the upgrade path in the [versioning policy](versioning.md).
+
+#### Changed
+
+- When showing multiple dates while the "Metrics requiring action" setting is on, show metrics that required action on all visible dates, not just the most recent one. Closes [#6578](https://github.com/ICTU/quality-time/issues/6578).
+
 ## v5.14.0 - 2024-07-05
 
 ### Deployment notes
@@ -37,6 +47,7 @@ If your currently installed *Quality-time* version is not v5.13.0, please first 
 ### Changed
 
 - Rename the "CI-environment" subject type to "Development environment". Prepares for [#3130](https://github.com/ICTU/quality-time/issues/3130).
+- Use unprivileged container `nginxinc/nginx-unprivileged` as base for the proxy component, so that it does not require additional capabilities. Closes [#8857](https://github.com/ICTU/quality-time/issues/8857).
 - Migrate to the new SonarQube issue structure introduced in SonarQube 10.2. See the [release 10.2 upgrade notes](https://docs.sonarsource.com/sonarqube/latest/setup-and-upgrade/release-upgrade-notes/#release-10.2-upgrade-notes). Closes [#8354](https://github.com/ICTU/quality-time/issues/8354). Where possible, SonarQube parameters and parameter values are migrated automatically:
   - The 'severities' parameter is changed into 'impact severities' and the severity values are changed ('blocker' and 'critical' become 'high', 'major' becomes 'medium', and 'minor' and 'info' become 'low'). If a report contained separate metrics for e.g. 'blocker' and 'critical' violations before the upgrade to this version of *Quality-time*, then these metrics will both measure the number of issue with 'high' impact after the upgrade. Since these metrics probably still differ in other aspects (comments, tags, linked issues, etc.) it is up to the user to resolve this manually.
   - The 'types' parameter is changed into 'impacted software qualities' and the types are changed ('code smell' becomes 'maintainability', 'vulnerability' becomes 'security', and 'bug' becomes 'reliability').
