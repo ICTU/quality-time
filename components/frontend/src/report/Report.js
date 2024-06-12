@@ -1,9 +1,10 @@
-import { array, func } from "prop-types"
+import { func } from "prop-types"
 
 import { ExportCard } from "../dashboard/ExportCard"
 import {
     datePropType,
     datesPropType,
+    measurementPropType,
     optionalDatePropType,
     reportPropType,
     reportsPropType,
@@ -96,7 +97,7 @@ Report.propTypes = {
     dates: datesPropType,
     handleSort: func,
     lastUpdate: datePropType,
-    measurements: array,
+    measurements: measurementPropType,
     openReportsOverview: func,
     reload: func,
     report: reportPropType,

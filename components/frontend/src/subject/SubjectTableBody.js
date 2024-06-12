@@ -3,6 +3,7 @@ import { array, func, string } from "prop-types"
 import { Table } from "../semantic_ui_react_wrappers"
 import {
     datesPropType,
+    measurementsPropType,
     optionalDatePropType,
     reportPropType,
     reportsPropType,
@@ -57,13 +58,13 @@ SubjectTableBody.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
     handleSort: func,
-    measurements: array,
+    measurements: measurementsPropType,
     metricEntries: array,
     reload: func,
     report: reportPropType,
     reportDate: optionalDatePropType,
     reports: reportsPropType,
-    reversedMeasurements: array,
+    reversedMeasurements: measurementsPropType,
     settings: settingsPropType,
     subject_uuid: string,
 }

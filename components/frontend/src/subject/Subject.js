@@ -1,11 +1,12 @@
 import "./Subject.css"
 
-import { array, bool, func, string } from "prop-types"
+import { bool, func, string } from "prop-types"
 import { useContext } from "react"
 
 import { DataModel } from "../context/DataModel"
 import {
     datesPropType,
+    measurementsPropType,
     metricsPropType,
     optionalDatePropType,
     reportPropType,
@@ -201,7 +202,7 @@ Subject.propTypes = {
     firstSubject: bool,
     handleSort: func,
     lastSubject: bool,
-    measurements: array,
+    measurements: measurementsPropType,
     report: reportPropType,
     report_date: optionalDatePropType,
     reports: reportsPropType,

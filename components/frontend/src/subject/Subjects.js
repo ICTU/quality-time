@@ -1,8 +1,9 @@
-import { array, bool, func } from "prop-types"
+import { bool, func } from "prop-types"
 
 import { useDelayedRender } from "../hooks/delayed_render"
 import {
     datesPropType,
+    measurementsPropType,
     optionalDatePropType,
     reportsPropType,
     settingsPropType,
@@ -59,7 +60,7 @@ Subjects.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
     handleSort: func,
-    measurements: array,
+    measurements: measurementsPropType,
     reload: func,
     reports: reportsPropType,
     reportsToShow: reportsPropType,
