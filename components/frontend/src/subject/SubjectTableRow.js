@@ -14,6 +14,8 @@ import { TrendSparkline } from "../measurement/TrendSparkline"
 import { MetricDetails } from "../metric/MetricDetails"
 import { Label, Popup, Table } from "../semantic_ui_react_wrappers"
 import {
+    dataModelPropType,
+    datePropType,
     datesPropType,
     directionPropType,
     measurementsPropType,
@@ -153,6 +155,35 @@ DeltaCell.propTypes = {
     status: string,
 }
 
+function measurementOnDate(metric_uuid, measurements, date) {
+    const isoDateString = date.toISOString().split("T")[0]
+    return measurements?.find((m) => {
+        return (
+            m.metric_uuid === metric_uuid &&
+            m.start.split("T")[0] <= isoDateString &&
+            isoDateString <= m.end.split("T")[0]
+        )
+    })
+}
+measurementOnDate.propTypes = {
+    metric_uuid: string,
+    measurements: measurementsPropType,
+    date: datePropType,
+}
+
+function metricValueAndStatusOnDate(dataModel, metric, metric_uuid, measurements, date) {
+    const measurement = measurementOnDate(metric_uuid, measurements, date)
+    const scale = getMetricScale(metric, dataModel)
+    return [measurement?.[scale]?.value ?? "?", measurement?.[scale]?.status ?? "unknown"]
+}
+metricValueAndStatusOnDate.propTypes = {
+    dataModel: dataModelPropType,
+    metric: metricPropType,
+    metric_uuid: string,
+    measurements: measurementsPropType,
+    date: datePropType,
+}
+
 function MeasurementCells({ dates, metric, metric_uuid, measurements, settings }) {
     const dataModel = useContext(DataModel)
     const showDeltaColumns = settings.hiddenColumns.excludes("delta")
@@ -161,16 +192,7 @@ function MeasurementCells({ dates, metric, metric_uuid, measurements, settings }
     const cells = []
     let previousValue = "?"
     dates.forEach((date, index) => {
-        const isoDateString = date.toISOString().split("T")[0]
-        const measurement = measurements?.find((m) => {
-            return (
-                m.metric_uuid === metric_uuid &&
-                m.start.split("T")[0] <= isoDateString &&
-                isoDateString <= m.end.split("T")[0]
-            )
-        })
-        let metricValue = measurement?.[scale]?.value ?? "?"
-        const status = measurement?.[scale]?.status ?? "unknown"
+        const [metricValue, status] = metricValueAndStatusOnDate(dataModel, metric, metric_uuid, measurements, date)
         if (showDeltaColumns && index > 0) {
             cells.push(
                 <DeltaCell
