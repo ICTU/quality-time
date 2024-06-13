@@ -65,7 +65,7 @@ SUBJECTS = {
             ),
             "process_technical_debt": Subject(
                 name="Technical debt management",
-                description="A process to manage outstanding technical debt.",
+                description="A process to manage technical debt.",
                 metrics=[
                     "dependencies",
                     "issues",
@@ -102,7 +102,7 @@ SUBJECTS = {
         subjects={
             "software_source_code": Subject(
                 name="Software source code",
-                description="Custom software source code.",
+                description="Source code of custom software.",
                 metrics=[
                     "commented_out_code",
                     "complex_units",
@@ -144,7 +144,7 @@ SUBJECTS = {
     ),
     "team": Subject(
         name="Team",
-        description="A team developing, maintaining and/or operation custom software.",
-        metrics=["sentiment"],
+        description="A team developing, maintaining and/or operating custom software.",
+        metrics=["sentiment", "velocity"],
     ),
 }
