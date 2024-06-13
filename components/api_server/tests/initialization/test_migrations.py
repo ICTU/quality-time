@@ -9,13 +9,27 @@ from tests.fixtures import SourceId, REPORT_ID, SUBJECT_ID, METRIC_ID, METRIC_ID
 class MigrationTestCase(DataModelTestCase):
     """Base class for migration unit tests."""
 
-    def existing_report(self, metric_type: str):
+    def existing_report(
+        self,
+        *,
+        metric_type: str,
+        metric_name: str = "",
+        metric_unit: str = "",
+        sources: dict[SourceId, dict[str, str | dict[str, str]]] | None = None,
+    ):
         """Return a report fixture. To be extended in subclasses."""
-        return {
+        report: dict = {
             "_id": "id",
             "report_uuid": REPORT_ID,
             "subjects": {SUBJECT_ID: {"type": "software", "metrics": {METRIC_ID: {"type": metric_type}}}},
         }
+        if metric_name:
+            report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["name"] = metric_name
+        if metric_unit:
+            report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["unit"] = metric_unit
+        if sources:
+            report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = sources
+        return report
 
     def inserted_report(self, **kwargs):
         """Return a report as it is expected to have been inserted into the reports collection.
@@ -38,30 +52,13 @@ class NoOpMigrationTest(MigrationTestCase):
 
     def test_empty_reports(self):
         """Test that the migration succeeds when the report does not have anything to migrate."""
-        self.database.reports.find.return_value = [self.existing_report("issues")]
+        self.database.reports.find.return_value = [self.existing_report(metric_type="issues")]
         perform_migrations(self.database)
         self.database.reports.replace_one.assert_not_called()
 
 
 class ChangeAccessibilityViolationsTest(MigrationTestCase):
     """Unit tests for the accessibility violations database migration."""
-
-    def existing_report(
-        self,
-        *,
-        metric_type: str = "accessibility",
-        metric_name: str = "",
-        metric_unit: str = "",
-        extra_metrics: bool = False,
-    ):
-        """Extend to add name and unit to the metric and optional extra metrics."""
-        report = super().existing_report(metric_type=metric_type)
-        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["name"] = metric_name
-        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["unit"] = metric_unit
-        if extra_metrics:
-            report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {"type": "violations"}
-            report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID3] = {"type": "security_warnings"}
-        return report
 
     def inserted_report(
         self, metric_name: str = "Accessibility violations", metric_unit: str = "accessibility violations", **kwargs
@@ -79,13 +76,15 @@ class ChangeAccessibilityViolationsTest(MigrationTestCase):
 
     def test_report_with_accessibility_metric(self):
         """Test that the migration succeeds with an accessibility metric."""
-        self.database.reports.find.return_value = [self.existing_report()]
+        self.database.reports.find.return_value = [self.existing_report(metric_type="accessibility")]
         perform_migrations(self.database)
         self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, self.inserted_report())
 
     def test_accessibility_metric_with_name_and_unit(self):
         """Test that the migration succeeds with an accessibility metric, and existing name and unit are kept."""
-        self.database.reports.find.return_value = [self.existing_report(metric_name="name", metric_unit="unit")]
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="accessibility", metric_name="name", metric_unit="unit"),
+        ]
         perform_migrations(self.database)
         self.database.reports.replace_one.assert_called_once_with(
             {"_id": "id"},
@@ -94,36 +93,33 @@ class ChangeAccessibilityViolationsTest(MigrationTestCase):
 
     def test_report_with_accessibility_metric_and_other_types(self):
         """Test that the migration succeeds with an accessibility metric and other metric types."""
-        self.database.reports.find.return_value = [self.existing_report(extra_metrics=True)]
+        report = self.existing_report(metric_type="accessibility")
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {"type": "violations"}
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID3] = {"type": "security_warnings"}
+        self.database.reports.find.return_value = [report]
         perform_migrations(self.database)
-        self.database.reports.replace_one.assert_called_once_with(
-            {"_id": "id"},
-            self.inserted_report(extra_metrics=True),
-        )
+        inserted_report = self.inserted_report()
+        inserted_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {"type": "violations"}
+        inserted_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID3] = {"type": "security_warnings"}
+        self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
 
 
 class BranchParameterTest(MigrationTestCase):
     """Unit tests for the branch parameter database migration."""
 
-    def existing_report(
-        self, metric_type: str = "loc", sources: dict[SourceId, dict[str, str | dict[str, str]]] | None = None
-    ):
-        """Extend to add sources and an extra metric without sources."""
-        report = super().existing_report(metric_type=metric_type)
-        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {"type": "issues"}
-        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = sources or {}
-        return report
-
     def test_report_without_branch_parameter(self):
         """Test that the migration succeeds with reports, but without metrics with a branch parameter."""
-        self.database.reports.find.return_value = [self.existing_report()]
+        self.database.reports.find.return_value = [self.existing_report(metric_type="loc")]
         perform_migrations(self.database)
         self.database.reports.replace_one.assert_not_called()
 
     def test_report_with_non_empty_branch_parameter(self):
         """Test that the migration succeeds when the branch parameter is not empty."""
         self.database.reports.find.return_value = [
-            self.existing_report(sources={SOURCE_ID: {"type": "sonarqube", "parameters": {"branch": "main"}}})
+            self.existing_report(
+                metric_type="loc",
+                sources={SOURCE_ID: {"type": "sonarqube", "parameters": {"branch": "main"}}},
+            )
         ]
         perform_migrations(self.database)
         self.database.reports.replace_one.assert_not_called()
@@ -148,49 +144,34 @@ class BranchParameterTest(MigrationTestCase):
 class SourceParameterHashMigrationTest(MigrationTestCase):
     """Unit tests for the source parameter hash database migration."""
 
-    def existing_report(self, sources: dict[SourceId, dict[str, str | dict[str, str]]] | None = None):
-        """Extend to add sources and an extra metric without sources."""
-        report = super().existing_report(metric_type="loc")
-        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {"type": "issues"}
-        if sources:
-            report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = sources
-        return report
-
     def test_report_with_sources_without_source_parameter_hash(self):
         """Test a report with sources and measurements."""
         self.database.measurements.find_one.return_value = {"_id": "id", "metric_uuid": METRIC_ID}
-        self.database.reports.find.return_value = [self.existing_report(sources={SOURCE_ID: {"type": "cloc"}})]
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="loc", sources={SOURCE_ID: {"type": "cloc"}})
+        ]
         perform_migrations(self.database)
         inserted_measurement = {"metric_uuid": METRIC_ID, "source_parameter_hash": "8c3b464958e9ad0f20fb2e3b74c80519"}
         self.database.measurements.replace_one.assert_called_once_with({"_id": "id"}, inserted_measurement)
 
     def test_report_without_sources(self):
         """Test a report without sources."""
-        self.database.reports.find.return_value = [self.existing_report()]
+        self.database.reports.find.return_value = [self.existing_report(metric_type="loc")]
         perform_migrations(self.database)
         self.database.measurements.replace_one.assert_not_called()
 
     def test_metric_without_measurement(self):
         """Test a metric without measurements."""
         self.database.measurements.find_one.return_value = None
-        self.database.reports.find.return_value = [self.existing_report(sources={SOURCE_ID: {"type": "cloc"}})]
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="loc", sources={SOURCE_ID: {"type": "cloc"}})
+        ]
         perform_migrations(self.database)
         self.database.measurements.replace_one.assert_not_called()
 
 
 class CIEnvironmentTest(MigrationTestCase):
     """Unit tests for the CI-environment subject type database migration."""
-
-    def existing_report(self, subject_type: str = "", subject_name: str = "", subject_description: str = ""):
-        """Extend to set the subject type to CI-environment."""
-        report = super().existing_report(metric_type="issues")
-        if subject_type:
-            report["subjects"][SUBJECT_ID]["type"] = subject_type
-        if subject_name:
-            report["subjects"][SUBJECT_ID]["name"] = subject_name
-        if subject_description:
-            report["subjects"][SUBJECT_ID]["description"] = subject_description
-        return report
 
     def inserted_report(self, **kwargs):
         """Extend to set the subject type to development environment."""
@@ -200,42 +181,37 @@ class CIEnvironmentTest(MigrationTestCase):
 
     def test_report_without_ci_environment(self):
         """Test that the migration succeeds without CI-environment subject."""
-        self.database.reports.find.return_value = [self.existing_report()]
+        self.database.reports.find.return_value = [self.existing_report(metric_type="failed_jobs")]
         perform_migrations(self.database)
         self.database.reports.replace_one.assert_not_called()
 
     def test_report_with_ci_environment(self):
         """Test that the migration succeeds with CI-environment subject."""
-        self.database.reports.find.return_value = [self.existing_report(subject_type="ci")]
+        report = self.existing_report(metric_type="failed_jobs")
+        report["subjects"][SUBJECT_ID]["type"] = "ci"
+        self.database.reports.find.return_value = [report]
         perform_migrations(self.database)
-        inserted_report = self.inserted_report(
-            subject_name="CI-environment",
-            subject_description="A continuous integration environment.",
-        )
+        inserted_report = self.inserted_report(metric_type="failed_jobs")
+        inserted_report["subjects"][SUBJECT_ID]["name"] = "CI-environment"
+        inserted_report["subjects"][SUBJECT_ID]["description"] = "A continuous integration environment."
         self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
 
     def test_ci_environment_with_title_and_subtitle(self):
         """Test that the migration succeeds with an CI-environment subject, and existing title and subtitle are kept."""
-        self.database.reports.find.return_value = [
-            self.existing_report(subject_type="ci", subject_name="CI", subject_description="My CI")
-        ]
+        report = self.existing_report(metric_type="failed_jobs")
+        report["subjects"][SUBJECT_ID]["type"] = "ci"
+        report["subjects"][SUBJECT_ID]["name"] = "CI"
+        report["subjects"][SUBJECT_ID]["description"] = "My CI"
+        self.database.reports.find.return_value = [report]
         perform_migrations(self.database)
-        inserted_report = self.inserted_report(subject_name="CI", subject_description="My CI")
+        inserted_report = self.inserted_report(metric_type="failed_jobs")
+        inserted_report["subjects"][SUBJECT_ID]["name"] = "CI"
+        inserted_report["subjects"][SUBJECT_ID]["description"] = "My CI"
         self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
 
 
 class SonarQubeParameterTest(MigrationTestCase):
     """Unit tests for the SonarQube parameter database migration."""
-
-    def existing_report(
-        self,
-        metric_type: str = "violations",
-        sources: dict[SourceId, dict[str, str | dict[str, str | list[str]]]] | None = None,
-    ):
-        """Extend to add sources."""
-        report = super().existing_report(metric_type=metric_type)
-        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = sources
-        return report
 
     def sources(self, source_type: str = "sonarqube", **parameters):
         """Create the sources fixture."""
@@ -243,29 +219,41 @@ class SonarQubeParameterTest(MigrationTestCase):
 
     def test_report_without_severity_or_types_parameter(self):
         """Test that the migration succeeds when the SonarQube source has no severity or types parameter."""
-        self.database.reports.find.return_value = [self.existing_report(sources=self.sources())]
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="violations", sources=self.sources()),
+        ]
         perform_migrations(self.database)
         self.database.reports.replace_one.assert_not_called()
 
     def test_report_with_violation_metric_but_no_sonarqube(self):
         """Test that the migration succeeds when a violations metric has no SonarQube sources."""
-        self.database.reports.find.return_value = [self.existing_report(sources=self.sources("sarif"))]
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="violations", sources=self.sources("sarif")),
+        ]
         perform_migrations(self.database)
         self.database.reports.replace_one.assert_not_called()
 
     def test_report_with_severity_parameter(self):
         """Test that the migration succeeds when the SonarQube source has a severity parameter."""
-        self.database.reports.find.return_value = [self.existing_report(sources=self.sources(severities=["info"]))]
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="violations", sources=self.sources(severities=["info"])),
+        ]
         perform_migrations(self.database)
-        inserted_report = self.inserted_report(sources=self.sources(impact_severities=["low"]))
+        inserted_report = self.inserted_report(
+            metric_type="violations",
+            sources=self.sources(impact_severities=["low"]),
+        )
         self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
 
     def test_report_with_multiple_old_severity_values_that_map_to_the_same_new_value(self):
         """Test a severity parameter with multiple old values that map to the same new value."""
-        reports = [self.existing_report(sources=self.sources(severities=["info", "minor"]))]
+        reports = [self.existing_report(metric_type="violations", sources=self.sources(severities=["info", "minor"]))]
         self.database.reports.find.return_value = reports
         perform_migrations(self.database)
-        inserted_report = self.inserted_report(sources=self.sources(impact_severities=["low"]))
+        inserted_report = self.inserted_report(
+            metric_type="violations",
+            sources=self.sources(impact_severities=["low"]),
+        )
         self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
 
     @disable_logging
@@ -273,25 +261,32 @@ class SonarQubeParameterTest(MigrationTestCase):
         """Test that unknown severity parameter values are ignored."""
         sources = self.sources(severities=["info", ""])
         sources[SOURCE_ID2] = {"type": "sonarqube", "parameters": {"branch": "main", "severities": ["foo"]}}
-        self.database.reports.find.return_value = [self.existing_report(sources=sources)]
+        self.database.reports.find.return_value = [self.existing_report(metric_type="violations", sources=sources)]
         perform_migrations(self.database)
         inserted_sources = self.sources(impact_severities=["low"])
         inserted_sources[SOURCE_ID2] = {"type": "sonarqube", "parameters": {"branch": "main"}}
-        inserted_report = self.inserted_report(sources=inserted_sources)
+        inserted_report = self.inserted_report(metric_type="violations", sources=inserted_sources)
         self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
 
     def test_report_with_types_parameter(self):
         """Test that the migration succeeds when the SonarQube source has a types parameter."""
-        self.database.reports.find.return_value = [self.existing_report(sources=self.sources(types=["bug"]))]
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="violations", sources=self.sources(types=["bug"])),
+        ]
         perform_migrations(self.database)
-        inserted_report = self.inserted_report(sources=self.sources(impacted_software_qualities=["reliability"]))
+        inserted_report = self.inserted_report(
+            metric_type="violations",
+            sources=self.sources(impacted_software_qualities=["reliability"]),
+        )
         self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
 
     def test_report_with_types_parameter_without_values(self):
         """Test that the migration succeeds when the SonarQube source has a types parameter without values."""
-        self.database.reports.find.return_value = [self.existing_report(sources=self.sources(types=[]))]
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="violations", sources=self.sources(types=[])),
+        ]
         perform_migrations(self.database)
-        inserted_report = self.inserted_report(sources=self.sources())
+        inserted_report = self.inserted_report(metric_type="violations", sources=self.sources())
         self.database.reports.replace_one.assert_called_once_with({"_id": "id"}, inserted_report)
 
     def test_report_with_security_types_parameter(self):

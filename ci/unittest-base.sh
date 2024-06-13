@@ -1,8 +1,13 @@
 #!/bin/bash
 
-# Get the dir of this script so the vbase.sh script that is in the same dir as this script can be sourced:
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source $SCRIPT_DIR/base.sh
+source base.sh
 
 # Turn on development mode, see https://docs.python.org/3/library/devmode.html
 export PYTHONDEVMODE=1
+
+run_coverage() {
+    run coverage run -m unittest --quiet
+    run coverage report --fail-under=0
+    run coverage html --fail-under=0
+    run coverage xml  # Fail if coverage is too low, but only after the text and HTML reports have been generated
+}

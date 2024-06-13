@@ -1,17 +1,79 @@
 [project]
 name = "application-tests"
 version = "5.13.0"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+]
 dependencies = [
     "axe-selenium-python==2.1.6",
     "requests==2.32.3",
-    "selenium==4.21.0"
+    "selenium==4.21.0",
+]
+optional-dependencies.dev = [
+    "pip==24.0",
+    "pip-tools==7.4.1",                # To add hashes to requirements
+    "pipx==1.6.0",
+    "types-requests==2.32.0.20240602",
+]
+optional-dependencies.tools = [
+    "bandit==1.7.9",
+    "fixit==2.1.0",
+    "mypy==1.10.0",
+    "pip-audit==2.7.3",
+    "pyproject-fmt==2.1.3",
+    "ruff==0.4.8",
+    "vulture==2.11",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pip==24.0",
-    "pip-tools==7.4.1"  # To add hashes to requirements
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+src = [
+    "src",
 ]
+lint.select = [
+    "ALL",
+]
+lint.ignore = [
+    "ANN001", # https://docs.astral.sh/ruff/rules/missing-type-function-argument/ - too many untyped arguments atm to turn this rule on
+    "ANN101", # https://docs.astral.sh/ruff/rules/missing-type-function-argument/ - type checkers can infer the type of `self`, so annotating it is superfluous
+    "ANN201", # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/ - too many untyped return values atm to turn this rule on
+    "ANN204", # https://docs.astral.sh/ruff/rules/missing-return-type-special-method/ - typing classes that inherit from set and list correctly is surprisingly hard
+    "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
+    "D107",   # https://docs.astral.sh/ruff/rules/undocumented-public-init/ - requiring __init__() methods to have docstrings seems a bit much
+    "D203",   # https://docs.astral.sh/ruff/rules/one-blank-line-before-class/ - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
+    "D213",   # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/ - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
+    "FBT",    # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
+    "ISC001", # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
+    "PD",     # https://docs.astral.sh/ruff/rules/#pandas-vet-pd - pandas isn't used
+    "PT",     # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
+]
+lint.per-file-ignores.".vulture_ignore_list.py" = [
+    "ALL",
+]
+lint.per-file-ignores."__init__.py" = [
+    "D104", # https://docs.astral.sh/ruff/rules/undocumented-public-package/ - don't require doc strings in __init__.py files
+]
+
+[tool.pyproject-fmt]
+indent = 4
+keep_full_version = true # Don't remove trailing zero's from version specifiers
+
+[tool.mypy]
+ignore_missing_imports = false
+incremental = false
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = [
+    "axe_selenium_python",
+]
+ignore_missing_imports = true
 
 [tool.pip-tools]
 allow_unsafe = true

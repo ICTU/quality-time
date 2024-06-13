@@ -1,37 +1,107 @@
 [project]
 name = "api-server"
 version = "5.13.0"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+]
 dependencies = [
     "bottle==0.12.25",
     "cryptography==42.0.8",
     "gevent==24.2.1",
     "ldap3==2.9.1",
-    "lxml[html_clean]==5.2.2",
+    "lxml==5.2.2",
+    "lxml-html-clean==0.1.1",
     "pymongo==4.7.3",
-    "requests==2.32.3"
+    "requests==2.32.3",
 ]
-
-[project.optional-dependencies]
-dev = [
+optional-dependencies.dev = [
     "coverage==7.5.3",
     "pip==24.0",
+    "pip-tools==7.4.1",                # To add hashes to requirements
     "pipx==1.6.0",
-    "pip-tools==7.4.1",  # To add hashes to requirements
-    "pydantic==2.7.4",  # Needed for importing the data model in the tests from the shared code component
+    "pydantic==2.7.4",                 # Needed for importing the data model in the tests from the shared code component
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.20240205",
     "types-requests==2.32.0.20240602",
-    "unittest-xml-reporting==3.2.0",  # Needed to generate JUnit XML output for Sonarcloud.io
+    "unittest-xml-reporting==3.2.0",   # Needed to generate JUnit XML output for Sonarcloud.io
 ]
-tools = [
+optional-dependencies.tools = [
     "bandit==1.7.9",
     "fixit==2.1.0",
     "mypy==1.10.0",
     "pip-audit==2.7.3",
+    "pyproject-fmt==2.1.3",
     "ruff==0.4.9",
-    "safety==3.2.3",
-    "vulture==2.11"
+    "vulture==2.11",
 ]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+src = [
+    "src",
+]
+lint.select = [
+    "ALL",
+]
+lint.ignore = [
+    "ANN001", # https://docs.astral.sh/ruff/rules/missing-type-function-argument/ - too many untyped arguments atm to turn this rule on
+    "ANN002", # https://docs.astral.sh/ruff/rules/missing-type-args/ - leads to false positives for super().__init__(*args, **kwargs)
+    "ANN003", # https://docs.astral.sh/ruff/rules/missing-type-kwargs/ - leads to false positives for super().__init__(*args, **kwargs)
+    "ANN101", # https://docs.astral.sh/ruff/rules/missing-type-self/ - type checkers can infer the type of `self`, so annotating it is superfluous
+    "ANN102", # https://docs.astral.sh/ruff/rules/missing-type-cls/ - type checkers can infer the type of `cls`, so annotating it is superfluous
+    "ANN201", # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/ - too many untyped return values atm to turn this rule on
+    "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
+    "D107",   # https://docs.astral.sh/ruff/rules/undocumented-public-init/ - requiring __init__() methods to have docstrings seems a bit much
+    "D203",   # https://docs.astral.sh/ruff/rules/one-blank-line-before-class/ - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
+    "D213",   # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/ - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
+    "FBT",    # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
+    "I001",   # https://docs.astral.sh/ruff/rules/unsorted-imports/ - (probably) because ruff is run with pipx it can't differentiate between dependencies and modules
+    "ISC001", # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
+    "PD",     # https://docs.astral.sh/ruff/rules/#pandas-vet-pd - pandas isn't used
+    "PT",     # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
+]
+lint.per-file-ignores.".vulture_ignore_list.py" = [
+    "ALL",
+]
+lint.per-file-ignores."__init__.py" = [
+    "D104", # https://docs.astral.sh/ruff/rules/undocumented-public-package/ - don't require doc strings in __init__.py files
+    "F401", # https://docs.astral.sh/ruff/rules/unused-import/ - routes are imported in __init__.py files to flatten the module hierarchy
+]
+lint.per-file-ignores."src/model/issue_tracker.py" = [
+    "BLE001", # https://docs.astral.sh/ruff/rules/blind-except/ - allow for catching blind exception `Exception`
+]
+lint.per-file-ignores."src/quality_time_server.py" = [
+    "E402",
+    "INP001", # https://docs.astral.sh/ruff/rules/implicit-namespace-package/ - false positive because this is the main script
+]
+lint.per-file-ignores."tests/**/*.py" = [
+    "ANN201", # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/ - don't require test functions to have return types
+    "S105",   # https://docs.astral.sh/ruff/rules/hardcoded-password-string/ - hardcoded passwords in test code are test data
+    "S106",   # https://docs.astral.sh/ruff/rules/hardcoded-password-func-arg/ - hardcoded passwords in test code are test data
+]
+lint.isort.section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "second-party",
+    "first-party",
+    "tests",
+    "local-folder",
+]
+lint.isort.sections."second-party" = [
+    "shared",
+    "shared_data_model",
+]
+lint.isort.sections.tests = [
+    "tests",
+]
+
+[tool.pyproject-fmt]
+indent = 4
+keep_full_version = true # Don't remove trailing zero's from version specifiers
 
 [tool.mypy]
 ignore_missing_imports = false
@@ -40,14 +110,14 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
-disable_error_code = "valid-type"  # mypy does not yet support PEP 695, Type Parameter Syntax. See https://github.com/python/mypy/issues/15238
+disable_error_code = "valid-type" # mypy does not yet support PEP 695, Type Parameter Syntax. See https://github.com/python/mypy/issues/15238
 
 [[tool.mypy.overrides]]
 module = [
     "bottle",
     "gevent",
     "lxml.html",
-    "lxml.html.clean"
+    "lxml_html_clean",
 ]
 ignore_missing_imports = true
 
@@ -55,56 +125,5 @@ ignore_missing_imports = true
 allow_unsafe = true
 generate_hashes = true
 quiet = true
-strip_extras = false  # Needed for lxml[html-clean]
+strip_extras = false   # Needed for lxml[html-clean]
 upgrade = true
-
-[tool.ruff]
-target-version = "py312"
-line-length = 120
-src = ["src"]
-
-[tool.ruff.lint]
-select = ["ALL"]
-ignore = [
-    "ANN001",  # https://docs.astral.sh/ruff/rules/missing-type-function-argument/ - too many untyped arguments atm to turn this rule on
-    "ANN002",  # https://docs.astral.sh/ruff/rules/missing-type-args/ - leads to false positives for super().__init__(*args, **kwargs)
-    "ANN003",  # https://docs.astral.sh/ruff/rules/missing-type-kwargs/ - leads to false positives for super().__init__(*args, **kwargs)
-    "ANN101",  # https://docs.astral.sh/ruff/rules/missing-type-self/ - type checkers can infer the type of `self`, so annotating it is superfluous
-    "ANN102",  # https://docs.astral.sh/ruff/rules/missing-type-cls/ - type checkers can infer the type of `cls`, so annotating it is superfluous
-    "ANN201",  # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/ - too many untyped return values atm to turn this rule on
-    "COM812",  # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
-    "D107",    # https://docs.astral.sh/ruff/rules/undocumented-public-init/ - requiring __init__() methods to have docstrings seems a bit much
-    "D203",    # https://docs.astral.sh/ruff/rules/one-blank-line-before-class/ - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
-    "D213",    # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/ - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
-    "FBT",     # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
-    "I001",    # https://docs.astral.sh/ruff/rules/unsorted-imports/ - (probably) because ruff is run with pipx it can't differentiate between dependencies and modules
-    "ISC001",  # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
-    "PD",      # https://docs.astral.sh/ruff/rules/#pandas-vet-pd - pandas isn't used
-    "PT",      # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
-]
-
-[tool.ruff.lint.isort]
-section-order = ["future", "standard-library", "third-party", "second-party", "first-party", "tests", "local-folder"]
-
-[tool.ruff.lint.isort.sections]
-"second-party" = ["shared", "shared_data_model"]
-"tests" = ["tests"]
-
-[tool.ruff.lint.per-file-ignores]
-".vulture_ignore_list.py" = ["ALL"]
-"__init__.py" = [
-    "D104",  # https://docs.astral.sh/ruff/rules/undocumented-public-package/ - don't require doc strings in __init__.py files
-    "F401",  # https://docs.astral.sh/ruff/rules/unused-import/ - routes are imported in __init__.py files to flatten the module hierarchy
-]
-"src/quality_time_server.py" = [
-    "E402",
-    "INP001",  # https://docs.astral.sh/ruff/rules/implicit-namespace-package/ - false positive because this is the main script
-]
-"src/model/issue_tracker.py" = [
-    "BLE001"  # https://docs.astral.sh/ruff/rules/blind-except/ - allow for catching blind exception `Exception`
-]
-"tests/**/*.py" = [
-    "ANN201",  # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/ - don't require test functions to have return types
-    "S105",    # https://docs.astral.sh/ruff/rules/hardcoded-password-string/ - hardcoded passwords in test code are test data
-    "S106",    # https://docs.astral.sh/ruff/rules/hardcoded-password-func-arg/ - hardcoded passwords in test code are test data
-]

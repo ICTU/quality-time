@@ -34,7 +34,7 @@ class IssueTrackerTest(unittest.TestCase):
 
     def test_private_token(self):
         """Test the issue tracker credentials."""
-        credentials = IssueTrackerCredentials(private_token="token")
+        credentials = IssueTrackerCredentials(private_token="token")  # nosec
         issue_tracker = IssueTracker(self.ISSUE_TRACKER_URL, self.issue_parameters, credentials)
         self.assertEqual("token", issue_tracker.credentials.private_token)
 

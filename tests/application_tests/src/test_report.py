@@ -10,29 +10,31 @@ from selenium.webdriver.support import expected_conditions as expect
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-class element_has_no_css_class:
-    """An expectation for checking that an element has no css class.
+class ElementHasNoCCSClass:
+    """An expectation for checking that an element has no CSS class.
 
     locator - used to find the element
-    returns the WebElement once it has the particular css class
+    returns the WebElement once it has no particular CSS class
     """
 
-    def __init__(self, locator):
+    def __init__(self, locator) -> None:
         self.locator = locator
 
     def __call__(self, driver):
+        """Return the element if it no longer has a CSS class, otherwise False."""
         element = driver.find_element(*self.locator)
         return element if len(element.get_attribute("class")) == 0 else False
 
 
-class nr_elements:
+class NrElements:
     """An expectation for the number of matching elements."""
 
-    def __init__(self, locator, expected_nr: int):
+    def __init__(self, locator, expected_nr: int) -> None:
         self.locator = locator
         self.expected_nr = expected_nr
 
     def __call__(self, driver):
+        """Return the element if it has the expected number of elements, otherwise False."""
         elements = driver.find_elements(*self.locator)
         return elements if len(elements) == self.expected_nr else False
 
@@ -60,7 +62,7 @@ class OpenReportTest(unittest.TestCase):
         login_form.find_element(By.NAME, "username").send_keys("jadoe")
         login_form.find_element(By.NAME, "password").send_keys("secret")
         login_form.find_element(By.CLASS_NAME, "button").click()
-        self.wait.until(element_has_no_css_class((By.TAG_NAME, "body")))  # Wait for body dimmer to disappear
+        self.wait.until(ElementHasNoCCSClass((By.TAG_NAME, "body")))  # Wait for body dimmer to disappear
 
     def test_title(self):
         """Test the title."""
@@ -90,7 +92,7 @@ class OpenReportTest(unittest.TestCase):
         self.login()
         nr_reports = len(self.driver.find_elements(By.CLASS_NAME, "card"))
         self.driver.find_element(By.CLASS_NAME, "button.primary").click()
-        self.wait.until(nr_elements((By.CLASS_NAME, "card"), nr_reports + 1))
+        self.wait.until(NrElements((By.CLASS_NAME, "card"), nr_reports + 1))
 
     def test_report_axe_accessibility(self):
         """Run axe accessibility check on a report."""
@@ -104,15 +106,16 @@ class OpenReportTest(unittest.TestCase):
 
         # Process axe results
         violation_results = results1["violations"]
-        axe.write_results(results1, '../../build/a11y.json')
+        axe.write_results(results1, "../../build/a11y.json")
         readable_report = axe.report(violation_results)
-        filename = pathlib.Path('../../build/a11y_violations.txt')
+        filename = pathlib.Path("../../build/a11y_violations.txt")
         try:
-            with open(filename, "w", encoding="utf8") as report_file:
+            with filename.open("w", encoding="utf8") as report_file:
                 report_file.write(readable_report)
         except OSError:
-            print("Could not write axe violations report")
+            self.fail("Could not write axe violations report")
 
-        # If there are violations, output the readable report data
-        # TODO - assertEqual 0 in https://github.com/ICTU/quality-time/issues/6354
-        self.assertTrue(6 >= len(violation_results), readable_report)
+        # If there are moe violations than expected, output the readable report data
+        # Fixing the axe violations is on the backlog: https://github.com/ICTU/quality-time/issues/6354
+        current_number_of_axe_violations = 6
+        self.assertLessEqual(len(violation_results), current_number_of_axe_violations, readable_report)

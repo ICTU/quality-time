@@ -217,7 +217,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         """Test that the notifier continues if a destination does not have a webhook configured."""
         report1 = create_report()
         report2 = deepcopy(report1)
-        measurements = []
+        measurements: list[dict] = []
         mocked_get.side_effect = [([report1], measurements), ([report2], measurements)]
 
         mocked_sleep.side_effect = [None, RuntimeError]

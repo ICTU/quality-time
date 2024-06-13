@@ -231,7 +231,7 @@ class PostSourceParameterTest(SourceTestCase):
     def test_url_with_user(self, mock_get, request):
         """Test that the source url can be changed and that the availability is checked."""
         self.sources[SOURCE_ID]["parameters"]["username"] = "un"
-        self.sources[SOURCE_ID]["parameters"]["password"] = "pwd"
+        self.sources[SOURCE_ID]["parameters"]["password"] = "pwd"  # nosec
         mock_get.return_value = self.url_check_get_response
         request.json = {"url": self.url}
         response = post_source_parameter(SOURCE_ID, "url", self.database)
@@ -261,7 +261,7 @@ class PostSourceParameterTest(SourceTestCase):
         """Test that the source url can be changed and that the availability is checked."""
         mock_get.return_value = self.url_check_get_response
         request.json = {"url": self.url}
-        self.sources[SOURCE_ID]["parameters"]["private_token"] = "xxx"
+        self.sources[SOURCE_ID]["parameters"]["private_token"] = "xxx"  # nosec
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
         mock_get.assert_called_once_with(

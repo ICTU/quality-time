@@ -1,6 +1,7 @@
 """Test the measurements model."""
 
 from datetime import UTC, datetime, timedelta
+from typing import cast
 from unittest.mock import patch
 
 from packaging.version import Version
@@ -504,7 +505,7 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
         self.source_count += 1
         source_number = "" if self.source_count == 1 else str(self.source_count)
         return Source(
-            f"source{source_number}",
+            cast(SourceId, f"source{source_number}"),
             metric,
             {
                 "source_uuid": f"source{source_number}",

@@ -1,12 +1,16 @@
 """Unit tests for getting reports from the database."""
 
 import unittest
+from typing import TYPE_CHECKING
 
 import mongomock
 
 from database.reports import get_reports_and_measurements
 
 from tests.fixtures import METRIC_ID, create_report
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 class ReportsTest(unittest.TestCase):
@@ -19,7 +23,7 @@ class ReportsTest(unittest.TestCase):
             {"_id": 2, "start": "3", "end": "4", "sources": [], "metric_uuid": METRIC_ID},
             {"_id": 3, "start": "6", "end": "7", "sources": [], "metric_uuid": METRIC_ID},
         ]
-        self.database = mongomock.MongoClient()["quality_time_db"]
+        self.database: Database = mongomock.MongoClient()["quality_time_db"]
 
     def test_get_reports_and_measurements(self):
         """Test that the reports and latest two measurements are returned."""

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source ../../ci/base.sh
+PATH="$PATH:../../ci"
+source pip-base.sh
 
-# Install the requirements
-run pip install --ignore-installed --quiet -r requirements/requirements-dev.txt
-run pip install --ignore-installed --quiet -r requirements/requirements-internal.txt
+run_pip_install -r requirements/requirements-dev.txt
+run_pip_install -r requirements/requirements-internal.txt

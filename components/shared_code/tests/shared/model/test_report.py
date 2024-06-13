@@ -1,6 +1,7 @@
 """Unit tests for the report class."""
 
 import unittest
+from typing import TYPE_CHECKING
 
 import mongomock
 
@@ -13,13 +14,16 @@ from shared.model.subject import Subject
 from tests.fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
 from tests.shared.base import DataModelTestCase
 
+if TYPE_CHECKING:
+    from pymongo.database import Database
+
 
 class ReportTest(DataModelTestCase):
     """Report unit tests."""
 
     def setUp(self) -> None:
         """Override to create a database fixture."""
-        self.source_data = {}
+        self.source_data: dict = {}
         self.metric_data = {"type": "violations", "sources": {SOURCE_ID: self.source_data}, "tags": ["tag"]}
         self.subject_data = {"metrics": {METRIC_ID: self.metric_data}}
         report_data = {
@@ -122,7 +126,7 @@ class TestMetrics(unittest.TestCase):
 
     def setUp(self) -> None:
         """Define info that is used in multiple tests."""
-        self.database = mongomock.MongoClient()["quality_time_db"]
+        self.database: Database = mongomock.MongoClient()["quality_time_db"]
 
     def test_get_metrics_from_reports(self):
         """Test that the metrics are returned."""

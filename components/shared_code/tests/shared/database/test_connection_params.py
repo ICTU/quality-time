@@ -16,7 +16,7 @@ class TestConnectionParams(unittest.TestCase):
     def test_default(self):
         """Test the default url."""
         db = client()
-        _default_user_pass = "root:root"  # bypassing Sonar security check flagging plaintext password # noqa: S105
+        _default_user_pass = "root:root"  # nosec  # noqa: S105
         self._assert_dbclient_host_url(db, f"mongodb://{_default_user_pass}@localhost:27017")
 
     def test_full_url_override(self):
