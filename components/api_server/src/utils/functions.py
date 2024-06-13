@@ -15,7 +15,7 @@ from cryptography.fernet import Fernet
 # Bandit complains that "Using autolink_html to parse untrusted XML data is known to be vulnerable to XML attacks",
 # and Dlint complains 'insecure use of XML modules, prefer "defusedxml"'
 # but we give autolink_html clean html, so ignore the warning:
-from lxml.html.clean import autolink_html, clean_html  # nosec
+from lxml_html_clean import autolink_html, clean_html  # nosec
 from lxml.html import fromstring, tostring  # nosec
 
 from shared.utils.type import ItemId

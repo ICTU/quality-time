@@ -106,6 +106,6 @@ class DependencyTrackSecurityWarningsTest(SourceCollectorTestCase):
         get.assert_called_once_with(
             "https://dependency_track/api/v1/project?pageSize=25&pageNumber=1",
             allow_redirects=True,
-            auth=BasicAuth(login="API key", password="", encoding="latin1"),
+            auth=BasicAuth(login="API key", password="", encoding="latin1"),  # nosec
             headers={"X-Api-Key": "API key"},
         )

@@ -6,6 +6,7 @@ import logging
 import unittest
 from collections.abc import Callable
 from unittest.mock import Mock
+from typing import ClassVar, cast
 
 from shared_data_model import DATA_MODEL_JSON
 
@@ -21,6 +22,8 @@ class DatabaseTestCase(unittest.TestCase):
 class DataModelTestCase(DatabaseTestCase):
     """Base class for unit tests that use the data model."""
 
+    DATA_MODEL: ClassVar[dict] = {}
+
     @classmethod
     def setUpClass(cls) -> None:
         """Override to set up the data model."""
@@ -34,7 +37,7 @@ class DataModelTestCase(DatabaseTestCase):
     @staticmethod
     def load_data_model() -> dict:
         """Load the data model from the JSON dump."""
-        data_model = json.loads(DATA_MODEL_JSON)
+        data_model = cast(dict, json.loads(DATA_MODEL_JSON))
         data_model["_id"] = "id"
         data_model["timestamp"] = "now"
         return data_model

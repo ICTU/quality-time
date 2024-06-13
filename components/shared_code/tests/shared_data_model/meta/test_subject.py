@@ -8,8 +8,6 @@ from .base import MetaModelTestCase
 class SubjectTest(MetaModelTestCase):
     """Unit tests for the subject model."""
 
-    MODEL = Subject
-
     def test_all_metrics(self):
         """Test that the all_metrics property of a subject returns all metrics recursively and deduplicated."""
         subject = Subject(

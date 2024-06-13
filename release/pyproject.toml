@@ -1,16 +1,52 @@
 [project]
 name = "release"
 version = "5.13.0"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+]
 dependencies = [
     "bump-my-version==0.23.0",
     "gitpython==3.1.43",
 ]
-
-[project.optional-dependencies]
-dev = [
+optional-dependencies.dev = [
     "pip==24.0",
-    "pip-tools==7.4.1"  # To add hashes to requirements
+    "pip-tools==7.4.1", # To add hashes to requirements
+    "pipx==1.6.0",
 ]
+optional-dependencies.tools = [
+    "bandit==1.7.9",
+    "fixit==2.1.0",
+    "mypy==1.10.0",
+    "pip-audit==2.7.3",
+    "pyproject-fmt==2.1.3",
+    "ruff==0.4.8",
+    "vulture==2.11",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+src = [
+    "src",
+]
+lint.select = [
+    "ALL",
+]
+lint.ignore = [
+    "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
+    "D203",   # https://docs.astral.sh/ruff/rules/one-blank-line-before-class/ - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
+    "D213",   # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/ - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
+    "ISC001", # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
+]
+lint.per-file-ignores.".vulture_ignore_list.py" = [
+    "ALL",
+]
+
+[tool.pyproject-fmt]
+indent = 4
+keep_full_version = true # Don't remove trailing zero's from version specifiers
 
 [tool.bumpversion]
 current_version = "5.13.0"
@@ -33,7 +69,10 @@ commit = true
 tag = true
 
 [tool.bumpversion.parts.pre_release_label]
-values = ["rc", "final"]
+values = [
+    "rc",
+    "final",
+]
 optional_value = "final"
 
 [[tool.bumpversion.files]]
@@ -75,6 +114,12 @@ replace = 'QUALITY_TIME_VERSION = "{new_version}"'
 glob = "../**/pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
+
+[tool.bandit]
+skips = [
+    "B404", # Consider possible security implications associated with the subprocess module.
+    "B603", # subprocess call - check for execution of untrusted input.
+]
 
 [tool.pip-tools]
 allow_unsafe = true

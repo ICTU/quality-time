@@ -1,5 +1,6 @@
 """Unit tests for the measurements collection."""
 
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, patch
 
 import mongomock
@@ -14,6 +15,9 @@ from shared.utils.functions import iso_timestamp
 from tests.fixtures import METRIC_ID, METRIC_ID2, create_report
 from tests.shared.base import DataModelTestCase
 
+if TYPE_CHECKING:
+    from pymongo.database import Database
+
 
 @patch("shared.model.measurement.iso_timestamp", Mock(return_value=iso_timestamp()))
 class MeasurementsTest(DataModelTestCase):
@@ -25,7 +29,7 @@ class MeasurementsTest(DataModelTestCase):
         self.database_mock = Mock()
         self.database_mock.measurements.find_one.return_value = None
         self.database_mock.measurements.insert_one = self.insert_one_measurement
-        self.metric = Metric(self.DATA_MODEL, {"type": "violations"}, "metric_uuid")
+        self.metric = Metric(self.DATA_MODEL, {"type": "violations"}, METRIC_ID)
         self.measurements = [
             {"_id": 1, "start": "0", "end": "1", "sources": [], "metric_uuid": METRIC_ID},
             {"_id": 2, "start": "3", "end": "4", "sources": [], "metric_uuid": METRIC_ID},
@@ -34,7 +38,7 @@ class MeasurementsTest(DataModelTestCase):
             {"_id": 5, "start": "4", "end": "5", "sources": [], "metric_uuid": METRIC_ID2},
             {"_id": 6, "start": "7", "end": "8", "sources": [], "metric_uuid": METRIC_ID2},
         ]
-        self.database = mongomock.MongoClient()["quality_time_db"]
+        self.database: Database = mongomock.MongoClient()["quality_time_db"]
 
     @staticmethod
     def insert_one_measurement(measurement: Measurement) -> None:

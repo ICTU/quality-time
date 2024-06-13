@@ -570,8 +570,8 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         exported_report["issue_tracker"]["parameters"].pop("password")
 
         self.assertDictEqual(exported_report, expected_report)
-        self.assertTrue(isinstance(exported_password, tuple))
-        self.assertTrue(len(exported_password) == 2)  # noqa: PLR2004
+        self.assertIsInstance(exported_password, tuple)
+        self.assertEqual(2, len(exported_password))
 
     def test_get_nonexisting_json_report(self):
         """Test that None is returned if report doesn't exist."""
@@ -598,10 +598,8 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
 
         request.query = {"public_key": self.public_key}
         mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"] = [
-            "0",
-            "1",
-        ]  # Use a list as password for coverage of the last line
+        parameters = mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
+        parameters["password"] = ["0", "1"]  # nosec  # Use a list as password for coverage of the last line
         self.database.reports.find_one.return_value = mocked_report
         exported_report = export_report_as_json(self.database, REPORT_ID)
         exported_password = exported_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID][
@@ -610,16 +608,15 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         exported_report["issue_tracker"]["parameters"].pop("password")
 
         self.assertDictEqual(exported_report, expected_report)
-        self.assertTrue(isinstance(exported_password, tuple))
-        self.assertTrue(len(exported_password) == 2)  # noqa: PLR2004
+        self.assertIsInstance(exported_password, tuple)
+        self.assertEqual(2, len(exported_password))
 
     @patch("bottle.request")
     def test_post_report_import(self, request):
         """Test that a report is imported correctly."""
         mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"] = (
-            asymmetric_encrypt(self.public_key, "test_message")
-        )
+        parameters = mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
+        parameters["password"] = asymmetric_encrypt(self.public_key, "test_message")  # nosec
         request.json = mocked_report
         post_report_import(self.database)
         inserted = self.database.reports.insert_one.call_args_list[0][0][0]
@@ -631,9 +628,8 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_post_report_import_without_encrypted_credentials(self, request):
         """Test that a report is imported correctly."""
         mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"] = (
-            "unencrypted_password"
-        )
+        parameters = mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
+        parameters["password"] = "unencrypted_password"  # nosec
         request.json = mocked_report
         post_report_import(self.database)
         inserted_report = self.database.reports.insert_one.call_args_list[0][0][0]
@@ -646,10 +642,8 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_post_report_import_with_failed_decryption(self, request):
         """Test that a report is imported correctly."""
         mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"] = (
-            "not_properly_encrypted==",
-            "test_message",
-        )
+        parameters = mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
+        parameters["password"] = ("not_properly_encrypted==", "test_message")  # nosec
         request.json = mocked_report
         response = post_report_import(self.database)
         self.assertIn("error", response)
@@ -659,9 +653,8 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         """Test that a report cannot be imported if the Quality-time instance has no private key."""
         self.database.secrets.find_one.return_value = None
         mocked_report = copy.deepcopy(self.report)
-        mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"] = (
-            "unencrypted_password"
-        )
+        parameters = mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
+        parameters["password"] = "unencrypted_password"  # nosec
         request.json = mocked_report
         response = post_report_import(self.database)
         self.assertIn("error", response)

@@ -1,4 +1,4 @@
-name: Feature tests quality
+name: Application tests quality
 
 on: [push]
 
@@ -15,9 +15,9 @@ jobs:
         python-version: '3.12'
     - name: Install dependencies
       run: |
-        cd tests/feature_tests
+        cd tests/application_tests
         ci/pip-install.sh
     - name: Quality
       run: |
-        cd tests/feature_tests
+        cd tests/application_tests
         ci/quality.sh

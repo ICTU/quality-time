@@ -2,6 +2,7 @@
 
 import unittest
 from datetime import UTC, datetime, timedelta
+from typing import TYPE_CHECKING
 
 import mongomock
 
@@ -10,6 +11,9 @@ from shared.database.reports import get_reports
 from database.measurements import get_recent_measurements
 
 from tests.fixtures import METRIC_ID, create_report
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 class MeasurementsTest(unittest.TestCase):
@@ -22,7 +26,7 @@ class MeasurementsTest(unittest.TestCase):
             {"_id": 2, "start": "3", "end": "4", "sources": [], "metric_uuid": METRIC_ID},
             {"_id": 3, "start": "6", "end": "7", "sources": [], "metric_uuid": METRIC_ID},
         ]
-        self.database = mongomock.MongoClient()["quality_time_db"]
+        self.database: Database = mongomock.MongoClient()["quality_time_db"]
 
     def test_get_recent_measurements(self):
         """Test that the recent measurements are returned."""

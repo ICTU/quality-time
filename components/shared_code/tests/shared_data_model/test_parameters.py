@@ -8,13 +8,8 @@ from .meta.base import MetaModelTestCase
 class IntegerParameterTest(MetaModelTestCase):
     """Integer parameter unit tests."""
 
-    MODEL = IntegerParameter
-
     def test_check_unit(self):
         """Test that a parameter with the integer type also has a unit."""
-        self.check_validation_error(
-            "Parameter Parameter has no unit",
-            name="Parameter",
-            type="integer",
-            metrics=["loc"],
-        )
+        model_kwargs = {"name": "Parameter", "type": "integer", "metrics": ["loc"]}
+        expected_message = "Parameter Parameter has no unit"
+        self.check_validation_error(expected_message, IntegerParameter, **model_kwargs)

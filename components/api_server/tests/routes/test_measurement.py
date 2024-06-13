@@ -1,6 +1,7 @@
 """Unit tests for the measurement routes."""
 
 from datetime import timedelta
+from typing import cast
 from unittest.mock import Mock, patch
 
 from shared.model.measurement import Measurement
@@ -117,7 +118,7 @@ class SetEntityAttributeTest(DataModelTestCase):
     def set_entity_attribute(self, attribute: str = "attribute", value: str = "value") -> Measurement:
         """Set the entity attribute and return the new measurement."""
         with patch("bottle.request", Mock(json={attribute: value})):
-            return set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", attribute, self.database)
+            return cast(Measurement, set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", attribute, self.database))
 
     def test_set_attribute(self):
         """Test that setting an attribute inserts a new measurement."""

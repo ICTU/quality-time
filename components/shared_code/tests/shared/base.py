@@ -2,12 +2,15 @@
 
 import json
 import unittest
+from typing import ClassVar
 
 from shared_data_model import DATA_MODEL_JSON
 
 
 class DataModelTestCase(unittest.TestCase):
     """Base class for unit tests that use the data model from the database."""
+
+    DATA_MODEL: ClassVar[dict] = {}
 
     @classmethod
     def setUpClass(cls) -> None:

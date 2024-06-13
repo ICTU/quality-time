@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tomllib
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from typing import cast
 
 import git
 
@@ -26,9 +27,10 @@ def get_version() -> str:
     with pathlib.Path(release_folder / "pyproject.toml").open(mode="rb") as py_project_toml_fp:
         py_project_toml = tomllib.load(py_project_toml_fp)
     version_re = py_project_toml["tool"]["bumpversion"]["parse"]
-    version_tags = [tag for tag in repo.tags if re.match(version_re, tag.tag.tag.strip("v"), re.MULTILINE)]
+    version_tags = [tag for tag in repo.tags if tag.tag and re.match(version_re, tag.tag.tag.strip("v"), re.MULTILINE)]
     latest_tag = sorted(version_tags, key=lambda tag: tag.commit.committed_datetime)[-1]
-    return latest_tag.tag.tag.strip("v")
+    # We cast latest_tag.tag to TagObject because we know it cannot be None, given how version_tags is constructed
+    return cast(git.TagObject, latest_tag.tag).tag.strip("v")
 
 
 def parse_arguments() -> tuple[str, str, bool]:
@@ -44,13 +46,26 @@ def parse_arguments() -> tuple[str, str, bool]:
   - the changelog has an '[Unreleased]' header
   - the changelog contains no release candidates
   - the new release has been added to the version overview"""
-    parser = ArgumentParser(description=description, epilog=epilog, formatter_class=RawDescriptionHelpFormatter)
-    allowed_bumps_in_rc_mode = ["rc", "rc-major", "rc-minor", "rc-patch", "drop-rc"]  # rc = release candidate
+    parser = ArgumentParser(
+        description=description,
+        epilog=epilog,
+        formatter_class=RawDescriptionHelpFormatter,
+    )
+    allowed_bumps_in_rc_mode = [
+        "rc",
+        "rc-major",
+        "rc-minor",
+        "rc-patch",
+        "drop-rc",
+    ]  # rc = release candidate
     allowed_bumps = ["rc-patch", "rc-minor", "rc-major", "patch", "minor", "major"]
     bumps = allowed_bumps_in_rc_mode if "rc" in current_version else allowed_bumps
     parser.add_argument("bump", choices=bumps)
     parser.add_argument(
-        "-c", "--check-preconditions-only", action="store_true", help="only check the preconditions and then exit"
+        "-c",
+        "--check-preconditions-only",
+        action="store_true",
+        help="only check the preconditions and then exit",
     )
     arguments = parser.parse_args()
     return arguments.bump, current_version, arguments.check_preconditions_only
@@ -117,7 +132,7 @@ def failed_preconditions_version_overview(current_version: str, root: pathlib.Pa
     for line in version_overview_lines:
         if line.startswith(f"| v{current_version} "):
             if previous_line.startswith("| v"):
-                today = datetime.date.today().isoformat()
+                today = utc_today().isoformat()
                 release_date = previous_line.split(" | ")[1].strip()
                 if release_date != today:  # Second column is the release date column
                     return [f"{missing} the release date. Expected today: '{today}', found: '{release_date}'."]
@@ -127,13 +142,18 @@ def failed_preconditions_version_overview(current_version: str, root: pathlib.Pa
     return [f"{missing} the current version ({current_version})."]
 
 
+def utc_today() -> datetime.date:
+    """Return today in UTC."""
+    return datetime.datetime.now(tz=datetime.UTC).date()
+
+
 def main() -> None:
     """Create the release."""
-    os.environ["RELEASE_DATE"] = datetime.date.today().isoformat()  # Used by bump-my-version to update CHANGELOG.md
+    os.environ["RELEASE_DATE"] = utc_today().isoformat()  # Used by bump-my-version to update CHANGELOG.md
     bump, current_version, check_preconditions_only = parse_arguments()
     check_preconditions(bump, current_version)
     if check_preconditions_only:
-       return
+        return
     # See https://github.com/callowayproject/bump-my-version?tab=readme-ov-file#add-support-for-pre-release-versions
     # for how bump-my-version deals with pre-release versions
     if bump.startswith("rc-"):
@@ -142,8 +162,8 @@ def main() -> None:
         bump = "pre_release_label"  # Bump the pre-release label from "rc" to "final" (which is optional and omitted)
     elif bump == "rc":
         bump = "pre_release_number"  # Bump the release candidate number
-    subprocess.run(("bump-my-version", "bump", bump), check=True)
-    subprocess.run(("git", "push", "--follow-tags"), check=True)
+    subprocess.run(("bump-my-version", "bump", bump), check=True)  # noqa: S603
+    subprocess.run(("git", "push", "--follow-tags"), check=True)  # noqa: S603
 
 
 if __name__ == "__main__":

@@ -34,7 +34,7 @@ class HideCredentialsTest(DataModelTestCase):
         credential in the UI. If we mask empty credentials the users won't be able to tell that they did successfully
         clear a credential (because it looks the same as an existing credential) and complain there is a bug.
         """
-        self.source_parameters["password"] = ""
+        self.source_parameters["password"] = ""  # nosec
         hide_credentials(self.DATA_MODEL, self.report)
         self.assertEqual("", self.source_parameters["password"])
 
@@ -45,6 +45,6 @@ class HideCredentialsTest(DataModelTestCase):
         credential in the UI. If we mask empty credentials the users won't be able to tell that they did successfully
         clear a credential (because it looks the same as an existing credential) and complain there is a bug.
         """
-        self.issue_tracker_parameters["private_token"] = ""
+        self.issue_tracker_parameters["private_token"] = ""  # nosec
         hide_credentials(self.DATA_MODEL, self.report)
         self.assertEqual("", self.issue_tracker_parameters["private_token"])

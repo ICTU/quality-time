@@ -14,7 +14,7 @@ from routes import login, logout, get_public_key
 from tests.base import DatabaseTestCase
 
 USERNAME = "john-doe"
-PASSWORD = "secret"
+PASSWORD = "secret"  # nosec
 
 
 class AuthTestCase(DatabaseTestCase):

@@ -6,7 +6,7 @@ from routes.settings import find_user, get_settings, update_settings
 from tests.base import DatabaseTestCase
 
 USERNAME = "john-doe"
-PASSWORD = "secret"
+PASSWORD = "secret"  # nosec
 
 
 class SettingsTest(DatabaseTestCase):

@@ -2,16 +2,14 @@
 
 import unittest
 
-from pydantic import BaseModel, ValidationError
+from pydantic import ValidationError
 
 
 class MetaModelTestCase(unittest.TestCase):
     """Meta model test case."""
 
-    MODEL = BaseModel  # Should be overridden by subclasses
-
-    def check_validation_error(self, message, **model_kwargs):
+    def check_validation_error(self, expected_message: str, model, **model_kwargs) -> None:
         """Check that parsing the object with the model raises a validation error with the specified message."""
         with self.assertRaises(ValidationError) as context:
-            self.MODEL(**model_kwargs)
-        self.assertIn(message, str(context.exception))
+            model(**model_kwargs)
+        self.assertIn(expected_message, str(context.exception))
