@@ -17,7 +17,8 @@ If your currently installed *Quality-time* version is not v5.13.0, please first 
 ### Fixed
 
 - In the dropdown of the "Add metric" button, keep the two checkboxes next to each other regardless of the width of the menu. Fixes [#8745](https://github.com/ICTU/quality-time/issues/8745).
-- The icon of the trend graph tab would not be shown. Closes [#8822](https://github.com/ICTU/quality-time/issues/8822).
+- The icon of the trend graph tab would not be shown. Fixes [#8822](https://github.com/ICTU/quality-time/issues/8822).
+- Closing the Chromium browser in the renderer component after creating a PDF would not stop all browser child processes. Fixed by starting Chromium only once and reusing, instead of starting a new browser for each render. Fixes [#8979](https://github.com/ICTU/quality-time/issues/8979).
 
 ### Added
 

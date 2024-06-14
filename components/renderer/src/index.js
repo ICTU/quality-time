@@ -6,21 +6,20 @@ const app = express();
 const RENDERER_PORT = process.env.RENDERER_PORT || 9000;
 const PROXY = `${process.env.PROXY_HOST || 'www'}:${process.env.PROXY_PORT || 80}`;
 const PROTOCOL = process.env.PROXY_PROTOCOL || 'http';
+let browser
 
 app.get("/api/health", async (_req, res) => {
-    res.status(200).send("OK")
+    // This endpoint is used by the Docker health check command (that in turn uses src/healthcheck.cjs) to report the
+    // health of the renderer component
+    const healthy = browser.connected ?? false
+    res.status(healthy ? 200 : 503).send(healthy ? "OK" : "Chromium not connected")
 })
 
 app.get("/api/render", async (req, res) => {
+    let webPage
     try {
         const url = sanitizeUrl(`${PROTOCOL}://${PROXY}/${req.query.path}`);
-        const browser = await puppeteer.launch({
-            defaultViewport: { width: 1500, height: 1000 },
-            args: ['--disable-dev-shm-usage', '--no-sandbox'],
-            // Opt in to new Chrome headless implementation, see https://developer.chrome.com/articles/new-headless/:
-            headless: "new",
-        });
-        const webPage = await browser.newPage();
+        webPage = await browser.newPage();
         await webPage.goto(url, {
             waitUntil: "networkidle2",
             timeout: 60000
@@ -42,15 +41,26 @@ app.get("/api/render", async (req, res) => {
             }
         });
         console.log(`URL ${url}: PDF created`);
-        await browser.close();
         res.contentType("application/pdf");
         res.send(pdf);
     } catch (error) {
         console.error(error)
         res.sendStatus(500)
+    } finally {
+        await webPage.close()
     }
 })
 
-app.listen(RENDERER_PORT, () => {
-    console.log(`Renderer started on port ${RENDERER_PORT}. Using proxy ${PROXY}`);
+app.listen(RENDERER_PORT, async () => {
+    try {
+        browser = await puppeteer.launch({
+            defaultViewport: { width: 1500, height: 1000 },
+            args: ['--disable-dev-shm-usage', '--no-sandbox'],
+            // Opt in to new Chrome headless implementation, see https://developer.chrome.com/articles/new-headless/:
+            headless: "new",
+        })
+        console.log(`Renderer started on port ${RENDERER_PORT}. Using proxy ${PROXY}`);
+    } catch (error) {
+        console.log(error)
+    }
 });
