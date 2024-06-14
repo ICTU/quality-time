@@ -2,7 +2,7 @@
 name = "release"
 version = "5.13.0"
 dependencies = [
-    "bump-my-version==0.22.0",
+    "bump-my-version==0.22.0.post197.dev9",
     "gitpython==3.1.43",
 ]
 

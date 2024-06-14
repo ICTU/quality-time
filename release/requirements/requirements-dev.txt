@@ -16,9 +16,9 @@ build==1.2.1 \
     --hash=sha256:526263f4870c26f26c433545579475377b2b7588b6f1eac76a001e873ae3e19d \
     --hash=sha256:75e10f767a433d9a86e50d83f418e83efc18ede923ee5ff7df93b6cb0306c5d4
     # via pip-tools
-bump-my-version==0.22.0 \
-    --hash=sha256:57cd3ba68b8a84d774a9abd247a6c6323192151fa2b41f22eb6763cb17dfebee \
-    --hash=sha256:b96f180d6aa154e98e199753e83847587609bd897df9114248e6392324c89620
+bump-my-version==0.22.0.post197.dev9 \
+    --hash=sha256:06730e001feca266dbbab1b273497eab4fd9bba677ad21c2441b04a9ed2aa085 \
+    --hash=sha256:546940433eb670955b6134e8c2b1def02678e804f4291144cdffc3342750366f
     # via release (pyproject.toml)
 click==8.1.7 \
     --hash=sha256:ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28 \
