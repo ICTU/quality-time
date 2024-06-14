@@ -89,6 +89,9 @@ replace = "sonar.projectVersion={new_version}"
 filename = "../docs/src/changelog.md"
 search = "[Unreleased]"
 replace = "v{new_version} - {$RELEASE_DATE}"
+include_bumps = [
+    "pre_release_label",
+] # this is the only bump that produces a non-rc release
 
 [[tool.bumpversion.files]]
 filename = "../.env"
