@@ -51,6 +51,7 @@ export function SettingsPanel({ atReportsOverview, handleSort, settings, tags })
                     <VisibleCardsMenuItem cards={atReportsOverview ? "reports" : "subjects"} {...cardsMenuItemProps} />
                     <VisibleCardsMenuItem cards="tags" {...cardsMenuItemProps} />
                     <VisibleCardsMenuItem cards="issues" {...cardsMenuItemProps} />
+                    <VisibleCardsMenuItem cards="action_required" {...cardsMenuItemProps} />
                     <VisibleCardsMenuItem cards="legend" {...cardsMenuItemProps} />
                 </Menu>
             </Segment>
@@ -58,7 +59,7 @@ export function SettingsPanel({ atReportsOverview, handleSort, settings, tags })
                 <Header size="small">Visible metrics</Header>
                 <Menu {...menuProps}>
                     <MetricMenuItem hide="none" {...metricMenuItemProps} />
-                    <MetricMenuItem hide="no_action_needed" {...metricMenuItemProps} />
+                    <MetricMenuItem hide="no_action_required" {...metricMenuItemProps} />
                     <MetricMenuItem hide="no_issues" {...metricMenuItemProps} />
                     <MetricMenuItem hide="all" {...metricMenuItemProps} />
                 </Menu>
@@ -381,7 +382,7 @@ function MetricMenuItem({ hide, metricsToHide }) {
             {
                 {
                     none: "All metrics",
-                    no_action_needed: "Metrics requiring action",
+                    no_action_required: "Metrics requiring action",
                     no_issues: "Metrics with issues",
                     all: "No metrics",
                 }[hide]

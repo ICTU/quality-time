@@ -28,9 +28,9 @@ it("shows the correct title", () => {
     expect(screen.getByText(/Issues/)).toBeInTheDocument()
 })
 
-it("shows the title in blue when selected", () => {
+it("shows the title as selected when the card is selected", () => {
     renderIssuesCard({ selected: true })
-    expect(screen.getByText(/Issues/)).toHaveClass("blue")
+    expect(screen.getByText(/Issues/)).toHaveClass("selected")
 })
 
 it("shows the number of issues", () => {

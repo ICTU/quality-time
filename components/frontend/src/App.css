@@ -14,3 +14,8 @@
 html {
     scroll-padding-top: 163px; /* height of sticky header */
 }
+
+:root {
+    --inverted-menu-background-color: #1b1c1d;
+    --selection-color: #2185d0;
+}

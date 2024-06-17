@@ -4,9 +4,9 @@ import { List, Table } from "semantic-ui-react"
 
 import { DarkMode } from "../context/DarkMode"
 import { StatusIcon } from "../measurement/StatusIcon"
+import { STATUS_DESCRIPTION, STATUSES } from "../metric/status"
 import { Icon, Label } from "../semantic_ui_react_wrappers"
 import { datesPropType, settingsPropType } from "../sharedPropTypes"
-import { STATUS_DESCRIPTION, STATUSES } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 import { SortableTableHeaderCell, UnsortableTableHeaderCell } from "../widgets/TableHeaderCell"
 

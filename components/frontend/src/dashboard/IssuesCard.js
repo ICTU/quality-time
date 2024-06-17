@@ -1,10 +1,9 @@
-import "./IssuesCard.css"
-
 import { bool, func } from "prop-types"
 
-import { Card, Header, Label, Table } from "../semantic_ui_react_wrappers"
+import { Label, Table } from "../semantic_ui_react_wrappers"
 import { reportPropType } from "../sharedPropTypes"
 import { capitalize, ISSUE_STATUS_COLORS } from "../utils"
+import { FilterCardWithTable } from "./FilterCardWithTable"
 
 function issueStatuses(report) {
     // The issue status is unknown when the issue was added recently and the status hasn't been collected yet
@@ -30,9 +29,9 @@ issueStatuses.propTypes = {
     report: reportPropType,
 }
 
-export function IssuesCard({ onClick, report, selected }) {
+function tableRows(report) {
     const statuses = issueStatuses(report)
-    const tableRows = Object.keys(statuses).map((status) => (
+    return Object.keys(statuses).map((status) => (
         <Table.Row key={status}>
             <Table.Cell>{capitalize(status)}</Table.Cell>
             <Table.Cell textAlign="right">
@@ -42,18 +41,16 @@ export function IssuesCard({ onClick, report, selected }) {
             </Table.Cell>
         </Table.Row>
     ))
-    const color = selected ? "blue" : null
+}
+tableRows.propTypes = {
+    report: reportPropType,
+}
+
+export function IssuesCard({ onClick, report, selected }) {
     return (
-        <Card className="issues" color={color} onClick={onClick} onKeyPress={onClick} tabIndex="0">
-            <Card.Content>
-                <Header as="h3" color={color} textAlign="center">
-                    {"Issues"}
-                </Header>
-                <Table basic="very" compact="very" size="small">
-                    <Table.Body>{tableRows}</Table.Body>
-                </Table>
-            </Card.Content>
-        </Card>
+        <FilterCardWithTable onClick={onClick} selected={selected} title="Issues">
+            {tableRows(report)}
+        </FilterCardWithTable>
     )
 }
 IssuesCard.propTypes = {

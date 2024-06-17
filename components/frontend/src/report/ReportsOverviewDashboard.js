@@ -5,9 +5,11 @@ import { set_reports_attribute } from "../api/report"
 import { DataModel } from "../context/DataModel"
 import { CardDashboard } from "../dashboard/CardDashboard"
 import { LegendCard } from "../dashboard/LegendCard"
+import { MetricsRequiringActionCard } from "../dashboard/MetricsRequiringActionCard"
 import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
+import { STATUS_COLORS } from "../metric/status"
 import { datesPropType, measurementPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
-import { getMetricTags, getReportsTags, nrMetricsInReport, STATUS_COLORS, sum, visibleMetrics } from "../utils"
+import { getMetricTags, getReportsTags, nrMetricsInReport, sum, visibleMetrics } from "../utils"
 import { Tag } from "../widgets/Tag"
 import { metricStatusOnDate } from "./report_utils"
 
@@ -111,9 +113,24 @@ export function ReportsOverviewDashboard({
                 />
             ))
     }
+    let extraCards = []
+    if (settings.hiddenCards.excludes("action_required")) {
+        const metricRequiringActionSelected = settings.metricsToHide.value === "no_action_required"
+        extraCards.push(
+            <MetricsRequiringActionCard
+                key="metrics_requiring_action"
+                reports={reports}
+                onClick={() => settings.metricsToHide.set(metricRequiringActionSelected ? "all" : "no_action_required")}
+                selected={metricRequiringActionSelected}
+            />,
+        )
+    }
+    if (settings.hiddenCards.excludes("legend")) {
+        extraCards.push(<LegendCard key="legend" />)
+    }
     return (
         <CardDashboard
-            cards={report_cards.concat(tagCards).concat([<LegendCard key="legend" />])}
+            cards={report_cards.concat(tagCards).concat(extraCards)}
             initialLayout={layout}
             saveLayout={function (new_layout) {
                 set_reports_attribute("layout", new_layout, reload)

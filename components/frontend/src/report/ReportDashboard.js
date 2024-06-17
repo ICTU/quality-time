@@ -6,16 +6,11 @@ import { DataModel } from "../context/DataModel"
 import { CardDashboard } from "../dashboard/CardDashboard"
 import { IssuesCard } from "../dashboard/IssuesCard"
 import { LegendCard } from "../dashboard/LegendCard"
+import { MetricsRequiringActionCard } from "../dashboard/MetricsRequiringActionCard"
 import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
+import { STATUS_COLORS } from "../metric/status"
 import { datesPropType, measurementPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
-import {
-    getMetricTags,
-    getReportTags,
-    getSubjectName,
-    nrMetricsInReport,
-    STATUS_COLORS,
-    visibleMetrics,
-} from "../utils"
+import { getMetricTags, getReportTags, getSubjectName, nrMetricsInReport, visibleMetrics } from "../utils"
 import { Tag } from "../widgets/Tag"
 import { metricStatusOnDate } from "./report_utils"
 
@@ -86,6 +81,19 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
         })
     }
     const extraCards = []
+    if (settings.hiddenCards.excludes("action_required")) {
+        const metricRequiringActionSelected = settings.metricsToHide.value === "no_action_required"
+        extraCards.push(
+            <MetricsRequiringActionCard
+                key="metrics_requiring_action"
+                reports={[report]}
+                onClick={() =>
+                    settings.metricsToHide.set(metricRequiringActionSelected ? "none" : "no_action_required")
+                }
+                selected={metricRequiringActionSelected}
+            />,
+        )
+    }
     if (report.issue_tracker?.type && settings.hiddenCards.excludes("issues")) {
         const selected = settings.metricsToHide.value === "no_issues"
         extraCards.push(

@@ -63,15 +63,6 @@ export const directionPropType = oneOf(["<", ">"])
 
 export const sortDirectionPropType = oneOf(["ascending", "descending"])
 
-export const statusPropType = oneOf([
-    "target_met",
-    "near_target_met",
-    "debt_target_met",
-    "target_not_met",
-    "informative",
-    "unknown",
-])
-
 export const sortDirectionURLSearchQueryPropType = shape({
     isDefault: func,
     reset: func,
@@ -79,9 +70,9 @@ export const sortDirectionURLSearchQueryPropType = shape({
     value: sortDirectionPropType,
 })
 
-export const hiddenCardsPropType = oneOf(["reports", "subjects", "tags", "issues", "legend"])
+export const hiddenCardsPropType = oneOf(["action_required", "reports", "subjects", "tags", "issues", "legend"])
 
-export const metricsToHidePropType = oneOf(["all", "none", "no_action_needed", "no_issues"])
+export const metricsToHidePropType = oneOf(["all", "none", "no_action_required", "no_issues"])
 
 export const metricsToHideURLSearchQueryPropType = shape({
     isDefault: func,

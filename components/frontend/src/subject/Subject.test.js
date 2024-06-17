@@ -44,7 +44,7 @@ it("shows the subject title at the reports overview", async () => {
 })
 
 it("hides metrics not requiring action", async () => {
-    history.push("?metrics_to_hide=no_action_needed")
+    history.push("?metrics_to_hide=no_action_required")
     renderSubject()
     expect(screen.queryAllByText(/M\d/).length).toBe(1)
 })
@@ -67,7 +67,7 @@ it("does not hide an empty subject if no metrics are hidden", async () => {
 })
 
 it("hides an empty subject if metrics that require action are hidden", async () => {
-    history.push("?metrics_to_hide=no_action_needed")
+    history.push("?metrics_to_hide=no_action_required")
     renderSubject(reportWithEmptySubject)
     expect(screen.queryAllByText("Subject 1 title").length).toBe(0)
 })

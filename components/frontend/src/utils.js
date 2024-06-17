@@ -2,6 +2,7 @@ import { arrayOf, number, objectOf, oneOf, string } from "prop-types"
 
 import { PERMISSIONS } from "./context/Permissions"
 import { defaultDesiredResponseTimes } from "./defaults"
+import { STATUSES_NOT_REQUIRING_ACTION } from "./metric/status"
 import {
     metricPropType,
     metricsPropType,
@@ -12,50 +13,9 @@ import {
     stringsPropType,
     subjectTypePropType,
 } from "./sharedPropTypes"
-import { HyperLink } from "./widgets/HyperLink"
 
 export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000
 const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR
-
-export const STATUSES = ["unknown", "target_not_met", "near_target_met", "target_met", "debt_target_met", "informative"]
-export const STATUS_COLORS = {
-    informative: "blue",
-    target_met: "green",
-    near_target_met: "yellow",
-    target_not_met: "red",
-    debt_target_met: "grey",
-    unknown: "white",
-}
-export const STATUS_COLORS_RGB = {
-    target_not_met: "rgb(211,59,55)",
-    target_met: "rgb(30,148,78)",
-    near_target_met: "rgb(253,197,54)",
-    debt_target_met: "rgb(150,150,150)",
-    informative: "rgb(0,165,255)",
-    unknown: "rgb(245,245,245)",
-}
-export const STATUS_NAME = {
-    informative: "Informative",
-    target_met: "Target met",
-    near_target_met: "Near target met",
-    target_not_met: "Target not met",
-    debt_target_met: "Technical debt target met",
-    unknown: "Unknown",
-}
-export const STATUS_DESCRIPTION = {
-    informative: `${STATUS_NAME.informative}: the measurement value is not evaluated against a target value.`,
-    target_met: `${STATUS_NAME.target_met}: the measurement value meets the target value.`,
-    near_target_met: `${STATUS_NAME.near_target_met}: the measurement value is close to the target value.`,
-    target_not_met: `${STATUS_NAME.target_not_met}: the measurement value does not meet the target value.`,
-    debt_target_met: (
-        <>
-            {`${STATUS_NAME.debt_target_met}: the measurement value does not meet the\ntarget value, but this is accepted as `}
-            <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt">technical debt</HyperLink>
-            {". The measurement\nvalue does meet the technical debt target."}
-        </>
-    ),
-    unknown: `${STATUS_NAME.unknown}: the status could not be determined because no sources have\nbeen configured for the metric yet or the measurement data could not\nbe collected.`,
-}
 
 export const ISSUE_STATUS_COLORS = { todo: "grey", doing: "blue", done: "green", unknown: null }
 
@@ -219,21 +179,7 @@ export function getMetricScale(metric, dataModel) {
 }
 
 export function getMetricStatus(metric) {
-    return metric.status ?? ""
-}
-
-export function getStatusName(status) {
-    return {
-        target_met: "Target met",
-        near_target_met: "Near target met",
-        debt_target_met: "Debt target met",
-        target_not_met: "Target not met",
-        informative: "Informative",
-        unknown: "Unknown",
-    }[status || "unknown"]
-}
-getStatusName.propTypes = {
-    status: string,
+    return metric.status ?? "unknown"
 }
 
 export function getMetricTags(metric) {
@@ -254,7 +200,7 @@ sortWithLocaleCompare.propTypes = {
 
 function hideMetric(metric, metricsToHide, hiddenTags) {
     const hideBecauseNoActionNeeded =
-        metricsToHide === "no_action_needed" && ["target_met", "debt_target_met", "informative"].includes(metric.status)
+        metricsToHide === "no_action_required" && STATUSES_NOT_REQUIRING_ACTION.includes(metric.status)
     const hideBecauseNoIssues = metricsToHide === "no_issues" && !metric?.issue_ids?.length
     const hideBecauseTagIsHidden =
         hiddenTags?.length > 0 &&
@@ -344,7 +290,7 @@ getMetricIssueIds.propTypes = {
 }
 
 export function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1)
+    return string.charAt(0).toUpperCase() + string.slice(1).replaceAll("_", " ")
 }
 
 export function pluralize(word, count) {

@@ -35,7 +35,7 @@ import { SubjectTitle } from "./SubjectTitle"
 
 function sortMetrics(dataModel, metrics, sortDirection, sortColumn, report, measurements) {
     const status_order = {
-        "": "0",
+        unknown: "0",
         target_not_met: "1",
         near_target_met: "2",
         debt_target_met: "3",

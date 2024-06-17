@@ -89,3 +89,31 @@ it("hides the tag cards", async () => {
     expect(screen.queryAllByText(/tag/).length).toBe(0)
     expect(screen.queryAllByText(/other/).length).toBe(0)
 })
+
+it("hides the required actions cards", async () => {
+    history.push("?hidden_cards=action_required")
+    renderReportsOverviewDashboard()
+    expect(screen.getAllByText(/Report/).length).toBe(1)
+    expect(screen.queryAllByText(/Action required/).length).toBe(0)
+    expect(screen.getAllByText(/tag/).length).toBe(1)
+    expect(screen.getAllByText(/other/).length).toBe(1)
+})
+
+it("hides metrics not requiring action", async () => {
+    renderReportsOverviewDashboard()
+    fireEvent.click(screen.getByText(/Action required/))
+    expect(history.location.search).toEqual("?metrics_to_hide=no_action_required")
+})
+
+it("unhides metrics not requiring action", async () => {
+    history.push("?metrics_to_hide=no_action_required")
+    renderReportsOverviewDashboard()
+    fireEvent.click(screen.getByText(/Action required/))
+    expect(history.location.search).toEqual("?metrics_to_hide=all")
+})
+
+it("hides the legend card", async () => {
+    history.push("?hidden_cards=legend")
+    renderReportsOverviewDashboard()
+    expect(screen.queryAllByText(/Legend/).length).toBe(0)
+})

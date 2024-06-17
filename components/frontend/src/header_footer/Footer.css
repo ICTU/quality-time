@@ -1,5 +1,11 @@
 @media print {
-    #Footer {
+    div.footer {
         display: none;
     }
+}
+
+div.footer {
+    background-color: var(--inverted-menu-background-color) !important;
+    margin: 5em 0em 0em !important;
+    padding: 5em 0em 3em !important;
 }

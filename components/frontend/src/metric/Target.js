@@ -10,15 +10,15 @@ import { IntegerInput } from "../fields/IntegerInput"
 import { StringInput } from "../fields/StringInput"
 import { StatusIcon } from "../measurement/StatusIcon"
 import { Header, Icon, Popup } from "../semantic_ui_react_wrappers"
-import { childrenPropType, labelPropType, metricPropType, scalePropType, statusPropType } from "../sharedPropTypes"
+import { childrenPropType, labelPropType, metricPropType, scalePropType } from "../sharedPropTypes"
 import {
     capitalize,
     formatMetricDirection,
     formatMetricScaleAndUnit,
     formatMetricValue,
     getMetricScale,
-    getStatusName,
 } from "../utils"
+import { STATUS_SHORT_NAME, statusPropType } from "./status"
 
 function smallerThan(target1, target2) {
     const t1 = target1 ?? `${Number.POSITIVE_INFINITY}`
@@ -57,7 +57,7 @@ function ColoredSegment({ children, color, show, status }) {
             <Segment inverted={darkMode}>
                 <Header>
                     <span>
-                        {getStatusName(status)} <StatusIcon status={status} size="tiny" />
+                        {STATUS_SHORT_NAME[status]} <StatusIcon status={status} size="tiny" />
                     </span>
                     <Header.Subheader>{capitalize(color)}</Header.Subheader>
                 </Header>

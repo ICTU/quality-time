@@ -6,8 +6,10 @@ import { VictoryContainer, VictoryLabel, VictoryPortal, VictoryTooltip } from "v
 
 import { DarkMode } from "../context/DarkMode"
 import { useBoundingBox } from "../hooks/boundingbox"
+import { STATUS_COLORS_RGB, STATUSES } from "../metric/status"
 import { Card } from "../semantic_ui_react_wrappers"
-import { pluralize, STATUS_COLORS_RGB, STATUSES, sum } from "../utils"
+import { pluralize, sum } from "../utils"
+import { FilterCard } from "./FilterCard"
 import { StatusBarChart } from "./StatusBarChart"
 import { StatusPieChart } from "./StatusPieChart"
 
@@ -87,10 +89,9 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
         tooltip: tooltip,
         width: Math.max(bbWidth, 1), // Prevent "Failed prop type: Invalid prop range supplied to VictoryBar"
     }
-    const color = selected ? "blue" : null
     return (
-        <Card color={color} style={{ height: "100%" }} onClick={onClick} onKeyPress={onClick} tabIndex="0">
-            <div ref={ref} style={{ width: "100%", height: "72%" }} aria-label={ariaChartLabel(summary)}>
+        <FilterCard onClick={onClick} selected={selected}>
+            <div ref={ref} style={{ height: "72%" }} aria-label={ariaChartLabel(summary)}>
                 <VictoryContainer width={bbWidth} height={bbHeight}>
                     {dates.length > 1 ? (
                         <StatusBarChart summary={summary} nrdates={dates.length} {...chartProps} />
@@ -102,7 +103,7 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
             <Card.Content>
                 <Card.Header textAlign="center">{header}</Card.Header>
             </Card.Content>
-        </Card>
+        </FilterCard>
     )
 }
 MetricSummaryCard.propTypes = {
