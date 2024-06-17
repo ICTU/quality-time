@@ -1,5 +1,5 @@
 [project]
-name = "api_server"
+name = "api-server"
 version = "5.13.0"
 dependencies = [
     "bottle==0.12.25",
@@ -28,7 +28,7 @@ tools = [
     "fixit==2.1.0",
     "mypy==1.10.0",
     "pip-audit==2.7.3",
-    "ruff==0.4.8",
+    "ruff==0.4.9",
     "safety==3.2.3",
     "vulture==2.11"
 ]
