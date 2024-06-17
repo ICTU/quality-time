@@ -27,7 +27,7 @@ function renderResetSettingsButton({
 it("resets the settings", async () => {
     history.push(
         "?date_interval=2&date_order=ascending&hidden_columns=comment&hidden_tags=tag&" +
-            "metrics_to_hide=no_action_needed&nr_dates=2&show_issue_creation_date=true&show_issue_summary=true&" +
+            "metrics_to_hide=no_action_required&nr_dates=2&show_issue_creation_date=true&show_issue_summary=true&" +
             "show_issue_update_date=true&show_issue_due_date=true&show_issue_release=true&show_issue_sprint=true&" +
             "sort_column=status&sort_direction=descending&expanded=tab:0&hidden_cards=tags",
     )

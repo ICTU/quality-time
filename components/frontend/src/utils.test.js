@@ -6,7 +6,6 @@ import {
     getMetricTarget,
     getReportTags,
     getSourceName,
-    getStatusName,
     getSubjectName,
     getSubjectType,
     getSubjectTypeMetrics,
@@ -50,6 +49,7 @@ it("capitalizes strings", () => {
     expect(capitalize("ab")).toBe("Ab")
     expect(capitalize("aB")).toBe("AB")
     expect(capitalize("AB")).toBe("AB")
+    expect(capitalize("a_b")).toBe("A b")
 })
 
 it("rounds numbers nicely", () => {
@@ -375,27 +375,27 @@ it("does not return hidden tags", () => {
 })
 
 it("hides metrics not requiring action or without issues", () => {
-    expect(visibleMetrics({}, "no_action_needed", [])).toStrictEqual({})
+    expect(visibleMetrics({}, "no_action_required", [])).toStrictEqual({})
     expect(visibleMetrics({}, "no_issues", [])).toStrictEqual({})
     expect(visibleMetrics({}, "all", [])).toStrictEqual({})
     expect(visibleMetrics({}, "none", [])).toStrictEqual({})
     const metricNotRequiringAction = { metric_uuid: { status: "informative" } }
-    expect(visibleMetrics(metricNotRequiringAction, "no_action_needed", [])).toStrictEqual({})
+    expect(visibleMetrics(metricNotRequiringAction, "no_action_required", [])).toStrictEqual({})
     expect(visibleMetrics(metricNotRequiringAction, "no_issues", [])).toStrictEqual({})
     expect(visibleMetrics(metricNotRequiringAction, "all", [])).toStrictEqual({})
     expect(visibleMetrics(metricNotRequiringAction, "none", [])).toStrictEqual(metricNotRequiringAction)
     const metricRequiringAction = { metric_uuid: { status: "target_not_met" } }
-    expect(visibleMetrics(metricRequiringAction, "no_action_needed", [])).toStrictEqual(metricRequiringAction)
+    expect(visibleMetrics(metricRequiringAction, "no_action_required", [])).toStrictEqual(metricRequiringAction)
     expect(visibleMetrics(metricRequiringAction, "no_issues", [])).toStrictEqual({})
     expect(visibleMetrics(metricRequiringAction, "none", [])).toStrictEqual(metricRequiringAction)
     expect(visibleMetrics(metricRequiringAction, "all", [])).toStrictEqual({})
     const metricWithIssue = { metric_uuid: { status: "target_met", issue_ids: ["ID-1"] } }
-    expect(visibleMetrics(metricWithIssue, "no_action_needed", [])).toStrictEqual({})
+    expect(visibleMetrics(metricWithIssue, "no_action_required", [])).toStrictEqual({})
     expect(visibleMetrics(metricWithIssue, "no_issues", [])).toStrictEqual(metricWithIssue)
     expect(visibleMetrics(metricWithIssue, "none", [])).toStrictEqual(metricWithIssue)
     expect(visibleMetrics(metricWithIssue, "all", [])).toStrictEqual({})
     const metricWithRemovedIssue = { metric_uuid: { status: "target_met", issue_ids: [] } }
-    expect(visibleMetrics(metricWithRemovedIssue, "no_action_needed", [])).toStrictEqual({})
+    expect(visibleMetrics(metricWithRemovedIssue, "no_action_required", [])).toStrictEqual({})
     expect(visibleMetrics(metricWithRemovedIssue, "no_issues", [])).toStrictEqual({})
     expect(visibleMetrics(metricWithRemovedIssue, "none", [])).toStrictEqual(metricWithRemovedIssue)
     expect(visibleMetrics(metricWithRemovedIssue, "all", [])).toStrictEqual({})
@@ -423,16 +423,6 @@ it("sorts strings with locale compare", () => {
     const emptyArray = []
     sortWithLocaleCompare(emptyArray)
     expect(emptyArray).toStrictEqual([])
-})
-
-it("gets the status name", () => {
-    expect(getStatusName("target_met")).toBe("Target met")
-    expect(getStatusName("near_target_met")).toBe("Near target met")
-    expect(getStatusName("debt_target_met")).toBe("Debt target met")
-    expect(getStatusName("target_not_met")).toBe("Target not met")
-    expect(getStatusName("informative")).toBe("Informative")
-    expect(getStatusName("unknown")).toBe("Unknown")
-    expect(getStatusName("")).toBe("Unknown")
 })
 
 it("gets the number of reports in a report", () => {

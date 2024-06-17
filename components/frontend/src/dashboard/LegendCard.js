@@ -5,8 +5,8 @@ import { List } from "semantic-ui-react"
 
 import { DarkMode } from "../context/DarkMode"
 import { StatusIcon } from "../measurement/StatusIcon"
+import { STATUS_SHORT_NAME, STATUSES } from "../metric/status"
 import { Card } from "../semantic_ui_react_wrappers"
-import { getStatusName, STATUSES } from "../utils"
 
 export function LegendCard() {
     const darkMode = useContext(DarkMode)
@@ -17,7 +17,7 @@ export function LegendCard() {
                 <StatusIcon status={status} size="small" />
             </List.Icon>
             <List.Content verticalAlign="middle" style={{ color: color }}>
-                {getStatusName(status)}
+                {STATUS_SHORT_NAME[status]}
             </List.Content>
         </List.Item>
     ))

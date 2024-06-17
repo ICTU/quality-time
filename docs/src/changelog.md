@@ -27,6 +27,7 @@ If your currently installed *Quality-time* version is not v5.13.0, please first 
 - In the measurement entity status menu, the description of the menu items would say "undefined days" if the desired response time for the status had not been changed from its default value. Fixes [#8284](https://github.com/ICTU/quality-time/issues/8284).
 - Added a [versioning policy](versioning.md) to the documentation. Closes [#8748](https://github.com/ICTU/quality-time/issues/8748).
 - Allow for specifying supported source versions in the data model. Show the supported source version in the UI and the reference documentation. Closes [#8786](https://github.com/ICTU/quality-time/issues/8786).
+- Show a card in the dashboard with the number of metrics that require action (red, yellow, and white metrics). The card can be hidden via the Settings panel. Clicking the card or setting "Visible metrics" to "Metrics requiring action" in the Settings panel hides metrics that do not require action. Closes [#8938](https://github.com/ICTU/quality-time/issues/8938).
 
 ### Changed
 

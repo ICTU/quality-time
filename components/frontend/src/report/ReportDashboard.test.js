@@ -76,7 +76,7 @@ it("hides a subject if all its tags are hidden", async () => {
     expect(screen.queryAllByText(/other/).length).toBe(0)
 })
 
-it("calls the callback on click", async () => {
+it("expands the subject title on click", async () => {
     const onClick = jest.fn()
     renderDashboard({ reportToRender: report, onClick: onClick })
     fireEvent.click(screen.getByText(/Subject title/))
@@ -87,6 +87,7 @@ it("hides the subject cards", async () => {
     history.push("?hidden_cards=subjects")
     renderDashboard({ reportToRender: report })
     expect(screen.queryAllByText(/Subject title/).length).toBe(0)
+    expect(screen.getAllByText(/Action required/).length).toBe(1)
     expect(screen.getAllByText(/tag/).length).toBe(1)
     expect(screen.getAllByText(/other/).length).toBe(1)
 })
@@ -95,8 +96,31 @@ it("hides the tag cards", async () => {
     history.push("?hidden_cards=tags")
     renderDashboard({ reportToRender: report })
     expect(screen.getAllByText(/Subject title/).length).toBe(1)
+    expect(screen.getAllByText(/Action required/).length).toBe(1)
     expect(screen.queryAllByText(/tag/).length).toBe(0)
     expect(screen.queryAllByText(/other/).length).toBe(0)
+})
+
+it("hides the required actions cards", async () => {
+    history.push("?hidden_cards=action_required")
+    renderDashboard({ reportToRender: report })
+    expect(screen.getAllByText(/Subject title/).length).toBe(1)
+    expect(screen.queryAllByText(/Action required/).length).toBe(0)
+    expect(screen.getAllByText(/tag/).length).toBe(1)
+    expect(screen.getAllByText(/other/).length).toBe(1)
+})
+
+it("hides metrics not requiring action", async () => {
+    renderDashboard({ reportToRender: report })
+    fireEvent.click(screen.getByText(/Action required/))
+    expect(history.location.search).toEqual("?metrics_to_hide=no_action_required")
+})
+
+it("unhides metrics not requiring action", async () => {
+    history.push("?metrics_to_hide=no_action_required")
+    renderDashboard({ reportToRender: report })
+    fireEvent.click(screen.getByText(/Action required/))
+    expect(history.location.search).toEqual("")
 })
 
 it("hides the legend card", async () => {

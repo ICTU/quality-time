@@ -3,9 +3,8 @@ import "./StatusIcon.css"
 import { instanceOf, oneOfType, string } from "prop-types"
 import { Icon } from "semantic-ui-react"
 
+import { STATUS_SHORT_NAME, statusPropType } from "../metric/status"
 import { Popup } from "../semantic_ui_react_wrappers"
-import { statusPropType } from "../sharedPropTypes"
-import { getStatusName } from "../utils"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 
 export function StatusIcon({ status, status_start, size }) {
@@ -18,7 +17,7 @@ export function StatusIcon({ status, status_start, size }) {
         informative: "info",
         unknown: "question",
     }[status]
-    const statusName = getStatusName(status)
+    const statusName = STATUS_SHORT_NAME[status]
     const icon = <Icon aria-label={statusName} className={status} inverted circular name={icon_name} size={size} />
     return status_start ? (
         <Popup trigger={icon} flowing hoverable>

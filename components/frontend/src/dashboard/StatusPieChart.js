@@ -1,8 +1,9 @@
 import { element, number, object } from "prop-types"
 import { VictoryPie } from "victory"
 
+import { STATUS_COLORS, STATUS_NAME, STATUSES } from "../metric/status"
 import { stringsPropType } from "../sharedPropTypes"
-import { pluralize, STATUS_COLORS, STATUS_NAME, STATUSES, sum } from "../utils"
+import { pluralize, sum } from "../utils"
 
 function nrMetricsLabel(nrMetrics) {
     return nrMetrics === 0 ? "No metrics" : nrMetrics + pluralize(" metric", nrMetrics)

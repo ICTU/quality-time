@@ -49,18 +49,18 @@ function renderSettingsPanel({
 it("hides the metrics not requiring action", async () => {
     renderSettingsPanel()
     fireEvent.click(screen.getByText(/Metrics requiring action/))
-    expect(history.location.search).toBe("?metrics_to_hide=no_action_needed")
+    expect(history.location.search).toBe("?metrics_to_hide=no_action_required")
 })
 
 it("shows all metrics", async () => {
-    history.push("?metrics_to_hide=no_action_needed")
+    history.push("?metrics_to_hide=no_action_required")
     renderSettingsPanel()
     fireEvent.click(screen.getByText(/All metrics/))
     expect(history.location.search).toBe("")
 })
 
 it("shows all metrics by keypress", async () => {
-    history.push("?metrics_to_hide=no_action_needed")
+    history.push("?metrics_to_hide=no_action_required")
     renderSettingsPanel()
     await userEvent.type(screen.getByText(/All metrics/), " ")
     expect(history.location.search).toBe("")

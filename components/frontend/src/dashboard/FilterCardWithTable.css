@@ -1,0 +1,16 @@
+.ui.card.filter .table {
+    margin-top: 0.1em;
+    overflow: hidden;
+    white-space: nowrap;
+    table-layout: fixed;
+}
+
+.ui.card.filter .header {
+    margin-bottom: 0.3em;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ui.card.filter .header.selected {
+    color: var(--selection-color);
+}

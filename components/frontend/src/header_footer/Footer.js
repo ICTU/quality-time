@@ -163,11 +163,7 @@ function QuoteColumn() {
 
 export function Footer({ lastUpdate, report }) {
     return (
-        <Segment
-            inverted
-            id="Footer"
-            style={{ margin: "5em 0em 0em", padding: "5em 0em 3em", backgroundColor: "#1b1c1d" }}
-        >
+        <Segment className="footer" inverted>
             <Container>
                 <Grid>
                     <Grid.Row>
