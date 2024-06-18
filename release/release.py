@@ -51,15 +51,9 @@ def parse_arguments() -> tuple[str, str, bool]:
         epilog=epilog,
         formatter_class=RawDescriptionHelpFormatter,
     )
-    allowed_bumps_in_rc_mode = [
-        "rc",
-        "rc-major",
-        "rc-minor",
-        "rc-patch",
-        "drop-rc",
-    ]  # rc = release candidate
-    allowed_bumps = ["rc-patch", "rc-minor", "rc-major", "patch", "minor", "major"]
-    bumps = allowed_bumps_in_rc_mode if "rc" in current_version else allowed_bumps
+    bumps = ["patch", "minor", "major"]
+    if "rc" in current_version:
+        bumps += ["rc", "release"]
     parser.add_argument("bump", choices=bumps)
     parser.add_argument(
         "-c",
@@ -80,7 +74,8 @@ def check_preconditions(bump: str, current_version: str) -> None:
     root = release_folder.parent
     messages.extend(failed_preconditions_repo(root))
     messages.extend(failed_preconditions_changelog(bump, root))
-    messages.extend(failed_preconditions_version_overview(current_version, root))
+    if bump == "release":  # don't update the version overview for release candidates
+        messages.extend(failed_preconditions_version_overview(current_version, root))
     if messages:
         formatted_messages = "\n".join([f"- {message}" for message in messages])
         sys.exit(f"Please fix these issues before releasing Quality-time:\n{formatted_messages}\n")
@@ -114,7 +109,7 @@ def failed_preconditions_changelog(bump: str, root: pathlib.Path) -> list[str]:
         changelog_text = changelog_file.read()
     if "[Unreleased]" not in changelog_text:
         messages.append(f"The changelog ({changelog}) has no '[Unreleased]' header.")
-    if bump == "drop-rc" and "-rc." in changelog_text:
+    if bump == "release" and "-rc." in changelog_text:
         messages.append(
             f"The changelog ({changelog}) still contains release candidates; remove "
             "the release candidates and move their changes under the '[Unreleased]' header."
@@ -129,8 +124,9 @@ def failed_preconditions_version_overview(current_version: str, root: pathlib.Pa
         version_overview_lines = version_overview_file.readlines()
     missing = f"The version overview ({version_overview}) does not contain"
     previous_line = ""
+    target_version = current_version.split("-rc.")[0]
     for line in version_overview_lines:
-        if line.startswith(f"| v{current_version} "):
+        if line.startswith(f"| v{target_version} "):
             if previous_line.startswith("| v"):
                 today = utc_today().isoformat()
                 release_date = previous_line.split(" | ")[1].strip()
@@ -139,7 +135,7 @@ def failed_preconditions_version_overview(current_version: str, root: pathlib.Pa
                 return []  # All good: current version, next version, and release date found
             return [f"{missing}) the new version."]
         previous_line = line
-    return [f"{missing} the current version ({current_version})."]
+    return [f"{missing} the target version ({target_version})."]
 
 
 def utc_today() -> datetime.date:
@@ -151,18 +147,19 @@ def main() -> None:
     """Create the release."""
     os.environ["RELEASE_DATE"] = utc_today().isoformat()  # Used by bump-my-version to update CHANGELOG.md
     bump, current_version, check_preconditions_only = parse_arguments()
+    # See https://github.com/callowayproject/bump-my-version?tab=readme-ov-file#add-support-for-pre-release-versions
+    # for how bump-my-version deals with pre-release versions
     check_preconditions(bump, current_version)
     if check_preconditions_only:
         return
-    # See https://github.com/callowayproject/bump-my-version?tab=readme-ov-file#add-support-for-pre-release-versions
-    # for how bump-my-version deals with pre-release versions
-    if bump.startswith("rc-"):
-        bump = bump.split("-", maxsplit=1)[1]  # Create a patch, minor, or major release candidate
-    elif bump == "drop-rc":
-        bump = "pre_release_label"  # Bump the pre-release label from "rc" to "final" (which is optional and omitted)
+    cmd = ["bump-my-version", "bump"]
+    if bump == "release":
+        cmd.append("pre_release_label")  # Bump the pre-release label from "rc" to "final" (being optional and omitted)
     elif bump == "rc":
-        bump = "pre_release_number"  # Bump the release candidate number
-    subprocess.run(("bump-my-version", "bump", bump), check=True)  # noqa: S603
+        cmd.append("pre_release_number")  # Bump the release candidate number, when already on a -rc version
+    else:
+        cmd.append(bump)
+    subprocess.run(cmd, check=True)  # noqa: S603
     subprocess.run(("git", "push", "--follow-tags"), check=True)  # noqa: S603
 
 
