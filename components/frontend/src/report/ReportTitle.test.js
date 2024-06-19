@@ -299,13 +299,6 @@ it("loads the changelog", async () => {
     expect(changelog_api.get_changelog).toHaveBeenCalledWith(5, { report_uuid: "report_uuid" })
 })
 
-it("shows the share tab", () => {
-    renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
-    fireEvent.click(screen.getByText(/Share/))
-    expect(screen.getAllByText(/Report permanent link/).length).toBe(1)
-})
-
 it("shows the notification destinations", () => {
     renderReportTitle()
     fireEvent.click(screen.getByTitle(/expand/))

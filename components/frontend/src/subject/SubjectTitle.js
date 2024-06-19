@@ -8,10 +8,9 @@ import { ChangeLog } from "../changelog/ChangeLog"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { Header, Tab } from "../semantic_ui_react_wrappers"
-import { Share } from "../share/Share"
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
 import { getSubjectType, slugify } from "../utils"
-import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
+import { DeleteButton, PermLinkButton, ReorderButtonGroup } from "../widgets/Button"
 import { FocusableTab } from "../widgets/FocusableTab"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { HyperLink } from "../widgets/HyperLink"
@@ -37,7 +36,7 @@ SubjectHeader.propTypes = {
     subjectType: object,
 }
 
-function ButtonRow({ subject_uuid, firstSubject, lastSubject, reload }) {
+function ButtonRow({ subject_uuid, firstSubject, lastSubject, reload, url }) {
     return (
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
@@ -51,6 +50,7 @@ function ButtonRow({ subject_uuid, firstSubject, lastSubject, reload }) {
                             set_subject_attribute(subject_uuid, "position", direction, reload)
                         }}
                     />
+                    <PermLinkButton itemType="subject" url={url} />
                     <DeleteButton itemType="subject" onClick={() => delete_subject(subject_uuid, reload)} />
                 </>
             }
@@ -62,6 +62,7 @@ ButtonRow.propTypes = {
     firstSubject: bool,
     lastSubject: bool,
     reload: func,
+    url: string,
 }
 
 export function SubjectTitle({
@@ -112,19 +113,6 @@ export function SubjectTitle({
                 </Tab.Pane>
             ),
         },
-        {
-            menuItem: (
-                <Menu.Item key="share">
-                    <Icon name="share square" />
-                    <FocusableTab>{"Share"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <Share title="Subject permanent link" url={subjectUrl} />
-                </Tab.Pane>
-            ),
-        },
     ]
 
     return (
@@ -149,6 +137,7 @@ export function SubjectTitle({
                     firstSubject={firstSubject}
                     lastSubject={lastSubject}
                     reload={reload}
+                    url={subjectUrl}
                 />
             </div>
         </HeaderWithDetails>

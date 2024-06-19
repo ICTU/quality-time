@@ -2,7 +2,7 @@ import { array, arrayOf, bool, func, string } from "prop-types"
 import { useState } from "react"
 import { Icon, Input } from "semantic-ui-react"
 
-import { Button, Checkbox, Dropdown, Label, Popup } from "../semantic_ui_react_wrappers"
+import { Button, Checkbox, Dropdown, Popup } from "../semantic_ui_react_wrappers"
 import { popupContentPropType } from "../sharedPropTypes"
 import { showMessage } from "../widgets/toast"
 import { ItemBreadcrumb } from "./ItemBreadcrumb"
@@ -296,7 +296,7 @@ ReorderButton.propTypes = {
 
 export function ReorderButtonGroup(props) {
     return (
-        <Button.Group style={{ marginTop: "0px" }}>
+        <Button.Group style={{ marginTop: "0px", marginRight: "5px" }}>
             <ReorderButton {...props} direction="first" />
             <ReorderButton {...props} direction="previous" />
             <ReorderButton {...props} direction="next" />
@@ -364,59 +364,32 @@ export function MoveButton(props) {
     return <ActionAndItemPickerButton {...props} action="Move" icon="shuffle" />
 }
 
-export function PermLinkButton({ url }) {
-    if (navigator.clipboard) {
+export function PermLinkButton({ itemType, url }) {
+    if (window.isSecureContext) {
         // Frontend runs in a secure context (https) so we can use the Clipboard API
         return (
-            <Button
-                as="div"
-                labelPosition="right"
-                onClick={() =>
-                    navigator.clipboard
-                        .writeText(url)
-                        .then(() => showMessage("success", "Copied URL to clipboard"))
-                        .catch((error) => showMessage("error", "Could not copy URL to clipboard", `${error}`))
+            <Popup
+                content={`Copy a permanent link to this ${itemType} to the clipboard`}
+                trigger={
+                    <Button
+                        basic
+                        content="Share"
+                        icon="share square"
+                        onClick={() =>
+                            navigator.clipboard
+                                .writeText(url)
+                                .then(() => showMessage("success", "Copied URL to clipboard"))
+                                .catch((error) => showMessage("error", "Could not copy URL to clipboard", `${error}`))
+                        }
+                        primary
+                    />
                 }
-            >
-                <Button basic content="Copy" icon="copy" primary />
-                <Label as="a" color="blue">
-                    {url}
-                </Label>
-            </Button>
-        )
-    } else {
-        // Frontend does not run in a secure context (https) so we cannot use the Clipboard API, and have
-        // to use the deprecated Document.execCommand. As document.exeCommand expects selected text, we also
-        // cannot use the Label component but have to use a (read only) input element so we can select the URL
-        // before copying it to the clipboard.
-        return (
-            <Input action actionPosition="left" color="blue" defaultValue={url} fluid readOnly>
-                <Button
-                    basic
-                    color="blue"
-                    content="Copy"
-                    icon="copy"
-                    onClick={() => {
-                        let urlText = document.querySelector("#permlink")
-                        urlText.select()
-                        document.execCommand("copy")
-                        showMessage("success", "Copied URL to clipboard")
-                    }}
-                    style={{ fontWeight: "bold" }}
-                />
-                <input
-                    data-testid="permlink"
-                    id="permlink"
-                    style={{
-                        border: "1px solid rgb(143, 208, 255)",
-                        color: "rgb(143, 208, 255)",
-                        fontWeight: "bold",
-                    }}
-                />
-            </Input>
+            />
         )
     }
+    return null
 }
 PermLinkButton.propTypes = {
+    itemType: string,
     url: string,
 }

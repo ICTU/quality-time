@@ -105,14 +105,6 @@ it("loads the changelog", async () => {
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/subject/subject_uuid/5")
 })
 
-it("shows the share tab", async () => {
-    await renderSubjectTitle()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Share/))
-    })
-    expect(screen.getAllByText(/Subject permanent link/).length).toBe(1)
-})
-
 it("moves the subject", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     await renderSubjectTitle()
