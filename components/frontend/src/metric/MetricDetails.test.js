@@ -141,18 +141,15 @@ it("does not show the trend graph tab if the metric scale is version number", as
     expect(screen.queryAllByText(/Trend graph/).length).toBe(0)
 })
 
-it("switches tabs to the share tab", async () => {
-    await renderMetricDetails()
-    expect(screen.getAllByText(/Metric name/).length).toBe(1)
-    fireEvent.click(screen.getByText(/Share/))
-    expect(screen.getAllByText(/Metric permanent link/).length).toBe(1)
-})
-
 it("removes the existing hashtag from the URL to share", async () => {
     history.push("#hash_that_should_be_removed")
+    Object.assign(window, { isSecureContext: true })
+    Object.assign(navigator, {
+        clipboard: { writeText: jest.fn().mockImplementation(() => Promise.resolve()) },
+    })
     await renderMetricDetails()
     fireEvent.click(screen.getByText(/Share/))
-    expect(screen.getByTestId("permlink").value).toBe("http://localhost/#metric_uuid")
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("http://localhost/#metric_uuid")
 })
 
 it("displays whether sources have errors", async () => {

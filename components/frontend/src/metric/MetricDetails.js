@@ -9,7 +9,6 @@ import { ChangeLog } from "../changelog/ChangeLog"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { Label, Tab } from "../semantic_ui_react_wrappers"
-import { Share } from "../share/Share"
 import {
     datePropType,
     reportPropType,
@@ -20,7 +19,7 @@ import {
 import { SourceEntities } from "../source/SourceEntities"
 import { Sources } from "../source/Sources"
 import { getMetricScale, getSourceName } from "../utils"
-import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
+import { DeleteButton, PermLinkButton, ReorderButtonGroup } from "../widgets/Button"
 import { FocusableTab } from "../widgets/FocusableTab"
 import { showMessage } from "../widgets/toast"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
@@ -28,7 +27,7 @@ import { MetricDebtParameters } from "./MetricDebtParameters"
 import { MetricTypeHeader } from "./MetricTypeHeader"
 import { TrendGraph } from "./TrendGraph"
 
-function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopFilteringAndSorting }) {
+function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopFilteringAndSorting, url }) {
     return (
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
@@ -44,6 +43,7 @@ function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopFilteri
                             set_metric_attribute(metric_uuid, "position", direction, reload)
                         }}
                     />
+                    <PermLinkButton itemType="metric" url={url} />
                     <DeleteButton itemType="metric" onClick={() => delete_metric(metric_uuid, reload)} />
                 </div>
             }
@@ -56,6 +56,7 @@ Buttons.propTypes = {
     metric_uuid: string,
     reload: func,
     stopFilteringAndSorting: func,
+    url: string,
 }
 
 function fetchMeasurements(reportDate, metric_uuid, setMeasurements) {
@@ -176,19 +177,6 @@ export function MetricDetails({
                 </Tab.Pane>
             ),
         },
-        {
-            menuItem: (
-                <Menu.Item key="share">
-                    <Icon name="share square" />
-                    <FocusableTab>{"Share"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <Share title="Metric permanent link" url={metricUrl} />
-                </Tab.Pane>
-            ),
-        },
     )
     if (measurements.length > 0) {
         if (getMetricScale(metric, dataModel) !== "version_number") {
@@ -251,6 +239,7 @@ export function MetricDetails({
                 isLastMetric={isLastMetric}
                 reload={reload}
                 stopFilteringAndSorting={stopFilteringAndSorting}
+                url={metricUrl}
             />
         </>
     )

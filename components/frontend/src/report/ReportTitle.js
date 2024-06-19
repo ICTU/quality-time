@@ -11,10 +11,9 @@ import { StringInput } from "../fields/StringInput"
 import { STATUS_DESCRIPTION, STATUS_NAME } from "../metric/status"
 import { NotificationDestinations } from "../notification/NotificationDestinations"
 import { Label, Segment, Tab } from "../semantic_ui_react_wrappers"
-import { Share } from "../share/Share"
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
 import { getDesiredResponseTime } from "../utils"
-import { DeleteButton } from "../widgets/Button"
+import { DeleteButton, PermLinkButton } from "../widgets/Button"
 import { FocusableTab } from "../widgets/FocusableTab"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { LabelWithHelp } from "../widgets/LabelWithHelp"
@@ -284,7 +283,7 @@ ReactionTimes.propTypes = {
     report: reportPropType,
 }
 
-function ButtonRow({ report_uuid, openReportsOverview }) {
+function ButtonRow({ report_uuid, openReportsOverview, url }) {
     return (
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
@@ -296,6 +295,7 @@ function ButtonRow({ report_uuid, openReportsOverview }) {
                     */
                     style={{ height: "36px", width: "100%", display: "block" }}
                 >
+                    <PermLinkButton itemType="report" url={url} />
                     <DeleteButton itemType="report" onClick={() => delete_report(report_uuid, openReportsOverview)} />
                 </span>
             }
@@ -305,6 +305,7 @@ function ButtonRow({ report_uuid, openReportsOverview }) {
 ButtonRow.propTypes = {
     report_uuid: string,
     openReportsOverview: func,
+    url: string,
 }
 
 export function ReportTitle({ report, openReportsOverview, reload, settings }) {
@@ -381,19 +382,6 @@ export function ReportTitle({ report, openReportsOverview, reload, settings }) {
                 </Tab.Pane>
             ),
         },
-        {
-            menuItem: (
-                <Menu.Item key="share">
-                    <Icon name="share square" />
-                    <FocusableTab>{"Share"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <Share title="Report permanent link" url={reportUrl} />
-                </Tab.Pane>
-            ),
-        },
     ]
     setDocumentTitle(report.title)
 
@@ -411,7 +399,7 @@ export function ReportTitle({ report, openReportsOverview, reload, settings }) {
                 panes={panes}
             />
             <div style={{ marginTop: "20px" }}>
-                <ButtonRow report_uuid={report_uuid} openReportsOverview={openReportsOverview} />
+                <ButtonRow report_uuid={report_uuid} openReportsOverview={openReportsOverview} url={reportUrl} />
             </div>
         </HeaderWithDetails>
     )

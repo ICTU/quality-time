@@ -41,6 +41,7 @@ If your currently installed *Quality-time* version is not v5.13.0, please first 
 
   In addition:
   - A new parameter 'clean code attributes category' is added.
+- Remove the share tabs for reports, subjects, and metrics and move the share button to the button row in the report, subject, and metric headers. Closes [#8821](https://github.com/ICTU/quality-time/issues/8821).
 - Set the MongoDB feature compatibility version to v7. Closes [#8896](https://github.com/ICTU/quality-time/issues/8896).
 
 ## v5.13.0 - 2024-05-23
