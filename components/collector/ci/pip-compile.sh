@@ -1,6 +1,6 @@
 #!/bin/bash
 
 PATH="$PATH:../../ci"
-source base.sh
+source pip-base.sh
 
 run_pip_compile
