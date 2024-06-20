@@ -23,18 +23,21 @@ jobs:
         uses: docker/build-push-action@v6.0.1
         with:
           context: components/database
+          platforms: linux/amd64,linux/arm64
           tags: ictu/quality-time_database:${{ github.ref_name }}
           push: true
       - name: Push Renderer to Docker Hub
         uses: docker/build-push-action@v6.0.1
         with:
           context: components/renderer
+          platforms: linux/amd64,linux/arm64
           tags: ictu/quality-time_renderer:${{ github.ref_name }}
           push: true
       - name: Push Proxy to Docker Hub
         uses: docker/build-push-action@v6.0.1
         with:
           context: components/proxy
+          platforms: linux/amd64,linux/arm64
           tags: ictu/quality-time_proxy:${{ github.ref_name }}
           push: true
       - name: Push Collector to Docker Hub
@@ -42,6 +45,7 @@ jobs:
         with:
           context: components
           file: components/collector/Dockerfile
+          platforms: linux/amd64,linux/arm64
           tags: ictu/quality-time_collector:${{ github.ref_name }}
           push: true
       - name: Push Notifier to Docker Hub
@@ -49,6 +53,7 @@ jobs:
         with:
           context: components
           file: components/notifier/Dockerfile
+          platforms: linux/amd64,linux/arm64
           tags: ictu/quality-time_notifier:${{ github.ref_name }}
           push: true
       - name: Push API-server to Docker Hub
@@ -56,12 +61,14 @@ jobs:
         with:
           context: components
           file: components/api_server/Dockerfile
+          platforms: linux/amd64,linux/arm64
           tags: ictu/quality-time_api_server:${{ github.ref_name }}
           push: true
       - name: Push Frontend to Docker Hub
         uses: docker/build-push-action@v6.0.1
         with:
           context: components/frontend
+          platforms: linux/amd64,linux/arm64
           tags: ictu/quality-time_frontend:${{ github.ref_name }}
           push: true
       - name: Anchore SBOM Action
