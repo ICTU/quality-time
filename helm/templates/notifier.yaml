@@ -1,0 +1,68 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ template "notifier_name" . }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "notifier_name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Chart.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: {{ template "notifier_name" . }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: {{ template "notifier_name" . }}
+    spec:
+      containers:
+        - name: {{ template "notifier_name" . }}
+          image: "{{ .Values.notifier.image.repository }}:{{ .Values.notifier.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-{{ template "notifier_name" . }}-env
+                optional: true
+          env:
+            - name: DATABASE_HOST
+              value: {{ .Release.Name }}-{{ template "database_name" . }}
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.dbCredential }}
+                  key: DATABASE_USERNAME
+                  optional: true
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.dbCredential }}
+                  key: DATABASE_PASSWORD
+                  optional: true
+{{- with .Values.notifier.resources }}
+          resources: {{- toYaml . | nindent 12 }}
+{{- end }}
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-{{ template "notifier_name" . }}-env
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "notifier_name" . }}
+data:
+{{- range $key, $val := .Values.notifier.env }}
+  {{ $key }}: "{{ $val }}"
+{{- end }}

@@ -1,0 +1,46 @@
+---
+secrets:
+  dbCredential: "quality-time-db-secret"
+  ldapCredential: "quality-time-ldap-secret"
+
+api_server:
+  image:
+    repository: "ictu/quality-time_api_server"
+  env:
+    LDAP_URL: "ldap://host.docker.internal:389"
+    LDAP_ROOT_DN: "dc=example,dc=org"
+    LDAP_SEARCH_FILTER: "(|(uid=$$username)(cn=$$username))"
+
+collector:
+  image:
+    repository: "ictu/quality-time_collector"
+
+database:
+  image:
+    repository: "ictu/quality-time_database"
+  resources:
+    limits:
+      cpu: "2"
+      memory: "2Gi"
+    requests:
+      cpu: "1"
+      memory: "1Gi"
+
+frontend:
+  image:
+    repository: "ictu/quality-time_frontend"
+
+notifier:
+  image:
+    repository: "ictu/quality-time_notifier"
+
+renderer:
+  image:
+    repository: "ictu/quality-time_renderer"
+  env:
+    LC_ALL: "en_GB.UTF-8"
+    TZ: "Europe/Amsterdam"
+
+www:
+  image:
+    repository: "ictu/quality-time_proxy"
