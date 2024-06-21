@@ -186,9 +186,9 @@ requests==2.32.3 \
     --hash=sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760 \
     --hash=sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6
     # via application-tests (pyproject.toml)
-selenium==4.21.0 \
-    --hash=sha256:4770ffe5a5264e609de7dc914be6b89987512040d5a8efb2abb181330d097993 \
-    --hash=sha256:650dbfa5159895ff00ad16e5ddb6ceecb86b90c7ed2012b3f041f64e6e4904fe
+selenium==4.22.0 \
+    --hash=sha256:903c8c9d61b3eea6fcc9809dc7d9377e04e2ac87709876542cc8f863e482c4ce \
+    --hash=sha256:e424991196e9857e19bf04fe5c1c0a4aac076794ff5e74615b1124e729d93104
     # via
     #   application-tests (pyproject.toml)
     #   axe-selenium-python
@@ -229,6 +229,10 @@ userpath==1.9.2 \
     --hash=sha256:2cbf01a23d655a1ff8fc166dfb78da1b641d1ceabf0fe5f970767d380b14e89d \
     --hash=sha256:6c52288dab069257cc831846d15d48133522455d4677ee69a9781f11dbefd815
     # via pipx
+websocket-client==1.8.0 \
+    --hash=sha256:17b44cc997f5c498e809b22cdf2d9c7a9e71c02c8cc2b6c56e7c2d1239bfa526 \
+    --hash=sha256:3239df9f44da632f96012472805d40a23281a991027ce11d2f45a6f24ac4c3da
+    # via selenium
 wheel==0.43.0 \
     --hash=sha256:465ef92c69fa5c5da2d1cf8ac40559a8c940886afcef87dcf14b9470862f1d85 \
     --hash=sha256:55c570405f142630c6b9f72fe09d9b67cf1477fcf543ae5b8dcb1f5b7377da81
@@ -239,9 +243,9 @@ wsproto==1.2.0 \
     # via trio-websocket
 
 # The following packages are considered to be unsafe in a requirements file:
-pip==24.0 \
-    --hash=sha256:ba0d021a166865d2265246961bec0152ff124de910c5cc39f1156ce3fa7c69dc \
-    --hash=sha256:ea9bd1a847e8c5774a5777bb398c19e80bcd4e2aa16a4b301b718fe6f593aba2
+pip==24.1 \
+    --hash=sha256:a775837439bf5da2c1a0c2fa43d5744854497c689ddbd9344cf3ea6d00598540 \
+    --hash=sha256:bdae551038c0ce6a83030b4aedef27fc95f0daa683593fea22fa05e55ed8e317
     # via
     #   application-tests (pyproject.toml)
     #   pip-tools
