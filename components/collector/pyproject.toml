@@ -19,7 +19,7 @@ dependencies = [
 optional-dependencies.dev = [
     "coverage==7.5.3",
     "mongomock==4.1.2",
-    "pip==24.0",
+    "pip==24.1",
     "pip-tools==7.4.1",                      # To add hashes to requirements
     "pipx==1.6.0",
     "pydantic==2.7.4",                       # Needed for importing the data model in the tests from the shared code component
@@ -33,7 +33,7 @@ optional-dependencies.tools = [
     "mypy==1.10.0",
     "pip-audit==2.7.3",
     "pyproject-fmt==2.1.3",
-    "ruff==0.4.9",
+    "ruff==0.4.10",
     "vulture==2.11",
 ]
 
