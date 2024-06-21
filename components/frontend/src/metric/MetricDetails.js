@@ -11,6 +11,7 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissio
 import { Label, Tab } from "../semantic_ui_react_wrappers"
 import {
     datePropType,
+    metricPropType,
     reportPropType,
     reportsPropType,
     stringsPropType,
@@ -18,8 +19,8 @@ import {
 } from "../sharedPropTypes"
 import { SourceEntities } from "../source/SourceEntities"
 import { Sources } from "../source/Sources"
-import { getMetricScale, getSourceName } from "../utils"
-import { DeleteButton, PermLinkButton, ReorderButtonGroup } from "../widgets/Button"
+import { getMetricScale, getSourceName, isMeasurementRequested } from "../utils"
+import { ActionButton, DeleteButton, PermLinkButton, ReorderButtonGroup } from "../widgets/Button"
 import { FocusableTab } from "../widgets/FocusableTab"
 import { showMessage } from "../widgets/toast"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
@@ -27,7 +28,27 @@ import { MetricDebtParameters } from "./MetricDebtParameters"
 import { MetricTypeHeader } from "./MetricTypeHeader"
 import { TrendGraph } from "./TrendGraph"
 
-function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopFilteringAndSorting, url }) {
+function RequestMeasurementButton({ metric, metric_uuid, reload }) {
+    const measurementRequested = isMeasurementRequested(metric)
+    return (
+        <ActionButton
+            action="Measure"
+            disabled={measurementRequested}
+            icon="refresh"
+            itemType="metric"
+            loading={measurementRequested}
+            onClick={() => set_metric_attribute(metric_uuid, "measurement_requested", new Date().toISOString(), reload)}
+            popup={`Measure this metric as soon as possible`}
+        />
+    )
+}
+RequestMeasurementButton.propTypes = {
+    metric: metricPropType,
+    metric_uuid: string,
+    reload: func,
+}
+
+function Buttons({ isFirstMetric, isLastMetric, metric, metric_uuid, reload, stopFilteringAndSorting, url }) {
     return (
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
@@ -44,6 +65,7 @@ function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopFilteri
                         }}
                     />
                     <PermLinkButton itemType="metric" url={url} />
+                    <RequestMeasurementButton metric={metric} metric_uuid={metric_uuid} reload={reload} />
                     <DeleteButton itemType="metric" onClick={() => delete_metric(metric_uuid, reload)} />
                 </div>
             }
@@ -53,6 +75,7 @@ function Buttons({ isFirstMetric, isLastMetric, metric_uuid, reload, stopFilteri
 Buttons.propTypes = {
     isFirstMetric: bool,
     isLastMetric: bool,
+    metric: metricPropType,
     metric_uuid: string,
     reload: func,
     stopFilteringAndSorting: func,
@@ -234,6 +257,7 @@ export function MetricDetails({
                 panes={panes}
             />
             <Buttons
+                metric={metric}
                 metric_uuid={metric_uuid}
                 isFirstMetric={isFirstMetric}
                 isLastMetric={isLastMetric}

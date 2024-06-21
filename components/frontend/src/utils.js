@@ -96,6 +96,16 @@ export function getMetricUnit(metric, dataModel) {
     return metric.unit || dataModel.metrics[metric.type].unit || ""
 }
 
+export function isMeasurementRequested(metric) {
+    if (metric.measurement_requested) {
+        if (metric.latest_measurement) {
+            return new Date(metric.measurement_requested) >= new Date(metric.latest_measurement.end)
+        }
+        return true
+    }
+    return false
+}
+
 export function getMetricResponseDeadline(metric, report) {
     let deadline = null
     const status = metric.status || "unknown"

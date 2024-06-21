@@ -75,6 +75,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Added
 
 - Allow for hiding the legend card via the Settings panel.
+- Allow for requesting a metric to be measured as soon as possible. Closes [#920](https://github.com/ICTU/quality-time/issues/920).
 - In the UI, while a source parameter of a metric have been changed and the metric has not been measured with the new parameter yet, show a spinner. Closes [#3134](https://github.com/ICTU/quality-time/issues/3134).
 - Explain the difference between security warnings and violations in a new FAQ section of the documentation. Closes [#7797](https://github.com/ICTU/quality-time/issues/7797).
 - When adding a metric to a subject, add an option to hide metric types already used. Closes [#7992](https://github.com/ICTU/quality-time/issues/7992).

@@ -6,6 +6,7 @@ import { MeasurementValue } from "./MeasurementValue"
 
 function renderMeasurementValue({
     latest_measurement = {},
+    measurement_requested = null,
     reportDate = null,
     scale = "count",
     status = null,
@@ -17,6 +18,7 @@ function renderMeasurementValue({
             <MeasurementValue
                 metric={{
                     latest_measurement: latest_measurement,
+                    measurement_requested: measurement_requested,
                     scale: scale,
                     status: status,
                     type: type,
@@ -61,6 +63,37 @@ it("renders an outdated value", async () => {
         expect(
             screen.queryByText(/The source configuration of this metric was changed after the latest measurement/),
         ).not.toBe(null)
+    })
+})
+
+it("renders a value for which a measurement was requested", async () => {
+    const now = new Date().toISOString()
+    renderMeasurementValue({
+        latest_measurement: { count: { value: 1 }, start: now, end: now },
+        measurement_requested: now,
+    })
+    const measurementValue = screen.getByText(/1/)
+    expect(measurementValue.className).toContain("yellow")
+    expect(measurementValue.children[0].className).toContain("loading")
+    await userEvent.hover(measurementValue)
+    await waitFor(() => {
+        expect(screen.queryByText(/Measurement requested/)).not.toBe(null)
+        expect(screen.queryByText(/An update of the latest measurement was requested by a user/)).not.toBe(null)
+    })
+})
+
+it("renders a value for which a measurement was requested, but which is now up to date", async () => {
+    const now = new Date().toISOString()
+    renderMeasurementValue({
+        latest_measurement: { count: { value: 1 }, start: now, end: now },
+        measurement_requested: "2024-01-01T00:00:00",
+    })
+    const measurementValue = screen.getByText(/1/)
+    expect(measurementValue.className).not.toContain("yellow")
+    await userEvent.hover(measurementValue)
+    await waitFor(() => {
+        expect(screen.queryByText(/Measurement requested/)).toBe(null)
+        expect(screen.queryByText(/An update of the latest measurement was requested by a user/)).toBe(null)
     })
 })
 
