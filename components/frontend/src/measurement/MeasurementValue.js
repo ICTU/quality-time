@@ -5,7 +5,13 @@ import { Icon } from "semantic-ui-react"
 import { DataModel } from "../context/DataModel"
 import { Label, Popup } from "../semantic_ui_react_wrappers"
 import { datePropType, metricPropType } from "../sharedPropTypes"
-import { formatMetricValue, getMetricScale, getMetricValue, MILLISECONDS_PER_HOUR } from "../utils"
+import {
+    formatMetricValue,
+    getMetricScale,
+    getMetricValue,
+    isMeasurementRequested,
+    MILLISECONDS_PER_HOUR,
+} from "../utils"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 import { WarningMessage } from "../widgets/WarningMessage"
 
@@ -42,8 +48,9 @@ export function MeasurementValue({ metric, reportDate }) {
         const now = reportDate ?? new Date()
         const stale = now - end > MILLISECONDS_PER_HOUR // No new measurement for more than one hour means something is wrong
         const outdated = metric.latest_measurement.outdated ?? false
+        const requested = isMeasurementRequested(metric)
         return (
-            <Popup trigger={measurementValueLabel(stale, outdated, value)} flowing hoverable>
+            <Popup trigger={measurementValueLabel(stale, outdated || requested, value)} flowing hoverable>
                 <WarningMessage
                     showIf={stale}
                     header="This metric was not recently measured"
@@ -53,6 +60,11 @@ export function MeasurementValue({ metric, reportDate }) {
                     showIf={outdated}
                     header="Latest measurement out of date"
                     content="The source configuration of this metric was changed after the latest measurement."
+                />
+                <WarningMessage
+                    showIf={requested}
+                    header="Measurement requested"
+                    content="An update of the latest measurement was requested by a user."
                 />
                 <TimeAgoWithDate date={metric.latest_measurement.end}>
                     {metric.status ? "The metric was last measured" : "Last measurement attempt"}

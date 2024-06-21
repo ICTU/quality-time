@@ -19,6 +19,7 @@ def create_report(title: str = "Title", report_uuid: str = "report1", **kwargs) 
     metric_id: MetricId = METRIC_ID
     metric_type = "dependencies"
     source_type = "pip"
+    measurement_requested = None
 
     for key, value in kwargs.items():
         match key:
@@ -32,6 +33,8 @@ def create_report(title: str = "Title", report_uuid: str = "report1", **kwargs) 
                 metric_type = value
             case "source_type":
                 source_type = value
+            case "measurement_requested":
+                measurement_requested = value
             case _:
                 raise ValueError
 
@@ -53,6 +56,7 @@ def create_report(title: str = "Title", report_uuid: str = "report1", **kwargs) 
                     "parameters": {"url": "https://url", "password": "password"},
                 },
             },
+            "measurement_requested": measurement_requested,
         },
     }
 

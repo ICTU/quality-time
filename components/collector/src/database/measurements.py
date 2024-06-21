@@ -28,8 +28,11 @@ def create_measurement(database: Database, measurement_data: dict) -> None:
             measurement.copy_entity_first_seen_timestamps(latest_successful)
         measurement.copy_entity_user_data(latest if latest_successful is None else latest_successful)
         measurement.update_measurement()  # Update the scales so we can compare the two measurements
-        if measurement.equals(latest):
-            # If the new measurement is equal to the previous one, merge them together
+        if measurement.equals(latest) and no_measurement_requested_after(latest):
+            # If the new measurement is equal to the latest one and no measurement update was requested, merge the
+            # two measurements together. Don't merge the measurements together when a measurement was requested,
+            # even if the new measurement value did not change, so that the frontend gets a new measurement count
+            # via the number of measurements server-sent events endpoint and knows the requested measurement was done.
             update_measurement_end(database, latest["_id"])
             return
     insert_new_measurement(database, measurement)
@@ -38,3 +41,10 @@ def create_measurement(database: Database, measurement_data: dict) -> None:
 def update_measurement_end(database: Database, measurement_id: MeasurementId) -> None:  # pragma: no feature-test-cover
     """Set the end date and time of the measurement to the current date and time."""
     database.measurements.update_one(filter={"_id": measurement_id}, update={"$set": {"end": iso_timestamp()}})
+
+
+def no_measurement_requested_after(measurement: Measurement) -> bool:
+    """Return whether a measurement was requested later than the end of this measurement."""
+    if measurement_request_timestamp := measurement.metric.get("measurement_requested"):
+        return bool(measurement_request_timestamp < measurement["end"])
+    return True

@@ -302,6 +302,8 @@ class Measurement(dict):
             if parameter_hash != self.metric.source_parameter_hash():
                 self["outdated"] = True
             del self["source_parameter_hash"]
+        if measurement_requested := self.metric.get("measurement_requested"):
+            self["measurement_requested"] = measurement_requested >= self["end"]
         return self
 
     def source_parameter_hash(self) -> str:

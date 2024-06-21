@@ -97,3 +97,12 @@ class TestMeasurements(unittest.TestCase):
             "2023-07-18",
             next(self.database.measurements.find())["sources"][0]["entities"][0]["first_seen"],
         )
+
+    def test_create_measurement_after_measurement_was_requested(self):
+        """Test that a new measurement is added after a measurement request, even if the measurement is unchanged."""
+        self.database["reports"].insert_one(create_report(report_uuid=REPORT_ID))
+        create_measurement(self.database, self.measurement_data())
+        self.database["reports"].update_one({"report_uuid": REPORT_ID}, {"$set": {"last": False}})
+        self.database["reports"].insert_one(create_report(report_uuid=REPORT_ID, measurement_requested="3000-01-01"))
+        create_measurement(self.database, self.measurement_data())
+        self.assertEqual(2, len(list(self.database.measurements.find())))

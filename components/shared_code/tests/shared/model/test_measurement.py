@@ -485,6 +485,29 @@ class SummarizeMeasurementTest(MeasurementTestCase):
             measurement.summarize(),
         )
 
+    def test_summarize_latest_with_old_measurement_request(self):
+        """Test that the measurement includes the measurement requested flag when a measurement was requested."""
+        now = datetime.now(tz=UTC).replace(microsecond=0)
+        just_now = (now - timedelta(seconds=1)).isoformat()
+        metric = self.metric(measurement_requested=just_now)
+        measurement = self.measurement(metric, start=now.isoformat(), end=now.isoformat())
+        self.assertFalse(measurement.summarize_latest()["measurement_requested"])
+
+    def test_summarize_latest_with_new_measurement_request(self):
+        """Test that the measurement includes the measurement requested flag when a measurement was requested."""
+        now = datetime.now(tz=UTC).replace(microsecond=0)
+        just_now = (now - timedelta(seconds=1)).isoformat()
+        metric = self.metric(measurement_requested=now.isoformat())
+        measurement = self.measurement(metric, start=just_now, end=just_now)
+        self.assertTrue(measurement.summarize_latest()["measurement_requested"])
+
+    def test_summarize_latest_without_measurement_request(self):
+        """Test that the measurement has no measurement requested flag when no measurement was requested."""
+        now = datetime.now(tz=UTC).replace(microsecond=0).isoformat()
+        metric = self.metric()
+        measurement = self.measurement(metric, start=now, end=now)
+        self.assertNotIn("measurement_requested", measurement.summarize_latest())
+
 
 class CalculateMeasurementValueTest(MeasurementTestCase):
     """Unit tests for calculating the measurement value from one or more source measurements."""

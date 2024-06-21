@@ -176,3 +176,13 @@ it("deletes the metric", async () => {
     fireEvent.click(screen.getByText(/Delete metric/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("delete", "metric/metric_uuid", {})
 })
+
+it("measures the metric", async () => {
+    await renderMetricDetails()
+    fireEvent.click(screen.getByText(/Measure metric/))
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
+        "post",
+        "metric/metric_uuid/attribute/measurement_requested",
+        expect.objectContaining({}), // Ignore the attribute value, it's new Date().toISOString()
+    )
+})

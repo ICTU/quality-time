@@ -10,6 +10,7 @@ import {
     getSubjectType,
     getSubjectTypeMetrics,
     getUserPermissions,
+    isMeasurementRequested,
     niceNumber,
     nrMetricsInReport,
     nrMetricsInReports,
@@ -449,4 +450,12 @@ it("sums numbers", () => {
     expect(sum({})).toBe(0)
     expect(sum({ a: 1 })).toBe(1)
     expect(sum({ a: 1, b: 2 })).toBe(3)
+})
+
+it("returns whether a measurement is requested for the metric", () => {
+    expect(isMeasurementRequested({})).toBe(false)
+    expect(isMeasurementRequested({ measurement_requested: "2000-01-01" })).toBe(true)
+    const latest = { end: "2024-01-01" }
+    expect(isMeasurementRequested({ measurement_requested: "2023-01-01", latest_measurement: latest })).toBe(false)
+    expect(isMeasurementRequested({ measurement_requested: "2025-01-01", latest_measurement: latest })).toBe(true)
 })
