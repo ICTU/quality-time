@@ -1,6 +1,6 @@
 import { func } from "prop-types"
 import { useContext, useEffect, useState } from "react"
-import { Grid, Header, Message } from "semantic-ui-react"
+import { Grid, Header } from "semantic-ui-react"
 
 import { get_report_issue_tracker_options, set_report_issue_tracker_attribute } from "../api/report"
 import { DataModel } from "../context/DataModel"
@@ -14,6 +14,7 @@ import { Logo } from "../source/Logo"
 import { LabelWithHelp } from "../widgets/LabelWithHelp"
 import { LabelWithHyperLink } from "../widgets/LabelWithHyperLink"
 import { showMessage } from "../widgets/toast"
+import { WarningMessage } from "../widgets/WarningMessage"
 
 const NONE_OPTION = {
     key: null,
@@ -224,13 +225,11 @@ export function IssueTracker({ report, reload }) {
                         }
                         value={epic_link}
                     />
-                    {project_key && issue_type && !issueEpicFieldSupported && (
-                        <Message
-                            warning
-                            header="Epic links not supported"
-                            content={`The issue type '${issue_type}' in project '${project_key}' does not support adding epic links when creating issues, so no epic link will be added to new issues.`}
-                        />
-                    )}
+                    <WarningMessage
+                        showIf={project_key && issue_type && !issueEpicFieldSupported}
+                        header="Epic links not supported"
+                        content={`The issue type '${issue_type}' in project '${project_key}' does not support adding epic links when creating issues, so no epic link will be added to new issues.`}
+                    />
                 </Grid.Column>
                 <Grid.Column>
                     <MultipleChoiceInput
@@ -249,13 +248,11 @@ export function IssueTracker({ report, reload }) {
                         }
                         value={report.issue_tracker?.parameters?.issue_labels}
                     />
-                    {project_key && issue_type && !labelFieldSupported && (
-                        <Message
-                            warning
-                            header="Labels not supported"
-                            content={`The issue type '${issue_type}' in project '${project_key}' does not support adding labels when creating issues, so no labels will be added to new issues.`}
-                        />
-                    )}
+                    <WarningMessage
+                        showIf={project_key && issue_type && !labelFieldSupported}
+                        header="Labels not supported"
+                        content={`The issue type '${issue_type}' in project '${project_key}' does not support adding labels when creating issues, so no labels will be added to new issues.`}
+                    />
                 </Grid.Column>
             </Grid.Row>
         </Grid>

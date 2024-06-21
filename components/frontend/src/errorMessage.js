@@ -1,5 +1,7 @@
 import { bool, object, oneOfType, string } from "prop-types"
-import { Grid, Message } from "semantic-ui-react"
+import { Grid } from "semantic-ui-react"
+
+import { Message } from "./semantic_ui_react_wrappers"
 
 export function ErrorMessage({ formatAsText, message, title }) {
     return (
