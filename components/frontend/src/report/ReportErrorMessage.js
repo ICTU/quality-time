@@ -1,6 +1,6 @@
 import { string } from "prop-types"
-import { Message } from "semantic-ui-react"
 
+import { Message } from "../semantic_ui_react_wrappers"
 import { datePropType, optionalDatePropType } from "../sharedPropTypes"
 
 function ErrorMessage({ children }) {

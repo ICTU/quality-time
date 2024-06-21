@@ -1,5 +1,5 @@
 import { func, objectOf, string } from "prop-types"
-import { Grid, Message } from "semantic-ui-react"
+import { Grid } from "semantic-ui-react"
 
 import {
     add_notification_destination,
@@ -8,7 +8,7 @@ import {
 } from "../api/notification"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { StringInput } from "../fields/StringInput"
-import { Segment } from "../semantic_ui_react_wrappers"
+import { Message, Segment } from "../semantic_ui_react_wrappers"
 import { destinationPropType } from "../sharedPropTypes"
 import { AddButton, DeleteButton } from "../widgets/Button"
 import { HyperLink } from "../widgets/HyperLink"

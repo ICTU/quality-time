@@ -1,11 +1,32 @@
+import { bool, string } from "prop-types"
 import { useContext } from "react"
-import { Icon, Message } from "semantic-ui-react"
+import { Icon } from "semantic-ui-react"
 
 import { DataModel } from "../context/DataModel"
 import { Label, Popup } from "../semantic_ui_react_wrappers"
 import { datePropType, metricPropType } from "../sharedPropTypes"
 import { formatMetricValue, getMetricScale, getMetricValue, MILLISECONDS_PER_HOUR } from "../utils"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
+import { WarningMessage } from "../widgets/WarningMessage"
+
+function measurementValueLabel(stale, updating, value) {
+    if (stale) {
+        return <Label color="red">{value}</Label>
+    }
+    if (updating) {
+        return (
+            <Label color="yellow">
+                <Icon loading name="hourglass" /> {value}
+            </Label>
+        )
+    }
+    return <span>{value}</span>
+}
+measurementValueLabel.propTypes = {
+    stale: bool,
+    updating: bool,
+    value: string,
+}
 
 export function MeasurementValue({ metric, reportDate }) {
     const dataModel = useContext(DataModel)
@@ -19,35 +40,20 @@ export function MeasurementValue({ metric, reportDate }) {
     if (metric.latest_measurement) {
         const end = new Date(metric.latest_measurement.end)
         const now = reportDate ?? new Date()
-        const staleMeasurementValue = now - end > MILLISECONDS_PER_HOUR // No new measurement for more than one hour means something is wrong
-        let trigger
-        if (staleMeasurementValue) {
-            trigger = <Label color="red">{value}</Label>
-        } else if (metric.latest_measurement.outdated) {
-            trigger = (
-                <Label color="yellow">
-                    <Icon loading name="hourglass" /> {value}
-                </Label>
-            )
-        } else {
-            trigger = <span>{value}</span>
-        }
+        const stale = now - end > MILLISECONDS_PER_HOUR // No new measurement for more than one hour means something is wrong
+        const outdated = metric.latest_measurement.outdated ?? false
         return (
-            <Popup trigger={trigger} flowing hoverable>
-                {staleMeasurementValue && (
-                    <Message
-                        negative
-                        header="This metric was not recently measured"
-                        content="This may indicate a problem with Quality-time itself. Please contact a system administrator."
-                    />
-                )}
-                {metric.latest_measurement.outdated && (
-                    <Message
-                        warning
-                        header="Latest measurement out of date"
-                        content="The source configuration of this metric was changed after the latest measurement."
-                    />
-                )}
+            <Popup trigger={measurementValueLabel(stale, outdated, value)} flowing hoverable>
+                <WarningMessage
+                    showIf={stale}
+                    header="This metric was not recently measured"
+                    content="This may indicate a problem with Quality-time itself. Please contact a system administrator."
+                />
+                <WarningMessage
+                    showIf={outdated}
+                    header="Latest measurement out of date"
+                    content="The source configuration of this metric was changed after the latest measurement."
+                />
                 <TimeAgoWithDate date={metric.latest_measurement.end}>
                     {metric.status ? "The metric was last measured" : "Last measurement attempt"}
                 </TimeAgoWithDate>

@@ -1,11 +1,10 @@
 import { func, number, string } from "prop-types"
 import { useContext } from "react"
-import { Message } from "semantic-ui-react"
 
 import { add_source, copy_source, move_source } from "../api/source"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { Segment } from "../semantic_ui_react_wrappers"
+import { Message, Segment } from "../semantic_ui_react_wrappers"
 import {
     measurementPropType,
     measurementSourcePropType,

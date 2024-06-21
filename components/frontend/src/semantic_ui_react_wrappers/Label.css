@@ -6,6 +6,10 @@
     background-color: rgba(118, 118, 118, 0.87) !important;
 }
 
+.ui.inverted.yellow.label {
+    background-color: rgba(253, 197, 54, 0.87) !important;
+}
+
 .ui.label > a {
     opacity: 1;
 }
