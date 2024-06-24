@@ -36,7 +36,11 @@ SUBJECTS = {
             "process_backlog": Subject(
                 name="Backlog management",
                 description="A process to manage the product backlog.",
-                metrics=["user_story_points", "velocity"],
+                metrics=[
+                    "issues",
+                    "user_story_points",
+                    "velocity",
+                ],
             ),
             "process_development": Subject(
                 name="Development process",
@@ -47,31 +51,14 @@ SUBJECTS = {
                     "unmerged_branches",
                 ],
             ),
-            "process_defect": Subject(
-                name="Defect management",
-                description="A process to manage known defects.",
-                metrics=[
-                    "issues",
-                ],
-            ),
             "process_operations": Subject(
                 name="Operations process",
                 description="A process to manage software in production.",
                 metrics=[
                     "average_issue_lead_time",
                     "change_failure_rate",
-                    "job_runs_within_time_period",
-                ],
-            ),
-            "process_technical_debt": Subject(
-                name="Technical debt management",
-                description="A process to manage technical debt.",
-                metrics=[
-                    "dependencies",
                     "issues",
-                    "remediation_effort",
-                    "suppressed_violations",
-                    "todo_and_fixme_comments",
+                    "job_runs_within_time_period",
                 ],
             ),
             "process_test": Subject(
@@ -108,11 +95,15 @@ SUBJECTS = {
                     "complex_units",
                     "dependencies",
                     "duplicated_lines",
+                    "issues",
                     "loc",
                     "long_units",
                     "many_parameters",
+                    "remediation_effort",
                     "software_version",
                     "security_warnings",
+                    "suppressed_violations",
+                    "todo_and_fixme_comments",
                     "violations",
                 ],
             ),
@@ -121,7 +112,7 @@ SUBJECTS = {
                 description="A test suite for custom software.",
                 metrics=[
                     "performancetest_duration",
-                    "performancetest_stability",
+                    "scalability",
                     "tests",
                     "test_cases",
                     "uncovered_branches",
@@ -138,8 +129,8 @@ SUBJECTS = {
             ),
         },
         metrics=[
-            "scalability",
             "slow_transactions",
+            "performancetest_stability",
         ],
     ),
     "team": Subject(
