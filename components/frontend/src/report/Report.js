@@ -4,7 +4,7 @@ import { ExportCard } from "../dashboard/ExportCard"
 import {
     datePropType,
     datesPropType,
-    measurementPropType,
+    measurementsPropType,
     optionalDatePropType,
     reportPropType,
     reportsPropType,
@@ -97,7 +97,7 @@ Report.propTypes = {
     dates: datesPropType,
     handleSort: func,
     lastUpdate: datePropType,
-    measurements: measurementPropType,
+    measurements: measurementsPropType,
     openReportsOverview: func,
     reload: func,
     report: reportPropType,

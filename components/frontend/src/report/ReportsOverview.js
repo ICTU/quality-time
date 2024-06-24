@@ -7,7 +7,7 @@ import { Segment } from "../semantic_ui_react_wrappers"
 import {
     datePropType,
     datesPropType,
-    measurementPropType,
+    measurementsPropType,
     optionalDatePropType,
     reportsOverviewPropType,
     reportsPropType,
@@ -112,7 +112,7 @@ ReportsOverview.propTypes = {
     dates: datesPropType,
     handleSort: func,
     lastUpdate: datePropType,
-    measurements: measurementPropType,
+    measurements: measurementsPropType,
     reports: reportsPropType,
     openReport: func,
     reload: func,

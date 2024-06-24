@@ -148,7 +148,9 @@ it("removes the existing hashtag from the URL to share", async () => {
         clipboard: { writeText: jest.fn().mockImplementation(() => Promise.resolve()) },
     })
     await renderMetricDetails()
-    fireEvent.click(screen.getByText(/Share/))
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Share/))
+    })
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith("http://localhost/#metric_uuid")
 })
 

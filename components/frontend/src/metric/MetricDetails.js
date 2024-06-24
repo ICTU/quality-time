@@ -206,7 +206,11 @@ export function MetricDetails({
             panes.push({
                 menuItem: (
                     <Menu.Item key="trend_graph">
-                        <Icon name="linegraph" />
+                        <Icon
+                            className="linegraph"
+                            /* Using name="linegraph" results in "Invalid prop `name` of value `linegraph` supplied to `Icon`."
+                               Using name="line graph" does not show the icon. Using className works around this. */
+                        />
                         <FocusableTab>{"Trend graph"}</FocusableTab>
                     </Menu.Item>
                 ),

@@ -8,7 +8,7 @@ import { LegendCard } from "../dashboard/LegendCard"
 import { MetricsRequiringActionCard } from "../dashboard/MetricsRequiringActionCard"
 import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
 import { STATUS_COLORS } from "../metric/status"
-import { datesPropType, measurementPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
+import { datesPropType, measurementsPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
 import { getMetricTags, getReportsTags, nrMetricsInReport, sum, visibleMetrics } from "../utils"
 import { Tag } from "../widgets/Tag"
 import { metricStatusOnDate } from "./report_utils"
@@ -141,7 +141,7 @@ export function ReportsOverviewDashboard({
 ReportsOverviewDashboard.propTypes = {
     dates: datesPropType,
     layout: array,
-    measurements: measurementPropType,
+    measurements: measurementsPropType,
     onClickTag: func,
     openReport: func,
     reload: func,

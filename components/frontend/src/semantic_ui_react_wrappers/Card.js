@@ -10,9 +10,8 @@ export function Card(props) {
     return <SemanticUICard {...addInvertedClassNameWhenInDarkMode(props, useContext(DarkMode))} />
 }
 
-function Header(props) {
-    return <SemanticUICard.Header {...addInvertedClassNameWhenInDarkMode(props, useContext(DarkMode))} />
-}
-
 Card.Content = SemanticUICard.Content
-Card.Header = Header
+Card.Description = SemanticUICard.Description
+Card.Group = SemanticUICard.Group
+Card.Header = SemanticUICard.Header
+Card.Meta = SemanticUICard.Meta
