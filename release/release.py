@@ -133,7 +133,7 @@ def failed_preconditions_version_overview(current_version: str, root: pathlib.Pa
                 if release_date != today:  # Second column is the release date column
                     return [f"{missing} the release date. Expected today: '{today}', found: '{release_date}'."]
                 return []  # All good: current version, next version, and release date found
-            return [f"{missing}) the new version."]
+            return [f"{missing} the new version."]
         previous_line = line
     return [f"{missing} the target version ({target_version})."]
 
