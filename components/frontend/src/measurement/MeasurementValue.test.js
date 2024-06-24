@@ -4,60 +4,54 @@ import userEvent from "@testing-library/user-event"
 import { DataModel } from "../context/DataModel"
 import { MeasurementValue } from "./MeasurementValue"
 
-it("renders the value", () => {
+function renderMeasurementValue({
+    latest_measurement = {},
+    reportDate = null,
+    scale = "count",
+    status = null,
+    type = "violations",
+    unit = null,
+} = {}) {
     render(
         <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
             <MeasurementValue
                 metric={{
-                    type: "violations",
-                    scale: "count",
-                    unit: null,
-                    latest_measurement: { count: { value: "42" } },
+                    latest_measurement: latest_measurement,
+                    scale: scale,
+                    status: status,
+                    type: type,
+                    unit: unit,
                 }}
+                reportDate={reportDate}
             />
         </DataModel.Provider>,
     )
+}
+
+it("renders the value", () => {
+    renderMeasurementValue({ latest_measurement: { count: { value: "42" } } })
     expect(screen.getAllByText(/42/).length).toBe(1)
 })
 
 it("renders an unkown value", () => {
-    render(
-        <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
-            <MeasurementValue
-                metric={{
-                    type: "violations",
-                    scale: "count",
-                    unit: null,
-                    latest_measurement: { count: { value: null } },
-                }}
-            />
-        </DataModel.Provider>,
-    )
+    renderMeasurementValue({ latest_measurement: { count: { value: null } } })
     expect(screen.getAllByText(/\?/).length).toBe(1)
 })
 
 it("renders a value that has not been measured yet", () => {
-    render(
-        <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
-            <MeasurementValue metric={{ type: "violations", scale: "count", unit: null, latest_measurement: {} }} />
-        </DataModel.Provider>,
-    )
+    renderMeasurementValue()
     expect(screen.getAllByText(/\?/).length).toBe(1)
 })
 
 it("renders an outdated value", async () => {
-    render(
-        <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
-            <MeasurementValue
-                metric={{
-                    type: "violations",
-                    scale: "count",
-                    unit: null,
-                    latest_measurement: { count: { value: 1 }, outdated: true },
-                }}
-            />
-        </DataModel.Provider>,
-    )
+    renderMeasurementValue({
+        latest_measurement: {
+            count: { value: 1 },
+            outdated: true,
+            start: new Date().toISOString(),
+            end: new Date().toISOString(),
+        },
+    })
     const measurementValue = screen.getByText(/1/)
     expect(measurementValue.className).toContain("yellow")
     expect(measurementValue.children[0].className).toContain("loading")
@@ -71,87 +65,44 @@ it("renders an outdated value", async () => {
 })
 
 it("renders a minutes value", () => {
-    render(
-        <DataModel.Provider value={{ metrics: { duration: { unit: "minutes" } } }}>
-            <MeasurementValue
-                metric={{
-                    type: "duration",
-                    scale: "count",
-                    unit: null,
-                    latest_measurement: { count: { value: "42" } },
-                }}
-            />
-        </DataModel.Provider>,
-    )
+    renderMeasurementValue({
+        type: "duration",
+        latest_measurement: { count: { value: "42" } },
+    })
     expect(screen.getAllByText(/42/).length).toBe(1)
 })
 
 it("renders an unknown minutes value", () => {
-    render(
-        <DataModel.Provider value={{ metrics: { duration: { unit: "minutes" } } }}>
-            <MeasurementValue
-                metric={{
-                    type: "duration",
-                    scale: "count",
-                    unit: null,
-                    latest_measurement: { count: { value: null } },
-                }}
-            />
-        </DataModel.Provider>,
-    )
+    renderMeasurementValue({
+        type: "duration",
+        latest_measurement: { count: { value: null } },
+    })
     expect(screen.getAllByText(/\?/).length).toBe(1)
 })
 
 it("renders a minutes percentage", () => {
-    render(
-        <DataModel.Provider value={{ metrics: { duration: { unit: "minutes" } } }}>
-            <MeasurementValue
-                metric={{
-                    type: "duration",
-                    scale: "percentage",
-                    unit: null,
-                    latest_measurement: { percentage: { value: "42" } },
-                }}
-            />
-        </DataModel.Provider>,
-    )
+    renderMeasurementValue({
+        type: "duration",
+        scale: "percentage",
+        latest_measurement: { percentage: { value: "42" } },
+    })
     expect(screen.getAllByText(/42%/).length).toBe(1)
 })
 
 it("renders an unknown minutes percentage", () => {
-    render(
-        <DataModel.Provider value={{ metrics: { duration: { unit: "minutes" } } }}>
-            <MeasurementValue
-                metric={{
-                    type: "duration",
-                    scale: "percentage",
-                    unit: null,
-                    latest_measurement: { percentage: { value: null } },
-                }}
-            />
-        </DataModel.Provider>,
-    )
+    renderMeasurementValue({
+        type: "duration",
+        scale: "percentage",
+        latest_measurement: { percentage: { value: null } },
+    })
     expect(screen.getAllByText(/\?%/).length).toBe(1)
 })
 
 it("shows when the metric was last measured", async () => {
-    render(
-        <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
-            <MeasurementValue
-                metric={{
-                    status: "target_met",
-                    type: "violations",
-                    scale: "count",
-                    unit: null,
-                    latest_measurement: {
-                        start: "2022-01-16T00:31:00",
-                        end: "2022-01-16T00:51:00",
-                        count: { value: "42" },
-                    },
-                }}
-            />
-        </DataModel.Provider>,
-    )
+    renderMeasurementValue({
+        status: "target_met",
+        latest_measurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00", count: { value: "42" } },
+    })
     await userEvent.hover(screen.queryByText(/42/))
     await waitFor(() => {
         expect(screen.queryByText(/The metric was last measured/)).not.toBe(null)
@@ -159,23 +110,9 @@ it("shows when the metric was last measured", async () => {
 })
 
 it("shows when the last measurement attempt was", async () => {
-    render(
-        <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
-            <MeasurementValue
-                metric={{
-                    status: null,
-                    type: "violations",
-                    scale: "count",
-                    unit: null,
-                    latest_measurement: {
-                        start: "2022-01-16T00:31:00",
-                        end: "2022-01-16T00:51:00",
-                        count: { value: null },
-                    },
-                }}
-            />
-        </DataModel.Provider>,
-    )
+    renderMeasurementValue({
+        latest_measurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00", count: { value: null } },
+    })
     await userEvent.hover(screen.queryByText(/\?/))
     await waitFor(() => {
         expect(screen.queryByText(/This metric was not recently measured/)).not.toBe(null)
@@ -185,20 +122,10 @@ it("shows when the last measurement attempt was", async () => {
 
 it("does not show an error message for past measurements that were recently measured at the time", async () => {
     const reportDate = new Date("2022-01-16T01:00:00")
-    render(
-        <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
-            <MeasurementValue
-                metric={{
-                    type: "violations",
-                    latest_measurement: {
-                        start: "2022-01-16T00:31:00",
-                        end: "2022-01-16T00:51:00",
-                    },
-                }}
-                reportDate={reportDate}
-            />
-        </DataModel.Provider>,
-    )
+    renderMeasurementValue({
+        latest_measurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00" },
+        reportDate: reportDate,
+    })
     await userEvent.hover(screen.queryByText(/\?/))
     await waitFor(() => {
         expect(screen.queryByText(/This metric was not recently measured/)).toBe(null)
