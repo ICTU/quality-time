@@ -15,7 +15,7 @@ it("renders an empty sparkline if there are no measurements", () => {
 
 it("renders an empty sparkline if there are no measurements in dark mode", () => {
     render(
-        <DarkMode.Provider value="true">
+        <DarkMode.Provider value={true}>
             <TrendSparkline measurements={[]} />
         </DarkMode.Provider>,
     )

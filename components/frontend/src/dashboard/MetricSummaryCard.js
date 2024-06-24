@@ -49,10 +49,10 @@ function ariaChartLabel(summary) {
 
 export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) {
     const [boundingBox, ref] = useBoundingBox()
-    const animate = { duration: 0, onLoad: { duration: 0 } }
-    const colors = STATUSES.map((status) => STATUS_COLORS_RGB[status])
     const labelColor = useContext(DarkMode) ? "darkgrey" : "rgba(120, 120, 120)"
     const flyoutBgColor = useContext(DarkMode) ? "rgba(60, 65, 70)" : "white"
+    const animate = { duration: 0, onLoad: { duration: 0 } }
+    const colors = STATUSES.map((status) => STATUS_COLORS_RGB[status])
     const style = {
         labels: { fontFamily: "Arial", fontSize: 12, fill: labelColor },
     }

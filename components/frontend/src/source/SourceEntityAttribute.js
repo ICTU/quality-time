@@ -1,7 +1,5 @@
-import { string } from "prop-types"
-
 import { StatusIcon } from "../measurement/StatusIcon"
-import { entityPropType } from "../sharedPropTypes"
+import { entityAttributePropType, entityPropType } from "../sharedPropTypes"
 import { formatMetricValue } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
@@ -45,5 +43,5 @@ export function SourceEntityAttribute({ entity, entityAttribute }) {
 }
 SourceEntityAttribute.propTypes = {
     entity: entityPropType,
-    entityAttribute: string,
+    entityAttribute: entityAttributePropType,
 }

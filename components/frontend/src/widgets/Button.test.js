@@ -327,7 +327,6 @@ test("PermLinkButton copies URL to clipboard", async () => {
         clipboard: { writeText: jest.fn().mockImplementation(() => Promise.resolve()) },
     })
     render(<PermLinkButton itemType="metric" url="https://example.org" />)
-    screen.debug()
     await act(async () => {
         fireEvent.click(screen.getByText(/Share/))
     })

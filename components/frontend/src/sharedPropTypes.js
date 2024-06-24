@@ -105,7 +105,7 @@ export const entityPropType = shape({
     key: string,
 })
 
-const entityAttributePropType = shape({
+export const entityAttributePropType = shape({
     key: string,
 })
 
