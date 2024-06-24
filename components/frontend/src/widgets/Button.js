@@ -373,7 +373,7 @@ export function PermLinkButton({ itemType, url }) {
                 trigger={
                     <Button
                         basic
-                        content="Share"
+                        content={`Share ${itemType}`}
                         icon="share square"
                         onClick={() =>
                             navigator.clipboard

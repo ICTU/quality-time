@@ -213,11 +213,11 @@ class Measurement(dict):
 
     def equals(self, other: Measurement) -> bool:  # pragma: no feature-test-cover
         """Return whether this measurement is unchanged compared to an (older) measurement."""
-        scales_equal = all(self[scale] == other[scale] for scale in self.metric.scales())
-        issues_statuses_equal = other.get("issue_status") == self.get("issue_status")
+        scale_equal = all(self[scale] == other[scale] for scale in self.metric.scales())
+        issues_status_equal = other.get("issue_status") == self.get("issue_status")
         sources_equal = other.sources() == self.sources()
-        source_parameter_hashes_equal = other.source_parameter_hash() == self.source_parameter_hash()
-        return scales_equal and issues_statuses_equal and sources_equal and source_parameter_hashes_equal
+        hash_equal = other.source_parameter_hash() == self.source_parameter_hash()
+        return scale_equal and issues_status_equal and sources_equal and hash_equal
 
     def debt_target_expired(self) -> bool:
         """Return whether the technical debt target is expired.

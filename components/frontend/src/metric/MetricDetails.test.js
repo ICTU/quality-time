@@ -157,7 +157,7 @@ it("displays whether sources have errors", async () => {
     expect(screen.getByText(/Sources/)).toHaveClass("red label")
 })
 
-it("calls the callback on click", async () => {
+it("moves the metric", async () => {
     const mockCallback = jest.fn()
     await renderMetricDetails(mockCallback)
     await act(async () => fireEvent.click(screen.getByLabelText(/Move metric to the last row/)))
@@ -171,7 +171,7 @@ it("loads the changelog", async () => {
     expect(changelog_api.get_changelog).toHaveBeenCalledWith(5, { metric_uuid: "metric_uuid" })
 })
 
-it("calls the callback on delete", async () => {
+it("deletes the metric", async () => {
     await renderMetricDetails()
     fireEvent.click(screen.getByText(/Delete metric/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("delete", "metric/metric_uuid", {})
