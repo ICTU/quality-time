@@ -15,7 +15,7 @@ dependencies = [
     "sseclient==0.0.27",
 ]
 optional-dependencies.dev = [
-    "coverage==7.5.3",
+    "coverage==7.5.4",
     "pip==24.1",
     "pip-tools==7.4.1",                # To add hashes to requirements
     "pipx==1.6.0",
