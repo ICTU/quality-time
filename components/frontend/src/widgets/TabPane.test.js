@@ -22,3 +22,14 @@ it("shows the tab red when there is an error", () => {
     render(<Tab panes={[tabPane("Tab", <p>Pane</p>, { error: true })]} />)
     expect(screen.getByText("Tab").className).toEqual(expect.stringContaining("red"))
 })
+
+it("shows an icon", () => {
+    const { container } = render(<Tab panes={[tabPane("Tab", <p>Pane</p>, { iconName: "server" })]} />)
+    expect(container.firstChild.firstChild.firstChild.firstChild.className).toEqual(expect.stringContaining("server"))
+})
+
+it("shows an image", () => {
+    const image = <img alt="" className="image" />
+    const { container } = render(<Tab panes={[tabPane("Tab", <p>Pane</p>, { image: image })]} />)
+    expect(container.firstChild.firstChild.firstChild.firstChild.className).toEqual(expect.stringContaining("image"))
+})

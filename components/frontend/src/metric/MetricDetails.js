@@ -16,6 +16,7 @@ import {
     stringsPropType,
     stringsURLSearchQueryPropType,
 } from "../sharedPropTypes"
+import { Logo } from "../source/Logo"
 import { SourceEntities } from "../source/SourceEntities"
 import { Sources } from "../source/Sources"
 import { getSourceName, isMeasurementRequested } from "../utils"
@@ -191,6 +192,7 @@ export function MetricDetails({
                         source={source}
                         reload={measurementsReload}
                     />,
+                    { image: <Logo logo={reportSource.type} alt={sourceName} /> },
                 ),
             )
         })
