@@ -12,9 +12,9 @@ bracex==2.4 \
     --hash=sha256:a27eaf1df42cf561fed58b7a8f3fdf129d1ea16a81e1fadd1d17989bc6384beb \
     --hash=sha256:efdc71eff95eaff5e0f8cfebe7d01adf2c8637c8c92edaf63ef348c241a82418
     # via wcmatch
-bump-my-version==0.23.0 \
-    --hash=sha256:984fcc5de3f6f67dd52bb4cfcddebad8e9725c0eb48b38d1fafb7ab19e15e527 \
-    --hash=sha256:c3017220bb70cade2cd865ac438fc8f9039ba65a4212fd37730197f512e10315
+bump-my-version==0.24.0 \
+    --hash=sha256:d2a3ef99474259edbf49fa7748048e4afc01f181254deafeb4b457f04f74e08d \
+    --hash=sha256:e0369b286ad1312b3b879bd329c47a14ad66a94e1da2e4d19228ed49d0a762c2
     # via release (pyproject.toml)
 click==8.1.7 \
     --hash=sha256:ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28 \
