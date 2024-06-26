@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not v5.14.0, please first 
 
 ### Added
 
+- Add icons to tabs with measurement entities. Closes [#8823](https://github.com/ICTU/quality-time/issues/8823).
 - Give measurement entity tables sticky headers, like the metric tables already have. Closes [#8879](https://github.com/ICTU/quality-time/issues/8879).
 
 ### Changed
