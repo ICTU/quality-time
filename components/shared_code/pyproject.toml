@@ -10,7 +10,7 @@ dependencies = [
     "bottle==0.12.25",
     "packaging==24.1",
     "pydantic==2.7.4",
-    "pymongo==4.7.3",
+    "pymongo==4.8.0",
     "python-dateutil==2.9.0.post0",
 ]
 
