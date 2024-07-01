@@ -81,9 +81,7 @@ class HarborSecurityWarnings(HarborBase):
         if projects_to_ignore and match_string_or_regular_expression(project_name, projects_to_ignore):
             return True
         projects_to_include = self._parameter("projects_to_include")
-        if projects_to_include and not match_string_or_regular_expression(project_name, projects_to_include):
-            return True
-        return False
+        return bool(projects_to_include and not match_string_or_regular_expression(project_name, projects_to_include))
 
     async def _get_source_responses_for_project(self, project, repositories_api: URL) -> SourceResponses:
         """Return the source responses for a specific project."""
@@ -106,9 +104,9 @@ class HarborSecurityWarnings(HarborBase):
         if repositories_to_ignore and match_string_or_regular_expression(repository_name, repositories_to_ignore):
             return True
         repositories_to_include = self._parameter("repositories_to_include")
-        if repositories_to_include and not match_string_or_regular_expression(repository_name, repositories_to_include):
-            return True
-        return False
+        return bool(
+            repositories_to_include and not match_string_or_regular_expression(repository_name, repositories_to_include)
+        )
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the Harbor security warnings."""

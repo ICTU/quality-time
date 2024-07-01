@@ -47,9 +47,9 @@ class AxeViolationsCollector(SourceCollector):
         if element_include_filter and not match_string_or_regular_expression(entity["element"], element_include_filter):
             return False
         element_exclude_filter = self._parameter("element_exclude_filter")
-        if element_exclude_filter and match_string_or_regular_expression(entity["element"], element_exclude_filter):
-            return False
-        return True
+        return not bool(
+            element_exclude_filter and match_string_or_regular_expression(entity["element"], element_exclude_filter)
+        )
 
 
 class AxeCoreViolations(JSONFileSourceCollector, AxeViolationsCollector):

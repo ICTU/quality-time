@@ -20,9 +20,9 @@ build==1.2.1 \
     --hash=sha256:526263f4870c26f26c433545579475377b2b7588b6f1eac76a001e873ae3e19d \
     --hash=sha256:75e10f767a433d9a86e50d83f418e83efc18ede923ee5ff7df93b6cb0306c5d4
     # via pip-tools
-bump-my-version==0.24.0 \
-    --hash=sha256:d2a3ef99474259edbf49fa7748048e4afc01f181254deafeb4b457f04f74e08d \
-    --hash=sha256:e0369b286ad1312b3b879bd329c47a14ad66a94e1da2e4d19228ed49d0a762c2
+bump-my-version==0.24.1 \
+    --hash=sha256:400e2e116a0d04015c26cc0461f7b30ee9602601561162ff7929a1591c59d829 \
+    --hash=sha256:bf7a474aa23519405a739eaf15c782e4bb038e14ae6db234f53a1f61f8fe1441
     # via release (pyproject.toml)
 click==8.1.7 \
     --hash=sha256:ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28 \
@@ -222,9 +222,9 @@ wheel==0.43.0 \
     # via pip-tools
 
 # The following packages are considered to be unsafe in a requirements file:
-pip==24.1 \
-    --hash=sha256:a775837439bf5da2c1a0c2fa43d5744854497c689ddbd9344cf3ea6d00598540 \
-    --hash=sha256:bdae551038c0ce6a83030b4aedef27fc95f0daa683593fea22fa05e55ed8e317
+pip==24.1.1 \
+    --hash=sha256:5aa64f65e1952733ee0a9a9b1f52496ebdb3f3077cc46f80a16d983b58d1180a \
+    --hash=sha256:efca15145a95e95c00608afeab66311d40bfb73bb2266a855befd705e6bb15a0
     # via
     #   pip-tools
     #   release (pyproject.toml)
