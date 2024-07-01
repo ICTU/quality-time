@@ -36,11 +36,10 @@ class QualityTimeMetrics(QualityTimeCollector):
             return False
         min_status_duration = int(cast(int, self._parameter("min_status_duration") or 0))
         status_start = self.__metric_status_start(entity["status_start_date"])
-        if not status_start and min_status_duration > 0:
-            return False
-        if status_start and (now() - status_start).days < min_status_duration:
-            return False
-        return True
+        if not status_start:
+            return min_status_duration == 0
+        status_duration = (now() - status_start).days
+        return status_duration >= min_status_duration
 
     @staticmethod
     def __get_status_and_value(metric, measurement) -> tuple[str, Value]:

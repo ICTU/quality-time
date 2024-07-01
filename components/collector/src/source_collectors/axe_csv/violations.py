@@ -23,9 +23,9 @@ class AxeCSVViolations(CSVFileSourceCollector):
         if element_include_filter and not match_string_or_regular_expression(entity["element"], element_include_filter):
             return False
         element_exclude_filter = self._parameter("element_exclude_filter")
-        if element_exclude_filter and match_string_or_regular_expression(entity["element"], element_exclude_filter):
-            return False
-        return True
+        return not bool(
+            element_exclude_filter and match_string_or_regular_expression(entity["element"], element_exclude_filter)
+        )
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the CSV and create the entities."""
