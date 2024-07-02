@@ -5,13 +5,15 @@ import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as changelog_api from "../api/changelog"
 import * as fetch_server_api from "../api/fetch_server_api"
 import * as measurement_api from "../api/measurement"
+import * as source_api from "../api/source"
 import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { MetricDetails } from "./MetricDetails"
 
 jest.mock("../api/fetch_server_api")
 jest.mock("../api/changelog.js")
 jest.mock("../api/measurement.js")
+jest.mock("../api/source.js")
 
 const report = {
     report_uuid: "report_uuid",
@@ -55,37 +57,44 @@ const dataModel = {
     subjects: { subject_type: { metrics: ["violations"] } },
 }
 
-async function renderMetricDetails(stopFilteringAndSorting, connection_error) {
-    measurement_api.get_metric_measurements.mockImplementation(() =>
-        Promise.resolve({
-            ok: true,
-            measurements: [
-                {
-                    count: { value: "42" },
-                    version_number: { value: "1.1" },
-                    start: "2020-02-29T10:25:52.252Z",
-                    end: "2020-02-29T11:25:52.252Z",
-                    sources: [
-                        {},
-                        { source_uuid: "source_uuid" },
-                        {
-                            source_uuid: "source_uuid",
-                            entities: [{ key: "1" }],
-                            connection_error: connection_error,
-                        },
-                    ],
-                },
-            ],
-        }),
+async function renderMetricDetails(stopFilteringAndSorting, connection_error, failLoadingMeasurements) {
+    measurement_api.get_metric_measurements.mockImplementation(() => {
+        if (failLoadingMeasurements) {
+            return Promise.reject(new Error("failed to load measurements"))
+        } else {
+            return Promise.resolve({
+                measurements: [
+                    {
+                        count: { value: "42" },
+                        version_number: { value: "1.1" },
+                        start: "2020-02-29T10:25:52.252Z",
+                        end: "2020-02-29T11:25:52.252Z",
+                        sources: [
+                            {},
+                            { source_uuid: "source_uuid" },
+                            {
+                                source_uuid: "source_uuid",
+                                entities: [{ key: "1" }],
+                                connection_error: connection_error,
+                            },
+                        ],
+                    },
+                ],
+            })
+        }
+    })
+    source_api.set_source_entity_attribute.mockImplementation(
+        (_metric_uuid, _source_uuid, _entity_key, _attribute, _value, reload) => reload(),
     )
     changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }))
     const settings = createTestableSettings()
     await act(async () =>
         render(
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+            <Permissions.Provider value={[EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION]}>
                 <DataModel.Provider value={dataModel}>
                     <MetricDetails
                         metric_uuid="metric_uuid"
+                        reload={jest.fn()}
                         report={report}
                         reports={[report]}
                         stopFilteringAndSorting={stopFilteringAndSorting}
@@ -99,12 +108,9 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error) {
 }
 
 beforeEach(() => {
+    jest.clearAllMocks()
     history.push("")
-    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({
-        then: jest.fn().mockReturnValue({
-            catch: jest.fn().mockReturnValue({ finally: jest.fn() }),
-        }),
-    })
+    fetch_server_api.fetch_server_api.mockImplementation(() => Promise.resolve())
 })
 
 it("switches tabs", async () => {
@@ -135,10 +141,11 @@ it("switches tabs to the trend graph", async () => {
     expect(screen.getAllByText(/Time/).length).toBe(1)
 })
 
-it("does not show the trend graph tab if the metric scale is version number", async () => {
+it("shows the trend graph tab even if the metric scale is version number", async () => {
     report.subjects["subject_uuid"].metrics["metric_uuid"].scale = "version_number"
     await renderMetricDetails()
-    expect(screen.queryAllByText(/Trend graph/).length).toBe(0)
+    expect(screen.queryAllByText(/Trend graph/).length).toBe(1)
+    report.subjects["subject_uuid"].metrics["metric_uuid"].scale = "count"
 })
 
 it("removes the existing hashtag from the URL to share", async () => {
@@ -187,4 +194,20 @@ it("measures the metric", async () => {
         "metric/metric_uuid/attribute/measurement_requested",
         expect.objectContaining({}), // Ignore the attribute value, it's new Date().toISOString()
     )
+})
+
+it("fails to load measurements", async () => {
+    await renderMetricDetails(null, null, true)
+    fireEvent.click(screen.getByText(/Trend graph/))
+    expect(screen.queryAllByText(/Loading measurements failed/).length).toBe(1)
+})
+
+it("reloads the measurements after editing a measurement entity", async () => {
+    await renderMetricDetails()
+    expect(measurement_api.get_metric_measurements).toHaveBeenCalledTimes(1)
+    fireEvent.click(screen.getByText(/The source/))
+    fireEvent.click(screen.getByRole("button", { name: "Expand/collapse" }))
+    fireEvent.click(screen.getAllByText("Unconfirmed")[1])
+    await act(async () => fireEvent.click(screen.getByText("Confirm")))
+    expect(measurement_api.get_metric_measurements).toHaveBeenCalledTimes(2)
 })

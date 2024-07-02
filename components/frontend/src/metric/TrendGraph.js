@@ -1,10 +1,13 @@
+import { oneOf } from "prop-types"
 import { useContext } from "react"
+import { Placeholder, PlaceholderImage } from "semantic-ui-react"
 import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme } from "victory"
 
 import { DarkMode } from "../context/DarkMode"
 import { DataModel } from "../context/DataModel"
 import { measurementsPropType, metricPropType } from "../sharedPropTypes"
 import { capitalize, formatMetricScaleAndUnit, getMetricName, getMetricScale, niceNumber, scaledNumber } from "../utils"
+import { WarningMessage } from "../widgets/WarningMessage"
 
 function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
     const scale = getMetricScale(metric, dataModel)
@@ -12,9 +15,42 @@ function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
     return value !== null ? Number(value) : null
 }
 
-export function TrendGraph({ metric, measurements }) {
+export function TrendGraph({ metric, measurements, loading }) {
     const dataModel = useContext(DataModel)
     const darkMode = useContext(DarkMode)
+    const chartHeight = 250
+    const estimatedTotalChartHeight = chartHeight + 200 // Estimate of the height including title and axis
+    if (getMetricScale(metric, dataModel) === "version_number") {
+        return (
+            <WarningMessage
+                content="Trend graphs are not supported for metrics with a version number scale."
+                header="Trend graph not supported for version numbers"
+            />
+        )
+    }
+    if (loading === "failed") {
+        return (
+            <WarningMessage
+                content="Loading the measurements from the API-server failed."
+                header="Loading measurements failed"
+            />
+        )
+    }
+    if (loading === "loading") {
+        return (
+            <Placeholder fluid inverted={darkMode} style={{ height: estimatedTotalChartHeight }}>
+                <PlaceholderImage />
+            </Placeholder>
+        )
+    }
+    if (measurements.length === 0) {
+        return (
+            <WarningMessage
+                content="A trend graph can not be displayed until this metric has measurements."
+                header="No measurements"
+            />
+        )
+    }
     const metricName = getMetricName(metric, dataModel)
     const unit = capitalize(formatMetricScaleAndUnit(metric, dataModel))
     const measurementValues = measurements.map((measurement) =>
@@ -44,7 +80,7 @@ export function TrendGraph({ metric, measurements }) {
     }
     return (
         <VictoryChart
-            height={250}
+            height={chartHeight}
             scale={{ x: "time", y: "linear" }}
             style={{
                 parent: { height: "100%", background: darkMode ? "rgb(40, 40, 40)" : "white" },
@@ -81,6 +117,7 @@ export function TrendGraph({ metric, measurements }) {
     )
 }
 TrendGraph.propTypes = {
+    loading: oneOf(["failed", "loaded", "loading"]),
     metric: metricPropType,
     measurements: measurementsPropType,
 }

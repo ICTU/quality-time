@@ -43,8 +43,8 @@ const dates = [
     new Date("2020-01-13T00:00:00+00:00"),
 ]
 
-function renderSubjectTable({ dates = [], expandedItems = null } = {}) {
-    let settings = createTestableSettings()
+function renderSubjectTable({ dates = [], expandedItems = null, settings = null } = {}) {
+    settings = settings ?? createTestableSettings()
     if (expandedItems) {
         settings.expandedItems = expandedItems
     }
@@ -207,28 +207,27 @@ it("expands the details via the button", () => {
     expect(expandedItems.result.current.value).toStrictEqual(["1:0"])
 })
 
-it("collapses the details via the button", () => {
+it("collapses the details via the button", async () => {
     history.push("?expanded=1:0")
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
     renderSubjectTable({ expandedItems: expandedItems.result.current })
     const expand = screen.getAllByRole("button")[0]
-    fireEvent.click(expand)
+    await act(async () => fireEvent.click(expand))
     expandedItems.rerender()
     expect(expandedItems.result.current.value).toStrictEqual([])
 })
 
-it("expands the details via the url", () => {
-    renderSubjectTable()
-    expect(screen.queryAllByText("Configuration").length).toBe(0)
+it("expands the details via the url", async () => {
     history.push("?expanded=1:0")
     renderSubjectTable()
+    await act(async () => {}) // Wait for hooks to finish
     expect(screen.queryAllByText("Configuration").length).toBe(1)
 })
 
 it("moves a metric", async () => {
     history.push("?expanded=1:2")
     renderSubjectTable()
-    await act(async () => fireEvent.click(await screen.findByLabelText("Move metric to the next row")))
+    await act(async () => fireEvent.click(screen.getByLabelText("Move metric to the next row")))
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/1/attribute/position", {
         position: "next",
     })
