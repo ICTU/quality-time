@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is not v5.14.0, please first 
 
 - Give measurement entity tables sticky headers, like the metric tables already have. Closes [#8879](https://github.com/ICTU/quality-time/issues/8879).
 
+### Changed
+
+- Always show metric trend graph tabs. Display a loader in the tab while loading measurements. If the trend graph cannot be displayed, explain in the tab why not. Closes [#8825](https://github.com/ICTU/quality-time/issues/8825).
+
 ## v5.14.0 - 2024-07-05
 
 ### Deployment notes

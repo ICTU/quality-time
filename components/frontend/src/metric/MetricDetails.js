@@ -18,7 +18,7 @@ import {
 } from "../sharedPropTypes"
 import { SourceEntities } from "../source/SourceEntities"
 import { Sources } from "../source/Sources"
-import { getMetricScale, getSourceName, isMeasurementRequested } from "../utils"
+import { getSourceName, isMeasurementRequested } from "../utils"
 import { ActionButton, DeleteButton, PermLinkButton, ReorderButtonGroup } from "../widgets/Button"
 import { changelogTabPane, configurationTabPane, tabPane } from "../widgets/TabPane"
 import { showMessage } from "../widgets/toast"
@@ -81,20 +81,23 @@ Buttons.propTypes = {
     url: string,
 }
 
-function fetchMeasurements(reportDate, metric_uuid, setMeasurements) {
+function fetchMeasurements(reportDate, metric_uuid, setMeasurements, setMeasurementsStatus) {
     get_metric_measurements(metric_uuid, reportDate)
         .then(function (json) {
-            if (json.ok !== false) {
-                setMeasurements(json.measurements)
-            }
+            setMeasurements(json.measurements ?? [])
+            setMeasurementsStatus("loaded")
             return null
         })
-        .catch((error) => showMessage("error", "Could not fetch measurements", `${error}`))
+        .catch((error) => {
+            showMessage("error", "Could not fetch measurements", `${error}`)
+            setMeasurementsStatus("failed")
+        })
 }
 fetchMeasurements.propTypes = {
-    reportDate: datePropType,
     metric_uuid: string,
+    reportDate: datePropType,
     setMeasurements: func,
+    setMeasurementsStatus: func,
 }
 
 export function MetricDetails({
@@ -103,7 +106,7 @@ export function MetricDetails({
     isLastMetric,
     metric_uuid,
     reload,
-    report_date,
+    reportDate,
     reports,
     report,
     stopFilteringAndSorting,
@@ -112,18 +115,19 @@ export function MetricDetails({
 }) {
     const dataModel = useContext(DataModel)
     const [measurements, setMeasurements] = useState([])
+    const [measurementsStatus, setMeasurementsStatus] = useState("loading")
     useEffect(() => {
-        fetchMeasurements(report_date, metric_uuid, setMeasurements)
+        fetchMeasurements(reportDate, metric_uuid, setMeasurements, setMeasurementsStatus)
         // eslint-disable-next-line
-    }, [metric_uuid, report_date])
+    }, [metric_uuid, reportDate])
     function measurementsReload() {
         reload()
-        fetchMeasurements(report_date, metric_uuid, setMeasurements)
+        fetchMeasurements(reportDate, metric_uuid, setMeasurements, setMeasurementsStatus)
     }
     const subject = report.subjects[subject_uuid]
     const metric = subject.metrics[metric_uuid]
-    const last_measurement = measurements[measurements.length - 1]
-    let anyError = last_measurement?.sources.some((source) => source.connection_error || source.parse_error)
+    const lastMeasurement = measurements[measurements.length - 1]
+    let anyError = lastMeasurement?.sources.some((source) => source.connection_error || source.parse_error)
     anyError =
         anyError ||
         Object.values(metric.sources ?? {}).some(
@@ -160,28 +164,26 @@ export function MetricDetails({
             { iconName: "server", error: Boolean(anyError) },
         ),
         changelogTabPane(<ChangeLog timestamp={report.timestamp} metric_uuid={metric_uuid} />),
+        tabPane(
+            "Trend graph",
+            <TrendGraph metric={metric} measurements={measurements} loading={measurementsStatus} />,
+            { iconName: "linegraph" },
+        ),
     )
     if (measurements.length > 0) {
-        if (getMetricScale(metric, dataModel) !== "version_number") {
-            panes.push(
-                tabPane("Trend graph", <TrendGraph metric={metric} measurements={measurements} />, {
-                    iconName: "linegraph",
-                }),
-            )
-        }
-        last_measurement.sources.forEach((source) => {
-            const report_source = metric.sources[source.source_uuid]
-            if (!report_source) {
+        lastMeasurement.sources.forEach((source) => {
+            const reportSource = metric.sources[source.source_uuid]
+            if (!reportSource) {
                 return
             } // source was deleted, continue
-            const nr_entities = source.entities?.length ?? 0
-            if (nr_entities === 0) {
+            const nrEntities = source.entities?.length ?? 0
+            if (nrEntities === 0) {
                 return
             } // no entities to show, continue
-            const source_name = getSourceName(report_source, dataModel)
+            const sourceName = getSourceName(reportSource, dataModel)
             panes.push(
                 tabPane(
-                    source_name,
+                    sourceName,
                     <SourceEntities
                         report={report}
                         metric={metric}
@@ -220,7 +222,7 @@ MetricDetails.propTypes = {
     isLastMetric: bool,
     metric_uuid: string,
     reload: func,
-    report_date: datePropType,
+    reportDate: datePropType,
     reports: reportsPropType,
     report: reportPropType,
     stopFilteringAndSorting: func,

@@ -11,20 +11,19 @@ const dataModel = {
     },
 }
 
-function renderTrendgraph({ measurements = [], darkMode = false } = {}) {
+function renderTrendgraph({ measurements = [], darkMode = false, scale = "count", loading = "loaded" } = {}) {
     return render(
         <DarkMode.Provider value={darkMode}>
             <DataModel.Provider value={dataModel}>
-                <TrendGraph metric={{ type: "violations", scale: "count" }} measurements={measurements} />
+                <TrendGraph
+                    metric={{ type: "violations", scale: scale }}
+                    measurements={measurements}
+                    loading={loading}
+                />
             </DataModel.Provider>
         </DarkMode.Provider>,
     )
 }
-
-it("renders the time axis", () => {
-    renderTrendgraph()
-    expect(screen.getAllByText(/Time/).length).toBe(1)
-})
 
 it("renders the measurements", () => {
     renderTrendgraph({
@@ -66,4 +65,27 @@ it("renders the measurements with missing values for the scale", () => {
         measurements: [{ percentage: { value: "1" }, start: "2019-09-29", end: "2019-09-29" }],
     })
     expect(screen.getAllByText(/Time/).length).toBe(1)
+})
+
+it("renders a placeholder while the measurements are loading", () => {
+    const { container } = renderTrendgraph({ loading: "loading" })
+    expect(container.firstChild.className).toContain("placeholder")
+    expect(screen.queryAllByText(/Time/).length).toBe(0)
+})
+
+it("renders a message if the measurements failed to load", () => {
+    renderTrendgraph({ loading: "failed" })
+    expect(screen.getAllByText(/Loading measurements failed/).length).toBe(1)
+})
+
+it("renders a message if the metric scale is version number", () => {
+    renderTrendgraph({ scale: "version_number" })
+    expect(screen.queryAllByText(/Time/).length).toBe(0)
+    expect(screen.getAllByText(/version number scale/).length).toBe(1)
+})
+
+it("renders a message if the metric has no measurements", () => {
+    renderTrendgraph()
+    expect(screen.queryAllByText(/Time/).length).toBe(0)
+    expect(screen.getAllByText(/trend graph can not be displayed/).length).toBe(1)
 })
