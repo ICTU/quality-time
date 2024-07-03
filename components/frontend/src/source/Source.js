@@ -1,6 +1,6 @@
 import { bool, func, object, oneOfType, string } from "prop-types"
 import { useContext } from "react"
-import { Grid, Menu } from "semantic-ui-react"
+import { Grid } from "semantic-ui-react"
 
 import { delete_source, set_source_attribute } from "../api/source"
 import { ChangeLog } from "../changelog/ChangeLog"
@@ -8,7 +8,7 @@ import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { ErrorMessage } from "../errorMessage"
 import { StringInput } from "../fields/StringInput"
-import { Icon, Label, Tab } from "../semantic_ui_react_wrappers"
+import { Tab } from "../semantic_ui_react_wrappers"
 import {
     measurementSourcePropType,
     metricPropType,
@@ -18,8 +18,8 @@ import {
 } from "../sharedPropTypes"
 import { getMetricName, getSourceName } from "../utils"
 import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
-import { FocusableTab } from "../widgets/FocusableTab"
 import { HyperLink } from "../widgets/HyperLink"
+import { changelogTabPane, configurationTabPane } from "../widgets/TabPane"
 import { SourceParameters } from "./SourceParameters"
 import { SourceType } from "./SourceType"
 import { SourceTypeHeader } from "./SourceTypeHeader"
@@ -171,45 +171,22 @@ export function Source({
         </>
     )
     const configError = dataModel.metrics[metric.type].sources.includes(source.type) ? "" : configErrorMessage
-    const configurationTabLabel =
-        configError || connectionError || parseError ? <Label color="red">{"Configuration"}</Label> : "Configuration"
     const panes = [
-        {
-            menuItem: (
-                <Menu.Item key="configuration">
-                    <Icon name="settings" />
-                    <FocusableTab>{configurationTabLabel}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <Parameters
-                        metric={metric}
-                        source={source}
-                        source_uuid={source_uuid}
-                        connection_error={connectionError}
-                        parse_error={parseError}
-                        config_error={configError}
-                        report={report}
-                        changed_fields={changed_fields}
-                        reload={reload}
-                    />
-                </Tab.Pane>
-            ),
-        },
-        {
-            menuItem: (
-                <Menu.Item key="changelog">
-                    <Icon name="history" />
-                    <FocusableTab>{"Changelog"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <ChangeLog source_uuid={source_uuid} timestamp={report.timestamp} />
-                </Tab.Pane>
-            ),
-        },
+        configurationTabPane(
+            <Parameters
+                metric={metric}
+                source={source}
+                source_uuid={source_uuid}
+                connection_error={connectionError}
+                parse_error={parseError}
+                config_error={configError}
+                report={report}
+                changed_fields={changed_fields}
+                reload={reload}
+            />,
+            { error: Boolean(configError || connectionError || parseError) },
+        ),
+        changelogTabPane(<ChangeLog source_uuid={source_uuid} timestamp={report.timestamp} />),
     ]
     return (
         <>
