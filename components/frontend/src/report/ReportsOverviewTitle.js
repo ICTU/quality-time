@@ -1,5 +1,5 @@
 import { func, shape } from "prop-types"
-import { Grid, Icon, Menu } from "semantic-ui-react"
+import { Grid } from "semantic-ui-react"
 
 import { set_reports_attribute } from "../api/report"
 import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
@@ -11,8 +11,8 @@ import { StringInput } from "../fields/StringInput"
 import { Tab } from "../semantic_ui_react_wrappers"
 import { permissionsPropType, reportsOverviewPropType, settingsPropType } from "../sharedPropTypes"
 import { dropdownOptions } from "../utils"
-import { FocusableTab } from "../widgets/FocusableTab"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
+import { changelogTabPane, configurationTabPane, tabPane } from "../widgets/TabPane"
 import { setDocumentTitle } from "./document_title"
 
 function ReportsOverviewConfiguration({ reports_overview, reload }) {
@@ -106,45 +106,11 @@ export function ReportsOverviewTitle({ reports_overview, reload, settings }) {
     const uuid = "reports_overview"
     const tabIndex = activeTabIndex(settings.expandedItems, uuid)
     const panes = [
-        {
-            menuItem: (
-                <Menu.Item key="configuration">
-                    <Icon name="settings" />
-                    <FocusableTab>{"Configuration"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <ReportsOverviewConfiguration reports_overview={reports_overview} reload={reload} />
-                </Tab.Pane>
-            ),
-        },
-        {
-            menuItem: (
-                <Menu.Item key="permissions">
-                    <Icon name="lock" />
-                    <FocusableTab>{"Permissions"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <Permissions permissions={reports_overview.permissions ?? {}} reload={reload} />
-                </Tab.Pane>
-            ),
-        },
-        {
-            menuItem: (
-                <Menu.Item key="changelog">
-                    <Icon name="history" />
-                    <FocusableTab>{"Changelog"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <ChangeLog />
-                </Tab.Pane>
-            ),
-        },
+        configurationTabPane(<ReportsOverviewConfiguration reports_overview={reports_overview} reload={reload} />),
+        tabPane("Permissions", <Permissions permissions={reports_overview.permissions ?? {}} reload={reload} />, {
+            iconName: "lock",
+        }),
+        changelogTabPane(<ChangeLog />),
     ]
     setDocumentTitle(reports_overview.title)
 

@@ -1,5 +1,5 @@
 import { func, string } from "prop-types"
-import { Grid, Icon, Menu } from "semantic-ui-react"
+import { Grid } from "semantic-ui-react"
 
 import { delete_report, set_report_attribute } from "../api/report"
 import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
@@ -14,9 +14,9 @@ import { Label, Segment, Tab } from "../semantic_ui_react_wrappers"
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
 import { getDesiredResponseTime } from "../utils"
 import { DeleteButton, PermLinkButton } from "../widgets/Button"
-import { FocusableTab } from "../widgets/FocusableTab"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { LabelWithHelp } from "../widgets/LabelWithHelp"
+import { changelogTabPane, configurationTabPane, tabPane } from "../widgets/TabPane"
 import { setDocumentTitle } from "./document_title"
 import { IssueTracker } from "./IssueTracker"
 
@@ -313,75 +313,19 @@ export function ReportTitle({ report, openReportsOverview, reload, settings }) {
     const tabIndex = activeTabIndex(settings.expandedItems, report_uuid)
     const reportUrl = `${window.location}`
     const panes = [
-        {
-            menuItem: (
-                <Menu.Item key="configuration">
-                    <Icon name="settings" />
-                    <FocusableTab>{"Configuration"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <ReportConfiguration report={report} reload={reload} />
-                </Tab.Pane>
-            ),
-        },
-        {
-            menuItem: (
-                <Menu.Item key="reaction_times">
-                    <Icon name="time" />
-                    <FocusableTab>{"Desired reaction times"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <ReactionTimes report={report} reload={reload} />
-                </Tab.Pane>
-            ),
-        },
-        {
-            menuItem: (
-                <Menu.Item key="notifications">
-                    <Icon name="feed" />
-                    <FocusableTab>{"Notifications"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <NotificationDestinations
-                        destinations={report.notification_destinations || {}}
-                        report_uuid={report_uuid}
-                        reload={reload}
-                    />
-                </Tab.Pane>
-            ),
-        },
-        {
-            menuItem: (
-                <Menu.Item key="issue_tracker">
-                    <Icon name="tasks" />
-                    <FocusableTab>{"Issue tracker"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <IssueTracker report={report} reload={reload} />
-                </Tab.Pane>
-            ),
-        },
-        {
-            menuItem: (
-                <Menu.Item key="changelog">
-                    <Icon name="history" />
-                    <FocusableTab>{"Changelog"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} />
-                </Tab.Pane>
-            ),
-        },
+        configurationTabPane(<ReportConfiguration report={report} reload={reload} />),
+        tabPane("Desired reaction times", <ReactionTimes report={report} reload={reload} />, { iconName: "time" }),
+        tabPane(
+            "Notifications",
+            <NotificationDestinations
+                destinations={report.notification_destinations || {}}
+                report_uuid={report_uuid}
+                reload={reload}
+            />,
+            { iconName: "feed" },
+        ),
+        tabPane("Issue tracker", <IssueTracker report={report} reload={reload} />, { iconName: "tasks" }),
+        changelogTabPane(<ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} />),
     ]
     setDocumentTitle(report.title)
 

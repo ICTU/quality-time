@@ -1,6 +1,6 @@
 import { bool, func, object, string } from "prop-types"
 import { useContext } from "react"
-import { Icon, Menu } from "semantic-ui-react"
+import { Icon } from "semantic-ui-react"
 
 import { delete_subject, set_subject_attribute } from "../api/subject"
 import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
@@ -11,9 +11,9 @@ import { Header, Tab } from "../semantic_ui_react_wrappers"
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
 import { getSubjectType, slugify } from "../utils"
 import { DeleteButton, PermLinkButton, ReorderButtonGroup } from "../widgets/Button"
-import { FocusableTab } from "../widgets/FocusableTab"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { HyperLink } from "../widgets/HyperLink"
+import { changelogTabPane, configurationTabPane } from "../widgets/TabPane"
 import { SubjectParameters } from "./SubjectParameters"
 
 function SubjectHeader({ subjectType }) {
@@ -82,37 +82,15 @@ export function SubjectTitle({
     const subjectTitle = (atReportsOverview ? report.title + " ❯ " : "") + subjectName
     const subjectUrl = `${window.location}#${subject_uuid}`
     const panes = [
-        {
-            menuItem: (
-                <Menu.Item key="configuration">
-                    <Icon name="settings" />
-                    <FocusableTab>{"Configuration"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <SubjectParameters
-                        subject={subject}
-                        subject_uuid={subject_uuid}
-                        subject_name={subjectName}
-                        reload={reload}
-                    />
-                </Tab.Pane>
-            ),
-        },
-        {
-            menuItem: (
-                <Menu.Item key="changelog">
-                    <Icon name="history" />
-                    <FocusableTab>{"Changelog"}</FocusableTab>
-                </Menu.Item>
-            ),
-            render: () => (
-                <Tab.Pane>
-                    <ChangeLog subject_uuid={subject_uuid} timestamp={report.timestamp} />
-                </Tab.Pane>
-            ),
-        },
+        configurationTabPane(
+            <SubjectParameters
+                subject={subject}
+                subject_uuid={subject_uuid}
+                subject_name={subjectName}
+                reload={reload}
+            />,
+        ),
+        changelogTabPane(<ChangeLog subject_uuid={subject_uuid} timestamp={report.timestamp} />),
     ]
 
     return (
