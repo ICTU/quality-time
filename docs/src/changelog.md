@@ -48,6 +48,10 @@ If your currently installed *Quality-time* version is not v5.13.0, please first 
 - Remove the share tabs for reports, subjects, and metrics and move the share button to the button row in the report, subject, and metric headers. Closes [#8821](https://github.com/ICTU/quality-time/issues/8821).
 - Set the MongoDB feature compatibility version to v7. Closes [#8896](https://github.com/ICTU/quality-time/issues/8896).
 
+### Removed
+
+- Remove the option to use a custom base image for the `www` container. Updates [#8857](https://github.com/ICTU/quality-time/issues/8857).
+
 ## v5.13.0 - 2024-05-23
 
 ### Deployment notes
