@@ -42,9 +42,9 @@ prompt-toolkit==3.0.36 \
     --hash=sha256:3e163f254bef5a03b146397d7c1963bd3e2812f0964bb9a24e6ec761fd28db63 \
     --hash=sha256:aa64ad242a462c5ff0363a7b9cfe696c20d55d9fc60c11fd8e632d064804d305
     # via questionary
-pydantic==2.8.0 \
-    --hash=sha256:d970ffb9d030b710795878940bd0489842c638e7252fc4a19c3ae2f7da4d6141 \
-    --hash=sha256:ead4f3a1e92386a734ca1411cb25d94147cf8778ed5be6b56749047676d6364e
+pydantic==2.8.1 \
+    --hash=sha256:5ac6a29cc27108917fb0923c28542471087bf90b2dc2c3a64d779818dffc1f6f \
+    --hash=sha256:a7e968e55cc934de69163cce4e90870326f57575984a698d5a96ad1e97762dbe
     # via
     #   bump-my-version
     #   pydantic-settings
