@@ -14,7 +14,7 @@ function FooterItem({ children, icon, url }) {
         children
     )
     return url ? (
-        <List.Item as="a" href={url}>
+        <List.Item as="a" href={url} target="_blank">
             {item}
         </List.Item>
     ) : (
