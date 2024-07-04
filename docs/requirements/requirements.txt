@@ -232,9 +232,9 @@ packaging==24.1 \
     --hash=sha256:026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002 \
     --hash=sha256:5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124
     # via sphinx
-pydantic==2.8.1 \
-    --hash=sha256:5ac6a29cc27108917fb0923c28542471087bf90b2dc2c3a64d779818dffc1f6f \
-    --hash=sha256:a7e968e55cc934de69163cce4e90870326f57575984a698d5a96ad1e97762dbe
+pydantic==2.8.2 \
+    --hash=sha256:6f62c13d067b0755ad1c21a34bdd06c0c12625a22b0fc09c6b149816604f7c2a \
+    --hash=sha256:73ee9fddd406dc318b885c7a2eab8a6472b68b8fb5ba8150949fc3db939f23c8
     # via docs (pyproject.toml)
 pydantic-core==2.20.1 \
     --hash=sha256:035ede2e16da7281041f0e626459bcae33ed998cca6a0a007a5ebb73414ac72d \
