@@ -77,7 +77,7 @@ export function SourceEntity({
         >
             <Table.Cell style={style}>{source_entity_status_name[status]}</Table.Cell>
             <Table.Cell style={style}>{status === "unconfirmed" ? "" : status_end_date}</Table.Cell>
-            <Table.Cell style={style}>{status === "unconfirmed" ? "" : rationale}</Table.Cell>
+            <Table.Cell style={style}>{rationale}</Table.Cell>
             <Table.Cell style={style}>
                 {entity.first_seen ? <TimeAgoWithDate dateFirst date={entity.first_seen} /> : ""}
             </Table.Cell>
