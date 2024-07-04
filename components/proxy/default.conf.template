@@ -1,14 +1,14 @@
 server {
     listen          ${PROXY_PORT};
-    add_header      Strict-Transport-Security "max-age=31536000;";
-    add_header      X-XSS-Protection "1; mode=block";
-    add_header      X-Content-Type-Options "nosniff";
-    add_header      X-Frame-Options "DENY";
     gzip            on;
     server_tokens   off;
     access_log      off;
 
     location /api/internal/nr_measurements {
+        add_header          Strict-Transport-Security "max-age=31536000;";
+        add_header          X-XSS-Protection "1; mode=block";
+        add_header          X-Content-Type-Options "nosniff";
+        add_header          X-Frame-Options "DENY";
         gzip                off;
         proxy_http_version  1.1;
         proxy_read_timeout  24h;
@@ -16,18 +16,34 @@ server {
         proxy_pass          http://${API_SERVER_HOST}:${API_SERVER_PORT}/api/internal/nr_measurements;
     }
     location /api/internal/datamodel {
+        add_header          Strict-Transport-Security "max-age=31536000;";
+        add_header          X-XSS-Protection "1; mode=block";
+        add_header          X-Content-Type-Options "nosniff";
+        add_header          X-Frame-Options "DENY";
         add_header          Cache-Control "no-cache";
         proxy_pass          http://${API_SERVER_HOST}:${API_SERVER_PORT}/api/internal/datamodel;
     }
     location /api/internal/logo {
+        add_header          Strict-Transport-Security "max-age=31536000;";
+        add_header          X-XSS-Protection "1; mode=block";
+        add_header          X-Content-Type-Options "nosniff";
+        add_header          X-Frame-Options "DENY";
         add_header          Cache-Control "no-cache";
         proxy_pass          http://${API_SERVER_HOST}:${API_SERVER_PORT}/api/internal/logo;
     }
     location /api {
+        add_header          Strict-Transport-Security "max-age=31536000;";
+        add_header          X-XSS-Protection "1; mode=block";
+        add_header          X-Content-Type-Options "nosniff";
+        add_header          X-Frame-Options "DENY";
         add_header          Cache-Control "no-store";
         proxy_pass          http://${API_SERVER_HOST}:${API_SERVER_PORT}/api;
     }
     location / {
+        add_header          Strict-Transport-Security "max-age=31536000;";
+        add_header          X-XSS-Protection "1; mode=block";
+        add_header          X-Content-Type-Options "nosniff";
+        add_header          X-Frame-Options "DENY";
         add_header          Cache-Control "no-store";
         proxy_pass          http://${FRONTEND_HOST}:${FRONTEND_PORT}/;
     }
