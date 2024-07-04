@@ -2,18 +2,22 @@
 
 source pipx-base.sh
 
-PYTHON_FILES_AND_FOLDERS=$(python $(script_dir)/python_files_and_folders.py)
+python_files_and_folders() {
+    echo $(python $(script_dir)/python_files_and_folders.py)
+}
 
 run_ruff() {
+    PYTHON_FILES_AND_FOLDERS=$(python_files_and_folders)
     run_pipx ruff check $PYTHON_FILES_AND_FOLDERS
     run_pipx ruff format --check $PYTHON_FILES_AND_FOLDERS
 }
 
 run_fixit() {
-    run_pipx fixit lint $PYTHON_FILES_AND_FOLDERS
+    run_pipx fixit lint $(python_files_and_folders)
 }
 
 run_mypy() {
+    PYTHON_FILES_AND_FOLDERS=$(python_files_and_folders)
     # Run mypy with or without pydantic plugin depending on whether pydantic is listed as dependency in the tools
     # section of the optional dependencies in the pyproject.toml file.
     pydantic_spec=$(spec pydantic)
@@ -32,7 +36,7 @@ run_pyproject_fmt() {
 }
 
 run_bandit() {
-    run_pipx bandit --configfile pyproject.toml --quiet --recursive $PYTHON_FILES_AND_FOLDERS
+    run_pipx bandit --configfile pyproject.toml --quiet --recursive $(python_files_and_folders)
 }
 
 run_pip_audit() {
@@ -40,7 +44,7 @@ run_pip_audit() {
 }
 
 run_vulture() {
-    run_pipx vulture --min-confidence 0 $PYTHON_FILES_AND_FOLDERS .vulture_ignore_list.py $@
+    run_pipx vulture --min-confidence 0 $(python_files_and_folders) .vulture_ignore_list.py $@
 }
 
 run_vale() {
