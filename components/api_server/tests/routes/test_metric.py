@@ -593,6 +593,23 @@ class MetricIssueTest(DataModelTestCase):
         self.assert_issue_inserted()
 
     @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
+    def test_add_metric_issue_with_percentage_scale(self, requests_post):
+        """Test that an issue with the percentage scale can be added to the issue tracker."""
+        self.measurement["percentage"] = {"status": "target_not_met", "value": "21"}
+        self.expected_json["fields"]["summary"] = "Fix 21% violations from Source"
+        self.expected_json["fields"]["description"] = (
+            "The metric [name|https://quality_time/metric42] in Quality-time reports 21% violations "
+            "from Source.\nPlease go to https://zap for more details.\n"
+        )
+        self.report.metrics_dict[METRIC_ID]["scale"] = "percentage"
+        response = Mock()
+        response.json.return_value = {"key": "FOO-42"}
+        requests_post.return_value = response
+        self.assertEqual({"ok": True, "issue_url": self.ISSUE_URL}, add_metric_issue(METRIC_ID, self.database))
+        self.assert_issue_posted(requests_post)
+        self.assert_issue_inserted()
+
+    @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
     @patch("model.issue_tracker.requests.get")
     def test_add_metric_issue_with_labels(self, requests_get, requests_post):
         """Test that an issue can be added to the issue tracker."""

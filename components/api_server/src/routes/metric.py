@@ -212,10 +212,11 @@ def create_issue_text(metric: Metric, measured_value: Value) -> tuple[str, str]:
     metric_url = dict(bottle.request.json)["metric_url"]
     source_names = ", ".join([source.name or DATA_MODEL.sources[str(source.type)].name for source in metric.sources])
     source_urls = [url for url in [source.get("parameters", {}).get("url") for source in metric.sources] if url]
-    issue_summary = f"Fix {measured_value} {metric.unit} from {source_names}"
+    percentage = "%" if metric.scale() == "percentage" else ""
+    issue_summary = f"Fix {measured_value}{percentage} {metric.unit} from {source_names}"
     source_url_str = f"\nPlease go to {', '.join(source_urls)} for more details." if source_urls else ""
     issue_description = (
         f"The metric [{metric.name}|{metric_url}] in Quality-time reports "
-        f"{measured_value} {metric.unit} from {source_names}.{source_url_str}\n"
+        f"{measured_value}{percentage} {metric.unit} from {source_names}.{source_url_str}\n"
     )
     return issue_summary, issue_description
