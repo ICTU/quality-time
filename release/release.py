@@ -10,7 +10,7 @@ import subprocess
 import sys
 import tomllib
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
-from typing import cast
+from typing import Any, cast
 
 import git
 
@@ -20,13 +20,19 @@ def get_release_folder() -> pathlib.Path:
     return pathlib.Path(__file__).resolve().parent
 
 
+def read_pyproject_toml() -> dict[str, Any]:
+    """Return the pyproject.toml file contents."""
+    release_folder = get_release_folder()
+    with pathlib.Path(release_folder / "pyproject.toml").open(mode="rb") as pyproject_toml_file:
+        return tomllib.load(pyproject_toml_file)
+
+
 def get_version() -> str:
     """Return the current version."""
     release_folder = get_release_folder()
     repo = git.Repo(release_folder.parent)
-    with pathlib.Path(release_folder / "pyproject.toml").open(mode="rb") as py_project_toml_fp:
-        py_project_toml = tomllib.load(py_project_toml_fp)
-    version_re = py_project_toml["tool"]["bumpversion"]["parse"]
+    pyproject_toml = read_pyproject_toml()
+    version_re = pyproject_toml["tool"]["bumpversion"]["parse"]
     version_tags = [tag for tag in repo.tags if tag.tag and re.match(version_re, tag.tag.tag.strip("v"), re.MULTILINE)]
     latest_tag = sorted(version_tags, key=lambda tag: tag.commit.committed_datetime)[-1]
     # We cast latest_tag.tag to TagObject because we know it cannot be None, given how version_tags is constructed
@@ -143,6 +149,13 @@ def utc_today() -> datetime.date:
     return datetime.datetime.now(tz=datetime.UTC).date()
 
 
+def bump_my_version_spec() -> str:
+    """Return the bump-my-version version to use."""
+    pyproject_toml = read_pyproject_toml()
+    tools = pyproject_toml["project"]["optional-dependencies"]["tools"]
+    return next(spec for spec in tools if spec.split("==")[0] == "bump-my-version")
+
+
 def main() -> None:
     """Create the release."""
     os.environ["RELEASE_DATE"] = utc_today().isoformat()  # Used by bump-my-version to update CHANGELOG.md
@@ -152,7 +165,7 @@ def main() -> None:
     check_preconditions(bump, current_version)
     if check_preconditions_only:
         return
-    cmd = ["bump-my-version", "bump"]
+    cmd = ["pipx", "run", bump_my_version_spec(), "bump"]
     if bump == "release":
         cmd.append("pre_release_label")  # Bump the pre-release label from "rc" to "final" (being optional and omitted)
     elif bump == "rc":
