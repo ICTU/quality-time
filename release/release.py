@@ -124,24 +124,25 @@ def failed_preconditions_changelog(bump: str, root: pathlib.Path) -> list[str]:
 
 
 def failed_preconditions_version_overview(current_version: str, root: pathlib.Path) -> list[str]:
-    """Check that the version overview is properly prepared."""
+    """Check that the version overview contains the new version.
+
+    Note: this check is only run when the version bump is 'release'.
+    """
     version_overview = root / "docs" / "src" / "versioning.md"
     with version_overview.open() as version_overview_file:
-        version_overview_lines = version_overview_file.readlines()
-    missing = f"The version overview ({version_overview}) does not contain"
-    previous_line = ""
+        latest_version_line = next(line for line in version_overview_file if re.match(r"\| \*?\*?v\d+", line))
+    columns = latest_version_line.split(" | ")
+    latest_version = columns[0].strip("| v")
+    release_date = columns[1].strip("| ")
     target_version = current_version.split("-rc.")[0]
-    for line in version_overview_lines:
-        if line.startswith(f"| v{target_version} "):
-            if previous_line.startswith("| v"):
-                today = utc_today().isoformat()
-                release_date = previous_line.split(" | ")[1].strip()
-                if release_date != today:  # Second column is the release date column
-                    return [f"{missing} the release date. Expected today: '{today}', found: '{release_date}'."]
-                return []  # All good: current version, next version, and release date found
-            return [f"{missing} the new version."]
-        previous_line = line
-    return [f"{missing} the target version ({target_version})."]
+    messages = []
+    today = utc_today().isoformat()
+    missing = f"The first line of the version overview table ({version_overview}) does not contain"
+    if release_date != today:
+        messages.append(f"{missing} the release date. Expected today: '{today}', found: '{release_date}'.")
+    if latest_version != target_version:
+        messages.append(f"{missing} the new version. Expected: '{target_version}', found: '{latest_version}'.")
+    return messages
 
 
 def utc_today() -> datetime.date:
