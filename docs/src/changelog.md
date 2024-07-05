@@ -20,7 +20,7 @@ If your currently installed *Quality-time* version is not v5.13.0, please first 
 - In the dropdown of the "Add metric" button, keep the two checkboxes next to each other regardless of the width of the menu. Fixes [#8745](https://github.com/ICTU/quality-time/issues/8745).
 - The icon of the trend graph tab would not be shown. Fixes [#8822](https://github.com/ICTU/quality-time/issues/8822).
 - Some headers in the proxy config were being ignored. Fixes [#8929](https://github.com/ICTU/quality-time/issues/8929).
-- Closing the Chromium browser in the renderer component after creating a PDF would not stop all browser child processes. Fixed by starting Chromium only once and reusing, instead of starting a new browser for each render. Fixes [#8979](https://github.com/ICTU/quality-time/issues/8979).
+- Closing the Chromium browser in the renderer component after creating a PDF would not stop all browser child processes. Fixed by starting Chromium only once and reusing it, instead of starting a new browser for each render. Fixes [#8979](https://github.com/ICTU/quality-time/issues/8979).
 - Don't hide the measurement entity status rationale when the status of the measurement entity is "Unconfirmed". Fixes [#9134](https://github.com/ICTU/quality-time/issues/9134).
 - Open links in the footer in a new browser tab or window. Fixes [#9136](https://github.com/ICTU/quality-time/issues/9136).
 - If a metric has the percentage scale, include the percentage sign (%) in the summary and description of issues created from *Quality-time*. Fixes [#9137](https://github.com/ICTU/quality-time/issues/9137).
@@ -37,7 +37,6 @@ If your currently installed *Quality-time* version is not v5.13.0, please first 
 ### Changed
 
 - Rename the "CI-environment" subject type to "Development environment". Prepares for [#3130](https://github.com/ICTU/quality-time/issues/3130).
-- Use unprivileged container `nginxinc/nginx-unprivileged` as base for the proxy component, so that it does not require additional capabilities. Closes [#8857](https://github.com/ICTU/quality-time/issues/8857).
 - Migrate to the new SonarQube issue structure introduced in SonarQube 10.2. See the [release 10.2 upgrade notes](https://docs.sonarsource.com/sonarqube/latest/setup-and-upgrade/release-upgrade-notes/#release-10.2-upgrade-notes). Closes [#8354](https://github.com/ICTU/quality-time/issues/8354). Where possible, SonarQube parameters and parameter values are migrated automatically:
   - The 'severities' parameter is changed into 'impact severities' and the severity values are changed ('blocker' and 'critical' become 'high', 'major' becomes 'medium', and 'minor' and 'info' become 'low'). If a report contained separate metrics for e.g. 'blocker' and 'critical' violations before the upgrade to this version of *Quality-time*, then these metrics will both measure the number of issue with 'high' impact after the upgrade. Since these metrics probably still differ in other aspects (comments, tags, linked issues, etc.) it is up to the user to resolve this manually.
   - The 'types' parameter is changed into 'impacted software qualities' and the types are changed ('code smell' becomes 'maintainability', 'vulnerability' becomes 'security', and 'bug' becomes 'reliability').
@@ -46,6 +45,7 @@ If your currently installed *Quality-time* version is not v5.13.0, please first 
   In addition:
   - A new parameter 'clean code attributes category' is added.
 - Remove the share tabs for reports, subjects, and metrics and move the share button to the button row in the report, subject, and metric headers. Closes [#8821](https://github.com/ICTU/quality-time/issues/8821).
+- Use unprivileged container `nginxinc/nginx-unprivileged` as base for the proxy component, so that it does not require additional capabilities. Closes [#8857](https://github.com/ICTU/quality-time/issues/8857).
 - Set the MongoDB feature compatibility version to v7. Closes [#8896](https://github.com/ICTU/quality-time/issues/8896).
 
 ### Removed
