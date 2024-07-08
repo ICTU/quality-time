@@ -226,7 +226,7 @@ export function IssueTracker({ report, reload }) {
                         value={epic_link}
                     />
                     <WarningMessage
-                        showIf={project_key && issue_type && !issueEpicFieldSupported}
+                        showIf={Boolean(project_key && issue_type && !issueEpicFieldSupported)}
                         header="Epic links not supported"
                         content={`The issue type '${issue_type}' in project '${project_key}' does not support adding epic links when creating issues, so no epic link will be added to new issues.`}
                     />
@@ -249,7 +249,7 @@ export function IssueTracker({ report, reload }) {
                         value={report.issue_tracker?.parameters?.issue_labels}
                     />
                     <WarningMessage
-                        showIf={project_key && issue_type && !labelFieldSupported}
+                        showIf={Boolean(project_key && issue_type && !labelFieldSupported)}
                         header="Labels not supported"
                         content={`The issue type '${issue_type}' in project '${project_key}' does not support adding labels when creating issues, so no labels will be added to new issues.`}
                     />
