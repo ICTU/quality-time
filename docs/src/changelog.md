@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v5.14.0, please first check the upgrade path in the [versioning policy](versioning.md).
+
+### Added
+
+- Give measurement entity tables sticky headers, like the metric tables already have. Closes [#8879](https://github.com/ICTU/quality-time/issues/8879).
+
 ## v5.14.0 - 2024-07-05
 
 ### Deployment notes

@@ -100,7 +100,10 @@ export function SubjectTitle({
             item_uuid={`${subject_uuid}:${tabIndex}`}
             level="h2"
             settings={settings}
-            style={{ marginTop: 50 }}
+            style={{
+                marginTop: 50 /* Whitespace between dashboard or previous subject and this subject */,
+                height: 50 /* Ensure that the header takes the same amount of vertical space with or without subtitle */,
+            }}
             subheader={subject.subtitle}
         >
             <SubjectHeader subjectType={subjectType} />
@@ -109,15 +112,13 @@ export function SubjectTitle({
                 onTabChange={tabChangeHandler(settings.expandedItems, subject_uuid)}
                 panes={panes}
             />
-            <div style={{ marginTop: "20px" }}>
-                <ButtonRow
-                    subject_uuid={subject_uuid}
-                    firstSubject={firstSubject}
-                    lastSubject={lastSubject}
-                    reload={reload}
-                    url={subjectUrl}
-                />
-            </div>
+            <ButtonRow
+                subject_uuid={subject_uuid}
+                firstSubject={firstSubject}
+                lastSubject={lastSubject}
+                reload={reload}
+                url={subjectUrl}
+            />
         </HeaderWithDetails>
     )
 }

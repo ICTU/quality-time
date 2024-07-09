@@ -2,16 +2,8 @@
     /* Make thead sticky by positioning the th's */
     position: sticky;
     /* Leave room for the menu bar and the subject title */
-    top: 129px;
-    z-index: 1;
-}
-
-.ui.sortable.table.stickyHeader.subjectHasSubTitle > thead {
-    /* Make thead sticky by positioning the th's */
-    position: sticky;
-    /* Leave room for the menu bar, the subject title, and the subtitle */
-    top: 142px;
-    z-index: 1;
+    top: 143px;
+    z-index: 2;
 }
 
 .ui.sortable.table.stickyHeader > thead > tr > th {
