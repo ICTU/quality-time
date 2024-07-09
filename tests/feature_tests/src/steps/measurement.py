@@ -5,7 +5,7 @@ from datetime import UTC, datetime, timedelta
 from asserts import assert_equal, assert_in
 from behave import given, then, when
 from behave.runner import Context
-from sseclient import SSEClient
+from requests_sse import EventSource
 
 
 def create_measurement(  # noqa: PLR0913
@@ -91,14 +91,15 @@ def set_entity_attribute(context: Context, attribute: str, key: str, value: str)
 def connect_to_nr_of_measurements_stream(context: Context, stream: str) -> None:
     """Get the number of measurements server-sent-events."""
     context.sse_messages = []
-    for message in SSEClient(f"{context.base_api_url}/nr_measurements"):  # pragma: no feature-test-cover
-        context.sse_messages.append(message)
-        if message.event == "init":
-            continue  # get the init and the flush message
-        if stream == "stream":
-            break
-        context.execute_steps('when the collector measures "42"')
-        stream = "stream"
+    with EventSource(f"{context.base_api_url}/nr_measurements") as event_source:
+        for message in event_source:  # pragma: no feature-test-cover
+            context.sse_messages.append(message)
+            if message.type == "init":
+                continue  # get the init and the flush message
+            if stream == "stream":
+                break
+            context.execute_steps('when the collector measures "42"')
+            stream = "stream"
 
 
 @then("the metric {has_or_had} one measurement")
@@ -118,12 +119,12 @@ def check_nr_of_measurements(context: Context, has_or_had: str, count: str = "on
 def check_nr_of_measurements_stream(context: Context, message_type: str) -> None:
     """Check the server-sent events."""
     if message_type == "init":
-        assert_equal("init", context.sse_messages[0].event)
-        assert_equal("0", context.sse_messages[0].id)
-        assert_equal("flush", context.sse_messages[1].event)
-        assert_equal("1", context.sse_messages[1].id)
+        assert_equal("init", context.sse_messages[0].type)
+        assert_equal("0", context.sse_messages[0].last_event_id)
+        assert_equal("flush", context.sse_messages[1].type)
+        assert_equal("1", context.sse_messages[1].last_event_id)
     else:
-        messages = [message for message in context.sse_messages if message.event != "flush"]
+        messages = [message for message in context.sse_messages if message.type != "flush"]
         assert_equal(int(messages[-2].data) + 1, int(messages[-1].data))
 
 
