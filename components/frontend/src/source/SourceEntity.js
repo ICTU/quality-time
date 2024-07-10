@@ -7,7 +7,7 @@ import { Table } from "semantic-ui-react"
 import { entityAttributesPropType, entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
-import { source_entity_status_name } from "./source_entity_status"
+import { SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
 import { alignment } from "./SourceEntities"
 import { SourceEntityAttribute } from "./SourceEntityAttribute"
 import { SourceEntityDetails } from "./SourceEntityDetails"
@@ -75,7 +75,7 @@ export function SourceEntity({
             expanded={expanded}
             onExpand={setExpanded}
         >
-            <Table.Cell style={style}>{source_entity_status_name[status]}</Table.Cell>
+            <Table.Cell style={style}>{SOURCE_ENTITY_STATUS_NAME[status]}</Table.Cell>
             <Table.Cell style={style}>{status === "unconfirmed" ? "" : status_end_date}</Table.Cell>
             <Table.Cell style={style}>{rationale}</Table.Cell>
             <Table.Cell style={style}>
