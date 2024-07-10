@@ -3,7 +3,6 @@
 import logging
 import time
 from collections.abc import Iterator
-from datetime import timedelta
 from typing import cast
 
 import bottle
@@ -11,7 +10,6 @@ from pymongo.database import Database
 
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
-from shared.utils.date_time import now
 from shared.utils.functions import first
 from shared.utils.type import MetricId, SourceId
 
@@ -47,11 +45,11 @@ def set_entity_attribute(
     description = f"{user.name()} changed the {attribute} of '{entity_description}' from '{old_value}' to '{new_value}'"
     entity_user_data = source.setdefault("entity_user_data", {}).setdefault(entity_key, {})
     entity_user_data[attribute] = new_value
-    if attribute == "status":
-        desired_reponse_time = report.desired_measurement_entity_response_time(new_value)
-        end_date = str((now() + timedelta(days=desired_reponse_time)).date()) if desired_reponse_time else None
-        entity_user_data["status_end_date"] = end_date
-        description += f" and changed the status end date to '{end_date}'"
+    if attribute == "status" and (end_date := report.deadline(new_value)):
+        old_end_date = entity_user_data.get("status_end_date")
+        if end_date != old_end_date:
+            entity_user_data["status_end_date"] = end_date
+            description += f" and changed the status end date from '{old_end_date}' to '{end_date}'"
     new_measurement["delta"] = {
         "uuids": [report.uuid, metric.subject_uuid, metric_uuid, source_uuid],
         "description": description + ".",

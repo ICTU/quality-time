@@ -2,7 +2,7 @@
 
 from datetime import UTC, datetime
 
-from asserts import assert_equal, assert_false, assert_true
+from asserts import assert_equal, assert_false, assert_is_none, assert_is_not_none, assert_true
 from behave import then, when
 from behave.runner import Context
 
@@ -78,3 +78,17 @@ def assert_metric_is_being_measured(context: Context, being: str) -> None:
     """Assert that the metric is 'being' measured' or is 'not being' measured."""
     metric = get_item(context, "metric")
     assert_equal(bool(being == "being"), metric["latest_measurement"]["measurement_requested"])
+
+
+@then("the metric technical debt end date is empty")
+def assert_metric_technical_debt_end_date_is_empty(context: Context) -> None:
+    """Assert the metric technical debt end date is empty."""
+    metric = get_item(context, "metric")
+    assert_is_none(metric.get("debt_end_date"))
+
+
+@then("the metric technical debt end date is not empty")
+def assert_metric_technical_debt_end_date_is_not_empty(context: Context) -> None:
+    """Assert the metric technical debt end date is not empty."""
+    metric = get_item(context, "metric")
+    assert_is_not_none(metric["debt_end_date"])

@@ -1,4 +1,4 @@
-import { func, number, oneOfType, string } from "prop-types"
+import { bool, func, number, oneOfType, string } from "prop-types"
 import { useState } from "react"
 
 import { ReadOnlyOrEditable } from "../context/Permissions"
@@ -7,12 +7,15 @@ import { labelPropType, permissionsPropType } from "../sharedPropTypes"
 import { ReadOnlyInput } from "./ReadOnlyInput"
 
 function EditableIntegerInput(props) {
-    let { editableLabel, label, min, prefix, set_value, unit, ...otherProps } = props
-    const initialValue = props.value || 0
+    let { allowEmpty, editableLabel, label, min, prefix, set_value, unit, ...otherProps } = props
+    const initialValue = props.value || (allowEmpty ? "" : 0)
     const [value, setValue] = useState(initialValue)
     const minValue = min || 0
 
     function isValid(aValue) {
+        if (aValue === "") {
+            return allowEmpty
+        }
         if (Number.isNaN(parseInt(aValue))) {
             return false
         }
@@ -69,6 +72,7 @@ function EditableIntegerInput(props) {
     )
 }
 EditableIntegerInput.propTypes = {
+    allowEmpty: bool,
     editableLabel: labelPropType,
     label: labelPropType,
     max: oneOfType([number, string]),

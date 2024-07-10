@@ -1,6 +1,8 @@
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from "./context/Permissions"
+import { defaultDesiredResponseTimes } from "./defaults"
 import {
     capitalize,
+    getMetricResponseDeadline,
     getMetricResponseOverrun,
     getMetricTags,
     getMetricTarget,
@@ -225,6 +227,34 @@ it("returns false when the user prefers light mode", () => {
     expect(userPrefersDarkMode("follow_os")).toBe(false)
 })
 
+it("returns the metric response deadline", () => {
+    expect(getMetricResponseDeadline({}, {})).toStrictEqual(null)
+})
+
+it("returns the metric response deadline based on the tech debt end date", () => {
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    expect(
+        getMetricResponseDeadline({ status: "debt_target_met", debt_end_date: tomorrow.toISOString() }, {}),
+    ).toStrictEqual(tomorrow)
+})
+
+it("returns the metric response deadline based on the desired response time", () => {
+    const statusStart = "2024-01-01"
+    const expectedDeadline = new Date(statusStart)
+    expectedDeadline.setDate(expectedDeadline.getDate() + defaultDesiredResponseTimes.near_target_met)
+    expect(getMetricResponseDeadline({ status: "near_target_met", status_start: statusStart }, {})).toStrictEqual(
+        expectedDeadline,
+    )
+})
+
+it("does not return a metric response deadline when the report has been configured not to have a desired response time", () => {
+    const report = { desired_response_times: { near_target_met: "" } }
+    expect(getMetricResponseDeadline({ status: "near_target_met", status_start: "2024-02-02" }, report)).toStrictEqual(
+        null,
+    )
+})
+
 it("returns the metric response overrun when there are no measurements", () => {
     expect(getMetricResponseOverrun("uuid", metric, {}, [], dataModel)).toStrictEqual({
         overruns: [],
@@ -257,8 +287,17 @@ it("returns the metric response overrun when there is one long measurement", () 
     })
 })
 
+it("returns the metric response overrun when there is one long measurement and the report has no desired response times", () => {
+    const report = { desired_response_times: { unknown: "" } }
+    const measurements = [{ metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31" }]
+    expect(getMetricResponseOverrun("uuid", metric, report, measurements, dataModel)).toStrictEqual({
+        overruns: [],
+        totalOverrun: 0,
+    })
+})
+
 it("returns the metric response overrun when there is one long measurement and the report has desired response times", () => {
-    const report = { desired_response_times: { unknown: 10 } }
+    const report = { desired_response_times: { unknown: "10" } }
     const measurements = [{ metric_uuid: "uuid", start: "2000-01-01", end: "2000-01-31" }]
     expect(getMetricResponseOverrun("uuid", metric, report, measurements, dataModel)).toStrictEqual({
         overruns: [

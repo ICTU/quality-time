@@ -1,6 +1,5 @@
 """Metric routes."""
 
-from datetime import UTC, datetime, timedelta
 from typing import Any, cast
 
 import bottle
@@ -157,8 +156,7 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
         latest = latest_measurement(database, Metric(DATA_MODEL.model_dump(), metric, metric_uuid))
         # Only if the metric has at least one measurement can a technical debt target be set:
         new_debt_target = latest.value() if latest else None
-        today = datetime.now(tz=UTC).date()
-        new_end_date = (today + timedelta(days=report.desired_response_time("debt_target_met"))).isoformat()
+        new_end_date = report.deadline("debt_target_met")
     else:
         new_debt_target = None
         new_end_date = None

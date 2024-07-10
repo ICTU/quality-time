@@ -1,6 +1,5 @@
 """Unit tests for the metric routes."""
 
-from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock, patch
 
 import requests
@@ -355,11 +354,33 @@ class PostMetricDebtTest(PostMetricAttributeTestCase):
             post_metric_debt(METRIC_ID, self.database),
         )
         updated_report = self.updated_report()
-        desired_response_time = Report(self.DATA_MODEL, updated_report).desired_response_time("debt_target_met")
-        expected_date = datetime.now(tz=UTC).date() + timedelta(days=desired_response_time)
+        expected_date = Report(self.DATA_MODEL, updated_report).deadline("debt_target_met")
         self.assert_delta(
             "accepted debt from 'False' to 'True' and the debt target from 'None' to '100' and the debt end date from "
-            f"'None' to '{expected_date.isoformat()}' of metric 'name' of subject 'Subject' in report 'Report'",
+            f"'None' to '{expected_date}' of metric 'name' of subject 'Subject' in report 'Report'",
+            report=updated_report,
+        )
+        self.assertTrue(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"])
+
+    @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
+    def test_turn_metric_technical_debt_on_with_existing_measurement_but_without_desired_response_time(self, request):
+        """Test that accepting technical debt also sets the technical debt value, but not the deadline."""
+        self.report["desired_response_times"] = {"debt_target_met": None}
+        self.database.measurements.find_one.return_value = {
+            "_id": "id",
+            "metric_uuid": METRIC_ID,
+            "count": {"value": "100", "status_start": "2018-01-01"},
+            "sources": [],
+        }
+        request.json = {"accept_debt": True}
+        self.assertDictEqual(
+            self.create_measurement(debt_target="100", status="debt_target_met", target="0"),
+            post_metric_debt(METRIC_ID, self.database),
+        )
+        updated_report = self.updated_report()
+        self.assert_delta(
+            "accepted debt from 'False' to 'True' and the debt target from 'None' to '100' "
+            "of metric 'name' of subject 'Subject' in report 'Report'",
             report=updated_report,
         )
         self.assertTrue(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["accept_debt"])
@@ -369,8 +390,7 @@ class PostMetricDebtTest(PostMetricAttributeTestCase):
         request.json = {"accept_debt": True}
         self.assertDictEqual({"ok": True}, post_metric_debt(METRIC_ID, self.database))
         updated_report = self.updated_report()
-        desired_response_time = Report(self.DATA_MODEL, updated_report).desired_response_time("debt_target_met")
-        expected_date = (datetime.now(tz=UTC).date() + timedelta(days=desired_response_time)).isoformat()
+        expected_date = Report(self.DATA_MODEL, updated_report).deadline("debt_target_met")
         self.assert_delta(
             f"accepted debt from 'False' to 'True' and the debt end date from 'None' to '{expected_date}' "
             "of metric 'name' of subject 'Subject' in report 'Report'",

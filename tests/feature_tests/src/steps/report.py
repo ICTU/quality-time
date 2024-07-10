@@ -9,6 +9,8 @@ from asserts import assert_equal, assert_not_in
 from behave import then, when
 from behave.runner import Context
 
+from item import get_item
+
 
 @when("the client gets the metric status summary")
 def get_report_metric_status_summary(context: Context) -> None:
@@ -181,3 +183,15 @@ def get_non_existing_report_tracker_suggestions(context: Context) -> None:
     """Get the issue tracker suggestions of a non-existing report."""
     context.uuid["report"] = report_uuid = "report-does-not-exist"
     context.get(f"report/{report_uuid}/issue_tracker/suggestions/query")
+
+
+@when("the client sets the {status} desired response time to {time}")
+def set_technical_debt_desired_response_time(context: Context, status: str, time: str) -> None:
+    """Set the technical debt desired response time of the specified status."""
+    desired_response_times = get_item(context, "report").get("desired_response_times", {})
+    desired_response_times[status] = None if time == "empty" else int(time)
+    report_uuid = context.uuid["report"]
+    context.post(
+        f"report/{report_uuid}/attribute/desired_response_times",
+        {"desired_response_times": desired_response_times},
+    )
