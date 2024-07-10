@@ -1,7 +1,16 @@
-export const source_entity_status_name = {
+export const SOURCE_ENTITY_STATUS_NAME = {
     unconfirmed: "Unconfirmed",
     confirmed: "Confirmed",
     fixed: "Fixed",
     false_positive: "False positive",
     wont_fix: "Won't fix",
+}
+
+export const SOURCE_ENTITY_STATUS_DESCRIPTION = {
+    // Unconfirmed is missing because these descriptions are only used for the desired response times at the moment
+    confirmed: "Confirmed means that an entity has been reviewed and should be dealt with.",
+    fixed: "Fixed means that an entity can be ignored because it has been fixed, or will be fixed shortly, and thus disappear.",
+    false_positive:
+        "False positive means an entity has been incorrectly identified as a problem and should be ignored.",
+    wont_fix: "Won't fix means that an entity can be ignored because it will not be fixed.",
 }

@@ -1,4 +1,4 @@
-import { func, string } from "prop-types"
+import { bool, func, oneOfType, string } from "prop-types"
 import { Grid } from "semantic-ui-react"
 
 import { delete_report, set_report_attribute } from "../api/report"
@@ -8,10 +8,11 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissio
 import { Comment } from "../fields/Comment"
 import { IntegerInput } from "../fields/IntegerInput"
 import { StringInput } from "../fields/StringInput"
-import { STATUS_DESCRIPTION, STATUS_NAME } from "../metric/status"
+import { STATUS_DESCRIPTION, STATUS_NAME, statusPropType } from "../metric/status"
 import { NotificationDestinations } from "../notification/NotificationDestinations"
 import { Label, Segment, Tab } from "../semantic_ui_react_wrappers"
-import { reportPropType, settingsPropType } from "../sharedPropTypes"
+import { entityStatusPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
+import { SOURCE_ENTITY_STATUS_DESCRIPTION, SOURCE_ENTITY_STATUS_NAME } from "../source/source_entity_status"
 import { getDesiredResponseTime } from "../utils"
 import { DeleteButton, PermLinkButton } from "../widgets/Button"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
@@ -60,8 +61,33 @@ ReportConfiguration.propTypes = {
     report: reportPropType,
 }
 
-function ReactionTimes({ reload, report }) {
+function DesiredResponseTimeInput({ hoverableLabel, reload, report, status }) {
     const desiredResponseTimes = report.desired_response_times ?? {}
+    const inputId = `desired-response-time-${status}`
+    const label = STATUS_NAME[status] || SOURCE_ENTITY_STATUS_NAME[status]
+    const help = STATUS_DESCRIPTION[status] || SOURCE_ENTITY_STATUS_DESCRIPTION[status]
+    return (
+        <IntegerInput
+            id={inputId}
+            label={<LabelWithHelp hoverable={hoverableLabel} labelFor={inputId} label={label} help={help} />}
+            requiredPermissions={[EDIT_REPORT_PERMISSION]}
+            set_value={(value) => {
+                desiredResponseTimes[status] = parseInt(value)
+                set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+            }}
+            unit="days"
+            value={getDesiredResponseTime(report, status)}
+        />
+    )
+}
+DesiredResponseTimeInput.propTypes = {
+    hoverableLabel: bool,
+    reload: func,
+    report: reportPropType,
+    status: oneOfType([statusPropType, entityStatusPropType]),
+}
+
+function ReactionTimes(props) {
     return (
         <>
             <Segment>
@@ -71,101 +97,16 @@ function ReactionTimes({ reload, report }) {
                 <Grid stackable>
                     <Grid.Row columns={4}>
                         <Grid.Column>
-                            <IntegerInput
-                                id="desired-response-time-white"
-                                label={
-                                    <LabelWithHelp
-                                        labelFor="desired-response-time-white"
-                                        label={STATUS_NAME.unknown}
-                                        help={STATUS_DESCRIPTION.unknown}
-                                    />
-                                }
-                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                                set_value={(value) => {
-                                    desiredResponseTimes["unknown"] = parseInt(value)
-                                    set_report_attribute(
-                                        report.report_uuid,
-                                        "desired_response_times",
-                                        desiredResponseTimes,
-                                        reload,
-                                    )
-                                }}
-                                unit="days"
-                                value={getDesiredResponseTime(report, "unknown")}
-                            />
+                            <DesiredResponseTimeInput status="unknown" {...props} />
                         </Grid.Column>
                         <Grid.Column>
-                            <IntegerInput
-                                id="desired-response-time-red"
-                                label={
-                                    <LabelWithHelp
-                                        labelFor="desired-response-time-red"
-                                        label={STATUS_NAME.target_not_met}
-                                        help={STATUS_DESCRIPTION.target_not_met}
-                                    />
-                                }
-                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                                set_value={(value) => {
-                                    desiredResponseTimes["target_not_met"] = parseInt(value)
-                                    set_report_attribute(
-                                        report.report_uuid,
-                                        "desired_response_times",
-                                        desiredResponseTimes,
-                                        reload,
-                                    )
-                                }}
-                                unit="days"
-                                value={getDesiredResponseTime(report, "target_not_met")}
-                            />
+                            <DesiredResponseTimeInput status="target_not_met" {...props} />
                         </Grid.Column>
                         <Grid.Column>
-                            <IntegerInput
-                                id="desired-response-time-yellow"
-                                label={
-                                    <LabelWithHelp
-                                        labelFor="desired-response-time-yellow"
-                                        label={STATUS_NAME.near_target_met}
-                                        help={STATUS_DESCRIPTION.near_target_met}
-                                    />
-                                }
-                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                                set_value={(value) => {
-                                    desiredResponseTimes["near_target_met"] = parseInt(value)
-                                    set_report_attribute(
-                                        report.report_uuid,
-                                        "desired_response_times",
-                                        desiredResponseTimes,
-                                        reload,
-                                    )
-                                }}
-                                unit="days"
-                                value={getDesiredResponseTime(report, "near_target_met")}
-                            />
+                            <DesiredResponseTimeInput status="near_target_met" {...props} />
                         </Grid.Column>
                         <Grid.Column>
-                            <IntegerInput
-                                id="desired-response-time-grey"
-                                label={
-                                    <LabelWithHelp
-                                        hoverable
-                                        labelFor="desired-response-time-grey"
-                                        label={STATUS_NAME.debt_target_met}
-                                        help={STATUS_DESCRIPTION.debt_target_met}
-                                    />
-                                }
-                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                                set_value={(value) => {
-                                    desiredResponseTimes["debt_target_met"] = parseInt(value)
-                                    set_report_attribute(
-                                        report.report_uuid,
-                                        "desired_response_times",
-                                        desiredResponseTimes,
-                                        reload,
-                                    )
-                                }}
-                                unit="days"
-                                value={getDesiredResponseTime(report, "debt_target_met")}
-                            />
+                            <DesiredResponseTimeInput hoverableLabel status="debt_target_met" {...props} />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
@@ -177,100 +118,16 @@ function ReactionTimes({ reload, report }) {
                 <Grid stackable>
                     <Grid.Row columns={4}>
                         <Grid.Column>
-                            <IntegerInput
-                                id="desired-response-time-confirmed"
-                                label={
-                                    <LabelWithHelp
-                                        labelFor="desired-response-time-confirmed"
-                                        label="Confirmed"
-                                        help="Confirmed means that an entity has been reviewed and should be dealt with."
-                                    />
-                                }
-                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                                set_value={(value) => {
-                                    desiredResponseTimes["confirmed"] = parseInt(value)
-                                    set_report_attribute(
-                                        report.report_uuid,
-                                        "desired_response_times",
-                                        desiredResponseTimes,
-                                        reload,
-                                    )
-                                }}
-                                unit="days"
-                                value={getDesiredResponseTime(report, "confirmed")}
-                            />
+                            <DesiredResponseTimeInput status="confirmed" {...props} />
                         </Grid.Column>
                         <Grid.Column>
-                            <IntegerInput
-                                id="desired-response-time-fixed"
-                                label={
-                                    <LabelWithHelp
-                                        labelFor="desired-response-time-fixed"
-                                        label="Fixed"
-                                        help="Fixed means that an entity can be ignored because it has been fixed, or will be fixed shortly, and thus disappear."
-                                    />
-                                }
-                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                                set_value={(value) => {
-                                    desiredResponseTimes["fixed"] = parseInt(value)
-                                    set_report_attribute(
-                                        report.report_uuid,
-                                        "desired_response_times",
-                                        desiredResponseTimes,
-                                        reload,
-                                    )
-                                }}
-                                unit="days"
-                                value={getDesiredResponseTime(report, "fixed")}
-                            />
+                            <DesiredResponseTimeInput status="fixed" {...props} />
                         </Grid.Column>
                         <Grid.Column>
-                            <IntegerInput
-                                id="desired-response-time-false-positive"
-                                label={
-                                    <LabelWithHelp
-                                        labelFor="desired-response-time-false-positive"
-                                        label="False positive"
-                                        help="False positive means an entity has been incorrectly identified as a problem and should be ignored."
-                                    />
-                                }
-                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                                set_value={(value) => {
-                                    desiredResponseTimes["false_positive"] = parseInt(value)
-                                    set_report_attribute(
-                                        report.report_uuid,
-                                        "desired_response_times",
-                                        desiredResponseTimes,
-                                        reload,
-                                    )
-                                }}
-                                unit="days"
-                                value={getDesiredResponseTime(report, "false_positive")}
-                            />
+                            <DesiredResponseTimeInput status="false_positive" {...props} />
                         </Grid.Column>
                         <Grid.Column>
-                            <IntegerInput
-                                id="desired-response-time-wont-fix"
-                                label={
-                                    <LabelWithHelp
-                                        labelFor="desired-response-time-wont-fix"
-                                        label="Won't fix"
-                                        help="Won't fix means that an entity can be ignored because it will not be fixed."
-                                    />
-                                }
-                                requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                                set_value={(value) => {
-                                    desiredResponseTimes["wont_fix"] = parseInt(value)
-                                    set_report_attribute(
-                                        report.report_uuid,
-                                        "desired_response_times",
-                                        desiredResponseTimes,
-                                        reload,
-                                    )
-                                }}
-                                unit="days"
-                                value={getDesiredResponseTime(report, "wont_fix")}
-                            />
+                            <DesiredResponseTimeInput status="wont_fix" {...props} />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

@@ -9,19 +9,18 @@ import { TextInput } from "../fields/TextInput"
 import { entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
 import { capitalize, getDesiredResponseTime } from "../utils"
 import { LabelWithDate } from "../widgets/LabelWithDate"
-import { source_entity_status_name as status_name } from "./source_entity_status"
+import { SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
 
-function entityStatusOption(status, text, content, subheader) {
+function entityStatusOption(status, content, subheader) {
     return {
         key: status,
-        text: text,
+        text: SOURCE_ENTITY_STATUS_NAME[status],
         value: status,
         content: <Header as="h5" content={content} subheader={subheader} />,
     }
 }
 entityStatusOption.propTypes = {
     status: entityStatusPropType,
-    text: string,
     content: node,
     subheader: node,
 }
@@ -33,16 +32,11 @@ function entityStatusOptions(entityType, report) {
     const falsePositiveSubheader = `Ignore this "${entityType}" for ${getDesiredResponseTime(report, "false_positive")} days because it has been incorrectly identified as ${entityType}.`
     const wontFixSubheader = `Ignore this ${entityType} for ${getDesiredResponseTime(report, "wont_fix")} days because it will not be fixed.`
     return [
-        entityStatusOption("unconfirmed", status_name.unconfirmed, "Unconfirm", unconfirmedSubheader),
-        entityStatusOption("confirmed", status_name.confirmed, "Confirm", confirmedSubheader),
-        entityStatusOption("fixed", status_name.fixed, "Resolve as fixed", fixedSubheader),
-        entityStatusOption(
-            "false_positive",
-            status_name.false_positive,
-            "Resolve as false positive",
-            falsePositiveSubheader,
-        ),
-        entityStatusOption("wont_fix", status_name.wont_fix, "Resolve as won't fix", wontFixSubheader),
+        entityStatusOption("unconfirmed", "Unconfirm", unconfirmedSubheader),
+        entityStatusOption("confirmed", "Confirm", confirmedSubheader),
+        entityStatusOption("fixed", "Resolve as fixed", fixedSubheader),
+        entityStatusOption("false_positive", "Resolve as false positive", falsePositiveSubheader),
+        entityStatusOption("wont_fix", "Resolve as won't fix", wontFixSubheader),
     ]
 }
 entityStatusOptions.propTypes = {
