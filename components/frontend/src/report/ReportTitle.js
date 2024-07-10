@@ -68,6 +68,7 @@ function DesiredResponseTimeInput({ hoverableLabel, reload, report, status }) {
     const help = STATUS_DESCRIPTION[status] || SOURCE_ENTITY_STATUS_DESCRIPTION[status]
     return (
         <IntegerInput
+            allowEmpty
             id={inputId}
             label={<LabelWithHelp hoverable={hoverableLabel} labelFor={inputId} label={label} help={help} />}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}

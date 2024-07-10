@@ -96,6 +96,17 @@ Feature: metric
     Then the metric status is "target_not_met"
     And the metric debt_target is "None"
 
+  Scenario: accept technical debt without desired technical debt response time
+    Given an existing metric
+    And an existing source
+    When the client sets the debt_target_met desired response time to empty
+    And the client accepts the technical debt
+    Then the metric technical debt end date is empty
+    When the client does not accept the technical debt
+    And the client sets the debt_target_met desired response time to 10
+    And the client accepts the technical debt
+    Then the metric technical debt end date is not empty
+
   Scenario: change metric name
     Given an existing metric
     When the client changes the metric name to "New name"

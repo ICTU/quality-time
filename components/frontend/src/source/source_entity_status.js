@@ -6,6 +6,14 @@ export const SOURCE_ENTITY_STATUS_NAME = {
     wont_fix: "Won't fix",
 }
 
+export const SOURCE_ENTITY_STATUS_ACTION = {
+    unconfirmed: "Unconfirm",
+    confirmed: "Confirm",
+    fixed: "Resolve as fixed",
+    false_positive: "Resolve as false positive",
+    wont_fix: "Resolve as won't fix",
+}
+
 export const SOURCE_ENTITY_STATUS_DESCRIPTION = {
     // Unconfirmed is missing because these descriptions are only used for the desired response times at the moment
     confirmed: "Confirmed means that an entity has been reviewed and should be dealt with.",

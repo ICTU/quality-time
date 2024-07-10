@@ -1,4 +1,4 @@
-import { func, node, string } from "prop-types"
+import { func, node, oneOf, string } from "prop-types"
 import { Grid, Header } from "semantic-ui-react"
 
 import { set_source_entity_attribute } from "../api/source"
@@ -9,34 +9,55 @@ import { TextInput } from "../fields/TextInput"
 import { entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
 import { capitalize, getDesiredResponseTime } from "../utils"
 import { LabelWithDate } from "../widgets/LabelWithDate"
-import { SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
+import { SOURCE_ENTITY_STATUS_ACTION, SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
 
-function entityStatusOption(status, content, subheader) {
+function entityStatusOption(status, subheader) {
     return {
         key: status,
         text: SOURCE_ENTITY_STATUS_NAME[status],
         value: status,
-        content: <Header as="h5" content={content} subheader={subheader} />,
+        content: <Header as="h5" content={SOURCE_ENTITY_STATUS_ACTION[status]} subheader={subheader} />,
     }
 }
 entityStatusOption.propTypes = {
     status: entityStatusPropType,
-    content: node,
     subheader: node,
 }
 
+function responseTimeClause(report, status, prefix = "for") {
+    const responseTime = getDesiredResponseTime(report, status)
+    return responseTime === null ? "" : ` ${prefix} ${responseTime} days`
+}
+responseTimeClause.propTypes = {
+    status: entityStatusPropType,
+    report: reportPropType,
+    prefix: oneOf(["for", "within"]),
+}
+
 function entityStatusOptions(entityType, report) {
-    const unconfirmedSubheader = `This ${entityType} should be reviewed to decide what to do with it.`
-    const confirmedSubheader = `This ${entityType} has been reviewed and should be addressed within ${getDesiredResponseTime(report, "confirmed")} days.`
-    const fixedSubheader = `Ignore this ${entityType} for ${getDesiredResponseTime(report, "fixed")} days because it has been fixed or will be fixed shortly.`
-    const falsePositiveSubheader = `Ignore this "${entityType}" for ${getDesiredResponseTime(report, "false_positive")} days because it has been incorrectly identified as ${entityType}.`
-    const wontFixSubheader = `Ignore this ${entityType} for ${getDesiredResponseTime(report, "wont_fix")} days because it will not be fixed.`
     return [
-        entityStatusOption("unconfirmed", "Unconfirm", unconfirmedSubheader),
-        entityStatusOption("confirmed", "Confirm", confirmedSubheader),
-        entityStatusOption("fixed", "Resolve as fixed", fixedSubheader),
-        entityStatusOption("false_positive", "Resolve as false positive", falsePositiveSubheader),
-        entityStatusOption("wont_fix", "Resolve as won't fix", wontFixSubheader),
+        entityStatusOption(
+            "unconfirmed",
+            `This ${entityType} should be reviewed in order to decide what to do with it.`,
+        ),
+        entityStatusOption(
+            "confirmed",
+            `This ${entityType} has been reviewed and should be addressed${responseTimeClause(report, "confirmed", "within")}.`,
+        ),
+        entityStatusOption(
+            "fixed",
+            `Ignore this ${entityType}${responseTimeClause(report, "fixed")} because it has been fixed or will be fixed shortly.`,
+        ),
+        entityStatusOption(
+            "false_positive",
+            // If the user marks then entity status as false positive, apparently the entity type is incorrect,
+            // hence the false positive option has quotes around the entity type:
+            `Ignore this "${entityType}"${responseTimeClause(report, "false_positive")} because it has been incorrectly identified as ${entityType}.`,
+        ),
+        entityStatusOption(
+            "wont_fix",
+            `Ignore this ${entityType}${responseTimeClause(report, "wont_fix")} because it will not be fixed.`,
+        ),
     ]
 }
 entityStatusOptions.propTypes = {

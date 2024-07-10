@@ -1,6 +1,9 @@
 """Report model class."""
 
+from datetime import timedelta
+
 from shared.model.report import Report as SharedReport
+from shared.utils.date_time import now
 
 from .issue_tracker import IssueParameters, IssueTracker, IssueTrackerCredentials
 
@@ -26,25 +29,27 @@ class Report(SharedReport):
         )
         return IssueTracker(url, issue_parameters, credentials)
 
-    def desired_response_time(self, status: str) -> int:
-        """Return the desired response time for the metric status."""
-        # Note that the frontend also has these constant, in src/defaults.js.
+    def deadline(self, status: str) -> str | None:
+        """Return the deadline for metrics or measurement entities with the given status."""
+        desired_response_time = self._desired_response_time(status)
+        return None if desired_response_time is None else str((now() + timedelta(days=desired_response_time)).date())
+
+    def _desired_response_time(self, status: str) -> int | None:
+        """Return the desired response time for the given status."""
+        # Note that the frontend also has these constants, in src/defaults.js.
         defaults = {
             "debt_target_met": 60,
             "near_target_met": 21,
             "target_not_met": 7,
             "unknown": 3,
-        }
-        default = defaults.get(status, defaults["unknown"])
-        return int(self.get("desired_response_times", {}).get(status, default))
-
-    def desired_measurement_entity_response_time(self, status: str) -> int | None:
-        """Return the desired response time for the measurement entity status."""
-        defaults = {
             "confirmed": 180,
             "false_positive": 180,
             "wont_fix": 180,
             "fixed": 7,
         }
-        default = defaults.get(status)
-        return int(self.get("desired_response_times", {}).get(status, default)) if status in defaults else None
+        if status not in self.get("desired_response_times", {}):
+            return defaults.get(status)
+        try:
+            return int(self["desired_response_times"][status])
+        except (ValueError, TypeError):  # The desired response time can be empty, treat any non-integer as None
+            return None

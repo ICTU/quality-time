@@ -75,6 +75,13 @@ it("does not accept an empty value", async () => {
     expect(setValue).toHaveBeenCalledWith("4")
 })
 
+it("accepts an empty value if an empty value is allowed", async () => {
+    let setValue = jest.fn()
+    render(<IntegerInput allowEmpty value="42" set_value={setValue} />)
+    await userEvent.type(screen.getByDisplayValue(/42/), "{selectall}{backspace}{backspace}{enter}")
+    expect(setValue).toHaveBeenCalledWith("")
+})
+
 it("undoes the change on escape", async () => {
     let setValue = jest.fn()
     render(<IntegerInput value="42" set_value={setValue} />)
@@ -106,4 +113,9 @@ it("renders values less than the maximum as valid", () => {
 it("renders missing value as 0", () => {
     render(<IntegerInput />)
     expect(screen.queryAllByDisplayValue(/0/).length).toBe(1)
+})
+
+it("renders missing value as empty if empty allowed", () => {
+    render(<IntegerInput allowEmpty />)
+    expect(screen.queryAllByDisplayValue(/0/).length).toBe(0)
 })

@@ -7,11 +7,9 @@ import { SourceEntityDetails } from "./SourceEntityDetails"
 
 jest.mock("../api/source.js")
 
-function reload() {
-    /* Dummy implementation */
-}
+const reload = jest.fn
 
-function renderSourceEntityDetails() {
+function renderSourceEntityDetails(report) {
     render(
         <Permissions.Provider value={[EDIT_ENTITY_PERMISSION]}>
             <SourceEntityDetails
@@ -21,6 +19,7 @@ function renderSourceEntityDetails() {
                 status="unconfirmed"
                 name="violation"
                 reload={reload}
+                report={report}
             />
         </Permissions.Provider>,
     )
@@ -34,6 +33,36 @@ it("shows the default desired response times when the report has no desired resp
         "Ignore this violation for 7 days because it has been fixed or will be fixed shortly.",
         'Ignore this "violation" for 180 days because it has been incorrectly identified as violation.',
         "Ignore this violation for 180 days because it will not be fixed.",
+    ]
+    expectedMenuItemDescriptions.forEach((description) => {
+        expect(screen.queryAllByText(description).length).toBe(1)
+    })
+})
+
+it("shows the configured desired response times", () => {
+    const report = { desired_response_times: { confirmed: "2", fixed: "4", false_positive: "600", wont_fix: "100" } }
+    renderSourceEntityDetails(report)
+    fireEvent.click(screen.getByText(/Unconfirmed/))
+    const expectedMenuItemDescriptions = [
+        "This violation has been reviewed and should be addressed within 2 days.",
+        "Ignore this violation for 4 days because it has been fixed or will be fixed shortly.",
+        'Ignore this "violation" for 600 days because it has been incorrectly identified as violation.',
+        "Ignore this violation for 100 days because it will not be fixed.",
+    ]
+    expectedMenuItemDescriptions.forEach((description) => {
+        expect(screen.queryAllByText(description).length).toBe(1)
+    })
+})
+
+it("shows no desired response times when the report has been configured to not have desired response times", () => {
+    const report = { desired_response_times: { confirmed: null, fixed: null, false_positive: null, wont_fix: null } }
+    renderSourceEntityDetails(report)
+    fireEvent.click(screen.getByText(/Unconfirmed/))
+    const expectedMenuItemDescriptions = [
+        "This violation has been reviewed and should be addressed.",
+        "Ignore this violation because it has been fixed or will be fixed shortly.",
+        'Ignore this "violation" because it has been incorrectly identified as violation.',
+        "Ignore this violation because it will not be fixed.",
     ]
     expectedMenuItemDescriptions.forEach((description) => {
         expect(screen.queryAllByText(description).length).toBe(1)
