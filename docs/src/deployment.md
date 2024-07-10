@@ -2,7 +2,9 @@
 
 This document describes how to deploy, and if needed move, the *Quality-time* application. It is aimed at *Quality-time* operators.
 
-*Quality-time* consists of a set of Docker containers that together form the application. See the [software documentation](software.md) for an overview of the different containers. It is assumed the containers are deployed using a Docker-composition. An alternative deployment based on a Helm chart and intended for an OpenShift (Kubernetes) cluster is described in the [Helm for OpenShift README](https://github.com/ICTU/quality-time/tree/master/openshift/helm/README.md).
+*Quality-time* consists of a set of Docker containers that together form the application.
+See the [software documentation](software.md) for an overview of the different containers.
+It is assumed the containers are deployed using a Docker-composition.
 
 *Quality-time* furthermore assumes an LDAP service is available to authenticate users or that forwarded authentication is used.
 
@@ -43,7 +45,7 @@ For example:
 ## Kubernetes
 
 The helm chart for deploying on Kubernetes does not support overriding port numbers.
-Setting port environment variables in the `values.yaml` will not change the service port mapping, while the app within the pod will listen on the altered port.
+Although setting port environment variables in the `values.yaml` will change the ports that the app within the pod listens to, it will *not* change the service port mapping and therefore lead to a malfunctioning service.
 Instead, only the ingress should be configured.
 
 ## Configuring authentication (mandatory)
