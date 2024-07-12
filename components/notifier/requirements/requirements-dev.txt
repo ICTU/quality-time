@@ -701,8 +701,8 @@ pydantic-core==2.20.1 \
     --hash=sha256:fa2fddcb7107e0d1808086ca306dcade7df60a13a6c347a7acf1ec139aa6789a \
     --hash=sha256:faa6b09ee09433b87992fb5a2859efd1c264ddc37280d2dd5db502126d0e7f27
     # via pydantic
-pymsteams==0.2.2 \
-    --hash=sha256:5696dc987b47b498825b8f095863edbdcff126db774b83aa246559c5f1f08ec6
+pymsteams==0.2.3 \
+    --hash=sha256:c0e59dd42708128cd8a9dc0b091b273683c586aa5668cb3a0e62146f9525e61b
     # via notifier (pyproject.toml)
 pyproject-hooks==1.1.0 \
     --hash=sha256:4b37730834edbd6bd37f26ece6b44802fb1c1ee2ece0e54ddff8bfc06db86965 \
