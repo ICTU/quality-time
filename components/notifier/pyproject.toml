@@ -8,11 +8,11 @@ classifiers = [
 ]
 dependencies = [
     "aiohttp==3.9.5",
-    "pymsteams==0.2.2",
+    "pymsteams==0.2.3",
 ]
 
 optional-dependencies.dev = [
-    "coverage==7.5.4",
+    "coverage==7.6.0",
     "mongomock==4.1.2",
     "pip==24.1.2",
     "pip-tools==7.4.1",              # To add hashes to requirements

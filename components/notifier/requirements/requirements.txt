@@ -367,8 +367,8 @@ multidict==6.0.5 \
     # via
     #   aiohttp
     #   yarl
-pymsteams==0.2.2 \
-    --hash=sha256:5696dc987b47b498825b8f095863edbdcff126db774b83aa246559c5f1f08ec6
+pymsteams==0.2.3 \
+    --hash=sha256:c0e59dd42708128cd8a9dc0b091b273683c586aa5668cb3a0e62146f9525e61b
     # via notifier (pyproject.toml)
 requests==2.32.3 \
     --hash=sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760 \
