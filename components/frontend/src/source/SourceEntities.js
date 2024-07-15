@@ -1,3 +1,5 @@
+import "./SourceEntities.css"
+
 import { func, string } from "prop-types"
 import { useContext, useState } from "react"
 
@@ -181,7 +183,7 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
         />
     ))
     return (
-        <Table sortable size="small">
+        <Table className="entities stickyHeader" sortable size="small">
             <Table.Header>{headers}</Table.Header>
             <Table.Body>{rows}</Table.Body>
         </Table>
