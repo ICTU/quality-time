@@ -15,7 +15,7 @@ optional-dependencies.dev = [
     "pip==24.1.2",
     "pip-tools==7.4.1",                # To add hashes to requirements
     "pipx==1.6.0",
-    "types-requests==2.32.0.20240622",
+    "types-requests==2.32.0.20240712",
 ]
 optional-dependencies.tools = [
     "bandit==1.7.9",
@@ -23,7 +23,7 @@ optional-dependencies.tools = [
     "mypy==1.10.1",
     "pip-audit==2.7.3",
     "pyproject-fmt==2.1.4",
-    "ruff==0.5.1",
+    "ruff==0.5.2",
     "vulture==2.11",
 ]
 
