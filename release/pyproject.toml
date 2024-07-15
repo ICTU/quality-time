@@ -114,6 +114,11 @@ search = 'QUALITY_TIME_VERSION = "{current_version}"'
 replace = 'QUALITY_TIME_VERSION = "{new_version}"'
 
 [[tool.bumpversion.files]]
+filename = "../helm/Chart.yaml"
+search = "{current_version}"
+replace = "{new_version}"
+
+[[tool.bumpversion.files]]
 glob = "../**/pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'

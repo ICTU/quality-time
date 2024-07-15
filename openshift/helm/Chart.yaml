@@ -1,6 +1,0 @@
-apiVersion: v2
-name: quality-time
-description: A Helm Chart for running ICTU quality-time on OpenShift
-type: application
-version: 0.0.2
-appVersion: "v5.0.0"

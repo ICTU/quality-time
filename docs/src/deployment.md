@@ -2,7 +2,9 @@
 
 This document describes how to deploy, and if needed move, the *Quality-time* application. It is aimed at *Quality-time* operators.
 
-*Quality-time* consists of a set of Docker containers that together form the application. See the [software documentation](software.md) for an overview of the different containers. It is assumed the containers are deployed using a Docker-composition. An alternative deployment based on a Helm chart and intended for an OpenShift (Kubernetes) cluster is described in the [Helm for OpenShift README](https://github.com/ICTU/quality-time/tree/master/openshift/helm/README.md).
+*Quality-time* consists of a set of Docker containers that together form the application.
+See the [software documentation](software.md) for an overview of the different containers.
+It is assumed the containers are deployed using a Docker-composition.
 
 *Quality-time* furthermore assumes an LDAP service is available to authenticate users or that forwarded authentication is used.
 
@@ -40,6 +42,12 @@ For example:
       - "1080:${PROXY_PORT:-80}"
 ```
 
+## Kubernetes
+
+The helm chart for deploying on Kubernetes does not support overriding port numbers.
+Although setting port environment variables in the `values.yaml` will change the ports that the app within the pod listens to, it will *not* change the service port mapping and therefore lead to a malfunctioning service.
+Instead, only the ingress should be configured.
+
 ## Configuring authentication (mandatory)
 
 You need to either configure an LDAP server to authenticate users with or configure forwarded authentication.
@@ -48,6 +56,7 @@ You need to either configure an LDAP server to authenticate users with or config
 
 To configure an LDAP server to authenticate users with, set the `LDAP_URL`, `LDAP_ROOT_DN`, `LDAP_LOOKUP_USER_DN`, `LDAP_LOOKUP_USER_PASSWORD`, and `LDAP_SEARCH_FILTER` environment variables.
 Note that `LDAP_URL` may be a comma-separated list of LDAP connection URL(s).
+
 Add the LDAP environment variables to the API-server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
 
 ```yaml
@@ -58,6 +67,18 @@ Add the LDAP environment variables to the API-server service in the [compose fil
       - LDAP_LOOKUP_USER_DN=cn=admin,dc=example,dc=org
       - LDAP_LOOKUP_USER_PASSWORD=admin
       - LDAP_SEARCH_FILTER=(|(uid=$username)(cn=$username))
+```
+
+Alternatively, for a Kubernetes deployment, add the LDAP environment variables to the API-server service in the [Helm values.yaml](https://github.com/ICTU/quality-time/blob/master/helm/values.yaml):
+
+```yaml
+api_server:
+  env:
+    LDAP_URL: "ldap://host.docker.internal:389"
+    LDAP_ROOT_DN: "dc=example,dc=org"
+    LDAP_LOOKUP_USER_DN: "cn=admin,dc=example,dc=org"
+    LDAP_LOOKUP_USER_PASSWORD: "admin"
+    LDAP_SEARCH_FILTER: "(|(uid=$$username)(cn=$$username))"
 ```
 
 When using the `LDAP_SEARCH_FILTER` as shown above, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box.
