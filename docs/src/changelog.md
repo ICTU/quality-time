@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is not v5.14.0, please first check the upgrade path in the [versioning policy](versioning.md).
 
+### Fixed
+
+- When using GitLab as source for the "job runs within time period metric", the source URL would point to the main GitLab landing page instead of the job overview of the configured project. Fixes [#9213](https://github.com/ICTU/quality-time/issues/9213).
+
 ### Added
 
 - Add icons to tabs with measurement entities. Closes [#8823](https://github.com/ICTU/quality-time/issues/8823).

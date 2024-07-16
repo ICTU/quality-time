@@ -2,10 +2,10 @@
 
 from datetime import UTC, datetime, timedelta
 
-from .base import GitLabTestCase
+from .base import GitLabJobsTestCase
 
 
-class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
+class GitLabJobRunsWithinTimePeriodTest(GitLabJobsTestCase):
     """Unit tests for the GitLab job runs within time period collector."""
 
     LOOKBACK_DAYS = "3"
@@ -55,7 +55,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
                 "build_date": str(now_dt.date()),
             },
         ]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(response, value="1", entities=expected_entities, landing_url=self.LANDING_URL)
 
     async def test_jobs_not_deduplicated(self):
         """Test that the job runs are not deduplicated."""
@@ -107,4 +107,4 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabTestCase):
                 "build_date": str((now_dt - timedelta(days=1)).date()),
             },
         ]
-        self.assert_measurement(response, value="2", entities=expected_entities)
+        self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.LANDING_URL)

@@ -65,6 +65,10 @@ class GitLabJobsBase(GitLabProjectBase):
         """Override to return the jobs API."""
         return await self._gitlab_api_url("jobs")
 
+    async def _landing_url(self, responses: SourceResponses) -> URL:
+        """Extend to add the jobs landing page."""
+        return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/-/jobs")
+
     async def _next_urls(self, responses: SourceResponses) -> list[URL]:
         """Return the next (pagination) links from the responses as long as we're within lookback days."""
         # Note: the GitLab documentation (https://docs.gitlab.com/ee/api/jobs.html#list-project-jobs) says:

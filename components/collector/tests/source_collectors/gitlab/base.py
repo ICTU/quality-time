@@ -59,6 +59,12 @@ class GitLabTestCase(SourceCollectorTestCase):
         ]
 
 
+class GitLabJobsTestCase(GitLabTestCase):
+    """Base class for GitLab job collector unit tests."""
+
+    LANDING_URL = "https://gitlab/namespace/project/-/jobs"
+
+
 class CommonGitLabJobsTestsMixin:
     """Unit tests that should succeed for both the unused jobs metric as well as the failed jobs metric."""
 
