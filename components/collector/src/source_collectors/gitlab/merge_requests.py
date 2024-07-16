@@ -73,7 +73,7 @@ class GitLabMergeRequests(GitLabBase):
     APPROVED_FIELD = "approved"  # Name of the merge request approved field in the GitLab GraphQL API
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
-        """Extend to add the project branches."""
+        """Extend to add the project merge requests landing page."""
         return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/-/merge_requests")
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
