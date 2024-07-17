@@ -2,6 +2,7 @@ import { func, string } from "prop-types"
 
 import { Popup, Table } from "../semantic_ui_react_wrappers"
 import {
+    alignmentPropType,
     labelPropType,
     popupContentPropType,
     sortDirectionURLSearchQueryPropType,
@@ -50,7 +51,7 @@ SortableTableHeaderCell.propTypes = {
     label: labelPropType,
     sortColumn: stringURLSearchQueryPropType,
     sortDirection: sortDirectionURLSearchQueryPropType,
-    textAlign: string,
+    textAlign: alignmentPropType,
 }
 
 export function UnsortableTableHeaderCell({ help, label, textAlign, width }) {

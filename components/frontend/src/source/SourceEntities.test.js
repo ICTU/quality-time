@@ -10,6 +10,7 @@ const dataModel = {
             entities: {
                 metric_type: {
                     name: "entity name",
+                    name_plural: "entities",
                     attributes: [
                         { key: "integer", type: "integer", name: "integer" },
                         {
@@ -18,7 +19,7 @@ const dataModel = {
                             name: "int percentage",
                         },
                         { key: "float", type: "float", name: "float" },
-                        { key: "text", type: "text", name: "text", help: "help text" },
+                        { key: "text", name: "text", help: "help text" }, // Omit type to cover missing type scenario
                         { key: "rightalign", type: "text", name: "rightalign", alignment: "right" },
                         { key: "date", type: "date", name: "date only" },
                         { key: "datetime", type: "datetime", name: "datetime" },
@@ -39,7 +40,7 @@ const metric = {
     },
 }
 
-const source = {
+const sourceFixture = {
     source_uuid: "source_uuid",
     entities: [
         {
@@ -92,13 +93,31 @@ function expectOrder(expected) {
     }
 }
 
-function renderSourceEntities() {
+function renderSourceEntities({ source = sourceFixture } = {}) {
     render(
         <DataModel.Provider value={dataModel}>
             <SourceEntities metric={metric} report={{ issue_tracker: null }} source={source} />
         </DataModel.Provider>,
     )
 }
+
+it("does not render when there are no source entities", async () => {
+    renderSourceEntities({ source: { source_uuid: "source_uuid", entities: [] } })
+    expect(screen.queryAllByText("AAA").length).toBe(0)
+})
+
+it("shows the hide resolved entities button", async () => {
+    renderSourceEntities()
+    const hideEntitiesButton = screen.getAllByRole("button")[0]
+    expect(hideEntitiesButton).toHaveAttribute("aria-label", "Hide resolved entities")
+})
+
+it("shows the show resolved entities button", async () => {
+    renderSourceEntities()
+    const hideEntitiesButton = screen.getAllByRole("button")[0]
+    await userEvent.click(hideEntitiesButton)
+    expect(hideEntitiesButton).toHaveAttribute("aria-label", "Show resolved entities")
+})
 
 it("sorts the entities by status", async () => {
     renderSourceEntities()

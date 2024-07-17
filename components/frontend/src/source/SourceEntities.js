@@ -1,11 +1,22 @@
 import "./SourceEntities.css"
 
-import { func, string } from "prop-types"
+import { bool, func, object, string } from "prop-types"
 import { useContext, useState } from "react"
 
 import { DataModel } from "../context/DataModel"
 import { Button, Icon, Popup, Table } from "../semantic_ui_react_wrappers"
-import { entityPropType, metricPropType, reportPropType, sourcePropType } from "../sharedPropTypes"
+import {
+    alignmentPropType,
+    childrenPropType,
+    entityAttributePropType,
+    entityAttributesPropType,
+    entityAttributeTypePropType,
+    entityPropType,
+    metricPropType,
+    reportPropType,
+    sortDirectionPropType,
+    sourcePropType,
+} from "../sharedPropTypes"
 import { capitalize } from "../utils"
 import { SourceEntity } from "./SourceEntity"
 
@@ -49,46 +60,122 @@ export function alignment(attributeType, attributeAlignment) {
     }[attributeType]
 }
 alignment.propTypes = {
-    attributeType: string,
-    attributeAligment: string,
+    attributeType: entityAttributeTypePropType,
+    attributeAligment: alignmentPropType,
 }
 
-export function SourceEntities({ metric, metric_uuid, reload, report, source }) {
-    const dataModel = useContext(DataModel)
-    const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false)
-    const [sortColumn, setSortColumn] = useState(null)
-    const [columnType, setColumnType] = useState("text")
-    const [sortDirection, setSortDirection] = useState("ascending")
+function sorted(column, sortColumn, sortDirection) {
+    return column === sortColumn ? sortDirection : null
+}
+sorted.propTypes = {
+    column: string,
+    sortColumn: string,
+    sortDirection: sortDirectionPropType,
+}
 
-    function sort(column, column_type) {
-        setColumnType(column_type || "text")
-        if (column === sortColumn) {
-            setSortDirection(sortDirection === "ascending" ? "descending" : "ascending")
-        } else {
-            setSortColumn(column)
-        }
+function sort(column, columnType, setColumnType, setSortColumn, setSortDirection, sortColumn, sortDirection) {
+    setColumnType(columnType)
+    if (column === sortColumn) {
+        setSortDirection(sortDirection === "ascending" ? "descending" : "ascending")
+    } else {
+        setSortColumn(column)
     }
-    function sorted(column) {
-        return column === sortColumn ? sortDirection : null
-    }
+}
+sort.propTypes = {
+    column: string,
+    columnType: entityAttributeTypePropType,
+    setColumnType: func,
+    setSortColumn: func,
+    setSortDirection: func,
+    sortColumn: string,
+    sortDirection: sortDirectionPropType,
+}
 
-    const report_source = metric.sources[source.source_uuid]
-    const source_type = report_source.type
-    const metric_entities = dataModel.sources[source_type].entities[metric.type]
-    if (!metric_entities || !Array.isArray(source.entities) || source.entities.length === 0) {
-        return null
-    }
-    const entity_attributes = metric_entities.attributes.filter(
-        (attribute) => attribute.visible === undefined || attribute.visible,
+function SortableHeaderCell({
+    children,
+    column,
+    columnType,
+    setColumnType,
+    setSortColumn,
+    setSortDirection,
+    sortColumn,
+    sortDirection,
+    textAlign,
+}) {
+    return (
+        <Table.HeaderCell
+            onClick={() =>
+                sort(column, columnType, setColumnType, setSortColumn, setSortDirection, sortColumn, sortDirection)
+            }
+            sorted={sorted(column, sortColumn, sortDirection)}
+            textAlign={textAlign}
+        >
+            {children}
+        </Table.HeaderCell>
     )
-    const entity_name = metric_entities.name
-    const entity_name_plural = metric_entities.name_plural
-    const headers = (
+}
+SortableHeaderCell.propTypes = {
+    children: childrenPropType,
+    column: string,
+    columnType: entityAttributeTypePropType,
+    setColumnType: func,
+    setSortColumn: func,
+    setSortDirection: func,
+    sortColumn: string,
+    sortDirection: sortDirectionPropType,
+    textAlign: alignmentPropType,
+}
+
+function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
+    return (
+        <SortableHeaderCell
+            column={entityAttribute.key}
+            columnType={entityAttribute.type || "text"}
+            textAlign={alignment(entityAttribute.type, entityAttribute.alignment)}
+            {...sortProps}
+        >
+            <span>{entityAttribute.name}</span>k
+            {entityAttribute.help ? (
+                <Popup
+                    on={["hover", "focus"]}
+                    trigger={
+                        <span>
+                            &nbsp;
+                            <Icon role="tooltip" aria-label="help" tabIndex="0" name="help circle" />
+                        </span>
+                    }
+                    content={entityAttribute.help}
+                />
+            ) : null}
+        </SortableHeaderCell>
+    )
+}
+EntityAttributeHeaderCell.propTypes = {
+    entityAttribute: entityAttributePropType,
+    setColumnType: func,
+    setSortColumn: func,
+    setSortDirection: func,
+    sortColumn: string,
+    sortDirection: sortDirectionPropType,
+}
+
+function sourceEntitiesHeaders(
+    entityAttributes,
+    hideIgnoredEntities,
+    metricEntities,
+    setHideIgnoredEntities,
+    sortProps,
+) {
+    const entityName = metricEntities.name
+    const entityNamePlural = metricEntities.name_plural
+    const hideIgnoredEntitiesLabel = `${hideIgnoredEntities ? "Show" : "Hide"} resolved ${entityNamePlural}`
+    return (
         <Table.Row>
             <Table.HeaderCell collapsing textAlign="center">
                 <Popup
                     trigger={
                         <Button
+                            aria-label={hideIgnoredEntitiesLabel}
                             basic
                             compact
                             icon={hideIgnoredEntities ? "unhide" : "hide"}
@@ -96,49 +183,40 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
                             primary
                         />
                     }
-                    content={
-                        hideIgnoredEntities
-                            ? `Show resolved ${entity_name_plural}`
-                            : `Hide resolved ${entity_name_plural}`
-                    }
+                    content={hideIgnoredEntitiesLabel}
                 />
             </Table.HeaderCell>
-            <Table.HeaderCell sorted={sorted("entity_status")} onClick={() => sort("entity_status")}>
-                {`${capitalize(entity_name)} status`}
-            </Table.HeaderCell>
-            <Table.HeaderCell sorted={sorted("status_end_date")} onClick={() => sort("status_end_date")}>
+            <SortableHeaderCell column="entity_status" columnType="text" {...sortProps}>
+                {`${capitalize(entityName)} status`}
+            </SortableHeaderCell>
+            <SortableHeaderCell column="status_end_date" columnType="date" {...sortProps}>
                 Status end date
-            </Table.HeaderCell>
-            <Table.HeaderCell sorted={sorted("rationale")} onClick={() => sort("rationale")}>
+            </SortableHeaderCell>
+            <SortableHeaderCell column="rationale" columnType="text" {...sortProps}>
                 Status rationale
-            </Table.HeaderCell>
-            <Table.HeaderCell onClick={() => sort("first_seen", "datetime")} sorted={sorted("first_seen")}>
-                {capitalize(entity_name)} first seen
-            </Table.HeaderCell>
-            {entity_attributes.map((entity_attribute) => (
-                <Table.HeaderCell
-                    key={entity_attribute.key}
-                    onClick={() => sort(entity_attribute.key, entity_attribute.type)}
-                    sorted={sorted(entity_attribute.key)}
-                    textAlign={alignment(entity_attribute.type, entity_attribute.alignment)}
-                >
-                    <span>{entity_attribute.name}</span>
-                    {entity_attribute.help ? (
-                        <Popup
-                            on={["hover", "focus"]}
-                            trigger={
-                                <span>
-                                    &nbsp;
-                                    <Icon role="tooltip" aria-label="help" tabIndex="0" name="help circle" />
-                                </span>
-                            }
-                            content={entity_attribute.help}
-                        />
-                    ) : null}
-                </Table.HeaderCell>
+            </SortableHeaderCell>
+            <SortableHeaderCell column="first_seen" columnType="datetime" {...sortProps}>
+                ${capitalize(entityName)} first seen
+            </SortableHeaderCell>
+            {entityAttributes.map((entityAttribute) => (
+                <EntityAttributeHeaderCell entityAttribute={entityAttribute} key={entityAttribute.key} {...sortProps} />
             ))}
         </Table.Row>
     )
+}
+sourceEntitiesHeaders.propTypes = {
+    entityAttributes: entityAttributesPropType,
+    hideIgnoredEntities: bool,
+    metricEntities: object,
+    setColumnType: func,
+    setHideIgnoredEntities: func,
+    setSortColumn: func,
+    setSortDirection: func,
+    sortColumn: string,
+    sortDirection: sortDirectionPropType,
+}
+
+function sortedEntities(columnType, sortColumn, sortDirection, source) {
     let entities = Array.from(source.entities)
     if (sortColumn !== null) {
         let parse
@@ -166,11 +244,48 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
             entities.reverse()
         }
     }
+    return entities
+}
+sortedEntities.propTypes = {
+    columnType: entityAttributeTypePropType,
+    sortColumn: string,
+    sortDirection: sortDirectionPropType,
+    source: sourcePropType,
+}
+
+export function SourceEntities({ metric, metric_uuid, reload, report, source }) {
+    const dataModel = useContext(DataModel)
+    const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false)
+    const [sortColumn, setSortColumn] = useState(null)
+    const [columnType, setColumnType] = useState("text")
+    const [sortDirection, setSortDirection] = useState("ascending")
+
+    const reportSource = metric.sources[source.source_uuid]
+    const metricEntities = dataModel.sources[reportSource.type].entities[metric.type]
+    if (!metricEntities || !Array.isArray(source.entities) || source.entities.length === 0) {
+        return null
+    }
+    const entityAttributes = metricEntities.attributes.filter((attribute) => attribute?.visible ?? true)
+    const sortProps = {
+        setColumnType: setColumnType,
+        setSortColumn: setSortColumn,
+        setSortDirection: setSortDirection,
+        sortColumn: sortColumn,
+        sortDirection: sortDirection,
+    }
+    const headers = sourceEntitiesHeaders(
+        entityAttributes,
+        hideIgnoredEntities,
+        metricEntities,
+        setHideIgnoredEntities,
+        sortProps,
+    )
+    const entities = sortedEntities(columnType, sortColumn, sortDirection, source)
     const rows = entities.map((entity) => (
         <SourceEntity
             entity={entity}
-            entity_attributes={entity_attributes}
-            entity_name={entity_name}
+            entity_attributes={entityAttributes}
+            entity_name={metricEntities.name}
             hide_ignored_entities={hideIgnoredEntities}
             key={entity.key}
             metric_uuid={metric_uuid}

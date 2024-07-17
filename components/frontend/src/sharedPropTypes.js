@@ -111,6 +111,18 @@ export const entityAttributePropType = shape({
 
 export const entityAttributesPropType = arrayOf(entityAttributePropType)
 
+export const entityAttributeTypePropType = oneOf([
+    "date",
+    "datetime",
+    "integer",
+    "integer_percentage",
+    "float",
+    "minutes",
+    "text",
+])
+
+export const alignmentPropType = oneOf(["center", "left", "right"])
+
 export const issueStatusPropType = shape({
     connection_error: string,
     created: string,

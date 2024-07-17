@@ -3,7 +3,7 @@ import "./Footer.css"
 import { number, object, oneOfType, string } from "prop-types"
 import { Container, Divider, Grid, Header, Icon, Image, List, Segment } from "semantic-ui-react"
 
-import { childrenPropType, datePropType, reportPropType } from "../sharedPropTypes"
+import { alignmentPropType, childrenPropType, datePropType, reportPropType } from "../sharedPropTypes"
 
 function FooterItem({ children, icon, url }) {
     const item = icon ? (
@@ -42,7 +42,7 @@ function FooterColumn({ children, header, textAlign, width }) {
 FooterColumn.propTypes = {
     children: childrenPropType,
     header: oneOfType([object, string]),
-    textAlign: string,
+    textAlign: alignmentPropType,
     width: number,
 }
 
