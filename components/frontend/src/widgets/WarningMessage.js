@@ -10,3 +10,12 @@ export function WarningMessage(props) {
 WarningMessage.propTypes = {
     showIf: bool,
 }
+
+export function FailedToLoadMeasurementsWarningMessage() {
+    return (
+        <WarningMessage
+            content="Loading the measurements from the API-server failed."
+            header="Loading measurements failed"
+        />
+    )
+}

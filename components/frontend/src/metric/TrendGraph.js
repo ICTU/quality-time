@@ -1,13 +1,13 @@
-import { oneOf } from "prop-types"
 import { useContext } from "react"
-import { Placeholder, PlaceholderImage } from "semantic-ui-react"
+import { Message } from "semantic-ui-react"
 import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme } from "victory"
 
 import { DarkMode } from "../context/DarkMode"
 import { DataModel } from "../context/DataModel"
-import { measurementsPropType, metricPropType } from "../sharedPropTypes"
+import { loadingPropType, measurementsPropType, metricPropType } from "../sharedPropTypes"
 import { capitalize, formatMetricScaleAndUnit, getMetricName, getMetricScale, niceNumber, scaledNumber } from "../utils"
-import { WarningMessage } from "../widgets/WarningMessage"
+import { LoadingPlaceHolder } from "../widgets/Placeholder"
+import { FailedToLoadMeasurementsWarningMessage, WarningMessage } from "../widgets/WarningMessage"
 
 function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
     const scale = getMetricScale(metric, dataModel)
@@ -22,26 +22,17 @@ export function TrendGraph({ metric, measurements, loading }) {
     const estimatedTotalChartHeight = chartHeight + 200 // Estimate of the height including title and axis
     if (getMetricScale(metric, dataModel) === "version_number") {
         return (
-            <WarningMessage
+            <Message
                 content="Trend graphs are not supported for metrics with a version number scale."
                 header="Trend graph not supported for version numbers"
             />
         )
     }
     if (loading === "failed") {
-        return (
-            <WarningMessage
-                content="Loading the measurements from the API-server failed."
-                header="Loading measurements failed"
-            />
-        )
+        return <FailedToLoadMeasurementsWarningMessage />
     }
     if (loading === "loading") {
-        return (
-            <Placeholder fluid inverted={darkMode} style={{ height: estimatedTotalChartHeight }}>
-                <PlaceholderImage />
-            </Placeholder>
-        )
+        return <LoadingPlaceHolder height={estimatedTotalChartHeight} />
     }
     if (measurements.length === 0) {
         return (
@@ -117,7 +108,7 @@ export function TrendGraph({ metric, measurements, loading }) {
     )
 }
 TrendGraph.propTypes = {
-    loading: oneOf(["failed", "loaded", "loading"]),
+    loading: loadingPropType,
     metric: metricPropType,
     measurements: measurementsPropType,
 }

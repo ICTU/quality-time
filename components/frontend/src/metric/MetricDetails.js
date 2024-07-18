@@ -171,32 +171,24 @@ export function MetricDetails({
             { iconName: "linegraph" },
         ),
     )
-    if (measurements.length > 0) {
-        lastMeasurement.sources.forEach((source) => {
-            const reportSource = metric.sources[source.source_uuid]
-            if (!reportSource) {
-                return
-            } // source was deleted, continue
-            const nrEntities = source.entities?.length ?? 0
-            if (nrEntities === 0) {
-                return
-            } // no entities to show, continue
-            const sourceName = getSourceName(reportSource, dataModel)
-            panes.push(
-                tabPane(
-                    sourceName,
-                    <SourceEntities
-                        report={report}
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        source={source}
-                        reload={measurementsReload}
-                    />,
-                    { image: <Logo logo={reportSource.type} alt={sourceName} /> },
-                ),
-            )
-        })
-    }
+    Object.entries(metric.sources).forEach(([source_uuid, source]) => {
+        const sourceName = getSourceName(source, dataModel)
+        panes.push(
+            tabPane(
+                sourceName,
+                <SourceEntities
+                    loading={measurementsStatus}
+                    measurements={measurements}
+                    metric={metric}
+                    metric_uuid={metric_uuid}
+                    reload={measurementsReload}
+                    report={report}
+                    source_uuid={source_uuid}
+                />,
+                { image: <Logo logo={source.type} alt={sourceName} /> },
+            ),
+        )
+    })
 
     return (
         <>

@@ -71,7 +71,7 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error, fa
                         end: "2020-02-29T11:25:52.252Z",
                         sources: [
                             {},
-                            { source_uuid: "source_uuid" },
+                            { source_uuid: "source_uuid2" },
                             {
                                 source_uuid: "source_uuid",
                                 entities: [{ key: "1" }],

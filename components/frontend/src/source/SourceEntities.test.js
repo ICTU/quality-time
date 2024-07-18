@@ -28,10 +28,16 @@ const dataModel = {
                 },
             },
         },
+        source_type_without_entities: {},
+    },
+    metrics: {
+        metric_type: {
+            unit: "items",
+        },
     },
 }
 
-const metric = {
+const metricFixture = {
     type: "metric_type",
     sources: {
         source_uuid: {
@@ -93,17 +99,51 @@ function expectOrder(expected) {
     }
 }
 
-function renderSourceEntities({ source = sourceFixture } = {}) {
-    render(
+function renderSourceEntities({
+    loading = "loaded",
+    measurements = [{ sources: [sourceFixture] }],
+    metric = metricFixture,
+} = {}) {
+    return render(
         <DataModel.Provider value={dataModel}>
-            <SourceEntities metric={metric} report={{ issue_tracker: null }} source={source} />
+            <SourceEntities
+                loading={loading}
+                measurements={measurements}
+                metric={metric}
+                metric_uuid="metric_uuid"
+                report={{ issue_tracker: null }}
+                source_uuid="source_uuid"
+            />
         </DataModel.Provider>,
     )
 }
 
-it("does not render when there are no source entities", async () => {
-    renderSourceEntities({ source: { source_uuid: "source_uuid", entities: [] } })
+it("renders a message if the metric does not support measurement entities", () => {
+    renderSourceEntities({
+        metric: { type: "metric_type", sources: { source_uuid: { type: "source_type_without_entities" } } },
+    })
+    expect(screen.getAllByText(/Measurement details not supported/).length).toBe(1)
+})
+
+it("renders a message if the metric does not have measurement entities", () => {
+    renderSourceEntities({ measurements: [{ sources: [{ source_uuid: "source_uuid", entities: [] }] }] })
+    expect(screen.getAllByText(/Measurement details not available/).length).toBe(1)
+})
+
+it("renders a message if the measurements failed to load", () => {
+    renderSourceEntities({ loading: "failed" })
+    expect(screen.getAllByText(/Loading measurements failed/).length).toBe(1)
+})
+
+it("renders a placeholder while the measurements are loading", () => {
+    const { container } = renderSourceEntities({ loading: "loading" })
+    expect(container.firstChild.className).toContain("placeholder")
     expect(screen.queryAllByText("AAA").length).toBe(0)
+})
+
+it("renders a message if there are no measurements", () => {
+    renderSourceEntities({ measurements: [] })
+    expect(screen.getAllByText(/No measurements/).length).toBe(1)
 })
 
 it("shows the hide resolved entities button", async () => {

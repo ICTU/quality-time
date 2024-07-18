@@ -70,6 +70,8 @@ export const sortDirectionURLSearchQueryPropType = shape({
     value: sortDirectionPropType,
 })
 
+export const loadingPropType = oneOf(["failed", "loaded", "loading"])
+
 export const hiddenCardsPropType = oneOf(["action_required", "reports", "subjects", "tags", "issues", "legend"])
 
 export const metricsToHidePropType = oneOf(["all", "none", "no_action_required", "no_issues"])

@@ -2,6 +2,7 @@ import "./SourceEntities.css"
 
 import { bool, func, object, string } from "prop-types"
 import { useContext, useState } from "react"
+import { Message } from "semantic-ui-react"
 
 import { DataModel } from "../context/DataModel"
 import { Button, Icon, Popup, Table } from "../semantic_ui_react_wrappers"
@@ -12,12 +13,16 @@ import {
     entityAttributesPropType,
     entityAttributeTypePropType,
     entityPropType,
+    loadingPropType,
+    measurementsPropType,
     metricPropType,
     reportPropType,
     sortDirectionPropType,
     sourcePropType,
 } from "../sharedPropTypes"
 import { capitalize } from "../utils"
+import { LoadingPlaceHolder } from "../widgets/Placeholder"
+import { FailedToLoadMeasurementsWarningMessage } from "../widgets/WarningMessage"
 import { SourceEntity } from "./SourceEntity"
 
 function entityStatus(source, entity) {
@@ -253,17 +258,49 @@ sortedEntities.propTypes = {
     source: sourcePropType,
 }
 
-export function SourceEntities({ metric, metric_uuid, reload, report, source }) {
+export function SourceEntities({ loading, measurements, metric, metric_uuid, reload, report, source_uuid }) {
     const dataModel = useContext(DataModel)
     const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false)
     const [sortColumn, setSortColumn] = useState(null)
     const [columnType, setColumnType] = useState("text")
     const [sortDirection, setSortDirection] = useState("ascending")
 
-    const reportSource = metric.sources[source.source_uuid]
-    const metricEntities = dataModel.sources[reportSource.type].entities[metric.type]
-    if (!metricEntities || !Array.isArray(source.entities) || source.entities.length === 0) {
-        return null
+    const sourceType = metric.sources[source_uuid].type
+    const metricEntities = dataModel.sources[sourceType]?.entities?.[metric.type]
+
+    if (!metricEntities) {
+        const unit = dataModel.metrics[metric.type].unit
+        const sourceTypeName = dataModel.sources[sourceType].name
+        return (
+            <Message
+                header="Measurement details not supported"
+                content={`Showing individual ${unit} is not supported when using ${sourceTypeName} as source.`}
+            />
+        )
+    }
+    if (loading === "failed") {
+        return <FailedToLoadMeasurementsWarningMessage />
+    }
+    if (loading === "loading") {
+        return <LoadingPlaceHolder />
+    }
+    if (measurements.length === 0) {
+        return (
+            <Message
+                header="No measurements available"
+                content="Measurement details not available because Quality-time has not collected any measurements yet."
+            />
+        )
+    }
+    const lastMeasurement = measurements[measurements.length - 1]
+    const source = lastMeasurement.sources.find((source) => source.source_uuid === source_uuid)
+    if (!Array.isArray(source.entities) || source.entities.length === 0) {
+        return (
+            <Message
+                header="Measurement details not available"
+                content="There are currently no measurement details available."
+            />
+        )
     }
     const entityAttributes = metricEntities.attributes.filter((attribute) => attribute?.visible ?? true)
     const sortProps = {
@@ -305,9 +342,11 @@ export function SourceEntities({ metric, metric_uuid, reload, report, source }) 
     )
 }
 SourceEntities.propTypes = {
+    loading: loadingPropType,
+    measurements: measurementsPropType,
     metric: metricPropType,
     metric_uuid: string,
     reload: func,
     report: reportPropType,
-    source: sourcePropType,
+    source_uuid: string,
 }
