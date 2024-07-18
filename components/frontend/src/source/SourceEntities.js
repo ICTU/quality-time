@@ -134,7 +134,7 @@ function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
             textAlign={alignment(entityAttribute.type, entityAttribute.alignment)}
             {...sortProps}
         >
-            <span>{entityAttribute.name}</span>k
+            <span>{entityAttribute.name}</span>
             {entityAttribute.help ? (
                 <Popup
                     on={["hover", "focus"]}
@@ -196,7 +196,7 @@ function sourceEntitiesHeaders(
                 Status rationale
             </SortableHeaderCell>
             <SortableHeaderCell column="first_seen" columnType="datetime" {...sortProps}>
-                ${capitalize(entityName)} first seen
+                {capitalize(entityName)} first seen
             </SortableHeaderCell>
             {entityAttributes.map((entityAttribute) => (
                 <EntityAttributeHeaderCell entityAttribute={entityAttribute} key={entityAttribute.key} {...sortProps} />
