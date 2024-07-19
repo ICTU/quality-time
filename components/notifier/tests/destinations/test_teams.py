@@ -53,7 +53,7 @@ class SendNotificationToTeamsTests(MsTeamsTestCase):
 class BuildNotificationMessageTests(MsTeamsTestCase):
     """Unit tests for the message builder."""
 
-    def create_section(  # noqa: PLR0913
+    def create_section(
         self,
         title: str,
         status: str,
