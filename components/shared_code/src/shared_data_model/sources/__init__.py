@@ -13,6 +13,7 @@ from .cxsast import CXSAST
 from .dependency_track import DEPENDENCY_TRACK
 from .gatling import GATLING
 from .generic_json import GENERIC_JSON
+from .github import GITHUB
 from .gitlab import GITLAB
 from .harbor import HARBOR, HARBOR_JSON
 from .jacoco import JACOCO, JACOCO_JENKINS_PLUGIN
@@ -57,6 +58,7 @@ SOURCES = {
     "dependency_track": DEPENDENCY_TRACK,
     "gatling": GATLING,
     "generic_json": GENERIC_JSON,
+    "github": GITHUB,
     "gitlab": GITLAB,
     "harbor": HARBOR,
     "harbor_json": HARBOR_JSON,
