@@ -48,6 +48,7 @@ from .gatling.source_up_to_dateness import GatlingSourceUpToDateness
 from .gatling.source_version import GatlingLogCollector
 from .gatling.tests import GatlingTests
 from .generic_json.security_warnings import GenericJSONSecurityWarnings
+from .github.merge_requests import GitHubMergeRequests
 from .gitlab.change_failure_rate import GitLabChangeFailureRate
 from .gitlab.failed_jobs import GitLabFailedJobs
 from .gitlab.job_runs_within_time_period import GitLabJobRunsWithinTimePeriod
