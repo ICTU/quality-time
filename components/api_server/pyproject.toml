@@ -8,7 +8,7 @@ classifiers = [
 ]
 dependencies = [
     "bottle==0.12.25",
-    "cryptography==42.0.8",
+    "cryptography==43.0.0",
     "gevent==24.2.1",
     "ldap3==2.9.1",
     "lxml==5.2.2",
@@ -30,10 +30,10 @@ optional-dependencies.dev = [
 optional-dependencies.tools = [
     "bandit==1.7.9",
     "fixit==2.1.0",
-    "mypy==1.10.1",
+    "mypy==1.11.0",
     "pip-audit==2.7.3",
     "pyproject-fmt==2.1.4",
-    "ruff==0.5.3",
+    "ruff==0.5.4",
     "vulture==2.11",
 ]
 
