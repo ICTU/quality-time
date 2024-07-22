@@ -17,8 +17,10 @@ if TYPE_CHECKING:
 class Build(TypedDict):
     """Jenkins build."""
 
+    duration: int
     result: str
-    timestamp: str
+    timestamp: int
+    url: str
 
 
 class Job(TypedDict):

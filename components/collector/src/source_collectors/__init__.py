@@ -68,6 +68,7 @@ from .jacoco_jenkins_plugin.uncovered_lines import JacocoJenkinsPluginUncoveredL
 from .jenkins.change_failure_rate import JenkinsChangeFailureRate
 from .jenkins.failed_jobs import JenkinsFailedJobs
 from .jenkins.job_runs_within_time_period import JenkinsJobRunsWithinTimePeriod
+from .jenkins.pipeline_duration import JenkinsPipelineDuration
 from .jenkins.source_up_to_dateness import JenkinsSourceUpToDateness
 from .jenkins.source_version import JenkinsSourceVersion
 from .jenkins.unused_jobs import JenkinsUnusedJobs
