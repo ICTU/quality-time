@@ -20,7 +20,7 @@ optional-dependencies.dev = [
 optional-dependencies.tools = [
     "bandit==1.7.9",
     "fixit==2.1.0",
-    "mypy==1.10.1",
+    "mypy==1.11.0",
     "pip-audit==2.7.3",
     "pyproject-fmt==2.1.4",
     "ruff==0.5.3",
