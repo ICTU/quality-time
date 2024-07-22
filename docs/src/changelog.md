@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v5.15.0, please first check the upgrade path in the [versioning policy](versioning.md).
+
+### Added
+
+- Allow for configuring Jenkins as source for the metric 'CI-pipeline duration' (GitLab CI was already supported, Azure DevOps will follow later). Partially implements [#6423](https://github.com/ICTU/quality-time/issues/6423).
+
 ## v5.15.0 - 2024-07-30
 
 ### Deployment notes
@@ -16,7 +26,7 @@ If your currently installed *Quality-time* version is not v5.14.0, please first 
 
 ### Fixed
 
-- When using GitLab as source for the "job runs within time period metric", the source URL would point to the main GitLab landing page instead of the job overview of the configured project. Fixes [#9213](https://github.com/ICTU/quality-time/issues/9213).
+- When using GitLab as source for the "job runs within time period" metric, the source URL would point to the main GitLab landing page instead of the job overview of the configured project. Fixes [#9213](https://github.com/ICTU/quality-time/issues/9213).
 
 ### Added
 

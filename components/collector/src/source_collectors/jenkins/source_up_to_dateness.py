@@ -3,13 +3,13 @@
 from collector_utilities.date_time import days_ago, parse_datetime
 from model import SourceMeasurement, SourceResponses
 
-from .base import JenkinsJobs
+from .base import Build, JenkinsJobs
 
 
 class JenkinsSourceUpToDateness(JenkinsJobs):
     """Collector to get the last build date from Jenkins jobs."""
 
-    def _include_build(self, build) -> bool:
+    def _include_build(self, build: Build) -> bool:
         """Override to only include builds with an allowed result type."""
         result_types = self._parameter("result_type")
         return str(build.get("result", "Not built")).capitalize().replace("_", " ") in result_types
