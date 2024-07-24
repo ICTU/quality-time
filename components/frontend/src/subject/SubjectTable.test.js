@@ -234,7 +234,7 @@ it("moves a metric", async () => {
 })
 
 it("adds a source", async () => {
-    history.push("?expanded=1:2")
+    history.push("?expanded=1:1")
     renderSubjectTable()
     const addButton = await screen.findByText("Add source")
     await act(async () => fireEvent.click(addButton))
