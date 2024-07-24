@@ -147,11 +147,6 @@ export function MetricDetails({
             />,
         ),
         tabPane(
-            "Technical debt",
-            <MetricDebtParameters metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />,
-            { iconName: "money" },
-        ),
-        tabPane(
             "Sources",
             <Sources
                 reports={reports}
@@ -163,6 +158,11 @@ export function MetricDetails({
                 reload={reload}
             />,
             { iconName: "server", error: Boolean(anyError) },
+        ),
+        tabPane(
+            "Technical debt",
+            <MetricDebtParameters metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />,
+            { iconName: "money" },
         ),
         changelogTabPane(<ChangeLog timestamp={report.timestamp} metric_uuid={metric_uuid} />),
         tabPane(
