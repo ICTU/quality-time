@@ -4,25 +4,24 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
 
     steps:
-    - uses: actions/checkout@v4.1.7
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.3
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: npm install, build, and test
-      run: |
-        cd components/frontend
-        npm ci
-        npm run --ignore-scripts build --if-present
-        ci/unittest.sh
-        ci/quality.sh
-      env:
-        CI: true
+      - uses: actions/checkout@v4.1.7
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4.0.3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install, build, and test
+        run: |
+          cd components/frontend
+          npm ci
+          npm run --ignore-scripts build --if-present
+          ci/unittest.sh
+          ci/quality.sh
+        env:
+          CI: true
