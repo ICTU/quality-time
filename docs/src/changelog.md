@@ -26,6 +26,10 @@ If your currently installed *Quality-time* version is not v5.15.0, please first 
 
 ## v5.15.0 - 2024-07-30
 
+### Added
+
+- For metric 'merge requests' added GitHub as possible sources. Closes [#9323](https://github.com/ICTU/quality-time/issues/9323).
+
 ### Deployment notes
 
 If your currently installed *Quality-time* version is not v5.14.0, please first check the upgrade path in the [versioning policy](versioning.md).
