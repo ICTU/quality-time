@@ -31,11 +31,6 @@ GITHUB = Source(
     name="GitHub",
     description="GitHub provides a cloud-based hosting service for Git repositories, offering tools for version control, source code management, pull requests, issue tracking, and continuous integration/continuous deployment (CI/CD).",
     url=HttpUrl("https://github.com/about"),
-    documentation={
-        "generic": """```{note}
-documentation about GitHub
-```""",
-    },
     parameters={
         "url": URL(
             name="GitHub instance URL",
@@ -45,15 +40,16 @@ documentation about GitHub
             metrics=ALL_GITHUB_METRICS,
         ),
         "owner": StringParameter(
-            name="Owner (https://github.com/<username>)",
+            name="Owner (name of owner of the repository)",
             short_name="owner",
             mandatory=True,
             help_url=HttpUrl("https://docs.github.com/en/account-and-profile"),
             metrics=ALL_GITHUB_METRICS,
         ),
         "repository": StringParameter(
-            name="Repository (https://github.com/<username>/<repository>)",
+            name="Repository (name of the repository)",
             short_name="repository",
+            help_url=HttpUrl("https://docs.github.com/en/repositories/creating-and-managing-repositories"),
             mandatory=True,
             metrics=ALL_GITHUB_METRICS,
         ),
