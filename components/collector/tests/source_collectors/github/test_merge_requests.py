@@ -1,4 +1,6 @@
 """Unit tests for the GitHub merge requests collector."""
+# Author: Tobias Termeczky
+# Company: the/experts.
 
 from unittest.mock import AsyncMock, patch
 
