@@ -1,4 +1,6 @@
 """GitHub source."""
+# Author: Tobias Termeczky
+# Company: the/experts.
 
 from pydantic import HttpUrl
 
