@@ -1,10 +1,7 @@
-"""GitHub merge requests collector."""
+"""GitHub pull requests collector."""
 
-import logging
-from typing import cast
-
-import aiohttp # type: ignore
-from aiogqlc import GraphQLClient # type: ignore
+import aiohttp
+from aiogqlc import GraphQLClient
 
 from collector_utilities.exceptions import NotFoundError
 from collector_utilities.functions import match_string_or_regular_expression
@@ -48,22 +45,26 @@ query ($repository: String!, $owner: String!) {{
 }}
 """
 
+
 class GitHubPullRequestInfoError(NotFoundError):
     """GitHub pull request info is missing."""
 
-    def __init__(self, owner: str, repository: str) -> None:
+    def __init__(self, project: str) -> None:
         tip = (
-          "Please check if the repository (name with owner) and access token (with repo scope) are "
-          "configured correctly."
+            "Please check if the repository (name with owner) and access token (with repo scope) are "
+            "configured correctly."
         )
-        super().__init__("Pull request info for repository", owner, repository, extra=tip)
-        
+        super().__init__("Pull request info for repository", project, extra=tip)
+
+
 class GitHubMergeRequests(GitHubBase):
     """Collector class to measure the number of pull requests."""
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the repository pull requests."""
-        return URL(f"{await super()._landing_url(responses)}/{self._parameter('owner')}/{self._parameter('repository')}/pulls")
+        return URL(
+            f"{await super()._landing_url(responses)}/{self._parameter('owner')}/{self._parameter('repository')}/pulls"
+        )
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override to use the GitHub GraphQL API to retrieve the pull requests."""
@@ -85,14 +86,20 @@ class GitHubMergeRequests(GitHubBase):
     ) -> tuple[aiohttp.ClientResponse, bool, str]:
         """Return the pull request response, whether there are more pages, and a cursor to the next page, if any."""
         pagination = f'(first: 100, after: "{cursor}")'
+        project = f"{self._parameter('owner')}/{self._parameter('repository')}"
         pull_request_query = PULL_REQUEST_QUERY.format(pagination=pagination)
-        logging.error(pull_request_query);
-        response = await client.execute(pull_request_query, variables={"repository": self._parameter("repository"), "owner": self._parameter("owner")})
+        response = await client.execute(
+            pull_request_query,
+            variables={
+                "repository": self._parameter("repository"),
+                "owner": self._parameter("owner"),
+            },
+        )
         json = await response.json()
         if repository := json["data"]["repository"]:
             page_info = repository["pullRequests"]["pageInfo"]
             return response, page_info["hasNextPage"], page_info.get("endCursor", "")
-        raise GitHubPullRequestInfoError(f"{self._parameter('owner')}/{self._parameter('repository')}")
+        raise GitHubPullRequestInfoError(project)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the pull requests."""
@@ -114,7 +121,7 @@ class GitHubMergeRequests(GitHubBase):
             base_ref_name=pull_request["baseRefName"],
             url=pull_request["url"],
             state=pull_request["state"],
-            review_decision=pull_request["reviewDecision"],
+            review_decision=self.__review_decision_state(pull_request["reviewDecision"]),
             created=pull_request["createdAt"],
             updated=pull_request["updatedAt"],
             merged=pull_request["mergedAt"],
@@ -125,15 +132,15 @@ class GitHubMergeRequests(GitHubBase):
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether the pull request should be counted."""
         pr_matches_state = entity["state"] in self._parameter("merge_request_state")
-        # pr_matches_review_decision = entity["review_decision"] in self._parameter("review_decision")
-        # base_ref_name = entity["base_ref_name"]
-        # branches = self._parameter("base_refs_to_include")
-        # pr_matches_branches = match_string_or_regular_expression(base_ref_name, branches) if branches else True
-        
-        
-        # If the required number of thumbs up is zero, pull requests are included regardless of how many thumbs up they
-        # actually have. If the required number of thumbs up is more than zero then only pull requests that have fewer
-        # than the minimum number of thumbs up are included in the count:
-        
-        # and pr_matches_review_decision and pr_matches_branches
-        return pr_matches_state 
+        pr_matches_review_decision = entity["review_decision"] in self._parameter("review_decision")
+        base_ref_name = entity["base_ref_name"]
+        branches = self._parameter("target_branches_to_include")
+        pr_matches_branches = match_string_or_regular_expression(base_ref_name, branches) if branches else True
+
+        return pr_matches_state and pr_matches_branches and pr_matches_review_decision
+
+    @classmethod
+    def __review_decision_state(cls, review_decision) -> str:
+        if isinstance(review_decision, str):
+            return review_decision
+        return "?"
