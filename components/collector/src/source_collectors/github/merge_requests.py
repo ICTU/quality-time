@@ -1,4 +1,6 @@
 """GitHub pull requests collector."""
+# Author: Tobias Termeczky
+# Company: the/experts.
 
 import aiohttp
 from aiogqlc import GraphQLClient
