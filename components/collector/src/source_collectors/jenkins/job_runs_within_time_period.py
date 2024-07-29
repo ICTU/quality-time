@@ -3,16 +3,15 @@
 from typing import cast
 
 from collector_utilities.date_time import datetime_from_timestamp, days_ago
-from collector_utilities.type import Job
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
-from .base import JenkinsJobs
+from .base import Build, JenkinsJobs, Job
 
 
 class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
     """Collector class to measure the number of Jenkins jobs run within a specified time period."""
 
-    def _include_build(self, build) -> bool:
+    def _include_build(self, build: Build) -> bool:
         """Return whether to include this build or not."""
         build_datetime = datetime_from_timestamp(int(build["timestamp"]))
         return days_ago(build_datetime) <= int(cast(str, self._parameter("lookback_days")))
