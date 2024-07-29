@@ -819,13 +819,13 @@ yarl==1.9.4 \
     # via aiohttp
 
 # The following packages are considered to be unsafe in a requirements file:
-pip==24.1.2 \
-    --hash=sha256:7cd207eed4c60b0f411b444cd1464198fe186671c323b6cd6d433ed80fc9d247 \
-    --hash=sha256:e5458a0b89f2755e0ee8c0c77613fe5273e05f337907874d64f13171a898a7ff
+pip==24.2 \
+    --hash=sha256:2cd581cf58ab7fcfca4ce8efa6dcacd0de5bf8d0a3eb9ec927e07405f4d9e2a2 \
+    --hash=sha256:5b5e490b5e9cb275c879595064adce9ebd31b854e3e803740b72f9ccf34a45b8
     # via
     #   collector (pyproject.toml)
     #   pip-tools
-setuptools==71.1.0 \
-    --hash=sha256:032d42ee9fb536e33087fb66cac5f840eb9391ed05637b3f2a76a7c8fb477936 \
-    --hash=sha256:33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855
+setuptools==72.0.0 \
+    --hash=sha256:5a0d9c6a2f332881a0153f629d8000118efd33255cfa802757924c53312c76da \
+    --hash=sha256:98b4d786a12fadd34eabf69e8d014b84e5fc655981e4ff419994700434ace132
     # via pip-tools
