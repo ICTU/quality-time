@@ -4,11 +4,8 @@ from typing import Any, NewType
 
 import aiohttp
 
-Build = dict[str, str | int]
-Builds = list[Build]
 ErrorMessage = None | str
 Job = dict[str, Any]
-Jobs = list[Job]
 JSONList = list[dict[str, Any]]
 JSONDict = dict[str, Any]
 JSON = JSONDict | JSONList

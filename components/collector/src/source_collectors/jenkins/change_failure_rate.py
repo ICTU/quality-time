@@ -1,13 +1,12 @@
 """Jenkins change failure rate deploys collector."""
 
-from collections.abc import Iterator
+from collections.abc import Iterator, Sequence
 from typing import cast
 
 from collector_utilities.date_time import datetime_from_timestamp, days_ago, parse_datetime
-from collector_utilities.type import Build, Job, Jobs
 from model import Entities, Entity, SourceResponses
 
-from .base import JenkinsJobs
+from .base import Build, JenkinsJobs, Job
 
 
 class JenkinsChangeFailureRate(JenkinsJobs):
@@ -35,7 +34,7 @@ class JenkinsChangeFailureRate(JenkinsJobs):
             ],
         )
 
-    def _builds_with_jobs(self, jobs: Jobs) -> Iterator[tuple[Build, Job]]:
+    def _builds_with_jobs(self, jobs: Sequence[Job]) -> Iterator[tuple[Build, Job]]:
         """Recursively return the builds and their respective jobs, for all selected jobs."""
         for job in self._jobs(jobs):
             for build in job.get("builds", []):

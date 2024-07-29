@@ -1,12 +1,34 @@
 """Jenkins metric collector base classes."""
 
-from collections.abc import Iterator
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, TypedDict
 
 from base_collectors import SourceCollector
 from collector_utilities.date_time import datetime_from_timestamp
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import URL, Builds, Job, Jobs
+from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator, Sequence
+
+
+class Build(TypedDict):
+    """Jenkins build."""
+
+    result: str
+    timestamp: str
+
+
+class Job(TypedDict):
+    """Jenkins job."""
+
+    buildable: bool
+    builds: Sequence[Build]
+    jobs: Sequence[Job]
+    name: str
+    url: str
 
 
 class JenkinsJobs(SourceCollector):
@@ -33,7 +55,7 @@ class JenkinsJobs(SourceCollector):
             ],
         )
 
-    def _jobs(self, jobs: Jobs, parent_job_name: str = "") -> Iterator[Job]:
+    def _jobs(self, jobs: Sequence[Job], parent_job_name: str = "") -> Iterator[Job]:
         """Recursively return the jobs and their child jobs that need to be counted for the metric."""
         for job in jobs:
             if parent_job_name:
@@ -64,10 +86,10 @@ class JenkinsJobs(SourceCollector):
                 return str(status).capitalize().replace("_", " ")
         return "Not built"
 
-    def _builds(self, job: Job) -> Builds:
+    def _builds(self, job: Job) -> list[Build]:
         """Return the builds of the job."""
         return [build for build in job.get("builds", []) if self._include_build(build)]
 
-    def _include_build(self, build) -> bool:
+    def _include_build(self, build: Build) -> bool:
         """Return whether to include this build or not."""
         return True
