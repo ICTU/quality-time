@@ -521,9 +521,9 @@ lxml==5.2.2 \
     #   api-server (pyproject.toml)
     #   lxml-html-clean
     #   unittest-xml-reporting
-lxml-html-clean==0.1.1 \
-    --hash=sha256:58c04176593c9caf72ec92e033d2f38859e918b3eff0cc0f8051ad27dc2ab8ef \
-    --hash=sha256:8a644ed01dbbe132fabddb9467f077f6dad12a1d4f3a6a553e280f3815fa46df
+lxml-html-clean==0.2.0 \
+    --hash=sha256:47c323f39d95d4cbf4956da62929c89a79313074467efaa4821013c97bf95628 \
+    --hash=sha256:80bdc730b288b8e68f0bf86b99f4bbef129c5ec59b694c6681422be4c1eeb3c5
     # via api-server (pyproject.toml)
 packaging==24.1 \
     --hash=sha256:026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002 \
