@@ -6,10 +6,12 @@ from shared_data_model.meta.entity import Color, Entity, EntityAttribute, Entity
 from shared_data_model.meta.parameter import Parameter
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
+    Branches,
     Days,
     FailureType,
     MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
+    StringParameter,
     TestResult,
     access_parameters,
 )
@@ -40,6 +42,7 @@ ALL_JENKINS_METRICS = [
     "change_failure_rate",
     "failed_jobs",
     "job_runs_within_time_period",
+    "pipeline_duration",
     "source_up_to_dateness",
     "source_version",
     "unused_jobs",
@@ -87,6 +90,7 @@ the "Username" field and the private token in the "**Password**" field.
     },
     url=HttpUrl("https://www.jenkins.io/"),
     parameters={
+        "branches": Branches(help="Branches only apply to multibranch pipelines."),
         "inactive_days": Days(
             name="Number of days without builds after which to consider CI-jobs unused",
             short_name="number of days without builds",
@@ -126,13 +130,19 @@ the "Username" field and the private token in the "**Password**" field.
             default_value="90",
             metrics=["change_failure_rate", "job_runs_within_time_period"],
         ),
+        "pipeline": StringParameter(
+            name="Pipeline (multibranch pipeline name)",
+            short_name="pipeline",
+            mandatory=True,
+            metrics=["pipeline_duration"],
+        ),
         "result_type": MultipleChoiceParameter(
             name="Build result types",
             short_name="result types",
             help="Limit which build result types to include.",
             placeholder="all result types",
             values=["Aborted", "Failure", "Not built", "Success", "Unstable"],
-            metrics=["source_up_to_dateness"],
+            metrics=["pipeline_duration", "source_up_to_dateness"],
         ),
         "failure_type": FailureType(values=["Aborted", "Failure", "Not built", "Unstable"]),
         **jenkins_access_parameters(
