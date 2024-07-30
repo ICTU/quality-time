@@ -4,24 +4,23 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4.1.7
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-    - name: Install dependencies
-      run: |
-        cd components/api_server
-        ci/pip-install.sh
-    - name: Test
-      run: |
-        cd components/api_server
-        ci/unittest.sh
-    - name: Quality
-      run: |
-        cd components/api_server
-        ci/quality.sh
+      - uses: actions/checkout@v4.1.7
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13.0-rc.0"
+      - name: Install dependencies
+        run: |
+          cd components/api_server
+          ci/pip-install.sh
+      - name: Test
+        run: |
+          cd components/api_server
+          ci/unittest.sh
+      - name: Quality
+        run: |
+          cd components/api_server
+          ci/quality.sh
