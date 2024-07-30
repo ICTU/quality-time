@@ -521,9 +521,9 @@ lxml==5.2.2 \
     #   api-server (pyproject.toml)
     #   lxml-html-clean
     #   unittest-xml-reporting
-lxml-html-clean==0.1.1 \
-    --hash=sha256:58c04176593c9caf72ec92e033d2f38859e918b3eff0cc0f8051ad27dc2ab8ef \
-    --hash=sha256:8a644ed01dbbe132fabddb9467f077f6dad12a1d4f3a6a553e280f3815fa46df
+lxml-html-clean==0.2.0 \
+    --hash=sha256:47c323f39d95d4cbf4956da62929c89a79313074467efaa4821013c97bf95628 \
+    --hash=sha256:80bdc730b288b8e68f0bf86b99f4bbef129c5ec59b694c6681422be4c1eeb3c5
     # via api-server (pyproject.toml)
 packaging==24.1 \
     --hash=sha256:026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002 \
@@ -798,9 +798,9 @@ pip==24.2 \
     # via
     #   api-server (pyproject.toml)
     #   pip-tools
-setuptools==72.0.0 \
-    --hash=sha256:5a0d9c6a2f332881a0153f629d8000118efd33255cfa802757924c53312c76da \
-    --hash=sha256:98b4d786a12fadd34eabf69e8d014b84e5fc655981e4ff419994700434ace132
+setuptools==72.1.0 \
+    --hash=sha256:5a03e1860cf56bb6ef48ce186b0e557fdba433237481a9a625176c2831be15d1 \
+    --hash=sha256:8d243eff56d095e5817f796ede6ae32941278f542e0f941867cc05ae52b162ec
     # via
     #   pip-tools
     #   zope-event
