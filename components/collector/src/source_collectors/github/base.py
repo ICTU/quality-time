@@ -1,6 +1,4 @@
 """Github collector base classes."""
-# Author: Tobias Termeczky
-# Company: the/experts.
 
 from abc import ABC
 

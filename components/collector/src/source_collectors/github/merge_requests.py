@@ -1,6 +1,4 @@
 """GitHub pull requests collector."""
-# Author: Tobias Termeczky
-# Company: the/experts.
 
 import aiohttp
 from aiogqlc import GraphQLClient
@@ -143,6 +141,5 @@ class GitHubMergeRequests(GitHubBase):
 
     @classmethod
     def __review_decision_state(cls, review_decision) -> str:
-        if isinstance(review_decision, str):
-            return review_decision
-        return "?"
+       """Return '?' if the input is None or not a string."""
+       return review_decision if isinstance(review_decision, str) else "?"
