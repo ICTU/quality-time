@@ -22,7 +22,7 @@ If your currently installed *Quality-time* version is not v5.15.0, please first 
 
 ### Added
 
-- For metric 'merge requests' added GitHub as possible sources. Closes [#9323](https://github.com/ICTU/quality-time/issues/9323).
+- Add GitHub as possible source for the 'merge requests' metric. Patch contributed by Tobias Termeczky (the/experts). Closes [#9323](https://github.com/ICTU/quality-time/issues/9323).
 
 ### Deployment notes
 
@@ -38,7 +38,7 @@ If your currently installed *Quality-time* version is not v5.14.0, please first 
 - Give measurement entity tables sticky headers, like the metric tables already have. Closes [#8879](https://github.com/ICTU/quality-time/issues/8879).
 
 ### Changed
-
+ 
 - Change the order of the metric tabs to follow the natural usage order, first configure metric and sources, then manage the measurements. Closes [#8824](https://github.com/ICTU/quality-time/issues/8824).
 - Always show metric trend graph tabs. Display a loader in the tab while loading measurements. If the trend graph cannot be displayed, explain in the tab why not. Closes [#8825](https://github.com/ICTU/quality-time/issues/8825).
 - Always show measurement entity tabs. Display a loader in the tab while loading measurements. If the measurement entities cannot be displayed, explain in the tab why not. Closes [#8826](https://github.com/ICTU/quality-time/issues/8826).
