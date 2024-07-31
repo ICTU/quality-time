@@ -1,6 +1,4 @@
 """GitHub source."""
-# Author: Tobias Termeczky
-# Company: the/experts.
 
 from pydantic import HttpUrl
 
@@ -54,8 +52,8 @@ GITHUB = Source(
             metrics=ALL_GITHUB_METRICS,
         ),
         "private_token": PrivateToken(
-            name="Fine-Grained Personal Access Tokens (with Read scope of the repository)",
-            short_name="Fine-Grained Personal Access Tokens",
+            name="Fine-grained personal access token (with read scope of the repository)",
+            short_name="Personal access token",
             help_url=HttpUrl(
                 "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens"
             ),
@@ -63,12 +61,11 @@ GITHUB = Source(
         ),
         "merge_request_state": MergeRequestState(
             name="Pull request state",
-            short_name="PR State",
             values=["Open", "Merged", "Closed"],
             api_values={"Open": "OPEN", "Merged": "MERGED", "Closed": "CLOSED"},
         ),
         "review_decision": MultipleChoiceParameter(
-            name="Review Decision",
+            name="Review decision",
             values=["Approved", "Changes requested", "Review required", "Unknown"],
             api_values={
                 "Approved": "APPROVED",

@@ -1,7 +1,6 @@
 """Unit tests for the GitHub merge requests collector."""
-# Author: Tobias Termeczky
-# Company: the/experts.
 
+from typing import TypedDict
 from unittest.mock import AsyncMock, patch
 
 import aiohttp
@@ -11,6 +10,55 @@ from base_collectors import MetricCollector
 from .base import GitHubTestCase
 
 
+class TotalCount(TypedDict):
+    """The TotalCount JSON as returned by the Github merge request API endpoint."""
+
+    totalCount: str
+
+class Node(TypedDict):
+    """The Node JSON as returned by the Github merge request API endpoint."""
+
+    id: int
+    title: str
+    baseRefName: str
+    state: str
+    url: str
+    createdAt: str
+    updatedAt: str
+    mergedAt: str
+    reviewDecision: str
+    reactions: TotalCount
+    comments: TotalCount
+
+class PageInfo(TypedDict):
+    """The PageInfo JSON as returned by the Github merge request API endpoint."""
+
+    hasNextPage: bool
+    endCursor: str
+
+class PullRequests(TypedDict):
+    """The PullRequests JSON as returned by the Github merge request API endpoint."""
+
+    pageInfo: PageInfo
+    totalCount: int
+    nodes: list[Node]
+
+class Repository(TypedDict):
+    """The Repository JSON as returned by the Github merge request API endpoint."""
+
+    pullRequests: PullRequests
+
+class Data(TypedDict):
+    """The Data JSON as returned by the Github merge request API endpoint."""
+
+    repository: Repository
+
+class Response(TypedDict):
+    """The Response JSON as returned by the Github merge request API endpoint."""
+
+    data: Data
+
+
 class GitHubMergeRequestsTest(GitHubTestCase):
     """Unit tests for the merge request metric."""
 
@@ -18,12 +66,12 @@ class GitHubMergeRequestsTest(GitHubTestCase):
     LANDING_URL = "https://github/owner/repository/pulls"
 
     @staticmethod
-    def merge_request_json(
+    def create_node_json(
         number: int,
         branch: str = "default",
         state: str = "MERGED",
         review_decision: str | None = None,
-    ) -> dict[str, int | str | dict[str, int] | None]:
+    ) -> Node:
         """Create a merge request."""
         return {
             "id": number,
@@ -44,7 +92,7 @@ class GitHubMergeRequestsTest(GitHubTestCase):
         nodes,
         count: int | None = None,
         has_next_page: bool = False,
-    ) -> dict[str, dict[str, dict[str, dict[str, dict[str, str | bool] | int]]]]:
+    ) -> Response:
         """Create the GraphQL merge request response JSON."""
         return {
             "data": {
@@ -92,9 +140,9 @@ class GitHubMergeRequestsTest(GitHubTestCase):
         self.set_source_parameter("target_branches_to_include", ["default"])
         merge_requests_json = self.merge_requests_json(
             [
-                self.merge_request_json(1),
-                self.merge_request_json(2, state="locked"),  # Excluded because of state
-                self.merge_request_json(3, branch="dev"),  # Excluded because of target branch
+                self.create_node_json(1),
+                self.create_node_json(2, state="locked"),  # Excluded because of state
+                self.create_node_json(3, branch="dev"),  # Excluded because of target branch
             ],
         )
 
@@ -114,8 +162,8 @@ class GitHubMergeRequestsTest(GitHubTestCase):
 
     async def test_pagination(self):
         """Test that pagination works."""
-        merge_requests_json1 = self.merge_requests_json([self.merge_request_json(1)], count=2, has_next_page=True)
-        merge_requests_json2 = self.merge_requests_json([self.merge_request_json(2)], count=2)
+        merge_requests_json1 = self.merge_requests_json([self.create_node_json(1)], count=2, has_next_page=True)
+        merge_requests_json2 = self.merge_requests_json([self.create_node_json(2)], count=2)
         merge_requests_page1 = AsyncMock()
         merge_requests_page2 = AsyncMock()
         execute = AsyncMock(side_effect=[merge_requests_page1, merge_requests_page2])
@@ -136,8 +184,8 @@ class GitHubMergeRequestsTest(GitHubTestCase):
         self.set_source_parameter("review_decision", ["Approved"])
         merge_requests_json = self.merge_requests_json(
             [
-                self.merge_request_json(1, review_decision="APPROVED"),
-                self.merge_request_json(2),
+                self.create_node_json(1, review_decision="APPROVED"),
+                self.create_node_json(2),
             ],
         )
         merge_requests_response = AsyncMock()
