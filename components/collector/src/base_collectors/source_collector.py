@@ -114,13 +114,9 @@ class SourceCollector:
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Open the url(s). Can be overridden if a post request is needed or serial requests need to be made."""
-        kwargs: dict[str, aiohttp.BasicAuth | dict[str, str]] = {}
-        credentials = self._basic_auth_credentials()
-        if credentials is not None:
-            kwargs["auth"] = aiohttp.BasicAuth(credentials[0], credentials[1])
-        if headers := self._headers():
-            kwargs["headers"] = headers
-        tasks = [self._session.get(url, allow_redirects=True, **kwargs) for url in urls if url]
+        auth = aiohttp.BasicAuth(*credentials) if (credentials := self._basic_auth_credentials()) else None
+        headers = self._headers()
+        tasks = [self._session.get(url, allow_redirects=True, headers=headers, auth=auth) for url in urls if url]
         responses = await asyncio.gather(*tasks, return_exceptions=True)
         for response in responses:
             if isinstance(response, Exception):
