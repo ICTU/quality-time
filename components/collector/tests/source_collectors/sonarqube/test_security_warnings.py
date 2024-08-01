@@ -126,7 +126,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
             get_request_json_side_effect=[show_component_json, self.issues_json, self.hotspots_json],
             return_mocks=True,
         )
-        get.assert_called_with(self.HOTSPOTS_API, allow_redirects=True)
+        get.assert_called_with(self.HOTSPOTS_API, allow_redirects=True, headers={}, auth=None)
         post.assert_not_called()
         self.assert_measurement(
             response,
@@ -140,7 +140,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         """Test that only the security hotspots are returned."""
         self.set_source_parameter("security_types", ["security hotspot"])
         response, get, post = await self.collect(get_request_json_return_value=self.hotspots_json, return_mocks=True)
-        get.assert_called_with(self.HOTSPOTS_API, allow_redirects=True)
+        get.assert_called_with(self.HOTSPOTS_API, allow_redirects=True, headers={}, auth=None)
         post.assert_not_called()
         self.assert_measurement(
             response,
@@ -153,7 +153,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     async def test_security_warnings_vulnerabilities_only(self):
         """Test that by default only issues with security impact are returned."""
         response, get, post = await self.collect(get_request_json_return_value=self.issues_json, return_mocks=True)
-        get.assert_called_with(self.ISSUES_API, allow_redirects=True)
+        get.assert_called_with(self.ISSUES_API, allow_redirects=True, headers={}, auth=None)
         post.assert_not_called()
         self.assert_measurement(
             response,
@@ -168,7 +168,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         self.set_source_parameter("security_types", ["security hotspot"])
         self.set_source_parameter("hotspot_statuses", ["to review", "fixed"])
         response, get, post = await self.collect(get_request_json_return_value=self.hotspots_json, return_mocks=True)
-        get.assert_called_with(self.HOTSPOTS_API, allow_redirects=True)
+        get.assert_called_with(self.HOTSPOTS_API, allow_redirects=True, headers={}, auth=None)
         post.assert_not_called()
         self.assert_measurement(
             response,
@@ -182,7 +182,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         """Test that the security warning issues can be filtered by tag."""
         self.set_source_parameter("tags", ["cwe"])
         response, get, post = await self.collect(get_request_json_return_value=self.issues_json, return_mocks=True)
-        get.assert_called_with(self.ISSUES_API + "&tags=cwe", allow_redirects=True)
+        get.assert_called_with(self.ISSUES_API + "&tags=cwe", allow_redirects=True, headers={}, auth=None)
         post.assert_not_called()
         self.assert_measurement(
             response,
