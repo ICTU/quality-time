@@ -8,7 +8,7 @@ classifiers = [
 ]
 dependencies = [
     "aiogqlc==5.1.0",
-    "aiohttp==3.9.5",
+    "aiohttp==3.10.0",
     "beautifulsoup4==4.12.3",
     "defusedxml==0.7.1",
     "packaging==24.1",
@@ -30,9 +30,9 @@ optional-dependencies.dev = [
 optional-dependencies.tools = [
     "bandit==1.7.9",
     "fixit==2.1.0",
-    "mypy==1.11.0",
+    "mypy==1.11.1",
     "pip-audit==2.7.3",
-    "pyproject-fmt==2.1.4",
+    "pyproject-fmt==2.2.1",
     "ruff==0.5.5",
     "vulture==2.11",
 ]
