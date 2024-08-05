@@ -29,7 +29,7 @@ optional-dependencies.tools = [
     "pip-audit==2.7.3",
     "pydantic==2.8.2",      # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.2.1",
-    "ruff==0.5.5",
+    "ruff==0.5.6",
     "vale==3.0.3.0",        # Documentation grammar and style checker
     "vulture==2.11",
 ]
