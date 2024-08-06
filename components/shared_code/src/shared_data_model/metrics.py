@@ -225,7 +225,7 @@ example. The parameter "Target branches to include" can be used to further limit
 requests that target specific branches, for example the "develop" branch.""",
         scales=["count", "percentage"],
         unit=Unit.MERGE_REQUESTS,
-        sources=["azure_devops", "gitlab", "manual_number"],
+        sources=["azure_devops", "github", "gitlab", "manual_number"],
         tags=[Tag.CI],
     ),
     "metrics": Metric(
