@@ -1,10 +1,9 @@
 [project]
 name = "shared-code"
 version = "5.15.0"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
     "bottle==0.12.25",
