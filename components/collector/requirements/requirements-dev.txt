@@ -12,7 +12,7 @@ aiohappyeyeballs==2.3.4 \
     --hash=sha256:40a16ceffcf1fc9e142fd488123b2e218abc4188cf12ac20c67200e1579baa42 \
     --hash=sha256:7e1ae8399c320a8adec76f6c919ed5ceae6edd4c3672f4d9eae2b27e37c80ff6
     # via aiohttp
-aiohttp==3.10.1 \
+aiohttp==3.10.2 \
     --hash=sha256:01c3f1eb280008e51965a8d160a108c333136f4a39d46f516c64d2aa2e6a53f2 \
     --hash=sha256:028faf71b338f069077af6315ad54281612705d68889f5d914318cbc2aab0d50 \
     --hash=sha256:03c0c380c83f8a8d4416224aafb88d378376d6f4cadebb56b060688251055cd4 \
