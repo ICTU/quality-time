@@ -18,7 +18,7 @@
         "react-timeago": "^7.2.0",
         "react-toastify": "^10.0.5",
         "semantic-ui-react": "^2.1.5",
-        "use-local-storage-state": "^19.3.1",
+        "use-local-storage-state": "^19.4.0",
         "victory": "^37.0.2"
     },
     "scripts": {
@@ -47,14 +47,14 @@
     "devDependencies": {
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
         "@eslint/compat": "^1.1.1",
-        "@eslint/js": "^9.8.0",
+        "@eslint/js": "^9.9.0",
         "@testing-library/dom": "10.4.0",
         "@testing-library/jest-dom": "^6.4.8",
         "@testing-library/react": "^16.0.0",
         "@testing-library/user-event": "^14.5.2",
-        "eslint": "^9.8.0",
+        "eslint": "^9.9.0",
         "eslint-config-prettier": "^9.1.0",
-        "eslint-plugin-jest": "^28.7.0",
+        "eslint-plugin-jest": "^28.8.0",
         "eslint-plugin-n": "^17.10.2",
         "eslint-plugin-prettier": "^5.2.1",
         "eslint-plugin-promise": "^7.1.0",
