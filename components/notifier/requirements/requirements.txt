@@ -4,9 +4,9 @@
 #
 #    ci/pip-compile.sh
 #
-aiohappyeyeballs==2.3.5 \
-    --hash=sha256:4d6dea59215537dbc746e93e779caea8178c866856a721c9c660d7a5a7b8be03 \
-    --hash=sha256:6fa48b9f1317254f122a07a131a86b71ca6946ca989ce6326fff54a99a920105
+aiohappyeyeballs==2.3.7 \
+    --hash=sha256:337ce4dc0e99eb697c3c5a77d6cb3c52925824d9a67ac0dea7c55b8a2d60b222 \
+    --hash=sha256:e794cd29ba6a14078092984e43688212a19081de3a73b6796c2fdeb3706dd6ce
     # via aiohttp
 aiohttp==3.10.3 \
     --hash=sha256:05d66203a530209cbe40f102ebaac0b2214aba2a33c075d0bf825987c36f1f0b \
