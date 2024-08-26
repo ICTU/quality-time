@@ -19,17 +19,17 @@ optional-dependencies.dev = [
     "coverage==7.3.4",
     "pip==24.2",
     "pip-tools==7.4.1",              # To add hashes to requirements
-    "pipx==1.6.0",
+    "pipx==1.7.1",
     "unittest-xml-reporting==3.2.0", # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
     "bandit==1.7.9",
     "fixit==2.1.0",
-    "mypy==1.11.1",
+    "mypy==1.11.2",
     "pip-audit==2.7.3",
     "pydantic==2.8.2",      # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.2.1",
-    "ruff==0.6.0",
+    "ruff==0.6.2",
     "vale==3.0.3.0",        # Documentation grammar and style checker
     "vulture==2.11",
 ]
