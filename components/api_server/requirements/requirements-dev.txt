@@ -566,9 +566,9 @@ pip-tools==7.4.1 \
     --hash=sha256:4c690e5fbae2f21e87843e89c26191f0d9454f362d8acdbd695716493ec8b3a9 \
     --hash=sha256:864826f5073864450e24dbeeb85ce3920cdfb09848a3d69ebf537b521f14bcc9
     # via api-server (pyproject.toml)
-pipx==1.6.0 \
-    --hash=sha256:760889dc3aeed7bf4024973bf22ca0c2a891003f52389159ab5cb0c57d9ebff4 \
-    --hash=sha256:840610e00103e3d49ae24b6b51804b60988851a5dd65468adb71e5a97e2699b2
+pipx==1.7.1 \
+    --hash=sha256:3933c43bb344e649cb28e10d357e0967ce8572f1c19caf90cf39ae95c2a0afaf \
+    --hash=sha256:762de134e16a462be92645166d225ecef446afaef534917f5f70008d63584360
     # via api-server (pyproject.toml)
 platformdirs==4.2.2 \
     --hash=sha256:2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee \
