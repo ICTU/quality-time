@@ -12,7 +12,7 @@ dependencies = [
 optional-dependencies.dev = [
     "pip==24.2",
     "pip-tools==7.4.1", # To add hashes to requirements
-    "pipx==1.6.0",
+    "pipx==1.7.1",
 ]
 optional-dependencies.tools = [
     "bandit==1.7.9",
