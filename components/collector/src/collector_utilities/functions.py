@@ -70,7 +70,24 @@ def sha1_hash(string: str) -> str:
 
 def is_regexp(string: str) -> bool:
     """Return whether the string looks like a regular expression."""
-    return bool(set("$^?.+*[]") & set(string))
+    return False if matches_semantic_version(string) else bool(set("$^?.+*[]") & set(string))
+
+
+def matches_semantic_version(string) -> bool:
+    """Return whether the string is a semantic version number.
+
+    Regular expression taken from
+    https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string.
+    """
+    return (
+        re.match(
+            r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)"
+            r"(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
+            r"(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$",
+            string,
+        )
+        is not None
+    )
 
 
 def match_string_or_regular_expression(string: str, strings_and_or_regular_expressions: Collection[str]) -> bool:
