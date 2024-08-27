@@ -1,4 +1,4 @@
-"""Github collector base classes."""
+"""GitHub collector base classes."""
 
 from abc import ABC
 

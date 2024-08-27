@@ -11,50 +11,56 @@ from .base import GitHubTestCase
 
 
 class TotalCount(TypedDict):
-    """The TotalCount JSON as returned by the Github merge request API endpoint."""
+    """The TotalCount JSON as returned by the GitHub merge request API endpoint."""
 
     totalCount: str
 
+
 class Node(TypedDict):
-    """The Node JSON as returned by the Github merge request API endpoint."""
+    """The Node JSON as returned by the GitHub merge request API endpoint."""
 
     id: int
     title: str
     baseRefName: str
     state: str
     url: str
-    createdAt: str
-    updatedAt: str
-    mergedAt: str
+    createdAt: str | None
+    updatedAt: str | None
+    mergedAt: str | None
     reviewDecision: str
     reactions: TotalCount
     comments: TotalCount
 
+
 class PageInfo(TypedDict):
-    """The PageInfo JSON as returned by the Github merge request API endpoint."""
+    """The PageInfo JSON as returned by the GitHub merge request API endpoint."""
 
     hasNextPage: bool
     endCursor: str
 
+
 class PullRequests(TypedDict):
-    """The PullRequests JSON as returned by the Github merge request API endpoint."""
+    """The PullRequests JSON as returned by the GitHub merge request API endpoint."""
 
     pageInfo: PageInfo
     totalCount: int
     nodes: list[Node]
 
+
 class Repository(TypedDict):
-    """The Repository JSON as returned by the Github merge request API endpoint."""
+    """The Repository JSON as returned by the GitHub merge request API endpoint."""
 
     pullRequests: PullRequests
 
+
 class Data(TypedDict):
-    """The Data JSON as returned by the Github merge request API endpoint."""
+    """The Data JSON as returned by the GitHub merge request API endpoint."""
 
     repository: Repository
 
+
 class Response(TypedDict):
-    """The Response JSON as returned by the Github merge request API endpoint."""
+    """The Response JSON as returned by the GitHub merge request API endpoint."""
 
     data: Data
 
@@ -70,22 +76,22 @@ class GitHubMergeRequestsTest(GitHubTestCase):
         number: int,
         branch: str = "default",
         state: str = "MERGED",
-        review_decision: str | None = None,
+        review_decision: str = "?",
     ) -> Node:
         """Create a merge request."""
-        return {
-            "id": number,
-            "title": f"Merge request {number}",
-            "baseRefName": branch,
-            "state": state,
-            "url": f"https://github/pull{number}",
-            "createdAt": "2017-04-29T08:46:00Z",
-            "updatedAt": "2017-04-29T09:40:00Z",
-            "mergedAt": None,
-            "reviewDecision": review_decision,
-            "reactions": {"totalCount": number},
-            "comments": {"totalCount": number},
-        }
+        return Node(
+            id=number,
+            title=f"Merge request {number}",
+            baseRefName=branch,
+            state=state,
+            url=f"https://github/pull{number}",
+            createdAt="2017-04-29T08:46:00Z",
+            updatedAt="2017-04-29T09:40:00Z",
+            mergedAt=None,
+            reviewDecision=review_decision,
+            reactions=TotalCount(totalCount=str(number)),
+            comments=TotalCount(totalCount=str(number)),
+        )
 
     @staticmethod
     def merge_requests_json(

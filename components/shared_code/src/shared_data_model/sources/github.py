@@ -27,7 +27,11 @@ GITHUB_BRANCH_HELP_URL = HttpUrl(
 
 GITHUB = Source(
     name="GitHub",
-    description="GitHub provides a cloud-based hosting service for Git repositories, offering tools for version control, source code management, pull requests, issue tracking, and continuous integration/continuous deployment (CI/CD).",
+    description=(
+        "GitHub provides a cloud-based hosting service for Git repositories, offering tools for version control, "
+        "source code management, pull requests, issue tracking, and continuous integration/continuous deployment "
+        "(CI/CD)."
+    ),
     url=HttpUrl("https://github.com/about"),
     parameters={
         "url": URL(
@@ -55,7 +59,8 @@ GITHUB = Source(
             name="Fine-grained personal access token (with read scope of the repository)",
             short_name="Personal access token",
             help_url=HttpUrl(
-                "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens"
+                "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/"
+                "managing-your-personal-access-tokens"
             ),
             metrics=ALL_GITHUB_METRICS,
         ),
@@ -76,9 +81,7 @@ GITHUB = Source(
             placeholder="all review decisions",
             metrics=["merge_requests"],
         ),
-        "target_branches_to_include": TargetBranchesToInclude(
-            help_url=GITHUB_BRANCH_HELP_URL
-        ),
+        "target_branches_to_include": TargetBranchesToInclude(help_url=GITHUB_BRANCH_HELP_URL),
     },
     entities={
         "merge_requests": Entity(

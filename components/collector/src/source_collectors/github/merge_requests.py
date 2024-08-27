@@ -141,5 +141,5 @@ class GitHubMergeRequests(GitHubBase):
 
     @classmethod
     def __review_decision_state(cls, review_decision) -> str:
-       """Return '?' if the input is None or not a string."""
-       return review_decision if isinstance(review_decision, str) else "?"
+        """Return '?' if the input is None or not a string."""
+        return review_decision if isinstance(review_decision, str) else "?"
