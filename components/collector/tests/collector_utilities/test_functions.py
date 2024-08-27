@@ -114,6 +114,13 @@ class IsRegularExpressionTest(unittest.TestCase):
         self.assertTrue(is_regexp("bar?foo"))
         self.assertTrue(is_regexp("[a-z]+foo"))
 
+    def test_semantic_version_are_no_regexp(self):
+        """Test that semantic version numbers are not considered a regular expression."""
+        self.assertFalse(is_regexp("1.2.3"))
+        self.assertFalse(is_regexp("1.2.3-rc.0"))
+        self.assertTrue(is_regexp("v10.2"))
+        self.assertTrue(is_regexp("foo 10.2"))
+
 
 class IterableToBatchesTest(unittest.TestCase):
     """Unit tests for the iterable_to_batches function."""

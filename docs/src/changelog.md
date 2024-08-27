@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is not v5.15.0, please first check the upgrade path in the [versioning policy](versioning.md).
 
+### Fixed
+
+- Don't interpret version number parameters as regular expressions. Fixes [#8739](https://github.com/ICTU/quality-time/issues/8739).
+
 ### Added
 
 - Allow for configuring Jenkins as source for the metric 'CI-pipeline duration' (GitLab CI was already supported, Azure DevOps will follow later). Partially implements [#6423](https://github.com/ICTU/quality-time/issues/6423).
