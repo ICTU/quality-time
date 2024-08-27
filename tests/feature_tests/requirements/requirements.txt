@@ -225,9 +225,9 @@ parse==1.20.2 \
     # via
     #   behave
     #   parse-type
-parse-type==0.6.2 \
-    --hash=sha256:06d39a8b70fde873eb2a131141a0e79bb34a432941fb3d66fad247abafc9766c \
-    --hash=sha256:79b1f2497060d0928bc46016793f1fca1057c4aacdf15ef876aa48d75a73a355
+parse-type==0.6.3 \
+    --hash=sha256:8d94a52e0197fbad63fee8f70df16e6ed689e5e4f105b705c9afa7a30397a5aa \
+    --hash=sha256:8e99d2f52fab2f0f1f3d68ba9d026060140bf0e53680aada0111fb27b2f0e93a
     # via behave
 pymongo==4.8.0 \
     --hash=sha256:0fc18b3a093f3db008c5fea0e980dbd3b743449eee29b5718bc2dc15ab5088bb \
