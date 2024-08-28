@@ -119,7 +119,6 @@ export function MetricDetails({
     const [measurementsStatus, setMeasurementsStatus] = useState("loading")
     useEffect(() => {
         fetchMeasurements(reportDate, metric_uuid, setMeasurements, setMeasurementsStatus)
-        // eslint-disable-next-line
     }, [metric_uuid, reportDate])
     function measurementsReload() {
         reload()

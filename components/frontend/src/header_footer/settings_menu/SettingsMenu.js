@@ -1,10 +1,37 @@
-import { bool, func, number, oneOfType, string } from "prop-types"
-import { Menu } from "semantic-ui-react"
+import "./SettingsMenu.css"
 
-import { Popup } from "../semantic_ui_react_wrappers"
-import { childrenPropType, popupContentPropType } from "../sharedPropTypes"
+import { bool, func, number, oneOfType, string } from "prop-types"
+import { Header, Menu, Segment } from "semantic-ui-react"
+
+import { Popup } from "../../semantic_ui_react_wrappers"
+import { childrenPropType, popupContentPropType } from "../../sharedPropTypes"
 
 const activeColor = "grey"
+
+export function SettingsMenuGroup({ children }) {
+    return (
+        <Segment.Group horizontal className="equal width" style={{ margin: "0px", border: "0px" }}>
+            {children}
+        </Segment.Group>
+    )
+}
+SettingsMenuGroup.propTypes = {
+    children: childrenPropType,
+}
+
+export function SettingsMenu({ children, title }) {
+    const menuProps = { compact: true, vertical: true, inverted: true, secondary: true }
+    return (
+        <Segment inverted color="black">
+            <Header size="small">{title}</Header>
+            <Menu {...menuProps}>{children}</Menu>
+        </Segment>
+    )
+}
+SettingsMenu.propTypes = {
+    title: string,
+    children: childrenPropType,
+}
 
 export function SettingsMenuItem({ active, children, disabled, disabledHelp, help, onClick, onClickData }) {
     // A menu item that can can show help when disabled so users can see why the menu item is disabled

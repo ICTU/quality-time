@@ -68,7 +68,6 @@ export function PageContent({
         get_measurements(minDate, maxDate)
             .then((json) => setMeasurements(json.measurements ?? []))
             .catch((error) => showMessage("error", "Could not fetch measurements", `${error}`))
-        // eslint-disable-next-line
     }, [report_date, nrMeasurements, settings.dateInterval.value, settings.nrDates.value])
     let content
     if (loading) {
