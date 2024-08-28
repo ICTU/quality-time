@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not v5.15.0, please first 
 ### Fixed
 
 - Don't interpret version number parameters as regular expressions. Fixes [#8739](https://github.com/ICTU/quality-time/issues/8739).
+- Don't fail on parsing npm outdated output with multiple dependents per dependency. Fixes [#9566](https://github.com/ICTU/quality-time/issues/9566).
 
 ### Added
 
