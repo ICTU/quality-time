@@ -8,33 +8,10 @@ import { IssuesCard } from "../dashboard/IssuesCard"
 import { LegendCard } from "../dashboard/LegendCard"
 import { MetricsRequiringActionCard } from "../dashboard/MetricsRequiringActionCard"
 import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
-import { STATUS_COLORS } from "../metric/status"
 import { datesPropType, measurementsPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
-import { getMetricTags, getReportTags, getSubjectName, nrMetricsInReport, visibleMetrics } from "../utils"
+import { getReportTags, getSubjectName, nrMetricsInReport, sum, visibleMetrics } from "../utils"
 import { Tag } from "../widgets/Tag"
-import { metricStatusOnDate } from "./report_utils"
-
-function summarizeMetricsOnDate(metrics, measurements, date, dataModel) {
-    const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
-    Object.entries(metrics).forEach(([metric_uuid, metric]) => {
-        const status = metricStatusOnDate(metric_uuid, metric, measurements, date, dataModel)
-        summary[STATUS_COLORS[status]] += 1
-    })
-    return summary
-}
-
-function summarizeTagOnDate(report, measurements, tag, date, dataModel) {
-    const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
-    Object.values(report.subjects).forEach((subject) => {
-        Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
-            if (getMetricTags(metric).indexOf(tag) >= 0) {
-                const status = metricStatusOnDate(metric_uuid, metric, measurements, date, dataModel)
-                summary[STATUS_COLORS[status]] += 1
-            }
-        })
-    })
-    return summary
-}
+import { summarizeMetricsOnDate, summarizeReportOnDate } from "./report_utils"
 
 export function ReportDashboard({ dates, measurements, onClick, onClickTag, reload, report, settings }) {
     const dataModel = useContext(DataModel)
@@ -42,11 +19,11 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
     const subjectCards = []
     if (settings.hiddenCards.excludes("subjects")) {
         Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-            const metrics = visibleMetrics(subject.metrics, "none", settings.hiddenTags.value)
+            const metrics = visibleMetrics(subject.metrics, settings.metricsToHide.value, settings.hiddenTags.value)
             if (Object.keys(metrics).length > 0) {
                 const summary = {}
                 dates.forEach((date) => {
-                    summary[date] = summarizeMetricsOnDate(metrics, measurements, date, dataModel)
+                    summary[date] = summarizeMetricsOnDate(dataModel, metrics, measurements, date)
                 })
                 subjectCards.push(
                     <MetricSummaryCard
@@ -63,12 +40,15 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
     let tagCards = []
     if (settings.hiddenCards.excludes("tags")) {
         const anyTagsHidden = settings.hiddenTags.value.length > 0
-        tagCards = getReportTags(report, settings.hiddenTags.value).map((tag) => {
+        getReportTags(report, settings.hiddenTags.value).forEach((tag) => {
             const summary = {}
             dates.forEach((date) => {
-                summary[date] = summarizeTagOnDate(report, measurements, tag, date, dataModel)
+                summary[date] = summarizeReportOnDate(dataModel, settings, report, measurements, date, tag)
             })
-            return (
+            if (Object.values(summary).every((summaryOnDate) => sum(summaryOnDate) === 0)) {
+                return // Don't show a tag card when all metrics with the tag have been hidden
+            }
+            tagCards.push(
                 <MetricSummaryCard
                     header={<Tag selected={anyTagsHidden} tag={tag} />}
                     key={tag}
@@ -76,7 +56,7 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
                     onClick={() => onClickTag(tag)}
                     selected={anyTagsHidden}
                     summary={summary}
-                />
+                />,
             )
         })
     }

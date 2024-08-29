@@ -7,39 +7,10 @@ import { CardDashboard } from "../dashboard/CardDashboard"
 import { LegendCard } from "../dashboard/LegendCard"
 import { MetricsRequiringActionCard } from "../dashboard/MetricsRequiringActionCard"
 import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
-import { STATUS_COLORS } from "../metric/status"
 import { datesPropType, measurementsPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
-import { getMetricTags, getReportsTags, nrMetricsInReport, sum, visibleMetrics } from "../utils"
+import { getReportsTags, nrMetricsInReport, sum } from "../utils"
 import { Tag } from "../widgets/Tag"
-import { metricStatusOnDate } from "./report_utils"
-
-function summarizeReportOnDate(report, measurements, date, hiddenTags, dataModel) {
-    const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
-    Object.values(report.subjects).forEach((subject) => {
-        const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
-        Object.entries(metrics).forEach(([metric_uuid, metric]) => {
-            const status = metricStatusOnDate(metric_uuid, metric, measurements, date, dataModel)
-            summary[STATUS_COLORS[status]] += 1
-        })
-    })
-    return summary
-}
-
-function summarizeReportsOnDate(reports, measurements, date, tag, hiddenTags, dataModel) {
-    const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
-    reports.forEach((report) => {
-        Object.values(report.subjects).forEach((subject) => {
-            const metrics = visibleMetrics(subject.metrics, "none", hiddenTags)
-            Object.entries(metrics).forEach(([metric_uuid, metric]) => {
-                if (getMetricTags(metric).indexOf(tag) >= 0) {
-                    const status = metricStatusOnDate(metric_uuid, metric, measurements, date, dataModel)
-                    summary[STATUS_COLORS[status]] += 1
-                }
-            })
-        })
-    })
-    return summary
-}
+import { summarizeReportOnDate, summarizeReportsOnDate } from "./report_utils"
 
 export function ReportsOverviewDashboard({
     dates,
@@ -59,11 +30,11 @@ export function ReportsOverviewDashboard({
         reportSummary[report.report_uuid] = {}
         dates.forEach((date) => {
             reportSummary[report.report_uuid][date] = summarizeReportOnDate(
+                dataModel,
+                settings,
                 report,
                 measurements,
                 date,
-                settings.hiddenTags.value,
-                dataModel,
             )
         })
     })
@@ -72,14 +43,7 @@ export function ReportsOverviewDashboard({
     tags.forEach((tag) => {
         tagSummary[tag] = {}
         dates.forEach((date) => {
-            tagSummary[tag][date] = summarizeReportsOnDate(
-                reports,
-                measurements,
-                date,
-                tag,
-                settings.hiddenTags.value,
-                dataModel,
-            )
+            tagSummary[tag][date] = summarizeReportsOnDate(dataModel, settings, reports, measurements, date, tag)
             nrMetrics = Math.max(nrMetrics, sum(tagSummary[tag][date]))
         })
     })

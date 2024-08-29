@@ -1,6 +1,7 @@
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from "./context/Permissions"
 import { defaultDesiredResponseTimes } from "./defaults"
 import {
+    addCounts,
     capitalize,
     getMetricResponseDeadline,
     getMetricResponseOverrun,
@@ -474,6 +475,13 @@ it("gets the number of reports in a report", () => {
 it("gets the number of reports in reports", () => {
     expect(nrMetricsInReports([{ subjects: {} }])).toBe(0)
     expect(nrMetricsInReports([{ subjects: { subject_uuid: { metrics: { metric_uuid: {} } } } }])).toBe(1)
+})
+
+it("adds counts", () => {
+    expect(addCounts({}, {})).toStrictEqual({})
+    expect(addCounts({ red: 1 }, { red: 0 })).toStrictEqual({ red: 1 })
+    expect(addCounts({ red: 1, green: 3 }, { red: 2, green: 3 })).toStrictEqual({ red: 3, green: 6 })
+    expect(() => addCounts({}, { red: 1 })).toThrow()
 })
 
 it("sums numbers", () => {

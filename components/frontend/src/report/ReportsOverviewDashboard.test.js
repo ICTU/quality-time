@@ -100,6 +100,7 @@ it("hides the required actions cards", async () => {
 })
 
 it("hides metrics not requiring action", async () => {
+    history.push("?metrics_to_hide=all")
     renderReportsOverviewDashboard()
     fireEvent.click(screen.getByText(/Action required/))
     expect(history.location.search).toEqual("?metrics_to_hide=no_action_required")
