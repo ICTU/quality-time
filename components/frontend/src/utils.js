@@ -237,14 +237,9 @@ export function visibleMetrics(metrics, metricsToHide, hiddenTags) {
     if (metricsToHide === "all") {
         return {}
     }
-    const visible = {}
-    Object.entries(metrics).forEach(([metric_uuid, metric]) => {
-        if (hideMetric(metric, metricsToHide, hiddenTags)) {
-            return
-        }
-        visible[metric_uuid] = metric
-    })
-    return visible
+    return Object.fromEntries(
+        Object.entries(metrics).filter(([_, metric]) => !hideMetric(metric, metricsToHide, hiddenTags)),
+    )
 }
 visibleMetrics.propTypes = {
     metrics: metricsPropType,
@@ -403,6 +398,18 @@ export function dropdownOptions(options) {
 export function slugify(name) {
     // The hash isn't really part of the slug, but to prevent duplication it is included anyway
     return `#${name?.toLowerCase().replaceAll(" ", "-").replaceAll("(", "").replaceAll(")", "").replaceAll("/", "")}`
+}
+
+export function addCounts(object1, object2) {
+    // Assuming object1 and object2 are objects of the form {key1: count1, key2: count2, ...}, add them together
+    if (JSON.stringify(Object.keys(object1)) !== JSON.stringify(Object.keys(object2))) {
+        throw new Error("Can't add the counts of objects with different keys")
+    }
+    const result = {}
+    Object.keys(object1).forEach((key) => {
+        result[key] = object1[key] + object2[key]
+    })
+    return result
 }
 
 export function sum(object) {
