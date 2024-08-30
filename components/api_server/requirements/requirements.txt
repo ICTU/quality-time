@@ -459,9 +459,9 @@ lxml==5.3.0 \
     # via
     #   api-server (pyproject.toml)
     #   lxml-html-clean
-lxml-html-clean==0.2.0 \
-    --hash=sha256:47c323f39d95d4cbf4956da62929c89a79313074467efaa4821013c97bf95628 \
-    --hash=sha256:80bdc730b288b8e68f0bf86b99f4bbef129c5ec59b694c6681422be4c1eeb3c5
+lxml-html-clean==0.2.1 \
+    --hash=sha256:50548f3717b7e74a83a9b427cc9f85fe5317ff6fa6b1a462c90182987c91c799 \
+    --hash=sha256:5df0fc6064cfa5f97a55d5c4ff4e876704fb159347d616e3b04ec35e46f23b36
     # via api-server (pyproject.toml)
 pyasn1==0.6.0 \
     --hash=sha256:3a35ab2c4b5ef98e17dfdec8ab074046fbda76e281c5a706ccd82328cfc8f64c \
