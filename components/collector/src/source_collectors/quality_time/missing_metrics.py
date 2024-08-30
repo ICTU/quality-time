@@ -50,7 +50,7 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
     def __report_nr_of_possible_metric_types(self, data_model: dict, report: dict) -> int:
         """Return the number of possible metric types in the report."""
         subjects = report.get("subjects", {}).values()
-        return sum(len(self.__subject_possible_metric_types(data_model, subject)) for subject in subjects)
+        return sum(len(self.supported_metric_types(data_model, subject)) for subject in subjects)
 
     def __missing_metric_type_entities(self, data_model: dict, reports: list[dict], landing_url: URL) -> Entities:
         """Return the reports' missing metric types as entities."""
@@ -77,7 +77,7 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
         report_uuid = report["report_uuid"]
         report_url = f"{landing_url}/{report_uuid}"
         subject = report["subjects"][subject_uuid]
-        subject_type_name = data_model["subjects"][subject["type"]]["name"]
+        subject_type_name = self.subject_type(data_model["subjects"], subject["type"])["name"]
         return Entities(
             Entity(
                 key=f"{report_uuid}:{subject_uuid}:{metric_type}",
@@ -89,20 +89,30 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
                 subject_type=subject_type_name,
                 metric_type=data_model["metrics"][metric_type]["name"],
             )
-            for metric_type in self.__subject_missing_metric_types(data_model, subject)
+            for metric_type in self.__missing_metric_types(data_model, subject)
         )
 
-    def __subject_missing_metric_types(self, data_model: dict, subject: dict) -> list[str]:
-        """Return the subject's missing metric types."""
-        possible_types = self.__subject_possible_metric_types(data_model, subject)
+    def __missing_metric_types(self, data_model: dict, subject: dict) -> list[str]:
+        """Return the subject's supported metric types minus the used metric types."""
+        supported_metric_types = self.supported_metric_types(data_model, subject)
         actual_types = {metric["type"] for metric in subject.get("metrics", {}).values()}
-        return [metric_type for metric_type in possible_types if metric_type not in actual_types]
+        return [metric_type for metric_type in supported_metric_types if metric_type not in actual_types]
 
-    @staticmethod
-    def __subject_possible_metric_types(data_model: dict, subject: dict) -> list[str]:
-        """Return the subject's possible metric types."""
-        subject_type = data_model["subjects"][subject["type"]]
+    @classmethod
+    def supported_metric_types(cls, data_model: dict, subject: dict) -> list[str]:
+        """Return the subject's supported metric types."""
+        subject_type = cls.subject_type(data_model["subjects"], subject["type"])
         metric_types = set(subject_type.get("metrics", []))
         for child_subject in subject_type.get("subjects", {}).values():
             metric_types |= set(child_subject.get("metrics", []))
         return sorted(metric_types)
+
+    @classmethod
+    def subject_type(cls, subjects: dict[str, dict], subject_type_name: str) -> dict:
+        """Return the subject type with the specified name."""
+        for name, subject_type in subjects.items():
+            if subject_type_name == name:
+                return subject_type
+            if composite_subject_type := cls.subject_type(subject_type.get("subjects", {}), subject_type_name):
+                return composite_subject_type
+        return {}

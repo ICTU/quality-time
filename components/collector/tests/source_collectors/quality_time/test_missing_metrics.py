@@ -2,8 +2,9 @@
 
 import json
 
-from shared.utils.functions import first
 from shared_data_model import DATA_MODEL_JSON
+
+from source_collectors.quality_time.missing_metrics import QualityTimeMissingMetrics
 
 from .base import QualityTimeTestCase
 
@@ -17,15 +18,14 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         """Set up test data."""
         super().setUp()
         self.data_model = json.loads(DATA_MODEL_JSON)
-        self.expected_software_metrics = str(2 * len(self.subject_metrics(self.data_model["subjects"]["software"])))
         self.reports["reports"].append(
             {
                 "title": "R3",
                 "report_uuid": "r3",
                 "subjects": {
                     "s2": {
-                        "type": "software",
-                        "name": "S2",
+                        "type": "software_source_code",
+                        "name": "Subject2",
                         "metrics": {
                             "m21": {
                                 "tags": ["security"],
@@ -46,23 +46,37 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
                 },
             },
         )
-        self.entities = []
-        metric_types = self.subject_metrics(self.data_model["subjects"]["software"])
+
+    def nr_supported_metric_types(self) -> int:
+        """Return the number of metric types supported by the subjects in the reports."""
+        nr_supported_metrics = 0
+        for report in self.reports["reports"]:
+            for subject in report.get("subjects", {}).values():
+                nr_supported_metrics += len(QualityTimeMissingMetrics.supported_metric_types(self.data_model, subject))
+        return nr_supported_metrics
+
+    def entities(self, subjects_to_ignore: list[str] | None = None) -> list[dict[str, str]]:
+        """Create the expected entities."""
+        subjects_to_ignore = subjects_to_ignore or []
+        entities = []
         for report in self.reports["reports"]:
             for subject_uuid, subject in report.get("subjects", {}).items():
-                for metric_type in metric_types:
-                    if metric_type not in ["violations", "loc"]:
-                        self.entities.append(self.create_entity(report, subject_uuid, subject, metric_type))
-
-    def subject_metrics(self, subject_type) -> list[str]:
-        """Return the metric types supported by the subject type."""
-        metric_types = set(subject_type.get("metrics", []))
-        for child_subject_type in subject_type.get("subjects", {}).values():
-            metric_types |= set(child_subject_type.get("metrics", []))
-        return sorted(metric_types)
+                if subject["name"] in subjects_to_ignore or subject_uuid in subjects_to_ignore:
+                    continue
+                subject_metric_types = [metric["type"] for metric in subject["metrics"].values()]
+                supported_metric_types = QualityTimeMissingMetrics.supported_metric_types(self.data_model, subject)
+                entities.extend(
+                    [
+                        self.create_entity(report, subject_uuid, subject, supported_metric_type)
+                        for supported_metric_type in supported_metric_types
+                        if supported_metric_type not in subject_metric_types
+                    ]
+                )
+        return entities
 
     def create_entity(self, report, subject_uuid: str, subject, metric_type: str) -> dict[str, str]:
         """Create a missing metric entity."""
+        data_model_subject = QualityTimeMissingMetrics.subject_type(self.data_model["subjects"], subject["type"])
         return {
             "key": f"{report['report_uuid']}:{subject_uuid}:{metric_type}",
             "report": report["title"],
@@ -70,28 +84,19 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
             "subject": subject["name"],
             "subject_url": f"https://quality_time/{report['report_uuid']}#{subject_uuid}",
             "subject_uuid": f"{subject_uuid}",
-            "subject_type": self.data_model["subjects"][subject["type"]]["name"],
+            "subject_type": data_model_subject["name"] if data_model_subject else "missing",
             "metric_type": self.data_model["metrics"][metric_type]["name"],
         }
 
     async def test_nr_of_metrics(self):
         """Test that the number of missing metrics is returned."""
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
+        entities = self.entities()
         self.assert_measurement(
             response,
-            value=str(len(self.entities)),
-            total=self.expected_software_metrics,
-            entities=self.entities,
-        )
-
-    async def test_nr_of_missing_metrics_without_reports(self):
-        """Test that no reports in the parameter equals all reports."""
-        response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
-        self.assert_measurement(
-            response,
-            value=str(len(self.entities)),
-            total=self.expected_software_metrics,
-            entities=self.entities,
+            entities=entities,
+            total=str(self.nr_supported_metric_types()),
+            value=str(len(entities)),
         )
 
     async def test_nr_of_missing_metrics_without_correct_report(self):
@@ -102,13 +107,26 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
 
     async def test_subjects_to_ignore_by_name(self):
         """Test that the number of non-ignored missing metrics is returned when filtered by name."""
-        self.set_source_parameter("subjects_to_ignore", ["S2"])
+        subjects_to_ignore = ["Subject2"]
+        self.set_source_parameter("subjects_to_ignore", subjects_to_ignore)
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
-        self.assert_measurement(response, value=str(int(len(self.entities) / 2)), total=self.expected_software_metrics)
+        entities = self.entities(subjects_to_ignore)
+        self.assert_measurement(
+            response,
+            entities=entities,
+            total=str(self.nr_supported_metric_types()),
+            value=str(len(entities)),
+        )
 
     async def test_subjects_to_ignore_by_uuid(self):
         """Test that the number of non-ignored missing metrics is returned when filtered by uuid."""
-        first_subject_uuid = first(first(self.reports["reports"])["subjects"].keys())
-        self.set_source_parameter("subjects_to_ignore", [first_subject_uuid])
+        subjects_to_ignore = ["s2"]
+        self.set_source_parameter("subjects_to_ignore", subjects_to_ignore)
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
-        self.assert_measurement(response, value=str(int(len(self.entities) / 2)), total=self.expected_software_metrics)
+        entities = self.entities(subjects_to_ignore)
+        self.assert_measurement(
+            response,
+            entities=entities,
+            total=str(self.nr_supported_metric_types()),
+            value=str(len(entities)),
+        )
