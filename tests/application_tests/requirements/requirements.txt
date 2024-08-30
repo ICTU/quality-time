@@ -14,9 +14,9 @@ axe-selenium-python==2.1.6 \
     --hash=sha256:21d10014c0bc3c999c1bfab54b9ef6a5d67f200ffca3db3629e0b315b3f1f136 \
     --hash=sha256:9203ff59c79edcfbcbd676ae55ca35f257e9afb663adbcbc210e3b0d802255ae
     # via application-tests (pyproject.toml)
-certifi==2024.7.4 \
-    --hash=sha256:5a1e7645bc0ec61a09e26c36f6106dd4cf40c6db3a1fb6352b0244e7fb057c7b \
-    --hash=sha256:c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90
+certifi==2024.8.30 \
+    --hash=sha256:922820b53db7a7257ffbda3f597266d435245903d80737e34f8a45ff3e3230d8 \
+    --hash=sha256:bec941d2aa8195e248a60b31ff9f0558284cf01a52591ceda73ea9afffd69fd9
     # via
     #   requests
     #   selenium

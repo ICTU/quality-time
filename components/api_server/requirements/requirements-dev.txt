@@ -20,9 +20,9 @@ build==1.2.1 \
     --hash=sha256:526263f4870c26f26c433545579475377b2b7588b6f1eac76a001e873ae3e19d \
     --hash=sha256:75e10f767a433d9a86e50d83f418e83efc18ede923ee5ff7df93b6cb0306c5d4
     # via pip-tools
-certifi==2024.7.4 \
-    --hash=sha256:5a1e7645bc0ec61a09e26c36f6106dd4cf40c6db3a1fb6352b0244e7fb057c7b \
-    --hash=sha256:c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90
+certifi==2024.8.30 \
+    --hash=sha256:922820b53db7a7257ffbda3f597266d435245903d80737e34f8a45ff3e3230d8 \
+    --hash=sha256:bec941d2aa8195e248a60b31ff9f0558284cf01a52591ceda73ea9afffd69fd9
     # via requests
 cffi==1.17.0 \
     --hash=sha256:011aff3524d578a9412c8b3cfaa50f2c0bd78e03eb7af7aa5e0df59b158efb2f \
@@ -552,9 +552,9 @@ lxml==5.3.0 \
     #   api-server (pyproject.toml)
     #   lxml-html-clean
     #   unittest-xml-reporting
-lxml-html-clean==0.2.0 \
-    --hash=sha256:47c323f39d95d4cbf4956da62929c89a79313074467efaa4821013c97bf95628 \
-    --hash=sha256:80bdc730b288b8e68f0bf86b99f4bbef129c5ec59b694c6681422be4c1eeb3c5
+lxml-html-clean==0.2.1 \
+    --hash=sha256:50548f3717b7e74a83a9b427cc9f85fe5317ff6fa6b1a462c90182987c91c799 \
+    --hash=sha256:5df0fc6064cfa5f97a55d5c4ff4e876704fb159347d616e3b04ec35e46f23b36
     # via api-server (pyproject.toml)
 packaging==24.1 \
     --hash=sha256:026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002 \
