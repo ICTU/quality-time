@@ -1,4 +1,4 @@
-FROM nginxinc/nginx-unprivileged:1.27.0-alpine3.19-slim as compile-image
+FROM nginxinc/nginx-unprivileged:1.27.0-alpine3.19-slim AS compile-image
 
 # hadolint ignore=DL3002
 USER root
