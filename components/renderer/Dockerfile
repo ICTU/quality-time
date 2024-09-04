@@ -13,12 +13,10 @@ RUN apk add --no-cache \
     ttf-freefont=20120503-r4 \
     ttf-liberation=2.1.5-r2 \
     chromium=128.0.6613.119-r0 && \
-    rm -rf /var/cache/apk/* /tmp/*
-
-RUN update-ms-fonts \
-    && fc-cache -f
-
-RUN npm install --ignore-scripts -g npm@10.8.3
+    rm -rf /var/cache/apk/* /tmp/* && \
+    update-ms-fonts && \
+    fc-cache -f && \
+    npm install --ignore-scripts -g npm@10.8.3
 
 WORKDIR /home/renderer
 COPY package*.json /home/renderer/
@@ -29,7 +27,7 @@ COPY src/*js /home/renderer/
 RUN adduser renderer --disabled-password
 USER renderer
 
-HEALTHCHECK CMD node /home/renderer/healthcheck.cjs
+HEALTHCHECK CMD ["node", "/home/renderer/healthcheck.cjs"]
 
 ENV NODE_ENV production
 
