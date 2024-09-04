@@ -8,7 +8,8 @@ export function fetch_server_api(method, api, body, content_type) {
         mode: "cors",
         credentials: "include",
         headers: {
-            "Content-Type": content_type || "application/json",
+            Accept: content_type || "application/json",
+            "Content-Type": "application/json",
         },
     }
     if (method === "post") {

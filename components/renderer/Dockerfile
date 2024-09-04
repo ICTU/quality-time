@@ -20,9 +20,6 @@ RUN update-ms-fonts \
 
 RUN npm install --ignore-scripts -g npm@10.8.3
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-
 WORKDIR /home/renderer
 COPY package*.json /home/renderer/
 RUN npm install --ignore-scripts
