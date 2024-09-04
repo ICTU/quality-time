@@ -12,13 +12,13 @@ RUN apk add --no-cache \
     ttf-droid=20200215-r2 \
     ttf-freefont=20120503-r4 \
     ttf-liberation=2.1.5-r2 \
-    chromium=128.0.6613.113-r0 && \
+    chromium=128.0.6613.119-r0 && \
     rm -rf /var/cache/apk/* /tmp/*
 
 RUN update-ms-fonts \
     && fc-cache -f
 
-RUN npm install --ignore-scripts -g npm@10.8.2
+RUN npm install --ignore-scripts -g npm@10.8.3
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
