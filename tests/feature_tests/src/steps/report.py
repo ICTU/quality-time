@@ -102,6 +102,7 @@ def time_travel(context: Context) -> None:
 def check_pdf(context: Context) -> None:
     """Check the PDF."""
     assert_equal("application/pdf", context.response.headers["Content-Type"])
+    assert_equal(b"%PDF", context.response.content[:4])
 
 
 @then("the client receives the JSON")
