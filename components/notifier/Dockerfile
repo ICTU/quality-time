@@ -2,9 +2,8 @@ FROM python:3.12.5-alpine3.20 AS compile-image
 
 WORKDIR /home/notifier
 
-RUN apk add --no-cache gcc=13.2.1_git20240309-r0 make=4.4.1-r2 libffi-dev=3.4.6-r0
-# hadolint ignore=DL3059
-RUN python -m venv venv
+RUN apk add --no-cache gcc=13.2.1_git20240309-r0 libffi-dev=3.4.6-r0 make=4.4.1-r2 && \
+    python -m venv venv
 ENV PATH="/home/notifier/venv/bin:$PATH"
 COPY notifier/requirements/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
@@ -23,6 +22,8 @@ WORKDIR /home/notifier
 USER notifier
 
 RUN touch ${HEALTH_CHECK_FILE} && chmod g+w ${HEALTH_CHECK_FILE} && chgrp root ${HEALTH_CHECK_FILE}
+# Use the Shell form of CMD instead of the Exec form so the environment variable is substituted
+# hadolint ignore=DL3025
 HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta, UTC; import sys; sys.exit(dt.now(tz=UTC) - dt.fromisoformat(open('${HEALTH_CHECK_FILE}', encoding='utf-8').read().strip()) > timedelta(seconds=600))"
 
 COPY --from=compile-image /home/notifier/venv /home/notifier/venv

@@ -12,12 +12,12 @@ COPY .env /home/frontend
 RUN npm install --ignore-scripts -g npm@10.8.3 && \
     npm install --ignore-scripts && \
     npm install --ignore-scripts -g serve@14.2.3 && \
-    npm run --ignore-scripts build
-
-RUN adduser frontend --disabled-password
+    npm run --ignore-scripts build && \
+    adduser frontend --disabled-password
 USER frontend
 
-HEALTHCHECK CMD node /home/frontend/healthcheck.js
+HEALTHCHECK CMD ["node", "/home/frontend/healthcheck.js"]
 
+# Use the Shell form of CMD instead of the Exec form so the environment variable is substituted
 # hadolint ignore=DL3025
 CMD serve --listen ${FRONTEND_PORT:-5000} --no-request-logging --single build
