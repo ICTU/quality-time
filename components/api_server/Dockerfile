@@ -2,7 +2,7 @@ FROM python:3.12.5-alpine3.20 AS compile-image
 
 WORKDIR /home/server
 
-RUN apk add --no-cache gcc=13.2.1_git20240309-r0 g++=13.2.1_git20240309-r0 libffi-dev=3.4.6-r0 make=4.4.1-r2 && \
+RUN apk add --no-cache  g++=13.2.1_git20240309-r0  gcc=13.2.1_git20240309-r0  libffi-dev=3.4.6-r0 make=4.4.1-r2 && \
     python -m venv venv
 ENV PATH="/home/server/venv/bin:$PATH"
 COPY api_server/requirements/requirements.txt /requirements.txt

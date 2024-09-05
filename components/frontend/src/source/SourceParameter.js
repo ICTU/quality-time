@@ -88,6 +88,43 @@ SourceParameterLabel.propTypes = {
     source_type_name: string,
 }
 
+function sources(report) {
+    // Return all sources in the report
+    const sources = []
+    Object.values(report.subjects).forEach((subject) => {
+        Object.values(subject.metrics).forEach((metric) => {
+            sources.push(...Object.values(metric.sources))
+        })
+    })
+    return sources
+}
+sources.propTypes = {
+    report: reportPropType,
+}
+
+function parameterValues(report, sourceType, parameterKey) {
+    // Collect all values in the current report used for this parameter, for this source type
+    let values = new Set()
+    sources(report).forEach((source) => {
+        if (source.type === sourceType && source.parameters) {
+            const value = source.parameters[parameterKey]
+            if (value) {
+                if (Array.isArray(value)) {
+                    value.forEach((item) => values.add(item))
+                } else {
+                    values.add(value)
+                }
+            }
+        }
+    })
+    return Array.from(values)
+}
+parameterValues.propTypes = {
+    report: reportPropType,
+    sourceType: string,
+    parameterKey: string,
+}
+
 export function SourceParameter({
     help,
     help_url,
@@ -112,27 +149,6 @@ export function SourceParameter({
     warning,
 }) {
     const [editScope, setEditScope] = useState("source")
-    function options() {
-        let values = new Set()
-        // Collect all values in the current report used for this parameter, for this source type:
-        Object.values(report.subjects).forEach((subject) => {
-            Object.values(subject.metrics).forEach((metric) => {
-                Object.values(metric.sources).forEach((metric_source) => {
-                    if (metric_source.type === source.type && metric_source.parameters) {
-                        const value = metric_source.parameters[parameter_key]
-                        if (value) {
-                            if (Array.isArray(value)) {
-                                value.forEach((item) => values.add(item))
-                            } else {
-                                values.add(value)
-                            }
-                        }
-                    }
-                })
-            })
-        })
-        return Array.from(values)
-    }
     let label = parameter_name
     if (help_url) {
         label = <LabelWithHyperLink label={parameter_name} url={help_url} />
@@ -188,7 +204,7 @@ export function SourceParameter({
     if (parameter_type === "multiple_choice_with_addition") {
         return <MultipleChoiceInput {...parameter_props} options={dropdownOptions(parameter_values)} allowAdditions />
     }
-    parameter_props["options"] = options()
+    parameter_props["options"] = parameterValues(report, source.type, parameter_key)
     if (parameter_type === "string") {
         return <StringInput {...parameter_props} />
     }
