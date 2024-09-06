@@ -35,9 +35,9 @@ GITHUB = Source(
     url=HttpUrl("https://github.com/about"),
     parameters={
         "url": URL(
-            name="GitHub instance URL",
-            help="URL of the GitHub instance, with port if necessary, but without path. For example, "
-            "'https://github.com'.",
+            name="GitHub instance API-URL",
+            help="API-URL of the GitHub instance, with port if necessary, but without path. For example, "
+            "'https://api.github.com'.",
             validate_on=["private_token"],
             metrics=ALL_GITHUB_METRICS,
         ),
@@ -56,7 +56,8 @@ GITHUB = Source(
             metrics=ALL_GITHUB_METRICS,
         ),
         "private_token": PrivateToken(
-            name="Fine-grained personal access token (with read scope of the repository)",
+            name="Fine-grained personal access token with repository permission 'Pull requests' set to "
+            "access level 'Read-only'.",
             short_name="Personal access token",
             help_url=HttpUrl(
                 "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/"

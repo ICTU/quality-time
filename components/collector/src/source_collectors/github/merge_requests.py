@@ -95,7 +95,7 @@ class GitHubMergeRequests(GitHubBase):
                 "owner": self._parameter("owner"),
             },
         )
-        json = await response.json()
+        json = await response.json(content_type=None)
         if repository := json["data"]["repository"]:
             page_info = repository["pullRequests"]["pageInfo"]
             return response, page_info["hasNextPage"], page_info.get("endCursor", "")
@@ -105,13 +105,13 @@ class GitHubMergeRequests(GitHubBase):
         """Override to parse the pull requests."""
         pull_requests = []
         for response in responses:
-            json = await response.json()
+            json = await response.json(content_type=None)
             pull_requests.extend(json["data"]["repository"]["pullRequests"]["nodes"])
         return Entities(self._create_entity(pr) for pr in pull_requests)
 
     async def _parse_total(self, responses: SourceResponses) -> Value:
         """Override to parse the total number of pull requests."""
-        return str((await responses[0].json())["data"]["repository"]["pullRequests"]["totalCount"])
+        return str((await responses[0].json(content_type=None))["data"]["repository"]["pullRequests"]["totalCount"])
 
     def _create_entity(self, pull_request) -> Entity:
         """Create an entity from a GitHub JSON pull request."""
