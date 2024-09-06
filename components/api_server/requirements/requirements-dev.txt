@@ -12,9 +12,9 @@ argcomplete==3.5.0 \
     --hash=sha256:4349400469dccfb7950bb60334a680c58d88699bff6159df61251878dc6bf74b \
     --hash=sha256:d4bcf3ff544f51e16e54228a7ac7f486ed70ebf2ecfe49a63a91171c76bf029b
     # via pipx
-bottle==0.12.25 \
-    --hash=sha256:d6f15f9d422670b7c073d63bd8d287b135388da187a0f3e3c19293626ce034ea \
-    --hash=sha256:e1a9c94970ae6d710b3fb4526294dfeb86f2cb4a81eff3a4b98dc40fb0e5e021
+bottle==0.13.0 \
+    --hash=sha256:ce11b454c3853c1b3283aabf68108d169b233b85fc5ceb3f0b732bfe24aa746d \
+    --hash=sha256:f322f5247f35150dc8686f44183af837597bd9a7db55a16901181b8b0d78f23a
     # via api-server (pyproject.toml)
 build==1.2.1 \
     --hash=sha256:526263f4870c26f26c433545579475377b2b7588b6f1eac76a001e873ae3e19d \
