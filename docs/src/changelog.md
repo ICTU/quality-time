@@ -23,6 +23,7 @@ If your currently installed *Quality-time* version is not v5.15.0, please first 
 ### Added
 
 - Allow for configuring Jenkins as source for the metric 'CI-pipeline duration' (GitLab CI was already supported, Azure DevOps will follow later). Partially implements [#6423](https://github.com/ICTU/quality-time/issues/6423).
+- Add GitHub as possible source for the 'merge requests' metric. Patch contributed by Tobias Termeczky (the/experts). Closes [#9323](https://github.com/ICTU/quality-time/issues/9323).
 
 ## v5.15.0 - 2024-07-30
 
