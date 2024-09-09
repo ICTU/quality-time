@@ -100,6 +100,7 @@ it("renders a value for which a measurement was requested, but which is now up t
 it("renders a minutes value", () => {
     renderMeasurementValue({
         type: "duration",
+        unit: "foo units",
         latest_measurement: { count: { value: "42" } },
     })
     expect(screen.getAllByText(/42/).length).toBe(1)
@@ -108,6 +109,7 @@ it("renders a minutes value", () => {
 it("renders an unknown minutes value", () => {
     renderMeasurementValue({
         type: "duration",
+        unit: "foo units",
         latest_measurement: { count: { value: null } },
     })
     expect(screen.getAllByText(/\?/).length).toBe(1)
@@ -117,6 +119,7 @@ it("renders a minutes percentage", () => {
     renderMeasurementValue({
         type: "duration",
         scale: "percentage",
+        unit: "foo units",
         latest_measurement: { percentage: { value: "42" } },
     })
     expect(screen.getAllByText(/42%/).length).toBe(1)
@@ -126,6 +129,7 @@ it("renders an unknown minutes percentage", () => {
     renderMeasurementValue({
         type: "duration",
         scale: "percentage",
+        unit: "foo units",
         latest_measurement: { percentage: { value: null } },
     })
     expect(screen.getAllByText(/\?%/).length).toBe(1)
@@ -163,5 +167,25 @@ it("does not show an error message for past measurements that were recently meas
     await waitFor(() => {
         expect(screen.queryByText(/This metric was not recently measured/)).toBe(null)
         expect(screen.queryByText(/Last measurement attempt/)).not.toBe(null)
+    })
+})
+
+it("shows ignored measurement entities", async () => {
+    renderMeasurementValue({
+        status: "target_met",
+        unit: "foo",
+        latest_measurement: {
+            start: "2022-01-16T00:31:00",
+            end: "2022-01-16T00:51:00",
+            count: { value: "42" },
+            sources: [
+                { entity_user_data: { entity1: { status: "false_positive" }, entity2: { status: "confirmed" } } },
+                {},
+            ],
+        },
+    })
+    await userEvent.hover(screen.queryByText(/42/))
+    await waitFor(() => {
+        expect(screen.queryByText(/Ignored foo/)).not.toBe(null)
     })
 })

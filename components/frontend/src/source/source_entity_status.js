@@ -1,3 +1,5 @@
+export const IGNORABLE_SOURCE_ENTITY_STATUSES = ["false_positive", "fixed", "wont_fix"]
+
 export const SOURCE_ENTITY_STATUS_NAME = {
     unconfirmed: "Unconfirmed",
     confirmed: "Confirmed",
@@ -9,9 +11,9 @@ export const SOURCE_ENTITY_STATUS_NAME = {
 export const SOURCE_ENTITY_STATUS_ACTION = {
     unconfirmed: "Unconfirm",
     confirmed: "Confirm",
-    fixed: "Resolve as fixed",
-    false_positive: "Resolve as false positive",
-    wont_fix: "Resolve as won't fix",
+    fixed: "Mark as fixed",
+    false_positive: "Mark as false positive",
+    wont_fix: "Mark as won't fix",
 }
 
 export const SOURCE_ENTITY_STATUS_DESCRIPTION = {

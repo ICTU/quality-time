@@ -5,3 +5,9 @@
     top: 187px;
     z-index: 1;
 }
+
+@media print {
+    button.ui {
+        display: none !important;
+    }
+}

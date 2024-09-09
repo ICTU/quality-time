@@ -173,7 +173,7 @@ function sourceEntitiesHeaders(
 ) {
     const entityName = metricEntities.name
     const entityNamePlural = metricEntities.name_plural
-    const hideIgnoredEntitiesLabel = `${hideIgnoredEntities ? "Show" : "Hide"} resolved ${entityNamePlural}`
+    const hideIgnoredEntitiesLabel = `${hideIgnoredEntities ? "Show" : "Hide"} ignored ${entityNamePlural}`
     return (
         <Table.Row>
             <Table.HeaderCell collapsing textAlign="center">

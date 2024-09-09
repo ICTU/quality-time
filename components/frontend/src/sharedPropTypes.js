@@ -142,7 +142,12 @@ export const issueStatusPropType = shape({
     updated: string,
 })
 
+const entityUserDataPropType = shape({
+    status: entityStatusPropType,
+})
+
 export const measurementSourcePropType = shape({
+    entity_user_date: entityUserDataPropType,
     connection_error: string,
     parse_error: string,
 })
