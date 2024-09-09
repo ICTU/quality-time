@@ -15,7 +15,7 @@ optional-dependencies.dev = [
     "pip==24.2",
     "pip-tools==7.4.1",                # To add hashes to requirements
     "pipx==1.7.1",
-    "types-requests==2.32.0.20240905",
+    "types-requests==2.32.0.20240907",
 ]
 optional-dependencies.tools = [
     "bandit==1.7.9",
