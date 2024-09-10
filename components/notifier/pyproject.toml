@@ -17,7 +17,7 @@ optional-dependencies.dev = [
     "pip==24.2",
     "pip-tools==7.4.1",              # To add hashes to requirements
     "pipx==1.7.1",
-    "pydantic==2.9.0",               # Needed for importing the data model in the tests from the shared code component
+    "pydantic==2.9.1",               # Needed for importing the data model in the tests from the shared code component
     "unittest-xml-reporting==3.2.0", # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
