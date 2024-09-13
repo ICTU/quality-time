@@ -230,4 +230,4 @@ export const reportsOverviewPropType = shape({
     subtitle: string,
 })
 
-export const uiModePropType = oneOf(["dark", "light", "follow_os"])
+export const uiModePropType = oneOf(["dark", "light", "system"])

@@ -7,9 +7,8 @@ import { VictoryContainer, VictoryLabel, VictoryPortal, VictoryTooltip } from "v
 import { DarkMode } from "../context/DarkMode"
 import { useBoundingBox } from "../hooks/boundingbox"
 import { STATUS_COLORS_RGB, STATUSES } from "../metric/status"
-import { Card } from "../semantic_ui_react_wrappers"
 import { pluralize, sum } from "../utils"
-import { FilterCard } from "./FilterCard"
+import { DashboardCard } from "./DashboardCard"
 import { StatusBarChart } from "./StatusBarChart"
 import { StatusPieChart } from "./StatusPieChart"
 
@@ -69,7 +68,7 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
     )
     const dates = Object.keys(summary)
     const bbWidth = boundingBox.width ?? 0
-    const bbHeight = boundingBox.height ?? 0
+    const bbHeight = bbWidth // Charts are round (pie chart) or square (bar chart)
     const label = (
         <VictoryPortal x={bbWidth / 2} y={bbHeight / 2}>
             <VictoryLabel
@@ -90,9 +89,9 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
         width: Math.max(bbWidth, 1), // Prevent "Failed prop type: Invalid prop range supplied to VictoryBar"
     }
     return (
-        <FilterCard onClick={onClick} selected={selected}>
-            <div ref={ref} style={{ height: "72%" }} aria-label={ariaChartLabel(summary)}>
-                <VictoryContainer width={bbWidth} height={bbHeight}>
+        <DashboardCard onClick={onClick} selected={selected} title={header}>
+            <div ref={ref} aria-label={ariaChartLabel(summary)}>
+                <VictoryContainer>
                     {dates.length > 1 ? (
                         <StatusBarChart summary={summary} nrdates={dates.length} {...chartProps} />
                     ) : (
@@ -100,10 +99,7 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
                     )}
                 </VictoryContainer>
             </div>
-            <Card.Content>
-                <Card.Header textAlign="center">{header}</Card.Header>
-            </Card.Content>
-        </FilterCard>
+        </DashboardCard>
     )
 }
 MetricSummaryCard.propTypes = {

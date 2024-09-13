@@ -1,6 +1,7 @@
 import "react-toastify/dist/ReactToastify.css"
 import "./App.css"
 
+import { createTheme, ThemeProvider } from "@mui/material/styles"
 import { Action } from "history"
 import history from "history/browser"
 import { Component } from "react"
@@ -13,6 +14,12 @@ import { AppUI } from "./AppUI"
 import { registeredURLSearchParams } from "./hooks/url_search_query"
 import { isValidDate_YYYYMMDD, toISODateStringInCurrentTZ } from "./utils"
 import { showConnectionMessage, showMessage } from "./widgets/toast"
+
+const theme = createTheme({
+    colorSchemes: {
+        dark: true, // Add a dark theme (light theme is available by default)
+    },
+})
 
 class App extends Component {
     constructor(props) {
@@ -237,27 +244,29 @@ class App extends Component {
 
     render() {
         return (
-            <AppUI
-                changed_fields={this.changed_fields}
-                dataModel={this.state.dataModel}
-                email={this.state.email}
-                openReportsOverview={() => this.openReportsOverview()}
-                handleDateChange={(date) => this.handleDateChange(date)}
-                key={this.state.report_uuid} // Make sure the AppUI is refreshed whenever the current report changes
-                lastUpdate={this.state.lastUpdate}
-                loading={this.state.loading}
-                nrMeasurements={this.state.nrMeasurements}
-                openReport={(report_uuid) => this.openReport(report_uuid)}
-                reload={(json) => this.reload(json)}
-                report_date={this.state.report_date}
-                report_uuid={this.state.report_uuid}
-                reports={this.state.reports}
-                reports_overview={this.state.reports_overview}
-                set_user={(username, email, sessionExpirationDateTime) =>
-                    this.setUserSession(username, email, sessionExpirationDateTime)
-                }
-                user={this.state.user}
-            />
+            <ThemeProvider theme={theme}>
+                <AppUI
+                    changed_fields={this.changed_fields}
+                    dataModel={this.state.dataModel}
+                    email={this.state.email}
+                    openReportsOverview={() => this.openReportsOverview()}
+                    handleDateChange={(date) => this.handleDateChange(date)}
+                    key={this.state.report_uuid} // Make sure the AppUI is refreshed whenever the current report changes
+                    lastUpdate={this.state.lastUpdate}
+                    loading={this.state.loading}
+                    nrMeasurements={this.state.nrMeasurements}
+                    openReport={(report_uuid) => this.openReport(report_uuid)}
+                    reload={(json) => this.reload(json)}
+                    report_date={this.state.report_date}
+                    report_uuid={this.state.report_uuid}
+                    reports={this.state.reports}
+                    reports_overview={this.state.reports_overview}
+                    set_user={(username, email, sessionExpirationDateTime) =>
+                        this.setUserSession(username, email, sessionExpirationDateTime)
+                    }
+                    user={this.state.user}
+                />
+            </ThemeProvider>
         )
     }
 }

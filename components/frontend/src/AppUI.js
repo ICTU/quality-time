@@ -1,11 +1,10 @@
 import "react-toastify/dist/ReactToastify.css"
 import "./App.css"
 
+import { useColorScheme } from "@mui/material/styles"
 import { bool, func, number, object, string } from "prop-types"
-import { useEffect } from "react"
 import HashLinkObserver from "react-hash-link"
 import { ToastContainer } from "react-toastify"
-import useLocalStorageState from "use-local-storage-state"
 
 import { useSettings } from "./app_ui_settings"
 import { DarkMode } from "./context/DarkMode"
@@ -42,20 +41,7 @@ export function AppUI({
     set_user,
     user,
 }) {
-    const [uiMode, setUIMode] = useLocalStorageState("ui_mode", { defaultValue: "follow_os" })
-    useEffect(() => {
-        const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)")
-        mediaQueryList.addEventListener("change", changeMode)
-        function changeMode(e) {
-            if (uiMode === "follow_os") {
-                // Only update if the user is following the OS mode setting
-                setUIMode(e.matches ? "dark" : "light") // Force redraw
-                setTimeout(() => setUIMode("follow_os")) // Reset setting
-            }
-        }
-        return () => mediaQueryList.removeEventListener("change", changeMode)
-    }, [uiMode, setUIMode])
-
+    const { mode, setMode } = useColorScheme()
     const user_permissions = getUserPermissions(user, email, report_date, reports_overview.permissions || {})
     const atReportsOverview = report_uuid === ""
     const current_report = atReportsOverview ? null : reports.filter((report) => report.report_uuid === report_uuid)[0]
@@ -76,7 +62,7 @@ export function AppUI({
         }
     }
 
-    const darkMode = userPrefersDarkMode(uiMode)
+    const darkMode = userPrefersDarkMode(mode)
     const backgroundColor = darkMode ? "rgb(40, 40, 40)" : "white"
     return (
         <div
@@ -107,8 +93,8 @@ export function AppUI({
                         />
                     }
                     settings={settings}
-                    setUIMode={setUIMode}
-                    uiMode={uiMode}
+                    setUIMode={setMode}
+                    uiMode={mode}
                 />
                 <ToastContainer theme="colored" />
                 <Permissions.Provider value={user_permissions}>

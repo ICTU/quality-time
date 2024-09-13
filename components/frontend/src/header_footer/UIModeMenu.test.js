@@ -21,7 +21,7 @@ it("sets follows os mode", () => {
     const setUIMode = jest.fn()
     render(<UIModeMenu setUIMode={setUIMode} uiMode="dark" />)
     fireEvent.click(screen.getByText(/Follow OS/))
-    expect(setUIMode).toHaveBeenCalledWith("follow_os")
+    expect(setUIMode).toHaveBeenCalledWith("system")
 })
 
 it("sets dark mode on keypress", async () => {

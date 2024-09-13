@@ -1,40 +1,13 @@
 import { render } from "@testing-library/react"
 
-import { DarkMode } from "../context/DarkMode"
 import { Tag } from "./Tag"
 
-it("is grey in dark mode", () => {
-    const { container } = render(
-        <DarkMode.Provider value={true}>
-            <Tag tag="tag" />
-        </DarkMode.Provider>,
-    )
-    expect(container.firstChild.className).toEqual(expect.stringContaining("grey"))
+it("has the default color when not selected", () => {
+    const { container } = render(<Tag tag="tag" />)
+    expect(container.firstChild.className).toEqual(expect.stringContaining("MuiChip-color "))
 })
 
-it("is not grey in light mode", () => {
-    const { container } = render(
-        <DarkMode.Provider value={false}>
-            <Tag tag="tag" />
-        </DarkMode.Provider>,
-    )
-    expect(container.firstChild.className).toEqual(expect.not.stringContaining("grey"))
-})
-
-it("is blue when selected in dark mode", () => {
-    const { container } = render(
-        <DarkMode.Provider value={true}>
-            <Tag selected tag="tag" />
-        </DarkMode.Provider>,
-    )
-    expect(container.firstChild.className).toEqual(expect.stringContaining("blue"))
-})
-
-it("is blue when selected in light mode", () => {
-    const { container } = render(
-        <DarkMode.Provider value={false}>
-            <Tag selected tag="tag" />
-        </DarkMode.Provider>,
-    )
-    expect(container.firstChild.className).toEqual(expect.stringContaining("blue"))
+it("has the primary color when selected", () => {
+    const { container } = render(<Tag selected tag="tag" />)
+    expect(container.firstChild.className).toEqual(expect.stringContaining("MuiChip-colorPrimary"))
 })
