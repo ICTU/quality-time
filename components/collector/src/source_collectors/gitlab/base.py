@@ -10,7 +10,7 @@ from shared.utils.date_time import now
 from base_collectors import SourceCollector
 from collector_utilities.date_time import parse_datetime
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.functions import match_string_or_regular_expression
+from collector_utilities.functions import add_query, match_string_or_regular_expression
 from collector_utilities.type import URL, Job
 from model import Entities, Entity, SourceResponses
 
@@ -52,10 +52,8 @@ class GitLabProjectBase(GitLabBase, ABC):
         """Return a GitLab API url for a project, if present in the parameters."""
         url = await super()._api_url()
         project = self._parameter("project", quote=True)
-        api_url = f"{url}/api/v4/projects/{project}" + (f"/{api}" if api else "")
-        sep = "&" if "?" in api_url else "?"
-        api_url += f"{sep}per_page=100"
-        return URL(api_url)
+        api_url = URL(f"{url}/api/v4/projects/{project}" + (f"/{api}" if api else ""))
+        return add_query(api_url, "per_page=100")
 
 
 class GitLabJobsBase(GitLabProjectBase):

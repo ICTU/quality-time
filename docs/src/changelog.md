@@ -20,6 +20,7 @@ If your currently installed *Quality-time* version is not v5.15.0, please first 
 - When filtering metrics by clicking on the "Action required" card or the "Issues" card, update the donut charts in the other cards. Fixes [#9245](https://github.com/ICTU/quality-time/issues/9245).
 - Don't fail on parsing npm outdated output with multiple dependents per dependency. Fixes [#9566](https://github.com/ICTU/quality-time/issues/9566).
 - Don't fail when measuring the number of 'missing metrics' in a subject with a composite subject type. Fixes [#9574](https://github.com/ICTU/quality-time/issues/9574).
+- Don't stop retrieving data from Dependency-Track after the first page. Fixes [#9751](https://github.com/ICTU/quality-time/issues/9751).
 
 ### Added
 

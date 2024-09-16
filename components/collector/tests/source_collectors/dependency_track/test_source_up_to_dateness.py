@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from dateutil.tz import tzlocal
 
-from source_collectors.dependency_track.base import DependencyTrackProject
+from source_collectors.dependency_track.base import DependencyTrackBase, DependencyTrackProject
 
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
@@ -75,3 +75,11 @@ class DependencyTrackSourceUpToDatenessVersionTest(SourceCollectorTestCase):
         self.set_source_parameter("project_versions", ["1.3", "1.4"])
         response = await self.collect(get_request_json_return_value=self.projects())
         self.assert_measurement(response, parse_error="No projects found")
+
+    async def test_source_up_to_dateness_with_pagination(self):
+        """Test that the source up-to-dateness can be measured when pagination is needed."""
+        default_size = DependencyTrackBase.PAGE_SIZE
+        DependencyTrackBase.PAGE_SIZE = 1
+        response = await self.collect(get_request_json_return_value=self.projects())
+        self.assert_measurement(response, value="7", landing_url=self.LANDING_URL, entities=self.entities())
+        DependencyTrackBase.PAGE_SIZE = default_size

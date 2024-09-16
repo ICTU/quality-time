@@ -5,6 +5,7 @@ from abc import ABC
 from shared.utils.functions import first
 
 from base_collectors import SourceCollector
+from collector_utilities.functions import add_query
 from collector_utilities.type import URL
 from model import SourceResponses
 
@@ -31,8 +32,8 @@ class TrelloBase(SourceCollector, ABC):
         return str(first(boards, lambda board: self._parameter("board") in board.values())["id"])
 
     async def __url_with_auth(self, api_part: str) -> URL:
-        """Return the authentication URL parameters."""
-        sep = "&" if "?" in api_part else "?"
+        """Return the URL for the API endpoint, with authentication parameters."""
+        api_url = URL(f"{await self._api_url()}/{api_part}")
         api_key = self._parameter("api_key")
         token = self._parameter("token")
-        return URL(f"{await self._api_url()}/{api_part}{sep}key={api_key}&token={token}")
+        return add_query(api_url, f"key={api_key}&token={token}")

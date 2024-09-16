@@ -4,7 +4,7 @@ from collections.abc import AsyncIterator
 from typing import TypedDict, cast
 
 from base_collectors import SourceCollector
-from collector_utilities.functions import match_string_or_regular_expression
+from collector_utilities.functions import add_query, match_string_or_regular_expression
 from collector_utilities.type import URL, Response
 from model import SourceResponses
 
@@ -24,7 +24,7 @@ class DependencyTrackBase(SourceCollector):
     """Dependency-Track base class."""
 
     # Max page size is 100, see https://github.com/DependencyTrack/dependency-track/issues/209.
-    # However, we use a lower number because pages may contain a lot of data, # especially for the
+    # However, we use a lower number because pages may contain a lot of data, especially for the
     # projects and findings endpoints.
     PAGE_SIZE = 25
 
@@ -44,9 +44,9 @@ class DependencyTrackBase(SourceCollector):
         responses = SourceResponses()
         for url in urls:
             page_nr = 1  # Page numbers start at 1
-            total_count = self.PAGE_SIZE + 1  # Total count is still unknown, make it so big we get at least one page
-            while page_nr * self.PAGE_SIZE < total_count:
-                offsetted_url = URL(f"{url}{"&" if "?" in url else "?"}pageSize={self.PAGE_SIZE}&pageNumber={page_nr}")
+            total_count = 1  # Total count is still unknown, make sure we retrieve at least one page
+            while (page_nr - 1) * self.PAGE_SIZE < total_count:
+                offsetted_url = add_query(url, f"pageSize={self.PAGE_SIZE}&pageNumber={page_nr}")
                 response = (await super()._get_source_responses(offsetted_url))[0]
                 total_count = int(response.headers.get("X-Total-Count", 0))
                 responses.append(response)
@@ -59,7 +59,7 @@ class DependencyTrackBase(SourceCollector):
 
     async def _get_projects(self) -> AsyncIterator[DependencyTrackProject]:
         """Return the Dependency-Track projects."""
-        projects_api = URL(await self._api_url() + "/project")
+        projects_api = URL(await DependencyTrackBase._api_url(self) + "/project")
         for response in await DependencyTrackBase._get_source_responses(self, projects_api):
             # We need an async for-loop and yield projects one by one because Python has no `async yield from`,
             # see https://peps.python.org/pep-0525/#asynchronous-yield-from
