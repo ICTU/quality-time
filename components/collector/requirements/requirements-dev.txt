@@ -868,7 +868,7 @@ pip==24.2 \
     # via
     #   collector (pyproject.toml)
     #   pip-tools
-setuptools==75.0.0 \
-    --hash=sha256:25af69c809d9334cd8e653d385277abeb5a102dca255954005a7092d282575ea \
-    --hash=sha256:791ae94f04f78c880b5e614e560dd32d4b4af5d151bd9e7483e3377846caf90a
+setuptools==75.1.0 \
+    --hash=sha256:35ab7fd3bcd95e6b7fd704e4a1539513edad446c097797f2985e0e4b960772f2 \
+    --hash=sha256:d59a21b17a275fb872a9c3dae73963160ae079f1049ed956880cd7c09b120538
     # via pip-tools
