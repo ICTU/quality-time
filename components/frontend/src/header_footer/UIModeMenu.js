@@ -9,7 +9,7 @@ export function UIModeMenu({ setUIMode, uiMode }) {
         <Dropdown icon={<IconCombi iconBottomRight="moon" iconTopLeft="sun" label="Dark/light mode" />}>
             <Dropdown.Menu>
                 <Dropdown.Header>Dark/light mode</Dropdown.Header>
-                <Dropdown.Item active={uiMode === "follow_os"} onClick={() => setUIMode("follow_os")}>
+                <Dropdown.Item active={uiMode === "system"} onClick={() => setUIMode("system")}>
                     Follow OS setting
                 </Dropdown.Item>
                 <Dropdown.Item active={uiMode === "dark"} onClick={() => setUIMode("dark")}>

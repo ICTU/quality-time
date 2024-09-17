@@ -1,19 +1,10 @@
-import "./Tag.css"
-
+import SellOutlinedIcon from "@mui/icons-material/SellOutlined"
+import { Chip } from "@mui/material"
 import { bool, string } from "prop-types"
-import { useContext } from "react"
-import { Label } from "semantic-ui-react"
-
-import { DarkMode } from "../context/DarkMode"
 
 export function Tag({ selected, tag }) {
-    const defaultColor = useContext(DarkMode) ? "grey" : null
-    const color = selected ? "blue" : defaultColor
-    return (
-        <Label color={color} tag>
-            {tag}
-        </Label>
-    )
+    const color = selected ? "primary" : ""
+    return <Chip color={color} icon={<SellOutlinedIcon />} label={tag} />
 }
 Tag.propTypes = {
     selected: bool,

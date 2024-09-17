@@ -14,9 +14,9 @@ nrMetricsLabel.PropTypes = {
 
 export function StatusPieChart({ animate, colors, label, tooltip, summary, style, maxY, width, height }) {
     const nrMetrics = sum(summary)
-    const outerRadius = 0.4 * Math.min(height, width)
-    const minInnerRadius = 0.4 * outerRadius
-    const maxInnerRadius = 0.7 * outerRadius
+    const outerRadius = 0.45 * Math.min(height, width)
+    const minInnerRadius = 0.3 * outerRadius
+    const maxInnerRadius = 0.8 * outerRadius
     const innerRadius = maxInnerRadius - (maxInnerRadius - minInnerRadius) * (nrMetrics / maxY)
     const data = STATUSES.map((status) => {
         const y = summary[STATUS_COLORS[status]]

@@ -27,6 +27,10 @@ If your currently installed *Quality-time* version is not v5.15.0, please first 
 - Show the number of ignored measurement entities (entities marked as "False positive, "Won't fix" or "Will be fixed") in the measurement value popup. Closes [#7626](https://github.com/ICTU/quality-time/issues/7626).
 - Add GitHub as possible source for the 'merge requests' metric. Patch contributed by Tobias Termeczky (the/experts). Closes [#9323](https://github.com/ICTU/quality-time/issues/9323).
 
+### Changed
+
+- Start replacing Semantic UI React with Material UI as frontend component library. This migration will probably span multiple releases. Until the migration is finished, the UI may contain inconsistent elements, such as fonts, colors, and icons. Closes [#9550](https://github.com/ICTU/quality-time/issues/9550).
+
 ## v5.15.0 - 2024-07-30
 
 ### Deployment notes

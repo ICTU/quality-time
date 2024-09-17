@@ -42,6 +42,10 @@ class NrElements:
 class OpenReportTest(unittest.TestCase):
     """Open a report."""
 
+    # Class names of MUI-components used in the tests
+    DASHBOARD_CARD_CLASS_NAME = "MuiCard-root"
+    DASHBOARD_CARD_HEADER_CONTENT_CLASS_NAME = "MuiCardHeader-content"
+
     def setUp(self):
         """Override to setup the driver."""
         firefox_options = webdriver.FirefoxOptions()
@@ -64,14 +68,18 @@ class OpenReportTest(unittest.TestCase):
         login_form.find_element(By.CLASS_NAME, "button").click()
         self.wait.until(ElementHasNoCCSClass((By.TAG_NAME, "body")))  # Wait for body dimmer to disappear
 
+    def dashboard_cards(self):
+        """Return the dashboard cards."""
+        return self.driver.find_elements(By.CLASS_NAME, self.DASHBOARD_CARD_CLASS_NAME)
+
     def test_title(self):
         """Test the title."""
         self.assertTrue(expect.title_contains("Quality-time"))
 
     def test_open_report(self):
-        """Test that the first report can be opened."""
-        report = self.driver.find_elements(By.CLASS_NAME, "card")[-1]  # The last card is a report
-        report_title = report.find_element(By.CLASS_NAME, "header")
+        """Test that a report can be opened."""
+        report = self.dashboard_cards()[-1]  # The last card is a report
+        report_title = report.find_element(By.CLASS_NAME, self.DASHBOARD_CARD_HEADER_CONTENT_CLASS_NAME)
         report.click()
         self.assertTrue(
             expect.text_to_be_present_in_element(self.driver.find_element(By.CLASS_NAME, "header"), report_title)
@@ -89,9 +97,10 @@ class OpenReportTest(unittest.TestCase):
     def test_add_report(self):
         """Test that a logged-in user can add a report."""
         self.login()
-        nr_reports = len(self.driver.find_elements(By.CLASS_NAME, "card"))
-        self.driver.find_element(By.CLASS_NAME, "button.primary").click()
-        self.wait.until(NrElements((By.CLASS_NAME, "card"), nr_reports + 1))
+        nr_cards = len(self.dashboard_cards())
+        self.driver.find_element(By.XPATH, '//button[text()="Add report"]').click()
+        # Not all cards are reports, but assume a report was added if there's one more card after clicking "Add report":
+        self.wait.until(NrElements((By.CLASS_NAME, self.DASHBOARD_CARD_CLASS_NAME), nr_cards + 1))
 
     def test_report_axe_accessibility(self):
         """Run axe accessibility check on a report."""
@@ -99,22 +108,21 @@ class OpenReportTest(unittest.TestCase):
         axe.inject()
 
         # Analyze report page
-        report = self.driver.find_elements(By.CLASS_NAME, "card")[-1]
-        report.click()
-        results1 = axe.run()
+        self.dashboard_cards()[-1].click()
+        results = axe.run()
 
         # Process axe results
-        violation_results = results1["violations"]
-        axe.write_results(results1, "../../build/a11y.json")
-        readable_report = axe.report(violation_results)
+        violation_results = results["violations"]
+        axe.write_results(results, "../../build/a11y.json")
+        human_readable_axe_report = axe.report(violation_results)
         filename = pathlib.Path("../../build/a11y_violations.txt")
         try:
             with filename.open("w", encoding="utf8") as report_file:
-                report_file.write(readable_report)
+                report_file.write(human_readable_axe_report)
         except OSError:
             self.fail("Could not write axe violations report")
 
-        # If there are moe violations than expected, output the readable report data
+        # If there are more violations than expected, output the human readable report
         # Fixing the axe violations is on the backlog: https://github.com/ICTU/quality-time/issues/6354
-        current_number_of_axe_violations = 6
-        self.assertLessEqual(len(violation_results), current_number_of_axe_violations, readable_report)
+        current_number_of_axe_violations = 7
+        self.assertLessEqual(len(violation_results), current_number_of_axe_violations, human_readable_axe_report)

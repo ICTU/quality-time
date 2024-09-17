@@ -24,8 +24,6 @@ import {
     visibleMetrics,
 } from "./utils"
 
-let matchMediaMatches
-
 const dataModel = {
     metrics: {
         metric_type: {
@@ -37,14 +35,6 @@ const dataModel = {
 const metric = {
     type: "metric_type",
 }
-
-beforeAll(() => {
-    Object.defineProperty(window, "matchMedia", {
-        value: jest.fn().mockImplementation((_query) => ({
-            matches: matchMediaMatches,
-        })),
-    })
-})
 
 it("capitalizes strings", () => {
     expect(capitalize("")).toBe("")
@@ -218,14 +208,27 @@ it("returns false when the user sets light mode", () => {
     expect(userPrefersDarkMode("light")).toBe(false)
 })
 
+function mockMatchMedia(matches, addEventListener) {
+    Object.defineProperty(window, "matchMedia", {
+        value: jest.fn().mockImplementation((_query) => ({
+            matches: matches ?? false,
+            addEventListener: addEventListener ?? jest.fn(),
+            removeEventListener: jest.fn(),
+            addListener: jest.fn(), // deprecated
+            removeListener: jest.fn(), // deprecated
+        })),
+        configurable: true,
+    })
+}
+
 it("returns true when the user prefers dark mode", () => {
-    matchMediaMatches = true
-    expect(userPrefersDarkMode("follow_os")).toBe(true)
+    mockMatchMedia(true)
+    expect(userPrefersDarkMode("system")).toBe(true)
 })
 
 it("returns false when the user prefers light mode", () => {
-    matchMediaMatches = false
-    expect(userPrefersDarkMode("follow_os")).toBe(false)
+    mockMatchMedia(false)
+    expect(userPrefersDarkMode("system")).toBe(false)
 })
 
 it("returns the metric response deadline", () => {
