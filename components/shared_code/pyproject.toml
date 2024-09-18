@@ -31,7 +31,7 @@ optional-dependencies.tools = [
     "pydantic==2.9.1",      # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.2.3",
     "ruff==0.6.5",
-    "vulture==2.11",
+    "vulture==2.12",
 ]
 
 [tool.setuptools.packages.find]
