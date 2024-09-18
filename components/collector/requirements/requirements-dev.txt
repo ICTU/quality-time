@@ -564,9 +564,9 @@ platformdirs==4.3.3 \
     --hash=sha256:50a5450e2e84f44539718293cbb1da0a0885c9d14adf21b77bae4e66fc99d9b5 \
     --hash=sha256:d4e0b7d8ec176b341fb03cb11ca12d0276faa8c485f9cd218f613840463fc2c0
     # via pipx
-pydantic==2.9.1 \
-    --hash=sha256:1363c7d975c7036df0db2b4a61f2e062fbc0aa5ab5f2772e0ffc7191a4f4bce2 \
-    --hash=sha256:7aff4db5fdf3cf573d4b3c30926a510a10e19a0774d38fc4967f78beb6deb612
+pydantic==2.9.2 \
+    --hash=sha256:d155cef71265d1e9807ed1c32b4c8deec042a44a50a4188b25ac67ecd81a9c0f \
+    --hash=sha256:f048cec7b26778210e28a0459867920654d48e5e62db0958433636cde4254f12
     # via collector (pyproject.toml)
 pydantic-core==2.23.3 \
     --hash=sha256:01491d8b4d8db9f3391d93b0df60701e644ff0894352947f31fff3e52bd5c801 \
