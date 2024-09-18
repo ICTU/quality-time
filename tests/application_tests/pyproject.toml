@@ -22,7 +22,7 @@ optional-dependencies.tools = [
     "fixit==2.1.0",
     "mypy==1.11.2",
     "pip-audit==2.7.3",
-    "pyproject-fmt==2.2.3",
+    "pyproject-fmt==2.2.4",
     "ruff==0.6.5",
     "vulture==2.11",
 ]
