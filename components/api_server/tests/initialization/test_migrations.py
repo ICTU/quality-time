@@ -1,5 +1,7 @@
 """Unit tests for database migrations."""
 
+from collections.abc import Mapping
+
 from initialization.migrations import perform_migrations
 
 from tests.base import DataModelTestCase, disable_logging
@@ -15,7 +17,7 @@ class MigrationTestCase(DataModelTestCase):
         metric_type: str,
         metric_name: str = "",
         metric_unit: str = "",
-        sources: dict[SourceId, dict[str, str | dict[str, str]]] | None = None,
+        sources: Mapping[SourceId, Mapping[str, str | Mapping[str, str]]] | None = None,
     ):
         """Return a report fixture. To be extended in subclasses."""
         report: dict = {
@@ -27,7 +29,7 @@ class MigrationTestCase(DataModelTestCase):
             report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["name"] = metric_name
         if metric_unit:
             report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["unit"] = metric_unit
-        if sources:
+        if sources is not None:
             report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"] = sources
         return report
 
@@ -308,3 +310,44 @@ class SonarQubeParameterTest(MigrationTestCase):
         self.database.reports.find.return_value = reports
         perform_migrations(self.database)
         self.database.reports.replace_one.assert_not_called()
+
+
+class TestCasesManualNumberTest(MigrationTestCase):
+    """Unit tests for the test cases manual number source migration."""
+
+    def sources(self, source_type: str = "manual_number", source_type2: str = ""):
+        """Create the sources fixture."""
+        sources = {SOURCE_ID: {"type": source_type}}
+        if source_type2:
+            sources[SOURCE_ID2] = {"type": source_type2}
+        return sources
+
+    def test_report_with_test_cases_and_jira_source(self):
+        """Test that the other sources are not removed."""
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="test_cases", sources=self.sources("jira")),
+        ]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_report_with_test_cases_and_manual_number_source(self):
+        """Test that the manual number source is removed."""
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="test_cases", sources=self.sources()),
+        ]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_called_once_with(
+            {"_id": "id"},
+            self.inserted_report(metric_type="test_cases", sources={}),
+        )
+
+    def test_report_with_test_cases_and_jira_and_manual_number_source(self):
+        """Test that the manual number source is removed."""
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="test_cases", sources=self.sources("jira", "manual_number")),
+        ]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_called_once_with(
+            {"_id": "id"},
+            self.inserted_report(metric_type="test_cases", sources=self.sources("jira")),
+        )
