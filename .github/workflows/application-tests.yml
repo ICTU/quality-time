@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v4.1.7
       - name: Run application tests
         env:
-          QUALITY_TIME_VERSION: v5.15.0
+          QUALITY_TIME_VERSION: v5.16.0-rc.0
           ENV: ci
           PROXY_PORT: 8080
         run: |
