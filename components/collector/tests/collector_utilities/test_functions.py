@@ -6,6 +6,7 @@ from decimal import Decimal
 
 from collector_utilities.date_time import days_ago
 from collector_utilities.functions import (
+    add_query,
     decimal_round_half_up,
     hashless,
     is_regexp,
@@ -101,6 +102,27 @@ class StripHashTest(unittest.TestCase):
         """Test that an url with a host name that matches the hash regular expression is returned unchanged."""
         expected_url = url = URL("https://test.app58064cb8d36474bd79f9.example.org:1234/main.js")
         self.assertEqual(expected_url, hashless(url))
+
+
+class AddQueryTest(unittest.TestCase):
+    """Unit tests for the add_query funcion."""
+
+    def setUp(self):
+        """Set up test fixtures."""
+        self.url = URL("https://example.org")
+
+    def test_add_query_to_url_without_query(self):
+        """Test adding a query to a URL without queries."""
+        self.assertEqual(self.url, add_query(self.url, ""))
+        self.assertEqual(URL("https://example.org?a=b"), add_query(self.url, "a=b"))
+        self.assertEqual(URL("https://example.org?a=b&c=d"), add_query(self.url, "a=b&c=d"))
+
+    def test_add_query_to_url_with_query(self):
+        """Test adding a query to a URL with queries."""
+        url = add_query(self.url, "a=b")
+        self.assertEqual(url, add_query(url, ""))
+        self.assertEqual(URL("https://example.org?a=b&c=d"), add_query(url, "c=d"))
+        self.assertEqual(URL("https://example.org?a=b&c=d&e=f"), add_query(url, "c=d&e=f"))
 
 
 class IsRegularExpressionTest(unittest.TestCase):

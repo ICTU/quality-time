@@ -62,6 +62,16 @@ def hashless(url: URL) -> URL:
     return URL(urllib.parse.urlunsplit((scheme, netloc, path, query, fragment)))
 
 
+def add_query(url: URL, query: str) -> URL:
+    """Add the query to the URL.
+
+    For example, adding "a=b&c=d" to "https://example.org" returns "https://example.org?a=b&c=d".
+    """
+    if not query:
+        return url
+    return URL(f"{url}{'&' if '?' in url else '?'}{query}")
+
+
 def sha1_hash(string: str) -> str:
     """Return a sha1 hash of the string."""
     sha1 = hashlib.sha1(string.encode("utf-8"), usedforsecurity=False)  # noqa: DUO130,RUF100

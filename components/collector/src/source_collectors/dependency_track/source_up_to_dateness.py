@@ -1,11 +1,12 @@
 """Dependency-Track source up-to-dateness collector."""
 
+from collections.abc import Sequence
 from datetime import datetime
 
 from base_collectors import TimePassedCollector
 from collector_utilities.date_time import datetime_from_timestamp
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.type import URL, Response
+from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
 from .base import DependencyTrackBase, DependencyTrackProject
@@ -18,12 +19,14 @@ class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector
         """Extend to add the projects endpoint to the API URL."""
         return URL(await super()._api_url() + "/project")
 
-    async def _parse_source_response_date_time(self, response: Response) -> datetime:
-        """Override to parse the timestamp from the response."""
+    async def _parse_source_response_date_times(self, responses: SourceResponses) -> Sequence[datetime]:
+        """Override to parse the timestamp from the responses."""
         if datetimes := [
-            self._last_bom_import_datetime(project) async for project in self._get_projects_from_response(response)
+            self._last_bom_import_datetime(project)
+            for response in responses
+            async for project in self._get_projects_from_response(response)
         ]:
-            return self.minimum(datetimes)
+            return datetimes
         error_message = "No projects found"
         raise CollectorError(error_message)
 
