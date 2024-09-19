@@ -68,7 +68,7 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
     )
     const dates = Object.keys(summary)
     const bbWidth = boundingBox.width ?? 0
-    const bbHeight = bbWidth // Charts are round (pie chart) or square (bar chart)
+    const bbHeight = boundingBox.height ?? 0
     const label = (
         <VictoryPortal x={bbWidth / 2} y={bbHeight / 2}>
             <VictoryLabel
