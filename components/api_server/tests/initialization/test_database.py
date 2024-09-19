@@ -24,7 +24,7 @@ class DatabaseInitTest(DataModelTestCase):
         self.database.sessions.find_one.return_value = {"user": "jodoe"}
         self.database.measurements.count_documents.return_value = 0
         self.database.measurements.index_information.return_value = {}
-        self.mongo_client().quality_time_db = self.database
+        self.mongo_client.get_database.return_value = self.database
 
     def init_database(self, data_model_json: str, assert_glob_called: bool = True) -> None:
         """Initialize the database."""
@@ -35,9 +35,8 @@ class DatabaseInitTest(DataModelTestCase):
                 "open",
                 mock_open(read_data=data_model_json),
             ),
-            patch("pymongo.MongoClient", self.mongo_client),
         ):
-            init_database()
+            init_database(self.mongo_client)
         if assert_glob_called:
             glob_mock.assert_called()
         else:

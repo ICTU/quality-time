@@ -3,30 +3,31 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from shared.initialization.database import client
+import pymongo
+
+from shared.initialization.database import mongo_client
+
+OS_ENVIRON_GET = "shared.initialization.database.os.environ.get"
 
 
 class TestConnectionParams(unittest.TestCase):
     """Test the database connection parameters."""
 
-    def _assert_dbclient_host_url(self, dbclient, expected_url) -> None:
+    def assert_mongo_client_host_url(self, client: pymongo.MongoClient, expected_url: str) -> None:
         """Assert that the dbclient was initialized with expected url."""
-        self.assertEqual(expected_url, dbclient._init_kwargs["host"])  # noqa: SLF001
+        self.assertEqual(expected_url, client._init_kwargs["host"])  # noqa: SLF001
 
     def test_default(self):
         """Test the default url."""
-        db = client()
         _default_user_pass = "root:root"  # nosec  # noqa: S105
-        self._assert_dbclient_host_url(db, f"mongodb://{_default_user_pass}@localhost:27017")
-        db.close()
+        with mongo_client() as client:
+            self.assert_mongo_client_host_url(client, f"mongodb://{_default_user_pass}@localhost:27017")
 
     def test_full_url_override(self):
         """Test setting full url with env var override."""
         local_url = "mongodb://localhost"
-        with patch("shared.initialization.database.os.environ.get", Mock(return_value=local_url)):
-            db = client()
-        self._assert_dbclient_host_url(db, local_url)
-        db.close()
+        with patch(OS_ENVIRON_GET, Mock(return_value=local_url)), mongo_client() as client:
+            self.assert_mongo_client_host_url(client, local_url)
 
     def test_partial_url_override(self):
         """Test setting partial url with env var overrides."""
@@ -41,7 +42,5 @@ class TestConnectionParams(unittest.TestCase):
             }
             return values.get(variable_name, default)
 
-        with patch("shared.initialization.database.os.environ.get", Mock(side_effect=_os_environ_get)):
-            db = client()
-        self._assert_dbclient_host_url(db, "mongodb://user:pass@host:4242")
-        db.close()
+        with patch(OS_ENVIRON_GET, Mock(side_effect=_os_environ_get)), mongo_client() as client:
+            self.assert_mongo_client_host_url(client, "mongodb://user:pass@host:4242")

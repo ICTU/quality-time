@@ -178,7 +178,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     async def test_collect(self):
         """Test the collect method."""
         with (
-            patch("quality_time_collector.database_connection", return_value=self.database),
+            patch("quality_time_collector.get_database", return_value=self.database),
             self.assertRaises(RuntimeError),
         ):
             await quality_time_collector.collect()

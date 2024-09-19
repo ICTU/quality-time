@@ -4,7 +4,7 @@ import asyncio
 import logging
 from typing import NoReturn
 
-from shared.initialization.database import database_connection
+from shared.initialization.database import get_database, mongo_client
 
 # Make sure subclasses are registered
 import metric_collectors  # noqa: F401
@@ -15,7 +15,8 @@ from base_collectors import Collector, config
 async def collect() -> NoReturn:
     """Collect the measurements indefinitely."""
     logging.getLogger().setLevel(config.LOG_LEVEL)
-    await Collector(database_connection()).start()
+    with mongo_client() as client:
+        await Collector(get_database(client)).start()
 
 
 if __name__ == "__main__":
