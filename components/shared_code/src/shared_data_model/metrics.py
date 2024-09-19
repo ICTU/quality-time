@@ -576,7 +576,7 @@ skipped, and passed. Test cases not found in the test results are listed as unte
         unit=Unit.TEST_CASES,
         direction=Direction.MORE_IS_BETTER,
         near_target="0",
-        sources=["jenkins_test_report", "jira", "junit", "manual_number", "robot_framework", "testng"],
+        sources=["jenkins_test_report", "jira", "junit", "robot_framework", "testng"],
         tags=[Tag.TEST_QUALITY],
     ),
     "tests": Metric(

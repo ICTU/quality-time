@@ -33,6 +33,10 @@ If your currently installed *Quality-time* version is not v5.15.0, please first 
 
 - Start replacing Semantic UI React with Material UI as frontend component library. This migration will probably span multiple releases. Until the migration is finished, the UI may contain inconsistent elements, such as fonts, colors, and icons. Closes [#9550](https://github.com/ICTU/quality-time/issues/9550).
 
+### Removed
+
+- The 'test cases' metric had 'manual number' as supported source for the metric, but that could never work since the metric needs sources that contain test cases with identifiers so they can be matched. Manual number sources for test cases metrics are removed from reports automatically on application startup. Fixes [#9793](https://github.com/ICTU/quality-time/issues/9793).
+
 ## v5.15.0 - 2024-07-30
 
 ### Deployment notes

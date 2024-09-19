@@ -19,6 +19,7 @@ def perform_migrations(database: Database) -> None:
             changes := [
                 change_accessibility_violation_metrics_to_violations(report),
                 fix_branch_parameters_without_value(report),
+                remove_test_cases_manual_number(report),
                 change_ci_subject_types_to_development_environment(report),
                 change_sonarqube_parameters(report),
             ]
@@ -56,6 +57,18 @@ def fix_branch_parameters_without_value(report) -> str:
         if not source["parameters"].get("branch"):
             source["parameters"]["branch"] = "master"
             change = "change sources with empty branch parameter"
+    return change
+
+
+def remove_test_cases_manual_number(report) -> str:
+    """Remove manual number sources from test cases metrics."""
+    # Added after Quality-time v5.15.0, see https://github.com/ICTU/quality-time/issues/9793
+    change = ""
+    for metric in metrics(report, metric_types=("test_cases",)):
+        for source_uuid, source in metric.get("sources", {}).copy().items():
+            if source["type"] == "manual_number":
+                del metric["sources"][source_uuid]
+                change = "remove manual number sources from test cases metrics"
     return change
 
 
