@@ -26,14 +26,31 @@ class TrivyJSONVulnerability(TypedDict):
     References: list[str]
 
 
-class TrivyJSONDependencyRepository(TypedDict):
+class TrivyJSONResult(TypedDict):
     """Trivy JSON for one dependency repository."""
 
     Target: str
     Vulnerabilities: list[TrivyJSONVulnerability] | None  # The examples in the Trivy docs show this key can be null
 
 
-TrivyJSON = list[TrivyJSONDependencyRepository]
+# Trivy JSON reports come in two different forms, following schema version 1 or schema version 2.
+# Schema version 1 is not explicitly documented as a schema. The Trivy docs only give an example report.
+# See https://aquasecurity.github.io/trivy/v0.55/docs/configuration/reporting/#json.
+# Schema version 2 is not explicitly documented as a schema either. The only thing available seems to be a GitHub
+# discussion: https://github.com/aquasecurity/trivy/discussions/1050.
+# Issue to improve the documentation: https://github.com/aquasecurity/trivy/discussions/7552
+
+TriviJSONSchemaVersion1 = list[TrivyJSONResult]
+
+
+class TrivyJSONSchemaVersion2(TypedDict):
+    """Trivy JSON conform schema version 2."""
+
+    SchemaVersion: int
+    Results: list[TrivyJSONResult]
+
+
+TrivyJSON = TriviJSONSchemaVersion1 | TrivyJSONSchemaVersion2
 
 
 class TrivyJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceCollector):
@@ -46,9 +63,11 @@ class TrivyJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceC
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the vulnerabilities from the Trivy JSON."""
         entities = Entities()
-        for dependency_repository in cast(TrivyJSON, json):
-            target = dependency_repository["Target"]
-            for vulnerability in dependency_repository.get("Vulnerabilities") or []:
+        trivy_json = cast(TrivyJSON, json)
+        results = trivy_json["Results"] if isinstance(trivy_json, dict) else trivy_json
+        for result in results:
+            target = result["Target"]
+            for vulnerability in result.get("Vulnerabilities") or []:
                 vulnerability_id = vulnerability["VulnerabilityID"]
                 package_name = vulnerability["PkgName"]
                 entities.append(
