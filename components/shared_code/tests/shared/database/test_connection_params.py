@@ -11,13 +11,14 @@ class TestConnectionParams(unittest.TestCase):
 
     def _assert_dbclient_host_url(self, dbclient, expected_url) -> None:
         """Assert that the dbclient was initialized with expected url."""
-        self.assertEqual(expected_url, dbclient._MongoClient__init_kwargs["host"])  # noqa: SLF001
+        self.assertEqual(expected_url, dbclient._init_kwargs["host"])  # noqa: SLF001
 
     def test_default(self):
         """Test the default url."""
         db = client()
         _default_user_pass = "root:root"  # nosec  # noqa: S105
         self._assert_dbclient_host_url(db, f"mongodb://{_default_user_pass}@localhost:27017")
+        db.close()
 
     def test_full_url_override(self):
         """Test setting full url with env var override."""
@@ -25,6 +26,7 @@ class TestConnectionParams(unittest.TestCase):
         with patch("shared.initialization.database.os.environ.get", Mock(return_value=local_url)):
             db = client()
         self._assert_dbclient_host_url(db, local_url)
+        db.close()
 
     def test_partial_url_override(self):
         """Test setting partial url with env var overrides."""
@@ -42,3 +44,4 @@ class TestConnectionParams(unittest.TestCase):
         with patch("shared.initialization.database.os.environ.get", Mock(side_effect=_os_environ_get)):
             db = client()
         self._assert_dbclient_host_url(db, "mongodb://user:pass@host:4242")
+        db.close()
