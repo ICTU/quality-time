@@ -6,19 +6,14 @@ import os
 import pymongo
 from pymongo.database import Database
 
-from shared.initialization.database import client
-
 from .migrations import perform_migrations
 from .datamodel import import_datamodel
 from .report import import_example_reports, initialize_reports_overview
 from .secrets import initialize_secrets
 
 
-def init_database() -> Database:  # pragma: no feature-test-cover
+def init_database(database: Database) -> None:  # pragma: no feature-test-cover
     """Initialize the database contents."""
-    db_client = client()
-    set_feature_compatibility_version(db_client.admin)
-    database = db_client.quality_time_db
     logging.info("Connected to database: %s", database)
     nr_reports = database.reports.count_documents({})
     nr_measurements = database.measurements.count_documents({})
@@ -30,7 +25,6 @@ def init_database() -> Database:  # pragma: no feature-test-cover
     perform_migrations(database)
     if os.environ.get("LOAD_EXAMPLE_REPORTS", "True").lower() == "true":
         import_example_reports(database)
-    return database
 
 
 def set_feature_compatibility_version(admin_database: Database) -> None:
