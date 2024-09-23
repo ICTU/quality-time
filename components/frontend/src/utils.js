@@ -4,6 +4,7 @@ import { PERMISSIONS } from "./context/Permissions"
 import { defaultDesiredResponseTimes } from "./defaults"
 import { STATUSES_NOT_REQUIRING_ACTION } from "./metric/status"
 import {
+    datePropType,
     metricPropType,
     metricsPropType,
     metricsToHidePropType,
@@ -96,6 +97,16 @@ export function getMetricUnit(metric, dataModel) {
     return metric.unit || dataModel.metrics[metric.type].unit || ""
 }
 
+export function isMeasurementOutdated(metric) {
+    if (metric.latest_measurement) {
+        return metric.latest_measurement.outdated ?? false
+    }
+    return Object.keys(metric.sources ?? {}).length > 0 // If there are sources, measurement is needed
+}
+isMeasurementOutdated.propTypes = {
+    metric: metricPropType,
+}
+
 export function isMeasurementRequested(metric) {
     if (metric.measurement_requested) {
         if (metric.latest_measurement) {
@@ -104,6 +115,19 @@ export function isMeasurementRequested(metric) {
         return true
     }
     return false
+}
+
+export function isMeasurementStale(metric, reportDate) {
+    if (!metric.latest_measurement) {
+        return false
+    }
+    const end = new Date(metric.latest_measurement.end)
+    const now = reportDate ?? new Date()
+    return now - end > MILLISECONDS_PER_HOUR // No new measurement for more than one hour means something is wrong
+}
+isMeasurementStale.propTypes = {
+    metric: metricPropType,
+    reportDate: datePropType,
 }
 
 export function getMetricResponseDeadline(metric, report) {

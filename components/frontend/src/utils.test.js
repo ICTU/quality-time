@@ -13,7 +13,9 @@ import {
     getSubjectType,
     getSubjectTypeMetrics,
     getUserPermissions,
+    isMeasurementOutdated,
     isMeasurementRequested,
+    isMeasurementStale,
     niceNumber,
     nrMetricsInReport,
     nrMetricsInReports,
@@ -503,9 +505,37 @@ it("sums numbers", () => {
 })
 
 it("returns whether a measurement is requested for the metric", () => {
+    // Measurement is not requested when the metric has no measurement requested timestamp:
     expect(isMeasurementRequested({})).toBe(false)
+    // Measurement is requested when the metric has a measurement requested timestamp and no latest measurement:
     expect(isMeasurementRequested({ measurement_requested: "2000-01-01" })).toBe(true)
     const latest = { end: "2024-01-01" }
+    // Measurement is not requested when the measurement requested timestamp is older than the latest measurement:
     expect(isMeasurementRequested({ measurement_requested: "2023-01-01", latest_measurement: latest })).toBe(false)
+    // Measurement is requested when the measurement requested timestamp is newer than the latest measurement:
     expect(isMeasurementRequested({ measurement_requested: "2025-01-01", latest_measurement: latest })).toBe(true)
+})
+
+it("returns whether a metric's measurement is stale", () => {
+    // A metric without measurements is not stale:
+    expect(isMeasurementStale({})).toBe(false)
+    // A metric with an old measurement and report date 'now' is stale:
+    expect(isMeasurementStale({ latest_measurement: { end: "2024-09-23" } })).toBe(true)
+    // A metric with measurement older than the report date is stale:
+    expect(isMeasurementStale({ latest_measurement: { end: "2024-09-23" } }, new Date("2024-09-24"))).toBe(true)
+    // A metric with measurement nwwer than the report date is not stale:
+    expect(isMeasurementStale({ latest_measurement: { end: "2024-09-24" } }, new Date("2024-09-23"))).toBe(false)
+})
+
+it("returns whether a metric's measurement is outdated", () => {
+    // A metric without measurements and without sources is not outdated:
+    expect(isMeasurementOutdated({})).toBe(false)
+    // A metric without measurements with an empty collection of sources is not outdated:
+    expect(isMeasurementOutdated({ sources: {} })).toBe(false)
+    // A metric without measurements but with a source is outdated:
+    expect(isMeasurementOutdated({ sources: { source_uuid: {} } })).toBe(true)
+    // A metric with an up-to-date measurement is not outdated:
+    expect(isMeasurementOutdated({ latest_measurement: {} })).toBe(false)
+    // A metric with an outdated measurement is outdated:
+    expect(isMeasurementOutdated({ latest_measurement: { outdated: true } })).toBe(true)
 })
