@@ -4,9 +4,9 @@
 #
 #    ci/pip-compile.sh
 #
-aiogqlc==5.1.0 \
-    --hash=sha256:1e7f49f572f17e7079176a12b1ead0cfd081d09f693f3199640bb0c75ac2f8a1 \
-    --hash=sha256:89520455022ad29f69c58ac55255ea0e94caff1499ed4bb40526ac81b7eab4ef
+aiogqlc==5.2.0 \
+    --hash=sha256:0b3a09fe69228b3385fd24443c8075a1f2809f5d2c4d06c29da0ca61b2d8f51c \
+    --hash=sha256:661be921fe00a3b489c86b3a76fa9d51ae9008cbcead5b1b5d20bfef4eccb6dd
     # via collector (pyproject.toml)
 aiohappyeyeballs==2.4.0 \
     --hash=sha256:55a1714f084e63d49639800f95716da97a1f173d46a16dfcfda0016abb93b6b2 \
