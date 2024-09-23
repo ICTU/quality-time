@@ -24,9 +24,7 @@ class DependencyTrackBase(SourceCollector):
     """Dependency-Track base class."""
 
     # Max page size is 100, see https://github.com/DependencyTrack/dependency-track/issues/209.
-    # However, we use a lower number because pages may contain a lot of data, especially for the
-    # projects and findings endpoints.
-    PAGE_SIZE = 25
+    PAGE_SIZE = 100
 
     async def _api_url(self) -> URL:
         """Override to add the API version."""
@@ -48,6 +46,9 @@ class DependencyTrackBase(SourceCollector):
             while (page_nr - 1) * self.PAGE_SIZE < total_count:
                 offsetted_url = add_query(url, f"pageSize={self.PAGE_SIZE}&pageNumber={page_nr}")
                 response = (await super()._get_source_responses(offsetted_url))[0]
+                # Retrieving consecutive big responses without reading the response hangs the client, see
+                # https://github.com/aio-libs/aiohttp/issues/2217
+                await response.read()
                 total_count = int(response.headers.get("X-Total-Count", 0))
                 responses.append(response)
                 page_nr += 1

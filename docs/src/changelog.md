@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v5.16.0, please first check the upgrade path in the [versioning policy](versioning.md).
+
+### Fixed
+
+- Work around a [bug in aiohttp](https://github.com/aio-libs/aiohttp/issues/2217) that causes Dependency-Track connections to hang and timeout when the Dependency-Track data is paginated. Fixes [#9599](https://github.com/ICTU/quality-time/issues/9599).
+
 ## v5.16.0 - 2024-09-19
 
 ### Deployment notes
