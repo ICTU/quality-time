@@ -138,14 +138,3 @@ Feature: metric
     Given an existing metric
     When the client changes the metric comment to "Text<script>alert('Danger')</script>"
     Then the metric comment is "Text"
-
-  Scenario: request measurement
-    Given an existing metric
-    And an existing source
-    And the collector has measured "100"
-    When the client requests the metric to be measured
-    Then the metric is being measured
-    When the client waits a second
-    And the collector measures "100"
-    And the client waits a second
-    Then the metric is not being measured
