@@ -1,7 +1,5 @@
 """Feature tests for metric specific attributes."""
 
-from datetime import UTC, datetime
-
 from asserts import assert_equal, assert_false, assert_is_none, assert_is_not_none, assert_true
 from behave import then, when
 from behave.runner import Context
@@ -63,21 +61,6 @@ def accept_technical_debt(context: Context) -> None:
 def do_not_accept_technical_debt(context: Context) -> None:
     """Change the technical debt of the metric, including debt target and end date."""
     context.post(f"metric/{context.uuid['metric']}/debt", json={"accept_debt": False})
-
-
-@when("the client requests the metric to be measured")
-def measurement_request(context: Context) -> None:
-    """Request a metric to be measured."""
-    now = datetime.now(tz=UTC).replace(microsecond=0).isoformat()
-    attribute_endpoint = f"metric/{context.uuid['metric']}/attribute/measurement_requested"
-    context.post(attribute_endpoint, json={"measurement_requested": now})
-
-
-@then("the metric is {being} measured")
-def assert_metric_is_being_measured(context: Context, being: str) -> None:
-    """Assert that the metric is 'being' measured' or is 'not being' measured."""
-    metric = get_item(context, "metric")
-    assert_equal(bool(being == "being"), metric["latest_measurement"]["measurement_requested"])
 
 
 @then("the metric technical debt end date is empty")
