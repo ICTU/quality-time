@@ -2,7 +2,7 @@
 
 from aiohttp import BasicAuth
 
-from source_collectors.dependency_track.base import DependencyTrackProject
+from source_collectors.dependency_track.base import DependencyTrackBase, DependencyTrackProject
 from source_collectors.dependency_track.security_warnings import (
     DependencyTrackComponent,
     DependencyTrackFinding,
@@ -104,7 +104,7 @@ class DependencyTrackSecurityWarningsTest(SourceCollectorTestCase):
         self.set_source_parameter("private_token", "API key")
         _, get, _ = await self.collect(get_request_json_return_value=[], return_mocks=True)
         get.assert_called_once_with(
-            "https://dependency_track/api/v1/project?pageSize=25&pageNumber=1",
+            f"https://dependency_track/api/v1/project?pageSize={DependencyTrackBase.PAGE_SIZE}&pageNumber=1",
             allow_redirects=True,
             auth=BasicAuth(login="API key", password="", encoding="latin1"),  # nosec
             headers={"X-Api-Key": "API key"},
