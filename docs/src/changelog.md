@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not v5.16.0, please first 
 ### Fixed
 
 - Work around a [bug in aiohttp](https://github.com/aio-libs/aiohttp/issues/2217) that causes Dependency-Track connections to hang and timeout when the Dependency-Track data is paginated. Fixes [#9599](https://github.com/ICTU/quality-time/issues/9599).
+- Show the hour glass icon when copying a metric with a source. Fixes [#9631](https://github.com/ICTU/quality-time/issues/9631).
 
 ## v5.16.0 - 2024-09-19
 
