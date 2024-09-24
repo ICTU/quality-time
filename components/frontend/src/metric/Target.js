@@ -1,15 +1,15 @@
+import { Box, Stack, Typography } from "@mui/material"
 import { bool, func, oneOf, string } from "prop-types"
 import { useContext } from "react"
 import { Segment } from "semantic-ui-react"
 
 import { set_metric_attribute } from "../api/metric"
-import { DarkMode } from "../context/DarkMode"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { IntegerInput } from "../fields/IntegerInput"
 import { StringInput } from "../fields/StringInput"
 import { StatusIcon } from "../measurement/StatusIcon"
-import { Header, Icon, Popup } from "../semantic_ui_react_wrappers"
+import { Icon, Popup } from "../semantic_ui_react_wrappers"
 import { childrenPropType, labelPropType, metricPropType, scalePropType } from "../sharedPropTypes"
 import {
     capitalize,
@@ -18,7 +18,7 @@ import {
     formatMetricValue,
     getMetricScale,
 } from "../utils"
-import { STATUS_SHORT_NAME, statusPropType } from "./status"
+import { STATUS_COLORS_MUI, STATUS_SHORT_NAME, statusPropType } from "./status"
 
 function smallerThan(target1, target2) {
     const t1 = target1 ?? `${Number.POSITIVE_INFINITY}`
@@ -48,22 +48,20 @@ function debtTargetActive(metric, direction) {
 }
 
 function ColoredSegment({ children, color, show, status }) {
-    const darkMode = useContext(DarkMode)
     if (show === false) {
         return null
     }
     return (
-        <Segment inverted color={color}>
-            <Segment inverted={darkMode}>
-                <Header>
-                    <span>
-                        {STATUS_SHORT_NAME[status]} <StatusIcon status={status} size="tiny" />
-                    </span>
-                    <Header.Subheader>{capitalize(color)}</Header.Subheader>
-                </Header>
-                <b>{children}</b>
-            </Segment>
-        </Segment>
+        <Box sx={{ padding: "10px", border: `12px solid ${STATUS_COLORS_MUI[status]}` }}>
+            <Typography variant="h6">
+                <Stack direction="row">
+                    {STATUS_SHORT_NAME[status]}&nbsp;
+                    <StatusIcon status={status} size="small" />
+                </Stack>
+            </Typography>
+            <Typography variant="subtitle2">{capitalize(color)}</Typography>
+            <b>{children}</b>
+        </Box>
     )
 }
 ColoredSegment.propTypes = {
