@@ -19,6 +19,7 @@ const theme = createTheme({
     colorSchemes: {
         dark: true, // Add a dark theme (light theme is available by default)
     },
+    components: { MuiTooltip: { defaultProps: { arrow: true }, styleOverrides: { tooltip: { fontSize: "1em" } } } },
 })
 
 class App extends Component {

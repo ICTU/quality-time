@@ -301,7 +301,7 @@ export function SubjectTableRow({
             )}
             {nrDates === 1 && settings.hiddenColumns.excludes("status") && (
                 <Table.Cell textAlign="center">
-                    <StatusIcon status={metric.status} status_start={metric.status_start} />
+                    <StatusIcon status={metric.status} statusStart={metric.status_start} />
                 </Table.Cell>
             )}
             {nrDates === 1 && settings.hiddenColumns.excludes("measurement") && (
