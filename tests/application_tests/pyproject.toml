@@ -18,7 +18,7 @@ optional-dependencies.dev = [
     "types-requests==2.32.0.20240914",
 ]
 optional-dependencies.tools = [
-    "bandit==1.7.9",
+    "bandit==1.7.10",
     "fixit==2.1.0",
     "mypy==1.11.2",
     "pip-audit==2.7.3",
