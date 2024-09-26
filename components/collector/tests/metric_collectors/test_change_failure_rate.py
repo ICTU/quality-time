@@ -21,7 +21,7 @@ from tests.fixtures import METRIC_ID
 class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
     """Unit tests for the change failure rate metric collector."""
 
-    EARLY_DT: datetime = datetime(2020, 8, 6, 8, 36, 48, tzinfo=tzlocal())
+    EARLY_DT: datetime = datetime(2020, 8, 6, 8, 36, 48, 927000, tzinfo=tzlocal())
     DEPLOY_DT: datetime = EARLY_DT + timedelta(hours=2)
     ISSUE_DT: datetime = EARLY_DT + timedelta(hours=5)
     COLLECT_DT: datetime = EARLY_DT + timedelta(hours=9)
@@ -32,8 +32,8 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
             "status": "failed",
             "name": "job1",
             "stage": "stage",
-            "created_at": DEPLOY_DT.astimezone(tzutc()).isoformat().replace("+00:00", ".007Z"),
-            "finished_at": DEPLOY_DT.astimezone(tzutc()).isoformat().replace("+00:00", ".927Z"),
+            "created_at": DEPLOY_DT.astimezone(tzutc()).isoformat().replace(".927000+00:00", ".007Z"),
+            "finished_at": DEPLOY_DT.astimezone(tzutc()).isoformat().replace(".927000+00:00", ".927Z"),
             "pipeline": {"web_url": "https://gitlab/project/-/pipelines/1"},
             "web_url": "https://gitlab/job1",
             "ref": "main",
@@ -52,7 +52,7 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
             },
         ],
     }
-    JIRA_CREATED: str = ISSUE_DT.isoformat().replace("+", ".000+")
+    JIRA_CREATED: str = ISSUE_DT.isoformat()
 
     def setUp(self) -> None:
         """Extend to set up test fixtures."""
@@ -97,6 +97,7 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
         return {
             "branch": "main",
             "build_date": self.DEPLOY_DT.astimezone(tzutc()).date().isoformat(),
+            "build_datetime": self.DEPLOY_DT,
             "build_status": "failed",
             "failed": True,
             "key": "1",
@@ -124,7 +125,7 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
                 wraps=datetime,
             ) as mock_dt,
         ):
-            mock_dt.now.return_value = self.COLLECT_DT
+            mock_dt.now.return_value = self.COLLECT_DT  # this shifts the perspective of `days_ago`
             measurement = await change_failure_rate_collector_class(self.session, metric).collect()
 
         if side_effects:
@@ -197,7 +198,7 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_only_match_issue_after_deploy(self):
         """Test that issues are not matched to deployments that were done later."""
-        self.tickets_json["issues"][0]["fields"]["created"] = self.EARLY_DT.isoformat().replace("+", ".000+")
+        self.tickets_json["issues"][0]["fields"]["created"] = self.EARLY_DT.isoformat()
         self.response.json.side_effect = [
             self.JENKINS_JOBS_JSON,
             [],

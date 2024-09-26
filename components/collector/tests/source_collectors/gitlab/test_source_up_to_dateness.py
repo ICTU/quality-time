@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime
 from unittest.mock import AsyncMock, Mock, _patch, patch
+
+from dateutil.tz import tzutc
 
 from collector_utilities.date_time import days_ago, parse_datetime
 
@@ -20,7 +22,7 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
         """Extend to set up the metric under test."""
         super().setUp()
         self.commit_json = {"committed_date": "2019-01-01T09:06:12+00:00"}
-        self.expected_age = days_ago(datetime(2019, 1, 1, 9, 6, 12, tzinfo=UTC))
+        self.expected_age = days_ago(datetime(2019, 1, 1, 9, 6, 12, tzinfo=tzutc()))
 
     @staticmethod
     def patched_client_session_head() -> _patch[AsyncMock]:
@@ -92,7 +94,7 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
         """Test that the landing url is the API url when GitLab cannot be reached."""
         self.set_source_parameter("file_path", "")
         with patch("shared.utils.date_time.datetime", wraps=datetime) as mock_dt:
-            mock_dt.now.return_value = datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC)
+            mock_dt.now.return_value = datetime(2024, 1, 1, 12, 0, 0, tzinfo=tzutc())
             response = await self.collect(get_request_json_side_effect=[ConnectionError])
         api_url = "https://gitlab/api/v4/projects/namespace%2Fproject/pipelines?updated_after=2023-12-25&per_page=100"
         self.assert_measurement(response, landing_url=api_url, parse_error="Traceback")

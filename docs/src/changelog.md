@@ -49,6 +49,7 @@ If your currently installed *Quality-time* version is not v5.16.1, please first 
 ### Fixed
 
 - The 'tests' metric with JUnit XML files as source would report incorrect results if the JUnit XML files contain test case names that are not unique across test suites. Fixes [#9872](https://github.com/ICTU/quality-time/issues/9872).
+- The 'job runs within time period' metric would incorrectly report results outside the configured time period. Fixes [#5313](https://github.com/ICTU/quality-time/issues/5313).
 
 ## v5.16.1 - 2024-09-26
 
