@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v5.16.1, please first check the upgrade path in the [versioning policy](versioning.md).
+
+### Fixed
+
+- The 'tests' metric with JUnit XML files as source would report incorrect results if the JUnit XML files contain test case names that are not unique across test suites. Fixes [#9872](https://github.com/ICTU/quality-time/issues/9872).
+
 ## v5.16.1 - 2024-09-26
 
 ### Deployment notes
