@@ -1,5 +1,7 @@
 """Unit tests for the Jenkins failed jobs collector."""
 
+from collector_utilities.date_time import datetime_from_timestamp
+
 from .base import JenkinsTestCase
 
 
@@ -33,7 +35,14 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         }
         response = await self.collect(get_request_json_return_value=jenkins_json)
         expected_entities = [
-            {"build_date": "2019-03-15", "build_status": "Failure", "key": "job", "name": "job", "url": self.job_url},
+            {
+                "build_date": "2019-03-15",
+                "build_datetime": datetime_from_timestamp(self.builds[0]["timestamp"]),
+                "build_status": "Failure",
+                "key": "job",
+                "name": "job",
+                "url": self.job_url,
+            },
         ]
         self.assert_measurement(response, entities=expected_entities)
 
@@ -42,7 +51,14 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         self.set_source_parameter("jobs_to_include", ["job"])
         response = await self.collect(get_request_json_return_value=self.jenkins_json)
         expected_entities = [
-            {"build_date": "2019-03-15", "build_status": "Failure", "key": "job", "name": "job", "url": self.job_url},
+            {
+                "build_date": "2019-03-15",
+                "build_datetime": datetime_from_timestamp(self.builds[0]["timestamp"]),
+                "build_status": "Failure",
+                "key": "job",
+                "name": "job",
+                "url": self.job_url,
+            },
         ]
         self.assert_measurement(response, entities=expected_entities)
 
@@ -53,6 +69,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         expected_entities = [
             {
                 "build_date": "2019-03-15",
+                "build_datetime": datetime_from_timestamp(self.builds[0]["timestamp"]),
                 "build_status": "Failure",
                 "key": "job2",
                 "name": "job2",
@@ -66,7 +83,14 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         self.set_source_parameter("jobs_to_ignore", ["job2"])
         response = await self.collect(get_request_json_return_value=self.jenkins_json)
         expected_entities = [
-            {"build_date": "2019-03-15", "build_status": "Failure", "key": "job", "name": "job", "url": self.job_url},
+            {
+                "build_date": "2019-03-15",
+                "build_datetime": datetime_from_timestamp(self.builds[0]["timestamp"]),
+                "build_status": "Failure",
+                "key": "job",
+                "name": "job",
+                "url": self.job_url,
+            },
         ]
         self.assert_measurement(response, entities=expected_entities)
 
@@ -75,7 +99,14 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         self.set_source_parameter("jobs_to_ignore", ["job."])
         response = await self.collect(get_request_json_return_value=self.jenkins_json)
         expected_entities = [
-            {"build_date": "2019-03-15", "build_status": "Failure", "key": "job", "name": "job", "url": self.job_url},
+            {
+                "build_date": "2019-03-15",
+                "build_datetime": datetime_from_timestamp(self.builds[0]["timestamp"]),
+                "build_status": "Failure",
+                "key": "job",
+                "name": "job",
+                "url": self.job_url,
+            },
         ]
         self.assert_measurement(response, entities=expected_entities)
 
@@ -90,6 +121,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         expected_entities = [
             {
                 "build_date": "2019-03-15",
+                "build_datetime": datetime_from_timestamp(self.builds[0]["timestamp"]),
                 "build_status": "Failure",
                 "key": "job3",
                 "name": "job3",

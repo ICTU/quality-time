@@ -1,6 +1,8 @@
 """Unit tests for the GitLab unmerged branches collector."""
 
-from datetime import UTC, datetime
+from datetime import datetime
+
+from dateutil.tz import tzutc
 
 from .base import GitLabTestCase
 
@@ -32,7 +34,7 @@ class GitLabUnmergedBranchesTest(GitLabTestCase):
             "name": "active_unmerged_branch",
             "default": False,
             "merged": False,
-            "commit": {"committed_date": datetime.now(tz=UTC).isoformat()},
+            "commit": {"committed_date": datetime.now(tz=tzutc()).isoformat()},
         }
         self.merged = {"name": "merged_branch", "default": False, "merged": True}
         self.expected_entities = [

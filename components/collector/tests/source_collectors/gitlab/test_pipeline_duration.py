@@ -1,7 +1,9 @@
 """Unit tests for the GitLab CI-pipeline duration collector."""
 
-from datetime import UTC, datetime
+from datetime import datetime
 from unittest.mock import Mock, patch
+
+from dateutil.tz import tzutc
 
 from .base import GitLabTestCase
 
@@ -11,7 +13,7 @@ class GitLabPipelineDurationTest(GitLabTestCase):
 
     METRIC_TYPE = "pipeline_duration"
     METRIC_ADDITION = "min"
-    NOW = datetime(2022, 9, 22, 1, 30, 14, 197, tzinfo=UTC)
+    NOW = datetime(2022, 9, 22, 1, 30, 14, 197, tzinfo=tzutc())
     MOCK_DATETIME = Mock(now=Mock(return_value=NOW))
 
     def setUp(self) -> None:
