@@ -4,7 +4,6 @@ name: Feature tests
 on: [push]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
 
@@ -13,7 +12,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.13.0"
       - name: Run feature tests
         run: ./tests/feature_tests/ci/test.sh
       - name: Upload artifacts
