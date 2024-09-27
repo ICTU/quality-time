@@ -1,10 +1,9 @@
 [project]
 name = "shared-code"
 version = "5.19.0-rc.1"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
@@ -38,7 +37,6 @@ where = [
 ]
 
 [tool.ruff]
-target-version = "py312"
 line-length = 120
 src = [
     "src",
