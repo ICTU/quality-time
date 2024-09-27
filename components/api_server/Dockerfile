@@ -1,4 +1,4 @@
-FROM python:3.12.7-alpine3.20 AS compile-image
+FROM python:3.13.0-alpine3.20 AS compile-image
 
 WORKDIR /home/server
 
@@ -11,7 +11,7 @@ COPY api_server/requirements/requirements-internal.txt /requirements-internal.tx
 COPY shared_code /home/shared_code/
 RUN pip install --no-cache-dir --use-pep517 -r /requirements-internal.txt
 
-FROM python:3.12.7-alpine3.20
+FROM python:3.13.0-alpine3.20
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time API-server"
