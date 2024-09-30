@@ -1,11 +1,12 @@
+import PictureAsPdf from "@mui/icons-material/PictureAsPdf"
+import { LoadingButton } from "@mui/lab"
+import { Tooltip } from "@mui/material"
 import { string } from "prop-types"
 import { useState } from "react"
-import { Icon } from "semantic-ui-react"
 
-import { get_report_pdf } from "../api/report"
-import { registeredURLSearchParams } from "../hooks/url_search_query"
-import { Button, Popup } from "../semantic_ui_react_wrappers"
-import { showMessage } from "../widgets/toast"
+import { get_report_pdf } from "../../api/report"
+import { registeredURLSearchParams } from "../../hooks/url_search_query"
+import { showMessage } from "../../widgets/toast"
 
 function download_pdf(report_uuid, query_string, callback) {
     const reportId = report_uuid ? `report-${report_uuid}` : "reports-overview"
@@ -41,29 +42,22 @@ export function DownloadAsPDFButton({ report_uuid }) {
     const itemType = report_uuid ? "report" : "reports overview"
     const label = `Download ${itemType} as PDF`
     return (
-        <Popup
-            on={["hover", "focus"]}
-            trigger={
-                <Button
-                    aria-label={label}
-                    basic
-                    icon
-                    loading={loading}
-                    onClick={() => {
-                        if (!loading) {
-                            setLoading(true)
-                            download_pdf(report_uuid, `?${query.toString()}`, () => {
-                                setLoading(false)
-                            })
-                        }
-                    }}
-                    inverted
-                >
-                    <Icon name="file pdf" /> Download as PDF
-                </Button>
-            }
-            content={`Generate a PDF version of the ${itemType} as currently displayed. This may take some time.`}
-        />
+        <Tooltip title={`Generate a PDF version of the ${itemType} as currently displayed. This may take some time.`}>
+            <LoadingButton
+                aria-label={label}
+                color="inherit"
+                loading={loading}
+                onClick={() => {
+                    setLoading(true)
+                    download_pdf(report_uuid, `?${query.toString()}`, () => {
+                        setLoading(false)
+                    })
+                }}
+                startIcon={<PictureAsPdf />}
+            >
+                Download as PDF
+            </LoadingButton>
+        </Tooltip>
     )
 }
 DownloadAsPDFButton.propTypes = {

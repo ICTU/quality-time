@@ -59,6 +59,6 @@ async function renderAppUI() {
 it("resets all settings", async () => {
     history.push("?date_interval=2")
     await act(async () => await renderAppUI())
-    fireEvent.click(screen.getByLabelText("Reset reports overview settings"))
+    fireEvent.click(screen.getByText("Reset settings"))
     expect(history.location.search).toBe("")
 })

@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import dayjs from "dayjs"
 import history from "history/browser"
 
 import * as auth from "./api/auth"
@@ -69,32 +69,50 @@ it("resets the user when the user clicks logout", async () => {
     expect(screen.queryAllByText(/admin/).length).toBe(0)
 })
 
+async function selectDate() {
+    await act(async () => {
+        fireEvent.click(screen.getByLabelText("Report date"))
+    })
+    await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "Previous month" }))
+    })
+    await act(async () => {
+        fireEvent.click(screen.getAllByRole("gridcell", { name: "15" })[0])
+    })
+}
+
 it("handles a date change", async () => {
     render(<App />)
-    await userEvent.type(screen.getByPlaceholderText("YYYY-MM-DD"), "2020-03-13")
-    expect(screen.getAllByDisplayValue("2020-03-13").length).toBe(1)
+    await selectDate()
+    const expectedDate = dayjs().subtract(1, "month").date(15).toDate().toDateString()
+    expect(screen.getByLabelText("Report date").textContent).toMatch(expectedDate)
 })
 
 it("handles a date change between two dates in the past", async () => {
     history.push("/?report_date=2022-03-13")
     render(<App />)
-    await userEvent.type(screen.getByPlaceholderText("YYYY-MM-DD"), "{Backspace}4")
-    expect(screen.getAllByDisplayValue("2022-03-14").length).toBe(1)
+    await selectDate()
+    const expectedDate = dayjs().subtract(1, "month").date(15).toDate().toDateString()
+    expect(screen.getByLabelText("Report date").textContent).toMatch(expectedDate)
 })
 
 it("reads the report date query parameter", () => {
     history.push("/?report_date=2020-03-13")
     render(<App />)
-    expect(screen.getAllByDisplayValue("2020-03-13").length).toBe(1)
+    const expectedDate = dayjs("2020-03-13").toDate().toDateString()
+    expect(screen.getByLabelText("Report date").textContent).toMatch(expectedDate)
 })
 
 it("handles a date reset", async () => {
     history.push("/?report_date=2020-03-13")
     render(<App />)
     await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "Close" }))
+        fireEvent.click(screen.getByLabelText("Report date"))
     })
-    expect(screen.queryAllByDisplayValue("2020-03-13").length).toBe(0)
+    await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "Today" }))
+    })
+    expect(screen.getByLabelText("Report date").textContent).toMatch(/today/)
 })
 
 it("handles the nr of measurements event source", async () => {

@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 
@@ -99,7 +99,7 @@ it("does not go to home page if on reports overview", async () => {
     const openReportsOverview = jest.fn()
     renderMenubar({ report_uuid: "", openReportsOverview: openReportsOverview })
     act(() => {
-        fireEvent.click(screen.getByAltText(/Go home/))
+        fireEvent.click(screen.getByAltText(/Go to reports overview/))
     })
     expect(openReportsOverview).not.toHaveBeenCalled()
 })
@@ -108,7 +108,7 @@ it("goes to home page if on report", async () => {
     const openReportsOverview = jest.fn()
     renderMenubar({ openReportsOverview: openReportsOverview })
     await act(async () => {
-        fireEvent.click(screen.getByAltText(/Go home/))
+        fireEvent.click(screen.getByAltText(/Go to reports overview/))
     })
     expect(openReportsOverview).toHaveBeenCalled()
 })
@@ -116,7 +116,7 @@ it("goes to home page if on report", async () => {
 it("goes to home page on keypress", async () => {
     const openReportsOverview = jest.fn()
     renderMenubar({ openReportsOverview: openReportsOverview })
-    await userEvent.type(screen.getByAltText(/Go home/), "{Enter}")
+    await userEvent.type(screen.getByAltText(/Go to reports overview/), "{Enter}")
     expect(openReportsOverview).toHaveBeenCalled()
 })
 
@@ -132,12 +132,12 @@ it("shows the view panel on space", async () => {
     expect(screen.getAllByText(/Hello/).length).toBe(1)
 })
 
-it("hides the view panel on click", () => {
+it("hides the view panel on click", async () => {
     renderMenubar({ panel: <div>Hello</div> })
     fireEvent.click(screen.getByText(/Settings/))
     expect(screen.getAllByText(/Hello/).length).toBe(1)
     fireEvent.click(screen.getByText(/Settings/))
-    expect(screen.queryAllByText(/Hello/).length).toBe(0)
+    await waitFor(() => expect(screen.queryAllByText(/Hello/).length).toBe(0))
 })
 
 it("hides the view panel on escape", async () => {
@@ -145,5 +145,5 @@ it("hides the view panel on escape", async () => {
     fireEvent.click(screen.getByText(/Settings/))
     expect(screen.getAllByText(/Hello/).length).toBe(1)
     await userEvent.keyboard("{Escape}")
-    expect(screen.queryAllByText(/Hello/).length).toBe(0)
+    await waitFor(() => expect(screen.queryAllByText(/Hello/).length).toBe(0))
 })

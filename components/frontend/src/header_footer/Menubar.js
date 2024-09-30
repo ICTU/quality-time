@@ -1,18 +1,20 @@
 import "./Menubar.css"
 
+import { AppBar, Button, Drawer, Stack, Toolbar } from "@mui/material"
 import { element, func, string } from "prop-types"
 import { useEffect, useState } from "react"
-import FocusLock from "react-focus-lock"
-import { Button, Dropdown, Icon, Image, Menu, Portal } from "semantic-ui-react"
+import { Dropdown, Icon } from "semantic-ui-react"
 
 import { login, logout } from "../api/auth"
-import { Form, Message, Modal, Popup } from "../semantic_ui_react_wrappers"
+import { Form, Message, Modal } from "../semantic_ui_react_wrappers"
 import { optionalDatePropType, settingsPropType, uiModePropType } from "../sharedPropTypes"
 import { Avatar } from "../widgets/Avatar"
-import { DatePicker } from "../widgets/DatePicker"
-import { CollapseButton } from "./CollapseButton"
-import { DownloadAsPDFButton } from "./DownloadAsPDFButton"
-import { ResetSettingsButton } from "./ResetSettingsButton"
+import { CollapseButton } from "./buttons/CollapseButton"
+import { DatePickerButton } from "./buttons/DatePickerButton"
+import { DownloadAsPDFButton } from "./buttons/DownloadAsPDFButton"
+import { HomeButton } from "./buttons/HomeButton"
+import { ResetSettingsButton } from "./buttons/ResetSettingsButton"
+import { SettingsButton } from "./buttons/SettingsButton"
 import { UIModeMenu } from "./UIModeMenu"
 
 function Login({ set_user }) {
@@ -49,7 +51,7 @@ function Login({ set_user }) {
     return (
         <Modal
             trigger={
-                <Button secondary>
+                <Button color="inherit">
                     <Icon name="user" />
                     Login
                 </Button>
@@ -144,113 +146,47 @@ export function Menubar({
     const atReportsOverview = report_uuid === ""
     return (
         <>
-            <Menu fluid className="menubar" inverted fixed="top">
-                <Menu.Menu position="left">
-                    <Popup
-                        content="Go to reports overview"
-                        disabled={atReportsOverview}
-                        trigger={
-                            <div
-                                onBeforeInput={(event) => {
-                                    event.preventDefault()
-                                    setSettingsPanelVisible(false)
-                                    openReportsOverview()
-                                }}
-                                tabIndex={atReportsOverview ? -1 : 0}
-                            >
-                                <Menu.Item
-                                    header
-                                    onClick={
-                                        atReportsOverview
-                                            ? null
-                                            : () => {
-                                                  setSettingsPanelVisible(false)
-                                                  openReportsOverview()
-                                              }
-                                    }
-                                >
-                                    <Image size="mini" src="/favicon.ico" alt="Go home" />
-                                    <span style={{ paddingLeft: "6mm", fontSize: "2em" }}>Quality-time</span>
-                                </Menu.Item>
-                            </div>
-                        }
-                    />
-                    <FocusLock group="settingsPanel" disabled={!settingsPanelVisible} className="center">
-                        <div
-                            onBeforeInput={(event) => {
-                                event.preventDefault()
-                                setSettingsPanelVisible(!settingsPanelVisible)
-                            }}
-                        >
-                            <Menu.Item
-                                onClick={(event) => {
-                                    event.stopPropagation()
-                                    setSettingsPanelVisible(!settingsPanelVisible)
-                                }}
-                                tabIndex={0}
-                            >
-                                <Icon size="large" name={`caret ${settingsPanelVisible ? "down" : "right"}`} />
-                                Settings
-                            </Menu.Item>
-                        </div>
-                    </FocusLock>
-                    <Menu.Item>
+            <AppBar
+                position="fixed"
+                sx={{
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                }} // Make sure the app bar is above the drawer for the settings
+            >
+                <Toolbar>
+                    <Stack direction="row" spacing={2} sx={{ flexGrow: 1 }}>
+                        <HomeButton
+                            atReportsOverview={atReportsOverview}
+                            openReportsOverview={openReportsOverview}
+                            setSettingsPanelVisible={setSettingsPanelVisible}
+                        />
+                        <SettingsButton
+                            setSettingsPanelVisible={setSettingsPanelVisible}
+                            settingsPanelVisible={settingsPanelVisible}
+                        />
                         <ResetSettingsButton
                             atReportsOverview={atReportsOverview}
                             handleDateChange={handleDateChange}
                             reportDate={report_date}
                             settings={settings}
                         />
-                    </Menu.Item>
-                    <Menu.Item>
                         <CollapseButton expandedItems={settings.expandedItems} />
-                    </Menu.Item>
-                    <Menu.Item>
                         <DownloadAsPDFButton report_uuid={report_uuid} />
-                    </Menu.Item>
-                </Menu.Menu>
-                <Menu.Menu position="right">
-                    <Popup
-                        content="Show the report as it was on the selected date"
-                        position="left center"
-                        trigger={
-                            <Menu.Item>
-                                <Form>
-                                    <DatePicker
-                                        isClearable={true}
-                                        maxDate={new Date()}
-                                        onChange={onDate}
-                                        selected={report_date}
-                                    />
-                                </Form>
-                            </Menu.Item>
-                        }
-                    />
-                    <Menu.Item>
+                    </Stack>
+                    <Stack direction="row" spacing={2}>
+                        <DatePickerButton onChange={(date) => onDate(date.$d)} reportDate={report_date} />
                         <UIModeMenu setUIMode={setUIMode} uiMode={uiMode} />
-                    </Menu.Item>
-                    <Menu.Item>
                         {user !== null ? (
                             <Logout email={email} user={user} set_user={set_user} />
                         ) : (
                             <Login set_user={set_user} />
                         )}
-                    </Menu.Item>
-                </Menu.Menu>
-            </Menu>
-            <Portal
-                closeOnTriggerClick={true}
-                open={settingsPanelVisible}
-                onClose={(event) => {
-                    event.stopPropagation()
-                    setSettingsPanelVisible(false)
-                }}
-                unmountOnHide
-            >
-                <div className="panel">
-                    <FocusLock group="settingsPanel">{panel}</FocusLock>
-                </div>
-            </Portal>
+                    </Stack>
+                </Toolbar>
+            </AppBar>
+            <Drawer anchor="top" open={settingsPanelVisible} onClose={() => setSettingsPanelVisible(false)}>
+                <Toolbar /* Add an empty toolbar to the drawer so the panel is not partly hidden by the appbar. */ />
+                {panel}
+            </Drawer>
         </>
     )
 }
