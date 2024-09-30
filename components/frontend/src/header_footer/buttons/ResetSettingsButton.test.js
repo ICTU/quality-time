@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
+import { createTestableSettings } from "../../__fixtures__/fixtures"
 import { ResetSettingsButton } from "./ResetSettingsButton"
 
 beforeEach(() => {
@@ -38,7 +38,7 @@ it("resets the settings", async () => {
         reportDate: new Date("2023-01-01"),
         settings: settings,
     })
-    fireEvent.click(screen.getAllByLabelText(/Reset reports overview settings/)[0])
+    fireEvent.click(screen.getAllByText(/Reset settings/)[0])
     expect(history.location.search).toEqual("")
     expect(handleDateChange).toHaveBeenCalledWith(null)
 })
@@ -51,6 +51,6 @@ it("does not reset the settings when all have the default value", async () => {
         handleDateChange: handleDateChange,
         settings: settings,
     })
-    fireEvent.click(screen.getAllByLabelText(/Reset this report's settings/)[0])
+    fireEvent.click(screen.getAllByText(/Reset settings/)[0])
     expect(handleDateChange).not.toHaveBeenCalled()
 })

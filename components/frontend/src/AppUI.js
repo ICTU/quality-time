@@ -2,6 +2,9 @@ import "react-toastify/dist/ReactToastify.css"
 import "./App.css"
 
 import { useColorScheme } from "@mui/material/styles"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { locale_en_gb } from "dayjs/locale/en-gb"
 import { bool, func, number, object, string } from "prop-types"
 import HashLinkObserver from "react-hash-link"
 import { ToastContainer } from "react-toastify"
@@ -73,52 +76,54 @@ export function AppUI({
                 backgroundColor: backgroundColor,
             }}
         >
-            <DarkMode.Provider value={darkMode}>
-                <HashLinkObserver />
-                <Menubar
-                    email={email}
-                    handleDateChange={handleDateChange}
-                    openReportsOverview={openReportsOverview}
-                    onDate={handleDateChange}
-                    report_date={report_date}
-                    report_uuid={report_uuid}
-                    set_user={set_user}
-                    user={user}
-                    panel={
-                        <SettingsPanel
-                            atReportsOverview={atReportsOverview}
-                            handleSort={handleSort}
-                            settings={settings}
-                            tags={getReportsTags(reports)}
-                        />
-                    }
-                    settings={settings}
-                    setUIMode={setMode}
-                    uiMode={mode}
-                />
-                <ToastContainer theme="colored" />
-                <Permissions.Provider value={user_permissions}>
-                    <DataModel.Provider value={dataModel}>
-                        <PageContent
-                            changed_fields={changed_fields}
-                            current_report={current_report}
-                            handleSort={handleSort}
-                            lastUpdate={lastUpdate}
-                            loading={loading}
-                            nrMeasurements={nrMeasurements}
-                            openReportsOverview={openReportsOverview}
-                            openReport={openReport}
-                            reload={reload}
-                            report_date={report_date}
-                            report_uuid={report_uuid}
-                            reports={reports}
-                            reports_overview={reports_overview}
-                            settings={settings}
-                        />
-                    </DataModel.Provider>
-                </Permissions.Provider>
-                <Footer lastUpdate={lastUpdate} report={current_report} />
-            </DarkMode.Provider>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale_en_gb}>
+                <DarkMode.Provider value={darkMode}>
+                    <HashLinkObserver />
+                    <Menubar
+                        email={email}
+                        handleDateChange={handleDateChange}
+                        openReportsOverview={openReportsOverview}
+                        onDate={handleDateChange}
+                        report_date={report_date}
+                        report_uuid={report_uuid}
+                        set_user={set_user}
+                        user={user}
+                        panel={
+                            <SettingsPanel
+                                atReportsOverview={atReportsOverview}
+                                handleSort={handleSort}
+                                settings={settings}
+                                tags={getReportsTags(reports)}
+                            />
+                        }
+                        settings={settings}
+                        setUIMode={setMode}
+                        uiMode={mode}
+                    />
+                    <ToastContainer theme="colored" />
+                    <Permissions.Provider value={user_permissions}>
+                        <DataModel.Provider value={dataModel}>
+                            <PageContent
+                                changed_fields={changed_fields}
+                                current_report={current_report}
+                                handleSort={handleSort}
+                                lastUpdate={lastUpdate}
+                                loading={loading}
+                                nrMeasurements={nrMeasurements}
+                                openReportsOverview={openReportsOverview}
+                                openReport={openReport}
+                                reload={reload}
+                                report_date={report_date}
+                                report_uuid={report_uuid}
+                                reports={reports}
+                                reports_overview={reports_overview}
+                                settings={settings}
+                            />
+                        </DataModel.Provider>
+                    </Permissions.Provider>
+                    <Footer lastUpdate={lastUpdate} report={current_report} />
+                </DarkMode.Provider>
+            </LocalizationProvider>
         </div>
     )
 }

@@ -1,6 +1,7 @@
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp"
 import { bool, func, string } from "prop-types"
 
-import { Icon } from "../../semantic_ui_react_wrappers"
 import {
     popupContentPropType,
     settingsPropType,
@@ -85,11 +86,7 @@ SortColumnMenu.propTypes = {
 function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handleSort, help }) {
     let sortIndicator = null
     if (sortColumn.equals(column) && sortDirection.value) {
-        // We use a triangle because the sort down and up icons are not at the same height
-        const iconDirection = sortDirection.equals("ascending") ? "up" : "down"
-        sortIndicator = (
-            <Icon disabled={disabled} name={`triangle ${iconDirection}`} aria-label={`sorted ${sortDirection.value}`} />
-        )
+        sortIndicator = sortDirection.equals("ascending") ? <ArrowDropDownIcon /> : <ArrowDropUpIcon />
     }
     return (
         <SettingsMenuItem
@@ -99,7 +96,7 @@ function SortColumnMenuItem({ column, disabled, sortColumn, sortDirection, handl
             onClick={handleSort}
             onClickData={column}
         >
-            {capitalize(column === "name" ? "metric" : column).replaceAll("_", " ")} <span>{sortIndicator}</span>
+            {capitalize(column === "name" ? "metric" : column).replaceAll("_", " ")} {sortIndicator}
         </SettingsMenuItem>
     )
 }

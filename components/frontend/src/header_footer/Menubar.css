@@ -1,26 +1,5 @@
 @media print {
-    .menubar {
+    .MuiAppBar-root {
         display: none !important;
     }
-}
-
-.menubar {
-    opacity: 0.98;
-}
-
-.menu .center {
-    display: grid;
-    place-content: center;
-}
-
-.panel {
-    background-color: black;
-    border: 0px;
-    left: 0px;
-    margin: 0px;
-    opacity: 0.98;
-    position: fixed;
-    top: 64px;
-    width: 100%;
-    z-index: 4;
 }

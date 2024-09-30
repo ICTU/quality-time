@@ -1,18 +1,13 @@
-import "./SettingsMenu.css"
-
+import { MenuItem, MenuList, Stack, Tooltip, Typography } from "@mui/material"
 import { bool, func, number, oneOfType, string } from "prop-types"
-import { Header, Menu, Segment } from "semantic-ui-react"
 
-import { Popup } from "../../semantic_ui_react_wrappers"
 import { childrenPropType, popupContentPropType } from "../../sharedPropTypes"
-
-const activeColor = "grey"
 
 export function SettingsMenuGroup({ children }) {
     return (
-        <Segment.Group horizontal className="equal width" style={{ margin: "0px", border: "0px" }}>
+        <Stack direction="row" sx={{ justifyContent: "space-between", padding: "20px" }}>
             {children}
-        </Segment.Group>
+        </Stack>
     )
 }
 SettingsMenuGroup.propTypes = {
@@ -20,12 +15,11 @@ SettingsMenuGroup.propTypes = {
 }
 
 export function SettingsMenu({ children, title }) {
-    const menuProps = { compact: true, vertical: true, inverted: true, secondary: true }
     return (
-        <Segment inverted color="black">
-            <Header size="small">{title}</Header>
-            <Menu {...menuProps}>{children}</Menu>
-        </Segment>
+        <Stack>
+            <Typography variant="h6">{title}</Typography>
+            <MenuList>{children}</MenuList>
+        </Stack>
     )
 }
 SettingsMenu.propTypes = {
@@ -36,8 +30,6 @@ SettingsMenu.propTypes = {
 export function SettingsMenuItem({ active, children, disabled, disabledHelp, help, onClick, onClickData }) {
     // A menu item that can can show help when disabled so users can see why the menu item is disabled
     const props = {
-        active: active,
-        color: activeColor,
         disabled: disabled,
         onBeforeInput: (event) => {
             event.preventDefault()
@@ -49,25 +41,19 @@ export function SettingsMenuItem({ active, children, disabled, disabledHelp, hel
             event.preventDefault()
             onClick(onClickData)
         },
+        selected: active,
         tabIndex: 0,
     }
     if (help || (disabledHelp && disabled)) {
-        props["style"] = { marginLeft: 0, marginRight: 0, marginBottom: 5 } // Compensate for the span
         return (
-            <Popup
-                content={disabledHelp || help}
-                inverted
-                position="left center"
-                // We need a span here to prevent the popup from becoming disabled when the menu item is disabled:
-                trigger={
-                    <span>
-                        <Menu.Item {...props}>{children}</Menu.Item>
-                    </span>
-                }
-            />
+            <Tooltip placement="left" title={disabledHelp || help}>
+                <span /* https://mui.com/material-ui/react-tooltip/#disabled-elements */>
+                    <MenuItem {...props}>{children}</MenuItem>
+                </span>
+            </Tooltip>
         )
     }
-    return <Menu.Item {...props}>{children}</Menu.Item>
+    return <MenuItem {...props}>{children}</MenuItem>
 }
 SettingsMenuItem.propTypes = {
     active: bool,

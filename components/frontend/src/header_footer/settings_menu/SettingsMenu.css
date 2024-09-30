@@ -1,4 +1,0 @@
-.ui.horizontal.segments.equal.width > .ui.segment {
-    flex-grow: 1;
-    width: 0;
-}

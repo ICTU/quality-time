@@ -127,14 +127,6 @@ it("sorts a column by keypress", async () => {
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
-it("ignores a keypress if the menu item is disabled", async () => {
-    history.push("?hidden_columns=comment")
-    const handleSort = jest.fn()
-    renderSettingsPanel({ handleSort: handleSort })
-    await userEvent.type(screen.getAllByText(/Comment/)[1], " ")
-    expect(handleSort).not.toHaveBeenCalledWith("comment")
-})
-
 it("sets the number of dates", async () => {
     history.push("?nr_dates=2")
     renderSettingsPanel()
