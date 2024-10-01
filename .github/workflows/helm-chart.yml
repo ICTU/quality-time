@@ -1,0 +1,45 @@
+---
+name: Helm Chart CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.7
+
+      - name: Set yaml value change dict with random generated secrets
+        run: |
+          echo "VALUE_CHANGES={\"[0].data.DATABASE_USERNAME\":\"$(echo ${RANDOM} | base64)\",\"[0].data.DATABASE_PASSWORD\":\"$(echo ${RANDOM} | base64)\",\"[1].data.LDAP_LOOKUP_USER_PASSWORD\":\"$(echo ${RANDOM} | base64)\"}" >> $GITHUB_ENV
+
+      - name: Update values.yaml
+        uses: fjogeleit/yaml-update-action@v0.15.0
+        with:
+          valueFile: "helm/deploy-ci.yaml"
+          commitChange: false
+          changes: ${{ env.VALUE_CHANGES }}
+
+      - name: Start minikube
+        uses: medyagh/setup-minikube@v0.0.18
+        with:
+          driver: docker
+          container-runtime: containerd
+          minikube-version: latest
+          kubernetes-version: stable
+        timeout-minutes: 2
+
+      - name: Build and run chart
+        run: |
+          eval $(minikube -p minikube docker-env)
+          kubectl apply -f helm/deploy-ci.yaml
+          helm dependency build helm
+          helm upgrade --install --render-subchart-notes quality-time helm
+          kubectl wait --all pods --timeout=2m --for=condition=Ready
+          kubectl wait --all deployments --timeout=30s --for=condition=Available
+        timeout-minutes: 3

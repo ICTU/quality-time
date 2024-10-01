@@ -1,3 +1,4 @@
+---
 name: Hadolint
 
 on: [push]
