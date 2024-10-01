@@ -8,9 +8,9 @@ aiogqlc==5.2.0 \
     --hash=sha256:0b3a09fe69228b3385fd24443c8075a1f2809f5d2c4d06c29da0ca61b2d8f51c \
     --hash=sha256:661be921fe00a3b489c86b3a76fa9d51ae9008cbcead5b1b5d20bfef4eccb6dd
     # via collector (pyproject.toml)
-aiohappyeyeballs==2.4.2 \
-    --hash=sha256:4ca893e6c5c1f5bf3888b04cb5a3bee24995398efef6e0b9f747b5e89d84fd74 \
-    --hash=sha256:8522691d9a154ba1145b157d6d5c15e5c692527ce6a53c5e5f9876977f6dab2f
+aiohappyeyeballs==2.4.3 \
+    --hash=sha256:75cf88a15106a5002a8eb1dab212525c00d1f4c0fa96e551c9fbe6f09a621586 \
+    --hash=sha256:8a7a83727b2756f394ab2895ea0765a0a8c475e3c71e98d43d76f22b4b435572
     # via aiohttp
 aiohttp==3.10.6 \
     --hash=sha256:02108326574ff60267b7b35b17ac5c0bbd0008ccb942ce4c48b657bb90f0b8aa \
