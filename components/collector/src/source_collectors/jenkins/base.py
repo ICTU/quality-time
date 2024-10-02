@@ -12,6 +12,7 @@ from model import Entities, Entity, SourceResponses
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
+    from datetime import datetime
 
 
 class Build(TypedDict):
@@ -52,6 +53,7 @@ class JenkinsJobs(SourceCollector):
                     url=job["url"],
                     build_status=self._build_status(job),
                     build_date=self._build_date(job),
+                    build_datetime=self._build_datetime(job),
                 )
                 for job in self._jobs((await responses[0].json())["jobs"])
             ],
@@ -73,13 +75,15 @@ class JenkinsJobs(SourceCollector):
             return False
         return not match_string_or_regular_expression(entity["name"], self._parameter("jobs_to_ignore"))
 
+    def _build_datetime(self, job: Job) -> datetime | None:
+        """Return the datetime of the most recent build of the job."""
+        builds = self._builds(job)
+        return datetime_from_timestamp(int(builds[0]["timestamp"])) if builds else None
+
     def _build_date(self, job: Job) -> str:
         """Return the date of the most recent build of the job."""
-        builds = self._builds(job)
-        if builds:
-            build_datetime = datetime_from_timestamp(int(builds[0]["timestamp"]))
-            return str(build_datetime.date())
-        return ""
+        build_datetime = self._build_datetime(job)
+        return str(build_datetime.date()) if build_datetime else ""
 
     def _build_status(self, job: Job) -> str:
         """Return the status of the most recent build of the job."""
