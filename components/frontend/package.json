@@ -63,7 +63,7 @@
         "eslint-plugin-promise": "^7.1.0",
         "eslint-plugin-react": "^7.37.0",
         "eslint-plugin-simple-import-sort": "^12.1.1",
-        "globals": "^15.9.0",
+        "globals": "^15.10.0",
         "prettier": "^3.3.3",
         "react-scripts": "5.0.1"
     },
