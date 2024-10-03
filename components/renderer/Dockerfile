@@ -1,4 +1,4 @@
-FROM node:22.8.0-alpine3.20
+FROM node:22.9.0-alpine3.20
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
