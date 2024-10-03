@@ -51,13 +51,13 @@ services:
     depends_on:
       - database
   ldap:
-    image: bitnami/openldap:2.6.4
+    image: bitnami/openldap:2.6.8
     environment:
       - LDAP_ADMIN_PASSWORD=admin
       - LDAP_PORT_NUMBER=389
       - LDAP_SKIP_DEFAULT_TREE=yes
     volumes:
-      - './ldap_ldifs:/ldifs'
+      - "./ldap_ldifs:/ldifs"
     ports:
       - "389:389"
   phpldapadmin:
