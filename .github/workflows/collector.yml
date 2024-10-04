@@ -5,24 +5,18 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4.2.1
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-    - name: Install dependencies
-      run: |
-        cd components/collector
-        ci/pip-install.sh
-    - name: Test
-      run: |
-        cd components/collector
-        ci/unittest.sh
-    - name: Quality
-      run: |
-        cd components/collector
-        ci/quality.sh
+      - uses: actions/checkout@v4.2.1
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "0.4.19"
+      - name: Install dependencies, run unit tests and check quality
+        run: |
+          cd components/collector
+          uv venv
+          ci/pip-install.sh
+          ci/unittest.sh
+          ci/quality.sh

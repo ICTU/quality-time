@@ -5,20 +5,17 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4.2.1
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-    - name: Install dependencies
-      run: |
-        cd tests/feature_tests
-        ci/pip-install.sh
-    - name: Quality
-      run: |
-        cd tests/feature_tests
-        ci/quality.sh
+      - uses: actions/checkout@v4.2.1
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "0.4.19"
+      - name: Install dependencies and check quality
+        run: |
+          cd tests/feature_tests
+          uv venv
+          ci/pip-install.sh
+          ci/quality.sh

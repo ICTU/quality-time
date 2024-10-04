@@ -1,7 +1,6 @@
 #!/bin/bash
 
 cd tests/application_tests
-python3 -m venv venv
-. venv/bin/activate
+uv venv
 ci/pip-install.sh
-python -m unittest discover --start-directory .
+.venv/bin/python -m unittest discover --start-directory .

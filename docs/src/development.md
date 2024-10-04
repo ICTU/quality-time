@@ -12,7 +12,7 @@ If you want to get *Quality-time* up and running quickly, for example for a demo
 
 #### Install prerequisites
 
-Prerequisites are Docker and Git for both scenario's. For scenario 2 you also need Python 3.12 and a recent version of Node.js (we currently use Node.js v20).
+Prerequisites are Docker and Git for both scenario's. For scenario 2 you also need Python 3.12, [uv](https://github.com/astral-sh/uv), and a recent version of Node.js (we currently use Node.js v22).
 
 Clone this repository:
 
@@ -69,7 +69,7 @@ Open another terminal and run the API-server:
 
 ```console
 cd components/api_server
-python3 -m venv venv
+uv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
 python src/quality_time_server.py
@@ -79,7 +79,7 @@ The API of the API-server is served at [http://localhost:5001](http://localhost:
 
 ```{note}
 If you're new to Python virtual environments, note that:
-- Creating a virtual environment (`python3 -m venv venv`) has to be done once. Only when the Python version changes, you want to recreate the virtual environment.
+- Creating a virtual environment (`uv venv`) has to be done once. Only when the Python version changes, you want to recreate the virtual environment.
 - Activating the virtual environment (`. venv/bin/activate`) has to be done every time you open a new shell and want to use the Python installed in the virtual environment.
 - Installing the requirements (`ci/pip-install.sh`) has to be repeated when the dependencies, specified in the requirements files, change.
 ```
@@ -95,7 +95,7 @@ Open another terminal and run the collector:
 
 ```console
 cd components/collector
-python3 -m venv venv
+uv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
 python src/quality_time_collector.py
@@ -131,7 +131,7 @@ Optionally, open yet another terminal and run the notifier:
 
 ```console
 cd components/notifier
-python3 -m venv venv
+uv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
 python src/quality_time_notifier.py
@@ -150,7 +150,7 @@ To create a virtual environment for the shared component and install the depende
 
 ```console
 cd components/shared_code
-python3 -m venv venv
+uv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
 ```
@@ -441,7 +441,7 @@ The application tests in theory test all components through the frontend, but un
 
 ```console
 docker-compose up -d
-docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 python:3.12.4-bookworm tests/application_tests/ci/test.sh
+docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 ghcr.io/astral-sh/uv:python3.12-bookworm tests/application_tests/ci/test.sh
 ```
 
 ## Documentation and changelog
@@ -452,7 +452,7 @@ To generate the documentation locally:
 
 ```console
 cd docs
-python3 -m venv venv
+uv venv
 . venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
 make html
@@ -475,7 +475,7 @@ Make sure the release folder is the current directory, and you have the dependen
 
 ```console
 cd release
-python3 -m venv venv
+uv venv
 . venv/bin/activate
 ci/pip-install.sh
 ```

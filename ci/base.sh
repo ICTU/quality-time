@@ -4,6 +4,13 @@
 
 set -e
 
+spec() {
+    # The versions of tools are specified in pyproject.toml. This function calls the spec.py script which in turn
+    # reads the version numbers from the pyproject.toml file. The function takes two arguments: the package to return
+    # the spec for and the seperator to use between package name and version number.
+    .venv/bin/python $(script_dir)/spec.py $1 $2
+}
+
 run() {
     # Show the invoked command using a subdued text color so it is clear which tool is running.
     header='\033[95m'

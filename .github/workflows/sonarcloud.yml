@@ -18,56 +18,52 @@ jobs:
         if: env.SONAR_TOKEN != null
         with:
           fetch-depth: 0 # Disabling shallow clone is recommended for improving relevancy of reporting
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
         if: env.SONAR_TOKEN != null
+        uses: astral-sh/setup-uv@v3
         with:
-          python-version: "3.12"
+          version: "0.4.19"
       - name: Set up Node
-        uses: actions/setup-node@v4.0.4
         if: env.SONAR_TOKEN != null
+        uses: actions/setup-node@v4.0.4
         with:
           node-version: "22"
       - name: Collector
         if: env.SONAR_TOKEN != null
         working-directory: components/collector
         run: |
-          python -m venv venv
-          . venv/bin/activate
+          uv venv
           ci/pip-install.sh
           ci/unittest.sh
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
-          python -m xmlrunner --output-file build/unittests.xml
+          .venv/bin/python -m xmlrunner --output-file build/unittests.xml
       - name: Notifier
         if: env.SONAR_TOKEN != null
         working-directory: components/notifier
         run: |
-          python -m venv venv
-          . venv/bin/activate
+          uv venv
           ci/pip-install.sh
           ci/unittest.sh
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
-          python -m xmlrunner --output-file build/unittests.xml
+          .venv/bin/python -m xmlrunner --output-file build/unittests.xml
       - name: API-server
         if: env.SONAR_TOKEN != null
         working-directory: components/api_server
         run: |
-          python -m venv venv
-          . venv/bin/activate
+          uv venv
           ci/pip-install.sh
           ci/unittest.sh
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
-          python -m xmlrunner --output-file build/unittests.xml
+          .venv/bin/python -m xmlrunner --output-file build/unittests.xml
       - name: Shared Code
         if: env.SONAR_TOKEN != null
         working-directory: components/shared_code
         run: |
-          python -m venv venv
-          . venv/bin/activate
+          uv venv
           ci/pip-install.sh
           ci/unittest.sh
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
-          python -m xmlrunner --output-file build/unittests.xml
+          .venv/bin/python -m xmlrunner --output-file build/unittests.xml
       - name: Frontend
         if: env.SONAR_TOKEN != null
         working-directory: components/frontend
