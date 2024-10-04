@@ -24,8 +24,8 @@ jobs:
           esac
           cd $component
           mkdir -p build
-          python -m venv venv
-          . venv/bin/activate
+          pip install uv
+          uv venv
           ci/pip-install.sh
           ci/unittest.sh
           ci/quality.sh
@@ -62,17 +62,16 @@ jobs:
     steps:
       - checkout
       - run: |
+          pip install uv
           cd docs
           npm install --ignore-scripts
-          python3 -m venv venv
-          . venv/bin/activate
+          uv venv
           ci/pip-install.sh
           ci/unittest.sh
           ci/quality.sh
       - run: |
           cd release
-          python3 -m venv venv
-          . venv/bin/activate
+          uv venv
           ci/pip-install.sh
           ci/quality.sh
 
@@ -91,7 +90,7 @@ jobs:
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker compose build && docker compose up -d
           docker ps
-          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:docker-www-1 python:3.12.5-bookworm tests/application_tests/ci/test.sh
+          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:docker-www-1 ghcr.io/astral-sh/uv:python3.12-bookworm tests/application_tests/ci/test.sh
           docker ps
           docker compose logs > build/containers.log
       - run:
@@ -110,6 +109,7 @@ jobs:
     steps:
       - checkout
       - run: |
+          pip install uv
           ./tests/feature_tests/ci/test.sh
       - store_artifacts:
           path: build
