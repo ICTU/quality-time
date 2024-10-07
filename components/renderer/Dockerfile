@@ -16,7 +16,7 @@ RUN apk add --no-cache \
     rm -rf /var/cache/apk/* /tmp/* && \
     update-ms-fonts && \
     fc-cache -f && \
-    npm install --ignore-scripts -g npm@10.8.3
+    npm install --ignore-scripts -g npm@10.9.0
 
 WORKDIR /home/renderer
 COPY package*.json /home/renderer/
