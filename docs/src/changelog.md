@@ -58,6 +58,10 @@ If your currently installed *Quality-time* version is not v5.15.0, please first 
 
 - The 'test cases' metric had 'manual number' as supported source for the metric, but that could never work since the metric needs sources that contain test cases with identifiers so they can be matched. Manual number sources for test cases metrics are removed from reports automatically on application startup. Fixes [#9793](https://github.com/ICTU/quality-time/issues/9793).
 
+### Changed
+
+- When showing multiple dates while the "Metrics requiring action" setting is on, show metrics that required action on all visible dates, not just the most recent one. Closes [#6578](https://github.com/ICTU/quality-time/issues/6578).
+
 ## v5.15.0 - 2024-07-30
 
 ### Deployment notes
