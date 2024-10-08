@@ -83,7 +83,7 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
                 key=f"{report_uuid}:{subject_uuid}:{metric_type}",
                 report=report["title"],
                 report_url=report_url,
-                subject=subject.get("name", subject_type_name),
+                subject=subject.get("name") or subject_type_name,
                 subject_url=f"{report_url}#{subject_uuid}",
                 subject_uuid=f"{subject_uuid}",
                 subject_type=subject_type_name,
