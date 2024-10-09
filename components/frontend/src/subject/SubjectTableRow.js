@@ -36,6 +36,7 @@ import {
     getMetricScale,
     getMetricTags,
     getMetricUnit,
+    limitTextLength,
 } from "../utils"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { Tag } from "../widgets/Tag"
@@ -338,7 +339,10 @@ export function SubjectTableRow({
             )}
             {settings.hiddenColumns.excludes("comment") && (
                 <Table.Cell style={style}>
-                    <div style={{ wordBreak: "break-word" }} dangerouslySetInnerHTML={{ __html: metric.comment }} />
+                    <div
+                        style={{ wordBreak: "break-word" }}
+                        dangerouslySetInnerHTML={{ __html: limitTextLength(metric.comment) }}
+                    />
                 </Table.Cell>
             )}
             {settings.hiddenColumns.excludes("issues") && (
