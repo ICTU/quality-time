@@ -1,14 +1,11 @@
 import { StatusIcon } from "../measurement/StatusIcon"
 import { entityAttributePropType, entityPropType } from "../sharedPropTypes"
-import { formatMetricValue } from "../utils"
+import { formatMetricValue, limitTextLength } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 
 export function SourceEntityAttribute({ entity, entityAttribute }) {
-    let cellContents = entity[entityAttribute.key] ?? ""
-    if (typeof cellContents === "string" && cellContents.length >= 250) {
-        cellContents = cellContents.slice(0, 247) + "..."
-    }
+    let cellContents = limitTextLength(entity[entityAttribute.key] ?? "")
     // See the data model (components/shared_code/src/shared_data_model/meta/entity.py) for possible entity attribute
     // types. Note that if entity attribute types are removed old types need to be supported to allow for time travel.
     const type = entityAttribute.type ?? ""

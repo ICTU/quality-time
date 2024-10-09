@@ -16,6 +16,7 @@ import {
     isMeasurementOutdated,
     isMeasurementRequested,
     isMeasurementStale,
+    limitTextLength,
     niceNumber,
     nrMetricsInReport,
     nrMetricsInReports,
@@ -538,4 +539,19 @@ it("returns whether a metric's measurement is outdated", () => {
     expect(isMeasurementOutdated({ latest_measurement: {} })).toBe(false)
     // A metric with an outdated measurement is outdated:
     expect(isMeasurementOutdated({ latest_measurement: { outdated: true } })).toBe(true)
+})
+
+it("limits the text length", () => {
+    // Short texts are not changed:
+    expect(limitTextLength("short text")).toStrictEqual("short text")
+    // Long texts are shortened:
+    expect(limitTextLength("a very very long text", 10)).toStrictEqual("a very ...")
+    // Very short texts result in an ellipsis only:
+    expect(limitTextLength("short text", 4)).toStrictEqual("s...")
+    expect(limitTextLength("short text", 3)).toStrictEqual("...")
+    expect(limitTextLength("short text", 2)).toStrictEqual("...")
+    expect(limitTextLength("short text", 1)).toStrictEqual("...")
+    expect(limitTextLength("short text", 0)).toStrictEqual("...")
+    // Arguments that are not text are returned unchanged:
+    expect(limitTextLength(<>{"short text"}</>)).toStrictEqual(<>{"short text"}</>)
 })
