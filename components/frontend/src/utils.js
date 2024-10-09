@@ -337,6 +337,13 @@ export function pluralize(word, count) {
     return word + (count === 1 ? "" : "s")
 }
 
+export function limitTextLength(text, maxLength = 250) {
+    if (typeof text === "string" && maxLength > 3 && text.length > maxLength) {
+        return text.slice(0, maxLength - 3) + "..."
+    }
+    return text
+}
+
 export function niceNumber(number) {
     let rounded_numbers = [10, 12, 15, 20, 30, 50, 75]
     do {
