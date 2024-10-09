@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not v5.16.2, please first 
 
 ### Fixed
 
+- Prevent metric comment columns and measurement entity status rationale columns from getting too wide and cut off values that are longer than 250 characters. Fixes [#8281](https://github.com/ICTU/quality-time/issues/8281).
 - The subject column in the measurement details of the 'missing metrics' metric would be empty for subjects that not have their default name overridden. Fixes [#9854](https://github.com/ICTU/quality-time/issues/9854).
 
 ### Added

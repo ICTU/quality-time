@@ -11,6 +11,7 @@ beforeEach(() => {
 })
 
 function renderSubjectTableRow({
+    comment = "",
     direction = "<",
     ascending = false,
     scale = "count",
@@ -51,6 +52,7 @@ function renderSubjectTableRow({
                         dates={dates}
                         measurements={[]}
                         metric={{
+                            comment: comment,
                             direction: direction,
                             evaluate_targets: evaluate_targets,
                             recent_measurements: [],
@@ -118,4 +120,9 @@ it("shows the delta column for the version scale", () => {
     expect(screen.getAllByLabelText("Metric type worsened from 1.0 to 1.2").length).toBe(1)
     expect(screen.getAllByText("-").length).toBe(1)
     expect(screen.getAllByLabelText("Metric type improved from 1.2 to 0.8").length).toBe(1)
+})
+
+it("cuts off long comments in the comment column", () => {
+    renderSubjectTableRow({ comment: "long comment ".repeat(20) })
+    expect(screen.queryAllByText(/\.\.\./).length).toBe(1)
 })
