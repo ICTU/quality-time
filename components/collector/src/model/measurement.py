@@ -2,11 +2,12 @@
 
 from collections.abc import Sequence
 from dataclasses import dataclass
+from datetime import datetime
 from typing import ClassVar
 
 from shared.model.metric import Metric
 
-from collector_utilities.type import URL, ErrorMessage, Value
+from collector_utilities.type import URL, ErrorMessage, JSONList, Value
 
 from .entity import Entities
 from .issue_status import IssueStatus
@@ -43,12 +44,22 @@ class SourceMeasurement:
         """Return the measurement entities or an empty list if there are none."""
         return self.entities or Entities()
 
-    def as_dict(self) -> dict[str, Value | Entities | ErrorMessage | URL | None]:
+    def entities_to_store(self) -> JSONList:
+        """Return the entities which should be stored, omitting ephemeral attributes."""
+        return [
+            # only include the attributes which have been flagged for storage
+            # TODO(wkoot): explicitly exclude datetime values, until figuring out how to use EntityAttribute :-(
+            #              https://github.com/ICTU/quality-time/pull/9914
+            {key: val for key, val in entity.items() if not isinstance(val, datetime)}
+            for entity in self.get_entities()
+        ]
+
+    def as_dict(self) -> dict[str, Value | JSONList | ErrorMessage | URL | None]:
         """Return the source measurement as dict."""
         return {
             "value": self.value,
             "total": self.total,
-            "entities": self.get_entities()[: self.MAX_ENTITIES],
+            "entities": self.entities_to_store()[: self.MAX_ENTITIES],
             "connection_error": self.connection_error,
             "parse_error": self.parse_error,
             "api_url": self.api_url,
