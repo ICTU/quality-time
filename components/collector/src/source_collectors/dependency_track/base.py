@@ -1,12 +1,12 @@
 """Dependency-Track base collector."""
 
 from collections.abc import AsyncIterator
-from typing import TypedDict, cast
+from typing import Literal, TypedDict, cast
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import add_query, match_string_or_regular_expression
 from collector_utilities.type import URL, Response
-from model import SourceResponses
+from model import Entity, SourceResponses
 
 
 class DependencyTrackProject(TypedDict):
@@ -81,3 +81,21 @@ class DependencyTrackBase(SourceCollector):
         project_matches_name = match_string_or_regular_expression(project["name"], names) if names else True
         project_matches_version = match_string_or_regular_expression(project["version"], versions) if versions else True
         return project_matches_name and project_matches_version
+
+    @staticmethod
+    def _latest_version_status(version: str, latest: str) -> Literal["unknown", "up-to-date", "update possible"]:
+        """Return the latest version status."""
+        if latest == "unknown":
+            return "unknown"
+        if latest == version:
+            return "up-to-date"
+        return "update possible"
+
+
+class DependencyTrackLatestVersionStatusBase(DependencyTrackBase):
+    """Base class for Dependency-Track collectors that can be filtered by latest version status."""
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether to include the entity in the measurement."""
+        has_latest_version_status = entity["latest_version_status"] in self._parameter("latest_version_status")
+        return super()._include_entity(entity) and has_latest_version_status

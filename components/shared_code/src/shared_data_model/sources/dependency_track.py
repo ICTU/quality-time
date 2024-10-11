@@ -19,6 +19,19 @@ DEPENDENCY_TRACK_DESCRIPTIlON = (
     "Dependency-Track is a component analysis platform that allows organizations to identify and "
     "reduce risk in the software supply chain."
 )
+VERSION_ATTRIBUTES = [
+    EntityAttribute(name="Current version", key="version"),
+    EntityAttribute(name="Latest version", key="latest"),
+    EntityAttribute(
+        name="Latest version status",
+        key="latest_version_status",
+        color={
+            "unknown": Color.ACTIVE,
+            "up-to-date": Color.POSITIVE,
+            "update possible": Color.WARNING,
+        },
+    ),
+]
 
 DEPENDENCY_TRACK = Source(
     name="Dependency-Track",
@@ -62,7 +75,7 @@ DEPENDENCY_TRACK = Source(
             placeholder="all statuses",
             help="Limit which latest version statuses to show.",
             values=["up-to-date", "update possible", "unknown"],
-            metrics=["dependencies"],
+            metrics=["dependencies", "security_warnings"],
         ),
         "severities": Severities(values=["Unassigned", "Info", "Low", "Medium", "High", "Critical"]),
     },
@@ -73,17 +86,7 @@ DEPENDENCY_TRACK = Source(
             attributes=[
                 EntityAttribute(name="Project", url="project_landing_url"),
                 EntityAttribute(name="Component", url="component_landing_url"),
-                EntityAttribute(name="Current version", key="version"),
-                EntityAttribute(name="Latest version", key="latest"),
-                EntityAttribute(
-                    name="Latest version status",
-                    key="latest_version_status",
-                    color={
-                        "unknown": Color.ACTIVE,
-                        "up-to-date": Color.POSITIVE,
-                        "update possible": Color.WARNING,
-                    },
-                ),
+                *VERSION_ATTRIBUTES,
             ],
         ),
         "security_warnings": Entity(
@@ -94,6 +97,7 @@ DEPENDENCY_TRACK = Source(
                 EntityAttribute(name="Identifier"),
                 EntityAttribute(name="Description"),
                 EntityAttribute(name="Severity", color={"Critical": Color.NEGATIVE, "High": Color.WARNING}),
+                *VERSION_ATTRIBUTES,
             ],
         ),
         "source_up_to_dateness": Entity(

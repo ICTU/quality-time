@@ -6,15 +6,17 @@ from base_collectors import SecurityWarningsSourceCollector
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
-from .base import DependencyTrackBase
+from .base import DependencyTrackLatestVersionStatusBase
 
 
 class DependencyTrackComponent(TypedDict):
     """Component as returned by Dependency-Track."""
 
+    latestVersion: str
     name: str
     project: str  # UUID of the project
     uuid: str
+    version: str
 
 
 class DependencyTrackVulnerability(TypedDict):
@@ -35,7 +37,7 @@ class DependencyTrackFinding(TypedDict):
     vulnerability: DependencyTrackVulnerability
 
 
-class DependencyTrackSecurityWarnings(SecurityWarningsSourceCollector, DependencyTrackBase):
+class DependencyTrackSecurityWarnings(SecurityWarningsSourceCollector, DependencyTrackLatestVersionStatusBase):
     """Dependency-Track collector for security warnings."""
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
@@ -59,13 +61,18 @@ class DependencyTrackSecurityWarnings(SecurityWarningsSourceCollector, Dependenc
         component = finding["component"]
         project_uuid = component["project"]
         vulnerability = finding["vulnerability"]
+        current_version = component["version"]
+        latest_version = component.get("latestVersion", "unknown")
         return Entity(
             component=component["name"],
             component_landing_url=f"{landing_url}/components/{component["uuid"]}",
             description=vulnerability["description"],
             identifier=vulnerability["vulnId"],
             key=finding["matrix"],  # Matrix is a combination of project, component, and vulnerability
+            latest=latest_version,
+            latest_version_status=self._latest_version_status(current_version, latest_version),
             project=self._project_uuids[project_uuid],  # Name of the project
             project_landing_url=f"{landing_url}/projects/{project_uuid}",
             severity=vulnerability["severity"].capitalize(),
+            version=current_version,
         )
