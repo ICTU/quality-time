@@ -1,11 +1,11 @@
 """Dependency-Track security warnings collector."""
 
-from typing import Literal, TypedDict
+from typing import TypedDict
 
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
-from .base import DependencyTrackBase, DependencyTrackProject
+from .base import DependencyTrackLatestVersionStatusBase, DependencyTrackProject
 
 
 class DependencyTrackRepositoryMetaData(TypedDict):
@@ -24,7 +24,7 @@ class DependencyTrackComponent(TypedDict, total=False):
     version: str
 
 
-class DependencyTrackDependencies(DependencyTrackBase):
+class DependencyTrackDependencies(DependencyTrackLatestVersionStatusBase):
     """Dependency-Track collector for security warnings."""
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
@@ -43,7 +43,7 @@ class DependencyTrackDependencies(DependencyTrackBase):
         return entities
 
     def _create_entity(self, component: DependencyTrackComponent) -> Entity:
-        """Create an entity from the vulnerability."""
+        """Create an entity from the component."""
         project = component["project"]
         current_version = component["version"]
         latest_version = component.get("repositoryMeta", {}).get("latestVersion", "unknown")
@@ -58,17 +58,3 @@ class DependencyTrackDependencies(DependencyTrackBase):
             project_landing_url=f"{landing_url}/projects/{project["uuid"]}",
             version=current_version,
         )
-
-    def _include_entity(self, entity: Entity) -> bool:
-        """Return whether to include the entity in the measurement."""
-        has_latest_version_status = entity["latest_version_status"] in self._parameter("latest_version_status")
-        return super()._include_entity(entity) and has_latest_version_status
-
-    @staticmethod
-    def _latest_version_status(version: str, latest: str) -> Literal["unknown", "up-to-date", "update possible"]:
-        """Return the latest version status."""
-        if latest == "unknown":
-            return "unknown"
-        if latest == version:
-            return "up-to-date"
-        return "update possible"

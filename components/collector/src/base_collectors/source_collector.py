@@ -259,7 +259,7 @@ class SecurityWarningsSourceCollector(SourceCollector):
         severity = str(entity[self.ENTITY_SEVERITY_ATTRIBUTE])
         if self.MAKE_ENTITY_SEVERITY_VALUE_LOWER_CASE:
             severity = severity.lower()
-        return severity in self._parameter(self.SEVERITY_PARAMETER)
+        return severity in self._parameter(self.SEVERITY_PARAMETER) and super()._include_entity(entity)
 
 
 class TimeCollector(SourceCollector):

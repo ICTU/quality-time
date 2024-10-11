@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is not v5.16.2, please first 
 
 - The subject column in the measurement details of the 'missing metrics' metric would be empty for subjects that not have their default name overridden. Fixes [#9854](https://github.com/ICTU/quality-time/issues/9854).
 
+### Added
+
+- When measuring 'security warnings' with Dependency-Track as source, also show the current version, latest version, and update status of the components in the measurement details. Also add a parameter to allow for filtering by update status. Closes [#8685](https://github.com/ICTU/quality-time/issues/8685).
+
 ## v5.16.2 - 2024-10-03
 
 ### Deployment notes

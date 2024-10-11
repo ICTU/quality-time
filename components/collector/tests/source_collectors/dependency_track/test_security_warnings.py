@@ -27,7 +27,11 @@ class DependencyTrackSecurityWarningsTest(SourceCollectorTestCase):
         return [
             DependencyTrackFinding(
                 component=DependencyTrackComponent(
-                    name="component name", project="project uuid", uuid="component-uuid"
+                    latestVersion="2",
+                    name="component name",
+                    project="project uuid",
+                    uuid="component-uuid",
+                    version="1",
                 ),
                 matrix="matrix",
                 vulnerability=DependencyTrackVulnerability(
@@ -47,9 +51,12 @@ class DependencyTrackSecurityWarningsTest(SourceCollectorTestCase):
                 "description": "vulnerability description",
                 "identifier": "CVE-123",
                 "key": "matrix",
+                "latest": "2",
+                "latest_version_status": "update possible",
                 "project": "project name",
                 "project_landing_url": "/projects/project uuid",
                 "severity": "Unassigned",
+                "version": "1",
             },
         ]
 
