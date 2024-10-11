@@ -5,6 +5,7 @@ requires-python = ">=3.12"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "furo==2023.9.10",
@@ -28,7 +29,7 @@ optional-dependencies.tools = [
     "mypy==1.11.2",
     "pip-audit==2.7.3",
     "pydantic==2.9.2",      # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
-    "pyproject-fmt==2.2.4",
+    "pyproject-fmt==2.3.0",
     "ruff==0.6.9",
     "vale==3.0.3.0",        # Documentation grammar and style checker
     "vulture==2.13",
