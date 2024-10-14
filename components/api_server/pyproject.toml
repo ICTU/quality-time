@@ -19,9 +19,6 @@ dependencies = [
 ]
 optional-dependencies.dev = [
     "coverage==7.6.3",
-    "pip==24.2",
-    "pip-tools==7.4.1",                # To add hashes to requirements
-    "pipx==1.7.1",
     "pydantic==2.9.2",                 # Needed for importing the data model in the tests from the shared code component
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.20240205",
@@ -121,10 +118,3 @@ module = [
     "lxml_html_clean",
 ]
 ignore_missing_imports = true
-
-[tool.pip-tools]
-allow_unsafe = true
-generate_hashes = true
-quiet = true
-strip_extras = false   # Needed for lxml[html-clean]
-upgrade = true

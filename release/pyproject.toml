@@ -10,11 +10,6 @@ classifiers = [
 dependencies = [
     "gitpython==3.1.43",
 ]
-optional-dependencies.dev = [
-    "pip==24.2",
-    "pip-tools==7.4.1", # To add hashes to requirements
-    "pipx==1.7.1",
-]
 optional-dependencies.tools = [
     "bandit==1.7.10",
     "bump-my-version==0.27.0",
@@ -129,10 +124,3 @@ skips = [
     "B404", # Consider possible security implications associated with the subprocess module.
     "B603", # subprocess call - check for execution of untrusted input.
 ]
-
-[tool.pip-tools]
-allow_unsafe = true
-generate_hashes = true
-quiet = true
-strip_extras = true
-upgrade = true

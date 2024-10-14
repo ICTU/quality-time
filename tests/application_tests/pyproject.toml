@@ -13,9 +13,6 @@ dependencies = [
     "selenium==4.25.0",
 ]
 optional-dependencies.dev = [
-    "pip==24.2",
-    "pip-tools==7.4.1",                # To add hashes to requirements
-    "pipx==1.7.1",
     "types-requests==2.32.0.20240914",
 ]
 optional-dependencies.tools = [
@@ -75,10 +72,3 @@ module = [
     "axe_selenium_python",
 ]
 ignore_missing_imports = true
-
-[tool.pip-tools]
-allow_unsafe = true
-generate_hashes = true
-quiet = true
-strip_extras = true
-upgrade = true
