@@ -330,8 +330,7 @@ SONARQUBE = Source(
         ),
         "component": StringParameter(
             name="Project key",
-            help="The project key can be found by opening the project in SonarQube and looking at the bottom of "
-            "the grey column on the right.",
+            help="The project key can be found by opening the project in SonarQube and clicking 'Project Information'.",
             mandatory=True,
             metrics=PROJECT_METRICS,
         ),
