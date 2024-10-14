@@ -8,7 +8,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-    "bottle==0.13.1",
+    "bottle==0.13.2",
     "cryptography==43.0.1",
     "gevent==24.10.2",
     "ldap3==2.9.1",
@@ -18,7 +18,7 @@ dependencies = [
     "requests==2.32.3",
 ]
 optional-dependencies.dev = [
-    "coverage==7.6.2",
+    "coverage==7.6.3",
     "pip==24.2",
     "pip-tools==7.4.1",                # To add hashes to requirements
     "pipx==1.7.1",
