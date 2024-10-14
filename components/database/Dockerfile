@@ -1,4 +1,4 @@
-FROM mongo:7.0.14
+FROM mongo:8.0.1
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time database"
