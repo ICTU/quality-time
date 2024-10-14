@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 optional-dependencies.dev = [
-    "coverage==7.6.2",
+    "coverage==7.6.3",
     "mongomock==4.2.0.post1",
     "pip==24.2",
     "pip-tools==7.4.1",                      # To add hashes to requirements
