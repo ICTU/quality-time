@@ -1,6 +1,6 @@
 [project]
 name = "collector"
-version = "5.16.2"
+version = "5.17.0-rc.0"
 requires-python = ">=3.12"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
