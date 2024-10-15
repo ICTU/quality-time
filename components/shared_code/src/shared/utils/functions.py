@@ -20,7 +20,7 @@ def percentage(numerator: int, denominator: int, direction: Direction) -> int:
     return int((100 * Decimal(numerator) / Decimal(denominator)).to_integral_value(ROUND_HALF_UP))
 
 
-def first[T](sequence: Sequence[T], where: Callable[[T], bool] = lambda _item: True) -> T:  # type: ignore[name-defined]  # mypy does not yet support PEP 695, Type Parameter Syntax. See https://github.com/python/mypy/issues/15238
+def first[T](sequence: Sequence[T], where: Callable[[T], bool] = lambda _item: True) -> T:
     """Return the first item in the sequence."""
     return next(item for item in sequence if where(item))  # pragma: no feature-test-cover
 

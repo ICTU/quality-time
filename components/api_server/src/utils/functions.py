@@ -151,7 +151,7 @@ def asymmetric_decrypt(private_key: str, fernet_key_message: tuple[str, str]) ->
     return message.decode()
 
 
-def unique[Item](items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda item: item) -> Iterator[Item]:  # type: ignore[name-defined]  # mypy does not yet support PEP 695, Type Parameter Syntax. See https://github.com/python/mypy/issues/15238
+def unique[Item](items: Iterable[Item], get_key: Callable[[Item], Hashable] = lambda item: item) -> Iterator[Item]:
     """Return the unique items in the list."""
     seen: set[Hashable] = set()
     for item in items:

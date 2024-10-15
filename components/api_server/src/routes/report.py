@@ -31,16 +31,13 @@ from .pdf import export_as_pdf
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 
-def with_report[ReturnType](
-    route: Callable[..., ReturnType] | None = None,  # type: ignore[name-defined]  # mypy does not yet support PEP 695, Type Parameter Syntax. See https://github.com/python/mypy/issues/15238
-    pass_report_uuid: bool = True,
-):
+def with_report[ReturnType](route: Callable[..., ReturnType] | None = None, pass_report_uuid: bool = True):
     """Return a decorator to fetch a report from the database and pass it to the route, or bail if it can't be found."""
     if route is None:  # Allow for using the decorator without brackets, e.g. @with_report
         return partial(with_report, pass_report_uuid=pass_report_uuid)
 
     @wraps(route)
-    def wrapper(database: Database, report_uuid: ReportId, *args, **kwargs) -> ReturnType | dict[str, str | bool]:  # type: ignore[name-defined]
+    def wrapper(database: Database, report_uuid: ReportId, *args, **kwargs) -> ReturnType | dict[str, str | bool]:
         report = latest_report(database, report_uuid)
         if report is None:
             bottle.response.status = HTTPStatus.NOT_FOUND

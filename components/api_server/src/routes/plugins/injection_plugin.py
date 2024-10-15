@@ -14,7 +14,7 @@ class InjectionPlugin[ValueType]:
 
     api = 2
 
-    def __init__(self, value: ValueType, keyword: str) -> None:  # type: ignore[name-defined]  # mypy does not yet support PEP 695, Type Parameter Syntax. See https://github.com/python/mypy/issues/15238
+    def __init__(self, value: ValueType, keyword: str) -> None:
         self.value = value
         self.keyword = keyword
         self.name = f"{keyword}-injection"
@@ -26,7 +26,7 @@ class InjectionPlugin[ValueType]:
                 msg = "InjectionPlugin found another plugin with the same keyword."
                 raise RuntimeError(msg)
 
-    def apply[ReturnType](self, callback: Callable[..., ReturnType], context: Route) -> Callable[..., ReturnType]:  # type: ignore[name-defined]
+    def apply[ReturnType](self, callback: Callable[..., ReturnType], context: Route) -> Callable[..., ReturnType]:
         """Apply the plugin to the route."""
         # Override global configuration with route-specific values.
         configuration = context.config.get("injection") or {}
@@ -39,7 +39,7 @@ class InjectionPlugin[ValueType]:
         if keyword not in parameter_names:
             return callback
 
-        def wrapper(*args, **kwargs) -> ReturnType:  # type: ignore[name-defined]
+        def wrapper(*args, **kwargs) -> ReturnType:
             """Wrap the route."""
             kwargs[keyword] = value
             return callback(*args, **kwargs)
