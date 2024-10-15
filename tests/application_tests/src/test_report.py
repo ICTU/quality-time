@@ -59,9 +59,13 @@ class OpenReportTest(unittest.TestCase):
         """Override to close the driver."""
         self.driver.quit()
 
+    def login_button(self):
+        """Return the login button."""
+        return self.driver.find_element(By.XPATH, '//button[contains(text(), "Login")]')
+
     def login(self):
         """Login a user."""
-        self.driver.find_element(By.XPATH, '//button[text()="Login"]').click()
+        self.login_button().click()
         login_form = self.driver.find_element(By.CLASS_NAME, "modal")
         login_form.find_element(By.NAME, "username").send_keys("jadoe")
         login_form.find_element(By.NAME, "password").send_keys("secret")
@@ -88,11 +92,11 @@ class OpenReportTest(unittest.TestCase):
     def test_login_and_logout(self):
         """Test that a user can login and logout."""
         self.login()
-        logout_dropdown = self.driver.find_elements(By.CLASS_NAME, "dropdown")[1]
-        logout_dropdown.click()
-        logout_menu_item = self.driver.find_element(By.CLASS_NAME, "selected.item")
+        user_options_button = self.driver.find_element(By.XPATH, '//button[contains(@aria-label, "User options")]')
+        user_options_button.click()
+        logout_menu_item = self.driver.find_element(By.XPATH, '//li[contains(text(), "Logout")]')
         logout_menu_item.click()
-        self.assertTrue(self.driver.find_element(By.XPATH, '//button[text()="Login"]'))
+        self.assertTrue(self.login_button())
 
     def test_add_report(self):
         """Test that a logged-in user can add a report."""

@@ -40,14 +40,14 @@ it("sets the user from local storage", () => {
     set_user_in_local_storage("3000-02-23T22:00:50.945Z")
     render(<App />)
     expect(screen.getAllByText(/admin/).length).toBe(1)
-    expect(screen.getAllByAltText(/Avatar/).length).toBe(1)
+    expect(screen.getAllByAltText(/Avatar for admin/).length).toBe(1)
 })
 
 it("does not set invalid email addresses", () => {
     set_user_in_local_storage("3000-02-23T22:00:50.945Z", "admin at example.org")
     render(<App />)
     expect(screen.getAllByText(/admin/).length).toBe(1)
-    expect(screen.queryAllByAltText(/Avatar/).length).toBe(0)
+    expect(screen.queryAllByAltText(/Avatar for admin/).length).toBe(0)
 })
 
 it("resets the user when the session is expired on mount", () => {
