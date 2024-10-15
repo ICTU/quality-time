@@ -24,7 +24,7 @@ class AuthPlugin:
         self.name = "route-auth"
 
     @classmethod
-    def apply[ReturnType](cls, callback: Callable[..., ReturnType], context) -> Callable[..., ReturnType]:  # type: ignore[name-defined]  # mypy does not yet support PEP 695, Type Parameter Syntax. See https://github.com/python/mypy/issues/15238
+    def apply[ReturnType](cls, callback: Callable[..., ReturnType], context) -> Callable[..., ReturnType]:
         """Apply the plugin to the route."""
         config = context.config
 
@@ -39,7 +39,7 @@ class AuthPlugin:
 
         required_permissions = config.get("permissions_required", [])
 
-        def wrapper(*args, **kwargs) -> ReturnType:  # type: ignore[name-defined]
+        def wrapper(*args, **kwargs) -> ReturnType:
             """Wrap the route."""
             database = kwargs["database"]
             session_id = SessionId(bottle.request.get_cookie("session_id"))
