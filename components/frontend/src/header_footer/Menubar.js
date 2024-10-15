@@ -3,18 +3,18 @@ import "./Menubar.css"
 import { AppBar, Button, Drawer, Stack, Toolbar } from "@mui/material"
 import { element, func, string } from "prop-types"
 import { useEffect, useState } from "react"
-import { Dropdown, Icon } from "semantic-ui-react"
+import { Icon } from "semantic-ui-react"
 
-import { login, logout } from "../api/auth"
+import { login } from "../api/auth"
 import { Form, Message, Modal } from "../semantic_ui_react_wrappers"
 import { optionalDatePropType, settingsPropType, uiModePropType } from "../sharedPropTypes"
-import { Avatar } from "../widgets/Avatar"
 import { CollapseButton } from "./buttons/CollapseButton"
 import { DatePickerButton } from "./buttons/DatePickerButton"
 import { DownloadAsPDFButton } from "./buttons/DownloadAsPDFButton"
 import { HomeButton } from "./buttons/HomeButton"
 import { ResetSettingsButton } from "./buttons/ResetSettingsButton"
 import { SettingsButton } from "./buttons/SettingsButton"
+import { UserButton } from "./buttons/UserButton"
 import { UIModeMenu } from "./UIModeMenu"
 
 function Login({ set_user }) {
@@ -87,35 +87,6 @@ Login.propTypes = {
     set_user: func,
 }
 
-function Logout({ user, email, set_user }) {
-    const trigger = (
-        <>
-            <Avatar email={email} /> {user}
-        </>
-    )
-    return (
-        <Dropdown
-            trigger={trigger}
-            options={[
-                {
-                    key: "logout",
-                    text: "Logout",
-                    icon: "log out",
-                    onClick: () => {
-                        logout()
-                        set_user(null)
-                    },
-                },
-            ]}
-        />
-    )
-}
-Logout.propTypes = {
-    user: string,
-    email: string,
-    set_user: func,
-}
-
 export function Menubar({
     email,
     handleDateChange,
@@ -176,7 +147,7 @@ export function Menubar({
                         <DatePickerButton onChange={(date) => onDate(date.$d)} reportDate={report_date} />
                         <UIModeMenu setUIMode={setUIMode} uiMode={uiMode} />
                         {user !== null ? (
-                            <Logout email={email} user={user} set_user={set_user} />
+                            <UserButton email={email} user={user} setUser={set_user} />
                         ) : (
                             <Login set_user={set_user} />
                         )}
