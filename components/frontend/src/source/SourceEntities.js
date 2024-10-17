@@ -53,7 +53,7 @@ export function alignment(attributeType, attributeAlignment) {
     if (attributeAlignment === "left" || attributeAlignment === "right") {
         return attributeAlignment
     }
-    // The attribute has no explicitly set aligment, use the attribute type to determine the alignment
+    // The attribute has no explicitly set alignment, use the attribute type to determine the alignment
     return {
         date: "left",
         datetime: "left",
@@ -66,7 +66,7 @@ export function alignment(attributeType, attributeAlignment) {
 }
 alignment.propTypes = {
     attributeType: entityAttributeTypePropType,
-    attributeAligment: alignmentPropType,
+    attributeAlignment: alignmentPropType,
 }
 
 function sorted(column, sortColumn, sortDirection) {

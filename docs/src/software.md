@@ -323,7 +323,7 @@ class EntityAttribute(NamedModel):
     url: str | None = None  # Which key to use to get the URL for this attribute
     color: dict[str, Color] | None = None
     type: EntityAttributeType | None = None
-    alignment: EntityAttributeAligment | None = None  # If not given, the aligment is based on the attribute type
+    alignment: EntityAttributeAlignment | None = None  # If not given, the alignment is based on the attribute type
     pre: bool | None = None  # Should the attribute be formatted using <pre></pre>? Defaults to False
     visible: bool | None = None  # Should this attribute be visible in the UI? Defaults to True
 ```

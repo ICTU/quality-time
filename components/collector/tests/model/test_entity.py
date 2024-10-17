@@ -1,4 +1,4 @@
-"""Unit tests for the entity model class."""
+"""Unit tests for the Entity model class."""
 
 import unittest
 
@@ -6,7 +6,7 @@ from model.entity import Entities, Entity
 
 
 class EntityTest(unittest.TestCase):
-    """Unit tests for the entity model class."""
+    """Unit tests for the Entity model class."""
 
     def test_init_with_duplicate_entities(self):
         """Test that duplicate entities are removed on initialization."""

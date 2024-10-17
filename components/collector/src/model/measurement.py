@@ -6,7 +6,7 @@ from typing import ClassVar
 
 from shared.model.metric import Metric
 
-from collector_utilities.type import URL, ErrorMessage, Value
+from collector_utilities.type import URL, ErrorMessage, JSONList, Value
 
 from .entity import Entities
 from .issue_status import IssueStatus
@@ -43,12 +43,20 @@ class SourceMeasurement:
         """Return the measurement entities or an empty list if there are none."""
         return self.entities or Entities()
 
-    def as_dict(self) -> dict[str, Value | Entities | ErrorMessage | URL | None]:
+    def entities_to_store(self) -> JSONList:
+        """Return the entities which should be stored, omitting ephemeral attributes."""
+        return [
+            # only include the attributes of type Value, so native objects like datetime can be used as ephemeral attrs
+            {key: val for key, val in entity.items() if isinstance(val, Value)}
+            for entity in self.get_entities()
+        ]
+
+    def as_dict(self) -> dict[str, Value | JSONList | ErrorMessage | URL | None]:
         """Return the source measurement as dict."""
         return {
             "value": self.value,
             "total": self.total,
-            "entities": self.get_entities()[: self.MAX_ENTITIES],
+            "entities": self.entities_to_store()[: self.MAX_ENTITIES],
             "connection_error": self.connection_error,
             "parse_error": self.parse_error,
             "api_url": self.api_url,

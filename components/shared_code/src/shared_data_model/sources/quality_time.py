@@ -6,7 +6,7 @@ from shared_data_model.meta.entity import (
     Color,
     Entity,
     EntityAttribute,
-    EntityAttributeAligment,
+    EntityAttributeAlignment,
     EntityAttributeType,
 )
 from shared_data_model.meta.source import Source
@@ -297,7 +297,7 @@ QUALITY_TIME = Source(
                 ),
                 EntityAttribute(name="Status start date", type=EntityAttributeType.DATE),
                 EntityAttribute(name="Measurement", type=EntityAttributeType.INTEGER),
-                EntityAttribute(name="Target", alignment=EntityAttributeAligment.RIGHT),
+                EntityAttribute(name="Target", alignment=EntityAttributeAlignment.RIGHT),
                 EntityAttribute(name="Unit"),
             ],
         ),
