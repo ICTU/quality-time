@@ -186,9 +186,9 @@ trio-websocket==0.11.1 \
     --hash=sha256:18c11793647703c158b1f6e62de638acada927344d534e3c7628eedcb746839f \
     --hash=sha256:520d046b0d030cf970b8b2b2e00c4c2245b3807853ecd44214acd33d74581638
     # via selenium
-types-requests==2.32.0.20240914 \
-    --hash=sha256:2850e178db3919d9bf809e434eef65ba49d0e7e33ac92d588f4a5e295fffd405 \
-    --hash=sha256:59c2f673eb55f32a99b2894faf6020e1a9f4a402ad0f192bfee0b64469054310
+types-requests==2.32.0.20241016 \
+    --hash=sha256:0d9cad2f27515d0e3e3da7134a1b6f28fb97129d86b867f24d9c726452634d95 \
+    --hash=sha256:4195d62d6d3e043a4eaaf08ff8a62184584d2e8684e9d2aa178c7915a7da3747
     # via application-tests (pyproject.toml)
 typing-extensions==4.12.2 \
     --hash=sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d \
