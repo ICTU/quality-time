@@ -3,7 +3,7 @@
 from collections.abc import Sequence
 from datetime import datetime
 from itertools import pairwise
-from typing import ClassVar
+from typing import ClassVar, cast
 
 from base_collectors import MetricCollector
 from collector_utilities.date_time import MAX_DATETIME, parse_datetime
@@ -79,7 +79,7 @@ class ChangeFailureRate(MetricCollector):
     @staticmethod
     def deployment_timestamp(entity: Entity) -> datetime:
         """Return the datetime of deployment entities."""
-        return parse_datetime(entity["build_date"])  # same for both GitLab and Jenkins
+        return cast(datetime, entity["build_datetime"])  # same for both GitLab and Jenkins
 
     def _include_entity(self, entity: Entity, deployments: Entities) -> bool:
         """Include the entity if it was marked as a failed."""
