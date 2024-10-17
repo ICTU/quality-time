@@ -32,7 +32,7 @@ As a `role` I want to `action` so that `goal`
 
 ## Components
 
-### Frontend
+### Front-end
 
 - [ ] Add `user interface element`
 - [ ] Update `user interface element`
