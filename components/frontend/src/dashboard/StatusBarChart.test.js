@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, queryAllByRole, queryAllByText, render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 
 import { MetricSummaryCard } from "./MetricSummaryCard"
 
@@ -29,4 +30,14 @@ it("shows the number of metrics per status", () => {
             exact: false,
         }).length,
     ).toBe(1)
+})
+
+it("shows the tooltip and hides it on click", async () => {
+    const { container } = renderBarChart(2, 2)
+    const targetNotMetBar = queryAllByRole(container, "presentation")[4]
+    const targetNotMetLabel = "Target not met: 2 metrics"
+    await userEvent.hover(targetNotMetBar)
+    expect(queryAllByText(container, targetNotMetLabel).length).toBe(1)
+    fireEvent.click(targetNotMetBar)
+    expect(queryAllByText(container, targetNotMetLabel).length).toBe(0)
 })

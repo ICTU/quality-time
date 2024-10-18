@@ -2,7 +2,7 @@ import "./MetricSummaryCard.css"
 
 import { bool, func, number, object, oneOfType, string } from "prop-types"
 import { useContext } from "react"
-import { VictoryContainer, VictoryLabel, VictoryPortal, VictoryTooltip } from "victory"
+import { VictoryContainer, VictoryLabel, VictoryTooltip } from "victory"
 
 import { DarkMode } from "../context/DarkMode"
 import { useBoundingBox } from "../hooks/boundingbox"
@@ -69,20 +69,36 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
     const dates = Object.keys(summary)
     const bbWidth = boundingBox.width ?? 0
     const bbHeight = boundingBox.height ?? 0
-    const label = (
-        <VictoryPortal x={bbWidth / 2} y={bbHeight / 2}>
-            <VictoryLabel
-                textAnchor="middle"
-                style={{ fontFamily: "Arial", fontSize: 12, fill: labelColor }}
-                text={nrMetricsLabel(sum(summary[dates[0]]))}
-            />
-        </VictoryPortal>
-    )
     const chartProps = {
         animate: animate,
         colors: colors,
+        events: [
+            {
+                childName: "all",
+                target: "data",
+                eventHandlers: {
+                    onClick: () => {
+                        return [
+                            {
+                                target: "labels",
+                                mutation: () => {
+                                    return { active: false } // Clear tooltip before filtering
+                                },
+                            },
+                        ]
+                    },
+                },
+            },
+        ],
         height: Math.max(bbHeight, 1), // Prevent "Failed prop type: Invalid prop range supplied to VictoryBar"
-        label: label,
+        label: (
+            <VictoryLabel
+                text={nrMetricsLabel(sum(summary[dates[0]]))}
+                textAnchor="middle"
+                x={bbWidth / 2}
+                y={bbHeight / 2}
+            />
+        ),
         maxY: maxY,
         style: style,
         tooltip: tooltip,
