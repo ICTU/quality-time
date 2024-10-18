@@ -1,14 +1,10 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, queryAllByRole, queryAllByText, render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 
-import { DarkMode } from "../context/DarkMode"
 import { MetricSummaryCard } from "./MetricSummaryCard"
 
-function renderPieChart({ summary = { blue: 0, red: 0, green: 0, yellow: 0, white: 0, grey: 0 }, dark = true } = {}) {
-    return render(
-        <DarkMode.Provider value={dark}>
-            <MetricSummaryCard summary={{ "2023-01-01": summary }} />
-        </DarkMode.Provider>,
-    )
+function renderPieChart({ summary = { blue: 0, red: 0, green: 0, yellow: 0, white: 0, grey: 0 } } = {}) {
+    return render(<MetricSummaryCard summary={{ "2023-01-01": summary }} />)
 }
 
 const dateString = new Date("2023-01-01").toLocaleDateString()
@@ -16,11 +12,6 @@ const dateString = new Date("2023-01-01").toLocaleDateString()
 it("shows there are no metrics", () => {
     renderPieChart()
     expect(screen.getAllByLabelText(`Status on ${dateString}: no metrics.`, { exact: false }).length).toBe(1)
-})
-
-it("shows there are no metrics in dark mode", () => {
-    renderPieChart({ dark: true })
-    expect(screen.getAllByLabelText(`Status on ${dateString}: no metrics`, { exact: false }).length).toBe(1)
 })
 
 it("shows the number of metrics per status", () => {
@@ -31,4 +22,14 @@ it("shows the number of metrics per status", () => {
             { exact: false },
         ).length,
     ).toBe(1)
+})
+
+it("shows the tooltip and hides it on click", async () => {
+    const { container } = renderPieChart({ summary: { blue: 2, red: 1, green: 2, yellow: 3, white: 1, grey: 1 } })
+    const unknownPie = queryAllByRole(container, "presentation")[0]
+    const unknownLabel = "Unknown: 1 metric (10%)"
+    await userEvent.hover(unknownPie)
+    expect(queryAllByText(container, unknownLabel).length).toBe(1)
+    fireEvent.click(unknownPie)
+    expect(queryAllByText(container, unknownLabel).length).toBe(0)
 })

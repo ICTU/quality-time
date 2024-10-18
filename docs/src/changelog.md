@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v5.17.0, please first check the upgrade path in the [versioning policy](versioning.md).
+
+### Fixed
+
+- The metric summary cards with pie chart wouldn't erase the center label when rerendering, causing the label to be visible multiple times. Fixes [#10098](https://github.com/ICTU/quality-time/issues/10098).
+
 ## v5.17.0 - 2024-10-17
 
 ### Deployment notes

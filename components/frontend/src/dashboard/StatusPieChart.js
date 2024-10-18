@@ -1,8 +1,8 @@
-import { element, number, object } from "prop-types"
+import { arrayOf, element, number, object } from "prop-types"
 import { VictoryPie } from "victory"
 
 import { STATUS_COLORS, STATUS_NAME, STATUSES } from "../metric/status"
-import { stringsPropType } from "../sharedPropTypes"
+import { labelPropType, stringsPropType } from "../sharedPropTypes"
 import { pluralize, sum } from "../utils"
 
 function nrMetricsLabel(nrMetrics) {
@@ -12,11 +12,11 @@ nrMetricsLabel.PropTypes = {
     nrMetrics: number,
 }
 
-export function StatusPieChart({ animate, colors, label, tooltip, summary, style, maxY, width, height }) {
+export function StatusPieChart({ animate, colors, events, height, label, maxY, style, summary, tooltip, width }) {
     const nrMetrics = sum(summary)
-    const outerRadius = 0.45 * Math.min(height, width)
-    const minInnerRadius = 0.3 * outerRadius
-    const maxInnerRadius = 0.8 * outerRadius
+    const outerRadius = 0.45 * Math.min(height, width) // Radius is slightly less than the available diameter
+    const minInnerRadius = 0.4 * outerRadius // Keep room for the label in the center
+    const maxInnerRadius = 0.8 * outerRadius // Make sure the donut does not become too thin
     const innerRadius = maxInnerRadius - (maxInnerRadius - minInnerRadius) * (nrMetrics / maxY)
     const data = STATUSES.map((status) => {
         const y = summary[STATUS_COLORS[status]]
@@ -30,6 +30,7 @@ export function StatusPieChart({ animate, colors, label, tooltip, summary, style
                 <VictoryPie
                     animate={animate}
                     colorScale={colors}
+                    events={events}
                     radius={outerRadius}
                     innerRadius={innerRadius}
                     standalone={false}
@@ -47,8 +48,9 @@ export function StatusPieChart({ animate, colors, label, tooltip, summary, style
 StatusPieChart.propTypes = {
     animate: object,
     colors: stringsPropType,
+    events: arrayOf(object),
     height: number,
-    label: object,
+    label: labelPropType,
     maxY: number,
     style: object,
     summary: object,
