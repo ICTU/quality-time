@@ -1,15 +1,15 @@
-import { number, object } from "prop-types"
+import { number, object, string } from "prop-types"
 import { VictoryBar, VictoryStack } from "victory"
 
 import { STATUS_COLORS, STATUS_NAME, STATUSES } from "../metric/status"
-import { labelPropType, stringsPropType } from "../sharedPropTypes"
+import { stringsPropType } from "../sharedPropTypes"
 import { pluralize, sum } from "../utils"
 
 function nrMetricsLabel(nrMetrics) {
     return nrMetrics === 0 ? "No metrics" : nrMetrics + pluralize(" metric", nrMetrics)
 }
 
-export function StatusBarChart({ animate, colors, label, tooltip, summary, maxY, style, width, height }) {
+export function StatusBarChart({ animate, centerLabel, colors, tooltip, summary, maxY, style, width, height }) {
     const nrMetrics = sum(summary[Object.keys(summary)[0]])
     const nrDates = Object.keys(summary).length
     // Calculate how many metrics this chart displays compared to the chart with the most metrics.
@@ -50,7 +50,7 @@ export function StatusBarChart({ animate, colors, label, tooltip, summary, maxY,
     const horizontalPadding = width / 8
     const verticalPadding = 10
     return nrMetrics === 0 ? (
-        label
+        centerLabel
     ) : (
         <VictoryStack
             colorScale={colors}
@@ -71,8 +71,8 @@ export function StatusBarChart({ animate, colors, label, tooltip, summary, maxY,
 }
 StatusBarChart.propTypes = {
     animate: object,
+    centerLabel: string,
     colors: stringsPropType,
-    label: labelPropType,
     tooltip: object,
     summary: object,
     maxY: number,
