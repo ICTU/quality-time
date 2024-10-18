@@ -1,5 +1,5 @@
-import { element, number, object } from "prop-types"
-import { VictoryPie } from "victory"
+import { element, number, object, string } from "prop-types"
+import { VictoryLabel, VictoryPie } from "victory"
 
 import { STATUS_COLORS, STATUS_NAME, STATUSES } from "../metric/status"
 import { stringsPropType } from "../sharedPropTypes"
@@ -12,10 +12,10 @@ nrMetricsLabel.PropTypes = {
     nrMetrics: number,
 }
 
-export function StatusPieChart({ animate, colors, label, tooltip, summary, style, maxY, width, height }) {
+export function StatusPieChart({ animate, centerLabel, colors, tooltip, summary, style, maxY, width, height }) {
     const nrMetrics = sum(summary)
     const outerRadius = 0.45 * Math.min(height, width)
-    const minInnerRadius = 0.3 * outerRadius
+    const minInnerRadius = 0.33 * outerRadius
     const maxInnerRadius = 0.8 * outerRadius
     const innerRadius = maxInnerRadius - (maxInnerRadius - minInnerRadius) * (nrMetrics / maxY)
     const data = STATUSES.map((status) => {
@@ -25,7 +25,7 @@ export function StatusPieChart({ animate, colors, label, tooltip, summary, style
     })
     return (
         <>
-            {label}
+            <VictoryLabel text={centerLabel} textAnchor="middle" x={width / 2} y={height / 2} />
             {nrMetrics > 0 && (
                 <VictoryPie
                     animate={animate}
@@ -46,9 +46,9 @@ export function StatusPieChart({ animate, colors, label, tooltip, summary, style
 }
 StatusPieChart.propTypes = {
     animate: object,
+    centerLabel: string,
     colors: stringsPropType,
     height: number,
-    label: object,
     maxY: number,
     style: object,
     summary: object,
