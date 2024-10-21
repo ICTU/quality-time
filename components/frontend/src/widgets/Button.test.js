@@ -32,7 +32,7 @@ function renderAddDropdownButton(nrItems = 2, totalItems = 10, usedItemKeys = []
         <AddDropdownButton
             allItemSubtypes={allItemSubtypes}
             itemType="foo"
-            itemSubtypes={itemSubtypes}
+            itemSubtypes={itemSubtypes.toReversed()} // Pass items in reversed order to test they are sorted correctly
             onClick={mockCallback}
             usedItemSubtypeKeys={usedItemKeys}
         />,
@@ -69,6 +69,14 @@ test("AddDropdownButton keyboard navigation", async () => {
         fireEvent.keyDown(screen.getByText(/Sub 2/), { key: "Enter" })
     })
     expect(mockCallback).toHaveBeenCalledWith("sub 2")
+})
+
+test("AddDropdownButton sort order", async () => {
+    renderAddDropdownButton()
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Add foo/))
+    })
+    expect(screen.getAllByText(/Sub/).map((item) => item.innerHTML)).toStrictEqual(["Sub 1", "Sub 2"])
 })
 
 test("AddDropdownButton hides popup when dropdown is shown", async () => {
