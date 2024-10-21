@@ -14,7 +14,7 @@ export function UserButton({ user, email, setUser }) {
         setUser(null)
     }
     return (
-        <>
+        <span /* Not using a React fragment (<>) here because that makes the button top-aligned instead of centered */>
             <Button
                 aria-label="User options"
                 aria-controls="user-options-menu"
@@ -28,7 +28,7 @@ export function UserButton({ user, email, setUser }) {
             <Menu id="user-options-menu" anchorEl={anchorEl} onClose={() => setAnchorEl(null)} open={Boolean(anchorEl)}>
                 <MenuItem onClick={onClickLogout}>Logout</MenuItem>
             </Menu>
-        </>
+        </span>
     )
 }
 UserButton.propTypes = {
