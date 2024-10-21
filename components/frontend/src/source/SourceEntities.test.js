@@ -28,12 +28,13 @@ const dataModel = {
                 },
             },
         },
-        source_type_without_entities: {},
+        source_type_without_entities: { name: "Source type without entities" },
     },
     metrics: {
         metric_type: {
             unit: "items",
         },
+        metric_type_without_unit: {},
     },
 }
 
@@ -123,6 +124,26 @@ it("renders a message if the metric does not support measurement entities", () =
         metric: { type: "metric_type", sources: { source_uuid: { type: "source_type_without_entities" } } },
     })
     expect(screen.getAllByText(/Measurement details not supported/).length).toBe(1)
+    expect(
+        screen.getAllByText(
+            /Showing individual items is not supported when using Source type without entities as source./,
+        ).length,
+    ).toBe(1)
+})
+
+it("renders a message if the metric does not support measurement entities andhas no unit", () => {
+    renderSourceEntities({
+        metric: {
+            type: "metric_type_without_unit",
+            sources: { source_uuid: { type: "source_type_without_entities" } },
+        },
+    })
+    expect(screen.getAllByText(/Measurement details not supported/).length).toBe(1)
+    expect(
+        screen.getAllByText(
+            /Showing individual entities is not supported when using Source type without entities as source./,
+        ).length,
+    ).toBe(1)
 })
 
 it("renders a message if the metric does not have measurement entities", () => {
