@@ -10,20 +10,20 @@ classifiers = [
 dependencies = [
     "asserts==0.13.1",
     "behave==1.2.6",
-    "gevent==24.10.2",
+    "gevent==24.10.3",
     "pymongo==4.10.1",
     "requests==2.32.3",
     "requests-sse==0.3.2",
 ]
 optional-dependencies.dev = [
-    "coverage==7.6.3",
+    "coverage==7.6.4",
     "types-requests==2.32.0.20241016",
     "unittest-xml-reporting==3.2.0",   # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
     "bandit==1.7.10",
     "fixit==2.1.0",
-    "mypy==1.12.0",
+    "mypy==1.12.1",
     "pip-audit==2.7.3",
     "pyproject-fmt==2.4.3",
     "ruff==0.7.0",
