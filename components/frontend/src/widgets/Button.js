@@ -115,6 +115,7 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
         items = items.filter((item) => !usedItemSubtypeKeys.includes(item.key))
     }
     const options = items.filter((itemSubtype) => itemSubtype.text.toLowerCase().includes(query.toLowerCase()))
+    options.sort((a, b) => a.text.localeCompare(b.text))
     return (
         <Popup
             content={`Add a new ${itemType} here`}
