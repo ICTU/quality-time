@@ -10,7 +10,7 @@ classifiers = [
 dependencies = [
     "asserts==0.13.1",
     "behave==1.2.6",
-    "gevent==24.10.2",
+    "gevent==24.10.3",
     "pymongo==4.10.1",
     "requests==2.32.3",
     "requests-sse==0.3.2",
