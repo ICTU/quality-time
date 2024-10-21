@@ -269,7 +269,7 @@ export function SourceEntities({ loading, measurements, metric, metric_uuid, rel
     const metricEntities = dataModel.sources[sourceType]?.entities?.[metric.type]
 
     if (!metricEntities) {
-        const unit = dataModel.metrics[metric.type].unit
+        const unit = dataModel.metrics[metric.type].unit || "entities"
         const sourceTypeName = dataModel.sources[sourceType].name
         return (
             <Message
