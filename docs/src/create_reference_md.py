@@ -32,6 +32,17 @@ def get_model_name(model: NamedModel) -> str:
     return model.name
 
 
+def data_model_metric_items() -> list[tuple[str, Metric]]:
+    """Return the data model metrics sorted by metric name."""
+    return sorted(DATA_MODEL.metrics.items(), key=lambda item: get_model_name(item[1]))
+
+
+def data_model_metric_source_keys_and_names(metric: Metric) -> list[tuple[str, str]]:
+    """Return the data model metric source keys and source names, sorted by name."""
+    keys_and_names = [(source_key, DATA_MODEL.sources[source_key].name) for source_key in metric.sources]
+    return sorted(keys_and_names, key=lambda key_and_name: key_and_name[1])
+
+
 def markdown_paragraph(text: str) -> str:
     """Return the text as Markdown paragraph."""
     return f"\n{text}\n\n"
@@ -82,7 +93,7 @@ def subject_section(subject: Subject, level: int) -> str:
 def metric_sections(level: int) -> str:
     """Return the metrics as Markdown sections."""
     markdown = ""
-    for metric_key, metric in sorted(DATA_MODEL.metrics.items(), key=lambda item: get_model_name(item[1])):
+    for metric_key, metric in data_model_metric_items():
         markdown += metric_section(metric_key, metric, level)
     return markdown
 
@@ -106,12 +117,11 @@ def metric_section(metric_key: str, metric: Metric, level: int) -> str:
     markdown += definition_list("Default tags", *[tag.value for tag in metric.tags])
     supported_subjects_markdown = ""
     subjects = [subject for subject in DATA_MODEL.all_subjects.values() if metric_key in subject.all_metrics]
-    for subject in subjects:
+    for subject in sorted(subjects, key=get_model_name):
         supported_subjects_markdown += f"- [{subject.name}]({slugify(subject.name)})\n"
     markdown += admonition(supported_subjects_markdown, "Supported subjects")
     supporting_sources_markdown = ""
-    for source in metric.sources:
-        source_name = DATA_MODEL.sources[source].name
+    for _source_key, source_name in data_model_metric_source_keys_and_names(metric):
         supporting_sources_markdown += f"- [{source_name}]({metric_source_slug(metric.name, source_name)})\n"
     markdown += admonition(supporting_sources_markdown, "Supporting sources")
     return markdown
@@ -162,7 +172,7 @@ def source_section(source: Source, source_key: str, level: int) -> str:
         markdown += admonition(source.supported_versions_description, title, "important")
     supported_metrics_markdown = ""
     metrics = [metric for metric in DATA_MODEL.metrics.values() if source_key in metric.sources]
-    for metric in metrics:
+    for metric in sorted(metrics, key=get_model_name):
         source_name = DATA_MODEL.sources[source_key].name
         supported_metrics_markdown += f"- [{metric.name}]({metric_source_slug(metric.name, source_name)})\n"
     markdown += admonition(supported_metrics_markdown, "Supported metrics")
@@ -303,9 +313,8 @@ def data_model_as_table() -> str:
         "measure the metric. If *Quality-time* needs to make certain assumptions about the source, for example which "
         "SonarQube rules to use to count long methods, then these assumptions are listed under 'configurations'.",
     )
-    for metric_key, metric in DATA_MODEL.metrics.items():
-        for source_key in metric.sources:
-            source_name = DATA_MODEL.sources[source_key].name
+    for metric_key, metric in data_model_metric_items():
+        for source_key, source_name in data_model_metric_source_keys_and_names(metric):
             markdown += markdown_header(f"{metric.name} from {source_name}", 3)
             markdown += metric_source_section(metric_key, source_key)
             markdown += metric_source_configuration_section(metric_key, source_key)
