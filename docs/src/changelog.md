@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not v5.17.0, please first 
 
 ### Fixed
 
+- Don't include the confusing "TypeError" in toaster messages when fetching measurements fails. Fixes [#9576](https://github.com/ICTU/quality-time/issues/9576).
 - In the reference manual, sort supported metrics alphabetically. Fixes [#9855](https://github.com/ICTU/quality-time/issues/9855).
 - Correctly sort metrics in the "Add metric" dropdown menu. Fixes [#9857](https://github.com/ICTU/quality-time/issues/9857).
 - The warning message shown for unsupported measurement details was incorrect for metrics with a version scale. Fixes [#9973](https://github.com/ICTU/quality-time/issues/9973).
