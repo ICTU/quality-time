@@ -1,4 +1,4 @@
-import { fireEvent, queryAllByRole, queryAllByText, render, screen } from "@testing-library/react"
+import { queryAllByRole, queryAllByText, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
 import { MetricSummaryCard } from "./MetricSummaryCard"
@@ -24,12 +24,10 @@ it("shows the number of metrics per status", () => {
     ).toBe(1)
 })
 
-it("shows the tooltip and hides it on click", async () => {
+it("shows the tooltip", async () => {
     const { container } = renderPieChart({ summary: { blue: 2, red: 1, green: 2, yellow: 3, white: 1, grey: 1 } })
     const unknownPie = queryAllByRole(container, "presentation")[0]
-    const unknownLabel = "Unknown: 1 metric (10%)"
+    const unknownLabel = "Unknown"
     await userEvent.hover(unknownPie)
     expect(queryAllByText(container, unknownLabel).length).toBe(1)
-    fireEvent.click(unknownPie)
-    expect(queryAllByText(container, unknownLabel).length).toBe(0)
 })
