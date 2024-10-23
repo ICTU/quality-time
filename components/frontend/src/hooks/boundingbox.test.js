@@ -1,4 +1,4 @@
-import { act, renderHook } from "@testing-library/react"
+import { act, renderHook, waitFor } from "@testing-library/react"
 
 import { useBoundingBox } from "./boundingbox"
 
@@ -7,14 +7,16 @@ it("gets the default bounding box", () => {
     expect(result.current[0]).toStrictEqual({})
 })
 
-it("gets the resized bounding box", () => {
-    let windowSpy = jest.spyOn(window, "addEventListener")
-    let registeredCallback
+let windowSpy
+let registeredCallback
+let ref
+let boundingBox
+
+beforeEach(() => {
+    windowSpy = jest.spyOn(window, "addEventListener")
     windowSpy.mockImplementation((_eventType, callback) => {
         registeredCallback = callback
     })
-    let ref
-    let boundingBox
     renderHook(() => {
         ;[boundingBox, ref] = useBoundingBox()
     })
@@ -22,6 +24,23 @@ it("gets the resized bounding box", () => {
     ref.current.getBoundingClientRect = () => {
         return { width: 100, height: 100 }
     }
+})
+
+it("gets the resized bounding box", () => {
     act(() => registeredCallback())
-    expect(boundingBox).toStrictEqual({ width: 100, height: 100 })
+    waitFor(() => {
+        expect(boundingBox).toStrictEqual({ width: 100, height: 100 })
+    })
+})
+
+it("gets the default bounding box after the current ref is unmounted", () => {
+    act(() => registeredCallback())
+    waitFor(() => {
+        expect(boundingBox).toStrictEqual({ width: 100, height: 100 })
+    })
+    ref.current.getBoundingClientRect = () => null
+    act(() => registeredCallback())
+    waitFor(() => {
+        expect(boundingBox).toStrictEqual({})
+    })
 })
