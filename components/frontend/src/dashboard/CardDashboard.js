@@ -15,7 +15,6 @@ function cardDivs(cards, dragging, isDragging) {
                 }
             }}
             key={card.key}
-            style={{ transition: dragging ? "0ms" : "400ms" }}
         >
             {card}
         </div>
@@ -97,6 +96,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
                     style={{
                         zIndex: "0", // Prevent cards from being shown above the settings panel after being clicked
                     }}
+                    useCSSTransforms={false} // Don't fly-in the cards from the top left
                 >
                     {cardDivs(cards, dragging, isDragging)}
                 </ReactGridLayout>

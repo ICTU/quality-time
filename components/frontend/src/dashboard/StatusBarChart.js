@@ -28,7 +28,7 @@ export function StatusBarChart({ animate, colors, events, height, label, maxY, s
             data.push({
                 x: date,
                 y: y,
-                label: `${dateString}\n${STATUS_NAME[status]}: ${nrMetricsLabel(y)}`,
+                label: [dateString, STATUS_NAME[status], nrMetricsLabel(y)],
             })
         })
         return (
