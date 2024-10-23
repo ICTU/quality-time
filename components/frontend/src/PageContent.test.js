@@ -1,29 +1,25 @@
 import { act, render, screen } from "@testing-library/react"
 import history from "history/browser"
+import * as react_toastify from "react-toastify"
 
 import { createTestableSettings } from "./__fixtures__/fixtures"
 import * as fetch_server_api from "./api/fetch_server_api"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 import { PageContent } from "./PageContent"
 
-jest.mock("./api/fetch_server_api", () => {
-    const originalModule = jest.requireActual("./api/fetch_server_api")
-
-    return {
-        __esModule: true,
-        ...originalModule,
-        fetch_server_api: jest.fn().mockResolvedValue({ ok: true, measurements: [] }),
-    }
-})
+jest.mock("react-toastify")
+jest.mock("./api/fetch_server_api")
 
 beforeEach(() => {
-    jest.clearAllMocks()
     jest.useFakeTimers("modern")
+    fetch_server_api.api_with_report_date = jest.requireActual("./api/fetch_server_api").api_with_report_date
+    fetch_server_api.fetch_server_api.mockImplementation(() => Promise.resolve({ ok: true, measurements: [] }))
     mockGetAnimations()
     history.push("")
 })
 
 afterEach(() => {
+    jest.clearAllMocks()
     jest.useRealTimers()
 })
 
@@ -110,4 +106,15 @@ it("fetches measurements if nr dates > 1 and time traveling", async () => {
     const reportDate = new Date(2022, 3, 25)
     await renderPageContent({ report_date: reportDate })
     expectMeasurementsCall(reportDate, 1)
+})
+
+it("fails to load measurements", async () => {
+    fetch_server_api.fetch_server_api.mockImplementation(() => Promise.reject(new Error("Error description")))
+    await renderPageContent()
+    expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(
+        <>
+            <h4>Could not fetch measurements</h4>
+            <p>Error description</p>
+        </>,
+    )
 })

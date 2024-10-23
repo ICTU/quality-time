@@ -67,7 +67,7 @@ export function PageContent({
         minDate.setHours(minDate.getHours() - 1) // Get at least one hour of measurements
         get_measurements(minDate, maxDate)
             .then((json) => setMeasurements(json.measurements ?? []))
-            .catch((error) => showMessage("error", "Could not fetch measurements", `${error}`))
+            .catch((error) => showMessage("error", "Could not fetch measurements", `${error.message}`))
     }, [report_date, nrMeasurements, settings.dateInterval.value, settings.nrDates.value])
     let content
     if (loading) {

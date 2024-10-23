@@ -90,7 +90,7 @@ function fetchMeasurements(reportDate, metric_uuid, setMeasurements, setMeasurem
             return null
         })
         .catch((error) => {
-            showMessage("error", "Could not fetch measurements", `${error}`)
+            showMessage("error", "Could not fetch measurements", `${error.message}`)
             setMeasurementsStatus("failed")
         })
 }
