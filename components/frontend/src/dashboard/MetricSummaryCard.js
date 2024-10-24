@@ -62,7 +62,7 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
             flyoutPadding={5}
             flyoutStyle={{ fill: flyoutBgColor }}
             pointerWidth={20}
-            renderInPortal={true}
+            renderInPortal={false}
             style={{ fontFamily: "Arial", fontSize: 12, fill: labelColor }}
         />
     )
@@ -72,27 +72,10 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
     const chartProps = {
         animate: animate,
         colors: colors,
-        events: [
-            {
-                childName: "all",
-                target: "data",
-                eventHandlers: {
-                    onClick: () => {
-                        return [
-                            {
-                                target: "labels",
-                                mutation: () => {
-                                    return { active: false } // Clear tooltip before filtering
-                                },
-                            },
-                        ]
-                    },
-                },
-            },
-        ],
         height: Math.max(bbHeight, 1), // Prevent "Failed prop type: Invalid prop range supplied to VictoryBar"
         label: (
             <VictoryLabel
+                style={{ fill: labelColor }}
                 text={nrMetricsLabel(sum(summary[dates[0]]))}
                 textAnchor="middle"
                 x={bbWidth / 2}

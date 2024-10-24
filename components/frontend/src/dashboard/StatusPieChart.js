@@ -21,7 +21,7 @@ export function StatusPieChart({ animate, colors, events, height, label, maxY, s
     const data = STATUSES.map((status) => {
         const y = summary[STATUS_COLORS[status]]
         const yPercentage = Math.round((y / nrMetrics) * 100)
-        return { y: y, label: `${STATUS_NAME[status]}: ${nrMetricsLabel(y)} (${yPercentage}%)` }
+        return { y: y, label: `${STATUS_NAME[status]}\n${nrMetricsLabel(y)} (${yPercentage}%)` }
     })
     return (
         <>
