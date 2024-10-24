@@ -1,5 +1,9 @@
 """GitLab unit test base classes."""
 
+from datetime import datetime
+
+from dateutil.tz import tzlocal
+
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -45,6 +49,7 @@ class GitLabTestCase(SourceCollectorTestCase):
                 "branch": "main",
                 "url": "https://gitlab/job1",
                 "build_date": "2019-03-31",
+                "build_datetime": datetime(2019, 3, 31, 19, 40, 39, 927000, tzinfo=tzlocal()),
                 "build_status": "failed",
             },
             {
@@ -54,6 +59,7 @@ class GitLabTestCase(SourceCollectorTestCase):
                 "branch": "develop",
                 "url": "https://gitlab/job2",
                 "build_date": "2019-03-31",
+                "build_datetime": datetime(2019, 3, 31, 19, 40, 39, 927000, tzinfo=tzlocal()),
                 "build_status": "failed",
             },
         ]

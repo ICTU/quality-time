@@ -2,8 +2,10 @@
 
 from abc import ABC
 from dataclasses import dataclass, fields
-from datetime import UTC, date, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import cast
+
+from dateutil.tz import tzutc
 
 from shared.utils.date_time import now
 
@@ -74,10 +76,10 @@ class GitLabJobsBase(GitLabProjectBase):
         # created or by date run, so we're going to assume that descending order of IDs is roughly equal to descending
         # order of date created and date run. As soon as all jobs on a page have a build date that is outside the
         # lookback period we stop the pagination.
-        lookback_date = self._lookback_date()
+        lookback_dt = self._lookback_datetime()
         for response in responses:
             for job in await response.json():
-                if self._build_date(job) >= lookback_date:
+                if self._build_datetime(job) >= lookback_dt:
                     return await super()._next_urls(responses)
         return []
 
@@ -92,7 +94,8 @@ class GitLabJobsBase(GitLabProjectBase):
                     build_status=job["status"],
                     branch=job["ref"],
                     stage=job["stage"],
-                    build_date=str(self._build_date(job)),
+                    build_date=str(self._build_datetime(job).date()),
+                    build_datetime=self._build_datetime(job),
                 )
                 for job in await self._jobs(responses)
             ],
@@ -115,25 +118,23 @@ class GitLabJobsBase(GitLabProjectBase):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to count the job."""
-        lookback_date = self._lookback_date()
         return (
             not match_string_or_regular_expression(
                 entity["name"],
                 self._parameter("jobs_to_ignore"),
             )
             and not match_string_or_regular_expression(entity["branch"], self._parameter("refs_to_ignore"))
-            and parse_datetime(entity["build_date"]).date() >= lookback_date
+            and entity["build_datetime"] >= self._lookback_datetime()
         )
 
     @staticmethod
-    def _build_date(job: Job) -> date:
+    def _build_datetime(job: Job) -> datetime:
         """Return the build date of the job."""
-        return parse_datetime(job.get("finished_at") or job["created_at"]).date()
+        return parse_datetime(job.get("finished_at") or job["created_at"])
 
-    def _lookback_date(self) -> date:
+    def _lookback_datetime(self) -> datetime:
         """Return the lookback cut-off date."""
-        today = now().date()
-        return today - timedelta(days=int(cast(str, self._parameter("lookback_days"))))
+        return now() - timedelta(days=int(cast(str, self._parameter("lookback_days"))))
 
 
 @dataclass
@@ -173,7 +174,7 @@ class Pipeline:
 
         The finished_at field may empty if the pipeline hasn't finished yet. Use the current time as fallback.
         """
-        return parse_datetime(self.finished_at) if self.finished_at else datetime.now(tz=UTC)
+        return parse_datetime(self.finished_at) if self.finished_at else datetime.now(tz=tzutc())
 
     @property
     def datetime(self) -> datetime:
