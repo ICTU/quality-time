@@ -5,7 +5,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 jobs:
   build:
     name: Trivy component analysis
@@ -38,7 +38,7 @@ jobs:
             docker_file: Dockerfile
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v4.2.2
 
       - name: Build image from Dockerfile
         run: |
@@ -48,19 +48,19 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'docker.io/ictu/quality-time_${{ matrix.component }}'
+          image-ref: "docker.io/ictu/quality-time_${{ matrix.component }}"
           ignore-unfixed: true
-          format: 'sarif'
-          output: 'trivy-${{ matrix.component }}.sarif'
+          format: "sarif"
+          output: "trivy-${{ matrix.component }}.sarif"
 
       - name: Upload Trivy scan results to GitHub Security tab
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'trivy-${{ matrix.component }}.sarif'
+          sarif_file: "trivy-${{ matrix.component }}.sarif"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: 'trivy-${{ matrix.component }}.sarif'
-          path: '*.sarif'
+          name: "trivy-${{ matrix.component }}.sarif"
+          path: "*.sarif"
