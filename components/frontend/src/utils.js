@@ -136,6 +136,7 @@ export function getMetricResponseDeadline(metric, report) {
     if (status === "debt_target_met") {
         if (metric.debt_end_date) {
             deadline = new Date(metric.debt_end_date)
+            deadline.setHours(23, 59, 59)
         }
     } else if (status in defaultDesiredResponseTimes && metric.status_start) {
         const desiredResponseTime = getDesiredResponseTime(report, status)

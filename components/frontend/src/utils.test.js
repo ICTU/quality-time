@@ -241,6 +241,7 @@ it("returns the metric response deadline", () => {
 it("returns the metric response deadline based on the tech debt end date", () => {
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
+    tomorrow.setHours(23, 59, 59)
     expect(
         getMetricResponseDeadline({ status: "debt_target_met", debt_end_date: tomorrow.toISOString() }, {}),
     ).toStrictEqual(tomorrow)
