@@ -102,7 +102,7 @@ ActionButton.propTypes = {
     position: string,
 }
 
-export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubtypes, usedItemSubtypeKeys }) {
+export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubtypes, usedItemSubtypeKeys, sort }) {
     const [selectedItem, setSelectedItem] = useState(0) // Index of selected item in the dropdown
     const [query, setQuery] = useState("") // Search query to filter item subtypes
     const [menuOpen, setMenuOpen] = useState(false) // Is the menu open?
@@ -115,7 +115,10 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
         items = items.filter((item) => !usedItemSubtypeKeys.includes(item.key))
     }
     const options = items.filter((itemSubtype) => itemSubtype.text.toLowerCase().includes(query.toLowerCase()))
-    options.sort((a, b) => a.text.localeCompare(b.text))
+    // Unless specified not to, sort the options:
+    if (sort !== false) {
+        options.sort((a, b) => a.text.localeCompare(b.text))
+    }
     return (
         <Popup
             content={`Add a new ${itemType} here`}
@@ -228,6 +231,7 @@ AddDropdownButton.propTypes = {
     itemSubtypes: array,
     itemType: string,
     onClick: func,
+    sort: bool,
     usedItemSubtypeKeys: arrayOf(string),
 }
 

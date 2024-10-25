@@ -28,6 +28,7 @@ export function SubjectsButtonRow({ reload, report, reports, settings }) {
                             stopFiltering()
                             add_subject(report.report_uuid, subtype, reload)
                         }}
+                        sort={false} // Don't sort the subjects by name because it's a hierarchy defined in the data model
                     />
                     <CopyButton
                         itemType="subject"
