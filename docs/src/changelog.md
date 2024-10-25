@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not v5.17.1, please first 
 ### Fixed
 
 - When calculating how much time is left until the technical debt end date, include the technical debt end date itself in the calculation. Fixes [#10063](https://github.com/ICTU/quality-time/issues/10063).
+- Fix cut off borders of popups in the dashboard. Fixes [#10175](https://github.com/ICTU/quality-time/issues/10175).
 - Correctly sort subjects in the "Add subject" dropdown menu. Fixes [#10176](https://github.com/ICTU/quality-time/issues/10176).
 
 ### Changed

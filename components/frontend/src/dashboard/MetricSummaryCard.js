@@ -52,23 +52,20 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
     const flyoutBgColor = useContext(DarkMode) ? "rgba(60, 65, 70)" : "white"
     const animate = { duration: 0, onLoad: { duration: 0 } }
     const colors = STATUSES.map((status) => STATUS_COLORS_RGB[status])
-    const style = {
-        labels: { fontFamily: "Arial", fontSize: 12, fill: labelColor },
-    }
+    const bbWidth = boundingBox.width ?? 0
+    const bbHeight = boundingBox.height ?? 0
     const tooltip = (
         <VictoryTooltip
+            center={{ x: bbWidth / 2, y: bbHeight / 2 }}
             constrainToVisibleArea={true}
             cornerRadius={4}
-            flyoutPadding={5}
+            flyoutHeight={54} // If we don't pass this, a height is calculated by Victory, but it's much too high
             flyoutStyle={{ fill: flyoutBgColor }}
-            pointerWidth={20}
             renderInPortal={false}
-            style={{ fontFamily: "Arial", fontSize: 12, fill: labelColor }}
+            style={{ fontFamily: "Arial", fontSize: 16, fill: labelColor }}
         />
     )
     const dates = Object.keys(summary)
-    const bbWidth = boundingBox.width ?? 0
-    const bbHeight = boundingBox.height ?? 0
     const chartProps = {
         animate: animate,
         colors: colors,
@@ -83,7 +80,6 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
             />
         ),
         maxY: maxY,
-        style: style,
         tooltip: tooltip,
         width: Math.max(bbWidth, 1), // Prevent "Failed prop type: Invalid prop range supplied to VictoryBar"
     }
