@@ -12,7 +12,7 @@ import {
 } from "./Button"
 import * as toast from "./toast"
 
-function renderAddDropdownButton(nrItems = 2, totalItems = 10, usedItemKeys = []) {
+function renderAddDropdownButton({ nrItems = 2, totalItems = 10, usedItemKeys = [], sort = true } = {}) {
     const mockCallback = jest.fn()
     const itemSubtypes = []
     let allItemSubtypes
@@ -35,6 +35,7 @@ function renderAddDropdownButton(nrItems = 2, totalItems = 10, usedItemKeys = []
             itemSubtypes={itemSubtypes.toReversed()} // Pass items in reversed order to test they are sorted correctly
             onClick={mockCallback}
             usedItemSubtypeKeys={usedItemKeys}
+            sort={sort}
         />,
     )
     return mockCallback
@@ -71,12 +72,20 @@ test("AddDropdownButton keyboard navigation", async () => {
     expect(mockCallback).toHaveBeenCalledWith("sub 2")
 })
 
-test("AddDropdownButton sort order", async () => {
+test("AddDropdownButton is sorted", async () => {
     renderAddDropdownButton()
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
     expect(screen.getAllByText(/Sub/).map((item) => item.innerHTML)).toStrictEqual(["Sub 1", "Sub 2"])
+})
+
+test("AddDropdownButton is not sorted", async () => {
+    renderAddDropdownButton({ sort: false })
+    await act(async () => {
+        fireEvent.click(screen.getByText(/Add foo/))
+    })
+    expect(screen.getAllByText(/Sub/).map((item) => item.innerHTML)).toStrictEqual(["Sub 2", "Sub 1"])
 })
 
 test("AddDropdownButton hides popup when dropdown is shown", async () => {
@@ -97,7 +106,7 @@ test("AddDropdownButton hides popup when dropdown is shown", async () => {
 })
 
 test("AddDropdownButton filter one item", async () => {
-    const mockCallback = renderAddDropdownButton(6)
+    const mockCallback = renderAddDropdownButton({ nrItems: 6 })
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
@@ -106,7 +115,7 @@ test("AddDropdownButton filter one item", async () => {
 })
 
 test("AddDropdownButton filter one item without focus", async () => {
-    const mockCallback = renderAddDropdownButton(6)
+    const mockCallback = renderAddDropdownButton({ nrItems: 6 })
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
@@ -127,7 +136,7 @@ test("AddDropdownButton filter one item without focus", async () => {
 })
 
 test("AddDropdownButton filter zero items", async () => {
-    const mockCallback = renderAddDropdownButton(6)
+    const mockCallback = renderAddDropdownButton({ nrItems: 6 })
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
@@ -150,7 +159,7 @@ test("AddDropdownButton add all items", async () => {
 })
 
 test("AddDropdownButton hide used items", async () => {
-    renderAddDropdownButton(2, 3, ["sub 1"])
+    renderAddDropdownButton({ nrItems: 2, totalItems: 3, usedItemKeys: ["sub 1"] })
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
@@ -175,7 +184,7 @@ test("AddDropdownButton add all items by keyboard", async () => {
 })
 
 test("AddDropdownButton resets query on escape", async () => {
-    const mockCallback = renderAddDropdownButton(6)
+    const mockCallback = renderAddDropdownButton({ nrItems: 6 })
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
@@ -199,7 +208,7 @@ test("AddDropdownButton does not reset query on blur when it has checkbox", asyn
 })
 
 test("AddDropdownButton does reset query on blur when it has no checkbox", async () => {
-    renderAddDropdownButton(10)
+    renderAddDropdownButton({ nrItems: 10 })
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
@@ -208,7 +217,7 @@ test("AddDropdownButton does reset query on blur when it has no checkbox", async
 })
 
 test("AddDropdownButton does not add selected item on enter when menu is closed", async () => {
-    const mockCallback = renderAddDropdownButton(6)
+    const mockCallback = renderAddDropdownButton({ nrItems: 6 })
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
