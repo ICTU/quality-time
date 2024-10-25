@@ -70,7 +70,7 @@ Open another terminal and run the API-server:
 ```console
 cd components/api_server
 uv venv
-. venv/bin/activate  # on Windows: venv\Scripts\activate
+. .venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
 python src/quality_time_server.py
 ```
@@ -80,7 +80,7 @@ The API of the API-server is served at [http://localhost:5001](http://localhost:
 ```{note}
 If you're new to Python virtual environments, note that:
 - Creating a virtual environment (`uv venv`) has to be done once. Only when the Python version changes, you want to recreate the virtual environment.
-- Activating the virtual environment (`. venv/bin/activate`) has to be done every time you open a new shell and want to use the Python installed in the virtual environment.
+- Activating the virtual environment (`. .venv/bin/activate`) has to be done every time you open a new shell and want to use the Python installed in the virtual environment.
 - Installing the requirements (`ci/pip-install.sh`) has to be repeated when the dependencies, specified in the requirements files, change.
 ```
 
@@ -96,7 +96,7 @@ Open another terminal and run the collector:
 ```console
 cd components/collector
 uv venv
-. venv/bin/activate  # on Windows: venv\Scripts\activate
+. .venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
 python src/quality_time_collector.py
 ```
@@ -132,7 +132,7 @@ Optionally, open yet another terminal and run the notifier:
 ```console
 cd components/notifier
 uv venv
-. venv/bin/activate  # on Windows: venv\Scripts\activate
+. .venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
 python src/quality_time_notifier.py
 ```
@@ -151,7 +151,7 @@ To create a virtual environment for the shared component and install the depende
 ```console
 cd components/shared_code
 uv venv
-. venv/bin/activate  # on Windows: venv\Scripts\activate
+. .venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
 ```
 
@@ -453,7 +453,7 @@ To generate the documentation locally:
 ```console
 cd docs
 uv venv
-. venv/bin/activate  # on Windows: venv\Scripts\activate
+. .venv/bin/activate  # on Windows: venv\Scripts\activate
 ci/pip-install.sh
 make html
 open build/html/index.html
@@ -476,7 +476,7 @@ Make sure the release folder is the current directory, and you have the dependen
 ```console
 cd release
 uv venv
-. venv/bin/activate
+. .venv/bin/activate
 ci/pip-install.sh
 ```
 

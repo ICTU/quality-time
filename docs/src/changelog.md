@@ -21,6 +21,7 @@ If your currently installed *Quality-time* version is not v5.17.0, please first 
 - Correctly sort metrics in the "Add metric" dropdown menu. Fixes [#9857](https://github.com/ICTU/quality-time/issues/9857).
 - The warning message shown for unsupported measurement details was incorrect for metrics with a version scale. Fixes [#9973](https://github.com/ICTU/quality-time/issues/9973).
 - The metric summary cards with pie chart wouldn't erase the center label when rerendering, causing the label to be visible multiple times. Fixes [#10098](https://github.com/ICTU/quality-time/issues/10098).
+- Developer documentation was still refering to `venv/bin/activate` where this should be `.venv/bin/activate`. Fixes [#10172](https://github.com/ICTU/quality-time/issues/10172).
 
 ## v5.17.0 - 2024-10-17
 
