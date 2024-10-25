@@ -68,17 +68,17 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
             </p>
         </>
     )
+    let debtEndDateTime = null
+    if (metric.debt_end_date) {
+        debtEndDateTime = new Date(metric.debt_end_date)
+        debtEndDateTime.setHours(23, 59, 59)
+    }
     return (
         <DateInput
             ariaLabelledBy={labelId}
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             label={
-                <LabelWithDate
-                    date={metric.debt_end_date}
-                    labelId={labelId}
-                    help={help}
-                    label="Technical debt end date"
-                />
+                <LabelWithDate date={debtEndDateTime} labelId={labelId} help={help} label="Technical debt end date" />
             }
             placeholder="YYYY-MM-DD"
             set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
