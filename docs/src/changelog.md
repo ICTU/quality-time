@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Deployment notes
+
+If your currently installed *Quality-time* version is not v5.17.1, please first check the upgrade path in the [versioning policy](versioning.md).
+
+### Changed
+
+- Extend Quality-Time with SonarQube Dart rules for complex units, functions with too many parameters and todo and fixme comments. Closes [#10191](https://github.com/ICTU/quality-time/issues/10191)
+
 ## v5.17.1 - 2024-10-25
 
 ### Deployment notes
