@@ -5,7 +5,7 @@ import { useState } from "react"
 import { Table } from "semantic-ui-react"
 
 import { entityAttributesPropType, entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
-import { limitTextLength } from "../utils"
+import { DivWithHTML } from "../widgets/DivWithHTML"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 import { IGNORABLE_SOURCE_ENTITY_STATUSES, SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
@@ -75,10 +75,13 @@ export function SourceEntity({
             key={entity.key}
             expanded={expanded}
             onExpand={setExpanded}
+            style={{ maxHeight: "100px", overflow: "auto" }}
         >
             <Table.Cell style={style}>{SOURCE_ENTITY_STATUS_NAME[status]}</Table.Cell>
             <Table.Cell style={style}>{status === "unconfirmed" ? "" : status_end_date}</Table.Cell>
-            <Table.Cell style={style}>{limitTextLength(rationale)}</Table.Cell>
+            <Table.Cell style={style}>
+                <DivWithHTML>{rationale}</DivWithHTML>
+            </Table.Cell>
             <Table.Cell style={style}>
                 {entity.first_seen ? <TimeAgoWithDate dateFirst date={entity.first_seen} /> : ""}
             </Table.Cell>

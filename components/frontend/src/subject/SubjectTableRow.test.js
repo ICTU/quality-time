@@ -121,8 +121,3 @@ it("shows the delta column for the version scale", () => {
     expect(screen.getAllByText("-").length).toBe(1)
     expect(screen.getAllByLabelText("Metric type improved from 1.2 to 0.8").length).toBe(1)
 })
-
-it("cuts off long comments in the comment column", () => {
-    renderSubjectTableRow({ comment: "long comment ".repeat(20) })
-    expect(screen.queryAllByText(/\.\.\./).length).toBe(1)
-})

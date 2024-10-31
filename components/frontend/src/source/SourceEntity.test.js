@@ -49,11 +49,6 @@ it("renders the status rationale", () => {
     expect(screen.getAllByText(/Why\?/).length).toBe(1)
 })
 
-it("limits the length of a long status rationale", () => {
-    renderSourceEntity({ status: "fixed", rationale: "long rationale ".repeat(20) })
-    expect(screen.getAllByText(/\.\.\./).length).toBe(1)
-})
-
 it("renders the first seen datetime", () => {
     renderSourceEntity({ first_seen: "2023-07-17" })
     expect(screen.getAllByText(/ago/).length).toBe(1)
