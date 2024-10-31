@@ -30,7 +30,7 @@ optional-dependencies.tools = [
     "fixit==2.1.0",
     "mypy==1.13.0",
     "pip-audit==2.7.3",
-    "pyproject-fmt==2.4.3",
+    "pyproject-fmt==2.5.0",
     "ruff==0.7.1",
     "vulture==2.13",
 ]
