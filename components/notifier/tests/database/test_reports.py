@@ -7,7 +7,7 @@ import mongomock
 
 from database.reports import get_reports_and_measurements
 
-from tests.fixtures import METRIC_ID, create_report
+from tests.fixtures import METRIC_ID, create_report_data
 
 if TYPE_CHECKING:
     from pymongo.database import Database
@@ -27,9 +27,9 @@ class ReportsTest(unittest.TestCase):
 
     def test_get_reports_and_measurements(self):
         """Test that the reports and latest two measurements are returned."""
-        report = create_report()
-        self.database["reports"].insert_one(report)
+        report_data = create_report_data()
+        self.database["reports"].insert_one(report_data)
         self.database["measurements"].insert_many(self.measurements)
         reports, measurements = get_reports_and_measurements(self.database)
-        self.assertEqual(report["report_uuid"], reports[0]["report_uuid"])
+        self.assertEqual(report_data["report_uuid"], reports[0]["report_uuid"])
         self.assertEqual(2, len(measurements))

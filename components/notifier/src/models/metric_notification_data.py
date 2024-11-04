@@ -30,7 +30,7 @@ class MetricNotificationData:
         self.metric_name = metric["name"] or DATA_MODEL.metrics[metric["type"]].name
         self.metric_unit = metric["unit"] or DATA_MODEL.metrics[metric["type"]].unit.value
         self.subject_name = subject.get("name") or DATA_MODEL.all_subjects[subject["type"]].name
-        self.scale = metric["scale"]
+        self.scale = metric.scale()
         self.status = self.__status(LAST)
         self.new_metric_value = self.__value(LAST)
         self.new_metric_status = self.__user_friendly_status(LAST)

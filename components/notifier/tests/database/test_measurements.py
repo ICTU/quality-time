@@ -10,7 +10,7 @@ from shared.database.reports import get_reports
 
 from database.measurements import get_recent_measurements
 
-from tests.fixtures import METRIC_ID, create_report
+from tests.fixtures import METRIC_ID, create_report_data
 
 if TYPE_CHECKING:
     from pymongo.database import Database
@@ -30,7 +30,7 @@ class MeasurementsTest(unittest.TestCase):
 
     def test_get_recent_measurements(self):
         """Test that the recent measurements are returned."""
-        self.database["reports"].insert_one(create_report())
+        self.database["reports"].insert_one(create_report_data())
         reports = get_reports(self.database)
 
         metrics = []
@@ -49,7 +49,7 @@ class MeasurementsTest(unittest.TestCase):
 
     def test_get_recent_measurements_limit(self):
         """Test that the recent measurements are returned."""
-        self.database["reports"].insert_one(create_report())
+        self.database["reports"].insert_one(create_report_data())
         reports = get_reports(self.database)
 
         metrics = []

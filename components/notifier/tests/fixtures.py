@@ -2,17 +2,20 @@
 
 from typing import cast
 
-from shared.utils.type import MetricId, NotificationDestinationId, SubjectId
+from shared.utils.type import MetricId, NotificationDestinationId, ReportId, SubjectId
 
 METRIC_ID = cast(MetricId, "metric_uuid")
+METRIC_ID2 = cast(MetricId, "metric_uuid2")
 NOTIFICATION_DESTINATION_ID = cast(NotificationDestinationId, "destination1")
+REPORT_ID = cast(ReportId, "report_uuid")
+REPORT_ID2 = cast(ReportId, "report_uuid2")
 SUBJECT_ID = cast(SubjectId, "subject_uuid")
 
 
-def create_report(deleted: bool = False) -> dict:
-    """Return a fake report."""
+def create_report_data(deleted: bool = False) -> dict:
+    """Return data for a fake report."""
     report = {
-        "report_uuid": "report1",
+        "report_uuid": REPORT_ID,
         "title": "Title",
         "subjects": {
             SUBJECT_ID: {
