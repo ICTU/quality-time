@@ -4,8 +4,12 @@ import unittest
 from datetime import UTC, datetime
 
 from shared.model.measurement import Measurement
+from shared.model.metric import Metric
+from shared.model.report import Report
 
 from strategies.notification_strategy import NotificationFinder
+
+from tests.fixtures import METRIC_ID, METRIC_ID2, NOTIFICATION_DESTINATION_ID, REPORT_ID, REPORT_ID2, SUBJECT_ID
 
 
 class StrategiesTests(unittest.TestCase):
@@ -22,13 +26,13 @@ class StrategiesTests(unittest.TestCase):
         self.red_metric = self.metric(name="metric1", status="target_not_met")
         self.red_metric_measurements = [
             {
-                "metric_uuid": "red_metric",
+                "metric_uuid": METRIC_ID,
                 "start": self.OLD_TIMESTAMP,
                 "end": self.NEW_TIMESTAMP,
                 "count": {"status": "target_met", "value": "5"},
             },
             {
-                "metric_uuid": "red_metric",
+                "metric_uuid": METRIC_ID,
                 "start": self.NEW_TIMESTAMP,
                 "end": self.NEW_TIMESTAMP,
                 "count": {"status": "target_not_met", "value": "10"},
@@ -36,9 +40,9 @@ class StrategiesTests(unittest.TestCase):
         ]
         self.reports = [
             {
-                "report_uuid": "report1",
+                "report_uuid": REPORT_ID,
                 "title": "Title",
-                "subjects": {"subject1": {"metrics": {"red_metric": self.red_metric}, "type": "software"}},
+                "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: self.red_metric}, "type": "software"}},
                 "notification_destinations": {
                     "destination_uuid": {"name": "destination", "report_url": "https://report"}
                 },
@@ -52,17 +56,21 @@ class StrategiesTests(unittest.TestCase):
         scale: str = "count",
         recent_measurements: list[Measurement] | None = None,
         status_start: str | None = None,
-    ) -> dict[str, str | list]:
+    ) -> Metric:
         """Create a metric."""
-        return {
-            "name": name,
-            "scale": scale,
-            "status": status,
-            "type": "tests",
-            "unit": "units",
-            "recent_measurements": recent_measurements or [],
-            "status_start": status_start or "",
-        }
+        return Metric(
+            {},
+            {
+                "name": name,
+                "scale": scale,
+                "status": status,
+                "type": "tests",
+                "unit": "units",
+                "recent_measurements": recent_measurements or [],
+                "status_start": status_start or "",
+            },
+            METRIC_ID,
+        )
 
     def get_notifications(self, measurements: list[Measurement] | None = None):
         """Return the notifications."""
@@ -88,7 +96,7 @@ class StrategiesTests(unittest.TestCase):
                 },
             ],
         )
-        self.reports[0]["subjects"]["subject1"]["metrics"] = {"metric": green_metric}
+        self.reports[0]["subjects"][SUBJECT_ID]["metrics"] = {METRIC_ID: green_metric}
         self.assertEqual([], self.get_notifications())
 
     def test_old_red_metric(self):
@@ -118,13 +126,13 @@ class StrategiesTests(unittest.TestCase):
         metric = self.metric(status=self.white_metric_status)
         measurements = [
             {
-                "metric_uuid": "metric_uuid",
+                "metric_uuid": METRIC_ID,
                 "start": self.NEW_TIMESTAMP,
                 "end": self.NEW_TIMESTAMP,
                 "count": {"status": "target_met"},
             },
             {
-                "metric_uuid": "metric_uuid",
+                "metric_uuid": METRIC_ID,
                 "start": self.OLD_TIMESTAMP,
                 "end": self.OLD_TIMESTAMP,
                 "count": {"status": self.white_metric_status},
@@ -159,24 +167,26 @@ class StrategiesTests(unittest.TestCase):
         """Test that the correct metrics are notified when multiple reports notify the same destination."""
         red_metric2 = self.red_metric.copy()
         red_metric2["name"] = "metric2"
-        subject2 = {"metrics": {"metric1": red_metric2}, "type": "software"}
+        subject2 = {"metrics": {METRIC_ID2: red_metric2}, "type": "software"}
         report2 = {
             "title": "Title",
-            "report_uuid": "report2",
+            "report_uuid": REPORT_ID2,
             "webhook": "webhook",
-            "subjects": {"subject": subject2},
-            "notification_destinations": {"uuid1": {"report_url": "https://report2", "name": "destination2"}},
+            "subjects": {SUBJECT_ID: subject2},
+            "notification_destinations": {
+                NOTIFICATION_DESTINATION_ID: {"report_url": "https://report2", "name": "destination2"},
+            },
         }
-        self.reports.append(report2)
+        self.reports.append(Report({}, report2))
         red_metric2_measurements = [
             {
-                "metric_uuid": "metric1",
+                "metric_uuid": METRIC_ID2,
                 "start": self.OLD_TIMESTAMP,
                 "end": self.NEW_TIMESTAMP,
                 "count": {"status": "target_met", "value": "5"},
             },
             {
-                "metric_uuid": "metric1",
+                "metric_uuid": METRIC_ID2,
                 "start": self.NEW_TIMESTAMP,
                 "end": self.NEW_TIMESTAMP,
                 "count": {"status": "target_not_met", "value": "10"},

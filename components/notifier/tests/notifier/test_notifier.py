@@ -3,15 +3,16 @@
 import contextlib
 import pathlib
 import unittest
-from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock, mock_open, patch
 
 import mongomock
 
+from shared.model.report import Report
+
 from notifier.notifier import most_recent_measurement_timestamp, notify, record_health
 
-from tests.fixtures import create_report
+from tests.fixtures import METRIC_ID, METRIC_ID2, NOTIFICATION_DESTINATION_ID, REPORT_ID, SUBJECT_ID, create_report_data
 
 
 class MostRecentMeasurementTimestampTests(unittest.TestCase):
@@ -68,11 +69,11 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         self.url = "www.url.com"
         self.database = mongomock.MongoClient()["quality_time_db"]
         self.subjects = {
-            "subject1": {
+            SUBJECT_ID: {
                 "type": "software",
                 "name": "Subject 1",
                 "metrics": {
-                    "metric1": {
+                    METRIC_ID: {
                         "type": "tests",
                         "name": "metric1",
                         "unit": "units",
@@ -101,20 +102,19 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("notifier.notifier.get_reports_and_measurements")
     async def test_no_new_red_metrics(self, mocked_get: Mock, mocked_sleep: Mock, mocked_send: Mock):
         """Test that no notifications are sent if there are no new red metrics."""
-        report1 = create_report()
+        report_data = create_report_data()
         now = datetime.now(tz=UTC).replace(microsecond=0).isoformat()
         just_now = (datetime.now(tz=UTC).replace(microsecond=0) - timedelta(seconds=10)).isoformat()
-        report2 = deepcopy(report1)
         measurements = [
-            {"metric_uuid": "metric1", "end": now, "start": now, "count": {"status": "target_not_met", "value": "10"}},
+            {"metric_uuid": METRIC_ID2, "end": now, "start": now, "count": {"status": "target_not_met", "value": "10"}},
             {
-                "metric_uuid": "metric1",
+                "metric_uuid": METRIC_ID2,
                 "end": just_now,
                 "start": just_now,
                 "count": {"status": "target_met", "value": "0"},
             },
         ]
-        mocked_get.side_effect = [([report1], measurements), ([report2], measurements)]
+        mocked_get.side_effect = [([Report({}, report_data)], measurements), ([Report({}, report_data)], measurements)]
         mocked_sleep.side_effect = [None, RuntimeError]
         with contextlib.suppress(RuntimeError):
             await notify(self.database)
@@ -126,12 +126,12 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     @patch("notifier.notifier.get_reports_and_measurements")
     async def test_one_new_red_metric(self, mocked_get: Mock, mocked_sleep: Mock, mocked_send: Mock):
         """Test that a notification is sent if there is one new red metric."""
-        report1 = {
-            "report_uuid": "report1",
+        report_data = {
+            "report_uuid": REPORT_ID,
             "title": self.title,
             "url": self.url,
             "notification_destinations": {
-                "destination1": {
+                NOTIFICATION_DESTINATION_ID: {
                     "name": "destination name",
                     "webhook": "www.webhook.com",
                     "report_url": "https://report",
@@ -141,17 +141,16 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         }
         now = datetime.now(tz=UTC).replace(microsecond=0).isoformat()
         just_now = (datetime.now(tz=UTC).replace(microsecond=0) - timedelta(days=1)).isoformat()
-        report2 = deepcopy(report1)
         measurements = [
-            {"metric_uuid": "metric1", "end": now, "start": now, "count": {"status": "target_not_met", "value": "0"}},
+            {"metric_uuid": METRIC_ID, "end": now, "start": now, "count": {"status": "target_not_met", "value": "0"}},
             {
-                "metric_uuid": "metric1",
+                "metric_uuid": METRIC_ID,
                 "end": just_now,
                 "start": just_now,
                 "count": {"status": "target_met", "value": "10"},
             },
         ]
-        mocked_get.side_effect = [([report1], []), ([report2], measurements)]
+        mocked_get.side_effect = [([Report({}, report_data)], []), ([Report({}, report_data)], measurements)]
 
         mocked_sleep.side_effect = [None, RuntimeError]
         with contextlib.suppress(RuntimeError):
@@ -173,20 +172,20 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         """Test that a notification is not sent if there is one old red metric."""
         history = self.history
         measurement = {
-            "metric_uuid": "metric1",
+            "metric_uuid": METRIC_ID,
             "start": history,
             "end": history,
             "count": {"status": "target_met", "value": "5"},
         }
-        report = {
-            "report_uuid": "report1",
+        report_data = {
+            "report_uuid": REPORT_ID,
             "title": self.title,
             "url": self.url,
             "webhook": "https://webhook",
             "subjects": {
-                "subject1": {
+                SUBJECT_ID: {
                     "metrics": {
-                        "metric1": {
+                        METRIC_ID: {
                             "type": "tests",
                             "name": "metric1",
                             "unit": "units",
@@ -198,7 +197,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             },
         }
 
-        mocked_get.return_value = ([report, report], [measurement, measurement])
+        mocked_get.return_value = ([Report({}, report_data), Report({}, report_data)], [measurement, measurement])
         mocked_sleep.side_effect = [None, RuntimeError]
         with contextlib.suppress(RuntimeError):
             await notify(self.database)
@@ -215,10 +214,9 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         mocked_send: Mock,
     ):
         """Test that the notifier continues if a destination does not have a webhook configured."""
-        report1 = create_report()
-        report2 = deepcopy(report1)
+        report_data = create_report_data()
         measurements: list[dict] = []
-        mocked_get.side_effect = [([report1], measurements), ([report2], measurements)]
+        mocked_get.side_effect = [([Report({}, report_data)], measurements), ([Report({}, report_data)], measurements)]
 
         mocked_sleep.side_effect = [None, RuntimeError]
         with contextlib.suppress(RuntimeError):

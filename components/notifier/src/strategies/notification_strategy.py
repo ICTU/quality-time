@@ -45,7 +45,7 @@ class NotificationFinder:
         """Determine if a metric got a new status after the given timestamp."""
         if len(measurements) < NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS_CHANGE:
             return False
-        scale = metric["scale"]
+        scale = metric.scale()
         metric_had_other_status = measurements[-2][scale]["status"] != measurements[-1][scale]["status"]
         change_was_recent = datetime.fromisoformat(measurements[-1]["start"]) > most_recent_measurement_seen
         return bool(metric_had_other_status and change_was_recent)
