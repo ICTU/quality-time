@@ -15,8 +15,7 @@ RUN apk add --no-cache \
     chromium=130.0.6723.116-r0 && \
     rm -rf /var/cache/apk/* /tmp/* && \
     update-ms-fonts && \
-    fc-cache -f && \
-    npm install --ignore-scripts -g npm@10.9.0
+    fc-cache -f
 
 WORKDIR /home/renderer
 COPY package*.json /home/renderer/
