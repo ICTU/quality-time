@@ -78,20 +78,34 @@ it("shows connection error message", async () => {
     expect(set_user).not.toHaveBeenCalled()
 })
 
+it("closes the dialog on cancel", async () => {
+    const set_user = jest.fn()
+    renderMenubar({ set_user: set_user })
+    fireEvent.click(screen.getByText(/Login/))
+    await act(async () => fireEvent.click(screen.getByText(/Cancel/)))
+    await waitFor(() => {
+        expect(screen.queryAllByLabelText("Username").length).toBe(0)
+    })
+    expect(set_user).not.toHaveBeenCalled()
+})
+
 it("closes the dialog on escape", async () => {
     const set_user = jest.fn()
     renderMenubar({ set_user: set_user })
     fireEvent.click(screen.getByText(/Login/))
-    await userEvent.type(screen.getByLabelText("Username"), "{Escape}")
-    expect(screen.queryAllByText(/Username/).length).toBe(0)
+    await userEvent.keyboard("{Escape}")
+    await waitFor(() => {
+        expect(screen.queryAllByLabelText("Username").length).toBe(0)
+    })
+    expect(set_user).not.toHaveBeenCalled()
 })
 
 it("logs out", async () => {
     auth.logout = jest.fn().mockResolvedValue({ ok: true })
     const set_user = jest.fn()
     renderMenubar({ set_user: set_user, user: "jadoe" })
-    await fireEvent.click(screen.getByRole("button", { name: "User options" }))
-    await fireEvent.click(screen.getByRole("menuitem", { name: "Logout" }))
+    fireEvent.click(screen.getByRole("button", { name: "User options" }))
+    fireEvent.click(screen.getByRole("menuitem", { name: "Logout" }))
     expect(auth.logout).toHaveBeenCalled()
     expect(set_user).toHaveBeenCalledWith(null)
 })

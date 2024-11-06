@@ -66,10 +66,9 @@ class OpenReportTest(unittest.TestCase):
     def login(self):
         """Login a user."""
         self.login_button().click()
-        login_form = self.driver.find_element(By.CLASS_NAME, "modal")
-        login_form.find_element(By.NAME, "username").send_keys("jadoe")
-        login_form.find_element(By.NAME, "password").send_keys("secret")
-        login_form.find_element(By.CLASS_NAME, "button").click()
+        self.driver.find_element(By.NAME, "username").send_keys("jadoe")
+        self.driver.find_element(By.NAME, "password").send_keys("secret")
+        self.driver.find_element(By.NAME, "submit").click()
         self.wait.until(ElementHasNoCCSClass((By.TAG_NAME, "body")))  # Wait for body dimmer to disappear
 
     def dashboard_cards(self):
