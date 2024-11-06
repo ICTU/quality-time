@@ -6,7 +6,17 @@ All notable changes to *Quality-time* will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Note before upgrading
+
+If your currently installed *Quality-time* version is not the latest version, please first check the upgrade path in the [versioning policy](versioning.md) before upgrading.
+
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
+
+## [Unreleased]
+
+### Fixed
+
+- Todo
 
 ## v5.18.0 - 2024-11-06
 

@@ -1,91 +1,19 @@
 import "./Menubar.css"
 
-import { AppBar, Button, Drawer, Stack, Toolbar } from "@mui/material"
+import { AppBar, Drawer, Stack, Toolbar } from "@mui/material"
 import { element, func, string } from "prop-types"
 import { useEffect, useState } from "react"
-import { Icon } from "semantic-ui-react"
 
-import { login } from "../api/auth"
-import { Form, Message, Modal } from "../semantic_ui_react_wrappers"
 import { optionalDatePropType, settingsPropType, uiModePropType } from "../sharedPropTypes"
 import { CollapseButton } from "./buttons/CollapseButton"
 import { DatePickerButton } from "./buttons/DatePickerButton"
 import { DownloadAsPDFButton } from "./buttons/DownloadAsPDFButton"
 import { HomeButton } from "./buttons/HomeButton"
+import { LoginButton } from "./buttons/LoginButton"
 import { ResetSettingsButton } from "./buttons/ResetSettingsButton"
 import { SettingsButton } from "./buttons/SettingsButton"
 import { UserButton } from "./buttons/UserButton"
 import { UIModeMenu } from "./UIModeMenu"
-
-function Login({ set_user }) {
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-    const [error, setError] = useState("")
-
-    function submit() {
-        login(username, password)
-            .then(function (json) {
-                if (json.ok) {
-                    set_user(username, json.email, new Date(Date.parse(json.session_expiration_datetime)))
-                } else {
-                    setError("credentials")
-                }
-                return null
-            })
-            .catch(function (_error) {
-                setError("connection")
-            })
-    }
-
-    let messageHeader = "Heads up"
-    let messageContent =
-        "Changes you make after you log in, such as adding metrics, changing metric targets, and marking issues as false positive, are logged."
-    if (error === "connection") {
-        messageHeader = "Connection error"
-        messageContent = "Can't reach the server. Please check your connection."
-    }
-    if (error === "credentials") {
-        messageHeader = "Invalid credentials"
-        messageContent = "Username and/or password are invalid. Please try again."
-    }
-    return (
-        <Modal
-            trigger={
-                <Button color="inherit">
-                    <Icon name="user" />
-                    Login
-                </Button>
-            }
-            size="tiny"
-            onClose={() => setError("")}
-        >
-            <Modal.Header content="Login" />
-            <Modal.Content>
-                <Form error={!!error} warning={!error} onSubmit={() => submit()}>
-                    <Form.Input
-                        autoFocus
-                        id="username"
-                        name="username"
-                        label="Username"
-                        onChange={(_event, { value }) => setUsername(value)}
-                    />
-                    <Form.Input
-                        id="password"
-                        name="password"
-                        type="password"
-                        label="Password"
-                        onChange={(_event, { value }) => setPassword(value)}
-                    />
-                    <Message error={!!error} warning={!error} header={messageHeader} content={messageContent} />
-                    <Form.Button>Submit</Form.Button>
-                </Form>
-            </Modal.Content>
-        </Modal>
-    )
-}
-Login.propTypes = {
-    set_user: func,
-}
 
 export function Menubar({
     email,
@@ -149,7 +77,7 @@ export function Menubar({
                         {user !== null ? (
                             <UserButton email={email} user={user} setUser={set_user} />
                         ) : (
-                            <Login set_user={set_user} />
+                            <LoginButton set_user={set_user} />
                         )}
                     </Stack>
                 </Toolbar>
