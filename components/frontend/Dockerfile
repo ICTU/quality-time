@@ -1,4 +1,4 @@
-FROM node:22.9.0-alpine3.20
+FROM node:23.1.0-alpine3.20
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"
@@ -11,7 +11,7 @@ COPY healthcheck.js /home/frontend
 COPY .env /home/frontend
 RUN npm install --ignore-scripts -g npm@10.9.0 && \
     npm install --ignore-scripts && \
-    npm install --ignore-scripts -g serve@14.2.3 && \
+    npm install --ignore-scripts -g serve@14.2.4 && \
     npm run --ignore-scripts build && \
     adduser frontend --disabled-password
 USER frontend

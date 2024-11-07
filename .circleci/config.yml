@@ -6,7 +6,7 @@ orbs:
 jobs:
   unittest_backend:
     docker:
-      - image: cimg/python:3.12.6
+      - image: cimg/python:3.12.7
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
@@ -44,7 +44,7 @@ jobs:
 
   unittest_frontend:
     docker:
-      - image: cimg/node:22.9.0
+      - image: cimg/node:23.1.0
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
