@@ -18,4 +18,4 @@ class GeneratedDocumentationTest(unittest.TestCase):
         main()
         repo_is_clean = not repo.is_dirty(path=docs)
         dirty_files = [item.a_path for item in repo.index.diff(None)]
-        self.assertTrue(repo_is_clean or dirty_files == ["docs/package-lock.json"], dirty_files)
+        self.assertTrue(repo_is_clean and not dirty_files, dirty_files)

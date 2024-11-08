@@ -33,7 +33,7 @@ jobs:
         if: env.SONAR_TOKEN != null
         uses: actions/setup-node@v4.1.0
         with:
-          node-version: "22"
+          node-version: "23"
       - name: Collector
         if: env.SONAR_TOKEN != null
         working-directory: components/collector
@@ -74,9 +74,10 @@ jobs:
         if: env.SONAR_TOKEN != null
         working-directory: components/frontend
         run: |
-          npm install --ignore-scripts
-          npm run --ignore-scripts build --if-present
-          npm test -- --coverage
+          corepack enable yarn
+          yarn
+          yarn run --ignore-scripts build
+          yarn run test --coverage
         env:
           CI: true
       - name: Create packages

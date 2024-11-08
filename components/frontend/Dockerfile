@@ -4,15 +4,17 @@ LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"
 
 WORKDIR /home/frontend
-COPY package*.json /home/frontend
+COPY package.json /home/frontend
+COPY yarn.lock /home/frontend
 COPY public /home/frontend/public
 COPY src /home/frontend/src
 COPY healthcheck.js /home/frontend
 COPY .env /home/frontend
-RUN npm install --ignore-scripts -g npm@10.9.0 && \
-    npm install --ignore-scripts && \
-    npm install --ignore-scripts -g serve@14.2.4 && \
-    npm run --ignore-scripts build && \
+RUN corepack enable yarn && \
+    yarn && \
+    yarn global add --ignore-scripts serve@14.2.4 && \
+    yarn run --ignore-scripts build && \
+    yarn cache clean && \
     adduser frontend --disabled-password
 USER frontend
 

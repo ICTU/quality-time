@@ -3,4 +3,4 @@
 PATH="$PATH:../../ci"
 source unittest-base.sh
 
-run npm test
+run yarn run test

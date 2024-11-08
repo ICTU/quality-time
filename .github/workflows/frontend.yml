@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22.x]
+        node-version: [23.x]
 
     steps:
       - uses: actions/checkout@v4.2.2
@@ -17,11 +17,12 @@ jobs:
         uses: actions/setup-node@v4.1.0
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm install, build, and test
+      - name: yarn install, build, and test
         run: |
           cd components/frontend
-          npm ci
-          npm run --ignore-scripts build --if-present
+          corepack enable yarn
+          yarn
+          yarn run --ignore-scripts build
           ci/unittest.sh
           ci/quality.sh
         env:

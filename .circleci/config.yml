@@ -52,7 +52,8 @@ jobs:
       - checkout
       - run: |
           cd components/frontend
-          npm install --ignore-scripts
+          corepack enable yarn
+          yarn
           ci/unittest.sh
           ci/quality.sh
 
@@ -64,7 +65,8 @@ jobs:
       - run: |
           pip install uv
           cd docs
-          npm install --ignore-scripts
+          corepack enable yarn
+          yarn
           uv venv
           ci/pip-install.sh
           ci/unittest.sh

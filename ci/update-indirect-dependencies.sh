@@ -6,10 +6,10 @@ set -e
 (cd components/shared_code; ci/pip-compile.sh; ci/pip-install.sh) &
 (cd components/api_server; ci/pip-compile.sh; ci/pip-install.sh) &
 (cd components/collector; ci/pip-compile.sh; ci/pip-install.sh) &
-(cd components/notifier;  ci/pip-compile.sh; ci/pip-install.sh) &
-(cd components/frontend; rm package-lock.json; npm install --ignore-scripts) &
-(cd components/renderer; rm package-lock.json; npm install --ignore-scripts) &
-(cd docs; rm package-lock.json; npm install --ignore-scripts) &
+(cd components/notifier; ci/pip-compile.sh; ci/pip-install.sh) &
+(cd components/frontend; yarn) &
+(cd components/renderer; yarn) &
+(cd docs; yarn) &
 (cd docs; ci/pip-compile.sh; ci/pip-install.sh) &
 (cd release; ci/pip-compile.sh; ci/pip-install.sh) &
 (cd tests/application_tests; ci/pip-compile.sh; ci/pip-install.sh) &
