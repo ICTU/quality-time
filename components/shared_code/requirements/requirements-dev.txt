@@ -220,9 +220,9 @@ mongomock==4.2.0.post1 \
     --hash=sha256:9241d2cec7274b9736dbe8edacb19528ff66af3b3779b324d79ecc4201227f31 \
     --hash=sha256:ff78f1944bf0cdcfc291ece198357db805c2f0db39e814bcef8a43c9f53e8a81
     # via shared-code (pyproject.toml)
-packaging==24.1 \
-    --hash=sha256:026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002 \
-    --hash=sha256:5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124
+packaging==24.2 \
+    --hash=sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759 \
+    --hash=sha256:c228a6dc5e932d346bc5739379109d49e8853dd8223571c7c5b55260edc0b97f
     # via
     #   shared-code (pyproject.toml)
     #   mongomock
