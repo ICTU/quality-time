@@ -1,20 +1,14 @@
 """Unit tests for the Dependency-Track security warnings collector."""
 
-from source_collectors.dependency_track.base import DependencyTrackProject
 from source_collectors.dependency_track.dependencies import DependencyTrackComponent
 
-from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+from .base_test import DependencyTrackTestCase
 
 
-class DependencyTrackDependenciesTest(SourceCollectorTestCase):
+class DependencyTrackDependenciesTest(DependencyTrackTestCase):
     """Unit tests for the Dependency-Track dependencies collector."""
 
     METRIC_TYPE = "dependencies"
-    SOURCE_TYPE = "dependency_track"
-
-    def projects(self) -> list[DependencyTrackProject]:
-        """Create the Dependency-Track projects fixture."""
-        return [DependencyTrackProject(name="project name", uuid="project uuid", version="1.4", lastBomImport=0)]
 
     def dependencies(self, latest_version: str) -> list[DependencyTrackComponent]:
         """Create a list of dependencies as returned by Dependency-Track."""

@@ -14,9 +14,9 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
-### Fixed
+### Added
 
-- Todo
+- Allow for measuring the time since the last analysis date of a Bill-of-Materials (BOM) in Dependency-Track using the new 'project event type' parameter of the 'source up-to-dateness' metric. Closes [#9764](https://github.com/ICTU/quality-time/issues/9764).
 
 ## v5.18.0 - 2024-11-06
 
