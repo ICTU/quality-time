@@ -1,11 +1,11 @@
-@media print {
-    div.footer {
-        display: none;
-    }
+.MuiDivider-root {
+    padding: 20px;
 }
 
-div.footer {
-    background-color: var(--inverted-menu-background-color) !important;
-    margin: 5em 0em 0em !important;
-    padding: 5em 0em 3em !important;
+.MuiDivider-root:before {
+    border-top: thin solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.MuiDivider-root:after {
+    border-top: thin solid rgba(255, 255, 255, 0.3) !important;
 }
