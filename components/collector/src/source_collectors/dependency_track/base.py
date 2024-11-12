@@ -1,12 +1,19 @@
 """Dependency-Track base collector."""
 
 from collections.abc import AsyncIterator
-from typing import Literal, TypedDict, cast
+from typing import Literal, NotRequired, TypedDict, cast
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import add_query, match_string_or_regular_expression
 from collector_utilities.type import URL, Response
 from model import Entity, SourceResponses
+
+
+class DependencyTrackMetrics(TypedDict, total=False):
+    """Project metrics as returned by Dependency-Track."""
+
+    # Last occurrence is a Unix timestamp of the datetime of the last BOM analysis
+    lastOccurrence: int
 
 
 class DependencyTrackProject(TypedDict):
@@ -18,6 +25,7 @@ class DependencyTrackProject(TypedDict):
     name: str
     uuid: str
     version: str
+    metrics: NotRequired[DependencyTrackMetrics]
 
 
 class DependencyTrackBase(SourceCollector):

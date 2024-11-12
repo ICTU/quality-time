@@ -78,6 +78,15 @@ DEPENDENCY_TRACK = Source(
             metrics=["dependencies", "security_warnings"],
         ),
         "severities": Severities(values=["Unassigned", "Info", "Low", "Medium", "High", "Critical"]),
+        "project_event_types": MultipleChoiceParameter(
+            name="Project event types",
+            short_name="event types",
+            placeholder="all event types",
+            default_value=["last BOM import"],
+            help="Project event types to consider for measuring the up-to-dateness.",
+            values=["last BOM analysis", "last BOM import"],
+            metrics=["source_up_to_dateness"],
+        ),
     },
     entities={
         "dependencies": Entity(
@@ -105,6 +114,7 @@ DEPENDENCY_TRACK = Source(
             attributes=[
                 EntityAttribute(name="Project", url="project_landing_url"),
                 EntityAttribute(name="Last BOM import", type=EntityAttributeType.DATETIME),
+                EntityAttribute(name="Last BOM analysis", type=EntityAttributeType.DATETIME),
             ],
         ),
     },

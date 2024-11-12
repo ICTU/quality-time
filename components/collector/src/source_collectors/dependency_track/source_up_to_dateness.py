@@ -21,11 +21,11 @@ class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector
 
     async def _parse_source_response_date_times(self, responses: SourceResponses) -> Sequence[datetime]:
         """Override to parse the timestamp from the responses."""
-        if datetimes := [
-            self._last_bom_import_datetime(project)
-            for response in responses
-            async for project in self._get_projects_from_response(response)
-        ]:
+        datetimes = []
+        for response in responses:
+            async for project in self._get_projects_from_response(response):
+                datetimes.extend(self._project_event_datetimes(project))
+        if datetimes:
             return datetimes
         error_message = "No projects found"
         raise CollectorError(error_message)
@@ -36,17 +36,40 @@ class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector
         entities = Entities()
         for response in responses:
             async for project in self._get_projects_from_response(response):
+                last_bom_analysis = self._last_bom_analysis_datetime(project)
+                last_bom_import = self._last_bom_import_datetime(project)
                 uuid = project["uuid"]
                 entity = Entity(
                     key=uuid,
-                    last_bom_import=self._last_bom_import_datetime(project).isoformat(),
+                    last_bom_analysis="" if last_bom_analysis is None else last_bom_analysis.isoformat(),
+                    last_bom_import="" if last_bom_import is None else last_bom_import.isoformat(),
                     project=project["name"],
                     project_landing_url=f"{landing_url}/projects/{uuid}",
                 )
                 entities.append(entity)
         return entities
 
-    @staticmethod
-    def _last_bom_import_datetime(project: DependencyTrackProject) -> datetime:
+    def _project_event_datetimes(self, project: DependencyTrackProject) -> list[datetime]:
+        """Return the project event (BOM import, BOM analysis) datetimes."""
+        datetimes = []
+        event_types = self._parameter("project_event_types")
+        if "last BOM import" in event_types and (datetime := self._last_bom_import_datetime(project)):
+            datetimes.append(datetime)
+        if "last BOM analysis" in event_types and (datetime := self._last_bom_analysis_datetime(project)):
+            datetimes.append(datetime)
+        return datetimes
+
+    @classmethod
+    def _last_bom_import_datetime(cls, project: DependencyTrackProject) -> datetime | None:
         """Return the last BOM import datetime for the project."""
-        return datetime_from_timestamp(int(project["lastBomImport"]))
+        return cls._timestamp_to_datetime(project.get("lastBomImport"))
+
+    @classmethod
+    def _last_bom_analysis_datetime(cls, project: DependencyTrackProject) -> datetime | None:
+        """Return the last BOM analysis datetime for the project."""
+        return cls._timestamp_to_datetime(project.get("metrics", {}).get("lastOccurrence"))
+
+    @staticmethod
+    def _timestamp_to_datetime(timestamp: int | None) -> datetime | None:
+        """Convert the timestamp to a datetime."""
+        return None if timestamp is None else datetime_from_timestamp(timestamp)

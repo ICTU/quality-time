@@ -1,14 +1,13 @@
 """Unit tests for the Dependency-Track source version collector."""
 
-from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+from .base_test import DependencyTrackTestCase
 
 
-class DependencyTrackSourceVersionTest(SourceCollectorTestCase):
+class DependencyTrackSourceVersionTest(DependencyTrackTestCase):
     """Unit tests for the Dependency-Track source version collector."""
 
     METRIC_ADDITION = "min"
     METRIC_TYPE = "source_version"
-    SOURCE_TYPE = "dependency_track"
 
     async def test_source_version(self):
         """Test that the source version can be measured."""

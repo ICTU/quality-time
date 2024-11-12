@@ -2,25 +2,20 @@
 
 from aiohttp import BasicAuth
 
-from source_collectors.dependency_track.base import DependencyTrackBase, DependencyTrackProject
+from source_collectors.dependency_track.base import DependencyTrackBase
 from source_collectors.dependency_track.security_warnings import (
     DependencyTrackComponent,
     DependencyTrackFinding,
     DependencyTrackVulnerability,
 )
 
-from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+from .base_test import DependencyTrackTestCase
 
 
-class DependencyTrackSecurityWarningsTest(SourceCollectorTestCase):
+class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
     """Unit tests for the Dependency-Track security warnings collector."""
 
     METRIC_TYPE = "security_warnings"
-    SOURCE_TYPE = "dependency_track"
-
-    def projects(self) -> list[DependencyTrackProject]:
-        """Create the Dependency-Track projects fixture."""
-        return [DependencyTrackProject(name="project name", uuid="project uuid", version="1.4", lastBomImport=0)]
 
     def findings(self) -> list[DependencyTrackFinding]:
         """Create the Dependency-Track findings fixture."""
