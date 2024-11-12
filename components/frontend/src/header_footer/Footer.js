@@ -1,122 +1,112 @@
 import "./Footer.css"
 
-import { number, object, oneOfType, string } from "prop-types"
-import { Container, Divider, Grid, Header, Icon, Image, List, Segment } from "semantic-ui-react"
+import BugReportIcon from "@mui/icons-material/BugReport"
+import CopyrightIcon from "@mui/icons-material/Copyright"
+import FeedbackIcon from "@mui/icons-material/Feedback"
+import GitHubIcon from "@mui/icons-material/GitHub"
+import HistoryIcon from "@mui/icons-material/History"
+import MenuBookIcon from "@mui/icons-material/MenuBook"
+import PersonIcon from "@mui/icons-material/Person"
+import ScienceIcon from "@mui/icons-material/Science"
+import {
+    Container,
+    Divider,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Stack,
+    Typography,
+} from "@mui/material"
+import { element, object, oneOfType, string } from "prop-types"
 
 import { alignmentPropType, childrenPropType, datePropType, reportPropType } from "../sharedPropTypes"
 
 function FooterItem({ children, icon, url }) {
-    const item = icon ? (
-        <>
-            <Icon name={icon} /> {children}
-        </>
-    ) : (
-        children
-    )
-    return url ? (
-        <List.Item as="a" href={url} target="_blank">
-            {item}
-        </List.Item>
-    ) : (
-        <List.Item>{item}</List.Item>
-    )
+    const color = "silver"
+    let item = <ListItemText sx={{ color: color, textAlign: icon ? "left" : "center" }}>{children}</ListItemText>
+    if (icon) {
+        item = (
+            <>
+                <ListItemIcon sx={{ color: color, minWidth: 28 }}>{icon}</ListItemIcon>
+                {item}
+            </>
+        )
+    }
+    if (url) {
+        item = (
+            <ListItemButton href={url} rel="noreferrer" target="_blank" sx={{ padding: 0 }}>
+                {item}
+            </ListItemButton>
+        )
+    }
+    return <ListItem disablePadding>{item}</ListItem>
 }
 FooterItem.propTypes = {
     children: childrenPropType,
-    icon: string,
+    icon: element,
     url: string,
 }
 
-function FooterColumn({ children, header, textAlign, width }) {
+function FooterColumn({ children, header, textAlign }) {
     return (
-        <Grid.Column width={width} textAlign={textAlign}>
-            <Header inverted as="h4">
-                {header || <>&zwnj;</>}
-            </Header>
-            <List inverted link>
-                {children}
-            </List>
-        </Grid.Column>
+        <Stack>
+            <Typography sx={{ color: "white", textAlign: textAlign }}>{header || <>&zwnj;</>}</Typography>
+            <List dense>{children}</List>
+        </Stack>
     )
 }
 FooterColumn.propTypes = {
     children: childrenPropType,
     header: oneOfType([object, string]),
     textAlign: alignmentPropType,
-    width: number,
-}
-
-function FooterCenterColumn({ header, children }) {
-    return (
-        <FooterColumn header={header} width={8} textAlign="center">
-            {children}
-        </FooterColumn>
-    )
-}
-FooterCenterColumn.propTypes = {
-    header: oneOfType([object, string]),
-    children: childrenPropType,
-}
-
-function FooterSideColumn({ header, children }) {
-    return (
-        <FooterColumn header={header} width={3} textAlign="left">
-            {children}
-        </FooterColumn>
-    )
-}
-FooterSideColumn.propTypes = {
-    header: oneOfType([object, string]),
-    children: childrenPropType,
 }
 
 function AboutAppColumn() {
     return (
-        <FooterSideColumn
-            header={
-                <>
-                    <em>Quality-time</em> v{process.env.REACT_APP_VERSION}
-                </>
-            }
-        >
-            <FooterItem icon="flask" url="https://www.ictu.nl/about-us">
+        <FooterColumn header={<>Quality-time v{process.env.REACT_APP_VERSION}</>}>
+            <FooterItem icon={<ScienceIcon />} url="https://www.ictu.nl/about-us">
                 Created by ICTU
             </FooterItem>
-            <FooterItem icon="copyright outline" url="https://github.com/ICTU/quality-time/blob/master/LICENSE">
+            <FooterItem icon={<CopyrightIcon />} url="https://github.com/ICTU/quality-time/blob/master/LICENSE">
                 License
             </FooterItem>
             <FooterItem
-                icon="history"
+                icon={<HistoryIcon />}
                 url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/changelog.html`}
             >
                 Changelog
             </FooterItem>
-            <FooterItem icon="code branch" url="https://github.com/ICTU/quality-time">
+            <FooterItem icon={<GitHubIcon />} url="https://github.com/ICTU/quality-time">
                 Source code
             </FooterItem>
-        </FooterSideColumn>
+        </FooterColumn>
     )
 }
 
 function SupportColumn() {
     return (
-        <FooterSideColumn header="Support">
-            <FooterItem icon="book" url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/`}>
+        <FooterColumn header="Support">
+            <FooterItem
+                icon={<MenuBookIcon />}
+                url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/`}
+            >
                 Documentation
             </FooterItem>
             <FooterItem
-                icon="user outline"
+                icon={<PersonIcon />}
                 url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/usage.html`}
             >
                 User manual
             </FooterItem>
-            <FooterItem icon="bug" url="https://github.com/ICTU/quality-time/issues">
+            <FooterItem icon={<BugReportIcon />} url="https://github.com/ICTU/quality-time/issues">
                 Known issues
             </FooterItem>
-            <FooterItem icon="comment outline" url="https://github.com/ICTU/quality-time/issues/new">
+            <FooterItem icon={<FeedbackIcon />} url="https://github.com/ICTU/quality-time/issues/new">
                 Report an issue
             </FooterItem>
-        </FooterSideColumn>
+        </FooterColumn>
     )
 }
 
@@ -126,12 +116,12 @@ function AboutReportColumn({ lastUpdate, report }) {
     // browser pass the correct URL as search parameter and use that instead:
     const reportURL = new URLSearchParams(window.location.search).get("report_url") ?? window.location.href
     return (
-        <FooterCenterColumn header="About this report">
+        <FooterColumn header="About this report" textAlign="center">
             <FooterItem url={reportURL}>{report.title}</FooterItem>
             <FooterItem>{report.subtitle}</FooterItem>
             <FooterItem>{lastUpdate.toLocaleDateString()}</FooterItem>
             <FooterItem>{lastUpdate.toLocaleTimeString()}</FooterItem>
-        </FooterCenterColumn>
+        </FooterColumn>
     )
 }
 AboutReportColumn.propTypes = {
@@ -149,7 +139,7 @@ function QuoteColumn() {
     ]
     const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
     return (
-        <FooterCenterColumn>
+        <FooterColumn>
             <FooterItem>
                 <em>{randomQuote[0]}</em>
             </FooterItem>
@@ -157,27 +147,30 @@ function QuoteColumn() {
                 <em>{randomQuote[1]}</em>
             </FooterItem>
             <FooterItem>{randomQuote[2]}</FooterItem>
-        </FooterCenterColumn>
+        </FooterColumn>
     )
 }
 
 export function Footer({ lastUpdate, report }) {
     return (
-        <Segment className="footer" inverted>
-            <Container>
-                <Grid>
-                    <Grid.Row>
-                        <Grid.Column width={1} />
-                        <AboutAppColumn />
-                        {report ? <AboutReportColumn lastUpdate={lastUpdate} report={report} /> : <QuoteColumn />}
-                        <Grid.Column width={1} />
-                        <SupportColumn />
-                    </Grid.Row>
-                </Grid>
-                <Divider inverted section />
-                <Image centered size="mini" src="./favicon.ico" />
+        <Container maxWidth="100%" sx={{ bgcolor: "black", displayPrint: "none", marginTop: "20px", padding: "60px" }}>
+            <Container maxWidth="lg">
+                <Stack
+                    direction="row"
+                    sx={{
+                        alignItems: "top",
+                        justifyContent: "space-evenly",
+                    }}
+                >
+                    <AboutAppColumn />
+                    {report ? <AboutReportColumn lastUpdate={lastUpdate} report={report} /> : <QuoteColumn />}
+                    <SupportColumn />
+                </Stack>
+                <Divider aria-hidden="true">
+                    <img alt="" src="./favicon.ico" width="30px" />
+                </Divider>
             </Container>
-        </Segment>
+        </Container>
     )
 }
 Footer.propTypes = {
