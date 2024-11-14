@@ -211,6 +211,7 @@ QUALITY_TIME = Source(
                 "TestNG",
                 "Trello",
                 "Trivy JSON",
+                "Visual Studio TRX",
             ],
             api_values={
                 "Anchore": "anchore",
@@ -261,6 +262,7 @@ QUALITY_TIME = Source(
                 "TestNG": "testng",
                 "Trello": "trello",
                 "Trivy JSON": "trivy_json",
+                "Visual Studio TRX": "visual_studio_trx",
             },
             metrics=["metrics"],
         ),
