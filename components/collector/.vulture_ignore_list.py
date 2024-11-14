@@ -157,6 +157,7 @@ Vulnerabilities  # unused variable (src/source_collectors/trivy/security_warning
 SchemaVersion  # unused variable (src/source_collectors/trivy/security_warnings.py:49)
 Results  # unused variable (src/source_collectors/trivy/security_warnings.py:50)
 TrivyJSONSecurityWarnings  # unused class (src/source_collectors/trivy/security_warnings.py:56)
+VisualStudioTRXSourceUpToDateness  # unused class (src/source_collectors/visual_studio_trx/source_up_to_dateness.py:13)
 totalCount  # unused variable (tests/source_collectors/github/test_merge_requests.py:16)
 baseRefName  # unused variable (tests/source_collectors/github/test_merge_requests.py:24)
 createdAt  # unused variable (tests/source_collectors/github/test_merge_requests.py:27)

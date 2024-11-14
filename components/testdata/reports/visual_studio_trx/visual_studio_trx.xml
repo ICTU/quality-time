@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d9a53ba2-3fe2-49a9-93fa-68fd6c421e20" name="abcdef@BLA-24 2024-09-12 11:33:30" runUser="BLA\abcdef" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2024-09-12T11:33:30.3272909+02:00" queuing="2024-09-12T11:33:30.3272909+02:00" start="2024-09-12T11:33:27.0973122+02:00" finish="2024-09-12T11:33:30.8892628+02:00" />
+  <TestSettings name="default" id="01faf8da-6375-4cfb-9ceb-53350be32406">
+    <Deployment runDeploymentRoot="abcdef_XYZ-BLA-24_2024-09-12_11_33_30" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="268fd488-12c7-4107-80d8-5df1200cd637" testId="63eb0c90-d1fc-a21e-6fc0-3974b0cc65db" testName="BestaandeZaakOpenen2" computerName="XYZ-BLA-24" duration="00:00:01.4635437" startTime="2024-09-12T11:33:29.3938415+02:00" endTime="2024-09-12T11:33:30.8644329+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="268fd488-12c7-4107-80d8-5df1200cd637">
+      <Output>
+        <StdOut>
+        </StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="daf369f6-7c54-482d-a12c-68357679bd78" testId="446a0829-8d87-1082-ab45-b2ab9f846325" testName="BestaandeZaakOpenen" computerName="XYZ-BLA-24" duration="00:00:01.7342127" startTime="2024-09-12T11:33:27.3275629+02:00" endTime="2024-09-12T11:33:29.3909874+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="daf369f6-7c54-482d-a12c-68357679bd78">
+      <Output>
+        <StdOut></StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BestaandeZaakOpenen" storage="c:\XYZ\frontendtests.dll" id="446a0829-8d87-1082-ab45-b2ab9f846325">
+      <TestCategory>
+        <TestCategoryItem TestCategory="FeatureTag" />
+        <TestCategoryItem TestCategory="ScenarioTag1" />
+        <TestCategoryItem TestCategory="JIRA-225" />
+      </TestCategory>
+      <Execution id="daf369f6-7c54-482d-a12c-68357679bd78" />
+      <TestMethod codeBase="C:\XYZ\FrontendTests.dll" adapterTypeName="executor://mstestadapter/v2" className="ClassName" name="BestaandeZaakOpenen" />
+    </UnitTest>
+    <UnitTest name="BestaandeZaakOpenen2" storage="c:\XYZ\frontendtests.dll" id="63eb0c90-d1fc-a21e-6fc0-3974b0cc65db">
+      <TestCategory>
+        <TestCategoryItem TestCategory="FeatureTag" />
+        <TestCategoryItem TestCategory="ScenarioTag2" />
+        <TestCategoryItem TestCategory="JIRA-225" />
+      </TestCategory>
+      <Execution id="268fd488-12c7-4107-80d8-5df1200cd637" />
+      <TestMethod codeBase="C:\XYZ\FrontendTests.dll" adapterTypeName="executor://mstestadapter/v2" className="ClassName" name="BestaandeZaakOpenen2" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="63eb0c90-d1fc-a21e-6fc0-3974b0cc65db" executionId="268fd488-12c7-4107-80d8-5df1200cd637" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="446a0829-8d87-1082-ab45-b2ab9f846325" executionId="daf369f6-7c54-482d-a12c-68357679bd78" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>Test Parallelization enabled for C:\XYZ\FrontendTests.dll (Workers: 24, Scope: ClassLevel)&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

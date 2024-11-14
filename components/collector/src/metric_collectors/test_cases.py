@@ -42,12 +42,34 @@ class TestCases(MetricCollector):
         ("errored", "errored"): "errored",
     }
     # Mapping to uniformize the test results from different sources:
-    UNIFORMIZED_TEST_RESULTS: ClassVar[dict[str, TestResult]] = {"fail": "failed", "pass": "passed", "skip": "skipped"}
+    UNIFORMIZED_TEST_RESULTS: ClassVar[dict[str, TestResult]] = {
+        "aborted": "errored",
+        "completed": "passed",
+        "disconnected": "errored",
+        "error": "errored",
+        "fail": "failed",
+        "inconclusive": "skipped",
+        "inprogress": "untested",
+        "notexecuted": "skipped",
+        "notrunnable": "skipped",
+        "pass": "passed",
+        "passedbutrunaborted": "passed",
+        "pending": "untested",
+        "skip": "skipped",
+        "timeout": "errored",
+        "warning": "errored",
+    }
     # Regular expression to identify test case ids in test names and descriptions:
     TEST_CASE_KEY_RE = re.compile(r"\w+\-\d+")
     # The supported source types for test cases and test reports:
     TEST_CASE_SOURCE_TYPES: ClassVar[list[str]] = ["jira"]
-    TEST_REPORT_SOURCE_TYPES: ClassVar[list[str]] = ["jenkins_test_report", "junit", "robot_framework", "testng"]
+    TEST_REPORT_SOURCE_TYPES: ClassVar[list[str]] = [
+        "jenkins_test_report",
+        "junit",
+        "robot_framework",
+        "testng",
+        "visual_studio_trx",
+    ]
 
     async def collect(self) -> MetricMeasurement | None:
         """Override to add the test results from the test report(s) to the test cases."""
@@ -113,4 +135,5 @@ class TestCases(MetricCollector):
     @classmethod
     def test_result(cls, entity: Entity) -> TestResult:
         """Return the (uniformized) test result of the entity."""
-        return cls.UNIFORMIZED_TEST_RESULTS.get(entity["test_result"], entity["test_result"])
+        test_result = entity["test_result"].lower()
+        return cls.UNIFORMIZED_TEST_RESULTS.get(test_result, test_result)
