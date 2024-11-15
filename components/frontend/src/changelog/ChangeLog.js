@@ -1,30 +1,21 @@
-import "./ChangeLog.css"
-
+import UpdateIcon from "@mui/icons-material/Update"
+import { Button, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material"
 import { string } from "prop-types"
 import React, { useEffect, useState } from "react"
-import { Icon } from "semantic-ui-react"
 
 import { get_changelog } from "../api/changelog"
-import { Button, Feed, Form, Header, Segment } from "../semantic_ui_react_wrappers"
 import { Avatar } from "../widgets/Avatar"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 import { showMessage } from "../widgets/toast"
 
 function Event({ description, email, timestamp }) {
     return (
-        <Feed.Event>
-            <Feed.Label>
+        <ListItem sx={{ padding: "0px" }}>
+            <ListItemAvatar>
                 <Avatar email={email} />
-            </Feed.Label>
-            <Feed.Content>
-                <Feed.Summary>
-                    {description}
-                    <Feed.Date>
-                        <TimeAgoWithDate date={timestamp} />
-                    </Feed.Date>
-                </Feed.Summary>
-            </Feed.Content>
-        </Feed.Event>
+            </ListItemAvatar>
+            <ListItemText primary={description} secondary={<TimeAgoWithDate date={timestamp} />} />
+        </ListItem>
     )
 }
 Event.propTypes = {
@@ -79,27 +70,23 @@ function ChangeLogWithoutMemo({ report_uuid, subject_uuid, metric_uuid, source_u
     }
 
     return (
-        <Form>
-            <Header size="small">
-                {scope}
-                <Header.Subheader>Most recent first</Header.Subheader>
-            </Header>
-            <Segment>
-                <Feed size="small">
-                    {changes.map((change) => (
-                        <Event
-                            key={change.timestamp + change.delta}
-                            description={change.delta}
-                            email={change.email}
-                            timestamp={change.timestamp}
-                        />
-                    ))}
-                </Feed>
-                <Button basic icon primary size="small" onClick={() => setNrChanges(nrChanges + 10)}>
-                    <Icon name="refresh" /> Load more changes
-                </Button>
-            </Segment>
-        </Form>
+        <>
+            <Typography variant="subtitle1">{scope}</Typography>
+            <Typography variant="subtitle2">Most recent first</Typography>
+            <List dense>
+                {changes.map((change) => (
+                    <Event
+                        key={change.timestamp + change.delta}
+                        description={change.delta}
+                        email={change.email}
+                        timestamp={change.timestamp}
+                    />
+                ))}
+            </List>
+            <Button variant="outlined" onClick={() => setNrChanges(nrChanges + 10)} startIcon={<UpdateIcon />}>
+                Load more changes
+            </Button>
+        </>
     )
 }
 ChangeLogWithoutMemo.propTypes = {
