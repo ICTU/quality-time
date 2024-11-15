@@ -12,6 +12,9 @@ class JenkinsTestCase(SourceCollectorTestCase):
         """Extend to set up a Jenkins with a build."""
         super().setUp()
         self.set_source_parameter("failure_type", ["Failure"])
-        self.builds = [{"result": "FAILURE", "timestamp": 1552686540953}]
+        self.builds = [
+            {"result": "FAILURE", "timestamp": 1552686540953},
+            {"result": "SUCCESS", "timestamp": 1552686531953},
+        ]
         self.job_url = "https://job"
         self.job2_url = "https://job2"

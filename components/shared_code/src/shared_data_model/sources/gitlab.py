@@ -15,6 +15,7 @@ from shared_data_model.parameters import (
     MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
     PrivateToken,
+    ResultType,
     StringParameter,
     TargetBranchesToInclude,
     Upvotes,
@@ -39,9 +40,14 @@ JOB_ENTITY = Entity(
         EntityAttribute(name="Job stage", key="stage"),
         EntityAttribute(name="Branch or tag", key="branch"),
         EntityAttribute(
-            name="Status of most recent build",
-            key="build_status",
-            color={"canceled": Color.ACTIVE, "failed": Color.NEGATIVE, "success": Color.POSITIVE},
+            name="Result of most recent build",
+            key="build_result",
+            color={
+                "canceled": Color.ACTIVE,
+                "failed": Color.NEGATIVE,
+                "skipped": Color.WARNING,
+                "success": Color.POSITIVE,
+            },
         ),
         EntityAttribute(name="Date of most recent build", key="build_date", type=EntityAttributeType.DATE),
     ],
@@ -146,6 +152,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             metrics=["unused_jobs"],
         ),
         "failure_type": FailureType(values=["canceled", "failed", "skipped"]),
+        "result_type": ResultType(values=["canceled", "failed", "skipped", "success"]),
         "jobs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Jobs to ignore (regular expressions or job names)",
             short_name="jobs to ignore",

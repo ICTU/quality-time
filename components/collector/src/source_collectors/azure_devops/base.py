@@ -107,8 +107,8 @@ class AzureDevopsPipelines(SourceCollector):
     async def _api_pipelines_url(self, pipeline_id: int | None = None) -> URL:
         """Add the pipelines API, or runs API path if needed."""
         extra_path = "" if not pipeline_id else f"/{pipeline_id}/runs"
-        # currently the pipelines api is not available in any version which is not a -preview version
         api_url = await SourceCollector._api_url(self)  # noqa: SLF001
+        # Use the oldest API version in which the endpoint is available:
         return URL(f"{api_url}/_apis/pipelines{extra_path}?api-version=6.0-preview.1")
 
     async def _active_pipelines(self) -> list[int]:
@@ -148,6 +148,7 @@ class AzureDevopsPipelines(SourceCollector):
                     pipeline=pipeline_name,
                     url=pipeline_run["_links"]["web"]["href"],
                     build_date=str(parse_datetime(pipeline_run["finishedDate"])),
+                    build_result=pipeline_run.get("result", "unknown"),
                     build_status=pipeline_run["state"],
                 ),
             )

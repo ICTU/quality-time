@@ -18,4 +18,4 @@ class GitLabFailedJobs(GitLabJobsBase):
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether the job has failed."""
         failure_types = list(self._parameter("failure_type"))
-        return super()._include_entity(entity) and entity["build_status"] in failure_types
+        return super()._include_entity(entity) and entity["build_result"] in failure_types

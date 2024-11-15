@@ -33,6 +33,19 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
 
         self.assert_measurement(response, value="0", entities=[])
 
+    async def test_pipeline_runs_jobs_exclude_by_result_type(self):
+        """Test that the pipeline runs are filtered by result type."""
+        self.set_source_parameter("lookback_days_pipeline_runs", "424242")
+        self.set_source_parameter("result_type", ["succeeded"])
+
+        response = await self.collect(
+            get_request_json_return_value=self.pipeline_runs,
+            get_request_json_side_effect=[self.pipelines, self.pipeline_runs],
+        )
+
+        expected_entities = [entity for entity in self.expected_entities if entity.get("build_result") == "succeeded"]
+        self.assert_measurement(response, value=str(len(expected_entities)), entities=expected_entities)
+
     async def test_pipeline_runs_jobs_empty_include(self):
         """Test that counting pipeline runs filtered by a not-matching name include, works."""
         self.set_source_parameter("lookback_days_pipeline_runs", "424242")
@@ -92,6 +105,7 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
                 "key": f"{self.test_pipeline['id']}-{build_date_str}_1",  # safe_entity_key
                 "url": f"{self.url}/_build/results?buildId=6",
                 "build_date": str(now_dt),
+                "build_result": "succeeded",
                 "build_status": "completed",
             },
         ]

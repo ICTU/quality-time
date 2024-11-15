@@ -130,6 +130,7 @@ class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):
                 "key": f"{self.test_pipeline['id']}-20191015_1",  # safe_entity_key
                 "url": f"{self.url}/_build/results?buildId=1",
                 "build_date": "2019-10-15 12:24:10.190586+00:00",
+                "build_result": "succeeded",
                 "build_status": "completed",
             },
             {
@@ -138,6 +139,7 @@ class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):
                 "key": f"{self.test_pipeline['id']}-20191015_2",  # safe_entity_key
                 "url": f"{self.url}/_build/results?buildId=2",
                 "build_date": "2019-10-15 12:34:10.190586+00:00",
+                "build_result": "succeeded",
                 "build_status": "completed",
             },
         ]

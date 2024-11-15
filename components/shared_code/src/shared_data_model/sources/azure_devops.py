@@ -14,6 +14,7 @@ from shared_data_model.parameters import (
     MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
     PrivateToken,
+    ResultType,
     StringParameter,
     TargetBranchesToInclude,
     TestResult,
@@ -46,11 +47,15 @@ PIPELINE_ATTRIBUTES = [
     EntityAttribute(
         name="Status of most recent build",
         key="build_status",
+    ),
+    # Result types conform https://learn.microsoft.com/en-us/rest/api/azure/devops/pipelines/runs/list?view=azure-devops-rest-6.0#runresult
+    EntityAttribute(
+        name="Result of most recent build",
+        key="build_result",
         color={
             "succeeded": Color.POSITIVE,
             "failed": Color.NEGATIVE,
             "canceled": Color.ACTIVE,
-            "partiallySucceeded": Color.WARNING,
         },
     ),
     EntityAttribute(name="Date of most recent build", key="build_date", type=EntityAttributeType.DATE),
@@ -193,6 +198,8 @@ AZURE_DEVOPS = Source(
             values=["canceled", "failed", "no result", "partially succeeded"],
             api_values={"no result": "none", "partially succeeded": "partiallySucceeded"},
         ),
+        # Result types conform https://learn.microsoft.com/en-us/rest/api/azure/devops/pipelines/runs/list?view=azure-devops-rest-6.0#runresult
+        "result_type": ResultType(values=["canceled", "failed", "succeeded", "unknown"]),
         "merge_request_state": MergeRequestState(
             values=["abandoned", "active", "completed", "not set"],
             api_values={"not set": "notSet"},

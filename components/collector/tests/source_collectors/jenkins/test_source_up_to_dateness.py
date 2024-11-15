@@ -22,7 +22,7 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
             {
                 "build_date": "2019-03-15",
                 "build_datetime": expected_dt,
-                "build_status": "Failure",
+                "build_result": "Failure",
                 "key": "job",
                 "name": "job",
                 "url": self.job_url,
@@ -38,7 +38,7 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
             {
                 "build_date": "",
                 "build_datetime": None,
-                "build_status": "Not built",
+                "build_result": "Not built",
                 "key": "job",
                 "name": "job",
                 "url": self.job_url,
@@ -48,9 +48,8 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
 
     async def test_ignore_failed_builds(self):
         """Test that failed builds can be ignored."""
-        success_dt = 1553686540953
+        success_dt = 1552686531953
         self.set_source_parameter("result_type", ["Success"])
-        self.builds.append({"result": "SUCCESS", "timestamp": success_dt})
         jenkins_json = {
             "jobs": [{"name": "job", "url": self.job_url, "buildable": True, "color": "red", "builds": self.builds}],
         }
@@ -58,9 +57,9 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
         expected_dt = datetime_from_timestamp(success_dt)
         expected_entities = [
             {
-                "build_date": "2019-03-27",
+                "build_date": "2019-03-15",
                 "build_datetime": expected_dt,
-                "build_status": "Success",
+                "build_result": "Success",
                 "key": "job",
                 "name": "job",
                 "url": self.job_url,

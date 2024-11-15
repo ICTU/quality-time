@@ -23,7 +23,7 @@ class GitLabTestCase(SourceCollectorTestCase):
         self.gitlab_jobs_json = [
             {
                 "id": "1",
-                "status": "failed",
+                "status": "skipped",
                 "name": "job1",
                 "stage": "stage",
                 "created_at": "2019-03-31T19:40:39.927Z",
@@ -50,7 +50,7 @@ class GitLabTestCase(SourceCollectorTestCase):
                 "url": "https://gitlab/job1",
                 "build_date": "2019-03-31",
                 "build_datetime": datetime(2019, 3, 31, 19, 40, 39, 927000, tzinfo=tzutc()),
-                "build_status": "failed",
+                "build_result": "skipped",
             },
             {
                 "key": "2",
@@ -60,7 +60,7 @@ class GitLabTestCase(SourceCollectorTestCase):
                 "url": "https://gitlab/job2",
                 "build_date": "2019-03-31",
                 "build_datetime": datetime(2019, 3, 31, 19, 40, 39, 927000, tzinfo=tzutc()),
-                "build_status": "failed",
+                "build_result": "failed",
             },
         ]
 

@@ -38,7 +38,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
             {
                 "build_date": "2019-03-15",
                 "build_datetime": datetime_from_timestamp(self.builds[0]["timestamp"]),
-                "build_status": "Failure",
+                "build_result": "Failure",
                 "key": "job",
                 "name": "job",
                 "url": self.job_url,
@@ -54,7 +54,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
             {
                 "build_date": "2019-03-15",
                 "build_datetime": datetime_from_timestamp(self.builds[0]["timestamp"]),
-                "build_status": "Failure",
+                "build_result": "Failure",
                 "key": "job",
                 "name": "job",
                 "url": self.job_url,
@@ -70,7 +70,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
             {
                 "build_date": "2019-03-15",
                 "build_datetime": datetime_from_timestamp(self.builds[0]["timestamp"]),
-                "build_status": "Failure",
+                "build_result": "Failure",
                 "key": "job2",
                 "name": "job2",
                 "url": self.job2_url,
@@ -86,7 +86,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
             {
                 "build_date": "2019-03-15",
                 "build_datetime": datetime_from_timestamp(self.builds[0]["timestamp"]),
-                "build_status": "Failure",
+                "build_result": "Failure",
                 "key": "job",
                 "name": "job",
                 "url": self.job_url,
@@ -102,7 +102,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
             {
                 "build_date": "2019-03-15",
                 "build_datetime": datetime_from_timestamp(self.builds[0]["timestamp"]),
-                "build_status": "Failure",
+                "build_result": "Failure",
                 "key": "job",
                 "name": "job",
                 "url": self.job_url,
@@ -122,7 +122,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
             {
                 "build_date": "2019-03-15",
                 "build_datetime": datetime_from_timestamp(self.builds[0]["timestamp"]),
-                "build_status": "Failure",
+                "build_result": "Failure",
                 "key": "job3",
                 "name": "job3",
                 "url": "https://job3",

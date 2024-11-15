@@ -88,14 +88,14 @@ class GitLabJobsBase(GitLabProjectBase):
         return Entities(
             [
                 Entity(
-                    key=job["id"],
-                    name=job["name"],
-                    url=job["web_url"],
-                    build_status=job["status"],
                     branch=job["ref"],
-                    stage=job["stage"],
                     build_date=str(self._build_datetime(job).date()),
                     build_datetime=self._build_datetime(job),
+                    build_result=job["status"],
+                    key=job["id"],
+                    name=job["name"],
+                    stage=job["stage"],
+                    url=job["web_url"],
                 )
                 for job in await self._jobs(responses)
             ],

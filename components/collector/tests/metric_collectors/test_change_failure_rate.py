@@ -98,7 +98,7 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
             "branch": "main",
             "build_date": self.DEPLOY_DT.astimezone(tzutc()).date().isoformat(),
             "build_datetime": self.DEPLOY_DT,
-            "build_status": "failed",
+            "build_result": "failed",
             "failed": True,
             "key": "1",
             "name": job,
