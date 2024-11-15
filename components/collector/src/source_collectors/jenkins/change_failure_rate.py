@@ -23,12 +23,12 @@ class JenkinsChangeFailureRate(JenkinsJobs):
         return Entities(
             [
                 Entity(
+                    build_date=str(datetime_from_timestamp(build["timestamp"])),
+                    build_datetime=datetime_from_timestamp(build["timestamp"]),
+                    build_result=str(build.get("result", "")).capitalize().replace("_", " "),
                     key=f"{job['name']}-{build['timestamp']}",
                     name=job["name"],
                     url=job["url"],
-                    build_status=str(build.get("result", "")).capitalize().replace("_", " "),
-                    build_date=str(datetime_from_timestamp(build["timestamp"])),
-                    build_datetime=datetime_from_timestamp(build["timestamp"]),
                 )
                 for build, job in self._builds_with_jobs((await responses[0].json())["jobs"])
             ],

@@ -9,8 +9,8 @@ from shared_data_model.parameters import (
     Branches,
     Days,
     FailureType,
-    MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
+    ResultType,
     StringParameter,
     TestResult,
     access_parameters,
@@ -54,8 +54,8 @@ JOB_ENTITY = Entity(
     attributes=[
         EntityAttribute(name=_JOB_ENTITY_NAME_NAME, key="name", url="url"),
         EntityAttribute(
-            name="Status of most recent build",
-            key="build_status",
+            name="Result of most recent build",
+            key="build_result",
             color={
                 "Success": Color.POSITIVE,
                 "Failure": Color.NEGATIVE,
@@ -136,13 +136,9 @@ the "Username" field and the private token in the "**Password**" field.
             mandatory=True,
             metrics=["pipeline_duration"],
         ),
-        "result_type": MultipleChoiceParameter(
-            name="Build result types",
-            short_name="result types",
-            help="Limit which build result types to include.",
-            placeholder="all result types",
+        "result_type": ResultType(
             values=["Aborted", "Failure", "Not built", "Success", "Unstable"],
-            metrics=["pipeline_duration", "source_up_to_dateness"],
+            metrics=["job_runs_within_time_period", "pipeline_duration", "source_up_to_dateness"],
         ),
         "failure_type": FailureType(values=["Aborted", "Failure", "Not built", "Unstable"]),
         **jenkins_access_parameters(
@@ -161,7 +157,7 @@ the "Username" field and the private token in the "**Password**" field.
             name="deployment",
             attributes=[
                 EntityAttribute(name=_JOB_ENTITY_NAME_NAME, key="name", url="url"),
-                EntityAttribute(name="Status of most recent build", key="build_status"),
+                EntityAttribute(name="Result of most recent build", key="build_result"),
                 EntityAttribute(name="Date of most recent build", key="build_date", type=EntityAttributeType.DATE),
             ],
         ),

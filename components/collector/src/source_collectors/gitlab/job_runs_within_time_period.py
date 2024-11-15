@@ -22,6 +22,7 @@ class GitLabJobRunsWithinTimePeriod(GitLabJobsBase):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether the job was run within the specified time period."""
+        lookback_days = int(cast(str, self._parameter("lookback_days")))
+        result_types = cast(list[str], self._parameter("result_type"))
         build_age = days_ago(entity["build_datetime"])
-        within_time_period = build_age <= int(cast(str, self._parameter("lookback_days")))
-        return within_time_period and super()._include_entity(entity)
+        return build_age <= lookback_days and entity["build_result"] in result_types and super()._include_entity(entity)

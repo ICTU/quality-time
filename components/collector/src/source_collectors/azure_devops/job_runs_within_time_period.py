@@ -17,4 +17,5 @@ class AzureDevopsJobRunsWithinTimePeriod(AzureDevopsPipelines):
             return False
         build_age = days_ago(parse_datetime(entity["build_date"]))
         max_build_age = int(cast(str, self._parameter("lookback_days_pipeline_runs")))
-        return build_age <= max_build_age
+        result_types = cast(list[str], self._parameter("result_type"))
+        return build_age <= max_build_age and entity["build_result"] in result_types

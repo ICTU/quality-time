@@ -196,6 +196,16 @@ class FailureType(MultipleChoiceParameter):
     metrics: list[str] = ["failed_jobs"]
 
 
+class ResultType(MultipleChoiceParameter):
+    """Build result type parameter."""
+
+    name: str = "Build result types"
+    short_name: str = "result types"
+    help: str = "Limit which build result types to include."
+    placeholder: str = "all result types"
+    metrics: list[str] = ["job_runs_within_time_period"]
+
+
 def access_parameters(
     metrics: list[str],
     include: dict[str, bool] | None = None,
