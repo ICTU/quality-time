@@ -8,12 +8,12 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-    "aiohttp==3.11.0",
+    "aiohttp==3.11.2",
     "pymsteams==0.2.3",
 ]
 
 optional-dependencies.dev = [
-    "coverage==7.6.4",
+    "coverage==7.6.5",
     "mongomock==4.2.0.post1",
     "pydantic==2.9.2",               # Needed for importing the data model in the tests from the shared code component
     "unittest-xml-reporting==3.2.0", # Needed to generate JUnit XML output for Sonarcloud.io
