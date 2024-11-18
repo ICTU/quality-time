@@ -13,8 +13,8 @@ dependencies = [
 ]
 
 optional-dependencies.dev = [
-    "coverage==7.6.5",
-    "mongomock==4.2.0.post1",
+    "coverage==7.6.7",
+    "mongomock==4.3.0",
     "pydantic==2.9.2",               # Needed for importing the data model in the tests from the shared code component
     "unittest-xml-reporting==3.2.0", # Needed to generate JUnit XML output for Sonarcloud.io
 ]
@@ -24,7 +24,7 @@ optional-dependencies.tools = [
     "mypy==1.13.0",
     "pip-audit==2.7.3",
     "pyproject-fmt==2.5.0",
-    "ruff==0.7.3",
+    "ruff==0.7.4",
     "vulture==2.13",
 ]
 
