@@ -16,8 +16,8 @@ dependencies = [
 ]
 
 optional-dependencies.dev = [
-    "coverage==7.6.5",
-    "mongomock==4.2.0.post1",
+    "coverage==7.6.7",
+    "mongomock==4.3.0",
     "types-python-dateutil==2.9.0.20241003",
     "unittest-xml-reporting==3.2.0",         # Needed to generate JUnit XML output for Sonarcloud.io
 ]
@@ -28,7 +28,7 @@ optional-dependencies.tools = [
     "pip-audit==2.7.3",
     "pydantic==2.9.2",      # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.5.0",
-    "ruff==0.7.3",
+    "ruff==0.7.4",
     "vulture==2.13",
 ]
 
