@@ -1,6 +1,6 @@
 [project]
 name = "api-server"
-version = "5.19.0-rc.0"
+version = "5.19.0-rc.1"
 requires-python = ">=3.12"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
