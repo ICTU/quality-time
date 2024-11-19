@@ -101,6 +101,30 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
         response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
         self.assert_measurement(response, value="1", entities=self.entities())
 
+    async def test_include_by_component_name(self):
+        """Test filtering by component name."""
+        self.set_source_parameter("components_to_include", ["other component"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(response, value="0", entities=[])
+
+    async def test_include_by_component_name_regular_expression(self):
+        """Test filtering by component name regular expression."""
+        self.set_source_parameter("components_to_include", ["component.*"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(response, value="1", entities=self.entities())
+
+    async def test_exclude_by_component_name(self):
+        """Test filtering by component name."""
+        self.set_source_parameter("components_to_ignore", ["component name"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(response, value="0", entities=[])
+
+    async def test_exclude_by_component_name_regular_expression(self):
+        """Test filtering by component name regular expression."""
+        self.set_source_parameter("components_to_ignore", ["other.*"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(response, value="1", entities=self.entities())
+
     async def test_api_key(self):
         """Test that the API key is passed as header."""
         self.set_source_parameter("private_token", "API key")

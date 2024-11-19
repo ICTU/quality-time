@@ -69,6 +69,18 @@ DEPENDENCY_TRACK = Source(
             short_name="project versions",
             metrics=["dependencies", "security_warnings", "source_up_to_dateness"],
         ),
+        "components_to_include": MultipleChoiceWithAdditionParameter(
+            name="Components to include (regular expressions or component names)",
+            placeholder="all components",
+            short_name="components to include",
+            metrics=["dependencies", "security_warnings"],
+        ),
+        "components_to_ignore": MultipleChoiceWithAdditionParameter(
+            name="Components to ignore (regular expressions or component names)",
+            placeholder="none",
+            short_name="components to ignore",
+            metrics=["dependencies", "security_warnings"],
+        ),
         "latest_version_status": MultipleChoiceParameter(
             name="Latest version statuses",
             short_name="statuses",

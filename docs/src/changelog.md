@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Added
 
+- Allow for filtering by component when measuring dependencies and security warnings with Dependency-Track as source. Closes [#9577](https://github.com/ICTU/quality-time/issues/9577).
 - Allow for measuring the time since the last analysis date of a Bill-of-Materials (BOM) in Dependency-Track using the new 'project event type' parameter of the 'source up-to-dateness' metric. Closes [#9764](https://github.com/ICTU/quality-time/issues/9764).
 - Add a result type parameter to the 'jobs within time period' metric to allow for filtering jobs by result type (success, failed, skipped, etc.). Closes [#9926](https://github.com/ICTU/quality-time/issues/9926).
 - Allow for using Visual Studio test reports (.trx) as source for the metrics 'tests', 'test cases', and 'source up-to-dateness'. Closes [#10009](https://github.com/ICTU/quality-time/issues/10009).

@@ -105,5 +105,12 @@ class DependencyTrackLatestVersionStatusBase(DependencyTrackBase):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the entity in the measurement."""
+        component_name = entity["component"]
+        components_to_include = self._parameter("components_to_include")
+        if components_to_include and not match_string_or_regular_expression(component_name, components_to_include):
+            return False
+        components_to_ignore = self._parameter("components_to_ignore")
+        if components_to_ignore and match_string_or_regular_expression(component_name, components_to_ignore):
+            return False
         has_latest_version_status = entity["latest_version_status"] in self._parameter("latest_version_status")
         return super()._include_entity(entity) and has_latest_version_status
