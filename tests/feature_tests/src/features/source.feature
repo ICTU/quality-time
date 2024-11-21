@@ -54,7 +54,7 @@ Feature: source
     Then the source name is "Source"
 
   Scenario: change source type
-    Given an existing metric with type "unmerged_branches"
+    Given an existing metric with type "inactive_branches"
     And an existing source with type "gitlab"
     When the client changes the source type to "azure_devops"
     Then the source type is "azure_devops"

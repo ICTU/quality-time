@@ -165,7 +165,7 @@ class BranchesToIgnore(MultipleChoiceWithAdditionParameter):
 
     name: str = "Branches to ignore (regular expressions or branch names)"
     short_name: str = "branches to ignore"
-    metrics: list[str] = ["unmerged_branches"]
+    metrics: list[str] = ["inactive_branches"]
 
 
 class TargetBranchesToInclude(MultipleChoiceWithAdditionParameter):
@@ -175,6 +175,17 @@ class TargetBranchesToInclude(MultipleChoiceWithAdditionParameter):
     short_name: str = "target branches to include"
     placeholder: str = "all target branches"
     metrics: list[str] = ["merge_requests"]
+
+
+class BranchMergeStatus(MultipleChoiceParameter):
+    """Branch merge status."""
+
+    name: str = "Branch merge status"
+    short_name: str = "merge status"
+    help: str = "Limit which merge states to count."
+    placeholder: str = "all merge states"
+    metrics: list[str] = ["inactive_branches"]
+    values: list[str] = ["merged", "unmerged"]
 
 
 class MergeRequestState(MultipleChoiceParameter):

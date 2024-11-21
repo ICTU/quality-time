@@ -6,7 +6,7 @@ import traceback
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Any, ClassVar, cast
+from typing import ClassVar, TypedDict, cast
 
 import aiohttp
 from packaging.version import Version
@@ -219,31 +219,72 @@ class SourceCollector:
         return URL(url.removesuffix("xml") + "html" if url.endswith(".xml") else url)
 
 
-class UnmergedBranchesSourceCollector(SourceCollector, ABC):
-    """Base class for unmerged branches source collectors."""
+class BranchType(TypedDict):
+    """Branch."""
+
+    name: str
+
+
+class InactiveBranchesSourceCollector[Branch: BranchType](SourceCollector, ABC):
+    """Base class for inactive branches source collectors."""
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
-        """Override to get the unmerged branches from the unmerged branches method that subclasses should implement."""
+        """Override to get the inactive branches from the inactive branches method that subclasses should implement."""
         return Entities(
             Entity(
                 key=branch["name"],
                 name=branch["name"],
                 commit_date=str(self._commit_datetime(branch).date()),
+                merge_status="merged" if self._is_branch_merged(branch) else "unmerged",
                 url=str(self._branch_landing_url(branch)),
             )
-            for branch in await self._unmerged_branches(responses)
+            for branch in await self._inactive_branches(responses)
         )
 
-    @abstractmethod
-    async def _unmerged_branches(self, responses: SourceResponses) -> list[dict[str, Any]]:
-        """Return the list of unmerged branches."""
+    async def _inactive_branches(self, responses: SourceResponses) -> list[Branch]:
+        """Return the list of inactive branches."""
+        return [
+            branch
+            for branch in await self._branches(responses)
+            if not self._is_default_branch(branch)
+            and self._has_allowed_merge_status(branch)
+            and self._is_branch_inactive(branch)
+            and not self._ignore_branch(branch)
+        ]
 
     @abstractmethod
-    def _commit_datetime(self, branch) -> datetime:
+    async def _branches(self, responses: SourceResponses) -> list[Branch]:
+        """Return a list of branches from the responses."""
+
+    @abstractmethod
+    def _is_default_branch(self, branch: Branch) -> bool:
+        """Return whether the branch is the default branch."""
+
+    def _has_allowed_merge_status(self, branch: Branch) -> bool:
+        """Return whether the branch has the configured status."""
+        allowed_statuses = self._parameter("branch_merge_status")
+        if self._is_branch_merged(branch):
+            return "merged" in allowed_statuses
+        return "unmerged" in allowed_statuses
+
+    @abstractmethod
+    def _is_branch_merged(self, branch: Branch) -> bool:
+        """Return whether the branch has been merged with the default branch."""
+
+    def _is_branch_inactive(self, branch: Branch) -> bool:
+        """Return whether the branch has not recently been committed to."""
+        return days_ago(self._commit_datetime(branch)) > int(cast(str, self._parameter("inactive_days")))
+
+    def _ignore_branch(self, branch: Branch) -> bool:
+        """Return whether to ignore the branch."""
+        return match_string_or_regular_expression(branch["name"], self._parameter("branches_to_ignore"))
+
+    @abstractmethod
+    def _commit_datetime(self, branch: Branch) -> datetime:
         """Return the date and time of the last commit on the branch."""
 
     @abstractmethod
-    def _branch_landing_url(self, branch) -> URL:
+    def _branch_landing_url(self, branch: Branch) -> URL:
         """Return the landing url of the branch."""
 
 

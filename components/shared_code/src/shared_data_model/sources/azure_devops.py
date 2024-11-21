@@ -8,6 +8,7 @@ from shared_data_model.parameters import (
     URL,
     Branch,
     BranchesToIgnore,
+    BranchMergeStatus,
     Days,
     FailureType,
     MergeRequestState,
@@ -25,12 +26,12 @@ ALL_AZURE_DEVOPS_METRICS = [
     "average_issue_lead_time",
     "change_failure_rate",
     "failed_jobs",
+    "inactive_branches",
     "issues",
     "job_runs_within_time_period",
     "merge_requests",
     "source_up_to_dateness",
     "tests",
-    "unmerged_branches",
     "unused_jobs",
     "user_story_points",
 ]
@@ -103,7 +104,7 @@ AZURE_DEVOPS = Source(
             name="Repository (name or id)",
             short_name="repository",
             placeholder="default repository",
-            metrics=["merge_requests", "source_up_to_dateness", "unmerged_branches"],
+            metrics=["inactive_branches", "merge_requests", "source_up_to_dateness"],
         ),
         "branch": Branch(),
         "branches_to_ignore": BranchesToIgnore(
@@ -111,11 +112,12 @@ AZURE_DEVOPS = Source(
                 "https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
             ),
         ),
+        "branch_merge_status": BranchMergeStatus(),
         "inactive_days": Days(
             name="Number of days since last commit after which to consider branches inactive",
             short_name="number of days since last commit",
             default_value="7",
-            metrics=["unmerged_branches"],
+            metrics=["inactive_branches"],
         ),
         "inactive_job_days": Days(
             name="Number of days since last build after which to consider pipelines inactive",
@@ -262,7 +264,7 @@ AZURE_DEVOPS = Source(
             ],
         ),
         "unused_jobs": Entity(name="unused pipeline", attributes=PIPELINE_ATTRIBUTES),
-        "unmerged_branches": Entity(
+        "inactive_branches": Entity(
             name="branch",
             name_plural="branches",
             attributes=[
@@ -272,6 +274,7 @@ AZURE_DEVOPS = Source(
                     key="commit_date",
                     type=EntityAttributeType.DATE,
                 ),
+                EntityAttribute(name="Merge status"),
             ],
         ),
         "issues": Entity(name="issue", attributes=ISSUE_ATTRIBUTES),

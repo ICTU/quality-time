@@ -12,12 +12,12 @@ from .axe_html_reporter.violations import AxeHTMLReporterViolations
 from .azure_devops.average_issue_lead_time import AzureDevopsAverageIssueLeadTime
 from .azure_devops.change_failure_rate import AzureDevopsChangeFailureRate
 from .azure_devops.failed_jobs import AzureDevopsFailedJobs
+from .azure_devops.inactive_branches import AzureDevopsInactiveBranches
 from .azure_devops.issues import AzureDevopsIssues
 from .azure_devops.job_runs_within_time_period import AzureDevopsJobRunsWithinTimePeriod
 from .azure_devops.merge_requests import AzureDevopsMergeRequests
 from .azure_devops.source_up_to_dateness import AzureDevopsSourceUpToDateness
 from .azure_devops.tests import AzureDevopsTests
-from .azure_devops.unmerged_branches import AzureDevopsUnmergedBranches
 from .azure_devops.unused_jobs import AzureDevopsUnusedJobs
 from .azure_devops.user_story_points import AzureDevopsUserStoryPoints
 from .bandit.security_warnings import BanditSecurityWarnings
@@ -51,12 +51,12 @@ from .generic_json.security_warnings import GenericJSONSecurityWarnings
 from .github.merge_requests import GitHubMergeRequests
 from .gitlab.change_failure_rate import GitLabChangeFailureRate
 from .gitlab.failed_jobs import GitLabFailedJobs
+from .gitlab.inactive_branches import GitLabInactiveBranches
 from .gitlab.job_runs_within_time_period import GitLabJobRunsWithinTimePeriod
 from .gitlab.merge_requests import GitLabMergeRequests
 from .gitlab.pipeline_duration import GitLabPipelineDuration
 from .gitlab.source_up_to_dateness import GitLabSourceUpToDateness
 from .gitlab.source_version import GitLabSourceVersion
-from .gitlab.unmerged_branches import GitLabUnmergedBranches
 from .gitlab.unused_jobs import GitLabUnusedJobs
 from .harbor.security_warnings import HarborSecurityWarnings
 from .harbor_json.security_warnings import HarborJSONSecurityWarnings

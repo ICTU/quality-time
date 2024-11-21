@@ -11,6 +11,8 @@ from .file_source_collector import (
 )
 from .metric_collector import MetricCollector
 from .source_collector import (
+    BranchType,
+    InactiveBranchesSourceCollector,
     SecurityWarningsSourceCollector,
     SlowTransactionsCollector,
     SourceCollector,
@@ -18,6 +20,5 @@ from .source_collector import (
     TimePassedCollector,
     TimeRemainingCollector,
     TransactionEntity,
-    UnmergedBranchesSourceCollector,
     VersionCollector,
 )
