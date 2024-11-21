@@ -118,6 +118,26 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
         sources=["azure_devops", "jenkins", "gitlab", "manual_number"],
         tags=[Tag.CI],
     ),
+    "inactive_branches": Metric(
+        name="Inactive branches",
+        description="The number of branches that have been inactive for a while.",
+        rationale="It is strange if branches have had no activity for a while and have not been merged to the "
+        "default branch. Maybe commits have been cherry picked, or maybe the work has been postponed, but it also "
+        "sometimes happen that someone simply forgets to merge the branch. Likewise, it is strange if branches "
+        "are not deleted after having been merged to the default branch.",
+        documentation="""To change how soon *Quality-time* should consider branches to be inactive, use the
+    parameter "Number of days since last commit after which to consider branches inactive".
+
+    What exactly is the default branch is configured in GitLab or Azure DevOps. If you want to use a different branch
+    as default branch, you need to configure this in the source, see the documentation for
+    [GitLab](https://docs.gitlab.com/ee/user/project/repository/branches/default.html) or
+    [Azure DevOps](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops#\
+    change-your-default-branch).""",
+        unit=Unit.BRANCHES,
+        near_target="5",
+        sources=["azure_devops", "gitlab", "manual_number"],
+        tags=[Tag.CI],
+    ),
     "issues": Metric(
         name="Issues",
         description="The number of issues.",
@@ -669,25 +689,6 @@ skipped, and passed. Test cases not found in the test results are listed as unte
             "sonarqube",
         ],
         tags=[Tag.TEST_QUALITY],
-    ),
-    "unmerged_branches": Metric(
-        name="Unmerged branches",
-        description="The number of branches that have not been merged to the default branch.",
-        rationale="It is strange if branches have had no activity for a while and have not been merged to the "
-        "default branch. Maybe commits have been cherry picked, or maybe the work has been postponed, but it "
-        "also sometimes happen that someone simply forgets to merge the branch.",
-        documentation="""To change how soon *Quality-time* should consider branches to be inactive, use the
-parameter "Number of days since last commit after which to consider branches inactive".
-
-What exactly is the default branch is configured in GitLab or Azure DevOps. If you want to use a different branch
-as default branch, you need to configure this in the source, see the documentation for
-[GitLab](https://docs.gitlab.com/ee/user/project/repository/branches/default.html) or
-[Azure DevOps](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops#\
-change-your-default-branch).""",
-        unit=Unit.BRANCHES,
-        near_target="5",
-        sources=["azure_devops", "gitlab", "manual_number"],
-        tags=[Tag.CI],
     ),
     "unused_jobs": Metric(
         name="Unused CI-jobs",

@@ -46,9 +46,9 @@ SUBJECTS = {
                 name="Development process",
                 description="A software development and/or maintenance process.",
                 metrics=[
+                    "inactive_branches",
                     "merge_requests",
                     "pipeline_duration",
-                    "unmerged_branches",
                 ],
             ),
             "process_operations": Subject(

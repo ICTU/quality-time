@@ -22,6 +22,7 @@ def perform_migrations(database: Database) -> None:
                 remove_test_cases_manual_number(report),
                 change_ci_subject_types_to_development_environment(report),
                 change_sonarqube_parameters(report),
+                change_unmerged_branches_metrics_to_inactive_branches(report),
             ]
         ):
             change_description = " and to ".join([change for change in changes if change])
@@ -182,6 +183,20 @@ def change_sonarqube_parameter(
             del source["parameters"][old_parameter_name]
             changed = True
     return changed
+
+
+def change_unmerged_branches_metrics_to_inactive_branches(report) -> str:
+    """Change unmerged branches metrics to inactive branches metrics."""
+    # Added after Quality-time v5.19.0, see https://github.com/ICTU/quality-time/issues/1253
+    change = ""
+    for metric in metrics(report, ["unmerged_branches"]):
+        metric["type"] = "inactive_branches"
+        for source in metric.get("sources", {}).values():
+            source["parameters"]["branch_merge_status"] = ["unmerged"]
+        if not metric.get("name"):
+            metric["name"] = "Unmerged branches"
+        change = "metric type 'unmerged_branches' to 'inactive_branches'"
+    return change
 
 
 def log_unknown_parameter_values(value_mapping: dict[str, str], old_values: list[str], value_type: str, report) -> None:

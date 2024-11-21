@@ -9,6 +9,7 @@ from shared_data_model.parameters import (
     Branch,
     Branches,
     BranchesToIgnore,
+    BranchMergeStatus,
     Days,
     FailureType,
     MergeRequestState,
@@ -24,12 +25,12 @@ from shared_data_model.parameters import (
 ALL_GITLAB_METRICS = [
     "change_failure_rate",
     "failed_jobs",
+    "inactive_branches",
     "job_runs_within_time_period",
     "merge_requests",
     "pipeline_duration",
     "source_up_to_dateness",
     "source_version",
-    "unmerged_branches",
     "unused_jobs",
 ]
 
@@ -110,11 +111,11 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             metrics=[
                 "change_failure_rate",
                 "failed_jobs",
+                "inactive_branches",
                 "job_runs_within_time_period",
                 "pipeline_duration",
                 "merge_requests",
                 "source_up_to_dateness",
-                "unmerged_branches",
                 "unused_jobs",
             ],
         ),
@@ -133,6 +134,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         "branch": Branch(help_url=GITLAB_BRANCH_HELP_URL),
         "branches": Branches(help_url=GITLAB_BRANCH_HELP_URL),
         "branches_to_ignore": BranchesToIgnore(help_url=GITLAB_BRANCH_HELP_URL),
+        "branch_merge_status": BranchMergeStatus(),
         "refs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Branches and tags to ignore (regular expressions, branch names or tag names)",
             short_name="branches and tags to ignore",
@@ -143,7 +145,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             name="Number of days since last commit after which to consider branches inactive",
             short_name="number of days since last commit",
             default_value="7",
-            metrics=["unmerged_branches"],
+            metrics=["inactive_branches"],
         ),
         "inactive_job_days": Days(
             name="Number of days without builds after which to consider CI-jobs unused",
@@ -267,7 +269,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
                 EntityAttribute(name="Merged", type=EntityAttributeType.DATETIME),
             ],
         ),
-        "unmerged_branches": Entity(
+        "inactive_branches": Entity(
             name="branch",
             name_plural="branches",
             attributes=[
@@ -277,6 +279,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
                     key="commit_date",
                     type=EntityAttributeType.DATE,
                 ),
+                EntityAttribute(name="Merge status"),
             ],
         ),
         "unused_jobs": JOB_ENTITY,
