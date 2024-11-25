@@ -65,12 +65,13 @@ def post_notification_destination_attributes(
     notification_destination_uuid: NotificationDestinationId,
 ):
     """Set specified notification destination attributes."""
-    notification_destination_name = report["notification_destinations"][notification_destination_uuid]["name"]
+    notification_destination = report["notification_destinations"][notification_destination_uuid]
+    notification_destination_name = notification_destination["name"]
     attributes = dict(bottle.request.json)
     old_values = []
-    for key in attributes:
-        old_values.append(report["notification_destinations"][notification_destination_uuid].get(key) or "")
-        report["notification_destinations"][notification_destination_uuid][key] = attributes[key]
+    for key, value in attributes.items():
+        old_values.append(notification_destination.get(key) or "")
+        notification_destination[key] = value
 
     if set(old_values) == set(attributes.values()):
         return {"ok": True}  # Nothing to do

@@ -20,7 +20,7 @@ optional-dependencies.tools = [
     "mypy==1.13.0",
     "pip-audit==2.7.3",
     "pyproject-fmt==2.5.0",
-    "ruff==0.7.4",
+    "ruff==0.8.0",
     "vulture==2.13",
 ]
 
@@ -34,7 +34,6 @@ lint.select = [
 ]
 lint.ignore = [
     "ANN001", # https://docs.astral.sh/ruff/rules/missing-type-function-argument/ - too many untyped arguments atm to turn this rule on
-    "ANN101", # https://docs.astral.sh/ruff/rules/missing-type-function-argument/ - type checkers can infer the type of `self`, so annotating it is superfluous
     "ANN201", # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/ - too many untyped return values atm to turn this rule on
     "ANN204", # https://docs.astral.sh/ruff/rules/missing-return-type-special-method/ - typing classes that inherit from set and list correctly is surprisingly hard
     "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
