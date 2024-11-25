@@ -215,7 +215,7 @@ def _availability_checks(source, parameter_key: str) -> list[dict[str, str | int
     url_parameter_keys = [
         key
         for key, value in parameters.items()
-        if value.type == "url" and parameter_key == key or parameter_key in (value.validate_on or [])
+        if (value.type == "url" and parameter_key == key) or parameter_key in (value.validate_on or [])
     ]
     availability_checks = []
     for url_parameter_key in url_parameter_keys:
