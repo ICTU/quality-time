@@ -32,7 +32,7 @@ def set_feature_compatibility_version(admin_database: Database) -> None:
 
     See https://docs.mongodb.com/manual/reference/command/setFeatureCompatibilityVersion/
     """
-    admin_database.command("setFeatureCompatibilityVersion", "7.0", confirm=True)
+    admin_database.command("setFeatureCompatibilityVersion", "8.0", confirm=True)
 
 
 def create_indexes(database: Database) -> None:
