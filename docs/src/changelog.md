@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 ### Changed
 
 - Change the 'unmerged branches' metric to 'inactive branches', also enabling it to count branches that have been merged but not deleted. Closes [#1253](https://github.com/ICTU/quality-time/issues/1253).
+- Set the MongoDB feature compatibility version to v8. Closes [#10357](https://github.com/ICTU/quality-time/issues/10357).
 
 ## v5.19.0 - 2024-11-22
 
