@@ -20,7 +20,7 @@ Feature: report
   Scenario: copy report
     Given an existing report
     When the client copies the report
-    Then the report title is "New report (copy)"
+    Then the reports overview contains 2 reports
 
   Scenario: copy non-existing report
     When the client copies a non-existing report
@@ -30,8 +30,7 @@ Feature: report
     Given an existing report
     And an existing subject
     When the client copies the report
-    Then the report title is "New report (copy)"
-    And the report contains 1 subject
+    Then the report contains 1 subject
 
   Scenario: change report title
     When the client creates a report

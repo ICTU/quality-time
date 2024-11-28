@@ -18,14 +18,13 @@ Feature: metric
   Scenario: copy metric
     Given an existing metric
     When the client copies the metric
-    Then the metric name is "Violations (copy)"
+    Then the subject contains 2 metrics
 
   Scenario: copy metric with source
     Given an existing metric
     And an existing source
     When the client copies the metric
-    Then the metric name is "Violations (copy)"
-    And the metric contains 1 source
+    Then the metric contains 1 source
 
   Scenario: move metric to another report
     Given an existing metric

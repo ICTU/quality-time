@@ -17,14 +17,13 @@ Feature: subject
   Scenario: copy subject
     Given an existing subject
     When the client copies the subject
-    Then the subject name is "Software (copy)"
+    Then the report contains 2 subjects
 
   Scenario: copy subject with metric
     Given an existing subject
     And an existing metric
     When the client copies the subject
-    Then the subject name is "Software (copy)"
-    And the subject contains 1 metric
+    Then the subject contains 1 metric
 
   Scenario: move subject
     Given an existing subject
