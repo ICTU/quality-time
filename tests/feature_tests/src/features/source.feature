@@ -20,7 +20,7 @@ Feature: source
   Scenario: copy source
     Given an existing source
     When the client copies the source
-    Then the source name is "Axe-core (copy)"
+    Then the metric contains 2 sources
 
   Scenario: move source to another report
     Given an existing source

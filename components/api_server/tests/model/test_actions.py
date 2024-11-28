@@ -15,20 +15,15 @@ class CopySourceTest(unittest.TestCase):
         self.source = {"name": "Source", "type": "pip"}
 
     def test_copy_name(self):
-        """Test that the copy name is changed."""
+        """Test that the copy name is not changed."""
         source_copy = copy_source(self.source)
-        self.assertEqual("Source (copy)", source_copy["name"])
+        self.assertEqual("Source", source_copy["name"])
 
     def test_copy_without_name(self):
-        """Test that the copy name is based on the data model if the original source doesn't have a name."""
+        """Test that the copy name is not changed."""
         self.source["name"] = ""
         source_copy = copy_source(self.source)
-        self.assertEqual("pip (copy)", source_copy["name"])
-
-    def test_copy_without_name_change(self):
-        """Test that the copy name can be left unchanged."""
-        source_copy = copy_source(self.source, change_name=False)
-        self.assertEqual("Source", source_copy["name"])
+        self.assertEqual("", source_copy["name"])
 
 
 class CopyMetricTest(unittest.TestCase):
@@ -43,20 +38,15 @@ class CopyMetricTest(unittest.TestCase):
         }
 
     def test_copy_name(self):
-        """Test that the copy name is changed."""
+        """Test that the copy name is not changed."""
         metric_copy = copy_metric(self.metric)
-        self.assertEqual("Metric (copy)", metric_copy["name"])
+        self.assertEqual("Metric", metric_copy["name"])
 
     def test_copy_without_name(self):
-        """Test that the copy name is based on the data model if the original metric doesn't have a name."""
+        """Test that the copy name is not changed."""
         self.metric["name"] = ""
         metric_copy = copy_metric(self.metric)
-        self.assertEqual("Security warnings (copy)", metric_copy["name"])
-
-    def test_copy_without_name_change(self):
-        """Test that the copy name can be left unchanged."""
-        metric_copy = copy_metric(self.metric, change_name=False)
-        self.assertEqual("Metric", metric_copy["name"])
+        self.assertEqual("", metric_copy["name"])
 
     def test_copy_sources(self):
         """Test that the sources are copied too."""
@@ -76,20 +66,15 @@ class CopySubjectTest(unittest.TestCase):
         }
 
     def test_copy_name(self):
-        """Test that the copy name is changed."""
+        """Test that the copy name is not changed."""
         subject_copy = copy_subject(self.subject)
-        self.assertEqual("Subject (copy)", subject_copy["name"])
+        self.assertEqual("Subject", subject_copy["name"])
 
     def test_copy_without_name(self):
-        """Test that the copy name is based on the data model if the original subject doesn't have a name."""
+        """Test that the copy name is not changed."""
         self.subject["name"] = ""
         subject_copy = copy_subject(self.subject)
-        self.assertEqual("Software (copy)", subject_copy["name"])
-
-    def test_copy_without_name_change(self):
-        """Test that the copy name can be left unchanged."""
-        subject_copy = copy_subject(self.subject, change_name=False)
-        self.assertEqual("Subject", subject_copy["name"])
+        self.assertEqual("", subject_copy["name"])
 
     def test_copy_metrics(self):
         """Test that the metrics are copied too."""
@@ -109,9 +94,9 @@ class CopyReportTest(unittest.TestCase):
         }
 
     def test_copy_title(self):
-        """Test that the copy title is changed."""
+        """Test that the copy title is not changed."""
         report_copy = copy_report(self.report)
-        self.assertEqual("Report (copy)", report_copy["title"])
+        self.assertEqual("Report", report_copy["title"])
 
     def test_copy_report_uuid(self):
         """Test that the report UUID can be changed."""

@@ -565,7 +565,7 @@ class SourceTest(SourceTestCase):
         copied_source_uuid, copied_source = list(
             updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].items(),
         )[1]
-        self.assertEqual("Source (copy)", copied_source["name"])
+        self.assertEqual("Source", copied_source["name"])
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, copied_source_uuid]
         description = (
             "Jenny copied the source 'Source' of metric 'Metric' of subject 'Subject' from report 'Report' to metric "

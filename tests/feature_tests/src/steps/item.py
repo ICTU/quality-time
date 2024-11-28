@@ -186,6 +186,10 @@ def check_item_order(  # noqa: PLR0913
 @then("the {container} contains {number} {children}")
 def check_nr_children(context: Context, container: str, number: str, children: str) -> None:
     """Check that the container has the expected number of child items."""
-    container_instance = get_container(context, container)
-    children = children if children.endswith("s") else children + "s"
-    assert_equal(number, str(len(container_instance[children])))
+    if container == "reports overview":
+        reports = context.get("report/")
+        assert_equal(number, str(len(reports)))
+    else:
+        container_instance = get_container(context, container)
+        children = children if children.endswith("s") else children + "s"
+        assert_equal(number, str(len(container_instance[children])))
