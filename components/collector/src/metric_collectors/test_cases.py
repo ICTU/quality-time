@@ -59,8 +59,9 @@ class TestCases(MetricCollector):
         "timeout": "errored",
         "warning": "errored",
     }
-    # Regular expression to identify test case ids in test names and descriptions:
+    # Regular expression to identify test case ids in entity attributes:
     TEST_CASE_KEY_RE = re.compile(r"\w+\-\d+")
+    ENTITY_ATTRIBUTES_TO_SEARCH = ("name", "test_name", "description")
     # The supported source types for test cases and test reports:
     TEST_CASE_SOURCE_TYPES: ClassVar[list[str]] = ["jira"]
     TEST_REPORT_SOURCE_TYPES: ClassVar[list[str]] = [
@@ -121,7 +122,7 @@ class TestCases(MetricCollector):
     @classmethod
     def referenced_test_cases(cls, entity: Entity) -> set[str]:
         """Return the keys of test cases referenced in test entity names or descriptions."""
-        text_attributes = " ".join(entity.get(attribute_key, "") for attribute_key in ("name", "description"))
+        text_attributes = " ".join(entity.get(attribute_key, "") for attribute_key in cls.ENTITY_ATTRIBUTES_TO_SEARCH)
         return set(re.findall(cls.TEST_CASE_KEY_RE, text_attributes))
 
     def test_results_to_count(self, source: SourceMeasurement) -> list[TestResult]:
