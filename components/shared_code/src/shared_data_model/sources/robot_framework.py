@@ -27,7 +27,8 @@ ROBOT_FRAMEWORK = Source(
         "tests": Entity(
             name="test",
             attributes=[
-                EntityAttribute(name="Test name", key="name"),
+                EntityAttribute(name="Suite name"),
+                EntityAttribute(name="Test name"),
                 EntityAttribute(name="Test result", color={"fail": Color.NEGATIVE, "pass": Color.POSITIVE}),
             ],
         ),

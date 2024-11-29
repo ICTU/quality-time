@@ -37,9 +37,13 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
             <testcase name="no_such_key-1"><failure /></testcase>
         </testsuite>
         """
-    ROBOT_FRAMEWORK_XML_V4 = """<?xml version="1.0" encoding="UTF-8"?>
-        <robot generator="Robot 4.0b3.dev1 (Python 3.9.1 on linux)" generated="20210212 17:27:03.027">
-            <suite>
+    ROBOT_FRAMEWORK_XML_V5 = """<?xml version="1.0" encoding="UTF-8"?>
+        <robot
+            generator="Robot 7.1.1 (Python 3.12.7 on linux)"
+            generated="2021-02-12T17:27:03.027383"
+            schemaversion="5"
+        >
+            <suite name="Suite 1">
                 <test id="s1-t1" name="key-1; Test 1">
                     <status status="PASS"></status>
                 </test>
@@ -138,7 +142,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_matching_test_case_robot_framework(self):
         """Test one matching test case."""
-        self.response.text = AsyncMock(return_value=self.ROBOT_FRAMEWORK_XML_V4)
+        self.response.text = AsyncMock(return_value=self.ROBOT_FRAMEWORK_XML_V5)
         jira = {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql"}}
         robot_framework = {"type": "robot_framework", "parameters": {"url": self.test_report_url}}
         measurement = await self.collect({"jira": jira, "robot_framework": robot_framework})
