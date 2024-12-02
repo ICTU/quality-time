@@ -52,7 +52,7 @@
     "devDependencies": {
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
         "@eslint/compat": "^1.2.3",
-        "@eslint/js": "^9.15.0",
+        "@eslint/js": "^9.16.0",
         "@testing-library/dom": "10.4.0",
         "@testing-library/jest-dom": "^6.6.3",
         "@testing-library/react": "^16.0.1",
