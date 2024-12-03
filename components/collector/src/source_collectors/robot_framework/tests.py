@@ -43,10 +43,10 @@ class RobotFrameworkTests(RobotFrameworkBaseClass):
                 continue
             nr_of_tests += int(stats.get(test_result, 0))
             for suite in tree.findall(".//suite[test]"):
-                suite_name = suite.get("name", "<Nameless suite>")
+                suite_name = suite.get("name", "unknown")
                 for test in suite.findall(f"test/status[@status='{test_result.upper()}']/.."):
                     test_id = test.get("id", "")
-                    test_name = test.get("name", "<Nameless test>")
+                    test_name = test.get("name", "unknown")
                     entity = Entity(key=test_id, test_name=test_name, suite_name=suite_name, test_result=test_result)
                     entities.append(entity)
         return nr_of_tests, total_nr_of_tests, entities

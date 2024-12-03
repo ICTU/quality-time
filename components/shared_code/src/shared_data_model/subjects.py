@@ -67,8 +67,9 @@ SUBJECTS = {
                 metrics=[
                     "manual_test_duration",
                     "manual_test_execution",
-                    "tests",
                     "test_cases",
+                    "test_suites",
+                    "tests",
                     "uncovered_branches",
                     "uncovered_lines",
                 ],
@@ -113,8 +114,9 @@ SUBJECTS = {
                 metrics=[
                     "performancetest_duration",
                     "scalability",
-                    "tests",
                     "test_cases",
+                    "test_suites",
+                    "tests",
                     "uncovered_branches",
                     "uncovered_lines",
                 ],

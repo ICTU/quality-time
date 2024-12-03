@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Added
+
+- Add a new metric 'test suites' that can be used to count test suites (or test scenarios in Robot Framework parlance). Test suites can be filtered by test result. Supporting sources are Robot Framework, JUnit, and TestNG. Closes [#10078](https://github.com/ICTU/quality-time/issues/10078).
+
 ### Changed
 
 - Change the 'unmerged branches' metric to 'inactive branches', also enabling it to count branches that have been merged but not deleted. Closes [#1253](https://github.com/ICTU/quality-time/issues/1253).

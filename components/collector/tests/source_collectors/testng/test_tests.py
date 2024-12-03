@@ -1,4 +1,4 @@
-"""Unit tests for the JUnit XML tests collector."""
+"""Unit tests for the TestNG XML tests collector."""
 
 from typing import ClassVar
 

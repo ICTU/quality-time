@@ -48,7 +48,9 @@
                                 "password": "",
                                 "private_token": "",
                                 "languages_to_ignore": [],
-                                "files_to_include": [".*test.*"]
+                                "files_to_include": [
+                                    ".*test.*"
+                                ]
                             }
                         }
                     },
@@ -104,6 +106,69 @@
                             }
                         },
                         "210ba452-685c-4959-a88e-c1cbb6f31f3e": {
+                            "type": "testng",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/testng/testng-results.xml",
+                                "landing_url": "http://localhost:8000/reports/testng/testng-results.xml",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "test_result": []
+                            }
+                        }
+                    },
+                    "name": null,
+                    "scale": "count",
+                    "unit": null,
+                    "addition": "sum",
+                    "accept_debt": false,
+                    "debt_target": null,
+                    "direction": null,
+                    "target": "0",
+                    "near_target": "0",
+                    "tags": [
+                        "test quality"
+                    ]
+                },
+                "823001ba-d75e-4f91-83ba-5843708cb775": {
+                    "type": "test_suites",
+                    "sources": {
+                        "462713f2-75c7-00c6-ae85-8987c40ee013": {
+                            "type": "junit",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/junit/junit-report.xml",
+                                "landing_url": "http://localhost:8000/reports/junit/junit-report.html",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "test_result": []
+                            }
+                        },
+                        "2f32b0fe-4bb7-4485-bd11-6aaaaaa77754": {
+                            "type": "robot_framework",
+                            "name": "Robot Framework v3",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/robot-framework/output-3.2.2.xml",
+                                "landing_url": "http://localhost:8000/reports/robot-framework/output-3.2.2.xml",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "test_result": []
+                            }
+                        },
+                        "2f35b0fe-4bb7-8485-9d11-6215a575bc54": {
+                            "type": "robot_framework",
+                            "name": "Robot Framework v4",
+                            "parameters": {
+                                "url": "http://testdata:8000/reports/robot-framework/output-4.0.xml",
+                                "landing_url": "http://localhost:8000/reports/robot-framework/output-4.0.xml",
+                                "username": "",
+                                "password": "",
+                                "private_token": "",
+                                "test_result": []
+                            }
+                        },
+                        "210ba442-6a5c-4959-a88e-a1cb66f91d3e": {
                             "type": "testng",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/testng/testng-results.xml",

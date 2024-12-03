@@ -3,8 +3,8 @@
 from .base import RobotFrameworkTestCase
 
 
-class RobotFrameworkSourceVersion(RobotFrameworkTestCase):
-    """Unit test for the source version metric."""
+class RobotFrameworkSourceVersionTest(RobotFrameworkTestCase):
+    """Unit test for the Robot Framework source version collector."""
 
     METRIC_TYPE = "source_version"
     METRIC_ADDITION = "min"

@@ -626,6 +626,23 @@ skipped, and passed. Test cases not found in the test results are listed as unte
         ],
         tags=[Tag.TEST_QUALITY],
     ),
+    "test_suites": Metric(
+        name="Test suites",
+        description="The number of test suites.",
+        rationale="Keep track of the total number of test suites or the number of test suites with different states, "
+        "for example failed or errored.",
+        scales=["count", "percentage"],
+        unit=Unit.TEST_SUITES,
+        direction=Direction.MORE_IS_BETTER,
+        near_target="0",
+        sources=[
+            "junit",
+            "manual_number",
+            "robot_framework",
+            "testng",
+        ],
+        tags=[Tag.TEST_QUALITY],
+    ),
     "time_remaining": Metric(
         name="Time remaining",
         description="The number of days remaining until a date in the future.",

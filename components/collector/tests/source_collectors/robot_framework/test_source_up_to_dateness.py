@@ -6,7 +6,7 @@ from .base import RobotFrameworkTestCase
 
 
 class RobotFrameworkSourceUpToDatenessTest(RobotFrameworkTestCase):
-    """Unit test for the source up-to-dateness metric."""
+    """Unit test for the Robot Framework source up-to-dateness collector."""
 
     METRIC_TYPE = "source_up_to_dateness"
     METRIC_ADDITION = "max"
