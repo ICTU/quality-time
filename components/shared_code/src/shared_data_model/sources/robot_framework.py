@@ -2,13 +2,15 @@
 
 from pydantic import HttpUrl
 
-from shared_data_model.meta.entity import Color, Entity, EntityAttribute
+from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import TestResult, access_parameters
 
 from .jenkins import JENKINS_TOKEN_DOCS, jenkins_access_parameters
 
-ALL_ROBOT_FRAMEWORK_METRICS = ["source_up_to_dateness", "source_version", "test_cases", "tests"]
+ALL_ROBOT_FRAMEWORK_METRICS = ["source_up_to_dateness", "source_version", "test_cases", "test_suites", "tests"]
+
+RESULT_COLORS = {"fail": Color.NEGATIVE, "pass": Color.POSITIVE}
 
 ROBOT_FRAMEWORK = Source(
     name="Robot Framework",
@@ -16,7 +18,7 @@ ROBOT_FRAMEWORK = Source(
     "test driven development, and robotic process automation.",
     url=HttpUrl("https://robotframework.org"),
     parameters={
-        "test_result": TestResult(values=["fail", "pass", "skip"]),
+        "test_result": TestResult(metrics=["test_suites", "tests"], values=["fail", "pass", "skip"]),
         **access_parameters(
             ALL_ROBOT_FRAMEWORK_METRICS,
             source_type="Robot Framework report",
@@ -24,12 +26,25 @@ ROBOT_FRAMEWORK = Source(
         ),
     },
     entities={
+        "test_suites": Entity(
+            name="test suite",
+            attributes=[
+                EntityAttribute(name="Suite name"),
+                EntityAttribute(name="Suite documentation"),
+                EntityAttribute(name="Suite result", color=RESULT_COLORS),
+                EntityAttribute(name="Tests", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Passed", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Errored", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Failed", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Skipped", type=EntityAttributeType.INTEGER),
+            ],
+        ),
         "tests": Entity(
             name="test",
             attributes=[
                 EntityAttribute(name="Suite name"),
                 EntityAttribute(name="Test name"),
-                EntityAttribute(name="Test result", color={"fail": Color.NEGATIVE, "pass": Color.POSITIVE}),
+                EntityAttribute(name="Test result", color=RESULT_COLORS),
             ],
         ),
     },

@@ -94,6 +94,7 @@ from .jmeter_json.slow_transactions import JMeterJSONSlowTransactions
 from .jmeter_json.tests import JMeterJSONTests
 from .junit.source_up_to_dateness import JUnitSourceUpToDateness
 from .junit.test_cases import JUnitTestCases
+from .junit.test_suites import JUnitTestSuites
 from .junit.tests import JUnitTests
 from .manual_number.all_metrics import ManualNumber
 from .ncover.source_up_to_dateness import NCoverSourceUpToDateness
@@ -127,6 +128,7 @@ from .quality_time.source_version import QualityTimeSourceVersion
 from .robot_framework.source_up_to_dateness import RobotFrameworkSourceUpToDateness
 from .robot_framework.source_version import RobotFrameworkSourceVersion
 from .robot_framework.test_cases import RobotFrameworkTestCases
+from .robot_framework.test_suites import RobotFrameworkTestSuites
 from .robot_framework.tests import RobotFrameworkTests
 from .robot_framework_jenkins_plugin.source_up_to_dateness import RobotFrameworkJenkinsPluginSourceUpToDateness
 from .robot_framework_jenkins_plugin.tests import RobotFrameworkJenkinsPluginTests
@@ -152,6 +154,7 @@ from .sonarqube.uncovered_lines import SonarQubeUncoveredLines
 from .sonarqube.violations import SonarQubeViolations
 from .testng.source_up_to_dateness import TestNGSourceUpToDateness
 from .testng.test_cases import TestNGTestCases
+from .testng.test_suites import TestNGTestSuites
 from .testng.tests import TestNGTests
 from .trello.issues import TrelloIssues
 from .trello.source_up_to_dateness import TrelloSourceUpToDateness

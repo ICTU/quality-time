@@ -1,10 +1,10 @@
-"""Unit tests for the JUnit XML test report tests collector."""
+"""Unit tests for the JUnit XML tests collector."""
 
 from .base import JUnitCollectorTestCase
 
 
-class JUnitTestReportTest(JUnitCollectorTestCase):
-    """Unit tests for the JUnit XML test report metrics."""
+class JUnitTestsTest(JUnitCollectorTestCase):
+    """Unit tests for the JUnit XML tests collector."""
 
     METRIC_TYPE = "tests"
 
@@ -13,16 +13,19 @@ class JUnitTestReportTest(JUnitCollectorTestCase):
         super().setUp()
         self.expected_entities = [
             {"key": "cn:tc1", "old_key": "tc1", "name": "tc1", "class_name": "cn", "test_result": "passed"},
-            {"key": "cn:tc2", "old_key": "tc2", "name": "tc2", "class_name": "cn", "test_result": "passed"},
-            {"key": "cn:tc3", "old_key": "tc3", "name": "tc3", "class_name": "cn", "test_result": "failed"},
-            {"key": "cn:tc4", "old_key": "tc4", "name": "tc4", "class_name": "cn", "test_result": "errored"},
-            {"key": "cn:tc5", "old_key": "tc5", "name": "tc5", "class_name": "cn", "test_result": "skipped"},
+            {"key": "cn:tc2", "old_key": "tc2", "name": "tc2", "class_name": "cn", "test_result": "failed"},
+            {"key": "cn:tc3", "old_key": "tc3", "name": "tc3", "class_name": "cn", "test_result": "errored"},
+            {"key": "cn:tc4", "old_key": "tc4", "name": "tc4", "class_name": "cn", "test_result": "skipped"},
+            {"key": "cn:tc5", "old_key": "tc5", "name": "tc5", "class_name": "cn", "test_result": "errored"},
+            {"key": "cn:tc6", "old_key": "tc6", "name": "tc6", "class_name": "cn", "test_result": "failed"},
+            {"key": "cn:tc7", "old_key": "tc7", "name": "tc7", "class_name": "cn", "test_result": "skipped"},
+            {"key": "cn:tc8", "old_key": "tc8", "name": "tc8", "class_name": "cn", "test_result": "passed"},
         ]
 
     async def test_tests(self):
         """Test that the number of tests is returned."""
         response = await self.collect(get_request_text=self.JUNIT_XML)
-        self.assert_measurement(response, value="5", total="5", entities=self.expected_entities)
+        self.assert_measurement(response, value="8", total="8", entities=self.expected_entities)
 
     async def test_failed_tests(self):
         """Test that the failed tests are returned."""
@@ -30,16 +33,19 @@ class JUnitTestReportTest(JUnitCollectorTestCase):
         response = await self.collect(get_request_text=self.JUNIT_XML)
         self.assert_measurement(
             response,
-            value="1",
-            total="5",
-            entities=[{"key": "cn:tc3", "old_key": "tc3", "name": "tc3", "class_name": "cn", "test_result": "failed"}],
+            value="2",
+            total="8",
+            entities=[
+                {"key": "cn:tc2", "old_key": "tc2", "name": "tc2", "class_name": "cn", "test_result": "failed"},
+                {"key": "cn:tc6", "old_key": "tc6", "name": "tc6", "class_name": "cn", "test_result": "failed"},
+            ],
         )
 
     async def test_zipped_junit_report(self):
         """Test that the number of tests is returned from a zip with JUnit reports."""
         self.set_source_parameter("url", "junit.zip")
         response = await self.collect(get_request_content=self.zipped_report(("junit.xml", self.JUNIT_XML)))
-        self.assert_measurement(response, value="5", total="5", entities=self.expected_entities)
+        self.assert_measurement(response, value="8", total="8", entities=self.expected_entities)
 
     async def test_empty_test_suites(self):
         """Test that a JUnit XML file with an empty testsuites node works."""

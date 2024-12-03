@@ -28,6 +28,7 @@ class Unit(StrEnum):
     SPRINTS = "sprints"
     SUPPRESSED_VIOLATIONS = "suppressed violations"
     TEST_CASES = "test cases"
+    TEST_SUITES = "test suites"
     TESTS = "tests"
     TODO_AND_FIXME_COMMENTS = "todo and fixme comments"
     TRANSACTIONS = "transactions"
