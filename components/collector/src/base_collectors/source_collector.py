@@ -11,6 +11,8 @@ from typing import ClassVar, TypedDict, cast
 import aiohttp
 from packaging.version import Version
 
+from shared_data_model import DATA_MODEL
+
 from collector_utilities.date_time import days_ago, days_to_go
 from collector_utilities.exceptions import CollectorError
 from collector_utilities.functions import (
@@ -295,12 +297,25 @@ class SecurityWarningsSourceCollector(SourceCollector):
     ENTITY_SEVERITY_ATTRIBUTE = "severity"
     MAKE_ENTITY_SEVERITY_VALUE_LOWER_CASE = False
 
+    FIX_AVAILABILITY_PARAMETER = "fix_availability"
+    ENTITY_FIX_AVAILABILITY_ATTRIBUTE = "fix"
+
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the security warning in the measurement."""
         severity = str(entity[self.ENTITY_SEVERITY_ATTRIBUTE])
         if self.MAKE_ENTITY_SEVERITY_VALUE_LOWER_CASE:
             severity = severity.lower()
-        return severity in self._parameter(self.SEVERITY_PARAMETER) and super()._include_entity(entity)
+        if severity not in self._parameter(self.SEVERITY_PARAMETER):
+            return False
+        if self.FIX_AVAILABILITY_PARAMETER in DATA_MODEL.sources[self.source_type].parameters:
+            fix_availability = self._parameter(self.FIX_AVAILABILITY_PARAMETER)
+            fix = entity[self.ENTITY_FIX_AVAILABILITY_ATTRIBUTE]
+            fix_available = fix and fix != "None"
+            entity_should_have_fix_but_does_not = fix_availability == ["fix available"] and not fix_available
+            entity_should_not_have_fix_but_does = fix_availability == ["no fix available"] and fix_available
+            if entity_should_have_fix_but_does_not or entity_should_not_have_fix_but_does:
+                return False
+        return super()._include_entity(entity)
 
 
 class TimeCollector(SourceCollector):

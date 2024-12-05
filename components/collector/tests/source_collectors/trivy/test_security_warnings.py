@@ -36,7 +36,7 @@ class TrivyJSONSecurityWarningsTest(SourceCollectorTestCase):
                         "VulnerabilityID": "CVE-2019-3822",
                         "PkgName": "curl",
                         "InstalledVersion": "7.61.1-r0",
-                        "FixedVersion": "7.61.2-r2",
+                        "FixedVersion": "",
                         "Title": "curl: NTLMv2 type-3 header stack buffer overflow",
                         "Description": "libcurl versions from 7.36.0 to before 7.64.0 are vulnerable to ...",
                         "Severity": "MEDIUM",
@@ -74,7 +74,7 @@ class TrivyJSONSecurityWarningsTest(SourceCollectorTestCase):
                 "level": "MEDIUM",
                 "package_name": "curl",
                 "installed_version": "7.61.1-r0",
-                "fixed_version": "7.61.2-r2",
+                "fixed_version": "",
                 "url": "https://curl.haxx.se/docs/CVE-2019-3822.html",
             },
         ]
@@ -93,3 +93,19 @@ class TrivyJSONSecurityWarningsTest(SourceCollectorTestCase):
             with self.subTest(schema_version=schema_version):
                 response = await self.collect(get_request_json_return_value=self.vulnerabilities_json(schema_version))
                 self.assert_measurement(response, value="1", entities=[self.expected_entities()[0]])
+
+    async def test_fix_available(self):
+        """Test the number of security warnings when specifying fix availability."""
+        self.set_source_parameter("fix_availability", ["fix available"])
+        for schema_version in self.SCHEMA_VERSIONS:
+            with self.subTest(schema_version=schema_version):
+                response = await self.collect(get_request_json_return_value=self.vulnerabilities_json(schema_version))
+                self.assert_measurement(response, value="1", entities=[self.expected_entities()[0]])
+
+    async def test_fix_not_available(self):
+        """Test the number of security warnings when specifying fix availability."""
+        self.set_source_parameter("fix_availability", ["no fix available"])
+        for schema_version in self.SCHEMA_VERSIONS:
+            with self.subTest(schema_version=schema_version):
+                response = await self.collect(get_request_json_return_value=self.vulnerabilities_json(schema_version))
+                self.assert_measurement(response, value="1", entities=[self.expected_entities()[1]])

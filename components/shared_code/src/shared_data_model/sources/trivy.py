@@ -4,7 +4,7 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import Severities, access_parameters
+from shared_data_model.parameters import FixAvailability, Severities, access_parameters
 
 TRIVY_JSON = Source(
     name="Trivy JSON",
@@ -18,6 +18,7 @@ TRIVY_JSON = Source(
             values=["unknown", "low", "medium", "high", "critical"],
             metrics=["security_warnings"],
         ),
+        "fix_availability": FixAvailability(),
         **access_parameters(["security_warnings"], source_type="Trivy vulnerability report", source_type_format="JSON"),
     },
     entities={

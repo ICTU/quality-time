@@ -105,6 +105,16 @@ class Days(IntegerParameter):
     min_value: str = "1"
 
 
+class FixAvailability(MultipleChoiceParameter):
+    """Fix availability for security warnings."""
+
+    name: str = "Fix availability"
+    placeholder: str | None = "disregard fix availability"
+    metrics: list[str] = ["security_warnings"]
+    help: str | None = "Show security warnings without fix, with fix, or both."
+    values: list[str] | None = ["fix available", "no fix available"]
+
+
 class Severities(MultipleChoiceParameter):
     """Security warning severities."""
 

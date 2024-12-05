@@ -15,6 +15,24 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
     REPO_NAME = f"{PROJECT_NAME}/repo"
     SCAN_REPORT_MIME_TYPE = "application/vnd.security.vulnerability.report; version=1.1"
 
+    def setUp(self) -> None:
+        """Set up test fixtures."""
+        super().setUp()
+        self.expected_entity = {
+            "artifact": "sha256:43f789166",
+            "fixable": 0,
+            "highest_severity": "Unknown",
+            "key": "sha256:43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e",
+            "project": self.PROJECT_NAME,
+            "repository": "tianon/postgres-upgrade",
+            "tags": "",
+            "total": 1,
+            "url": (
+                "https://harbor/harbor/projects/3/repositories/tianon%2Fpostgres-upgrade/artifacts-tab/artifacts/"
+                "sha256:43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e"
+            ),
+        }
+
     async def collect_data(self):
         """Collect the (fake) Harbor contents."""
         project = self.PROJECT_NAME
@@ -84,7 +102,7 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
         self.assert_measurement(response, value="0", entities=[])
 
     async def test_scan_overview_has_unknown_report(self):
-        """Test that an exceptio is thrown if the scan report format is not recognized."""
+        """Test that an exception is thrown if the scan report format is not recognized."""
         response = await self.collect(
             get_request_json_side_effect=[
                 [{"name": self.PROJECT_NAME}],
@@ -108,26 +126,31 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
     async def test_scan_with_warnings(self):
         """Test that there are security warnings if the scan has warnings."""
         response = await self.collect_data()
-        self.assert_measurement(
-            response,
-            value="1",
-            entities=[
-                {
-                    "artifact": "sha256:43f789166",
-                    "fixable": 0,
-                    "highest_severity": "Unknown",
-                    "key": "sha256:43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e",
-                    "project": self.PROJECT_NAME,
-                    "repository": "tianon/postgres-upgrade",
-                    "tags": "",
-                    "total": 1,
-                    "url": (
-                        "https://harbor/harbor/projects/3/repositories/tianon%2Fpostgres-upgrade/artifacts-tab/artifacts/"
-                        "sha256:43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e"
-                    ),
-                },
-            ],
-        )
+        self.assert_measurement(response, value="1", entities=[self.expected_entity])
+
+    async def test_filter_severity_match(self):
+        """Test that the security warnings can be filtered by severity."""
+        self.set_source_parameter("severities", ["unknown"])
+        response = await self.collect_data()
+        self.assert_measurement(response, value="1", entities=[self.expected_entity])
+
+    async def test_filter_severity_no_match(self):
+        """Test that the security warnings can be filtered by severity."""
+        self.set_source_parameter("severities", ["high"])
+        response = await self.collect_data()
+        self.assert_measurement(response, value="0", entities=[])
+
+    async def test_fix_available(self):
+        """Test that the security warnings can be filtered by fix availability."""
+        self.set_source_parameter("fix_availability", ["fix available"])
+        response = await self.collect_data()
+        self.assert_measurement(response, value="0", entities=[])
+
+    async def test_fix_not_available(self):
+        """Test that the security warnings can be filtered by fix availability."""
+        self.set_source_parameter("fix_availability", ["no fix available"])
+        response = await self.collect_data()
+        self.assert_measurement(response, value="1", entities=[self.expected_entity])
 
     async def test_pagination(self):
         """Test that pagination works."""

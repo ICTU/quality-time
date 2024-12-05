@@ -37,6 +37,7 @@ class HarborJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSource
     """Harbor JSON collector for security warnings."""
 
     MAKE_ENTITY_SEVERITY_VALUE_LOWER_CASE = True
+    ENTITY_FIX_AVAILABILITY_ATTRIBUTE = "fix_version"
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the vulnerabilities from the Harbor JSON."""

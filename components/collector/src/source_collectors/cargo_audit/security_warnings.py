@@ -54,6 +54,7 @@ class CargoAuditSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSource
 
     SEVERITY_PARAMETER = "warning_types"
     ENTITY_SEVERITY_ATTRIBUTE = "warning_type"
+    ENTITY_FIX_AVAILABILITY_ATTRIBUTE = "versions_patched"
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the security warnings from the JSON."""

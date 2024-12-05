@@ -4,7 +4,12 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import MultipleChoiceWithAdditionParameter, Severities, access_parameters
+from shared_data_model.parameters import (
+    FixAvailability,
+    MultipleChoiceWithAdditionParameter,
+    Severities,
+    access_parameters,
+)
 
 ALL_HARBOR_METRICS = ["security_warnings"]
 HARBOR_URL = HttpUrl("https://goharbor.io")
@@ -46,6 +51,8 @@ HARBOR = Source(
             placeholder="none",
             metrics=["security_warnings"],
         ),
+        "severities": Severities(values=["unknown", "low", "medium", "high", "critical"]),
+        "fix_availability": FixAvailability(),
         **access_parameters(
             ALL_HARBOR_METRICS,
             include={"private_token": False, "landing_url": False},
@@ -82,7 +89,8 @@ HARBOR_JSON = Source(
     ),
     url=HARBOR_URL,
     parameters={
-        "severities": Severities(values=["low", "medium", "high", "critical"]),
+        "severities": Severities(values=["unknown", "low", "medium", "high", "critical"]),
+        "fix_availability": FixAvailability(),
         **access_parameters(ALL_HARBOR_METRICS, source_type="Harbor vulnerability report", source_type_format="JSON"),
     },
     entities={

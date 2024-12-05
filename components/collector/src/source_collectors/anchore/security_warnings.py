@@ -2,27 +2,18 @@
 
 from shared.utils.functions import md5_hash
 
-from base_collectors import JSONFileSourceCollector
+from base_collectors import JSONFileSourceCollector, SecurityWarningsSourceCollector
 from collector_utilities.type import JSON
 from model import Entities, Entity
 
 
-class AnchoreSecurityWarnings(JSONFileSourceCollector):
+class AnchoreSecurityWarnings(JSONFileSourceCollector, SecurityWarningsSourceCollector):
     """Anchore collector for security warnings."""
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the Anchore security warnings."""
-        severities = self._parameter("severities")
-        entities = Entities()
         vulnerabilities = json.get("vulnerabilities", []) if isinstance(json, dict) else []
-        entities.extend(
-            [
-                self._create_entity(vulnerability, filename)
-                for vulnerability in vulnerabilities
-                if vulnerability["severity"] in severities
-            ],
-        )
-        return entities
+        return Entities([self._create_entity(vulnerability, filename) for vulnerability in vulnerabilities])
 
     @staticmethod
     def _create_entity(vulnerability: dict[str, str], filename: str) -> Entity:
