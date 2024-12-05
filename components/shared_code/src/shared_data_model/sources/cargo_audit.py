@@ -4,7 +4,7 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Entity, EntityAttribute
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import MultipleChoiceParameter, access_parameters
+from shared_data_model.parameters import FixAvailability, MultipleChoiceParameter, access_parameters
 
 CARGO_AUDIT = Source(
     name="Cargo Audit",
@@ -18,6 +18,7 @@ CARGO_AUDIT = Source(
             values=["vulnerability", "unsound", "yanked"],
             metrics=["security_warnings"],
         ),
+        "fix_availability": FixAvailability(),
         **access_parameters(["security_warnings"], source_type="Cargo Audit report", source_type_format="JSON"),
     },
     entities={

@@ -11,27 +11,48 @@ class AnchoreJenkinsPluginSecurityWarningsTest(SourceCollectorTestCase):
     METRIC_TYPE = "security_warnings"
     SOURCE_TYPE = "anchore_jenkins_plugin"
 
-    async def test_warnings(self):
-        """Test the number of security warnings."""
-        self.set_source_parameter("severities", ["Low"])
-        vulnerabilities_json = {
+    def setUp(self) -> None:
+        """Create the Anchore Jenkins plugin JSON fixture."""
+        super().setUp()
+        self.job_json = {"name": "job", "lastSuccessfulBuild": {"number": 42}}
+        self.vulnerabilities_json = {
             "data": [
                 ["tag", "CVE-000", "Low", "package", "None", "https://cve-000"],
-                ["tag", "CVE-001", "Unknown", "package2", "None", "https://cve-001"],
+                ["tag", "CVE-001", "Unknown", "package2", "v1.2.3", "https://cve-001"],
             ],
         }
-        response = await self.collect(
-            get_request_json_side_effect=[{"name": "job", "lastSuccessfulBuild": {"number": 42}}, vulnerabilities_json],
-        )
+
+    def create_entity(self, cve: str, package: str, severity: str = "Low", fix: str = "None") -> dict[str, str]:
+        """Create an expected entity."""
+        return {
+            "key": md5_hash(f"tag:{cve}:{package}"),
+            "tag": "tag",
+            "cve": cve,
+            "url": f"https://{cve.lower()}",
+            "fix": fix,
+            "severity": severity,
+            "package": package,
+        }
+
+    async def test_warnings(self):
+        """Test the number of security warnings."""
+        response = await self.collect(get_request_json_side_effect=[self.job_json, self.vulnerabilities_json])
         expected_entities = [
-            {
-                "key": md5_hash("tag:CVE-000:package"),
-                "tag": "tag",
-                "cve": "CVE-000",
-                "url": "https://cve-000",
-                "fix": "None",
-                "severity": "Low",
-                "package": "package",
-            },
+            self.create_entity("CVE-000", "package"),
+            self.create_entity("CVE-001", "package2", severity="Unknown", fix="v1.2.3"),
         ]
+        self.assert_measurement(response, value="2", entities=expected_entities)
+
+    async def test_filter_warnings_by_severity(self):
+        """Test that the security warnings can be filtered by severity."""
+        self.set_source_parameter("severities", ["Low"])
+        response = await self.collect(get_request_json_side_effect=[self.job_json, self.vulnerabilities_json])
+        expected_entities = [self.create_entity("CVE-000", "package")]
+        self.assert_measurement(response, value="1", entities=expected_entities)
+
+    async def test_filter_warnings_by_fix_availability(self):
+        """Test that the security warnings can be filtered by fix availability."""
+        self.set_source_parameter("fix_availability", ["no fix available"])
+        response = await self.collect(get_request_json_side_effect=[self.job_json, self.vulnerabilities_json])
+        expected_entities = [self.create_entity("CVE-000", "package")]
         self.assert_measurement(response, value="1", entities=expected_entities)

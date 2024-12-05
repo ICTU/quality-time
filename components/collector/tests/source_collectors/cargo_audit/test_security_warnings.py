@@ -105,3 +105,15 @@ class CargoAuditSecurityWarningsTest(SourceCollectorTestCase):
         self.set_source_parameter("warning_types", ["vulnerability", "unsound"])
         response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
         self.assert_measurement(response, value="2", entities=self.expected_entities[:2])
+
+    async def test_warnings_with_fix(self):
+        """Test that the security warnings can be filtered by fix availability."""
+        self.set_source_parameter("fix_availability", ["fix available"])
+        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
+        self.assert_measurement(response, value="1", entities=self.expected_entities[:1])
+
+    async def test_warnings_without_fix(self):
+        """Test that the security warnings can be filtered by fix availability."""
+        self.set_source_parameter("fix_availability", ["no fix available"])
+        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
+        self.assert_measurement(response, value="2", entities=self.expected_entities[1:])

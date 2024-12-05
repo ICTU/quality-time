@@ -4,7 +4,7 @@ from abc import ABC
 from typing import TypedDict, cast
 from urllib.parse import quote, unquote
 
-from base_collectors import SourceCollector
+from base_collectors import SecurityWarningsSourceCollector, SourceCollector
 from collector_utilities.exceptions import CollectorError
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
@@ -59,8 +59,12 @@ class ScanOverview(TypedDict):
     summary: dict[str, int]
 
 
-class HarborSecurityWarnings(HarborBase):
+class HarborSecurityWarnings(HarborBase, SecurityWarningsSourceCollector):
     """Harbor collector for security warnings."""
+
+    ENTITY_SEVERITY_ATTRIBUTE = "highest_severity"
+    MAKE_ENTITY_SEVERITY_VALUE_LOWER_CASE = True
+    ENTITY_FIX_AVAILABILITY_ATTRIBUTE = "fixable"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend because we need to do multiple requests to get all the data we need."""

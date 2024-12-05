@@ -59,6 +59,7 @@ class TrivyJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceC
     SEVERITY_PARAMETER = "levels"
     ENTITY_SEVERITY_ATTRIBUTE = "level"
     MAKE_ENTITY_SEVERITY_VALUE_LOWER_CASE = True
+    ENTITY_FIX_AVAILABILITY_ATTRIBUTE = "fixed_version"
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the vulnerabilities from the Trivy JSON."""

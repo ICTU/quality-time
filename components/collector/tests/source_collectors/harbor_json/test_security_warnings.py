@@ -69,3 +69,15 @@ class HarborJSONSecurityWarningsTest(SourceCollectorTestCase):
         self.set_source_parameter("severities", ["high", "critical"])
         response = await self.collect(get_request_json_return_value=self.VULNERABILITIES_JSON)
         self.assert_measurement(response, value="1", entities=[self.EXPECTED_ENTITIES[1]])
+
+    async def test_warning_fix_available(self):
+        """Test the number of security warnings when filtering by fix availability."""
+        self.set_source_parameter("fix_availability", ["fix available"])
+        response = await self.collect(get_request_json_return_value=self.VULNERABILITIES_JSON)
+        self.assert_measurement(response, value="1", entities=[self.EXPECTED_ENTITIES[0]])
+
+    async def test_warning_fix_not_available(self):
+        """Test the number of security warnings when filtering by fix availability."""
+        self.set_source_parameter("fix_availability", ["no fix available"])
+        response = await self.collect(get_request_json_return_value=self.VULNERABILITIES_JSON)
+        self.assert_measurement(response, value="1", entities=[self.EXPECTED_ENTITIES[1]])

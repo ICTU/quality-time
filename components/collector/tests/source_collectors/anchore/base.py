@@ -13,11 +13,10 @@ class AnchoreTestCase(SourceCollectorTestCase):
         super().setUp()
         self.url = "https://cve"
         self.set_source_parameter("details_url", "image-details.json")
-        self.set_source_parameter("severities", ["Low"])
         self.vulnerabilities_json = {
             "vulnerabilities": [
                 {"vuln": "CVE-000", "package": "package", "fix": "None", "url": self.url, "severity": "Low"},
-                {"vuln": "CVE-000", "package": "package2", "fix": "None", "url": self.url, "severity": "Unknown"},
+                {"vuln": "CVE-000", "package": "package2", "fix": "v1.2.3", "url": self.url, "severity": "Unknown"},
             ],
         }
         self.details_json = [{"analyzed_at": "2020-02-07T22:53:43Z"}]
