@@ -4,7 +4,7 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import URL, Severities, access_parameters
+from shared_data_model.parameters import URL, FixStatus, Severities, access_parameters
 
 from .jenkins import JENKINS_TOKEN_DOCS, jenkins_access_parameters
 
@@ -33,6 +33,7 @@ ANCHORE = Source(
             metrics=["source_up_to_dateness"],
         ),
         "severities": SEVERITIES,
+        "fix_status": FixStatus(),
         **access_parameters(
             ALL_ANCHORE_METRICS,
             source_type="an Anchore vulnerability report",
