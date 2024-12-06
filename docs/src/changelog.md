@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- When measuring test cases with Visual Studio TRX as source, search all test category items for test case ids, instead of cutting the search short after the first match. Fixes [#10460](https://github.com/ICTU/quality-time/issues/10460).
+
 ## v5.20.0 - 2024-12-05
 
 ### Added

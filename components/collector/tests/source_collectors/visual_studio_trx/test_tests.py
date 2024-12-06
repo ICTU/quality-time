@@ -14,7 +14,7 @@ class VisualStudioTRXTestReportTest(VisualStudioTRXCollectorTestCase):
         self.expected_entities = [
             {
                 "key": "446a0829-8d87-1082-ab45-b2ab9f846325",
-                "name": "BestaandeZaakOpenen (JIRA-224)",
+                "name": "BestaandeZaakOpenen (JIRA-224, JIRA-225)",
                 "test_result": "Passed",
             },
             {

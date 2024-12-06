@@ -39,9 +39,10 @@ class VisualStudioTRXTests(XMLFileSourceCollector):
     def __entity(test: Element, result: str, namespaces: Namespaces) -> Entity:
         """Transform a test case into a test entity."""
         name = test.attrib["name"]
-        for category in test.findall(".//ns:TestCategoryItem", namespaces):
-            if match := re.search(TestCases.TEST_CASE_KEY_RE, category.attrib["TestCategory"]):
-                name += f" ({match[0]})"
-                break
+        category_items = test.findall(".//ns:TestCategoryItem", namespaces)
+        categories = [item.attrib["TestCategory"] for item in category_items]
+        matches = [match[0] for category in categories if (match := re.search(TestCases.TEST_CASE_KEY_RE, category))]
+        if matches:
+            name += f" ({', '.join(sorted(matches))})"
         key = test.attrib["id"]
         return Entity(key=key, name=name, test_result=result)

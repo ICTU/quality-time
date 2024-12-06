@@ -41,9 +41,15 @@ class VisualStudioTRXCollectorTestCase(SourceCollectorTestCase):
         <TestDefinitions>
             <UnitTest name="BestaandeZaakOpenen" id="446a0829-8d87-1082-ab45-b2ab9f846325">
                 <TestCategory>
-                    <TestCategoryItem TestCategory="FeatureTag" />
-                    <TestCategoryItem TestCategory="ScenarioTag1" />
-                    <TestCategoryItem TestCategory="JIRA-224" />
+                    <TestCategoryItem TestCategory="This is not an identifier" />
+                    <TestCategoryItem TestCategory="This is not an-identifier-1" />
+                    <TestCategoryItem TestCategory="This is not an identifier-1-2" />
+                    <TestCategoryItem TestCategory="This is -not-3 an identifier" />
+                    <TestCategoryItem TestCategory="This is not-4- an identifier" />
+                    <TestCategoryItem TestCategory="This is 5-not an identifier" />
+                    <TestCategoryItem TestCategory="This is not an identifier 6" />
+                    <TestCategoryItem TestCategory="This is an identifier: JIRA-224" />
+                    <TestCategoryItem TestCategory="JIRA-225 is also an identifier" />
                 </TestCategory>
                 <Execution id="daf369f6-7c54-482d-a12c-68357679bd78" />
                 <TestMethod

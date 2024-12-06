@@ -59,8 +59,9 @@ class TestCases(MetricCollector):
         "timeout": "errored",
         "warning": "errored",
     }
-    # Regular expression to identify test case ids in entity attributes:
-    TEST_CASE_KEY_RE = re.compile(r"\w+\-\d+")
+    # Regular expression to identify test case ids in entity attributes. Matches identifiers of the form BAR-123,
+    # while ensuring they are not part of longer identifiers such as FOO-BAR-123 or BAR-123-456:
+    TEST_CASE_KEY_RE = re.compile(r"(?<![-\w])\b[A-Za-z]+\-\d+\b(?![-\w])")
     ENTITY_ATTRIBUTES_TO_SEARCH = ("name", "test_name", "description")
     # The supported source types for test cases and test reports:
     TEST_CASE_SOURCE_TYPES: ClassVar[list[str]] = ["jira"]
