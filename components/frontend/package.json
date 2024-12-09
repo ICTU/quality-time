@@ -24,7 +24,7 @@
         "react-timeago": "^7.2.0",
         "react-toastify": "^10.0.6",
         "semantic-ui-react": "^2.1.5",
-        "victory": "^37.3.2"
+        "victory": "^37.3.3"
     },
     "scripts": {
         "start": "react-scripts start",
