@@ -28,7 +28,7 @@ optional-dependencies.tools = [
     "pyproject-fmt==2.5.0",
     "ruff==0.8.2",
     "vale==3.0.3.0",        # Documentation grammar and style checker
-    "vulture==2.13",
+    "vulture==2.14",
 ]
 
 [tool.ruff]

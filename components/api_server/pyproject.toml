@@ -17,7 +17,7 @@ dependencies = [
     "requests==2.32.3",
 ]
 optional-dependencies.dev = [
-    "coverage==7.6.8",
+    "coverage==7.6.9",
     "pydantic==2.10.3",                # Needed for importing the data model in the tests from the shared code component
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.20240205",
@@ -31,7 +31,7 @@ optional-dependencies.tools = [
     "pip-audit==2.7.3",
     "pyproject-fmt==2.5.0",
     "ruff==0.8.2",
-    "vulture==2.13",
+    "vulture==2.14",
 ]
 
 [tool.ruff]
