@@ -79,7 +79,7 @@ class AxeCoreViolations(JSONFileSourceCollector, AxeViolationsCollector):
         """Parse the violations."""
         entity_attributes = []
         for result_type, violations_by_result_type in violations.items():
-            for violation in violations_by_result_type:
+            for violation in violations_by_result_type or []:
                 entity_attributes.extend(self.__parse_violation(violation, result_type, url))
         return entity_attributes
 

@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 ### Fixed
 
 - When measuring test cases with Visual Studio TRX as source, search all test category items for test case ids, instead of cutting the search short after the first match. Fixes [#10460](https://github.com/ICTU/quality-time/issues/10460).
+- Correctly parse empty Axe-core JSON report. Fixes [#10487](https://github.com/ICTU/quality-time/issues/10487).
 
 ## v5.20.0 - 2024-12-05
 

@@ -94,8 +94,14 @@ class AxeCoreViolationsTest(AxeCoreTestCase):
         self.assert_measurement(response, value="2", entities=self.expected_entities)
 
     async def test_no_issues(self):
-        """Test zero issues."""
+        """Test zero issues, with an empty violations list."""
         self.json["violations"] = []
+        response = await self.collect(get_request_json_return_value=self.json)
+        self.assert_measurement(response, value="0", entities=[])
+
+    async def test_no_violations_key(self):
+        """Test zero issues, without a violations list."""
+        del self.json["violations"]
         response = await self.collect(get_request_json_return_value=self.json)
         self.assert_measurement(response, value="0", entities=[])
 
