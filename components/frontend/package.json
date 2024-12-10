@@ -4,8 +4,8 @@
     "private": true,
     "proxy": "http://127.0.0.1:5001",
     "dependencies": {
-        "@emotion/react": "^11.13.5",
-        "@emotion/styled": "^11.13.5",
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.0",
         "@mui/icons-material": "^6.1.10",
         "@mui/lab": "^6.0.0-beta.17",
         "@mui/material": "^6.1.10",
@@ -24,7 +24,7 @@
         "react-timeago": "^7.2.0",
         "react-toastify": "^10.0.6",
         "semantic-ui-react": "^2.1.5",
-        "victory": "^37.3.3"
+        "victory": "^37.3.4"
     },
     "scripts": {
         "start": "react-scripts start",
