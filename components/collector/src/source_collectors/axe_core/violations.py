@@ -57,9 +57,10 @@ class AxeCoreViolations(JSONFileSourceCollector, AxeViolationsCollector):
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the violations."""
+        result_types = self._parameter("result_types")
         entity_attributes = []
         for test_result in self.__parse_test_results(json):
-            violations = {result_type: test_result.get(result_type) for result_type in self._parameter("result_types")}
+            violations = {result_type: test_result.get(result_type, []) for result_type in result_types}
             url = test_result.get("url", "")
             entity_attributes.extend(self.__parse_violations(violations, url))
         return Entities(Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes)
