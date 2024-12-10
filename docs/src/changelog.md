@@ -18,11 +18,17 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - When measuring test cases with Visual Studio TRX as source, search all test category items for test case ids, instead of cutting the search short after the first match. Fixes [#10460](https://github.com/ICTU/quality-time/issues/10460).
 
+### Added
+
+- Allow for filtering dependencies and security warnings by the availability of a fix or upgrade. Closes [#10323](https://github.com/ICTU/quality-time/issues/10323).
+
 ## v5.20.0 - 2024-12-05
 
 ### Added
 
 - Add a new metric 'test suites' that can be used to count test suites (or test scenarios in Robot Framework parlance). Test suites can be filtered by test result. Supporting sources are Robot Framework, JUnit, and TestNG. Closes [#10078](https://github.com/ICTU/quality-time/issues/10078).
+
+## v5.20.0 - 2024-12-05
 
 ### Changed
 

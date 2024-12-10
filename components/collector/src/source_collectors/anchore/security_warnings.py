@@ -12,17 +12,8 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
 
     def _parse_json(self, json: JSON, filename: str) -> Entities:
         """Override to parse the Anchore security warnings."""
-        severities = self._parameter("severities")
-        entities = Entities()
         vulnerabilities = json.get("vulnerabilities", []) if isinstance(json, dict) else []
-        entities.extend(
-            [
-                self._create_entity(vulnerability, filename)
-                for vulnerability in vulnerabilities
-                if vulnerability["severity"] in severities
-            ],
-        )
-        return entities
+        return Entities([self._create_entity(vulnerability, filename) for vulnerability in vulnerabilities])
 
     @staticmethod
     def _create_entity(vulnerability: dict[str, str], filename: str) -> Entity:
@@ -39,3 +30,11 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector):
             fix=vulnerability["fix"],
             url=vulnerability["url"],
         )
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether to include the entity in the measurement."""
+        if entity["severity"] not in self._parameter("severities"):
+            return False
+        fix_status = self._parameter("fix_status")
+        has_fix = entity["fix"] and entity["fix"] != "None"
+        return ("fix available" in fix_status and has_fix) or ("fix not available" in fix_status and not has_fix)
