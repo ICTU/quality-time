@@ -23,6 +23,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - Allow for filtering dependencies and security warnings by the availability of a fix or upgrade. Closes [#10323](https://github.com/ICTU/quality-time/issues/10323).
 
+### Changed
+
+- Support for Checkmarx CxSAST as source for metrics is deprecated and marked for removal in the future. Closes [#10383](https://github.com/ICTU/quality-time/issues/10383).
+
 ## v5.20.0 - 2024-12-05
 
 ### Added

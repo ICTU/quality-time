@@ -4,7 +4,7 @@ import { useContext } from "react"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { SingleChoiceInput } from "../fields/SingleChoiceInput"
-import { Header } from "../semantic_ui_react_wrappers"
+import { Header, Label } from "../semantic_ui_react_wrappers"
 import { dataModelPropType, sourceTypePropType } from "../sharedPropTypes"
 import { Logo } from "./Logo"
 
@@ -29,6 +29,7 @@ function sourceTypeOption(key, sourceType) {
                 <Header.Content>
                     <Logo logo={key} alt={sourceType.name} />
                     {sourceType.name}
+                    {sourceType.deprecated && <Label color="yellow">Deprecated</Label>}
                     <Header.Subheader>{sourceTypeDescription(sourceType)}</Header.Subheader>
                 </Header.Content>
             </Header>

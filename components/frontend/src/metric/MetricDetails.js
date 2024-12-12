@@ -128,6 +128,7 @@ export function MetricDetails({
     const metric = subject.metrics[metric_uuid]
     const lastMeasurement = measurements[measurements.length - 1]
     let anyError = lastMeasurement?.sources.some((source) => source.connection_error || source.parse_error)
+    let anyWarning = Object.values(metric.sources).some((source) => dataModel.sources[source.type].deprecated)
     anyError =
         anyError ||
         Object.values(metric.sources ?? {}).some(
@@ -156,7 +157,7 @@ export function MetricDetails({
                 changed_fields={changed_fields}
                 reload={reload}
             />,
-            { iconName: "server", error: Boolean(anyError) },
+            { iconName: "server", error: Boolean(anyError), warning: Boolean(anyWarning) },
         ),
         tabPane(
             "Technical debt",

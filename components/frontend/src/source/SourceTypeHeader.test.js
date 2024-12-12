@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 
 import { SourceTypeHeader } from "./SourceTypeHeader"
 
-function renderSourceTypeHeader(documentation, metricTypeId) {
+function renderSourceTypeHeader(documentation, metricTypeId, deprecated) {
     render(
         <SourceTypeHeader
             metricTypeId={metricTypeId}
@@ -11,6 +11,7 @@ function renderSourceTypeHeader(documentation, metricTypeId) {
                 description: "Description",
                 documentation: documentation,
                 supported_versions_description: ">=1.0",
+                deprecated: deprecated,
             }}
         />,
     )
@@ -41,4 +42,14 @@ it("points users to specific information in the docs if the information is for t
 it("shows the supported source versions", () => {
     renderSourceTypeHeader()
     expect(screen.getAllByText(/Supported Source type versions: >=1.0/).length).toBe(1)
+})
+
+it("does not show the source as deprecated if it is not deprecated", () => {
+    renderSourceTypeHeader()
+    expect(screen.queryAllByText(/Deprecated/).length).toBe(0)
+})
+
+it("shows the source as deprecated if it is deprecated", () => {
+    renderSourceTypeHeader({}, null, true)
+    expect(screen.getAllByText(/Deprecated/).length).toBe(1)
 })

@@ -11,6 +11,8 @@ CXSAST = Source(
     name="Checkmarx CxSAST",
     description="Static analysis software to identify security vulnerabilities in both custom code and open source "
     "components.",
+    deprecated=True,
+    deprecation_url=HttpUrl("https://github.com/ICTU/quality-time/issues/10383"),
     url=HttpUrl("https://checkmarx.com/glossary/static-application-security-testing-sast/"),
     parameters={
         "project": StringParameter(

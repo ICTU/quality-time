@@ -170,6 +170,12 @@ def source_section(source: Source, source_key: str, level: int) -> str:
     if source.supported_versions_description:
         title = f"Supported {source.name} versions"
         markdown += admonition(source.supported_versions_description, title, "important")
+    if source.deprecated:
+        deprecation_message = (
+            f"Support for using {source.name} as source is deprecated. "
+            f"See this [GitHub issue]({source.deprecation_url}) for more information."
+        )
+        markdown += admonition(deprecation_message, "Deprecated", "caution")
     supported_metrics_markdown = ""
     metrics = [metric for metric in DATA_MODEL.metrics.values() if source_key in metric.sources]
     for metric in sorted(metrics, key=get_model_name):

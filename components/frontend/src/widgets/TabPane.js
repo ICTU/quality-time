@@ -7,9 +7,13 @@ import { Menu } from "semantic-ui-react"
 import { DarkMode } from "../context/DarkMode"
 import { Icon, Label, Tab } from "../semantic_ui_react_wrappers"
 
-function FocusableTab({ error, iconName, image, label }) {
+function FocusableTab({ error, iconName, image, label, warning }) {
     const className = useContext(DarkMode) ? "tabbutton inverted" : "tabbutton"
-    const tabLabel = error ? <Label color="red">{label}</Label> : label
+    let tabLabel = label
+    if (error || warning) {
+        const color = error ? "red" : "yellow"
+        tabLabel = <Label color={color}>{label}</Label>
+    }
     return (
         <>
             {iconName ? <Icon name={iconName} size="large" /> : image}
@@ -22,6 +26,7 @@ FocusableTab.propTypes = {
     iconName: string,
     image: element,
     label: oneOfType([element, string]),
+    warning: bool,
 }
 
 export function tabPane(label, pane, options) {
@@ -34,6 +39,7 @@ export function tabPane(label, pane, options) {
                     iconName={options?.iconName}
                     image={options?.image}
                     label={label}
+                    warning={options?.warning}
                 />
             </Menu.Item>
         ),
