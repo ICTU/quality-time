@@ -1,6 +1,7 @@
+import HelpIcon from "@mui/icons-material/Help"
 import { bool, string } from "prop-types"
 
-import { Icon, Popup } from "../semantic_ui_react_wrappers"
+import { Popup } from "../semantic_ui_react_wrappers"
 import { labelPropType, popupContentPropType } from "../sharedPropTypes"
 
 export function LabelWithHelp({ labelId, labelFor, label, help, hoverable }) {
@@ -11,7 +12,7 @@ export function LabelWithHelp({ labelId, labelFor, label, help, hoverable }) {
                 hoverable={hoverable}
                 on={["hover", "focus"]}
                 content={help}
-                trigger={<Icon data-testid="help-icon" tabIndex="0" name="help circle" />}
+                trigger={<HelpIcon fontSize="inherit" data-testid="help-icon" tabIndex="0" />}
                 wide
             />
         </label>

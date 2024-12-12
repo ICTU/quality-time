@@ -1,6 +1,6 @@
+import HelpIcon from "@mui/icons-material/Help"
 import { string } from "prop-types"
 
-import { Icon } from "../semantic_ui_react_wrappers"
 import { labelPropType } from "../sharedPropTypes"
 import { HyperLink } from "./HyperLink"
 
@@ -9,7 +9,7 @@ export function LabelWithHyperLink({ labelId, label, url }) {
         <label id={labelId}>
             {label}{" "}
             <HyperLink url={url}>
-                <Icon name="help circle" link tabIndex="0" />
+                <HelpIcon fontSize="inherit" tabIndex="0" />
             </HyperLink>
         </label>
     )
