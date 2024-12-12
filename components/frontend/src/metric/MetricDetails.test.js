@@ -43,6 +43,7 @@ const dataModel = {
     sources: {
         source_type: {
             name: "The source",
+            deprecated: true,
             parameters: {},
             parameter_layout: {
                 all: {
@@ -164,6 +165,11 @@ it("removes the existing hashtag from the URL to share", async () => {
 it("displays whether sources have errors", async () => {
     await renderMetricDetails(null, "Connection error")
     expect(screen.getByText(/Sources/)).toHaveClass("red label")
+})
+
+it("displays whether sources have warnings", async () => {
+    await renderMetricDetails()
+    expect(screen.getByText(/Sources/)).toHaveClass("yellow label")
 })
 
 it("moves the metric", async () => {

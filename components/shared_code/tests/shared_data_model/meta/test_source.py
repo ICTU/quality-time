@@ -28,10 +28,18 @@ class SourceTest(MetaModelTestCase):
         )
 
     def test_missing_url_when_landing_url(self):
-        """Test that a source that has a landing url also has a url parameter."""
+        """Test that a source that has a landing URL also has a URL parameter."""
         extra_model_kwargs = {
             "parameters": {
                 "landing_url": {"name": "URL", "type": "url", "metrics": ["metric"]},
             },
         }
         self.check_source_validation_error("Source Source has a landing URL but no URL", **extra_model_kwargs)
+
+    def test_missing_url_when_deprecated(self):
+        """Test that a source that is deprecated also has a deprecation URL parameter."""
+        extra_model_kwargs = {"deprecated": True, "parameters": {}}
+        self.check_source_validation_error(
+            "Source Source is deprecated but has no deprecation URL",
+            **extra_model_kwargs,
+        )

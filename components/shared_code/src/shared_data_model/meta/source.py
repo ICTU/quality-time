@@ -27,10 +27,12 @@ class Source(DescribedModel):
     entities: dict[str, Entity] = {}
     issue_tracker: bool | None = False
     supported_versions_description: str | None = None  # The source versions that Quality-time supports, e.g. "≥10.2"
+    deprecated: bool | None = False
+    deprecation_url: HttpUrl | None = None  # URL to a GitHub issue
 
     @model_validator(mode="after")
     def check_parameters(self) -> Self:
-        """Check that if the source has a landing URL parameter it also has a URL parameter."""
+        """Check the consistency of the source parameters."""
         if "landing_url" in self.parameters and "url" not in self.parameters:
             msg = f"Source {self.name} has a landing URL but no URL"
             raise ValueError(msg)
@@ -43,4 +45,12 @@ class Source(DescribedModel):
                         f"{parameter_to_validate_on}"
                     )
                     raise ValueError(msg)
+        return self
+
+    @model_validator(mode="after")
+    def check_deprecation_url(self) -> Self:
+        """Check that deprecated sources have a deprecation URL."""
+        if self.deprecated and self.deprecation_url is None:
+            msg = f"Source {self.name} is deprecated but has no deprecation URL"
+            raise ValueError(msg)
         return self

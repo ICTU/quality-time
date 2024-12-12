@@ -1,6 +1,6 @@
 import { string } from "prop-types"
 
-import { Header, Icon } from "../semantic_ui_react_wrappers"
+import { Header, Icon, Label } from "../semantic_ui_react_wrappers"
 import { sourceTypePropType } from "../sharedPropTypes"
 import { slugify } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
@@ -18,6 +18,7 @@ export function SourceTypeHeader({ metricTypeId, sourceTypeId, sourceType }) {
             <Header.Content>
                 <Logo logo={sourceTypeId} alt={sourceType.name} />
                 {sourceType.name}
+                {sourceType.deprecated && <Label color="yellow">Deprecated</Label>}
                 <Header.Subheader>
                     {`${sourceTypeDescription(sourceType)} `}
                     <HyperLink url={url}>

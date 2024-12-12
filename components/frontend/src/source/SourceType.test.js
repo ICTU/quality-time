@@ -25,6 +25,7 @@ const dataModel = {
         },
         gitlab: {
             name: "GitLab",
+            deprecated: true,
         },
         unsupported: {
             name: "Unsupported",
@@ -67,4 +68,11 @@ it("shows the supported source versions", async () => {
         renderSourceType("violations", "sonarqube")
     })
     expect(screen.queryAllByText(/Supported SonarQube versions: >=8.2/).length).toBe(1)
+})
+
+it("shows sources as deprecated if they are deprecated", async () => {
+    await act(async () => {
+        renderSourceType("violations", "sonarqube")
+    })
+    expect(screen.getAllByText(/Deprecated/).length).toBe(1)
 })

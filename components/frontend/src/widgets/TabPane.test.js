@@ -23,6 +23,11 @@ it("shows the tab red when there is an error", () => {
     expect(screen.getByText("Tab").className).toEqual(expect.stringContaining("red"))
 })
 
+it("shows the tab yellow when there is a warning", () => {
+    render(<Tab panes={[tabPane("Tab", <p>Pane</p>, { warning: true })]} />)
+    expect(screen.getByText("Tab").className).toEqual(expect.stringContaining("yellow"))
+})
+
 it("shows an icon", () => {
     const { container } = render(<Tab panes={[tabPane("Tab", <p>Pane</p>, { iconName: "server" })]} />)
     expect(container.firstChild.firstChild.firstChild.firstChild.className).toEqual(expect.stringContaining("server"))
