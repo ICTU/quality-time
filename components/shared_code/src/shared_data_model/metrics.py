@@ -135,7 +135,7 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
     change-your-default-branch).""",
         unit=Unit.BRANCHES,
         near_target="5",
-        sources=["azure_devops", "gitlab", "manual_number"],
+        sources=["azure_devops", "bitbucket", "gitlab", "manual_number"],
         tags=[Tag.CI],
     ),
     "issues": Metric(

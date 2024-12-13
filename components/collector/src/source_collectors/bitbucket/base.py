@@ -1,17 +1,8 @@
 """Bitbucket collector base classes."""
 
 from abc import ABC
-from dataclasses import dataclass, fields
-from datetime import datetime, timedelta
-from typing import cast
-
-from dateutil.tz import tzutc
-
-from shared.utils.date_time import now
 
 from base_collectors import SourceCollector
-from collector_utilities.date_time import parse_datetime
-from collector_utilities.exceptions import CollectorError
 from collector_utilities.functions import add_query, match_string_or_regular_expression
 from collector_utilities.type import URL, Job
 from model import Entities, Entity, SourceResponses

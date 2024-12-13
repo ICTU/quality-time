@@ -1,9 +1,5 @@
 """Bitbucket unit test base classes."""
 
-from datetime import datetime
-
-from dateutil.tz import tzutc
-
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 

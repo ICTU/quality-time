@@ -22,6 +22,7 @@ from .azure_devops.unused_jobs import AzureDevopsUnusedJobs
 from .azure_devops.user_story_points import AzureDevopsUserStoryPoints
 from .bandit.security_warnings import BanditSecurityWarnings
 from .bandit.source_up_to_dateness import BanditSourceUpToDateness
+from .bitbucket.inactive_branches import BitbucketInactiveBranches
 from .calendar.source_up_to_dateness import CalendarSourceUpToDateness
 from .calendar.time_remaining import CalendarTimeRemaining
 from .cargo_audit.security_warnings import CargoAuditSecurityWarnings
