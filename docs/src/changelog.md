@@ -21,7 +21,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Added
 
-- Allow for filtering dependencies and security warnings by the availability of a fix or upgrade. Closes [#10323](https://github.com/ICTU/quality-time/issues/10323).
+- Allow for filtering security warnings by the availability of a fix, for sources that have that information. Closes [#10323](https://github.com/ICTU/quality-time/issues/10323).
 
 ### Changed
 
