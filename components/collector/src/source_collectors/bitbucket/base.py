@@ -26,13 +26,6 @@ class BitbucketBase(SourceCollector, ABC):
         """Override to return None, as the private token is passed as header."""
         return None
 
-    def _headers(self) -> dict[str, str]:
-        """Extend to add the private token, if any, to the headers."""
-        headers = super()._headers()
-        if private_token := self._parameter("private_token"):
-            headers["Private-Token"] = str(private_token)
-        return headers
-
     async def _next_urls(self, responses: SourceResponses) -> list[URL]:
         """Return the next (pagination) links from the responses."""
         return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
