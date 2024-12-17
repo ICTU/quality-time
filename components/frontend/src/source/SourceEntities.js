@@ -1,11 +1,12 @@
 import "./SourceEntities.css"
 
+import HelpIcon from "@mui/icons-material/Help"
 import { bool, func, object, string } from "prop-types"
 import { useContext, useState } from "react"
 import { Message } from "semantic-ui-react"
 
 import { DataModel } from "../context/DataModel"
-import { Button, Icon, Popup, Table } from "../semantic_ui_react_wrappers"
+import { Button, Popup, Table } from "../semantic_ui_react_wrappers"
 import {
     alignmentPropType,
     childrenPropType,
@@ -146,7 +147,7 @@ function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
                     trigger={
                         <span>
                             &nbsp;
-                            <Icon role="tooltip" aria-label="help" tabIndex="0" name="help circle" />
+                            <HelpIcon fontSize="inherit" sx={{ verticalAlign: "middle" }} tabIndex="0" />
                         </span>
                     }
                     content={entityAttribute.help}

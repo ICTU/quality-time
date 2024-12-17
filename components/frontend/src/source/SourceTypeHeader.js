@@ -1,9 +1,9 @@
 import { string } from "prop-types"
 
-import { Header, Icon, Label } from "../semantic_ui_react_wrappers"
+import { Header, Label } from "../semantic_ui_react_wrappers"
 import { sourceTypePropType } from "../sharedPropTypes"
 import { slugify } from "../utils"
-import { HyperLink } from "../widgets/HyperLink"
+import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
 import { Logo } from "./Logo"
 import { sourceTypeDescription } from "./SourceType"
 
@@ -21,9 +21,7 @@ export function SourceTypeHeader({ metricTypeId, sourceTypeId, sourceType }) {
                 {sourceType.deprecated && <Label color="yellow">Deprecated</Label>}
                 <Header.Subheader>
                     {`${sourceTypeDescription(sourceType)} `}
-                    <HyperLink url={url}>
-                        Read the Docs <Icon name="external" link />
-                    </HyperLink>
+                    <ReadTheDocsLink url={url} />
                     {howToConfigure}
                 </Header.Subheader>
             </Header.Content>

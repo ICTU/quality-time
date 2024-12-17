@@ -152,7 +152,7 @@ it("renders a help url", () => {
 
 it("renders a help text", async () => {
     renderSourceParameter({ help: "Help text" })
-    await userEvent.hover(screen.queryByTestId("help-icon"))
+    await userEvent.hover(screen.queryByTestId("HelpIcon"))
     await waitFor(() => {
         expect(screen.queryAllByText(/Help text/).length).toBe(1)
     })
