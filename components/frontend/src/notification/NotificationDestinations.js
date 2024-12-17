@@ -1,3 +1,4 @@
+import { Stack } from "@mui/material"
 import { func, objectOf, string } from "prop-types"
 import { Grid } from "semantic-ui-react"
 
@@ -8,9 +9,11 @@ import {
 } from "../api/notification"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { StringInput } from "../fields/StringInput"
-import { Message, Segment } from "../semantic_ui_react_wrappers"
+import { Message } from "../semantic_ui_react_wrappers"
 import { destinationPropType } from "../sharedPropTypes"
-import { AddButton, DeleteButton } from "../widgets/Button"
+import { ButtonRow } from "../widgets/ButtonRow"
+import { AddButton } from "../widgets/buttons/AddButton"
+import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { HyperLink } from "../widgets/HyperLink"
 import { LabelWithHelp } from "../widgets/LabelWithHelp"
 
@@ -19,7 +22,7 @@ function NotificationDestination({ destination, destination_uuid, reload, report
         "https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook"
     const teams_hyperlink = <HyperLink url={help_url}>Microsoft Teams</HyperLink>
     return (
-        <Segment vertical key={destination_uuid}>
+        <Stack key={destination_uuid} direction="column" spacing={2}>
             <Grid stackable>
                 <Grid.Row columns={2}>
                     <Grid.Column width={6}>
@@ -61,23 +64,21 @@ function NotificationDestination({ destination, destination_uuid, reload, report
                         />
                     </Grid.Column>
                 </Grid.Row>
-                <ReadOnlyOrEditable
-                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                    editableComponent={
-                        <Grid.Row>
-                            <Grid.Column>
-                                <DeleteButton
-                                    itemType="notification destination"
-                                    onClick={() =>
-                                        delete_notification_destination(report_uuid, destination_uuid, reload)
-                                    }
-                                />
-                            </Grid.Column>
-                        </Grid.Row>
-                    }
-                />
             </Grid>
-        </Segment>
+            <ReadOnlyOrEditable
+                requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                editableComponent={
+                    <ButtonRow
+                        rightButton={
+                            <DeleteButton
+                                itemType="notification destination"
+                                onClick={() => delete_notification_destination(report_uuid, destination_uuid, reload)}
+                            />
+                        }
+                    />
+                }
+            />
+        </Stack>
     )
 }
 NotificationDestination.propTypes = {
@@ -114,12 +115,10 @@ export function NotificationDestinations({ destinations, reload, report_uuid }) 
                 key="1"
                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
                 editableComponent={
-                    <Segment vertical>
-                        <AddButton
-                            itemType="notification destination"
-                            onClick={() => add_notification_destination(report_uuid, reload)}
-                        />
-                    </Segment>
+                    <AddButton
+                        itemType="notification destination"
+                        onClick={() => add_notification_destination(report_uuid, reload)}
+                    />
                 }
             />
         </>

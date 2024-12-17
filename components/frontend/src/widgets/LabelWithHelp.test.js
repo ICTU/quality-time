@@ -10,7 +10,7 @@ it("shows the label", () => {
 
 it("shows the help", async () => {
     render(<LabelWithHelp label="Hello" help="Help" />)
-    await userEvent.hover(screen.queryByTestId("help-icon"))
+    await userEvent.hover(screen.queryByTestId("HelpIcon"))
     await waitFor(() => {
         expect(screen.queryByText(/Help/)).not.toBe(null)
     })

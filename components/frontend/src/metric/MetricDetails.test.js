@@ -28,12 +28,12 @@ const report = {
                     type: "violations",
                     sources: {
                         source_uuid: {
-                            type: "source_type",
+                            type: "sonarqube",
                             entities: [],
                         },
                     },
                 },
-                metric_uuid2: {},
+                metric_uuid2: { name: "Metric 2", sources: {} },
             },
         },
     },
@@ -41,7 +41,7 @@ const report = {
 
 const dataModel = {
     sources: {
-        source_type: {
+        sonarqube: {
             name: "The source",
             deprecated: true,
             parameters: {},
@@ -54,7 +54,7 @@ const dataModel = {
             entities: { violations: { name: "Attribute", attributes: [] } },
         },
     },
-    metrics: { violations: { direction: "<", tags: [], sources: ["source_type"] } },
+    metrics: { violations: { direction: "<", tags: [], sources: ["sonarqube"] } },
     subjects: { subject_type: { metrics: ["violations"] } },
 }
 
@@ -175,7 +175,7 @@ it("displays whether sources have warnings", async () => {
 it("moves the metric", async () => {
     const mockCallback = jest.fn()
     await renderMetricDetails(mockCallback)
-    await act(async () => fireEvent.click(screen.getByLabelText(/Move metric to the last row/)))
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: /Move metric to the last row/ })))
     expect(mockCallback).toHaveBeenCalled()
     expect(measurement_api.get_metric_measurements).toHaveBeenCalled()
 })

@@ -97,6 +97,7 @@ function renderSubjectTable({ dates = [], expandedItems = null, settings = null 
                         },
                     ]}
                     metricEntries={Object.entries({ 1: metric, 2: metric2 })}
+                    reports={[]}
                     settings={settings}
                     subject={{ type: "subject_type", metrics: { 1: metric, 2: metric2 } }}
                     subject_uuid="subject_uuid"
@@ -227,7 +228,7 @@ it("expands the details via the url", async () => {
 it("moves a metric", async () => {
     history.push("?expanded=1:2")
     renderSubjectTable()
-    await act(async () => fireEvent.click(screen.getByLabelText("Move metric to the next row")))
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Move metric to the next row" })))
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/1/attribute/position", {
         position: "next",
     })

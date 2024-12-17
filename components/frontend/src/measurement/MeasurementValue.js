@@ -4,7 +4,7 @@ import { bool, string } from "prop-types"
 import { useContext } from "react"
 
 import { DataModel } from "../context/DataModel"
-import { Icon, Label, Message, Popup } from "../semantic_ui_react_wrappers"
+import { Label, Message, Popup } from "../semantic_ui_react_wrappers"
 import { datePropType, measurementPropType, metricPropType } from "../sharedPropTypes"
 import { IGNORABLE_SOURCE_ENTITY_STATUSES, SOURCE_ENTITY_STATUS_NAME } from "../source/source_entity_status"
 import {
@@ -17,13 +17,14 @@ import {
     isMeasurementStale,
     sum,
 } from "../utils"
+import { IgnoreIcon, LoadingIcon } from "../widgets/icons"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 import { WarningMessage } from "../widgets/WarningMessage"
 
 function measurementValueLabel(hasIgnoredEntities, stale, updating, value) {
     const measurementValue = hasIgnoredEntities ? (
         <>
-            <Icon name="hide" /> {value}
+            <IgnoreIcon /> {value}
         </>
     ) : (
         value
@@ -34,7 +35,8 @@ function measurementValueLabel(hasIgnoredEntities, stale, updating, value) {
     if (updating) {
         return (
             <Label color="yellow">
-                <Icon loading name="hourglass" /> {measurementValue}
+                <LoadingIcon />
+                {measurementValue}
             </Label>
         )
     }
@@ -124,7 +126,7 @@ export function MeasurementValue({ metric, reportDate }) {
                     info
                     header={
                         <span>
-                            <Icon name="hide" /> {`Ignored ${unit}`}
+                            <IgnoreIcon /> {`Ignored ${unit}`}
                         </span>
                     }
                     content={ignoredEntitiesMessage(metric.latest_measurement, unit)}

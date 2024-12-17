@@ -1,3 +1,4 @@
+import { Stack, Typography } from "@mui/material"
 import { func, string } from "prop-types"
 import { useContext } from "react"
 
@@ -5,7 +6,6 @@ import { set_metric_attribute } from "../api/metric"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { SingleChoiceInput } from "../fields/SingleChoiceInput"
-import { Header } from "../semantic_ui_react_wrappers"
 import { getSubjectTypeMetrics } from "../utils"
 
 export function metricTypeOption(key, metricType) {
@@ -13,7 +13,12 @@ export function metricTypeOption(key, metricType) {
         key: key,
         text: metricType.name,
         value: key,
-        content: <Header as="h4" content={metricType.name} subheader={metricType.description} />,
+        content: (
+            <Stack direction="column">
+                {metricType.name}
+                <Typography variant="body2">{metricType.description}</Typography>
+            </Stack>
+        ),
     }
 }
 

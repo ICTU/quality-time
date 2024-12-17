@@ -14,7 +14,10 @@ import {
     stringsPropType,
 } from "../sharedPropTypes"
 import { pluralize } from "../utils"
-import { AddDropdownButton, CopyButton, MoveButton } from "../widgets/Button"
+import { ButtonRow } from "../widgets/ButtonRow"
+import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
+import { CopyButton } from "../widgets/buttons/CopyButton"
+import { MoveButton } from "../widgets/buttons/MoveButton"
 import { source_options } from "../widgets/menu_options"
 import { showMessage } from "../widgets/toast"
 import { Source } from "./Source"
@@ -26,7 +29,7 @@ function ButtonSegment({ metric, metric_uuid, reload, reports }) {
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <Segment vertical>
+                <ButtonRow>
                     <AddDropdownButton
                         itemType="source"
                         itemSubtypes={sourceTypeOptions(dataModel, metric.type)}
@@ -42,7 +45,7 @@ function ButtonSegment({ metric, metric_uuid, reload, reports }) {
                         onChange={(source_uuid) => move_source(source_uuid, metric_uuid, reload)}
                         get_options={() => source_options(reports, dataModel, metric.type, metric_uuid)}
                     />
-                </Segment>
+                </ButtonRow>
             }
         />
     )
