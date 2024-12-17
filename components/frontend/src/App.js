@@ -1,4 +1,3 @@
-import "react-toastify/dist/ReactToastify.css"
 import "./App.css"
 
 import { createTheme, ThemeProvider } from "@mui/material/styles"

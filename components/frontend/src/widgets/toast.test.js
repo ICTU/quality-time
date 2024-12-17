@@ -13,10 +13,10 @@ beforeEach(() => {
 it("shows a message", () => {
     showMessage("error", "Error", "Description")
     expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(
-        <>
+        <div>
             <h4>Error</h4>
             <p>Description</p>
-        </>,
+        </div>,
     )
 })
 
@@ -29,10 +29,10 @@ it("does not show a message when showing toasts has been turned off", () => {
 it("shows a custom icon", () => {
     showMessage("error", "Error", "Description", "question")
     expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(
-        <>
+        <div>
             <h4>Error</h4>
             <p>Description</p>
-        </>,
+        </div>,
     )
 })
 
@@ -49,19 +49,19 @@ it("shows a successful connection message", () => {
 it("shows a failed connection message", () => {
     showConnectionMessage({ availability: [{ status_code: -1, reason: "Failure" }] })
     expect(react_toastify.toast.mock.calls[0][0]).toEqual(
-        <>
+        <div>
             <h4>URL connection error</h4>
             <p>Failure</p>
-        </>,
+        </div>,
     )
 })
 
 it("shows the http status code", () => {
     showConnectionMessage({ availability: [{ status_code: 404, reason: "Not found" }] })
     expect(react_toastify.toast.mock.calls[0][0]).toEqual(
-        <>
+        <div>
             <h4>URL connection error</h4>
             <p>[HTTP status code 404] Not found</p>
-        </>,
+        </div>,
     )
 })

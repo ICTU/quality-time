@@ -7,10 +7,10 @@ export function showMessage(type, title, description, messageId) {
     if (hideToasts !== "true") {
         const toastMessage =
             title && description ? (
-                <>
+                <div>
                     <h4>{title}</h4>
                     <p>{description}</p>
-                </>
+                </div>
             ) : (
                 title
             )
