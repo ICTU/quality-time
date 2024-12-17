@@ -112,9 +112,9 @@ it("fails to load measurements", async () => {
     fetch_server_api.fetch_server_api.mockImplementation(() => Promise.reject(new Error("Error description")))
     await renderPageContent()
     expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(
-        <>
+        <div>
             <h4>Could not fetch measurements</h4>
             <p>Error description</p>
-        </>,
+        </div>,
     )
 })
