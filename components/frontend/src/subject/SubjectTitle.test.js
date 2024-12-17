@@ -109,7 +109,7 @@ it("moves the subject", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     await renderSubjectTitle()
     await act(async () => {
-        fireEvent.click(screen.getByLabelText(/Move subject to the next position/))
+        fireEvent.click(screen.getByRole("button", { name: /Move subject to the next position/ }))
     })
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
         "post",

@@ -125,7 +125,7 @@ it("copies a report", async () => {
     renderReportsOverview({ reports: reports })
     fireEvent.click(screen.getByText(/Copy report/))
     await act(async () => {
-        fireEvent.click(screen.getByRole("option"))
+        fireEvent.click(screen.getAllByRole("menuitem")[1])
     })
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/uuid/copy", {})
 })

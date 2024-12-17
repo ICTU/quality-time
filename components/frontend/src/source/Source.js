@@ -17,7 +17,9 @@ import {
     stringsPropType,
 } from "../sharedPropTypes"
 import { getMetricName, getSourceName } from "../utils"
-import { DeleteButton, ReorderButtonGroup } from "../widgets/Button"
+import { ButtonRow } from "../widgets/ButtonRow"
+import { DeleteButton } from "../widgets/buttons/DeleteButton"
+import { ReorderButtonGroup } from "../widgets/buttons/ReorderButtonGroup"
 import { HyperLink } from "../widgets/HyperLink"
 import { changelogTabPane, configurationTabPane } from "../widgets/TabPane"
 import { SourceParameters } from "./SourceParameters"
@@ -30,31 +32,27 @@ function select_sources_parameter_keys(changed_fields, source_uuid) {
         : []
 }
 
-function ButtonGridRow({ first_source, last_source, reload, source_uuid }) {
+function SourceButtonRow({ first_source, last_source, reload, source_uuid }) {
+    const deleteButton = <DeleteButton itemType="source" onClick={() => delete_source(source_uuid, reload)} />
     return (
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <div style={{ marginTop: "20px" }}>
-                    <Grid.Row>
-                        <Grid.Column>
-                            <ReorderButtonGroup
-                                first={first_source}
-                                last={last_source}
-                                moveable="source"
-                                onClick={(direction) => {
-                                    set_source_attribute(source_uuid, "position", direction, reload)
-                                }}
-                            />
-                            <DeleteButton itemType="source" onClick={() => delete_source(source_uuid, reload)} />
-                        </Grid.Column>
-                    </Grid.Row>
-                </div>
+                <ButtonRow rightButton={deleteButton}>
+                    <ReorderButtonGroup
+                        first={first_source}
+                        last={last_source}
+                        moveable="source"
+                        onClick={(direction) => {
+                            set_source_attribute(source_uuid, "position", direction, reload)
+                        }}
+                    />
+                </ButtonRow>
             }
         />
     )
 }
-ButtonGridRow.propTypes = {
+SourceButtonRow.propTypes = {
     first_source: bool,
     last_source: bool,
     reload: func,
@@ -192,7 +190,7 @@ export function Source({
         <>
             <SourceTypeHeader metricTypeId={metric.type} sourceTypeId={source.type} sourceType={sourceType} />
             <Tab panes={panes} />
-            <ButtonGridRow
+            <SourceButtonRow
                 first_source={first_source}
                 last_source={last_source}
                 reload={reload}

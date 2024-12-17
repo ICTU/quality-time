@@ -1,13 +1,15 @@
 import "./TabPane.css"
 
+import HistoryIcon from "@mui/icons-material/History"
+import SettingsIcon from "@mui/icons-material/Settings"
 import { bool, element, oneOfType, string } from "prop-types"
 import { useContext } from "react"
 import { Menu } from "semantic-ui-react"
 
 import { DarkMode } from "../context/DarkMode"
-import { Icon, Label, Tab } from "../semantic_ui_react_wrappers"
+import { Label, Tab } from "../semantic_ui_react_wrappers"
 
-function FocusableTab({ error, iconName, image, label, warning }) {
+function FocusableTab({ error, icon, image, label, warning }) {
     const className = useContext(DarkMode) ? "tabbutton inverted" : "tabbutton"
     let tabLabel = label
     if (error || warning) {
@@ -16,14 +18,13 @@ function FocusableTab({ error, iconName, image, label, warning }) {
     }
     return (
         <>
-            {iconName ? <Icon name={iconName} size="large" /> : image}
-            <button className={className}>{tabLabel}</button>
+            {icon || image}&nbsp;<button className={className}>{tabLabel}</button>
         </>
     )
 }
 FocusableTab.propTypes = {
     error: bool,
-    iconName: string,
+    icon: element,
     image: element,
     label: oneOfType([element, string]),
     warning: bool,
@@ -36,7 +37,7 @@ export function tabPane(label, pane, options) {
             <Menu.Item key={label}>
                 <FocusableTab
                     error={options?.error}
-                    iconName={options?.iconName}
+                    icon={options?.icon}
                     image={options?.image}
                     label={label}
                     warning={options?.warning}
@@ -48,9 +49,9 @@ export function tabPane(label, pane, options) {
 }
 
 export function configurationTabPane(pane, options) {
-    return tabPane("Configuration", pane, { ...options, iconName: "settings" })
+    return tabPane("Configuration", pane, { ...options, icon: <SettingsIcon /> })
 }
 
 export function changelogTabPane(pane, options) {
-    return tabPane("Changelog", pane, { ...options, iconName: "history" })
+    return tabPane("Changelog", pane, { ...options, icon: <HistoryIcon /> })
 }

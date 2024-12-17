@@ -3,18 +3,19 @@ import "./DateInput.css"
 import { bool, func, string } from "prop-types"
 
 import { ReadOnlyOrEditable } from "../context/Permissions"
-import { Form, Icon, Label } from "../semantic_ui_react_wrappers"
+import { Form, Label } from "../semantic_ui_react_wrappers"
 import { labelPropType, permissionsPropType } from "../sharedPropTypes"
 import { toISODateStringInCurrentTZ } from "../utils"
 import { DatePicker } from "../widgets/DatePicker"
+import { CalendarIcon } from "../widgets/icons"
 import { ReadOnlyInput } from "./ReadOnlyInput"
 
 function EditableDateInput({ ariaLabelledBy, label, placeholder, required, set_value, value }) {
     value = value ? new Date(value) : null
     return (
         <Form.Input error={required && !value} label={label} labelPosition="left" required={required}>
-            <Label>
-                <Icon fitted name="calendar" />
+            <Label style={{ padding: "8px" }}>
+                <CalendarIcon />
             </Label>
             <DatePicker
                 ariaLabelledBy={ariaLabelledBy}

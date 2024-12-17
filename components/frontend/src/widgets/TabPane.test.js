@@ -1,3 +1,4 @@
+import StorageIcon from "@mui/icons-material/Storage"
 import { render, screen } from "@testing-library/react"
 
 import { DarkMode } from "../context/DarkMode"
@@ -29,8 +30,8 @@ it("shows the tab yellow when there is a warning", () => {
 })
 
 it("shows an icon", () => {
-    const { container } = render(<Tab panes={[tabPane("Tab", <p>Pane</p>, { iconName: "server" })]} />)
-    expect(container.firstChild.firstChild.firstChild.firstChild.className).toEqual(expect.stringContaining("server"))
+    render(<Tab panes={[tabPane("Tab", <p>Pane</p>, { icon: <StorageIcon /> })]} />)
+    expect(screen.getAllByTestId("StorageIcon").length).toBe(1)
 })
 
 it("shows an image", () => {

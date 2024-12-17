@@ -9,7 +9,8 @@ import { ErrorMessage } from "../errorMessage"
 import { MultipleChoiceInput } from "../fields/MultipleChoiceInput"
 import { metricPropType, reportPropType } from "../sharedPropTypes"
 import { getMetricIssueIds } from "../utils"
-import { ActionButton } from "../widgets/Button"
+import { ActionButton } from "../widgets/buttons/ActionButton"
+import { AddItemIcon } from "../widgets/icons"
 import { LabelWithHelp } from "../widgets/LabelWithHelp"
 import { showMessage } from "../widgets/toast"
 
@@ -18,8 +19,7 @@ function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, me
         <ActionButton
             action="Create new"
             disabled={!issueTrackerConfigured}
-            fluid
-            icon="plus"
+            icon={<AddItemIcon />}
             itemType="issue"
             onClick={() => add_metric_issue(metric_uuid, reload)}
             popup={
@@ -28,7 +28,6 @@ function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, me
                     tracked issue identifiers.{issueTrackerInstruction}
                 </>
             }
-            position="top center"
         />
     )
 }
@@ -127,7 +126,7 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
                     }
                     editableComponent={
                         <>
-                            <Grid.Column width={3} verticalAlign="bottom">
+                            <Grid.Column width={2} verticalAlign="bottom">
                                 <CreateIssueButton
                                     issueTrackerConfigured={issueTrackerConfigured}
                                     issueTrackerInstruction={issueTrackerInstruction}
@@ -136,7 +135,7 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
                                     reload={reload}
                                 />
                             </Grid.Column>
-                            <Grid.Column width={13}>
+                            <Grid.Column width={14}>
                                 <IssueIdentifiers {...issueIdentifiersProps} />
                             </Grid.Column>
                         </>

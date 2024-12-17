@@ -1,9 +1,9 @@
+import { Box } from "@mui/material"
 import { func } from "prop-types"
 
 import { add_report, copy_report } from "../api/report"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { ExportCard } from "../dashboard/ExportCard"
-import { Segment } from "../semantic_ui_react_wrappers"
 import {
     datePropType,
     datesPropType,
@@ -16,7 +16,9 @@ import {
 } from "../sharedPropTypes"
 import { Subjects } from "../subject/Subjects"
 import { getReportsTags } from "../utils"
-import { AddButton, CopyButton } from "../widgets/Button"
+import { ButtonRow } from "../widgets/ButtonRow"
+import { AddButton } from "../widgets/buttons/AddButton"
+import { CopyButton } from "../widgets/buttons/CopyButton"
 import { CommentSegment } from "../widgets/CommentSegment"
 import { report_options } from "../widgets/menu_options"
 import { ReportsOverviewErrorMessage } from "./ReportErrorMessage"
@@ -28,14 +30,16 @@ function ReportsOverviewButtonRow({ reload, reports }) {
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <Segment basic>
-                    <AddButton itemType={"report"} onClick={() => add_report(reload)} />
-                    <CopyButton
-                        itemType={"report"}
-                        get_options={() => report_options(reports)}
-                        onChange={(source_report_uuid) => copy_report(source_report_uuid, reload)}
-                    />
-                </Segment>
+                <Box sx={{ p: "10px" }}>
+                    <ButtonRow>
+                        <AddButton itemType={"report"} onClick={() => add_report(reload)} />
+                        <CopyButton
+                            itemType={"report"}
+                            get_options={() => report_options(reports)}
+                            onChange={(source_report_uuid) => copy_report(source_report_uuid, reload)}
+                        />
+                    </ButtonRow>
+                </Box>
             }
         />
     )

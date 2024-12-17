@@ -15,8 +15,8 @@ jest.mock("../widgets/menu_options", () => {
         __esModule: true,
         ...originalModule,
         subject_options: jest.fn(() => [
-            { key: "1", text: "dummy option 1" },
-            { key: "2", text: "dummy option 2" },
+            { key: "1", text: "dummy option 1", content: "dummy option 1" },
+            { key: "2", text: "dummy option 2", content: "dummy option 2" },
         ]),
     }
 })

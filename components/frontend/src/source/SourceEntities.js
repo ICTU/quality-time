@@ -1,11 +1,13 @@
 import "./SourceEntities.css"
 
+import HelpIcon from "@mui/icons-material/Help"
+import { IconButton, Tooltip } from "@mui/material"
 import { bool, func, object, string } from "prop-types"
 import { useContext, useState } from "react"
 import { Message } from "semantic-ui-react"
 
 import { DataModel } from "../context/DataModel"
-import { Button, Icon, Popup, Table } from "../semantic_ui_react_wrappers"
+import { Popup, Table } from "../semantic_ui_react_wrappers"
 import {
     alignmentPropType,
     childrenPropType,
@@ -21,6 +23,7 @@ import {
     sourcePropType,
 } from "../sharedPropTypes"
 import { capitalize } from "../utils"
+import { IgnoreIcon, ShowIcon } from "../widgets/icons"
 import { LoadingPlaceHolder } from "../widgets/Placeholder"
 import { FailedToLoadMeasurementsWarningMessage } from "../widgets/WarningMessage"
 import { SourceEntity } from "./SourceEntity"
@@ -146,7 +149,7 @@ function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
                     trigger={
                         <span>
                             &nbsp;
-                            <Icon role="tooltip" aria-label="help" tabIndex="0" name="help circle" />
+                            <HelpIcon fontSize="inherit" sx={{ verticalAlign: "middle" }} tabIndex="0" />
                         </span>
                     }
                     content={entityAttribute.help}
@@ -177,19 +180,14 @@ function sourceEntitiesHeaders(
     return (
         <Table.Row>
             <Table.HeaderCell collapsing textAlign="center">
-                <Popup
-                    trigger={
-                        <Button
-                            aria-label={hideIgnoredEntitiesLabel}
-                            basic
-                            compact
-                            icon={hideIgnoredEntities ? "unhide" : "hide"}
-                            onClick={() => setHideIgnoredEntities(!hideIgnoredEntities)}
-                            primary
-                        />
-                    }
-                    content={hideIgnoredEntitiesLabel}
-                />
+                <Tooltip title={hideIgnoredEntitiesLabel}>
+                    <IconButton
+                        aria-label={hideIgnoredEntitiesLabel}
+                        onClick={() => setHideIgnoredEntities(!hideIgnoredEntities)}
+                    >
+                        {hideIgnoredEntities ? <ShowIcon /> : <IgnoreIcon />}
+                    </IconButton>
+                </Tooltip>
             </Table.HeaderCell>
             <SortableHeaderCell column="entity_status" columnType="text" {...sortProps}>
                 {`${capitalize(entityName)} status`}
