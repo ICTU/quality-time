@@ -14,6 +14,7 @@ from .base import BitbucketProjectBase
 class BitbucketBranchType(BranchType):
     """Bitbucket branch information as returned by the API."""
 
+    "Contains commit(ed)-date"
     commit: dict[str, str]
     default: bool
     merged: bool
