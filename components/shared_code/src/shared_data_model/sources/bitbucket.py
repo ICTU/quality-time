@@ -25,8 +25,7 @@ BITBUCKET_BRANCH_HELP_URL = HttpUrl("https://confluence.atlassian.com/bitbuckets
 
 BITBUCKET = Source(
     name="Bitbucket",
-    description="Bitbucket Cloud is a Git based code hosting and collaboration tool, built for teams."
-                "Bitbucket's best-in-class Jira and Trello integrations are designed to bring the entire software team together to execute on a project.",
+    description="Bitbucket is a Git-based source code hosting and collaboration tool, built for teams.",
     url=HttpUrl("https://bitbucket.org/product/guides/getting-started/overview#a-brief-overview-of-bitbucket/"),
     documentation={},
     parameters={
