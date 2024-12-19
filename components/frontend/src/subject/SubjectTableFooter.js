@@ -7,7 +7,9 @@ import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { allMetricTypeOptions, metricTypeOptions, usedMetricTypes } from "../metric/MetricType"
 import { reportsPropType, subjectPropType } from "../sharedPropTypes"
-import { AddDropdownButton, CopyButton, MoveButton } from "../widgets/Button"
+import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
+import { CopyButton } from "../widgets/buttons/CopyButton"
+import { MoveButton } from "../widgets/buttons/MoveButton"
 import { metric_options } from "../widgets/menu_options"
 
 function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, reports, stopFilteringAndSorting }) {

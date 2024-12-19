@@ -1,6 +1,5 @@
 import { bool, func, object, string } from "prop-types"
 import { useContext } from "react"
-import { Icon } from "semantic-ui-react"
 
 import { delete_subject, set_subject_attribute } from "../api/subject"
 import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
@@ -10,9 +9,12 @@ import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissio
 import { Header, Tab } from "../semantic_ui_react_wrappers"
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
 import { getSubjectType, slugify } from "../utils"
-import { DeleteButton, PermLinkButton, ReorderButtonGroup } from "../widgets/Button"
+import { ButtonRow } from "../widgets/ButtonRow"
+import { DeleteButton } from "../widgets/buttons/DeleteButton"
+import { PermLinkButton } from "../widgets/buttons/PermLinkButton"
+import { ReorderButtonGroup } from "../widgets/buttons/ReorderButtonGroup"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
-import { HyperLink } from "../widgets/HyperLink"
+import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
 import { changelogTabPane, configurationTabPane } from "../widgets/TabPane"
 import { SubjectParameters } from "./SubjectParameters"
 
@@ -23,10 +25,7 @@ function SubjectHeader({ subjectType }) {
             <Header.Content>
                 {subjectType.name}
                 <Header.Subheader>
-                    {subjectType.description}{" "}
-                    <HyperLink url={url}>
-                        Read the Docs <Icon name="external" link />
-                    </HyperLink>
+                    {subjectType.description} <ReadTheDocsLink url={url} />
                 </Header.Subheader>
             </Header.Content>
         </Header>
@@ -36,12 +35,13 @@ SubjectHeader.propTypes = {
     subjectType: object,
 }
 
-function ButtonRow({ subject_uuid, firstSubject, lastSubject, reload, url }) {
+function SubjectTitleButtonRow({ subject_uuid, firstSubject, lastSubject, reload, url }) {
+    const deleteButton = <DeleteButton itemType="subject" onClick={() => delete_subject(subject_uuid, reload)} />
     return (
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <>
+                <ButtonRow rightButton={deleteButton}>
                     <ReorderButtonGroup
                         first={firstSubject}
                         last={lastSubject}
@@ -51,13 +51,12 @@ function ButtonRow({ subject_uuid, firstSubject, lastSubject, reload, url }) {
                         }}
                     />
                     <PermLinkButton itemType="subject" url={url} />
-                    <DeleteButton itemType="subject" onClick={() => delete_subject(subject_uuid, reload)} />
-                </>
+                </ButtonRow>
             }
         />
     )
 }
-ButtonRow.propTypes = {
+SubjectTitleButtonRow.propTypes = {
     subject_uuid: string,
     firstSubject: bool,
     lastSubject: bool,
@@ -112,7 +111,7 @@ export function SubjectTitle({
                 onTabChange={tabChangeHandler(settings.expandedItems, subject_uuid)}
                 panes={panes}
             />
-            <ButtonRow
+            <SubjectTitleButtonRow
                 subject_uuid={subject_uuid}
                 firstSubject={firstSubject}
                 lastSubject={lastSubject}

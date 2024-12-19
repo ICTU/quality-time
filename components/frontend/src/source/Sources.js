@@ -14,7 +14,9 @@ import {
     stringsPropType,
 } from "../sharedPropTypes"
 import { pluralize } from "../utils"
-import { AddDropdownButton, CopyButton, MoveButton } from "../widgets/Button"
+import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
+import { CopyButton } from "../widgets/buttons/CopyButton"
+import { MoveButton } from "../widgets/buttons/MoveButton"
 import { source_options } from "../widgets/menu_options"
 import { showMessage } from "../widgets/toast"
 import { Source } from "./Source"

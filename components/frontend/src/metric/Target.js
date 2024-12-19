@@ -1,7 +1,7 @@
+import HelpIcon from "@mui/icons-material/Help"
 import { Box, Stack, Typography } from "@mui/material"
 import { bool, func, oneOf, string } from "prop-types"
 import { useContext } from "react"
-import { Segment } from "semantic-ui-react"
 
 import { set_metric_attribute } from "../api/metric"
 import { DataModel } from "../context/DataModel"
@@ -9,7 +9,7 @@ import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { IntegerInput } from "../fields/IntegerInput"
 import { StringInput } from "../fields/StringInput"
 import { StatusIcon } from "../measurement/StatusIcon"
-import { Icon, Popup } from "../semantic_ui_react_wrappers"
+import { Popup } from "../semantic_ui_react_wrappers"
 import { childrenPropType, labelPropType, metricPropType, scalePropType } from "../sharedPropTypes"
 import {
     capitalize,
@@ -153,11 +153,7 @@ YellowSegment.propTypes = {
 }
 
 function ColoredSegments({ children }) {
-    return (
-        <Segment.Group horizontal size="tiny">
-            {children}
-        </Segment.Group>
-    )
+    return <Stack direction="row">{children}</Stack>
 }
 ColoredSegments.propTypes = {
     children: childrenPropType,
@@ -256,7 +252,7 @@ function TargetLabel({ label, metric, position, targetType }) {
                 hoverable
                 on={["hover", "focus"]}
                 position={position}
-                trigger={<Icon role="tooltip" tabIndex="0" name="help circle" />}
+                trigger={<HelpIcon fontSize="inherit" tabIndex={0} />}
             />
         </label>
     )

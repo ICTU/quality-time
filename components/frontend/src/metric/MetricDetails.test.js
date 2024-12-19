@@ -175,7 +175,7 @@ it("displays whether sources have warnings", async () => {
 it("moves the metric", async () => {
     const mockCallback = jest.fn()
     await renderMetricDetails(mockCallback)
-    await act(async () => fireEvent.click(screen.getByLabelText(/Move metric to the last row/)))
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: /Move metric to the last row/ })))
     expect(mockCallback).toHaveBeenCalled()
     expect(measurement_api.get_metric_measurements).toHaveBeenCalled()
 })

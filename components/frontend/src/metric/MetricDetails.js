@@ -20,7 +20,12 @@ import { Logo } from "../source/Logo"
 import { SourceEntities } from "../source/SourceEntities"
 import { Sources } from "../source/Sources"
 import { getSourceName, isMeasurementRequested } from "../utils"
-import { ActionButton, DeleteButton, PermLinkButton, ReorderButtonGroup } from "../widgets/Button"
+import { ButtonRow } from "../widgets/ButtonRow"
+import { ActionButton } from "../widgets/buttons/ActionButton"
+import { DeleteButton } from "../widgets/buttons/DeleteButton"
+import { PermLinkButton } from "../widgets/buttons/PermLinkButton"
+import { ReorderButtonGroup } from "../widgets/buttons/ReorderButtonGroup"
+import { RefreshIcon } from "../widgets/icons"
 import { changelogTabPane, configurationTabPane, tabPane } from "../widgets/TabPane"
 import { showMessage } from "../widgets/toast"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
@@ -34,7 +39,7 @@ function RequestMeasurementButton({ metric, metric_uuid, reload }) {
         <ActionButton
             action="Measure"
             disabled={measurementRequested}
-            icon="refresh"
+            icon={<RefreshIcon />}
             itemType="metric"
             loading={measurementRequested}
             onClick={() => set_metric_attribute(metric_uuid, "measurement_requested", new Date().toISOString(), reload)}
@@ -48,12 +53,21 @@ RequestMeasurementButton.propTypes = {
     reload: func,
 }
 
-function Buttons({ isFirstMetric, isLastMetric, metric, metric_uuid, reload, stopFilteringAndSorting, url }) {
+function MetricDetailsButtonRow({
+    isFirstMetric,
+    isLastMetric,
+    metric,
+    metric_uuid,
+    reload,
+    stopFilteringAndSorting,
+    url,
+}) {
+    const deleteButton = <DeleteButton itemType="metric" onClick={() => delete_metric(metric_uuid, reload)} />
     return (
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <div style={{ marginTop: "20px" }}>
+                <ButtonRow rightButton={deleteButton}>
                     <ReorderButtonGroup
                         first={isFirstMetric}
                         last={isLastMetric}
@@ -66,13 +80,12 @@ function Buttons({ isFirstMetric, isLastMetric, metric, metric_uuid, reload, sto
                     />
                     <PermLinkButton itemType="metric" url={url} />
                     <RequestMeasurementButton metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                    <DeleteButton itemType="metric" onClick={() => delete_metric(metric_uuid, reload)} />
-                </div>
+                </ButtonRow>
             }
         />
     )
 }
-Buttons.propTypes = {
+MetricDetailsButtonRow.propTypes = {
     isFirstMetric: bool,
     isLastMetric: bool,
     metric: metricPropType,
@@ -198,7 +211,7 @@ export function MetricDetails({
                 onTabChange={tabChangeHandler(expandedItems, metric_uuid)}
                 panes={panes}
             />
-            <Buttons
+            <MetricDetailsButtonRow
                 metric={metric}
                 metric_uuid={metric_uuid}
                 isFirstMetric={isFirstMetric}

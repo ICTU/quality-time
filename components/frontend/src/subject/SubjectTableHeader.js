@@ -1,20 +1,33 @@
-import { bool, func } from "prop-types"
+import { bool, func, string } from "prop-types"
 import { useContext } from "react"
 import { List, Table } from "semantic-ui-react"
 
 import { DarkMode } from "../context/DarkMode"
 import { StatusIcon } from "../measurement/StatusIcon"
 import { STATUS_DESCRIPTION, STATUSES } from "../metric/status"
-import { Icon, Label } from "../semantic_ui_react_wrappers"
+import { Label } from "../semantic_ui_react_wrappers"
 import { datesPropType, settingsPropType } from "../sharedPropTypes"
 import { HyperLink } from "../widgets/HyperLink"
+import { IgnoreIcon, TriangleRightIcon } from "../widgets/icons"
 import { SortableTableHeaderCell, UnsortableTableHeaderCell } from "../widgets/TableHeaderCell"
+
+function Expand({ children }) {
+    return (
+        <>
+            Expand the {children} (click
+            <TriangleRightIcon />)
+        </>
+    )
+}
+Expand.propTypes = {
+    children: string,
+}
 
 const metricHelp = (
     <>
         <p>The name of the metric.</p>
         <p>
-            Expand the metric (click <Icon fitted name="triangle right" />) to edit its name in the configuration tab.
+            <Expand>metric</Expand> to edit its name in the configuration tab.
         </p>
         <p>Click the column header to sort the metrics by name.</p>
     </>
@@ -31,8 +44,7 @@ const trendHelp = (
             number scale.
         </p>
         <p>
-            Expand the metric (click <Icon fitted name="triangle right" />) and navigate to the trend graph tab to see a
-            graph of all measurements.
+            <Expand>metric</Expand> and navigate to the trend graph tab to see a graph of all measurements.
         </p>
     </>
 )
@@ -65,8 +77,8 @@ const measurementHelp = (
         <p>The latest measurement value. Metrics are measured periodically.</p>
         <p>
             If the measurement value is ?, no sources have been configured for the metric yet or the measurement data
-            could not be collected. Expand the metric (click <Icon fitted name="triangle right" />) and navigate to the
-            sources tab to add sources or see the error details.
+            could not be collected. <Expand>metric</Expand> and navigate to the sources tab to add sources or see the
+            error details.
         </p>
         <p>
             If the measurement value has a{" "}
@@ -77,10 +89,9 @@ const measurementHelp = (
             a system administrator should be notified.
         </p>
         <p>
-            If there is a <Icon name="hide" /> before the measurement value, it means one or more measurement entities
-            are being ignored. Hover over the measurement value to see how many entities are ignored. Expand the metric
-            (click <Icon fitted name="triangle right" />) and navigate to the entities tab to see why individual
-            entities are ignored.
+            If there is a <IgnoreIcon /> before the measurement value, it means one or more measurement entities are
+            being ignored. Hover over the measurement value to see how many entities are ignored.{" "}
+            <Expand>metric</Expand> and navigate to the entities tab to see why individual entities are ignored.
         </p>
         <p>Hover over the measurement value to see when the metric was last measured.</p>
         <p>Click the column header to sort the metrics by measurement value.</p>
@@ -99,8 +110,7 @@ const targetHelp = (
             past or all issues linked to the metric have been resolved.
         </p>
         <p>
-            Expand the metric (click <Icon fitted name="triangle right" />) to edit the target value in the
-            configuration tab.
+            <Expand>metric</Expand> to edit the target value in the configuration tab.
         </p>
         <p>Click the column header to sort the metrics by target value.</p>
     </>
@@ -113,8 +123,7 @@ const unitHelp = (
             and target values.
         </p>
         <p>
-            Expand the metric (click <Icon fitted name="triangle right" />) to edit the unit name in the configuration
-            tab.
+            <Expand>metric</Expand> to edit the unit name in the configuration tab.
         </p>
         <p>Click the column header to sort the metrics by unit.</p>
     </>
@@ -124,13 +133,12 @@ const timeLeftHelp = (
     <>
         <p>The number of days left to address the metric.</p>
         <p>
-            If the metric needs action, the time left is based on the desired reaction times. Expand the report title
-            (click <Icon fitted name="triangle right" />) to change the desired reaction times.
+            If the metric needs action, the time left is based on the desired reaction times.{" "}
+            <Expand>report title</Expand> to change the desired reaction times.
         </p>
         <p>
-            If the metric has accepted technical debt, the time left is based on the technical debt end date. Expand the
-            metric (click <Icon fitted name="triangle right" />) to edit technical debt end date in the technical debt
-            tab.
+            If the metric has accepted technical debt, the time left is based on the technical debt end date.{" "}
+            <Expand>metric</Expand> to edit technical debt end date in the technical debt tab.
         </p>
         <p>Hover over the number of days to see the exact deadline.</p>
         <p>Click the column header to sort the metrics by time left.</p>
@@ -141,7 +149,7 @@ const overrunHelp = (
     <>
         <p>The number of days that the desired reaction time was exceeded, in the displayed period.</p>
         <p>
-            Expand the report title (click <Icon fitted name="triangle right" />) to change the desired reaction times.
+            <Expand>report title</Expand> to change the desired reaction times.
         </p>
         <p>
             Hover over the number of days to see an overview of when and for which statuses the metric had overruns, in
@@ -158,7 +166,7 @@ const commentHelp = (
             and URLs are supported.
         </p>
         <p>
-            Expand the metric (click <Icon fitted name="triangle right" />) to edit the comments.
+            <Expand>metric</Expand> to edit the comments.
         </p>
     </>
 )
@@ -171,11 +179,11 @@ const sourcesHelp = (
             <Label as="span" horizontal color="red">
                 red background
             </Label>
-            , the source could not be accessed or the data could not be parsed. Expand the metric (click{" "}
-            <Icon fitted name="triangle right" />) and navigate to the source to see the error details.
+            , the source could not be accessed or the data could not be parsed. <Expand>metric</Expand> and navigate to
+            the source to see the error details.
         </p>
         <p>
-            Expand the metric (click <Icon fitted name="triangle right" />) to configure sources.
+            <Expand>metric</Expand> to configure sources.
         </p>
         <p>Click a source to open the tool or report in a new tab.</p>
         <p>Click the column header to sort the metrics by source.</p>
@@ -193,8 +201,8 @@ const issuesHelp = (
             <Label as="span" horizontal color="red">
                 red background
             </Label>
-            , the issue tracker could not be accessed or the data could not be parsed. Expand the metric and navigate to
-            the technical debt tab to see the error details.
+            , the issue tracker could not be accessed or the data could not be parsed. <Expand>metric</Expand> and
+            navigate to the technical debt tab to see the error details.
         </p>
         <p>Hover over an issue to see more information about the issue.</p>
         <p>Click an issue to open the issue in a new tab.</p>
@@ -212,7 +220,7 @@ const tagsHelp = (
             selected tags.
         </p>
         <p>
-            Expand the metric (click <Icon fitted name="triangle right" />) to add or remove tags.
+            <Expand>metric</Expand> to add or remove tags.
         </p>
         <p>Click the column header to sort the metrics by tag.</p>
     </>
