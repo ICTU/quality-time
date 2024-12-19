@@ -19,7 +19,7 @@ jobs:
           echo "VALUE_CHANGES={\"[0].data.DATABASE_USERNAME\":\"$(echo ${RANDOM} | base64)\",\"[0].data.DATABASE_PASSWORD\":\"$(echo ${RANDOM} | base64)\",\"[1].data.LDAP_LOOKUP_USER_PASSWORD\":\"$(echo ${RANDOM} | base64)\"}" >> $GITHUB_ENV
 
       - name: Update values.yaml
-        uses: fjogeleit/yaml-update-action@v0.15.0
+        uses: fjogeleit/yaml-update-action@v0.16.0
         with:
           valueFile: "helm/deploy-ci.yaml"
           commitChange: false
