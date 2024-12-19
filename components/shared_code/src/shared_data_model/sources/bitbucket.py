@@ -2,23 +2,15 @@
 
 from pydantic import HttpUrl
 
-from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
+from shared_data_model.meta.entity import Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     URL,
-    Branch,
-    Branches,
     BranchesToIgnore,
     BranchMergeStatus,
     Days,
-    FailureType,
-    MergeRequestState,
-    MultipleChoiceParameter,
-    MultipleChoiceWithAdditionParameter,
     PrivateToken,
-    ResultType,
     StringParameter,
-    TargetBranchesToInclude,
 )
 
 BITBUCKET_BRANCH_HELP_URL = HttpUrl("https://confluence.atlassian.com/bitbucketserver/branches-776639968.html")

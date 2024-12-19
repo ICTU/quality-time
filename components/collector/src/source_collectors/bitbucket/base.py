@@ -3,9 +3,9 @@
 from abc import ABC
 
 from base_collectors import SourceCollector
-from collector_utilities.functions import add_query, match_string_or_regular_expression
-from collector_utilities.type import URL, Job
-from model import Entities, Entity, SourceResponses
+from collector_utilities.functions import add_query
+from collector_utilities.type import URL
+from model import SourceResponses
 
 
 class BitbucketBase(SourceCollector, ABC):

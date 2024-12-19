@@ -3,7 +3,6 @@
 from datetime import datetime
 
 from dateutil.tz import tzutc
-from unittest.mock import AsyncMock
 
 from .base import BitbucketTestCase
 
