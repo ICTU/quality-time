@@ -18,6 +18,7 @@ it("shows the add metric button and adds a metric when clicked", () => {
             <DataModel.Provider value={dataModel}>
                 <Table>
                     <SubjectTableFooter
+                        reports={[]}
                         subjectUuid="subject_uuid"
                         subject={report.subjects.subject_uuid}
                         stopFilteringAndSorting={stopFilteringAndSorting}

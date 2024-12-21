@@ -1,30 +1,40 @@
+import CircleIcon from "@mui/icons-material/Circle"
+import { Stack, Typography } from "@mui/material"
 import { func, number, objectOf, string } from "prop-types"
 import { useContext } from "react"
-import { HeaderContent, HeaderSubheader } from "semantic-ui-react"
 
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { SingleChoiceInput } from "../fields/SingleChoiceInput"
-import { Header, Icon } from "../semantic_ui_react_wrappers"
 import { subjectPropType } from "../sharedPropTypes"
 
 export function subjectTypes(subjectTypesMapping, level = 0) {
     const options = []
-    const headingLevel = `h${Math.min(level, 2) + 4}` // Ensure the heading level is at least h4 and at most h6
-    const bullet = level === 0 ? null : <Icon name="circle" size="tiny" style={{ paddingLeft: `${level}em` }} />
+    const bullet =
+        level === 0 ? null : (
+            <CircleIcon
+                fontSize="inherit"
+                sx={{
+                    color: "inherit",
+                    width: "0.5em",
+                    marginRight: "0.5em",
+                    paddingTop: "0.3em",
+                }}
+            />
+        )
     Object.entries(subjectTypesMapping).forEach(([key, subjectType]) => {
         options.push({
             key: key,
             text: subjectType.name,
             value: key,
             content: (
-                <Header as={headingLevel}>
+                <Stack direction="row">
                     {bullet}
-                    <HeaderContent>
+                    <p>
                         {subjectType.name}
-                        <HeaderSubheader>{subjectType.description}</HeaderSubheader>
-                    </HeaderContent>
-                </Header>
+                        <Typography variant="body2">{subjectType.description}</Typography>
+                    </p>
+                </Stack>
             ),
         })
         options.push(...subjectTypes(subjectType?.subjects ?? [], level + 1))

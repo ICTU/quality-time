@@ -2,8 +2,9 @@ import "./TableRowWithDetails.css"
 
 import { bool, func, object } from "prop-types"
 
-import { Button, Icon, Table } from "../semantic_ui_react_wrappers"
+import { Button, Table } from "../semantic_ui_react_wrappers"
 import { childrenPropType } from "../sharedPropTypes"
+import { CaretDown, CaretRight } from "./icons"
 
 export function TableRowWithDetails(props) {
     const { children, details, expanded, onExpand, style, ...otherProps } = props
@@ -15,8 +16,9 @@ export function TableRowWithDetails(props) {
                         aria-label="Expand/collapse"
                         basic
                         className="expandcollapse"
-                        icon={<Icon name={expanded ? "caret down" : "caret right"} size="large" />}
+                        icon={expanded ? <CaretDown /> : <CaretRight />}
                         onClick={() => onExpand(!expanded)}
+                        style={{ padding: "0pt" }}
                     />
                 </Table.Cell>
                 {children}

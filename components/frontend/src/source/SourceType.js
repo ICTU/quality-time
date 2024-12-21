@@ -1,10 +1,11 @@
+import { Stack, Typography } from "@mui/material"
 import { func, string } from "prop-types"
 import { useContext } from "react"
 
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { SingleChoiceInput } from "../fields/SingleChoiceInput"
-import { Header, Label } from "../semantic_ui_react_wrappers"
+import { Label } from "../semantic_ui_react_wrappers"
 import { dataModelPropType, sourceTypePropType } from "../sharedPropTypes"
 import { Logo } from "./Logo"
 
@@ -25,14 +26,14 @@ function sourceTypeOption(key, sourceType) {
         text: sourceType.name,
         value: key,
         content: (
-            <Header as="h4">
-                <Header.Content>
-                    <Logo logo={key} alt={sourceType.name} />
+            <Stack direction="row">
+                <Logo logo={key} alt={sourceType.name} />
+                <p>
                     {sourceType.name}
                     {sourceType.deprecated && <Label color="yellow">Deprecated</Label>}
-                    <Header.Subheader>{sourceTypeDescription(sourceType)}</Header.Subheader>
-                </Header.Content>
-            </Header>
+                    <Typography variant="body2">{sourceTypeDescription(sourceType)}</Typography>
+                </p>
+            </Stack>
         ),
     }
 }
