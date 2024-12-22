@@ -14,7 +14,9 @@ import { Label, Segment, Tab } from "../semantic_ui_react_wrappers"
 import { entityStatusPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
 import { SOURCE_ENTITY_STATUS_DESCRIPTION, SOURCE_ENTITY_STATUS_NAME } from "../source/source_entity_status"
 import { getDesiredResponseTime } from "../utils"
-import { DeleteButton, PermLinkButton } from "../widgets/Button"
+import { ButtonRow } from "../widgets/ButtonRow"
+import { DeleteButton } from "../widgets/buttons/DeleteButton"
+import { PermLinkButton } from "../widgets/buttons/PermLinkButton"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { LabelWithHelp } from "../widgets/LabelWithHelp"
 import { changelogTabPane, configurationTabPane, tabPane } from "../widgets/TabPane"
@@ -141,26 +143,22 @@ ReactionTimes.propTypes = {
     report: reportPropType,
 }
 
-function ButtonRow({ report_uuid, openReportsOverview, url }) {
+function ReportTitleButtonRow({ report_uuid, openReportsOverview, url }) {
+    const deleteButton = (
+        <DeleteButton itemType="report" onClick={() => delete_report(report_uuid, openReportsOverview)} />
+    )
     return (
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <span
-                    /* The delete button needs to be in a span with an explicit height because otherwise it is
-                       considered to have a height of zero. Maybe because it is floated right? Button rows that have
-                       buttons on the left-hand side don't have this problem.
-                    */
-                    style={{ height: "36px", width: "100%", display: "block" }}
-                >
+                <ButtonRow rightButton={deleteButton}>
                     <PermLinkButton itemType="report" url={url} />
-                    <DeleteButton itemType="report" onClick={() => delete_report(report_uuid, openReportsOverview)} />
-                </span>
+                </ButtonRow>
             }
         />
     )
 }
-ButtonRow.propTypes = {
+ReportTitleButtonRow.propTypes = {
     report_uuid: string,
     openReportsOverview: func,
     url: string,
@@ -200,9 +198,7 @@ export function ReportTitle({ report, openReportsOverview, reload, settings }) {
                 onTabChange={tabChangeHandler(settings.expandedItems, report_uuid)}
                 panes={panes}
             />
-            <div style={{ marginTop: "20px" }}>
-                <ButtonRow report_uuid={report_uuid} openReportsOverview={openReportsOverview} url={reportUrl} />
-            </div>
+            <ReportTitleButtonRow report_uuid={report_uuid} openReportsOverview={openReportsOverview} url={reportUrl} />
         </HeaderWithDetails>
     )
 }

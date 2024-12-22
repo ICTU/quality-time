@@ -2,8 +2,9 @@ import "./HeaderWithDetails.css"
 
 import { node, object, string } from "prop-types"
 
-import { Header, Icon, Segment } from "../semantic_ui_react_wrappers"
+import { Header, Segment } from "../semantic_ui_react_wrappers"
 import { childrenPropType, settingsPropType } from "../sharedPropTypes"
+import { ExpandButton } from "./buttons/ExpandButton"
 
 export function HeaderWithDetails({ children, className, header, item_uuid, level, style, settings, subheader }) {
     const showDetails = settings.expandedItems.includes(item_uuid)
@@ -20,8 +21,8 @@ export function HeaderWithDetails({ children, className, header, item_uuid, leve
                 style={style}
                 tabIndex="0"
             >
-                <Icon className="Caret" title="expand" name={showDetails ? "caret down" : "caret right"} size="large" />
-                <Header.Content>
+                <ExpandButton expand={showDetails} />
+                <Header.Content style={{ verticalAlign: "middle" }}>
                     {header}
                     <Header.Subheader>{subheader}</Header.Subheader>
                 </Header.Content>

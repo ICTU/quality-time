@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { Table } from "semantic-ui-react"
 
@@ -72,4 +73,13 @@ it("hides the delta columns", () => {
     const date2 = new Date("2022-02-03")
     renderSubjectTableHeader([date1, date2])
     expect(screen.queryAllByText("𝚫").length).toBe(0)
+})
+
+it("shows help for column headers", async () => {
+    const date1 = new Date("2022-02-02")
+    renderSubjectTableHeader([date1])
+    await userEvent.hover(screen.getByText("Metric"))
+    await waitFor(() => {
+        expect(screen.queryByText(/Click the column header to sort the metrics by name/)).not.toBe(null)
+    })
 })
