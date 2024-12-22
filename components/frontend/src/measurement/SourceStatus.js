@@ -15,11 +15,9 @@ export function SourceStatus({ metric, measurement_source }) {
     const source = metric.sources[measurement_source.source_uuid]
     const source_name = getSourceName(source, dataModel)
     const configError = !dataModel.metrics[metric.type].sources.includes(source.type)
-    function source_label(error) {
+    function source_label() {
         return measurement_source.landing_url ? (
-            <HyperLink error={error} url={measurement_source.landing_url}>
-                {source_name}
-            </HyperLink>
+            <HyperLink url={measurement_source.landing_url}>{source_name}</HyperLink>
         ) : (
             source_name
         )
@@ -43,7 +41,7 @@ export function SourceStatus({ metric, measurement_source }) {
                 flowing
                 header={header}
                 hoverable
-                trigger={<Label color="red">{source_label(true)}</Label>}
+                trigger={<Label color="red">{source_label()}</Label>}
             />
         )
     } else {

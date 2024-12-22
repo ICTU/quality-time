@@ -46,7 +46,7 @@ export function ActionAndItemPickerButton({ action, itemType, onChange, get_opti
             >
                 <MenuItem disabled divider>
                     <Typography variant="button">
-                        <ItemBreadcrumb size="tiny" {...breadcrumbProps} />
+                        <ItemBreadcrumb {...breadcrumbProps} />
                     </Typography>
                 </MenuItem>
                 {get_options().map((option) => (

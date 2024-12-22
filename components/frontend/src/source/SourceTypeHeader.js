@@ -1,6 +1,7 @@
+import { Chip } from "@mui/material"
 import { string } from "prop-types"
 
-import { Header, Label } from "../semantic_ui_react_wrappers"
+import { Header } from "../semantic_ui_react_wrappers"
 import { sourceTypePropType } from "../sharedPropTypes"
 import { slugify } from "../utils"
 import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
@@ -18,7 +19,7 @@ export function SourceTypeHeader({ metricTypeId, sourceTypeId, sourceType }) {
             <Header.Content>
                 <Logo logo={sourceTypeId} alt={sourceType.name} />
                 {sourceType.name}
-                {sourceType.deprecated && <Label color="yellow">Deprecated</Label>}
+                {sourceType.deprecated && <Chip color="warning" label="Deprecated" sx={{ marginLeft: "8px" }} />}
                 <Header.Subheader>
                     {`${sourceTypeDescription(sourceType)} `}
                     <ReadTheDocsLink url={url} />

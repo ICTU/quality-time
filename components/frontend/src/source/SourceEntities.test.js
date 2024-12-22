@@ -158,7 +158,7 @@ it("renders a message if the measurements failed to load", () => {
 
 it("renders a placeholder while the measurements are loading", () => {
     const { container } = renderSourceEntities({ loading: "loading" })
-    expect(container.firstChild.className).toContain("placeholder")
+    expect(container.firstChild.className).toContain("MuiSkeleton-rectangular")
     expect(screen.queryAllByText("AAA").length).toBe(0)
 })
 
