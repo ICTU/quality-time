@@ -69,7 +69,7 @@ it("renders the measurements with missing values for the scale", () => {
 
 it("renders a placeholder while the measurements are loading", () => {
     const { container } = renderTrendgraph({ loading: "loading" })
-    expect(container.firstChild.className).toContain("placeholder")
+    expect(container.firstChild.className).toContain("MuiSkeleton-rectangular")
     expect(screen.queryAllByText(/Time/).length).toBe(0)
 })
 

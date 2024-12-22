@@ -1,8 +1,7 @@
+import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material"
 import { bool, func, string } from "prop-types"
-import { useContext } from "react"
-import { List, Table } from "semantic-ui-react"
+import { Table } from "semantic-ui-react"
 
-import { DarkMode } from "../context/DarkMode"
 import { StatusIcon } from "../measurement/StatusIcon"
 import { STATUS_DESCRIPTION, STATUSES } from "../metric/status"
 import { Label } from "../semantic_ui_react_wrappers"
@@ -49,21 +48,18 @@ const trendHelp = (
     </>
 )
 
-function statusHelp(darkMode) {
-    const color = darkMode ? "white" : "black"
+function statusHelp() {
     return (
         <>
             <p>The current status of the metric.</p>
             <List>
                 {STATUSES.map((status) => (
-                    <List.Item key={status}>
-                        <List.Icon>
+                    <ListItem key={status} alignItems="flex-start" sx={{ paddingLeft: "8px" }}>
+                        <ListItemIcon sx={{ minWidth: "32px" }}>
                             <StatusIcon status={status} size="small" />
-                        </List.Icon>
-                        <List.Content verticalAlign="middle" style={{ color: color, whiteSpace: "pre" }}>
-                            {STATUS_DESCRIPTION[status]}
-                        </List.Content>
-                    </List.Item>
+                        </ListItemIcon>
+                        <ListItemText>{STATUS_DESCRIPTION[status]}</ListItemText>
+                    </ListItem>
                 ))}
             </List>
             <p>Hover over the status to see how long the metric has had the current status.</p>
@@ -286,7 +282,6 @@ MeasurementHeaderCells.propTypes = {
 }
 
 export function SubjectTableHeader({ columnDates, handleSort, settings }) {
-    const darkMode = useContext(DarkMode)
     const sortProps = {
         sortColumn: settings.sortColumn,
         sortDirection: settings.sortDirection,
@@ -311,7 +306,7 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
                         column="status"
                         label="Status"
                         textAlign="center"
-                        help={statusHelp(darkMode)}
+                        help={statusHelp()}
                         {...sortProps}
                     />
                 )}
