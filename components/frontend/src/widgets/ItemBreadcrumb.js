@@ -1,36 +1,20 @@
+import NavigateNextIcon from "@mui/icons-material/NavigateNext"
+import { Breadcrumbs } from "@mui/material"
 import { string } from "prop-types"
-
-import { Breadcrumb } from "../semantic_ui_react_wrappers"
 
 export function ItemBreadcrumb(props) {
     return (
-        <Breadcrumb size={props.size || "small"}>
-            <Breadcrumb.Section>{props.report}</Breadcrumb.Section>
-            {props.subject && (
-                <>
-                    <Breadcrumb.Divider icon="right chevron" />
-                    <Breadcrumb.Section>{props.subject}</Breadcrumb.Section>
-                    {props.metric && (
-                        <>
-                            <Breadcrumb.Divider icon="right chevron" />
-                            <Breadcrumb.Section>{props.metric}</Breadcrumb.Section>
-                            {props.source && (
-                                <>
-                                    <Breadcrumb.Divider icon="right chevron" />
-                                    <Breadcrumb.Section>{props.source}</Breadcrumb.Section>
-                                </>
-                            )}
-                        </>
-                    )}
-                </>
-            )}
-        </Breadcrumb>
+        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
+            <span>{props.report}</span>
+            {props.subject && <span>{props.subject}</span>}
+            {props.metric && <span>{props.metric}</span>}
+            {props.source && <span>{props.source}</span>}
+        </Breadcrumbs>
     )
 }
 ItemBreadcrumb.propTypes = {
     metric: string,
     report: string,
-    size: string,
     source: string,
     subject: string,
 }

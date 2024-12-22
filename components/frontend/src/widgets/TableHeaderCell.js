@@ -1,6 +1,7 @@
+import { Tooltip } from "@mui/material"
 import { func, string } from "prop-types"
 
-import { Popup, Table } from "../semantic_ui_react_wrappers"
+import { Table } from "../semantic_ui_react_wrappers"
 import {
     alignmentPropType,
     labelPropType,
@@ -11,7 +12,9 @@ import {
 
 function TableHeaderCellContents({ help, label }) {
     return help ? (
-        <Popup wide="very" trigger={<span>{label}</span>} header={label} hoverable content={help} on={["hover"]} />
+        <Tooltip slotProps={{ tooltip: { sx: { maxWidth: "30em" } } }} title={help}>
+            <span>{label}</span>
+        </Tooltip>
     ) : (
         label
     )

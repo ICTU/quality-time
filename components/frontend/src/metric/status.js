@@ -57,11 +57,11 @@ export const STATUS_DESCRIPTION = {
     target_not_met: `${STATUS_NAME.target_not_met}: the measurement value does not meet the target value.`,
     debt_target_met: (
         <>
-            {`${STATUS_NAME.debt_target_met}: the measurement value does not meet the\ntarget value, but this is accepted as `}
+            {`${STATUS_NAME.debt_target_met}: the measurement value does not meet the target value, but this is accepted as `}
             <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt">technical debt</HyperLink>
-            {". The measurement\nvalue does meet the technical debt target."}
+            {". The measurement value does meet the technical debt target."}
         </>
     ),
-    unknown: `${STATUS_NAME.unknown}: the status could not be determined because no sources have\nbeen configured for the metric yet or the measurement data could not\nbe collected.`,
+    unknown: `${STATUS_NAME.unknown}: the status could not be determined because no sources have been configured for the metric yet or the measurement data could not be collected.`,
 }
 export const statusPropType = oneOf(STATUSES)
