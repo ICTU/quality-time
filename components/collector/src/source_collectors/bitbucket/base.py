@@ -26,6 +26,13 @@ class BitbucketBase(SourceCollector, ABC):
         """Override to return None, as the private token is passed as header."""
         return None
 
+    def _headers(self) -> dict[str, str]:
+        """Extend to add the private token, if any, to the headers."""
+        headers = super()._headers()
+        if private_token := self._parameter("private_token"):
+            headers["Authorization"] = "Bearer " + str(private_token)
+        return headers
+
     async def _next_urls(self, responses: SourceResponses) -> list[URL]:
         """Return the next (pagination) links from the responses."""
         return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
@@ -37,6 +44,6 @@ class BitbucketProjectBase(BitbucketBase, ABC):
     async def _bitbucket_api_url(self, api: str) -> URL:
         """Return a Bitbucket API url for a project, if present in the parameters."""
         url = await super()._api_url()
-        project = self._parameter("project", quote=True)
-        api_url = URL(f"{url}/api/v4/projects/{project}" + (f"/{api}" if api else ""))
-        return add_query(api_url, "per_page=100")
+        project = self._parameter("project")
+        api_url = URL(f"{url}/rest/api/1.0/projects/{project}" + (f"/{api}" if api else ""))
+        return add_query(api_url, "pagelen=100")
