@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
-from .base import DescribedModel
+from .base import DocumentedModel
 
 
 class SubjectContainer(BaseModel):
@@ -21,7 +21,7 @@ class SubjectContainer(BaseModel):
         return all_subjects
 
 
-class Subject(SubjectContainer, DescribedModel):
+class Subject(SubjectContainer, DocumentedModel):
     """Base model for subjects."""
 
     metrics: list[str] = Field(default_factory=list)

@@ -2,8 +2,7 @@
 
 import bottle
 
-
-QUALITY_TIME_VERSION = "5.21.0"
+from shared.utils.version import QUALITY_TIME_VERSION
 
 
 @bottle.get("/api/v3/server", authentication_required=False)

@@ -16,7 +16,7 @@ import {
     sourcePropType,
     stringsPropType,
 } from "../sharedPropTypes"
-import { getMetricName, getSourceName } from "../utils"
+import { getMetricName, getSourceName, referenceDocumentationURL } from "../utils"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { ReorderButtonGroup } from "../widgets/buttons/ReorderButtonGroup"
@@ -141,7 +141,6 @@ export function Source({
     const metricName = getMetricName(metric, dataModel)
     const connectionError = measurement_source?.connection_error || ""
     const parseError = measurement_source?.parse_error || ""
-    const referenceManualURL = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html`
     const configErrorMessage = (
         <>
             <p>
@@ -152,11 +151,11 @@ export function Source({
             <ul>
                 <li>
                     Change the type of the metric (back) to a type that is supported by{" "}
-                    <HyperLink url={`${referenceManualURL}#${source.type}`}>{sourceName}</HyperLink>.
+                    <HyperLink url={referenceDocumentationURL(sourceName)}>{sourceName}</HyperLink>.
                 </li>
                 <li>
                     Change the type of this source to a type that supports{" "}
-                    <HyperLink url={`${referenceManualURL}#${metric.type}`}>{metricName}</HyperLink>.
+                    <HyperLink url={referenceDocumentationURL(metricName)}>{metricName}</HyperLink>.
                 </li>
                 <li>Move this source to another metric.</li>
                 <li>Remove this source altogether.</li>

@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- When measuring missing metrics, make the subject type and the metric type of the missing metrics link to the reference documentation. Closes [#10528](https://github.com/ICTU/quality-time/issues/10528).
+
 ## v5.21.0 - 2024-12-12
 
 ### Fixed
