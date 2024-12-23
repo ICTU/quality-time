@@ -5,7 +5,7 @@
     "type": "module",
     "proxy": "http://localhost:9000",
     "dependencies": {
-        "@braintree/sanitize-url": "^7.1.0",
+        "@braintree/sanitize-url": "^7.1.1",
         "express": "^4.21.2",
         "puppeteer-core": "^23.11.0"
     }
