@@ -26,7 +26,7 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
 
     async def _api_url(self) -> URL:
         """Override to return the branches API."""
-        return await self._bitbucket_api_url("repository/branches")
+        return await self._bitbucket_api_url("branches")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project branches."""
