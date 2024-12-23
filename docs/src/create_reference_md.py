@@ -6,6 +6,7 @@ from typing import Literal
 
 from pydantic import HttpUrl
 
+from shared.utils.functions import slugify
 from shared_data_model import DATA_MODEL
 from shared_data_model.meta import Metric, NamedModel, Parameter, Source, Subject
 
@@ -195,14 +196,6 @@ def admonition(text: str, title: str = "", admonition: AdmonitionType = "admonit
     admonition_title = f" {title}" if title else ""
     admonition_class = f"{indent}:class: {admonition}\n" if title else ""
     return f"{indent}```{{{admonition_type}}}{admonition_title}\n{admonition_class}{indent}{text}\n{indent}```\n\n"
-
-
-def slugify(name: str) -> str:
-    """Return a slugified version of the name."""
-    # Add type to prevent mypy complaining that 'Argument 1 to "maketrans" of "str" has incompatible type...'
-    char_mapping: dict[str, str | int | None] = {" ": "-", "(": "", ")": "", "/": ""}
-    slug = name.lower().translate(str.maketrans(char_mapping))
-    return f"#{slug}"  # The hash isn't really part of the slug, but to prevent duplication it is included anyway
 
 
 def decapitalize(name: str) -> str:

@@ -90,6 +90,8 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         self, report, subject_uuid: str, expected_subject_type: str, expected_subject_name: str, metric_type: str
     ) -> dict[str, str]:
         """Create an expected missing metric entity."""
+        subject_type_name = report["subjects"][subject_uuid]["type"]
+        subject_type = QualityTimeMissingMetrics.subject_type(self.data_model["subjects"], subject_type_name)
         return {
             "key": f"{report['report_uuid']}:{subject_uuid}:{metric_type}",
             "report": report["title"],
@@ -98,7 +100,9 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
             "subject_url": f"https://quality_time/{report['report_uuid']}#{subject_uuid}",
             "subject_uuid": f"{subject_uuid}",
             "subject_type": expected_subject_type,
+            "subject_type_url": subject_type["reference_documentation_url"],
             "metric_type": self.data_model["metrics"][metric_type]["name"],
+            "metric_type_url": self.data_model["metrics"][metric_type]["reference_documentation_url"],
         }
 
     async def test_nr_of_metrics(self):
