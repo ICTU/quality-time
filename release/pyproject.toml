@@ -103,7 +103,7 @@ search = "v{current_version}"
 replace = "v{new_version}"
 
 [[tool.bumpversion.files]]
-filename = "../components/api_server/src/routes/server.py"
+filename = "../components/shared_code/src/shared/utils/version.py"
 search = 'QUALITY_TIME_VERSION = "{current_version}"'
 replace = 'QUALITY_TIME_VERSION = "{new_version}"'
 

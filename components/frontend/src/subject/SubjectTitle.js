@@ -8,7 +8,7 @@ import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { Header, Tab } from "../semantic_ui_react_wrappers"
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
-import { getSubjectType, slugify } from "../utils"
+import { getSubjectType, referenceDocumentationURL } from "../utils"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { PermLinkButton } from "../widgets/buttons/PermLinkButton"
@@ -19,13 +19,12 @@ import { changelogTabPane, configurationTabPane } from "../widgets/TabPane"
 import { SubjectParameters } from "./SubjectParameters"
 
 function SubjectHeader({ subjectType }) {
-    const url = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html${slugify(subjectType.name)}`
     return (
         <Header>
             <Header.Content>
                 {subjectType.name}
                 <Header.Subheader>
-                    {subjectType.description} <ReadTheDocsLink url={url} />
+                    {subjectType.description} <ReadTheDocsLink url={referenceDocumentationURL(subjectType.name)} />
                 </Header.Subheader>
             </Header.Content>
         </Header>

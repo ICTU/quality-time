@@ -6,6 +6,9 @@ from typing import Self, cast
 
 from pydantic import BaseModel, Field, model_validator
 
+from shared.utils.functions import slugify
+from shared.utils.version import REFERENCE_DOCUMENTATION_URL
+
 
 class StrEnum(str, Enum):
     """Enums that use strings as values."""
@@ -38,4 +41,16 @@ class DescribedModel(NamedModel):
     def check_description(self) -> Self:
         """Check the description."""
         self.check_punctuation("description", self.description)
+        return self
+
+
+class DocumentedModel(DescribedModel):
+    """Extend the described model with a reference documentation URL."""
+
+    reference_documentation_url: str | None = None  # Set automatically by set_reference_documentation_url() below
+
+    @model_validator(mode="after")
+    def set_reference_documentation_url(self) -> Self:
+        """Set the reference documentation URL based on the metric name."""
+        self.reference_documentation_url = f"{REFERENCE_DOCUMENTATION_URL}{slugify(self.name)}"
         return self

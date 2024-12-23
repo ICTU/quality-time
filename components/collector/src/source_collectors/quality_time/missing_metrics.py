@@ -77,7 +77,8 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
         report_uuid = report["report_uuid"]
         report_url = f"{landing_url}/{report_uuid}"
         subject = report["subjects"][subject_uuid]
-        subject_type_name = self.subject_type(data_model["subjects"], subject["type"])["name"]
+        subject_type = self.subject_type(data_model["subjects"], subject["type"])
+        subject_type_name = subject_type["name"]
         return Entities(
             Entity(
                 key=f"{report_uuid}:{subject_uuid}:{metric_type}",
@@ -87,7 +88,9 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
                 subject_url=f"{report_url}#{subject_uuid}",
                 subject_uuid=f"{subject_uuid}",
                 subject_type=subject_type_name,
+                subject_type_url=subject_type["reference_documentation_url"],
                 metric_type=data_model["metrics"][metric_type]["name"],
+                metric_type_url=data_model["metrics"][metric_type]["reference_documentation_url"],
             )
             for metric_type in self.__missing_metric_types(data_model, subject)
         )

@@ -310,8 +310,8 @@ QUALITY_TIME = Source(
             attributes=[
                 EntityAttribute(name="Report", url="report_url"),
                 EntityAttribute(name="Subject", url="subject_url"),
-                EntityAttribute(name="Subject type"),
-                EntityAttribute(name="Metric type"),
+                EntityAttribute(name="Subject type", url="subject_type_url"),
+                EntityAttribute(name="Metric type", url="metric_type_url"),
             ],
         ),
     },

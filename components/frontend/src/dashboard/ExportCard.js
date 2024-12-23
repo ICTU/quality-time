@@ -4,6 +4,7 @@ import { bool, string } from "prop-types"
 import { Card, List } from "semantic-ui-react"
 
 import { childrenPropType, datePropType, reportPropType } from "../sharedPropTypes"
+import { DOCUMENTATION_URL } from "../utils"
 
 function ExportCardItem({ children, url }) {
     const item = children
@@ -43,9 +44,7 @@ export function ExportCard({ lastUpdate, report, reportDate, isOverview = false 
         </List.Item>,
         <List.Item key={"version"} data-testid={"version"}>
             <List.Content verticalAlign={"middle"}>
-                <ExportCardItem
-                    url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/changelog.html`}
-                >
+                <ExportCardItem url={`${DOCUMENTATION_URL}/changelog.html`}>
                     <em>Quality-time</em> v{process.env.REACT_APP_VERSION}
                 </ExportCardItem>
             </List.Content>

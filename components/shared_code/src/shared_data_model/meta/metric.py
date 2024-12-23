@@ -4,7 +4,7 @@ from typing import Self
 
 from pydantic import ConfigDict, Field, model_validator
 
-from .base import DescribedModel, StrEnum
+from .base import DocumentedModel, StrEnum
 from .unit import Unit
 
 
@@ -35,7 +35,7 @@ class Tag(StrEnum):
     TESTABILITY = "testability"
 
 
-class Metric(DescribedModel):
+class Metric(DocumentedModel):
     """Base model for metrics."""
 
     model_config = ConfigDict(validate_default=True)
