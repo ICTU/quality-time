@@ -8,7 +8,7 @@
         "@emotion/styled": "^11.14.0",
         "@mui/icons-material": "^6.2.1",
         "@mui/lab": "^6.0.0-beta.17",
-        "@mui/material": "^6.2.1",
+        "@mui/material": "^6.3.0",
         "@mui/x-date-pickers": "^7.23.3",
         "crypto-js": "^4.2.0",
         "dayjs": "^1.11.13",
