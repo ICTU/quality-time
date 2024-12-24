@@ -1,8 +1,9 @@
+import { Chip } from "@mui/material"
 import { bool, func } from "prop-types"
 
-import { Label, Table } from "../semantic_ui_react_wrappers"
+import { Table } from "../semantic_ui_react_wrappers"
 import { reportPropType } from "../sharedPropTypes"
-import { capitalize, ISSUE_STATUS_COLORS } from "../utils"
+import { capitalize, ISSUE_STATUS_THEME_COLORS } from "../utils"
 import { FilterCardWithTable } from "./FilterCardWithTable"
 
 function issueStatuses(report) {
@@ -35,9 +36,13 @@ function tableRows(report) {
         <Table.Row key={status}>
             <Table.Cell>{capitalize(status)}</Table.Cell>
             <Table.Cell textAlign="right">
-                <Label size="small" color={ISSUE_STATUS_COLORS[status]}>
-                    {statuses[status]}
-                </Label>
+                <Chip
+                    color={ISSUE_STATUS_THEME_COLORS[status]}
+                    label={`${statuses[status]}`}
+                    size="small"
+                    sx={{ borderRadius: 1 }}
+                    variant={ISSUE_STATUS_THEME_COLORS[status] ? "" : "outlined"}
+                />
             </Table.Cell>
         </Table.Row>
     ))
