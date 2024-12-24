@@ -63,7 +63,7 @@ it("shows that the report was missing", async () => {
 
 it("shows the loading spinner", async () => {
     await renderPageContent({ loading: true })
-    expect(screen.getAllByLabelText(/Loading/).length).toBe(1)
+    expect(screen.getAllByRole("progressbar").length).toBe(1)
 })
 
 function expectMeasurementsCall(date, offset = 0) {

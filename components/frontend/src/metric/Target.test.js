@@ -84,7 +84,7 @@ it("displays the default target if changed", () => {
 
 it("shows help", async () => {
     renderMetricTarget({ type: "violations", target: "10", near_target: "15" })
-    await userEvent.tab()
+    await userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expect(screen.queryAllByText(/How measurement values are evaluated/).length).toBe(1)
     })
@@ -100,7 +100,7 @@ function expectNotVisible(...matchers) {
 
 it("shows help for evaluated metric without tech debt", async () => {
     renderMetricTarget({ type: "violations", target: "10", near_target: "15" })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(
             /Target met/,
@@ -122,7 +122,7 @@ it("shows help for evaluated metric with tech debt", async () => {
         near_target: "20",
         accept_debt: true,
     })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(
             /Target met/,
@@ -139,7 +139,7 @@ it("shows help for evaluated metric with tech debt", async () => {
 
 it("shows help for evaluated metric with tech debt if debt target is missing", async () => {
     renderMetricTarget({ type: "violations", target: "10", near_target: "20", accept_debt: true })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(
             /Target met/,
@@ -162,7 +162,7 @@ it("shows help for evaluated metric with tech debt with end date", async () => {
         accept_debt: true,
         debt_end_date: "3000-01-01",
     })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(
             /Target met/,
@@ -186,7 +186,7 @@ it("shows help for evaluated metric with tech debt with end date in the past", a
         accept_debt: true,
         debt_end_date: "2000-01-01",
     })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(
             /Target met/,
@@ -208,7 +208,7 @@ it("shows help for evaluated metric with tech debt completely overlapping near t
         near_target: "20",
         accept_debt: true,
     })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(
             /Target met/,
@@ -224,7 +224,7 @@ it("shows help for evaluated metric with tech debt completely overlapping near t
 
 it("shows help for evaluated metric without tech debt and target completely overlapping near target", async () => {
     renderMetricTarget({ type: "violations", target: "10", near_target: "10" })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(/Target met/, /≦ 10 violations/, /Target not met/, /> 10 violations/)
         expectNotVisible(/Debt target met/, /Near target met/)
@@ -233,7 +233,7 @@ it("shows help for evaluated metric without tech debt and target completely over
 
 it("shows help for evaluated more-is-better metric without tech debt", async () => {
     renderMetricTarget({ type: "violations", target: "15", near_target: "10", direction: ">" })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(
             /Target not met/,
@@ -256,7 +256,7 @@ it("shows help for evaluated more-is-better metric with tech debt", async () => 
         accept_debt: true,
         direction: ">",
     })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(
             /Target not met/,
@@ -279,7 +279,7 @@ it("shows help for evaluated more-is-better metric with tech debt and missing de
         accept_debt: true,
         direction: ">",
     })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(
             /Target not met/,
@@ -302,7 +302,7 @@ it("shows help for evaluated more-is-better metric with tech debt completely ove
         accept_debt: true,
         direction: ">",
     })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(
             /Target not met/,
@@ -318,7 +318,7 @@ it("shows help for evaluated more-is-better metric with tech debt completely ove
 
 it("shows help for evaluated more-is-better metric without tech debt and target completely overlapping near target", async () => {
     renderMetricTarget({ type: "violations", target: "15", near_target: "15", direction: ">" })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(/Target not met/, /< 15 violations/, /Target met/, /≧ 15 violations/)
         expectNotVisible(/Near target met/, /Debt target met/)
@@ -327,7 +327,7 @@ it("shows help for evaluated more-is-better metric without tech debt and target 
 
 it("shows help for evaluated metric without tech debt and zero target completely overlapping near target", async () => {
     renderMetricTarget({ type: "violations", target: "0", near_target: "0", direction: ">" })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(/Target met/, /≧ 0 violations/)
         expectNotVisible(/Debt target met/, /Near target met/, /Target not met/)
@@ -336,7 +336,7 @@ it("shows help for evaluated metric without tech debt and zero target completely
 
 it("shows help for informative metric", async () => {
     renderMetricTarget({ type: "violations", evaluate_targets: false })
-    await userEvent.tab()
+    userEvent.hover(screen.getByTestId("HelpIcon"))
     await waitFor(() => {
         expectVisible(/Informative/, /violations are not evaluated/)
         expectNotVisible(/Target met/, /Debt target met/, /Near target met/, /Target not met/)

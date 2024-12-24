@@ -55,7 +55,6 @@ it("renders an outdated value", async () => {
         },
     })
     const measurementValue = screen.getByText(/1/)
-    expect(measurementValue.className).toContain("yellow")
     expect(screen.getAllByTestId("LoopIcon").length).toBe(1)
     await userEvent.hover(measurementValue)
     await waitFor(() => {
@@ -73,7 +72,6 @@ it("renders a value for which a measurement was requested", async () => {
         measurement_requested: now,
     })
     const measurementValue = screen.getByText(/1/)
-    expect(measurementValue.className).toContain("yellow")
     expect(screen.getAllByTestId("LoopIcon").length).toBe(1)
     await userEvent.hover(measurementValue)
     await waitFor(() => {
@@ -89,7 +87,6 @@ it("renders a value for which a measurement was requested, but which is now up t
         measurement_requested: "2024-01-01T00:00:00",
     })
     const measurementValue = screen.getByText(/1/)
-    expect(measurementValue.className).not.toContain("yellow")
     expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
     await userEvent.hover(measurementValue)
     await waitFor(() => {

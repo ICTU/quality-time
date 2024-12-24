@@ -1,5 +1,5 @@
+import Grid from "@mui/material/Grid2"
 import { func, shape } from "prop-types"
-import { Grid } from "semantic-ui-react"
 
 import { set_reports_attribute } from "../api/report"
 import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
@@ -17,36 +17,32 @@ import { setDocumentTitle } from "./document_title"
 
 function ReportsOverviewConfiguration({ reports_overview, reload }) {
     return (
-        <Grid stackable>
-            <Grid.Row columns={2}>
-                <Grid.Column>
-                    <StringInput
-                        id="reports-overview-title"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label="Report overview title"
-                        set_value={(value) => set_reports_attribute("title", value, reload)}
-                        value={reports_overview.title}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <StringInput
-                        id="reports-overview-subtitle"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label="Report overview subtitle"
-                        set_value={(value) => set_reports_attribute("subtitle", value, reload)}
-                        value={reports_overview.subtitle}
-                    />
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column>
-                    <Comment
-                        id="reports-overview-comment"
-                        set_value={(value) => set_reports_attribute("comment", value, reload)}
-                        value={reports_overview.comment}
-                    />
-                </Grid.Column>
-            </Grid.Row>
+        <Grid container alignItems="flex-end" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 2, md: 2 }}>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <StringInput
+                    id="reports-overview-title"
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    label="Report overview title"
+                    set_value={(value) => set_reports_attribute("title", value, reload)}
+                    value={reports_overview.title}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <StringInput
+                    id="reports-overview-subtitle"
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    label="Report overview subtitle"
+                    set_value={(value) => set_reports_attribute("subtitle", value, reload)}
+                    value={reports_overview.subtitle}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 2, md: 2 }}>
+                <Comment
+                    id="reports-overview-comment"
+                    set_value={(value) => set_reports_attribute("comment", value, reload)}
+                    value={reports_overview.comment}
+                />
+            </Grid>
         </Grid>
     )
 }
@@ -62,35 +58,31 @@ function setPermissions(permissions, permission, value, reload) {
 
 function Permissions({ permissions, reload }) {
     return (
-        <Grid stackable>
-            <Grid.Row columns={1}>
-                <Grid.Column>
-                    <MultipleChoiceInput
-                        allowAdditions
-                        id="report_overview_edit_report_permission"
-                        label="Users allowed to edit reports (user name or email address)"
-                        options={dropdownOptions(permissions[EDIT_REPORT_PERMISSION] || [])}
-                        placeholder="All authenticated users"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        set_value={(value) => setPermissions(permissions, EDIT_REPORT_PERMISSION, value, reload)}
-                        value={permissions[EDIT_REPORT_PERMISSION]}
-                    />
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row columns={1}>
-                <Grid.Column>
-                    <MultipleChoiceInput
-                        allowAdditions
-                        id="report_overview_edit_entity_permission"
-                        label="Users allowed to edit measured entities (user name or email address)"
-                        options={dropdownOptions(permissions[EDIT_ENTITY_PERMISSION] || [])}
-                        placeholder="All authenticated users"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        set_value={(value) => setPermissions(permissions, EDIT_ENTITY_PERMISSION, value, reload)}
-                        value={permissions[EDIT_ENTITY_PERMISSION]}
-                    />
-                </Grid.Column>
-            </Grid.Row>
+        <Grid container alignItems="flex-end" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 1, md: 2 }}>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <MultipleChoiceInput
+                    allowAdditions
+                    id="report_overview_edit_report_permission"
+                    label="Users allowed to edit reports (user name or email address)"
+                    options={dropdownOptions(permissions[EDIT_REPORT_PERMISSION] || [])}
+                    placeholder="All authenticated users"
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    set_value={(value) => setPermissions(permissions, EDIT_REPORT_PERMISSION, value, reload)}
+                    value={permissions[EDIT_REPORT_PERMISSION]}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <MultipleChoiceInput
+                    allowAdditions
+                    id="report_overview_edit_entity_permission"
+                    label="Users allowed to edit measured entities (user name or email address)"
+                    options={dropdownOptions(permissions[EDIT_ENTITY_PERMISSION] || [])}
+                    placeholder="All authenticated users"
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    set_value={(value) => setPermissions(permissions, EDIT_ENTITY_PERMISSION, value, reload)}
+                    value={permissions[EDIT_ENTITY_PERMISSION]}
+                />
+            </Grid>
         </Grid>
     )
 }

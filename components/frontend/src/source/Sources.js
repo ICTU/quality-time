@@ -1,10 +1,10 @@
+import { Paper } from "@mui/material"
 import { func, number, string } from "prop-types"
 import { useContext } from "react"
 
 import { add_source, copy_source, move_source } from "../api/source"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { Message, Segment } from "../semantic_ui_react_wrappers"
 import {
     measurementPropType,
     measurementSourcePropType,
@@ -20,6 +20,7 @@ import { CopyButton } from "../widgets/buttons/CopyButton"
 import { MoveButton } from "../widgets/buttons/MoveButton"
 import { source_options } from "../widgets/menu_options"
 import { showMessage } from "../widgets/toast"
+import { InfoMessage } from "../widgets/WarningMessage"
 import { Source } from "./Source"
 import { sourceTypeOptions } from "./SourceType"
 
@@ -59,7 +60,7 @@ ButtonSegment.propTypes = {
 
 function SourceSegment({ changed_fields, index, last_index, measurement_source, metric, reload, report, sourceUuid }) {
     return (
-        <Segment vertical id={sourceUuid}>
+        <Paper elevation={0} id={sourceUuid} sx={{ padding: "8px", paddingBottom: "16px" }}>
             <Source
                 first_source={index === 0}
                 last_source={index === last_index}
@@ -70,7 +71,7 @@ function SourceSegment({ changed_fields, index, last_index, measurement_source, 
                 source_uuid={sourceUuid}
                 changed_fields={changed_fields}
             />
-        </Segment>
+        </Paper>
     )
 }
 SourceSegment.propTypes = {
@@ -118,10 +119,7 @@ export function Sources({ reports, report, metric, metric_uuid, measurement, cha
     return (
         <>
             {sourceSegments.length === 0 ? (
-                <Message>
-                    <Message.Header>No sources</Message.Header>
-                    <p>No sources have been configured yet.</p>
-                </Message>
+                <InfoMessage title="No sources">No sources have been configured yet.</InfoMessage>
             ) : (
                 sourceSegments
             )}

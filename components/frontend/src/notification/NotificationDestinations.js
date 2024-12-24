@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material"
+import Grid from "@mui/material/Grid2"
 import { func, objectOf, string } from "prop-types"
-import { Grid } from "semantic-ui-react"
 
 import {
     add_notification_destination,
@@ -9,13 +9,13 @@ import {
 } from "../api/notification"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { StringInput } from "../fields/StringInput"
-import { Message } from "../semantic_ui_react_wrappers"
 import { destinationPropType } from "../sharedPropTypes"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { AddButton } from "../widgets/buttons/AddButton"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { HyperLink } from "../widgets/HyperLink"
 import { LabelWithHelp } from "../widgets/LabelWithHelp"
+import { InfoMessage } from "../widgets/WarningMessage"
 
 function NotificationDestination({ destination, destination_uuid, reload, report_uuid }) {
     const help_url =
@@ -23,47 +23,41 @@ function NotificationDestination({ destination, destination_uuid, reload, report
     const teams_hyperlink = <HyperLink url={help_url}>Microsoft Teams</HyperLink>
     return (
         <Stack key={destination_uuid} direction="column" spacing={2}>
-            <Grid stackable>
-                <Grid.Row columns={2}>
-                    <Grid.Column width={6}>
-                        <StringInput
-                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                            id={destination_uuid}
-                            label="Name"
-                            set_value={(value) => {
-                                set_notification_destination_attributes(
-                                    report_uuid,
-                                    destination_uuid,
-                                    { name: value },
-                                    reload,
-                                )
-                            }}
-                            value={destination.name}
-                        />
-                    </Grid.Column>
-                    <Grid.Column width={10}>
-                        <StringInput
-                            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                            label={
-                                <LabelWithHelp
-                                    label="Webhook"
-                                    help={<>Paste a {teams_hyperlink} webhook URL here.</>}
-                                    hoverable
-                                />
-                            }
-                            placeholder="https://example.webhook.office.com/webhook..."
-                            set_value={(value) => {
-                                set_notification_destination_attributes(
-                                    report_uuid,
-                                    destination_uuid,
-                                    { webhook: value, url: window.location.href },
-                                    reload,
-                                )
-                            }}
-                            value={destination.webhook}
-                        />
-                    </Grid.Column>
-                </Grid.Row>
+            <Grid container spacing={2}>
+                <Grid size={4}>
+                    <StringInput
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        id={destination_uuid}
+                        label="Name"
+                        set_value={(value) => {
+                            set_notification_destination_attributes(
+                                report_uuid,
+                                destination_uuid,
+                                { name: value },
+                                reload,
+                            )
+                        }}
+                        value={destination.name}
+                    />
+                </Grid>
+                <Grid size={8}>
+                    <StringInput
+                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                        label={
+                            <LabelWithHelp label="Webhook" help={<>Paste a {teams_hyperlink} webhook URL here.</>} />
+                        }
+                        placeholder="https://example.webhook.office.com/webhook..."
+                        set_value={(value) => {
+                            set_notification_destination_attributes(
+                                report_uuid,
+                                destination_uuid,
+                                { webhook: value, url: window.location.href },
+                                reload,
+                            )
+                        }}
+                        value={destination.webhook}
+                    />
+                </Grid>
             </Grid>
             <ReadOnlyOrEditable
                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
@@ -102,12 +96,11 @@ export function NotificationDestinations({ destinations, reload, report_uuid }) 
         )
     })
     return (
-        <>
+        <Stack direction="column" spacing={1}>
             {notification_destinations.length === 0 ? (
-                <Message>
-                    <Message.Header>No notification destinations</Message.Header>
-                    <p>No notification destinations have been configured yet.</p>
-                </Message>
+                <InfoMessage title="No notification destinations">
+                    No notification destinations have been configured yet.
+                </InfoMessage>
             ) : (
                 notification_destinations
             )}
@@ -121,7 +114,7 @@ export function NotificationDestinations({ destinations, reload, report_uuid }) 
                     />
                 }
             />
-        </>
+        </Stack>
     )
 }
 NotificationDestinations.propTypes = {

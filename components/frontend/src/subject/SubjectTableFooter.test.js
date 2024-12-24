@@ -1,5 +1,5 @@
+import { Table } from "@mui/material"
 import { act, fireEvent, render, screen } from "@testing-library/react"
-import { Table } from "semantic-ui-react"
 
 import { dataModel, report } from "../__fixtures__/fixtures"
 import * as fetch_server_api from "../api/fetch_server_api"

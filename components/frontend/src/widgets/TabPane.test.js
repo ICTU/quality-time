@@ -21,12 +21,12 @@ it("is inverted in dark mode", () => {
 
 it("shows the tab red when there is an error", () => {
     render(<Tab panes={[tabPane("Tab", <p>Pane</p>, { error: true })]} />)
-    expect(screen.getByText("Tab").className).toEqual(expect.stringContaining("red"))
+    expect(screen.getByText("Tab").className).toEqual(expect.stringContaining("error"))
 })
 
 it("shows the tab yellow when there is a warning", () => {
     render(<Tab panes={[tabPane("Tab", <p>Pane</p>, { warning: true })]} />)
-    expect(screen.getByText("Tab").className).toEqual(expect.stringContaining("yellow"))
+    expect(screen.getByText("Tab").className).toEqual(expect.stringContaining("warning"))
 })
 
 it("shows an icon", () => {

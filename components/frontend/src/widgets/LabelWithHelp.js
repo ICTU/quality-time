@@ -1,20 +1,16 @@
 import HelpIcon from "@mui/icons-material/Help"
-import { bool, string } from "prop-types"
+import { Tooltip } from "@mui/material"
+import { string } from "prop-types"
 
-import { Popup } from "../semantic_ui_react_wrappers"
 import { labelPropType, popupContentPropType } from "../sharedPropTypes"
 
-export function LabelWithHelp({ labelId, labelFor, label, help, hoverable }) {
+export function LabelWithHelp({ labelId, labelFor, label, help }) {
     return (
         <label id={labelId} htmlFor={labelFor}>
             {label}{" "}
-            <Popup
-                hoverable={hoverable}
-                on={["hover", "focus"]}
-                content={help}
-                trigger={<HelpIcon fontSize="inherit" tabIndex="0" />}
-                wide
-            />
+            <Tooltip title={help}>
+                <HelpIcon fontSize="inherit" tabIndex="0" />
+            </Tooltip>
         </label>
     )
 }
@@ -23,5 +19,4 @@ LabelWithHelp.propTypes = {
     labelFor: string,
     label: labelPropType,
     help: popupContentPropType,
-    hoverable: bool,
 }

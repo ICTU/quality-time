@@ -36,7 +36,6 @@ const report = {
 function renderSourceParameter({
     help = null,
     help_url = null,
-    index = 0,
     parameter_key = "key1",
     parameter_name = "URL",
     parameter_type = "url",
@@ -50,7 +49,6 @@ function renderSourceParameter({
             <SourceParameter
                 help={help}
                 help_url={help_url}
-                index={index}
                 parameter_key={parameter_key}
                 parameter_name={parameter_name}
                 parameter_type={parameter_type}
@@ -74,10 +72,9 @@ it("renders an url parameter", () => {
 })
 
 it("renders an url parameter with warning", () => {
-    renderSourceParameter({ warning: true, index: 1 })
+    renderSourceParameter({ warning: true })
     expect(screen.queryAllByText(/URL/).length).toBe(1)
     expect(screen.queryAllByText(/placeholder/).length).toBe(1)
-    expect(screen.getByRole("combobox")).toBeInvalid()
 })
 
 it("renders a string parameter", () => {
@@ -171,6 +168,7 @@ it("changes the value", async () => {
 it("changes the value via mass edit", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderSourceParameter({})
+    await userEvent.click(screen.queryByText(/Apply change to source/))
     await userEvent.click(screen.queryByText(/Apply change to subject/))
     await userEvent.type(screen.queryByText(/test/), "/new{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", {

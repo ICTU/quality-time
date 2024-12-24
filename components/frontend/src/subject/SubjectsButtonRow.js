@@ -23,7 +23,7 @@ export function SubjectsButtonRow({ reload, report, reports, settings }) {
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <Box sx={{ pt: "50px" }}>
+                <Box sx={{ paddingTop: "50px" }}>
                     <ButtonRow>
                         <AddDropdownButton
                             itemType="subject"

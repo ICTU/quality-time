@@ -7,13 +7,14 @@ import { useContext } from "react"
 import { Menu } from "semantic-ui-react"
 
 import { DarkMode } from "../context/DarkMode"
-import { Label, Tab } from "../semantic_ui_react_wrappers"
+import { Tab } from "../semantic_ui_react_wrappers"
+import { Label } from "./Label"
 
 function FocusableTab({ error, icon, image, label, warning }) {
     const className = useContext(DarkMode) ? "tabbutton inverted" : "tabbutton"
     let tabLabel = label
     if (error || warning) {
-        const color = error ? "red" : "yellow"
+        const color = error ? "error" : "warning"
         tabLabel = <Label color={color}>{label}</Label>
     }
     return (

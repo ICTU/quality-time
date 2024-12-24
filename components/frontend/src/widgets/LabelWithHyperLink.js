@@ -9,7 +9,7 @@ export function LabelWithHyperLink({ labelId, label, url }) {
         <label id={labelId}>
             {label}{" "}
             <HyperLink url={url}>
-                <HelpIcon fontSize="inherit" tabIndex="0" />
+                <HelpIcon fontSize="inherit" />
             </HyperLink>
         </label>
     )

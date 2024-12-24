@@ -1,7 +1,7 @@
 import { Avatar, Tooltip } from "@mui/material"
 import { instanceOf, oneOfType, string } from "prop-types"
 
-import { STATUS_COLORS_MUI, STATUS_ICONS, STATUS_SHORT_NAME, statusPropType } from "../metric/status"
+import { STATUS_ICONS, STATUS_SHORT_NAME, statusPropType } from "../metric/status"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 
 export function StatusIcon({ status, statusStart, size }) {
@@ -9,7 +9,7 @@ export function StatusIcon({ status, statusStart, size }) {
     const sizes = { small: 20, undefined: 32 }
     const statusName = STATUS_SHORT_NAME[status]
     // Use Avatar to create a round inverted icon:
-    const iconStyle = { width: sizes[size], height: sizes[size], bgcolor: STATUS_COLORS_MUI[status] }
+    const iconStyle = { width: sizes[size], height: sizes[size], bgcolor: `${status}.main` }
     const icon = (
         <Avatar aria-label={statusName} sx={iconStyle}>
             {STATUS_ICONS[status]}

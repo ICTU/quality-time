@@ -1,5 +1,5 @@
 import HelpIcon from "@mui/icons-material/Help"
-import { Box, Stack, Typography } from "@mui/material"
+import { Box, Stack, Tooltip, Typography } from "@mui/material"
 import { bool, func, oneOf, string } from "prop-types"
 import { useContext } from "react"
 
@@ -9,7 +9,6 @@ import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { IntegerInput } from "../fields/IntegerInput"
 import { StringInput } from "../fields/StringInput"
 import { StatusIcon } from "../measurement/StatusIcon"
-import { Popup } from "../semantic_ui_react_wrappers"
 import { childrenPropType, labelPropType, metricPropType, scalePropType } from "../sharedPropTypes"
 import {
     capitalize,
@@ -18,7 +17,7 @@ import {
     formatMetricValue,
     getMetricScale,
 } from "../utils"
-import { STATUS_COLORS_MUI, STATUS_SHORT_NAME, statusPropType } from "./status"
+import { STATUS_SHORT_NAME, statusPropType } from "./status"
 
 function smallerThan(target1, target2) {
     const t1 = target1 ?? `${Number.POSITIVE_INFINITY}`
@@ -52,7 +51,7 @@ function ColoredSegment({ children, color, show, status }) {
         return null
     }
     return (
-        <Box sx={{ padding: "10px", border: `12px solid ${STATUS_COLORS_MUI[status]}` }}>
+        <Box sx={{ padding: "10px", border: "12px solid", borderColor: `${status}.main` }}>
             <Typography variant="h6">
                 <Stack direction="row">
                     {STATUS_SHORT_NAME[status]}&nbsp;
@@ -232,7 +231,7 @@ TargetVisualiser.propTypes = {
     metric: metricPropType,
 }
 
-function TargetLabel({ label, metric, position, targetType }) {
+function TargetLabel({ label, metric, targetType }) {
     const dataModel = useContext(DataModel)
     const metricType = dataModel.metrics[metric.type]
     const defaultTarget = metricType[targetType]
@@ -245,32 +244,33 @@ function TargetLabel({ label, metric, position, targetType }) {
     return (
         <label>
             {label + defaultTargetLabel}{" "}
-            <Popup
-                content={<TargetVisualiser metric={metric} />}
-                flowing
-                header="How measurement values are evaluated"
-                hoverable
-                on={["hover", "focus"]}
-                position={position}
-                trigger={<HelpIcon fontSize="inherit" tabIndex={0} />}
-            />
+            <Tooltip
+                slotProps={{ tooltip: { sx: { maxWidth: "40em" } } }}
+                title={
+                    <>
+                        How measurement values are evaluated
+                        <TargetVisualiser metric={metric} />
+                    </>
+                }
+            >
+                <HelpIcon fontSize="inherit" tabIndex={0} />
+            </Tooltip>
         </label>
     )
 }
 TargetLabel.propTypes = {
     label: labelPropType,
     metric: metricPropType,
-    position: string,
     targetType: string,
 }
 
-export function Target({ label, labelPosition, metric, metric_uuid, reload, target_type }) {
+export function Target({ label, metric, metric_uuid, reload, target_type }) {
     const dataModel = useContext(DataModel)
     const metricScale = getMetricScale(metric, dataModel)
     const metricDirectionPrefix = formatMetricDirection(metric, dataModel)
     const targetValue = metric[target_type]
     const unit = formatMetricScaleAndUnit(metric, dataModel)
-    const targetLabel = <TargetLabel label={label} metric={metric} position={labelPosition} targetType={target_type} />
+    const targetLabel = <TargetLabel label={label} metric={metric} targetType={target_type} />
     if (metricScale === "version_number") {
         return (
             <StringInput
@@ -298,7 +298,6 @@ export function Target({ label, labelPosition, metric, metric_uuid, reload, targ
 }
 Target.propTypes = {
     label: labelPropType,
-    labelPosition: string,
     metric: metricPropType,
     metric_uuid: string,
     reload: func,

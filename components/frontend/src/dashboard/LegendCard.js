@@ -9,7 +9,7 @@ export function LegendCard() {
         <ListItem key={status} dense={true} sx={{ padding: "0px" }}>
             <StatusIcon status={status} size="small" />
             &nbsp;
-            <ListItemText primary={STATUS_SHORT_NAME[status]} primaryTypographyProps={{ noWrap: true }} />
+            <ListItemText primary={STATUS_SHORT_NAME[status]} slotProps={{ typography: { noWrap: true } }} />
         </ListItem>
     ))
 

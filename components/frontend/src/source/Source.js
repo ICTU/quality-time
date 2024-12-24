@@ -1,6 +1,6 @@
+import Grid from "@mui/material/Grid2"
 import { bool, func, object, oneOfType, string } from "prop-types"
 import { useContext } from "react"
-import { Grid } from "semantic-ui-react"
 
 import { delete_source, set_source_attribute } from "../api/source"
 import { ChangeLog } from "../changelog/ChangeLog"
@@ -73,39 +73,35 @@ function Parameters({
     const dataModel = useContext(DataModel)
     const source_type = dataModel.sources[source.type]
     return (
-        <Grid stackable>
-            <Grid.Row columns={2}>
-                <Grid.Column>
-                    <SourceType
-                        metric_type={metric.type}
-                        set_source_attribute={(a, v) => set_source_attribute(source_uuid, a, v, reload)}
-                        source_uuid={source_uuid}
-                        source_type={source.type}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <StringInput
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        id="source-name"
-                        label="Source name"
-                        placeholder={source_type.name}
-                        set_value={(value) => set_source_attribute(source_uuid, "name", value, reload)}
-                        value={source.name}
-                    />
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row columns={1}>
-                <Grid.Column>
-                    <SourceParameters
-                        changed_param_keys={select_sources_parameter_keys(changed_fields, source_uuid)}
-                        metric={metric}
-                        reload={reload}
-                        report={report}
-                        source={source}
-                        source_uuid={source_uuid}
-                    />
-                </Grid.Column>
-            </Grid.Row>
+        <Grid container alignItems="flex-end" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 2, md: 2 }}>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <SourceType
+                    metric_type={metric.type}
+                    set_source_attribute={(a, v) => set_source_attribute(source_uuid, a, v, reload)}
+                    source_uuid={source_uuid}
+                    source_type={source.type}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <StringInput
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    id="source-name"
+                    label="Source name"
+                    placeholder={source_type.name}
+                    set_value={(value) => set_source_attribute(source_uuid, "name", value, reload)}
+                    value={source.name}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 2, md: 2 }}>
+                <SourceParameters
+                    changed_param_keys={select_sources_parameter_keys(changed_fields, source_uuid)}
+                    metric={metric}
+                    reload={reload}
+                    report={report}
+                    source={source}
+                    source_uuid={source_uuid}
+                />
+            </Grid>
             {connection_error && <ErrorMessage title="Connection error" message={connection_error} />}
             {parse_error && <ErrorMessage title="Parse error" message={parse_error} />}
             {config_error && <ErrorMessage title="Configuration error" message={config_error} formatAsText={true} />}

@@ -13,6 +13,7 @@ export function HyperLink({ url, children }) {
             target="_blank"
             title="Opens new window or tab"
             underline="always"
+            variant="inherit"
         >
             {children}
         </Link>
