@@ -1,7 +1,8 @@
+import { Tooltip } from "@mui/material"
 import { bool, string } from "prop-types"
 import TimeAgo from "react-timeago"
 
-import { Label, Popup } from "../semantic_ui_react_wrappers"
+import { Label } from "../semantic_ui_react_wrappers"
 import { issueStatusPropType, metricPropType, settingsPropType, stringsPropType } from "../sharedPropTypes"
 import { getMetricIssueIds, ISSUE_STATUS_COLORS } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
@@ -9,13 +10,21 @@ import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 
 function IssueWithoutTracker({ issueId }) {
     return (
-        <Popup
-            content={
-                "Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker."
+        <Tooltip
+            title={
+                <>
+                    <h4>No issue tracker configured</h4>
+                    <p>
+                        Please configure an issue tracker by expanding the report title, selecting the &lsquo;Issue
+                        tracker&rsquo; tab, and configuring an issue tracker.
+                    </p>
+                </>
             }
-            header={"No issue tracker configured"}
-            trigger={<Label color="red">{issueId}</Label>}
-        />
+        >
+            <span>
+                <Label color="red">{issueId}</Label>
+            </span>
+        </Tooltip>
     )
 }
 IssueWithoutTracker.propTypes = {
@@ -160,7 +169,18 @@ function IssueWithTracker({ issueStatus, settings }) {
         popupContent = issuePopupContent(issueStatus)
     }
     if (popupContent) {
-        label = <Popup header={popupHeader} content={popupContent} flowing hoverable trigger={label} />
+        label = (
+            <Tooltip
+                title={
+                    <>
+                        <h4>{popupHeader}</h4>
+                        <p>{popupContent}</p>
+                    </>
+                }
+            >
+                {label}
+            </Tooltip>
+        )
     }
     return label
 }
