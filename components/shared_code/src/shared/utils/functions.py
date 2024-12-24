@@ -29,3 +29,11 @@ def md5_hash(string: str) -> str:
     """Return a md5 hash of the string."""
     md5 = hashlib.md5(string.encode("utf-8"), usedforsecurity=False)
     return md5.hexdigest()
+
+
+def slugify(name: str) -> str:
+    """Return a slugified version of the name."""
+    # Add type to prevent mypy complaining that 'Argument 1 to "maketrans" of "str" has incompatible type...'
+    char_mapping: dict[str, str | int | None] = {" ": "-", "(": "", ")": "", "/": ""}
+    slug = name.lower().translate(str.maketrans(char_mapping))
+    return f"#{slug}"  # The hash isn't really part of the slug, but to prevent duplication it is included anyway

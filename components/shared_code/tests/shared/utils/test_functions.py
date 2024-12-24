@@ -4,7 +4,7 @@ import unittest
 from datetime import UTC, datetime
 from unittest.mock import patch
 
-from shared.utils.functions import first, iso_timestamp, md5_hash
+from shared.utils.functions import first, iso_timestamp, md5_hash, slugify
 
 
 class IsoTimestampTest(unittest.TestCase):
@@ -40,3 +40,19 @@ class MD5HashTest(unittest.TestCase):
     def test_hash(self):
         """Test that the md5 hash is returned."""
         self.assertEqual("acbd18db4cc2f85cedef654fccc4a4d8", md5_hash("foo"))
+
+
+class SlugifyTest(unittest.TestCase):
+    """Unit tests for the slugify function."""
+
+    def test_simple_string(self):
+        """Test that a simple string is returned unchanged."""
+        self.assertEqual("#name", slugify("name"))
+
+    def test_mixed_case(self):
+        """Test that a upper case characters are made lower case."""
+        self.assertEqual("#name", slugify("Name"))
+
+    def test_forbidden_characters(self):
+        """Test that forbidden characters are removed."""
+        self.assertEqual("#name-part-two", slugify("/name part two()"))

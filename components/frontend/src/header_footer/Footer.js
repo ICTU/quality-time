@@ -22,6 +22,7 @@ import {
 import { element, object, oneOfType, string } from "prop-types"
 
 import { alignmentPropType, childrenPropType, datePropType, reportPropType } from "../sharedPropTypes"
+import { DOCUMENTATION_URL, REPOSITORY_URL } from "../utils"
 
 function FooterItem({ children, icon, url }) {
     const color = "silver"
@@ -69,16 +70,13 @@ function AboutAppColumn() {
             <FooterItem icon={<ScienceIcon />} url="https://www.ictu.nl/about-us">
                 Created by ICTU
             </FooterItem>
-            <FooterItem icon={<CopyrightIcon />} url="https://github.com/ICTU/quality-time/blob/master/LICENSE">
+            <FooterItem icon={<CopyrightIcon />} url={`${REPOSITORY_URL}/blob/master/LICENSE`}>
                 License
             </FooterItem>
-            <FooterItem
-                icon={<HistoryIcon />}
-                url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/changelog.html`}
-            >
+            <FooterItem icon={<HistoryIcon />} url={`${DOCUMENTATION_URL}/changelog.html`}>
                 Changelog
             </FooterItem>
-            <FooterItem icon={<GitHubIcon />} url="https://github.com/ICTU/quality-time">
+            <FooterItem icon={<GitHubIcon />} url={REPOSITORY_URL}>
                 Source code
             </FooterItem>
         </FooterColumn>
@@ -88,22 +86,16 @@ function AboutAppColumn() {
 function SupportColumn() {
     return (
         <FooterColumn header="Support">
-            <FooterItem
-                icon={<MenuBookIcon />}
-                url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/`}
-            >
+            <FooterItem icon={<MenuBookIcon />} url={DOCUMENTATION_URL}>
                 Documentation
             </FooterItem>
-            <FooterItem
-                icon={<PersonIcon />}
-                url={`https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/usage.html`}
-            >
+            <FooterItem icon={<PersonIcon />} url={`${DOCUMENTATION_URL}/usage.html`}>
                 User manual
             </FooterItem>
-            <FooterItem icon={<BugReportIcon />} url="https://github.com/ICTU/quality-time/issues">
+            <FooterItem icon={<BugReportIcon />} url={`${REPOSITORY_URL}/issues`}>
                 Known issues
             </FooterItem>
-            <FooterItem icon={<FeedbackIcon />} url="https://github.com/ICTU/quality-time/issues/new">
+            <FooterItem icon={<FeedbackIcon />} url={`${REPOSITORY_URL}/issues/new`}>
                 Report an issue
             </FooterItem>
         </FooterColumn>

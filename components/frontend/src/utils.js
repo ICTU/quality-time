@@ -15,6 +15,8 @@ import {
     subjectTypePropType,
 } from "./sharedPropTypes"
 
+export const DOCUMENTATION_URL = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}`
+export const REPOSITORY_URL = "https://github.com/ICTU/quality-time"
 export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000
 const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR
 
@@ -421,9 +423,10 @@ export function dropdownOptions(options) {
     return options.map((option) => ({ key: option, text: option, value: option }))
 }
 
-export function slugify(name) {
-    // The hash isn't really part of the slug, but to prevent duplication it is included anyway
-    return `#${name?.toLowerCase().replaceAll(" ", "-").replaceAll("(", "").replaceAll(")", "").replaceAll("/", "")}`
+export function referenceDocumentationURL(name) {
+    // Return a URL to the documentation for the metric/subject/source name
+    const slug = `${name?.toLowerCase().replaceAll(" ", "-").replaceAll(/[()/]/g, "")}`
+    return `${DOCUMENTATION_URL}/reference.html#${slug}`
 }
 
 export function addCounts(object1, object2) {
