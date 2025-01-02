@@ -1,13 +1,12 @@
+import { Box, Typography } from "@mui/material"
 import { string } from "prop-types"
-
-import { Segment } from "../semantic_ui_react_wrappers"
 
 export function CommentSegment({ comment }) {
     if (comment) {
         return (
-            <Segment basic style={{ marginTop: "10px" }}>
-                <div dangerouslySetInnerHTML={{ __html: comment }} />
-            </Segment>
+            <Box sx={{ margin: "12px" }}>
+                <Typography color="text.primary" dangerouslySetInnerHTML={{ __html: comment }} />
+            </Box>
         )
     }
     return null

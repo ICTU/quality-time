@@ -1,6 +1,6 @@
 import "./App.css"
 
-import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { ThemeProvider } from "@mui/material/styles"
 import { Action } from "history"
 import history from "history/browser"
 import { Component } from "react"
@@ -11,15 +11,9 @@ import { nr_measurements_api } from "./api/measurement"
 import { get_report, get_reports_overview } from "./api/report"
 import { AppUI } from "./AppUI"
 import { registeredURLSearchParams } from "./hooks/url_search_query"
+import { theme } from "./theme"
 import { isValidDate_YYYYMMDD, toISODateStringInCurrentTZ } from "./utils"
 import { showConnectionMessage, showMessage } from "./widgets/toast"
-
-const theme = createTheme({
-    colorSchemes: {
-        dark: true, // Add a dark theme (light theme is available by default)
-    },
-    components: { MuiTooltip: { defaultProps: { arrow: true }, styleOverrides: { tooltip: { fontSize: "1em" } } } },
-})
 
 class App extends Component {
     constructor(props) {

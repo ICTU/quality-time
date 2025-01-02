@@ -1,6 +1,6 @@
+import Grid from "@mui/material/Grid2"
 import { func, string } from "prop-types"
 import { useContext } from "react"
-import { Grid, Header } from "semantic-ui-react"
 
 import { set_metric_attribute } from "../api/metric"
 import { DataModel } from "../context/DataModel"
@@ -17,6 +17,7 @@ import {
     getMetricTags,
     getReportTags,
 } from "../utils"
+import { Header } from "../widgets/Header"
 import { LabelWithHelp } from "../widgets/LabelWithHelp"
 import { MetricType } from "./MetricType"
 import { Target } from "./Target"
@@ -27,7 +28,7 @@ function metric_scale_options(metric_scales, dataModel) {
         let scale_name = dataModel.scales ? dataModel.scales[scale].name : "Count"
         let scale_description = dataModel.scales ? dataModel.scales[scale].description : ""
         scale_options.push({
-            content: <Header as="h4" content={scale_name} subheader={scale_description} />,
+            content: <Header level="h4" header={scale_name} subheader={scale_description} />,
             key: scale,
             text: scale_name,
             value: scale,
@@ -191,61 +192,51 @@ export function MetricConfigurationParameters({ metric, metric_uuid, reload, rep
     const dataModel = useContext(DataModel)
     const metricScale = getMetricScale(metric, dataModel)
     return (
-        <Grid stackable columns={3}>
-            <Grid.Row>
-                <Grid.Column>
-                    <MetricType
-                        subjectType={subject.type}
-                        metricType={metric.type}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <MetricName metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                </Grid.Column>
-                <Grid.Column>
-                    <Tags metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column>
-                    <Scale metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                </Grid.Column>
-                <Grid.Column>
-                    <Direction metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                </Grid.Column>
-                {metricScale !== "version_number" && (
-                    <Grid.Column>
-                        <Unit metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                    </Grid.Column>
-                )}
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column>
-                    <EvaluateTargets metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                </Grid.Column>
-                <Grid.Column>
-                    <Target
-                        label="Metric target"
-                        labelPosition="top center"
-                        target_type="target"
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <Target
-                        label="Metric near target"
-                        labelPosition="top right"
-                        target_type="near_target"
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
-                </Grid.Column>
-            </Grid.Row>
+        <Grid container spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 3, md: 3 }}>
+            <Grid size={1}>
+                <MetricType
+                    subjectType={subject.type}
+                    metricType={metric.type}
+                    metric_uuid={metric_uuid}
+                    reload={reload}
+                />
+            </Grid>
+            <Grid size={1}>
+                <MetricName metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
+            <Grid size={1}>
+                <Tags metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
+            </Grid>
+            <Grid size={1}>
+                <Scale metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
+            <Grid size={1}>
+                <Direction metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
+            <Grid size={1}>
+                {metricScale !== "version_number" && <Unit metric={metric} metric_uuid={metric_uuid} reload={reload} />}
+            </Grid>
+            <Grid size={1}>
+                <EvaluateTargets metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
+            <Grid size={1}>
+                <Target
+                    label="Metric target"
+                    target_type="target"
+                    metric={metric}
+                    metric_uuid={metric_uuid}
+                    reload={reload}
+                />
+            </Grid>
+            <Grid size={1}>
+                <Target
+                    label="Metric near target"
+                    target_type="near_target"
+                    metric={metric}
+                    metric_uuid={metric_uuid}
+                    reload={reload}
+                />
+            </Grid>
         </Grid>
     )
 }

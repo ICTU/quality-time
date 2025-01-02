@@ -168,10 +168,9 @@ it("updates a parameter of a source", async () => {
 it("mass updates a parameter of a source", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 })
     renderSources()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Apply change to subject/))
-    })
-    expect(screen.getAllByText(/Apply change to subject/).length).toBe(2)
+    await userEvent.click(screen.getByText(/Apply change to source/))
+    await userEvent.click(screen.getByText(/Apply change to subject/))
+    expect(screen.getAllByText(/Apply change to subject/).length).toBe(1)
     await userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), "https://other{Enter}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 15,
@@ -185,5 +184,5 @@ it("mass updates a parameter of a source", async () => {
         url: "https://other",
     })
     expect(toast.showMessage).toHaveBeenCalledTimes(1)
-    expect(screen.getAllByText(/Apply change to subject/).length).toBe(1)
+    expect(screen.getAllByText(/Apply change to source/).length).toBe(1)
 })

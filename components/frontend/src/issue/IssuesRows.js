@@ -1,6 +1,6 @@
+import Grid from "@mui/material/Grid2"
 import { bool, func, node, string } from "prop-types"
 import { useState } from "react"
-import { Grid } from "semantic-ui-react"
 
 import { add_metric_issue, set_metric_attribute } from "../api/metric"
 import { get_report_issue_tracker_suggestions } from "../api/report"
@@ -116,64 +116,56 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
     }
     return (
         <>
-            <Grid.Row>
-                <ReadOnlyOrEditable
-                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                    readOnlyComponent={
-                        <Grid.Column width={16}>
+            <ReadOnlyOrEditable
+                requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                readOnlyComponent={
+                    <Grid size={{ xs: 1, sm: 3, md: 6 }}>
+                        <IssueIdentifiers {...issueIdentifiersProps} />
+                    </Grid>
+                }
+                editableComponent={
+                    <>
+                        <Grid size={{ xs: 1, sm: 1, md: "auto" }}>
+                            <CreateIssueButton
+                                issueTrackerConfigured={issueTrackerConfigured}
+                                issueTrackerInstruction={issueTrackerInstruction}
+                                metric_uuid={metric_uuid}
+                                target={target ?? "metric"}
+                                reload={reload}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 1, sm: 2, md: "grow" }}>
                             <IssueIdentifiers {...issueIdentifiersProps} />
-                        </Grid.Column>
-                    }
-                    editableComponent={
-                        <>
-                            <Grid.Column width={2} verticalAlign="bottom">
-                                <CreateIssueButton
-                                    issueTrackerConfigured={issueTrackerConfigured}
-                                    issueTrackerInstruction={issueTrackerInstruction}
-                                    metric_uuid={metric_uuid}
-                                    target={target ?? "metric"}
-                                    reload={reload}
-                                />
-                            </Grid.Column>
-                            <Grid.Column width={14}>
-                                <IssueIdentifiers {...issueIdentifiersProps} />
-                            </Grid.Column>
-                        </>
-                    }
-                />
-            </Grid.Row>
+                        </Grid>
+                    </>
+                }
+            />
             {getMetricIssueIds(metric).length > 0 && !issueTrackerConfigured && (
-                <Grid.Row>
-                    <Grid.Column width={16}>
-                        <ErrorMessage title="No issue tracker configured" message={issueTrackerInstruction} />
-                    </Grid.Column>
-                </Grid.Row>
+                <Grid size={{ xs: 1, sm: 3, md: 6 }}>
+                    <ErrorMessage title="No issue tracker configured" message={issueTrackerInstruction} />
+                </Grid>
             )}
             {(metric.issue_status ?? [])
                 .filter((issue_status) => issue_status.connection_error)
                 .map((issue_status) => (
-                    <Grid.Row key={issue_status.issue_id}>
-                        <Grid.Column width={16}>
-                            <ErrorMessage
-                                key={issue_status.issue_id}
-                                title={"Connection error while retrieving " + issue_status.issue_id}
-                                message={issue_status.connection_error}
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
+                    <Grid key={issue_status.issue_id} size={{ xs: 1, sm: 3, md: 6 }}>
+                        <ErrorMessage
+                            key={issue_status.issue_id}
+                            title={"Connection error while retrieving " + issue_status.issue_id}
+                            message={issue_status.connection_error}
+                        />
+                    </Grid>
                 ))}
             {(metric.issue_status ?? [])
                 .filter((issue_status) => issue_status.parse_error)
                 .map((issue_status) => (
-                    <Grid.Row key={issue_status.issue_id}>
-                        <Grid.Column width={16}>
-                            <ErrorMessage
-                                key={issue_status.issue_id}
-                                title={"Parse error while processing " + issue_status.issue_id}
-                                message={issue_status.parse_error}
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
+                    <Grid key={issue_status.issue_id} size={{ xs: 1, sm: 3, md: 6 }}>
+                        <ErrorMessage
+                            key={issue_status.issue_id}
+                            title={"Parse error while processing " + issue_status.issue_id}
+                            message={issue_status.parse_error}
+                        />
+                    </Grid>
                 ))}
         </>
     )

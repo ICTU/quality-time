@@ -37,5 +37,6 @@ it("renders multiple measurement sources", () => {
             />
         </DataModel.Provider>,
     )
-    expect(screen.getAllByText(/Source name 1, Source name 2/).length).toBe(1)
+    expect(screen.getAllByText(/Source name 1/).length).toBe(1)
+    expect(screen.getAllByText(/Source name 2/).length).toBe(1)
 })

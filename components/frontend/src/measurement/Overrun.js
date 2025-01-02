@@ -1,8 +1,18 @@
+import {
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Tooltip,
+    Typography,
+} from "@mui/material"
 import { string } from "prop-types"
 import { useContext } from "react"
 
 import { DataModel } from "../context/DataModel"
-import { Header, Popup, Table } from "../semantic_ui_react_wrappers"
 import { datesPropType, measurementsPropType, metricPropType, reportPropType } from "../sharedPropTypes"
 import { getMetricResponseOverrun, pluralize } from "../utils"
 import { StatusIcon } from "./StatusIcon"
@@ -23,59 +33,60 @@ export function Overrun({ metric_uuid, metric, report, measurements, dates }) {
     const period = `${sortedDates.at(0).toLocaleDateString()} - ${sortedDates.at(-1).toLocaleDateString()}`
     const content = (
         <>
-            <Header>
-                <Header.Content>
-                    Metric reaction time overruns
-                    <Header.Subheader>In the period {period}</Header.Subheader>
-                </Header.Content>
-            </Header>
-            <Table compact size="small">
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell textAlign="center" colSpan="3">
-                            When did the metric need action?
-                        </Table.HeaderCell>
-                        <Table.HeaderCell textAlign="center" colSpan="3">
-                            How long did it take to react?
-                        </Table.HeaderCell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.HeaderCell textAlign="center">Status</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="center">Start</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="center">End</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="right">Actual</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="right">Desired</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="right">Overrun</Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                    {overruns.map((overrun) => (
-                        <Table.Row key={overrun.start}>
-                            <Table.Cell textAlign="center">
-                                <StatusIcon size="small" status={overrun.status} />
-                            </Table.Cell>
-                            <Table.Cell>{overrun.start.split("T")[0]}</Table.Cell>
-                            <Table.Cell>{overrun.end.split("T")[0]}</Table.Cell>
-                            <Table.Cell textAlign="right">{formatDays(overrun.actual_response_time)}</Table.Cell>
-                            <Table.Cell textAlign="right">{formatDays(overrun.desired_response_time)}</Table.Cell>
-                            <Table.Cell textAlign="right">{formatDays(overrun.overrun)}</Table.Cell>
-                        </Table.Row>
-                    ))}
-                </Table.Body>
-                <Table.Footer>
-                    <Table.Row>
-                        <Table.HeaderCell colSpan="5">
-                            <b>Total</b>
-                        </Table.HeaderCell>
-                        <Table.HeaderCell textAlign="right">
-                            <b>{triggerText}</b>
-                        </Table.HeaderCell>
-                    </Table.Row>
-                </Table.Footer>
-            </Table>
+            <Typography>Metric reaction time overruns in the period {period}</Typography>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="center" colSpan="3">
+                                When did the metric need action?
+                            </TableCell>
+                            <TableCell align="center" colSpan="3">
+                                How long did it take to react?
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell align="left">Status</TableCell>
+                            <TableCell align="left">Start</TableCell>
+                            <TableCell align="left">End</TableCell>
+                            <TableCell align="right">Actual</TableCell>
+                            <TableCell align="right">Desired</TableCell>
+                            <TableCell align="right">Overrun</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {overruns.map((overrun) => (
+                            <TableRow key={overrun.start}>
+                                <TableCell align="left">
+                                    <StatusIcon size="small" status={overrun.status} />
+                                </TableCell>
+                                <TableCell align="left">{overrun.start.split("T")[0]}</TableCell>
+                                <TableCell align="left">{overrun.end.split("T")[0]}</TableCell>
+                                <TableCell align="right">{formatDays(overrun.actual_response_time)}</TableCell>
+                                <TableCell align="right">{formatDays(overrun.desired_response_time)}</TableCell>
+                                <TableCell align="right">{formatDays(overrun.overrun)}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell colSpan="5">
+                                <b>Total</b>
+                            </TableCell>
+                            <TableCell align="right">
+                                <b>{triggerText}</b>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                </Table>
+            </TableContainer>
         </>
     )
-    return <Popup content={content} flowing hoverable trigger={trigger} />
+    return (
+        <Tooltip slotProps={{ tooltip: { sx: { maxWidth: "40em" } } }} title={content}>
+            {trigger}
+        </Tooltip>
+    )
 }
 Overrun.propTypes = {
     dates: datesPropType,

@@ -1,6 +1,6 @@
-import { Header } from "../semantic_ui_react_wrappers"
 import { metricTypePropType } from "../sharedPropTypes"
 import { slugify } from "../utils"
+import { Header } from "../widgets/Header"
 import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
 
 export function MetricTypeHeader({ metricType }) {
@@ -9,15 +9,15 @@ export function MetricTypeHeader({ metricType }) {
         ? " for specific information on how to configure this metric type."
         : ""
     return (
-        <Header>
-            <Header.Content>
-                {metricType.name}
-                <Header.Subheader>
-                    {metricType.description} <ReadTheDocsLink url={url} />
-                    {howToConfigure}
-                </Header.Subheader>
-            </Header.Content>
-        </Header>
+        <Header
+            header={metricType.name}
+            level="h4"
+            subheader={
+                <>
+                    {metricType.description} <ReadTheDocsLink url={url} /> {howToConfigure}
+                </>
+            }
+        />
     )
 }
 MetricTypeHeader.propTypes = {

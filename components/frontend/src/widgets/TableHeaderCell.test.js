@@ -1,6 +1,6 @@
+import { Table, TableHead, TableRow } from "@mui/material"
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { Table } from "semantic-ui-react"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import { SortableTableHeaderCell, UnsortableTableHeaderCell } from "./TableHeaderCell"
@@ -9,16 +9,16 @@ function renderSortableTableHeaderCell(help) {
     const settings = createTestableSettings()
     render(
         <Table>
-            <Table.Header>
-                <Table.Row>
+            <TableHead>
+                <TableRow>
                     <SortableTableHeaderCell
                         label="Header"
                         help={help}
                         sortColumn={settings.sortColumn}
                         sortDirection={settings.sortDirection}
                     />
-                </Table.Row>
-            </Table.Header>
+                </TableRow>
+            </TableHead>
         </Table>,
     )
 }
@@ -39,11 +39,11 @@ it("shows the help of the sortable header", async () => {
 function renderUnsortableTableHeaderCell(help) {
     render(
         <Table>
-            <Table.Header>
-                <Table.Row>
+            <TableHead>
+                <TableRow>
                     <UnsortableTableHeaderCell label="Header" help={help} />
-                </Table.Row>
-            </Table.Header>
+                </TableRow>
+            </TableHead>
         </Table>,
     )
 }

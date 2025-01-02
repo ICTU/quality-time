@@ -1,5 +1,5 @@
+import Grid from "@mui/material/Grid2"
 import { func, string } from "prop-types"
-import { Grid } from "semantic-ui-react"
 
 import { set_metric_attribute, set_metric_debt } from "../api/metric"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
@@ -94,35 +94,30 @@ TechnicalDebtEndDate.propTypes = {
 
 export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
     return (
-        <Grid stackable columns={3}>
-            <Grid.Row>
-                <Grid.Column>
-                    <AcceptTechnicalDebt metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                </Grid.Column>
-                <Grid.Column>
-                    <Target
-                        key={metric.debt_target}
-                        label="Technical debt target"
-                        labelPosition="top center"
-                        target_type="debt_target"
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <TechnicalDebtEndDate metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                </Grid.Column>
-            </Grid.Row>
+        <Grid alignItems="flex-end" container spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 3, md: 6 }}>
+            <Grid size={{ xs: 1, sm: 1, md: 2 }}>
+                <AcceptTechnicalDebt metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 2 }}>
+                <Target
+                    key={metric.debt_target}
+                    label="Technical debt target"
+                    target_type="debt_target"
+                    metric={metric}
+                    metric_uuid={metric_uuid}
+                    reload={reload}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 2 }}>
+                <TechnicalDebtEndDate metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
             <IssuesRows metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
-            <Grid.Row>
-                <Grid.Column width={16}>
-                    <Comment
-                        set_value={(value) => set_metric_attribute(metric_uuid, "comment", value, reload)}
-                        value={metric.comment}
-                    />
-                </Grid.Column>
-            </Grid.Row>
+            <Grid size={{ xs: 1, sm: 3, md: 6 }}>
+                <Comment
+                    set_value={(value) => set_metric_attribute(metric_uuid, "comment", value, reload)}
+                    value={metric.comment}
+                />
+            </Grid>
         </Grid>
     )
 }

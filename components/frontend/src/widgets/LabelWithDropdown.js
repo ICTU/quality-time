@@ -1,29 +1,31 @@
+import { MenuItem, Select } from "@mui/material"
 import { array, func, string } from "prop-types"
 
-import { Dropdown } from "../semantic_ui_react_wrappers"
-import { alignmentPropType, labelPropType } from "../sharedPropTypes"
+import { labelPropType } from "../sharedPropTypes"
 
-export function LabelWithDropdown({ color, direction, label, onChange, options, value }) {
+export function LabelWithDropdown({ label, onChange, options, value }) {
     return (
         <label>
             {label}
-            <span style={{ paddingLeft: "6mm", color: color || "black" }}>
-                <Dropdown
-                    color={color}
-                    direction={direction}
-                    inline
-                    onChange={onChange}
-                    options={options}
-                    tabIndex="0"
-                    value={value}
-                />
-            </span>
+            <Select
+                onChange={(event) => onChange(event.target.value)}
+                value={value}
+                inputProps={{ sx: { paddingBottom: "2px", paddingTop: "2px" } }}
+                sx={{
+                    color: options.find((option) => option.value === value).color,
+                    marginLeft: "6px",
+                }}
+            >
+                {options.map((option) => (
+                    <MenuItem key={option.key} sx={{ color: option.color }} value={option.value}>
+                        {option.text}
+                    </MenuItem>
+                ))}
+            </Select>
         </label>
     )
 }
 LabelWithDropdown.propTypes = {
-    color: string,
-    direction: alignmentPropType,
     label: labelPropType,
     onChange: func,
     options: array,

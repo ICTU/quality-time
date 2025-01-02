@@ -1,9 +1,9 @@
+import { Table, TableBody } from "@mui/material"
 import { render, screen } from "@testing-library/react"
 import history from "history/browser"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
-import { Table } from "../semantic_ui_react_wrappers"
 import { SubjectTableRow } from "./SubjectTableRow"
 
 beforeEach(() => {
@@ -47,7 +47,7 @@ function renderSubjectTableRow({
     render(
         <DataModel.Provider value={dataModel}>
             <Table>
-                <Table.Body>
+                <TableBody>
                     <SubjectTableRow
                         dates={dates}
                         measurements={[]}
@@ -65,7 +65,7 @@ function renderSubjectTableRow({
                         reversedMeasurements={reverseMeasurements}
                         settings={createTestableSettings()}
                     />
-                </Table.Body>
+                </TableBody>
             </Table>
         </DataModel.Provider>,
     )

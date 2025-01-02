@@ -153,7 +153,7 @@ function QuoteColumn() {
 
 export function Footer({ lastUpdate, report }) {
     return (
-        <Container maxWidth="100%" sx={{ bgcolor: "black", displayPrint: "none", marginTop: "20px", padding: "60px" }}>
+        <Container maxWidth="100%" sx={{ bgcolor: "black", displayPrint: "none", padding: "60px" }}>
             <Container maxWidth="lg">
                 <Stack
                     direction="row"

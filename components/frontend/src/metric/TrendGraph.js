@@ -1,5 +1,4 @@
 import { useContext } from "react"
-import { Message } from "semantic-ui-react"
 import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme } from "victory"
 
 import { DarkMode } from "../context/DarkMode"
@@ -7,7 +6,7 @@ import { DataModel } from "../context/DataModel"
 import { loadingPropType, measurementsPropType, metricPropType } from "../sharedPropTypes"
 import { capitalize, formatMetricScaleAndUnit, getMetricName, getMetricScale, niceNumber, scaledNumber } from "../utils"
 import { LoadingPlaceHolder } from "../widgets/Placeholder"
-import { FailedToLoadMeasurementsWarningMessage, WarningMessage } from "../widgets/WarningMessage"
+import { FailedToLoadMeasurementsWarningMessage, InfoMessage, WarningMessage } from "../widgets/WarningMessage"
 
 function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
     const scale = getMetricScale(metric, dataModel)
@@ -22,10 +21,9 @@ export function TrendGraph({ metric, measurements, loading }) {
     const estimatedTotalChartHeight = chartHeight + 200 // Estimate of the height including title and axis
     if (getMetricScale(metric, dataModel) === "version_number") {
         return (
-            <Message
-                content="Trend graphs are not supported for metrics with a version number scale."
-                header="Trend graph not supported for version numbers"
-            />
+            <InfoMessage title="Trend graph not supported for version numbers">
+                Trend graphs are not supported for metrics with a version number scale.
+            </InfoMessage>
         )
     }
     if (loading === "failed") {
@@ -36,10 +34,9 @@ export function TrendGraph({ metric, measurements, loading }) {
     }
     if (measurements.length === 0) {
         return (
-            <WarningMessage
-                content="A trend graph can not be displayed until this metric has measurements."
-                header="No measurements"
-            />
+            <WarningMessage title="No measurements">
+                A trend graph can not be displayed until this metric has measurements.
+            </WarningMessage>
         )
     }
     const metricName = getMetricName(metric, dataModel)

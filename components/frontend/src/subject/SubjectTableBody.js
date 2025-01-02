@@ -1,6 +1,6 @@
+import { TableBody } from "@mui/material"
 import { array, func, string } from "prop-types"
 
-import { Table } from "../semantic_ui_react_wrappers"
 import {
     datesPropType,
     measurementsPropType,
@@ -28,7 +28,7 @@ export function SubjectTableBody({
 }) {
     const lastIndex = metricEntries.length - 1
     return (
-        <Table.Body>
+        <TableBody>
             {metricEntries.map(([metric_uuid, metric], index) => {
                 return (
                     <SubjectTableRow
@@ -51,7 +51,7 @@ export function SubjectTableBody({
                     />
                 )
             })}
-        </Table.Body>
+        </TableBody>
     )
 }
 SubjectTableBody.propTypes = {

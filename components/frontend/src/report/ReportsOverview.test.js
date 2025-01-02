@@ -50,7 +50,7 @@ it("shows the reports overview", async () => {
     const reports = [{ report_uuid: "report_uuid", subjects: {} }]
     const reportsOverview = { title: "Overview", permissions: {} }
     renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
-    expect(screen.getAllByText(/Overview/).length).toBe(2)
+    expect(screen.getAllByText(/Overview/).length).toBe(1)
 })
 
 it("shows the comment", async () => {

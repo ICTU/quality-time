@@ -1,5 +1,5 @@
+import Grid from "@mui/material/Grid2"
 import { func, node, oneOf, string } from "prop-types"
-import { Grid, Header } from "semantic-ui-react"
 
 import { set_source_entity_attribute } from "../api/source"
 import { EDIT_ENTITY_PERMISSION } from "../context/Permissions"
@@ -8,6 +8,7 @@ import { SingleChoiceInput } from "../fields/SingleChoiceInput"
 import { TextInput } from "../fields/TextInput"
 import { entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
 import { capitalize, getDesiredResponseTime } from "../utils"
+import { Header } from "../widgets/Header"
 import { LabelWithDate } from "../widgets/LabelWithDate"
 import { SOURCE_ENTITY_STATUS_ACTION, SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
 
@@ -16,7 +17,7 @@ function entityStatusOption(status, subheader) {
         key: status,
         text: SOURCE_ENTITY_STATUS_NAME[status],
         value: status,
-        content: <Header as="h5" content={SOURCE_ENTITY_STATUS_ACTION[status]} subheader={subheader} />,
+        content: <Header level="h4" header={SOURCE_ENTITY_STATUS_ACTION[status]} subheader={subheader} />,
     }
 }
 entityStatusOption.propTypes = {
@@ -77,65 +78,56 @@ export function SourceEntityDetails({
     source_uuid,
 }) {
     return (
-        <Grid stackable>
-            <Grid.Row>
-                <Grid.Column width={4}>
-                    <SingleChoiceInput
-                        requiredPermissions={[EDIT_ENTITY_PERMISSION]}
-                        label={`${capitalize(name)} status`}
-                        options={entityStatusOptions(name, report)}
-                        set_value={(value) =>
-                            set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "status", value, reload)
-                        }
-                        value={status}
-                        sort={false}
-                    />
-                </Grid.Column>
-                <Grid.Column width={4}>
-                    <DateInput
-                        requiredPermissions={[EDIT_ENTITY_PERMISSION]}
-                        label={
-                            <LabelWithDate
-                                date={status_end_date}
-                                labelId={entity.key}
-                                label={`${capitalize(name)} status end date`}
-                                help={`Consider the status of this ${name} to be 'Unconfirmed' after the selected date.`}
-                            />
-                        }
-                        placeholder="YYYY-MM-DD"
-                        set_value={(value) =>
-                            set_source_entity_attribute(
-                                metric_uuid,
-                                source_uuid,
-                                entity.key,
-                                "status_end_date",
-                                value,
-                                reload,
-                            )
-                        }
-                        value={status_end_date}
-                    />
-                </Grid.Column>
-                <Grid.Column width={8}>
-                    <TextInput
-                        requiredPermissions={[EDIT_ENTITY_PERMISSION]}
-                        label={`${capitalize(name)} status rationale`}
-                        placeholder={`Rationale for the ${name} status...`}
-                        rows={Math.min(5, rationale?.split("\n").length ?? 1)}
-                        set_value={(value) =>
-                            set_source_entity_attribute(
-                                metric_uuid,
-                                source_uuid,
-                                entity.key,
-                                "rationale",
-                                value,
-                                reload,
-                            )
-                        }
-                        value={rationale}
-                    />
-                </Grid.Column>
-            </Grid.Row>
+        <Grid container spacing={{ xs: 1, sm: 2, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+            <Grid size={{ xs: 1, sm: 2, md: 3 }}>
+                <SingleChoiceInput
+                    requiredPermissions={[EDIT_ENTITY_PERMISSION]}
+                    label={`${capitalize(name)} status`}
+                    options={entityStatusOptions(name, report)}
+                    set_value={(value) =>
+                        set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "status", value, reload)
+                    }
+                    value={status}
+                    sort={false}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 2, md: 3 }}>
+                <DateInput
+                    requiredPermissions={[EDIT_ENTITY_PERMISSION]}
+                    label={
+                        <LabelWithDate
+                            date={status_end_date}
+                            labelId={entity.key}
+                            label={`${capitalize(name)} status end date`}
+                            help={`Consider the status of this ${name} to be 'Unconfirmed' after the selected date.`}
+                        />
+                    }
+                    placeholder="YYYY-MM-DD"
+                    set_value={(value) =>
+                        set_source_entity_attribute(
+                            metric_uuid,
+                            source_uuid,
+                            entity.key,
+                            "status_end_date",
+                            value,
+                            reload,
+                        )
+                    }
+                    value={status_end_date}
+                />
+            </Grid>
+            <Grid size={{ xs: 2, sm: 4, md: 6 }}>
+                <TextInput
+                    requiredPermissions={[EDIT_ENTITY_PERMISSION]}
+                    label={`${capitalize(name)} status rationale`}
+                    placeholder={`Rationale for the ${name} status...`}
+                    rows={Math.min(5, rationale?.split("\n").length ?? 1)}
+                    set_value={(value) =>
+                        set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "rationale", value, reload)
+                    }
+                    value={rationale}
+                />
+            </Grid>
         </Grid>
     )
 }

@@ -1,7 +1,6 @@
 // Metric status constants
 
 import { Bolt, Check, Money, QuestionMark, Warning } from "@mui/icons-material"
-import { blue, green, grey, orange, red } from "@mui/material/colors"
 import { oneOf } from "prop-types"
 
 import { HyperLink } from "../widgets/HyperLink"
@@ -24,14 +23,6 @@ export const STATUS_COLORS_RGB = {
     debt_target_met: "rgb(150,150,150)",
     informative: "rgb(0,165,255)",
     unknown: "rgb(245,245,245)",
-}
-export const STATUS_COLORS_MUI = {
-    target_not_met: red[700],
-    target_met: green[600],
-    near_target_met: orange[300],
-    debt_target_met: grey[500],
-    informative: blue[500],
-    unknown: grey[300],
 }
 export const STATUS_ICONS = {
     target_met: <Check />,

@@ -1,6 +1,8 @@
-import { Label, Popup } from "../semantic_ui_react_wrappers"
+import { Tooltip } from "@mui/material"
+
 import { metricPropType, reportPropType } from "../sharedPropTypes"
 import { days, getMetricResponseDeadline, getMetricResponseTimeLeft, pluralize } from "../utils"
+import { Label } from "../widgets/Label"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 
 export function TimeLeft({ metric, report }) {
@@ -12,15 +14,15 @@ export function TimeLeft({ metric, report }) {
     const daysLeft = days(Math.max(0, timeLeft))
     const triggerText = `${daysLeft} ${pluralize("day", daysLeft)}`
     let deadlineLabel = "Deadline to address this metric was"
-    let trigger = <Label color="red">{triggerText}</Label>
+    let trigger = <Label color="error">{triggerText}</Label>
     if (timeLeft >= 0) {
         deadlineLabel = "Time left to address this metric is"
-        trigger = <span>{triggerText}</span>
+        trigger = triggerText
     }
     return (
-        <Popup flowing hoverable trigger={trigger}>
-            <TimeAgoWithDate date={deadline}>{deadlineLabel}</TimeAgoWithDate>.
-        </Popup>
+        <Tooltip title={<TimeAgoWithDate date={deadline}>{deadlineLabel}</TimeAgoWithDate>}>
+            <span>{trigger}</span>
+        </Tooltip>
     )
 }
 TimeLeft.propTypes = {

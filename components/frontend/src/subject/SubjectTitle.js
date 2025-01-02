@@ -6,13 +6,14 @@ import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { Header, Tab } from "../semantic_ui_react_wrappers"
+import { Tab } from "../semantic_ui_react_wrappers"
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
 import { getSubjectType, slugify } from "../utils"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { PermLinkButton } from "../widgets/buttons/PermLinkButton"
 import { ReorderButtonGroup } from "../widgets/buttons/ReorderButtonGroup"
+import { Header } from "../widgets/Header"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
 import { changelogTabPane, configurationTabPane } from "../widgets/TabPane"
@@ -21,14 +22,15 @@ import { SubjectParameters } from "./SubjectParameters"
 function SubjectHeader({ subjectType }) {
     const url = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/reference.html${slugify(subjectType.name)}`
     return (
-        <Header>
-            <Header.Content>
-                {subjectType.name}
-                <Header.Subheader>
+        <Header
+            header={subjectType.name}
+            level="h3"
+            subheader={
+                <>
                     {subjectType.description} <ReadTheDocsLink url={url} />
-                </Header.Subheader>
-            </Header.Content>
-        </Header>
+                </>
+            }
+        />
     )
 }
 SubjectHeader.propTypes = {
@@ -94,15 +96,10 @@ export function SubjectTitle({
 
     return (
         <HeaderWithDetails
-            className="sticky"
             header={subjectTitle}
             item_uuid={`${subject_uuid}:${tabIndex}`}
             level="h2"
             settings={settings}
-            style={{
-                marginTop: 50 /* Whitespace between dashboard or previous subject and this subject */,
-                height: 50 /* Ensure that the header takes the same amount of vertical space with or without subtitle */,
-            }}
             subheader={subject.subtitle}
         >
             <SubjectHeader subjectType={subjectType} />

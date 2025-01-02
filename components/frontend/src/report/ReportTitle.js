@@ -1,5 +1,6 @@
+import { Typography } from "@mui/material"
+import Grid from "@mui/material/Grid2"
 import { bool, func, oneOfType, string } from "prop-types"
-import { Grid } from "semantic-ui-react"
 
 import { delete_report, set_report_attribute } from "../api/report"
 import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
@@ -10,7 +11,7 @@ import { IntegerInput } from "../fields/IntegerInput"
 import { StringInput } from "../fields/StringInput"
 import { STATUS_DESCRIPTION, STATUS_NAME, statusPropType } from "../metric/status"
 import { NotificationDestinations } from "../notification/NotificationDestinations"
-import { Label, Segment, Tab } from "../semantic_ui_react_wrappers"
+import { Tab } from "../semantic_ui_react_wrappers"
 import { entityStatusPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
 import { SOURCE_ENTITY_STATUS_DESCRIPTION, SOURCE_ENTITY_STATUS_NAME } from "../source/source_entity_status"
 import { getDesiredResponseTime } from "../utils"
@@ -25,36 +26,32 @@ import { IssueTracker } from "./IssueTracker"
 
 function ReportConfiguration({ reload, report }) {
     return (
-        <Grid stackable>
-            <Grid.Row columns={2}>
-                <Grid.Column>
-                    <StringInput
-                        id="report-title"
-                        label="Report title"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        set_value={(value) => set_report_attribute(report.report_uuid, "title", value, reload)}
-                        value={report.title}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <StringInput
-                        id="report-subtitle"
-                        label="Report subtitle"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        set_value={(value) => set_report_attribute(report.report_uuid, "subtitle", value, reload)}
-                        value={report.subtitle}
-                    />
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column>
-                    <Comment
-                        id="report-comment"
-                        set_value={(value) => set_report_attribute(report.report_uuid, "comment", value, reload)}
-                        value={report.comment}
-                    />
-                </Grid.Column>
-            </Grid.Row>
+        <Grid container alignItems="flex-end" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 2, md: 2 }}>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <StringInput
+                    id="report-title"
+                    label="Report title"
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    set_value={(value) => set_report_attribute(report.report_uuid, "title", value, reload)}
+                    value={report.title}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <StringInput
+                    id="report-subtitle"
+                    label="Report subtitle"
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    set_value={(value) => set_report_attribute(report.report_uuid, "subtitle", value, reload)}
+                    value={report.subtitle}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 2, md: 2 }}>
+                <Comment
+                    id="report-comment"
+                    set_value={(value) => set_report_attribute(report.report_uuid, "comment", value, reload)}
+                    value={report.comment}
+                />
+            </Grid>
         </Grid>
     )
 }
@@ -92,50 +89,40 @@ DesiredResponseTimeInput.propTypes = {
 
 function ReactionTimes(props) {
     return (
-        <>
-            <Segment>
-                <Label attached="top" size="large">
-                    Desired metric response times
-                </Label>
-                <Grid stackable>
-                    <Grid.Row columns={4}>
-                        <Grid.Column>
-                            <DesiredResponseTimeInput status="unknown" {...props} />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <DesiredResponseTimeInput status="target_not_met" {...props} />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <DesiredResponseTimeInput status="near_target_met" {...props} />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <DesiredResponseTimeInput hoverableLabel status="debt_target_met" {...props} />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </Segment>
-            <Segment>
-                <Label attached="top" size="large">
+        <Grid container alignItems="flex-end" spacing={{ xs: 1, sm: 2, md: 2 }} columns={{ xs: 1, sm: 2, md: 4 }}>
+            <Grid size={{ xs: 1, sm: 2, md: 4 }}>
+                <Typography variant="subtitle1">Desired metric response times</Typography>
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <DesiredResponseTimeInput status="unknown" {...props} />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <DesiredResponseTimeInput status="target_not_met" {...props} />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <DesiredResponseTimeInput status="near_target_met" {...props} />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <DesiredResponseTimeInput hoverableLabel status="debt_target_met" {...props} />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 2, md: 4 }}>
+                <Typography variant="subtitle1">
                     Desired time after which to review measurement entities (violations, warnings, issues, etc.)
-                </Label>
-                <Grid stackable>
-                    <Grid.Row columns={4}>
-                        <Grid.Column>
-                            <DesiredResponseTimeInput status="confirmed" {...props} />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <DesiredResponseTimeInput status="fixed" {...props} />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <DesiredResponseTimeInput status="false_positive" {...props} />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <DesiredResponseTimeInput status="wont_fix" {...props} />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </Segment>
-        </>
+                </Typography>
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <DesiredResponseTimeInput status="confirmed" {...props} />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <DesiredResponseTimeInput status="fixed" {...props} />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <DesiredResponseTimeInput status="false_positive" {...props} />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <DesiredResponseTimeInput status="wont_fix" {...props} />
+            </Grid>
+        </Grid>
     )
 }
 ReactionTimes.propTypes = {

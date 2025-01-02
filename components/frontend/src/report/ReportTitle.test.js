@@ -84,7 +84,7 @@ it("sets the unknown status reaction time", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/Unknown/), "4{Enter}}", {
+    await userEvent.type(screen.getByLabelText("Unknown"), "4{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 1,
     })
@@ -102,7 +102,7 @@ it("sets the target not met status reaction time", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/Target not met/), "5{Enter}}", {
+    await userEvent.type(screen.getByLabelText("Target not met"), "5{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 1,
     })
@@ -120,7 +120,7 @@ it("sets the near target met status reaction time", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/Near target met/), "6{Enter}}", {
+    await userEvent.type(screen.getByLabelText("Near target met"), "6{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 2,
     })
@@ -156,7 +156,7 @@ it("sets the confirmed measurement entity status reaction time", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/Confirmed/), "60{Enter}}", {
+    await userEvent.type(screen.getByLabelText("Confirmed"), "60{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
@@ -174,7 +174,7 @@ it("sets the false positive measurement entity status reaction time", async () =
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/False positive/), "70{Enter}}", {
+    await userEvent.type(screen.getByLabelText("False positive"), "70{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
@@ -192,7 +192,7 @@ it("sets the fixed measurement entity status reaction time", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/Fixed/), "80{Enter}}", {
+    await userEvent.type(screen.getByLabelText("Fixed"), "80{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
@@ -210,7 +210,7 @@ it("sets the won't fixed measurement entity status reaction time", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/Won't fix/), "90{Enter}}", {
+    await userEvent.type(screen.getByLabelText("Won't fix"), "90{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })

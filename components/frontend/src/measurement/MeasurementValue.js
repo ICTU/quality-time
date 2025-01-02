@@ -1,10 +1,10 @@
 import "./MeasurementValue.css"
 
+import { Alert, Tooltip, Typography } from "@mui/material"
 import { bool, string } from "prop-types"
 import { useContext } from "react"
 
 import { DataModel } from "../context/DataModel"
-import { Label, Message, Popup } from "../semantic_ui_react_wrappers"
 import { datePropType, measurementPropType, metricPropType } from "../sharedPropTypes"
 import { IGNORABLE_SOURCE_ENTITY_STATUSES, SOURCE_ENTITY_STATUS_NAME } from "../source/source_entity_status"
 import {
@@ -18,6 +18,7 @@ import {
     sum,
 } from "../utils"
 import { IgnoreIcon, LoadingIcon } from "../widgets/icons"
+import { Label } from "../widgets/Label"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 import { WarningMessage } from "../widgets/WarningMessage"
 
@@ -30,14 +31,20 @@ function measurementValueLabel(hasIgnoredEntities, stale, updating, value) {
         value
     )
     if (stale) {
-        return <Label color="red">{measurementValue}</Label>
+        return (
+            <span>
+                <Label color="error">{measurementValue}</Label>
+            </span>
+        )
     }
     if (updating) {
         return (
-            <Label color="yellow">
-                <LoadingIcon />
-                {measurementValue}
-            </Label>
+            <span>
+                <Label color="warning">
+                    <LoadingIcon />
+                    {measurementValue}
+                </Label>
+            </span>
         )
     }
     return <span>{measurementValue}</span>
@@ -101,49 +108,43 @@ export function MeasurementValue({ metric, reportDate }) {
     const requested = isMeasurementRequested(metric)
     const hasIgnoredEntities = sum(ignoredEntitiesCount(metric.latest_measurement)) > 0
     return (
-        <Popup
-            trigger={measurementValueLabel(hasIgnoredEntities, stale, outdated || requested, value)}
-            flowing
-            hoverable
+        <Tooltip
+            slotProps={{ tooltip: { sx: { maxWidth: "32em" } } }}
+            title={
+                <div>
+                    <WarningMessage showIf={stale} title="This metric was not recently measured">
+                        This may indicate a problem with Quality-time itself. Please contact a system administrator.
+                    </WarningMessage>
+                    <WarningMessage showIf={outdated} title="Latest measurement out of date">
+                        The source configuration of this metric was changed after the latest measurement.
+                    </WarningMessage>
+                    <WarningMessage showIf={requested} title="Measurement requested">
+                        An update of the latest measurement was requested by a user.
+                    </WarningMessage>
+                    {hasIgnoredEntities && (
+                        <Alert severity="info">
+                            <Typography>
+                                <IgnoreIcon /> {`Ignored ${unit}`}
+                            </Typography>
+                            {ignoredEntitiesMessage(metric.latest_measurement, unit)}
+                        </Alert>
+                    )}
+                    {metric.latest_measurement && (
+                        <>
+                            <TimeAgoWithDate date={metric.latest_measurement.end}>
+                                {metric.status ? "The metric was last measured" : "Last measurement attempt"}
+                            </TimeAgoWithDate>
+                            <br />
+                            <TimeAgoWithDate date={metric.latest_measurement.start}>
+                                {metric.status ? "The current value was first measured" : "The value is unknown since"}
+                            </TimeAgoWithDate>
+                        </>
+                    )}
+                </div>
+            }
         >
-            <WarningMessage
-                showIf={stale}
-                header="This metric was not recently measured"
-                content="This may indicate a problem with Quality-time itself. Please contact a system administrator."
-            />
-            <WarningMessage
-                showIf={outdated}
-                header="Latest measurement out of date"
-                content="The source configuration of this metric was changed after the latest measurement."
-            />
-            <WarningMessage
-                showIf={requested}
-                header="Measurement requested"
-                content="An update of the latest measurement was requested by a user."
-            />
-            {hasIgnoredEntities && (
-                <Message
-                    info
-                    header={
-                        <span>
-                            <IgnoreIcon /> {`Ignored ${unit}`}
-                        </span>
-                    }
-                    content={ignoredEntitiesMessage(metric.latest_measurement, unit)}
-                />
-            )}
-            {metric.latest_measurement && (
-                <>
-                    <TimeAgoWithDate date={metric.latest_measurement.end}>
-                        {metric.status ? "The metric was last measured" : "Last measurement attempt"}
-                    </TimeAgoWithDate>
-                    <br />
-                    <TimeAgoWithDate date={metric.latest_measurement.start}>
-                        {metric.status ? "The current value was first measured" : "The value is unknown since"}
-                    </TimeAgoWithDate>
-                </>
-            )}
-        </Popup>
+            {measurementValueLabel(hasIgnoredEntities, stale, outdated || requested, value)}
+        </Tooltip>
     )
 }
 MeasurementValue.propTypes = {
