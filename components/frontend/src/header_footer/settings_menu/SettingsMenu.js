@@ -5,7 +5,7 @@ import { childrenPropType, popupContentPropType } from "../../sharedPropTypes"
 
 export function SettingsMenuGroup({ children }) {
     return (
-        <Stack direction="row" sx={{ justifyContent: "space-between", padding: "20px" }}>
+        <Stack direction="row" spacing={1} sx={{ justifyContent: "space-between", padding: "16px" }}>
             {children}
         </Stack>
     )
@@ -17,8 +17,12 @@ SettingsMenuGroup.propTypes = {
 export function SettingsMenu({ children, title }) {
     return (
         <Stack>
-            <Typography variant="h6">{title}</Typography>
-            <MenuList>{children}</MenuList>
+            <Typography variant="h3" noWrap>
+                {title}
+            </Typography>
+            <MenuList dense disablePadding>
+                {children}
+            </MenuList>
         </Stack>
     )
 }
@@ -48,12 +52,18 @@ export function SettingsMenuItem({ active, children, disabled, disabledHelp, hel
         return (
             <Tooltip placement="left" title={disabledHelp || help}>
                 <span /* https://mui.com/material-ui/react-tooltip/#disabled-elements */>
-                    <MenuItem {...props}>{children}</MenuItem>
+                    <MenuItem {...props} disableGutters sx={{ paddingLeft: "2px", paddingRight: "2px" }}>
+                        {children}
+                    </MenuItem>
                 </span>
             </Tooltip>
         )
     }
-    return <MenuItem {...props}>{children}</MenuItem>
+    return (
+        <MenuItem {...props} disableGutters sx={{ paddingLeft: "2px", paddingRight: "2px" }}>
+            {children}
+        </MenuItem>
+    )
 }
 SettingsMenuItem.propTypes = {
     active: bool,

@@ -202,7 +202,7 @@ it("hides the tags column", () => {
 it("expands the details via the button", () => {
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
     renderSubjectTable({ expandedItems: expandedItems.result.current })
-    const expand = screen.getAllByRole("button")[0]
+    const expand = screen.getAllByRole("button", { name: "Expand/collapse" })[0]
     fireEvent.click(expand)
     expandedItems.rerender()
     expect(expandedItems.result.current.value).toStrictEqual(["1:0"])
@@ -212,7 +212,7 @@ it("collapses the details via the button", async () => {
     history.push("?expanded=1:0")
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
     renderSubjectTable({ expandedItems: expandedItems.result.current })
-    const expand = screen.getAllByRole("button")[0]
+    const expand = screen.getAllByRole("button", { name: "Expand/collapse" })[0]
     await act(async () => fireEvent.click(expand))
     expandedItems.rerender()
     expect(expandedItems.result.current.value).toStrictEqual([])
@@ -237,6 +237,9 @@ it("moves a metric", async () => {
 it("adds a source", async () => {
     history.push("?expanded=1:1")
     renderSubjectTable()
+    await act(async () => {
+        fireEvent.click(screen.getByRole("tab", { name: /Sources/ }))
+    })
     const addButton = await screen.findByText("Add source")
     await act(async () => fireEvent.click(addButton))
     fireEvent.click(await screen.findByText("Source type"))

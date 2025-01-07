@@ -131,7 +131,7 @@ it("renders a message if the metric does not support measurement entities", () =
     ).toBe(1)
 })
 
-it("renders a message if the metric does not support measurement entities andhas no unit", () => {
+it("renders a message if the metric does not support measurement entities and has no unit", () => {
     renderSourceEntities({
         metric: {
             type: "metric_type_without_unit",

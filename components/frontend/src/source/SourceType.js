@@ -1,11 +1,13 @@
-import { Chip, Stack, Typography } from "@mui/material"
+import { Chip, MenuItem, Stack, Typography } from "@mui/material"
 import { func, string } from "prop-types"
 import { useContext } from "react"
 
 import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
-import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { TextField } from "../fields/TextField"
 import { dataModelPropType, sourceTypePropType } from "../sharedPropTypes"
+import { referenceDocumentationURL } from "../utils"
+import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
 import { Logo } from "./Logo"
 
 export function sourceTypeDescription(sourceType) {
@@ -19,21 +21,27 @@ sourceTypeDescription.propTypes = {
     sourceType: sourceTypePropType,
 }
 
-function sourceTypeOption(key, sourceType) {
+export function sourceTypeOption(key, sourceType) {
     return {
         key: key,
         text: sourceType.name,
         value: key,
         content: (
-            <Stack direction="row">
+            <Stack direction="row" sx={{ maxWidth: "40vw" }}>
                 <span style={{ paddingRight: "10px" }}>
                     <Logo logo={key} alt={sourceType.name} />
                 </span>
-                <p>
-                    {sourceType.name}
-                    {sourceType.deprecated && <Chip color="warning" label="Deprecated" sx={{ marginLeft: "8px" }} />}
-                    <Typography variant="body2">{sourceTypeDescription(sourceType)}</Typography>
-                </p>
+                <Stack direction="column">
+                    <Stack direction="row" alignItems="center">
+                        {sourceType.name}
+                        {sourceType.deprecated && (
+                            <Chip color="warning" label="Deprecated" sx={{ marginLeft: "8px" }} />
+                        )}
+                    </Stack>
+                    <Typography variant="body2" sx={{ whiteSpace: "normal" }}>
+                        {sourceTypeDescription(sourceType)}
+                    </Typography>
+                </Stack>
             </Stack>
         ),
     }
@@ -54,19 +62,36 @@ sourceTypeOptions.propTypes = {
 
 export function SourceType({ metric_type, set_source_attribute, source_type }) {
     const dataModel = useContext(DataModel)
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const options = sourceTypeOptions(dataModel, metric_type)
     const sourceTypes = options.map((option) => option.key)
     if (!sourceTypes.includes(source_type)) {
         options.push(sourceTypeOption(source_type, dataModel.sources[source_type]))
     }
+    const sourceType = dataModel.sources[source_type]
+    const hasExtraDocs = sourceType?.documentation?.generic || sourceType?.documentation?.[metric_type]
+    const howToConfigure = ` for ${hasExtraDocs ? "additional " : ""}information on how to configure this source type.`
     return (
-        <SingleChoiceInput
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
+        <TextField
+            disabled={disabled}
+            helperText={
+                <>
+                    <ReadTheDocsLink url={referenceDocumentationURL(source_type)} />
+                    {howToConfigure}
+                </>
+            }
             label="Source type"
-            options={options}
-            set_value={(value) => set_source_attribute("type", value)}
+            onChange={(value) => set_source_attribute("type", value)}
+            select
             value={source_type}
-        />
+        >
+            {options.map((option) => (
+                <MenuItem key={option.key} sx={{ width: "50vw" }} value={option.value}>
+                    {option.content}
+                </MenuItem>
+            ))}
+        </TextField>
     )
 }
 SourceType.propTypes = {

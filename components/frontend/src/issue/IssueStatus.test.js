@@ -1,9 +1,8 @@
-import { render, screen, waitFor } from "@testing-library/react"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
-import { ISSUE_STATUS_COLORS } from "../utils"
 import { IssueStatus } from "./IssueStatus"
 
 function renderIssueStatus({
@@ -62,47 +61,22 @@ beforeEach(() => {
 })
 
 it("displays the issue id", () => {
-    const { queryByText } = renderIssueStatus()
-    expect(queryByText(/123/)).not.toBe(null)
-})
-
-it("displays the status", () => {
-    const { queryByText } = renderIssueStatus()
-    expect(queryByText(/in progress/)).not.toBe(null)
-})
-
-it("displays the status category doing", () => {
-    renderIssueStatus({ statusCategory: "doing" })
-    expect(screen.getByText(/123/).className).toContain("blue")
-})
-
-it("displays the status category todo", () => {
-    renderIssueStatus({ statusCategory: "todo" })
-    expect(screen.getByText(/123/).className).toContain("grey")
-})
-
-it("displays the status category done", () => {
-    renderIssueStatus({ statusCategory: "done" })
-    expect(screen.getByText(/123/).className).toContain("green")
-})
-
-it("displays a missing status category as unknown", () => {
     renderIssueStatus()
-    Object.values(ISSUE_STATUS_COLORS)
-        .filter((color) => color !== null)
-        .forEach((color) => {
-            expect(screen.getByText(/123/).className).not.toContain(color)
-        })
+    expect(screen.queryByText(/123/)).not.toBe(null)
 })
 
-it("displays the issue landing url", async () => {
+it("opens the issue landing url", async () => {
+    window.open = jest.fn()
     const { queryByText } = renderIssueStatus()
-    expect(queryByText(/123/).closest("a").href).toBe("https://issue/")
+    fireEvent.click(queryByText(/123/))
+    expect(window.open).toHaveBeenCalledWith("https://issue")
 })
 
-it("does not display an url if the issue has no landing url", async () => {
-    const { queryByText } = renderIssueStatus({ landingUrl: null })
-    expect(queryByText(/123/).closest("a")).toBe(null)
+it("does not open an url if the issue has no landing url", async () => {
+    window.open = jest.fn()
+    const { queryByText } = renderIssueStatus({ landingUrl: "" })
+    fireEvent.click(queryByText(/123/))
+    expect(window.open).not.toHaveBeenCalled()
 })
 
 it("displays a question mark as status if the issue has no status", () => {

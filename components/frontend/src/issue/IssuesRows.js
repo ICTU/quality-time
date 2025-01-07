@@ -1,24 +1,25 @@
+import Grid from "@mui/material/Grid2"
 import { bool, func, node, string } from "prop-types"
-import { useState } from "react"
-import { Grid } from "semantic-ui-react"
+import { useContext, useState } from "react"
 
 import { add_metric_issue, set_metric_attribute } from "../api/metric"
 import { get_report_issue_tracker_suggestions } from "../api/report"
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { ErrorMessage } from "../errorMessage"
-import { MultipleChoiceInput } from "../fields/MultipleChoiceInput"
+import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { metricPropType, reportPropType } from "../sharedPropTypes"
 import { getMetricIssueIds } from "../utils"
 import { ActionButton } from "../widgets/buttons/ActionButton"
+import { ErrorMessage } from "../widgets/ErrorMessage"
 import { AddItemIcon } from "../widgets/icons"
-import { LabelWithHelp } from "../widgets/LabelWithHelp"
 import { showMessage } from "../widgets/toast"
 
 function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, metric_uuid, target, reload }) {
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <ActionButton
             action="Create new"
-            disabled={!issueTrackerConfigured}
+            disabled={disabled || !issueTrackerConfigured}
             icon={<AddItemIcon />}
             itemType="issue"
             onClick={() => add_metric_issue(metric_uuid, reload)}
@@ -40,33 +41,29 @@ CreateIssueButton.propTypes = {
 }
 
 function IssueIdentifiers({ entityKey, issueTrackerInstruction, metric, metric_uuid, report_uuid, target, reload }) {
-    const issueStatusHelp = (
-        <>
-            <p>
-                Identifiers of issues in the configured issue tracker that track the progress of fixing this {target}.
-            </p>
-            <p>
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
+    const issueStatusHelp = `Identifiers of issues in the configured issue tracker that track the progress of fixing this ${target}.
                 When the issues have all been resolved, or the technical debt end date has passed, whichever happens
-                first, the technical debt should be resolved and the technical debt target is no longer evaluated.
-            </p>
-            {issueTrackerInstruction}
-        </>
-    )
+                first, the technical debt should be resolved and the technical debt target is no longer evaluated.${issueTrackerInstruction ?? ""}`
     const [suggestions, setSuggestions] = useState([])
-    const labelId = `issue-identifiers-label-${metric_uuid}`
-    const issue_ids = getMetricIssueIds(metric, entityKey)
+    const issueIds = getMetricIssueIds(metric, entityKey)
     return (
-        <MultipleChoiceInput
-            aria-labelledby={labelId}
+        <MultipleChoiceField
             allowAdditions
-            onSearchChange={(query) => {
+            disabled={disabled}
+            freeSolo
+            helperText={issueStatusHelp}
+            key={issueIds} // Make sure the multiple choice input is rerendered when the issue ids change
+            label="Issue identifiers"
+            onChange={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
+            onInputChange={(_event, query) => {
                 if (query) {
                     get_report_issue_tracker_suggestions(report_uuid, query)
                         .then((suggestionsResponse) => {
                             const suggestionOptions = suggestionsResponse.suggestions.map((s) => ({
-                                key: s.key,
-                                text: `${s.key}: ${s.text}`,
-                                value: s.key,
+                                id: s.key,
+                                label: `${s.key}: ${s.text}`,
                             }))
                             setSuggestions(suggestionOptions)
                             return null
@@ -76,12 +73,8 @@ function IssueIdentifiers({ entityKey, issueTrackerInstruction, metric, metric_u
                     setSuggestions([])
                 }
             }}
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<LabelWithHelp labelId={labelId} label="Issue identifiers" help={issueStatusHelp} />}
             options={suggestions}
-            set_value={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
-            value={issue_ids}
-            key={issue_ids} // Make sure the multiple choice input is rerendered when the issue ids change
+            value={issueIds}
         />
     )
 }
@@ -100,12 +93,9 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
     const issueTrackerConfigured = Boolean(
         report?.issue_tracker?.type && parameters?.url && parameters?.project_key && parameters?.issue_type,
     )
-    const issueTrackerInstruction = issueTrackerConfigured ? null : (
-        <p>
-            Please configure an issue tracker by expanding the report title, selecting the &apos;Issue tracker&apos;
-            tab, and configuring an issue tracker.
-        </p>
-    )
+    const issueTrackerInstruction = issueTrackerConfigured
+        ? null
+        : " Please configure an issue tracker by expanding the report title, selecting the Issue tracker tab, and configuring an issue tracker."
     const issueIdentifiersProps = {
         issueTrackerInstruction: issueTrackerInstruction,
         metric: metric,
@@ -116,64 +106,44 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
     }
     return (
         <>
-            <Grid.Row>
-                <ReadOnlyOrEditable
-                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                    readOnlyComponent={
-                        <Grid.Column width={16}>
-                            <IssueIdentifiers {...issueIdentifiersProps} />
-                        </Grid.Column>
-                    }
-                    editableComponent={
-                        <>
-                            <Grid.Column width={2} verticalAlign="bottom">
-                                <CreateIssueButton
-                                    issueTrackerConfigured={issueTrackerConfigured}
-                                    issueTrackerInstruction={issueTrackerInstruction}
-                                    metric_uuid={metric_uuid}
-                                    target={target ?? "metric"}
-                                    reload={reload}
-                                />
-                            </Grid.Column>
-                            <Grid.Column width={14}>
-                                <IssueIdentifiers {...issueIdentifiersProps} />
-                            </Grid.Column>
-                        </>
-                    }
+            <Grid size={{ xs: 1, sm: 1, md: "auto" }}>
+                <CreateIssueButton
+                    issueTrackerConfigured={issueTrackerConfigured}
+                    issueTrackerInstruction={issueTrackerInstruction}
+                    metric_uuid={metric_uuid}
+                    target={target ?? "metric"}
+                    reload={reload}
                 />
-            </Grid.Row>
+            </Grid>
+            <Grid size={{ xs: 1, sm: 2, md: "grow" }}>
+                <IssueIdentifiers {...issueIdentifiersProps} />
+            </Grid>
             {getMetricIssueIds(metric).length > 0 && !issueTrackerConfigured && (
-                <Grid.Row>
-                    <Grid.Column width={16}>
-                        <ErrorMessage title="No issue tracker configured" message={issueTrackerInstruction} />
-                    </Grid.Column>
-                </Grid.Row>
+                <Grid size={{ xs: 1, sm: 3, md: 6 }}>
+                    <ErrorMessage title="No issue tracker configured" message={issueTrackerInstruction} />
+                </Grid>
             )}
             {(metric.issue_status ?? [])
                 .filter((issue_status) => issue_status.connection_error)
                 .map((issue_status) => (
-                    <Grid.Row key={issue_status.issue_id}>
-                        <Grid.Column width={16}>
-                            <ErrorMessage
-                                key={issue_status.issue_id}
-                                title={"Connection error while retrieving " + issue_status.issue_id}
-                                message={issue_status.connection_error}
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
+                    <Grid key={issue_status.issue_id} size={{ xs: 1, sm: 3, md: 6 }}>
+                        <ErrorMessage
+                            key={issue_status.issue_id}
+                            title={"Connection error while retrieving " + issue_status.issue_id}
+                            message={issue_status.connection_error}
+                        />
+                    </Grid>
                 ))}
             {(metric.issue_status ?? [])
                 .filter((issue_status) => issue_status.parse_error)
                 .map((issue_status) => (
-                    <Grid.Row key={issue_status.issue_id}>
-                        <Grid.Column width={16}>
-                            <ErrorMessage
-                                key={issue_status.issue_id}
-                                title={"Parse error while processing " + issue_status.issue_id}
-                                message={issue_status.parse_error}
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
+                    <Grid key={issue_status.issue_id} size={{ xs: 1, sm: 3, md: 6 }}>
+                        <ErrorMessage
+                            key={issue_status.issue_id}
+                            title={"Parse error while processing " + issue_status.issue_id}
+                            message={issue_status.parse_error}
+                        />
+                    </Grid>
                 ))}
         </>
     )

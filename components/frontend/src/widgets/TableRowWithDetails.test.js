@@ -1,15 +1,15 @@
+import { Table, TableBody } from "@mui/material"
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { Table } from "semantic-ui-react"
 
 import { TableRowWithDetails } from "./TableRowWithDetails"
 
 function renderTableRowWithDetails(expanded, onExpand) {
     render(
         <Table>
-            <Table.Body>
+            <TableBody>
                 <TableRowWithDetails expanded={expanded} onExpand={onExpand} details={"Details"} />
-            </Table.Body>
+            </TableBody>
         </Table>,
     )
 }

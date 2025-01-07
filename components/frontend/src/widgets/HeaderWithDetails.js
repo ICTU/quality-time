@@ -1,43 +1,54 @@
-import "./HeaderWithDetails.css"
+import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material"
+import { accordionSummaryClasses } from "@mui/material/AccordionSummary"
+import { string } from "prop-types"
 
-import { node, object, string } from "prop-types"
-
-import { Header, Segment } from "../semantic_ui_react_wrappers"
 import { childrenPropType, settingsPropType } from "../sharedPropTypes"
-import { ExpandButton } from "./buttons/ExpandButton"
+import { Header } from "./Header"
+import { CaretRight } from "./icons"
 
-export function HeaderWithDetails({ children, className, header, item_uuid, level, style, settings, subheader }) {
-    const showDetails = settings.expandedItems.includes(item_uuid)
-    const segmentStyle = { paddingLeft: "0px", paddingRight: "0px" }
+export function HeaderWithDetails({ children, header, item_uuid, level, settings, subheader }) {
+    const showDetails = Boolean(settings.expandedItems.includes(item_uuid))
     return (
-        <Segment basic aria-expanded={showDetails} className={className} style={segmentStyle}>
-            <Header
-                as={level}
-                onClick={() => settings.expandedItems.toggle(item_uuid)}
-                onKeyPress={(event) => {
-                    event.preventDefault()
-                    settings.expandedItems.toggle(item_uuid)
+        <Accordion
+            disableGutters // Prevent the accordion summary from moving down when expanding the accordion
+            elevation={0}
+            expanded={showDetails}
+            onChange={() => settings.expandedItems.toggle(item_uuid)}
+            slotProps={{ transition: { unmountOnExit: true } }} // Make testing for (dis)appearance of contents easier
+            sx={{
+                "&:before": {
+                    display: "none", // Remove top border
+                },
+            }}
+        >
+            <AccordionSummary
+                aria-controls={`accordion-content-${item_uuid}`}
+                expandIcon={<CaretRight size={{ h1: "5em", h2: "4em", h3: "3em" }[level]} />}
+                id={`accordion-header-${item_uuid}`}
+                sx={{
+                    border: "0",
+                    flexDirection: "row-reverse",
+                    height: "80px",
+                    padding: "0px",
+                    [`& .${accordionSummaryClasses.expandIconWrapper}.${accordionSummaryClasses.expanded}`]: {
+                        transform: "rotate(90deg)",
+                    },
+                    color: "primary.main",
                 }}
-                style={style}
-                tabIndex="0"
             >
-                <ExpandButton expand={showDetails} />
-                <Header.Content style={{ verticalAlign: "middle" }}>
-                    {header}
-                    <Header.Subheader>{subheader}</Header.Subheader>
-                </Header.Content>
-            </Header>
-            {showDetails && <Segment>{children}</Segment>}
-        </Segment>
+                <Header header={header} level={level} subheader={subheader} />
+            </AccordionSummary>
+            <AccordionDetails sx={{ paddingLeft: "8px", paddingRight: "8px", paddingBottom: "0px" }}>
+                {children}
+            </AccordionDetails>
+        </Accordion>
     )
 }
 HeaderWithDetails.propTypes = {
     children: childrenPropType,
-    className: string,
-    header: node,
+    header: string,
     item_uuid: string,
     level: string,
     settings: settingsPropType,
-    style: object,
     subheader: string,
 }

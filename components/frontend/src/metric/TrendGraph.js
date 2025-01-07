@@ -1,13 +1,12 @@
+import { useTheme } from "@mui/material"
 import { useContext } from "react"
-import { Message } from "semantic-ui-react"
 import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme } from "victory"
 
-import { DarkMode } from "../context/DarkMode"
 import { DataModel } from "../context/DataModel"
 import { loadingPropType, measurementsPropType, metricPropType } from "../sharedPropTypes"
 import { capitalize, formatMetricScaleAndUnit, getMetricName, getMetricScale, niceNumber, scaledNumber } from "../utils"
 import { LoadingPlaceHolder } from "../widgets/Placeholder"
-import { FailedToLoadMeasurementsWarningMessage, WarningMessage } from "../widgets/WarningMessage"
+import { FailedToLoadMeasurementsWarningMessage, InfoMessage, WarningMessage } from "../widgets/WarningMessage"
 
 function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
     const scale = getMetricScale(metric, dataModel)
@@ -17,15 +16,16 @@ function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
 
 export function TrendGraph({ metric, measurements, loading }) {
     const dataModel = useContext(DataModel)
-    const darkMode = useContext(DarkMode)
+    const color = useTheme().palette.text.secondary
+    const bgcolor = useTheme().palette.background.secondary
+    const fontFamily = useTheme().typography.fontFamily
     const chartHeight = 250
     const estimatedTotalChartHeight = chartHeight + 200 // Estimate of the height including title and axis
     if (getMetricScale(metric, dataModel) === "version_number") {
         return (
-            <Message
-                content="Trend graphs are not supported for metrics with a version number scale."
-                header="Trend graph not supported for version numbers"
-            />
+            <InfoMessage title="Trend graph not supported for version numbers">
+                Trend graphs are not supported for metrics with a version number scale.
+            </InfoMessage>
         )
     }
     if (loading === "failed") {
@@ -36,10 +36,9 @@ export function TrendGraph({ metric, measurements, loading }) {
     }
     if (measurements.length === 0) {
         return (
-            <WarningMessage
-                content="A trend graph can not be displayed until this metric has measurements."
-                header="No measurements"
-            />
+            <WarningMessage title="No measurements">
+                A trend graph can not be displayed until this metric has measurements.
+            </WarningMessage>
         )
     }
     const metricName = getMetricName(metric, dataModel)
@@ -63,26 +62,22 @@ export function TrendGraph({ metric, measurements, loading }) {
         previousX2 = x2
         measurementPoints.push({ y: measurementValues[index], x: x1 }, { y: measurementValues[index], x: x2 })
     })
-    const softWhite = "rgba(255, 255, 255, 0.8)"
-    const softerWhite = "rgba(255, 255, 255, 0.7)"
     const axisStyle = {
-        axisLabel: { padding: 30, fontSize: 11, fill: darkMode ? softWhite : null },
-        tickLabels: { fontSize: 8, fill: darkMode ? softerWhite : null },
+        axisLabel: { padding: 30, fontSize: 11, fill: color, fontFamily: fontFamily },
+        tickLabels: { fontSize: 8, fill: color, fontFamily: fontFamily },
     }
     return (
         <VictoryChart
             height={chartHeight}
             scale={{ x: "time", y: "linear" }}
-            style={{
-                parent: { height: "100%", background: darkMode ? "rgb(40, 40, 40)" : "white" },
-            }}
+            style={{ parent: { height: "100%", background: bgcolor }, fontFamily: fontFamily }}
             theme={VictoryTheme.material}
             width={750}
         >
             <VictoryLabel
                 x={375}
                 y={20}
-                style={{ fill: darkMode ? softWhite : null }}
+                style={{ fill: color, fontFamily: fontFamily }}
                 text={metricName}
                 textAnchor="middle"
             />
@@ -97,12 +92,7 @@ export function TrendGraph({ metric, measurements, loading }) {
             <VictoryLine
                 data={measurementPoints}
                 interpolation="stepBefore"
-                style={{
-                    data: {
-                        stroke: darkMode ? "rgba(255, 255, 255, 0.87) " : "black",
-                        strokeWidth: 2,
-                    },
-                }}
+                style={{ data: { stroke: color, strokeWidth: 2 } }}
             />
         </VictoryChart>
     )

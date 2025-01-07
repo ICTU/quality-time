@@ -50,3 +50,27 @@ it("shows the editable only component", () => {
     expect(screen.queryAllByText("One").length).toBe(0)
     expect(screen.queryAllByText("Two").length).toBe(1)
 })
+
+it("shows the editable only component if no permissions are needed", () => {
+    render(
+        <Permissions.Provider value={["mockPermission"]}>
+            <ReadOnlyOrEditable
+                requiredPermissions={[]}
+                readOnlyComponent={<MockComponent1 />}
+                editableComponent={<MockComponent2 />}
+            />
+        </Permissions.Provider>,
+    )
+    expect(screen.queryAllByText("One").length).toBe(0)
+    expect(screen.queryAllByText("Two").length).toBe(1)
+})
+
+it("shows the read-only component if required permissions are missing", () => {
+    render(
+        <Permissions.Provider value={["mockPermission"]}>
+            <ReadOnlyOrEditable readOnlyComponent={<MockComponent1 />} editableComponent={<MockComponent2 />} />
+        </Permissions.Provider>,
+    )
+    expect(screen.queryAllByText("One").length).toBe(1)
+    expect(screen.queryAllByText("Two").length).toBe(0)
+})

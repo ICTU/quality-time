@@ -1,7 +1,9 @@
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { act, fireEvent, render, screen } from "@testing-library/react"
+import { locale_en_gb } from "dayjs/locale/en-gb"
 import history from "history/browser"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as changelog_api from "../api/changelog"
 import * as fetch_server_api from "../api/fetch_server_api"
 import * as measurement_api from "../api/measurement"
@@ -54,7 +56,14 @@ const dataModel = {
             entities: { violations: { name: "Attribute", attributes: [] } },
         },
     },
-    metrics: { violations: { direction: "<", tags: [], sources: ["sonarqube"] } },
+    metrics: {
+        violations: {
+            direction: "<",
+            tags: [],
+            sources: ["sonarqube"],
+            scales: ["count", "percentage", "version_number"],
+        },
+    },
     subjects: { subject_type: { metrics: ["violations"] } },
 }
 
@@ -88,22 +97,22 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error, fa
         (_metric_uuid, _source_uuid, _entity_key, _attribute, _value, reload) => reload(),
     )
     changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }))
-    const settings = createTestableSettings()
     await act(async () =>
         render(
-            <Permissions.Provider value={[EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION]}>
-                <DataModel.Provider value={dataModel}>
-                    <MetricDetails
-                        metric_uuid="metric_uuid"
-                        reload={jest.fn()}
-                        report={report}
-                        reports={[report]}
-                        stopFilteringAndSorting={stopFilteringAndSorting}
-                        subject_uuid="subject_uuid"
-                        expandedItems={settings.expandedItems}
-                    />
-                </DataModel.Provider>
-            </Permissions.Provider>,
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale_en_gb}>
+                <Permissions.Provider value={[EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION]}>
+                    <DataModel.Provider value={dataModel}>
+                        <MetricDetails
+                            metric_uuid="metric_uuid"
+                            reload={jest.fn()}
+                            report={report}
+                            reports={[report]}
+                            stopFilteringAndSorting={stopFilteringAndSorting}
+                            subject_uuid="subject_uuid"
+                        />
+                    </DataModel.Provider>
+                </Permissions.Provider>
+            </LocalizationProvider>,
         ),
     )
 }
@@ -116,28 +125,28 @@ beforeEach(() => {
 
 it("switches tabs", async () => {
     await renderMetricDetails()
-    expect(screen.getAllByText(/Metric name/).length).toBe(1)
+    expect(screen.getAllByLabelText(/Metric name/).length).toBe(1)
     fireEvent.click(screen.getByText(/Sources/))
-    expect(screen.getAllByText(/Source name/).length).toBe(1)
+    expect(screen.getAllByLabelText(/Source name/).length).toBe(1)
 })
 
 it("switches tabs to technical debt", async () => {
     await renderMetricDetails()
-    expect(screen.getAllByText(/Metric name/).length).toBe(1)
+    expect(screen.getAllByLabelText(/Metric name/).length).toBe(1)
     fireEvent.click(screen.getByText(/Technical debt/))
-    expect(screen.getAllByText(/Technical debt target/).length).toBe(1)
+    expect(screen.getAllByLabelText(/Metric technical debt target/).length).toBe(1)
 })
 
 it("switches tabs to measurement entities", async () => {
     await renderMetricDetails()
-    expect(screen.getAllByText(/Metric name/).length).toBe(1)
+    expect(screen.getAllByLabelText(/Metric name/).length).toBe(1)
     fireEvent.click(screen.getByText(/The source/))
     expect(screen.getAllByText(/Attribute status/).length).toBe(1)
 })
 
 it("switches tabs to the trend graph", async () => {
     await renderMetricDetails()
-    expect(screen.getAllByText(/Metric name/).length).toBe(1)
+    expect(screen.getAllByLabelText(/Metric name/).length).toBe(1)
     fireEvent.click(screen.getByText(/Trend graph/))
     expect(screen.getAllByText(/Time/).length).toBe(1)
 })
@@ -164,12 +173,12 @@ it("removes the existing hashtag from the URL to share", async () => {
 
 it("displays whether sources have errors", async () => {
     await renderMetricDetails(null, "Connection error")
-    expect(screen.getByText(/Sources/)).toHaveClass("red label")
+    expect(screen.getByText(/Sources/)).toHaveClass("error")
 })
 
 it("displays whether sources have warnings", async () => {
     await renderMetricDetails()
-    expect(screen.getByText(/Sources/)).toHaveClass("yellow label")
+    expect(screen.getByText(/Sources/)).toHaveClass("warning")
 })
 
 it("moves the metric", async () => {
@@ -213,7 +222,7 @@ it("reloads the measurements after editing a measurement entity", async () => {
     expect(measurement_api.get_metric_measurements).toHaveBeenCalledTimes(1)
     fireEvent.click(screen.getByText(/The source/))
     fireEvent.click(screen.getByRole("button", { name: "Expand/collapse" }))
-    fireEvent.click(screen.getAllByText("Unconfirmed")[1])
+    fireEvent.mouseDown(screen.getByText("Unconfirm"))
     await act(async () => fireEvent.click(screen.getByText("Confirm")))
     expect(measurement_api.get_metric_measurements).toHaveBeenCalledTimes(2)
 })

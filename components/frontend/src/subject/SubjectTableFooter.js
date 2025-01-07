@@ -1,6 +1,6 @@
+import { TableCell, TableFooter, TableRow } from "@mui/material"
 import { func, string } from "prop-types"
 import { useContext } from "react"
-import { Table } from "semantic-ui-react"
 
 import { add_metric, copy_metric, move_metric } from "../api/metric"
 import { DataModel } from "../context/DataModel"
@@ -16,9 +16,9 @@ import { metric_options } from "../widgets/menu_options"
 function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, reports, stopFilteringAndSorting }) {
     const dataModel = useContext(DataModel)
     return (
-        <Table.Row>
-            <Table.HeaderCell colSpan="99">
-                <ButtonRow>
+        <TableRow>
+            <TableCell colSpan="99">
+                <ButtonRow paddingLeft={0} paddingRight={0}>
                     <AddDropdownButton
                         allItemSubtypes={allMetricTypeOptions(dataModel)}
                         itemType="metric"
@@ -46,8 +46,8 @@ function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, reports, st
                         get_options={() => metric_options(reports, dataModel, subject.type, subjectUuid)}
                     />
                 </ButtonRow>
-            </Table.HeaderCell>
-        </Table.Row>
+            </TableCell>
+        </TableRow>
     )
 }
 SubjectTableFooterButtonRow.propTypes = {
@@ -63,9 +63,9 @@ export function SubjectTableFooter(props) {
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <Table.Footer>
+                <TableFooter>
                     <SubjectTableFooterButtonRow {...props} />
-                </Table.Footer>
+                </TableFooter>
             }
         />
     )

@@ -1,15 +1,16 @@
+import EditIcon from "@mui/icons-material/Edit"
+import { FormControl, IconButton, Menu, MenuItem, Typography } from "@mui/material"
+import { DatePicker } from "@mui/x-date-pickers/DatePicker"
+import dayjs from "dayjs"
 import { bool, func, number, oneOfType, string } from "prop-types"
-import { useState } from "react"
+import { useContext, useState } from "react"
+import TimeAgo from "react-timeago"
 
 import { set_source_parameter } from "../api/source"
-import { DateInput } from "../fields/DateInput"
-import { IntegerInput } from "../fields/IntegerInput"
-import { MultipleChoiceInput } from "../fields/MultipleChoiceInput"
-import { PasswordInput } from "../fields/PasswordInput"
-import { SingleChoiceInput } from "../fields/SingleChoiceInput"
-import { StringInput } from "../fields/StringInput"
+import { accessGranted, Permissions } from "../context/Permissions"
+import { MultipleChoiceField } from "../fields/MultipleChoiceField"
+import { TextField } from "../fields/TextField"
 import {
-    labelPropType,
     permissionsPropType,
     popupContentPropType,
     reportPropType,
@@ -17,75 +18,78 @@ import {
     stringsPropType,
 } from "../sharedPropTypes"
 import { dropdownOptions } from "../utils"
-import { LabelDate } from "../widgets/LabelWithDate"
-import { LabelWithDropdown } from "../widgets/LabelWithDropdown"
-import { LabelWithHelp } from "../widgets/LabelWithHelp"
-import { LabelWithHyperLink } from "../widgets/LabelWithHyperLink"
+import { HyperLink } from "../widgets/HyperLink"
 
-function SourceParameterLabel({ edit_scope, index, label, parameter_short_name, setEditScope, source_type_name }) {
-    const scope_options = [
+function EditScopeSelect({ editScope, setEditScope }) {
+    const scopeOptions = [
         {
-            key: "source",
             value: "source",
             text: "Apply change to source",
-            description: `Change the ${parameter_short_name} of this ${source_type_name} source only`,
-            label: { color: "grey", empty: true, circular: true },
+            color: "edit_scope_source",
         },
         {
-            key: "metric",
             value: "metric",
             text: "Apply change to metric",
-            description: `Change the ${parameter_short_name} of ${source_type_name} sources in this metric that have the same ${parameter_short_name}`,
-            label: { color: "black", empty: true, circular: true },
+            color: "edit_scope_metric",
         },
         {
-            key: "subject",
             value: "subject",
             text: "Apply change to subject",
-            description: `Change the ${parameter_short_name} of ${source_type_name} sources in this subject that have the same ${parameter_short_name}`,
-            label: { color: "yellow", empty: true, circular: true },
+            color: "edit_scope_subject",
         },
         {
-            key: "report",
             value: "report",
             text: "Apply change to report",
-            description: `Change the ${parameter_short_name} of ${source_type_name} sources in this report that have the same ${parameter_short_name}`,
-            label: { color: "orange", empty: true, circular: true },
+            color: "edit_scope_report",
         },
         {
-            key: "reports",
             value: "reports",
             text: "Apply change to all reports",
-            description: `Change the ${parameter_short_name} of ${source_type_name} sources in all reports that have the same ${parameter_short_name}`,
-            label: { color: "red", empty: true, circular: true },
+            color: "edit_scope_reports",
         },
     ]
+    const [anchorEl, setAnchorEl] = useState(null)
+    const open = Boolean(anchorEl)
     return (
-        <LabelWithDropdown
-            color={
-                {
-                    source: "grey",
-                    metric: "black",
-                    subject: "gold",
-                    report: "orange",
-                    reports: "red",
-                }[edit_scope]
-            }
-            direction={index % 2 === 0 ? "right" : "left"}
-            label={label}
-            onChange={(_event, data) => setEditScope(data.value)}
-            options={scope_options}
-            value={edit_scope}
-        />
+        <FormControl>
+            <IconButton
+                aria-controls="edit-scope-menu"
+                aria-expanded={open}
+                aria-haspopup="true"
+                aria-label="Edit scope"
+                color={scopeOptions.find((option) => option.value === editScope).color}
+                id="edit-scope-button"
+                onClick={(event) => setAnchorEl(event.currentTarget)}
+            >
+                <EditIcon />
+            </IconButton>
+            <Menu
+                id="edit-scope-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={() => setAnchorEl(null)}
+                MenuListProps={{ "aria-labelledby": "edit-scope-button" }}
+            >
+                {scopeOptions.map((option) => (
+                    <MenuItem
+                        key={option.value}
+                        onClick={() => {
+                            setEditScope(option.value)
+                            setAnchorEl(null)
+                        }}
+                        selected={editScope === option.value}
+                        value={option.value}
+                    >
+                        <Typography color={option.color}>{option.text}</Typography>
+                    </MenuItem>
+                ))}
+            </Menu>
+        </FormControl>
     )
 }
-SourceParameterLabel.propTypes = {
-    edit_scope: string,
-    index: number,
-    label: labelPropType,
-    parameter_short_name: string,
+EditScopeSelect.propTypes = {
+    editScope: string,
     setEditScope: func,
-    source_type_name: string,
 }
 
 function sources(report) {
@@ -128,11 +132,9 @@ parameterValues.propTypes = {
 export function SourceParameter({
     help,
     help_url,
-    index,
     parameter_key,
     parameter_type,
     parameter_name,
-    parameter_short_name,
     parameter_unit,
     parameter_min,
     parameter_max,
@@ -144,83 +146,103 @@ export function SourceParameter({
     required,
     requiredPermissions,
     source,
-    source_type_name,
     source_uuid,
     warning,
 }) {
     const [editScope, setEditScope] = useState("source")
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, requiredPermissions)
     let label = parameter_name
+    let helperText = null
     if (help_url) {
-        label = <LabelWithHyperLink label={parameter_name} url={help_url} />
-    }
-    if (help) {
-        label = <LabelWithHelp label={parameter_name} help={help} />
-    }
-    if (parameter_type === "date") {
-        const date = new Date(Date.parse(parameter_value))
-        label = (
-            <span>
-                {label}
-                <LabelDate date={date} />
-            </span>
+        helperText = (
+            <>
+                See <HyperLink url={help_url}>{help_url}</HyperLink> for more information.
+            </>
         )
     }
-    let parameter_props = {
-        requiredPermissions: requiredPermissions,
-        editableLabel: (
-            <SourceParameterLabel
-                edit_scope={editScope}
-                label={label}
-                setEditScope={setEditScope}
-                source_type_name={source_type_name}
-                parameter_short_name={parameter_short_name}
-                index={index}
-            />
-        ),
+    if (help) {
+        helperText = help
+    }
+    if (parameter_type === "date" && parameter_value) {
+        helperText = <TimeAgo date={dayjs(parameter_value)} />
+    }
+    let parameterProps = {
+        disabled: disabled,
+        helperText: helperText,
         label: label,
-        placeholder: placeholder,
-        required: required,
-        set_value: (value) => {
+        onChange: (value) => {
             set_source_parameter(source_uuid, parameter_key, value, editScope, reload)
             setEditScope("source") // Reset the edit scope of the parameter to source only
         },
-        value: parameter_value,
+        placeholder: placeholder,
+        required: required,
     }
+    const startAdornment = <EditScopeSelect editScope={editScope} setEditScope={setEditScope} />
+    let parameterInput = null
     if (parameter_type === "date") {
-        return <DateInput {...parameter_props} />
+        parameterInput = (
+            <DatePicker
+                {...parameterProps}
+                defaultValue={parameter_value ? dayjs(parameter_value) : null}
+                format="YYYY-MM-DD"
+                slotProps={{
+                    field: { clearable: true },
+                    textField: { helperText: helperText, InputProps: { startAdornment: startAdornment } },
+                }}
+                sx={{ width: "100%" }}
+                timezone="default"
+            />
+        )
     }
+    parameterProps["value"] = parameter_value
+    parameterProps["startAdornment"] = startAdornment
     if (parameter_type === "password") {
-        return <PasswordInput {...parameter_props} />
+        parameterInput = <TextField {...parameterProps} type="password" />
     }
     if (parameter_type === "integer") {
-        return <IntegerInput {...parameter_props} max={parameter_max} min={parameter_min} unit={parameter_unit} />
+        parameterInput = (
+            <TextField
+                {...parameterProps}
+                max={parameter_max || null}
+                min={parameter_min || null}
+                type="number"
+                unit={parameter_unit}
+            />
+        )
     }
     if (parameter_type === "single_choice") {
-        return <SingleChoiceInput {...parameter_props} options={dropdownOptions(parameter_values)} />
+        parameterInput = (
+            <TextField {...parameterProps} select>
+                {dropdownOptions(parameter_values).map((option) => (
+                    <MenuItem key={option.key} value={option.value}>
+                        {option.text}
+                    </MenuItem>
+                ))}
+            </TextField>
+        )
     }
     if (parameter_type === "multiple_choice") {
-        return <MultipleChoiceInput {...parameter_props} options={dropdownOptions(parameter_values)} />
+        parameterInput = <MultipleChoiceField {...parameterProps} options={parameter_values} />
     }
     if (parameter_type === "multiple_choice_with_addition") {
-        return <MultipleChoiceInput {...parameter_props} options={dropdownOptions(parameter_values)} allowAdditions />
+        parameterInput = <MultipleChoiceField {...parameterProps} options={parameter_values} freeSolo />
     }
-    parameter_props["options"] = parameterValues(report, source.type, parameter_key)
+    parameterProps["options"] = parameterValues(report, source.type, parameter_key)
     if (parameter_type === "string") {
-        return <StringInput {...parameter_props} />
+        parameterInput = <TextField {...parameterProps} />
     }
     if (parameter_type === "url") {
-        return <StringInput {...parameter_props} error={warning} />
+        parameterInput = <TextField {...parameterProps} error={warning} />
     }
-    return null
+    return parameterInput
 }
 SourceParameter.propTypes = {
     help: popupContentPropType,
     help_url: string,
-    index: number,
     parameter_key: string,
     parameter_type: string,
     parameter_name: string,
-    parameter_short_name: string,
     parameter_unit: string,
     parameter_min: number,
     parameter_max: number,
@@ -232,7 +254,6 @@ SourceParameter.propTypes = {
     required: bool,
     requiredPermissions: permissionsPropType,
     source: sourcePropType,
-    source_type_name: string,
     source_uuid: string,
     warning: bool,
 }

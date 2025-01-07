@@ -1,7 +1,6 @@
-import { Tooltip } from "@mui/material"
+import { TableCell, TableSortLabel, Tooltip } from "@mui/material"
 import { func, string } from "prop-types"
 
-import { Table } from "../semantic_ui_react_wrappers"
 import {
     alignmentPropType,
     labelPropType,
@@ -24,6 +23,10 @@ TableHeaderCellContents.propTypes = {
     label: labelPropType,
 }
 
+function MuiSortDirection(sortDirection) {
+    return sortDirection === "ascending" ? "asc" : "desc"
+}
+
 export function SortableTableHeaderCell({
     colSpan,
     column,
@@ -34,16 +37,17 @@ export function SortableTableHeaderCell({
     textAlign,
     help,
 }) {
-    const sorted = sortColumn.value === column ? sortDirection.value : null
+    const sorted = sortColumn.value === column ? MuiSortDirection(sortDirection.value) : null
     return (
-        <Table.HeaderCell
-            colSpan={colSpan}
-            onClick={() => handleSort(column)}
-            sorted={sorted}
-            textAlign={textAlign || "left"}
-        >
-            <TableHeaderCellContents help={help} label={label} />
-        </Table.HeaderCell>
+        <TableCell align={textAlign || "left"} colSpan={colSpan} sortDirection={sorted}>
+            <TableSortLabel
+                active={column === sortColumn.value}
+                direction={column === sortColumn.value ? MuiSortDirection(sortDirection.value) : "asc"}
+                onClick={() => handleSort(column)}
+            >
+                <TableHeaderCellContents help={help} label={label} />
+            </TableSortLabel>
+        </TableCell>
     )
 }
 SortableTableHeaderCell.propTypes = {
@@ -59,9 +63,9 @@ SortableTableHeaderCell.propTypes = {
 
 export function UnsortableTableHeaderCell({ help, label, textAlign, width }) {
     return (
-        <Table.HeaderCell className="unsortable" textAlign={textAlign} width={width}>
+        <TableCell align={textAlign} width={width}>
             <TableHeaderCellContents help={help} label={label} />
-        </Table.HeaderCell>
+        </TableCell>
     )
 }
 UnsortableTableHeaderCell.propTypes = {

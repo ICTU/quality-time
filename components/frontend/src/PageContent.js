@@ -1,11 +1,11 @@
+import { Box, Container } from "@mui/material"
+import CircularProgress from "@mui/material/CircularProgress"
 import { bool, func, number, string } from "prop-types"
 import { useEffect, useState } from "react"
-import { Container, Loader } from "semantic-ui-react"
 
 import { get_measurements } from "./api/measurement"
 import { Report } from "./report/Report"
 import { ReportsOverview } from "./report/ReportsOverview"
-import { Segment } from "./semantic_ui_react_wrappers"
 import {
     datePropType,
     optionalDatePropType,
@@ -72,9 +72,17 @@ export function PageContent({
     let content
     if (loading) {
         content = (
-            <Segment basic placeholder aria-label="Loading...">
-                <Loader active size="massive" />
-            </Segment>
+            <Box
+                sx={{
+                    alignItems: "center",
+                    display: "flex",
+                    width: "100%",
+                    height: "60vh",
+                    justifyContent: "center",
+                }}
+            >
+                <CircularProgress aria-label="Loading..." size="6rem" />
+            </Box>
         )
     } else {
         const commonProps = {
@@ -108,7 +116,22 @@ export function PageContent({
         }
     }
     return (
-        <Container fluid className="MainContainer">
+        <Container
+            disableGutters
+            maxWidth={false}
+            sx={{
+                bgcolor: "background.default",
+                flex: 1,
+                paddingBottom: "50px",
+                paddingTop: "10px",
+                paddingLeft: "20px",
+                paddingRight: "20px",
+                marginTop: "60px",
+                marginBottom: "0px",
+                marginLeft: "0px",
+                marginRight: "0px",
+            }}
+        >
             {content}
         </Container>
     )

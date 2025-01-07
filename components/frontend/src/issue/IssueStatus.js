@@ -1,21 +1,36 @@
+import { Card, CardActionArea, CardContent, List, ListItem, Tooltip, Typography } from "@mui/material"
 import { bool, string } from "prop-types"
 import TimeAgo from "react-timeago"
 
-import { Label, Popup } from "../semantic_ui_react_wrappers"
 import { issueStatusPropType, metricPropType, settingsPropType, stringsPropType } from "../sharedPropTypes"
-import { getMetricIssueIds, ISSUE_STATUS_COLORS } from "../utils"
-import { HyperLink } from "../widgets/HyperLink"
+import { getMetricIssueIds } from "../utils"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 
 function IssueWithoutTracker({ issueId }) {
     return (
-        <Popup
-            content={
-                "Please configure an issue tracker by expanding the report title, selecting the 'Issue tracker' tab, and configuring an issue tracker."
+        <Tooltip
+            title={
+                <>
+                    <h4>No issue tracker configured</h4>
+                    <p>
+                        Please configure an issue tracker by expanding the report title, selecting the &lsquo;Issue
+                        tracker&rsquo; tab, and configuring an issue tracker.
+                    </p>
+                </>
             }
-            header={"No issue tracker configured"}
-            trigger={<Label color="red">{issueId}</Label>}
-        />
+        >
+            <span>
+                <Card elevation={1} sx={{ display: "inline-flex", margin: "1px" }}>
+                    <CardActionArea disableRipple>
+                        <CardContent sx={{ padding: "8px" }}>
+                            <Typography color="error" noWrap>
+                                {issueId} - ?
+                            </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+            </span>
+        </Tooltip>
     )
 }
 IssueWithoutTracker.propTypes = {
@@ -35,41 +50,47 @@ IssuesWithoutTracker.propTypes = {
     issueIds: stringsPropType,
 }
 
-function labelDetails(issueStatus, settings) {
-    let details = [<Label.Detail key="name">{issueStatus.name || "?"}</Label.Detail>]
+function cardDetails(issueStatus, settings) {
+    let details = []
     if (issueStatus.summary && settings.showIssueSummary.value) {
-        details.push(<Label.Detail key="summary">{issueStatus.summary}</Label.Detail>)
+        details.push(<ListItem key="summary">{issueStatus.summary}</ListItem>)
     }
     if (issueStatus.created && settings.showIssueCreationDate.value) {
         details.push(
-            <Label.Detail key="created">
-                Created <TimeAgo date={issueStatus.created} />
-            </Label.Detail>,
+            <ListItem key="created">
+                <Typography noWrap variant="inherit">
+                    Created <TimeAgo date={issueStatus.created} />
+                </Typography>
+            </ListItem>,
         )
     }
     if (issueStatus.updated && settings.showIssueUpdateDate.value) {
         details.push(
-            <Label.Detail key="updated">
-                Updated <TimeAgo date={issueStatus.updated} />
-            </Label.Detail>,
+            <ListItem key="updated">
+                <Typography noWrap variant="inherit">
+                    Updated <TimeAgo date={issueStatus.updated} />
+                </Typography>
+            </ListItem>,
         )
     }
     if (issueStatus.duedate && settings.showIssueDueDate.value) {
         details.push(
-            <Label.Detail key="duedate">
-                Due <TimeAgo date={issueStatus.duedate} />
-            </Label.Detail>,
+            <ListItem key="duedate">
+                <Typography noWrap variant="inherit">
+                    Due <TimeAgo date={issueStatus.duedate} />
+                </Typography>
+            </ListItem>,
         )
     }
     if (issueStatus.release_name && settings.showIssueRelease.value) {
-        details.push(releaseLabel(issueStatus))
+        details.push(release(issueStatus))
     }
     if (issueStatus.sprint_name && settings.showIssueSprint.value) {
-        details.push(sprintLabel(issueStatus))
+        details.push(sprint(issueStatus))
     }
-    return details
+    return details.length > 0 ? <List dense>{details}</List> : null
 }
-labelDetails.propTypes = {
+cardDetails.propTypes = {
     issueStatus: issueStatusPropType,
     settings: settingsPropType,
 }
@@ -81,31 +102,31 @@ releaseStatus.propTypes = {
     issueStatus: issueStatusPropType,
 }
 
-function releaseLabel(issueStatus) {
+function release(issueStatus) {
     const date = issueStatus.release_date ? <TimeAgo date={issueStatus.release_date} /> : null
     return (
-        <Label.Detail key="release">
+        <ListItem key="release">
             {prefixName(issueStatus.release_name, "Release")} {releaseStatus(issueStatus)} {date}
-        </Label.Detail>
+        </ListItem>
     )
 }
-releaseLabel.propTypes = {
+release.propTypes = {
     issueStatus: issueStatusPropType,
 }
 
-function sprintLabel(issueStatus) {
+function sprint(issueStatus) {
     const sprintEnd = issueStatus.sprint_enddate ? (
         <>
             ends <TimeAgo date={issueStatus.sprint_enddate} />
         </>
     ) : null
     return (
-        <Label.Detail key="sprint">
+        <ListItem key="sprint">
             {prefixName(issueStatus.sprint_name, "Sprint")} ({issueStatus.sprint_state}) {sprintEnd}
-        </Label.Detail>
+        </ListItem>
     )
 }
-sprintLabel.propTypes = {
+sprint.propTypes = {
     issueStatus: issueStatusPropType,
 }
 
@@ -118,26 +139,29 @@ prefixName.propType = {
     prefix: string,
 }
 
-function issueLabel(issueStatus, settings, error) {
+function IssueCard({ issueStatus, settings, error }) {
     // The issue status can be unknown when the issue was added recently and the status hasn't been collected yet
-    const color = error ? "red" : ISSUE_STATUS_COLORS[issueStatus.status_category ?? "unknown"]
-    const label = (
-        <Label basic={!error} color={color}>
-            {issueStatus.issue_id}
-            {labelDetails(issueStatus, settings)}
-        </Label>
+    const color = error ? "error" : (issueStatus.status_category ?? "unknown")
+    const onClick = issueStatus.landing_url ? () => window.open(issueStatus.landing_url) : null
+    return (
+        <Card onClick={onClick} elevation={1} sx={{ display: "inline-flex", margin: "1px" }}>
+            <CardActionArea disableRipple={!issueStatus.landing_url}>
+                <CardContent sx={{ padding: "8px" }}>
+                    <Typography color={color} noWrap>
+                        {issueStatus.issue_id} - {issueStatus.name || "?"}
+                    </Typography>
+                    <Typography
+                        component="span" // Default component is p. Use span to prevent "Warning: validateDOMNesting(...): <ul> cannot appear as a descendant of <p>."
+                        variant="body2"
+                    >
+                        {cardDetails(issueStatus, settings)}
+                    </Typography>
+                </CardContent>
+            </CardActionArea>
+        </Card>
     )
-    if (issueStatus.landing_url) {
-        // Without the span, the popup doesn't work
-        return (
-            <span>
-                <HyperLink url={issueStatus.landing_url}>{label}</HyperLink>
-            </span>
-        )
-    }
-    return label
 }
-issueLabel.propTypes = {
+IssueCard.propTypes = {
     issueStatus: issueStatusPropType,
     settings: settingsPropType,
     error: string,
@@ -154,15 +178,26 @@ function IssueWithTracker({ issueStatus, settings }) {
         popupHeader = "Parse error"
         popupContent = "Quality-time could not parse the data received from the issue tracker."
     }
-    let label = issueLabel(issueStatus, settings, popupHeader)
+    let card = <IssueCard error={popupHeader} issueStatus={issueStatus} settings={settings} />
     if (!popupContent && issueStatus.created) {
         popupHeader = issueStatus.summary
         popupContent = issuePopupContent(issueStatus)
     }
     if (popupContent) {
-        label = <Popup header={popupHeader} content={popupContent} flowing hoverable trigger={label} />
+        card = (
+            <Tooltip
+                title={
+                    <>
+                        <h4>{popupHeader}</h4>
+                        {popupContent}
+                    </>
+                }
+            >
+                <span>{card}</span>
+            </Tooltip>
+        )
     }
-    return label
+    return card
 }
 IssueWithTracker.propTypes = {
     issueStatus: issueStatusPropType,

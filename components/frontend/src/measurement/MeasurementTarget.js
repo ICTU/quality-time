@@ -1,7 +1,7 @@
+import { Tooltip } from "@mui/material"
 import { useContext } from "react"
 
 import { DataModel } from "../context/DataModel"
-import { Label, Popup } from "../semantic_ui_react_wrappers"
 import { metricPropType } from "../sharedPropTypes"
 import {
     formatMetricDirection,
@@ -12,6 +12,7 @@ import {
     getMetricTarget,
     isValidDate_YYYYMMDD,
 } from "../utils"
+import { Label } from "../widgets/Label"
 
 function popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel) {
     const unit = formatMetricScaleAndUnit(metric, dataModel)
@@ -59,11 +60,11 @@ export function MeasurementTarget({ metric }) {
         const today = new Date()
         debtEndDateInThePast = endDate.toISOString().split("T")[0] < today.toISOString().split("T")[0]
     }
-    const label = allIssuesDone || debtEndDateInThePast ? <Label color="grey">{target}</Label> : <span>{target}</span>
+    const label = allIssuesDone || debtEndDateInThePast ? <Label color="debt_target_met">{target}</Label> : target
     return (
-        <Popup hoverable on={["hover", "focus"]} trigger={label}>
-            {popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel)}
-        </Popup>
+        <Tooltip title={<span>{popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel)}</span>}>
+            <span>{label}</span>
+        </Tooltip>
     )
 }
 MeasurementTarget.propTypes = {

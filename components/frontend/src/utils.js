@@ -21,7 +21,6 @@ export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000
 const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR
 
 export const ISSUE_STATUS_COLORS = { todo: "grey", doing: "blue", done: "green", unknown: null }
-export const ISSUE_STATUS_THEME_COLORS = { todo: "grey", doing: "info", done: "success", unknown: "" }
 
 export function getMetricDirection(metric, dataModel) {
     // Old versions of the data model may contain the unicode version of the direction, be prepared:
@@ -413,10 +412,6 @@ export function getUserPermissions(username, email, report_date, permissions) {
         const permittedUsers = permissions?.[permission] ?? []
         return permittedUsers.length === 0 ? true : permittedUsers.includes(username) || permittedUsers.includes(email)
     })
-}
-
-export function userPrefersDarkMode(uiMode) {
-    return uiMode === "dark" || (uiMode === "system" && window.matchMedia?.("(prefers-color-scheme: dark)").matches)
 }
 
 export function dropdownOptions(options) {

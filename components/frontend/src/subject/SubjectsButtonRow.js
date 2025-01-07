@@ -1,4 +1,3 @@
-import { Box } from "@mui/material"
 import { func } from "prop-types"
 import { useContext } from "react"
 
@@ -23,35 +22,33 @@ export function SubjectsButtonRow({ reload, report, reports, settings }) {
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <Box sx={{ pt: "50px" }}>
-                    <ButtonRow>
-                        <AddDropdownButton
-                            itemType="subject"
-                            itemSubtypes={subjectTypes(dataModel.subjects)}
-                            onClick={(subtype) => {
-                                stopFiltering()
-                                add_subject(report.report_uuid, subtype, reload)
-                            }}
-                            sort={false} // Don't sort the subjects by name because it's a hierarchy defined in the data model
-                        />
-                        <CopyButton
-                            itemType="subject"
-                            onChange={(source_subject_uuid) => {
-                                stopFiltering()
-                                copy_subject(source_subject_uuid, report.report_uuid, reload)
-                            }}
-                            get_options={() => subject_options(reports, dataModel)}
-                        />
-                        <MoveButton
-                            itemType="subject"
-                            onChange={(source_subject_uuid) => {
-                                stopFiltering()
-                                move_subject(source_subject_uuid, report.report_uuid, reload)
-                            }}
-                            get_options={() => subject_options(reports, dataModel, report.report_uuid)}
-                        />
-                    </ButtonRow>
-                </Box>
+                <ButtonRow paddingLeft={0} paddingTop={7}>
+                    <AddDropdownButton
+                        itemType="subject"
+                        itemSubtypes={subjectTypes(dataModel.subjects)}
+                        onClick={(subtype) => {
+                            stopFiltering()
+                            add_subject(report.report_uuid, subtype, reload)
+                        }}
+                        sort={false} // Don't sort the subjects by name because it's a hierarchy defined in the data model
+                    />
+                    <CopyButton
+                        itemType="subject"
+                        onChange={(source_subject_uuid) => {
+                            stopFiltering()
+                            copy_subject(source_subject_uuid, report.report_uuid, reload)
+                        }}
+                        get_options={() => subject_options(reports, dataModel)}
+                    />
+                    <MoveButton
+                        itemType="subject"
+                        onChange={(source_subject_uuid) => {
+                            stopFiltering()
+                            move_subject(source_subject_uuid, report.report_uuid, reload)
+                        }}
+                        get_options={() => subject_options(reports, dataModel, report.report_uuid)}
+                    />
+                </ButtonRow>
             }
         />
     )

@@ -8,7 +8,7 @@ export function showMessage(type, title, description, messageId) {
         const toastMessage =
             title && description ? (
                 <div>
-                    <h4>{title}</h4>
+                    <b>{title}</b>
                     <p>{description}</p>
                 </div>
             ) : (

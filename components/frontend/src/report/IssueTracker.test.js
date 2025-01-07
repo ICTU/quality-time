@@ -41,11 +41,9 @@ function renderIssueTracker({ report = { report_uuid: "report_uuid", title: "Rep
 }
 
 it("sets the issue tracker type", async () => {
-    renderIssueTracker()
-    fireEvent.click(screen.getByText(/Issue tracker type/))
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Jira/))
-    })
+    await act(async () => renderIssueTracker())
+    fireEvent.mouseDown(screen.getByLabelText(/Issue tracker type/))
+    fireEvent.click(screen.getByText("Jira"))
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "type",
@@ -56,7 +54,7 @@ it("sets the issue tracker type", async () => {
 
 it("sets the issue tracker url", async () => {
     renderIssueTracker()
-    await userEvent.type(screen.getByText(/URL/), "https://jira{Enter}")
+    await userEvent.type(screen.getByLabelText(/URL/), "https://jira{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "url",
@@ -67,7 +65,7 @@ it("sets the issue tracker url", async () => {
 
 it("sets the issue tracker username", async () => {
     renderIssueTracker()
-    await userEvent.type(screen.getByText(/Username/), "janedoe{Enter}")
+    await userEvent.type(screen.getByLabelText(/Username/), "janedoe{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "username",
@@ -78,7 +76,7 @@ it("sets the issue tracker username", async () => {
 
 it("sets the issue tracker password", async () => {
     renderIssueTracker()
-    await userEvent.type(screen.getByText(/Password/), "secret{Enter}")
+    await userEvent.type(screen.getByLabelText(/Password/), "secret{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "password",
@@ -89,7 +87,7 @@ it("sets the issue tracker password", async () => {
 
 it("sets the issue tracker private token", async () => {
     renderIssueTracker()
-    await userEvent.type(screen.getByText(/Private token/), "secret{Enter}")
+    await userEvent.type(screen.getByLabelText(/Private token/), "secret{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "private_token",
@@ -135,13 +133,9 @@ it("shows the issue tracker private token help url", async () => {
 })
 
 it("sets the issue tracker project", async () => {
-    renderIssueTracker()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Project for new issues/))
-    })
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Project name/))
-    })
+    await act(async () => renderIssueTracker())
+    fireEvent.mouseDown(screen.getByLabelText(/Project for new issues/))
+    fireEvent.click(screen.getByText(/Project name/))
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "project_key",
@@ -151,13 +145,9 @@ it("sets the issue tracker project", async () => {
 })
 
 it("sets the issue tracker issue type", async () => {
-    renderIssueTracker()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Issue type/))
-    })
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Bug/))
-    })
+    await act(async () => renderIssueTracker())
+    fireEvent.mouseDown(screen.getByLabelText(/Issue type/))
+    fireEvent.click(screen.getByText(/Bug/))
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "issue_type",
@@ -168,7 +158,7 @@ it("sets the issue tracker issue type", async () => {
 
 it("sets the issue tracker issue labels", async () => {
     renderIssueTracker()
-    await userEvent.type(screen.getByText(/Enter one or more labels here/), "Label{Enter}")
+    await userEvent.type(screen.getByLabelText(/Labels/), "Label{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "issue_labels",
@@ -178,13 +168,9 @@ it("sets the issue tracker issue labels", async () => {
 })
 
 it("sets the issue tracker epic link", async () => {
-    renderIssueTracker()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Epic link/))
-    })
-    await act(async () => {
-        fireEvent.click(screen.getByText(/FOO-420/))
-    })
+    await act(async () => renderIssueTracker())
+    fireEvent.mouseDown(screen.getByLabelText(/Epic link/))
+    fireEvent.click(screen.getByText(/FOO-420/))
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "epic_link",

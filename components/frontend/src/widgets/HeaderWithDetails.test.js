@@ -11,22 +11,20 @@ beforeEach(() => {
 
 it("expands the details on click", () => {
     render(
-        <HeaderWithDetails item_uuid="uuid" settings={createTestableSettings()}>
+        <HeaderWithDetails item_uuid="uuid" level="h1" settings={createTestableSettings()} header="Expand">
             <p>Hello</p>
         </HeaderWithDetails>,
     )
-    expect(screen.queryAllByText("Hello").length).toBe(0)
-    fireEvent.click(screen.getByTitle("expand"))
+    fireEvent.click(screen.getByText("Expand"))
     expect(history.location.search).toBe("?expanded=uuid")
 })
 
 it("expands the details on space", async () => {
     render(
-        <HeaderWithDetails header="Header" item_uuid="uuid" settings={createTestableSettings()}>
+        <HeaderWithDetails header="Header" item_uuid="uuid" level="h1" settings={createTestableSettings()}>
             <p>Hello</p>
         </HeaderWithDetails>,
     )
-    expect(screen.queryAllByText("Hello").length).toBe(0)
     await userEvent.tab()
     await userEvent.keyboard(" ")
     expect(history.location.search).toBe("?expanded=uuid")
@@ -35,7 +33,7 @@ it("expands the details on space", async () => {
 it("is expanded on load when listed in the query string", () => {
     history.push("?expanded=uuid")
     render(
-        <HeaderWithDetails header="Header" item_uuid="uuid" settings={createTestableSettings()}>
+        <HeaderWithDetails header="Header" item_uuid="uuid" level="h1" settings={createTestableSettings()}>
             <p>Hello</p>
         </HeaderWithDetails>,
     )

@@ -22,7 +22,6 @@ import {
     scaledNumber,
     sortWithLocaleCompare,
     sum,
-    userPrefersDarkMode,
     visibleMetrics,
 } from "./utils"
 
@@ -200,37 +199,6 @@ it("gets the subject name from the data model if the subject has no name", () =>
     expect(getSubjectName({ type: "subject_type" }, { subjects: { subject_type: { name: "subject" } } })).toStrictEqual(
         "subject",
     )
-})
-
-it("returns true when the user sets dark mode", () => {
-    expect(userPrefersDarkMode("dark")).toBe(true)
-})
-
-it("returns false when the user sets light mode", () => {
-    expect(userPrefersDarkMode("light")).toBe(false)
-})
-
-function mockMatchMedia(matches, addEventListener) {
-    Object.defineProperty(window, "matchMedia", {
-        value: jest.fn().mockImplementation((_query) => ({
-            matches: matches ?? false,
-            addEventListener: addEventListener ?? jest.fn(),
-            removeEventListener: jest.fn(),
-            addListener: jest.fn(), // deprecated
-            removeListener: jest.fn(), // deprecated
-        })),
-        configurable: true,
-    })
-}
-
-it("returns true when the user prefers dark mode", () => {
-    mockMatchMedia(true)
-    expect(userPrefersDarkMode("system")).toBe(true)
-})
-
-it("returns false when the user prefers light mode", () => {
-    mockMatchMedia(false)
-    expect(userPrefersDarkMode("system")).toBe(false)
 })
 
 it("returns the metric response deadline", () => {

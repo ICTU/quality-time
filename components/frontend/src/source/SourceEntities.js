@@ -1,13 +1,22 @@
 import "./SourceEntities.css"
 
 import HelpIcon from "@mui/icons-material/Help"
-import { IconButton, Tooltip } from "@mui/material"
+import {
+    IconButton,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TableSortLabel,
+    Tooltip,
+} from "@mui/material"
 import { bool, func, object, string } from "prop-types"
 import { useContext, useState } from "react"
-import { Message } from "semantic-ui-react"
 
 import { DataModel } from "../context/DataModel"
-import { Popup, Table } from "../semantic_ui_react_wrappers"
 import {
     alignmentPropType,
     childrenPropType,
@@ -25,7 +34,7 @@ import {
 import { capitalize } from "../utils"
 import { IgnoreIcon, ShowIcon } from "../widgets/icons"
 import { LoadingPlaceHolder } from "../widgets/Placeholder"
-import { FailedToLoadMeasurementsWarningMessage } from "../widgets/WarningMessage"
+import { FailedToLoadMeasurementsWarningMessage, InfoMessage } from "../widgets/WarningMessage"
 import { SourceEntity } from "./SourceEntity"
 
 function entityStatus(source, entity) {
@@ -99,6 +108,10 @@ sort.propTypes = {
     sortDirection: sortDirectionPropType,
 }
 
+function MuiSortDirection(sortDirection) {
+    return sortDirection === "ascending" ? "asc" : "desc"
+}
+
 function SortableHeaderCell({
     children,
     column,
@@ -111,15 +124,17 @@ function SortableHeaderCell({
     textAlign,
 }) {
     return (
-        <Table.HeaderCell
-            onClick={() =>
-                sort(column, columnType, setColumnType, setSortColumn, setSortDirection, sortColumn, sortDirection)
-            }
-            sorted={sorted(column, sortColumn, sortDirection)}
-            textAlign={textAlign}
-        >
-            {children}
-        </Table.HeaderCell>
+        <TableCell align={textAlign} direction={sorted(column, sortColumn, sortDirection)}>
+            <TableSortLabel
+                active={column === sortColumn}
+                direction={column === sortColumn ? MuiSortDirection(sortDirection) : "asc"}
+                onClick={() =>
+                    sort(column, columnType, setColumnType, setSortColumn, setSortDirection, sortColumn, sortDirection)
+                }
+            >
+                {children}
+            </TableSortLabel>
+        </TableCell>
     )
 }
 SortableHeaderCell.propTypes = {
@@ -144,16 +159,12 @@ function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
         >
             <span>{entityAttribute.name}</span>
             {entityAttribute.help ? (
-                <Popup
-                    on={["hover", "focus"]}
-                    trigger={
-                        <span>
-                            &nbsp;
-                            <HelpIcon fontSize="inherit" sx={{ verticalAlign: "middle" }} tabIndex="0" />
-                        </span>
-                    }
-                    content={entityAttribute.help}
-                />
+                <Tooltip title={entityAttribute.help}>
+                    <span>
+                        &nbsp;
+                        <HelpIcon fontSize="inherit" sx={{ verticalAlign: "middle" }} tabIndex="0" />
+                    </span>
+                </Tooltip>
             ) : null}
         </SortableHeaderCell>
     )
@@ -178,8 +189,8 @@ function sourceEntitiesHeaders(
     const entityNamePlural = metricEntities.name_plural
     const hideIgnoredEntitiesLabel = `${hideIgnoredEntities ? "Show" : "Hide"} ignored ${entityNamePlural}`
     return (
-        <Table.Row>
-            <Table.HeaderCell collapsing textAlign="center">
+        <TableRow>
+            <TableCell align="center">
                 <Tooltip title={hideIgnoredEntitiesLabel}>
                     <IconButton
                         aria-label={hideIgnoredEntitiesLabel}
@@ -188,7 +199,7 @@ function sourceEntitiesHeaders(
                         {hideIgnoredEntities ? <ShowIcon /> : <IgnoreIcon />}
                     </IconButton>
                 </Tooltip>
-            </Table.HeaderCell>
+            </TableCell>
             <SortableHeaderCell column="entity_status" columnType="text" {...sortProps}>
                 {`${capitalize(entityName)} status`}
             </SortableHeaderCell>
@@ -204,19 +215,15 @@ function sourceEntitiesHeaders(
             {entityAttributes.map((entityAttribute) => (
                 <EntityAttributeHeaderCell entityAttribute={entityAttribute} key={entityAttribute.key} {...sortProps} />
             ))}
-        </Table.Row>
+        </TableRow>
     )
 }
 sourceEntitiesHeaders.propTypes = {
     entityAttributes: entityAttributesPropType,
     hideIgnoredEntities: bool,
     metricEntities: object,
-    setColumnType: func,
     setHideIgnoredEntities: func,
-    setSortColumn: func,
-    setSortDirection: func,
-    sortColumn: string,
-    sortDirection: sortDirectionPropType,
+    sortProps: object,
 }
 
 function sortedEntities(columnType, sortColumn, sortDirection, source) {
@@ -270,10 +277,9 @@ export function SourceEntities({ loading, measurements, metric, metric_uuid, rel
         const unit = dataModel.metrics[metric.type].unit || "entities"
         const sourceTypeName = dataModel.sources[sourceType].name
         return (
-            <Message
-                header="Measurement details not supported"
-                content={`Showing individual ${unit} is not supported when using ${sourceTypeName} as source.`}
-            />
+            <InfoMessage title="Measurement details not supported">
+                {`Showing individual ${unit} is not supported when using ${sourceTypeName} as source.`}
+            </InfoMessage>
         )
     }
     if (loading === "failed") {
@@ -284,20 +290,18 @@ export function SourceEntities({ loading, measurements, metric, metric_uuid, rel
     }
     if (measurements.length === 0) {
         return (
-            <Message
-                header="No measurements available"
-                content="Measurement details not available because Quality-time has not collected any measurements yet."
-            />
+            <InfoMessage title="No measurements available">
+                Measurement details not available because Quality-time has not collected any measurements yet.
+            </InfoMessage>
         )
     }
     const lastMeasurement = measurements[measurements.length - 1]
     const source = lastMeasurement.sources.find((source) => source.source_uuid === source_uuid)
     if (!Array.isArray(source.entities) || source.entities.length === 0) {
         return (
-            <Message
-                header="Measurement details not available"
-                content="There are currently no measurement details available."
-            />
+            <InfoMessage title="Measurement details not available">
+                There are currently no measurement details available.
+            </InfoMessage>
         )
     }
     const entityAttributes = metricEntities.attributes.filter((attribute) => attribute?.visible ?? true)
@@ -333,10 +337,12 @@ export function SourceEntities({ loading, measurements, metric, metric_uuid, rel
         />
     ))
     return (
-        <Table className="entities stickyHeader" sortable size="small">
-            <Table.Header>{headers}</Table.Header>
-            <Table.Body>{rows}</Table.Body>
-        </Table>
+        <TableContainer component={Paper} sx={{ maxHeight: "50vh" }}>
+            <Table padding="none" size="small">
+                <TableHead>{headers}</TableHead>
+                <TableBody>{rows}</TableBody>
+            </Table>
+        </TableContainer>
     )
 }
 SourceEntities.propTypes = {

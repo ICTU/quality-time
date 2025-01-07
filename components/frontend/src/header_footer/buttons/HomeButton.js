@@ -16,7 +16,7 @@ export function HomeButton({ atReportsOverview, openReportsOverview, setSettings
                     startIcon={<img height="28px" width="28px" src="/favicon.ico" alt={label} />}
                     sx={{ textTransform: "none" }}
                 >
-                    <Typography variant="h4">Quality-time</Typography>
+                    <Typography variant="h3">Quality-time</Typography>
                 </Button>
             </span>
         </Tooltip>
