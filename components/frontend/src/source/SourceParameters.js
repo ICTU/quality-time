@@ -1,10 +1,10 @@
+import { Paper, Stack, Typography } from "@mui/material"
+import Grid from "@mui/material/Grid2"
 import { func, string } from "prop-types"
 import { useContext } from "react"
-import { Grid } from "semantic-ui-react"
 
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
-import { Header, Segment } from "../semantic_ui_react_wrappers"
 import { metricPropType, reportPropType, sourcePropType, stringsPropType } from "../sharedPropTypes"
 import { formatMetricScaleAndUnit } from "../utils"
 import { SourceParameter } from "./SourceParameter"
@@ -44,17 +44,15 @@ export function SourceParameters({ changed_param_keys, metric, reload, report, s
         if (parameterKeys.length === 0) {
             return null
         }
-        const parameters = parameterKeys.map((parameterKey, index) => (
+        const parameters = parameterKeys.map((parameterKey) => (
             <div key={parameterKey} style={{ paddingTop: "10px" }}>
                 <SourceParameter
                     report={report}
                     source={source}
                     source_uuid={source_uuid}
-                    source_type_name={dataModel.sources[source.type].name}
                     parameter_key={parameterKey}
                     parameter_type={allParameters[parameterKey].type}
                     parameter_name={allParameters[parameterKey].name}
-                    parameter_short_name={allParameters[parameterKey].short_name}
                     parameter_unit={allParameters[parameterKey].unit || metricUnit}
                     parameter_min={allParameters[parameterKey].min_value || null}
                     parameter_max={allParameters[parameterKey].max_value || null}
@@ -71,24 +69,23 @@ export function SourceParameters({ changed_param_keys, metric, reload, report, s
                     required={allParameters[parameterKey].mandatory}
                     warning={changed_param_keys?.indexOf(parameterKey) !== -1}
                     reload={reload}
-                    index={index}
                 />
             </div>
         ))
         return (
-            <Grid.Column key={parameterGroup.name}>
-                <Segment>
-                    <Header as="h5" color="grey">
-                        {parameterGroup.name}
-                    </Header>
-                    {parameters}
-                </Segment>
-            </Grid.Column>
+            <Grid key={parameterGroup.name} size={{ xs: 1, sm: 1, md: 1 }}>
+                <Paper elevation={2} sx={{ padding: "8px" }}>
+                    <Stack direction="column" spacing={2}>
+                        <Typography variant="h3">{parameterGroup.name}</Typography>
+                        {parameters}
+                    </Stack>
+                </Paper>
+            </Grid>
         )
     })
     return (
-        <Grid>
-            <Grid.Row columns={2}>{groups}</Grid.Row>
+        <Grid container alignItems="flex-start" columns={{ xs: 1, sm: 1, md: 2 }} spacing={{ xs: 1, sm: 2, md: 3 }}>
+            {groups}
         </Grid>
     )
 }

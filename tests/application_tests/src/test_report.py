@@ -45,6 +45,7 @@ class OpenReportTest(unittest.TestCase):
     # Class names of MUI-components used in the tests
     DASHBOARD_CARD_CLASS_NAME = "MuiCard-root"
     DASHBOARD_CARD_HEADER_CONTENT_CLASS_NAME = "MuiCardHeader-content"
+    REPORT_HEADER_CLASS_NAME = "MuiAccordionSummary-content"
 
     def setUp(self):
         """Override to setup the driver."""
@@ -84,9 +85,8 @@ class OpenReportTest(unittest.TestCase):
         report = self.dashboard_cards()[-1]  # The last card is a report
         report_title = report.find_element(By.CLASS_NAME, self.DASHBOARD_CARD_HEADER_CONTENT_CLASS_NAME)
         report.click()
-        self.assertTrue(
-            expect.text_to_be_present_in_element(self.driver.find_element(By.CLASS_NAME, "header"), report_title)
-        )
+        report_header = self.driver.find_element(By.CLASS_NAME, self.REPORT_HEADER_CLASS_NAME)
+        self.assertTrue(expect.text_to_be_present_in_element(report_header, report_title))
 
     def test_login_and_logout(self):
         """Test that a user can login and logout."""

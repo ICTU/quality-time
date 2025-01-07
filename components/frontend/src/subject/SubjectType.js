@@ -1,12 +1,14 @@
 import CircleIcon from "@mui/icons-material/Circle"
-import { Stack, Typography } from "@mui/material"
+import { MenuItem, Stack, Typography } from "@mui/material"
 import { func, number, objectOf, string } from "prop-types"
 import { useContext } from "react"
 
 import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
-import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { TextField } from "../fields/TextField"
 import { subjectPropType } from "../sharedPropTypes"
+import { referenceDocumentationURL } from "../utils"
+import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
 
 export function subjectTypes(subjectTypesMapping, level = 0) {
     const options = []
@@ -30,10 +32,10 @@ export function subjectTypes(subjectTypesMapping, level = 0) {
             content: (
                 <Stack direction="row">
                     {bullet}
-                    <p>
+                    <Stack direction="column" sx={{ whiteSpace: "normal" }}>
                         {subjectType.name}
                         <Typography variant="body2">{subjectType.description}</Typography>
-                    </p>
+                    </Stack>
                 </Stack>
             ),
         })
@@ -47,15 +49,23 @@ subjectTypes.propTypes = {
 }
 
 export function SubjectType({ subjectType, setValue }) {
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
-        <SingleChoiceInput
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
+        <TextField
+            disabled={disabled}
+            helperText={<ReadTheDocsLink url={referenceDocumentationURL(subjectType.value)} />}
             label="Subject type"
-            options={subjectTypes(useContext(DataModel).subjects)}
-            set_value={(value) => setValue(value)}
-            sort={false}
+            onChange={(value) => setValue(value)}
+            select
             value={subjectType}
-        />
+        >
+            {subjectTypes(useContext(DataModel).subjects).map((subjectType) => (
+                <MenuItem key={subjectType.key} value={subjectType.value}>
+                    {subjectType.content}
+                </MenuItem>
+            ))}
+        </TextField>
     )
 }
 SubjectType.propTypes = {

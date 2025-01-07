@@ -1,10 +1,16 @@
+import { ThemeProvider } from "@mui/material/styles"
 import { queryAllByRole, queryAllByText, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
+import { theme } from "../theme"
 import { MetricSummaryCard } from "./MetricSummaryCard"
 
 function renderPieChart({ summary = { blue: 0, red: 0, green: 0, yellow: 0, white: 0, grey: 0 } } = {}) {
-    return render(<MetricSummaryCard summary={{ "2023-01-01": summary }} />)
+    return render(
+        <ThemeProvider theme={theme}>
+            <MetricSummaryCard summary={{ "2023-01-01": summary }} />
+        </ThemeProvider>,
+    )
 }
 
 const dateString = new Date("2023-01-01").toLocaleDateString()

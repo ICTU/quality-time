@@ -1,24 +1,18 @@
+import HistoryIcon from "@mui/icons-material/History"
 import MoneyIcon from "@mui/icons-material/Money"
+import SettingsIcon from "@mui/icons-material/Settings"
 import ShowChartIcon from "@mui/icons-material/ShowChart"
 import StorageIcon from "@mui/icons-material/Storage"
+import { Stack } from "@mui/material"
 import { bool, func, string } from "prop-types"
 import { useContext, useEffect, useState } from "react"
 
 import { get_metric_measurements } from "../api/measurement"
 import { delete_metric, set_metric_attribute } from "../api/metric"
-import { activeTabIndex, tabChangeHandler } from "../app_ui_settings"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { Tab } from "../semantic_ui_react_wrappers"
-import {
-    datePropType,
-    metricPropType,
-    reportPropType,
-    reportsPropType,
-    stringsPropType,
-    stringsURLSearchQueryPropType,
-} from "../sharedPropTypes"
+import { datePropType, metricPropType, reportPropType, reportsPropType, stringsPropType } from "../sharedPropTypes"
 import { Logo } from "../source/Logo"
 import { SourceEntities } from "../source/SourceEntities"
 import { Sources } from "../source/Sources"
@@ -29,11 +23,10 @@ import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { PermLinkButton } from "../widgets/buttons/PermLinkButton"
 import { ReorderButtonGroup } from "../widgets/buttons/ReorderButtonGroup"
 import { RefreshIcon } from "../widgets/icons"
-import { changelogTabPane, configurationTabPane, tabPane } from "../widgets/TabPane"
+import { Tabs } from "../widgets/Tabs"
 import { showMessage } from "../widgets/toast"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
 import { MetricDebtParameters } from "./MetricDebtParameters"
-import { MetricTypeHeader } from "./MetricTypeHeader"
 import { TrendGraph } from "./TrendGraph"
 
 function RequestMeasurementButton({ metric, metric_uuid, reload }) {
@@ -70,7 +63,7 @@ function MetricDetailsButtonRow({
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <ButtonRow rightButton={deleteButton}>
+                <ButtonRow paddingBottom={1} paddingLeft={0} paddingRight={0} paddingTop={2} rightButton={deleteButton}>
                     <ReorderButtonGroup
                         first={isFirstMetric}
                         last={isLastMetric}
@@ -128,7 +121,6 @@ export function MetricDetails({
     report,
     stopFilteringAndSorting,
     subject_uuid,
-    expandedItems,
 }) {
     const dataModel = useContext(DataModel)
     const [measurements, setMeasurements] = useState([])
@@ -149,69 +141,58 @@ export function MetricDetails({
         anyError ||
         Object.values(metric.sources).some((source) => !dataModel.metrics[metric.type].sources.includes(source.type))
     const metricUrl = `${window.location.href.split("#")[0]}#${metric_uuid}`
-    let panes = []
-    panes.push(
-        configurationTabPane(
-            <MetricConfigurationParameters
-                subject={subject}
-                metric={metric}
-                metric_uuid={metric_uuid}
-                report={report}
-                reload={reload}
-            />,
-        ),
-        tabPane(
-            "Sources",
-            <Sources
-                reports={reports}
-                report={report}
-                metric={metric}
-                metric_uuid={metric_uuid}
-                measurement={metric.latest_measurement}
-                changed_fields={changed_fields}
-                reload={reload}
-            />,
-            { icon: <StorageIcon />, error: Boolean(anyError), warning: Boolean(anyWarning) },
-        ),
-        tabPane(
-            "Technical debt",
-            <MetricDebtParameters metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />,
-            { icon: <MoneyIcon /> },
-        ),
-        changelogTabPane(<ChangeLog timestamp={report.timestamp} metric_uuid={metric_uuid} />),
-        tabPane(
-            "Trend graph",
-            <TrendGraph metric={metric} measurements={measurements} loading={measurementsStatus} />,
-            { icon: <ShowChartIcon /> },
-        ),
-    )
+    const panes = [
+        <MetricConfigurationParameters
+            key="1"
+            metric={metric}
+            metric_uuid={metric_uuid}
+            reload={reload}
+            report={report}
+            subject={subject}
+        />,
+        <Sources
+            changed_fields={changed_fields}
+            key="2"
+            measurement={metric.latest_measurement}
+            metric={metric}
+            metric_uuid={metric_uuid}
+            reload={reload}
+            report={report}
+            reports={reports}
+        />,
+        <MetricDebtParameters key="3" metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />,
+        <ChangeLog key="4" timestamp={report.timestamp} metric_uuid={metric_uuid} />,
+        <TrendGraph key="5" metric={metric} measurements={measurements} loading={measurementsStatus} />,
+    ]
+    const tabs = [
+        { label: "Configuration", icon: <SettingsIcon /> },
+        { error: Boolean(anyError), label: "Sources", icon: <StorageIcon />, warning: Boolean(anyWarning) },
+        { label: "Technical debt", icon: <MoneyIcon /> },
+        { label: "Changelog", icon: <HistoryIcon /> },
+        { label: "Trend graph", icon: <ShowChartIcon /> },
+    ]
     Object.entries(metric.sources).forEach(([source_uuid, source]) => {
         const sourceName = getSourceName(source, dataModel)
+        tabs.push({
+            image: <Logo logo={source.type} alt={sourceName} width="21px" height="21px" marginBottom="6px" />,
+            label: sourceName,
+        })
         panes.push(
-            tabPane(
-                sourceName,
-                <SourceEntities
-                    loading={measurementsStatus}
-                    measurements={measurements}
-                    metric={metric}
-                    metric_uuid={metric_uuid}
-                    reload={measurementsReload}
-                    report={report}
-                    source_uuid={source_uuid}
-                />,
-                { image: <Logo logo={source.type} alt={sourceName} /> },
-            ),
+            <SourceEntities
+                key={metric_uuid}
+                loading={measurementsStatus}
+                measurements={measurements}
+                metric={metric}
+                metric_uuid={metric_uuid}
+                reload={measurementsReload}
+                report={report}
+                source_uuid={source_uuid}
+            />,
         )
     })
-
     return (
-        <>
-            <MetricTypeHeader metricType={dataModel.metrics[metric.type]} />
-            <Tab
-                defaultActiveIndex={activeTabIndex(expandedItems, metric_uuid)}
-                onTabChange={tabChangeHandler(expandedItems, metric_uuid)}
-                panes={panes}
-            />
+        <Stack>
+            <Tabs tabs={tabs}>{panes}</Tabs>
             <MetricDetailsButtonRow
                 metric={metric}
                 metric_uuid={metric_uuid}
@@ -221,7 +202,7 @@ export function MetricDetails({
                 stopFilteringAndSorting={stopFilteringAndSorting}
                 url={metricUrl}
             />
-        </>
+        </Stack>
     )
 }
 MetricDetails.propTypes = {
@@ -235,5 +216,4 @@ MetricDetails.propTypes = {
     report: reportPropType,
     stopFilteringAndSorting: func,
     subject_uuid: string,
-    expandedItems: stringsURLSearchQueryPropType,
 }

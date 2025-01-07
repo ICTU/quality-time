@@ -10,7 +10,7 @@ import { ReportsOverviewTitle } from "./ReportsOverviewTitle"
 jest.mock("../api/fetch_server_api.js")
 
 beforeEach(() => {
-    history.push("?expanded=reports_overview:0")
+    history.push("?expanded=reports_overview")
 })
 
 function renderReportsOverviewTitle() {
@@ -52,7 +52,7 @@ it("sets the edit report permission", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderReportsOverviewTitle()
     fireEvent.click(screen.getByText(/Permissions/))
-    await userEvent.type(screen.getAllByText(/All authenticated users/)[0], "jadoe{Enter}")
+    await userEvent.type(screen.getByLabelText(/Users allowed to edit reports/), "jadoe{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
         "post",
         "reports_overview/attribute/permissions",
@@ -64,7 +64,7 @@ it("sets the edit entities permission", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderReportsOverviewTitle()
     fireEvent.click(screen.getByText(/Permissions/))
-    await userEvent.type(screen.getAllByText(/All authenticated users/)[1], "jodoe{Enter}")
+    await userEvent.type(screen.getByLabelText(/Users allowed to edit measured entities/), "jodoe{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
         "post",
         "reports_overview/attribute/permissions",

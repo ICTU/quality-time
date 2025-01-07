@@ -1,6 +1,8 @@
+import { ThemeProvider } from "@mui/material/styles"
 import { queryAllByRole, queryAllByText, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
+import { theme } from "../theme"
 import { MetricSummaryCard } from "./MetricSummaryCard"
 
 function renderBarChart(maxY, red) {
@@ -8,7 +10,11 @@ function renderBarChart(maxY, red) {
         "2023-01-02": { blue: 0, red: red, green: 0, yellow: 0, white: 0, grey: 0 },
         "2023-01-01": { blue: 0, red: red, green: 0, yellow: 0, white: 0, grey: 0 },
     }
-    return render(<MetricSummaryCard maxY={maxY} summary={summary} />)
+    return render(
+        <ThemeProvider theme={theme}>
+            <MetricSummaryCard maxY={maxY} summary={summary} />
+        </ThemeProvider>,
+    )
 }
 
 const dateString = new Date("2023-01-02").toLocaleDateString()

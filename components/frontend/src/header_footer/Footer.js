@@ -1,5 +1,3 @@
-import "./Footer.css"
-
 import BugReportIcon from "@mui/icons-material/BugReport"
 import CopyrightIcon from "@mui/icons-material/Copyright"
 import FeedbackIcon from "@mui/icons-material/Feedback"
@@ -9,6 +7,8 @@ import MenuBookIcon from "@mui/icons-material/MenuBook"
 import PersonIcon from "@mui/icons-material/Person"
 import ScienceIcon from "@mui/icons-material/Science"
 import {
+    AppBar,
+    Box,
     Container,
     Divider,
     List,
@@ -19,13 +19,15 @@ import {
     Stack,
     Typography,
 } from "@mui/material"
+import { grey } from "@mui/material/colors"
+import Grid from "@mui/material/Grid2"
 import { element, object, oneOfType, string } from "prop-types"
 
 import { alignmentPropType, childrenPropType, datePropType, reportPropType } from "../sharedPropTypes"
 import { DOCUMENTATION_URL, REPOSITORY_URL } from "../utils"
 
 function FooterItem({ children, icon, url }) {
-    const color = "silver"
+    const color = grey[300]
     let item = <ListItemText sx={{ color: color, textAlign: icon ? "left" : "center" }}>{children}</ListItemText>
     if (icon) {
         item = (
@@ -145,24 +147,26 @@ function QuoteColumn() {
 
 export function Footer({ lastUpdate, report }) {
     return (
-        <Container maxWidth="100%" sx={{ bgcolor: "black", displayPrint: "none", marginTop: "20px", padding: "60px" }}>
-            <Container maxWidth="lg">
-                <Stack
-                    direction="row"
-                    sx={{
-                        alignItems: "top",
-                        justifyContent: "space-evenly",
-                    }}
-                >
-                    <AboutAppColumn />
-                    {report ? <AboutReportColumn lastUpdate={lastUpdate} report={report} /> : <QuoteColumn />}
-                    <SupportColumn />
-                </Stack>
+        <AppBar position="relative" sx={{ displayPrint: "none" }}>
+            <Container maxWidth="md" sx={{ padding: "60px" }}>
+                <Grid container spacing={2} columns={{ xs: 1, sm: 3 }}>
+                    <Grid size={1}>
+                        <AboutAppColumn />
+                    </Grid>
+                    <Grid size={1}>
+                        {report ? <AboutReportColumn lastUpdate={lastUpdate} report={report} /> : <QuoteColumn />}
+                    </Grid>
+                    <Grid size={1}>
+                        <Box display="flex" justifyContent="flex-end">
+                            <SupportColumn />
+                        </Box>
+                    </Grid>
+                </Grid>
                 <Divider aria-hidden="true">
                     <img alt="" src="./favicon.ico" width="30px" />
                 </Divider>
             </Container>
-        </Container>
+        </AppBar>
     )
 }
 Footer.propTypes = {

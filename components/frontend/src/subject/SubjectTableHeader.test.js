@@ -1,7 +1,7 @@
+import { Table } from "@mui/material"
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
-import { Table } from "semantic-ui-react"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import { SubjectTableHeader } from "./SubjectTableHeader"
@@ -81,5 +81,15 @@ it("shows help for column headers", async () => {
     await userEvent.hover(screen.getByText("Metric"))
     await waitFor(() => {
         expect(screen.queryByText(/Click the column header to sort the metrics by name/)).not.toBe(null)
+    })
+})
+
+it("shows help for delta column headers", async () => {
+    const date1 = new Date("2022-02-02")
+    const date2 = new Date("2022-02-03")
+    renderSubjectTableHeader([date1, date2])
+    await userEvent.hover(screen.getByText(/𝚫/))
+    await waitFor(() => {
+        expect(screen.queryByText(/shows the difference/)).not.toBe(null)
     })
 })

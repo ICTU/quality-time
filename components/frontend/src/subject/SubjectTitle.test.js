@@ -9,7 +9,7 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { SubjectTitle } from "./SubjectTitle"
 
 beforeEach(() => {
-    history.push("?expanded=subject_uuid:0")
+    history.push("?expanded=subject_uuid")
 })
 
 const dataModel = {
@@ -53,17 +53,12 @@ async function renderSubjectTitle(subject_type = "subject_type") {
 it("changes the subject type", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     await renderSubjectTitle()
-    await userEvent.click(screen.getAllByText(/Default subject type/)[1])
+    fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
+    //await userEvent.click(screen.getAllByText(/Default subject type/)[1])
     await userEvent.click(screen.getByText(/Other subject type/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/type", {
         type: "subject_type2",
     })
-})
-
-it("deals with unknown subject types", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
-    await renderSubjectTitle("unknown_subject_type")
-    expect(screen.getAllByText("Unknown subject type").length).toBe(2)
 })
 
 it("changes the subject title", async () => {

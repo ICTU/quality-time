@@ -1,7 +1,7 @@
+import { Chip, TableCell, TableRow } from "@mui/material"
 import { bool, func } from "prop-types"
 
-import { STATUS_COLORS, STATUS_NAME, STATUSES_REQUIRING_ACTION } from "../metric/status"
-import { Label, Table } from "../semantic_ui_react_wrappers"
+import { STATUS_NAME, STATUSES_REQUIRING_ACTION } from "../metric/status"
 import { reportsPropType } from "../sharedPropTypes"
 import { getMetricStatus, sum } from "../utils"
 import { FilterCardWithTable } from "./FilterCardWithTable"
@@ -30,26 +30,22 @@ metricStatuses.propTypes = {
 function tableRows(reports) {
     const statuses = metricStatuses(reports)
     const rows = Object.keys(statuses).map((status) => (
-        <Table.Row key={status}>
-            <Table.Cell>{STATUS_NAME[status]}</Table.Cell>
-            <Table.Cell textAlign="right">
-                <Label size="small" color={STATUS_COLORS[status] === "white" ? null : STATUS_COLORS[status]}>
-                    {statuses[status]}
-                </Label>
-            </Table.Cell>
-        </Table.Row>
+        <TableRow key={status}>
+            <TableCell sx={{ fontSize: "12px", paddingLeft: "0px" }}>{STATUS_NAME[status]}</TableCell>
+            <TableCell sx={{ paddingRight: "0px", textAlign: "right" }}>
+                <Chip color={status} label={statuses[status]} size="small" sx={{ borderRadius: 1 }} />
+            </TableCell>
+        </TableRow>
     ))
     rows.push(
-        <Table.Row key="total">
-            <Table.Cell>
+        <TableRow key="total">
+            <TableCell sx={{ fontSize: "12px", paddingLeft: "0px" }}>
                 <b>Total</b>
-            </Table.Cell>
-            <Table.Cell textAlign="right">
-                <Label size="small" color="black">
-                    {sum(Object.values(statuses))}
-                </Label>
-            </Table.Cell>
-        </Table.Row>,
+            </TableCell>
+            <TableCell sx={{ paddingRight: "0px", textAlign: "right" }}>
+                <Chip color="total" label={sum(Object.values(statuses))} size="small" sx={{ borderRadius: 1 }} />
+            </TableCell>
+        </TableRow>,
     )
     return rows
 }

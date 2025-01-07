@@ -186,6 +186,8 @@ export const metricPropType = shape({
     tags: stringsPropType,
 })
 
+export const targetType = oneOf(["debt_target", "near_target", "target"])
+
 export const metricsPropType = arrayOf(metricPropType)
 
 export const metricTypePropType = shape({

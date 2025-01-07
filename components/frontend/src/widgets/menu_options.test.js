@@ -8,8 +8,8 @@ it("contains the reports", () => {
             { report_uuid: "report2", title: "A" },
         ]),
     ).toStrictEqual([
-        { key: "report2", text: "A", value: "report2" },
-        { key: "report1", text: "B", value: "report1" },
+        { content: "A", key: "report2", text: "A", value: "report2" },
+        { content: "B", key: "report1", text: "B", value: "report1" },
     ])
 })
 

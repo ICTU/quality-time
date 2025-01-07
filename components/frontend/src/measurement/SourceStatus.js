@@ -1,10 +1,11 @@
+import { Tooltip, Typography } from "@mui/material"
 import { useContext } from "react"
 
 import { DataModel } from "../context/DataModel"
-import { Label, Popup } from "../semantic_ui_react_wrappers"
 import { measurementSourcePropType, metricPropType } from "../sharedPropTypes"
 import { getMetricName, getSourceName } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
+import { Label } from "../widgets/Label"
 
 export function SourceStatus({ metric, measurement_source }) {
     const dataModel = useContext(DataModel)
@@ -36,13 +37,18 @@ export function SourceStatus({ metric, measurement_source }) {
             header = "Parse error"
         }
         return (
-            <Popup
-                content={content}
-                flowing
-                header={header}
-                hoverable
-                trigger={<Label color="red">{source_label()}</Label>}
-            />
+            <Tooltip
+                title={
+                    <>
+                        <Typography>{header}</Typography>
+                        {content}
+                    </>
+                }
+            >
+                <span>
+                    <Label color="error">{source_label()}</Label>
+                </span>
+            </Tooltip>
         )
     } else {
         return source_label()

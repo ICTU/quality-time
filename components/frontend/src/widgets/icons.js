@@ -42,7 +42,7 @@ export function DeleteItemIcon() {
 }
 
 export function IgnoreIcon() {
-    return <VisibilityOffIcon fontSize="inherit" sx={{ verticalAlign: "middle" }} />
+    return <VisibilityOffIcon className="hide icon" fontSize="inherit" sx={{ verticalAlign: "middle" }} />
 }
 
 export function MoveItemIcon() {

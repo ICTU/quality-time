@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 
@@ -13,14 +13,13 @@ jest.mock("../api/changelog.js")
 jest.mock("../api/report.js")
 
 beforeEach(() => {
-    history.push("?expanded=report_uuid:0")
+    history.push("?expanded=report_uuid")
+    jest.resetAllMocks()
 })
 
 report_api.get_report_issue_tracker_options.mockImplementation(() =>
     Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
 )
-
-changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }))
 
 const reload = jest.fn
 
@@ -41,7 +40,6 @@ function renderReportTitle() {
 it("deletes the report", async () => {
     report_api.delete_report = jest.fn().mockResolvedValue({ ok: true })
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await act(async () => {
         fireEvent.click(screen.getByText(/Delete report/))
     })
@@ -50,7 +48,6 @@ it("deletes the report", async () => {
 
 it("sets the title", async () => {
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await userEvent.type(screen.getByLabelText(/Report title/), "New title{Enter}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 12,
@@ -60,7 +57,6 @@ it("sets the title", async () => {
 
 it("sets the subtitle", async () => {
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await userEvent.type(screen.getByLabelText(/Report subtitle/), "New subtitle{Enter}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 12,
@@ -70,7 +66,6 @@ it("sets the subtitle", async () => {
 
 it("sets the comment", async () => {
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await userEvent.type(screen.getByLabelText(/Comment/), "New comment{Shift>}{Enter}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 8,
@@ -80,11 +75,13 @@ it("sets the comment", async () => {
 
 it("sets the unknown status reaction time", async () => {
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await act(async () => {
-        fireEvent.click(screen.getByText(/reaction times/))
+        fireEvent.click(screen.getByRole("tab", { name: /reaction times/ }))
     })
-    await userEvent.type(screen.getByLabelText(/Unknown/), "4{Enter}}", {
+    await act(async () => {
+        fireEvent.click(screen.getByLabelText("Unknown"))
+    })
+    await userEvent.type(screen.getByLabelText("Unknown"), "4{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 1,
     })
@@ -98,11 +95,10 @@ it("sets the unknown status reaction time", async () => {
 
 it("sets the target not met status reaction time", async () => {
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/Target not met/), "5{Enter}}", {
+    await userEvent.type(screen.getByLabelText("Target not met"), "5{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 1,
     })
@@ -116,11 +112,10 @@ it("sets the target not met status reaction time", async () => {
 
 it("sets the near target met status reaction time", async () => {
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/Near target met/), "6{Enter}}", {
+    await userEvent.type(screen.getByLabelText("Near target met"), "6{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 2,
     })
@@ -134,7 +129,6 @@ it("sets the near target met status reaction time", async () => {
 
 it("sets the tech debt target status reaction time", async () => {
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
@@ -152,11 +146,10 @@ it("sets the tech debt target status reaction time", async () => {
 
 it("sets the confirmed measurement entity status reaction time", async () => {
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/Confirmed/), "60{Enter}}", {
+    await userEvent.type(screen.getByLabelText("Confirmed"), "60{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
@@ -170,11 +163,10 @@ it("sets the confirmed measurement entity status reaction time", async () => {
 
 it("sets the false positive measurement entity status reaction time", async () => {
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/False positive/), "70{Enter}}", {
+    await userEvent.type(screen.getByLabelText("False positive"), "70{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
@@ -188,11 +180,10 @@ it("sets the false positive measurement entity status reaction time", async () =
 
 it("sets the fixed measurement entity status reaction time", async () => {
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/Fixed/), "80{Enter}}", {
+    await userEvent.type(screen.getByLabelText("Fixed"), "80{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
@@ -206,11 +197,10 @@ it("sets the fixed measurement entity status reaction time", async () => {
 
 it("sets the won't fixed measurement entity status reaction time", async () => {
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await act(async () => {
         fireEvent.click(screen.getByText(/reaction times/))
     })
-    await userEvent.type(screen.getByLabelText(/Won't fix/), "90{Enter}}", {
+    await userEvent.type(screen.getByLabelText("Won't fix"), "90{Enter}}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
@@ -223,13 +213,14 @@ it("sets the won't fixed measurement entity status reaction time", async () => {
 })
 
 it("sets the issue tracker type", async () => {
+    report_api.get_report_issue_tracker_options.mockImplementation(() =>
+        Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
+    )
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     fireEvent.click(screen.getByText(/Issue tracker/))
-    fireEvent.click(screen.getByText(/Issue tracker type/))
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Jira/))
-    })
+    fireEvent.mouseDown(screen.getByLabelText(/Issue tracker type/))
+    const listbox = within(screen.getByRole("listbox"))
+    await act(async () => fireEvent.click(listbox.getByText(/Jira/)))
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "type",
@@ -239,10 +230,12 @@ it("sets the issue tracker type", async () => {
 })
 
 it("sets the issue tracker url", async () => {
+    report_api.get_report_issue_tracker_options.mockImplementation(() =>
+        Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
+    )
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     fireEvent.click(screen.getByText(/Issue tracker/))
-    await userEvent.type(screen.getByText(/URL/), "https://jira{Enter}")
+    await userEvent.type(screen.getByLabelText(/URL/), "https://jira{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "url",
@@ -252,10 +245,12 @@ it("sets the issue tracker url", async () => {
 })
 
 it("sets the issue tracker username", async () => {
+    report_api.get_report_issue_tracker_options.mockImplementation(() =>
+        Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
+    )
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     fireEvent.click(screen.getByText(/Issue tracker/))
-    await userEvent.type(screen.getByText(/Username/), "janedoe{Enter}")
+    await userEvent.type(screen.getByLabelText(/Username/), "janedoe{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "username",
@@ -265,10 +260,12 @@ it("sets the issue tracker username", async () => {
 })
 
 it("sets the issue tracker password", async () => {
+    report_api.get_report_issue_tracker_options.mockImplementation(() =>
+        Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
+    )
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     fireEvent.click(screen.getByText(/Issue tracker/))
-    await userEvent.type(screen.getByText(/Password/), "secret{Enter}")
+    await userEvent.type(screen.getByLabelText(/Password/), "secret{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "password",
@@ -278,10 +275,12 @@ it("sets the issue tracker password", async () => {
 })
 
 it("sets the issue tracker private token", async () => {
+    report_api.get_report_issue_tracker_options.mockImplementation(() =>
+        Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
+    )
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     fireEvent.click(screen.getByText(/Issue tracker/))
-    await userEvent.type(screen.getByText(/Private token/), "secret{Enter}")
+    await userEvent.type(screen.getByLabelText(/Private token/), "secret{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "private_token",
@@ -291,8 +290,8 @@ it("sets the issue tracker private token", async () => {
 })
 
 it("loads the changelog", async () => {
+    changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }))
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     await act(async () => {
         fireEvent.click(screen.getByText(/Changelog/))
     })
@@ -301,7 +300,6 @@ it("loads the changelog", async () => {
 
 it("shows the notification destinations", () => {
     renderReportTitle()
-    fireEvent.click(screen.getByTitle(/expand/))
     fireEvent.click(screen.getByText(/Notifications/))
     expect(screen.getAllByText(/No notification destinations/).length).toBe(2)
 })

@@ -1,14 +1,16 @@
+import { MenuItem } from "@mui/material"
+import Grid from "@mui/material/Grid2"
+import { DatePicker } from "@mui/x-date-pickers"
+import dayjs from "dayjs"
 import { func, node, oneOf, string } from "prop-types"
-import { Grid, Header } from "semantic-ui-react"
+import { useContext } from "react"
 
 import { set_source_entity_attribute } from "../api/source"
-import { EDIT_ENTITY_PERMISSION } from "../context/Permissions"
-import { DateInput } from "../fields/DateInput"
-import { SingleChoiceInput } from "../fields/SingleChoiceInput"
-import { TextInput } from "../fields/TextInput"
+import { accessGranted, EDIT_ENTITY_PERMISSION, Permissions } from "../context/Permissions"
+import { TextField } from "../fields/TextField"
 import { entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
 import { capitalize, getDesiredResponseTime } from "../utils"
-import { LabelWithDate } from "../widgets/LabelWithDate"
+import { Header } from "../widgets/Header"
 import { SOURCE_ENTITY_STATUS_ACTION, SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
 
 function entityStatusOption(status, subheader) {
@@ -16,7 +18,7 @@ function entityStatusOption(status, subheader) {
         key: status,
         text: SOURCE_ENTITY_STATUS_NAME[status],
         value: status,
-        content: <Header as="h5" content={SOURCE_ENTITY_STATUS_ACTION[status]} subheader={subheader} />,
+        content: <Header level="h4" header={SOURCE_ENTITY_STATUS_ACTION[status]} subheader={subheader} />,
     }
 }
 entityStatusOption.propTypes = {
@@ -76,66 +78,65 @@ export function SourceEntityDetails({
     status_end_date,
     source_uuid,
 }) {
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_ENTITY_PERMISSION])
     return (
-        <Grid stackable>
-            <Grid.Row>
-                <Grid.Column width={4}>
-                    <SingleChoiceInput
-                        requiredPermissions={[EDIT_ENTITY_PERMISSION]}
-                        label={`${capitalize(name)} status`}
-                        options={entityStatusOptions(name, report)}
-                        set_value={(value) =>
-                            set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "status", value, reload)
-                        }
-                        value={status}
-                        sort={false}
-                    />
-                </Grid.Column>
-                <Grid.Column width={4}>
-                    <DateInput
-                        requiredPermissions={[EDIT_ENTITY_PERMISSION]}
-                        label={
-                            <LabelWithDate
-                                date={status_end_date}
-                                labelId={entity.key}
-                                label={`${capitalize(name)} status end date`}
-                                help={`Consider the status of this ${name} to be 'Unconfirmed' after the selected date.`}
-                            />
-                        }
-                        placeholder="YYYY-MM-DD"
-                        set_value={(value) =>
-                            set_source_entity_attribute(
-                                metric_uuid,
-                                source_uuid,
-                                entity.key,
-                                "status_end_date",
-                                value,
-                                reload,
-                            )
-                        }
-                        value={status_end_date}
-                    />
-                </Grid.Column>
-                <Grid.Column width={8}>
-                    <TextInput
-                        requiredPermissions={[EDIT_ENTITY_PERMISSION]}
-                        label={`${capitalize(name)} status rationale`}
-                        placeholder={`Rationale for the ${name} status...`}
-                        rows={Math.min(5, rationale?.split("\n").length ?? 1)}
-                        set_value={(value) =>
-                            set_source_entity_attribute(
-                                metric_uuid,
-                                source_uuid,
-                                entity.key,
-                                "rationale",
-                                value,
-                                reload,
-                            )
-                        }
-                        value={rationale}
-                    />
-                </Grid.Column>
-            </Grid.Row>
+        <Grid container spacing={{ xs: 1, sm: 2, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{ margin: "10px" }}>
+            <Grid size={{ xs: 1, sm: 2, md: 3 }}>
+                <TextField
+                    disabled={disabled}
+                    label={`${capitalize(name)} status`}
+                    onChange={(value) =>
+                        set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "status", value, reload)
+                    }
+                    select
+                    value={status}
+                >
+                    {entityStatusOptions(name, report).map((option) => (
+                        <MenuItem key={option.key} value={option.value}>
+                            {option.content}
+                        </MenuItem>
+                    ))}
+                </TextField>
+            </Grid>
+            <Grid size={{ xs: 1, sm: 2, md: 3 }}>
+                <DatePicker
+                    defaultValue={status_end_date ? dayjs(status_end_date) : null}
+                    disabled={disabled}
+                    format="YYYY-MM-DD"
+                    label={`${capitalize(name)} status end date`}
+                    onChange={(value) =>
+                        set_source_entity_attribute(
+                            metric_uuid,
+                            source_uuid,
+                            entity.key,
+                            "status_end_date",
+                            value,
+                            reload,
+                        )
+                    }
+                    slotProps={{
+                        field: { clearable: true },
+                        textField: {
+                            helperText: `Consider the status of this ${name} to be 'Unconfirmed' after the selected date.`,
+                        },
+                    }}
+                    sx={{ width: "100%" }}
+                    timezone="default"
+                />
+            </Grid>
+            <Grid size={{ xs: 2, sm: 4, md: 6 }}>
+                <TextField
+                    disabled={disabled}
+                    id={`${entity.key}-rationale`}
+                    label={`${capitalize(name)} status rationale`}
+                    multiline
+                    onChange={(value) =>
+                        set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "rationale", value, reload)
+                    }
+                    value={rationale}
+                />
+            </Grid>
         </Grid>
     )
 }

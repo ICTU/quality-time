@@ -1,8 +1,6 @@
-import "./SourceEntity.css"
-
+import { TableCell } from "@mui/material"
 import { bool, func, string } from "prop-types"
 import { useState } from "react"
-import { Table } from "semantic-ui-react"
 
 import { entityAttributesPropType, entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
 import { DivWithHTML } from "../widgets/DivWithHTML"
@@ -71,28 +69,30 @@ export function SourceEntity({
     return (
         <TableRowWithDetails
             className={statusClassName}
+            color={statusClassName}
             details={details}
-            key={entity.key}
             expanded={expanded}
+            id={entity.key}
+            key={entity.key}
             onExpand={setExpanded}
             style={{ maxHeight: "100px", overflow: "auto" }}
         >
-            <Table.Cell style={style}>{SOURCE_ENTITY_STATUS_NAME[status]}</Table.Cell>
-            <Table.Cell style={style}>{status === "unconfirmed" ? "" : status_end_date}</Table.Cell>
-            <Table.Cell style={style}>
+            <TableCell sx={style}>{SOURCE_ENTITY_STATUS_NAME[status]}</TableCell>
+            <TableCell sx={style}>{status === "unconfirmed" ? "" : status_end_date}</TableCell>
+            <TableCell sx={style}>
                 <DivWithHTML>{rationale}</DivWithHTML>
-            </Table.Cell>
-            <Table.Cell style={style}>
+            </TableCell>
+            <TableCell sx={style}>
                 {entity.first_seen ? <TimeAgoWithDate dateFirst date={entity.first_seen} /> : ""}
-            </Table.Cell>
+            </TableCell>
             {entity_attributes.map((entity_attribute) => (
-                <Table.Cell
+                <TableCell
+                    align={alignment(entity_attribute.type, entity_attribute.alignment)}
                     key={entity_attribute.key}
-                    style={style}
-                    textAlign={alignment(entity_attribute.type, entity_attribute.alignment)}
+                    sx={style}
                 >
                     <SourceEntityAttribute entity={entity} entityAttribute={entity_attribute} />
-                </Table.Cell>
+                </TableCell>
             ))}
         </TableRowWithDetails>
     )

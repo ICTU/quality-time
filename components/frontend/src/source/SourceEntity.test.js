@@ -1,5 +1,8 @@
+import { Table, TableBody } from "@mui/material"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { fireEvent, render, screen } from "@testing-library/react"
-import { Table } from "semantic-ui-react"
+import { locale_en_gb } from "dayjs/locale/en-gb"
 
 import { SourceEntity } from "./SourceEntity"
 
@@ -11,27 +14,29 @@ function renderSourceEntity({
     first_seen = null,
 }) {
     return render(
-        <Table>
-            <Table.Body>
-                <SourceEntity
-                    entity={{ attr1: "good", attr2: "bad", first_seen: first_seen }}
-                    entity_attributes={[{ key: "attr1" }, { key: "attr2", color: { bad: "warning" } }]}
-                    entity_name="entity"
-                    hide_ignored_entities={hide_ignored_entities}
-                    rationale={rationale}
-                    status={status}
-                    status_end_date={status_end_date}
-                />
-            </Table.Body>
-        </Table>,
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale_en_gb}>
+            <Table>
+                <TableBody>
+                    <SourceEntity
+                        entity={{ attr1: "good", attr2: "bad", first_seen: first_seen }}
+                        entity_attributes={[{ key: "attr1" }, { key: "attr2", color: { bad: "warning" } }]}
+                        entity_name="entity"
+                        hide_ignored_entities={hide_ignored_entities}
+                        rationale={rationale}
+                        status={status}
+                        status_end_date={status_end_date}
+                    />
+                </TableBody>
+            </Table>
+        </LocalizationProvider>,
     )
 }
 
 it("renders the unconfirmed status", () => {
     renderSourceEntity({})
     fireEvent.click(screen.getByRole("button"))
-    expect(screen.getAllByText(/Unconfirmed/).length).toBe(1)
-    expect(screen.getByText(/Unconfirmed/).closest("tr").className).toContain("warning_status")
+    expect(screen.getAllByText(/Unconfirmed/).length).toBe(2)
+    expect(screen.getAllByText(/Unconfirmed/)[0].closest("tr").className).toContain("warning_status")
 })
 
 it("renders the fixed status", () => {

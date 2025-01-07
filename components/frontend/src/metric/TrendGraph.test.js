@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react"
 
-import { DarkMode } from "../context/DarkMode"
 import { DataModel } from "../context/DataModel"
 import { TrendGraph } from "./TrendGraph"
 
@@ -11,31 +10,17 @@ const dataModel = {
     },
 }
 
-function renderTrendgraph({ measurements = [], darkMode = false, scale = "count", loading = "loaded" } = {}) {
+function renderTrendgraph({ measurements = [], scale = "count", loading = "loaded" } = {}) {
     return render(
-        <DarkMode.Provider value={darkMode}>
-            <DataModel.Provider value={dataModel}>
-                <TrendGraph
-                    metric={{ type: "violations", scale: scale }}
-                    measurements={measurements}
-                    loading={loading}
-                />
-            </DataModel.Provider>
-        </DarkMode.Provider>,
+        <DataModel.Provider value={dataModel}>
+            <TrendGraph metric={{ type: "violations", scale: scale }} measurements={measurements} loading={loading} />
+        </DataModel.Provider>,
     )
 }
 
 it("renders the measurements", () => {
     renderTrendgraph({
         measurements: [{ count: { value: "1" }, start: "2019-09-29", end: "2019-09-30" }],
-    })
-    expect(screen.getAllByText(/Time/).length).toBe(1)
-})
-
-it("renders the measurements in dark mode", () => {
-    renderTrendgraph({
-        measurements: [{ count: { value: "1" }, start: "2019-09-29", end: "2019-09-30" }],
-        darkMode: true,
     })
     expect(screen.getAllByText(/Time/).length).toBe(1)
 })

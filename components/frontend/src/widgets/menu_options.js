@@ -31,7 +31,7 @@ export function metric_options(reports, dataModel, current_subject_type, current
 export function report_options(reports) {
     let options = []
     reports.forEach((report) => {
-        options.push({ key: report.report_uuid, text: report.title, value: report.report_uuid })
+        options.push({ key: report.report_uuid, content: report.title, text: report.title, value: report.report_uuid })
     })
     options.sort((a, b) => a.text.localeCompare(b.text))
     return options

@@ -106,7 +106,7 @@ it("creates a new source", async () => {
         fireEvent.click(screen.getByText(/Add source/))
     })
     await act(async () => {
-        fireEvent.click(screen.getAllByText(/Source type 2/)[1])
+        fireEvent.click(screen.getByText(/Source type 2/))
     })
     expect(fetch_server_api.fetch_server_api).toHaveBeenNthCalledWith(1, "post", "source/new/metric_uuid", {
         type: "source_type2",
@@ -168,10 +168,9 @@ it("updates a parameter of a source", async () => {
 it("mass updates a parameter of a source", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 })
     renderSources()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Apply change to subject/))
-    })
-    expect(screen.getAllByText(/Apply change to subject/).length).toBe(2)
+    fireEvent.click(screen.getByLabelText(/Edit scope/))
+    fireEvent.click(screen.getByText(/Apply change to subject/))
+    expect(screen.getAllByText(/Apply change to subject/).length).toBe(1)
     await userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), "https://other{Enter}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 15,
@@ -185,5 +184,4 @@ it("mass updates a parameter of a source", async () => {
         url: "https://other",
     })
     expect(toast.showMessage).toHaveBeenCalledTimes(1)
-    expect(screen.getAllByText(/Apply change to subject/).length).toBe(1)
 })

@@ -53,7 +53,7 @@ it("creates a new notification destination when the add notification destination
 it("edits notification destination name attribute when it is changed in the input field", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderNotificationDestinations(notification_destinations)
-    await userEvent.type(screen.getByLabelText(/Name/), " changed{Enter}")
+    await userEvent.type(screen.getByLabelText(/Webhook name/), " changed{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
         "post",
         "report/report_uuid/notification_destination/destination_uuid1/attributes",

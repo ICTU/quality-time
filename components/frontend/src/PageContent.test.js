@@ -63,7 +63,7 @@ it("shows that the report was missing", async () => {
 
 it("shows the loading spinner", async () => {
     await renderPageContent({ loading: true })
-    expect(screen.getAllByLabelText(/Loading/).length).toBe(1)
+    expect(screen.getAllByRole("progressbar").length).toBe(1)
 })
 
 function expectMeasurementsCall(date, offset = 0) {
@@ -113,7 +113,7 @@ it("fails to load measurements", async () => {
     await renderPageContent()
     expect(react_toastify.toast.mock.calls[0][0]).toStrictEqual(
         <div>
-            <h4>Could not fetch measurements</h4>
+            <b>Could not fetch measurements</b>
             <p>Error description</p>
         </div>,
     )

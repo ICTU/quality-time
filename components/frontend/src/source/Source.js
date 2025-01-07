@@ -1,14 +1,14 @@
+import HistoryIcon from "@mui/icons-material/History"
+import SettingsIcon from "@mui/icons-material/Settings"
+import Grid from "@mui/material/Grid2"
 import { bool, func, object, oneOfType, string } from "prop-types"
 import { useContext } from "react"
-import { Grid } from "semantic-ui-react"
 
 import { delete_source, set_source_attribute } from "../api/source"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { ErrorMessage } from "../errorMessage"
-import { StringInput } from "../fields/StringInput"
-import { Tab } from "../semantic_ui_react_wrappers"
+import { accessGranted, EDIT_REPORT_PERMISSION, Permissions, ReadOnlyOrEditable } from "../context/Permissions"
+import { TextField } from "../fields/TextField"
 import {
     measurementSourcePropType,
     metricPropType,
@@ -20,11 +20,11 @@ import { getMetricName, getSourceName, referenceDocumentationURL } from "../util
 import { ButtonRow } from "../widgets/ButtonRow"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { ReorderButtonGroup } from "../widgets/buttons/ReorderButtonGroup"
+import { ErrorMessage } from "../widgets/ErrorMessage"
 import { HyperLink } from "../widgets/HyperLink"
-import { changelogTabPane, configurationTabPane } from "../widgets/TabPane"
+import { Tabs } from "../widgets/Tabs"
 import { SourceParameters } from "./SourceParameters"
 import { SourceType } from "./SourceType"
-import { SourceTypeHeader } from "./SourceTypeHeader"
 
 function select_sources_parameter_keys(changed_fields, source_uuid) {
     return changed_fields
@@ -38,7 +38,7 @@ function SourceButtonRow({ first_source, last_source, reload, source_uuid }) {
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <ButtonRow rightButton={deleteButton}>
+                <ButtonRow paddingBottom={1} paddingLeft={0} paddingRight={0} paddingTop={2} rightButton={deleteButton}>
                     <ReorderButtonGroup
                         first={first_source}
                         last={last_source}
@@ -71,41 +71,39 @@ function Parameters({
     source_uuid,
 }) {
     const dataModel = useContext(DataModel)
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const source_type = dataModel.sources[source.type]
     return (
-        <Grid stackable>
-            <Grid.Row columns={2}>
-                <Grid.Column>
-                    <SourceType
-                        metric_type={metric.type}
-                        set_source_attribute={(a, v) => set_source_attribute(source_uuid, a, v, reload)}
-                        source_uuid={source_uuid}
-                        source_type={source.type}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <StringInput
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        id="source-name"
-                        label="Source name"
-                        placeholder={source_type.name}
-                        set_value={(value) => set_source_attribute(source_uuid, "name", value, reload)}
-                        value={source.name}
-                    />
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row columns={1}>
-                <Grid.Column>
-                    <SourceParameters
-                        changed_param_keys={select_sources_parameter_keys(changed_fields, source_uuid)}
-                        metric={metric}
-                        reload={reload}
-                        report={report}
-                        source={source}
-                        source_uuid={source_uuid}
-                    />
-                </Grid.Column>
-            </Grid.Row>
+        <Grid container alignItems="flex-start" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 2, md: 2 }}>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <SourceType
+                    metric_type={metric.type}
+                    set_source_attribute={(a, v) => set_source_attribute(source_uuid, a, v, reload)}
+                    source_uuid={source_uuid}
+                    source_type={source.type}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <TextField
+                    disabled={disabled}
+                    id="source-name"
+                    label="Source name"
+                    placeholder={source_type.name}
+                    onChange={(value) => set_source_attribute(source_uuid, "name", value, reload)}
+                    value={source.name}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 2, md: 2 }}>
+                <SourceParameters
+                    changed_param_keys={select_sources_parameter_keys(changed_fields, source_uuid)}
+                    metric={metric}
+                    reload={reload}
+                    report={report}
+                    source={source}
+                    source_uuid={source_uuid}
+                />
+            </Grid>
             {connection_error && <ErrorMessage title="Connection error" message={connection_error} />}
             {parse_error && <ErrorMessage title="Parse error" message={parse_error} />}
             {config_error && <ErrorMessage title="Configuration error" message={config_error} formatAsText={true} />}
@@ -136,7 +134,6 @@ export function Source({
 }) {
     const dataModel = useContext(DataModel)
     const source = metric.sources[source_uuid]
-    const sourceType = dataModel.sources[source.type]
     const sourceName = getSourceName(source, dataModel)
     const metricName = getMetricName(metric, dataModel)
     const connectionError = measurement_source?.connection_error || ""
@@ -168,27 +165,28 @@ export function Source({
         </>
     )
     const configError = dataModel.metrics[metric.type].sources.includes(source.type) ? "" : configErrorMessage
-    const panes = [
-        configurationTabPane(
-            <Parameters
-                metric={metric}
-                source={source}
-                source_uuid={source_uuid}
-                connection_error={connectionError}
-                parse_error={parseError}
-                config_error={configError}
-                report={report}
-                changed_fields={changed_fields}
-                reload={reload}
-            />,
-            { error: Boolean(configError || connectionError || parseError) },
-        ),
-        changelogTabPane(<ChangeLog source_uuid={source_uuid} timestamp={report.timestamp} />),
-    ]
+    const anyError = Boolean(configError || connectionError || parseError)
     return (
         <>
-            <SourceTypeHeader metricTypeId={metric.type} sourceTypeId={source.type} sourceType={sourceType} />
-            <Tab panes={panes} />
+            <Tabs
+                tabs={[
+                    { error: anyError, label: "Configuration", icon: <SettingsIcon /> },
+                    { label: "Changelog", icon: <HistoryIcon /> },
+                ]}
+            >
+                <Parameters
+                    metric={metric}
+                    source={source}
+                    source_uuid={source_uuid}
+                    connection_error={connectionError}
+                    parse_error={parseError}
+                    config_error={configError}
+                    report={report}
+                    changed_fields={changed_fields}
+                    reload={reload}
+                />
+                <ChangeLog source_uuid={source_uuid} timestamp={report.timestamp} />
+            </Tabs>
             <SourceButtonRow
                 first_source={first_source}
                 last_source={last_source}

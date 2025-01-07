@@ -1,46 +1,34 @@
+import { MenuItem } from "@mui/material"
+import Grid from "@mui/material/Grid2"
+import { DatePicker } from "@mui/x-date-pickers/DatePicker"
+import dayjs from "dayjs"
 import { func, string } from "prop-types"
-import { Grid } from "semantic-ui-react"
+import { useContext } from "react"
+import TimeAgo from "react-timeago"
 
 import { set_metric_attribute, set_metric_debt } from "../api/metric"
-import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
-import { Comment } from "../fields/Comment"
-import { DateInput } from "../fields/DateInput"
-import { SingleChoiceInput } from "../fields/SingleChoiceInput"
+import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { CommentField } from "../fields/CommentField"
+import { TextField } from "../fields/TextField"
 import { IssuesRows } from "../issue/IssuesRows"
 import { metricPropType, reportPropType } from "../sharedPropTypes"
-import { LabelWithDate } from "../widgets/LabelWithDate"
-import { LabelWithHyperLink } from "../widgets/LabelWithHyperLink"
+import { HyperLink } from "../widgets/HyperLink"
 import { Target } from "./Target"
 
 function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
-    const labelId = `accept-debt-label-${metric_uuid}`
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
-        <SingleChoiceInput
-            aria-labelledby={labelId}
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={
-                <LabelWithHyperLink
-                    labelId={labelId}
-                    label="Accept technical debt?"
-                    url="https://en.wikipedia.org/wiki/Technical_debt"
-                />
+        <TextField
+            disabled={disabled}
+            helperText={
+                <>
+                    Read more about{" "}
+                    <HyperLink url="https://en.wikipedia.org/wiki/Technical_debt">technical debt</HyperLink>
+                </>
             }
-            value={metric.accept_debt ? "yes" : "no"}
-            options={[
-                { key: "yes", text: "Yes", value: "yes" },
-                {
-                    key: "yes_completely",
-                    text: "Yes, and also set technical debt target and end date",
-                    value: "yes_completely",
-                },
-                { key: "no", text: "No", value: "no" },
-                {
-                    key: "no_completely",
-                    text: "No, and also clear technical debt target and end date",
-                    value: "no_completely",
-                },
-            ]}
-            set_value={(value) => {
+            label="Accept technical debt?"
+            onChange={(value) => {
                 const acceptDebt = value.startsWith("yes")
                 if (value.endsWith("completely")) {
                     set_metric_debt(metric_uuid, acceptDebt, reload)
@@ -48,7 +36,22 @@ function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
                     set_metric_attribute(metric_uuid, "accept_debt", acceptDebt, reload)
                 }
             }}
-        />
+            select
+            value={metric.accept_debt ? "yes" : "no"}
+        >
+            <MenuItem key="yes" value="yes">
+                Yes
+            </MenuItem>
+            <MenuItem key="yes_completely" value="yes_completely">
+                Yes, and also set technical debt target and end date
+            </MenuItem>
+            <MenuItem key="no" value="no">
+                No
+            </MenuItem>
+            <MenuItem key="no_completely" value="no_completely">
+                No, and also clear technical debt target and end date
+            </MenuItem>
+        </TextField>
     )
 }
 AcceptTechnicalDebt.propTypes = {
@@ -58,31 +61,24 @@ AcceptTechnicalDebt.propTypes = {
 }
 
 function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
-    const labelId = `technical-debt-end-date-label-${metric_uuid}`
-    const help = (
-        <>
-            <p>Accept technical debt until this date.</p>
-            <p>
-                After this date, or when the issues below have all been resolved, whichever happens first, the technical
-                debt should be resolved and the technical debt target is no longer evaluated.
-            </p>
-        </>
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
+    const debtEndDateTime = metric.debt_end_date ? dayjs(metric.debt_end_date) : null
+    const helperText = metric.debt_end_date ? (
+        <TimeAgo date={debtEndDateTime} />
+    ) : (
+        "Accept technical debt until this date. After this date, or when the issues below have all been resolved, whichever happens first, the technical debt should be resolved and the technical debt target is no longer evaluated."
     )
-    let debtEndDateTime = null
-    if (metric.debt_end_date) {
-        debtEndDateTime = new Date(metric.debt_end_date)
-        debtEndDateTime.setHours(23, 59, 59)
-    }
     return (
-        <DateInput
-            ariaLabelledBy={labelId}
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={
-                <LabelWithDate date={debtEndDateTime} labelId={labelId} help={help} label="Technical debt end date" />
-            }
-            placeholder="YYYY-MM-DD"
-            set_value={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
-            value={metric.debt_end_date ?? ""}
+        <DatePicker
+            defaultValue={debtEndDateTime}
+            disabled={disabled}
+            format="YYYY-MM-DD"
+            label="Technical debt end date"
+            onChange={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
+            slotProps={{ field: { clearable: true }, textField: { helperText: helperText } }}
+            sx={{ width: "100%" }}
+            timezone="default"
         />
     )
 }
@@ -94,35 +90,29 @@ TechnicalDebtEndDate.propTypes = {
 
 export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
     return (
-        <Grid stackable columns={3}>
-            <Grid.Row>
-                <Grid.Column>
-                    <AcceptTechnicalDebt metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                </Grid.Column>
-                <Grid.Column>
-                    <Target
-                        key={metric.debt_target}
-                        label="Technical debt target"
-                        labelPosition="top center"
-                        target_type="debt_target"
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <TechnicalDebtEndDate metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                </Grid.Column>
-            </Grid.Row>
+        <Grid alignItems="flex-start" container spacing={{ xs: 1, sm: 2, md: 3 }} columns={{ xs: 1, sm: 3, md: 6 }}>
+            <Grid size={{ xs: 1, sm: 1, md: 2 }}>
+                <AcceptTechnicalDebt metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 2 }}>
+                <Target
+                    key={metric.debt_target}
+                    target_type="debt_target"
+                    metric={metric}
+                    metric_uuid={metric_uuid}
+                    reload={reload}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 2 }}>
+                <TechnicalDebtEndDate metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
             <IssuesRows metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
-            <Grid.Row>
-                <Grid.Column width={16}>
-                    <Comment
-                        set_value={(value) => set_metric_attribute(metric_uuid, "comment", value, reload)}
-                        value={metric.comment}
-                    />
-                </Grid.Column>
-            </Grid.Row>
+            <Grid size={{ xs: 1, sm: 3, md: 6 }}>
+                <CommentField
+                    onChange={(value) => set_metric_attribute(metric_uuid, "comment", value, reload)}
+                    value={metric.comment}
+                />
+            </Grid>
         </Grid>
     )
 }

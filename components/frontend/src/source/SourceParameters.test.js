@@ -60,7 +60,7 @@ function renderSourceParameters({
 
 it("renders a string parameter", () => {
     renderSourceParameters({})
-    expect(screen.queryAllByText(/Parameter/).length).toBe(1)
+    expect(screen.queryAllByLabelText(/Parameter/).length).toBe(1)
 })
 
 it("renders a string parameter with placeholder", () => {
@@ -96,5 +96,5 @@ it("renders parameter groups", () => {
 
 it("renders ungrouped parameters in the group without explicitly listed parameters", () => {
     renderSourceParameters({})
-    expect(screen.queryAllByText(/Other parameter/).length).toBe(2)
+    expect(screen.queryAllByLabelText(/Other parameter/).length).toBe(1)
 })

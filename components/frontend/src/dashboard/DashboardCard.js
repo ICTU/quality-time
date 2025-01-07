@@ -4,18 +4,17 @@ import { bool, element, func, oneOfType, string } from "prop-types"
 import { childrenPropType } from "../sharedPropTypes"
 
 export function DashboardCard({ children, onClick, selected, title, titleFirst }) {
-    const color = selected ? "info.main" : null
+    const color = selected ? "info.main" : "divider"
     const header = (
         <CardHeader
             title={title}
             // The selected class is for test purposes only
-            titleTypographyProps={{ className: selected ? "selected" : "", noWrap: true, variant: "h6" }}
+            slotProps={{ title: { className: selected ? "selected" : "", noWrap: true, variant: "h6" } }}
             sx={{
-                textAlign: "center",
-                verticalAlign: "center",
                 padding: "0px",
                 paddingTop: titleFirst ? "10px" : "0px",
-                color: color,
+                textAlign: "center",
+                verticalAlign: "center",
             }}
         />
     )
@@ -24,7 +23,12 @@ export function DashboardCard({ children, onClick, selected, title, titleFirst }
         <Card
             elevation={2}
             onClick={onClick}
-            sx={{ border: 1, borderColor: color, height: "100%", "&:hover": { boxShadow: "4" } }}
+            sx={{
+                border: 1,
+                borderColor: color,
+                height: "100%",
+                "&:hover": { boxShadow: "4", borderColor: "text.primary" },
+            }}
             variant="elevation"
         >
             <CardActionArea disableRipple={!onClick} sx={{ height: "100%" }}>

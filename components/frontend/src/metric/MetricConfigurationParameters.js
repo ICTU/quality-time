@@ -1,25 +1,18 @@
+import { MenuItem, Stack, Typography } from "@mui/material"
+import Grid from "@mui/material/Grid2"
 import { func, string } from "prop-types"
 import { useContext } from "react"
-import { Grid, Header } from "semantic-ui-react"
 
 import { set_metric_attribute } from "../api/metric"
 import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
-import { MultipleChoiceInput } from "../fields/MultipleChoiceInput"
-import { SingleChoiceInput } from "../fields/SingleChoiceInput"
-import { StringInput } from "../fields/StringInput"
+import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { MultipleChoiceField } from "../fields/MultipleChoiceField"
+import { TextField } from "../fields/TextField"
 import { metricPropType, reportPropType, subjectPropType } from "../sharedPropTypes"
-import {
-    dropdownOptions,
-    formatMetricScale,
-    getMetricDirection,
-    getMetricScale,
-    getMetricTags,
-    getReportTags,
-} from "../utils"
-import { LabelWithHelp } from "../widgets/LabelWithHelp"
+import { formatMetricScale, getMetricDirection, getMetricScale, getMetricTags, getReportTags } from "../utils"
 import { MetricType } from "./MetricType"
 import { Target } from "./Target"
+import { TargetVisualiser } from "./TargetVisualiser"
 
 function metric_scale_options(metric_scales, dataModel) {
     let scale_options = []
@@ -27,7 +20,12 @@ function metric_scale_options(metric_scales, dataModel) {
         let scale_name = dataModel.scales ? dataModel.scales[scale].name : "Count"
         let scale_description = dataModel.scales ? dataModel.scales[scale].description : ""
         scale_options.push({
-            content: <Header as="h4" content={scale_name} subheader={scale_description} />,
+            content: (
+                <Stack direction="column" sx={{ whiteSpace: "normal" }}>
+                    {scale_name}
+                    <Typography variant="body2">{scale_description}</Typography>
+                </Stack>
+            ),
             key: scale,
             text: scale_name,
             value: scale,
@@ -38,16 +36,16 @@ function metric_scale_options(metric_scales, dataModel) {
 
 function MetricName({ metric, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const metricType = dataModel.metrics[metric.type]
-    const labelId = `metric-name-${metric_uuid}`
     return (
-        <StringInput
-            aria-labelledby={labelId}
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label id={labelId}>Metric name</label>}
+        <TextField
+            disabled={disabled}
+            label="Metric name"
             placeholder={metricType.name}
-            set_value={(value) => set_metric_attribute(metric_uuid, "name", value, reload)}
-            value={metric.name ?? ""}
+            onChange={(value) => set_metric_attribute(metric_uuid, "name", value, reload)}
+            value={metric.name}
         />
     )
 }
@@ -58,16 +56,16 @@ MetricName.propTypes = {
 }
 
 function Tags({ metric, metric_uuid, reload, report }) {
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const tags = getReportTags(report)
-    const labelId = `tags-${metric_uuid}`
     return (
-        <MultipleChoiceInput
-            allowAdditions
-            aria-labelledby={labelId}
-            label={<label id={labelId}>Tags</label>}
-            options={dropdownOptions(tags)}
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            set_value={(value) => set_metric_attribute(metric_uuid, "tags", value, reload)}
+        <MultipleChoiceField
+            disabled={disabled}
+            freeSolo
+            label="Metric tags"
+            options={tags}
+            onChange={(value) => set_metric_attribute(metric_uuid, "tags", value, reload)}
             value={getMetricTags(metric)}
         />
     )
@@ -81,20 +79,26 @@ Tags.propTypes = {
 
 function Scale({ metric, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const scale = getMetricScale(metric, dataModel)
     const metricType = dataModel.metrics[metric.type]
     const scale_options = metric_scale_options(metricType.scales || ["count"], dataModel)
-    const labelId = `scale-${metric_uuid}`
     return (
-        <SingleChoiceInput
-            aria-labelledby={labelId}
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label id={labelId}>Metric scale</label>}
-            options={scale_options}
+        <TextField
+            disabled={disabled}
+            label="Metric scale"
+            onChange={(value) => set_metric_attribute(metric_uuid, "scale", value, reload)}
             placeholder={metricType.default_scale || "Count"}
-            set_value={(value) => set_metric_attribute(metric_uuid, "scale", value, reload)}
+            select
             value={scale}
-        />
+        >
+            {scale_options.map((option) => (
+                <MenuItem key={option.key} value={option.value}>
+                    {option.content}
+                </MenuItem>
+            ))}
+        </TextField>
     )
 }
 Scale.propTypes = {
@@ -105,6 +109,8 @@ Scale.propTypes = {
 
 function Direction({ metric, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const scale = getMetricScale(metric, dataModel)
     const metricType = dataModel.metrics[metric.type]
     const metricUnitWithoutPercentage = metric.unit || metricType.unit
@@ -119,20 +125,21 @@ function Direction({ metric, metric_uuid, reload }) {
         percentage: `A higher percentage of ${metricUnitWithoutPercentage}`,
         version_number: "A higher version number",
     }[scale]
-    const metricDirection = getMetricDirection(metric, dataModel) ?? "<"
-    const labelId = `direction-${metric_uuid}`
     return (
-        <SingleChoiceInput
-            aria-labelledby={labelId}
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<label id={labelId}>Metric direction</label>}
-            options={[
-                { key: "0", text: `${fewer} is better`, value: "<" },
-                { key: "1", text: `${more} is better`, value: ">" },
-            ]}
-            set_value={(value) => set_metric_attribute(metric_uuid, "direction", value, reload)}
-            value={metricDirection}
-        />
+        <TextField
+            disabled={disabled}
+            label="Metric direction"
+            onChange={(value) => set_metric_attribute(metric_uuid, "direction", value, reload)}
+            select
+            value={getMetricDirection(metric, dataModel) ?? "<"}
+        >
+            <MenuItem key="0" value="<">
+                {`${fewer} is better`}
+            </MenuItem>
+            <MenuItem key="1" value=">">
+                {`${more} is better`}
+            </MenuItem>
+        </TextField>
     )
 }
 Direction.propTypes = {
@@ -143,17 +150,17 @@ Direction.propTypes = {
 
 function Unit({ metric, metric_uuid, reload }) {
     const dataModel = useContext(DataModel)
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const metricType = dataModel.metrics[metric.type]
-    const labelId = `unit-${metric_uuid}`
     return (
-        <StringInput
-            aria-labelledby={labelId}
-            label={<label id={labelId}>Metric unit</label>}
+        <TextField
+            disabled={disabled}
+            label="Metric unit"
             placeholder={metricType.unit}
-            prefix={formatMetricScale(metric, dataModel)}
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            set_value={(value) => set_metric_attribute(metric_uuid, "unit", value, reload)}
-            value={metric.unit ?? ""}
+            startAdornment={formatMetricScale(metric, dataModel)}
+            onChange={(value) => set_metric_attribute(metric_uuid, "unit", value, reload)}
+            value={metric.unit}
         />
     )
 }
@@ -164,21 +171,26 @@ Unit.propTypes = {
 }
 
 function EvaluateTargets({ metric, metric_uuid, reload }) {
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const help =
         "Turning off evaluation of the metric targets makes this an informative metric. Informative metrics do not turn red, green, or yellow, and can't have accepted technical debt."
-    const labelId = `evaluate-targets-label-${metric_uuid}`
     return (
-        <SingleChoiceInput
-            aria-labelledby={labelId}
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            label={<LabelWithHelp labelId={labelId} label="Evaluate metric targets?" help={help} />}
+        <TextField
+            disabled={disabled}
+            helperText={help}
+            label="Evaluate metric targets?"
+            onChange={(value) => set_metric_attribute(metric_uuid, "evaluate_targets", value, reload)}
+            select
             value={metric.evaluate_targets ?? true}
-            options={[
-                { key: true, text: "Yes", value: true },
-                { key: false, text: "No", value: false },
-            ]}
-            set_value={(value) => set_metric_attribute(metric_uuid, "evaluate_targets", value, reload)}
-        />
+        >
+            <MenuItem key={true} value={true}>
+                Yes
+            </MenuItem>
+            <MenuItem key={false} value={false}>
+                No
+            </MenuItem>
+        </TextField>
     )
 }
 EvaluateTargets.propTypes = {
@@ -191,61 +203,45 @@ export function MetricConfigurationParameters({ metric, metric_uuid, reload, rep
     const dataModel = useContext(DataModel)
     const metricScale = getMetricScale(metric, dataModel)
     return (
-        <Grid stackable columns={3}>
-            <Grid.Row>
-                <Grid.Column>
-                    <MetricType
-                        subjectType={subject.type}
-                        metricType={metric.type}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <MetricName metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                </Grid.Column>
-                <Grid.Column>
-                    <Tags metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column>
-                    <Scale metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                </Grid.Column>
-                <Grid.Column>
-                    <Direction metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                </Grid.Column>
-                {metricScale !== "version_number" && (
-                    <Grid.Column>
-                        <Unit metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                    </Grid.Column>
-                )}
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column>
-                    <EvaluateTargets metric={metric} metric_uuid={metric_uuid} reload={reload} />
-                </Grid.Column>
-                <Grid.Column>
-                    <Target
-                        label="Metric target"
-                        labelPosition="top center"
-                        target_type="target"
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <Target
-                        label="Metric near target"
-                        labelPosition="top right"
-                        target_type="near_target"
-                        metric={metric}
-                        metric_uuid={metric_uuid}
-                        reload={reload}
-                    />
-                </Grid.Column>
-            </Grid.Row>
+        <Grid container spacing={{ xs: 1, sm: 2, md: 3 }} columns={{ xs: 1, sm: 3, md: 3 }}>
+            <Grid size={1}>
+                <MetricType
+                    subjectType={subject.type}
+                    metricType={metric.type}
+                    metric_uuid={metric_uuid}
+                    reload={reload}
+                />
+            </Grid>
+            <Grid size={1}>
+                <MetricName metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
+            <Grid size={1}>
+                <Tags metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
+            </Grid>
+            <Grid size={1}>
+                <Scale metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
+            <Grid size={1}>
+                <Direction metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
+            <Grid size={1}>
+                {metricScale !== "version_number" && <Unit metric={metric} metric_uuid={metric_uuid} reload={reload} />}
+            </Grid>
+            <Grid size={1}>
+                <EvaluateTargets metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
+            <Grid size={1}>
+                <Target target_type="target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
+            <Grid size={1}>
+                <Target target_type="near_target" metric={metric} metric_uuid={metric_uuid} reload={reload} />
+            </Grid>
+            <Grid size={3}>
+                <Stack spacing={1}>
+                    <Typography variant="h4">How targets are evaluated</Typography>
+                    <TargetVisualiser metric={metric} />
+                </Stack>
+            </Grid>
         </Grid>
     )
 }

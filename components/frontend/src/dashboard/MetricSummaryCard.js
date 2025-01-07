@@ -1,12 +1,11 @@
 import "./MetricSummaryCard.css"
 
+import { useTheme } from "@mui/material"
 import { bool, func, number, object, oneOfType, string } from "prop-types"
-import { useContext } from "react"
 import { VictoryContainer, VictoryLabel, VictoryTooltip } from "victory"
 
-import { DarkMode } from "../context/DarkMode"
 import { useBoundingBox } from "../hooks/boundingbox"
-import { STATUS_COLORS_RGB, STATUSES } from "../metric/status"
+import { STATUSES } from "../metric/status"
 import { pluralize, sum } from "../utils"
 import { DashboardCard } from "./DashboardCard"
 import { StatusBarChart } from "./StatusBarChart"
@@ -48,10 +47,8 @@ function ariaChartLabel(summary) {
 
 export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) {
     const [boundingBox, ref] = useBoundingBox()
-    const labelColor = useContext(DarkMode) ? "darkgrey" : "rgba(120, 120, 120)"
-    const flyoutBgColor = useContext(DarkMode) ? "rgba(60, 65, 70)" : "white"
     const animate = { duration: 0, onLoad: { duration: 0 } }
-    const colors = STATUSES.map((status) => STATUS_COLORS_RGB[status])
+    const colors = STATUSES.map((status) => useTheme().palette[status].main)
     const bbWidth = boundingBox.width ?? 0
     const bbHeight = boundingBox.height ?? 0
     const tooltip = (
@@ -60,9 +57,8 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
             constrainToVisibleArea={true}
             cornerRadius={4}
             flyoutHeight={54} // If we don't pass this, a height is calculated by Victory, but it's much too high
-            flyoutStyle={{ fill: flyoutBgColor }}
             renderInPortal={false}
-            style={{ fontFamily: "Arial", fontSize: 16, fill: labelColor }}
+            style={{ fontFamily: "Arial", fontSize: 16 }}
         />
     )
     const dates = Object.keys(summary)
@@ -72,7 +68,7 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
         height: Math.max(bbHeight, 1), // Prevent "Failed prop type: Invalid prop range supplied to VictoryBar"
         label: (
             <VictoryLabel
-                style={{ fill: labelColor }}
+                style={{ fill: useTheme().palette.text.secondary, fontFamily: useTheme().typography.fontFamily }}
                 text={nrMetricsLabel(sum(summary[dates[0]]))}
                 textAnchor="middle"
                 x={bbWidth / 2}

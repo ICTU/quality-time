@@ -84,7 +84,7 @@ it("adds a tag", async () => {
     await act(async () => {
         renderMetricParameters()
     })
-    await userEvent.type(screen.getByLabelText(/Tags/), "New tag{Enter}")
+    await userEvent.type(screen.getByLabelText(/Metric tags/), "New tag{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/tags", {
         tags: ["New tag"],
     })
@@ -94,7 +94,7 @@ it("changes the scale", async () => {
     await act(async () => {
         renderMetricParameters()
     })
-    fireEvent.click(screen.getByText(/Metric scale/))
+    fireEvent.mouseDown(screen.getByLabelText(/Metric scale/))
     fireEvent.click(screen.getByText(/Percentage/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/scale", {
         scale: "percentage",
@@ -105,7 +105,7 @@ it("changes the direction", async () => {
     await act(async () => {
         renderMetricParameters()
     })
-    fireEvent.click(screen.getByText(/direction/))
+    fireEvent.mouseDown(screen.getByLabelText(/direction/))
     fireEvent.click(screen.getByText(/More violations is better/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
         "post",

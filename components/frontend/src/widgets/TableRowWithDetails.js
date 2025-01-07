@@ -1,31 +1,42 @@
-import { bool, func, object } from "prop-types"
+import { TableCell, TableRow } from "@mui/material"
+import { bool, func, string } from "prop-types"
 
-import { Table } from "../semantic_ui_react_wrappers"
 import { childrenPropType } from "../sharedPropTypes"
 import { ExpandButton } from "./buttons/ExpandButton"
 
 export function TableRowWithDetails(props) {
-    const { children, details, expanded, onExpand, style, ...otherProps } = props
+    const { color, children, details, expanded, onExpand, ...otherProps } = props
     return (
         <>
-            <Table.Row {...otherProps}>
-                <Table.Cell collapsing textAlign="center" style={style}>
+            <TableRow
+                {...otherProps}
+                hover
+                sx={{
+                    bgcolor: `${color}.bgcolor`,
+                    "&.MuiTableRow-hover": {
+                        "&:hover": {
+                            backgroundColor: `${color}.hover`,
+                        },
+                    },
+                }}
+            >
+                <TableCell align="center" sx={{ padding: "0px" }}>
                     <ExpandButton expand={expanded} onClick={() => onExpand(!expanded)} size="1.5em" />
-                </Table.Cell>
+                </TableCell>
                 {children}
-            </Table.Row>
+            </TableRow>
             {expanded && (
-                <Table.Row>
-                    <Table.Cell colSpan="99">{details}</Table.Cell>
-                </Table.Row>
+                <TableRow>
+                    <TableCell colSpan="99">{details}</TableCell>
+                </TableRow>
             )}
         </>
     )
 }
 TableRowWithDetails.propTypes = {
     children: childrenPropType,
+    color: string,
     details: childrenPropType,
     expanded: bool,
     onExpand: func,
-    style: object,
 }

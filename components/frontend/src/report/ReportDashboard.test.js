@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@mui/material/styles"
 import { fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
 
@@ -5,6 +6,7 @@ import { createTestableSettings } from "../__fixtures__/fixtures"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
+import { theme } from "../theme"
 import { ReportDashboard } from "./ReportDashboard"
 
 let report
@@ -42,11 +44,13 @@ function renderDashboard({ hiddenTags = null, dates = [new Date()], onClick = je
         settings.hiddenTags = hiddenTags
     }
     return render(
-        <DataModel.Provider value={dataModel}>
-            <div id="dashboard">
-                <ReportDashboard dates={dates} onClick={onClick} report={reportToRender} settings={settings} />
-            </div>
-        </DataModel.Provider>,
+        <ThemeProvider theme={theme}>
+            <DataModel.Provider value={dataModel}>
+                <div id="dashboard">
+                    <ReportDashboard dates={dates} onClick={onClick} report={reportToRender} settings={settings} />
+                </div>
+            </DataModel.Provider>
+        </ThemeProvider>,
     )
 }
 

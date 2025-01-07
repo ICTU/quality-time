@@ -8,14 +8,17 @@ export function LegendCard() {
     const listItems = STATUSES.map((status) => (
         <ListItem key={status} dense={true} sx={{ padding: "0px" }}>
             <StatusIcon status={status} size="small" />
-            &nbsp;
-            <ListItemText primary={STATUS_SHORT_NAME[status]} primaryTypographyProps={{ noWrap: true }} />
+            <ListItemText
+                primary={STATUS_SHORT_NAME[status]}
+                slotProps={{ primary: { typography: { fontSize: "11px" } } }}
+                sx={{ marginLeft: "10px" }}
+            />
         </ListItem>
     ))
 
     return (
         <DashboardCard title="Legend" titleFirst={true}>
-            <List sx={{ padding: "0px", paddingLeft: "16px" }}>{listItems}</List>
+            <List sx={{ padding: "0px", paddingLeft: "0px" }}>{listItems}</List>
         </DashboardCard>
     )
 }

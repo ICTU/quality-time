@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@mui/material/styles"
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
 
@@ -7,6 +8,7 @@ import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
+import { theme } from "../theme"
 import { ReportsOverview } from "./ReportsOverview"
 
 beforeEach(() => {
@@ -25,19 +27,21 @@ function renderReportsOverview({ hiddenTags = null, reportDate = null, reports =
         settings.hiddenTags = hiddenTags
     }
     render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
-                <ReportsOverview
-                    dates={[reportDate || new Date()]}
-                    lastUpdate={new Date()}
-                    measurements={[{ status: "target_met" }]}
-                    report_date={reportDate}
-                    reports={reports}
-                    reports_overview={reportsOverview}
-                    settings={settings}
-                />
-            </DataModel.Provider>
-        </Permissions.Provider>,
+        <ThemeProvider theme={theme}>
+            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+                <DataModel.Provider value={dataModel}>
+                    <ReportsOverview
+                        dates={[reportDate || new Date()]}
+                        lastUpdate={new Date()}
+                        measurements={[{ status: "target_met" }]}
+                        report_date={reportDate}
+                        reports={reports}
+                        reports_overview={reportsOverview}
+                        settings={settings}
+                    />
+                </DataModel.Provider>
+            </Permissions.Provider>
+        </ThemeProvider>,
     )
 }
 
@@ -50,7 +54,7 @@ it("shows the reports overview", async () => {
     const reports = [{ report_uuid: "report_uuid", subjects: {} }]
     const reportsOverview = { title: "Overview", permissions: {} }
     renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
-    expect(screen.getAllByText(/Overview/).length).toBe(2)
+    expect(screen.getAllByText(/Overview/).length).toBe(1)
 })
 
 it("shows the comment", async () => {

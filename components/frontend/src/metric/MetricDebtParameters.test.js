@@ -1,5 +1,9 @@
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import dayjs from "dayjs"
+import { locale_en_gb } from "dayjs/locale/en-gb"
 
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
@@ -34,26 +38,33 @@ const dataModel = {
 
 function renderMetricDebtParameters({ accept_debt = false, debt_end_date = null } = {}) {
     render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
-                <MetricDebtParameters
-                    metric={{
-                        accept_debt: accept_debt,
-                        debt_end_date: debt_end_date,
-                        issue_ids: [],
-                        issue_status: [],
-                        scale: "count",
-                        tags: [],
-                        type: "violations",
-                    }}
-                    metric_uuid="metric_uuid"
-                    reload={jest.fn()}
-                    report={{ subjects: {} }}
-                />
-            </DataModel.Provider>
-        </Permissions.Provider>,
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale_en_gb}>
+            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+                <DataModel.Provider value={dataModel}>
+                    <MetricDebtParameters
+                        metric={{
+                            accept_debt: accept_debt,
+                            debt_end_date: debt_end_date,
+                            issue_ids: [],
+                            issue_status: [],
+                            scale: "count",
+                            tags: [],
+                            type: "violations",
+                        }}
+                        metric_uuid="metric_uuid"
+                        reload={jest.fn()}
+                        report={{ subjects: {} }}
+                    />
+                </DataModel.Provider>
+            </Permissions.Provider>
+            ,
+        </LocalizationProvider>,
     )
 }
+
+beforeEach(() => {
+    jest.resetAllMocks()
+})
 
 it("accepts technical debt", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
@@ -85,6 +96,7 @@ it("unaccepts technical debt and resets target and end date", async () => {
 })
 
 it("adds a comment", async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderMetricDebtParameters()
     await userEvent.type(screen.getByLabelText(/Comment/), "Keep cool{Tab}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/comment", {
@@ -92,26 +104,25 @@ it("adds a comment", async () => {
     })
 })
 
+it("undoes changes to a comment", async () => {
+    renderMetricDebtParameters()
+    await userEvent.type(screen.getByLabelText(/Comment/), "Keep cool{Escape}")
+    expect(fetch_server_api.fetch_server_api).not.toHaveBeenCalled()
+})
+
 it("sets the technical debt end date", async () => {
-    // Suppress "Warning: An update to t inside a test was not wrapped in act(...)." caused by interacting with
-    // the date picker.
-    const consoleLog = console.log
-    console.error = jest.fn()
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderMetricDebtParameters()
-    await userEvent.type(screen.getByPlaceholderText(/YYYY-MM-DD/), "2022-12-31{Tab}", {
-        initialSelectionStart: 0,
-        initialSelectionEnd: 10,
-    })
+    await userEvent.type(screen.getByPlaceholderText(/YYYY-MM-DD/), "20221231{Enter}")
+    const expectedDate = dayjs("2022-12-31")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
         "post",
         "metric/metric_uuid/attribute/debt_end_date",
-        { debt_end_date: "2022-12-31" },
+        { debt_end_date: expectedDate },
     )
-    console.log = consoleLog
 })
 
 it("shows days ago for the technical debt end date", () => {
     renderMetricDebtParameters({ debt_end_date: "2000-01-01" })
-    expect(screen.getAllByLabelText(/years ago/).length).toBe(1)
+    expect(screen.getAllByText(/years ago/).length).toBe(1)
 })

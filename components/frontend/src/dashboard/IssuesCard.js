@@ -1,9 +1,8 @@
-import { Chip } from "@mui/material"
+import { Chip, TableCell, TableRow } from "@mui/material"
 import { bool, func } from "prop-types"
 
-import { Table } from "../semantic_ui_react_wrappers"
 import { reportPropType } from "../sharedPropTypes"
-import { capitalize, ISSUE_STATUS_THEME_COLORS } from "../utils"
+import { capitalize } from "../utils"
 import { FilterCardWithTable } from "./FilterCardWithTable"
 
 function issueStatuses(report) {
@@ -33,18 +32,12 @@ issueStatuses.propTypes = {
 function tableRows(report) {
     const statuses = issueStatuses(report)
     return Object.keys(statuses).map((status) => (
-        <Table.Row key={status}>
-            <Table.Cell>{capitalize(status)}</Table.Cell>
-            <Table.Cell textAlign="right">
-                <Chip
-                    color={ISSUE_STATUS_THEME_COLORS[status]}
-                    label={`${statuses[status]}`}
-                    size="small"
-                    sx={{ borderRadius: 1 }}
-                    variant={ISSUE_STATUS_THEME_COLORS[status] ? "" : "outlined"}
-                />
-            </Table.Cell>
-        </Table.Row>
+        <TableRow key={status}>
+            <TableCell sx={{ fontSize: "12px", paddingLeft: "0px" }}>{capitalize(status)}</TableCell>
+            <TableCell sx={{ paddingRight: "0px", textAlign: "right" }}>
+                <Chip color={status} label={`${statuses[status]}`} size="small" sx={{ borderRadius: 1 }} />
+            </TableCell>
+        </TableRow>
     ))
 }
 tableRows.propTypes = {

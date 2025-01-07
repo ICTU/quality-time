@@ -41,7 +41,7 @@ it("invokes the callback on clicking delete", () => {
 
 it("changes the source type", () => {
     renderSource(metric)
-    fireEvent.click(screen.getAllByText(/Source type 1/)[0])
+    fireEvent.mouseDown(screen.getByLabelText(/Source type/))
     fireEvent.click(screen.getByText(/Source type 2/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/type", {
         type: "source_type2",

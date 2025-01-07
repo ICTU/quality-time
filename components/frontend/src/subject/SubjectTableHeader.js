@@ -1,10 +1,8 @@
-import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material"
+import { Chip, List, ListItem, ListItemIcon, ListItemText, Paper, TableHead, TableRow, Typography } from "@mui/material"
 import { bool, func, string } from "prop-types"
-import { Table } from "semantic-ui-react"
 
 import { StatusIcon } from "../measurement/StatusIcon"
 import { STATUS_DESCRIPTION, STATUSES } from "../metric/status"
-import { Label } from "../semantic_ui_react_wrappers"
 import { datesPropType, settingsPropType } from "../sharedPropTypes"
 import { HyperLink } from "../widgets/HyperLink"
 import { IgnoreIcon, TriangleRightIcon } from "../widgets/icons"
@@ -78,9 +76,9 @@ const measurementHelp = (
         </p>
         <p>
             If the measurement value has a{" "}
-            <Label as="span" horizontal color="red">
+            <Typography component="span" display="inline" bgcolor="error.main">
                 red background
-            </Label>
+            </Typography>
             , the metric has not been measured recently. This indicates a problem with <em>Quality-time</em> itself, and
             a system administrator should be notified.
         </p>
@@ -99,9 +97,9 @@ const targetHelp = (
         <p>The value against which measurements are evaluated to determine whether a metric needs action.</p>
         <p>
             The target value has a{" "}
-            <Label as="span" horizontal color="grey">
+            <Typography component="span" display="inline" bgcolor="grey">
                 grey background
-            </Label>{" "}
+            </Typography>{" "}
             if the metric has accepted technical debt that is not applied because the technical debt end date is in the
             past or all issues linked to the metric have been resolved.
         </p>
@@ -172,9 +170,9 @@ const sourcesHelp = (
         <p>The tools and reports accessed to collect the measurement data. One metric can have multiple sources.</p>
         <p>
             If a source has a{" "}
-            <Label as="span" horizontal color="red">
+            <Typography component="span" display="inline" bgcolor="error.main">
                 red background
-            </Label>
+            </Typography>
             , the source could not be accessed or the data could not be parsed. <Expand>metric</Expand> and navigate to
             the source to see the error details.
         </p>
@@ -194,9 +192,9 @@ const issuesHelp = (
         </p>
         <p>
             If an issue has a{" "}
-            <Label as="span" horizontal color="red">
+            <Typography component="span" display="inline" bgcolor="error.main">
                 red background
-            </Label>
+            </Typography>
             , the issue tracker could not be accessed or the data could not be parsed. <Expand>metric</Expand> and
             navigate to the technical debt tab to see the error details.
         </p>
@@ -222,6 +220,29 @@ const tagsHelp = (
     </>
 )
 
+function InlineChip({ color, label }) {
+    return (
+        <Paper
+            component="span" // Default component is div Use span to prevent "Warning: validateDOMNesting(...): <div> cannot appear as a descendant of <p>."
+            elevation={0}
+            sx={{ display: "inline-flex" }}
+        >
+            <Chip
+                color={color}
+                component="span" // Default component is div Use span to prevent "Warning: validateDOMNesting(...): <div> cannot appear as a descendant of <p>."
+                label={label}
+                size="small"
+                sx={{ borderRadius: 1 }}
+                variant="outlined"
+            />
+        </Paper>
+    )
+}
+InlineChip.propTypes = {
+    color: string,
+    label: string,
+}
+
 function MeasurementHeaderCells({ columnDates, showDeltaColumns }) {
     const cells = []
     columnDates.forEach((date, index) => {
@@ -236,29 +257,16 @@ function MeasurementHeaderCells({ columnDates, showDeltaColumns }) {
                                 and next date.
                             </p>
                             <p>
-                                A plus sign{" "}
-                                <Label basic color="blue">
-                                    +
-                                </Label>{" "}
-                                indicates that the newer value is higher. A minus sign{" "}
-                                <Label basic color="blue">
-                                    -
-                                </Label>{" "}
-                                indicates that the newer value is lower.
+                                A plus sign <InlineChip color="info" label="+" /> indicates that the newer value is
+                                higher. A minus sign <InlineChip color="info" label="+" /> indicates that the newer
+                                value is lower.
                             </p>
                             <p>
-                                A{" "}
-                                <Label basic color="green">
-                                    green outline
-                                </Label>{" "}
+                                A <InlineChip color="success" label="green outline" />
                                 indicates that the newer value is better. A{" "}
-                                <Label basic color="red">
-                                    red outline
-                                </Label>{" "}
+                                <InlineChip color="error" label="red outline" />
                                 indicates that the newer value is worse. A{" "}
-                                <Label basic color="blue">
-                                    blue outline
-                                </Label>{" "}
+                                <InlineChip color="info" label="blue outline" />
                                 is used for metrics that are informative.
                             </p>
                             <p>
@@ -289,8 +297,8 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
     }
     const nrDates = columnDates.length
     return (
-        <Table.Header>
-            <Table.Row>
+        <TableHead sx={{ bgcolor: "background.default" }}>
+            <TableRow>
                 <SortableTableHeaderCell colSpan="2" column="name" label="Metric" help={metricHelp} {...sortProps} />
                 {nrDates > 1 && (
                     <MeasurementHeaderCells
@@ -302,13 +310,7 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
                     <UnsortableTableHeaderCell width="2" label="Trend (7 days)" help={trendHelp} />
                 )}
                 {nrDates === 1 && settings.hiddenColumns.excludes("status") && (
-                    <SortableTableHeaderCell
-                        column="status"
-                        label="Status"
-                        textAlign="center"
-                        help={statusHelp()}
-                        {...sortProps}
-                    />
+                    <SortableTableHeaderCell column="status" label="Status" help={statusHelp()} {...sortProps} />
                 )}
                 {nrDates === 1 && settings.hiddenColumns.excludes("measurement") && (
                     <SortableTableHeaderCell
@@ -349,8 +351,8 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
                 {settings.hiddenColumns.excludes("tags") && (
                     <SortableTableHeaderCell column="tags" label="Tags" help={tagsHelp} {...sortProps} />
                 )}
-            </Table.Row>
-        </Table.Header>
+            </TableRow>
+        </TableHead>
     )
 }
 SubjectTableHeader.propTypes = {

@@ -3,7 +3,7 @@ import { func } from "prop-types"
 
 import { add_report, copy_report } from "../api/report"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { ExportCard } from "../dashboard/ExportCard"
+import { PageHeader } from "../dashboard/PageHeader"
 import {
     datePropType,
     datesPropType,
@@ -21,7 +21,7 @@ import { AddButton } from "../widgets/buttons/AddButton"
 import { CopyButton } from "../widgets/buttons/CopyButton"
 import { CommentSegment } from "../widgets/CommentSegment"
 import { report_options } from "../widgets/menu_options"
-import { ReportsOverviewErrorMessage } from "./ReportErrorMessage"
+import { WarningMessage } from "../widgets/WarningMessage"
 import { ReportsOverviewDashboard } from "./ReportsOverviewDashboard"
 import { ReportsOverviewTitle } from "./ReportsOverviewTitle"
 
@@ -30,7 +30,7 @@ function ReportsOverviewButtonRow({ reload, reports }) {
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
-                <Box sx={{ p: "10px" }}>
+                <Box sx={{ paddingTop: "50px" }}>
                     <ButtonRow>
                         <AddButton itemType={"report"} onClick={() => add_report(reload)} />
                         <CopyButton
@@ -63,21 +63,14 @@ export function ReportsOverview({
     settings,
 }) {
     if (reports.length === 0 && report_date !== null) {
-        return <ReportsOverviewErrorMessage reportDate={report_date} />
+        return <WarningMessage title="No reports found">{`Sorry, no reports existed at ${report_date}`}</WarningMessage>
     }
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
     const reversedMeasurements = measurements.slice().sort((m1, m2) => (m1.start < m2.start ? 1 : -1))
     return (
         <div id="dashboard">
-            <div className="reportHeader">
-                <ReportsOverviewTitle reports_overview={reports_overview} reload={reload} settings={settings} />
-                <ExportCard
-                    isOverview={true}
-                    lastUpdate={lastUpdate}
-                    report={reports_overview}
-                    reportDate={report_date}
-                />
-            </div>
+            <PageHeader lastUpdate={lastUpdate} reportDate={report_date} />
+            <ReportsOverviewTitle reports_overview={reports_overview} reload={reload} settings={settings} />
             <CommentSegment comment={reports_overview.comment} />
             <ReportsOverviewDashboard
                 dates={dates}

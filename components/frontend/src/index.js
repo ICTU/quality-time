@@ -1,4 +1,3 @@
-import "fomantic-ui-css/semantic.min.css"
 import "react-grid-layout/css/styles.css"
 
 import { createRoot } from "react-dom/client"

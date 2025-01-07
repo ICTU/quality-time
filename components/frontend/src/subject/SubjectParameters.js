@@ -1,53 +1,53 @@
+import Grid from "@mui/material/Grid2"
 import { func, string } from "prop-types"
-import { Grid } from "semantic-ui-react"
+import { useContext } from "react"
 
 import { set_subject_attribute } from "../api/subject"
-import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
-import { Comment } from "../fields/Comment"
-import { StringInput } from "../fields/StringInput"
+import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { CommentField } from "../fields/CommentField"
+import { TextField } from "../fields/TextField"
 import { subjectPropType } from "../sharedPropTypes"
 import { SubjectType } from "./SubjectType"
 
 export function SubjectParameters({ subject, subject_uuid, subject_name, reload }) {
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
-        <Grid stackable>
-            <Grid.Row columns={3}>
-                <Grid.Column>
-                    <SubjectType
-                        id={`${subject_uuid}-type`}
-                        setValue={(value) => set_subject_attribute(subject_uuid, "type", value, reload)}
-                        subjectType={subject.type}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <StringInput
-                        id={`${subject_uuid}-title`}
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        label="Subject title"
-                        placeholder={subject_name}
-                        set_value={(value) => set_subject_attribute(subject_uuid, "name", value, reload)}
-                        value={subject.name}
-                    />
-                </Grid.Column>
-                <Grid.Column>
-                    <StringInput
-                        id={`${subject_uuid}-subtitle`}
-                        label="Subject subtitle"
-                        requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                        set_value={(value) => set_subject_attribute(subject_uuid, "subtitle", value, reload)}
-                        value={subject.subtitle}
-                    />
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column>
-                    <Comment
-                        id={`${subject_uuid}-comment`}
-                        set_value={(value) => set_subject_attribute(subject_uuid, "comment", value, reload)}
-                        value={subject.comment}
-                    />
-                </Grid.Column>
-            </Grid.Row>
+        <Grid container spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 1, md: 3 }}>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <SubjectType
+                    id={`${subject_uuid}-type`}
+                    setValue={(value) => set_subject_attribute(subject_uuid, "type", value, reload)}
+                    subjectType={subject.type}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <TextField
+                    disabled={disabled}
+                    id={`${subject_uuid}-title`}
+                    label="Subject title"
+                    placeholder={subject_name}
+                    onChange={(value) => set_subject_attribute(subject_uuid, "name", value, reload)}
+                    value={subject.name}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <TextField
+                    disabled={disabled}
+                    id={`${subject_uuid}-subtitle`}
+                    label="Subject subtitle"
+                    onChange={(value) => set_subject_attribute(subject_uuid, "subtitle", value, reload)}
+                    value={subject.subtitle}
+                />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 3 }}>
+                <CommentField
+                    disabled={disabled}
+                    id={`${subject_uuid}-comment`}
+                    onChange={(value) => set_subject_attribute(subject_uuid, "comment", value, reload)}
+                    value={subject.comment}
+                />
+            </Grid>
         </Grid>
     )
 }

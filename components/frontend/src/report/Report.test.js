@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@mui/material/styles"
 import { fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
 
@@ -7,6 +8,7 @@ import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
+import { theme } from "../theme"
 import { Report } from "./Report"
 
 beforeEach(() => {
@@ -55,20 +57,23 @@ function renderReport({
         settings.hiddenTags = hiddenTags
     }
     render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
-                <Report
-                    dates={dates}
-                    handleSort={handleSort}
-                    lastUpdate={new Date()}
-                    measurements={[]}
-                    reports={[reportToRender]}
-                    report={reportToRender}
-                    report_date={report_date}
-                    settings={settings}
-                />
-            </DataModel.Provider>
-        </Permissions.Provider>,
+        <ThemeProvider theme={theme}>
+            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+                <DataModel.Provider value={dataModel}>
+                    <Report
+                        dates={dates}
+                        handleSort={handleSort}
+                        lastUpdate={new Date()}
+                        measurements={[]}
+                        reports={[reportToRender]}
+                        report={reportToRender}
+                        report_date={report_date}
+                        settings={settings}
+                    />
+                </DataModel.Provider>
+            </Permissions.Provider>
+            ,
+        </ThemeProvider>,
     )
 }
 

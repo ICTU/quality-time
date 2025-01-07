@@ -1,7 +1,8 @@
+import { ThemeProvider } from "@mui/material/styles"
 import { fireEvent, render, screen } from "@testing-library/react"
 
-import { DarkMode } from "../context/DarkMode"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { theme } from "../theme"
 import { CardDashboard } from "./CardDashboard"
 import { MetricSummaryCard } from "./MetricSummaryCard"
 import { mockGetAnimations } from "./MockAnimations"
@@ -12,13 +13,13 @@ afterEach(() => jest.restoreAllMocks())
 
 function renderCardDashboard({ cards = [], initialLayout = [], saveLayout = jest.fn } = {}) {
     return render(
-        <DarkMode.Provider value={false}>
+        <ThemeProvider theme={theme}>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <div id="dashboard">
                     <CardDashboard cards={cards} initialLayout={initialLayout} saveLayout={saveLayout} />
                 </div>
             </Permissions.Provider>
-        </DarkMode.Provider>,
+        </ThemeProvider>,
     )
 }
 

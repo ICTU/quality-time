@@ -97,9 +97,9 @@ it("tries to create an issue", () => {
     })
 })
 
-it("does not show the create issue button if the user has no permissions", () => {
+it("disables the create issue button if the user has no permissions", () => {
     renderIssuesRow({ report: reportWithIssueTracker, permissions: [] })
-    expect(screen.queryAllByText(/Create new issue/).length).toBe(0)
+    expect(screen.getByText(/Create new issue/)).toBeDisabled()
 })
 
 it("adds an issue id", async () => {
@@ -133,8 +133,8 @@ it("shows no issue id suggestions without a query", async () => {
     renderIssuesRow({
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
     })
-    await userEvent.type(screen.getByLabelText(/Issue identifiers/), "s")
+    await userEvent.type(screen.getByRole("combobox"), "s")
     expect(screen.queryAllByText(/FOO-42: Suggestion/).length).toBe(1)
-    await userEvent.clear(screen.getByLabelText(/Issue identifiers/).firstChild)
+    await userEvent.clear(screen.getByRole("combobox"))
     expect(screen.queryAllByText(/FOO-42: Suggestion/).length).toBe(0)
 })
