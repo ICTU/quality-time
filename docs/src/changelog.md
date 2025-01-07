@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Fixed
+
+- Don't throw an exception when a Trivy JSON file contains vulnerabilities without fixed version information. Fixes [#10606](https://github.com/ICTU/quality-time/issues/10606).
+
 ### Added
 
 - When measuring missing metrics, make the subject type and the metric type of the missing metrics link to the reference documentation. Closes [#10528](https://github.com/ICTU/quality-time/issues/10528).

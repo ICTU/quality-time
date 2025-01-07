@@ -45,6 +45,15 @@ class TrivyJSONSecurityWarningsTest(SourceCollectorTestCase):
                             "https://lists.apache.org/thread.html",
                         ],
                     },
+                    {
+                        "VulnerabilityID": "CVE-2024-5432",
+                        "PkgName": "python",
+                        "InstalledVersion": "3.13.1",
+                        "Title": "Vulnerability without fixed version",
+                        "Description": "This vulnerability has no fixed version field.",
+                        "Severity": "LOW",
+                        "References": ["https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-5432"],
+                    },
                 ],
             },
         ]
@@ -77,6 +86,17 @@ class TrivyJSONSecurityWarningsTest(SourceCollectorTestCase):
                 "fixed_version": "",
                 "url": "https://curl.haxx.se/docs/CVE-2019-3822.html",
             },
+            {
+                "key": "CVE-2024-5432@python@trivy-ci-test (alpine 3_7_1)",
+                "vulnerability_id": "CVE-2024-5432",
+                "title": "Vulnerability without fixed version",
+                "description": "This vulnerability has no fixed version field.",
+                "level": "LOW",
+                "package_name": "python",
+                "installed_version": "3.13.1",
+                "fixed_version": "",
+                "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-5432",
+            },
         ]
 
     async def test_warnings(self):
@@ -84,7 +104,7 @@ class TrivyJSONSecurityWarningsTest(SourceCollectorTestCase):
         for schema_version in self.SCHEMA_VERSIONS:
             with self.subTest(schema_version=schema_version):
                 response = await self.collect(get_request_json_return_value=self.vulnerabilities_json(schema_version))
-                self.assert_measurement(response, value="2", entities=self.expected_entities())
+                self.assert_measurement(response, value="3", entities=self.expected_entities())
 
     async def test_warning_levels(self):
         """Test the number of security warnings when specifying a level."""
@@ -108,4 +128,4 @@ class TrivyJSONSecurityWarningsTest(SourceCollectorTestCase):
         for schema_version in self.SCHEMA_VERSIONS:
             with self.subTest(schema_version=schema_version):
                 response = await self.collect(get_request_json_return_value=self.vulnerabilities_json(schema_version))
-                self.assert_measurement(response, value="1", entities=[self.expected_entities()[1]])
+                self.assert_measurement(response, value="2", entities=self.expected_entities()[1:])
