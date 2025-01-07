@@ -80,7 +80,7 @@ class TrivyJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceC
                         level=vulnerability["Severity"],
                         package_name=package_name,
                         installed_version=vulnerability["InstalledVersion"],
-                        fixed_version=vulnerability["FixedVersion"],
+                        fixed_version=vulnerability.get("FixedVersion", ""),
                         url=vulnerability["References"][0],  # Assume the 1st link is at least as relevant as the others
                     ),
                 )
