@@ -14,11 +14,8 @@ from .base import BitbucketProjectBase
 class BitbucketBranchType(BranchType):
     """Bitbucket branch information as returned by the API."""
 
-    "Contains commit(ed)-date"
-    commit: dict[str, str]
     default: bool
-    merged: bool
-    web_url: str
+    last_commit: datetime
 
 
 class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBase, InactiveBranchesSourceCollector):
@@ -30,13 +27,22 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project branches."""
-        return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/-/branches")
+        return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/browse")
 
     async def _branches(self, responses: SourceResponses) -> list[Branch]:
         """Return a list of branches from the responses."""
         branches = []
         for response in responses:
-            branches.extend(await response.json())
+            json = await response.json()
+            branches.extend([
+                BitbucketBranchType(
+                    name=branch["displayId"],
+                    default=branch["isDefault"],
+                    last_commit=datetime.fromtimestamp(branch["metadata"]["com.atlassian.bitbucket.server.bitbucket-branch:latest-commit-metadata"]["committerTimestamp"] / 1e3),
+                    id=branch["id"]
+                )
+                for branch in json["values"]
+            ])
         return branches
 
     def _is_default_branch(self, branch: Branch) -> bool:
@@ -45,12 +51,14 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
 
     def _is_branch_merged(self, branch: Branch) -> bool:
         """Return whether the branch has been merged with the default branch."""
-        return branch["merged"]
+        return False
 
     def _commit_datetime(self, branch: Branch) -> datetime:
         """Override to parse the commit date from the branch."""
-        return parse_datetime(branch["commit"]["committed_date"])
+        return branch["last_commit"]
 
     def _branch_landing_url(self, branch: Branch) -> URL:
         """Override to get the landing URL from the branch."""
-        return cast(URL, branch.get("web_url") or "")
+        instance_url=super()._parameter('url')
+        project = f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}/browse?at="
+        return cast(URL, f"{instance_url}/{project}{branch.get('id') or ""}")

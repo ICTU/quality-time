@@ -44,6 +44,6 @@ class BitbucketProjectBase(BitbucketBase, ABC):
     async def _bitbucket_api_url(self, api: str) -> URL:
         """Return a Bitbucket API url for a project, if present in the parameters."""
         url = await super()._api_url()
-        project = self._parameter("project")
+        project = f"{self._parameter('owner')}/repos/{self._parameter('repository')}"
         api_url = URL(f"{url}/rest/api/1.0/projects/{project}" + (f"/{api}" if api else ""))
-        return add_query(api_url, "pagelen=100")
+        return add_query(api_url, "pagelen=100&details=true")

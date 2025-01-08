@@ -28,14 +28,19 @@ BITBUCKET = Source(
             validate_on=["private_token"],
             metrics=["inactive_branches"],
         ),
-        "project": StringParameter(
-            name="Project (name with namespace or id)",
-            short_name="project",
+        "owner": StringParameter(
+            name="Owner (name of owner of the repository)",
+            short_name="owner",
             mandatory=True,
             help_url=HttpUrl("https://support.atlassian.com/bitbucket-cloud/docs/create-a-project/"),
-            metrics=[
-                "inactive_branches",
-            ],
+            metrics=["inactive_branches"],
+        ),
+        "repository": StringParameter(
+            name="Repository (name of the repository)",
+            short_name="repository",
+            help_url=HttpUrl("https://support.atlassian.com/bitbucket-cloud/docs/create-a-git-repository/"),
+            mandatory=True,
+            metrics=["inactive_branches"],
         ),
         "private_token": PrivateToken(
             name="Private token (with read_api scope)",
