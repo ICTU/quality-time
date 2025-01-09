@@ -3,6 +3,7 @@
 from datetime import datetime
 from typing import cast
 
+from collector_utilities.exceptions import NotFoundError
 from base_collectors import BranchType, InactiveBranchesSourceCollector
 from collector_utilities.date_time import parse_datetime
 from collector_utilities.type import URL
@@ -10,6 +11,15 @@ from model import SourceResponses
 
 from .base import BitbucketProjectBase
 
+class BitbucketBranchInfoError(NotFoundError):
+    """Bitbucket branch info is missing."""
+
+    def __init__(self, project: str) -> None:
+        tip = (
+            "Please check if the repository (name with owner) and access token (with repo scope) are "
+            "configured correctly."
+        )
+        super().__init__("Branch info for repository", project, extra=tip)
 
 class BitbucketBranchType(BranchType):
     """Bitbucket branch information as returned by the API."""
@@ -43,6 +53,8 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
                 )
                 for branch in json["values"]
             ])
+        if len(branches) == 0:
+            raise BitbucketBranchInfoError(f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}")
         return branches
 
     def _is_default_branch(self, branch: Branch) -> bool:
@@ -61,4 +73,5 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
         """Override to get the landing URL from the branch."""
         instance_url=super()._parameter('url')
         project = f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}/browse?at="
-        return cast(URL, f"{instance_url}/{project}{branch.get('id') or ""}")
+        branch_id = branch.get('id').lstrip('/')
+        return cast(URL, f"{instance_url}/{project}{branch_id or ""}")

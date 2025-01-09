@@ -11,17 +11,6 @@ from model import SourceResponses
 class BitbucketBase(SourceCollector, ABC):
     """Base class for Bitbucket collectors."""
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """Extend to follow Bitbucket pagination links, if necessary."""
-        all_responses = responses = await super()._get_source_responses(*urls)
-        while next_urls := await self._next_urls(responses):
-            # Retrieving consecutive big responses without reading the response hangs the client, see
-            # https://github.com/aio-libs/aiohttp/issues/2217
-            for response in responses:
-                await response.read()
-            all_responses.extend(responses := await super()._get_source_responses(*next_urls))
-        return all_responses
-
     def _basic_auth_credentials(self) -> tuple[str, str] | None:
         """Override to return None, as the private token is passed as header."""
         return None
@@ -33,10 +22,6 @@ class BitbucketBase(SourceCollector, ABC):
             headers["Authorization"] = "Bearer " + str(private_token)
         return headers
 
-    async def _next_urls(self, responses: SourceResponses) -> list[URL]:
-        """Return the next (pagination) links from the responses."""
-        return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
-
 
 class BitbucketProjectBase(BitbucketBase, ABC):
     """Base class for Bitbucket collectors for a specific project."""
@@ -46,4 +31,4 @@ class BitbucketProjectBase(BitbucketBase, ABC):
         url = await super()._api_url()
         project = f"{self._parameter('owner')}/repos/{self._parameter('repository')}"
         api_url = URL(f"{url}/rest/api/1.0/projects/{project}" + (f"/{api}" if api else ""))
-        return add_query(api_url, "pagelen=100&details=true")
+        return add_query(api_url, "limit=100&details=true")

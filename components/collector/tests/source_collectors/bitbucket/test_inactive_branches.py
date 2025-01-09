@@ -3,7 +3,6 @@
 from datetime import datetime
 from dateutil.tz import tzutc
 from unittest.mock import AsyncMock
-import pdb
 
 from .base import BitbucketTestCase
 
@@ -25,7 +24,7 @@ class BitbucketInactiveBranchesTest(BitbucketTestCase):
         self.branches = self.create_branches_json([main, unmerged, ignored, active_unmerged])
         self.unmerged_branch_entity = self.create_entity("unmerged_branch")
         self.entities = [self.unmerged_branch_entity]
-        self.landing_url = "https://bitbucket/rest/api/1.0/projects/owner/repos/repository/branches?pagelen=100&details=true"
+        self.landing_url = "https://bitbucket/rest/api/1.0/projects/owner/repos/repository/branches?limit=100&details=true"
 
     def create_branch(
         self, name: str, *, default: bool = False, active: bool = False
@@ -69,40 +68,26 @@ class BitbucketInactiveBranchesTest(BitbucketTestCase):
     async def test_inactive_branches(self):
         """Test that the number of inactive branches can be measured."""
         response = await self.collect(get_request_json_return_value=self.branches)
-        # pdb.set_trace()
         self.assert_measurement(response, value="1", entities=self.entities, landing_url=self.landing_url)
 
     async def test_unmerged_inactive_branches(self):
         """Test that the number of unmerged inactive branches can be measured."""
         self.set_source_parameter("branch_merge_status", ["unmerged"])
         response = await self.collect(get_request_json_return_value=self.branches)
-        # pdb.set_trace()
         self.assert_measurement(
             response, value="1", entities=[self.unmerged_branch_entity], landing_url=self.landing_url
         )
 
-    # async def test_merged_inactive_branches(self):
-    #     """Test that the number of merged inactive branches can be measured."""
-    #     self.set_source_parameter("branch_merge_status", ["merged"])
-    #     response = await self.collect(get_request_json_return_value=self.branches)
-    #     self.assert_measurement(response, value="0", entities=[self.unmerged_branch_entity], landing_url=self.landing_url)
-
-    # async def test_pagination(self):
-    #     """Test that pagination works."""
-    #     branches = [self.branches[:3], self.branches[3:]]
-    #     links = {"next": {"url": "https://bitbucket/next_page"}}
-    #     response = await self.collect(get_request_json_side_effect=branches, get_request_links=links)
-    #     self.assert_measurement(response, value="2", entities=self.entities, landing_url=self.landing_url)
-    #
-    # async def test_private_token(self):
-    #     """Test that the private token is used."""
-    #     self.set_source_parameter("private_token", "token")
-    #     inactive_branches_json = {"data": {"repository": None}}
-    #     inactive_branches_response = AsyncMock()
-    #     inactive_branches_response.json = AsyncMock(return_value=inactive_branches_json)
-    #     response = await self.collect(get_request_json_return_value=self.branches)
-    #     self.assert_measurement(
-    #         response,
-    #         landing_url=self.landing_url,
-    #         connection_error="Pull request info for repository",
-    #     )
+    async def test_private_token(self):
+        """Test that the private token is used."""
+        self.set_source_parameter("private_token", "token")
+        inactive_branches_json = {"values": None}
+        inactive_branches_response = AsyncMock()
+        execute = AsyncMock(side_effect=[inactive_branches_response])
+        inactive_branches_response.json = AsyncMock(return_value=inactive_branches_json)
+        response = await self.collect(get_request_json_return_value=execute)
+        self.assert_measurement(
+            response,
+            landing_url=self.landing_url,
+            parse_error="Branch info for repository",
+        )
