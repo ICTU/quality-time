@@ -337,9 +337,9 @@ pydantic-core==2.27.2 \
     --hash=sha256:fa8e459d4954f608fa26116118bb67f56b93b209c39b008277ace29937453dc9 \
     --hash=sha256:fd1aea04935a508f62e0d0ef1f5ae968774a32afc306fb8545e06f5ff5cdf3ad
     # via pydantic
-pygments==2.19.0 \
-    --hash=sha256:4755e6e64d22161d5b61432c0600c923c5927214e7c956e31c23923c89251a9b \
-    --hash=sha256:afc4146269910d4bdfabcd27c24923137a74d562a23a320a41a55ad303e19783
+pygments==2.19.1 \
+    --hash=sha256:61c16d2a8576dc0649d9f39e089b5f02bcd27fba10d8fb4dcc28173f7a45151f \
+    --hash=sha256:9ea1544ad55cecf4b8242fab6dd35a93bbce657034b0611ee383099054ab6d8c
     # via
     #   furo
     #   sphinx
