@@ -17,7 +17,7 @@ class GenericJSONSecurityWarnings(JSONFileSourceCollector):
         entities = Entities()
         vulnerabilities = cast(JSONDict, json).get("vulnerabilities", [])
         for vulnerability in vulnerabilities:
-            key = md5_hash(f'{vulnerability["title"]}:{vulnerability["description"]}')
+            key = md5_hash(f"{vulnerability['title']}:{vulnerability['description']}")
             entities.append(
                 Entity(
                     key=key,

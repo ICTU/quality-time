@@ -249,11 +249,10 @@ def access_parameters(
     url_kwargs = kwargs.get("url") or {"name": "URL"}
     if source_type:
         source_type_article = "an" if source_type.startswith("an ") else "a"
-        source_type = source_type[len("an ") :] if source_type.startswith("an ") else source_type
+        source_type = source_type.removeprefix("an ")
         format_phrase = f" in {source_type_format} format" if source_type_format else ""
         url_kwargs["name"] = (
-            f"URL to {source_type_article} {source_type}{format_phrase} or to a zip "
-            f"with {source_type}s{format_phrase}"
+            f"URL to {source_type_article} {source_type}{format_phrase} or to a zip with {source_type}s{format_phrase}"
         )
     url_kwargs.setdefault("metrics", metrics)
     parameters["url"] = URL(validate_on=validate_on, **url_kwargs)

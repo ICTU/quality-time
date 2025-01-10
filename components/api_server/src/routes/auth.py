@@ -17,7 +17,7 @@ from pymongo.database import Database
 
 from database.users import upsert_user, get_user
 from database import sessions
-from initialization.secrets import EXPORT_FIELDS_KEYS_NAME
+from initialization.app_secrets import EXPORT_FIELDS_KEYS_NAME
 from utils.functions import uuid
 from utils.type import SessionId, User
 

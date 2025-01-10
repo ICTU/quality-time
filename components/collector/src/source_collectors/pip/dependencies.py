@@ -14,7 +14,7 @@ class PipDependencies(JSONFileSourceCollector):
         """Override to parse the dependencies from the JSON."""
         return Entities(
             Entity(
-                key=f'{dependency["name"]}@{dependency.get("version", "?")}',
+                key=f"{dependency['name']}@{dependency.get('version', '?')}",
                 name=dependency["name"],
                 version=dependency.get("version", "unknown"),
                 latest=dependency.get("latest_version", "unknown"),

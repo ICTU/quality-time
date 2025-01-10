@@ -161,4 +161,4 @@ class DecimalRoundHalfUpTest(unittest.TestCase):
         self.assertEqual(1, decimal_round_half_up(1.0))
         self.assertEqual(1, decimal_round_half_up(1.1))
         self.assertEqual(2, decimal_round_half_up(1.5))
-        self.assertEqual(2, decimal_round_half_up(Decimal(1.5)))
+        self.assertEqual(2, decimal_round_half_up(Decimal("1.5")))

@@ -65,7 +65,7 @@ class DependencyTrackSecurityWarnings(SecurityWarningsSourceCollector, Dependenc
         latest_version = component.get("latestVersion", "unknown")
         return Entity(
             component=component["name"],
-            component_landing_url=f"{landing_url}/components/{component["uuid"]}",
+            component_landing_url=f"{landing_url}/components/{component['uuid']}",
             description=vulnerability["description"],
             identifier=vulnerability["vulnId"],
             key=finding["matrix"],  # Matrix is a combination of project, component, and vulnerability

@@ -14,7 +14,7 @@ class ComposerDependencies(JSONFileSourceCollector):
             installed_dependencies.extend((await response.json(content_type=None)).get("installed", []))
         entities = [
             Entity(
-                key=f'{dependency["name"]}@{dependency.get("version", "?")}',
+                key=f"{dependency['name']}@{dependency.get('version', '?')}",
                 name=dependency["name"],
                 version=dependency.get("version", "unknown"),
                 homepage=dependency.get("homepage", ""),

@@ -16,5 +16,5 @@ class SonarQubeTodoAndFixmeCommentsTest(SonarQubeTestCase):
             response,
             value="2",
             total="100",
-            landing_url=f"{self.issues_landing_url}&rules={self.sonar_rules("todo_and_fixme_comment")}",
+            landing_url=f"{self.issues_landing_url}&rules={self.sonar_rules('todo_and_fixme_comment')}",
         )

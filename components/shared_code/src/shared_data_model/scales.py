@@ -14,7 +14,6 @@ SCALES = {
     ),
     "version_number": Scale(
         name="Version number",
-        description="Version numbers of sources (for example, GitLab 10.2, SonarQube 7.4.1, "
-        "Quality-time 3.27.1rc-1).",
+        description="Version numbers of sources (for example, GitLab 10.2, SonarQube 7.4.1, Quality-time 3.27.1rc-1).",
     ),
 }

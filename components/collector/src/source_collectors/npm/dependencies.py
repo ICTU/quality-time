@@ -31,7 +31,7 @@ class NpmDependencies(JSONFileSourceCollector):
 
     def _create_entity(self, dependency: str, version: DependencyVersionInfo) -> Entity:
         """Create an entity for the dependency."""
-        key = f'{dependency}@{version.get("current", "?")}'
+        key = f"{dependency}@{version.get('current', '?')}"
         name = dependency
         if "dependent" in version:
             key += f"@{version['dependent']}"

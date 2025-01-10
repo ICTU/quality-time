@@ -27,5 +27,5 @@ class SonarQubeManyParametersTest(SonarQubeTestCase):
             response,
             value="2",
             total="4",
-            landing_url=f"{self.issues_landing_url}&rules={self.sonar_rules("many_parameter")}",
+            landing_url=f"{self.issues_landing_url}&rules={self.sonar_rules('many_parameter')}",
         )

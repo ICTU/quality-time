@@ -18,8 +18,8 @@ class BanditSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceColl
         return Entities(
             [
                 Entity(
-                    key=f'{warning["test_id"]}:{warning["filename"]}:{warning["line_number"]}',
-                    location=f'{warning["filename"]}:{warning["line_number"]}',
+                    key=f"{warning['test_id']}:{warning['filename']}:{warning['line_number']}",
+                    location=f"{warning['filename']}:{warning['line_number']}",
                     issue_text=warning["issue_text"],
                     issue_severity=warning["issue_severity"].capitalize(),
                     issue_confidence=warning["issue_confidence"].capitalize(),

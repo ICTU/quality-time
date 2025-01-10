@@ -31,8 +31,7 @@ def post_source_new(metric_uuid: MetricId, database: Database):
     parameters = default_source_parameters(metric.type(), source_type)
     metric.sources_dict[(source_uuid := uuid())] = {"type": source_type, "parameters": parameters}
     delta_description = (
-        f"{{user}} added a new source to metric '{metric.name}' of subject "
-        f"'{subject.name}' in report '{report.name}'."
+        f"{{user}} added a new source to metric '{metric.name}' of subject '{subject.name}' in report '{report.name}'."
     )
     uuids = [report.uuid, subject.uuid, metric.uuid, source_uuid]
     result = insert_new_report(database, delta_description, uuids, report)

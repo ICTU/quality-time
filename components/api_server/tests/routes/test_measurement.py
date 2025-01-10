@@ -213,7 +213,7 @@ class StreamNrMeasurementsTest(DatabaseTestCase):
             stream = stream_nr_measurements(self.database)
             try:
                 self.assertEqual("retry: 2000\nid: 0\nevent: init\ndata: 42\n\n", next(stream))
-                self.assertEqual(f"retry: 2000\nid: 1\nevent: flush\ndata: {"." * 256 ** 2}\n\n", next(stream))
+                self.assertEqual(f"retry: 2000\nid: 1\nevent: flush\ndata: {'.' * 256**2}\n\n", next(stream))
                 self.assertEqual("retry: 2000\nid: 2\nevent: delta\ndata: 43\n\n", next(stream))
                 self.assertEqual("retry: 2000\nid: 3\nevent: delta\ndata: 43\n\n", next(stream))
                 self.assertEqual("retry: 2000\nid: 4\nevent: delta\ndata: 44\n\n", next(stream))
