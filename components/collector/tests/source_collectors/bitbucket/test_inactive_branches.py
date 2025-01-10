@@ -1,8 +1,9 @@
 """Unit tests for the Bitbucket inactive branches collector."""
 
 from datetime import datetime
-from dateutil.tz import tzutc
 from unittest.mock import AsyncMock
+
+from dateutil.tz import tzutc
 
 from .base import BitbucketTestCase
 

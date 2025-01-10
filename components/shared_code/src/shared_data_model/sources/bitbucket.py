@@ -17,9 +17,15 @@ BITBUCKET_BRANCH_HELP_URL = HttpUrl("https://confluence.atlassian.com/bitbuckets
 
 BITBUCKET = Source(
     name="Bitbucket",
-    description="Bitbucket is a Git-based source code hosting and collaboration tool, built for teams.",
+    description="Bitbucket is a version control platform by Atlassian that supports Git, "
+                "enabling developers to collaborate on code with features like pull requests, CI/CD, and seamless integration with tools like Jira and Trello.",
     url=HttpUrl("https://bitbucket.org/product/guides/getting-started/overview#a-brief-overview-of-bitbucket/"),
-    documentation={},
+    documentation={
+        "generic": """```{note}
+The pagination for the Bitbucket collector has not yet been implemented, and the current limit for retrieving branches for the inactive branches metric using the API is set to 100. 
+Pagination will be implemented in a future update.
+```""",
+    },
     parameters={
         "url": URL(
             name="Bitbucket instance URL",

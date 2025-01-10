@@ -3,13 +3,14 @@
 from datetime import datetime
 from typing import cast
 
-from collector_utilities.exceptions import NotFoundError
 from base_collectors import BranchType, InactiveBranchesSourceCollector
-from collector_utilities.date_time import parse_datetime
+from collector_utilities.exceptions import NotFoundError
 from collector_utilities.type import URL
+from dateutil.tz import tzutc
 from model import SourceResponses
 
 from .base import BitbucketProjectBase
+
 
 class BitbucketBranchInfoError(NotFoundError):
     """Bitbucket branch info is missing."""
@@ -44,17 +45,20 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
         branches = []
         for response in responses:
             json = await response.json()
+            metadata = "com.atlassian.bitbucket.server.bitbucket-branch:latest-commit-metadata"
             branches.extend([
                 BitbucketBranchType(
                     name=branch["displayId"],
                     default=branch["isDefault"],
-                    last_commit=datetime.fromtimestamp(branch["metadata"]["com.atlassian.bitbucket.server.bitbucket-branch:latest-commit-metadata"]["committerTimestamp"] / 1e3),
+                    last_commit=datetime.fromtimestamp(branch["metadata"][metadata]["committerTimestamp"] / 1e3,
+                        tz=tzutc),
                     id=branch["id"]
                 )
                 for branch in json["values"]
             ])
         if len(branches) == 0:
-            raise BitbucketBranchInfoError(f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}")
+            project = f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}"
+            raise BitbucketBranchInfoError(project)
         return branches
 
     def _is_default_branch(self, branch: Branch) -> bool:
@@ -71,7 +75,7 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
 
     def _branch_landing_url(self, branch: Branch) -> URL:
         """Override to get the landing URL from the branch."""
-        instance_url=super()._parameter('url')
+        instance_url=super()._parameter("url")
         project = f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}/browse?at="
-        branch_id = branch.get('id').lstrip('/')
+        branch_id = branch.get("id").lstrip("/")
         return cast(URL, f"{instance_url}/{project}{branch_id or ""}")

@@ -5,7 +5,6 @@ from abc import ABC
 from base_collectors import SourceCollector
 from collector_utilities.functions import add_query
 from collector_utilities.type import URL
-from model import SourceResponses
 
 
 class BitbucketBase(SourceCollector, ABC):
