@@ -1,6 +1,7 @@
 """Unit tests for the Bitbucket inactive branches collector."""
 
 from datetime import datetime
+from typing import Dict
 from unittest.mock import AsyncMock
 
 from dateutil.tz import tzutc
@@ -31,7 +32,7 @@ class BitbucketInactiveBranchesTest(BitbucketTestCase):
 
     def create_branch(
         self, name: str, *, default: bool = False, active: bool = False
-    ) -> dict[str, str | bool | dict[str, str]]:
+    ) -> dict[str, str | bool | dict[str, dict[str, float | int]]]:
         """Create a Bitbucket branch."""
         commit_date = (datetime.now(tz=tzutc()).timestamp() if active else 1554197584) * 1000
         return {

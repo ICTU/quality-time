@@ -27,6 +27,7 @@ class BitbucketBranchInfoError(NotFoundError):
 class BitbucketBranchType(BranchType):
     """Bitbucket branch information as returned by the API."""
 
+    id: str
     default: bool
     last_commit: datetime
 
@@ -42,7 +43,7 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
         """Extend to add the project branches."""
         return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/browse")
 
-    async def _branches(self, responses: SourceResponses) -> list[Branch]:
+    async def _branches(self, responses: SourceResponses) -> list[BitbucketBranchType]:
         """Return a list of branches from the responses."""
         branches = []
         for response in responses:
@@ -82,5 +83,5 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
         """Override to get the landing URL from the branch."""
         instance_url = super()._parameter("url")
         project = f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}/browse?at="
-        branch_id = branch.get("id").lstrip("/")
+        branch_id = str(branch.get("id")).lstrip("/")
         return cast(URL, f"{instance_url}/{project}{branch_id or ''}")
