@@ -9,7 +9,7 @@ from pymongo.database import Database
 from .migrations import perform_migrations
 from .datamodel import import_datamodel
 from .report import import_example_reports, initialize_reports_overview
-from .secrets import initialize_secrets
+from .app_secrets import initialize_secrets
 
 
 def init_database(database: Database) -> None:  # pragma: no feature-test-cover

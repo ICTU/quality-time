@@ -23,7 +23,7 @@ class SARIFJSONBase(JSONFileSourceCollector):
                 ]
                 entities.append(
                     Entity(
-                        key=f'{rule["id"]}@{",".join(locations)}',
+                        key=f"{rule['id']}@{','.join(locations)}",
                         message=result["message"]["text"],
                         level=result["level"],
                         locations=", ".join(locations),

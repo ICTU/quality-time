@@ -50,11 +50,11 @@ class DependencyTrackDependencies(DependencyTrackLatestVersionStatusBase):
         landing_url = str(self._parameter("landing_url")).strip("/")
         return Entity(
             component=component["name"],
-            component_landing_url=f"{landing_url}/components/{component["uuid"]}",
+            component_landing_url=f"{landing_url}/components/{component['uuid']}",
             key=component["uuid"],
             latest=latest_version,
             latest_version_status=self._latest_version_status(current_version, latest_version),
             project=project["name"],
-            project_landing_url=f"{landing_url}/projects/{project["uuid"]}",
+            project_landing_url=f"{landing_url}/projects/{project['uuid']}",
             version=current_version,
         )

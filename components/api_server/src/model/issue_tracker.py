@@ -222,7 +222,7 @@ class IssueTracker:
         except Exception as reason:
             logging.warning("Getting epics at %s failed: %s", api_url, reason)
         return [
-            Option(str(epic["key"]), f'{cast(dict[str, dict[str, str]], epic)["fields"]["summary"]} ({epic["key"]})')
+            Option(str(epic["key"]), f"{cast(dict[str, dict[str, str]], epic)['fields']['summary']} ({epic['key']})")
             for epic in epics
         ]
 
