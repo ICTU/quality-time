@@ -18,8 +18,8 @@ BITBUCKET_BRANCH_HELP_URL = HttpUrl("https://confluence.atlassian.com/bitbuckets
 BITBUCKET = Source(
     name="Bitbucket",
     description="Bitbucket is a version control platform by Atlassian that supports Git, "
-                "enabling developers to collaborate on code with features like pull requests, "
-                "CI/CD, and seamless integration with tools like Jira and Trello.",
+    "enabling developers to collaborate on code with features like pull requests, "
+    "CI/CD, and seamless integration with tools like Jira and Trello.",
     url=HttpUrl("https://bitbucket.org/product/guides/getting-started/overview#a-brief-overview-of-bitbucket/"),
     documentation={
         "generic": """```{note}

@@ -3,10 +3,11 @@
 from datetime import datetime
 from typing import cast
 
+from dateutil.tz import tzutc
+
 from base_collectors import BranchType, InactiveBranchesSourceCollector
 from collector_utilities.exceptions import NotFoundError
 from collector_utilities.type import URL
-from dateutil.tz import tzutc
 from model import SourceResponses
 
 from .base import BitbucketProjectBase
