@@ -48,16 +48,19 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
         for response in responses:
             json = await response.json()
             metadata = "com.atlassian.bitbucket.server.bitbucket-branch:latest-commit-metadata"
-            branches.extend([
-                BitbucketBranchType(
-                    name=branch["displayId"],
-                    default=branch["isDefault"],
-                    last_commit=datetime.fromtimestamp(branch["metadata"][metadata]["committerTimestamp"] / 1e3,
-                        tz=tzutc()),
-                    id=branch["id"]
-                )
-                for branch in json["values"]
-            ])
+            branches.extend(
+                [
+                    BitbucketBranchType(
+                        name=branch["displayId"],
+                        default=branch["isDefault"],
+                        last_commit=datetime.fromtimestamp(
+                            branch["metadata"][metadata]["committerTimestamp"] / 1e3, tz=tzutc()
+                        ),
+                        id=branch["id"],
+                    )
+                    for branch in json["values"]
+                ]
+            )
         if len(branches) == 0:
             project = f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}"
             raise BitbucketBranchInfoError(project)
@@ -77,7 +80,7 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
 
     def _branch_landing_url(self, branch: Branch) -> URL:
         """Override to get the landing URL from the branch."""
-        instance_url=super()._parameter("url")
+        instance_url = super()._parameter("url")
         project = f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}/browse?at="
         branch_id = branch.get("id").lstrip("/")
-        return cast(URL, f"{instance_url}/{project}{branch_id or ""}")
+        return cast(URL, f"{instance_url}/{project}{branch_id or ''}")

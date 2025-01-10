@@ -25,7 +25,9 @@ class BitbucketInactiveBranchesTest(BitbucketTestCase):
         self.branches = self.create_branches_json([main, unmerged, ignored, active_unmerged])
         self.unmerged_branch_entity = self.create_entity("unmerged_branch")
         self.entities = [self.unmerged_branch_entity]
-        self.landing_url = "https://bitbucket/rest/api/1.0/projects/owner/repos/repository/branches?limit=100&details=true"
+        self.landing_url = (
+            "https://bitbucket/rest/api/1.0/projects/owner/repos/repository/branches?limit=100&details=true"
+        )
 
     def create_branch(
         self, name: str, *, default: bool = False, active: bool = False
@@ -43,18 +45,12 @@ class BitbucketInactiveBranchesTest(BitbucketTestCase):
                 "com.atlassian.bitbucket.server.bitbucket-branch:latest-commit-metadata": {
                     "committerTimestamp": commit_date
                 }
-            }
+            },
         }
 
     def create_branches_json(self, branches):
         """Create an entity."""
-        return {
-            "size": len(branches),
-            "limit": 25,
-            "isLastPage": True,
-            "start": 0,
-            "values": branches
-        }
+        return {"size": len(branches), "limit": 25, "isLastPage": True, "start": 0, "values": branches}
 
     def create_entity(self, name: str) -> dict[str, str]:
         """Create an entity."""
