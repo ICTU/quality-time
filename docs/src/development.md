@@ -395,7 +395,11 @@ ci/quality.sh
 src/source_collectors/file_source_collectors/cloc.py:26: unused class 'ClocLOC' (60% confidence)
 ```
 
-Add `Cloc*` to the `NAMES_TO_IGNORE` in [`components/collector/ci/quality.sh`](https://github.com/ICTU/quality-time/blob/master/components/collector/ci/quality.sh) to suppress Vulture's warning.
+Add `ClocLOC` to the `.vulture_ignore_list.py` as follows to suppress Vulture's warning:
+
+```console
+uvx vulture --min-confidence 0 --make-whitelist src tests > .vulture_ignore_list.py
+```
 
 ## Testing
 
