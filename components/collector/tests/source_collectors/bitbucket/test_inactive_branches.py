@@ -1,7 +1,6 @@
 """Unit tests for the Bitbucket inactive branches collector."""
 
 from datetime import datetime
-from typing import Dict
 from unittest.mock import AsyncMock
 
 from dateutil.tz import tzutc
