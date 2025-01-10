@@ -22,6 +22,7 @@ class BitbucketBranchInfoError(NotFoundError):
         )
         super().__init__("Branch info for repository", project, extra=tip)
 
+
 class BitbucketBranchType(BranchType):
     """Bitbucket branch information as returned by the API."""
 
