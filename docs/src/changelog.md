@@ -22,6 +22,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - When measuring missing metrics, make the subject type and the metric type of the missing metrics link to the reference documentation. Closes [#10528](https://github.com/ICTU/quality-time/issues/10528).
 
+### Changed
+
+- Support for Trello as source for metrics is deprecated and marked for removal in the future. Closes [#10613](https://github.com/ICTU/quality-time/issues/10613).
+
 ## v5.21.0 - 2024-12-12
 
 ### Fixed
