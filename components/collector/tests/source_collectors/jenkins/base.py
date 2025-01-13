@@ -15,6 +15,7 @@ class JenkinsTestCase(SourceCollectorTestCase):
         self.builds = [
             {"result": "FAILURE", "timestamp": 1552686540953},
             {"result": "SUCCESS", "timestamp": 1552686531953},
+            {"timestamp": 1552686531953},
         ]
         self.job_url = "https://job"
         self.job2_url = "https://job2"

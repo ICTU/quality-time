@@ -32,11 +32,11 @@ async function clickDownload(nrClicks = 1) {
 }
 
 function expectButtonIsLoading() {
-    expect(screen.getAllByLabelText(/Download/)[0].className).toContain("MuiCircularProgress-indeterminate")
+    expect(screen.getByRole("button").className).toContain("MuiLoadingButton-loading")
 }
 
 function expectButtonIsNotLoading() {
-    expect(screen.getByLabelText(/Download/).className).not.toContain("MuiCircularProgress-indeterminate")
+    expect(screen.getByRole("button").className).not.toContain("MuiLoadingButton-loading")
 }
 
 function mockGetReportPDFWithTimeout() {
