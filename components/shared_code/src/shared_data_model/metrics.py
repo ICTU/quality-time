@@ -479,6 +479,7 @@ report(s).
             "sonarqube",
             "testng",
             "trello",
+            "trivy_json",
             "visual_studio_trx",
         ],
         tags=[Tag.CI],

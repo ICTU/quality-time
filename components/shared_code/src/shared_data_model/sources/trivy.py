@@ -6,6 +6,8 @@ from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import FixAvailability, Severities, access_parameters
 
+ALL_TRIVY_JSON_METRICS = ["security_warnings", "source_up_to_dateness"]
+
 TRIVY_JSON = Source(
     name="Trivy JSON",
     description="A Trivy vulnerability report in JSON format.",
@@ -16,10 +18,13 @@ TRIVY_JSON = Source(
             placeholder="all levels",
             help="If provided, only count security warnings with the selected levels.",
             values=["unknown", "low", "medium", "high", "critical"],
-            metrics=["security_warnings"],
         ),
         "fix_availability": FixAvailability(),
-        **access_parameters(["security_warnings"], source_type="Trivy vulnerability report", source_type_format="JSON"),
+        **access_parameters(
+            ALL_TRIVY_JSON_METRICS,
+            source_type="Trivy vulnerability report",
+            source_type_format="JSON",
+        ),
     },
     entities={
         "security_warnings": Entity(

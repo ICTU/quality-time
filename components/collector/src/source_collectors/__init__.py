@@ -159,6 +159,7 @@ from .testng.tests import TestNGTests
 from .trello.issues import TrelloIssues
 from .trello.source_up_to_dateness import TrelloSourceUpToDateness
 from .trivy.security_warnings import TrivyJSONSecurityWarnings
+from .trivy.source_up_to_dateness import TrivyJSONSourceUpToDateness
 from .visual_studio_trx.source_up_to_dateness import VisualStudioTRXSourceUpToDateness
 from .visual_studio_trx.test_cases import VisualStudioTRXTestCases
 from .visual_studio_trx.tests import VisualStudioTRXTests
