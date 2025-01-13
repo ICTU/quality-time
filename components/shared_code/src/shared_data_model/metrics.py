@@ -462,6 +462,7 @@ report(s).
             "dependency_track",
             "gatling",
             "gitlab",
+            "harbor_json",
             "jacoco",
             "jacoco_jenkins_plugin",
             "jenkins",

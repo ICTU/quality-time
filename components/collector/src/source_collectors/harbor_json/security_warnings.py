@@ -1,36 +1,12 @@
 """Harbor JSON security warnings collector."""
 
-from typing import Final, TypedDict, cast
+from typing import cast
 
 from base_collectors import JSONFileSourceCollector, SecurityWarningsSourceCollector
 from collector_utilities.type import JSON
 from model import Entities, Entity
 
-REPORT_MIME_TYPE: Final = "application/vnd.security.vulnerability.report; version=1.1"
-
-
-class Vulnerability(TypedDict):
-    """A Harbor JSON vulnerability."""
-
-    id: str
-    package: str
-    version: str
-    fix_version: str
-    severity: str
-    description: str
-    links: list[str]
-
-
-class HarborJSONVulnerabilityReport(TypedDict):
-    """A Harbor JSON vulnerability report."""
-
-    vulnerabilities: list[Vulnerability]
-
-
-HarborJSON = TypedDict(
-    "HarborJSON",
-    {"application/vnd.security.vulnerability.report; version=1.1": HarborJSONVulnerabilityReport},
-)
+from .base import REPORT_MIME_TYPE, HarborJSON
 
 
 class HarborJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceCollector):

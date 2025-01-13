@@ -81,6 +81,8 @@ HARBOR = Source(
     },
 )
 
+ALL_HARBOR_JSON_METRICS = ["security_warnings", "source_up_to_dateness"]
+
 HARBOR_JSON = Source(
     name="Harbor JSON",
     description=(
@@ -91,7 +93,11 @@ HARBOR_JSON = Source(
     parameters={
         "severities": Severities(values=["unknown", "low", "medium", "high", "critical"]),
         "fix_availability": FixAvailability(),
-        **access_parameters(ALL_HARBOR_METRICS, source_type="Harbor vulnerability report", source_type_format="JSON"),
+        **access_parameters(
+            ALL_HARBOR_JSON_METRICS,
+            source_type="Harbor vulnerability report",
+            source_type_format="JSON",
+        ),
     },
     entities={
         "security_warnings": Entity(
