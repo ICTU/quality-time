@@ -51,6 +51,8 @@ TRELLO_APP_KEY_URL = HttpUrl(f"{TRELLO_URL}/app-key")
 TRELLO = Source(
     name="Trello",
     description="Trello is a collaboration tool that organizes projects into boards.",
+    deprecated=True,
+    deprecation_url=HttpUrl("https://github.com/ICTU/quality-time/issues/10613"),
     url=HttpUrl(TRELLO_URL),
     parameters={
         "url": URL(
