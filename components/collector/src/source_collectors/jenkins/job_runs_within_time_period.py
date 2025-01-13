@@ -36,4 +36,4 @@ class JenkinsJobRunsWithinTimePeriod(JenkinsJobs):
         result_types = [result_type.lower() for result_type in self._parameter("result_type")]
         lookback_days = int(cast(str, self._parameter("lookback_days")))
         build_datetime = datetime_from_timestamp(int(build["timestamp"]))
-        return days_ago(build_datetime) <= lookback_days and build["result"].lower() in result_types
+        return days_ago(build_datetime) <= lookback_days and build.get("result", "").lower() in result_types

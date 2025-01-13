@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 ### Fixed
 
 - Don't throw an exception when a Trivy JSON file contains vulnerabilities without fixed version information. Fixes [#10606](https://github.com/ICTU/quality-time/issues/10606).
+- When measuring the number of job runs within a time period with Jenkins as source, don't throw an exception when a Jenkins pipeline build has no result yet. Fixes [#10610](https://github.com/ICTU/quality-time/issues/10610).
 
 ### Added
 
