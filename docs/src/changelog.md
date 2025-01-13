@@ -23,6 +23,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - When measuring missing metrics, make the subject type and the metric type of the missing metrics link to the reference documentation. Closes [#10528](https://github.com/ICTU/quality-time/issues/10528).
 - Allow for measuring the source up-to-dateness of Trivy JSON reports. Closes [#10608](https://github.com/ICTU/quality-time/issues/10608).
+- Allow for measuring the source up-to-dateness of Harbor JSON reports. Closes [#10609](https://github.com/ICTU/quality-time/issues/10609).
 - Support version 4.1 of the OWASP Dependency-Check DTD (OWASP Dependency-Check version 12.0.0). Closes [#10645](https://github.com/ICTU/quality-time/issues/10645).
 
 ### Changed
