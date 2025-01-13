@@ -21,6 +21,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 ### Added
 
 - When measuring missing metrics, make the subject type and the metric type of the missing metrics link to the reference documentation. Closes [#10528](https://github.com/ICTU/quality-time/issues/10528).
+- Support version 4.1 of the OWASP Dependency-Check DTD (OWASP Dependency-Check version 12.0.0). Closes [#10645](https://github.com/ICTU/quality-time/issues/10645).
 
 ### Changed
 
