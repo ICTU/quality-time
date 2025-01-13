@@ -29,6 +29,7 @@ class BitbucketBranchType(BranchType):
 
     id: str
     default: bool
+    last_commit: datetime
 
 
 class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBase, InactiveBranchesSourceCollector):
