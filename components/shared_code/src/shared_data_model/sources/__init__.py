@@ -4,6 +4,7 @@ from .anchore import ANCHORE, ANCHORE_JENKINS_PLUGIN
 from .axe import AXE_CORE, AXE_CSV, AXE_HTML_REPORTER
 from .azure_devops import AZURE_DEVOPS
 from .bandit import BANDIT
+from .bitbucket import BITBUCKET
 from .calendar_date import CALENDAR
 from .cargo_audit import CARGO_AUDIT
 from .cloc import CLOC
@@ -49,6 +50,7 @@ SOURCES = {
     "axecsv": AXE_CSV,
     "azure_devops": AZURE_DEVOPS,
     "bandit": BANDIT,
+    "bitbucket": BITBUCKET,
     "calendar": CALENDAR,
     "cargo_audit": CARGO_AUDIT,
     "cloc": CLOC,
