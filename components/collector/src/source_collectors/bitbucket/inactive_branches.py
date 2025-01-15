@@ -55,7 +55,7 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
                         name=branch["displayId"],
                         default=branch["isDefault"],
                         last_commit=datetime_from_timestamp(
-                            branch["metadata"][metadata]["committerTimestamp"] / 1e3, tz=tzutc()
+                            branch["metadata"][metadata]["committerTimestamp"] / 1e3
                         ),
                         id=branch["id"],
                     )
