@@ -7,7 +7,6 @@ from base_collectors import BranchType, InactiveBranchesSourceCollector
 from collector_utilities.date_time import datetime_from_timestamp
 from collector_utilities.exceptions import NotFoundError
 from collector_utilities.type import URL
-from dateutil.tz import tzutc
 from model import SourceResponses
 
 from .base import BitbucketProjectBase
@@ -55,7 +54,7 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
                         name=branch["displayId"],
                         default=branch["isDefault"],
                         last_commit=datetime_from_timestamp(
-                            branch["metadata"][metadata]["committerTimestamp"] / 1e3
+                            branch["metadata"][metadata]["committerTimestamp"]
                         ),
                         id=branch["id"],
                     )
