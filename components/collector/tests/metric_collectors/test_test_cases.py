@@ -108,6 +108,13 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         """Test missing sources."""
         self.assertIsNone(await self.collect({}))
 
+    async def test_no_test_cases(self):
+        """Test missing test cases."""
+        self.response.text = AsyncMock(return_value=self.JUNIT_XML)
+        junit = {"type": "junit", "parameters": {"url": self.test_report_url}}
+        measurement = await self.collect({"junit": junit})
+        self.assertEqual("No test case keys found in this source", measurement.sources[0].parse_error)
+
     async def test_no_test_report(self):
         """Test missing test report."""
         measurement = await self.collect({"jira": {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql"}}})
