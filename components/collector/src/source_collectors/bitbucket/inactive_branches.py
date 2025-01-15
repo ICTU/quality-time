@@ -3,14 +3,14 @@
 from datetime import datetime
 from typing import cast
 
-from dateutil.tz import tzutc
-
 from base_collectors import BranchType, InactiveBranchesSourceCollector
 from collector_utilities.exceptions import NotFoundError
 from collector_utilities.type import URL
+from dateutil.tz import tzutc
 from model import SourceResponses
 
 from .base import BitbucketProjectBase
+from ...collector_utilities.date_time import datetime_from_timestamp
 
 
 class BitbucketBranchInfoError(NotFoundError):
@@ -46,15 +46,15 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
     async def _branches(self, responses: SourceResponses) -> list[BitbucketBranchType]:
         """Return a list of branches from the responses."""
         branches = []
+        metadata = "com.atlassian.bitbucket.server.bitbucket-branch:latest-commit-metadata"
         for response in responses:
             json = await response.json()
-            metadata = "com.atlassian.bitbucket.server.bitbucket-branch:latest-commit-metadata"
             branches.extend(
                 [
                     BitbucketBranchType(
                         name=branch["displayId"],
                         default=branch["isDefault"],
-                        last_commit=datetime.fromtimestamp(
+                        last_commit=datetime_from_timestamp(
                             branch["metadata"][metadata]["committerTimestamp"] / 1e3, tz=tzutc()
                         ),
                         id=branch["id"],
@@ -73,6 +73,7 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
 
     def _is_branch_merged(self, branch: Branch) -> bool:
         """Return whether the branch has been merged with the default branch."""
+        """The merged value is always set to false because the Bitbucket API does not include a merged field."""
         return False
 
     def _commit_datetime(self, branch: Branch) -> datetime:
