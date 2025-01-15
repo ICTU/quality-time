@@ -17,7 +17,10 @@ class JUnitTestSuites(XMLFileSourceCollector):
         total = 0
         for response in responses:
             tree = await parse_source_response_xml(response)
-            test_suites = [tree] if tree.tag == "testsuite" else tree.findall(".//testsuite[testcase]")
+            if tree.tag == "testsuite" and len(tree.findall("testsuite")) == 0:
+                test_suites = [tree]
+            else:
+                test_suites = tree.findall(".//testsuite[testcase]")
             for test_suite in test_suites:
                 parsed_entity = self.__entity(test_suite)
                 if self._include_entity(parsed_entity):

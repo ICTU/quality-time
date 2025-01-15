@@ -67,3 +67,16 @@ class JUnitTestSuitesTest(JUnitCollectorTestCase):
         response = await self.collect(get_request_text=xml)
         expected_entities = [self.create_entity("ts1", "errored", errored=1)]
         self.assert_measurement(response, value="1", total="1", entities=expected_entities)
+
+    async def test_one_top_level_nested_test_suite(self):
+        """Test that a JUnit XML file with one top level nested test suite works."""
+        xml = """
+        <testsuite name="ts1" timestamp="2009-12-19T17:58:59" failures="0" errors="1" skipped="0" tests="1">
+            <testsuite name="ts1-1" timestamp="2009-12-19T17:58:59" failures="0" errors="1" skipped="0" tests="1">
+                <testcase name="tc1" classname="cn"><error/></testcase>
+            </testsuite>
+        </testsuite>
+        """
+        response = await self.collect(get_request_text=xml)
+        expected_entities = [self.create_entity("ts1-1", "errored", errored=1)]
+        self.assert_measurement(response, value="1", total="1", entities=expected_entities)
