@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Added
 
+- Support Bitbucket as source for the 'inactive branches' metric. Note that the amount of branches checked is limited to 100 because pagination for the Bitbucket API has not been implemented yet. Closes [#10083](https://github.com/ICTU/quality-time/issues/10083).
 - When measuring missing metrics, make the subject type and the metric type of the missing metrics link to the reference documentation. Closes [#10528](https://github.com/ICTU/quality-time/issues/10528).
 - Allow for measuring the source up-to-dateness of Trivy JSON reports. Closes [#10608](https://github.com/ICTU/quality-time/issues/10608).
 - Allow for measuring the source up-to-dateness of Harbor JSON reports. Closes [#10609](https://github.com/ICTU/quality-time/issues/10609).
