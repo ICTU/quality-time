@@ -79,6 +79,10 @@ class TestCases(MetricCollector):
             return None
         test_cases = self.test_cases(measurement.sources)
         test_case_keys = set(test_cases.keys())
+        if not test_case_keys:
+            for source in measurement.sources:
+                source.parse_error = "No test case keys found in this source"
+            return measurement
         # Derive the test result of the test cases from the test results of the tests
         for entity in self.test_report_entities(measurement.sources):
             for test_case_key in self.referenced_test_cases(entity) & test_case_keys:
