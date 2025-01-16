@@ -22,7 +22,7 @@
         "react-hash-link": "1.0.2",
         "react-is": "^18.3.1",
         "react-timeago": "^7.2.0",
-        "react-toastify": "^11.0.2",
+        "react-toastify": "^11.0.3",
         "semantic-ui-react": "^2.1.5",
         "victory": "^37.3.6"
     },
@@ -59,7 +59,7 @@
         "@testing-library/user-event": "^14.5.2",
         "eslint": "^9.18.0",
         "eslint-config-prettier": "^10.0.1",
-        "eslint-plugin-jest": "^28.10.0",
+        "eslint-plugin-jest": "^28.11.0",
         "eslint-plugin-n": "^17.15.1",
         "eslint-plugin-prettier": "^5.2.1",
         "eslint-plugin-promise": "^7.2.1",
