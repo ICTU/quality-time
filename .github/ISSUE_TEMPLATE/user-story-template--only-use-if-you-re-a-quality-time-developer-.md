@@ -2,7 +2,7 @@
 name: User story template [only use if you're a Quality-time developer]
 about: Document what, why and how needs to be changed
 title: ''
-labels: Feature
+type: Feature
 assignees: ''
 
 ---
