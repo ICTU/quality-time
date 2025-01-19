@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Fixed
+
+- Docker compose has been integrated into Docker as a subcommand for a while, but the developer documentation did not reflect that. Change `docker-compose` to `docker compose` in the documentation. Fixes [#10684](https://github.com/ICTU/quality-time/issues/10684).
+
 ### Changed
 
 - Completed the replacement of Semantic UI React with Material UI as frontend component library. Closes [#9796](https://github.com/ICTU/quality-time/issues/9796).

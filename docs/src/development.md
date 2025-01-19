@@ -444,7 +444,7 @@ tests/feature_tests/ci/test.sh tests/feature_tests/features/metric.feature
 The application tests in theory test all components through the frontend, but unfortunately the number of tests is too small to meet that goal. To run the application tests, start all components and then start the tests:
 
 ```console
-docker-compose up -d
+docker compose up -d
 docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 ghcr.io/astral-sh/uv:python3.13-bookworm tests/application_tests/ci/test.sh
 ```
 
