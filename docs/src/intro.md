@@ -98,6 +98,7 @@ Implemented features include:
 - Side-by-side comparison of measurements at different points in time.
 - Integration with issue tracker (Jira only at the moment) to manage actions and technical debt.
 - Dark and light UI mode.
+- Runs on Docker and Kubernetes.
 
 ```{seealso}
 For more plans, see the [issue tracker](https://github.com/ICTU/quality-time/issues).
@@ -105,7 +106,7 @@ For more plans, see the [issue tracker](https://github.com/ICTU/quality-time/iss
 
 # Trying it out
 
-*Quality-time* requires Docker and Docker-compose.
+*Quality-time* requires Docker or Kubernetes, but the easiest way to try it out locally is to use Docker.
 
 Clone this repository:
 
@@ -116,13 +117,13 @@ git clone https://github.com/ICTU/quality-time.git
 Build the containers:
 
 ```console
-docker-compose build
+docker compose build
 ```
 
 Start the containers:
 
 ```console
-docker-compose up
+docker compose up
 ```
 
 *Quality-time* is served at [http://localhost](http://localhost). Use username `jadoe` and password `secret` to log in.

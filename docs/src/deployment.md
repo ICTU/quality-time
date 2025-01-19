@@ -14,7 +14,7 @@ Before skipping versions or downgrading, see the [version policy](versioning.md)
 
 ## Docker-composition
 
-This document assumes docker-compose is used to deploy the containers. The [docker folder](https://github.com/ICTU/quality-time/tree/master/docker) of the *Quality-time* repository contains different compose files for running *Quality-time* in development and continuous integration mode. You can use these compose files as basis for your own deployment configuration.
+This document assumes Docker is used to deploy the containers. The [docker folder](https://github.com/ICTU/quality-time/tree/master/docker) of the *Quality-time* repository contains different compose files for running *Quality-time* in development and continuous integration mode. You can use these compose files as basis for your own deployment configuration.
 
 ```{note}
 Per the [version policy](versioning.md), if the Docker-composition needs changes, this will be indicated by a new major release of *Quality-time*.
