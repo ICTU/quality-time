@@ -3,7 +3,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import dayjs from "dayjs"
-import { locale_en_gb } from "dayjs/locale/en-gb"
 
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
@@ -38,7 +37,7 @@ const dataModel = {
 
 function renderMetricDebtParameters({ accept_debt = false, debt_end_date = null } = {}) {
     render(
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale_en_gb}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <DataModel.Provider value={dataModel}>
                     <MetricDebtParameters
@@ -113,12 +112,11 @@ it("undoes changes to a comment", async () => {
 it("sets the technical debt end date", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     renderMetricDebtParameters()
-    await userEvent.type(screen.getByPlaceholderText(/YYYY-MM-DD/), "20221231{Enter}")
-    const expectedDate = dayjs("2022-12-31")
+    await userEvent.type(screen.getByPlaceholderText(/YYYY/), "12312022{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
         "post",
         "metric/metric_uuid/attribute/debt_end_date",
-        { debt_end_date: expectedDate },
+        { debt_end_date: dayjs("2022-12-31") },
     )
 })
 

@@ -73,7 +73,6 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
         <DatePicker
             defaultValue={debtEndDateTime}
             disabled={disabled}
-            format="YYYY-MM-DD"
             label="Technical debt end date"
             onChange={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
             slotProps={{ field: { clearable: true }, textField: { helperText: helperText } }}

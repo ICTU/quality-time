@@ -2,7 +2,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { locale_en_gb } from "dayjs/locale/en-gb"
 
 import * as fetch_server_api from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
@@ -48,7 +47,7 @@ function renderSourceParameter({
     warning = false,
 }) {
     return render(
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale_en_gb}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <SourceParameter
                     help={help}
@@ -100,7 +99,7 @@ it("renders a date parameter", () => {
         parameter_value: "2021-10-10",
     })
     expect(screen.queryAllByLabelText(/Date/).length).toBe(1)
-    expect(screen.queryAllByDisplayValue("2021-10-10").length).toBe(1)
+    expect(screen.queryAllByDisplayValue("10/10/2021").length).toBe(1)
 })
 
 it("renders a date parameter without date", () => {
@@ -110,7 +109,7 @@ it("renders a date parameter without date", () => {
         parameter_value: "",
     })
     expect(screen.queryAllByLabelText(/Date/).length).toBe(1)
-    expect(screen.queryAllByPlaceholderText(/YYYY-MM-DD/).length).toBe(1)
+    expect(screen.queryAllByPlaceholderText(/YYYY/).length).toBe(1)
 })
 
 it("renders an integer parameter", () => {

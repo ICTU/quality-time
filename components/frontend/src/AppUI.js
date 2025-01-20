@@ -4,7 +4,6 @@ import "./App.css"
 import { useColorScheme } from "@mui/material/styles"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { locale_en_gb } from "dayjs/locale/en-gb"
 import { bool, func, number, object, string } from "prop-types"
 import HashLinkObserver from "react-hash-link"
 import { ToastContainer } from "react-toastify"
@@ -15,6 +14,7 @@ import { Permissions } from "./context/Permissions"
 import { Footer } from "./header_footer/Footer"
 import { Menubar } from "./header_footer/Menubar"
 import { SettingsPanel } from "./header_footer/SettingsPanel"
+import { adapterLocale } from "./locale"
 import { PageContent } from "./PageContent"
 import {
     datePropType,
@@ -63,9 +63,8 @@ export function AppUI({
             settings.sortColumn.set(column)
         }
     }
-
     return (
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale_en_gb}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={adapterLocale(navigator.language)}>
             <HashLinkObserver />
             <Menubar
                 email={email}
