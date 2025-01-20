@@ -1,6 +1,5 @@
 import PictureAsPdf from "@mui/icons-material/PictureAsPdf"
-import { LoadingButton } from "@mui/lab"
-import { Tooltip } from "@mui/material"
+import { Button, Tooltip } from "@mui/material"
 import { string } from "prop-types"
 import { useState } from "react"
 
@@ -8,9 +7,9 @@ import { get_report_pdf } from "../../api/report"
 import { registeredURLSearchParams } from "../../hooks/url_search_query"
 import { showMessage } from "../../widgets/toast"
 
-function download_pdf(report_uuid, query_string, callback) {
+function downloadPDF(report_uuid, queryString, callback) {
     const reportId = report_uuid ? `report-${report_uuid}` : "reports-overview"
-    return get_report_pdf(report_uuid, query_string)
+    return get_report_pdf(report_uuid, queryString)
         .then((response) => {
             if (response.ok === false) {
                 showMessage(
@@ -43,20 +42,21 @@ export function DownloadAsPDFButton({ report_uuid }) {
     const label = `Download ${itemType} as PDF`
     return (
         <Tooltip title={`Generate a PDF version of the ${itemType} as currently displayed. This may take some time.`}>
-            <LoadingButton
+            <Button
                 aria-label={label}
                 color="inherit"
                 loading={loading}
+                loadingPosition="start"
                 onClick={() => {
                     setLoading(true)
-                    download_pdf(report_uuid, `?${query.toString()}`, () => {
+                    downloadPDF(report_uuid, `?${query.toString()}`, () => {
                         setLoading(false)
                     })
                 }}
                 startIcon={<PictureAsPdf />}
             >
                 Download as PDF
-            </LoadingButton>
+            </Button>
         </Tooltip>
     )
 }
