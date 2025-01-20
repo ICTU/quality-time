@@ -185,7 +185,6 @@ export function SourceParameter({
             <DatePicker
                 {...parameterProps}
                 defaultValue={parameter_value ? dayjs(parameter_value) : null}
-                format="YYYY-MM-DD"
                 slotProps={{
                     field: { clearable: true },
                     textField: { helperText: helperText, InputProps: { startAdornment: startAdornment } },

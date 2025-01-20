@@ -3,7 +3,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import dayjs from "dayjs"
-import { locale_en_gb } from "dayjs/locale/en-gb"
 
 import * as source from "../api/source"
 import { EDIT_ENTITY_PERMISSION, Permissions } from "../context/Permissions"
@@ -15,7 +14,7 @@ const reload = jest.fn
 
 function renderSourceEntityDetails({ report = null, status_end_date = null } = {}) {
     render(
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale_en_gb}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Permissions.Provider value={[EDIT_ENTITY_PERMISSION]}>
                 <SourceEntityDetails
                     metric_uuid="metric_uuid"
@@ -94,13 +93,13 @@ it("changes the entity status", () => {
 it("shows the entity status end date", async () => {
     source.set_source_entity_attribute = jest.fn()
     renderSourceEntityDetails({ status_end_date: "20250112" })
-    expect(screen.queryAllByDisplayValue(/2025-01-12/).length).toBe(1)
+    expect(screen.queryAllByDisplayValue("01/12/2025").length).toBe(1)
 })
 
 it("changes the entity status end date", async () => {
     source.set_source_entity_attribute = jest.fn()
     renderSourceEntityDetails()
-    await userEvent.type(screen.getByPlaceholderText(/YYYY-MM-DD/), "22220101{Enter}")
+    await userEvent.type(screen.getByPlaceholderText(/YYYY/), "01012222{Enter}")
     expect(source.set_source_entity_attribute).toHaveBeenCalledWith(
         "metric_uuid",
         "source_uuid",
