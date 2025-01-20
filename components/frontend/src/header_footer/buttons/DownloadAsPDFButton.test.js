@@ -32,11 +32,11 @@ async function clickDownload(nrClicks = 1) {
 }
 
 function expectButtonIsLoading() {
-    expect(screen.getByRole("button").className).toContain("MuiLoadingButton-loading")
+    expect(screen.getByRole("button").className).toContain("MuiButton-loading")
 }
 
 function expectButtonIsNotLoading() {
-    expect(screen.getByRole("button").className).not.toContain("MuiLoadingButton-loading")
+    expect(screen.getByRole("button").className).not.toContain("MuiButton-loading")
 }
 
 function mockGetReportPDFWithTimeout() {
