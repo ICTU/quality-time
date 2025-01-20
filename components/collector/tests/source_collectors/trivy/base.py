@@ -53,6 +53,12 @@ class TrivyJSONTestCase(SourceCollectorTestCase):
                         "Severity": "LOW",
                         "References": ["https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-5432"],
                     },
+                    {
+                        "VulnerabilityID": "CVE-2025-6298",
+                        "PkgName": "This vulnerability has no optional fields",
+                        "InstalledVersion": "3.4.1",
+                        "Severity": "LOW",
+                    },
                 ],
             },
         ]
