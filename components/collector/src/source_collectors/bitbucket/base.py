@@ -10,10 +10,6 @@ from collector_utilities.type import URL
 class BitbucketBase(SourceCollector, ABC):
     """Base class for Bitbucket collectors."""
 
-    def _basic_auth_credentials(self) -> tuple[str, str] | None:
-        """Override to return None, as the private token is passed as header."""
-        return None
-
     def _headers(self) -> dict[str, str]:
         """Extend to add the private token, if any, to the headers."""
         headers = super()._headers()

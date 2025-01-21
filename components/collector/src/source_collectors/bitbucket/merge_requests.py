@@ -1,5 +1,5 @@
 """Bitbucket merge requests collector."""
-
+import pdb
 from typing import cast
 
 from collector_utilities.functions import match_string_or_regular_expression
@@ -9,16 +9,16 @@ from model import Entities, Entity, SourceResponses
 from .base import BitbucketProjectBase
 
 class BitbucketMergeRequests(BitbucketProjectBase):
-    """Collector for pull requests in Bitbucket."""
+    """Collector for merge requests in Bitbucket."""
 
     PAGE_SIZE = 100  # Page size for Bitbucket pagination
 
     async def _api_url(self) -> URL:
-        """Override to return the pull requests API."""
+        """Override to return the merge requests API."""
         return await self._bitbucket_api_url("pull-requests")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
-        """Extend to add the project pull requests."""
+        """Extend to add the project merge requests."""
         project = f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}"
         return URL(f"{await super()._landing_url(responses)}/{project}/pull-requests")
 
@@ -32,7 +32,7 @@ class BitbucketMergeRequests(BitbucketProjectBase):
         return responses
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
-        """Override to parse the pull requests from the responses."""
+        """Override to parse the merge requests from the responses."""
         merge_requests = []
         for response in responses:
             merge_requests.extend((await response.json())["values"])
@@ -79,4 +79,4 @@ class BitbucketMergeRequests(BitbucketProjectBase):
     @staticmethod
     def _upvotes(merge_request) -> int:
         """Return the number of upvotes the merge request has."""
-        return len([r for r in merge_request.get("reviewers", []) if r.get("vote", True)])
+        return len([r for r in merge_request.get("reviewers", []) if r.get("approved", True)])
