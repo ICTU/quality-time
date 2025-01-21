@@ -76,9 +76,9 @@ class AzureDevopsMergeRequests(AzureDevopsRepositoryBase):
     @staticmethod
     def _downvotes(merge_request) -> int:
         """Return the number of downvotes the merge request has."""
-        return len([r for r in merge_request.get("reviewers", []) if r.get("approved") is False])
+        return len([r for r in merge_request.get("reviewers", []) if r.get("vote", 0) < 0])
 
     @staticmethod
     def _upvotes(merge_request) -> int:
         """Return the number of upvotes the merge request has."""
-        return len([r for r in merge_request.get("reviewers", []) if r.get("approved") is True])
+        return len([r for r in merge_request.get("reviewers", []) if r.get("vote", 0) > 0])

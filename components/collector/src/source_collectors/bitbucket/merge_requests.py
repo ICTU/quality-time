@@ -74,9 +74,9 @@ class BitbucketMergeRequests(BitbucketProjectBase):
     @staticmethod
     def _downvotes(merge_request) -> int:
         """Return the number of downvotes the merge request has."""
-        return len([r for r in merge_request.get("reviewers", []) if not r.get("approved", True)])
+        return len([r for r in merge_request.get("reviewers", []) if r.get("approved") is False])
 
     @staticmethod
     def _upvotes(merge_request) -> int:
         """Return the number of upvotes the merge request has."""
-        return len([r for r in merge_request.get("reviewers", []) if r.get("approved", True)])
+        return len([r for r in merge_request.get("reviewers", []) if r.get("approved") is True])
