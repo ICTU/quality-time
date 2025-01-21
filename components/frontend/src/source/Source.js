@@ -20,9 +20,9 @@ import { getMetricName, getSourceName, referenceDocumentationURL } from "../util
 import { ButtonRow } from "../widgets/ButtonRow"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { ReorderButtonGroup } from "../widgets/buttons/ReorderButtonGroup"
-import { ErrorMessage } from "../widgets/ErrorMessage"
 import { HyperLink } from "../widgets/HyperLink"
 import { Tabs } from "../widgets/Tabs"
+import { WarningMessage } from "../widgets/WarningMessage"
 import { SourceParameters } from "./SourceParameters"
 import { SourceType } from "./SourceType"
 
@@ -104,9 +104,25 @@ function Parameters({
                     source_uuid={source_uuid}
                 />
             </Grid>
-            {connection_error && <ErrorMessage title="Connection error" message={connection_error} />}
-            {parse_error && <ErrorMessage title="Parse error" message={parse_error} />}
-            {config_error && <ErrorMessage title="Configuration error" message={config_error} formatAsText={true} />}
+            {connection_error && (
+                <Grid size={{ xs: 1, sm: 2, md: 2 }}>
+                    <WarningMessage pre title="Connection error">
+                        {connection_error}
+                    </WarningMessage>
+                </Grid>
+            )}
+            {parse_error && (
+                <Grid size={{ xs: 1, sm: 2, md: 2 }}>
+                    <WarningMessage pre title="Parse error">
+                        {parse_error}
+                    </WarningMessage>
+                </Grid>
+            )}
+            {config_error && (
+                <Grid size={{ xs: 1, sm: 2, md: 2 }}>
+                    <WarningMessage title="Configuration error">{config_error}</WarningMessage>
+                </Grid>
+            )}
         </Grid>
     )
 }

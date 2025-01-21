@@ -9,9 +9,9 @@ import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { metricPropType, reportPropType } from "../sharedPropTypes"
 import { getMetricIssueIds } from "../utils"
 import { ActionButton } from "../widgets/buttons/ActionButton"
-import { ErrorMessage } from "../widgets/ErrorMessage"
 import { AddItemIcon } from "../widgets/icons"
 import { showMessage } from "../widgets/toast"
+import { WarningMessage } from "../widgets/WarningMessage"
 
 function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, metric_uuid, target, reload }) {
     const permissions = useContext(Permissions)
@@ -106,7 +106,7 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
     }
     return (
         <>
-            <Grid size={{ xs: 1, sm: 1, md: "auto" }}>
+            <Grid size={{ xs: 1, sm: "auto", md: "auto" }}>
                 <CreateIssueButton
                     issueTrackerConfigured={issueTrackerConfigured}
                     issueTrackerInstruction={issueTrackerInstruction}
@@ -115,34 +115,38 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
                     reload={reload}
                 />
             </Grid>
-            <Grid size={{ xs: 1, sm: 2, md: "grow" }}>
+            <Grid size={{ xs: 1, sm: "grow", md: "grow" }}>
                 <IssueIdentifiers {...issueIdentifiersProps} />
             </Grid>
             {getMetricIssueIds(metric).length > 0 && !issueTrackerConfigured && (
                 <Grid size={{ xs: 1, sm: 3, md: 6 }}>
-                    <ErrorMessage title="No issue tracker configured" message={issueTrackerInstruction} />
+                    <WarningMessage title="No issue tracker configured">{issueTrackerInstruction}</WarningMessage>
                 </Grid>
             )}
             {(metric.issue_status ?? [])
                 .filter((issue_status) => issue_status.connection_error)
                 .map((issue_status) => (
                     <Grid key={issue_status.issue_id} size={{ xs: 1, sm: 3, md: 6 }}>
-                        <ErrorMessage
+                        <WarningMessage
                             key={issue_status.issue_id}
+                            pre
                             title={"Connection error while retrieving " + issue_status.issue_id}
-                            message={issue_status.connection_error}
-                        />
+                        >
+                            {issue_status.connection_error}
+                        </WarningMessage>
                     </Grid>
                 ))}
             {(metric.issue_status ?? [])
                 .filter((issue_status) => issue_status.parse_error)
                 .map((issue_status) => (
                     <Grid key={issue_status.issue_id} size={{ xs: 1, sm: 3, md: 6 }}>
-                        <ErrorMessage
+                        <WarningMessage
                             key={issue_status.issue_id}
+                            pre
                             title={"Parse error while processing " + issue_status.issue_id}
-                            message={issue_status.parse_error}
-                        />
+                        >
+                            {issue_status.parse_error}
+                        </WarningMessage>
                     </Grid>
                 ))}
         </>

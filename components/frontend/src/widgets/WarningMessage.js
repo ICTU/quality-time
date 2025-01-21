@@ -3,17 +3,18 @@ import { bool, string } from "prop-types"
 
 import { childrenPropType } from "../sharedPropTypes"
 
-export function WarningMessage({ children, title, showIf }) {
+export function WarningMessage({ children, pre, showIf, title }) {
     // Show a warning message if showIf is true or undefined
     return (showIf ?? true) ? (
         <Alert severity="warning">
             <AlertTitle>{title}</AlertTitle>
-            {children}
+            {pre ? <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{children}</pre> : children}
         </Alert>
     ) : null
 }
 WarningMessage.propTypes = {
     children: childrenPropType,
+    pre: bool,
     showIf: bool,
     title: string,
 }
