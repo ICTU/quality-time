@@ -53,7 +53,7 @@ function EditScopeSelect({ editScope, setEditScope }) {
     return (
         <FormControl>
             <IconButton
-                aria-controls="edit-scope-menu"
+                aria-controls={open ? "edit-scope-menu" : null}
                 aria-expanded={open}
                 aria-haspopup="true"
                 aria-label="Edit scope"

@@ -22,7 +22,7 @@ export function HeaderWithDetails({ children, header, item_uuid, level, settings
             }}
         >
             <AccordionSummary
-                aria-controls={`accordion-content-${item_uuid}`}
+                aria-controls={showDetails ? `accordion-content-${item_uuid}` : null}
                 expandIcon={<CaretRight size={{ h1: "5em", h2: "4em", h3: "3em" }[level]} />}
                 id={`accordion-header-${item_uuid}`}
                 sx={{

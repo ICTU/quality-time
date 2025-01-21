@@ -26,7 +26,7 @@ export function ActionAndItemPickerButton({ action, itemType, onChange, get_opti
     return (
         <>
             <Tooltip title={`${action} an existing ${itemType} here`} placement="top">
-                <Button aria-controls="action-menu" onClick={handleMenu} variant="outlined">
+                <Button aria-controls={anchorEl ? "action-menu" : null} onClick={handleMenu} variant="outlined">
                     {icon}&nbsp;{`${action} ${itemType} `}
                     <ArrowDropDownIcon />
                 </Button>

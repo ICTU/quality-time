@@ -68,6 +68,7 @@ export function TrendGraph({ metric, measurements, loading }) {
     }
     return (
         <VictoryChart
+            aria-label={`Trend graph for the metric ${metricName}`}
             height={chartHeight}
             scale={{ x: "time", y: "linear" }}
             style={{ parent: { height: "100%", background: bgcolor }, fontFamily: fontFamily }}

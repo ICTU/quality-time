@@ -17,7 +17,7 @@ export function UIModeMenu({ setUIMode, uiMode }) {
             <span /* https://mui.com/material-ui/react-tooltip/#disabled-elements */>
                 <IconButton
                     aria-label="Dark/light mode"
-                    aria-controls="dark-light-menu"
+                    aria-controls={anchorEl ? "dark-light-menu" : null}
                     aria-haspopup="true"
                     color="inherit"
                     onClick={handleMenu}

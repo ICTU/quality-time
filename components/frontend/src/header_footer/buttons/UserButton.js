@@ -17,7 +17,7 @@ export function UserButton({ user, email, setUser }) {
         <span /* Not using a React fragment (<>) here because that makes the button top-aligned instead of centered */>
             <Button
                 aria-label="User options"
-                aria-controls="user-options-menu"
+                aria-controls={anchorEl ? "user-options-menu" : null}
                 color="inherit"
                 onClick={handleMenu}
                 startIcon={<Avatar email={email} />}

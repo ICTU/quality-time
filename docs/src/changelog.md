@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Fixed
 
+- Fix accessibility issues in dark mode. Fixes [#7251](https://github.com/ICTU/quality-time/issues/7251).
 - When measuring security warnings with Trivy JSON as source, be prepared for optional fields not being present. Fixes [#10672](https://github.com/ICTU/quality-time/issues/10672).
 - Docker compose has been integrated into Docker as a subcommand for a while, but the developer documentation did not reflect that. Change `docker-compose` to `docker compose` in the documentation. Fixes [#10684](https://github.com/ICTU/quality-time/issues/10684).
 
