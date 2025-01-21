@@ -22,7 +22,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Changed
 
-- Completed the replacement of Semantic UI React with Material UI as frontend component library. Fixes [#5180] (https://github.com/ICTU/quality-time/issues/5180), [#9904](https://github.com/ICTU/quality-time/issues/9904) and [#10159](https://github.com/ICTU/quality-time/issues/10159). Closes [#9796](https://github.com/ICTU/quality-time/issues/9796).
+- Completed the replacement of Semantic UI React with Material UI as frontend component library. Fixes [#5180](https://github.com/ICTU/quality-time/issues/5180), [#6443](https://github.com/ICTU/quality-time/issues/6443), [#9904](https://github.com/ICTU/quality-time/issues/9904) and [#10159](https://github.com/ICTU/quality-time/issues/10159). Closes [#9796](https://github.com/ICTU/quality-time/issues/9796).
 
 ## v5.22.0 - 2025-01-16
 

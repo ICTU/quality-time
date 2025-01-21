@@ -10,7 +10,6 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    TableSortLabel,
     Tooltip,
 } from "@mui/material"
 import { bool, func, object, string } from "prop-types"
@@ -19,7 +18,6 @@ import { useContext, useState } from "react"
 import { DataModel } from "../context/DataModel"
 import {
     alignmentPropType,
-    childrenPropType,
     entityAttributePropType,
     entityAttributesPropType,
     entityAttributeTypePropType,
@@ -34,6 +32,7 @@ import {
 import { capitalize } from "../utils"
 import { IgnoreIcon, ShowIcon } from "../widgets/icons"
 import { LoadingPlaceHolder } from "../widgets/Placeholder"
+import { SortableTableHeaderCell } from "../widgets/TableHeaderCell"
 import { FailedToLoadMeasurementsWarningMessage, InfoMessage } from "../widgets/WarningMessage"
 import { SourceEntity } from "./SourceEntity"
 
@@ -90,70 +89,19 @@ sorted.propTypes = {
     sortDirection: sortDirectionPropType,
 }
 
-function sort(column, columnType, setColumnType, setSortColumn, setSortDirection, sortColumn, sortDirection) {
-    setColumnType(columnType)
-    if (column === sortColumn) {
-        setSortDirection(sortDirection === "ascending" ? "descending" : "ascending")
-    } else {
-        setSortColumn(column)
-    }
-}
-sort.propTypes = {
-    column: string,
-    columnType: entityAttributeTypePropType,
-    setColumnType: func,
-    setSortColumn: func,
-    setSortDirection: func,
-    sortColumn: string,
-    sortDirection: sortDirectionPropType,
-}
-
-function MuiSortDirection(sortDirection) {
-    return sortDirection === "ascending" ? "asc" : "desc"
-}
-
-function SortableHeaderCell({
-    children,
-    column,
-    columnType,
-    setColumnType,
-    setSortColumn,
-    setSortDirection,
-    sortColumn,
-    sortDirection,
-    textAlign,
-}) {
-    return (
-        <TableCell align={textAlign} direction={sorted(column, sortColumn, sortDirection)}>
-            <TableSortLabel
-                active={column === sortColumn}
-                direction={column === sortColumn ? MuiSortDirection(sortDirection) : "asc"}
-                onClick={() =>
-                    sort(column, columnType, setColumnType, setSortColumn, setSortDirection, sortColumn, sortDirection)
-                }
-            >
-                {children}
-            </TableSortLabel>
-        </TableCell>
-    )
-}
-SortableHeaderCell.propTypes = {
-    children: childrenPropType,
-    column: string,
-    columnType: entityAttributeTypePropType,
-    setColumnType: func,
-    setSortColumn: func,
-    setSortDirection: func,
-    sortColumn: string,
-    sortDirection: sortDirectionPropType,
-    textAlign: alignmentPropType,
-}
-
 function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
+    function handleSort(column) {
+        sortProps.setColumnType(entityAttribute.type || "text")
+        if (column === sortProps.sortColumn) {
+            sortProps.setSortDirection(sortProps.sortDirection === "ascending" ? "descending" : "ascending")
+        } else {
+            sortProps.setSortColumn(column)
+        }
+    }
     return (
-        <SortableHeaderCell
+        <SortableTableHeaderCell
             column={entityAttribute.key}
-            columnType={entityAttribute.type || "text"}
+            handleSort={handleSort}
             textAlign={alignment(entityAttribute.type, entityAttribute.alignment)}
             {...sortProps}
         >
@@ -166,7 +114,7 @@ function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
                     </span>
                 </Tooltip>
             ) : null}
-        </SortableHeaderCell>
+        </SortableTableHeaderCell>
     )
 }
 EntityAttributeHeaderCell.propTypes = {
@@ -188,6 +136,14 @@ function sourceEntitiesHeaders(
     const entityName = metricEntities.name
     const entityNamePlural = metricEntities.name_plural
     const hideIgnoredEntitiesLabel = `${hideIgnoredEntities ? "Show" : "Hide"} ignored ${entityNamePlural}`
+    function handleSort(column, columnType) {
+        sortProps.setColumnType(columnType)
+        if (column === sortProps.sortColumn) {
+            sortProps.setSortDirection(sortProps.sortDirection === "ascending" ? "descending" : "ascending")
+        } else {
+            sortProps.setSortColumn(column)
+        }
+    }
     return (
         <TableRow>
             <TableCell align="center">
@@ -200,18 +156,34 @@ function sourceEntitiesHeaders(
                     </IconButton>
                 </Tooltip>
             </TableCell>
-            <SortableHeaderCell column="entity_status" columnType="text" {...sortProps}>
+            <SortableTableHeaderCell
+                column="entity_status"
+                handleSort={(column) => handleSort(column, "text")}
+                {...sortProps}
+            >
                 {`${capitalize(entityName)} status`}
-            </SortableHeaderCell>
-            <SortableHeaderCell column="status_end_date" columnType="date" {...sortProps}>
+            </SortableTableHeaderCell>
+            <SortableTableHeaderCell
+                column="status_end_date"
+                handleSort={(column) => handleSort(column, "date")}
+                {...sortProps}
+            >
                 Status end date
-            </SortableHeaderCell>
-            <SortableHeaderCell column="rationale" columnType="text" {...sortProps}>
+            </SortableTableHeaderCell>
+            <SortableTableHeaderCell
+                column="rationale"
+                handleSort={(column) => handleSort(column, "text")}
+                {...sortProps}
+            >
                 Status rationale
-            </SortableHeaderCell>
-            <SortableHeaderCell column="first_seen" columnType="datetime" {...sortProps}>
+            </SortableTableHeaderCell>
+            <SortableTableHeaderCell
+                column="first_seen"
+                handleSort={(column) => handleSort(column, "datetime")}
+                {...sortProps}
+            >
                 {capitalize(entityName)} first seen
-            </SortableHeaderCell>
+            </SortableTableHeaderCell>
             {entityAttributes.map((entityAttribute) => (
                 <EntityAttributeHeaderCell entityAttribute={entityAttribute} key={entityAttribute.key} {...sortProps} />
             ))}
