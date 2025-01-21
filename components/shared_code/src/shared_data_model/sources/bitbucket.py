@@ -13,10 +13,11 @@ from shared_data_model.parameters import (
     StringParameter,
     MergeRequestState,
     MultipleChoiceParameter,
-    TargetBranchesToInclude
+    TargetBranchesToInclude,
+    Upvotes,
 )
 
-ALL_GITLAB_METRICS = [
+ALL_BITBUCKET_METRICS = [
     "inactive_branches",
     "merge_requests",
 ]
@@ -42,26 +43,26 @@ Pagination will be implemented in a future update.
             help="URL of the Bitbucket instance, with port if necessary, but without path. For example, "
             "'https://bitbucket.org'.",
             validate_on=["private_token"],
-            metrics=ALL_GITLAB_METRICS,
+            metrics=ALL_BITBUCKET_METRICS,
         ),
         "owner": StringParameter(
             name="Owner (name of owner of the repository)",
             short_name="owner",
             mandatory=True,
             help_url=HttpUrl("https://support.atlassian.com/bitbucket-cloud/docs/create-a-project/"),
-            metrics=ALL_GITLAB_METRICS,
+            metrics=ALL_BITBUCKET_METRICS,
         ),
         "repository": StringParameter(
             name="Repository (name of the repository)",
             short_name="repository",
             help_url=HttpUrl("https://support.atlassian.com/bitbucket-cloud/docs/create-a-git-repository/"),
             mandatory=True,
-            metrics=ALL_GITLAB_METRICS,
+            metrics=ALL_BITBUCKET_METRICS,
         ),
         "private_token": PrivateToken(
             name="Private token (with read_api scope)",
             help_url=HttpUrl("https://support.atlassian.com/bitbucket-cloud/docs/create-a-repository-access-token/"),
-            metrics=ALL_GITLAB_METRICS,
+            metrics=ALL_BITBUCKET_METRICS,
         ),
         "branches_to_ignore": BranchesToIgnore(help_url=BITBUCKET_BRANCH_HELP_URL),
         "branch_merge_status": BranchMergeStatus(),
@@ -73,21 +74,10 @@ Pagination will be implemented in a future update.
         ),
         "merge_request_state": MergeRequestState(
             name="Pull request state",
-            values=["Open", "Merged", "Closed"],
-            api_values={"Open": "OPEN", "Merged": "MERGED", "Closed": "CLOSED"},
+            values=["open", "merged", "declined", "superseded"],
+            api_values={"open": "OPEN", "merged": "MERGED", "declined": "DECLINED", "superseded": "SUPERSEDED"},
         ),
-        "review_decision": MultipleChoiceParameter(
-            name="Review decision",
-            values=["Approved", "Changes requested", "Review required", "Unknown"],
-            api_values={
-                "Approved": "APPROVED",
-                "Changes requested": "CHANGES_REQUESTED",
-                "Review required": "REVIEW_REQUIRED",
-                "Unknown": "?",
-            },
-            placeholder="all review decisions",
-            metrics=["merge_requests"],
-        ),
+        "upvotes": Upvotes(),
         "target_branches_to_include": TargetBranchesToInclude(help_url=BITBUCKET_BRANCH_HELP_URL),
     },
     entities={
@@ -108,14 +98,12 @@ Pagination will be implemented in a future update.
             name="merge request",
             attributes=[
                 EntityAttribute(name="Merge request", key="title", url="url"),
-                EntityAttribute(name="Target branch"),
+                EntityAttribute(name="Target branch", key="target_branch"),
                 EntityAttribute(name="State"),
-                EntityAttribute(name="ReviewDecision"),
+                EntityAttribute(name="Upvotes", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Downvotes", type=EntityAttributeType.INTEGER),
                 EntityAttribute(name="Created", type=EntityAttributeType.DATETIME),
-                EntityAttribute(name="Updated", type=EntityAttributeType.DATETIME),
-                EntityAttribute(name="Merged", type=EntityAttributeType.DATETIME),
-                EntityAttribute(name="Comments", type=EntityAttributeType.INTEGER),
-                EntityAttribute(name="Thumbs up", type=EntityAttributeType.INTEGER),
+                EntityAttribute(name="Closed", type=EntityAttributeType.DATETIME),
             ],
         ),
     },
