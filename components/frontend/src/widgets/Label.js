@@ -4,7 +4,7 @@ import { string } from "prop-types"
 import { childrenPropType } from "../sharedPropTypes"
 
 export function Label({ color, children }) {
-    const bgcolor = `${color}.main`
+    const bgcolor = `${color}.dark`
     const fgcolor = `${color}.contrastText`
     return (
         <Box

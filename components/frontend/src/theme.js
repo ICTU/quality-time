@@ -18,10 +18,10 @@ const theme1 = createTheme({
     },
     palette: {
         primary: {
-            main: "#1976D2", // Slightly darker blue than default
+            main: "#0F569C", // Slightly darker blue than default
         },
         secondary: {
-            main: "#963D3D", // Secondary color created with https://m2.material.io/design/color/the-color-system.html#tools-for-picking-colors
+            main: "#502c09", // Secondary color created with https://m2.material.io/design/color/the-color-system.html#tools-for-picking-colors
         },
     },
     typography: {

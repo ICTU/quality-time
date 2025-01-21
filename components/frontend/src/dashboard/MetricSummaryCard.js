@@ -81,8 +81,8 @@ export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) 
     }
     return (
         <DashboardCard onClick={onClick} selected={selected} title={header}>
-            <div ref={ref} aria-label={ariaChartLabel(summary)}>
-                <VictoryContainer>
+            <div ref={ref}>
+                <VictoryContainer aria-label={ariaChartLabel(summary)}>
                     {dates.length > 1 ? (
                         <StatusBarChart summary={summary} nrdates={dates.length} {...chartProps} />
                     ) : (

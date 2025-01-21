@@ -29,27 +29,26 @@ export function TrendSparkline({ measurements, scale, report_date }) {
     // The width property below is not used according to https://formidable.com/open-source/victory/docs/common-props#width,
     // but setting it prevents these messages in the console: "Warning: `Infinity` is an invalid value for the `width` css style property.""
     return (
-        <div aria-label={ariaLabel}>
-            <VictoryGroup
-                theme={VictoryTheme.material}
-                scale={{ x: "time", y: "linear" }}
-                domain={{ x: [week_ago, now] }}
-                height={30}
-                padding={0}
-            >
-                <VictoryLine
-                    data={points}
-                    interpolation="stepBefore"
-                    style={{
-                        data: {
-                            stroke: stroke,
-                            strokeWidth: 5,
-                            width: "100%",
-                        },
-                    }}
-                />
-            </VictoryGroup>
-        </div>
+        <VictoryGroup
+            aria-label={ariaLabel}
+            theme={VictoryTheme.material}
+            scale={{ x: "time", y: "linear" }}
+            domain={{ x: [week_ago, now] }}
+            height={30}
+            padding={0}
+        >
+            <VictoryLine
+                data={points}
+                interpolation="stepBefore"
+                style={{
+                    data: {
+                        stroke: stroke,
+                        strokeWidth: 5,
+                        width: "100%",
+                    },
+                }}
+            />
+        </VictoryGroup>
     )
 }
 TrendSparkline.propTypes = {

@@ -7,7 +7,7 @@ export function DeleteButton(props) {
     return (
         <ActionButton
             action="Delete"
-            color="warning"
+            color="error"
             icon={<DeleteItemIcon />}
             popup={`Delete this ${props.itemType}. Careful, this can only be undone by a system administrator!`}
             {...props}

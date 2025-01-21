@@ -6,12 +6,12 @@ import { STATUS_SHORT_NAME, statusPropType } from "../metric/status"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 
 const STATUS_ICONS = {
-    target_met: (size) => <Check sx={{ fontSize: size }} />,
-    near_target_met: (size) => <Warning sx={{ fontSize: size }} />,
-    debt_target_met: (size) => <Money sx={{ fontSize: size }} />,
-    target_not_met: (size) => <Bolt sx={{ fontSize: size }} />,
-    informative: (_size) => <b>i</b>,
-    unknown: (size) => <QuestionMark sx={{ fontSize: size }} />,
+    target_met: (size) => <Check aria-label={STATUS_SHORT_NAME.target_met} sx={{ fontSize: size }} />,
+    near_target_met: (size) => <Warning aria-label={STATUS_SHORT_NAME.near_target_met} sx={{ fontSize: size }} />,
+    debt_target_met: (size) => <Money aria-label={STATUS_SHORT_NAME.debt_target_met} sx={{ fontSize: size }} />,
+    target_not_met: (size) => <Bolt aria-label={STATUS_SHORT_NAME.target_not_met} sx={{ fontSize: size }} />,
+    informative: (_size) => <b aria-label={STATUS_SHORT_NAME.informative}>i</b>,
+    unknown: (size) => <QuestionMark aria-label={STATUS_SHORT_NAME.unknown} sx={{ fontSize: size }} />,
 }
 
 export function StatusIcon({ status, statusStart, size }) {
@@ -21,7 +21,7 @@ export function StatusIcon({ status, statusStart, size }) {
     const statusName = STATUS_SHORT_NAME[status]
     // Use Avatar to create a round inverted icon:
     const icon = (
-        <Avatar aria-label={statusName} sx={{ width: sizes[size], height: sizes[size], bgcolor: `${status}.main` }}>
+        <Avatar sx={{ width: sizes[size], height: sizes[size], bgcolor: `${status}.main` }}>
             {STATUS_ICONS[status](fontSizes[size])}
         </Avatar>
     )

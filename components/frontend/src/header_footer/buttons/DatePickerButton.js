@@ -15,7 +15,7 @@ export function DatePickerButton({ onChange, reportDate }) {
             <span /* https://mui.com/material-ui/react-tooltip/#disabled-elements */>
                 <Button
                     aria-label="Report date"
-                    aria-controls="date-picker-button-menu"
+                    aria-controls={anchorEl ? "date-picker-button-menu" : null}
                     color="inherit"
                     onClick={handleMenu}
                     startIcon={<EventIcon />}
