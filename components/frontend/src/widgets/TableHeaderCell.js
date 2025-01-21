@@ -1,12 +1,12 @@
-import { TableCell, TableSortLabel, Tooltip } from "@mui/material"
+import { ButtonBase, TableCell, TableSortLabel, Tooltip } from "@mui/material"
 import { func, string } from "prop-types"
 
 import {
     alignmentPropType,
+    childrenPropType,
     labelPropType,
     popupContentPropType,
-    sortDirectionURLSearchQueryPropType,
-    stringURLSearchQueryPropType,
+    sortDirectionPropType,
 } from "../sharedPropTypes"
 
 function TableHeaderCellContents({ help, label }) {
@@ -28,6 +28,7 @@ function MuiSortDirection(sortDirection) {
 }
 
 export function SortableTableHeaderCell({
+    children,
     colSpan,
     column,
     sortColumn,
@@ -37,27 +38,41 @@ export function SortableTableHeaderCell({
     textAlign,
     help,
 }) {
-    const sorted = sortColumn.value === column ? MuiSortDirection(sortDirection.value) : null
+    const sorted = sortColumn === column ? MuiSortDirection(sortDirection) : null
+    const align = textAlign || "left"
     return (
-        <TableCell align={textAlign || "left"} colSpan={colSpan} sortDirection={sorted}>
-            <TableSortLabel
-                active={column === sortColumn.value}
-                direction={column === sortColumn.value ? MuiSortDirection(sortDirection.value) : "asc"}
-                onClick={() => handleSort(column)}
+        <TableCell colSpan={colSpan} sortDirection={sorted}>
+            <ButtonBase
+                focusRipple
+                sx={{
+                    display: "block",
+                    fontSize: "inherit",
+                    padding: "inherit",
+                    textAlign: align,
+                    width: "100%",
+                }}
+                tabIndex={-1}
             >
-                <TableHeaderCellContents help={help} label={label} />
-            </TableSortLabel>
+                <TableSortLabel
+                    active={column === sortColumn}
+                    direction={column === sortColumn ? MuiSortDirection(sortDirection) : "asc"}
+                    onClick={() => handleSort(column)}
+                >
+                    {children || <TableHeaderCellContents help={help} label={label} />}
+                </TableSortLabel>
+            </ButtonBase>
         </TableCell>
     )
 }
 SortableTableHeaderCell.propTypes = {
+    children: childrenPropType,
     colSpan: string,
     column: string,
     handleSort: func,
     help: popupContentPropType,
     label: labelPropType,
-    sortColumn: stringURLSearchQueryPropType,
-    sortDirection: sortDirectionURLSearchQueryPropType,
+    sortColumn: string,
+    sortDirection: sortDirectionPropType,
     textAlign: alignmentPropType,
 }
 

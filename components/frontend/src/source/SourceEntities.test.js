@@ -180,103 +180,59 @@ it("shows the show ignored entities button", async () => {
     expect(hideEntitiesButton).toHaveAttribute("aria-label", "Show ignored entities")
 })
 
-it("sorts the entities by status", async () => {
+async function expectColumnIsSortedCorrectly(header, ascending) {
     renderSourceEntities()
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/Entity name status/))
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/Entity name status/))
-    expectOrder(["A", "B", "C"])
+    expectOrder(["C", "B", "A"]) // Initial order
+    await userEvent.click(screen.getByText(header))
+    expectOrder(ascending)
+    await userEvent.click(screen.getByText(header))
+    expectOrder(ascending.toReversed())
+    await userEvent.click(screen.getByText(header))
+    expectOrder(ascending)
+}
+
+it("sorts the entities by status", async () => {
+    await expectColumnIsSortedCorrectly(/Entity name status/, ["C", "B", "A"])
 })
 
 it("sorts the entities by status end date", async () => {
-    renderSourceEntities()
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/Status end date/))
-    expectOrder(["A", "C", "B"])
-    await userEvent.click(screen.getByText(/Status end date/))
-    expectOrder(["B", "C", "A"])
+    await expectColumnIsSortedCorrectly(/Status end date/, ["A", "C", "B"])
 })
 
 it("sorts the entities by status rationale", async () => {
-    renderSourceEntities()
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/Status rationale/))
-    expectOrder(["A", "C", "B"])
-    await userEvent.click(screen.getByText(/Status rationale/))
-    expectOrder(["B", "C", "A"])
+    await expectColumnIsSortedCorrectly(/Status rationale/, ["A", "C", "B"])
 })
 
 it("sorts the entities by first seen date", async () => {
-    renderSourceEntities()
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/first seen/))
-    expectOrder(["C", "A", "B"])
-    await userEvent.click(screen.getByText(/first seen/))
-    expectOrder(["B", "A", "C"])
+    await expectColumnIsSortedCorrectly(/first seen/, ["C", "A", "B"])
 })
 
 it("sorts the entities by integer", async () => {
-    renderSourceEntities()
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/integer/))
-    expectOrder(["C", "A", "B"])
-    await userEvent.click(screen.getByText(/integer/))
-    expectOrder(["B", "A", "C"])
+    await expectColumnIsSortedCorrectly(/integer/, ["C", "A", "B"])
 })
 
 it("sorts the entities by integer percentage", async () => {
-    renderSourceEntities()
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/int percentage/))
-    expectOrder(["C", "A", "B"])
-    await userEvent.click(screen.getByText(/int percentage/))
-    expectOrder(["B", "A", "C"])
+    await expectColumnIsSortedCorrectly(/int percentage/, ["C", "A", "B"])
 })
 
 it("sorts the entities by float", async () => {
-    renderSourceEntities()
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/float/))
-    expectOrder(["A", "B", "C"])
-    await userEvent.click(screen.getByText(/float/))
-    expectOrder(["C", "B", "A"])
+    await expectColumnIsSortedCorrectly(/float/, ["A", "B", "C"])
 })
 
 it("sorts the entities by text", async () => {
-    renderSourceEntities()
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/text/))
-    expectOrder(["A", "B", "C"])
-    await userEvent.click(screen.getByText(/text/))
-    expectOrder(["C", "B", "A"])
+    await expectColumnIsSortedCorrectly(/text/, ["A", "B", "C"])
 })
 
 it("sorts the entities by date", async () => {
-    renderSourceEntities()
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/date only/))
-    expectOrder(["C", "A", "B"])
-    await userEvent.click(screen.getByText(/date only/))
-    expectOrder(["B", "A", "C"])
+    await expectColumnIsSortedCorrectly(/date only/, ["C", "A", "B"])
 })
 
 it("sorts the entities by datetime", async () => {
-    renderSourceEntities()
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/datetime/))
-    expectOrder(["C", "A", "B"])
-    await userEvent.click(screen.getByText(/datetime/))
-    expectOrder(["B", "A", "C"])
+    await expectColumnIsSortedCorrectly(/datetime/, ["C", "A", "B"])
 })
 
 it("sorts the entities by minutes", async () => {
-    renderSourceEntities()
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/minutes/))
-    expectOrder(["C", "B", "A"])
-    await userEvent.click(screen.getByText(/minutes/))
-    expectOrder(["A", "B", "C"])
+    await expectColumnIsSortedCorrectly(/minutes/, ["C", "B", "A"])
 })
 
 it("shows help", async () => {

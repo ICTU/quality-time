@@ -291,7 +291,7 @@ MeasurementHeaderCells.propTypes = {
 
 export function SubjectTableHeader({ columnDates, handleSort, settings }) {
     const sortProps = {
-        sortColumn: settings.sortColumn,
+        sortColumn: settings.sortColumn.value,
         sortDirection: settings.sortDirection,
         handleSort: handleSort,
     }

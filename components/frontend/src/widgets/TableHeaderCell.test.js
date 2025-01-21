@@ -14,8 +14,8 @@ function renderSortableTableHeaderCell(help) {
                     <SortableTableHeaderCell
                         label="Header"
                         help={help}
-                        sortColumn={settings.sortColumn}
-                        sortDirection={settings.sortDirection}
+                        sortColumn={settings.sortColumn.value}
+                        sortDirection={settings.sortDirection.value}
                     />
                 </TableRow>
             </TableHead>
