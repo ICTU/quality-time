@@ -11,6 +11,13 @@ class BitbucketTestCase(SourceCollectorTestCase):
     def setUp(self):
         """Extend to add generic test fixtures."""
         super().setUp()
-        self.set_source_parameter("branch", "branch")
         self.set_source_parameter("owner", "owner")
         self.set_source_parameter("repository", "repository")
+
+class BitbucketBranchesTestCase(BitbucketTestCase):
+    """Base class for Bitbucket branches collectors."""
+
+    def setUp(self):
+        """Extend to add branches test fixtures."""
+        super().setUp()
+        self.set_source_parameter("branch", "branch")
