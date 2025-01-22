@@ -5,10 +5,10 @@ from unittest.mock import AsyncMock
 
 from dateutil.tz import tzutc
 
-from .base import BitbucketTestCase
+from .base import BitbucketBranchesTestCase
 
 
-class BitbucketInactiveBranchesTest(BitbucketTestCase):
+class BitbucketInactiveBranchesTest(BitbucketBranchesTestCase):
     """Unit tests for the inactive branches metric."""
 
     METRIC_TYPE = "inactive_branches"

@@ -15,7 +15,11 @@ class BitbucketMergeRequests(BitbucketProjectBase):
 
     async def _api_url(self) -> URL:
         """Override to return the merge requests API."""
-        return await self._bitbucket_api_url("pull-requests")
+        url = str(await super()._api_url())
+        project = f"{self._parameter('owner')}/repos/{self._parameter('repository')}"
+        api_url = URL(f"{url}/rest/api/1.0/projects/{project}" + (f"/pull-requests?limit={self.PAGE_SIZE}"))
+        return URL(api_url)
+
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project merge requests."""
@@ -24,16 +28,16 @@ class BitbucketMergeRequests(BitbucketProjectBase):
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to use Bitbucket pagination, if necessary."""
-        nr_merge_requests_to_skip = 0
         responses = await super()._get_source_responses(*urls)
-        while len((await responses[-1].json())["values"]) == self.PAGE_SIZE:
-            nr_merge_requests_to_skip += self.PAGE_SIZE
+        while not (await responses[-1].json())["isLastPage"]:
+            nr_merge_requests_to_skip = (await responses[-1].json())["nextPageStart"]
             responses.extend(await super()._get_source_responses(URL(f"{urls[0]}&start={nr_merge_requests_to_skip}")))
         return responses
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the merge requests from the responses."""
         merge_requests = []
+        pdb.set_trace()
         for response in responses:
             merge_requests.extend((await response.json())["values"])
         landing_url = (await self._landing_url(responses))
@@ -49,7 +53,7 @@ class BitbucketMergeRequests(BitbucketProjectBase):
         return Entity(
             key=merge_request["id"],
             title=merge_request["title"],
-            target_branch=merge_request["toRef"],
+            target_branch=merge_request["toRef"]["id"],
             url=f"{landing_url}/{merge_request['id']}",
             state=merge_request["state"],
             created=merge_request.get("createdDate"),
