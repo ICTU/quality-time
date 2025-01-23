@@ -65,28 +65,18 @@ it("resets the user when the user clicks logout", async () => {
     set_user_in_local_storage("3000-02-23T22:00:50.945Z")
     auth.logout = jest.fn().mockResolvedValue({ ok: true })
     const { container } = render(<App />)
-    await act(async () => {
-        fireEvent.click(screen.getByText(/admin/))
-        await expectNoAccessibilityViolations(container)
-    })
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Logout/))
-    })
+    fireEvent.click(screen.getByText(/admin/))
+    await expectNoAccessibilityViolations(container)
+    fireEvent.click(screen.getByText(/Logout/))
     expect(screen.queryAllByText(/admin/).length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
 
 async function selectDate(container) {
-    await act(async () => {
-        fireEvent.click(screen.getByLabelText("Report date"))
-        await expectNoAccessibilityViolations(container)
-    })
-    await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "Previous month" }))
-    })
-    await act(async () => {
-        fireEvent.click(screen.getAllByRole("gridcell", { name: "15" })[0])
-    })
+    fireEvent.click(screen.getByLabelText("Report date"))
+    await expectNoAccessibilityViolations(container)
+    fireEvent.click(screen.getByRole("button", { name: "Previous month" }))
+    fireEvent.click(screen.getAllByRole("gridcell", { name: "15" })[0])
 }
 
 it("handles a date change", async () => {
@@ -117,13 +107,9 @@ it("reads the report date query parameter", async () => {
 it("handles a date reset", async () => {
     history.push("/?report_date=2020-03-13")
     const { container } = render(<App />)
-    await act(async () => {
-        fireEvent.click(screen.getByLabelText("Report date"))
-        await expectNoAccessibilityViolations(container)
-    })
-    await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "Today" }))
-    })
+    fireEvent.click(screen.getByLabelText("Report date"))
+    await expectNoAccessibilityViolations(container)
+    fireEvent.click(screen.getByRole("button", { name: "Today" }))
     expect(screen.getByLabelText("Report date").textContent).toMatch(/today/)
     await expectNoAccessibilityViolations(container)
 })

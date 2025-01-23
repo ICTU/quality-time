@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Added
+
+- Support the new SonarQube impact severity levels "blocker" and "info", introduced in SonarQube v10.8. Closes [#10708](https://github.com/ICTU/quality-time/issues/10708).
+
 ### Fixed
 
 - Fix accessibility issues found by the application test. Fixes [#6354](https://github.com/ICTU/quality-time/issues/6354).
