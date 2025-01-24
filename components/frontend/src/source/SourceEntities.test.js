@@ -2,6 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
 import { DataModel } from "../context/DataModel"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceEntities } from "./SourceEntities"
 
 const dataModel = {
@@ -19,7 +20,7 @@ const dataModel = {
                             name: "int percentage",
                         },
                         { key: "float", type: "float", name: "float" },
-                        { key: "text", name: "text", help: "help text" }, // Omit type to cover missing type scenario
+                        { key: "text", name: "text", help: "help" }, // Omit type to cover missing type scenario
                         { key: "rightalign", type: "text", name: "rightalign", alignment: "right" },
                         { key: "date", type: "date", name: "date only" },
                         { key: "datetime", type: "datetime", name: "datetime" },
@@ -119,8 +120,8 @@ function renderSourceEntities({
     )
 }
 
-it("renders a message if the metric does not support measurement entities", () => {
-    renderSourceEntities({
+it("renders a message if the metric does not support measurement entities", async () => {
+    const { container } = renderSourceEntities({
         metric: { type: "metric_type", sources: { source_uuid: { type: "source_type_without_entities" } } },
     })
     expect(screen.getAllByText(/Measurement details not supported/).length).toBe(1)
@@ -129,10 +130,11 @@ it("renders a message if the metric does not support measurement entities", () =
             /Showing individual items is not supported when using Source type without entities as source./,
         ).length,
     ).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a message if the metric does not support measurement entities and has no unit", () => {
-    renderSourceEntities({
+it("renders a message if the metric does not support measurement entities and has no unit", async () => {
+    const { container } = renderSourceEntities({
         metric: {
             type: "metric_type_without_unit",
             sources: { source_uuid: { type: "source_type_without_entities" } },
@@ -144,49 +146,60 @@ it("renders a message if the metric does not support measurement entities and ha
             /Showing individual entities is not supported when using Source type without entities as source./,
         ).length,
     ).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a message if the metric does not have measurement entities", () => {
-    renderSourceEntities({ measurements: [{ sources: [{ source_uuid: "source_uuid", entities: [] }] }] })
+it("renders a message if the metric does not have measurement entities", async () => {
+    const { container } = renderSourceEntities({
+        measurements: [{ sources: [{ source_uuid: "source_uuid", entities: [] }] }],
+    })
     expect(screen.getAllByText(/Measurement details not available/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a message if the measurements failed to load", () => {
-    renderSourceEntities({ loading: "failed" })
+it("renders a message if the measurements failed to load", async () => {
+    const { container } = renderSourceEntities({ loading: "failed" })
     expect(screen.getAllByText(/Loading measurements failed/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a placeholder while the measurements are loading", () => {
+it("renders a placeholder while the measurements are loading", async () => {
     const { container } = renderSourceEntities({ loading: "loading" })
     expect(container.firstChild.className).toContain("MuiSkeleton-rectangular")
     expect(screen.queryAllByText("AAA").length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a message if there are no measurements", () => {
-    renderSourceEntities({ measurements: [] })
+it("renders a message if there are no measurements", async () => {
+    const { container } = renderSourceEntities({ measurements: [] })
     expect(screen.getAllByText(/No measurements/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the hide ignored entities button", async () => {
-    renderSourceEntities()
+    const { container } = renderSourceEntities()
     const hideEntitiesButton = screen.getAllByRole("button")[0]
     expect(hideEntitiesButton).toHaveAttribute("aria-label", "Hide ignored entities")
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the show ignored entities button", async () => {
-    renderSourceEntities()
+    const { container } = renderSourceEntities()
     const hideEntitiesButton = screen.getAllByRole("button")[0]
     await userEvent.click(hideEntitiesButton)
     expect(hideEntitiesButton).toHaveAttribute("aria-label", "Show ignored entities")
+    await expectNoAccessibilityViolations(container)
 })
 
 async function expectColumnIsSortedCorrectly(header, ascending) {
-    renderSourceEntities()
+    const { container } = renderSourceEntities()
     expectOrder(["C", "B", "A"]) // Initial order
     await userEvent.click(screen.getByText(header))
     expectOrder(ascending)
+    await expectNoAccessibilityViolations(container)
     await userEvent.click(screen.getByText(header))
     expectOrder(ascending.toReversed())
+    await expectNoAccessibilityViolations(container)
     await userEvent.click(screen.getByText(header))
     expectOrder(ascending)
 }
@@ -239,6 +252,6 @@ it("shows help", async () => {
     renderSourceEntities()
     await userEvent.hover(screen.queryByTestId("HelpIcon"))
     await waitFor(() => {
-        expect(screen.queryByText(/help text/)).not.toBe(null)
+        expect(screen.queryByText(/help/)).not.toBe(null)
     })
 })

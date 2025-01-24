@@ -1,5 +1,9 @@
 import "@testing-library/jest-dom"
 
+import { toHaveNoViolations } from "jest-axe"
+
+expect.extend(toHaveNoViolations)
+
 const error = console.error
 console.error = (...args) => {
     if (/Support for defaultProps will be removed from function components/.test(args[0])) return

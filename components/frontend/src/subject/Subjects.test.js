@@ -3,6 +3,7 @@ import history from "history/browser"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { Subjects } from "./Subjects"
 
 function renderSubjects(reports) {
@@ -26,12 +27,13 @@ beforeEach(() => {
     history.push("")
 })
 
-it("shows the subjects", () => {
-    renderSubjects([report])
+it("shows the subjects", async () => {
+    const { container } = renderSubjects([report])
     expect(screen.getAllByText(/Subject/).length).toBe(2)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("does not render invisible subjects", () => {
+it("does not render invisible subjects", async () => {
     const report2 = {
         report_uuid: "report_uuid2",
         subjects: {
@@ -77,8 +79,9 @@ it("does not render invisible subjects", () => {
         },
         title: "Report 2 title",
     }
-    renderSubjects([report, report2])
+    const { container } = renderSubjects([report, report2])
     expect(screen.getAllByText(/Report 2 Subject 1/).length).toBe(1)
     expect(screen.getAllByText(/Report 2 Subject 2/).length).toBe(1)
     expect(screen.queryAllByText(/Report 2 Subject 3/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })

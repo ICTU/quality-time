@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 
 import { DataModel } from "../context/DataModel"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceParameters } from "./SourceParameters"
 
 function renderSourceParameters({
@@ -58,43 +59,51 @@ function renderSourceParameters({
     )
 }
 
-it("renders a string parameter", () => {
-    renderSourceParameters({})
+it("renders a string parameter", async () => {
+    const { container } = renderSourceParameters({})
     expect(screen.queryAllByLabelText(/Parameter/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a string parameter with placeholder", () => {
-    renderSourceParameters({ placeholder: "Placeholder" })
+it("renders a string parameter with placeholder", async () => {
+    const { container } = renderSourceParameters({ placeholder: "Placeholder" })
     expect(screen.queryAllByPlaceholderText(/Placeholder/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a default value if the source parameter has no value", () => {
-    renderSourceParameters({})
+it("renders a default value if the source parameter has no value", async () => {
+    const { container } = renderSourceParameters({})
     expect(screen.queryAllByDisplayValue(/Default value/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders the source parameter value", () => {
-    renderSourceParameters({ source_parameter_value: "Value" })
+it("renders the source parameter value", async () => {
+    const { container } = renderSourceParameters({ source_parameter_value: "Value" })
     expect(screen.queryAllByDisplayValue(/Value/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("does not render a warning if the url was reachable", () => {
-    renderSourceParameters({ type: "url", changed_param_keys: ["other_parameter_key"] })
+it("does not render a warning if the url was reachable", async () => {
+    const { container } = renderSourceParameters({ type: "url", changed_param_keys: ["other_parameter_key"] })
     expect(screen.getByDisplayValue(/Default value/)).toBeValid()
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a warning if the url was not reachable", () => {
-    renderSourceParameters({ type: "url", changed_param_keys: ["parameter_key"] })
+it("renders a warning if the url was not reachable", async () => {
+    const { container } = renderSourceParameters({ type: "url", changed_param_keys: ["parameter_key"] })
     expect(screen.getByDisplayValue(/Default value/)).toBeInvalid()
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders parameter groups", () => {
-    renderSourceParameters({})
+it("renders parameter groups", async () => {
+    const { container } = renderSourceParameters({})
     expect(screen.queryAllByText(/Location parameters/).length).toBe(1)
     expect(screen.queryAllByText(/Other parameters/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders ungrouped parameters in the group without explicitly listed parameters", () => {
-    renderSourceParameters({})
+it("renders ungrouped parameters in the group without explicitly listed parameters", async () => {
+    const { container } = renderSourceParameters({})
     expect(screen.queryAllByLabelText(/Other parameter/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })

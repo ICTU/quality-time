@@ -52,11 +52,11 @@ function statusHelp() {
             <p>The current status of the metric.</p>
             <List>
                 {STATUSES.map((status) => (
-                    <ListItem key={status} alignItems="flex-start" sx={{ paddingLeft: "8px" }}>
-                        <ListItemIcon sx={{ minWidth: "32px" }}>
-                            <StatusIcon status={status} size="small" />
+                    <ListItem key={status} alignItems="flex-start">
+                        <ListItemIcon>
+                            <StatusIcon status={status} />
                         </ListItemIcon>
-                        <ListItemText>{STATUS_DESCRIPTION[status]}</ListItemText>
+                        <ListItemText disableTypography>{STATUS_DESCRIPTION[status]}</ListItemText>
                     </ListItem>
                 ))}
             </List>

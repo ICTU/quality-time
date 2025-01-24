@@ -1,5 +1,5 @@
 import UpdateIcon from "@mui/icons-material/Update"
-import { Button, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material"
+import { Button, List, ListItem, ListItemAvatar, ListItemText, Stack, Typography } from "@mui/material"
 import { string } from "prop-types"
 import React, { useEffect, useState } from "react"
 
@@ -71,8 +71,12 @@ function ChangeLogWithoutMemo({ report_uuid, subject_uuid, metric_uuid, source_u
 
     return (
         <>
-            <Typography variant="subtitle1">{scope}</Typography>
-            <Typography variant="subtitle2">Most recent first</Typography>
+            <Stack direction="column">
+                <Typography>{scope}</Typography>
+                <Typography component="span" sx={{ fontSize: "80%" }}>
+                    Most recent first
+                </Typography>
+            </Stack>
             <List dense>
                 {changes.map((change) => (
                     <Event

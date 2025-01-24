@@ -3,6 +3,7 @@ import history from "history/browser"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { Subject } from "./Subject"
 
 function renderSubject({
@@ -12,7 +13,7 @@ function renderSubject({
     reportToRender = null,
 } = {}) {
     const settings = createTestableSettings()
-    render(
+    return render(
         <DataModel.Provider value={dataModel}>
             <Subject
                 atReportsOverview={atReportsOverview}
@@ -34,13 +35,15 @@ beforeEach(() => {
 })
 
 it("shows the subject title", async () => {
-    renderSubject({ dates: [new Date(2022, 3, 26)] })
+    const { container } = renderSubject({ dates: [new Date(2022, 3, 26)] })
     expect(screen.queryAllByText("Subject 1 title").length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the subject title at the reports overview", async () => {
-    renderSubject({ atReportsOverview: true, dates: [new Date(2022, 3, 26)] })
+    const { container } = renderSubject({ atReportsOverview: true, dates: [new Date(2022, 3, 26)] })
     expect(screen.queryAllByText("Report title ❯ Subject 1 title").length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("hides metrics not requiring action", async () => {

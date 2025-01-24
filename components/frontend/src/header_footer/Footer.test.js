@@ -1,21 +1,25 @@
 import { render, screen } from "@testing-library/react"
 
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { Footer } from "./Footer"
 
-it("renders the report title when there is a report", () => {
+it("renders the report title when there is a report", async () => {
     const lastUpdate = new Date()
-    render(<Footer lastUpdate={lastUpdate} report={{ title: "Report title" }} />)
+    const { container } = render(<Footer lastUpdate={lastUpdate} report={{ title: "Report title" }} />)
     expect(screen.findByText("Report")).not.toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a quote when there is no report", () => {
-    render(<Footer />)
+it("renders a quote when there is no report", async () => {
+    const { container } = render(<Footer />)
     expect(screen.queryByText("Report")).toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a link to the report url", () => {
-    render(<Footer report={{ title: "Report title" }} />)
+it("renders a link to the report url", async () => {
+    const { container } = render(<Footer report={{ title: "Report title" }} />)
     expect(screen.getByText("Report title").closest("a")).toHaveAttribute("href", "http://localhost/")
+    await expectNoAccessibilityViolations(container)
 })
 
 it("renders a link to the report url from the search parameter", () => {

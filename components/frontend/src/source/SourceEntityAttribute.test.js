@@ -1,70 +1,86 @@
 import { render, screen } from "@testing-library/react"
 
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceEntityAttribute } from "./SourceEntityAttribute"
 
 function renderSourceEntityAttribute(entity, entityAttribute) {
     return render(<SourceEntityAttribute entity={entity} entityAttribute={entityAttribute} />)
 }
 
-it("renders a string", () => {
-    renderSourceEntityAttribute({ text: "some text" }, { key: "text" })
+it("renders a string", async () => {
+    const { container } = renderSourceEntityAttribute({ text: "some text" }, { key: "text" })
     expect(screen.queryAllByText(/some text/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders an empty string", () => {
-    renderSourceEntityAttribute({ other: "will not be shown" }, { key: "missing" })
+it("renders an empty string", async () => {
+    const { container } = renderSourceEntityAttribute({ other: "will not be shown" }, { key: "missing" })
     expect(screen.queryAllByText(/will not be shown/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a float", () => {
-    renderSourceEntityAttribute({ number: 42.0 }, { key: "number", type: "float" })
+it("renders a float", async () => {
+    const { container } = renderSourceEntityAttribute({ number: 42.0 }, { key: "number", type: "float" })
     expect(screen.getAllByText(/42/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a zero float", () => {
-    renderSourceEntityAttribute({ number: 0.0 }, { key: "number", type: "float" })
+it("renders a zero float", async () => {
+    const { container } = renderSourceEntityAttribute({ number: 0.0 }, { key: "number", type: "float" })
     expect(screen.getAllByText(/0/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders an integer", () => {
-    renderSourceEntityAttribute({ number: 42.0 }, { key: "number", type: "integer" })
+it("renders an integer", async () => {
+    const { container } = renderSourceEntityAttribute({ number: 42.0 }, { key: "number", type: "integer" })
     expect(screen.getAllByText(/42/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders an integer percentage", () => {
-    renderSourceEntityAttribute({ number: 42.0 }, { key: "number", type: "integer_percentage" })
+it("renders an integer percentage", async () => {
+    const { container } = renderSourceEntityAttribute({ number: 42.0 }, { key: "number", type: "integer_percentage" })
     expect(screen.getAllByText(/42%/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a datetime", () => {
-    renderSourceEntityAttribute({ timestamp: "2021-10-10T10:10:10" }, { key: "timestamp", type: "datetime" })
+it("renders a datetime", async () => {
+    const { container } = renderSourceEntityAttribute(
+        { timestamp: "2021-10-10T10:10:10" },
+        { key: "timestamp", type: "datetime" },
+    )
     expect(screen.getAllByText(/ago/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a date", () => {
-    renderSourceEntityAttribute({ date: "2021-10-10T10:10:10" }, { key: "date", type: "date" })
+it("renders a date", async () => {
+    const { container } = renderSourceEntityAttribute({ date: "2021-10-10T10:10:10" }, { key: "date", type: "date" })
     expect(screen.getAllByText(/ago/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders minutes", () => {
-    renderSourceEntityAttribute({ duration: "42" }, { key: "duration", type: "minutes" })
+it("renders minutes", async () => {
+    const { container } = renderSourceEntityAttribute({ duration: "42" }, { key: "duration", type: "minutes" })
     expect(screen.getAllByText(/42/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a status icon", () => {
-    renderSourceEntityAttribute({ status: "target_met" }, { key: "status", type: "status" })
+it("renders a status icon", async () => {
+    const { container } = renderSourceEntityAttribute({ status: "target_met" }, { key: "status", type: "status" })
     expect(screen.getAllByLabelText("Target met").length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a url", () => {
-    renderSourceEntityAttribute(
+it("renders a url", async () => {
+    const { container } = renderSourceEntityAttribute(
         { status: "target_met", url: "https://url" },
         { key: "status", type: "status", url: "url" },
     )
     expect(screen.getByLabelText("Target met").closest("a").href).toBe("https://url/")
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders preformatted text", () => {
-    renderSourceEntityAttribute({ text: "text" }, { key: "text", pre: true })
+it("renders preformatted text", async () => {
+    const { container } = renderSourceEntityAttribute({ text: "text" }, { key: "text", pre: true })
     expect(screen.getByTestId("pre-wrapped")).toBeInTheDocument()
+    await expectNoAccessibilityViolations(container)
 })

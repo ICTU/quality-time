@@ -105,15 +105,14 @@ function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
             textAlign={alignment(entityAttribute.type, entityAttribute.alignment)}
             {...sortProps}
         >
-            <span>{entityAttribute.name}</span>
             {entityAttribute.help ? (
                 <Tooltip title={entityAttribute.help}>
-                    <span>
-                        &nbsp;
-                        <HelpIcon fontSize="inherit" sx={{ verticalAlign: "middle" }} tabIndex="0" />
-                    </span>
+                    {entityAttribute.name}
+                    <HelpIcon fontSize="inherit" sx={{ marginLeft: "1em", verticalAlign: "middle" }} tabIndex="0" />
                 </Tooltip>
-            ) : null}
+            ) : (
+                <span>{entityAttribute.name}</span>
+            )}
         </SortableTableHeaderCell>
     )
 }

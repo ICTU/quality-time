@@ -2,6 +2,7 @@ import { ThemeProvider } from "@mui/material/styles"
 import { fireEvent, render, screen } from "@testing-library/react"
 
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { theme } from "../theme"
 import { CardDashboard } from "./CardDashboard"
 import { MetricSummaryCard } from "./MetricSummaryCard"
@@ -23,12 +24,13 @@ function renderCardDashboard({ cards = [], initialLayout = [], saveLayout = jest
     )
 }
 
-it("returns null without cards", () => {
+it("returns null without cards", async () => {
     const { container } = renderCardDashboard()
     expect(container.children[0].children.length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("adds the card to the dashboard", () => {
+it("adds the card to the dashboard", async () => {
     const { container } = renderCardDashboard({
         cards: [
             <MetricSummaryCard
@@ -41,11 +43,12 @@ it("adds the card to the dashboard", () => {
         ],
     })
     expect(container.children.length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not save the layout after click", async () => {
     const mockCallback = jest.fn()
-    renderCardDashboard({
+    const { container } = renderCardDashboard({
         cards: [
             <MetricSummaryCard
                 header="Card"
@@ -60,4 +63,5 @@ it("does not save the layout after click", async () => {
     })
     fireEvent.click(screen.getByText("Card"))
     expect(mockCallback).not.toHaveBeenCalled()
+    await expectNoAccessibilityViolations(container)
 })

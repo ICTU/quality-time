@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@mui/material/styles"
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
+import { axe } from "jest-axe"
 
 import { dataModel, report } from "./__fixtures__/fixtures"
 import * as fetch_server_api from "./api/fetch_server_api"
@@ -18,33 +19,35 @@ beforeEach(() => {
 
 afterEach(() => jest.restoreAllMocks())
 
-it("shows an error message when there are no reports", async () => {
-    await act(async () =>
-        render(
-            <ThemeProvider theme={theme}>
-                <AppUI report_uuid="" reports={[]} reports_overview={{}} />
-            </ThemeProvider>,
-        ),
-    )
-    expect(screen.getAllByText(/Sorry, no reports/).length).toBe(1)
-})
-
-it("handles sorting", async () => {
-    await act(async () =>
-        render(
+async function renderAppUI(reports) {
+    let result
+    await act(async () => {
+        result = render(
             <ThemeProvider theme={theme}>
                 <AppUI
                     dataModel={dataModel}
+                    handleDateChange={jest.fn}
                     lastUpdate={new Date()}
-                    report_date={null}
-                    report_uuid="report_uuid"
-                    reports={[report]}
+                    report_date={reports ? null : undefined}
+                    report_uuid={reports ? "report_uuid" : ""}
+                    reports={reports ?? []}
                     reports_overview={{}}
                     user="xxx"
                 />
             </ThemeProvider>,
-        ),
-    )
+        )
+    })
+    return result
+}
+
+it("shows an error message when there are no reports", async () => {
+    const { container } = await renderAppUI()
+    expect(screen.getAllByText(/Sorry, no reports/).length).toBe(1)
+    expect(await axe(container)).toHaveNoViolations()
+})
+
+it("handles sorting", async () => {
+    await renderAppUI([report])
     fireEvent.click(screen.getAllByText("Comment")[0])
     expect(history.location.search).toEqual("?sort_column_report_uuid=comment")
     fireEvent.click(screen.getAllByText("Status")[0])
@@ -60,19 +63,10 @@ it("handles sorting", async () => {
     expect(history.location.search).toEqual("")
 })
 
-async function renderAppUI() {
-    return await act(async () =>
-        render(
-            <ThemeProvider theme={theme}>
-                <AppUI handleDateChange={jest.fn} report_uuid="" reports={[]} reports_overview={{}} />
-            </ThemeProvider>,
-        ),
-    )
-}
-
 it("resets all settings", async () => {
     history.push("?date_interval=2")
-    await act(async () => await renderAppUI())
+    const { container } = await renderAppUI()
+    expect(await axe(container)).toHaveNoViolations()
     fireEvent.click(screen.getByText("Reset settings"))
     expect(history.location.search).toBe("")
 })

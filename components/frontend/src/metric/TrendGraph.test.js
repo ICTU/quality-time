@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 
 import { DataModel } from "../context/DataModel"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { TrendGraph } from "./TrendGraph"
 
 const dataModel = {
@@ -18,11 +19,12 @@ function renderTrendgraph({ measurements = [], scale = "count", loading = "loade
     )
 }
 
-it("renders the measurements", () => {
-    renderTrendgraph({
+it("renders the measurements", async () => {
+    const { container } = renderTrendgraph({
         measurements: [{ count: { value: "1" }, start: "2019-09-29", end: "2019-09-30" }],
     })
     expect(screen.getAllByText(/Time/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("renders measurements with targets", () => {

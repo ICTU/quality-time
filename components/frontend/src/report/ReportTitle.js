@@ -98,7 +98,7 @@ function ReactionTimes(props) {
     return (
         <Grid container alignItems="flex-start" spacing={{ xs: 1, sm: 2, md: 2 }} columns={{ xs: 1, sm: 2, md: 4 }}>
             <Grid size={{ xs: 1, sm: 2, md: 4 }}>
-                <Typography variant="subtitle1">Desired metric response times</Typography>
+                <Typography>Desired metric response times</Typography>
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <DesiredResponseTimeInput status="unknown" {...props} />
@@ -113,7 +113,7 @@ function ReactionTimes(props) {
                 <DesiredResponseTimeInput hoverableLabel status="debt_target_met" {...props} />
             </Grid>
             <Grid size={{ xs: 1, sm: 2, md: 4 }}>
-                <Typography variant="subtitle1">
+                <Typography>
                     Desired time after which to review measurement entities (violations, warnings, issues, etc.)
                 </Typography>
             </Grid>

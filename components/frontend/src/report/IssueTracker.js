@@ -10,7 +10,6 @@ import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { TextField } from "../fields/TextField"
 import { reportPropType } from "../sharedPropTypes"
 import { sourceTypeOption } from "../source/SourceType"
-import { Header } from "../widgets/Header"
 import { HyperLink } from "../widgets/HyperLink"
 import { showMessage } from "../widgets/toast"
 import { WarningMessage } from "../widgets/WarningMessage"
@@ -19,7 +18,7 @@ const NONE_OPTION = {
     key: "None",
     text: "None",
     value: "None",
-    content: <Header header="None" level="h4" />,
+    content: "None",
 }
 
 export function IssueTracker({ report, reload }) {

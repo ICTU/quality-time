@@ -58,7 +58,7 @@ export function Overrun({ metric_uuid, metric, report, measurements, dates }) {
                         {overruns.map((overrun) => (
                             <TableRow key={overrun.start}>
                                 <TableCell align="left">
-                                    <StatusIcon size="small" status={overrun.status} />
+                                    <StatusIcon status={overrun.status} />
                                 </TableCell>
                                 <TableCell align="left">{overrun.start.split("T")[0]}</TableCell>
                                 <TableCell align="left">{overrun.end.split("T")[0]}</TableCell>

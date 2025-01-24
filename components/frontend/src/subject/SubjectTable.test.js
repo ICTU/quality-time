@@ -6,6 +6,7 @@ import * as fetch_server_api from "../api/fetch_server_api"
 import { useExpandedItemsSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTable } from "./SubjectTable"
 
 jest.mock("../api/fetch_server_api.js")
@@ -48,7 +49,7 @@ function renderSubjectTable({ dates = [], expandedItems = null, settings = null 
     if (expandedItems) {
         settings.expandedItems = expandedItems
     }
-    render(
+    return render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={dataModel}>
                 <SubjectTable
@@ -111,19 +112,21 @@ beforeEach(() => {
     history.push("")
 })
 
-it("displays all the metrics", () => {
-    renderSubjectTable()
+it("displays all the metrics", async () => {
+    const { container } = renderSubjectTable()
     const metricNames = ["name_1", "name_2"]
     metricNames.forEach((metricName) => {
         expect(screen.queryAllByText(metricName).length).toBe(1)
     })
+    await expectNoAccessibilityViolations(container)
 })
 
-it("shows the date columns", () => {
-    renderSubjectTable({ dates: dates })
+it("shows the date columns", async () => {
+    const { container } = renderSubjectTable({ dates: dates })
     dates.forEach((date) => {
         expect(screen.queryAllByText(date.toLocaleDateString()).length).toBe(1)
     })
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the source column", () => {
@@ -199,12 +202,13 @@ it("hides the tags column", () => {
     expect(screen.queryAllByText(/Tag 1/).length).toBe(0)
 })
 
-it("expands the details via the button", () => {
+it("expands the details via the button", async () => {
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
-    renderSubjectTable({ expandedItems: expandedItems.result.current })
+    const { container } = renderSubjectTable({ expandedItems: expandedItems.result.current })
     const expand = screen.getAllByRole("button", { name: "Expand/collapse" })[0]
     fireEvent.click(expand)
     expandedItems.rerender()
+    await expectNoAccessibilityViolations(container)
     expect(expandedItems.result.current.value).toStrictEqual(["1:0"])
 })
 
@@ -220,9 +224,10 @@ it("collapses the details via the button", async () => {
 
 it("expands the details via the url", async () => {
     history.push("?expanded=1:0")
-    renderSubjectTable()
+    const { container } = renderSubjectTable()
     await act(async () => {}) // Wait for hooks to finish
     expect(screen.queryAllByText("Configuration").length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("moves a metric", async () => {
@@ -236,12 +241,13 @@ it("moves a metric", async () => {
 
 it("adds a source", async () => {
     history.push("?expanded=1:1")
-    renderSubjectTable()
+    const { container } = renderSubjectTable()
     await act(async () => {
         fireEvent.click(screen.getByRole("tab", { name: /Sources/ }))
     })
     const addButton = await screen.findByText("Add source")
     await act(async () => fireEvent.click(addButton))
+    await expectNoAccessibilityViolations(container)
     fireEvent.click(await screen.findByText("Source type"))
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "source/new/1", {
         type: "source_type",

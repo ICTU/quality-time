@@ -106,7 +106,7 @@ export function ReportsOverviewTitle({ reports_overview, reload, settings }) {
 
     return (
         <HeaderWithDetails
-            header={reports_overview.title}
+            header={reports_overview.title || "Reports overview"}
             item_uuid={uuid}
             level="h1"
             settings={settings}

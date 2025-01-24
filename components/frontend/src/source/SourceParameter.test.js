@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event"
 
 import * as fetch_server_api from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceParameter } from "./SourceParameter"
 
 jest.mock("../api/fetch_server_api.js")
@@ -69,63 +70,75 @@ function renderSourceParameter({
     )
 }
 
-it("renders an url parameter", () => {
-    renderSourceParameter({})
+it("renders an url parameter", async () => {
+    const { container } = renderSourceParameter({})
     expect(screen.queryAllByLabelText(/URL/).length).toBe(1)
     expect(screen.getByDisplayValue(/https:\/\/test/)).toBeValid()
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders an url parameter with warning", () => {
-    renderSourceParameter({ warning: true })
+it("renders an url parameter with warning", async () => {
+    const { container } = renderSourceParameter({ warning: true })
     expect(screen.queryAllByLabelText(/URL/).length).toBe(1)
     expect(screen.getByDisplayValue(/https:\/\/test/)).not.toBeValid()
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a string parameter", () => {
-    renderSourceParameter({ parameter_name: "String", parameter_type: "string" })
+it("renders a string parameter", async () => {
+    const { container } = renderSourceParameter({ parameter_name: "String", parameter_type: "string" })
     expect(screen.queryAllByLabelText(/String/).length).toBe(1)
     expect(screen.queryAllByDisplayValue(/https/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a password parameter", () => {
-    renderSourceParameter({ parameter_name: "Password", parameter_type: "password" })
+it("renders a password parameter", async () => {
+    const { container } = renderSourceParameter({ parameter_name: "Password", parameter_type: "password" })
     expect(screen.queryAllByLabelText(/Password/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a date parameter", () => {
-    renderSourceParameter({
+it("renders a date parameter", async () => {
+    const { container } = renderSourceParameter({
         parameter_name: "Date",
         parameter_type: "date",
         parameter_value: "2021-10-10",
     })
     expect(screen.queryAllByLabelText(/Date/).length).toBe(1)
     expect(screen.queryAllByDisplayValue("10/10/2021").length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a date parameter without date", () => {
-    renderSourceParameter({
+it("renders a date parameter without date", async () => {
+    const { container } = renderSourceParameter({
         parameter_name: "Date",
         parameter_type: "date",
         parameter_value: "",
     })
     expect(screen.queryAllByLabelText(/Date/).length).toBe(1)
     expect(screen.queryAllByPlaceholderText(/YYYY/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders an integer parameter", () => {
-    renderSourceParameter({ parameter_name: "Integer", parameter_type: "integer" })
+it("renders an integer parameter", async () => {
+    const { container } = renderSourceParameter({ parameter_name: "Integer", parameter_type: "integer" })
     expect(screen.queryAllByLabelText(/Integer/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("doesn't change an integer parameter with mouse wheel", () => {
+it("doesn't change an integer parameter with mouse wheel", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
-    renderSourceParameter({ parameter_name: "Integer", parameter_type: "integer", parameter_value: "10" })
+    const { container } = renderSourceParameter({
+        parameter_name: "Integer",
+        parameter_type: "integer",
+        parameter_value: "10",
+    })
     fireEvent.wheel(screen.getByLabelText(/Integer/, { target: { scrollLeft: 500 } }))
     expect(fetch_server_api.fetch_server_api).not.toHaveBeenCalled()
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a single choice parameter", () => {
-    renderSourceParameter({
+it("renders a single choice parameter", async () => {
+    const { container } = renderSourceParameter({
         parameter_name: "Single choice",
         parameter_type: "single_choice",
         parameter_value: "option 1",
@@ -133,10 +146,11 @@ it("renders a single choice parameter", () => {
     })
     expect(screen.queryAllByLabelText(/Single choice/).length).toBe(1)
     expect(screen.queryAllByText(/option 1/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a multiple choice parameter", () => {
-    renderSourceParameter({
+it("renders a multiple choice parameter", async () => {
+    const { container } = renderSourceParameter({
         parameter_name: "Multiple choice",
         parameter_type: "multiple_choice",
         parameter_value: ["option 1", "option 2"],
@@ -144,46 +158,52 @@ it("renders a multiple choice parameter", () => {
     })
     expect(screen.queryAllByLabelText(/Multiple choice/).length).toBe(1)
     expect(screen.queryAllByText(/option 1/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a multiple choice with addition parameter", () => {
-    renderSourceParameter({
+it("renders a multiple choice with addition parameter", async () => {
+    const { container } = renderSourceParameter({
         parameter_name: "Multiple choice with addition",
         parameter_type: "multiple_choice_with_addition",
         parameter_value: ["option 1", "option 2"],
         placeholder: null,
     })
     expect(screen.queryAllByLabelText(/Multiple choice/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders nothing on unknown parameter type", () => {
-    renderSourceParameter({ parameter_name: "Unknown", parameter_type: "unknown" })
+it("renders nothing on unknown parameter type", async () => {
+    const { container } = renderSourceParameter({ parameter_name: "Unknown", parameter_type: "unknown" })
     expect(screen.queryAllByText(/Unknown/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders a help url", () => {
-    renderSourceParameter({ help_url: "https://help" })
+it("renders a help url", async () => {
+    const { container } = renderSourceParameter({ help_url: "https://help" })
     expect(screen.queryAllByTitle(/Opens new window/)[0].closest("a").href).toBe("https://help/")
+    await expectNoAccessibilityViolations(container)
 })
 
 it("renders a help text", async () => {
-    renderSourceParameter({ help: "Help text" })
+    const { container } = renderSourceParameter({ help: "Help text" })
     expect(screen.queryAllByText(/Help text/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("changes the value", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
-    renderSourceParameter({})
+    const { container } = renderSourceParameter({})
     await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", {
         key1: "https://test/new",
         edit_scope: "source",
     })
+    await expectNoAccessibilityViolations(container)
 })
 
 it("changes the value via mass edit", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
-    renderSourceParameter({})
+    const { container } = renderSourceParameter({})
     fireEvent.click(screen.getByLabelText(/Edit scope/))
     fireEvent.click(screen.getByText(/Apply change to subject/))
     await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
@@ -191,12 +211,14 @@ it("changes the value via mass edit", async () => {
         key1: "https://test/new",
         edit_scope: "subject",
     })
+    await expectNoAccessibilityViolations(container)
 })
 
 it("closes the mass edit menu", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
-    renderSourceParameter({})
+    const { container } = renderSourceParameter({})
     fireEvent.click(screen.getByLabelText(/Edit scope/))
     await userEvent.keyboard("{Escape}")
     expect(fetch_server_api.fetch_server_api).not.toHaveBeenCalled()
+    await expectNoAccessibilityViolations(container)
 })
