@@ -5,6 +5,7 @@ import history from "history/browser"
 import * as auth from "./api/auth"
 import * as fetch_server_api from "./api/fetch_server_api"
 import App from "./App"
+import { expectNoAccessibilityViolations } from "./testUtils"
 import * as toast from "./widgets/toast"
 
 function set_user_in_local_storage(session_expiration_datetime, email) {
@@ -32,46 +33,53 @@ afterEach(() => {
 })
 
 it("shows spinner", async () => {
-    render(<App />)
+    const { container } = render(<App />)
     expect(screen.getAllByLabelText(/Loading/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("sets the user from local storage", () => {
+it("sets the user from local storage", async () => {
     set_user_in_local_storage("3000-02-23T22:00:50.945Z")
-    render(<App />)
+    const { container } = render(<App />)
     expect(screen.getAllByText(/admin/).length).toBe(1)
     expect(screen.getAllByAltText(/Avatar for admin/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("does not set invalid email addresses", () => {
+it("does not set invalid email addresses", async () => {
     set_user_in_local_storage("3000-02-23T22:00:50.945Z", "admin at example.org")
-    render(<App />)
+    const { container } = render(<App />)
     expect(screen.getAllByText(/admin/).length).toBe(1)
     expect(screen.queryAllByAltText(/Avatar for admin/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("resets the user when the session is expired on mount", () => {
+it("resets the user when the session is expired on mount", async () => {
     set_user_in_local_storage("2000-02-23T22:00:50.945Z")
-    render(<App />)
+    const { container } = render(<App />)
     expect(screen.queryAllByText(/admin/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("resets the user when the user clicks logout", async () => {
     set_user_in_local_storage("3000-02-23T22:00:50.945Z")
     auth.logout = jest.fn().mockResolvedValue({ ok: true })
-    render(<App />)
+    const { container } = render(<App />)
     await act(async () => {
         fireEvent.click(screen.getByText(/admin/))
+        await expectNoAccessibilityViolations(container)
     })
     await act(async () => {
         fireEvent.click(screen.getByText(/Logout/))
     })
     expect(screen.queryAllByText(/admin/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })
 
-async function selectDate() {
+async function selectDate(container) {
     await act(async () => {
         fireEvent.click(screen.getByLabelText("Report date"))
+        await expectNoAccessibilityViolations(container)
     })
     await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "Previous month" }))
@@ -82,37 +90,42 @@ async function selectDate() {
 }
 
 it("handles a date change", async () => {
-    render(<App />)
-    await selectDate()
+    const { container } = render(<App />)
+    await selectDate(container)
     const expectedDate = dayjs().subtract(1, "month").date(15).toDate().toDateString()
     expect(screen.getByLabelText("Report date").textContent).toMatch(expectedDate)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("handles a date change between two dates in the past", async () => {
     history.push("/?report_date=2022-03-13")
-    render(<App />)
-    await selectDate()
+    const { container } = render(<App />)
+    await selectDate(container)
     const expectedDate = dayjs().subtract(1, "month").date(15).toDate().toDateString()
     expect(screen.getByLabelText("Report date").textContent).toMatch(expectedDate)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("reads the report date query parameter", () => {
+it("reads the report date query parameter", async () => {
     history.push("/?report_date=2020-03-13")
-    render(<App />)
+    const { container } = render(<App />)
     const expectedDate = dayjs("2020-03-13").toDate().toDateString()
     expect(screen.getByLabelText("Report date").textContent).toMatch(expectedDate)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("handles a date reset", async () => {
     history.push("/?report_date=2020-03-13")
-    render(<App />)
+    const { container } = render(<App />)
     await act(async () => {
         fireEvent.click(screen.getByLabelText("Report date"))
+        await expectNoAccessibilityViolations(container)
     })
     await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "Today" }))
     })
     expect(screen.getByLabelText("Report date").textContent).toMatch(/today/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("handles the nr of measurements event source", async () => {

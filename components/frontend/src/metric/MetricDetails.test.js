@@ -10,6 +10,7 @@ import * as measurement_api from "../api/measurement"
 import * as source_api from "../api/source"
 import { DataModel } from "../context/DataModel"
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { MetricDetails } from "./MetricDetails"
 
 jest.mock("../api/fetch_server_api")
@@ -97,8 +98,9 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error, fa
         (_metric_uuid, _source_uuid, _entity_key, _attribute, _value, reload) => reload(),
     )
     changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }))
-    await act(async () =>
-        render(
+    let result
+    await act(async () => {
+        result = render(
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale_en_gb}>
                 <Permissions.Provider value={[EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION]}>
                     <DataModel.Provider value={dataModel}>
@@ -113,8 +115,9 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error, fa
                     </DataModel.Provider>
                 </Permissions.Provider>
             </LocalizationProvider>,
-        ),
-    )
+        )
+    })
+    return result
 }
 
 beforeEach(() => {
@@ -124,38 +127,44 @@ beforeEach(() => {
 })
 
 it("switches tabs", async () => {
-    await renderMetricDetails()
+    const { container } = await renderMetricDetails()
     expect(screen.getAllByLabelText(/Metric name/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
     fireEvent.click(screen.getByText(/Sources/))
     expect(screen.getAllByLabelText(/Source name/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("switches tabs to technical debt", async () => {
-    await renderMetricDetails()
+    const { container } = await renderMetricDetails()
     expect(screen.getAllByLabelText(/Metric name/).length).toBe(1)
     fireEvent.click(screen.getByText(/Technical debt/))
     expect(screen.getAllByLabelText(/Metric technical debt target/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("switches tabs to measurement entities", async () => {
-    await renderMetricDetails()
+    const { container } = await renderMetricDetails()
     expect(screen.getAllByLabelText(/Metric name/).length).toBe(1)
     fireEvent.click(screen.getByText(/The source/))
     expect(screen.getAllByText(/Attribute status/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("switches tabs to the trend graph", async () => {
-    await renderMetricDetails()
+    const { container } = await renderMetricDetails()
     expect(screen.getAllByLabelText(/Metric name/).length).toBe(1)
     fireEvent.click(screen.getByText(/Trend graph/))
     expect(screen.getAllByText(/Time/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the trend graph tab even if the metric scale is version number", async () => {
     report.subjects["subject_uuid"].metrics["metric_uuid"].scale = "version_number"
-    await renderMetricDetails()
+    const { container } = await renderMetricDetails()
     expect(screen.queryAllByText(/Trend graph/).length).toBe(1)
     report.subjects["subject_uuid"].metrics["metric_uuid"].scale = "count"
+    await expectNoAccessibilityViolations(container)
 })
 
 it("removes the existing hashtag from the URL to share", async () => {
@@ -172,13 +181,15 @@ it("removes the existing hashtag from the URL to share", async () => {
 })
 
 it("displays whether sources have errors", async () => {
-    await renderMetricDetails(null, "Connection error")
+    const { container } = await renderMetricDetails(null, "Connection error")
     expect(screen.getByText(/Sources/)).toHaveClass("error")
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays whether sources have warnings", async () => {
-    await renderMetricDetails()
+    const { container } = await renderMetricDetails()
     expect(screen.getByText(/Sources/)).toHaveClass("warning")
+    await expectNoAccessibilityViolations(container)
 })
 
 it("moves the metric", async () => {
@@ -190,9 +201,10 @@ it("moves the metric", async () => {
 })
 
 it("loads the changelog", async () => {
-    await renderMetricDetails()
+    const { container } = await renderMetricDetails()
     await act(async () => fireEvent.click(screen.getByText(/Changelog/)))
     expect(changelog_api.get_changelog).toHaveBeenCalledWith(5, { metric_uuid: "metric_uuid" })
+    await expectNoAccessibilityViolations(container)
 })
 
 it("deletes the metric", async () => {
@@ -212,16 +224,18 @@ it("measures the metric", async () => {
 })
 
 it("fails to load measurements", async () => {
-    await renderMetricDetails(null, null, true)
+    const { container } = await renderMetricDetails(null, null, true)
     fireEvent.click(screen.getByText(/Trend graph/))
     expect(screen.queryAllByText(/Loading measurements failed/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("reloads the measurements after editing a measurement entity", async () => {
-    await renderMetricDetails()
+    const { container } = await renderMetricDetails()
     expect(measurement_api.get_metric_measurements).toHaveBeenCalledTimes(1)
     fireEvent.click(screen.getByText(/The source/))
     fireEvent.click(screen.getByRole("button", { name: "Expand/collapse" }))
+    await expectNoAccessibilityViolations(container)
     fireEvent.mouseDown(screen.getByText("Unconfirm"))
     await act(async () => fireEvent.click(screen.getByText("Confirm")))
     expect(measurement_api.get_metric_measurements).toHaveBeenCalledTimes(2)

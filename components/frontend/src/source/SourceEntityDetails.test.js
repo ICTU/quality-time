@@ -6,6 +6,7 @@ import dayjs from "dayjs"
 
 import * as source from "../api/source"
 import { EDIT_ENTITY_PERMISSION, Permissions } from "../context/Permissions"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceEntityDetails } from "./SourceEntityDetails"
 
 jest.mock("../api/source.js")
@@ -13,7 +14,7 @@ jest.mock("../api/source.js")
 const reload = jest.fn
 
 function renderSourceEntityDetails({ report = null, status_end_date = null } = {}) {
-    render(
+    return render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Permissions.Provider value={[EDIT_ENTITY_PERMISSION]}>
                 <SourceEntityDetails
@@ -31,8 +32,8 @@ function renderSourceEntityDetails({ report = null, status_end_date = null } = {
     )
 }
 
-it("shows the default desired response times when the report has no desired response times", () => {
-    renderSourceEntityDetails()
+it("shows the default desired response times when the report has no desired response times", async () => {
+    const { container } = renderSourceEntityDetails()
     fireEvent.mouseDown(screen.getByText("Unconfirm"))
     const expectedMenuItemDescriptions = [
         "This violation has been reviewed and should be addressed within 180 days.",
@@ -43,11 +44,12 @@ it("shows the default desired response times when the report has no desired resp
     expectedMenuItemDescriptions.forEach((description) => {
         expect(screen.queryAllByText(description).length).toBe(1)
     })
+    await expectNoAccessibilityViolations(container)
 })
 
-it("shows the configured desired response times", () => {
+it("shows the configured desired response times", async () => {
     const report = { desired_response_times: { confirmed: "2", fixed: "4", false_positive: "600", wont_fix: "100" } }
-    renderSourceEntityDetails({ report: report })
+    const { container } = renderSourceEntityDetails({ report: report })
     fireEvent.mouseDown(screen.getByText("Unconfirm"))
     const expectedMenuItemDescriptions = [
         "This violation has been reviewed and should be addressed within 2 days.",
@@ -58,11 +60,12 @@ it("shows the configured desired response times", () => {
     expectedMenuItemDescriptions.forEach((description) => {
         expect(screen.queryAllByText(description).length).toBe(1)
     })
+    await expectNoAccessibilityViolations(container)
 })
 
-it("shows no desired response times when the report has been configured to not have desired response times", () => {
+it("shows no desired response times when the report has been configured to not have desired response times", async () => {
     const report = { desired_response_times: { confirmed: null, fixed: null, false_positive: null, wont_fix: null } }
-    renderSourceEntityDetails({ report: report })
+    const { container } = renderSourceEntityDetails({ report: report })
     fireEvent.mouseDown(screen.getByText("Unconfirm"))
     const expectedMenuItemDescriptions = [
         "This violation has been reviewed and should be addressed.",
@@ -73,11 +76,12 @@ it("shows no desired response times when the report has been configured to not h
     expectedMenuItemDescriptions.forEach((description) => {
         expect(screen.queryAllByText(description).length).toBe(1)
     })
+    await expectNoAccessibilityViolations(container)
 })
 
-it("changes the entity status", () => {
+it("changes the entity status", async () => {
     source.set_source_entity_attribute = jest.fn()
-    renderSourceEntityDetails()
+    const { container } = renderSourceEntityDetails()
     fireEvent.mouseDown(screen.getByText("Unconfirm"))
     fireEvent.click(screen.getByText(/Confirm/))
     expect(source.set_source_entity_attribute).toHaveBeenCalledWith(
@@ -88,17 +92,19 @@ it("changes the entity status", () => {
         "confirmed",
         reload,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the entity status end date", async () => {
     source.set_source_entity_attribute = jest.fn()
-    renderSourceEntityDetails({ status_end_date: "20250112" })
+    const { container } = renderSourceEntityDetails({ status_end_date: "20250112" })
     expect(screen.queryAllByDisplayValue("01/12/2025").length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("changes the entity status end date", async () => {
     source.set_source_entity_attribute = jest.fn()
-    renderSourceEntityDetails()
+    const { container } = renderSourceEntityDetails()
     await userEvent.type(screen.getByPlaceholderText(/YYYY/), "01012222{Enter}")
     expect(source.set_source_entity_attribute).toHaveBeenCalledWith(
         "metric_uuid",
@@ -108,11 +114,12 @@ it("changes the entity status end date", async () => {
         dayjs("2222-01-01"),
         reload,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("changes the rationale", async () => {
     source.set_source_entity_attribute = jest.fn()
-    renderSourceEntityDetails()
+    const { container } = renderSourceEntityDetails()
     await userEvent.type(screen.getByLabelText(/rationale/), "Rationale")
     await userEvent.tab()
     expect(source.set_source_entity_attribute).toHaveBeenCalledWith(
@@ -123,4 +130,5 @@ it("changes the rationale", async () => {
         "Rationale",
         reload,
     )
+    await expectNoAccessibilityViolations(container)
 })

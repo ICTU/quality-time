@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event"
 import * as report_api from "../api/report"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { IssueTracker } from "./IssueTracker"
 
 jest.mock("../api/report.js")
@@ -20,28 +21,33 @@ const reload = () => {
     /* Dummy implementation */
 }
 
-function renderIssueTracker({ report = { report_uuid: "report_uuid", title: "Report" }, help_url = "" } = {}) {
-    return render(
-        <DataModel.Provider
-            value={{
-                sources: {
-                    jira: {
-                        name: "Jira",
-                        issue_tracker: true,
-                        parameters: { private_token: { help_url: help_url } },
+async function renderIssueTracker({ report = { report_uuid: "report_uuid", title: "Report" }, help_url = "" } = {}) {
+    let result
+    await act(async () => {
+        result = render(
+            <DataModel.Provider
+                value={{
+                    sources: {
+                        jira: {
+                            name: "Jira",
+                            issue_tracker: true,
+                            parameters: { private_token: { help_url: help_url } },
+                        },
                     },
-                },
-            }}
-        >
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <IssueTracker report={report} reload={reload} />
-            </Permissions.Provider>
-        </DataModel.Provider>,
-    )
+                }}
+            >
+                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+                    <IssueTracker report={report} reload={reload} />
+                </Permissions.Provider>
+            </DataModel.Provider>,
+        )
+    })
+    return result
 }
 
 it("sets the issue tracker type", async () => {
-    await act(async () => renderIssueTracker())
+    //await act(async () => renderIssueTracker())
+    const { container } = await renderIssueTracker()
     fireEvent.mouseDown(screen.getByLabelText(/Issue tracker type/))
     fireEvent.click(screen.getByText("Jira"))
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
@@ -50,10 +56,11 @@ it("sets the issue tracker type", async () => {
         "jira",
         reload,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker url", async () => {
-    renderIssueTracker()
+    const { container } = await renderIssueTracker()
     await userEvent.type(screen.getByLabelText(/URL/), "https://jira{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
@@ -61,10 +68,11 @@ it("sets the issue tracker url", async () => {
         "https://jira",
         reload,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker username", async () => {
-    renderIssueTracker()
+    const { container } = await renderIssueTracker()
     await userEvent.type(screen.getByLabelText(/Username/), "janedoe{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
@@ -72,10 +80,11 @@ it("sets the issue tracker username", async () => {
         "janedoe",
         reload,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker password", async () => {
-    renderIssueTracker()
+    const { container } = await renderIssueTracker()
     await userEvent.type(screen.getByLabelText(/Password/), "secret{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
@@ -83,10 +92,11 @@ it("sets the issue tracker password", async () => {
         "secret",
         reload,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker private token", async () => {
-    renderIssueTracker()
+    const { container } = await renderIssueTracker()
     await userEvent.type(screen.getByLabelText(/Private token/), "secret{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
@@ -94,46 +104,43 @@ it("sets the issue tracker private token", async () => {
         "secret",
         reload,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not show the issue tracker private token help url if there is no issue tracker", async () => {
-    await act(async () => {
-        const { container } = renderIssueTracker({
-            report: { report_uuid: "report_uuid", title: "Report", issue_tracker: {} },
-            help_url: "https://help",
-        })
-        expect(container.querySelector("a")).toBe(null)
+    const { container } = await renderIssueTracker({
+        report: { report_uuid: "report_uuid", title: "Report", issue_tracker: {} },
+        help_url: "https://help",
     })
+    expect(container.querySelector("a")).toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not show the issue tracker private token help url if the data model has no help url", async () => {
-    await act(async () => {
-        const { container } = renderIssueTracker({
-            report_uuid: "report_uuid",
-            title: "Report",
-            issue_tracker: { type: "jira" },
-        })
-        expect(container.querySelector("a")).toBe(null)
+    const { container } = await renderIssueTracker({
+        report_uuid: "report_uuid",
+        title: "Report",
+        issue_tracker: { type: "jira" },
     })
+    expect(container.querySelector("a")).toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the issue tracker private token help url", async () => {
-    let result
-    await act(async () => {
-        result = renderIssueTracker({
-            report: {
-                report_uuid: "report_uuid",
-                title: "Report",
-                issue_tracker: { type: "jira" },
-            },
-            help_url: "https://help",
-        })
+    const { container } = await renderIssueTracker({
+        report: {
+            report_uuid: "report_uuid",
+            title: "Report",
+            issue_tracker: { type: "jira" },
+        },
+        help_url: "https://help",
     })
-    expect(result.container.querySelector("a")).toHaveAttribute("href", "https://help")
+    expect(container.querySelector("a")).toHaveAttribute("href", "https://help")
+    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker project", async () => {
-    await act(async () => renderIssueTracker())
+    const { container } = await renderIssueTracker()
     fireEvent.mouseDown(screen.getByLabelText(/Project for new issues/))
     fireEvent.click(screen.getByText(/Project name/))
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
@@ -142,10 +149,11 @@ it("sets the issue tracker project", async () => {
         "PRJ",
         reload,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker issue type", async () => {
-    await act(async () => renderIssueTracker())
+    const { container } = await renderIssueTracker()
     fireEvent.mouseDown(screen.getByLabelText(/Issue type/))
     fireEvent.click(screen.getByText(/Bug/))
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
@@ -154,10 +162,11 @@ it("sets the issue tracker issue type", async () => {
         "Bug",
         reload,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker issue labels", async () => {
-    renderIssueTracker()
+    const { container } = await renderIssueTracker()
     await userEvent.type(screen.getByLabelText(/Labels/), "Label{Enter}")
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
         "report_uuid",
@@ -165,10 +174,11 @@ it("sets the issue tracker issue labels", async () => {
         ["Label"],
         reload,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker epic link", async () => {
-    await act(async () => renderIssueTracker())
+    const { container } = await renderIssueTracker()
     fireEvent.mouseDown(screen.getByLabelText(/Epic link/))
     fireEvent.click(screen.getByText(/FOO-420/))
     expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
@@ -177,48 +187,46 @@ it("sets the issue tracker epic link", async () => {
         "FOO-420",
         reload,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not show the issue labels warning without tracker project", async () => {
-    await act(async () => {
-        renderIssueTracker({
-            report: {
-                report_uuid: "report_uuid",
-                title: "Report",
-                issue_tracker: { type: "jira" },
-            },
-        })
+    const { container } = await renderIssueTracker({
+        report: {
+            report_uuid: "report_uuid",
+            title: "Report",
+            issue_tracker: { type: "jira" },
+        },
     })
     expect(screen.queryAllByText(/Labels not supported/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not show the issue labels warning without issue type", async () => {
-    await act(async () => {
-        renderIssueTracker({
-            report: {
-                report_uuid: "report_uuid",
-                title: "Report",
-                issue_tracker: { type: "jira", parameters: { project_key: "PRJ" } },
-            },
-        })
+    const { container } = await renderIssueTracker({
+        report: {
+            report_uuid: "report_uuid",
+            title: "Report",
+            issue_tracker: { type: "jira", parameters: { project_key: "PRJ" } },
+        },
     })
     expect(screen.queryAllByText(/Labels not supported/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not show the issue labels warning with issue type that supports labels", async () => {
-    await act(async () => {
-        renderIssueTracker({
-            report: {
-                report_uuid: "report_uuid",
-                title: "Report",
-                issue_tracker: {
-                    type: "jira",
-                    parameters: { project_key: "PRJ", issue_type: "Bug" },
-                },
+    const { container } = await renderIssueTracker({
+        report: {
+            report_uuid: "report_uuid",
+            title: "Report",
+            issue_tracker: {
+                type: "jira",
+                parameters: { project_key: "PRJ", issue_type: "Bug" },
             },
-        })
+        },
     })
     expect(screen.queryAllByText(/Labels not supported/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does show the issue labels warning with issue type that does not support labels", async () => {
@@ -230,17 +238,16 @@ it("does show the issue labels warning with issue type that does not support lab
             epic_links: [],
         }),
     )
-    await act(async () => {
-        renderIssueTracker({
-            report: {
-                report_uuid: "report_uuid",
-                title: "Report",
-                issue_tracker: {
-                    type: "jira",
-                    parameters: { project_key: "PRJ", issue_type: "Bug" },
-                },
+    const { container } = await renderIssueTracker({
+        report: {
+            report_uuid: "report_uuid",
+            title: "Report",
+            issue_tracker: {
+                type: "jira",
+                parameters: { project_key: "PRJ", issue_type: "Bug" },
             },
-        })
+        },
     })
     expect(screen.queryAllByText(/Labels not supported/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })

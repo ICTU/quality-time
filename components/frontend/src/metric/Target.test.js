@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event"
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { Target } from "./Target"
 
 jest.mock("../api/fetch_server_api.js")
@@ -36,7 +37,7 @@ const dataModel = {
 }
 
 function renderMetricTarget(metric) {
-    render(
+    return render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={dataModel}>
                 <Target
@@ -52,31 +53,36 @@ function renderMetricTarget(metric) {
     )
 }
 
-it("sets the metric integer target", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
-    renderMetricTarget({ type: "violations", target: "10" })
-    await userEvent.type(screen.getByDisplayValue("10"), "42{Enter}", {
+async function typeInField(label, text) {
+    await userEvent.type(screen.getByDisplayValue(label), `${text}{Enter}`, {
         initialSelectionStart: 0,
         initialSelectionEnd: 2,
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/target", {
-        target: "42",
-    })
+}
+
+function expectMetricAttributePost(attribute, payload) {
+    const endPoint = `metric/metric_uuid/attribute/${attribute}`
+    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", endPoint, { [attribute]: payload })
+}
+
+it("sets the metric integer target", async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    const { container } = renderMetricTarget({ type: "violations", target: "10" })
+    await typeInField("10", "42")
+    expectMetricAttributePost("target", "42")
+    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the metric version target", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
-    renderMetricTarget({ type: "source_version", target: "10" })
-    await userEvent.type(screen.getByDisplayValue("10"), "4.2{Enter}", {
-        initialSelectionStart: 0,
-        initialSelectionEnd: 2,
-    })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/target", {
-        target: "4.2",
-    })
+    const { container } = renderMetricTarget({ type: "source_version", target: "10" })
+    await typeInField("10", "4.2")
+    expectMetricAttributePost("target", "4.2")
+    await expectNoAccessibilityViolations(container)
 })
 
-it("displays the default target if changed", () => {
-    renderMetricTarget({ type: "violations_with_default_target" })
+it("displays the default target if changed", async () => {
+    const { container } = renderMetricTarget({ type: "violations_with_default_target" })
     expect(screen.queryAllByText(/Default/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })

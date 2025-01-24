@@ -51,7 +51,7 @@ export function SettingsMenuItem({ active, children, disabled, disabledHelp, hel
     if (help || (disabledHelp && disabled)) {
         return (
             <Tooltip placement="left" title={disabledHelp || help}>
-                <span /* https://mui.com/material-ui/react-tooltip/#disabled-elements */>
+                <span role="menu" /* https://mui.com/material-ui/react-tooltip/#disabled-elements */>
                     <MenuItem {...props} disableGutters sx={{ paddingLeft: "2px", paddingRight: "2px" }}>
                         {children}
                     </MenuItem>

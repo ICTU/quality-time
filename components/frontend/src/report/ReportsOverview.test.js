@@ -8,6 +8,7 @@ import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { theme } from "../theme"
 import { ReportsOverview } from "./ReportsOverview"
 
@@ -21,47 +22,59 @@ beforeEach(() => {
 
 afterEach(() => jest.restoreAllMocks())
 
-function renderReportsOverview({ hiddenTags = null, reportDate = null, reports = [], reportsOverview = {} } = {}) {
+async function renderReportsOverview({
+    hiddenTags = null,
+    reportDate = null,
+    reports = [],
+    reportsOverview = {},
+} = {}) {
     let settings = createTestableSettings()
     if (hiddenTags) {
         settings.hiddenTags = hiddenTags
     }
-    render(
-        <ThemeProvider theme={theme}>
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <DataModel.Provider value={dataModel}>
-                    <ReportsOverview
-                        dates={[reportDate || new Date()]}
-                        lastUpdate={new Date()}
-                        measurements={[{ status: "target_met" }]}
-                        report_date={reportDate}
-                        reports={reports}
-                        reports_overview={reportsOverview}
-                        settings={settings}
-                    />
-                </DataModel.Provider>
-            </Permissions.Provider>
-        </ThemeProvider>,
-    )
+    let result
+    await act(async () => {
+        result = render(
+            <ThemeProvider theme={theme}>
+                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+                    <DataModel.Provider value={dataModel}>
+                        <ReportsOverview
+                            dates={[reportDate || new Date()]}
+                            lastUpdate={new Date()}
+                            measurements={[{ status: "target_met" }]}
+                            report_date={reportDate}
+                            reports={reports}
+                            reports_overview={reportsOverview}
+                            settings={settings}
+                        />
+                    </DataModel.Provider>
+                </Permissions.Provider>
+            </ThemeProvider>,
+        )
+    })
+    return result
 }
 
 it("shows an error message if there are no reports at the specified date", async () => {
-    renderReportsOverview({ reportDate: new Date() })
+    const { container } = await renderReportsOverview({ reportDate: new Date() })
     expect(screen.getAllByText(/Sorry, no reports existed at/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the reports overview", async () => {
     const reports = [{ report_uuid: "report_uuid", subjects: {} }]
     const reportsOverview = { title: "Overview", permissions: {} }
-    renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
+    const { container } = await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expect(screen.getAllByText(/Overview/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the comment", async () => {
     const reports = [{ report_uuid: "report_uuid", subjects: {} }]
     const reportsOverview = { title: "Overview", comment: "Commentary", permissions: {} }
-    renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
+    const { container } = await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expect(screen.getAllByText(/Commentary/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 const reports = [
@@ -91,7 +104,7 @@ const reportsOverview = { title: "Overview", permissions: {} }
 
 it("hides the report tag cards", async () => {
     const { result } = renderHook(() => useHiddenTagsURLSearchQuery())
-    renderReportsOverview({
+    await renderReportsOverview({
         reports: reports,
         reportsOverview: reportsOverview,
         hiddenTags: result.current,
@@ -105,7 +118,7 @@ it("hides the report tag cards", async () => {
 it("shows the report tag cards", async () => {
     history.push("?hidden_tags=Bar")
     const { result } = renderHook(() => useHiddenTagsURLSearchQuery())
-    renderReportsOverview({
+    await renderReportsOverview({
         reports: reports,
         reportsOverview: reportsOverview,
         hiddenTags: result.current,
@@ -118,7 +131,7 @@ it("shows the report tag cards", async () => {
 
 it("adds a report", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
-    renderReportsOverview()
+    await renderReportsOverview()
     fireEvent.click(screen.getByText(/Add report/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/new", {})
 })
@@ -126,7 +139,7 @@ it("adds a report", async () => {
 it("copies a report", async () => {
     fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
     const reports = [{ report_uuid: "uuid", subjects: {}, title: "Existing report" }]
-    renderReportsOverview({ reports: reports })
+    await renderReportsOverview({ reports: reports })
     fireEvent.click(screen.getByText(/Copy report/))
     await act(async () => {
         fireEvent.click(screen.getAllByRole("menuitem")[1])

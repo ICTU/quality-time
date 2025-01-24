@@ -49,7 +49,7 @@ function ColoredSegment({ children, color, show, status }) {
         <Box sx={{ padding: "10px", border: "12px solid", borderColor: `${status}.main`, width: "100%" }}>
             <Stack alignItems="center" direction="row" justifyContent="space-around" spacing={2}>
                 {STATUS_SHORT_NAME[status]}
-                <StatusIcon status={status} size="small" />
+                <StatusIcon status={status} />
                 {capitalize(color)}
                 <b>{children}</b>
             </Stack>

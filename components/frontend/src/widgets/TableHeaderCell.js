@@ -45,6 +45,13 @@ export function SortableTableHeaderCell({
                 active={column === sortColumn}
                 direction={column === sortColumn ? MuiSortDirection(sortDirection) : "asc"}
                 onClick={() => handleSort(column)}
+                sx={{
+                    padding: "4px",
+                    "&:focus": {
+                        borderRadius: 2,
+                        backgroundColor: "divider",
+                    },
+                }}
             >
                 {children || <TableHeaderCellContents help={help} label={label} />}
             </TableSortLabel>

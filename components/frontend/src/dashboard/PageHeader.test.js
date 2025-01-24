@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react"
 
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { mockGetAnimations } from "./MockAnimations"
 import { PageHeader } from "./PageHeader"
 
@@ -34,36 +35,42 @@ const report = {
 }
 
 function renderPageHeader({ lastUpdate = new Date(), report = null, reportDate = null } = {}) {
-    render(<PageHeader lastUpdate={lastUpdate} report={report} reportDate={reportDate} />)
+    return render(<PageHeader lastUpdate={lastUpdate} report={report} reportDate={reportDate} />)
 }
 
-it("displays correct title for the reports overview", () => {
-    renderPageHeader({})
+it("displays correct title for the reports overview", async () => {
+    const { container } = renderPageHeader({})
     expect(screen.getByText(/Reports overview/)).toBeInTheDocument()
+    await expectNoAccessibilityViolations(container)
 })
 
-it("displays correct title for a report", () => {
-    renderPageHeader({ report: report })
+it("displays correct title for a report", async () => {
+    const { container } = renderPageHeader({ report: report })
     expect(screen.getByText(/Title/)).toBeInTheDocument()
+    await expectNoAccessibilityViolations(container)
 })
 
-it("displays dates in en-GB format", () => {
-    renderPageHeader({ lastUpdate: mockLastUpdate, report: report, reportDate: mockReportDate })
+it("displays dates in en-GB format", async () => {
+    const { container } = renderPageHeader({ lastUpdate: mockLastUpdate, report: report, reportDate: mockReportDate })
     expect(screen.getByText(/Report date: 24-03-2024/)).toBeInTheDocument()
     expect(screen.getByText(/Generated: 26-03-2024, 12:34/)).toBeInTheDocument()
+    await expectNoAccessibilityViolations(container)
 })
 
-it("displays report URL", () => {
-    renderPageHeader({ report: report })
+it("displays report URL", async () => {
+    const { container } = renderPageHeader({ report: report })
     expect(screen.getByTestId("reportUrl")).toBeInTheDocument()
+    await expectNoAccessibilityViolations(container)
 })
 
-it("displays version link", () => {
-    renderPageHeader({ lastUpdate: mockLastUpdate, report: report })
+it("displays version link", async () => {
+    const { container } = renderPageHeader({ lastUpdate: mockLastUpdate, report: report })
     expect(screen.getByTestId("version")).toBeInTheDocument()
+    await expectNoAccessibilityViolations(container)
 })
 
-it("displays today as report date if no report date is provided", () => {
-    renderPageHeader({ lastUpdate: mockLastUpdate, report: report })
+it("displays today as report date if no report date is provided", async () => {
+    const { container } = renderPageHeader({ lastUpdate: mockLastUpdate, report: report })
     expect(screen.getByText(`Report date: ${mockDateOfToday}`)).toBeInTheDocument()
+    await expectNoAccessibilityViolations(container)
 })

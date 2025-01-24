@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { SettingsPanel } from "./SettingsPanel"
 
 beforeEach(() => {
@@ -17,7 +18,7 @@ function renderSettingsPanel({
     tags = [],
 } = {}) {
     const settings = createTestableSettings()
-    render(
+    return render(
         <SettingsPanel
             atReportsOverview={atReportsOverview}
             handleDateChange={handleDateChange}
@@ -47,9 +48,10 @@ function renderSettingsPanel({
 }
 
 it("hides the metrics not requiring action", async () => {
-    renderSettingsPanel()
+    const { container } = renderSettingsPanel()
     fireEvent.click(screen.getByText(/Metrics requiring action/))
     expect(history.location.search).toBe("?metrics_to_hide=no_action_required")
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows all metrics", async () => {

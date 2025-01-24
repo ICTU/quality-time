@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 
 import { DataModel } from "../context/DataModel"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { TargetVisualiser } from "./TargetVisualiser"
 
 const dataModel = {
@@ -31,7 +32,7 @@ const dataModel = {
 }
 
 function renderVisualiser(metric) {
-    render(
+    return render(
         <DataModel.Provider value={dataModel}>
             <TargetVisualiser metric={metric} />
         </DataModel.Provider>,
@@ -47,7 +48,7 @@ function expectNotVisible(...matchers) {
 }
 
 it("shows help for evaluated metric without tech debt", async () => {
-    renderVisualiser({ type: "violations", target: "10", near_target: "15" })
+    const { container } = renderVisualiser({ type: "violations", target: "10", near_target: "15" })
     expectVisible(
         /Target met/,
         /≦ 10 violations/,
@@ -57,10 +58,11 @@ it("shows help for evaluated metric without tech debt", async () => {
         /> 15 violations/,
     )
     expectNotVisible(/Debt target met/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for evaluated metric with tech debt", async () => {
-    renderVisualiser({
+    const { container } = renderVisualiser({
         type: "violations",
         target: "10",
         debt_target: "15",
@@ -77,10 +79,11 @@ it("shows help for evaluated metric with tech debt", async () => {
         /Target not met/,
         /> 20 violations/,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for evaluated metric with tech debt if debt target is missing", async () => {
-    renderVisualiser({ type: "violations", target: "10", near_target: "20", accept_debt: true })
+    const { container } = renderVisualiser({ type: "violations", target: "10", near_target: "20", accept_debt: true })
     expectVisible(
         /Target met/,
         /≦ 10 violations/,
@@ -90,10 +93,11 @@ it("shows help for evaluated metric with tech debt if debt target is missing", a
         /> 20 violations/,
     )
     expectNotVisible(/Debt target met/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for evaluated metric with tech debt with end date", async () => {
-    renderVisualiser({
+    const { container } = renderVisualiser({
         type: "violations",
         target: "10",
         debt_target: "15",
@@ -111,10 +115,11 @@ it("shows help for evaluated metric with tech debt with end date", async () => {
         /Target not met/,
         /> 20 violations/,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for evaluated metric with tech debt with end date in the past", async () => {
-    renderVisualiser({
+    const { container } = renderVisualiser({
         type: "violations",
         target: "10",
         debt_target: "15",
@@ -131,10 +136,11 @@ it("shows help for evaluated metric with tech debt with end date in the past", a
         /> 20 violations/,
     )
     expectNotVisible(/Debt target met/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for evaluated metric with tech debt completely overlapping near target", async () => {
-    renderVisualiser({
+    const { container } = renderVisualiser({
         type: "violations",
         target: "10",
         debt_target: "20",
@@ -150,16 +156,18 @@ it("shows help for evaluated metric with tech debt completely overlapping near t
         /> 20 violations/,
     )
     expectNotVisible(/Near target met/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for evaluated metric without tech debt and target completely overlapping near target", async () => {
-    renderVisualiser({ type: "violations", target: "10", near_target: "10" })
+    const { container } = renderVisualiser({ type: "violations", target: "10", near_target: "10" })
     expectVisible(/Target met/, /≦ 10 violations/, /Target not met/, /> 10 violations/)
     expectNotVisible(/Debt target met/, /Near target met/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for evaluated more-is-better metric without tech debt", async () => {
-    renderVisualiser({ type: "violations", target: "15", near_target: "10", direction: ">" })
+    const { container } = renderVisualiser({ type: "violations", target: "15", near_target: "10", direction: ">" })
     expectVisible(
         /Target not met/,
         /< 10 violations/,
@@ -169,10 +177,11 @@ it("shows help for evaluated more-is-better metric without tech debt", async () 
         /≧ 15 violations/,
     )
     expectNotVisible(/Debt target met/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for evaluated more-is-better metric with tech debt", async () => {
-    renderVisualiser({
+    const { container } = renderVisualiser({
         type: "violations",
         target: "15",
         near_target: "5",
@@ -190,10 +199,11 @@ it("shows help for evaluated more-is-better metric with tech debt", async () => 
         /Target met/,
         /≧ 15 violations/,
     )
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for evaluated more-is-better metric with tech debt and missing debt target", async () => {
-    renderVisualiser({
+    const { container } = renderVisualiser({
         type: "violations",
         target: "15",
         near_target: "5",
@@ -209,10 +219,11 @@ it("shows help for evaluated more-is-better metric with tech debt and missing de
         /≧ 15 violations/,
     )
     expectNotVisible(/Debt target met/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for evaluated more-is-better metric with tech debt completely overlapping near target", async () => {
-    renderVisualiser({
+    const { container } = renderVisualiser({
         type: "violations",
         target: "15",
         near_target: "5",
@@ -229,22 +240,26 @@ it("shows help for evaluated more-is-better metric with tech debt completely ove
         /≧ 15 violations/,
     )
     expectNotVisible(/Near target met/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for evaluated more-is-better metric without tech debt and target completely overlapping near target", async () => {
-    renderVisualiser({ type: "violations", target: "15", near_target: "15", direction: ">" })
+    const { container } = renderVisualiser({ type: "violations", target: "15", near_target: "15", direction: ">" })
     expectVisible(/Target not met/, /< 15 violations/, /Target met/, /≧ 15 violations/)
     expectNotVisible(/Near target met/, /Debt target met/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for evaluated metric without tech debt and zero target completely overlapping near target", async () => {
-    renderVisualiser({ type: "violations", target: "0", near_target: "0", direction: ">" })
+    const { container } = renderVisualiser({ type: "violations", target: "0", near_target: "0", direction: ">" })
     expectVisible(/Target met/, /≧ 0 violations/)
     expectNotVisible(/Debt target met/, /Near target met/, /Target not met/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows help for informative metric", async () => {
-    renderVisualiser({ type: "violations", evaluate_targets: false })
+    const { container } = renderVisualiser({ type: "violations", evaluate_targets: false })
     expectVisible(/Informative/, /violations are not evaluated/)
     expectNotVisible(/Target met/, /Debt target met/, /Near target met/, /Target not met/)
+    await expectNoAccessibilityViolations(container)
 })

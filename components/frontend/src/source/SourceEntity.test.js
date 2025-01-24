@@ -2,8 +2,8 @@ import { Table, TableBody } from "@mui/material"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { fireEvent, render, screen } from "@testing-library/react"
-import { locale_en_gb } from "dayjs/locale/en-gb"
 
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceEntity } from "./SourceEntity"
 
 function renderSourceEntity({
@@ -14,7 +14,7 @@ function renderSourceEntity({
     first_seen = null,
 }) {
     return render(
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale_en_gb}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Table>
                 <TableBody>
                     <SourceEntity
@@ -32,35 +32,40 @@ function renderSourceEntity({
     )
 }
 
-it("renders the unconfirmed status", () => {
-    renderSourceEntity({})
+it("renders the unconfirmed status", async () => {
+    const { container } = renderSourceEntity({})
     fireEvent.click(screen.getByRole("button"))
     expect(screen.getAllByText(/Unconfirmed/).length).toBe(2)
     expect(screen.getAllByText(/Unconfirmed/)[0].closest("tr").className).toContain("warning_status")
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders the fixed status", () => {
-    renderSourceEntity({ status: "fixed" })
+it("renders the fixed status", async () => {
+    const { container } = renderSourceEntity({ status: "fixed" })
     expect(screen.getAllByText(/Fixed/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders the status end date", () => {
-    renderSourceEntity({ status: "fixed", status_end_date: "3000-01-01" })
+it("renders the status end date", async () => {
+    const { container } = renderSourceEntity({ status: "fixed", status_end_date: "3000-01-01" })
     expect(screen.getAllByText(/3000-01-01/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders the status rationale", () => {
-    renderSourceEntity({ status: "fixed", rationale: "Why?" })
+it("renders the status rationale", async () => {
+    const { container } = renderSourceEntity({ status: "fixed", rationale: "Why?" })
     expect(screen.getAllByText(/Why\?/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders the first seen datetime", () => {
-    renderSourceEntity({ first_seen: "2023-07-17" })
+it("renders the first seen datetime", async () => {
+    const { container } = renderSourceEntity({ first_seen: "2023-07-17" })
     expect(screen.getAllByText(/ago/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders the status and rationale past end date", () => {
-    renderSourceEntity({
+it("renders the status and rationale past end date", async () => {
+    const { container } = renderSourceEntity({
         status: "fixed",
         status_end_date: "2000-01-01",
         hide_ignored_entities: true,
@@ -68,9 +73,11 @@ it("renders the status and rationale past end date", () => {
     })
     expect(screen.getAllByText(/2000-01-01/).length).toBe(1)
     expect(screen.getAllByText(/Because/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
-it("renders nothing if the status is to be ignored", () => {
-    renderSourceEntity({ status: "fixed", hide_ignored_entities: true })
+it("renders nothing if the status is to be ignored", async () => {
+    const { container } = renderSourceEntity({ status: "fixed", hide_ignored_entities: true })
     expect(screen.queryAllByText(/Fixed/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })

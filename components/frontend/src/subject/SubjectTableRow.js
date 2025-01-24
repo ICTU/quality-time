@@ -1,4 +1,4 @@
-import { Chip, TableCell, Tooltip } from "@mui/material"
+import { Chip, TableCell, Tooltip, Typography } from "@mui/material"
 import { bool, func, number, object, string } from "prop-types"
 import { useContext } from "react"
 
@@ -293,7 +293,9 @@ export function SubjectTableRow({
             )}
             {nrDates === 1 && settings.hiddenColumns.excludes("status") && (
                 <TableCell>
-                    <StatusIcon status={metric.status} statusStart={metric.status_start} />
+                    <Typography sx={{ paddingLeft: "10px", fontSize: "24px" }}>
+                        <StatusIcon status={metric.status} statusStart={metric.status_start} />
+                    </Typography>
                 </TableCell>
             )}
             {nrDates === 1 && settings.hiddenColumns.excludes("measurement") && (

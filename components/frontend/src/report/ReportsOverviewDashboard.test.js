@@ -6,6 +6,7 @@ import { createTestableSettings } from "../__fixtures__/fixtures"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { theme } from "../theme"
 import { ReportsOverviewDashboard } from "./ReportsOverviewDashboard"
 
@@ -47,7 +48,7 @@ function renderReportsOverviewDashboard({
     if (hiddenTags) {
         settings.hiddenTags = hiddenTags
     }
-    render(
+    return render(
         <ThemeProvider theme={theme}>
             <DataModel.Provider value={dataModel}>
                 <div id="dashboard">
@@ -64,66 +65,75 @@ function renderReportsOverviewDashboard({
 }
 
 it("shows the reports overview dashboard", async () => {
-    renderReportsOverviewDashboard()
+    const { container } = renderReportsOverviewDashboard()
     expect(screen.getAllByText(/Legend/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("hides tags", async () => {
     history.push("?hidden_tags=other")
     const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
-    renderReportsOverviewDashboard({ hiddenTags: hiddenTags.result.current })
+    const { container } = renderReportsOverviewDashboard({ hiddenTags: hiddenTags.result.current })
     expect(screen.getAllByText(/tag/).length).toBe(1)
     expect(screen.queryAllByText(/other/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("calls the callback on click", async () => {
     const openReport = jest.fn()
-    renderReportsOverviewDashboard({ openReport: openReport })
+    const { container } = renderReportsOverviewDashboard({ openReport: openReport })
     fireEvent.click(screen.getByText(/Report/))
     expect(openReport).toHaveBeenCalledWith("report_uuid")
+    await expectNoAccessibilityViolations(container)
 })
 
 it("hides the report cards", async () => {
     history.push("?hidden_cards=reports")
-    renderReportsOverviewDashboard()
+    const { container } = renderReportsOverviewDashboard()
     expect(screen.queryAllByText(/Report/).length).toBe(0)
     expect(screen.getAllByText(/tag/).length).toBe(1)
     expect(screen.getAllByText(/other/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("hides the tag cards", async () => {
     history.push("?hidden_cards=tags")
-    renderReportsOverviewDashboard()
+    const { container } = renderReportsOverviewDashboard()
     expect(screen.getAllByText(/Report/).length).toBe(1)
     expect(screen.queryAllByText(/tag/).length).toBe(0)
     expect(screen.queryAllByText(/other/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("hides the required actions cards", async () => {
     history.push("?hidden_cards=action_required")
-    renderReportsOverviewDashboard()
+    const { container } = renderReportsOverviewDashboard()
     expect(screen.getAllByText(/Report/).length).toBe(1)
     expect(screen.queryAllByText(/Action required/).length).toBe(0)
     expect(screen.getAllByText(/tag/).length).toBe(1)
     expect(screen.getAllByText(/other/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("hides metrics not requiring action", async () => {
     history.push("?metrics_to_hide=all")
-    renderReportsOverviewDashboard()
+    const { container } = renderReportsOverviewDashboard()
     fireEvent.click(screen.getByText(/Action required/))
     expect(history.location.search).toEqual("?metrics_to_hide=no_action_required")
+    await expectNoAccessibilityViolations(container)
 })
 
 it("unhides metrics not requiring action", async () => {
     history.push("?metrics_to_hide=no_action_required")
-    renderReportsOverviewDashboard()
+    const { container } = renderReportsOverviewDashboard()
     fireEvent.click(screen.getByText(/Action required/))
     expect(history.location.search).toEqual("?metrics_to_hide=all")
+    await expectNoAccessibilityViolations(container)
 })
 
 it("hides the legend card", async () => {
     history.push("?hidden_cards=legend")
-    renderReportsOverviewDashboard()
+    const { container } = renderReportsOverviewDashboard()
     expect(screen.queryAllByText(/Legend/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
 })

@@ -4,6 +4,7 @@ import history from "history/browser"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as auth from "../api/auth"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { Menubar } from "./Menubar"
 
 jest.mock("../api/auth.js")
@@ -20,7 +21,7 @@ function renderMenubar({
     user = null,
 } = {}) {
     const settings = createTestableSettings()
-    render(
+    return render(
         <Menubar
             onDate={() => {
                 /* Dummy handler */
@@ -42,20 +43,22 @@ it("logs in", async () => {
         session_expiration_datetime: "2021-02-24T13:10:00+00:00",
     })
     const set_user = jest.fn()
-    renderMenubar({ set_user: set_user })
+    const { container } = renderMenubar({ set_user: set_user })
     fireEvent.click(screen.getByText(/Login/))
+    await expectNoAccessibilityViolations(container)
     fireEvent.change(screen.getByLabelText("Username"), { target: { value: "user@example.org" } })
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "secret" } })
-    await fireEvent.click(screen.getByText(/Submit/))
+    await act(async () => fireEvent.click(screen.getByText(/Submit/)))
     expect(auth.login).toHaveBeenCalledWith("user@example.org", "secret")
     const expected_date = new Date(Date.parse("2021-02-24T13:10:00+00:00"))
     expect(set_user).toHaveBeenCalledWith("user@example.org", "user@example.org", expected_date)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows invalid credential message", async () => {
     auth.login = jest.fn().mockResolvedValue({ ok: false })
     const set_user = jest.fn()
-    renderMenubar({ set_user: set_user })
+    const { container } = renderMenubar({ set_user: set_user })
     fireEvent.click(screen.getByText(/Login/))
     fireEvent.change(screen.getByLabelText("Username"), { target: { value: "user@example.org" } })
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "secret" } })
@@ -63,12 +66,13 @@ it("shows invalid credential message", async () => {
     expect(screen.getAllByText(/Invalid credentials/).length).toBe(1)
     expect(auth.login).toHaveBeenCalledWith("user@example.org", "secret")
     expect(set_user).not.toHaveBeenCalled()
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows connection error message", async () => {
     auth.login = jest.fn().mockRejectedValue(new Error("Async error message"))
     const set_user = jest.fn()
-    renderMenubar({ set_user: set_user })
+    const { container } = renderMenubar({ set_user: set_user })
     fireEvent.click(screen.getByText(/Login/))
     fireEvent.change(screen.getByLabelText("Username"), { target: { value: "user@example.org" } })
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "secret" } })
@@ -76,15 +80,17 @@ it("shows connection error message", async () => {
     expect(screen.getAllByText(/Connection error/).length).toBe(1)
     expect(auth.login).toHaveBeenCalledWith("user@example.org", "secret")
     expect(set_user).not.toHaveBeenCalled()
+    await expectNoAccessibilityViolations(container)
 })
 
 it("closes the dialog on cancel", async () => {
     const set_user = jest.fn()
-    renderMenubar({ set_user: set_user })
+    const { container } = renderMenubar({ set_user: set_user })
     fireEvent.click(screen.getByText(/Login/))
     await act(async () => fireEvent.click(screen.getByText(/Cancel/)))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(screen.queryAllByLabelText("Username").length).toBe(0)
+        await expectNoAccessibilityViolations(container)
     })
     expect(set_user).not.toHaveBeenCalled()
 })
@@ -103,29 +109,32 @@ it("closes the dialog on escape", async () => {
 it("logs out", async () => {
     auth.logout = jest.fn().mockResolvedValue({ ok: true })
     const set_user = jest.fn()
-    renderMenubar({ set_user: set_user, user: "jadoe" })
+    const { container } = renderMenubar({ set_user: set_user, user: "jadoe" })
     fireEvent.click(screen.getByRole("button", { name: "User options" }))
     fireEvent.click(screen.getByRole("menuitem", { name: "Logout" }))
     expect(auth.logout).toHaveBeenCalled()
     expect(set_user).toHaveBeenCalledWith(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not go to home page if on reports overview", async () => {
     const openReportsOverview = jest.fn()
-    renderMenubar({ report_uuid: "", openReportsOverview: openReportsOverview })
+    const { container } = renderMenubar({ report_uuid: "", openReportsOverview: openReportsOverview })
     act(() => {
         fireEvent.click(screen.getByAltText(/Go to reports overview/))
     })
     expect(openReportsOverview).not.toHaveBeenCalled()
+    await expectNoAccessibilityViolations(container)
 })
 
 it("goes to home page if on report", async () => {
     const openReportsOverview = jest.fn()
-    renderMenubar({ openReportsOverview: openReportsOverview })
+    const { container } = renderMenubar({ openReportsOverview: openReportsOverview })
     await act(async () => {
         fireEvent.click(screen.getByAltText(/Go to reports overview/))
     })
     expect(openReportsOverview).toHaveBeenCalled()
+    await expectNoAccessibilityViolations(container)
 })
 
 it("goes to home page on keypress", async () => {
@@ -135,10 +144,11 @@ it("goes to home page on keypress", async () => {
     expect(openReportsOverview).toHaveBeenCalled()
 })
 
-it("shows the view panel on menu item click", () => {
-    renderMenubar({ panel: <div>Hello</div> })
+it("shows the view panel on menu item click", async () => {
+    const { container } = renderMenubar({ panel: <div>Hello</div> })
     fireEvent.click(screen.getByText(/Settings/))
     expect(screen.getAllByText(/Hello/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the view panel on space", async () => {

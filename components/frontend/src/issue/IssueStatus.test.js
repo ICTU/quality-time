@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { IssueStatus } from "./IssueStatus"
 
 function renderIssueStatus({
@@ -60,239 +61,271 @@ beforeEach(() => {
     history.push("")
 })
 
-it("displays the issue id", () => {
-    renderIssueStatus()
+it("displays the issue id", async () => {
+    const { container } = renderIssueStatus()
     expect(screen.queryByText(/123/)).not.toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("opens the issue landing url", async () => {
     window.open = jest.fn()
-    const { queryByText } = renderIssueStatus()
+    const { container, queryByText } = renderIssueStatus()
     fireEvent.click(queryByText(/123/))
     expect(window.open).toHaveBeenCalledWith("https://issue")
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not open an url if the issue has no landing url", async () => {
     window.open = jest.fn()
-    const { queryByText } = renderIssueStatus({ landingUrl: "" })
+    const { container, queryByText } = renderIssueStatus({ landingUrl: "" })
     fireEvent.click(queryByText(/123/))
     expect(window.open).not.toHaveBeenCalled()
+    await expectNoAccessibilityViolations(container)
 })
 
-it("displays a question mark as status if the issue has no status", () => {
-    const { queryByText } = renderIssueStatus({ status: null })
+it("displays a question mark as status if the issue has no status", async () => {
+    const { container, queryByText } = renderIssueStatus({ status: null })
     expect(queryByText(/\?/)).not.toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays the issue summary in the label if configured", async () => {
     history.push("?show_issue_summary=true")
-    const { queryByText } = renderIssueStatus()
+    const { container, queryByText } = renderIssueStatus()
     expect(queryByText(/summary/)).not.toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays the creation date in the label if configured", async () => {
     history.push("?show_issue_creation_date=true")
-    const { queryByText } = renderIssueStatus()
+    const { container, queryByText } = renderIssueStatus()
     expect(queryByText(/4 days ago/)).not.toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not display the creation date in the label if not configured", async () => {
-    const { queryByText } = renderIssueStatus()
+    const { container, queryByText } = renderIssueStatus()
     expect(queryByText(/4 days ago/)).toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays the issue summary in the popup", async () => {
-    const { queryByText } = renderIssueStatus()
+    const { container, queryByText } = renderIssueStatus()
     await userEvent.hover(queryByText(/123/))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(queryByText("Issue summary")).not.toBe(null)
+        await expectNoAccessibilityViolations(container)
     })
 })
 
 it("displays the creation date in the popup", async () => {
-    const { queryByText } = renderIssueStatus({ updated: false })
+    const { container, queryByText } = renderIssueStatus({ updated: false })
     await userEvent.hover(queryByText(/123/))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(queryByText("4 days ago")).not.toBe(null)
         expect(queryByText("2 days ago")).toBe(null)
+        await expectNoAccessibilityViolations(container)
     })
 })
 
 it("displays the update date in the label if configured", async () => {
     history.push("?show_issue_update_date=true")
-    const { queryByText } = renderIssueStatus({ updated: true })
+    const { container, queryByText } = renderIssueStatus({ updated: true })
     expect(queryByText(/2 days ago/)).not.toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not display the update date in the label if not configured", async () => {
-    const { queryByText } = renderIssueStatus({ updated: true })
+    const { container, queryByText } = renderIssueStatus({ updated: true })
     expect(queryByText(/2 days ago/)).toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays the update date in the popup", async () => {
-    const { queryByText } = renderIssueStatus({ updated: true })
+    const { container, queryByText } = renderIssueStatus({ updated: true })
     await userEvent.hover(queryByText(/123/))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(queryByText("4 days ago")).not.toBe(null)
         expect(queryByText("2 days ago")).not.toBe(null)
+        await expectNoAccessibilityViolations(container)
     })
 })
 
 it("displays the due date in the label if configured", async () => {
     history.push("?show_issue_due_date=true")
-    const { queryByText } = renderIssueStatus({ due: true })
+    const { container, queryByText } = renderIssueStatus({ due: true })
     expect(queryByText(/2 days from now/)).not.toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not display the due date in the label if not configured", async () => {
-    const { queryByText } = renderIssueStatus({ due: true })
+    const { container, queryByText } = renderIssueStatus({ due: true })
     expect(queryByText(/2 days from now/)).toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays the due date in the popup", async () => {
-    const { queryByText } = renderIssueStatus({ due: true })
+    const { container, queryByText } = renderIssueStatus({ due: true })
     await userEvent.hover(queryByText(/123/))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(queryByText("2 days from now")).not.toBe(null)
+        await expectNoAccessibilityViolations(container)
     })
 })
 
 it("displays the planned release in the label if configured", async () => {
     history.push("?show_issue_release=true")
-    const { queryByText } = renderIssueStatus({ release: true })
+    const { container, queryByText } = renderIssueStatus({ release: true })
     expect(queryByText(/1.0/)).not.toBe(null)
     expect(queryByText(/planned/)).not.toBe(null)
     expect(queryByText(/from now/)).not.toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays the released release in the label if configured", async () => {
     history.push("?show_issue_release=true")
-    const { queryByText } = renderIssueStatus({ release: true, releaseReleased: true })
+    const { container, queryByText } = renderIssueStatus({ release: true, releaseReleased: true })
     expect(queryByText(/1.0/)).not.toBe(null)
     expect(queryByText(/released/)).not.toBe(null)
     expect(queryByText(/from now/)).not.toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays the release in the label if configured, but without release date", async () => {
     history.push("?show_issue_release=true")
-    const { queryByText } = renderIssueStatus({ release: true, releaseDate: null })
+    const { container, queryByText } = renderIssueStatus({ release: true, releaseDate: null })
     expect(queryByText(/1.0/)).not.toBe(null)
     expect(queryByText(/planned/)).not.toBe(null)
     expect(queryByText(/from now/)).toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays the release without doubling release in the label", async () => {
     history.push("?show_issue_release=true")
-    const { queryByText } = renderIssueStatus({ release: true, releaseName: "Release 1.0" })
+    const { container, queryByText } = renderIssueStatus({ release: true, releaseName: "Release 1.0" })
     expect(queryByText(/Release 1.0/)).not.toBe(null)
     expect(queryByText(/Release Release 1.0/)).toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not display the release in the label if not configured", async () => {
-    const { queryByText } = renderIssueStatus({ release: true })
+    const { container, queryByText } = renderIssueStatus({ release: true })
     expect(queryByText(/1.0/)).toBe(null)
     expect(queryByText(/planned/)).toBe(null)
     expect(queryByText(/from now/)).toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays the release in the popup", async () => {
-    const { queryByText } = renderIssueStatus({ release: true })
+    const { container, queryByText } = renderIssueStatus({ release: true })
     await userEvent.hover(queryByText(/123/))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(queryByText(/1.0/)).not.toBe(null)
         expect(queryByText(/planned/)).not.toBe(null)
         expect(queryByText(/from now/)).not.toBe(null)
+        await expectNoAccessibilityViolations(container)
     })
 })
 
 it("displays the release in the popup without release date", async () => {
-    const { queryByText } = renderIssueStatus({ release: true, releaseDate: null })
+    const { container, queryByText } = renderIssueStatus({ release: true, releaseDate: null })
     await userEvent.hover(queryByText(/123/))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(queryByText(/1.0/)).not.toBe(null)
         expect(queryByText(/planned/)).toBe(null)
         expect(queryByText(/from now/)).toBe(null)
+        await expectNoAccessibilityViolations(container)
     })
 })
 
 it("displays the sprint in the label if configured", async () => {
     history.push("?show_issue_sprint=true")
-    const { queryByText } = renderIssueStatus({ sprint: true })
+    const { container, queryByText } = renderIssueStatus({ sprint: true })
     expect(queryByText(/Sprint 42/)).not.toBe(null)
     expect(queryByText(/active/)).not.toBe(null)
     expect(queryByText(/from now/)).not.toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays the sprint in the label if configured, but without sprint end date", async () => {
     history.push("?show_issue_sprint=true")
-    const { queryByText } = renderIssueStatus({ sprint: true, sprintEndDate: null })
+    const { container, queryByText } = renderIssueStatus({ sprint: true, sprintEndDate: null })
     expect(queryByText(/Sprint 42/)).not.toBe(null)
     expect(queryByText(/active/)).not.toBe(null)
     expect(queryByText(/from now/)).toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not display the sprint in the label if not configured", async () => {
-    const { queryByText } = renderIssueStatus({ sprint: true })
+    const { container, queryByText } = renderIssueStatus({ sprint: true })
     expect(queryByText(/Sprint 42/)).toBe(null)
     expect(queryByText(/active/)).toBe(null)
     expect(queryByText(/from now/)).toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays the sprint in the popup", async () => {
-    const { queryByText } = renderIssueStatus({ sprint: true })
+    const { container, queryByText } = renderIssueStatus({ sprint: true })
     await userEvent.hover(queryByText(/123/))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(queryByText(/Sprint 42/)).not.toBe(null)
         expect(queryByText(/active/)).not.toBe(null)
         expect(queryByText(/from now/)).not.toBe(null)
+        await expectNoAccessibilityViolations(container)
     })
 })
 
 it("displays the sprint in the popup without sprint end date", async () => {
-    const { queryByText } = renderIssueStatus({ sprint: true, sprintEndDate: null })
+    const { container, queryByText } = renderIssueStatus({ sprint: true, sprintEndDate: null })
     await userEvent.hover(queryByText(/123/))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(queryByText(/Sprint 42/)).not.toBe(null)
         expect(queryByText(/active/)).not.toBe(null)
         expect(queryByText(/from now/)).toBe(null)
+        await expectNoAccessibilityViolations(container)
     })
 })
 
 it("displays no popup if the issue has no creation date and there is no error", async () => {
-    const { queryByText } = renderIssueStatus({ created: false })
+    const { container, queryByText } = renderIssueStatus({ created: false })
     await userEvent.hover(queryByText(/123/))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(queryByText("4 days ago")).toBe(null)
         expect(queryByText("2 days ago")).toBe(null)
         expect(queryByText("2 days from now")).toBe(null)
+        await expectNoAccessibilityViolations(container)
     })
 })
 
 it("displays a connection error in the popup", async () => {
-    const { queryByText } = renderIssueStatus({ connectionError: true })
+    const { container, queryByText } = renderIssueStatus({ connectionError: true })
     await userEvent.hover(queryByText(/123/))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(queryByText("Connection error")).not.toBe(null)
+        await expectNoAccessibilityViolations(container)
     })
 })
 
 it("displays a parse error in the popup", async () => {
-    const { queryByText } = renderIssueStatus({ parseError: true })
+    const { container, queryByText } = renderIssueStatus({ parseError: true })
     await userEvent.hover(queryByText(/123/))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(queryByText("Parse error")).not.toBe(null)
+        await expectNoAccessibilityViolations(container)
     })
 })
 
 it("displays nothing if the metric has no issue status", async () => {
-    const { queryByText } = render(<IssueStatus metric={{}} />)
+    const { container, queryByText } = render(<IssueStatus metric={{}} />)
     expect(queryByText(/123/)).toBe(null)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("displays an error message if the metric has issue ids but the report has no issue tracker", async () => {
-    const { queryByText } = renderIssueStatus({ issueTrackerMissing: true })
+    const { container, queryByText } = renderIssueStatus({ issueTrackerMissing: true })
     await userEvent.hover(queryByText(/123/))
-    await waitFor(() => {
+    await waitFor(async () => {
         expect(queryByText(/No issue tracker configured/)).not.toBe(null)
+        await expectNoAccessibilityViolations(container)
     })
 })

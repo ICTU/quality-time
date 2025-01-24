@@ -6,6 +6,7 @@ import { createTestableSettings } from "./__fixtures__/fixtures"
 import * as fetch_server_api from "./api/fetch_server_api"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 import { PageContent } from "./PageContent"
+import { expectNoAccessibilityViolations } from "./testUtils"
 
 jest.mock("react-toastify")
 jest.mock("./api/fetch_server_api")
@@ -25,8 +26,9 @@ afterEach(() => {
 
 async function renderPageContent({ loading = false, reports = [], report_date = null, report_uuid = "" } = {}) {
     const settings = createTestableSettings()
-    await act(async () =>
-        render(
+    let result
+    await act(async () => {
+        result = render(
             <div id="dashboard">
                 <PageContent
                     lastUpdate={new Date()}
@@ -38,32 +40,37 @@ async function renderPageContent({ loading = false, reports = [], report_date = 
                     settings={settings}
                 />
             </div>,
-        ),
-    )
+        )
+    })
+    return result
 }
 
 it("shows the reports overview", async () => {
-    await renderPageContent({ report_date: new Date(2023, 10, 25) })
+    const { container } = await renderPageContent({ report_date: new Date(2023, 10, 25) })
     expect(screen.getAllByText(/Sorry, no reports/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows that the report is missing", async () => {
-    await renderPageContent({ reports: [{}], report_uuid: "uuid" })
+    const { container } = await renderPageContent({ reports: [{}], report_uuid: "uuid" })
     expect(screen.getAllByText(/Sorry, this report doesn't exist/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows that the report was missing", async () => {
-    await renderPageContent({
+    const { container } = await renderPageContent({
         report_date: new Date("2022-03-31"),
         reports: [{}],
         report_uuid: "uuid",
     })
     expect(screen.getAllByText(/Sorry, this report didn't exist/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the loading spinner", async () => {
-    await renderPageContent({ loading: true })
+    const { container } = await renderPageContent({ loading: true })
     expect(screen.getAllByRole("progressbar").length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
 
 function expectMeasurementsCall(date, offset = 0) {
@@ -79,8 +86,9 @@ function expectMeasurementsCall(date, offset = 0) {
 it("fetches measurements", async () => {
     const mockedDate = new Date("2022-04-27T16:00:05+0000")
     jest.setSystemTime(mockedDate)
-    await renderPageContent({ report_date: null })
+    const { container } = await renderPageContent({ report_date: null })
     expectMeasurementsCall(mockedDate)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("fetches measurements if nr dates > 1", async () => {
