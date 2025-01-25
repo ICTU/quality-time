@@ -1,4 +1,4 @@
-import { ButtonBase, TableCell, TableSortLabel, Tooltip } from "@mui/material"
+import { TableCell, TableSortLabel, Tooltip } from "@mui/material"
 import { func, string } from "prop-types"
 
 import {
@@ -39,28 +39,15 @@ export function SortableTableHeaderCell({
     help,
 }) {
     const sorted = sortColumn === column ? MuiSortDirection(sortDirection) : null
-    const align = textAlign || "left"
     return (
-        <TableCell colSpan={colSpan} sortDirection={sorted}>
-            <ButtonBase
-                focusRipple
-                sx={{
-                    display: "block",
-                    fontSize: "inherit",
-                    padding: "inherit",
-                    textAlign: align,
-                    width: "100%",
-                }}
-                tabIndex={-1}
+        <TableCell align={textAlign || "left"} colSpan={colSpan} sortDirection={sorted}>
+            <TableSortLabel
+                active={column === sortColumn}
+                direction={column === sortColumn ? MuiSortDirection(sortDirection) : "asc"}
+                onClick={() => handleSort(column)}
             >
-                <TableSortLabel
-                    active={column === sortColumn}
-                    direction={column === sortColumn ? MuiSortDirection(sortDirection) : "asc"}
-                    onClick={() => handleSort(column)}
-                >
-                    {children || <TableHeaderCellContents help={help} label={label} />}
-                </TableSortLabel>
-            </ButtonBase>
+                {children || <TableHeaderCellContents help={help} label={label} />}
+            </TableSortLabel>
         </TableCell>
     )
 }

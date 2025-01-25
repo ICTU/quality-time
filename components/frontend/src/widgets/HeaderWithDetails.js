@@ -15,6 +15,7 @@ export function HeaderWithDetails({ children, header, item_uuid, level, settings
             expanded={showDetails}
             onChange={() => settings.expandedItems.toggle(item_uuid)}
             slotProps={{ transition: { unmountOnExit: true } }} // Make testing for (dis)appearance of contents easier
+            slots={{ heading: "div" }}
             sx={{
                 "&:before": {
                     display: "none", // Remove top border
@@ -23,6 +24,7 @@ export function HeaderWithDetails({ children, header, item_uuid, level, settings
         >
             <AccordionSummary
                 aria-controls={showDetails ? `accordion-content-${item_uuid}` : null}
+                aria-label="Expand/collapse"
                 expandIcon={<CaretRight size={{ h1: "5em", h2: "4em", h3: "3em" }[level]} />}
                 id={`accordion-header-${item_uuid}`}
                 sx={{

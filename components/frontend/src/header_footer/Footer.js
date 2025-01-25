@@ -147,7 +147,7 @@ function QuoteColumn() {
 
 export function Footer({ lastUpdate, report }) {
     return (
-        <AppBar position="relative" sx={{ displayPrint: "none" }}>
+        <AppBar component="footer" position="relative" sx={{ displayPrint: "none" }}>
             <Container maxWidth="md" sx={{ padding: "60px" }}>
                 <Grid container spacing={2} columns={{ xs: 1, sm: 3 }}>
                     <Grid size={1}>

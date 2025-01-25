@@ -4,8 +4,10 @@ import { element, oneOfType, string } from "prop-types"
 export function Header({ header, level, subheader }) {
     return (
         <Stack direction="column" sx={{ whiteSpace: "normal" }}>
-            <Typography variant={level}>{header}</Typography>
-            <Typography variant={`h${parseInt(level[1]) + 1}`}>{subheader}</Typography>
+            <Typography variant={level}>
+                {header}
+                {subheader && <Typography sx={{ fontSize: "80%", fontWeight: "inherit" }}>{subheader}</Typography>}
+            </Typography>
         </Stack>
     )
 }
