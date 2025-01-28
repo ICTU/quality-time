@@ -6,7 +6,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { bool, func, number, object, string } from "prop-types"
 import HashLinkObserver from "react-hash-link"
-import { ToastContainer } from "react-toastify"
 
 import { useSettings } from "./app_ui_settings"
 import { DataModel } from "./context/DataModel"
@@ -87,7 +86,6 @@ export function AppUI({
                 setUIMode={setMode}
                 uiMode={mode}
             />
-            <ToastContainer theme="colored" />
             <Permissions.Provider value={user_permissions}>
                 <DataModel.Provider value={dataModel}>
                     <PageContent

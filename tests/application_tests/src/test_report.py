@@ -126,6 +126,5 @@ class OpenReportTest(unittest.TestCase):
             self.fail("Could not write axe violations report")
 
         # If there are more violations than expected, output the human readable report
-        # Fixing the axe violations is on the backlog: https://github.com/ICTU/quality-time/issues/6354
-        current_number_of_axe_violations = 7
+        current_number_of_axe_violations = 0
         self.assertLessEqual(len(violation_results), current_number_of_axe_violations, human_readable_axe_report)
