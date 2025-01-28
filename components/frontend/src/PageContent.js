@@ -2,6 +2,7 @@ import { Box, Container } from "@mui/material"
 import CircularProgress from "@mui/material/CircularProgress"
 import { bool, func, number, string } from "prop-types"
 import { useEffect, useState } from "react"
+import { ToastContainer } from "react-toastify"
 
 import { get_measurements } from "./api/measurement"
 import { Report } from "./report/Report"
@@ -117,6 +118,7 @@ export function PageContent({
     }
     return (
         <Container
+            component="main"
             disableGutters
             maxWidth={false}
             sx={{
@@ -132,6 +134,7 @@ export function PageContent({
                 marginRight: "0px",
             }}
         >
+            <ToastContainer theme="colored" />
             {content}
         </Container>
     )

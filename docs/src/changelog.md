@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix accessibility issues found by the application test. Fixes [#6354](https://github.com/ICTU/quality-time/issues/6354).
+
 ### Changed
 
 - Use the font configured in the browser instead of the browser's system font. Fixes [#9864](https://github.com/ICTU/quality-time/issues/9864).
