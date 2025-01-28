@@ -10,7 +10,7 @@ const theme1 = createTheme({
     components: {
         MuiTooltip: {
             defaultProps: { arrow: true },
-            styleOverrides: { tooltip: { fontSize: "0.9em" } },
+            styleOverrides: { tooltip: { fontSize: "0.9rem" } },
         },
         MuiTextField: {
             defaultProps: { variant: "filled" },
@@ -25,18 +25,7 @@ const theme1 = createTheme({
         },
     },
     typography: {
-        fontFamily: [
-            "-apple-system",
-            "BlinkMacSystemFont",
-            '"Segoe UI"',
-            "Roboto",
-            '"Helvetica Neue"',
-            "Arial",
-            "sans-serif",
-            '"Apple Color Emoji"',
-            '"Segoe UI Emoji"',
-            '"Segoe UI Symbol"',
-        ].join(","), // Use system font
+        fontFamily: "sans-serif", // Use browser font
     },
 })
 
