@@ -52,7 +52,7 @@ export function MultipleChoiceField({
     )
 }
 MultipleChoiceField.propTypes = {
-    disabled: bool,
+    disabled: bool.isRequired,
     freeSolo: bool,
     helperText: string,
     label: string,

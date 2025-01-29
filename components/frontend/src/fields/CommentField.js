@@ -16,7 +16,7 @@ export function CommentField({ disabled, id, onChange, value }) {
     )
 }
 CommentField.propTypes = {
-    disabled: bool,
+    disabled: bool.isRequired,
     id: string,
     onChange: func,
     value: string,

@@ -80,7 +80,7 @@ export function TextField({
 }
 TextField.propTypes = {
     children: childrenPropType,
-    disabled: bool,
+    disabled: bool.isRequired,
     endAdornment: oneOfType([element, string]),
     error: bool,
     helperText: oneOfType([element, string]),

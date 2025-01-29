@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - Fix accessibility issues found by the application test. Fixes [#6354](https://github.com/ICTU/quality-time/issues/6354).
 - When adding multiple sources to one metric, the source names would not be comma-separated in the sources column. Fixes [#10735](https://github.com/ICTU/quality-time/issues/10735).
+- The comment field of a metric's technical debt tab would be editable even though the user was not logged in or when the user was time traveling. Note that the server would not save any changes made as it also checks for correct permissions. Fixes [#10739](https://github.com/ICTU/quality-time/issues/10739).
 
 ### Changed
 
