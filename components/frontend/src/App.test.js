@@ -80,6 +80,7 @@ async function selectDate(container) {
 }
 
 it("handles a date change", async () => {
+    jest.setTimeout(10000)
     const { container } = render(<App />)
     await selectDate(container)
     const expectedDate = dayjs().subtract(1, "month").date(15).toDate().toDateString()

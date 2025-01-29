@@ -21,6 +21,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 ### Fixed
 
 - Fix accessibility issues found by the application test. Fixes [#6354](https://github.com/ICTU/quality-time/issues/6354).
+- When adding multiple sources to one metric, the source names would not be comma-separated in the sources column. Fixes [#10735](https://github.com/ICTU/quality-time/issues/10735).
 
 ### Changed
 
