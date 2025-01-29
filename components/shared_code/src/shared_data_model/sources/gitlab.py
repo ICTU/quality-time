@@ -54,6 +54,20 @@ JOB_ENTITY = Entity(
     ],
 )
 
+PIPELINE_ENTITY = Entity(
+    name="pipeline",
+    attributes=[
+        EntityAttribute(name="Pipeline name", key="name", url="url"),
+        EntityAttribute(name="Ref"),
+        EntityAttribute(name="Status"),
+        EntityAttribute(name="Trigger"),
+        EntityAttribute(name="Schedule"),
+        EntityAttribute(name="Created", type=EntityAttributeType.DATETIME),
+        EntityAttribute(name="Updated", type=EntityAttributeType.DATETIME),
+        EntityAttribute(name="Duration (minutes)", key="duration", type=EntityAttributeType.INTEGER),
+    ],
+)
+
 GITLAB_BRANCH_HELP_URL = HttpUrl("https://docs.gitlab.com/ee/user/project/repository/branches/")
 
 GITLAB = Source(
@@ -253,6 +267,13 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             placeholder="all pipeline triggers",
             metrics=["pipeline_duration", "source_up_to_dateness"],
         ),
+        "pipeline_schedules_to_include": MultipleChoiceWithAdditionParameter(
+            name="Pipeline schedules to include",
+            short_name="pipeline schedules",
+            help="Pipeline schedules to include can be specified by description or by regular expression.",
+            placeholder="all pipeline schedules",
+            metrics=["pipeline_duration", "source_up_to_dateness"],
+        ),
         "upvotes": Upvotes(),
         "target_branches_to_include": TargetBranchesToInclude(help_url=GITLAB_BRANCH_HELP_URL),
     },
@@ -296,6 +317,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
                 EntityAttribute(name="Merge status"),
             ],
         ),
+        "pipeline_duration": PIPELINE_ENTITY,
         "unused_jobs": JOB_ENTITY,
     },
 )

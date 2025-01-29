@@ -9,7 +9,7 @@ from dateutil.tz import tzutc
 
 from collector_utilities.date_time import days_ago, parse_datetime
 
-from .base import GitLabTestCase
+from .base import FakeResponse, GitLabTestCase
 
 
 class GitLabSourceUpToDatenessTest(GitLabTestCase):
@@ -65,6 +65,9 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
         self.set_source_parameter("file_path", "")
         pipeline_json = [
             {
+                "id": "id",
+                "project_id": "project_id",
+                "name": "Pipeline name",
                 "created_at": "2020-11-24T10:00:00Z",
                 "updated_at": "2020-11-24T10:00:00Z",
                 "ref": "branch",
@@ -75,7 +78,12 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
         ]
         expected_age = days_ago(parse_datetime(pipeline_json[0]["updated_at"]))
         with self.patched_client_session_head():
-            response = await self.collect(get_request_json_return_value=pipeline_json)
+            response = await self.collect(
+                get_request_side_effect=[
+                    FakeResponse([]),  # No pipeline schedules
+                    FakeResponse(pipeline_json),
+                ]
+            )
         self.assert_measurement(response, value=str(expected_age), landing_url="https://gitlab/project/-/pipelines/1")
 
     async def test_source_up_to_dateness_pipeline_missing(self):
@@ -97,4 +105,4 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
             mock_dt.now.return_value = datetime(2024, 1, 1, 12, 0, 0, tzinfo=tzutc())
             response = await self.collect(get_request_json_side_effect=[ConnectionError])
         api_url = "https://gitlab/api/v4/projects/namespace%2Fproject/pipelines?updated_after=2023-12-25&per_page=100"
-        self.assert_measurement(response, landing_url=api_url, parse_error="Traceback")
+        self.assert_measurement(response, landing_url=api_url, connection_error="Traceback")

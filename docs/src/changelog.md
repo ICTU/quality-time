@@ -53,6 +53,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Added
 
+- When measuring CI-pipeline duration with GitLab as source, allow for filtering by pipeline description. Closes [#10426](https://github.com/ICTU/quality-time/issues/10426).
 - Support the new SonarQube impact severity levels "blocker" and "info", introduced in SonarQube v10.8. Closes [#10708](https://github.com/ICTU/quality-time/issues/10708).
 - After clicking "Add metric", give focus to the filter field automatically. Closes [#10743](https://github.com/ICTU/quality-time/issues/10743).
 

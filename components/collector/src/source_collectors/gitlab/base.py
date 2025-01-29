@@ -3,15 +3,14 @@
 from abc import ABC
 from dataclasses import dataclass, fields
 from datetime import datetime, timedelta
-from typing import cast
+from typing import Self, cast
 
 from dateutil.tz import tzutc
 
 from shared.utils.date_time import now
 
 from base_collectors import SourceCollector
-from collector_utilities.date_time import parse_datetime
-from collector_utilities.exceptions import CollectorError
+from collector_utilities.date_time import minutes, parse_datetime
 from collector_utilities.functions import add_query, match_string_or_regular_expression
 from collector_utilities.type import URL, Job
 from model import Entities, Entity, SourceResponses
@@ -139,43 +138,45 @@ class GitLabJobsBase(GitLabProjectBase):
 
 
 @dataclass
-class Pipeline:
-    """GitLab pipeline JSON. See https://docs.gitlab.com/ee/api/pipelines.html."""
+class GitLabJSON:
+    """Base class for GitLab response JSON."""
+
+    @classmethod
+    def from_json(cls, **kwargs) -> Self:
+        """Override to ignore unknown fields so the caller does not need to weed the GitLab JSON."""
+        field_names = [field.name for field in fields(cls)]
+        return cls(**{key: value for key, value in kwargs.items() if key in field_names})
+
+
+@dataclass
+class Pipeline(GitLabJSON):
+    """GitLab pipeline JSON. See https://docs.gitlab.com/ee/api/pipelines.html.
+
+    We don't use the pipeline details to determine the pipeline duration, but simply subtract the update_at and
+    created_at timestamps. Reason is that GitLab itself is pretty unclear about what exactly the pipeline duration is.
+    See https://gitlab.com/gitlab-org/gitlab/-/issues/19594.
+    """
 
     id: int
     project_id: int
+    name: str
     ref: str
     status: str
     source: str
     created_at: str
-    updated_at: str
     web_url: str
-    started_at: str | None = None
-    finished_at: str | None = None
-    duration: int | None = None  # Seconds
-
-    def __init__(self, **kwargs) -> None:
-        """Override to ignore unknown fields so the caller does not need to weed the GitLab pipeline JSON."""
-        field_names = [field.name for field in fields(self)]
-        for key, value in kwargs.items():
-            if key in field_names:
-                setattr(self, key, value)
+    updated_at: str = ""
+    schedule_description: str = ""  # Pipeline schedule description for scheduled pipelines
 
     @property
     def start(self) -> datetime:
-        """Return the pipeline start time.
-
-        The started_at field may be empty, be prepared. See https://gitlab.com/gitlab-org/gitlab/-/issues/210353.
-        """
-        return parse_datetime(self.started_at or self.created_at)
+        """Return the pipeline start time."""
+        return parse_datetime(self.created_at)
 
     @property
     def end(self) -> datetime:
-        """Return the pipeline end time.
-
-        The finished_at field may empty if the pipeline hasn't finished yet. Use the current time as fallback.
-        """
-        return parse_datetime(self.finished_at) if self.finished_at else datetime.now(tz=tzutc())
+        """Return the pipeline end time."""
+        return parse_datetime(self.updated_at) if self.updated_at else datetime.now(tz=tzutc())
 
     @property
     def datetime(self) -> datetime:
@@ -183,9 +184,17 @@ class Pipeline:
         return parse_datetime(self.updated_at or self.created_at)
 
     @property
-    def pipeline_duration(self) -> timedelta:
+    def duration(self) -> timedelta:
         """Return the duration of the pipeline."""
-        return self.end - self.start if self.duration is None else timedelta(seconds=self.duration)
+        return self.end - self.start
+
+
+@dataclass
+class PipelineSchedule(GitLabJSON):
+    """Dataclass for GitLab pipeline schedule."""
+
+    id: int
+    description: str
 
 
 class GitLabPipelineBase(GitLabProjectBase):
@@ -201,26 +210,69 @@ class GitLabPipelineBase(GitLabProjectBase):
         pipelines = await self._pipelines(responses)
         return URL(pipelines[0].web_url)
 
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Extend to get pipeline schedule descriptions."""
+        # Get the pipeline schedule descriptions so the user can filter scheduled pipelines by schedule description
+        # The pipeline schedule descriptions is a mapping from pipeline ids to schedule descriptions
+        self.pipeline_schedule_descriptions = await self._scheduled_pipeline_descriptions()
+        return await super()._get_source_responses(*urls)
+
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
+        """Parse the entities from the responses."""
+        return Entities(
+            [
+                Entity(
+                    key=str(pipeline.id),
+                    name=pipeline.name,
+                    ref=pipeline.ref,
+                    status=pipeline.status,
+                    trigger=pipeline.source,
+                    schedule=pipeline.schedule_description,
+                    created=pipeline.created_at,
+                    updated=pipeline.updated_at,
+                    duration=str(minutes(pipeline.duration)),
+                )
+                for pipeline in await self._pipelines(responses)
+            ],
+        )
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether this entity should be considered."""
+        branches = self._parameter("branches")
+        matches_branches = match_string_or_regular_expression(entity["ref"], branches) if branches else True
+        schedule_descriptions = self._parameter("pipeline_schedules_to_include")
+        matches_schedule_description = (
+            match_string_or_regular_expression(entity["schedule"], schedule_descriptions)
+            if schedule_descriptions
+            else True
+        )
+        matches_status = entity["status"] in self._parameter("pipeline_statuses_to_include")
+        matches_trigger = entity["trigger"] in self._parameter("pipeline_triggers_to_include")
+        return matches_branches and matches_schedule_description and matches_status and matches_trigger
+
     async def _pipelines(self, responses: SourceResponses) -> list[Pipeline]:
         """Get the pipelines from the responses."""
         pipelines = []
-        try:
-            for response in responses:
-                json = await response.json()
-                # The GitLab pipelines endpoint returns a list or, if a pipeline id is passed, one pipeline. Harmonize:
-                json_list = json if isinstance(json, list) else [json]
-                pipelines.extend([Pipeline(**pipeline) for pipeline in json_list])
-        except StopAsyncIteration:
-            pass
-        if pipelines := [pipeline for pipeline in pipelines if self._include_pipeline(pipeline)]:
-            return pipelines
-        error_message = "No pipelines found within the lookback period"
-        raise CollectorError(error_message)
+        for response in responses:
+            for pipeline_json in await response.json():
+                schedule_description = self.pipeline_schedule_descriptions.get(pipeline_json["id"], "")
+                pipeline_json["schedule_description"] = schedule_description
+                pipelines.append(Pipeline.from_json(**pipeline_json))
+        return pipelines
 
-    def _include_pipeline(self, pipeline: Pipeline) -> bool:
-        """Return whether this pipeline should be considered."""
-        branches = self._parameter("branches")
-        matches_branches = match_string_or_regular_expression(pipeline.ref, branches) if branches else True
-        matches_status = pipeline.status in self._parameter("pipeline_statuses_to_include")
-        matches_source = pipeline.source in self._parameter("pipeline_triggers_to_include")
-        return matches_branches and matches_status and matches_source
+    async def _scheduled_pipeline_descriptions(self) -> dict[int, str]:
+        """Get the scheduled pipelines. Returns a mapping of scheduled pipeline IDs to their descriptions."""
+        scheduled_pipeline_descriptions = {}
+        for schedule in await self._pipeline_schedules():
+            scheduled_pipelines_api = await self._gitlab_api_url(f"pipeline_schedules/{schedule.id}/pipelines")
+            for response in await super()._get_source_responses(scheduled_pipelines_api):
+                for scheduled_pipeline in await response.json():
+                    scheduled_pipeline_descriptions[scheduled_pipeline["id"]] = schedule.description
+        return scheduled_pipeline_descriptions
+
+    async def _pipeline_schedules(self) -> list[PipelineSchedule]:
+        """Get the pipeline schedules."""
+        pipeline_schedules = []
+        for response in await super()._get_source_responses(await self._gitlab_api_url("pipeline_schedules")):
+            pipeline_schedules.extend([PipelineSchedule.from_json(**schedule) for schedule in await response.json()])
+        return pipeline_schedules
