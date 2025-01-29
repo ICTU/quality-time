@@ -88,6 +88,8 @@ TechnicalDebtEndDate.propTypes = {
 }
 
 export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <Grid alignItems="flex-start" container spacing={{ xs: 1, sm: 2, md: 3 }} columns={{ xs: 1, sm: 3, md: 6 }}>
             <Grid size={{ xs: 1, sm: 1, md: 2 }}>
@@ -108,6 +110,7 @@ export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
             <IssuesRows metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
             <Grid size={{ xs: 1, sm: 3, md: 6 }}>
                 <CommentField
+                    disabled={disabled}
                     onChange={(value) => set_metric_attribute(metric_uuid, "comment", value, reload)}
                     value={metric.comment}
                 />
