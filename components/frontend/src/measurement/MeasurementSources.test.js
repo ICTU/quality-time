@@ -39,7 +39,6 @@ it("renders multiple measurement sources", async () => {
             sources: [{ source_uuid: "source_uuid1" }, { source_uuid: "source_uuid2" }],
         },
     )
-    expect(screen.getAllByText(/Source name 1/).length).toBe(1)
-    expect(screen.getAllByText(/Source name 2/).length).toBe(1)
+    expect(screen.getAllByText(/Source name 1, Source name 2/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })

@@ -293,7 +293,7 @@ export function SubjectTableRow({
             )}
             {nrDates === 1 && settings.hiddenColumns.excludes("status") && (
                 <TableCell>
-                    <Typography sx={{ paddingLeft: "10px", fontSize: "24px" }}>
+                    <Typography sx={{ paddingLeft: "6px", fontSize: "24px" }}>
                         <StatusIcon status={metric.status} statusStart={metric.status_start} />
                     </Typography>
                 </TableCell>
