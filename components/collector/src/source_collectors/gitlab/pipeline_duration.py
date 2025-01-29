@@ -1,9 +1,7 @@
 """GitLab CI-pipeline duration collector."""
 
-from datetime import timedelta
-
-from collector_utilities.date_time import minutes
-from collector_utilities.type import URL, Value
+from collector_utilities.exceptions import CollectorError
+from collector_utilities.type import Value
 from model import Entities, SourceResponses
 
 from .base import GitLabPipelineBase
@@ -12,14 +10,9 @@ from .base import GitLabPipelineBase
 class GitLabPipelineDuration(GitLabPipelineBase):
     """GitLab CI-pipeline duration collector."""
 
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """Override to get the pipeline details."""
-        responses = await super()._get_source_responses(*urls)
-        pipelines = await self._pipelines(responses)
-        api_url = await self._gitlab_api_url(f"pipelines/{pipelines[0].id}")
-        return await super()._get_source_responses(api_url)
-
     async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Parse the value from the responses."""
-        durations = [pipeline.pipeline_duration for pipeline in await self._pipelines(responses)]
-        return str(minutes(max(durations, default=timedelta())))
+        if durations := [int(entity["duration"]) for entity in included_entities]:
+            return str(max(durations))
+        error_message = "No pipelines found within the lookback period"
+        raise CollectorError(error_message)
