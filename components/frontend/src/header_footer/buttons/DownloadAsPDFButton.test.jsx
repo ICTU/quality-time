@@ -1,15 +1,16 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import * as get_report_pdf from "../../api/report"
 import * as toast from "../../widgets/toast"
 import { DownloadAsPDFButton } from "./DownloadAsPDFButton"
 
-jest.mock("../../api/report")
-jest.mock("../../widgets/toast.jsx")
+vi.mock("../../api/report")
+vi.mock("../../widgets/toast.jsx")
 
 beforeEach(() => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
     get_report_pdf.get_report_pdf.mockImplementation(() => Promise.resolve({ ok: true }))
 })
 
@@ -51,7 +52,10 @@ test("DownloadAsPDFButton indicates loading on click", async () => {
     render(<DownloadAsPDFButton report_uuid="report_uuid" />)
     await clickDownload()
     expectButtonIsLoading()
-    expect(get_report_pdf.get_report_pdf).toHaveBeenCalledWith("report_uuid", "?report_url=http%3A%2F%2Flocalhost%2F")
+    expect(get_report_pdf.get_report_pdf).toHaveBeenCalledWith(
+        "report_uuid",
+        "?report_url=http%3A%2F%2Flocalhost%3A3000%2F",
+    )
     await waitFor(() => {
         expect(toast.showMessage).toHaveBeenCalledTimes(1)
     })
@@ -62,7 +66,10 @@ test("DownloadAsPDFButton ignores a second click", async () => {
     render(<DownloadAsPDFButton report_uuid="report_uuid" />)
     await clickDownload(2)
     expectButtonIsLoading()
-    expect(get_report_pdf.get_report_pdf).toHaveBeenCalledWith("report_uuid", "?report_url=http%3A%2F%2Flocalhost%2F")
+    expect(get_report_pdf.get_report_pdf).toHaveBeenCalledWith(
+        "report_uuid",
+        "?report_url=http%3A%2F%2Flocalhost%3A3000%2F",
+    )
     await waitFor(() => {
         expect(toast.showMessage).toHaveBeenCalledTimes(1)
     })
@@ -74,13 +81,13 @@ test("DownloadAsPDFButton ignores unregistered query parameters", async () => {
     await clickDownload()
     expect(get_report_pdf.get_report_pdf).toHaveBeenCalledWith(
         "report_uuid",
-        "?nr_dates=4&report_url=http%3A%2F%2Flocalhost%2F%3Fnr_dates%3D4",
+        "?nr_dates=4&report_url=http%3A%2F%2Flocalhost%3A3000%2F%3Fnr_dates%3D4",
     )
 })
 
 test("DownloadAsPDFButton stops loading after returning pdf", async () => {
-    HTMLAnchorElement.prototype.click = jest.fn() // Prevent "Not implemented: navigation (except hash changes)"
-    window.URL.createObjectURL = jest.fn()
+    HTMLAnchorElement.prototype.click = vi.fn() // Prevent "Not implemented: navigation (except hash changes)"
+    window.URL.createObjectURL = vi.fn()
     render(<DownloadAsPDFButton />)
     await clickDownload()
     expectButtonIsNotLoading()

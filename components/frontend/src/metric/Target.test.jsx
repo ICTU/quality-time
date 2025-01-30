@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
@@ -7,7 +8,7 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { Target } from "./Target"
 
-jest.mock("../api/fetch_server_api.js")
+vi.mock("../api/fetch_server_api.js")
 
 const dataModel = {
     metrics: {
@@ -66,7 +67,7 @@ function expectMetricAttributePost(attribute, payload) {
 }
 
 it("sets the metric integer target", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricTarget({ type: "violations", target: "10" })
     await typeInField("10", "42")
     expectMetricAttributePost("target", "42")
@@ -74,7 +75,7 @@ it("sets the metric integer target", async () => {
 })
 
 it("sets the metric version target", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricTarget({ type: "source_version", target: "10" })
     await typeInField("10", "4.2")
     expectMetricAttributePost("target", "4.2")

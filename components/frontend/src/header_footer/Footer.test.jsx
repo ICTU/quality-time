@@ -18,7 +18,7 @@ it("renders a quote when there is no report", async () => {
 
 it("renders a link to the report url", async () => {
     const { container } = render(<Footer report={{ title: "Report title" }} />)
-    expect(screen.getByText("Report title").closest("a")).toHaveAttribute("href", "http://localhost/")
+    expect(screen.getByText("Report title").closest("a")).toHaveAttribute("href", "http://localhost:3000/")
     await expectNoAccessibilityViolations(container)
 })
 

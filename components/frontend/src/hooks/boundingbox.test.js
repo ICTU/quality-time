@@ -1,4 +1,5 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
+import { vi } from "vitest"
 
 import { useBoundingBox } from "./boundingbox"
 
@@ -13,7 +14,7 @@ let ref
 let boundingBox
 
 beforeEach(() => {
-    windowSpy = jest.spyOn(window, "addEventListener")
+    windowSpy = vi.spyOn(window, "addEventListener")
     windowSpy.mockImplementation((_eventType, callback) => {
         registeredCallback = callback
     })

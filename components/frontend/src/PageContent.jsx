@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { ToastContainer } from "react-toastify"
 
 import { get_measurements } from "./api/measurement"
+import { useHashFragment } from "./hooks/hash_fragment"
 import { Report } from "./report/Report"
 import { ReportsOverview } from "./report/ReportsOverview"
 import {
@@ -50,6 +51,7 @@ export function PageContent({
     reports_overview,
     settings,
 }) {
+    useHashFragment(!loading)
     const dates = getColumnDates(
         report_date,
         settings.dateInterval.value,

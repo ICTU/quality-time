@@ -68,7 +68,7 @@ FooterColumn.propTypes = {
 
 function AboutAppColumn() {
     return (
-        <FooterColumn header={<>Quality-time v{process.env.REACT_APP_VERSION}</>}>
+        <FooterColumn header={<>Quality-time v{import.meta.env.VITE_APP_VERSION}</>}>
             <FooterItem icon={<ScienceIcon />} url="https://www.ictu.nl/about-us">
                 Created by ICTU
             </FooterItem>

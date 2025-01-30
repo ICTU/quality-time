@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
+import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import * as fetch_server_api from "../api/fetch_server_api"
@@ -7,15 +8,15 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectsButtonRow } from "./SubjectsButtonRow"
 
-jest.mock("../api/fetch_server_api.js")
+vi.mock("../api/fetch_server_api.js")
 
-jest.mock("../widgets/menu_options", () => {
-    const originalModule = jest.requireActual("../api/subject")
+vi.mock("../widgets/menu_options", async () => {
+    const originalModule = await vi.importActual("../api/subject.js")
 
     return {
         __esModule: true,
         ...originalModule,
-        subject_options: jest.fn(() => [
+        subject_options: vi.fn(() => [
             { key: "1", text: "dummy option 1", content: "dummy option 1" },
             { key: "2", text: "dummy option 2", content: "dummy option 2" },
         ]),
@@ -23,10 +24,11 @@ jest.mock("../widgets/menu_options", () => {
 })
 
 beforeEach(() => {
-    jest.clearAllMocks()
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) })
+    fetch_server_api.fetch_server_api = vi.fn().mockReturnValue({ then: vi.fn().mockReturnValue({ finally: vi.fn() }) })
+})
+
+afterEach(() => {
+    vi.clearAllMocks()
 })
 
 function renderSubjectsButtonRow(permissions = []) {

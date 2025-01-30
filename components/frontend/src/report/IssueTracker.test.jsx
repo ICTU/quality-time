@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import * as report_api from "../api/report"
 import { DataModel } from "../context/DataModel"
@@ -7,7 +8,7 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { IssueTracker } from "./IssueTracker"
 
-jest.mock("../api/report.js")
+vi.mock("../api/report.js")
 report_api.get_report_issue_tracker_options.mockImplementation(() =>
     Promise.resolve({
         projects: [{ key: "PRJ", name: "Project name" }],

@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@mui/material/styles"
 import { fireEvent, render, screen } from "@testing-library/react"
+import { vi } from "vitest"
 
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -10,9 +11,9 @@ import { mockGetAnimations } from "./MockAnimations"
 
 beforeEach(() => mockGetAnimations())
 
-afterEach(() => jest.restoreAllMocks())
+afterEach(() => vi.restoreAllMocks())
 
-function renderCardDashboard({ cards = [], initialLayout = [], saveLayout = jest.fn } = {}) {
+function renderCardDashboard({ cards = [], initialLayout = [], saveLayout = vi.fn } = {}) {
     return render(
         <ThemeProvider theme={theme}>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
@@ -47,7 +48,7 @@ it("adds the card to the dashboard", async () => {
 })
 
 it("does not save the layout after click", async () => {
-    const mockCallback = jest.fn()
+    const mockCallback = vi.fn()
     const { container } = renderCardDashboard({
         cards: [
             <MetricSummaryCard

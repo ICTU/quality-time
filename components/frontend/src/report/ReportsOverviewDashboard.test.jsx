@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@mui/material/styles"
 import { fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
@@ -80,7 +81,7 @@ it("hides tags", async () => {
 })
 
 it("calls the callback on click", async () => {
-    const openReport = jest.fn()
+    const openReport = vi.fn()
     const { container } = renderReportsOverviewDashboard({ openReport: openReport })
     fireEvent.click(screen.getByText(/Report/))
     expect(openReport).toHaveBeenCalledWith("report_uuid")

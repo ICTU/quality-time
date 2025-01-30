@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
@@ -7,7 +8,7 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
 
-jest.mock("../api/fetch_server_api.js")
+vi.mock("../api/fetch_server_api.js")
 
 const dataModel = {
     scales: {
@@ -84,7 +85,7 @@ function expectMetricAttributePost(attribute, payload) {
 }
 
 it("sets the metric name", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderMetricParameters()
     await typeInField(/Metric name/, "New metric name")
     expectMetricAttributePost("name", "New metric name")
@@ -115,7 +116,7 @@ it("changes the direction", async () => {
 })
 
 it("sets the metric unit for metrics with the count scale", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderMetricParameters()
     await typeInField(/Metric unit/, "New metric unit")
     expectMetricAttributePost("unit", "New metric unit")
@@ -123,7 +124,7 @@ it("sets the metric unit for metrics with the count scale", async () => {
 })
 
 it("sets the metric unit field for metrics with the percentage scale", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderMetricParameters("percentage")
     await typeInField(/Metric unit/, "New metric unit")
     expectMetricAttributePost("unit", "New metric unit")
@@ -146,7 +147,7 @@ it("skips the metric unit field for metrics with the version number scale", asyn
 })
 
 it("turns off evaluation of targets", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderMetricParameters()
     await userEvent.type(screen.getByLabelText(/Evaluate metric targets/), "No{Enter}")
     expectMetricAttributePost("evaluate_targets", false)

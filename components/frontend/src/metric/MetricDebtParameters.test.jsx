@@ -3,6 +3,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import dayjs from "dayjs"
+import { vi } from "vitest"
 
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
@@ -10,7 +11,7 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { MetricDebtParameters } from "./MetricDebtParameters"
 
-jest.mock("../api/fetch_server_api.js")
+vi.mock("../api/fetch_server_api.js")
 
 const dataModel = {
     subjects: {
@@ -52,7 +53,7 @@ function renderMetricDebtParameters({ accept_debt = false, debt_end_date = null 
                             type: "violations",
                         }}
                         metric_uuid="metric_uuid"
-                        reload={jest.fn()}
+                        reload={vi.fn()}
                         report={{ subjects: {} }}
                     />
                 </DataModel.Provider>
@@ -63,11 +64,11 @@ function renderMetricDebtParameters({ accept_debt = false, debt_end_date = null 
 }
 
 beforeEach(() => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
 })
 
 it("accepts technical debt", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricDebtParameters()
     await userEvent.type(screen.getByLabelText(/Accept technical debt/), "Yes{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
@@ -79,7 +80,7 @@ it("accepts technical debt", async () => {
 })
 
 it("accepts technical debt and sets target and end date", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricDebtParameters()
     await userEvent.type(screen.getByLabelText(/Accept technical debt/), "Yes, and{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/debt", {
@@ -89,7 +90,7 @@ it("accepts technical debt and sets target and end date", async () => {
 })
 
 it("unaccepts technical debt and resets target and end date", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricDebtParameters({ accept_debt: true })
     await userEvent.type(screen.getByLabelText(/Accept technical debt/), "No, and{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/debt", {
@@ -99,7 +100,7 @@ it("unaccepts technical debt and resets target and end date", async () => {
 })
 
 it("adds a comment", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricDebtParameters()
     await userEvent.type(screen.getByLabelText(/Comment/), "Keep cool{Tab}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/comment", {
@@ -116,7 +117,7 @@ it("undoes changes to a comment", async () => {
 })
 
 it("sets the technical debt end date", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricDebtParameters()
     await userEvent.type(screen.getByPlaceholderText(/YYYY/), "12312022{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(

@@ -1,6 +1,7 @@
 import { Table, TableBody } from "@mui/material"
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import { TableRowWithDetails } from "./TableRowWithDetails"
 
@@ -25,14 +26,14 @@ it("does not show the details when collapsed", () => {
 })
 
 it("calls the expand callback when clicked", () => {
-    const onExpand = jest.fn()
+    const onExpand = vi.fn()
     renderTableRowWithDetails(false, onExpand)
     fireEvent.click(screen.getByRole("button"))
     expect(onExpand).toHaveBeenCalledWith(true)
 })
 
 it("calls the expand callback on keypress", async () => {
-    const onExpand = jest.fn()
+    const onExpand = vi.fn()
     renderTableRowWithDetails(false, onExpand)
     await userEvent.type(screen.getByRole("button"), "x")
     expect(onExpand).toHaveBeenCalledWith(true)

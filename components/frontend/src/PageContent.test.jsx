@@ -8,20 +8,20 @@ import { mockGetAnimations } from "./dashboard/MockAnimations"
 import { PageContent } from "./PageContent"
 import { expectNoAccessibilityViolations } from "./testUtils"
 
-jest.mock("react-toastify")
-jest.mock("./api/fetch_server_api")
+vi.mock("react-toastify")
+vi.mock("./api/fetch_server_api.js")
 
-beforeEach(() => {
-    jest.useFakeTimers("modern")
-    fetch_server_api.api_with_report_date = jest.requireActual("./api/fetch_server_api").api_with_report_date
+beforeEach(async () => {
+    vi.useFakeTimers("modern")
+    fetch_server_api.api_with_report_date = (await vi.importActual("./api/fetch_server_api.js")).api_with_report_date
     fetch_server_api.fetch_server_api.mockImplementation(() => Promise.resolve({ ok: true, measurements: [] }))
     mockGetAnimations()
     history.push("")
 })
 
 afterEach(() => {
-    jest.clearAllMocks()
-    jest.useRealTimers()
+    vi.clearAllMocks()
+    vi.useRealTimers()
 })
 
 async function renderPageContent({ loading = false, reports = [], report_date = null, report_uuid = "" } = {}) {
@@ -85,7 +85,7 @@ function expectMeasurementsCall(date, offset = 0) {
 
 it("fetches measurements", async () => {
     const mockedDate = new Date("2022-04-27T16:00:05+0000")
-    jest.setSystemTime(mockedDate)
+    vi.setSystemTime(mockedDate)
     const { container } = await renderPageContent({ report_date: null })
     expectMeasurementsCall(mockedDate)
     await expectNoAccessibilityViolations(container)
@@ -93,7 +93,7 @@ it("fetches measurements", async () => {
 
 it("fetches measurements if nr dates > 1", async () => {
     const mockedDate = new Date("2022-04-27T16:00:05+0000")
-    jest.setSystemTime(mockedDate)
+    vi.setSystemTime(mockedDate)
     history.push("?date_interval=1&nr_dates=2")
     await renderPageContent()
     expectMeasurementsCall(mockedDate, 1)
@@ -101,7 +101,7 @@ it("fetches measurements if nr dates > 1", async () => {
 
 it("fetches measurements if time traveling", async () => {
     const mockedDate = new Date("2022-04-27T16:00:05+0000")
-    jest.setSystemTime(mockedDate)
+    vi.setSystemTime(mockedDate)
     const reportDate = new Date(2021, 3, 25)
     await renderPageContent({ report_date: reportDate })
     expectMeasurementsCall(reportDate)
@@ -109,7 +109,7 @@ it("fetches measurements if time traveling", async () => {
 
 it("fetches measurements if nr dates > 1 and time traveling", async () => {
     const mockedDate = new Date("2022-04-27T16:00:05+0000")
-    jest.setSystemTime(mockedDate)
+    vi.setSystemTime(mockedDate)
     history.push("?date_interval=1&nr_dates=2")
     const reportDate = new Date(2022, 3, 25)
     await renderPageContent({ report_date: reportDate })

@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react"
+import { vi } from "vitest"
 
 import { HyperLink } from "./HyperLink"
 
@@ -8,7 +9,7 @@ it("shows the hyperlink", () => {
 })
 
 it("does not propagate a click event", () => {
-    const eventHandler = jest.fn()
+    const eventHandler = vi.fn()
     render(
         <button onClick={() => eventHandler()}>
             <HyperLink url="https://url">Link</HyperLink>

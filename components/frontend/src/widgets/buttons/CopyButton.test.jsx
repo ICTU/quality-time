@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import { CopyButton } from "./CopyButton"
 
@@ -22,7 +23,7 @@ Array("report", "subject", "metric", "source").forEach((itemType) => {
     })
 
     test("CopyButton can be used to select an item", async () => {
-        const mockCallback = jest.fn()
+        const mockCallback = vi.fn()
         renderCopyButton(itemType, mockCallback)
         await act(async () => {
             fireEvent.click(screen.getByText(new RegExp(`Copy ${itemType}`)))
@@ -34,7 +35,7 @@ Array("report", "subject", "metric", "source").forEach((itemType) => {
     })
 
     test("CopyButton menu can be closed without selecting an item", async () => {
-        const mockCallback = jest.fn()
+        const mockCallback = vi.fn()
         renderCopyButton(itemType, mockCallback)
         await act(async () => {
             fireEvent.click(screen.getByText(new RegExp(`Copy ${itemType}`)))
@@ -45,7 +46,7 @@ Array("report", "subject", "metric", "source").forEach((itemType) => {
     })
 
     test("CopyButton loads the options every time the menu is opened", async () => {
-        const mockCallback = jest.fn()
+        const mockCallback = vi.fn()
         let get_options_called = 0
         render(
             <CopyButton

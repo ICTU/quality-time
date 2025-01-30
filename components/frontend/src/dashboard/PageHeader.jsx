@@ -6,7 +6,7 @@ import { HyperLink } from "../widgets/HyperLink"
 export function PageHeader({ lastUpdate, report, reportDate }) {
     const reportURL = new URLSearchParams(window.location.search).get("report_url") ?? window.location.href
     const title = report?.title ?? "Reports overview"
-    const changelogURL = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}/changelog.html`
+    const changelogURL = `https://quality-time.readthedocs.io/en/v${import.meta.env.VITE_APP_VERSION}/changelog.html`
     return (
         <Stack
             direction="row"
@@ -21,7 +21,7 @@ export function PageHeader({ lastUpdate, report, reportDate }) {
                 {"Generated: " + formatDate(lastUpdate) + ", " + formatTime(lastUpdate)}
             </Typography>
             <Typography key={"version"} data-testid={"version"}>
-                <HyperLink url={changelogURL}>Quality-time v{process.env.REACT_APP_VERSION}</HyperLink>
+                <HyperLink url={changelogURL}>Quality-time v{import.meta.env.VITE_APP_VERSION}</HyperLink>
             </Typography>
         </Stack>
     )

@@ -1,7 +1,10 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
+import { vi } from "vitest"
 
 import * as toast from "../toast"
 import { PermLinkButton } from "./PermLinkButton"
+
+vi.mock("../toast.jsx")
 
 test("PermLinkButton is not shown in an insecure context", () => {
     Object.assign(window, { isSecureContext: false })
@@ -10,10 +13,10 @@ test("PermLinkButton is not shown in an insecure context", () => {
 })
 
 test("PermLinkButton copies URL to clipboard", async () => {
-    toast.showMessage = jest.fn()
+    toast.showMessage = vi.fn()
     Object.assign(window, { isSecureContext: true })
     Object.assign(navigator, {
-        clipboard: { writeText: jest.fn().mockImplementation(() => Promise.resolve()) },
+        clipboard: { writeText: vi.fn().mockImplementation(() => Promise.resolve()) },
     })
     render(<PermLinkButton itemType="metric" url="https://example.org" />)
     await act(async () => {
@@ -24,11 +27,11 @@ test("PermLinkButton copies URL to clipboard", async () => {
 })
 
 test("PermLinkButton shows error message if copying fails", async () => {
-    toast.showMessage = jest.fn()
+    toast.showMessage = vi.fn()
     Object.assign(window, { isSecureContext: true })
     Object.assign(navigator, {
         clipboard: {
-            writeText: jest.fn().mockImplementation(() => Promise.reject(new Error("fail"))),
+            writeText: vi.fn().mockImplementation(() => Promise.reject(new Error("fail"))),
         },
     })
     render(<PermLinkButton itemType="metric" url="https://example.org" />)
