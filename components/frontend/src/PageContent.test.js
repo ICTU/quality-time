@@ -12,7 +12,7 @@ jest.mock("react-toastify")
 jest.mock("./api/fetch_server_api")
 
 beforeEach(() => {
-    jest.useFakeTimers("modern")
+    jest.useFakeTimers()
     fetch_server_api.api_with_report_date = jest.requireActual("./api/fetch_server_api").api_with_report_date
     fetch_server_api.fetch_server_api.mockImplementation(() => Promise.resolve({ ok: true, measurements: [] }))
     mockGetAnimations()
