@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetch_server_api from "../api/fetch_server_api"
@@ -9,9 +10,13 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTitle } from "./SubjectTitle"
 
+vi.mock("../api/fetch_server_api.js")
+
 beforeEach(() => {
     history.push("?expanded=subject_uuid")
 })
+
+afterEach(() => vi.restoreAllMocks())
 
 const dataModel = {
     subjects: {
@@ -54,7 +59,7 @@ async function renderSubjectTitle(subject_type = "subject_type") {
 }
 
 it("changes the subject type", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderSubjectTitle()
     fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
     //await userEvent.click(screen.getAllByText(/Default subject type/)[1])
@@ -66,7 +71,7 @@ it("changes the subject type", async () => {
 })
 
 it("changes the subject title", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderSubjectTitle()
     await userEvent.type(screen.getByLabelText(/Subject title/), "{Delete}New title{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/name", {
@@ -76,7 +81,7 @@ it("changes the subject title", async () => {
 })
 
 it("changes the subject subtitle", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderSubjectTitle()
     await userEvent.type(screen.getByLabelText(/Subject subtitle/), "{Delete}New subtitle{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
@@ -88,7 +93,7 @@ it("changes the subject subtitle", async () => {
 })
 
 it("changes the subject comment", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderSubjectTitle()
     await userEvent.type(screen.getByLabelText(/Comment/), "{Delete}New comment{Shift>}{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
@@ -100,6 +105,7 @@ it("changes the subject comment", async () => {
 })
 
 it("loads the changelog", async () => {
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderSubjectTitle()
     await act(async () => {
         fireEvent.click(screen.getByText(/Changelog/))
@@ -109,7 +115,7 @@ it("loads the changelog", async () => {
 })
 
 it("moves the subject", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderSubjectTitle()
     await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: /Move subject to the next position/ }))
@@ -123,7 +129,7 @@ it("moves the subject", async () => {
 })
 
 it("deletes the subject", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderSubjectTitle()
     await act(async () => {
         fireEvent.click(screen.getByText(/Delete subject/))

@@ -2,13 +2,14 @@ import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import * as fetch_server_api from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceParameter } from "./SourceParameter"
 
-jest.mock("../api/fetch_server_api.js")
+vi.mock("../api/fetch_server_api.js")
 
 const report = {
     subjects: {
@@ -126,7 +127,7 @@ it("renders an integer parameter", async () => {
 })
 
 it("doesn't change an integer parameter with mouse wheel", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderSourceParameter({
         parameter_name: "Integer",
         parameter_type: "integer",
@@ -191,7 +192,7 @@ it("renders a help text", async () => {
 })
 
 it("changes the value", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderSourceParameter({})
     await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", {
@@ -202,7 +203,7 @@ it("changes the value", async () => {
 })
 
 it("changes the value via mass edit", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderSourceParameter({})
     fireEvent.click(screen.getByLabelText(/Edit scope/))
     fireEvent.click(screen.getByText(/Apply change to subject/))
@@ -215,7 +216,7 @@ it("changes the value via mass edit", async () => {
 })
 
 it("closes the mass edit menu", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderSourceParameter({})
     fireEvent.click(screen.getByLabelText(/Edit scope/))
     await userEvent.keyboard("{Escape}")

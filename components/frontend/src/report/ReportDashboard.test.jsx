@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@mui/material/styles"
 import { fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
@@ -39,7 +40,7 @@ const dataModel = {
     },
 }
 
-function renderDashboard({ hiddenTags = null, dates = [new Date()], onClick = jest.fn(), reportToRender = null } = {}) {
+function renderDashboard({ hiddenTags = null, dates = [new Date()], onClick = vi.fn(), reportToRender = null } = {}) {
     let settings = createTestableSettings()
     if (hiddenTags) {
         settings.hiddenTags = hiddenTags
@@ -85,7 +86,7 @@ it("hides a subject if all its tags are hidden", async () => {
 })
 
 it("expands the subject title on click", async () => {
-    const onClick = jest.fn()
+    const onClick = vi.fn()
     const { container } = renderDashboard({ reportToRender: report, onClick: onClick })
     fireEvent.click(screen.getByText(/Subject title/))
     expect(onClick).toHaveBeenCalledWith(expect.anything(), "subject_uuid")

@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
@@ -7,7 +8,7 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { MetricType } from "./MetricType"
 
-jest.mock("../api/fetch_server_api.js")
+vi.mock("../api/fetch_server_api.js")
 
 const dataModel = {
     subjects: {
@@ -59,7 +60,7 @@ function renderMetricType(metricType) {
 }
 
 it("sets the metric type", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricType("violations")
     await userEvent.type(screen.getByRole("combobox"), "Source version{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/type", {

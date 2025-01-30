@@ -2,6 +2,7 @@ import { ThemeProvider } from "@mui/material/styles"
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
 import { axe } from "jest-axe"
+import { vi } from "vitest"
 
 import { dataModel, report } from "./__fixtures__/fixtures"
 import * as fetch_server_api from "./api/fetch_server_api"
@@ -9,15 +10,18 @@ import { AppUI } from "./AppUI"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 import { theme } from "./theme"
 
-beforeEach(() => {
-    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({
-        then: jest.fn().mockReturnValue({ catch: jest.fn().mockReturnValue({ finally: jest.fn() }) }),
+vi.mock("./api/fetch_server_api.js")
+
+beforeEach(async () => {
+    fetch_server_api.api_with_report_date = (await vi.importActual("./api/fetch_server_api.js")).api_with_report_date
+    fetch_server_api.fetch_server_api = vi.fn().mockReturnValue({
+        then: vi.fn().mockReturnValue({ catch: vi.fn().mockReturnValue({ finally: vi.fn() }) }),
     })
     mockGetAnimations()
     history.push("")
 })
 
-afterEach(() => jest.restoreAllMocks())
+afterEach(() => vi.restoreAllMocks())
 
 async function renderAppUI(reports) {
     let result
@@ -26,7 +30,7 @@ async function renderAppUI(reports) {
             <ThemeProvider theme={theme}>
                 <AppUI
                     dataModel={dataModel}
-                    handleDateChange={jest.fn}
+                    handleDateChange={vi.fn}
                     lastUpdate={new Date()}
                     report_date={reports ? null : undefined}
                     report_uuid={reports ? "report_uuid" : ""}

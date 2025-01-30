@@ -1,8 +1,8 @@
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { act, fireEvent, render, screen } from "@testing-library/react"
-import { locale_en_gb } from "dayjs/locale/en-gb"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import * as changelog_api from "../api/changelog"
 import * as fetch_server_api from "../api/fetch_server_api"
@@ -13,10 +13,10 @@ import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION, Permissions } from "../
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { MetricDetails } from "./MetricDetails"
 
-jest.mock("../api/fetch_server_api")
-jest.mock("../api/changelog.js")
-jest.mock("../api/measurement.js")
-jest.mock("../api/source.js")
+vi.mock("../api/fetch_server_api.js")
+vi.mock("../api/changelog.js")
+vi.mock("../api/measurement.js")
+vi.mock("../api/source.js")
 
 const report = {
     report_uuid: "report_uuid",
@@ -101,12 +101,12 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error, fa
     let result
     await act(async () => {
         result = render(
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={locale_en_gb}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Permissions.Provider value={[EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION]}>
                     <DataModel.Provider value={dataModel}>
                         <MetricDetails
                             metric_uuid="metric_uuid"
-                            reload={jest.fn()}
+                            reload={vi.fn()}
                             report={report}
                             reports={[report]}
                             stopFilteringAndSorting={stopFilteringAndSorting}
@@ -121,9 +121,12 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error, fa
 }
 
 beforeEach(() => {
-    jest.clearAllMocks()
     history.push("")
     fetch_server_api.fetch_server_api.mockImplementation(() => Promise.resolve())
+})
+
+afterEach(() => {
+    vi.clearAllMocks()
 })
 
 it("switches tabs", async () => {
@@ -171,13 +174,13 @@ it("removes the existing hashtag from the URL to share", async () => {
     history.push("#hash_that_should_be_removed")
     Object.assign(window, { isSecureContext: true })
     Object.assign(navigator, {
-        clipboard: { writeText: jest.fn().mockImplementation(() => Promise.resolve()) },
+        clipboard: { writeText: vi.fn().mockImplementation(() => Promise.resolve()) },
     })
     await renderMetricDetails()
     await act(async () => {
         fireEvent.click(screen.getByText(/Share/))
     })
-    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("http://localhost/#metric_uuid")
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("http://localhost:3000/#metric_uuid")
 })
 
 it("displays whether sources have errors", async () => {
@@ -193,7 +196,7 @@ it("displays whether sources have warnings", async () => {
 })
 
 it("moves the metric", async () => {
-    const mockCallback = jest.fn()
+    const mockCallback = vi.fn()
     await renderMetricDetails(mockCallback)
     await act(async () => fireEvent.click(screen.getByRole("button", { name: /Move metric to the last row/ })))
     expect(mockCallback).toHaveBeenCalled()

@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react"
+import { vi } from "vitest"
 
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { mockGetAnimations } from "./MockAnimations"
@@ -6,7 +7,7 @@ import { PageHeader } from "./PageHeader"
 
 beforeEach(() => mockGetAnimations())
 
-afterEach(() => jest.restoreAllMocks())
+afterEach(() => vi.restoreAllMocks())
 
 const mockReportDate = new Date("2024-03-24T12:34:56")
 const mockLastUpdate = new Date("2024-03-26T12:34:56")

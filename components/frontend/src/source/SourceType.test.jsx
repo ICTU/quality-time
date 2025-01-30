@@ -1,12 +1,13 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceType } from "./SourceType"
 
-jest.mock("../api/fetch_server_api.js")
+vi.mock("../api/fetch_server_api.js")
 
 const dataModel = {
     metrics: {
@@ -55,7 +56,7 @@ async function renderSourceType(metricType, sourceType, mockSetSourceAttribute) 
 }
 
 it("sets the source type", async () => {
-    const mockSetSourceAttribute = jest.fn()
+    const mockSetSourceAttribute = vi.fn()
     const { container } = await renderSourceType("violations", "sonarqube", mockSetSourceAttribute)
     await userEvent.type(screen.getByRole("combobox"), "GitLab{Enter}")
     expect(mockSetSourceAttribute).toHaveBeenLastCalledWith("type", "gitlab")

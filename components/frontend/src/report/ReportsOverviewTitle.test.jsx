@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetch_server_api from "../api/fetch_server_api"
@@ -8,7 +9,7 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { ReportsOverviewTitle } from "./ReportsOverviewTitle"
 
-jest.mock("../api/fetch_server_api.js")
+vi.mock("../api/fetch_server_api.js")
 
 beforeEach(() => {
     history.push("?expanded=reports_overview")
@@ -23,7 +24,7 @@ function renderReportsOverviewTitle() {
 }
 
 it("sets the title", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderReportsOverviewTitle()
     await userEvent.type(screen.getByLabelText(/Report overview title/), "{Delete}New title{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/title", {
@@ -33,7 +34,7 @@ it("sets the title", async () => {
 })
 
 it("sets the subtitle", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderReportsOverviewTitle()
     await userEvent.type(screen.getByLabelText(/Report overview subtitle/), "{Delete}New subtitle{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/subtitle", {
@@ -43,7 +44,7 @@ it("sets the subtitle", async () => {
 })
 
 it("sets the comment", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderReportsOverviewTitle()
     await userEvent.type(screen.getByLabelText(/Comment/), "{Delete}New comment{Shift>}{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "reports_overview/attribute/comment", {
@@ -53,7 +54,7 @@ it("sets the comment", async () => {
 })
 
 it("sets the edit report permission", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderReportsOverviewTitle()
     fireEvent.click(screen.getByText(/Permissions/))
     await userEvent.type(screen.getByLabelText(/Users allowed to edit reports/), "jadoe{Enter}")
@@ -66,7 +67,7 @@ it("sets the edit report permission", async () => {
 })
 
 it("sets the edit entities permission", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderReportsOverviewTitle()
     fireEvent.click(screen.getByText(/Permissions/))
     await userEvent.type(screen.getByLabelText(/Users allowed to edit measured entities/), "jodoe{Enter}")

@@ -15,7 +15,7 @@ import {
     subjectTypePropType,
 } from "./sharedPropTypes"
 
-export const DOCUMENTATION_URL = `https://quality-time.readthedocs.io/en/v${process.env.REACT_APP_VERSION}`
+export const DOCUMENTATION_URL = `https://quality-time.readthedocs.io/en/v${import.meta.env.VITE_APP_VERSION}`
 export const REPOSITORY_URL = "https://github.com/ICTU/quality-time"
 export const MILLISECONDS_PER_HOUR = 60 * 60 * 1000
 const MILLISECONDS_PER_DAY = 24 * MILLISECONDS_PER_HOUR

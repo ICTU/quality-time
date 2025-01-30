@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -12,8 +13,8 @@ beforeEach(() => {
 
 function renderSettingsPanel({
     atReportsOverview = true,
-    handleDateChange = jest.fn(),
-    handleSort = jest.fn(),
+    handleDateChange = vi.fn(),
+    handleSort = vi.fn(),
     reportDate = null,
     tags = [],
 } = {}) {
@@ -107,7 +108,7 @@ it("shows a column", async () => {
 })
 
 it("changes the sorting of an unsorted column", async () => {
-    const handleSort = jest.fn()
+    const handleSort = vi.fn()
     renderSettingsPanel({ handleSort: handleSort })
     fireEvent.click(screen.getAllByText(/Comment/)[1])
     expect(handleSort).toHaveBeenCalledWith("comment")
@@ -115,7 +116,7 @@ it("changes the sorting of an unsorted column", async () => {
 ;["ascending", "descending"].forEach((sortOrder) => {
     it("changes the sorting of a column", async () => {
         history.push(`?sort_column=comment&sort_direction=${sortOrder}`)
-        const handleSort = jest.fn()
+        const handleSort = vi.fn()
         renderSettingsPanel({ handleSort: handleSort })
         fireEvent.click(screen.getAllByText(/Comment/)[1])
         expect(handleSort).toHaveBeenCalledWith("comment")
@@ -123,7 +124,7 @@ it("changes the sorting of an unsorted column", async () => {
 })
 
 it("sorts a column by keypress", async () => {
-    const handleSort = jest.fn()
+    const handleSort = vi.fn()
     renderSettingsPanel({ handleSort: handleSort })
     await userEvent.type(screen.getAllByText(/Comment/)[1], " ")
     expect(handleSort).toHaveBeenCalledWith("comment")

@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
@@ -18,7 +19,7 @@ function renderSubject({
             <Subject
                 atReportsOverview={atReportsOverview}
                 dates={dates}
-                handleSort={() => jest.fn()}
+                handleSort={() => vi.fn()}
                 measurements={[]}
                 report={reportToRender || report}
                 report_date={reportDate}

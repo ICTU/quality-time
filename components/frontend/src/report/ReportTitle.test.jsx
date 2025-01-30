@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as changelog_api from "../api/changelog"
@@ -10,19 +11,19 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { ReportTitle } from "./ReportTitle"
 
-jest.mock("../api/changelog.js")
-jest.mock("../api/report.js")
+vi.mock("../api/changelog.js")
+vi.mock("../api/report.js")
 
 beforeEach(() => {
     history.push("?expanded=report_uuid")
-    jest.resetAllMocks()
+    vi.resetAllMocks()
 })
 
 report_api.get_report_issue_tracker_options.mockImplementation(() =>
     Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
 )
 
-const reload = jest.fn
+const reload = vi.fn
 
 function renderReportTitle() {
     return render(
@@ -39,7 +40,7 @@ function renderReportTitle() {
 }
 
 it("deletes the report", async () => {
-    report_api.delete_report = jest.fn().mockResolvedValue({ ok: true })
+    report_api.delete_report = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderReportTitle()
     await act(async () => {
         fireEvent.click(screen.getByText(/Delete report/))

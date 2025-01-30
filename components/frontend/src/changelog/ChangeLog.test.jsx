@@ -1,15 +1,16 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { vi } from "vitest"
 
 import * as changelog_api from "../api/changelog"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import * as toast from "../widgets/toast"
 import { ChangeLog } from "./ChangeLog"
 
-jest.mock("../api/changelog.js")
-jest.mock("../widgets/toast.jsx")
+vi.mock("../api/changelog.js")
+vi.mock("../widgets/toast.jsx")
 
 beforeEach(() => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
 })
 
 async function renderChangeLog({ props }) {

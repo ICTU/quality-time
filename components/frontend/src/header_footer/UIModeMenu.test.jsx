@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { UIModeMenu } from "./UIModeMenu"
@@ -8,7 +9,7 @@ const openUIModeMenu = () => fireEvent.click(screen.getByLabelText(/Dark\/light 
 const click = (mode) => fireEvent.click(screen.getByText(mode))
 
 it("sets dark mode", async () => {
-    const setUIMode = jest.fn()
+    const setUIMode = vi.fn()
     const { container } = render(<UIModeMenu setUIMode={setUIMode} />)
     openUIModeMenu()
     click("Dark mode")
@@ -17,7 +18,7 @@ it("sets dark mode", async () => {
 })
 
 it("sets light mode", async () => {
-    const setUIMode = jest.fn()
+    const setUIMode = vi.fn()
     const { container } = render(<UIModeMenu setUIMode={setUIMode} uiMode="dark" />)
     openUIModeMenu()
     click("Light mode")
@@ -26,7 +27,7 @@ it("sets light mode", async () => {
 })
 
 it("sets follows os mode", () => {
-    const setUIMode = jest.fn()
+    const setUIMode = vi.fn()
     render(<UIModeMenu setUIMode={setUIMode} uiMode="dark" />)
     openUIModeMenu()
     click("Follow OS setting")
@@ -34,7 +35,7 @@ it("sets follows os mode", () => {
 })
 
 it("sets dark mode on keypress", async () => {
-    const setUIMode = jest.fn()
+    const setUIMode = vi.fn()
     render(<UIModeMenu setUIMode={setUIMode} uiMode="light" />)
     openUIModeMenu()
     await userEvent.type(screen.getByText(/Dark mode/), " ")
@@ -42,7 +43,7 @@ it("sets dark mode on keypress", async () => {
 })
 
 it("closes the menu on escape", async () => {
-    const setUIMode = jest.fn()
+    const setUIMode = vi.fn()
     render(<UIModeMenu setUIMode={setUIMode} />)
     openUIModeMenu()
     await userEvent.keyboard("{Escape}")
