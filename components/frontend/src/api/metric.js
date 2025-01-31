@@ -1,4 +1,3 @@
-import { showMessage } from "../widgets/toast"
 import { fetch_server_api } from "./fetch_server_api"
 
 export function add_metric(subject_uuid, metricType, reload) {
@@ -27,14 +26,14 @@ export function set_metric_debt(metric_uuid, value, reload) {
     return fetch_server_api("post", `metric/${metric_uuid}/debt`, { accept_debt: value }).then(reload)
 }
 
-export function add_metric_issue(metric_uuid, reload) {
+export function add_metric_issue(metric_uuid, reload, showMessage) {
     const payload = { metric_url: `${window.location}#${metric_uuid}` }
     return fetch_server_api("post", `metric/${metric_uuid}/issue/new`, payload)
         .then((json) => {
             if (json.ok) {
                 window.open(json.issue_url)
             } else {
-                showMessage("error", "Could not create issue", json.error)
+                showMessage(json.error)
             }
             return null
         })

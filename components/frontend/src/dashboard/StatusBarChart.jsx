@@ -1,7 +1,7 @@
 import { arrayOf, number, object } from "prop-types"
 import { VictoryBar, VictoryStack } from "victory"
 
-import { STATUS_COLORS, STATUS_NAME, STATUSES } from "../metric/status"
+import { STATUS_COLORS, STATUS_SHORT_NAME, STATUSES } from "../metric/status"
 import { labelPropType, stringsPropType } from "../sharedPropTypes"
 import { pluralize, sum } from "../utils"
 
@@ -28,7 +28,7 @@ export function StatusBarChart({ animate, colors, events, height, label, maxY, s
             data.push({
                 x: date,
                 y: y,
-                label: [dateString, STATUS_NAME[status], nrMetricsLabel(y)],
+                label: [dateString, STATUS_SHORT_NAME[status], nrMetricsLabel(y)],
             })
         })
         return (
@@ -37,7 +37,6 @@ export function StatusBarChart({ animate, colors, events, height, label, maxY, s
                 barRatio={barRatio}
                 key={status}
                 style={style}
-                labels={() => null}
                 labelComponent={tooltip}
                 data={data}
                 animate={animate}

@@ -57,7 +57,7 @@ export function SubjectTitle({
     settings,
 }) {
     const dataModel = useContext(DataModel)
-    const subjectType = getSubjectType(subject.type, dataModel.subjects) || { name: "Unknown subject type" }
+    const subjectType = getSubjectType(subject.type, dataModel.subjects)
     const subjectName = subject.name || subjectType.name
     const subjectTitle = (atReportsOverview ? report.title + " ❯ " : "") + subjectName
     const subjectUrl = `${window.location}#${subject_uuid}`

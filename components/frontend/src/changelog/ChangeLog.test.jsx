@@ -6,7 +6,7 @@ import * as toast from "../widgets/toast"
 import { ChangeLog } from "./ChangeLog"
 
 jest.mock("../api/changelog.js")
-jest.mock("../widgets/toast.js")
+jest.mock("../widgets/toast.jsx")
 
 beforeEach(() => {
     jest.resetAllMocks()
