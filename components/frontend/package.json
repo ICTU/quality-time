@@ -38,7 +38,7 @@
         "resetMocks": false,
         "coveragePathIgnorePatterns": [
             "<rootDir>/node_modules/",
-            "<rootDir>/src/index.js"
+            "<rootDir>/src/index.jsx"
         ]
     },
     "browserslist": [

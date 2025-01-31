@@ -6,7 +6,7 @@ import * as toast from "../../widgets/toast"
 import { DownloadAsPDFButton } from "./DownloadAsPDFButton"
 
 jest.mock("../../api/report")
-jest.mock("../../widgets/toast.js")
+jest.mock("../../widgets/toast.jsx")
 
 beforeEach(() => {
     jest.resetAllMocks()

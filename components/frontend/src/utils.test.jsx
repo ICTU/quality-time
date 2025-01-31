@@ -158,6 +158,12 @@ it("gets the subject type recursively from the second subject type", () => {
     ).toStrictEqual(subject)
 })
 
+it("gets an unknown subject type", () => {
+    expect(getSubjectType("other subject", { subject: { name: "Subject" } })).toStrictEqual({
+        name: "Unknown subject type",
+    })
+})
+
 it("gets the subject type metrics", () => {
     expect(getSubjectTypeMetrics("subject", { subject: { metrics: ["metric"] } })).toStrictEqual(["metric"])
 })

@@ -1,7 +1,6 @@
 import AddIcon from "@mui/icons-material/Add"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ArrowRightIcon from "@mui/icons-material/ArrowRight"
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth"
 import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 import DeleteIcon from "@mui/icons-material/Delete"
 import LoopIcon from "@mui/icons-material/Loop"
@@ -13,10 +12,6 @@ import { string } from "prop-types"
 
 export function AddItemIcon() {
     return <AddIcon fontSize="inherit" sx={{ verticalAlign: "middle" }} />
-}
-
-export function CalendarIcon() {
-    return <CalendarMonthIcon fontSize="inherit" sx={{ verticalAlign: "middle" }} />
 }
 
 export function CaretDown({ size }) {

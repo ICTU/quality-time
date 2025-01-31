@@ -80,15 +80,6 @@ alignment.propTypes = {
     attributeAlignment: alignmentPropType,
 }
 
-function sorted(column, sortColumn, sortDirection) {
-    return column === sortColumn ? sortDirection : null
-}
-sorted.propTypes = {
-    column: string,
-    sortColumn: string,
-    sortDirection: sortDirectionPropType,
-}
-
 function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
     function handleSort(column) {
         sortProps.setColumnType(entityAttribute.type || "text")

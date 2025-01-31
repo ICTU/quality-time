@@ -22,7 +22,9 @@ function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, me
             disabled={disabled || !issueTrackerConfigured}
             icon={<AddItemIcon />}
             itemType="issue"
-            onClick={() => add_metric_issue(metric_uuid, reload)}
+            onClick={() =>
+                add_metric_issue(metric_uuid, reload, (error) => showMessage("error", "Could not create issue", error))
+            }
             popup={
                 <>
                     Create a new issue for this {target} in the configured issue tracker and add its identifier to the

@@ -1,7 +1,7 @@
 import { arrayOf, element, number, object } from "prop-types"
 import { VictoryPie } from "victory"
 
-import { STATUS_COLORS, STATUS_NAME, STATUSES } from "../metric/status"
+import { STATUS_COLORS, STATUS_SHORT_NAME, STATUSES } from "../metric/status"
 import { labelPropType, stringsPropType } from "../sharedPropTypes"
 import { pluralize, sum } from "../utils"
 
@@ -21,7 +21,7 @@ export function StatusPieChart({ animate, colors, events, height, label, maxY, s
     const data = STATUSES.map((status) => {
         const y = summary[STATUS_COLORS[status]]
         const yPercentage = Math.round((y / nrMetrics) * 100)
-        return { y: y, label: `${STATUS_NAME[status]}\n${nrMetricsLabel(y)} (${yPercentage}%)` }
+        return { y: y, label: `${STATUS_SHORT_NAME[status]}\n${nrMetricsLabel(y)} (${yPercentage}%)` }
     })
     return (
         <>
@@ -35,7 +35,6 @@ export function StatusPieChart({ animate, colors, events, height, label, maxY, s
                     innerRadius={innerRadius}
                     standalone={false}
                     style={style}
-                    labels={() => null}
                     labelComponent={tooltip}
                     data={data}
                     width={width}

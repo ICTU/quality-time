@@ -5,8 +5,14 @@ import * as fetch_server_api from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { IssuesRows } from "./IssuesRows"
+import * as toast from "../widgets/toast"
 
 jest.mock("../api/fetch_server_api.js")
+jest.mock("../widgets/toast.jsx")
+
+beforeEach(() => {
+    jest.resetAllMocks()
+})
 
 const reportWithIssueTracker = {
     issue_tracker: {
@@ -135,6 +141,21 @@ it("shows issue id suggestions", async () => {
     })
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), "u")
     expect(screen.queryAllByText(/FOO-42: Suggestion/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows an error message if fetching suggestions fails", async () => {
+    fetch_server_api.fetch_server_api = jest.fn().mockRejectedValue(new Error("fetching suggestions failed"))
+    const { container } = renderIssuesRow({
+        report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
+    })
+    await userEvent.type(screen.getByLabelText(/Issue identifiers/), "u")
+    expect(toast.showMessage).toHaveBeenCalledTimes(1)
+    expect(toast.showMessage).toHaveBeenCalledWith(
+        "error",
+        "Could not fetch issue identifiers",
+        "Error: fetching suggestions failed",
+    )
     await expectNoAccessibilityViolations(container)
 })
 

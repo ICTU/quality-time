@@ -77,10 +77,11 @@ export function getSubjectType(subjectTypeKey, subjects) {
     }
     for (const childSubject of childSubjects(subjects)) {
         const result = getSubjectType(subjectTypeKey, childSubject.subjects)
-        if (result) {
+        if (result.name !== "Unknown subject type") {
             return result
         }
     }
+    return { name: "Unknown subject type" }
 }
 getSubjectType.propTypes = {
     subjectTypeKey: string,

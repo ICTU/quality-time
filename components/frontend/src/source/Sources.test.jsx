@@ -9,7 +9,7 @@ import * as toast from "../widgets/toast"
 import { Sources } from "./Sources"
 
 jest.mock("../api/fetch_server_api.js")
-jest.mock("../widgets/toast.js")
+jest.mock("../widgets/toast.jsx")
 
 const dataModel = {
     metrics: { metric_type: { sources: ["source_type1", "source_type2"] } },

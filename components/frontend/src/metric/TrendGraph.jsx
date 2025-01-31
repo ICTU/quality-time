@@ -48,19 +48,11 @@ export function TrendGraph({ metric, measurements, loading }) {
     )
     let max_y = niceNumber(Math.max(...measurementValues))
     let measurementPoints = [] // The measurement values as (x, y) coordinates
-    let previousX2 = new Date("2000-01-01")
     measurements.forEach((measurement, index) => {
-        const x1 = new Date(measurement.start)
-        const x2 = new Date(measurement.end)
-        // Make sure each measurement has a positive width, or VictoryChart won't draw the area
-        if (x1.getTime() <= previousX2.getTime()) {
-            x1.setSeconds(x1.getSeconds() + (previousX2.getSeconds() - x1.getSeconds()) + 1)
-        }
-        if (x2.getTime() <= x1.getTime()) {
-            x2.setSeconds(x2.getSeconds() + (x1.getSeconds() - x2.getSeconds()) + 1)
-        }
-        previousX2 = x2
-        measurementPoints.push({ y: measurementValues[index], x: x1 }, { y: measurementValues[index], x: x2 })
+        measurementPoints.push(
+            { y: measurementValues[index], x: new Date(measurement.start) },
+            { y: measurementValues[index], x: new Date(measurement.end) },
+        )
     })
     const axisStyle = {
         axisLabel: { padding: 30, fontSize: 11, fill: color, fontFamily: fontFamily },
