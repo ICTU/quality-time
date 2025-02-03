@@ -11,7 +11,7 @@ from .base import BitbucketProjectBase
 class BitbucketMergeRequests(BitbucketProjectBase):
     """Collector for merge requests in Bitbucket."""
 
-    PAGE_SIZE = 100  # Page size for Bitbucket pagination
+    PAGE_SIZE = 1  # Page size for Bitbucket pagination
 
     async def _api_url(self) -> URL:
         """Override to return the merge requests API."""
@@ -37,7 +37,6 @@ class BitbucketMergeRequests(BitbucketProjectBase):
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the merge requests from the responses."""
         merge_requests = []
-        pdb.set_trace()
         for response in responses:
             merge_requests.extend((await response.json())["values"])
         landing_url = (await self._landing_url(responses))
