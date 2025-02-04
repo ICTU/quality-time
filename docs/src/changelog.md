@@ -29,6 +29,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 ### Changed
 
 - Use the font configured in the browser instead of the browser's system font. Fixes [#9864](https://github.com/ICTU/quality-time/issues/9864).
+- Update SonarQube logo and documentation URLs. Closes [#10766](https://github.com/ICTU/quality-time/issues/10766).
 
 ## v5.23.0 - 2025-01-27
 
