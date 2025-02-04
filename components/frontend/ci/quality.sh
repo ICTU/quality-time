@@ -4,4 +4,4 @@ PATH="$PATH:../../ci"
 source quality-base.sh
 
 # Eslint
-run npx eslint *.js *.mjs src
+run npx eslint *.mjs src
