@@ -12,6 +12,39 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Support the new SonarQube impact severity levels "blocker" and "info", introduced in SonarQube v10.8. Closes [#10708](https://github.com/ICTU/quality-time/issues/10708).
+
+### Fixed
+
+- Fix accessibility issues found by the application test. Fixes [#6354](https://github.com/ICTU/quality-time/issues/6354).
+- When adding multiple sources to one metric, the source names would not be comma-separated in the sources column. Fixes [#10735](https://github.com/ICTU/quality-time/issues/10735).
+- The comment field of a metric's technical debt tab would be editable even though the user was not logged in or when the user was time traveling. Note that the server would not save any changes made as it also checks for correct permissions. Fixes [#10739](https://github.com/ICTU/quality-time/issues/10739).
+
+### Changed
+
+- Use the font configured in the browser instead of the browser's system font. Fixes [#9864](https://github.com/ICTU/quality-time/issues/9864).
+
+## v5.23.0 - 2025-01-27
+
+### Fixed
+
+- Use browser locale to determine the first day of the week in date pickers. Fixes [#7250](https://github.com/ICTU/quality-time/issues/7250).
+- Fix accessibility issues in dark mode. Fixes [#7251](https://github.com/ICTU/quality-time/issues/7251).
+- When measuring security warnings with Trivy JSON as source, be prepared for optional fields not being present. Fixes [#10672](https://github.com/ICTU/quality-time/issues/10672).
+- Docker compose has been integrated into Docker as a subcommand for a while, but the developer documentation did not reflect that. Change `docker-compose` to `docker compose` in the documentation. Fixes [#10684](https://github.com/ICTU/quality-time/issues/10684).
+
+### Changed
+
+- Completed the replacement of Semantic UI React with Material UI as frontend component library. Fixes [#5180](https://github.com/ICTU/quality-time/issues/5180), [#6443](https://github.com/ICTU/quality-time/issues/6443), [#9904](https://github.com/ICTU/quality-time/issues/9904) and [#10159](https://github.com/ICTU/quality-time/issues/10159). Closes [#9796](https://github.com/ICTU/quality-time/issues/9796).
+
+### Added
+
+- Add accessibility tests to the frontend component. Closes [#2934](https://github.com/ICTU/quality-time/issues/2934).
+
 ## v5.22.0 - 2025-01-16
 
 ### Fixed

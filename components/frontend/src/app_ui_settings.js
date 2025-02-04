@@ -1,12 +1,9 @@
-import { string } from "prop-types"
-
 import {
     useArrayURLSearchQuery,
     useBooleanURLSearchQuery,
     useIntegerURLSearchQuery,
     useStringURLSearchQuery,
 } from "./hooks/url_search_query"
-import { stringsURLSearchQueryPropType } from "./sharedPropTypes"
 
 function urlSearchQueryKey(key, report_uuid) {
     // Make the settings changeable per report (and separately for the reports overview) by adding the report UUID as
@@ -146,27 +143,4 @@ export function allSettingsAreDefault(settings) {
         settings.sortColumn.isDefault() &&
         settings.sortDirection.isDefault()
     )
-}
-
-export function tabChangeHandler(expandedItems, uuid) {
-    // Return an event handler for Tab.onTabChange that updates the active tab
-    return function onTabChange(_event, data) {
-        const oldItem = expandedItems.value.filter((item) => item?.startsWith(uuid))[0]
-        const newItem = `${uuid}:${data.activeIndex}`
-        expandedItems.toggle(oldItem, newItem)
-    }
-}
-tabChangeHandler.propTypes = {
-    expandedItems: stringsURLSearchQueryPropType,
-    uuid: string,
-}
-
-export function activeTabIndex(expandedItems, uuid) {
-    // Return the active tab index of the expanded item, defaults to 0
-    const item = expandedItems.value.filter((item) => item?.startsWith(uuid))[0] ?? `${uuid}:0`
-    return Number(item.split(":")[1])
-}
-activeTabIndex.propTypes = {
-    expandedItems: stringsURLSearchQueryPropType,
-    uuid: string,
 }

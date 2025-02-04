@@ -1,6 +1,6 @@
 """Base classes for Trivy JSON collectors."""
 
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 # The types below are based on https://aquasecurity.github.io/trivy/v0.45/docs/configuration/reporting/#json.
 # That documentation says: "VulnerabilityID, PkgName, InstalledVersion, and Severity in Vulnerabilities are always
@@ -13,20 +13,20 @@ class TrivyJSONVulnerability(TypedDict):
     """Trivy JSON for one vulnerability."""
 
     VulnerabilityID: str
-    Title: str
-    Description: str
+    Title: NotRequired[str]
+    Description: NotRequired[str]
     Severity: str
     PkgName: str
     InstalledVersion: str
-    FixedVersion: str
-    References: list[str]
+    FixedVersion: NotRequired[str]
+    References: NotRequired[list[str]]
 
 
 class TrivyJSONResult(TypedDict):
     """Trivy JSON for one dependency repository."""
 
     Target: str
-    Vulnerabilities: list[TrivyJSONVulnerability] | None  # The examples in the Trivy docs show this key can be null
+    Vulnerabilities: NotRequired[list[TrivyJSONVulnerability]]  # Examples in the Trivy docs show this key can be null
 
 
 # Trivy JSON reports come in two different forms, following schema version 1 or schema version 2.
@@ -34,7 +34,6 @@ class TrivyJSONResult(TypedDict):
 # See https://aquasecurity.github.io/trivy/v0.55/docs/configuration/reporting/#json.
 # Schema version 2 is not explicitly documented as a schema either. The only thing available seems to be a GitHub
 # discussion: https://github.com/aquasecurity/trivy/discussions/1050.
-# Issue to improve the documentation: https://github.com/aquasecurity/trivy/discussions/7552
 
 TriviJSONSchemaVersion1 = list[TrivyJSONResult]
 

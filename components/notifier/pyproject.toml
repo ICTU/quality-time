@@ -1,6 +1,6 @@
 [project]
 name = "notifier"
-version = "5.22.0"
+version = "5.23.0"
 requires-python = ">=3.13"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
@@ -23,7 +23,7 @@ optional-dependencies.tools = [
     "mypy==1.14.1",
     "pip-audit==2.7.3",
     "pyproject-fmt==2.5.0",
-    "ruff==0.9.1",
+    "ruff==0.9.4",
     "vulture==2.14",
 ]
 

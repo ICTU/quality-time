@@ -2,7 +2,7 @@
 name: Epic template [only use if you're a Quality-time developer]
 about: Document what and why needs to be changed
 title: ''
-labels: Feature
+type: Feature
 assignees: ''
 
 ---
@@ -35,6 +35,5 @@ As a `role` I want to `action` so that `goal`.
 
 # Dependencies
 
-- `insert issue number of user story here` blocks `insert issue number of user story here` 
+- `insert issue number of user story here` blocks `insert issue number of user story here`
 - ...
-

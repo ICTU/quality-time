@@ -1,11 +1,3 @@
-.ui.sortable.table.entities.stickyHeader > thead {
-    /* Make thead sticky by positioning the th's */
-    position: sticky;
-    /* Leave room for the menu bar, the subject title, and the subject table header row */
-    top: 187px;
-    z-index: 1;
-}
-
 @media print {
     button.ui {
         display: none !important;

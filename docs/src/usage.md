@@ -8,7 +8,15 @@ This user manual assumes *Quality-time* has been installed, is up and running, a
 
 You can view Quality reports without logging in, but to edit reports and metrics you need to log in. Click the "Login" button in the menu bar:
 
-![Logged out screenshot](screenshots/menubar_logged_out.png)
+```{image} screenshots/menubar_logged_out.png
+:alt: Screenshot of the menubar when not logged in
+:class: only-light
+```
+
+```{image} screenshots/menubar_logged_out_dark.png
+:alt: Screenshot of the menubar when not logged in
+:class: only-dark
+```
 
 Enter your {index}`LDAP`-credentials in the dialog:
 
@@ -35,9 +43,17 @@ You can either use your canonical LDAP name as username or your LDAP user id. Pl
 
 After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://en.gravatar.com/), it will be displayed next to your username.
 
-![Logged in screenshot](screenshots/menubar_logged_in.png)
+```{image} screenshots/menubar_logged_in.png
+:alt: Screenshot of the menubar when logged in
+:class: only-light
+```
 
-Clicking "Logout" logs you out from *Quality-time*. Your user session expires after 24 hours and you need to log in again to be able to edit reports.
+```{image} screenshots/menubar_logged_in_dark.png
+:alt: Screenshot of the menubar when logged in
+:class: only-dark
+```
+
+Clicking your username and then "Logout" logs you out from *Quality-time*. If you don't log out manually, your user session will expire after 24 hours and you need to log in again to be able to edit reports.
 
 ```{index} Permissions
 ```
@@ -145,7 +161,7 @@ To change the subject type and name expand the subject header if it's not alread
 ```
 
 ```{note}
-Currently, changing the type of the subject does not affect what you can do with the subject.
+Changing the subject type influences which types of metrics Quality-time offers you to add to a subject. However, it is always possible to ignore the suggested metric types and add other types.
 ```
 
 To change the title or subtitle of the subject, enter a new title and/or subtitle in their respective fields.
@@ -205,10 +221,10 @@ After you've added a metric, the metric is visible in the subject's metric table
 :class: only-dark
 ```
 
-The first parameter is the "Metric type". The metric type determines what gets measured. By default, the name of the metric is equal to its type, "Accessibility violations" in the example above, but you can change the metric name using the "Metric name" field. When you change the metric type, the sources you can select in the "Sources" tab change accordingly.
+The first parameter is the "Metric type". The metric type determines what gets measured. By default, the name of the metric is equal to its type, "Violations" in the example above, but you can change the metric name using the "Metric name" field. When you change the metric type, the sources you can select in the "Sources" tab change accordingly.
 
 ```{warning}
-If you change the type of a metric that has sources configured, sources that do not support the new metric type will be removed.
+If you change the type of a metric that has sources configured, sources that do not support the new metric type will not be removed, but of course they can't provide the data needed by the metric and you'll see an error message.
 ```
 
 Metrics can have zero or more arbitrary "{index}`Tags <Tag>`". Most metric have a default tag, but you can remove it and/or add more if you like. For each tag, the report dashboard at the top of the page shows a summary of the metrics with that tag:
@@ -223,7 +239,7 @@ Metrics can have zero or more arbitrary "{index}`Tags <Tag>`". Most metric have 
 :class: only-dark
 ```
 
-The "Metric {index}`scale <Scale>`" field determines what scale to use to measure the metric. Most metrics support either the "Count" scale, the "Percentage" scale, or both. In the example of the duplicated lines metric above, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is shown instead of the count of duplicated lines.
+The "Metric {index}`scale <Scale>`" field determines what scale to use to measure the metric. Most metrics support either the "Count" scale, the "Percentage" scale, or both. For example, with the duplicated lines metric, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is shown instead of the count of duplicated lines.
 
 The "Metric {index}`direction <Direction>`" determines whether lower measurement values are considered to be better or worse. Usually, the default direction is correct. An example of a metric where you might want to change the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But, when used to measure the number of failing tests, fewer is better.
 
@@ -316,7 +332,7 @@ After you've added a source, you can change the source type using the "Source ty
 
 By default, the name of the source equals the source type but this can be overridden using the "Source name" field.
 
-The parameters that sources need differ per source type. Most sources need a URL, and optionally take either a username and password or a token so that *Quality-time* can access the source. If a parameter is required, this is indicated with a red outline as shown below.
+The parameters that sources need differ per source type. Most sources need a URL, and optionally take either a username and password or a token so that *Quality-time* can access the source. If a parameter is required, this is indicated with an asterix (*) as shown below.
 
 ```{image} screenshots/editing_source.png
 :alt: Screenshot of dialog to edit source showing fields for the source type, source name, and source parameters such as URL and credentials
@@ -328,7 +344,7 @@ The parameters that sources need differ per source type. Most sources need a URL
 :class: only-dark
 ```
 
-Source parameter (URLs, usernames, passwords, etc.) changes can be applied to different scopes: to just the source being edited or to multiple sources that have the same type and value as the one being edited. When applying the change to multiple sources, the user can change all sources that have the same type and value of a metric, of a subject, of a report, or of all reports.
+Source parameter (URLs, usernames, passwords, etc.) changes can be applied to different scopes: to just the source being edited or to multiple sources that have the same type and value as the one being edited. When applying the change to multiple sources, the user can change all sources that have the same type and value of a metric, of a subject, of a report, or of all reports. Click the pencil icon to change the edit scope before making the change.
 
 #### Deleting sources
 
@@ -347,7 +363,7 @@ To reorder sources, expand the metric in the metric table and click the sources 
 
 ### Configuring entities
 
-An entity is a measured entity like for example one single failed job in GitLab for a metric that measures failed GitLab jobs or a single violation in SonarQube for a metric that measures violations. What exactly an entity is, and what properties it has depends on what the metric in question is measuring. Not every metric will have entities.
+An entity is a measured entity, such as one single failed job in GitLab for a metric that measures failed GitLab jobs or a single violation in SonarQube for a metric that measures violations. What exactly an entity is, and what properties it has depends on what the metric in question is measuring. Not every metric will have entities.
 
 To add a source to a metric, expand the metric in the metric table and then click the tab with the source name. It will show a list of entities with all its details.
 
@@ -438,7 +454,7 @@ To manually download a PDF version of a report, navigate to the report and click
 The exported PDF report has the same metric table rows and columns hidden as in the user interface, and has the same metrics expanded as in the user interface. The exported PDF report also has the same date as the report visible in the user interface.
 
 ```{tip}
-It is also possible to download a PDF version of the reports overview. Navigate to the reports overview and click the "Download overview as PDF" button in the menu bar to create and download the PDF report.
+It is also possible to download a PDF version of the reports overview. Navigate to the reports overview and click the "Download as PDF" button in the menu bar to create and download the PDF report.
 ```
 
 ```{seealso}

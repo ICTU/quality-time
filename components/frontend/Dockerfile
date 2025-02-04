@@ -1,4 +1,4 @@
-FROM node:23.1.0-alpine3.20 AS compile-image
+FROM node:23.6.1-alpine3.20 AS compile-image
 
 WORKDIR /home/frontend
 COPY public /home/frontend/public
@@ -8,7 +8,7 @@ COPY .env /home/frontend
 RUN npm install --ignore-scripts && \
     npm run --ignore-scripts build
 
-FROM node:23.1.0-alpine3.20
+FROM node:23.6.1-alpine3.20
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"

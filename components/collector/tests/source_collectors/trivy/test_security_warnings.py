@@ -44,6 +44,17 @@ class TrivyJSONSecurityWarningsTest(TrivyJSONTestCase):
                 "fixed_version": "",
                 "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-5432",
             },
+            {
+                "key": "CVE-2025-6298@This vulnerability has no optional fields@trivy-ci-test (alpine 3_7_1)",
+                "vulnerability_id": "CVE-2025-6298",
+                "title": "CVE-2025-6298",
+                "description": "",
+                "package_name": "This vulnerability has no optional fields",
+                "installed_version": "3.4.1",
+                "level": "LOW",
+                "fixed_version": "",
+                "url": "",
+            },
         ]
 
     async def test_warnings(self):
@@ -51,7 +62,7 @@ class TrivyJSONSecurityWarningsTest(TrivyJSONTestCase):
         for schema_version in self.SCHEMA_VERSIONS:
             with self.subTest(schema_version=schema_version):
                 response = await self.collect(get_request_json_return_value=self.vulnerabilities_json(schema_version))
-                self.assert_measurement(response, value="3", entities=self.expected_entities())
+                self.assert_measurement(response, value="4", entities=self.expected_entities())
 
     async def test_warning_levels(self):
         """Test the number of security warnings when specifying a level."""
@@ -75,4 +86,4 @@ class TrivyJSONSecurityWarningsTest(TrivyJSONTestCase):
         for schema_version in self.SCHEMA_VERSIONS:
             with self.subTest(schema_version=schema_version):
                 response = await self.collect(get_request_json_return_value=self.vulnerabilities_json(schema_version))
-                self.assert_measurement(response, value="2", entities=self.expected_entities()[1:])
+                self.assert_measurement(response, value="3", entities=self.expected_entities()[1:])

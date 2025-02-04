@@ -27,17 +27,19 @@ class TrivyJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceC
             for vulnerability in result.get("Vulnerabilities") or []:
                 vulnerability_id = vulnerability["VulnerabilityID"]
                 package_name = vulnerability["PkgName"]
+                references = vulnerability.get("References", [])
+                url = references[0] if references else ""  # Assume the 1st link is at least as relevant as the others
                 entities.append(
                     Entity(
                         key=f"{vulnerability_id}@{package_name}@{target}",
                         vulnerability_id=vulnerability_id,
-                        title=vulnerability["Title"],
-                        description=vulnerability["Description"],
+                        title=vulnerability.get("Title", vulnerability_id),
+                        description=vulnerability.get("Description", ""),
                         level=vulnerability["Severity"],
                         package_name=package_name,
                         installed_version=vulnerability["InstalledVersion"],
                         fixed_version=vulnerability.get("FixedVersion", ""),
-                        url=vulnerability["References"][0],  # Assume the 1st link is at least as relevant as the others
+                        url=url,
                     ),
                 )
         return entities
