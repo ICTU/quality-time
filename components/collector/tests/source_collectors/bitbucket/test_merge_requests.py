@@ -78,21 +78,21 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
         """Test that pagination works."""
         BitbucketMergeRequests.PAGE_SIZE = 1
         bitbucket_json = [
-            { "Hallo": True, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
-            { "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
-            { "isLastPage": True, "values": [self.create_merge_request(3)]},
-            {"isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
-            {"isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
-            {"isLastPage": True, "values": [self.create_merge_request(3)]},
-            {"isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
-            {"isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
-            {"isLastPage": True, "values": [self.create_merge_request(3)]},
+            { "size": len("values"), "Hallo": True, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
+            { "size": len("values"), "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
+            { "size": len("values"), "isLastPage": True, "values": [self.create_merge_request(3)]},
+            { "size": len("values"), "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
+            { "size": len("values"), "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
+            { "size": len("values"), "isLastPage": True, "values": [self.create_merge_request(3)]},
+            { "size": len("values"), "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
+            { "size": len("values"), "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
+            { "size": len("values"), "isLastPage": True, "values": [self.create_merge_request(3)]},
         ]
         response = await self.collect(get_request_json_side_effect=bitbucket_json)
         self.assert_measurement(
             response,
             value="3",
-            total="9",
+            total="6",
             entities=[self.create_entity(1), self.create_entity(2)],
             landing_url=self.landing_url,
         )
