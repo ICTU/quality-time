@@ -105,7 +105,12 @@ export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
                 />
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 2 }}>
-                <TechnicalDebtEndDate metric={metric} metric_uuid={metric_uuid} reload={reload} />
+                <TechnicalDebtEndDate
+                    key={metric.debt_end_date}
+                    metric={metric}
+                    metric_uuid={metric_uuid}
+                    reload={reload}
+                />
             </Grid>
             <IssuesRows metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
             <Grid size={{ xs: 1, sm: 3, md: 6 }}>
