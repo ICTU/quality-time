@@ -103,6 +103,7 @@ export function SourceEntityDetails({
                 <DatePicker
                     defaultValue={status_end_date ? dayjs(status_end_date) : null}
                     disabled={disabled}
+                    key={status_end_date}
                     label={`${capitalize(name)} status end date`}
                     onChange={(value) =>
                         set_source_entity_attribute(
