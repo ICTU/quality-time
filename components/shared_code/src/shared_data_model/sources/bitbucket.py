@@ -9,10 +9,9 @@ from shared_data_model.parameters import (
     BranchesToIgnore,
     BranchMergeStatus,
     Days,
+    MergeRequestState,
     PrivateToken,
     StringParameter,
-    MergeRequestState,
-    MultipleChoiceParameter,
     TargetBranchesToInclude,
     Upvotes,
 )
