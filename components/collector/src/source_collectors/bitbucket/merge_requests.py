@@ -1,4 +1,5 @@
 """Bitbucket merge requests collector."""
+import pdb
 from typing import cast
 
 from collector_utilities.functions import match_string_or_regular_expression
@@ -28,9 +29,12 @@ class BitbucketMergeRequests(BitbucketProjectBase):
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to use Bitbucket pagination, if necessary."""
         responses = await super()._get_source_responses(*urls)
-        while not (await responses[-1].json())["isLastPage"]:
-            nr_merge_requests_to_skip = (await responses[-1].json())["nextPageStart"]
+        isLastPage = False
+        while not isLastPage:
+            json = await responses[-1].json()
+            nr_merge_requests_to_skip = json.get("nextPageStart", 0)
             responses.extend(await super()._get_source_responses(URL(f"{urls[0]}&start={nr_merge_requests_to_skip}")))
+            isLastPage = json["isLastPage"]
         return responses
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:

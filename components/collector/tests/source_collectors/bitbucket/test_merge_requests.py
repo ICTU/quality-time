@@ -74,40 +74,25 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
             landing_url=self.landing_url,
         )
 
-    # async def test_pagination(self):
-    #     """Test that pagination works."""
-    #     BitbucketMergeRequests.PAGE_SIZE = 1
-    #     bitbucket_json = [
-    #         { "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
-    #         { "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
-    #         { "isLastPage": True, "values": [self.create_merge_request(3)]},
-    #     ]
-    #     response = await self.collect(get_request_json_side_effect=bitbucket_json)
-    #     self.assert_measurement(
-    #         response,
-    #         value="2",
-    #         total="2",
-    #         entities=[self.create_entity(1), self.create_entity(2)],
-    #         landing_url=self.landing_url,
-    #     )
-
-    # async def test_pagination(self):
-    #     """Test that pagination works."""
-    #     merge_requests_json1 = self.create_mr_json([self.create_merge_request(1)], has_next_page=True)
-    #     merge_requests_json2 = self.create_mr_json([self.create_merge_request(2)])
-    #     # merge_request_fields_response = AsyncMock()
-    #     merge_requests_page1 = AsyncMock()
-    #     merge_requests_page2 = AsyncMock()
-    #     execute = AsyncMock(side_effect=[merge_requests_page1, merge_requests_page2])
-    #     # merge_request_fields_response.json = AsyncMock(return_value=self.merge_request_fields_json())
-    #     merge_requests_page1.json = AsyncMock(return_value=merge_requests_json1)
-    #     merge_requests_page2.json = AsyncMock(return_value=merge_requests_json2)
-    #     entities = [self.create_entity(1), self.create_entity(2)]
-    #     # response = await self.collect_merge_requests(execute)
-    #     # pdb.set_trace()
-    #     # self.assert_measurement(response, value="2", total="2", entities=entities, landing_url=self.landing_url)
-    #
-    #     # links = {"next": {"url": "https://harbor/next_page"}}
-    #     response = await self.collect(get_request_json_side_effect=[merge_requests_json1, merge_requests_json2])
-    #     # pdb.set_trace()
-    #     self.assert_measurement(response, value="2", entities=entities)
+    async def test_pagination(self):
+        """Test that pagination works."""
+        BitbucketMergeRequests.PAGE_SIZE = 1
+        bitbucket_json = [
+            { "Hallo": True, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
+            { "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
+            { "isLastPage": True, "values": [self.create_merge_request(3)]},
+            {"isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
+            {"isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
+            {"isLastPage": True, "values": [self.create_merge_request(3)]},
+            {"isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
+            {"isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
+            {"isLastPage": True, "values": [self.create_merge_request(3)]},
+        ]
+        response = await self.collect(get_request_json_side_effect=bitbucket_json)
+        self.assert_measurement(
+            response,
+            value="3",
+            total="9",
+            entities=[self.create_entity(1), self.create_entity(2)],
+            landing_url=self.landing_url,
+        )
