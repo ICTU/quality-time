@@ -38,6 +38,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - Use the font configured in the browser instead of the browser's system font. Fixes [#9864](https://github.com/ICTU/quality-time/issues/9864).
 - Update SonarQube logo and documentation URLs. Closes [#10766](https://github.com/ICTU/quality-time/issues/10766).
+- Use busybox as base image for the frontend component Docker image. This reduces the size of the frontend component image from 175MB to less than 6MB. Closes [#10767](https://github.com/ICTU/quality-time/issues/10767).
 
 ## v5.23.0 - 2025-01-27
 
