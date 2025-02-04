@@ -1,5 +1,4 @@
 """Bitbucket merge requests collector."""
-import pdb
 from typing import cast
 
 from collector_utilities.functions import match_string_or_regular_expression
@@ -11,7 +10,7 @@ from .base import BitbucketProjectBase
 class BitbucketMergeRequests(BitbucketProjectBase):
     """Collector for merge requests in Bitbucket."""
 
-    PAGE_SIZE = 1  # Page size for Bitbucket pagination
+    PAGE_SIZE = 100  # Page size for Bitbucket pagination
 
     async def _api_url(self) -> URL:
         """Override to return the merge requests API."""
