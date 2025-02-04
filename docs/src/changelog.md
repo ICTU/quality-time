@@ -23,6 +23,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 - Fix accessibility issues found by the application test. Fixes [#6354](https://github.com/ICTU/quality-time/issues/6354).
 - When adding multiple sources to one metric, the source names would not be comma-separated in the sources column. Fixes [#10735](https://github.com/ICTU/quality-time/issues/10735).
 - The comment field of a metric's technical debt tab would be editable even though the user was not logged in or when the user was time traveling. Note that the server would not save any changes made as it also checks for correct permissions. Fixes [#10739](https://github.com/ICTU/quality-time/issues/10739).
+- When changing technical debt with the option "Yes, and also set technical debt target and end date" or "No, and also clear technical debt target and end date", the technical end date value would not be refreshed in the UI. Fixes [#10761](https://github.com/ICTU/quality-time/issues/10761).
 
 ### Changed
 
