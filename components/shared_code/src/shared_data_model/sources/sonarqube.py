@@ -35,6 +35,9 @@ def violation_entity_attributes(
             name="Impact",
             key="impacts",
             color={
+                "blocker impact on maintainability": Color.NEGATIVE,
+                "blocker impact on reliability": Color.NEGATIVE,
+                "blocker impact on security": Color.NEGATIVE,
                 "high impact on maintainability": Color.NEGATIVE,
                 "high impact on reliability": Color.NEGATIVE,
                 "high impact on security": Color.NEGATIVE,
@@ -329,7 +332,7 @@ SONARQUBE = Source(
             metrics=ALL_SONARQUBE_METRICS,
         ),
         "private_token": PrivateToken(
-            help_url=HttpUrl("https://docs.sonarqube.org/latest/user-guide/user-token/"),
+            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/managing-tokens/"),
             metrics=ALL_SONARQUBE_METRICS,
         ),
         "component": StringParameter(
@@ -341,7 +344,9 @@ SONARQUBE = Source(
         "branch": StringParameter(
             name="Branch (only supported by commercial SonarQube editions)",
             short_name="branch",
-            help_url=HttpUrl("https://docs.sonarqube.org/latest/branches/overview/"),
+            help_url=HttpUrl(
+                "https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/branch-analysis/introduction/"
+            ),
             default_value="main",
             metrics=PROJECT_METRICS,
         ),
@@ -365,8 +370,8 @@ SONARQUBE = Source(
         "impact_severities": Severities(
             name="Impact severities",
             placeholder="all impact severities",
-            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube/latest/user-guide/issues/#issue-severity"),
-            values=["low", "medium", "high"],
+            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/rules/overview/"),
+            values=["info", "low", "medium", "high", "blocker"],
             metrics=["security_warnings", "suppressed_violations", "violations"],
         ),
         "impacted_software_qualities": MultipleChoiceParameter(
@@ -429,7 +434,9 @@ SONARQUBE = Source(
             name="Tags to include",
             short_name="tags",
             placeholder="all tags",
-            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube/latest/user-guide/issues/"),
+            help_url=HttpUrl(
+                "https://docs.sonarsource.com/sonarqube-server/latest/user-guide/rules/built-in-rule-tags/"
+            ),
             metrics=["security_warnings", "violations"],
         ),
     },

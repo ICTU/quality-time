@@ -1,21 +1,3 @@
-.MainContainer {
-    flex: 1;
-    margin-top: 6em;
-    padding-left: 1em;
-    padding-right: 1em;
-}
-
-@media print {
-    .MainContainer {
-        margin-top: 0em;
-    }
-}
-
 html {
-    scroll-padding-top: 163px; /* height of sticky header */
-}
-
-:root {
-    --inverted-menu-background-color: #1b1c1d;
-    --selection-color: #2185d0;
+    scroll-padding-top: 176px; /* height of sticky header */
 }
