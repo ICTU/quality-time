@@ -3,7 +3,7 @@
     "version": "5.23.0",
     "private": true,
     "dependencies": {
-        "@mui/icons-material": "^6.4.2",
+        "@mui/icons-material": "^6.4.3",
         "@mui/material": "^6.4.2",
         "@mui/x-date-pickers": "^7.25.0",
         "crypto-js": "^4.2.0",
