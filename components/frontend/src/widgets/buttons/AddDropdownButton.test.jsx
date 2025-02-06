@@ -38,6 +38,7 @@ test("AddDropdownButton mouse navigation", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
+    expect(screen.getByLabelText(/Filter/)).toHaveFocus()
     await act(async () => {
         fireEvent.click(screen.getByText(/Sub 2/))
     })
@@ -49,6 +50,7 @@ test("AddDropdownButton keyboard navigation", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
+    expect(screen.getByLabelText(/Filter/)).toHaveFocus()
     await act(async () => {
         fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowDown" })
     })
