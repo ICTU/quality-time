@@ -25,15 +25,34 @@ class JaCoCoCommonTestsMixin:
 class JaCoCoCommonCoverageTestsMixin:
     """Tests common to JaCoCo coverage collectors."""
 
-    JACOCO_XML = "Subclass responsibility"
+    JACOCO_XML = """
+<report>
+    <package>
+        <class>
+            <method>
+                <counter type='LINE' missed='2' covered='4'/>
+                <counter type='BRANCH' missed='2' covered='4'/>
+            </method>
+        </class>
+        <class>
+                    <method>
+                        <counter type='LINE' missed='0' covered='3'/>
+                        <counter type='BRANCH' missed='0' covered='3'/>
+                    </method>
+                </class>
+    </package>
+    <counter type='LINE' missed='2' covered='7'/>
+    <counter type='BRANCH' missed='2' covered='7'/>
+</report>
+"""
 
     async def test_coverage(self):
         """Test that the number of uncovered lines/branches and the total number of lines/branches are returned."""
         response = await self.collect(get_request_text=self.JACOCO_XML)
-        self.assert_measurement(response, value="2", total="6")
+        self.assert_measurement(response, value="2", total="9")
 
     async def test_zipped_report(self):
         """Test that a zipped report can be read."""
         self.set_source_parameter("url", "https://example.org/jacoco.zip")
         response = await self.collect(get_request_content=self.zipped_report(("jacoco.xml", self.JACOCO_XML)))
-        self.assert_measurement(response, value="2", total="6")
+        self.assert_measurement(response, value="2", total="9")

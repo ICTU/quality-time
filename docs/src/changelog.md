@@ -25,6 +25,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 - The comment field of a metric's technical debt tab would be editable even though the user was not logged in or when the user was time traveling. Note that the server would not save any changes made as it also checks for correct permissions. Fixes [#10739](https://github.com/ICTU/quality-time/issues/10739).
 - When changing technical debt with the option "Yes, and also set technical debt target and end date" or "No, and also clear technical debt target and end date", the technical end date value would not be refreshed in the UI. Fixes [#10761](https://github.com/ICTU/quality-time/issues/10761).
 - The status end date of measurement entities would not be refreshed in the UI when changing the status. Fixes [#10762](https://github.com/ICTU/quality-time/issues/10762).
+- When measuring branch or line coverage with Jacoco XML as source, the coverage would be calculated incorrectly. Fixes [#10787](https://github.com/ICTU/quality-time/issues/10787).
 
 ### Changed
 
