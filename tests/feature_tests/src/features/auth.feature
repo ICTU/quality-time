@@ -11,6 +11,10 @@ Feature: authentication
     When the client tries to log in with incorrect credentials
     Then the server tells the client the credentials are incorrect
 
+  Scenario: non-existing endpoint
+    When the client tries to access a non-existing endpoint
+    Then the server tells the client the endpoint does not exist
+
   Scenario: change editors
     When jadoe logs in
     And the client changes the reports_overview permissions to "{"edit_reports": ["jadoe", "other_user"], "edit_entities": []}"
