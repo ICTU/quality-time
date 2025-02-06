@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Make the API-server return HTTP status 404 on non-existing endpoints instead of 200. Fixes [#9860](https://github.com/ICTU/quality-time/issues/9860).
+
 ## v5.24.0 - 2025-02-06
 
 ### Added

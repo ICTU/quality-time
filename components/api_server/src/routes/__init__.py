@@ -9,7 +9,8 @@ from .changelog import (
     get_report_changelog,
 )
 from .datamodel import get_data_model
-from .documentation import get_api
+from .documentation import get_api_docs
+from .health import get_health
 from .logo import get_logo
 from .measurement import get_metric_measurements, get_measurements, set_entity_attribute, stream_nr_measurements
 from .metric import (

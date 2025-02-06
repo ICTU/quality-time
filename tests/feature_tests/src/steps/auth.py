@@ -26,6 +26,12 @@ def log_in_with_incorrect_credentials(context: Context) -> None:
     context.post("login", {"username": "jadoe", "password": "wrong"})  # nosec
 
 
+@when("the client tries to access a non-existing endpoint")
+def access_non_existing_endpoint(context: Context) -> None:
+    """Try to access non-existing endpoint."""
+    context.get("does-not-exist")
+
+
 @then("the server tells the client the credentials are incorrect")
 def check_invalid_credentials(context: Context) -> None:
     """Check that the server responded that the credentials are invalid."""
@@ -42,6 +48,12 @@ def check_unauthenticated(context: Context) -> None:
 def check_unauthorized(context: Context) -> None:
     """Check that the server responded with an unauthorized error message."""
     assert_equal(403, context.response.status_code)
+
+
+@then("the server tells the client the endpoint does not exist")
+def check_endpoint_does_not_exist(context: Context) -> None:
+    """Check that the server responded with a resource does not exist error message."""
+    assert_equal(404, context.response.status_code)
 
 
 @when("the client requests the public key")
