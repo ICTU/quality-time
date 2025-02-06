@@ -22,7 +22,7 @@ optional-dependencies.dev = [
 optional-dependencies.tools = [
     "bandit==1.8.2",
     "fixit==2.1.0",
-    "mypy==1.14.1",
+    "mypy==1.15.0",
     "pip-audit==2.7.3",
     "pydantic==2.10.4",     # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.5.0",
