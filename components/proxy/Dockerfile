@@ -18,3 +18,7 @@ ENV API_SERVER_PORT 5001
 
 COPY --from=compile-image /usr/sbin/nginx /usr/sbin/nginx
 COPY *.template /etc/nginx/templates/
+
+# Use the Shell form of CMD instead of the Exec form so the environment variable is substituted
+# hadolint ignore=DL3025
+HEALTHCHECK CMD wget --spider http://0.0.0.0:${PROXY_PORT:-80}/favicon.ico || exit 1
