@@ -5,7 +5,7 @@ USER root
 # Add the CAP_NET_BIND_SERVICE to provide backwards compatability, running on privileged port (80)
 RUN apk add --no-cache libcap=2.70-r0 && setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/nginx
 
-FROM nginxinc/nginx-unprivileged:1.27.0-alpine3.19-slim
+FROM nginxinc/nginx-unprivileged:1.27.3-alpine3.20-slim
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time proxy"
