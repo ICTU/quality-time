@@ -1,15 +1,15 @@
 """Login/logout."""
 
-import base64
-import hashlib
 import logging
 import os
 import re
 import string
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta, UTC
 from http.cookies import Morsel
 from typing import cast
 
+import argon2
 import bottle
 from ldap3 import ALL, Connection, Server, ServerPool, AUTO_BIND_NO_TLS
 from ldap3.core import exceptions
@@ -51,21 +51,10 @@ def set_session_cookie(session_id: SessionId, expires_datetime: datetime) -> Non
     bottle.response.set_cookie("session_id", session_id, **options)
 
 
-def check_password(ssha_ldap_salted_password, password) -> bool:
-    """Check the OpenLDAP tagged digest against the given password."""
-    # See https://www.openldap.org/doc/admin24/security.html#SSHA%20password%20storage%20scheme
-    # We should (also) support SHA512 as SHA1 is no longer considered to be secure.
-    ssha_prefix = b"{SSHA}"
-    if not ssha_ldap_salted_password.startswith(ssha_prefix):  # pragma: no feature-test-cover
-        logging.warning("Only SSHA LDAP password digest supported!")
-        raise exceptions.LDAPInvalidAttributeSyntaxResult
-    digest_salt_b64 = ssha_ldap_salted_password.removeprefix(ssha_prefix)
-    digest_salt = base64.b64decode(digest_salt_b64)
-    digest = digest_salt[:20]
-    salt = digest_salt[20:]
-    sha = hashlib.sha1(bytes(password, "utf-8"))  # nosec, # noqa: S324
-    sha.update(salt)  # nosec
-    return digest == sha.digest()
+def check_password(password_hash, password) -> bool:
+    """Check the OpenLDAP password hash against the given password."""
+    # Note we currently only support ARGON2 hashes
+    return argon2.PasswordHasher().verify(password_hash.decode().removeprefix("{ARGON2}"), password)
 
 
 def get_credentials() -> tuple[str, str]:
@@ -77,52 +66,48 @@ def get_credentials() -> tuple[str, str]:
     return username, password
 
 
-def get_ldap_config(username):
-    """Get LDAP config from environment."""
-    ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
-    return {
-        "ldap_root_dn": os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org"),
-        "ldap_urls": os.environ.get("LDAP_URL", "ldap://localhost:389").split(","),
-        "ldap_lookup_user_dn": os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org"),
-        "ldap_lookup_user_pw": os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin"),
-        "ldap_search_filter": string.Template(ldap_search_filter_template).substitute(username=username),
-    }
+@dataclass
+class LDAPConfig:
+    """LDAP configuration."""
+
+    username: str
+    root_dn: str = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
+    urls: tuple[str, ...] = tuple(os.environ.get("LDAP_URL", "ldap://localhost:389").split(","))
+    lookup_user_dn: str = os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org")
+    lookup_user_pw: str = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
+    search_filter: str = field(init=False)
+
+    def __post_init__(self) -> None:
+        """Instantiate the search filter with the username."""
+        ldap_search_filter_template = os.environ.get("LDAP_SEARCH_FILTER", "(|(uid=$username)(cn=$username))")
+        self.search_filter = string.Template(ldap_search_filter_template).substitute(username=self.username)
 
 
 def verify_user(database: Database, username: str, password: str) -> User:
     """Authenticate the user and return whether they are authorized to login and their email address."""
-    ldap_config = get_ldap_config(username)
+    ldap = LDAPConfig(username)
     try:
-        ldap_servers = [Server(ldap_url, get_info=ALL) for ldap_url in ldap_config.get("ldap_urls")]
-        ldap_server_pool = ServerPool(ldap_servers)
-        with Connection(
-            ldap_server_pool,
-            user=ldap_config.get("ldap_lookup_user_dn"),
-            password=ldap_config.get("ldap_lookup_user_pw"),
-        ) as lookup_connection:
+        ldap_server_pool = ServerPool([Server(url, get_info=ALL) for url in ldap.urls])
+        # Look up the user to authenticate, using the lookup-user credentials:
+        with Connection(ldap_server_pool, user=ldap.lookup_user_dn, password=ldap.lookup_user_pw) as lookup_connection:
             if not lookup_connection.bind():  # pragma: no feature-test-cover
                 raise exceptions.LDAPBindError  # noqa: TRY301
-            lookup_connection.search(
-                ldap_config.get("ldap_root_dn"),
-                ldap_config.get("ldap_search_filter"),
-                attributes=["userPassword", "cn", "mail"],
-            )
-            result = lookup_connection.entries[0]
-        if salted_password := result.userPassword.value:
-            if check_password(salted_password, password):
-                logging.info("LDAP salted password check for %s succeeded", username)
-            else:
-                raise exceptions.LDAPInvalidCredentialsResult  # noqa: TRY301
+            lookup_connection.search(ldap.root_dn, ldap.search_filter, attributes=["userPassword", "cn", "mail"])
+            ldap_user = lookup_connection.entries[0]
+        # If the LDAP-server returned the user's password-hash, check the password against the hash, otherwise
+        # attempt a bind operation using the user's distinguished name (dn) and password:
+        if (password_hash := ldap_user.userPassword.value) and check_password(password_hash, password):
+            logging.info("LDAP password check succeeded")
         else:  # pragma: no feature-test-cover
-            with Connection(ldap_server_pool, user=result.entry_dn, password=password, auto_bind=AUTO_BIND_NO_TLS):
-                logging.info("LDAP bind for %s succeeded", username)
+            with Connection(ldap_server_pool, user=ldap_user.entry_dn, password=password, auto_bind=AUTO_BIND_NO_TLS):
+                logging.info("LDAP bind succeeded")
     except Exception as reason:  # noqa: BLE001
         user = User(username)
         logging.warning("LDAP error: %s", reason)
     else:
         user = get_user(database, username) or User(username)
-        user.email = result.mail.value or ""
-        user.common_name = result.cn.value
+        user.email = ldap_user.mail.value or ""
+        user.common_name = ldap_user.cn.value
         user.verified = True
         upsert_user(database, user)
     return user

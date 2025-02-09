@@ -7,6 +7,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
+    "argon2-cffi==23.1.0",
     "bottle==0.13.2",
     "cryptography==44.0.1",
     "gevent==24.11.1",
