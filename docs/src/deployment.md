@@ -87,6 +87,11 @@ When using the `LDAP_SEARCH_FILTER` as shown above, users can use either their L
 See [https://ldap.com/ldap-filters/](https://ldap.com/ldap-filters/) for more information on LDAP filters.
 ```
 
+Quality-time tries two methods to authenticate users:
+
+- If the LDAP-server returns the `userPassword` (containing a hash of the users' password), Quality-time uses that to verify the password. Note that currently only `ARGON2` hashes are supported. Please submit a feature request if you need support for another type of hash.
+- If the `userPassword` is not returned, Quality-time attempts an LDAP-bind.
+
 ```{index} Forwarded Authentication
 ```
 

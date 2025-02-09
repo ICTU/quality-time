@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Fixed
 
+- Use ARGON2 hashes to verify user LDAP passwords instead of SSHA1. Fixes [#6233](https://github.com/ICTU/quality-time/issues/6233).
 - Make the API-server return HTTP status 404 on non-existing endpoints instead of 200. Fixes [#9860](https://github.com/ICTU/quality-time/issues/9860).
 - Input to a multiple choice input fields, such as the metric tags field and the issue identifiers field, would not saved on tab. Fixes [#10814](https://github.com/ICTU/quality-time/issues/10814).
 

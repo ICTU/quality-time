@@ -10,6 +10,6 @@ loginShell: /bin/bash
 homeDirectory: /home/jadoe
 uidNumber: 14583103
 gidNumber: 14564100
-userPassword: {SSHA}/mWnh0bZyUvrHwKccTa/D8HpzfUc8+js
+userPassword: {ARGON2}$argon2id$v=19$m=65536,t=3,p=4$rTmNv6FmvVQaSIXzLvcStQ$F2qtxHsklGS+sgWMrbekjeUn4bWbMvt3Liqsw7jOV1I
 mail: janedoe@example.org
 gecos: Jane User
