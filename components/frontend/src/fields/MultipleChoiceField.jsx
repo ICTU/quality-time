@@ -17,6 +17,7 @@ export function MultipleChoiceField({
 }) {
     return (
         <Autocomplete
+            autoSelect
             value={value}
             disabled={disabled}
             filterOptions={(x) => x} // Disable built-in filtering
