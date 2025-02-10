@@ -39,6 +39,10 @@ const dataModel = {
     },
 }
 
+afterEach(() => {
+    vi.clearAllMocks()
+})
+
 async function renderMetricParameters(
     scale = "count",
     issue_ids = [],
@@ -72,8 +76,8 @@ async function renderMetricParameters(
     return result
 }
 
-async function typeInField(label, text) {
-    await userEvent.type(screen.getByLabelText(label), `${text}{Enter}`, {
+async function typeInField(label, text, confirm = "Enter") {
+    await userEvent.type(screen.getByLabelText(label), `${text}{${confirm}}`, {
         initialSelectionStart: 0,
         initialSelectionEnd: 11,
     })
@@ -92,9 +96,16 @@ it("sets the metric name", async () => {
     await expectNoAccessibilityViolations(container)
 })
 
-it("adds a tag", async () => {
+it("adds a tag on enter", async () => {
     const { container } = await renderMetricParameters()
-    await typeInField(/Metric tags/, "New tag")
+    await typeInField(/Metric tags/, "New tag", "Enter")
+    expectMetricAttributePost("tags", ["New tag"])
+    await expectNoAccessibilityViolations(container)
+})
+
+it("adds a tag on tab", async () => {
+    const { container } = await renderMetricParameters()
+    await typeInField(/Metric tags/, "New tag", "Tab")
     expectMetricAttributePost("tags", ["New tag"])
     await expectNoAccessibilityViolations(container)
 })
