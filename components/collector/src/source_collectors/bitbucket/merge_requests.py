@@ -47,7 +47,7 @@ class BitbucketMergeRequests(BitbucketProjectBase):
 
     async def _parse_total(self, responses: SourceResponses) -> Value:
         """Override to parse the total number of merge requests from the responses."""
-        merge_requests = [len((await response.json())["size"]) for response in responses]
+        merge_requests = [(await response.json())["size"] for response in responses]
         return str(sum(merge_requests))
 
     def _create_entity(self, merge_request, landing_url: str) -> Entity:
