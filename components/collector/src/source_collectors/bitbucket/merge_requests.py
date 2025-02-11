@@ -28,7 +28,7 @@ class BitbucketMergeRequests(BitbucketProjectBase):
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to use Bitbucket pagination, if necessary."""
-        responses = []
+        responses = SourceResponses()
         isLastPage = False
         nr_merge_requests_to_skip = 0
         while not isLastPage:

@@ -86,15 +86,15 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
         """Test that pagination works."""
         BitbucketMergeRequests.PAGE_SIZE = 1
         bitbucket_responses = [
-            [FakeResponse({ "size": len("values"), "Hallo": True, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]})],
-            [FakeResponse({ "size": len("values"), "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]})],
-            [FakeResponse({ "size": len("values"), "isLastPage": True, "values": [self.create_merge_request(3)]})]
+            FakeResponse({ "size": 1, "Hallo": True, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]}),
+            FakeResponse({ "size": 1, "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]}),
+            FakeResponse({ "size": 1, "isLastPage": True, "values": [self.create_merge_request(3)]})
         ]
         response = await self.collect(get_request_side_effect=bitbucket_responses)
         self.assert_measurement(
             response,
             value="3",
-            total="6",
-            entities=[self.create_entity(1), self.create_entity(2)],
+            total="3",
+            entities=[self.create_entity(1), self.create_entity(2), self.create_entity(3)],
             landing_url=self.landing_url,
         )
