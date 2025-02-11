@@ -15,41 +15,12 @@ class BitbucketMergeRequests(BitbucketProjectBase):
 
     async def _api_url(self) -> URL:
         """Override to return the merge requests API."""
-        url = str(await super()._api_url())
-        project = f"{self._parameter('owner')}/repos/{self._parameter('repository')}"
-        api_url = URL(f"{url}/rest/api/1.0/projects/{project}" + (f"/pull-requests?limit={self.PAGE_SIZE}"))
-        return URL(api_url)
-
+        return await self._bitbucket_api_url("pull-requests", self.PAGE_SIZE)
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project merge requests."""
         project = f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}"
         return URL(f"{await super()._landing_url(responses)}/{project}/pull-requests")
-
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """Extend to use Bitbucket pagination, if necessary."""
-        responses = SourceResponses()
-        isLastPage = False
-        nr_merge_requests_to_skip = 0
-        while not isLastPage:
-            responses.extend(await super()._get_source_responses(URL(f"{urls[0]}&start={nr_merge_requests_to_skip}")))
-            json = await responses[-1].json()
-            nr_merge_requests_to_skip = json.get("nextPageStart", 0)
-            isLastPage = json["isLastPage"]
-        return responses
-
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:
-        """Override to parse the merge requests from the responses."""
-        merge_requests = []
-        for response in responses:
-            merge_requests.extend((await response.json())["values"])
-        landing_url = (await self._landing_url(responses))
-        return Entities([self._create_entity(mr, landing_url) for mr in merge_requests])
-
-    async def _parse_total(self, responses: SourceResponses) -> Value:
-        """Override to parse the total number of merge requests from the responses."""
-        merge_requests = [(await response.json())["size"] for response in responses]
-        return str(sum(merge_requests))
 
     def _create_entity(self, merge_request, landing_url: str) -> Entity:
         """Create an entity from a Bitbucket JSON result."""

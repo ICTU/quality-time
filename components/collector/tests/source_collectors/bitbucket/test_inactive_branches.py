@@ -48,9 +48,11 @@ class BitbucketInactiveBranchesTest(BitbucketBranchesTestCase):
             },
         }
 
-    def create_branches_json(self, branches):
+    def create_branches_json(self, branches,
+                             has_next_page: bool = False,):
         """Create an entity."""
-        return {"size": len(branches), "limit": 25, "isLastPage": True, "start": 0, "values": branches}
+        return {"size": len(branches), "limit": 25, "isLastPage": True, "start": 0, "hasNextPage": has_next_page, "values": branches}
+
 
     def create_entity(self, name: str) -> dict[str, str]:
         """Create an entity."""
