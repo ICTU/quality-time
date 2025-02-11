@@ -6,6 +6,14 @@ from source_collectors import BitbucketMergeRequests
 
 from .base import BitbucketTestCase
 
+class FakeResponse:
+    def __init__(self, fake_json):
+        self.fake_json = fake_json
+
+    async def json(self):
+        return self.fake_json
+
+
 class BitbucketMergeRequestsTest(BitbucketTestCase):
     """Unit tests for the merge requests metric."""
 
@@ -77,18 +85,12 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
     async def test_pagination(self):
         """Test that pagination works."""
         BitbucketMergeRequests.PAGE_SIZE = 1
-        bitbucket_json = [
-            { "size": len("values"), "Hallo": True, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
-            { "size": len("values"), "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
-            { "size": len("values"), "isLastPage": True, "values": [self.create_merge_request(3)]},
-            { "size": len("values"), "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
-            { "size": len("values"), "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
-            { "size": len("values"), "isLastPage": True, "values": [self.create_merge_request(3)]},
-            { "size": len("values"), "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]},
-            { "size": len("values"), "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]},
-            { "size": len("values"), "isLastPage": True, "values": [self.create_merge_request(3)]},
+        bitbucket_responses = [
+            [FakeResponse({ "size": len("values"), "Hallo": True, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]})],
+            [FakeResponse({ "size": len("values"), "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]})],
+            [FakeResponse({ "size": len("values"), "isLastPage": True, "values": [self.create_merge_request(3)]})]
         ]
-        response = await self.collect(get_request_json_side_effect=bitbucket_json)
+        response = await self.collect(get_request_side_effect=bitbucket_responses)
         self.assert_measurement(
             response,
             value="3",
