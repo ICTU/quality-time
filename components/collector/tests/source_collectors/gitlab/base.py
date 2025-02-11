@@ -80,8 +80,20 @@ class CommonGitLabJobsTestsMixin:
         response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
 
+    async def test_include_job_by_name(self):
+        """Test that jobs can be included by name."""
+        self.set_source_parameter("jobs_to_include", ["job1"])
+        response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
+
     async def test_ignore_job_by_ref(self):
         """Test that jobs can be ignored by ref."""
         self.set_source_parameter("refs_to_ignore", ["develop"])
+        response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])
+
+    async def test_include_job_by_ref(self):
+        """Test that jobs can be included by ref."""
+        self.set_source_parameter("refs_to_include", ["main"])
         response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
         self.assert_measurement(response, value="1", entities=self.expected_entities[:-1])

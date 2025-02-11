@@ -141,6 +141,13 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             help_url=GITLAB_BRANCH_HELP_URL,
             metrics=["change_failure_rate", "failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
+        "refs_to_include": MultipleChoiceWithAdditionParameter(
+            name="Branches and tags to include (regular expressions, branch names or tag names)",
+            short_name="branches and tags to include",
+            help_url=GITLAB_BRANCH_HELP_URL,
+            placeholder="all branches and tags",
+            metrics=["change_failure_rate", "failed_jobs", "job_runs_within_time_period", "unused_jobs"],
+        ),
         "inactive_days": Days(
             name="Number of days since last commit after which to consider branches inactive",
             short_name="number of days since last commit",
@@ -159,6 +166,13 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             name="Jobs to ignore (regular expressions or job names)",
             short_name="jobs to ignore",
             help="Jobs to ignore can be specified by job name or by regular expression.",
+            metrics=["change_failure_rate", "failed_jobs", "job_runs_within_time_period", "unused_jobs"],
+        ),
+        "jobs_to_include": MultipleChoiceWithAdditionParameter(
+            name="Jobs to include (regular expressions or job names)",
+            short_name="jobs to include",
+            help="Jobs to include can be specified by job name or by regular expression.",
+            placeholder="all jobs",
             metrics=["change_failure_rate", "failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
         "lookback_days": Days(
