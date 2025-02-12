@@ -33,7 +33,7 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
         approved: bool = False,
         state: str = "OPEN",
         branch: str = "main",
-    ) -> dict[str, str | int | list[dict[str, int]]]:
+    ) -> dict[str, int | str | list[dict[str, bool]] | dict[str, str]]:
         """Create a merge request fixture."""
         return {
             "id": number,
