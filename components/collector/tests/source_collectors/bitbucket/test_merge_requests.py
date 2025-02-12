@@ -1,6 +1,4 @@
 """Unit tests for the Bitbucket merge requests collector."""
-import pdb
-from unittest.mock import AsyncMock
 
 from source_collectors import BitbucketMergeRequests
 
@@ -42,7 +40,7 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
         }
 
     def create_entity(self, number: int):
-        """Create an Bitbucket merge request entity."""
+        """Create a Bitbucket merge request entity."""
         return {
             "key": str(number),
             "title": f"Pull request {number}",
@@ -86,7 +84,7 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
         """Test that pagination works."""
         BitbucketMergeRequests.PAGE_SIZE = 1
         bitbucket_responses = [
-            FakeResponse({ "size": 1, "Hallo": True, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]}),
+            FakeResponse({ "size": 1, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]}),
             FakeResponse({ "size": 1, "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]}),
             FakeResponse({ "size": 1, "isLastPage": True, "values": [self.create_merge_request(3)]})
         ]

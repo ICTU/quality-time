@@ -26,26 +26,18 @@ class BitbucketBase(SourceCollector, ABC):
         """Extend to use Bitbucket pagination, if necessary."""
         responses = SourceResponses()
         isLastPage = False
-        nr_merge_requests_to_skip = 0
+        number_to_skip = 0
         while not isLastPage:
-            responses.extend(await super()._get_source_responses(URL(f"{urls[0]}&start={nr_merge_requests_to_skip}")))
+            responses.extend(await super()._get_source_responses(URL(f"{urls[0]}&start={number_to_skip}")))
             json = await responses[-1].json()
-            nr_merge_requests_to_skip = json.get("nextPageStart", 0)
+            number_to_skip = json.get("nextPageStart", 0)
             isLastPage = json["isLastPage"]
         return responses
 
-    async def _parse_entities(self, responses: SourceResponses) -> Entities:
-        """Override to parse the entities from the responses."""
-        merge_requests = []
-        for response in responses:
-            merge_requests.extend((await response.json())["values"])
-        landing_url = (await self._landing_url(responses))
-        return Entities([self._create_entity(mr, landing_url) for mr in merge_requests])
-
     async def _parse_total(self, responses: SourceResponses) -> Value:
         """Override to parse the total number of entities from the responses."""
-        merge_requests = [(await response.json())["size"] for response in responses]
-        return str(sum(merge_requests))
+        size = [(await response.json())["size"] for response in responses]
+        return str(sum(size))
 
 
 class BitbucketProjectBase(BitbucketBase, ABC):
@@ -58,7 +50,7 @@ class BitbucketProjectBase(BitbucketBase, ABC):
         api_url = URL(f"{url}/rest/api/1.0/projects/{project}" + (f"/{api}?limit{page_size}" if api else ""))
         return add_query(api_url, "&details=true")
 
-    async def _landing_url(self, responses: SourceResponses) -> URL:
-        """Extend to add the project merge requests."""
-        project = f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}"
-        return URL(f"{await super()._landing_url(responses)}/{project}/pull-requests")
+    async def _bitbucket_landing_url(self, responses: SourceResponses, api: str) -> URL:
+        """Override to create the landing url."""
+        project = f"{self._parameter('owner')}/repos/{self._parameter('repository')}"
+        return URL(f"{await super()._landing_url(responses)}/projects/{project}/{api}")

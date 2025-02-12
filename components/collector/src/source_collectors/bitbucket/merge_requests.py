@@ -1,5 +1,4 @@
 """Bitbucket merge requests collector."""
-import pdb
 from typing import cast
 
 from collector_utilities.functions import match_string_or_regular_expression
@@ -19,8 +18,15 @@ class BitbucketMergeRequests(BitbucketProjectBase):
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project merge requests."""
-        project = f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}"
-        return URL(f"{await super()._landing_url(responses)}/{project}/pull-requests")
+        return await self._bitbucket_landing_url(responses, "pull-requests")
+
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
+        """Override to parse the entities from the responses."""
+        merge_requests = []
+        for response in responses:
+            merge_requests.extend((await response.json())["values"])
+        landing_url = (await self._landing_url(responses))
+        return Entities([self._create_entity(mr, landing_url) for mr in merge_requests])
 
     def _create_entity(self, merge_request, landing_url: str) -> Entity:
         """Create an entity from a Bitbucket JSON result."""
