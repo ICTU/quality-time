@@ -14,6 +14,7 @@ class BitbucketTestCase(SourceCollectorTestCase):
         self.set_source_parameter("owner", "owner")
         self.set_source_parameter("repository", "repository")
 
+
 class BitbucketBranchesTestCase(BitbucketTestCase):
     """Base class for Bitbucket branches collectors."""
 

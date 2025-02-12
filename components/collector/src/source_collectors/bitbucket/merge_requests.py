@@ -1,4 +1,5 @@
 """Bitbucket merge requests collector."""
+
 from typing import cast
 
 from collector_utilities.functions import match_string_or_regular_expression
@@ -26,7 +27,7 @@ class BitbucketMergeRequests(BitbucketProjectBase):
         merge_requests = []
         for response in responses:
             merge_requests.extend((await response.json())["values"])
-        landing_url = (await self._landing_url(responses))
+        landing_url = await self._landing_url(responses)
         return Entities([self._create_entity(mr, landing_url) for mr in merge_requests])
 
     def _create_entity(self, merge_request, landing_url: str) -> Entity:
