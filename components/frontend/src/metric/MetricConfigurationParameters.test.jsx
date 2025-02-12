@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
@@ -7,7 +8,7 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
 
-jest.mock("../api/fetch_server_api.js")
+vi.mock("../api/fetch_server_api.js")
 
 const dataModel = {
     scales: {
@@ -37,6 +38,10 @@ const dataModel = {
         },
     },
 }
+
+afterEach(() => {
+    vi.clearAllMocks()
+})
 
 async function renderMetricParameters(
     scale = "count",
@@ -71,8 +76,8 @@ async function renderMetricParameters(
     return result
 }
 
-async function typeInField(label, text) {
-    await userEvent.type(screen.getByLabelText(label), `${text}{Enter}`, {
+async function typeInField(label, text, confirm = "Enter") {
+    await userEvent.type(screen.getByLabelText(label), `${text}{${confirm}}`, {
         initialSelectionStart: 0,
         initialSelectionEnd: 11,
     })
@@ -84,16 +89,23 @@ function expectMetricAttributePost(attribute, payload) {
 }
 
 it("sets the metric name", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderMetricParameters()
     await typeInField(/Metric name/, "New metric name")
     expectMetricAttributePost("name", "New metric name")
     await expectNoAccessibilityViolations(container)
 })
 
-it("adds a tag", async () => {
+it("adds a tag on enter", async () => {
     const { container } = await renderMetricParameters()
-    await typeInField(/Metric tags/, "New tag")
+    await typeInField(/Metric tags/, "New tag", "Enter")
+    expectMetricAttributePost("tags", ["New tag"])
+    await expectNoAccessibilityViolations(container)
+})
+
+it("adds a tag on tab", async () => {
+    const { container } = await renderMetricParameters()
+    await typeInField(/Metric tags/, "New tag", "Tab")
     expectMetricAttributePost("tags", ["New tag"])
     await expectNoAccessibilityViolations(container)
 })
@@ -115,7 +127,7 @@ it("changes the direction", async () => {
 })
 
 it("sets the metric unit for metrics with the count scale", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderMetricParameters()
     await typeInField(/Metric unit/, "New metric unit")
     expectMetricAttributePost("unit", "New metric unit")
@@ -123,7 +135,7 @@ it("sets the metric unit for metrics with the count scale", async () => {
 })
 
 it("sets the metric unit field for metrics with the percentage scale", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderMetricParameters("percentage")
     await typeInField(/Metric unit/, "New metric unit")
     expectMetricAttributePost("unit", "New metric unit")
@@ -146,7 +158,7 @@ it("skips the metric unit field for metrics with the version number scale", asyn
 })
 
 it("turns off evaluation of targets", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderMetricParameters()
     await userEvent.type(screen.getByLabelText(/Evaluate metric targets/), "No{Enter}")
     expectMetricAttributePost("evaluate_targets", false)

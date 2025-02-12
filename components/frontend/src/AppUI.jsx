@@ -5,7 +5,6 @@ import { useColorScheme } from "@mui/material/styles"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { bool, func, number, object, string } from "prop-types"
-import HashLinkObserver from "react-hash-link"
 
 import { useSettings } from "./app_ui_settings"
 import { DataModel } from "./context/DataModel"
@@ -64,7 +63,6 @@ export function AppUI({
     }
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={adapterLocale(navigator.language)}>
-            <HashLinkObserver />
             <Menubar
                 email={email}
                 handleDateChange={handleDateChange}

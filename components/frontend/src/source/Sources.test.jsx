@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
@@ -8,8 +9,8 @@ import { expectNoAccessibilityViolations } from "../testUtils"
 import * as toast from "../widgets/toast"
 import { Sources } from "./Sources"
 
-jest.mock("../api/fetch_server_api.js")
-jest.mock("../widgets/toast.jsx")
+vi.mock("../api/fetch_server_api.js")
+vi.mock("../widgets/toast.jsx")
 
 const dataModel = {
     metrics: { metric_type: { sources: ["source_type1", "source_type2"] } },
@@ -105,7 +106,7 @@ it("shows errored sources", async () => {
 })
 
 it("creates a new source", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderSources()
     await act(async () => {
         fireEvent.click(screen.getByText(/Add source/))
@@ -121,7 +122,7 @@ it("creates a new source", async () => {
 })
 
 it("copies a source", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderSources()
     await act(async () => {
         fireEvent.click(screen.getByText(/Copy source/))
@@ -140,7 +141,7 @@ it("copies a source", async () => {
 })
 
 it("moves a source", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderSources()
     await act(async () => {
         fireEvent.click(screen.getByText(/Move source/))
@@ -159,7 +160,7 @@ it("moves a source", async () => {
 })
 
 it("updates a parameter of a source", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 0 })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 0 })
     const { container } = renderSources()
     await userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), "https://other{Enter}", {
         initialSelectionStart: 0,
@@ -179,7 +180,7 @@ it("updates a parameter of a source", async () => {
 })
 
 it("mass updates a parameter of a source", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 })
     const { container } = renderSources()
     fireEvent.click(screen.getByLabelText(/Edit scope/))
     await expectNoAccessibilityViolations(container)

@@ -1,10 +1,11 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import { AddDropdownButton } from "./AddDropdownButton"
 
 function renderAddDropdownButton({ nrItems = 2, totalItems = 10, usedItemKeys = [], sort = true } = {}) {
-    const mockCallback = jest.fn()
+    const mockCallback = vi.fn()
     const itemSubtypes = []
     let allItemSubtypes
     if (nrItems < totalItems) {
@@ -37,6 +38,7 @@ test("AddDropdownButton mouse navigation", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
+    expect(screen.getByLabelText(/Filter/)).toHaveFocus()
     await act(async () => {
         fireEvent.click(screen.getByText(/Sub 2/))
     })
@@ -48,6 +50,7 @@ test("AddDropdownButton keyboard navigation", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Add foo/))
     })
+    expect(screen.getByLabelText(/Filter/)).toHaveFocus()
     await act(async () => {
         fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowDown" })
     })

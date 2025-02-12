@@ -1,12 +1,13 @@
 import history from "history/browser"
 import * as react_toastify from "react-toastify"
+import { vi } from "vitest"
 
 import { showConnectionMessage, showMessage } from "./toast"
 
-jest.mock("react-toastify")
+vi.mock("react-toastify")
 
 beforeEach(() => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
     history.push("")
 })
 

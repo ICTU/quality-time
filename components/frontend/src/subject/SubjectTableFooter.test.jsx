@@ -7,13 +7,16 @@ import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTableFooter } from "./SubjectTableFooter"
+import { vi } from "vitest"
 
-const stopFilteringAndSorting = jest.fn()
+const stopFilteringAndSorting = vi.fn()
 
-jest.mock("../api/fetch_server_api.js")
-fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: true })
+vi.mock("../api/fetch_server_api.js")
+
+afterEach(() => vi.restoreAllMocks())
 
 it("shows the add metric button and adds a metric when clicked", async () => {
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container, getByText } = render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={dataModel}>
@@ -39,6 +42,7 @@ it("shows the add metric button and adds a metric when clicked", async () => {
 })
 
 it("copies a metric when the copy button is clicked and a metric is selected", async () => {
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={dataModel}>
@@ -63,6 +67,7 @@ it("copies a metric when the copy button is clicked and a metric is selected", a
 })
 
 it("moves a metric when the move button is clicked and a metric is selected", async () => {
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = render(
         <DataModel.Provider value={dataModel}>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>

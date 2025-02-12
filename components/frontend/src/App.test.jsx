@@ -1,12 +1,17 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import dayjs from "dayjs"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import * as auth from "./api/auth"
 import * as fetch_server_api from "./api/fetch_server_api"
 import App from "./App"
 import { expectNoAccessibilityViolations } from "./testUtils"
 import * as toast from "./widgets/toast"
+
+vi.mock("./api/fetch_server_api.js")
+vi.mock("./api/auth.js")
+vi.mock("./widgets/toast.jsx")
 
 function set_user_in_local_storage(session_expiration_datetime, email) {
     localStorage.setItem("user", "admin")
@@ -15,21 +20,25 @@ function set_user_in_local_storage(session_expiration_datetime, email) {
 }
 
 beforeAll(() => {
-    global.EventSource = jest.fn(() => ({
-        addEventListener: jest.fn(),
-        close: jest.fn(),
+    global.EventSource = vi.fn(() => ({
+        addEventListener: vi.fn(),
+        close: vi.fn(),
     }))
 })
 
-beforeEach(() => {
+beforeEach(async () => {
     history.push("")
-    fetch_server_api.fetch_server_api = jest.fn().mockReturnValue({
-        then: jest.fn().mockReturnValue({ catch: jest.fn().mockReturnValue({ finally: jest.fn() }) }),
+    fetch_server_api.api_with_report_date = (await vi.importActual("./api/fetch_server_api.js")).api_with_report_date
+    fetch_server_api.fetch_server_api = vi.fn().mockReturnValue({
+        then: vi.fn().mockReturnValue({ catch: vi.fn().mockReturnValue({ finally: vi.fn() }) }),
+    })
+    auth.login = vi.fn().mockResolvedValue({
+        ok: false,
     })
 })
 
 afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
 })
 
 it("shows spinner", async () => {
@@ -63,10 +72,9 @@ it("resets the user when the session is expired on mount", async () => {
 
 it("resets the user when the user clicks logout", async () => {
     set_user_in_local_storage("3000-02-23T22:00:50.945Z")
-    auth.logout = jest.fn().mockResolvedValue({ ok: true })
+    auth.logout = vi.fn().mockResolvedValue({ ok: true })
     const { container } = render(<App />)
     fireEvent.click(screen.getByText(/admin/))
-    await expectNoAccessibilityViolations(container)
     fireEvent.click(screen.getByText(/Logout/))
     expect(screen.queryAllByText(/admin/).length).toBe(0)
     await expectNoAccessibilityViolations(container)
@@ -80,7 +88,6 @@ async function selectDate(container) {
 }
 
 it("handles a date change", async () => {
-    jest.setTimeout(10000)
     const { container } = render(<App />)
     await selectDate(container)
     const expectedDate = dayjs().subtract(1, "month").date(15).toDate().toDateString()
@@ -117,8 +124,8 @@ it("handles a date reset", async () => {
 
 it("handles the nr of measurements event source", async () => {
     const eventSourceInstance = {
-        addEventListener: jest.fn(),
-        close: jest.fn(),
+        addEventListener: vi.fn(),
+        close: vi.fn(),
     }
     const eventListeners = {}
 
@@ -126,8 +133,8 @@ it("handles the nr of measurements event source", async () => {
         eventListeners[event] = listener
     })
 
-    const showMessage = jest.spyOn(toast, "showMessage")
-    global.EventSource = jest.fn(() => eventSourceInstance)
+    const showMessage = vi.spyOn(toast, "showMessage")
+    global.EventSource = vi.fn(() => eventSourceInstance)
 
     render(<App />)
     await act(async () => eventListeners["init"]({ data: 42 }))

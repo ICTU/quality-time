@@ -1,13 +1,14 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as auth from "../api/auth"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { Menubar } from "./Menubar"
 
-jest.mock("../api/auth.js")
+vi.mock("../api/auth.js")
 
 beforeEach(() => {
     history.push("")
@@ -37,12 +38,12 @@ function renderMenubar({
 }
 
 it("logs in", async () => {
-    auth.login = jest.fn().mockResolvedValue({
+    auth.login = vi.fn().mockResolvedValue({
         ok: true,
         email: "user@example.org",
         session_expiration_datetime: "2021-02-24T13:10:00+00:00",
     })
-    const set_user = jest.fn()
+    const set_user = vi.fn()
     const { container } = renderMenubar({ set_user: set_user })
     fireEvent.click(screen.getByText(/Login/))
     await expectNoAccessibilityViolations(container)
@@ -56,8 +57,8 @@ it("logs in", async () => {
 })
 
 it("shows invalid credential message", async () => {
-    auth.login = jest.fn().mockResolvedValue({ ok: false })
-    const set_user = jest.fn()
+    auth.login = vi.fn().mockResolvedValue({ ok: false })
+    const set_user = vi.fn()
     const { container } = renderMenubar({ set_user: set_user })
     fireEvent.click(screen.getByText(/Login/))
     fireEvent.change(screen.getByLabelText("Username"), { target: { value: "user@example.org" } })
@@ -70,8 +71,8 @@ it("shows invalid credential message", async () => {
 })
 
 it("shows connection error message", async () => {
-    auth.login = jest.fn().mockRejectedValue(new Error("Async error message"))
-    const set_user = jest.fn()
+    auth.login = vi.fn().mockRejectedValue(new Error("Async error message"))
+    const set_user = vi.fn()
     const { container } = renderMenubar({ set_user: set_user })
     fireEvent.click(screen.getByText(/Login/))
     fireEvent.change(screen.getByLabelText("Username"), { target: { value: "user@example.org" } })
@@ -84,7 +85,7 @@ it("shows connection error message", async () => {
 })
 
 it("closes the dialog on cancel", async () => {
-    const set_user = jest.fn()
+    const set_user = vi.fn()
     const { container } = renderMenubar({ set_user: set_user })
     fireEvent.click(screen.getByText(/Login/))
     await act(async () => fireEvent.click(screen.getByText(/Cancel/)))
@@ -96,7 +97,7 @@ it("closes the dialog on cancel", async () => {
 })
 
 it("closes the dialog on escape", async () => {
-    const set_user = jest.fn()
+    const set_user = vi.fn()
     renderMenubar({ set_user: set_user })
     fireEvent.click(screen.getByText(/Login/))
     await userEvent.keyboard("{Escape}")
@@ -107,8 +108,8 @@ it("closes the dialog on escape", async () => {
 })
 
 it("logs out", async () => {
-    auth.logout = jest.fn().mockResolvedValue({ ok: true })
-    const set_user = jest.fn()
+    auth.logout = vi.fn().mockResolvedValue({ ok: true })
+    const set_user = vi.fn()
     const { container } = renderMenubar({ set_user: set_user, user: "jadoe" })
     fireEvent.click(screen.getByRole("button", { name: "User options" }))
     fireEvent.click(screen.getByRole("menuitem", { name: "Logout" }))
@@ -118,7 +119,7 @@ it("logs out", async () => {
 })
 
 it("does not go to home page if on reports overview", async () => {
-    const openReportsOverview = jest.fn()
+    const openReportsOverview = vi.fn()
     const { container } = renderMenubar({ report_uuid: "", openReportsOverview: openReportsOverview })
     act(() => {
         fireEvent.click(screen.getByAltText(/Go to reports overview/))
@@ -128,7 +129,7 @@ it("does not go to home page if on reports overview", async () => {
 })
 
 it("goes to home page if on report", async () => {
-    const openReportsOverview = jest.fn()
+    const openReportsOverview = vi.fn()
     const { container } = renderMenubar({ openReportsOverview: openReportsOverview })
     await act(async () => {
         fireEvent.click(screen.getByAltText(/Go to reports overview/))
@@ -138,7 +139,7 @@ it("goes to home page if on report", async () => {
 })
 
 it("goes to home page on keypress", async () => {
-    const openReportsOverview = jest.fn()
+    const openReportsOverview = vi.fn()
     renderMenubar({ openReportsOverview: openReportsOverview })
     await userEvent.type(screen.getByAltText(/Go to reports overview/), "{Enter}")
     expect(openReportsOverview).toHaveBeenCalled()

@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -68,7 +69,7 @@ it("displays the issue id", async () => {
 })
 
 it("opens the issue landing url", async () => {
-    window.open = jest.fn()
+    window.open = vi.fn()
     const { container, queryByText } = renderIssueStatus()
     fireEvent.click(queryByText(/123/))
     expect(window.open).toHaveBeenCalledWith("https://issue")
@@ -76,7 +77,7 @@ it("opens the issue landing url", async () => {
 })
 
 it("does not open an url if the issue has no landing url", async () => {
-    window.open = jest.fn()
+    window.open = vi.fn()
     const { container, queryByText } = renderIssueStatus({ landingUrl: "" })
     fireEvent.click(queryByText(/123/))
     expect(window.open).not.toHaveBeenCalled()

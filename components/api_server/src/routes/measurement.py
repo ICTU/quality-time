@@ -45,11 +45,12 @@ def set_entity_attribute(
     description = f"{user.name()} changed the {attribute} of '{entity_description}' from '{old_value}' to '{new_value}'"
     entity_user_data = source.setdefault("entity_user_data", {}).setdefault(entity_key, {})
     entity_user_data[attribute] = new_value
-    if attribute == "status" and (end_date := report.deadline(new_value)):
+    if attribute == "status":
+        new_end_date = report.deadline(new_value)
         old_end_date = entity_user_data.get("status_end_date")
-        if end_date != old_end_date:
-            entity_user_data["status_end_date"] = end_date
-            description += f" and changed the status end date from '{old_end_date}' to '{end_date}'"
+        if new_end_date != old_end_date:
+            entity_user_data["status_end_date"] = new_end_date
+            description += f" and changed the status end date from '{old_end_date}' to '{new_end_date}'"
     new_measurement["delta"] = {
         "uuids": [report.uuid, metric.subject_uuid, metric_uuid, source_uuid],
         "description": description + ".",

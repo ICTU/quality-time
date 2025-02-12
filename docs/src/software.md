@@ -453,3 +453,11 @@ The LDAP database has two users:
 |----------|-----------------------|----------|----------|
 | Jane Doe | `janedoe@example.org` | `jadoe`  | `secret` |
 | John Doe | `johndoe@example.org` | `jodoe`  | `secret` |
+
+The `{ARGON2}` hashes for the `userPassword`s in the LDIF-files were generated using [argon2-cffi](https://github.com/hynek/argon2-cffi):
+
+```python
+>>> from argon2 import PasswordHasher
+>>> ph = PasswordHasher()
+>>> ph.hash("secret")
+```

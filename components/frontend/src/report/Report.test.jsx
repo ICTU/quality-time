@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@mui/material/styles"
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings, dataModel } from "../__fixtures__/fixtures"
 import * as fetch_server_api from "../api/fetch_server_api"
@@ -12,15 +13,15 @@ import { expectNoAccessibilityViolations } from "../testUtils"
 import { theme } from "../theme"
 import { Report } from "./Report"
 
+vi.mock("../api/fetch_server_api.js")
+
 beforeEach(() => {
-    fetch_server_api.fetch_server_api = jest
-        .fn()
-        .mockReturnValue({ then: jest.fn().mockReturnValue({ finally: jest.fn() }) })
+    fetch_server_api.fetch_server_api = vi.fn().mockReturnValue({ then: vi.fn().mockReturnValue({ finally: vi.fn() }) })
     mockGetAnimations()
     history.push("")
 })
 
-afterEach(() => jest.restoreAllMocks())
+afterEach(() => vi.restoreAllMocks())
 
 const report = {
     report_uuid: "report_uuid",
@@ -50,7 +51,7 @@ const report = {
 async function renderReport({
     reportToRender = null,
     dates = [new Date()],
-    handleSort = jest.fn(),
+    handleSort = vi.fn(),
     hiddenTags = null,
     report_date = null,
 } = {}) {
@@ -107,7 +108,7 @@ it("hides columns on load", async () => {
 })
 
 it("sorts the column", async () => {
-    let handleSort = jest.fn()
+    let handleSort = vi.fn()
     await renderReport({ reportToRender: report, handleSort: handleSort })
     fireEvent.click(screen.getByText(/Comment/))
     expect(handleSort).toHaveBeenCalledWith("comment")
@@ -115,7 +116,7 @@ it("sorts the column", async () => {
 
 it("sorts the column descending", async () => {
     history.push("?sort_column=comment")
-    let handleSort = jest.fn()
+    let handleSort = vi.fn()
     await renderReport({ reportToRender: report, handleSort: handleSort })
     fireEvent.click(screen.getByText(/Comment/))
     expect(handleSort).toHaveBeenCalledWith("comment")
@@ -123,7 +124,7 @@ it("sorts the column descending", async () => {
 
 it("stops sorting", async () => {
     history.push("?sort_column=issues&sort_direction=descending")
-    let handleSort = jest.fn()
+    let handleSort = vi.fn()
     await renderReport({ reportToRender: report, handleSort: handleSort })
     fireEvent.click(screen.getByText(/Issues/))
     expect(handleSort).toHaveBeenCalledWith("issues")
@@ -131,7 +132,7 @@ it("stops sorting", async () => {
 
 it("stop sorting on add metric", async () => {
     history.push("?sort_column=status")
-    let handleSort = jest.fn()
+    let handleSort = vi.fn()
     await renderReport({ reportToRender: report, handleSort: handleSort })
     fireEvent.click(screen.getByText(/Add metric/))
     fireEvent.click(screen.getByText(/Metric type/))
@@ -140,7 +141,7 @@ it("stop sorting on add metric", async () => {
 
 it("sorts another column", async () => {
     history.push("?sort_column=issues")
-    let handleSort = jest.fn()
+    let handleSort = vi.fn()
     await renderReport({ reportToRender: report, handleSort: handleSort })
     fireEvent.click(screen.getByText(/Comment/))
     expect(handleSort).toHaveBeenCalledWith("comment")
@@ -171,9 +172,9 @@ it("hides subjects if empty", async () => {
 })
 
 it("navigates to subject", async () => {
-    const mockScroll = jest.fn()
+    const mockScroll = vi.fn()
     window.HTMLElement.prototype.scrollIntoView = mockScroll
-    const mockScrollBy = jest.fn()
+    const mockScrollBy = vi.fn()
     window.scrollBy = mockScrollBy
     await renderReport({ reportToRender: report })
     fireEvent.click(screen.getAllByText(/Subject title/)[0])

@@ -1,6 +1,6 @@
 [project]
 name = "application-tests"
-version = "5.23.0"
+version = "5.24.0"
 requires-python = ">=3.13"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
@@ -17,10 +17,10 @@ optional-dependencies.dev = [
 optional-dependencies.tools = [
     "bandit==1.8.2",
     "fixit==2.1.0",
-    "mypy==1.14.1",
-    "pip-audit==2.7.3",
+    "mypy==1.15.0",
+    "pip-audit==2.8.0",
     "pyproject-fmt==2.5.0",
-    "ruff==0.9.4",
+    "ruff==0.9.6",
     "vulture==2.14",
 ]
 

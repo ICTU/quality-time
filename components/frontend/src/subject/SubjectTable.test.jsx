@@ -1,5 +1,6 @@
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetch_server_api from "../api/fetch_server_api"
@@ -9,8 +10,8 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTable } from "./SubjectTable"
 
-jest.mock("../api/fetch_server_api.js")
-fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false })
+vi.mock("../api/fetch_server_api.js")
+fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: false })
 
 const metric = {
     unit: "testUnit",
@@ -54,7 +55,7 @@ function renderSubjectTable({ dates = [], expandedItems = null, settings = null 
             <DataModel.Provider value={dataModel}>
                 <SubjectTable
                     dates={dates}
-                    handleSort={jest.fn()}
+                    handleSort={vi.fn()}
                     reportDate={new Date("2020-01-15T00:00:00+00:00")}
                     report={{
                         report_uuid: "report_uuid",

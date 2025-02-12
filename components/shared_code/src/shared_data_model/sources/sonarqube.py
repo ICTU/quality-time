@@ -95,11 +95,10 @@ ISSUE_SECURITY_TYPE = "issue with security impact"
 
 SONARQUBE = Source(
     name="SonarQube",
-    description="SonarQube is an open-source platform for continuous inspection of code quality to perform automatic "
-    "reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities on 20+ programming "
-    "languages.",
+    description="SonarQube Server is an on-premise analysis tool designed to detect coding issues in 30+ languages, "
+    "frameworks, and infrastructure-as-code platforms.",
     supported_versions_description="≥10.2",
-    url=HttpUrl("https://www.sonarqube.org"),
+    url=HttpUrl("https://www.sonarsource.com/products/sonarqube/"),
     configuration={
         "commented_out_rules": Configuration(
             metrics=["commented_out_code"],
@@ -353,7 +352,9 @@ SONARQUBE = Source(
         "languages_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Languages to ignore (regular expressions or language names)",
             short_name="languages to ignore",
-            help_url=HttpUrl("https://docs.sonarqube.org/latest/analysis/languages/overview/"),
+            help_url=HttpUrl(
+                "https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/languages/overview/"
+            ),
             metrics=["loc"],
         ),
         "lines_to_count": SingleChoiceParameter(
@@ -384,14 +385,16 @@ SONARQUBE = Source(
         "clean_code_attribute_categories": MultipleChoiceParameter(
             name="Clean code attribute categories",
             placeholder="all clean code attribute categories",
-            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube/latest/user-guide/clean-code/definition/"),
+            help_url=HttpUrl(
+                "https://docs.sonarsource.com/sonarqube-server/latest/core-concepts/clean-code/definition/"
+            ),
             values=["adaptable", "consistent", "intentional", "responsible"],
             metrics=["suppressed_violations", "violations"],
         ),
         "hotspot_statuses": MultipleChoiceParameter(
             name="Security hotspot statuses",
             short_name="hotspot statuses",
-            help_url=HttpUrl("https://docs.sonarqube.org/latest/user-guide/security-hotspots/"),
+            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/security-hotspots/"),
             placeholder="acknowledged, to review",
             values=["to review", "acknowledged", "safe", "fixed"],
             default_value=["to review", "acknowledged"],
@@ -400,7 +403,7 @@ SONARQUBE = Source(
         "review_priorities": MultipleChoiceParameter(
             name="Security hotspot review priorities",
             short_name="review priorities",
-            help_url=HttpUrl("https://docs.sonarqube.org/latest/user-guide/security-hotspots/"),
+            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/security-hotspots/"),
             placeholder="all review priorities",
             values=["low", "medium", "high"],
             metrics=["security_warnings"],
@@ -409,7 +412,9 @@ SONARQUBE = Source(
             name="Types of effort",
             short_name="effort types",
             placeholder="all effort types",
-            help_url=HttpUrl("https://docs.sonarqube.org/latest/user-guide/metric-definitions/"),
+            help_url=HttpUrl(
+                "https://docs.sonarsource.com/sonarqube-server/latest/user-guide/code-metrics/metrics-definition/"
+            ),
             values=[
                 "effort to fix all code smells",
                 "effort to fix all bug issues",
@@ -425,7 +430,7 @@ SONARQUBE = Source(
         "security_types": MultipleChoiceParameter(
             name="Security issue types",
             placeholder=ISSUE_SECURITY_TYPE,
-            help_url=HttpUrl("https://docs.sonarqube.org/latest/user-guide/rules/"),
+            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/rules/overview/"),
             default_value=[ISSUE_SECURITY_TYPE],
             values=["security hotspot", ISSUE_SECURITY_TYPE],
             metrics=["security_warnings"],

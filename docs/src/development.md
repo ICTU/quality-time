@@ -77,6 +77,12 @@ python src/quality_time_server.py
 
 The API of the API-server is served at [http://localhost:5001](http://localhost:5001), e.g. access [http://localhost:5001/api/internal/report](http://localhost:5001/api/internal/report) to get the available reports combined with their recent measurements.
 
+To quickly see all endpoints, use the `/api/v3/docs` endpoint:
+
+```console
+curl http://localhost:5001/api/v3/docs | jq .
+```
+
 ```{note}
 If you're new to Python virtual environments, note that:
 - Creating a virtual environment (`uv venv`) has to be done once. Only when the Python version changes, you want to recreate the virtual environment.

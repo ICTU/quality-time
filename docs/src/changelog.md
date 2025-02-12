@@ -14,19 +14,36 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Fixed
+
+- Use ARGON2 hashes to verify user LDAP passwords instead of SSHA1. Fixes [#6233](https://github.com/ICTU/quality-time/issues/6233).
+- Make the API-server return HTTP status 404 on non-existing endpoints instead of 200. Fixes [#9860](https://github.com/ICTU/quality-time/issues/9860).
+- Input to a multiple choice input fields, such as the metric tags field and the issue identifiers field, would not saved on tab. Fixes [#10814](https://github.com/ICTU/quality-time/issues/10814).
+
+### Changed
+
+- Use Nginx (`nginxinc/nginx-unprivileged`) as base image for the frontend container for a reduced image size. Closes [#10767](https://github.com/ICTU/quality-time/issues/10767).
+
+## v5.24.0 - 2025-02-06
+
 ### Added
 
 - Support the new SonarQube impact severity levels "blocker" and "info", introduced in SonarQube v10.8. Closes [#10708](https://github.com/ICTU/quality-time/issues/10708).
+- After clicking "Add metric", give focus to the filter field automatically. Closes [#10743](https://github.com/ICTU/quality-time/issues/10743).
 
 ### Fixed
 
 - Fix accessibility issues found by the application test. Fixes [#6354](https://github.com/ICTU/quality-time/issues/6354).
 - When adding multiple sources to one metric, the source names would not be comma-separated in the sources column. Fixes [#10735](https://github.com/ICTU/quality-time/issues/10735).
 - The comment field of a metric's technical debt tab would be editable even though the user was not logged in or when the user was time traveling. Note that the server would not save any changes made as it also checks for correct permissions. Fixes [#10739](https://github.com/ICTU/quality-time/issues/10739).
+- When changing technical debt with the option "Yes, and also set technical debt target and end date" or "No, and also clear technical debt target and end date", the technical end date value would not be refreshed in the UI. Fixes [#10761](https://github.com/ICTU/quality-time/issues/10761).
+- The status end date of measurement entities would not be refreshed in the UI when changing the status. Fixes [#10762](https://github.com/ICTU/quality-time/issues/10762).
+- When measuring branch or line coverage with Jacoco XML as source, the coverage would be calculated incorrectly. Fixes [#10787](https://github.com/ICTU/quality-time/issues/10787).
 
 ### Changed
 
 - Use the font configured in the browser instead of the browser's system font. Fixes [#9864](https://github.com/ICTU/quality-time/issues/9864).
+- Update SonarQube logo and documentation URLs. Closes [#10766](https://github.com/ICTU/quality-time/issues/10766).
 
 ## v5.23.0 - 2025-01-27
 

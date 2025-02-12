@@ -3,15 +3,16 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import dayjs from "dayjs"
+import { vi } from "vitest"
 
 import * as source from "../api/source"
 import { EDIT_ENTITY_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceEntityDetails } from "./SourceEntityDetails"
 
-jest.mock("../api/source.js")
+vi.mock("../api/source.js")
 
-const reload = jest.fn
+const reload = vi.fn
 
 function renderSourceEntityDetails({ report = null, status_end_date = null } = {}) {
     return render(
@@ -80,7 +81,7 @@ it("shows no desired response times when the report has been configured to not h
 })
 
 it("changes the entity status", async () => {
-    source.set_source_entity_attribute = jest.fn()
+    source.set_source_entity_attribute = vi.fn()
     const { container } = renderSourceEntityDetails()
     fireEvent.mouseDown(screen.getByText("Unconfirm"))
     fireEvent.click(screen.getByText(/Confirm/))
@@ -96,14 +97,14 @@ it("changes the entity status", async () => {
 })
 
 it("shows the entity status end date", async () => {
-    source.set_source_entity_attribute = jest.fn()
+    source.set_source_entity_attribute = vi.fn()
     const { container } = renderSourceEntityDetails({ status_end_date: "20250112" })
     expect(screen.queryAllByDisplayValue("01/12/2025").length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("changes the entity status end date", async () => {
-    source.set_source_entity_attribute = jest.fn()
+    source.set_source_entity_attribute = vi.fn()
     const { container } = renderSourceEntityDetails()
     await userEvent.type(screen.getByPlaceholderText(/YYYY/), "01012222{Enter}")
     expect(source.set_source_entity_attribute).toHaveBeenCalledWith(
@@ -118,7 +119,7 @@ it("changes the entity status end date", async () => {
 })
 
 it("changes the rationale", async () => {
-    source.set_source_entity_attribute = jest.fn()
+    source.set_source_entity_attribute = vi.fn()
     const { container } = renderSourceEntityDetails()
     await userEvent.type(screen.getByLabelText(/rationale/), "Rationale")
     await userEvent.tab()

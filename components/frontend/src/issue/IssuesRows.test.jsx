@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import * as fetch_server_api from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
@@ -7,11 +8,11 @@ import { expectNoAccessibilityViolations } from "../testUtils"
 import { IssuesRows } from "./IssuesRows"
 import * as toast from "../widgets/toast"
 
-jest.mock("../api/fetch_server_api.js")
-jest.mock("../widgets/toast.jsx")
+vi.mock("../api/fetch_server_api.js")
+vi.mock("../widgets/toast.jsx")
 
-beforeEach(() => {
-    jest.resetAllMocks()
+afterEach(() => {
+    vi.resetAllMocks()
 })
 
 const reportWithIssueTracker = {
@@ -36,7 +37,9 @@ function renderIssuesRow({
                     issue_status: issue_status,
                 }}
                 metric_uuid="metric_uuid"
-                reload={jest.fn}
+                reload={() => {
+                    /* Can't use vi.fn here; it leads to "Error: cannot spy on a non-function value" */
+                }}
                 report={report}
             />
         </Permissions.Provider>,
@@ -90,24 +93,24 @@ it("shows a parse error", async () => {
 })
 
 it("creates an issue", async () => {
-    window.open = jest.fn()
-    fetch_server_api.fetch_server_api = jest
+    window.open = vi.fn()
+    fetch_server_api.fetch_server_api = vi
         .fn()
         .mockResolvedValue({ ok: true, error: "", issue_url: "https://tracker/foo-42" })
     const { container } = renderIssuesRow({ report: reportWithIssueTracker })
     fireEvent.click(screen.getByText(/Create new issue/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", {
-        metric_url: "http://localhost/#metric_uuid",
+        metric_url: "http://localhost:3000/#metric_uuid",
     })
     await expectNoAccessibilityViolations(container)
 })
 
 it("tries to create an issue", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockResolvedValue({ ok: false, error: "Dummy", issue_url: "" })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: false, error: "Dummy", issue_url: "" })
     const { container } = renderIssuesRow({ report: reportWithIssueTracker })
     fireEvent.click(screen.getByText(/Create new issue/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", {
-        metric_url: "http://localhost/#metric_uuid",
+        metric_url: "http://localhost:3000/#metric_uuid",
     })
     await expectNoAccessibilityViolations(container)
 })
@@ -119,7 +122,7 @@ it("disables the create issue button if the user has no permissions", async () =
 })
 
 it("adds an issue id", async () => {
-    fetch_server_api.fetch_server_api = jest
+    fetch_server_api.fetch_server_api = vi
         .fn()
         .mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
     const { container } = renderIssuesRow()
@@ -133,7 +136,7 @@ it("adds an issue id", async () => {
 })
 
 it("shows issue id suggestions", async () => {
-    fetch_server_api.fetch_server_api = jest
+    fetch_server_api.fetch_server_api = vi
         .fn()
         .mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
     const { container } = renderIssuesRow({
@@ -145,7 +148,7 @@ it("shows issue id suggestions", async () => {
 })
 
 it("shows an error message if fetching suggestions fails", async () => {
-    fetch_server_api.fetch_server_api = jest.fn().mockRejectedValue(new Error("fetching suggestions failed"))
+    fetch_server_api.fetch_server_api = vi.fn().mockRejectedValue(new Error("fetching suggestions failed"))
     const { container } = renderIssuesRow({
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
     })
@@ -160,7 +163,7 @@ it("shows an error message if fetching suggestions fails", async () => {
 })
 
 it("shows no issue id suggestions without a query", async () => {
-    fetch_server_api.fetch_server_api = jest
+    fetch_server_api.fetch_server_api = vi
         .fn()
         .mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
     const { container } = renderIssuesRow({

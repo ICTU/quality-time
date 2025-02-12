@@ -4,6 +4,7 @@ import logging
 from datetime import datetime, timedelta, UTC
 from unittest.mock import Mock, patch
 
+import argon2
 import bottle
 import ldap3
 from ldap3.core import exceptions
@@ -138,7 +139,9 @@ class LoginTests(AuthTestCase):
     def test_successful_login(self, connection_mock, connection_enter):
         """Test successful login."""
         connection_mock.return_value = None
-        self.ldap_entry.userPassword.value = b"{SSHA}W841/YybjO4TmqcNTqnBxFKd3SJggaPr"
+        self.ldap_entry.userPassword.value = (
+            b"{ARGON2}$argon2id$v=19$m=65536,t=3,p=4$rTmNv6FmvVQaSIXzLvcStQ$F2qtxHsklGS+sgWMrbekjeUn4bWbMvt3Liqsw7jOV1I"
+        )
         connection_enter.return_value = self.ldap_connection
         self.assertEqual(self.login_ok, login(self.database))
         self.assert_cookie_has_session_id()
@@ -191,24 +194,26 @@ class LoginTests(AuthTestCase):
 
     @patch.object(logging, "warning")
     def test_login_password_hash_error(self, logging_mock, connection_mock, connection_enter):
-        """Test login fails when LDAP password hash is not salted SHA1."""
+        """Test login fails when LDAP password hash is not ARGON2."""
         connection_mock.return_value = None
         self.ldap_entry.userPassword.value = b"{XSHA}whatever-here"
         connection_enter.return_value = self.ldap_connection
         self.assertEqual(self.login_nok, login(self.database))
         self.assert_ldap_connection_search_called()
-        self.assertEqual("Only SSHA LDAP password digest supported!", logging_mock.call_args_list[0][0][0])
-        self.assert_log(logging_mock, exceptions.LDAPInvalidAttributeSyntaxResult)
+        self.assertEqual("LDAP error: %s", logging_mock.call_args_list[0][0][0])
+        self.assert_log(logging_mock, argon2.exceptions.InvalidHashError)
 
     @patch.object(logging, "warning")
     def test_login_wrong_password(self, logging_mock, connection_mock, connection_enter):
         """Test login when search error of the login user occurs."""
         connection_mock.return_value = None
-        self.ldap_entry.userPassword.value = b"{SSHA}W841/abcdefghijklmnopqrstuvwxyz0"
+        self.ldap_entry.userPassword.value = (
+            b"{ARGON2}$argon2id$v=19$m=65536,t=3,p=4$rTmNv6FmvvQaSIXzLvcStQ$F2qtxHsklGS+sgWMrbekjeUn4bWbMvt3Liqsw7jOV1I"
+        )
         connection_enter.return_value = self.ldap_connection
         self.assertEqual(self.login_nok, login(self.database))
         self.assert_ldap_connection_search_called()
-        self.assert_log(logging_mock, exceptions.LDAPInvalidCredentialsResult)
+        self.assert_log(logging_mock, argon2.exceptions.VerifyMismatchError)
 
     @patch("routes.auth.datetime", MOCK_DATETIME)
     def test_login_changed_details(self, connection_mock, connection_enter):

@@ -1,12 +1,13 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import { UserButton } from "./UserButton"
 
-jest.mock("../../api/auth.js")
+vi.mock("../../api/auth.js")
 
 function renderUserButton() {
-    const setUser = jest.fn()
+    const setUser = vi.fn()
     render(<UserButton user="jadoe" email="jadoe@example.org" setUser={setUser} />)
     return setUser
 }

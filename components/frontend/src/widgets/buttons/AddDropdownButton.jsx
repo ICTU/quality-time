@@ -105,6 +105,7 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
             </Tooltip>
             <Popover id="dropdown-menu" anchorEl={anchorEl} onClose={() => setAnchorEl(null)} open={Boolean(anchorEl)}>
                 <TextField
+                    autoFocus
                     fullWidth
                     label={`Filter ${itemType} types`}
                     onChange={(event) => setQuery(event.target.value)}

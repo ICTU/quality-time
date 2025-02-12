@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings } from "../../__fixtures__/fixtures"
 import { ResetSettingsButton } from "./ResetSettingsButton"
@@ -10,7 +11,7 @@ beforeEach(() => {
 
 function renderResetSettingsButton({
     atReportsOverview = true,
-    handleDateChange = jest.fn(),
+    handleDateChange = vi.fn(),
     reportDate = null,
     settings = null,
 } = {}) {
@@ -32,7 +33,7 @@ it("resets the settings", async () => {
             "sort_column=status&sort_direction=descending&expanded=tab:0&hidden_cards=tags",
     )
     const settings = createTestableSettings()
-    const handleDateChange = jest.fn()
+    const handleDateChange = vi.fn()
     renderResetSettingsButton({
         handleDateChange: handleDateChange,
         reportDate: new Date("2023-01-01"),
@@ -45,7 +46,7 @@ it("resets the settings", async () => {
 
 it("does not reset the settings when all have the default value", async () => {
     const settings = createTestableSettings()
-    const handleDateChange = jest.fn()
+    const handleDateChange = vi.fn()
     renderResetSettingsButton({
         atReportsOverview: false,
         handleDateChange: handleDateChange,
