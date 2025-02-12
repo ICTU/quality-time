@@ -5,7 +5,7 @@ from abc import ABC
 from base_collectors import SourceCollector
 from collector_utilities.functions import add_query
 from collector_utilities.type import URL, Value
-from model import Entities, SourceResponses
+from model import SourceResponses
 
 
 class BitbucketBase(SourceCollector, ABC):
@@ -25,13 +25,13 @@ class BitbucketBase(SourceCollector, ABC):
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to use Bitbucket pagination, if necessary."""
         responses = SourceResponses()
-        isLastPage = False
+        is_last_page = False
         number_to_skip = 0
-        while not isLastPage:
+        while not is_last_page:
             responses.extend(await super()._get_source_responses(URL(f"{urls[0]}&start={number_to_skip}")))
             json = await responses[-1].json()
             number_to_skip = json.get("nextPageStart", 0)
-            isLastPage = json["isLastPage"]
+            is_last_page = json["isLastPage"]
         return responses
 
     async def _parse_total(self, responses: SourceResponses) -> Value:

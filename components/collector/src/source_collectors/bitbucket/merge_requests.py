@@ -2,10 +2,11 @@
 from typing import cast
 
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import URL, Value
+from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
 from .base import BitbucketProjectBase
+
 
 class BitbucketMergeRequests(BitbucketProjectBase):
     """Collector for merge requests in Bitbucket."""
