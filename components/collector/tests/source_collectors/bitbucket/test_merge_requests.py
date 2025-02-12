@@ -58,17 +58,19 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
             "downvotes": "1",
         }
 
-    def create_mr_json(self,
-                       mr,
-                       has_next_page: bool = False,
-                       ):
+    def create_mr_json(
+        self,
+        mr,
+        has_next_page: bool = False,
+    ):
         """Create an entity."""
-        return {"size": len(mr),
-                "limit": 25,
-                "isLastPage": True,
-                "start": 0,
-                "values": mr,
-                "hasNextPage": has_next_page
+        return {
+            "size": len(mr),
+            "limit": 25,
+            "isLastPage": True,
+            "start": 0,
+            "values": mr,
+            "hasNextPage": has_next_page,
         }
 
     async def test_merge_requests(self):
@@ -76,12 +78,14 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
         self.set_source_parameter("merge_request_state", ["open"])
         self.set_source_parameter("upvotes", "2")  # Require at least two upvotes
         self.set_source_parameter("target_branches_to_include", ["refs/heads/main"])
-        bitbucket_json = self.create_mr_json([
-                    self.create_merge_request(1),
-                    self.create_merge_request(2, state="DECLINED"),
-                    self.create_merge_request(3, approved=True),
-                    self.create_merge_request(4, branch="dev"),
-        ])
+        bitbucket_json = self.create_mr_json(
+            [
+                self.create_merge_request(1),
+                self.create_merge_request(2, state="DECLINED"),
+                self.create_merge_request(3, approved=True),
+                self.create_merge_request(4, branch="dev"),
+            ]
+        )
         response = await self.collect(get_request_json_return_value=bitbucket_json)
         self.assert_measurement(
             response,
@@ -96,12 +100,12 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
         BitbucketMergeRequests.PAGE_SIZE = 1
         bitbucket_responses = [
             FakeResponse(
-                { "size": 1, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]}
+                {"size": 1, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]}
             ),
             FakeResponse(
-                { "size": 1, "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]}
+                {"size": 1, "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]}
             ),
-            FakeResponse({ "size": 1, "isLastPage": True, "values": [self.create_merge_request(3)]})
+            FakeResponse({"size": 1, "isLastPage": True, "values": [self.create_merge_request(3)]}),
         ]
         response = await self.collect(get_request_side_effect=bitbucket_responses)
         self.assert_measurement(

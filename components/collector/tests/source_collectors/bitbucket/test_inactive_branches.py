@@ -27,7 +27,6 @@ class BitbucketInactiveBranchesTest(BitbucketBranchesTestCase):
         self.unmerged_branch_entity = self.create_entity("unmerged_branch")
         self.entities = [self.unmerged_branch_entity]
 
-
     def create_branch(
         self, name: str, *, default: bool = False, active: bool = False
     ) -> dict[str, str | bool | dict[str, dict[str, float | int]]]:
@@ -47,17 +46,16 @@ class BitbucketInactiveBranchesTest(BitbucketBranchesTestCase):
             },
         }
 
-    def create_branches_json(self, branches,
-                             has_next_page: bool = False):
+    def create_branches_json(self, branches, has_next_page: bool = False):
         """Create an entity."""
-        return {"size": len(branches),
-                "limit": 25,
-                "isLastPage": True,
-                "start": 0,
-                "hasNextPage": has_next_page,
-                "values": branches
+        return {
+            "size": len(branches),
+            "limit": 25,
+            "isLastPage": True,
+            "start": 0,
+            "hasNextPage": has_next_page,
+            "values": branches,
         }
-
 
     def create_entity(self, name: str) -> dict[str, str]:
         """Create an entity."""
