@@ -4,11 +4,16 @@ from source_collectors import BitbucketMergeRequests
 
 from .base import BitbucketTestCase
 
+
 class FakeResponse:
+    """A fake response class that mimics an async JSON response."""
+
     def __init__(self, fake_json):
+        """Initialize with a fake JSON payload."""
         self.fake_json = fake_json
 
     async def json(self):
+        """Return the fake JSON response asynchronously."""
         return self.fake_json
 
 
@@ -58,7 +63,13 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
                        has_next_page: bool = False,
                        ):
         """Create an entity."""
-        return {"size": len(mr), "limit": 25, "isLastPage": True, "start": 0, "values": mr, "hasNextPage": has_next_page}
+        return {"size": len(mr),
+                "limit": 25,
+                "isLastPage": True,
+                "start": 0,
+                "values": mr,
+                "hasNextPage": has_next_page
+        }
 
     async def test_merge_requests(self):
         """Test that the number of merge requests can be measured."""
@@ -84,8 +95,12 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
         """Test that pagination works."""
         BitbucketMergeRequests.PAGE_SIZE = 1
         bitbucket_responses = [
-            FakeResponse({ "size": 1, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]}),
-            FakeResponse({ "size": 1, "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]}),
+            FakeResponse(
+                { "size": 1, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]}
+            ),
+            FakeResponse(
+                { "size": 1, "isLastPage": False, "nextPageStart": 2, "values": [self.create_merge_request(2)]}
+            ),
             FakeResponse({ "size": 1, "isLastPage": True, "values": [self.create_merge_request(3)]})
         ]
         response = await self.collect(get_request_side_effect=bitbucket_responses)
