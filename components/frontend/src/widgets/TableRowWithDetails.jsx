@@ -21,7 +21,7 @@ export function TableRowWithDetails(props) {
                 }}
             >
                 <TableCell align="center" sx={{ padding: "0px" }}>
-                    <ExpandButton expand={expanded} onClick={() => onExpand(!expanded)} size="1.5em" />
+                    <ExpandButton expand={expanded} onClick={() => onExpand(!expanded)} />
                 </TableCell>
                 {children}
             </TableRow>

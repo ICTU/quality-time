@@ -4,26 +4,20 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
-import * as changelog_api from "../api/changelog"
-import * as report_api from "../api/report"
+import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { ReportTitle } from "./ReportTitle"
 
-vi.mock("../api/changelog.js")
-vi.mock("../api/report.js")
+vi.mock("../api/fetch_server_api.js")
 
 beforeEach(() => {
     history.push("?expanded=report_uuid")
-    vi.resetAllMocks()
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
 })
 
-report_api.get_report_issue_tracker_options.mockImplementation(() =>
-    Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
-)
-
-const reload = vi.fn
+afterEach(() => vi.resetAllMocks())
 
 function renderReportTitle() {
     return render(
@@ -31,7 +25,7 @@ function renderReportTitle() {
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <ReportTitle
                     report={{ report_uuid: "report_uuid", title: "Report" }}
-                    reload={reload}
+                    reload={() => {}}
                     settings={createTestableSettings()}
                 />
             </Permissions.Provider>
@@ -39,13 +33,20 @@ function renderReportTitle() {
     )
 }
 
+function expectFetch(method, api, body) {
+    if (body) {
+        expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(method, api, body)
+    } else {
+        expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(method, api)
+    }
+}
+
 it("deletes the report", async () => {
-    report_api.delete_report = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderReportTitle()
     await act(async () => {
         fireEvent.click(screen.getByText(/Delete report/))
     })
-    expect(report_api.delete_report).toHaveBeenLastCalledWith("report_uuid", undefined)
+    expectFetch("delete", "report/report_uuid", {})
     await expectNoAccessibilityViolations(container)
 })
 
@@ -55,7 +56,7 @@ it("sets the title", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 12,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "title", "New title", reload)
+    expectFetch("post", "report/report_uuid/attribute/title", { title: "New title" })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -65,7 +66,7 @@ it("sets the subtitle", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 12,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "subtitle", "New subtitle", reload)
+    expectFetch("post", "report/report_uuid/attribute/subtitle", { subtitle: "New subtitle" })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -75,7 +76,7 @@ it("sets the comment", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 8,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith("report_uuid", "comment", "New comment", reload)
+    expectFetch("post", "report/report_uuid/attribute/comment", { comment: "New comment" })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -91,12 +92,9 @@ it("sets the unknown status reaction time", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 1,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "desired_response_times",
-        { unknown: 4 },
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/attribute/desired_response_times", {
+        desired_response_times: { unknown: 4 },
+    })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -109,12 +107,9 @@ it("sets the target not met status reaction time", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 1,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "desired_response_times",
-        { target_not_met: 5 },
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/attribute/desired_response_times", {
+        desired_response_times: { target_not_met: 5 },
+    })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -127,12 +122,9 @@ it("sets the near target met status reaction time", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 2,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "desired_response_times",
-        { near_target_met: 6 },
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/attribute/desired_response_times", {
+        desired_response_times: { near_target_met: 6 },
+    })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -145,12 +137,9 @@ it("sets the tech debt target status reaction time", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 2,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "desired_response_times",
-        { debt_target_met: 6 },
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/attribute/desired_response_times", {
+        desired_response_times: { debt_target_met: 6 },
+    })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -163,12 +152,9 @@ it("sets the confirmed measurement entity status reaction time", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "desired_response_times",
-        { confirmed: 60 },
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/attribute/desired_response_times", {
+        desired_response_times: { confirmed: 60 },
+    })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -181,12 +167,9 @@ it("sets the false positive measurement entity status reaction time", async () =
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "desired_response_times",
-        { false_positive: 70 },
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/attribute/desired_response_times", {
+        desired_response_times: { false_positive: 70 },
+    })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -199,12 +182,9 @@ it("sets the fixed measurement entity status reaction time", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "desired_response_times",
-        { fixed: 80 },
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/attribute/desired_response_times", {
+        desired_response_times: { fixed: 80 },
+    })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -217,17 +197,14 @@ it("sets the won't fixed measurement entity status reaction time", async () => {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
-    expect(report_api.set_report_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "desired_response_times",
-        { wont_fix: 90 },
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/attribute/desired_response_times", {
+        desired_response_times: { wont_fix: 90 },
+    })
     await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker type", async () => {
-    report_api.get_report_issue_tracker_options.mockImplementation(() =>
+    fetch_server_api.fetch_server_api.mockImplementation(() =>
         Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
     )
     const { container } = renderReportTitle()
@@ -235,86 +212,49 @@ it("sets the issue tracker type", async () => {
     fireEvent.mouseDown(screen.getByLabelText(/Issue tracker type/))
     const listbox = within(screen.getByRole("listbox"))
     await act(async () => fireEvent.click(listbox.getByText(/Jira/)))
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "type",
-        "jira",
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/issue_tracker/type", { type: "jira" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker url", async () => {
-    report_api.get_report_issue_tracker_options.mockImplementation(() =>
-        Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
-    )
     const { container } = renderReportTitle()
     fireEvent.click(screen.getByText(/Issue tracker/))
     await userEvent.type(screen.getByLabelText(/URL/), "https://jira{Enter}")
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "url",
-        "https://jira",
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/issue_tracker/url", { url: "https://jira" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker username", async () => {
-    report_api.get_report_issue_tracker_options.mockImplementation(() =>
-        Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
-    )
     const { container } = renderReportTitle()
     fireEvent.click(screen.getByText(/Issue tracker/))
     await userEvent.type(screen.getByLabelText(/Username/), "janedoe{Enter}")
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "username",
-        "janedoe",
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/issue_tracker/username", { username: "janedoe" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker password", async () => {
-    report_api.get_report_issue_tracker_options.mockImplementation(() =>
-        Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
-    )
     const { container } = renderReportTitle()
     fireEvent.click(screen.getByText(/Issue tracker/))
     await userEvent.type(screen.getByLabelText(/Password/), "secret{Enter}")
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "password",
-        "secret",
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/issue_tracker/password", { password: "secret" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker private token", async () => {
-    report_api.get_report_issue_tracker_options.mockImplementation(() =>
-        Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
-    )
     const { container } = renderReportTitle()
     fireEvent.click(screen.getByText(/Issue tracker/))
     await userEvent.type(screen.getByLabelText(/Private token/), "secret{Enter}")
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "private_token",
-        "secret",
-        reload,
-    )
+    expectFetch("post", "report/report_uuid/issue_tracker/private_token", { private_token: "secret" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("loads the changelog", async () => {
-    changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }))
+    fetch_server_api.fetch_server_api.mockImplementation(() => Promise.resolve({ changelog: [] }))
     const { container } = renderReportTitle()
     await act(async () => {
         fireEvent.click(screen.getByText(/Changelog/))
     })
-    expect(changelog_api.get_changelog).toHaveBeenCalledWith(5, { report_uuid: "report_uuid" })
+    expectFetch("get", "changelog/report/report_uuid/5")
     await expectNoAccessibilityViolations(container)
 })
 

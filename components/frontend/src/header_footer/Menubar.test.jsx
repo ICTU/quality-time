@@ -4,15 +4,15 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
-import * as auth from "../api/auth"
+import * as fetch_server_api from "../api/fetch_server_api"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { Menubar } from "./Menubar"
 
-vi.mock("../api/auth.js")
+vi.mock("../api/fetch_server_api.js")
 
-beforeEach(() => {
-    history.push("")
-})
+beforeEach(() => history.push(""))
+
+afterEach(() => vi.resetAllMocks())
 
 function renderMenubar({
     openReportsOverview = null,
@@ -38,7 +38,7 @@ function renderMenubar({
 }
 
 it("logs in", async () => {
-    auth.login = vi.fn().mockResolvedValue({
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({
         ok: true,
         email: "user@example.org",
         session_expiration_datetime: "2021-02-24T13:10:00+00:00",
@@ -50,14 +50,17 @@ it("logs in", async () => {
     fireEvent.change(screen.getByLabelText("Username"), { target: { value: "user@example.org" } })
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "secret" } })
     await act(async () => fireEvent.click(screen.getByText(/Submit/)))
-    expect(auth.login).toHaveBeenCalledWith("user@example.org", "secret")
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "login", {
+        username: "user@example.org",
+        password: "secret",
+    })
     const expected_date = new Date(Date.parse("2021-02-24T13:10:00+00:00"))
     expect(set_user).toHaveBeenCalledWith("user@example.org", "user@example.org", expected_date)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows invalid credential message", async () => {
-    auth.login = vi.fn().mockResolvedValue({ ok: false })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: false })
     const set_user = vi.fn()
     const { container } = renderMenubar({ set_user: set_user })
     fireEvent.click(screen.getByText(/Login/))
@@ -65,13 +68,16 @@ it("shows invalid credential message", async () => {
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "secret" } })
     await act(async () => fireEvent.click(screen.getByText(/Submit/)))
     expect(screen.getAllByText(/Invalid credentials/).length).toBe(1)
-    expect(auth.login).toHaveBeenCalledWith("user@example.org", "secret")
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "login", {
+        username: "user@example.org",
+        password: "secret",
+    })
     expect(set_user).not.toHaveBeenCalled()
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows connection error message", async () => {
-    auth.login = vi.fn().mockRejectedValue(new Error("Async error message"))
+    fetch_server_api.fetch_server_api = vi.fn().mockRejectedValue(new Error("Async error message"))
     const set_user = vi.fn()
     const { container } = renderMenubar({ set_user: set_user })
     fireEvent.click(screen.getByText(/Login/))
@@ -79,7 +85,10 @@ it("shows connection error message", async () => {
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "secret" } })
     await act(async () => fireEvent.click(screen.getByText(/Submit/)))
     expect(screen.getAllByText(/Connection error/).length).toBe(1)
-    expect(auth.login).toHaveBeenCalledWith("user@example.org", "secret")
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "login", {
+        username: "user@example.org",
+        password: "secret",
+    })
     expect(set_user).not.toHaveBeenCalled()
     await expectNoAccessibilityViolations(container)
 })
@@ -108,12 +117,12 @@ it("closes the dialog on escape", async () => {
 })
 
 it("logs out", async () => {
-    auth.logout = vi.fn().mockResolvedValue({ ok: true })
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const set_user = vi.fn()
     const { container } = renderMenubar({ set_user: set_user, user: "jadoe" })
     fireEvent.click(screen.getByRole("button", { name: "User options" }))
     fireEvent.click(screen.getByRole("menuitem", { name: "Logout" }))
-    expect(auth.logout).toHaveBeenCalled()
+    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "logout", {})
     expect(set_user).toHaveBeenCalledWith(null)
     await expectNoAccessibilityViolations(container)
 })
