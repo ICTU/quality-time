@@ -1,11 +1,25 @@
 """Unit tests for the GitLab CI-pipeline duration collector."""
 
 from datetime import datetime
+from typing import Final
 from unittest.mock import Mock, patch
 
 from dateutil.tz import tzutc
 
 from .base import GitLabTestCase
+
+
+class FakeResponse:
+    """Fake GitLab response."""
+
+    links: Final[dict] = {}
+
+    def __init__(self, fake_json) -> None:
+        self.fake_json = fake_json
+
+    async def json(self):
+        """Return the fake JSON."""
+        return self.fake_json
 
 
 class GitLabPipelineDurationTest(GitLabTestCase):
@@ -48,10 +62,9 @@ class GitLabPipelineDurationTest(GitLabTestCase):
     async def collect(self):
         """Override to pass the GitLab pipeline JSON responses."""
         return await super().collect(
-            get_request_json_side_effect=[
-                self.pipeline_json,  # To fetch all pipelines
-                self.pipeline_detail_json,  # To get the pipeline data for the most recent pipeline
-                self.pipeline_detail_json,  # To get the pipeline landing URL for the most recent pipeline
+            get_request_side_effect=[
+                FakeResponse(self.pipeline_json),  # To fetch all pipelines
+                FakeResponse(self.pipeline_detail_json),  # To get the pipeline details for the most recent pipeline
             ]
         )
 
