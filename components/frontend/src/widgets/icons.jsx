@@ -8,17 +8,24 @@ import MoveDownIcon from "@mui/icons-material/MoveDown"
 import OpenInNewIcon from "@mui/icons-material/OpenInNew"
 import VisibilityIcon from "@mui/icons-material/Visibility"
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
+import { string } from "prop-types"
 
 export function AddItemIcon() {
     return <AddIcon fontSize="inherit" sx={{ verticalAlign: "middle" }} />
 }
 
-export function CaretDown() {
-    return <ArrowDropDownIcon title="expand" sx={{ verticalAlign: "middle", fontSize: "1.5em" }} />
+export function CaretDown({ size }) {
+    return <ArrowDropDownIcon title="expand" sx={{ verticalAlign: "middle", fontSize: size }} />
+}
+CaretDown.propTypes = {
+    size: string.isRequired,
 }
 
-export function CaretRight() {
-    return <ArrowRightIcon title="expand" sx={{ verticalAlign: "middle", fontSize: "1.5em" }} />
+export function CaretRight({ size }) {
+    return <ArrowRightIcon title="expand" sx={{ verticalAlign: "middle", fontSize: size }} />
+}
+CaretRight.propTypes = {
+    size: string.isRequired,
 }
 
 export function CopyItemIcon() {

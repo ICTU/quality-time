@@ -25,7 +25,7 @@ export function HeaderWithDetails({ children, header, item_uuid, level, settings
             <AccordionSummary
                 aria-controls={showDetails ? `accordion-content-${item_uuid}` : null}
                 aria-label="Expand/collapse"
-                expandIcon={<CaretRight size={{ h1: "5em", h2: "4em", h3: "3em" }[level]} />}
+                expandIcon={<CaretRight size={{ h1: "48px", h2: "32px", h3: "24px" }[level]} />}
                 id={`accordion-header-${item_uuid}`}
                 sx={{
                     border: "0",

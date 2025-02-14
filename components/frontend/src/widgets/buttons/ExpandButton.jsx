@@ -6,7 +6,7 @@ import { CaretDown, CaretRight } from "../icons"
 export function ExpandButton({ expand, onClick }) {
     return (
         <IconButton aria-label="Expand/collapse" onClick={onClick}>
-            {expand ? <CaretDown /> : <CaretRight />}
+            {expand ? <CaretDown size="1.5em" /> : <CaretRight size="1.5em" />}
         </IconButton>
     )
 }
