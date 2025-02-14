@@ -1,6 +1,6 @@
 """Unit tests for the Bitbucket merge requests collector."""
 
-from source_collectors import BitbucketMergeRequests
+from src.source_collectors.bitbucket.base import BitbucketProjectBase
 
 from .base import BitbucketTestCase
 
@@ -97,7 +97,7 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
 
     async def test_pagination(self):
         """Test that pagination works."""
-        BitbucketMergeRequests.PAGE_SIZE = 1
+        BitbucketProjectBase.page_size=1
         bitbucket_responses = [
             FakeResponse(
                 {"size": 1, "isLastPage": False, "nextPageStart": 1, "values": [self.create_merge_request(1)]}

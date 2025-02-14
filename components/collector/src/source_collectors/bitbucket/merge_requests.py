@@ -12,11 +12,9 @@ from .base import BitbucketProjectBase
 class BitbucketMergeRequests(BitbucketProjectBase):
     """Collector for merge requests in Bitbucket."""
 
-    PAGE_SIZE = 100  # Page size for Bitbucket pagination
-
     async def _api_url(self) -> URL:
         """Override to return the merge requests API."""
-        return await self._bitbucket_api_url("pull-requests", self.PAGE_SIZE)
+        return await self._bitbucket_api_url("pull-requests")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project merge requests."""

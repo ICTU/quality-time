@@ -36,18 +36,20 @@ class BitbucketBase(SourceCollector, ABC):
 
     async def _parse_total(self, responses: SourceResponses) -> Value:
         """Override to parse the total number of entities from the responses."""
-        size = [(await response.json())["size"] for response in responses]
-        return str(sum(size))
+        sizes = [(await response.json())["size"] for response in responses]
+        return str(sum(sizes))
 
 
 class BitbucketProjectBase(BitbucketBase, ABC):
     """Base class for Bitbucket collectors for a specific project."""
 
-    async def _bitbucket_api_url(self, api: str, page_size: int) -> URL:
+    page_size = 100 # Page size for Bitbucket pagination
+
+    async def _bitbucket_api_url(self, api: str) -> URL:
         """Return a Bitbucket API url for a project, if present in the parameters."""
         url = await super()._api_url()
         project = f"{self._parameter('owner')}/repos/{self._parameter('repository')}"
-        api_url = URL(f"{url}/rest/api/1.0/projects/{project}" + (f"/{api}?limit{page_size}" if api else ""))
+        api_url = URL(f"{url}/rest/api/1.0/projects/{project}" + (f"/{api}?limit{self.page_size}" if api else ""))
         return add_query(api_url, "&details=true")
 
     async def _bitbucket_landing_url(self, responses: SourceResponses, api: str) -> URL:
