@@ -12,7 +12,6 @@ class BitbucketInactiveBranchesTest(BitbucketBranchesTestCase):
     """Unit tests for the inactive branches metric."""
 
     METRIC_TYPE = "inactive_branches"
-    WEB_URL = "https://bitbucket/rest/api/1.0/projects/owner/repos/repository/branches?limit=100&details=true"
 
     def setUp(self):
         """Extend to setup fixtures."""

@@ -19,6 +19,6 @@ class BitbucketBranchesTestCase(BitbucketTestCase):
     """Base class for Bitbucket branches collectors."""
 
     def setUp(self):
-        """Extend to add branches test fixtures."""
+        """Extend to add test fixtures."""
         super().setUp()
         self.set_source_parameter("branch", "branch")

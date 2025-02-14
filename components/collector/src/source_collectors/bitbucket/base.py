@@ -43,7 +43,7 @@ class BitbucketBase(SourceCollector, ABC):
 class BitbucketProjectBase(BitbucketBase, ABC):
     """Base class for Bitbucket collectors for a specific project."""
 
-    page_size = 100 # Page size for Bitbucket pagination
+    page_size = 100  # Page size for Bitbucket pagination
 
     async def _bitbucket_api_url(self, api: str) -> URL:
         """Return a Bitbucket API url for a project, if present in the parameters."""
