@@ -118,11 +118,12 @@ class GitLabJobsBase(GitLabProjectBase):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to count the job."""
+        jobs_to_include = self._parameter("jobs_to_include")
+        refs_to_include = self._parameter("refs_to_include")
         return (
-            not match_string_or_regular_expression(
-                entity["name"],
-                self._parameter("jobs_to_ignore"),
-            )
+            (match_string_or_regular_expression(entity["name"], jobs_to_include) if jobs_to_include else True)
+            and (match_string_or_regular_expression(entity["branch"], refs_to_include) if refs_to_include else True)
+            and not match_string_or_regular_expression(entity["name"], self._parameter("jobs_to_ignore"))
             and not match_string_or_regular_expression(entity["branch"], self._parameter("refs_to_ignore"))
             and entity["build_datetime"] >= self._lookback_datetime()
         )

@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Added
+
+- Next to ignoring branches, tags, and jobs, also allow for including branches, tags, and jobs when measuring 'failed CI-jobs', 'unused CI-jobs', 'change failure rate', and 'jobs runs within time period' with GitLab as source. Closes [#4520](https://github.com/ICTU/quality-time/issues/4520).
+
 ### Fixed
 
 - Use ARGON2 hashes to verify user LDAP passwords instead of SSHA1. Fixes [#6233](https://github.com/ICTU/quality-time/issues/6233).

@@ -34,9 +34,11 @@ class BitbucketBranchType(BranchType):
 class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBase, InactiveBranchesSourceCollector):
     """Collector for inactive branches."""
 
+    PAGE_SIZE = 100  # Page size for Bitbucket pagination
+
     async def _api_url(self) -> URL:
         """Override to return the branches API."""
-        return await self._bitbucket_api_url("branches")
+        return await self._bitbucket_api_url("branches", self.PAGE_SIZE)
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project branches."""
