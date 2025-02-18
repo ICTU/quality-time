@@ -1,6 +1,7 @@
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from "./context/Permissions"
 import { defaultDesiredResponseTimes } from "./defaults"
 import {
+    DOCUMENTATION_URL,
     addCounts,
     capitalize,
     getMetricResponseDeadline,
@@ -19,6 +20,7 @@ import {
     niceNumber,
     nrMetricsInReport,
     nrMetricsInReports,
+    referenceDocumentationURL,
     scaledNumber,
     sortWithLocaleCompare,
     sum,
@@ -513,4 +515,18 @@ it("returns whether a metric's measurement is outdated", () => {
     expect(isMeasurementOutdated({ latest_measurement: {} })).toBe(false)
     // A metric with an outdated measurement is outdated:
     expect(isMeasurementOutdated({ latest_measurement: { outdated: true } })).toBe(true)
+})
+
+it("returns the reference documentation URL", () => {
+    const url = `${DOCUMENTATION_URL}/reference.html`
+    // Simple name
+    expect(referenceDocumentationURL("name")).toBe(`${url}#name`)
+    // Name with spaces
+    expect(referenceDocumentationURL("name with space")).toBe(`${url}#name-with-space`)
+    // Name with underscores
+    expect(referenceDocumentationURL("name_with_underscore")).toBe(`${url}#name-with-underscore`)
+    // Name with brackets
+    expect(referenceDocumentationURL("(bracketed)")).toBe(`${url}#bracketed`)
+    // Name with forward slash
+    expect(referenceDocumentationURL("forward/slash")).toBe(`${url}#forwardslash`)
 })
