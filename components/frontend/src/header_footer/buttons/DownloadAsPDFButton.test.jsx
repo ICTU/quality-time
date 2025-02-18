@@ -16,12 +16,14 @@ beforeEach(() => {
 
 test("DownloadAsPDFButton has the correct label for reports overview", () => {
     render(<DownloadAsPDFButton />)
-    expect(screen.getAllByLabelText(/reports overview as PDF/).length).toBe(1)
+    // toBe(2) due to 10840-menubar-color-contrast-for-disabled-items
+    expect(screen.getAllByLabelText(/Generate a PDF version/).length).toBe(2)
 })
 
 test("DownloadAsPDFButton has the correct label for a report", () => {
     render(<DownloadAsPDFButton report_uuid={"report_uuid"} />)
-    expect(screen.getAllByLabelText(/report as PDF/).length).toBe(1)
+    // toBe(2) due to 10840-menubar-color-contrast-for-disabled-items
+    expect(screen.getAllByLabelText(/Generate a PDF version/).length).toBe(2)
 })
 
 async function clickDownload(nrClicks = 1) {

@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Fixed
 
+- Increase contrast for disabled items in the menu bar. Fixes [#10840](https://github.com/ICTU/quality-time/issues/10840).
 - Links to documentation on Read the Docs for subjects, metrics, or sources with hyphens in their name wouldn't scroll to the right location. Fixes [#10843](https://github.com/ICTU/quality-time/issues/10843).
 - The software documentation was outdated (among other things the API-server health check endpoint). Fixes [#10858](https://github.com/ICTU/quality-time/issues/10858).
 
