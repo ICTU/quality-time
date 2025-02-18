@@ -421,7 +421,7 @@ export function dropdownOptions(options) {
 
 export function referenceDocumentationURL(name) {
     // Return a URL to the documentation for the metric/subject/source name
-    const slug = `${name?.toLowerCase().replaceAll(" ", "-").replaceAll(/[()/]/g, "")}`
+    const slug = `${name?.toLowerCase().replaceAll(/[\s_]/g, "-").replaceAll(/[()/]/g, "")}`
     return `${DOCUMENTATION_URL}/reference.html#${slug}`
 }
 
