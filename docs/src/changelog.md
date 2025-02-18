@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- The software documentation was outdated (among other things the API-server health check endpoint). Fixes [#10858](https://github.com/ICTU/quality-time/issues/10858).
+
 ## v5.25.0 - 2025-02-14
 
 ### Added

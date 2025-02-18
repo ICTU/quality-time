@@ -18,12 +18,12 @@ This document describes the *Quality-time* software. It is aimed at *Quality-tim
 
 There are four bespoke components:
 
-- A [frontend](#frontend), serving the user interface. The frontend is written in JavaScript using [ReactJS](https://reactjs.org) and [Semantic UI React](https://react.semantic-ui.com).
+- A [frontend](#frontend), serving the user interface. The frontend is written in JavaScript using [ReactJS](https://reactjs.org) and [Material UI](https://mui.com).
 - An [API-server](#api-server) serving the API for the user interface. The API-server is written in Python using [Bottle](https://bottlepy.org) as web framework.
 - A [collector](#collector) to collect the measurements from the sources. The collector is written in Python using [`aiohttp`](https://docs.aiohttp.org) as HTTP client library.
 - A [notifier](#notifier) to notify users about events such as metrics turning red. The notifier is written in Python.
 
-Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared code](#shared-code) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model is used by all Python components, i.e. the API-server, the collector, and the notifier. The shared code is used by the API-server.
+Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared code](#shared-code) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model and shared code are used by all Python components, i.e. the API-server, the collector, and the notifier.
 
 ### Standard components
 
@@ -46,7 +46,7 @@ For testing purposes there a few additional components:
 
 ## Frontend
 
-The frontend contains the React frontend code. This component was bootstrapped using [Create React App](https://github.com/ICTU/quality-time/blob/master/components/frontend/README-Create-React-App.md).
+The frontend contains the React frontend code.
 
 ### Health check
 
@@ -71,7 +71,15 @@ The API of the API-server is versioned. The version is not changed when backward
 
 ### Health check
 
-The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/api_server/Dockerfile) contains a health check that uses curl to retrieve an end-point (api/health) from the API-server. Officially, this end-point does not exist, but since the server returns an empty JSON file for non-existing endpoints it works for checking the health of the API-server.
+The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/api_server/Dockerfile) contains a health check script that downloads the health information from the API-server end-point `/api/internal/health`.
+
+If the server is healthy the end-point returns a response with HTTP-status 200 and a JSON payload containing:
+
+```json
+{
+    "healthy": true
+}
+```
 
 ### Environment variables
 
@@ -156,7 +164,7 @@ The notifier uses the following environment variables:
 
 ## Shared code
 
-The [shared code component](https://github.com/ICTU/quality-time/tree/master/components/shared_code) contains code and resources shared between the servers and the collector and notifier components. This includes the [example reports](#example-reports), a [shared data model](#shared-data-model), and code to initialize the servers, access the database, and provide endpoints.
+The [shared code component](https://github.com/ICTU/quality-time/tree/master/components/shared_code) contains code and resources shared between the API-server, the collector, and the notifier. This includes the [example reports](#example-reports), a [shared data model](#shared-data-model), and code to initialize the servers, access the database, and provide endpoints.
 
 ### Example reports
 
@@ -365,6 +373,10 @@ The proxy routes traffic from and to the user's browser. *Quality-time* uses [Ng
 
 The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile) adds the *Quality-time* configuration to the Nginx image.
 
+### Health check
+
+As a health check, the favicon is downloaded from the frontend container.
+
 ### Environment variables
 
 The proxy uses the following environment variables:
@@ -387,6 +399,10 @@ The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/componen
 
 Data models, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the data model is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the API-server to retrieve the documents as they were at a specific moment in time and provide time-travel functionality.
 
+### Health check
+
+The MongoDB container currently has no health check.
+
 ### Environment variables
 
 The database uses the following environment variables:
@@ -404,7 +420,7 @@ The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/compo
 
 ### Health check
 
-The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) contains a health check that uses curl to retrieve an API (api/health) from the renderer API server.
+The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) contains a health check that uses curl to connect to a health end-point (`/api/health`) of the renderer.
 
 ### Environment variables
 
@@ -421,6 +437,10 @@ The renderer uses the following environment variables:
 ## Test data
 
 This component contains test data for the example reports. The Docker image is published as `ictu/quality-time_testdata` on Docker Hub.
+
+### Health check
+
+The test data container currently has no health check.
 
 ### Running the test data component
 
@@ -444,6 +464,10 @@ Add the example file(s) to the [test data reports](https://github.com/ICTU/quali
 ## Test LDAP server
 
 A test LDAP server with test users is included for development and testing purposes. An admin interface (phpldapadmin) is included to administer users in this LDAP server.
+
+### Health check
+
+The test LDAP server container currently has no health check.
 
 ### LDAP users
 
