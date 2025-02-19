@@ -17,8 +17,16 @@ import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { Tabs } from "../widgets/Tabs"
 import { SubjectParameters } from "./SubjectParameters"
 
-function SubjectTitleButtonRow({ subject_uuid, firstSubject, lastSubject, reload, url }) {
-    const deleteButton = <DeleteButton itemType="subject" onClick={() => delete_subject(subject_uuid, reload)} />
+function SubjectTitleButtonRow({ subject_uuid, firstSubject, lastSubject, reload, settings, url }) {
+    const deleteButton = (
+        <DeleteButton
+            itemType="subject"
+            onClick={() => {
+                delete_subject(subject_uuid, reload)
+                settings.expandedItems.deleteItem(subject_uuid)
+            }}
+        />
+    )
     return (
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
@@ -43,6 +51,7 @@ SubjectTitleButtonRow.propTypes = {
     firstSubject: bool,
     lastSubject: bool,
     reload: func,
+    settings: settingsPropType,
     url: string,
 }
 
@@ -70,10 +79,12 @@ export function SubjectTitle({
             subheader={subject.subtitle}
         >
             <Tabs
+                settings={settings}
                 tabs={[
                     { label: "Configuration", icon: <SettingsIcon /> },
                     { label: "Changelog", icon: <HistoryIcon /> },
                 ]}
+                uuid={subject_uuid}
             >
                 <SubjectParameters
                     subject={subject}
@@ -88,6 +99,7 @@ export function SubjectTitle({
                 firstSubject={firstSubject}
                 lastSubject={lastSubject}
                 reload={reload}
+                settings={settings}
                 url={subjectUrl}
             />
         </HeaderWithDetails>

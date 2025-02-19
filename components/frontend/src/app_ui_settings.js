@@ -1,6 +1,7 @@
 import {
     useArrayURLSearchQuery,
     useBooleanURLSearchQuery,
+    useIntegerMappingURLSearchQuery,
     useIntegerURLSearchQuery,
     useStringURLSearchQuery,
 } from "./hooks/url_search_query"
@@ -51,7 +52,8 @@ export function useSortDirectionURLSearchQuery(report_uuid, defaultValue = "asce
 }
 
 export function useExpandedItemsSearchQuery(report_uuid) {
-    return useArrayURLSearchQuery(urlSearchQueryKey("expanded", report_uuid))
+    // Use useIntegerMappingURLSearchQuery to handle expanded items and tabs. Key is the item, value is the tab index.
+    return useIntegerMappingURLSearchQuery(urlSearchQueryKey("expanded", report_uuid))
 }
 
 export function useShowIssueSummaryURLSearchQuery(report_uuid) {

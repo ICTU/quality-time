@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { vi } from "vitest"
@@ -11,9 +11,9 @@ import { ReportsOverviewTitle } from "./ReportsOverviewTitle"
 
 vi.mock("../api/fetch_server_api.js")
 
-beforeEach(() => {
-    history.push("?expanded=reports_overview")
-})
+beforeEach(() => history.push("?expanded=reports_overview:0"))
+
+afterEach(() => vi.restoreAllMocks())
 
 function renderReportsOverviewTitle() {
     return render(
@@ -55,8 +55,8 @@ it("sets the comment", async () => {
 
 it("sets the edit report permission", async () => {
     fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
+    history.push("?expanded=reports_overview:1")
     const { container } = renderReportsOverviewTitle()
-    fireEvent.click(screen.getByText(/Permissions/))
     await userEvent.type(screen.getByLabelText(/Users allowed to edit reports/), "jadoe{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
         "post",
@@ -68,8 +68,8 @@ it("sets the edit report permission", async () => {
 
 it("sets the edit entities permission", async () => {
     fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
+    history.push("?expanded=reports_overview:1")
     const { container } = renderReportsOverviewTitle()
-    fireEvent.click(screen.getByText(/Permissions/))
     await userEvent.type(screen.getByLabelText(/Users allowed to edit measured entities/), "jodoe{Enter}")
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
         "post",
@@ -80,10 +80,9 @@ it("sets the edit entities permission", async () => {
 })
 
 it("loads the changelog", async () => {
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
+    history.push("?expanded=reports_overview:2")
     const { container } = renderReportsOverviewTitle()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Changelog/))
-    })
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/5")
     await expectNoAccessibilityViolations(container)
 })

@@ -137,9 +137,15 @@ ReactionTimes.propTypes = {
     report: reportPropType,
 }
 
-function ReportTitleButtonRow({ report_uuid, openReportsOverview, url }) {
+function ReportTitleButtonRow({ report_uuid, openReportsOverview, settings, url }) {
     const deleteButton = (
-        <DeleteButton itemType="report" onClick={() => delete_report(report_uuid, openReportsOverview)} />
+        <DeleteButton
+            itemType="report"
+            onClick={() => {
+                delete_report(report_uuid, openReportsOverview)
+                settings.expandedItems.deleteItem(report_uuid)
+            }}
+        />
     )
     return (
         <ReadOnlyOrEditable
@@ -155,6 +161,7 @@ function ReportTitleButtonRow({ report_uuid, openReportsOverview, url }) {
 ReportTitleButtonRow.propTypes = {
     report_uuid: string,
     openReportsOverview: func,
+    settings: settingsPropType,
     url: string,
 }
 
@@ -171,6 +178,7 @@ export function ReportTitle({ report, openReportsOverview, reload, settings }) {
             subheader={report.subtitle}
         >
             <Tabs
+                settings={settings}
                 tabs={[
                     { label: "Configuration", icon: <SettingsIcon /> },
                     { label: "Desired reaction times", icon: <TimerIcon /> },
@@ -178,6 +186,7 @@ export function ReportTitle({ report, openReportsOverview, reload, settings }) {
                     { label: "Issue tracker", icon: <AssignmentIcon /> },
                     { label: "Changelog", icon: <HistoryIcon /> },
                 ]}
+                uuid={report_uuid}
             >
                 <ReportConfiguration report={report} reload={reload} />
                 <ReactionTimes report={report} reload={reload} />
@@ -189,7 +198,12 @@ export function ReportTitle({ report, openReportsOverview, reload, settings }) {
                 <IssueTracker report={report} reload={reload} />
                 <ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} />
             </Tabs>
-            <ReportTitleButtonRow report_uuid={report_uuid} openReportsOverview={openReportsOverview} url={reportUrl} />
+            <ReportTitleButtonRow
+                report_uuid={report_uuid}
+                openReportsOverview={openReportsOverview}
+                settings={settings}
+                url={reportUrl}
+            />
         </HeaderWithDetails>
     )
 }

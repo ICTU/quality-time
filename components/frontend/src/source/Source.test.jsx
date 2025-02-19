@@ -1,7 +1,9 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import history from "history/browser"
 import { vi } from "vitest"
 
+import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
@@ -9,6 +11,10 @@ import { expectNoAccessibilityViolations } from "../testUtils"
 import { Source } from "./Source"
 
 vi.mock("../api/fetch_server_api.js")
+
+beforeEach(() => history.push(""))
+
+afterEach(() => vi.clearAllMocks())
 
 const dataModel = {
     metrics: {
@@ -28,7 +34,13 @@ function renderSource(metric, props) {
     return render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={dataModel}>
-                <Source metric={metric} report={report} source_uuid="source_uuid" {...props} />
+                <Source
+                    metric={metric}
+                    report={report}
+                    settings={createTestableSettings()}
+                    source_uuid="source_uuid"
+                    {...props}
+                />
             </DataModel.Provider>
         </Permissions.Provider>,
     )
@@ -79,10 +91,9 @@ it("shows a config error message", async () => {
 })
 
 it("loads the changelog", async () => {
+    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
+    history.push("?expanded=source_uuid:1")
     const { container } = renderSource(metric)
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Changelog/))
-    })
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/source/source_uuid/5")
     await expectNoAccessibilityViolations(container)
 })

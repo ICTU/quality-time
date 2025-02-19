@@ -23,6 +23,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - Increase contrast for disabled items in the menu bar. Fixes [#10840](https://github.com/ICTU/quality-time/issues/10840).
 - Links to documentation on Read the Docs for subjects, metrics, or sources with hyphens in their name wouldn't scroll to the right location. Fixes [#10843](https://github.com/ICTU/quality-time/issues/10843).
+- Metric details were not shown in exports to PDF. Fixes [#10845](https://github.com/ICTU/quality-time/issues/10845).
 - The software documentation was outdated (among other things the API-server health check endpoint). Fixes [#10858](https://github.com/ICTU/quality-time/issues/10858).
 - Keep the footer at the bottom of the page even if the report is very short. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
 - Automatically expand long comments when exporting to PDF. Fixes [#10892](https://github.com/ICTU/quality-time/issues/10892).

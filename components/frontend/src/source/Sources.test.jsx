@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
+import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetch_server_api from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
@@ -73,6 +74,7 @@ function renderSources(props) {
                     reload={() => {
                         /* Dummy implemention */
                     }}
+                    settings={createTestableSettings()}
                     {...props}
                 />
             </DataModel.Provider>

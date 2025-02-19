@@ -113,11 +113,13 @@ export function ReportsOverviewTitle({ reports_overview, reload, settings }) {
             subheader={reports_overview.subtitle}
         >
             <Tabs
+                settings={settings}
                 tabs={[
                     { label: "Configuration", icon: <SettingsIcon /> },
                     { label: "Permissions", icon: <LockIcon /> },
                     { label: "Changelog", icon: <HistoryIcon /> },
                 ]}
+                uuid={uuid}
             >
                 <ReportsOverviewConfiguration reports_overview={reports_overview} reload={reload} />
                 <PermissionsConfiguration permissions={reports_overview.permissions ?? {}} reload={reload} />

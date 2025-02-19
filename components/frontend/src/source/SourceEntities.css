@@ -1,5 +1,5 @@
 @media print {
-    button.ui {
-        display: none !important;
+    div.MuiTableContainer-root {
+        max-height: none !important;
     }
 }

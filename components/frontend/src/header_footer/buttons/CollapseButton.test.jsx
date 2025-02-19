@@ -5,9 +5,7 @@ import { createTestableSettings } from "../../__fixtures__/fixtures"
 import { useExpandedItemsSearchQuery } from "../../app_ui_settings"
 import { CollapseButton } from "./CollapseButton"
 
-beforeEach(() => {
-    history.push("")
-})
+beforeEach(() => history.push(""))
 
 function renderCollapseButton({ expandedItems = null } = {}) {
     const settings = createTestableSettings()
@@ -15,9 +13,9 @@ function renderCollapseButton({ expandedItems = null } = {}) {
 }
 
 it("resets the expanded items", () => {
-    history.push("?expanded=tab")
+    history.push("?expanded=tab:0")
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
-    expect(expandedItems.result.current.value).toStrictEqual(["tab"])
+    expect(expandedItems.result.current.value).toStrictEqual(["tab:0"])
     renderCollapseButton({ expandedItems: expandedItems.result.current })
     fireEvent.click(screen.getByRole("button", { name: /Collapse all/ }))
     expandedItems.rerender()

@@ -12,9 +12,7 @@ import { SubjectTitle } from "./SubjectTitle"
 
 vi.mock("../api/fetch_server_api.js")
 
-beforeEach(() => {
-    history.push("?expanded=subject_uuid")
-})
+beforeEach(() => history.push("?expanded=subject_uuid:0"))
 
 afterEach(() => vi.restoreAllMocks())
 
@@ -106,10 +104,8 @@ it("changes the subject comment", async () => {
 
 it("loads the changelog", async () => {
     fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
+    history.push("?expanded=subject_uuid:1")
     const { container } = await renderSubjectTitle()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Changelog/))
-    })
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/subject/subject_uuid/5")
     await expectNoAccessibilityViolations(container)
 })
@@ -129,11 +125,13 @@ it("moves the subject", async () => {
 })
 
 it("deletes the subject", async () => {
+    history.push("?expanded=subject_uuid:0")
     fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderSubjectTitle()
     await act(async () => {
         fireEvent.click(screen.getByText(/Delete subject/))
     })
     expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("delete", "subject/subject_uuid", {})
+    expect(history.location.search).toEqual("")
     await expectNoAccessibilityViolations(container)
 })

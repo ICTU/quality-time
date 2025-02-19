@@ -12,7 +12,14 @@ import { delete_metric, set_metric_attribute } from "../api/metric"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { datePropType, metricPropType, reportPropType, reportsPropType, stringsPropType } from "../sharedPropTypes"
+import {
+    datePropType,
+    metricPropType,
+    reportPropType,
+    reportsPropType,
+    settingsPropType,
+    stringsPropType,
+} from "../sharedPropTypes"
 import { Logo } from "../source/Logo"
 import { SourceEntities } from "../source/SourceEntities"
 import { Sources } from "../source/Sources"
@@ -55,10 +62,19 @@ function MetricDetailsButtonRow({
     metric,
     metric_uuid,
     reload,
+    settings,
     stopFilteringAndSorting,
     url,
 }) {
-    const deleteButton = <DeleteButton itemType="metric" onClick={() => delete_metric(metric_uuid, reload)} />
+    const deleteButton = (
+        <DeleteButton
+            itemType="metric"
+            onClick={() => {
+                delete_metric(metric_uuid, reload)
+                settings.expandedItems.deleteItem(metric_uuid)
+            }}
+        />
+    )
     return (
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
@@ -87,6 +103,7 @@ MetricDetailsButtonRow.propTypes = {
     metric: metricPropType,
     metric_uuid: string,
     reload: func,
+    settings: settingsPropType,
     stopFilteringAndSorting: func,
     url: string,
 }
@@ -119,6 +136,7 @@ export function MetricDetails({
     reportDate,
     reports,
     report,
+    settings,
     stopFilteringAndSorting,
     subject_uuid,
 }) {
@@ -159,6 +177,7 @@ export function MetricDetails({
             reload={reload}
             report={report}
             reports={reports}
+            settings={settings}
         />,
         <MetricDebtParameters key="3" metric={metric} metric_uuid={metric_uuid} report={report} reload={reload} />,
         <ChangeLog key="4" timestamp={report.timestamp} metric_uuid={metric_uuid} />,
@@ -192,13 +211,16 @@ export function MetricDetails({
     })
     return (
         <Stack>
-            <Tabs tabs={tabs}>{panes}</Tabs>
+            <Tabs settings={settings} tabs={tabs} uuid={metric_uuid}>
+                {panes}
+            </Tabs>
             <MetricDetailsButtonRow
                 metric={metric}
                 metric_uuid={metric_uuid}
                 isFirstMetric={isFirstMetric}
                 isLastMetric={isLastMetric}
                 reload={reload}
+                settings={settings}
                 stopFilteringAndSorting={stopFilteringAndSorting}
                 url={metricUrl}
             />
@@ -214,6 +236,7 @@ MetricDetails.propTypes = {
     reportDate: datePropType,
     reports: reportsPropType,
     report: reportPropType,
+    settings: settingsPropType,
     stopFilteringAndSorting: func,
     subject_uuid: string,
 }

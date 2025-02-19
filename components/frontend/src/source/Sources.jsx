@@ -11,6 +11,7 @@ import {
     metricPropType,
     reportPropType,
     reportsPropType,
+    settingsPropType,
     stringsPropType,
 } from "../sharedPropTypes"
 import { pluralize } from "../utils"
@@ -58,7 +59,17 @@ ButtonSegment.propTypes = {
     reports: reportsPropType,
 }
 
-function SourceSegment({ changed_fields, index, last_index, measurement_source, metric, reload, report, sourceUuid }) {
+function SourceSegment({
+    changed_fields,
+    index,
+    last_index,
+    measurement_source,
+    metric,
+    reload,
+    report,
+    settings,
+    sourceUuid,
+}) {
     return (
         <Box id={sourceUuid} sx={{ border: 1, borderColor: "divider", padding: "8px" }}>
             <Source
@@ -68,6 +79,7 @@ function SourceSegment({ changed_fields, index, last_index, measurement_source, 
                 measurement_source={measurement_source}
                 reload={reload}
                 report={report}
+                settings={settings}
                 source_uuid={sourceUuid}
                 changed_fields={changed_fields}
             />
@@ -82,10 +94,11 @@ SourceSegment.propTypes = {
     metric: metricPropType,
     reload: func,
     report: reportPropType,
+    settings: settingsPropType,
     sourceUuid: string,
 }
 
-export function Sources({ reports, report, metric, metric_uuid, measurement, changed_fields, reload }) {
+export function Sources({ reports, report, metric, metric_uuid, measurement, changed_fields, reload, settings }) {
     const dataModel = useContext(DataModel)
     const measurementSources = measurement?.sources ?? []
     const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
@@ -113,6 +126,7 @@ export function Sources({ reports, report, metric, metric_uuid, measurement, cha
                 measurement_source={measurementSources.find((source) => source.source_uuid === sourceUuid)}
                 changed_fields={changed_fields}
                 reload={reload_source}
+                settings={settings}
             />
         )
     })
@@ -135,4 +149,5 @@ Sources.propTypes = {
     metric_uuid: string,
     measurement: measurementPropType,
     reload: func,
+    settings: settingsPropType,
 }

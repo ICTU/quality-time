@@ -87,6 +87,7 @@ export function createTestableSettings() {
     return {
         dateInterval: testableQuery(useDateIntervalURLSearchQuery),
         dateOrder: testableQuery(useDateOrderURLSearchQuery),
+        expandedItems: testableQuery(useExpandedItemsSearchQuery),
         hiddenCards: testableQuery(useHiddenCardsURLSearchQuery),
         hiddenColumns: testableQuery(useHiddenColumnsURLSearchQuery),
         hiddenTags: testableQuery(useHiddenTagsURLSearchQuery),
@@ -100,7 +101,6 @@ export function createTestableSettings() {
         showIssueSprint: testableQuery(useShowIssueSprintURLSearchQuery),
         sortColumn: testableQuery(useSortColumnURLSearchQuery),
         sortDirection: testableQuery(useSortDirectionURLSearchQuery),
-        expandedItems: testableQuery(useExpandedItemsSearchQuery),
         reset: function () {
             resetSettings(this)
         },

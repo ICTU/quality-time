@@ -42,6 +42,7 @@ function createHook(key, value, defaultValue, setValue) {
     hook.isDefault = () => equals(value, defaultValue)
     hook.reset = () => setURLSearchQuery(key, defaultValue, defaultValue, setValue)
     hook.set = (newValue) => setURLSearchQuery(key, newValue, defaultValue, setValue)
+    hook.defaultValue = defaultValue
     hook.value = value
     return hook
 }
@@ -70,6 +71,42 @@ export function useArrayURLSearchQuery(key) {
     hook.excludes = (item) => !value.includes(item)
     hook.includes = (item) => value.includes(item)
     hook.toggle = toggleURLSearchQuery
+    return hook
+}
+
+export function useIntegerMappingURLSearchQuery(key) {
+    // URL search queries of the form ?key=item_key:item_value,item_key:item_value, where item_value is an integer
+    let hook = useArrayURLSearchQuery(key)
+    hook._findItem = (itemKey) => {
+        return hook.value.find((eachItem) => eachItem.split(":")[0] === itemKey)
+    }
+    hook.includes = (itemKey) => {
+        return Boolean(hook._findItem(itemKey))
+    }
+    hook.excludes = (itemKey) => {
+        return !hook.includes(itemKey)
+    }
+    hook.getItem = (itemKey) => {
+        const item = hook._findItem(itemKey)
+        return item ? parseInt(item.split(":")[1], 10) : 0
+    }
+    hook._allItemsExcept = (itemKey) => {
+        return hook.value.filter((eachItem) => eachItem.split(":")[0] !== itemKey)
+    }
+    hook.deleteItem = (itemKey) => {
+        setURLSearchQuery(key, hook._allItemsExcept(itemKey), hook.defaultValue, hook.set)
+    }
+    hook.setItem = (itemKey, itemValue) => {
+        const newValue = [...hook._allItemsExcept(itemKey), `${itemKey}:${itemValue}`]
+        setURLSearchQuery(key, newValue, hook.defaultValue, hook.set)
+    }
+    hook.toggle = (itemKey) => {
+        if (hook.includes(itemKey)) {
+            hook.deleteItem(itemKey)
+        } else {
+            hook.setItem(itemKey, 0)
+        }
+    }
     return hook
 }
 
