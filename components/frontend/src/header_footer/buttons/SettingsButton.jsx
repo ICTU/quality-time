@@ -1,17 +1,17 @@
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import ArrowRightIcon from "@mui/icons-material/ArrowRight"
-import { Button } from "@mui/material"
 import { bool, func } from "prop-types"
+
+import { AppBarButton } from "./AppBarbutton"
 
 export function SettingsButton({ settingsPanelVisible, setSettingsPanelVisible }) {
     return (
-        <Button
-            color="inherit"
+        <AppBarButton
             startIcon={settingsPanelVisible ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
             onClick={() => setSettingsPanelVisible(!settingsPanelVisible)}
         >
             Settings
-        </Button>
+        </AppBarButton>
     )
 }
 SettingsButton.propTypes = {

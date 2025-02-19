@@ -1,11 +1,12 @@
 import PictureAsPdf from "@mui/icons-material/PictureAsPdf"
-import { Button, Tooltip } from "@mui/material"
 import { string } from "prop-types"
 import { useState } from "react"
 
 import { get_report_pdf } from "../../api/report"
 import { registeredURLSearchParams } from "../../hooks/url_search_query"
 import { showMessage } from "../../widgets/toast"
+
+import { AppBarButton } from "./AppBarbutton"
 
 function downloadPDF(report_uuid, queryString, callback) {
     const reportId = report_uuid ? `report-${report_uuid}` : "reports-overview"
@@ -39,25 +40,20 @@ export function DownloadAsPDFButton({ report_uuid }) {
     const queryString = query.toString() ? "?" + query.toString() : ""
     query.set("report_url", window.location.origin + window.location.pathname + queryString + window.location.hash)
     const itemType = report_uuid ? "report" : "reports overview"
-    const label = `Download ${itemType} as PDF`
     return (
-        <Tooltip title={`Generate a PDF version of the ${itemType} as currently displayed. This may take some time.`}>
-            <Button
-                aria-label={label}
-                color="inherit"
-                loading={loading}
-                loadingPosition="start"
-                onClick={() => {
-                    setLoading(true)
-                    downloadPDF(report_uuid, `?${query.toString()}`, () => {
-                        setLoading(false)
-                    })
-                }}
-                startIcon={<PictureAsPdf />}
-            >
-                Download as PDF
-            </Button>
-        </Tooltip>
+        <AppBarButton
+            loading={loading}
+            onClick={() => {
+                setLoading(true)
+                downloadPDF(report_uuid, `?${query.toString()}`, () => {
+                    setLoading(false)
+                })
+            }}
+            startIcon={<PictureAsPdf />}
+            tooltip={`Generate a PDF version of the ${itemType} as currently displayed. This may take some time.`}
+        >
+            Download as PDF
+        </AppBarButton>
     )
 }
 DownloadAsPDFButton.propTypes = {

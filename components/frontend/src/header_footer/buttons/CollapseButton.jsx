@@ -1,23 +1,19 @@
 import UnfoldLessIcon from "@mui/icons-material/UnfoldLess"
-import { Button, Tooltip } from "@mui/material"
 
 import { stringsURLSearchQueryPropType } from "../../sharedPropTypes"
 
+import { AppBarButton } from "./AppBarbutton"
+
 export function CollapseButton({ expandedItems }) {
     return (
-        <Tooltip title={"Collapse all headers and metrics"}>
-            <span /* https://mui.com/material-ui/react-tooltip/#disabled-elements */>
-                <Button
-                    color="inherit"
-                    disabled={expandedItems.equals([])}
-                    onClick={() => expandedItems.reset()}
-                    startIcon={<UnfoldLessIcon />}
-                    sx={{ height: "100%" }}
-                >
-                    Collapse all
-                </Button>
-            </span>
-        </Tooltip>
+        <AppBarButton
+            disabled={expandedItems.equals([])}
+            onClick={() => expandedItems.reset()}
+            startIcon={<UnfoldLessIcon />}
+            tooltip={"Collapse all headers and metrics"}
+        >
+            Collapse all
+        </AppBarButton>
     )
 }
 CollapseButton.propTypes = {
