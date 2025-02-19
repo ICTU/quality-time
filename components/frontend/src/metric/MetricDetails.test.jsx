@@ -4,6 +4,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
+import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as changelog_api from "../api/changelog"
 import * as fetch_server_api from "../api/fetch_server_api"
 import * as measurement_api from "../api/measurement"
@@ -17,6 +18,13 @@ vi.mock("../api/fetch_server_api.js")
 vi.mock("../api/changelog.js")
 vi.mock("../api/measurement.js")
 vi.mock("../api/source.js")
+
+beforeEach(() => {
+    history.push("")
+    fetch_server_api.fetch_server_api.mockImplementation(() => Promise.resolve())
+})
+
+afterEach(() => vi.restoreAllMocks())
 
 const report = {
     report_uuid: "report_uuid",
@@ -99,6 +107,7 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error, fa
     )
     changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }))
     let result
+    const settings = createTestableSettings()
     await act(async () => {
         result = render(
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -109,6 +118,7 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error, fa
                             reload={vi.fn()}
                             report={report}
                             reports={[report]}
+                            settings={settings}
                             stopFilteringAndSorting={stopFilteringAndSorting}
                             subject_uuid="subject_uuid"
                         />
@@ -119,48 +129,6 @@ async function renderMetricDetails(stopFilteringAndSorting, connection_error, fa
     })
     return result
 }
-
-beforeEach(() => {
-    history.push("")
-    fetch_server_api.fetch_server_api.mockImplementation(() => Promise.resolve())
-})
-
-afterEach(() => {
-    vi.clearAllMocks()
-})
-
-it("switches tabs", async () => {
-    const { container } = await renderMetricDetails()
-    expect(screen.getAllByLabelText(/Metric name/).length).toBe(1)
-    await expectNoAccessibilityViolations(container)
-    fireEvent.click(screen.getByText(/Sources/))
-    expect(screen.getAllByLabelText(/Source name/).length).toBe(1)
-    await expectNoAccessibilityViolations(container)
-})
-
-it("switches tabs to technical debt", async () => {
-    const { container } = await renderMetricDetails()
-    expect(screen.getAllByLabelText(/Metric name/).length).toBe(1)
-    fireEvent.click(screen.getByText(/Technical debt/))
-    expect(screen.getAllByLabelText(/Metric technical debt target/).length).toBe(1)
-    await expectNoAccessibilityViolations(container)
-})
-
-it("switches tabs to measurement entities", async () => {
-    const { container } = await renderMetricDetails()
-    expect(screen.getAllByLabelText(/Metric name/).length).toBe(1)
-    fireEvent.click(screen.getByText(/The source/))
-    expect(screen.getAllByText(/Attribute status/).length).toBe(1)
-    await expectNoAccessibilityViolations(container)
-})
-
-it("switches tabs to the trend graph", async () => {
-    const { container } = await renderMetricDetails()
-    expect(screen.getAllByLabelText(/Metric name/).length).toBe(1)
-    fireEvent.click(screen.getByText(/Trend graph/))
-    expect(screen.getAllByText(/Time/).length).toBe(1)
-    await expectNoAccessibilityViolations(container)
-})
 
 it("shows the trend graph tab even if the metric scale is version number", async () => {
     report.subjects["subject_uuid"].metrics["metric_uuid"].scale = "version_number"
@@ -203,17 +171,12 @@ it("moves the metric", async () => {
     expect(measurement_api.get_metric_measurements).toHaveBeenCalled()
 })
 
-it("loads the changelog", async () => {
-    const { container } = await renderMetricDetails()
-    await act(async () => fireEvent.click(screen.getByText(/Changelog/)))
-    expect(changelog_api.get_changelog).toHaveBeenCalledWith(5, { metric_uuid: "metric_uuid" })
-    await expectNoAccessibilityViolations(container)
-})
-
 it("deletes the metric", async () => {
+    history.push("?expanded=metric_uuid:1")
     await renderMetricDetails()
     fireEvent.click(screen.getByText(/Delete metric/))
     expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("delete", "metric/metric_uuid", {})
+    expect(history.location.search).toEqual("")
 })
 
 it("measures the metric", async () => {
@@ -227,16 +190,16 @@ it("measures the metric", async () => {
 })
 
 it("fails to load measurements", async () => {
+    history.push("?expanded=metric_uuid:5")
     const { container } = await renderMetricDetails(null, null, true)
-    fireEvent.click(screen.getByText(/Trend graph/))
     expect(screen.queryAllByText(/Loading measurements failed/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("reloads the measurements after editing a measurement entity", async () => {
+    history.push("?expanded=metric_uuid:5")
     const { container } = await renderMetricDetails()
     expect(measurement_api.get_metric_measurements).toHaveBeenCalledTimes(1)
-    fireEvent.click(screen.getByText(/The source/))
     fireEvent.click(screen.getByRole("button", { name: "Expand/collapse" }))
     await expectNoAccessibilityViolations(container)
     fireEvent.mouseDown(screen.getByText("Unconfirm"))

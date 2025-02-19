@@ -1,3 +1,5 @@
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
@@ -53,57 +55,59 @@ function renderSubjectTable({ dates = [], expandedItems = null, settings = null 
     return render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={dataModel}>
-                <SubjectTable
-                    dates={dates}
-                    handleSort={vi.fn()}
-                    reportDate={new Date("2020-01-15T00:00:00+00:00")}
-                    report={{
-                        report_uuid: "report_uuid",
-                        subjects: {
-                            subject_uuid: {
-                                type: "subject_type",
-                                metrics: { 1: metric, 2: metric2 },
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <SubjectTable
+                        dates={dates}
+                        handleSort={vi.fn()}
+                        reportDate={new Date("2020-01-15T00:00:00+00:00")}
+                        report={{
+                            report_uuid: "report_uuid",
+                            subjects: {
+                                subject_uuid: {
+                                    type: "subject_type",
+                                    metrics: { 1: metric, 2: metric2 },
+                                },
                             },
-                        },
-                    }}
-                    measurements={[
-                        {
-                            metric_uuid: "1",
-                            start: "2020-01-14T00:00:00+00:00",
-                            end: "2020-01-15T00:00:00+00:00",
-                            count: { status: "target_met" },
-                        },
-                        {
-                            metric_uuid: "1",
-                            start: "2020-01-15T00:00:00+00:00",
-                            end: "2020-01-16T00:00:00+00:00",
-                            count: { status: "target_met" },
-                        },
-                        {
-                            metric_uuid: "1",
-                            start: "2020-01-16T00:00:00+00:00",
-                            end: "2020-01-17T00:00:00+00:00",
-                            count: { status: "target_not_met" },
-                        },
-                        {
-                            metric_uuid: "2",
-                            start: "2020-01-10T00:00:00+00:00",
-                            end: "2020-01-10T00:00:00+00:00",
-                            count: { status: "target_not_met" },
-                        },
-                        {
-                            metric_uuid: "3",
-                            start: "2020-01-14T00:00:00+00:00",
-                            end: "2020-01-15T00:00:00+00:00",
-                            count: { status: "target_not_met" },
-                        },
-                    ]}
-                    metricEntries={Object.entries({ 1: metric, 2: metric2 })}
-                    reports={[]}
-                    settings={settings}
-                    subject={{ type: "subject_type", metrics: { 1: metric, 2: metric2 } }}
-                    subject_uuid="subject_uuid"
-                />
+                        }}
+                        measurements={[
+                            {
+                                metric_uuid: "1",
+                                start: "2020-01-14T00:00:00+00:00",
+                                end: "2020-01-15T00:00:00+00:00",
+                                count: { status: "target_met" },
+                            },
+                            {
+                                metric_uuid: "1",
+                                start: "2020-01-15T00:00:00+00:00",
+                                end: "2020-01-16T00:00:00+00:00",
+                                count: { status: "target_met" },
+                            },
+                            {
+                                metric_uuid: "1",
+                                start: "2020-01-16T00:00:00+00:00",
+                                end: "2020-01-17T00:00:00+00:00",
+                                count: { status: "target_not_met" },
+                            },
+                            {
+                                metric_uuid: "2",
+                                start: "2020-01-10T00:00:00+00:00",
+                                end: "2020-01-10T00:00:00+00:00",
+                                count: { status: "target_not_met" },
+                            },
+                            {
+                                metric_uuid: "3",
+                                start: "2020-01-14T00:00:00+00:00",
+                                end: "2020-01-15T00:00:00+00:00",
+                                count: { status: "target_not_met" },
+                            },
+                        ]}
+                        metricEntries={Object.entries({ 1: metric, 2: metric2 })}
+                        reports={[]}
+                        settings={settings}
+                        subject={{ type: "subject_type", metrics: { 1: metric, 2: metric2 } }}
+                        subject_uuid="subject_uuid"
+                    />
+                </LocalizationProvider>
             </DataModel.Provider>
         </Permissions.Provider>,
     )

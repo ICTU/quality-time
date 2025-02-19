@@ -5,6 +5,7 @@ import {
     registeredURLSearchParams,
     useArrayURLSearchQuery,
     useBooleanURLSearchQuery,
+    useIntegerMappingURLSearchQuery,
     useIntegerURLSearchQuery,
     useStringURLSearchQuery,
 } from "./url_search_query"
@@ -186,4 +187,65 @@ it("returns registered URL search parameters only", () => {
     history.push("?unregistered_key=value&report_date=2022-02-11")
     const expected = new URLSearchParams("?report_date=2022-02-11")
     expect(registeredURLSearchParams().toString()).toEqual(expected.toString())
+})
+
+it("gets a mapping value", () => {
+    history.push("?mapping=key:1")
+    const { result } = renderHook(() => useIntegerMappingURLSearchQuery("mapping"))
+    expect(result.current.getItem("key")).toEqual(1)
+    expect(result.current.value).toStrictEqual(["key:1"])
+})
+
+it("sets a mapping value", () => {
+    const { result } = renderHook(() => useIntegerMappingURLSearchQuery("mapping"))
+    act(() => {
+        result.current.setItem("key", 2)
+    })
+    expect(result.current.getItem("key")).toEqual(2)
+    expect(result.current.value).toStrictEqual(["key:2"])
+    expect(history.location.search).toEqual("?mapping=key%3A2")
+})
+
+it("replaces a mapping value", () => {
+    history.push("?mapping=key:2")
+    const { result } = renderHook(() => useIntegerMappingURLSearchQuery("mapping"))
+    act(() => {
+        result.current.setItem("key", 3)
+    })
+    expect(result.current.getItem("key")).toEqual(3)
+    expect(result.current.value).toStrictEqual(["key:3"])
+    expect(history.location.search).toEqual("?mapping=key%3A3")
+})
+
+it("deletes a mapping value", () => {
+    history.push("?mapping=key:4")
+    const { result } = renderHook(() => useIntegerMappingURLSearchQuery("mapping"))
+    act(() => {
+        result.current.deleteItem("key")
+    })
+    expect(result.current.value).toStrictEqual([])
+    expect(history.location.search).toEqual("")
+})
+
+it("toggles a mapping value", () => {
+    const { result } = renderHook(() => useIntegerMappingURLSearchQuery("mapping"))
+    act(() => {
+        result.current.toggle("key")
+    })
+    expect(result.current.value).toStrictEqual(["key:0"])
+    expect(history.location.search).toEqual("?mapping=key%3A0")
+    act(() => {
+        result.current.toggle("key")
+    })
+    expect(result.current.value).toStrictEqual([])
+    expect(history.location.search).toEqual("")
+})
+
+it("returns whether the mapping includes or excludes a key", () => {
+    history.push("?mapping=key:1")
+    const { result } = renderHook(() => useIntegerMappingURLSearchQuery("mapping"))
+    expect(result.current.includes("key")).toBeTruthy()
+    expect(result.current.excludes("key")).toBeFalsy()
+    expect(result.current.includes("other key")).toBeFalsy()
+    expect(result.current.excludes("other key")).toBeTruthy()
 })

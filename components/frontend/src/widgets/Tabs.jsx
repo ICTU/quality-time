@@ -1,18 +1,18 @@
 import { Box, Stack, Tab, Tabs as MUITabs } from "@mui/material"
-import { arrayOf, object } from "prop-types"
-import { useId, useState } from "react"
+import { arrayOf, object, string } from "prop-types"
+import { useId } from "react"
 
-import { childrenPropType } from "../sharedPropTypes"
+import { childrenPropType, settingsPropType } from "../sharedPropTypes"
 import { Label } from "./Label"
 
-export function Tabs({ children, tabs }) {
+export function Tabs({ children, settings, tabs, uuid }) {
     const tabsId = useId()
-    const [tabIndex, setTabIndex] = useState(0)
+    const tabIndex = settings.expandedItems.getItem(uuid)
     return (
         <Stack>
             <MUITabs
                 value={tabIndex}
-                onChange={(_event, newTabIndex) => setTabIndex(newTabIndex)}
+                onChange={(_event, newTabIndex) => settings.expandedItems.setItem(uuid, newTabIndex)}
                 scrollButtons="auto"
                 sx={{ marginBottom: 1, maxWidth: "95vw" }}
                 variant="scrollable"
@@ -29,7 +29,6 @@ export function Tabs({ children, tabs }) {
                             icon={tab.icon || tab.image}
                             key={tab.label}
                             label={tabLabel}
-                            //sx={{ flex: 1 }}
                         />
                     )
                 })}
@@ -47,5 +46,7 @@ export function Tabs({ children, tabs }) {
 }
 Tabs.propTypes = {
     children: childrenPropType,
+    settings: settingsPropType,
     tabs: arrayOf(object),
+    uuid: string,
 }

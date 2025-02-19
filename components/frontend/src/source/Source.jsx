@@ -13,6 +13,7 @@ import {
     measurementSourcePropType,
     metricPropType,
     reportPropType,
+    settingsPropType,
     sourcePropType,
     stringsPropType,
 } from "../sharedPropTypes"
@@ -146,6 +147,7 @@ export function Source({
     metric,
     reload,
     report,
+    settings,
     source_uuid,
 }) {
     const dataModel = useContext(DataModel)
@@ -185,10 +187,12 @@ export function Source({
     return (
         <>
             <Tabs
+                settings={settings}
                 tabs={[
                     { error: anyError, label: "Configuration", icon: <SettingsIcon /> },
                     { label: "Changelog", icon: <HistoryIcon /> },
                 ]}
+                uuid={source_uuid}
             >
                 <Parameters
                     metric={metric}
@@ -220,5 +224,6 @@ Source.propTypes = {
     metric: metricPropType,
     reload: func,
     report: reportPropType,
+    settings: settingsPropType,
     source_uuid: string,
 }

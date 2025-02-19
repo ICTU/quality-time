@@ -219,15 +219,6 @@ MeasurementCells.propTypes = {
     settings: settingsPropType,
 }
 
-function expandOrCollapseItem(expand, metric_uuid, expandedItems) {
-    if (expand) {
-        expandedItems.toggle(`${metric_uuid}:0`)
-    } else {
-        const items = expandedItems.value.filter((each) => each?.startsWith(metric_uuid))
-        expandedItems.toggle(items[0])
-    }
-}
-
 export function SubjectTableRow({
     changed_fields,
     dates,
@@ -264,6 +255,7 @@ export function SubjectTableRow({
                     report_date={reportDate}
                     reports={reports}
                     report={report}
+                    settings={settings}
                     stopFilteringAndSorting={() => {
                         handleSort(null)
                         settings.hiddenTags.reset()
@@ -272,9 +264,9 @@ export function SubjectTableRow({
                     subject_uuid={subject_uuid}
                 />
             }
-            expanded={settings.expandedItems.value.filter((item) => item?.startsWith(metric_uuid)).length > 0}
+            expanded={settings.expandedItems.includes(metric_uuid)}
             id={metric_uuid}
-            onExpand={(expand) => expandOrCollapseItem(expand, metric_uuid, settings.expandedItems)}
+            onExpand={() => settings.expandedItems.toggle(metric_uuid)}
         >
             <TableCell>{metricName}</TableCell>
             {nrDates > 1 && (
