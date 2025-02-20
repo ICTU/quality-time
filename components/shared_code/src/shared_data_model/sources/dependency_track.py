@@ -15,7 +15,7 @@ from shared_data_model.parameters import (
 
 ALL_DEPENDENCY_TRACK_METRICS = ["dependencies", "security_warnings", "source_up_to_dateness", "source_version"]
 DEPENDENCY_TRACK_URL = HttpUrl("https://dependencytrack.org")
-DEPENDENCY_TRACK_DESCRIPTIlON = (
+DEPENDENCY_TRACK_DESCRIPTION = (
     "Dependency-Track is a component analysis platform that allows organizations to identify and "
     "reduce risk in the software supply chain."
 )
@@ -35,7 +35,7 @@ VERSION_ATTRIBUTES = [
 
 DEPENDENCY_TRACK = Source(
     name="Dependency-Track",
-    description=DEPENDENCY_TRACK_DESCRIPTIlON,
+    description=DEPENDENCY_TRACK_DESCRIPTION,
     url=DEPENDENCY_TRACK_URL,
     parameters={
         "url": URL(
