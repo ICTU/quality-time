@@ -5,7 +5,7 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
-        "@mui/icons-material": "^6.4.4",
+        "@mui/icons-material": "^6.4.5",
         "@mui/material": "^6.4.4",
         "@mui/x-date-pickers": "^7.27.0",
         "crypto-js": "^4.2.0",
