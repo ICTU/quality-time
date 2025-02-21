@@ -435,3 +435,38 @@ class SlowTransactionsCollector(SourceCollector):
     def _round(value: float) -> float:
         """Round the value at exactly one decimal."""
         return round(float(value), 1)
+
+
+class MergeRequestCollector(SourceCollector):
+    """Base class for merge request collectors."""
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether the merge request should be counted."""
+        return (
+            self._request_matches_branches(entity)
+            and self._request_matches_approval(entity)
+            and self._request_matches_state(entity)
+            and self._request_matches_upvotes(entity)
+        )
+
+    def _request_matches_approval(self, entity: Entity) -> bool:
+        """Return whether the merge request approval matches the configured approval."""
+        return True
+
+    def _request_matches_branches(self, entity: Entity) -> bool:
+        """Return whether the merge request target branch matches the configured branches."""
+        branches = self._parameter("target_branches_to_include")
+        target_branch = entity["target_branch"]
+        return match_string_or_regular_expression(target_branch, branches) if branches else True
+
+    def _request_matches_state(self, entity: Entity) -> bool:
+        """Return whether the merge request state matches the configured states."""
+        return entity["state"] in self._parameter("merge_request_state")
+
+    def _request_matches_upvotes(self, entity: Entity) -> bool:
+        """Return whether the merge request upvotes matches the configured upvotes."""
+        # If the required number of upvotes is zero, merge requests are included regardless of how many upvotes they
+        # actually have. If the required number of upvotes is more than zero then only merge requests that have fewer
+        # than the minimum number of upvotes are included in the count:
+        required_upvotes = int(cast(str, self._parameter("upvotes")))
+        return required_upvotes == 0 or int(entity["upvotes"]) < required_upvotes
