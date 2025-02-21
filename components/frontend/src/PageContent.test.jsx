@@ -1,6 +1,7 @@
 import { act, render, screen } from "@testing-library/react"
 import history from "history/browser"
 import * as react_toastify from "react-toastify"
+import { vi } from "vitest"
 
 import { createTestableSettings } from "./__fixtures__/fixtures"
 import * as fetch_server_api from "./api/fetch_server_api"

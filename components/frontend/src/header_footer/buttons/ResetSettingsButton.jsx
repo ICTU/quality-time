@@ -2,7 +2,6 @@ import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore
 import { bool, func } from "prop-types"
 
 import { optionalDatePropType, settingsPropType } from "../../sharedPropTypes"
-
 import { AppBarButton } from "./AppBarbutton"
 
 export function ResetSettingsButton({ atReportsOverview, handleDateChange, reportDate, settings }) {

@@ -5,7 +5,6 @@ import { useState } from "react"
 import { get_report_pdf } from "../../api/report"
 import { registeredURLSearchParams } from "../../hooks/url_search_query"
 import { showMessage } from "../../widgets/toast"
-
 import { AppBarButton } from "./AppBarbutton"
 
 function downloadPDF(report_uuid, queryString, callback) {

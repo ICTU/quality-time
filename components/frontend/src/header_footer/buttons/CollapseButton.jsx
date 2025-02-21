@@ -1,7 +1,6 @@
 import UnfoldLessIcon from "@mui/icons-material/UnfoldLess"
 
 import { stringsURLSearchQueryPropType } from "../../sharedPropTypes"
-
 import { AppBarButton } from "./AppBarbutton"
 
 export function CollapseButton({ expandedItems }) {

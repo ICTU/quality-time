@@ -5,8 +5,8 @@ import { vi } from "vitest"
 import * as fetch_server_api from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
-import { IssuesRows } from "./IssuesRows"
 import * as toast from "../widgets/toast"
+import { IssuesRows } from "./IssuesRows"
 
 vi.mock("../api/fetch_server_api.js")
 vi.mock("../widgets/toast.jsx")
