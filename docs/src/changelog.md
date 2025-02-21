@@ -26,6 +26,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 - Keep the footer at the bottom of the page even if the report is very short. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
 - Automatically expand long comments when exporting to PDF. Fixes [#10892](https://github.com/ICTU/quality-time/issues/10892).
 
+### Removed
+
+- To reduce the size of the renderer image, don't install fonts and let Chromium use its default fonts for PDF exports. Closes [#10835](https://github.com/ICTU/quality-time/issues/10835).
+
 ## v5.25.0 - 2025-02-14
 
 ### Added
