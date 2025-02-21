@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 ### Added
 
 - Allow for measuring merge requests using Bitbucket as source. Closes [#10225](https://github.com/ICTU/quality-time/issues/10225).
+- When reading JUnit XML files, in addition to the "name" and "classname" attributes, also use the "hostname" attribute to differentiate test cases. Closes [#10878](https://github.com/ICTU/quality-time/issues/10878).
 
 ### Fixed
 

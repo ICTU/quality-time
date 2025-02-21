@@ -40,7 +40,10 @@ class JUnitTests(XMLFileSourceCollector):
     def __entity(case_node: Element, case_result: str) -> Entity:
         """Transform a test case into a test case entity."""
         class_name = case_node.get("classname", "")
+        host_name = case_node.get("hostname", "")
         name = case_node.get("name", "unknown")
-        key = f"{class_name}:{name}"
-        old_key = name  # Key was changed after Quality-time 5.16.1, enable migration of user entity data
-        return Entity(key=key, old_key=old_key, name=name, class_name=class_name, test_result=case_result)
+        key = f"{class_name}:{host_name}:{name}"
+        old_key = f"{class_name}:{name}"  # Key was changed after v5.25.0, enable migration of user entity data
+        return Entity(
+            key=key, old_key=old_key, name=name, class_name=class_name, host_name=host_name, test_result=case_result
+        )
