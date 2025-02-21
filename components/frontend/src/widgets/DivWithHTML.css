@@ -1,0 +1,8 @@
+@media print {
+    /* Make sure no scrollbar appears and the HTML content is printed completely */
+    .with-html {
+        height: auto !important;
+        overflow: visible !important;
+        resize: none !important;
+    }
+}
