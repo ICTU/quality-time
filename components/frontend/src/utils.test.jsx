@@ -1,9 +1,9 @@
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from "./context/Permissions"
 import { defaultDesiredResponseTimes } from "./defaults"
 import {
-    DOCUMENTATION_URL,
     addCounts,
     capitalize,
+    DOCUMENTATION_URL,
     getMetricResponseDeadline,
     getMetricResponseOverrun,
     getMetricTags,

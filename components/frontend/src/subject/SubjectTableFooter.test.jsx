@@ -1,5 +1,6 @@
 import { Table } from "@mui/material"
 import { act, fireEvent, render, screen } from "@testing-library/react"
+import { vi } from "vitest"
 
 import { dataModel, report } from "../__fixtures__/fixtures"
 import * as fetch_server_api from "../api/fetch_server_api"
@@ -7,7 +8,6 @@ import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTableFooter } from "./SubjectTableFooter"
-import { vi } from "vitest"
 
 const stopFilteringAndSorting = vi.fn()
 

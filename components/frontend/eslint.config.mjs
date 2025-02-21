@@ -1,7 +1,6 @@
 import { fixupConfigRules } from "@eslint/compat"
 import pluginJs from "@eslint/js"
 import pluginJest from "eslint-plugin-jest"
-import pluginNode from "eslint-plugin-n"
 import pluginPrettierConfigRecommended from "eslint-plugin-prettier/recommended"
 import pluginPromise from "eslint-plugin-promise"
 import pluginReactJSXRuntime from "eslint-plugin-react/configs/jsx-runtime.js"
@@ -10,13 +9,20 @@ import pluginSimpleImportSort from "eslint-plugin-simple-import-sort"
 import globals from "globals"
 
 export default [
+    {
+        settings: {
+            react: {
+                version: "detect",
+            },
+        },
+    },
     pluginJs.configs.recommended,
     pluginJest.configs["flat/recommended"],
-    pluginNode.configs["flat/recommended-module"],
     ...fixupConfigRules(pluginReactConfigRecommended),
     ...fixupConfigRules(pluginReactJSXRuntime),
     pluginPrettierConfigRecommended,
     {
+        files: ["**/*.js", "**/*.jsx"],
         plugins: {
             "simple-import-sort": pluginSimpleImportSort,
             promise: pluginPromise,
@@ -47,14 +53,9 @@ export default [
             "simple-import-sort/imports": "error",
             "simple-import-sort/exports": "error",
         },
-        settings: {
-            react: {
-                version: "detect",
-            },
-        },
     },
     {
-        files: ["**/*.test.js"],
+        files: ["**/*.test.js", "**/*.test.jsx"],
         rules: {
             "no-import-assign": "off",
             "jest/expect-expect": ["error", { assertFunctionNames: ["expect*"] }],
