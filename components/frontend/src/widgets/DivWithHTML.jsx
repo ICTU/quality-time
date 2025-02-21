@@ -1,3 +1,5 @@
+import "./DivWithHTML.css"
+
 import { createRef, useLayoutEffect, useState } from "react"
 
 import { childrenPropType } from "../sharedPropTypes"
@@ -15,6 +17,7 @@ export function DivWithHTML({ children }) {
     }, [ref])
     return (
         <div
+            className="with-html"
             ref={ref}
             style={{
                 wordBreak: "break-word",
