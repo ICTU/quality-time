@@ -40,7 +40,7 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project branches."""
-        return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/browse")
+        return await self._bitbucket_landing_url(responses, "browse")
 
     async def _branches(self, responses: SourceResponses) -> list[BitbucketBranchType]:
         """Return a list of branches from the responses."""

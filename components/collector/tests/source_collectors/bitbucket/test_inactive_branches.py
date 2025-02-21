@@ -1,22 +1,21 @@
 """Unit tests for the Bitbucket inactive branches collector."""
 
 from datetime import datetime
-from unittest.mock import AsyncMock
 
 from dateutil.tz import tzutc
 
-from .base import BitbucketTestCase
+from .base import BitbucketBranchesTestCase
 
 
-class BitbucketInactiveBranchesTest(BitbucketTestCase):
+class BitbucketInactiveBranchesTest(BitbucketBranchesTestCase):
     """Unit tests for the inactive branches metric."""
 
     METRIC_TYPE = "inactive_branches"
-    WEB_URL = "https://bitbucket/projects/owner/repos/repository/browse?at="
 
     def setUp(self):
         """Extend to setup fixtures."""
         super().setUp()
+        self.landing_url = "https://bitbucket/projects/owner/repos/repository/browse"
         self.set_source_parameter("branches_to_ignore", ["ignored_.*"])
         main = self.create_branch("main", default=True)
         unmerged = self.create_branch("unmerged_branch")
@@ -25,9 +24,6 @@ class BitbucketInactiveBranchesTest(BitbucketTestCase):
         self.branches = self.create_branches_json([main, unmerged, ignored, active_unmerged])
         self.unmerged_branch_entity = self.create_entity("unmerged_branch")
         self.entities = [self.unmerged_branch_entity]
-        self.landing_url = (
-            "https://bitbucket/rest/api/1.0/projects/owner/repos/repository/branches?limit=100&details=true"
-        )
 
     def create_branch(
         self, name: str, *, default: bool = False, active: bool = False
@@ -48,9 +44,16 @@ class BitbucketInactiveBranchesTest(BitbucketTestCase):
             },
         }
 
-    def create_branches_json(self, branches):
+    def create_branches_json(self, branches, has_next_page: bool = False):
         """Create an entity."""
-        return {"size": len(branches), "limit": 25, "isLastPage": True, "start": 0, "values": branches}
+        return {
+            "size": len(branches),
+            "limit": 25,
+            "isLastPage": True,
+            "start": 0,
+            "hasNextPage": has_next_page,
+            "values": branches,
+        }
 
     def create_entity(self, name: str) -> dict[str, str]:
         """Create an entity."""
@@ -59,7 +62,7 @@ class BitbucketInactiveBranchesTest(BitbucketTestCase):
             "name": name,
             "commit_date": "2019-04-02",
             "merge_status": "unmerged",
-            "url": self.WEB_URL + "refs/heads/" + name,
+            "url": self.landing_url + "?at=refs/heads/" + name,
         }
 
     async def test_inactive_branches(self):
@@ -75,16 +78,18 @@ class BitbucketInactiveBranchesTest(BitbucketTestCase):
             response, value="1", entities=[self.unmerged_branch_entity], landing_url=self.landing_url
         )
 
+    async def test_no_branches_found(self):
+        """Test that a parse error is returned when no branches are found."""
+        response = await self.collect(get_request_json_return_value={"isLastPage": True, "values": []})
+        self.assert_measurement(response, landing_url=self.landing_url, parse_error="Branch info for repository")
+
     async def test_private_token(self):
         """Test that the private token is used."""
         self.set_source_parameter("private_token", "token")
-        inactive_branches_json = {"values": None}
-        inactive_branches_response = AsyncMock()
-        execute = AsyncMock(side_effect=[inactive_branches_response])
-        inactive_branches_response.json = AsyncMock(return_value=inactive_branches_json)
-        response = await self.collect(get_request_json_return_value=execute)
-        self.assert_measurement(
-            response,
-            landing_url=self.landing_url,
-            parse_error="Branch info for repository",
+        _, get, _ = await self.collect(get_request_json_return_value=self.branches, return_mocks=True)
+        get.assert_called_once_with(
+            "https://bitbucket/rest/api/1.0/projects/owner/repos/repository/branches?limit100&&details=true&start=0",
+            allow_redirects=True,
+            auth=None,
+            headers={"Authorization": "Bearer token"},
         )

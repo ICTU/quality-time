@@ -2,6 +2,7 @@
 
 from pydantic import HttpUrl
 
+from shared_data_model.entities import MERGE_REQUEST_ENTITY
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
@@ -234,18 +235,7 @@ AZURE_DEVOPS = Source(
         ),
         "failed_jobs": Entity(name="failed pipeline", attributes=PIPELINE_ATTRIBUTES),
         "job_runs_within_time_period": Entity(name="pipeline", attributes=PIPELINE_ATTRIBUTES),
-        "merge_requests": Entity(
-            name="merge request",
-            attributes=[
-                EntityAttribute(name="Merge request", key="title", url="url"),
-                EntityAttribute(name="Target branch", key="target_branch"),
-                EntityAttribute(name="State"),
-                EntityAttribute(name="Upvotes", type=EntityAttributeType.INTEGER),
-                EntityAttribute(name="Downvotes", type=EntityAttributeType.INTEGER),
-                EntityAttribute(name="Created", type=EntityAttributeType.DATETIME),
-                EntityAttribute(name="Closed", type=EntityAttributeType.DATETIME),
-            ],
-        ),
+        "merge_requests": MERGE_REQUEST_ENTITY,
         "tests": Entity(
             name="test run",
             measured_attribute="counted_tests",

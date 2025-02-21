@@ -13,6 +13,7 @@ from .metric_collector import MetricCollector
 from .source_collector import (
     BranchType,
     InactiveBranchesSourceCollector,
+    MergeRequestCollector,
     SecurityWarningsSourceCollector,
     SlowTransactionsCollector,
     SourceCollector,

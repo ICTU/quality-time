@@ -1,12 +1,10 @@
 """GitLab merge requests collector."""
 
-from typing import cast
-
 import aiohttp
 from aiogqlc import GraphQLClient
 
+from base_collectors import MergeRequestCollector
 from collector_utilities.exceptions import NotFoundError
-from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceResponses
 
@@ -67,7 +65,7 @@ class GitLabMergeRequestInfoError(NotFoundError):
         super().__init__("Merge request info for project", project, extra=tip)
 
 
-class GitLabMergeRequests(GitLabBase):
+class GitLabMergeRequests(MergeRequestCollector, GitLabBase):
     """Collector class to measure the number of merge requests."""
 
     APPROVED_FIELD = "approved"  # Name of the merge request approved field in the GitLab GraphQL API
@@ -147,19 +145,9 @@ class GitLabMergeRequests(GitLabBase):
             upvotes=str(merge_request["upvotes"]),
         )
 
-    def _include_entity(self, entity: Entity) -> bool:
-        """Return whether the merge request should be counted."""
-        mr_matches_state = entity["state"] in self._parameter("merge_request_state")
-        mr_matches_approval = entity["approved"] in self._parameter("approval_state")
-        target_branch = entity["target_branch"]
-        branches = self._parameter("target_branches_to_include")
-        mr_matches_branches = match_string_or_regular_expression(target_branch, branches) if branches else True
-        # If the required number of upvotes is zero, merge requests are included regardless of how many upvotes they
-        # actually have. If the required number of upvotes is more than zero then only merge requests that have fewer
-        # than the minimum number of upvotes are included in the count:
-        required_upvotes = int(cast(str, self._parameter("upvotes")))
-        mr_has_fewer_than_min_upvotes = required_upvotes == 0 or int(entity["upvotes"]) < required_upvotes
-        return mr_matches_state and mr_matches_approval and mr_matches_branches and mr_has_fewer_than_min_upvotes
+    def _request_matches_approval(self, entity: Entity) -> bool:
+        """Override to return whether the merge request approval matches the configured approval."""
+        return entity["approved"] in self._parameter("approval_state")
 
     @classmethod
     def __approval_state(cls, merge_request) -> str:

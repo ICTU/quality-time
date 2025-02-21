@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Added
+
+- Allow for measuring merge requests using Bitbucket as source. Closes [#10225](https://github.com/ICTU/quality-time/issues/10225).
+
 ### Fixed
 
 - Increase contrast for disabled items in the menu bar. Fixes [#10840](https://github.com/ICTU/quality-time/issues/10840).
