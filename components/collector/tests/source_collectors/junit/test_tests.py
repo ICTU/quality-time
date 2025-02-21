@@ -12,14 +12,70 @@ class JUnitTestsTest(JUnitCollectorTestCase):
         """Extend to set up JUnit test data."""
         super().setUp()
         self.expected_entities = [
-            {"key": "cn:tc1", "old_key": "tc1", "name": "tc1", "class_name": "cn", "test_result": "passed"},
-            {"key": "cn:tc2", "old_key": "tc2", "name": "tc2", "class_name": "cn", "test_result": "failed"},
-            {"key": "cn:tc3", "old_key": "tc3", "name": "tc3", "class_name": "cn", "test_result": "errored"},
-            {"key": "cn:tc4", "old_key": "tc4", "name": "tc4", "class_name": "cn", "test_result": "skipped"},
-            {"key": "cn:tc5", "old_key": "tc5", "name": "tc5", "class_name": "cn", "test_result": "errored"},
-            {"key": "cn:tc6", "old_key": "tc6", "name": "tc6", "class_name": "cn", "test_result": "failed"},
-            {"key": "cn:tc7", "old_key": "tc7", "name": "tc7", "class_name": "cn", "test_result": "skipped"},
-            {"key": "cn:tc8", "old_key": "tc8", "name": "tc8", "class_name": "cn", "test_result": "passed"},
+            {
+                "key": "cn:h1:tc1",
+                "old_key": "cn:tc1",
+                "name": "tc1",
+                "class_name": "cn",
+                "host_name": "h1",
+                "test_result": "passed",
+            },
+            {
+                "key": "cn:h1:tc2",
+                "old_key": "cn:tc2",
+                "name": "tc2",
+                "class_name": "cn",
+                "host_name": "h1",
+                "test_result": "failed",
+            },
+            {
+                "key": "cn:h2:tc3",
+                "old_key": "cn:tc3",
+                "name": "tc3",
+                "class_name": "cn",
+                "host_name": "h2",
+                "test_result": "errored",
+            },
+            {
+                "key": "cn:h2:tc4",
+                "old_key": "cn:tc4",
+                "name": "tc4",
+                "class_name": "cn",
+                "host_name": "h2",
+                "test_result": "skipped",
+            },
+            {
+                "key": "cn::tc5",
+                "old_key": "cn:tc5",
+                "name": "tc5",
+                "class_name": "cn",
+                "host_name": "",
+                "test_result": "errored",
+            },
+            {
+                "key": "cn::tc6",
+                "old_key": "cn:tc6",
+                "name": "tc6",
+                "class_name": "cn",
+                "host_name": "",
+                "test_result": "failed",
+            },
+            {
+                "key": "cn::tc7",
+                "old_key": "cn:tc7",
+                "name": "tc7",
+                "class_name": "cn",
+                "host_name": "",
+                "test_result": "skipped",
+            },
+            {
+                "key": "cn::tc8",
+                "old_key": "cn:tc8",
+                "name": "tc8",
+                "class_name": "cn",
+                "host_name": "",
+                "test_result": "passed",
+            },
         ]
 
     async def test_tests(self):
@@ -36,8 +92,22 @@ class JUnitTestsTest(JUnitCollectorTestCase):
             value="2",
             total="8",
             entities=[
-                {"key": "cn:tc2", "old_key": "tc2", "name": "tc2", "class_name": "cn", "test_result": "failed"},
-                {"key": "cn:tc6", "old_key": "tc6", "name": "tc6", "class_name": "cn", "test_result": "failed"},
+                {
+                    "key": "cn:h1:tc2",
+                    "old_key": "cn:tc2",
+                    "name": "tc2",
+                    "class_name": "cn",
+                    "host_name": "h1",
+                    "test_result": "failed",
+                },
+                {
+                    "key": "cn::tc6",
+                    "old_key": "cn:tc6",
+                    "name": "tc6",
+                    "class_name": "cn",
+                    "host_name": "",
+                    "test_result": "failed",
+                },
             ],
         )
 
@@ -64,6 +134,18 @@ class JUnitTestsTest(JUnitCollectorTestCase):
         response = await self.collect(get_request_text=junit_xml_repeated_test_case_name)
         self.assert_measurement(response, value="4", total="4")
 
+    async def test_repeated_test_case_names_and_class_name(self):
+        """Test that repeated test case and class names are distinguished."""
+        junit_xml_repeated_test_case_name_and_class_name = """<testsuites>
+        <testsuite timestamp="2009-12-19T17:58:59">
+            <testcase name="tc1" classname="cn1" hostname="host1"/>
+            <testcase name="tc1" classname="cn1" hostname="host2"/>
+            <testcase name="tc1" classname="cn2" hostname="host1"/>
+            <testcase name="tc1" classname="cn2" hostname="host2"/>
+        </testsuite></testsuites>"""
+        response = await self.collect(get_request_text=junit_xml_repeated_test_case_name_and_class_name)
+        self.assert_measurement(response, value="4", total="4")
+
     async def test_one_top_level_nested_test_suite(self):
         """Test that a JUnit XML file with one top level nested test suite works."""
         xml = """
@@ -79,6 +161,13 @@ class JUnitTestsTest(JUnitCollectorTestCase):
             value="1",
             total="1",
             entities=[
-                {"key": "cn:tc1", "old_key": "tc1", "name": "tc1", "class_name": "cn", "test_result": "errored"},
+                {
+                    "key": "cn::tc1",
+                    "old_key": "cn:tc1",
+                    "name": "tc1",
+                    "class_name": "cn",
+                    "host_name": "",
+                    "test_result": "errored",
+                },
             ],
         )

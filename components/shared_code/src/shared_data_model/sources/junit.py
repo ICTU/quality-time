@@ -19,6 +19,7 @@ TEST_ENTITY = Entity(
     name="test",
     attributes=[
         EntityAttribute(name="Class name"),
+        EntityAttribute(name="Host name"),
         EntityAttribute(name="Test case", key="name"),
         EntityAttribute(name="Test result", color=RESULT_COLORS),
     ],

@@ -10,10 +10,10 @@ class JUnitCollectorTestCase(SourceCollectorTestCase):
     JUNIT_XML = """
     <testsuites>
         <testsuite name="ts1" timestamp="2009-12-19T17:58:59" failures="1" errors="1" skipped="1" tests="4">
-            <testcase name="tc1" classname="cn"/>
-            <testcase name="tc2" classname="cn"><failure/></testcase>
-            <testcase name="tc3" classname="cn"><error/></testcase>
-            <testcase name="tc4" classname="cn"><skipped/></testcase>
+            <testcase name="tc1" classname="cn" hostname="h1" />
+            <testcase name="tc2" classname="cn" hostname="h1"><failure/></testcase>
+            <testcase name="tc3" classname="cn" hostname="h2"><error/></testcase>
+            <testcase name="tc4" classname="cn" hostname="h2"><skipped/></testcase>
         </testsuite>
         <testsuite name="ts2" timestamp="2009-12-19T17:58:59" failures="0" errors="1" skipped="0" tests="1">
             <testcase name="tc5" classname="cn"><error/></testcase>
