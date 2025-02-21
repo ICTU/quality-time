@@ -134,6 +134,7 @@ export function PageContent({
                 marginBottom: "0px",
                 marginLeft: "0px",
                 marginRight: "0px",
+                minHeight: "65vh",
             }}
         >
             <ToastContainer theme="colored" />
