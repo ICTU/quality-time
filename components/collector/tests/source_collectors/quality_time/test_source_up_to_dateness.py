@@ -20,14 +20,14 @@ class QualityTimeSourceUpToDatenessTest(QualityTimeTestCase):
         self.set_source_parameter("reports", ["r1"])
         response = await self.collect(get_request_json_return_value=self.reports)
         expected_age = days_ago(parse("2020-06-24T07:53:17+00:00"))
-        self.assert_measurement(response, value=str(expected_age), total="100", entities=[])
+        self.assert_measurement(response, value=str(expected_age), total="0", entities=[])
 
     async def test_source_up_to_dateness_report(self):
         """Test that the source up-to-dateness of a specific report can be measured."""
         self.set_source_parameter("reports", ["r2"])
         response = await self.collect(get_request_json_return_value=self.reports)
         expected_age = days_ago(datetime.min)
-        self.assert_measurement(response, value=str(expected_age), total="100", entities=[])
+        self.assert_measurement(response, value=str(expected_age), total="0", entities=[])
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: list | str | None) -> None:
         """Override to pass the api URLs."""

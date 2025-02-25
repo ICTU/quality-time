@@ -5,7 +5,7 @@ from typing import cast
 from bs4 import Tag
 
 from collector_utilities.type import Response, Value
-from model import SourceResponses
+from model import Entities, SourceResponses
 
 from .base import PerformanceTestRunnerBaseClass
 
@@ -13,12 +13,12 @@ from .base import PerformanceTestRunnerBaseClass
 class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
     """Collector for the scalability metric."""
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Override to parse the scalability breaking point from the responses."""
         breaking_points = [await self.__breaking_point_vusers(response) for response in responses]
         return str(min(breaking_points))
 
-    async def _parse_total(self, responses: SourceResponses) -> Value:
+    async def _parse_total(self, responses: SourceResponses, entities: Entities) -> Value:
         """Override to compute the total number of virtual users from the responses."""
         breaking_points = [
             (

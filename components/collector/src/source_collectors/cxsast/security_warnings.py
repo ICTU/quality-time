@@ -2,7 +2,7 @@
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL, Value
-from model import SourceResponses
+from model import Entities, SourceResponses
 
 from .base import CxSASTScanBase
 
@@ -16,7 +16,7 @@ class CxSASTSecurityWarnings(CxSASTScanBase):
         stats_api = URL(f"{await self._api_url()}/cxrestapi/sast/scans/{self._scan_id}/resultsStatistics")
         return await SourceCollector._get_source_responses(self, stats_api)  # noqa: SLF001
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Override to parse the number of security warnings from the scan results."""
         stats = await responses[0].json()
         severities = self._parameter("severities")

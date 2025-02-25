@@ -20,4 +20,4 @@ class PipDependenciesTest(SourceCollectorTestCase):
             {"key": "pip@20_1", "name": "pip", "version": "20.1", "latest": "20.1.1"},
         ]
         response = await self.collect(get_request_json_return_value=pip_json)
-        self.assert_measurement(response, value="2", total="100", entities=expected_entities)
+        self.assert_measurement(response, value="2", total="2", entities=expected_entities)

@@ -5,7 +5,7 @@ from typing import Final, cast
 
 from collector_utilities.date_time import days_ago, parse_datetime
 from collector_utilities.type import Value
-from model import Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 from .issues import AzureDevopsIssues
 
@@ -30,7 +30,7 @@ class AzureDevopsAverageIssueLeadTime(AzureDevopsIssues):
         max_change_age = int(cast(str, self._parameter("lookback_days_issues")))
         return change_age <= max_change_age
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Calculate the average lead time of the completed work items."""
         if work_items := await self._work_items(responses):
             lead_times = [lead_time for item in work_items if ((lead_time := self.__lead_time(item)) is not None)]

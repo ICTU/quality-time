@@ -39,7 +39,7 @@ class AzureDevopsMergeRequests(MergeRequestCollector, AzureDevopsRepositoryBase)
         landing_url = (await self._landing_url(responses)).rstrip("s")
         return Entities([self._create_entity(mr, landing_url) for mr in merge_requests])
 
-    async def _parse_total(self, responses: SourceResponses) -> Value:
+    async def _parse_total(self, responses: SourceResponses, entities: Entities) -> Value:
         """Override to parse the total number of merge requests from the responses."""
         merge_requests = [len((await response.json())["value"]) for response in responses]
         return str(sum(merge_requests))

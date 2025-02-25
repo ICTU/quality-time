@@ -5,7 +5,7 @@ from abc import ABC
 from base_collectors import SourceCollector
 from collector_utilities.functions import add_query
 from collector_utilities.type import URL, Value
-from model import SourceResponses
+from model import Entities, SourceResponses
 
 
 class BitbucketBase(SourceCollector, ABC):
@@ -34,7 +34,7 @@ class BitbucketBase(SourceCollector, ABC):
             is_last_page = json["isLastPage"]
         return responses
 
-    async def _parse_total(self, responses: SourceResponses) -> Value:
+    async def _parse_total(self, responses: SourceResponses, entities: Entities) -> Value:
         """Override to parse the total number of entities from the responses."""
         sizes = [(await response.json())["size"] for response in responses]
         return str(sum(sizes))

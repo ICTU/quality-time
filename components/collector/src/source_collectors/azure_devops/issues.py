@@ -85,7 +85,7 @@ class AzureDevopsIssues(SourceCollector):
         """Override to parse the work items from the WIQL query response."""
         return Entities(self._parse_entity(work_item) for work_item in await self._work_items(responses))
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Override to parse the value from the responses.
 
         We can't just count the entities because due to pagination the response may not contain all work items.

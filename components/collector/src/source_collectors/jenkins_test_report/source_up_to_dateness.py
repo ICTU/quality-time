@@ -3,7 +3,7 @@
 from base_collectors import SourceCollector
 from collector_utilities.date_time import datetime_from_timestamp, days_ago, parse_datetime
 from collector_utilities.type import URL, Value
-from model import SourceResponses
+from model import Entities, SourceResponses
 
 
 class JenkinsTestReportSourceUpToDateness(SourceCollector):
@@ -15,7 +15,7 @@ class JenkinsTestReportSourceUpToDateness(SourceCollector):
         job_url = URL(f"{urls[0]}/lastSuccessfulBuild/api/json")
         return await super()._get_source_responses(test_report_url, job_url)
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Override to parse the timestamp from either the job or the test report."""
         timestamps = [
             suite.get("timestamp") for suite in (await responses[0].json()).get("suites", []) if suite.get("timestamp")

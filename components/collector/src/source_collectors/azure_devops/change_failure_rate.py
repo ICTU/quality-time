@@ -84,11 +84,6 @@ class AzureDevopsChangeFailureRate(AzureDevopsIssues, AzureDevopsPipelines):
         max_age = int(cast(str, self._parameter("lookback_days_pipeline_runs")))
         return entity["failed"] and build_age <= max_age
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Calculate the numerator of the change failure rate."""
-        included_entities = [entity for entity in await self._parse_entities(responses) if self._include_entity(entity)]
         return str(len(included_entities))
-
-    async def _parse_total(self, responses: SourceResponses) -> Value:
-        """Calculate the denominator of the change failure rate."""
-        return str(len(await self._parse_entities(responses)))

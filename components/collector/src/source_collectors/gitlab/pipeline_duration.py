@@ -4,7 +4,7 @@ from datetime import timedelta
 
 from collector_utilities.date_time import minutes
 from collector_utilities.type import URL, Value
-from model import SourceResponses
+from model import Entities, SourceResponses
 
 from .base import GitLabPipelineBase
 
@@ -19,7 +19,7 @@ class GitLabPipelineDuration(GitLabPipelineBase):
         api_url = await self._gitlab_api_url(f"pipelines/{pipelines[0].id}")
         return await super()._get_source_responses(api_url)
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Parse the value from the responses."""
         durations = [pipeline.pipeline_duration for pipeline in await self._pipelines(responses)]
         return str(minutes(max(durations, default=timedelta())))
