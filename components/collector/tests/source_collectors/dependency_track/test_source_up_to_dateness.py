@@ -20,7 +20,7 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
     METRIC_TYPE = "source_up_to_dateness"
     LANDING_URL = "https://dependency_track"
 
-    def projects(self) -> list[DependencyTrackProject]:
+    def projects(self, version: str = "1.4") -> list[DependencyTrackProject]:
         """Create Dependency-Track projects fixture."""
         now = datetime.now(tz=tzlocal()).replace(microsecond=0)
         self.yesterday = now - timedelta(days=1)
