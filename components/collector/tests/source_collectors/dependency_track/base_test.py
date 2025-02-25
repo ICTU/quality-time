@@ -10,14 +10,14 @@ class DependencyTrackTestCase(SourceCollectorTestCase):
 
     SOURCE_TYPE = "dependency_track"
 
-    def projects(self) -> list[DependencyTrackProject]:
+    def projects(self, version: str = "1.4") -> list[DependencyTrackProject]:
         """Create the Dependency-Track projects fixture."""
-        return [
-            DependencyTrackProject(
-                name="project name",
-                uuid="project uuid",
-                version="1.4",
-                lastBomImport=0,
-                metrics=DependencyTrackMetrics(),
-            ),
-        ]
+        project = DependencyTrackProject(
+            name="project name",
+            uuid="project uuid",
+            lastBomImport=0,
+            metrics=DependencyTrackMetrics(),
+        )
+        if version:
+            project["version"] = version
+        return [project]

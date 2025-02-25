@@ -1,6 +1,6 @@
 """Dependency-Track security warnings collector."""
 
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
@@ -14,14 +14,14 @@ class DependencyTrackRepositoryMetaData(TypedDict):
     latestVersion: str
 
 
-class DependencyTrackComponent(TypedDict, total=False):
+class DependencyTrackComponent(TypedDict):
     """Component as returned by Dependency-Track."""
 
     name: str
     project: DependencyTrackProject
-    repositoryMeta: DependencyTrackRepositoryMetaData
     uuid: str
-    version: str
+    repositoryMeta: NotRequired[DependencyTrackRepositoryMetaData]
+    version: NotRequired[str]
 
 
 class DependencyTrackDependencies(DependencyTrackLatestVersionStatusBase):
@@ -45,7 +45,7 @@ class DependencyTrackDependencies(DependencyTrackLatestVersionStatusBase):
     def _create_entity(self, component: DependencyTrackComponent) -> Entity:
         """Create an entity from the component."""
         project = component["project"]
-        current_version = component["version"]
+        current_version = component.get("version", "unknown")
         latest_version = component.get("repositoryMeta", {}).get("latestVersion", "unknown")
         landing_url = str(self._parameter("landing_url")).strip("/")
         return Entity(

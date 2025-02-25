@@ -15,8 +15,8 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         dependency: DependencyTrackComponent = {
             "name": "component name",
             "project": self.projects()[0],
-            "uuid": "component-uuid",
             "version": "1.0",
+            "uuid": "component-uuid",
         }
         if latest_version:
             dependency["repositoryMeta"] = {"latestVersion": latest_version}
@@ -62,14 +62,26 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         response = await self.collect(get_request_json_side_effect=[self.projects(), self.dependencies("")])
         self.assert_measurement(response, value="1", entities=self.entities("unknown", "unknown"))
 
-    async def test_filter_by_latest_version_status(self):
+    async def test_filter_by_latest_version_status_with_match(self):
+        """Test that components can be filtered by latest version status."""
+        self.set_source_parameter("latest_version_status", ["up-to-date"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.dependencies("1.0")])
+        self.assert_measurement(response, value="1", entities=self.entities("1.0", "up-to-date"))
+
+    async def test_filter_by_latest_version_status_without_match(self):
         """Test that components can be filtered by latest version status."""
         self.set_source_parameter("latest_version_status", ["update possible"])
         response = await self.collect(get_request_json_side_effect=[self.projects(), self.dependencies("1.0")])
         self.assert_measurement(response, value="0", entities=[])
 
-    async def test_filter_by_project_name(self):
-        """Test filtering projects by name."""
+    async def test_filter_by_project_name_with_match(self):
+        """Test filtering projects by name and match."""
+        self.set_source_parameter("project_names", ["project name", "other project"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.dependencies("1.0")])
+        self.assert_measurement(response, value="1", entities=self.entities("1.0", "up-to-date"))
+
+    async def test_filter_by_project_name_without_match(self):
+        """Test filtering projects by name without match."""
         self.set_source_parameter("project_names", ["other project"])
         response = await self.collect(get_request_json_return_value=self.projects())
         self.assert_measurement(response, value="0", entities=[])
@@ -80,8 +92,14 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         response = await self.collect(get_request_json_side_effect=[self.projects(), self.dependencies("1.0")])
         self.assert_measurement(response, value="1", entities=self.entities("1.0", "up-to-date"))
 
-    async def test_filter_by_project_version(self):
-        """Test filtering projects by version."""
+    async def test_filter_by_project_version_with_match(self):
+        """Test filtering projects by version with a match."""
+        self.set_source_parameter("project_versions", ["1.2", "1.3", "1.4"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.dependencies("1.0")])
+        self.assert_measurement(response, value="1", entities=self.entities("1.0", "up-to-date"))
+
+    async def test_filter_by_project_version_without_match(self):
+        """Test filtering projects by version without a match."""
         self.set_source_parameter("project_versions", ["1.2", "1.3"])
         response = await self.collect(get_request_json_return_value=self.projects())
         self.assert_measurement(response, value="0", entities=[])
@@ -92,3 +110,9 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         self.set_source_parameter("project_versions", ["1.3", "1.4"])
         response = await self.collect(get_request_json_side_effect=[self.projects(), self.dependencies("1.0")])
         self.assert_measurement(response, value="1", entities=self.entities("1.0", "up-to-date"))
+
+    async def test_filter_by_project_version_when_project_has_no_version(self):
+        """Test filtering projects by version."""
+        self.set_source_parameter("project_versions", ["1.2", "1.3"])
+        response = await self.collect(get_request_json_return_value=self.projects(version=""))
+        self.assert_measurement(response, value="0", entities=[])
