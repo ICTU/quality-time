@@ -84,7 +84,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             "api_url": str(kwargs.get("api_url", self.url)),
             "landing_url": str(kwargs.get("landing_url", self.url)),
             "value": None if connection_error else str(kwargs.get("value", "1")),
-            "total": None if connection_error else str(kwargs.get("total", "100")),
+            "total": None if connection_error else str(kwargs.get("total", "1")),
             "entities": [] if connection_error else entities,
             "connection_error": connection_error,
             "parse_error": None,
@@ -266,6 +266,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             self.expected_measurement(
                 source_parameter_hash="8c3b464958e9ad0f20fb2e3b74c80519",
                 value="0",
+                total="100",
                 entities=[],
                 api_url="",
                 landing_url="",

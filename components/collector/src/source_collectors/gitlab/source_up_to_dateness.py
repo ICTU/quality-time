@@ -13,7 +13,7 @@ import aiohttp
 from base_collectors import SourceCollector, TimePassedCollector
 from collector_utilities.date_time import days_ago, parse_datetime
 from collector_utilities.type import URL, Response, Value
-from model import SourceMeasurement, SourceResponses
+from model import Entities, SourceMeasurement, SourceResponses
 
 from .base import GitLabPipelineBase, GitLabProjectBase
 
@@ -68,7 +68,7 @@ class GitLabFileUpToDateness(GitLabProjectBase):
         commit_api_url = await self._gitlab_api_url(f"repository/commits/{last_commit_id}")
         return await super()._get_source_responses(commit_api_url)
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Override to parse the dates from the commits."""
         commit_responses = responses[1:]
         commit_dates = [parse_datetime((await response.json())["committed_date"]) for response in commit_responses]

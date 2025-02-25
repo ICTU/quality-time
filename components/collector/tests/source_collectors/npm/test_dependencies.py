@@ -26,7 +26,7 @@ class NpmDependenciesTest(SourceCollectorTestCase):
             },
         ]
         response = await self.collect(get_request_json_return_value=npm_json)
-        self.assert_measurement(response, value="2", total="100", entities=expected_entities)
+        self.assert_measurement(response, value="2", total="2", entities=expected_entities)
 
     async def test_multiple_dependents_per_dependency(self):
         """Test that the number of dependencies is returned if a dependency has multiple dependents."""
@@ -53,4 +53,4 @@ class NpmDependenciesTest(SourceCollectorTestCase):
             },
         ]
         response = await self.collect(get_request_json_return_value=npm_json)
-        self.assert_measurement(response, value="2", total="100", entities=expected_entities)
+        self.assert_measurement(response, value="2", total="2", entities=expected_entities)

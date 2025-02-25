@@ -158,11 +158,12 @@ class SourceCollector:
         Either this method or self._parse_entities() need to be overridden in the subclass to implement the actual
         parsing of the source responses.
         """
-        included_entities = [entity for entity in await self._parse_entities(responses) if self._include_entity(entity)]
+        entities = await self._parse_entities(responses)
+        included_entities = Entities([entity for entity in entities if self._include_entity(entity)])
         return SourceMeasurement(
-            entities=Entities(included_entities),
-            total=await self._parse_total(responses),
-            value=await self._parse_value(responses),
+            entities=included_entities,
+            total=await self._parse_total(responses, entities),
+            value=await self._parse_value(responses, included_entities),
         )
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
@@ -173,13 +174,13 @@ class SourceCollector:
         """Return whether to include the entity in the measurement."""
         return True
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Parse the value from the responses."""
-        return None
+        return str(len(included_entities))
 
-    async def _parse_total(self, responses: SourceResponses) -> Value:
+    async def _parse_total(self, responses: SourceResponses, entities: Entities) -> Value:
         """Parse the total from the responses."""
-        return "100"
+        return str(len(entities))
 
     async def __safely_parse_issue_status(self, responses: SourceResponses) -> IssueStatus:
         """Parse the issue status from the source responses, without failing.
@@ -321,7 +322,7 @@ class SecurityWarningsSourceCollector(SourceCollector):
 class TimeCollector(SourceCollector):
     """Base class for time collectors."""
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Parse the value from the responses."""
         date_times = await self._parse_source_response_date_times(responses)
         return str(self.days(self.minimum(date_times)))

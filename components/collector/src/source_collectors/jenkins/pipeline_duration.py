@@ -8,7 +8,7 @@ from base_collectors import SourceCollector
 from collector_utilities.date_time import minutes
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
-from model import SourceResponses
+from model import Entities, SourceResponses
 
 from .base import Build, Job
 
@@ -37,7 +37,7 @@ class JenkinsPipelineDuration(SourceCollector):
             return URL(build["url"])
         return URL(await super()._landing_url(responses) + f"/job/{self._parameter('pipeline')}")
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Parse the value from the responses."""
         build = await self._build(responses)
         return str(minutes(timedelta(milliseconds=build["duration"]))) if build else "0"

@@ -8,7 +8,7 @@ from shared_data_model import DATA_MODEL
 
 from collector_utilities.date_time import parse_datetime
 from collector_utilities.type import URL, Response, Value
-from model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 from .base import QualityTimeCollector
 
@@ -22,13 +22,11 @@ class QualityTimeMetrics(QualityTimeCollector):
         """Extend to add the reports API path."""
         return URL(await super()._api_url() + "/api/internal/report")
 
-    async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
-        """Get the metric entities from the responses."""
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
+        """Parse the entities from the responses."""
         landing_url = await self._landing_url(responses)
         metrics_and_entities = await self.__get_metrics_and_entities(responses[0])
-        parsed_entities = [self.__parse_entity(entity, metric, landing_url) for metric, entity in metrics_and_entities]
-        entities = Entities([entity for entity in parsed_entities if self._include_entity(entity)])
-        return SourceMeasurement(total=str(len(metrics_and_entities)), entities=entities)
+        return Entities([self.__parse_entity(entity, metric, landing_url) for metric, entity in metrics_and_entities])
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the entity in the measurement."""

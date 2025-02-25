@@ -4,7 +4,7 @@ from typing import Final
 
 from collector_utilities.functions import decimal_round_half_up
 from collector_utilities.type import Value
-from model import Entity, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 from .issues import AzureDevopsIssues
 
@@ -26,7 +26,7 @@ class AzureDevopsUserStoryPoints(AzureDevopsIssues):
         parsed_entity["story_points"] = self.__story_points(work_item)
         return parsed_entity
 
-    async def _parse_value(self, responses: SourceResponses) -> Value:
+    async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Override to parse the sum of the user story points from the responses."""
         calculated_value = sum(self.__story_points(work_item) for work_item in await self._work_items(responses))
         return str(decimal_round_half_up(calculated_value))

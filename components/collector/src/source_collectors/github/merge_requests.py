@@ -109,7 +109,7 @@ class GitHubMergeRequests(GitHubBase):
             pull_requests.extend(json["data"]["repository"]["pullRequests"]["nodes"])
         return Entities(self._create_entity(pr) for pr in pull_requests)
 
-    async def _parse_total(self, responses: SourceResponses) -> Value:
+    async def _parse_total(self, responses: SourceResponses, entities: Entities) -> Value:
         """Override to parse the total number of pull requests."""
         return str((await responses[0].json(content_type=None))["data"]["repository"]["pullRequests"]["totalCount"])
 
