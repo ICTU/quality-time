@@ -15,6 +15,7 @@ import {
     isMeasurementOutdated,
     isMeasurementRequested,
     isMeasurementStale,
+    isSourceConfigurationComplete,
     sum,
 } from "../utils"
 import { IgnoreIcon, LoadingIcon } from "../widgets/icons"
@@ -104,8 +105,10 @@ export function MeasurementValue({ metric, reportDate }) {
     value = formatMetricValue(scale, value)
     const unit = getMetricUnit(metric, dataModel)
     const stale = isMeasurementStale(metric, reportDate)
+    const complete = isSourceConfigurationComplete(dataModel, metric)
     const outdated = isMeasurementOutdated(metric)
     const requested = isMeasurementRequested(metric)
+    const updating = complete && (outdated || requested)
     const hasIgnoredEntities = sum(ignoredEntitiesCount(metric.latest_measurement)) > 0
     return (
         <Tooltip
@@ -114,6 +117,10 @@ export function MeasurementValue({ metric, reportDate }) {
                 <div>
                     <WarningMessage showIf={stale} title="This metric was not recently measured">
                         This may indicate a problem with Quality-time itself. Please contact a system administrator.
+                    </WarningMessage>
+                    <WarningMessage showIf={!complete} title="Source configuration incomplete">
+                        The source configuration of this metric is not complete. Add at least one source and make sure
+                        all mandatory parameters for all sources have been provided.
                     </WarningMessage>
                     <WarningMessage showIf={outdated} title="Latest measurement out of date">
                         The source configuration of this metric was changed after the latest measurement.
@@ -143,7 +150,7 @@ export function MeasurementValue({ metric, reportDate }) {
                 </div>
             }
         >
-            {measurementValueLabel(hasIgnoredEntities, stale, outdated || requested, value)}
+            {measurementValueLabel(hasIgnoredEntities, stale, updating, value)}
         </Tooltip>
     )
 }

@@ -21,6 +21,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Fixed
 
+- When adding a new source to a metric, don't show the spinner until the source has been configured sufficiently to start collecting data. Fixes [#9994](https://github.com/ICTU/quality-time/issues/9994).
 - Increase contrast for disabled items in the menu bar. Fixes [#10840](https://github.com/ICTU/quality-time/issues/10840).
 - Links to documentation on Read the Docs for subjects, metrics, or sources with hyphens in their name wouldn't scroll to the right location. Fixes [#10843](https://github.com/ICTU/quality-time/issues/10843).
 - Metric details were not shown in exports to PDF. Fixes [#10845](https://github.com/ICTU/quality-time/issues/10845).

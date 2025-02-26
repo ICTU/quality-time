@@ -13,14 +13,21 @@ function renderMeasurementValue({
     status = null,
     type = "violations",
     unit = null,
+    url = "https://example.org",
 } = {}) {
     return render(
-        <DataModel.Provider value={{ metrics: { violations: { unit: "violations" } } }}>
+        <DataModel.Provider
+            value={{
+                metrics: { violations: { unit: "violations" } },
+                sources: { source_type: { parameters: { url: { mandatory: true, metrics: ["violations"] } } } },
+            }}
+        >
             <MeasurementValue
                 metric={{
                     latest_measurement: latest_measurement,
                     measurement_requested: measurement_requested,
                     scale: scale,
+                    sources: { source_uuid: { type: "source_type", parameters: { url: url } } },
                     status: status,
                     type: type,
                     unit: unit,
@@ -40,12 +47,29 @@ it("renders the value", async () => {
 it("renders an unkown value", async () => {
     const { container } = renderMeasurementValue({ latest_measurement: { count: { value: null } } })
     expect(screen.getAllByText(/\?/).length).toBe(1)
+    expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders a value that has not been measured yet", async () => {
     const { container } = renderMeasurementValue()
     expect(screen.getAllByText(/\?/).length).toBe(1)
+    expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("renders a value that can not be measured yet", async () => {
+    const { container } = renderMeasurementValue({
+        latest_measurement: {
+            count: { value: 1 },
+            outdated: true,
+            start: new Date().toISOString(),
+            end: new Date().toISOString(),
+        },
+        url: "",
+    })
+    expect(screen.getAllByText(/1/).length).toBe(1)
+    expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
 

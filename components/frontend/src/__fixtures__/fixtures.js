@@ -28,6 +28,9 @@ export const dataModel = {
     metrics: {
         metric_type: { name: "Metric type", tags: [] },
     },
+    sources: {
+        source_type: { name: "Source type", metrics: ["metric_type"], parameters: {} },
+    },
 }
 
 export const report = {
@@ -42,7 +45,7 @@ export const report = {
                     type: "metric_type",
                     tags: ["other tag"],
                     target: "1",
-                    sources: { source_uuid: { name: "Source" } },
+                    sources: { source_uuid: { name: "Source", type: "source_type" } },
                     status: "target_not_met",
                     recent_measurements: [],
                     latest_measurement: { count: 1 },
@@ -54,7 +57,7 @@ export const report = {
                     tags: ["tag"],
                     target: "2",
                     issue_ids: ["ABC-42"],
-                    sources: { source_uuid2: { name: "Source 2" } },
+                    sources: { source_uuid2: { name: "Source 2", type: "source_type" } },
                     status: "informative",
                     recent_measurements: [],
                     latest_measurement: { count: 2 },

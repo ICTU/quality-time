@@ -23,7 +23,7 @@ import {
 import { Logo } from "../source/Logo"
 import { SourceEntities } from "../source/SourceEntities"
 import { Sources } from "../source/Sources"
-import { getSourceName, isMeasurementRequested } from "../utils"
+import { getSourceName, isMeasurementRequested, isSourceConfigurationComplete } from "../utils"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { ActionButton } from "../widgets/buttons/ActionButton"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
@@ -37,16 +37,22 @@ import { MetricDebtParameters } from "./MetricDebtParameters"
 import { TrendGraph } from "./TrendGraph"
 
 function RequestMeasurementButton({ metric, metric_uuid, reload }) {
+    const dataModel = useContext(DataModel)
+    const configurationComplete = isSourceConfigurationComplete(dataModel, metric)
     const measurementRequested = isMeasurementRequested(metric)
     return (
         <ActionButton
             action="Measure"
-            disabled={measurementRequested}
+            disabled={!configurationComplete || measurementRequested}
             icon={<RefreshIcon />}
             itemType="metric"
             loading={measurementRequested}
             onClick={() => set_metric_attribute(metric_uuid, "measurement_requested", new Date().toISOString(), reload)}
-            popup={`Measure this metric as soon as possible`}
+            popup={
+                configurationComplete
+                    ? "Measure this metric as soon as possible"
+                    : "The source configuration of this metric is not complete. Add at least one source and make sure all mandatory parameters for all sources have been provided."
+            }
         />
     )
 }
