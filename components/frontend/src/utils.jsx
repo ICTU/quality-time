@@ -4,6 +4,7 @@ import { PERMISSIONS } from "./context/Permissions"
 import { defaultDesiredResponseTimes } from "./defaults"
 import { STATUSES_NOT_REQUIRING_ACTION } from "./metric/status"
 import {
+    dataModelPropType,
     datePropType,
     metricPropType,
     metricsPropType,
@@ -104,9 +105,31 @@ export function isMeasurementOutdated(metric) {
     if (metric.latest_measurement) {
         return metric.latest_measurement.outdated ?? false
     }
-    return Object.keys(metric.sources ?? {}).length > 0 // If there are sources, measurement is needed
+    return false
 }
 isMeasurementOutdated.propTypes = {
+    metric: metricPropType,
+}
+
+export function isSourceConfigurationComplete(dataModel, metric) {
+    // Return whether the metric can be measured, meaning that there is at least one source and all sources have
+    // all mandatory parameters configured
+    const sources = Object.values(metric.sources ?? {})
+    if (sources.length === 0) {
+        return false
+    }
+    return sources.every((source) => {
+        const parameters = dataModel.sources[source.type].parameters
+        return Object.entries(parameters).every(([parameterKey, parameter]) => {
+            if (parameter.mandatory && parameter.metrics.includes(metric.type) && !parameter.default_value) {
+                return source?.parameters?.[parameterKey]
+            }
+            return true
+        })
+    })
+}
+isSourceConfigurationComplete.propTypes = {
+    dataModel: dataModelPropType,
     metric: metricPropType,
 }
 

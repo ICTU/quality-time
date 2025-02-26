@@ -17,6 +17,7 @@ import {
     isMeasurementOutdated,
     isMeasurementRequested,
     isMeasurementStale,
+    isSourceConfigurationComplete,
     niceNumber,
     nrMetricsInReport,
     nrMetricsInReports,
@@ -509,12 +510,41 @@ it("returns whether a metric's measurement is outdated", () => {
     expect(isMeasurementOutdated({})).toBe(false)
     // A metric without measurements with an empty collection of sources is not outdated:
     expect(isMeasurementOutdated({ sources: {} })).toBe(false)
-    // A metric without measurements but with a source is outdated:
-    expect(isMeasurementOutdated({ sources: { source_uuid: {} } })).toBe(true)
+    // A metric without measurements but with a source is not outdated:
+    expect(isMeasurementOutdated({ sources: { source_uuid: {} } })).toBe(false)
     // A metric with an up-to-date measurement is not outdated:
     expect(isMeasurementOutdated({ latest_measurement: {} })).toBe(false)
     // A metric with an outdated measurement is outdated:
     expect(isMeasurementOutdated({ latest_measurement: { outdated: true } })).toBe(true)
+})
+
+it("returns whether a metric can be measured", () => {
+    const dataModel = {
+        sources: { source_type: { parameters: { url: { mandatory: true, metrics: ["metric_type"] } } } },
+    }
+    const metric = { type: "metric_type" }
+    // A metric without sources is not measurable:
+    expect(isSourceConfigurationComplete(dataModel, metric)).toBe(false)
+    // A metric with a source without parameters is not measurable:
+    metric.sources = { source_uuid: { type: "source_type" } }
+    expect(isSourceConfigurationComplete(dataModel, metric)).toBe(false)
+    // A metric with a source with empty parameters is measurable:
+    metric.sources["source_uuid"].parameters = {}
+    expect(isSourceConfigurationComplete(dataModel, metric)).toBe(false)
+    // A metric with a source with mandatory parameters configured is measurable:
+    metric.sources["source_uuid"].parameters["url"] = "https://example.org"
+    expect(isSourceConfigurationComplete(dataModel, metric)).toBe(true)
+    // Non-mandatory parameters that are not configured don't make the metric unmeasurable:
+    dataModel.sources["source_type"].parameters["username"] = { mandatory: false, metrics: ["metric_type"] }
+    expect(isSourceConfigurationComplete(dataModel, metric)).toBe(true)
+    // Mandatory parameters for other metrics that are not configured don't make the metric unmeasurable:
+    metric.sources["source_uuid"].parameters["password"] = { mandatory: true, metrics: ["other_metric_type"] }
+    expect(isSourceConfigurationComplete(dataModel, metric)).toBe(true)
+    // A metric with a source with mandatory parameters that has a default value for a mandatory parameter is
+    // measurable:
+    dataModel.sources["source_type"].parameters["url"]["default_value"] = "https://example.org"
+    metric.sources["source_uuid"].parameters = {}
+    expect(isSourceConfigurationComplete(dataModel, metric)).toBe(true)
 })
 
 it("returns the reference documentation URL", () => {

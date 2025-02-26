@@ -76,31 +76,35 @@ const dataModel = {
     subjects: { subject_type: { metrics: ["violations"] } },
 }
 
-async function renderMetricDetails(stopFilteringAndSorting, connection_error, failLoadingMeasurements) {
-    measurement_api.get_metric_measurements.mockImplementation(() => {
-        if (failLoadingMeasurements) {
-            return Promise.reject(new Error("failed to load measurements"))
-        } else {
-            return Promise.resolve({
-                measurements: [
+function getMetricMeasurementsSuccessfully(connection_error) {
+    return Promise.resolve({
+        measurements: [
+            {
+                count: { value: "42" },
+                version_number: { value: "1.1" },
+                start: "2020-02-29T10:25:52.252Z",
+                end: "2020-02-29T11:25:52.252Z",
+                sources: [
+                    {},
+                    { source_uuid: "source_uuid2" },
                     {
-                        count: { value: "42" },
-                        version_number: { value: "1.1" },
-                        start: "2020-02-29T10:25:52.252Z",
-                        end: "2020-02-29T11:25:52.252Z",
-                        sources: [
-                            {},
-                            { source_uuid: "source_uuid2" },
-                            {
-                                source_uuid: "source_uuid",
-                                entities: [{ key: "1" }],
-                                connection_error: connection_error,
-                            },
-                        ],
+                        source_uuid: "source_uuid",
+                        entities: [{ key: "1" }],
+                        connection_error: connection_error,
                     },
                 ],
-            })
-        }
+            },
+        ],
+    })
+}
+
+async function renderMetricDetails({
+    stopFilteringAndSorting = null,
+    connection_error = null,
+    getMetricMeasurements = null,
+} = {}) {
+    measurement_api.get_metric_measurements.mockImplementation(() => {
+        return getMetricMeasurements ? getMetricMeasurements() : getMetricMeasurementsSuccessfully(connection_error)
     })
     source_api.set_source_entity_attribute.mockImplementation(
         (_metric_uuid, _source_uuid, _entity_key, _attribute, _value, reload) => reload(),
@@ -152,7 +156,7 @@ it("removes the existing hashtag from the URL to share", async () => {
 })
 
 it("displays whether sources have errors", async () => {
-    const { container } = await renderMetricDetails(null, "Connection error")
+    const { container } = await renderMetricDetails({ connection_error: "Connection error" })
     expect(screen.getByText(/Sources/)).toHaveClass("error")
     await expectNoAccessibilityViolations(container)
 })
@@ -165,7 +169,7 @@ it("displays whether sources have warnings", async () => {
 
 it("moves the metric", async () => {
     const mockCallback = vi.fn()
-    await renderMetricDetails(mockCallback)
+    await renderMetricDetails({ stopFilteringAndSorting: mockCallback })
     await act(async () => fireEvent.click(screen.getByRole("button", { name: /Move metric to the last row/ })))
     expect(mockCallback).toHaveBeenCalled()
     expect(measurement_api.get_metric_measurements).toHaveBeenCalled()
@@ -189,9 +193,18 @@ it("measures the metric", async () => {
     )
 })
 
+it("does not measure the metric if the metric source configuration is incomplete", async () => {
+    dataModel.sources["sonarqube"].parameters = { url: { mandatory: true, metrics: ["violations"] } }
+    await renderMetricDetails()
+    fireEvent.click(screen.getByText(/Measure metric/))
+    expect(fetch_server_api.fetch_server_api).not.toHaveBeenCalled()
+})
+
 it("fails to load measurements", async () => {
     history.push("?expanded=metric_uuid:5")
-    const { container } = await renderMetricDetails(null, null, true)
+    const { container } = await renderMetricDetails({
+        getMetricMeasurements: () => Promise.reject(new Error("failed to load measurements")),
+    })
     expect(screen.queryAllByText(/Loading measurements failed/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
