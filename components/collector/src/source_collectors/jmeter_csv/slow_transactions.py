@@ -22,8 +22,8 @@ class JMeterCSVSlowTransactions(JMeterCSVCollector, SlowTransactionsCollector):
             entity = TransactionEntity(
                 key=label,
                 name=label,
-                sample_count=sample_count,
-                error_count=error_count,
+                sample_count=str(sample_count),
+                error_count=str(error_count),
                 error_percentage=self._round((error_count / sample_count) * 100),
                 mean_response_time=self._round(statistics.mean(latencies)),
                 median_response_time=self._round(statistics.median(latencies)),

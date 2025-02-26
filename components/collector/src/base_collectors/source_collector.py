@@ -398,7 +398,7 @@ class TransactionEntity(Entity):
         transaction_specific_target_response_times: list[str],
     ) -> bool:
         """Return whether the transaction is slow."""
-        name, response_time = self["name"], self[response_time_to_evaluate]
+        name, response_time = self["name"], float(self[response_time_to_evaluate])
         for transaction_specific_target_response_time in transaction_specific_target_response_times:
             re_or_name, target = transaction_specific_target_response_time.rsplit(":", maxsplit=1)
             if match_string_or_regular_expression(name, [re_or_name]) and response_time <= float(target):
@@ -433,9 +433,9 @@ class SlowTransactionsCollector(SourceCollector):
         )
 
     @staticmethod
-    def _round(value: float) -> float:
+    def _round(value: float) -> str:
         """Round the value at exactly one decimal."""
-        return round(float(value), 1)
+        return str(round(float(value), 1))
 
 
 class MergeRequestCollector(SourceCollector):

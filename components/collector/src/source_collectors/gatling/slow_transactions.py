@@ -22,8 +22,8 @@ class GatlingSlowTransactions(GatlingJSONCollector, SlowTransactionsCollector):
             entity = TransactionEntity(
                 key=transaction["name"],
                 name=transaction["name"],
-                sample_count=sample_count,
-                error_count=error_count,
+                sample_count=str(sample_count),
+                error_count=str(error_count),
                 error_percentage=self._round((float(error_count) / float(sample_count)) * 100),
                 mean_response_time=self._round(transaction["meanResponseTime"]["total"]),
                 min_response_time=self._round(transaction["minResponseTime"]["total"]),

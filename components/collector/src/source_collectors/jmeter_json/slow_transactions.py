@@ -18,8 +18,8 @@ class JMeterJSONSlowTransactions(SlowTransactionsCollector, JSONFileSourceCollec
             entity = TransactionEntity(
                 key=transaction["transaction"],
                 name=transaction["transaction"],
-                sample_count=transaction["sampleCount"],
-                error_count=transaction["errorCount"],
+                sample_count=str(transaction["sampleCount"]),
+                error_count=str(transaction["errorCount"]),
                 error_percentage=self._round(transaction["errorPct"]),
                 mean_response_time=self._round(transaction["meanResTime"]),
                 median_response_time=self._round(transaction["medianResTime"]),
