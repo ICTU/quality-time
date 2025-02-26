@@ -48,7 +48,15 @@ it("renders the fixed status", async () => {
 
 it("renders the status end date", async () => {
     const { container } = renderSourceEntity({ status: "fixed", status_end_date: "3000-01-01" })
-    expect(screen.getAllByText(/3000-01-01/).length).toBe(1)
+    const expectedDate = new Date("3000-01-01").toLocaleDateString([], { dateStyle: "short" })
+    expect(screen.getAllByText(RegExp(expectedDate)).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("does not render the status end date if the status is unconfirmed", async () => {
+    const { container } = renderSourceEntity({ status: "unconfirmed", status_end_date: "3000-01-01" })
+    const expectedDate = new Date("3000-01-01").toLocaleDateString([], { dateStyle: "short" })
+    expect(screen.queryAllByText(RegExp(expectedDate)).length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -71,7 +79,8 @@ it("renders the status and rationale past end date", async () => {
         hide_ignored_entities: true,
         rationale: "Because",
     })
-    expect(screen.getAllByText(/2000-01-01/).length).toBe(1)
+    const expectedDate = new Date("2000-01-01").toLocaleDateString([], { dateStyle: "short" })
+    expect(screen.getAllByText(RegExp(expectedDate)).length).toBe(1)
     expect(screen.getAllByText(/Because/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })

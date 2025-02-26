@@ -78,7 +78,9 @@ export function SourceEntity({
             style={{ maxHeight: "100px", overflow: "auto" }}
         >
             <TableCell sx={style}>{SOURCE_ENTITY_STATUS_NAME[status]}</TableCell>
-            <TableCell sx={style}>{status === "unconfirmed" ? "" : status_end_date}</TableCell>
+            <TableCell sx={style}>
+                {status === "unconfirmed" ? "" : <TimeAgoWithDate dateFirst noTime date={status_end_date} />}
+            </TableCell>
             <TableCell sx={style}>
                 <DivWithHTML>{rationale}</DivWithHTML>
             </TableCell>
