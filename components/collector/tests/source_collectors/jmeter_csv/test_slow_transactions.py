@@ -11,36 +11,36 @@ class JMeterCSVSlowTransactionsTest(JMeterCSVTestCase):
     def setUp(self):
         """Extend to set the expected entities."""
         super().setUp()
-        search_endpoint_mean_response_time = search_endpoint_median_response_time = round((360 + 1214) / 2, 1)
-        home_endpoint_mean_response_time = home_endpoint_median_response_time = round((57 + 10) / 2, 1)
+        search_endpoint_mean_response_time = search_endpoint_median_response_time = str(round((360 + 1214) / 2, 1))
+        home_endpoint_mean_response_time = home_endpoint_median_response_time = str(round((57 + 10) / 2, 1))
         self.expected_entities = [
             {
                 "key": "-api-search",
                 "name": "/api/search",
-                "sample_count": 2,
-                "error_count": 0,
-                "error_percentage": 0.0,
+                "sample_count": "2",
+                "error_count": "0",
+                "error_percentage": "0.0",
                 "mean_response_time": search_endpoint_mean_response_time,
                 "median_response_time": search_endpoint_median_response_time,
-                "min_response_time": 360.0,
-                "max_response_time": 1214.0,
-                "percentile_90_response_time": 1811.8,
-                "percentile_95_response_time": 1939.9,
-                "percentile_99_response_time": 2042.4,
+                "min_response_time": "360.0",
+                "max_response_time": "1214.0",
+                "percentile_90_response_time": "1811.8",
+                "percentile_95_response_time": "1939.9",
+                "percentile_99_response_time": "2042.4",
             },
             {
                 "key": "-home",
                 "name": "/home",
-                "sample_count": 2,
-                "error_count": 1,
-                "error_percentage": 50.0,
+                "sample_count": "2",
+                "error_count": "1",
+                "error_percentage": "50.0",
                 "mean_response_time": home_endpoint_mean_response_time,
                 "median_response_time": home_endpoint_median_response_time,
-                "min_response_time": 10.0,
-                "max_response_time": 57.0,
-                "percentile_90_response_time": 89.9,
-                "percentile_95_response_time": 97.0,
-                "percentile_99_response_time": 102.6,
+                "min_response_time": "10.0",
+                "max_response_time": "57.0",
+                "percentile_90_response_time": "89.9",
+                "percentile_95_response_time": "97.0",
+                "percentile_99_response_time": "102.6",
             },
         ]
         self.set_source_parameter("target_response_time", "10")

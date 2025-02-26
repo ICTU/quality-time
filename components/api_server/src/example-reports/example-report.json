@@ -722,7 +722,7 @@
                         "284adba5-9aca-3a61-5847-eea6fb1d7070": {
                             "type": "gatling",
                             "parameters": {
-                                "url": "http://testdata:8000/reports/gatling",
+                                "url": "http://testdata:8000/reports/gatling/index.html",
                                 "username": "",
                                 "password": "",
                                 "private_token": "",
@@ -787,7 +787,7 @@
                         "345acbb5-0ada-3262-5247-e2a6fb128970": {
                             "type": "gatling",
                             "parameters": {
-                                "url": "http://testdata:8000/reports/gatling",
+                                "url": "http://testdata:8000/reports/gatling/index.html",
                                 "username": "",
                                 "password": "",
                                 "private_token": "",
@@ -877,7 +877,7 @@
                         "340acbb5-0ada-5262-53f7-eaa6f8128774": {
                             "type": "gatling",
                             "parameters": {
-                                "url": "http://testdata:8000/reports/gatling",
+                                "url": "http://testdata:8000/reports/gatling/index.html",
                                 "username": "",
                                 "password": "",
                                 "private_token": "",

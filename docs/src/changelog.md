@@ -29,6 +29,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 - Keep the footer at the bottom of the page even if the report is very short. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
 - Automatically expand long comments when exporting to PDF. Fixes [#10892](https://github.com/ICTU/quality-time/issues/10892).
 - Correctly format the measurement entity status end dates in the measurement details table. Fixes [#10907](https://github.com/ICTU/quality-time/issues/10907).
+- Gatling and JMeter measurement details of type integer and float (such as sample count and mean response time) would not be collected. Fixes [#10911](https://github.com/ICTU/quality-time/issues/10911).
 
 ### Removed
 
