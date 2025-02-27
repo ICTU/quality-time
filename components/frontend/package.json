@@ -46,7 +46,7 @@
         "@vitest/coverage-v8": "^3.0.7",
         "browserslist-to-esbuild": "^2.1.1",
         "eslint": "^9.20.1",
-        "eslint-config-prettier": "^10.0.1",
+        "eslint-config-prettier": "^10.0.2",
         "eslint-plugin-jest": "^28.11.0",
         "eslint-plugin-prettier": "^5.2.3",
         "eslint-plugin-promise": "^7.2.1",
