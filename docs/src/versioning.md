@@ -17,40 +17,40 @@ A new **patch** release of *Quality-time* is made when the new version has only 
 
 ## Version overview
 
-The table below contains the *Quality-time* releases since the last minor of the previous major release. For each release it shows the release date, the MongoDB version included, the MongoDB feature compatibility (FC) version set in the database, whether migration code was added or removed, whether up- or downgrading is possible, and if so, to which versions, and whether manual changes are needed to up- or downgrade.
+The table below contains the *Quality-time* releases since the last minor of the previous major release. For each release it shows the release date, the MongoDB version included, the MongoDB feature compatibility (FC) version set in the database, whether migration code was added or removed, whether up- or downgrading is supported, and if so, to which versions, and whether manual changes are needed to up- or downgrade.
 
 | Version    | Date         | Mongo  | FC     | Migrations | Downgrade       | Upgrade         | Manual changes |
 |------------|--------------|--------|--------|------------|-----------------|-----------------|----------------|
-| v5.26.0    | [unreleased] | v8     | v8     | added      | not possible    | n/a             | no             |
+| v5.26.0    | 2025-02-27   | v8     | v8     | added      | not supported   | n/a             | no             |
 | v5.25.0    | 2025-02-14   | v8     | v8     |            | v5.20.0-v5.24.0 | v5.26.0         | no             |
 | v5.24.0    | 2025-02-06   | v8     | v8     |            | v5.20.0-v5.23.0 | v5.25.0-v5.26.0 | no             |
 | v5.23.0    | 2025-01-27   | v8     | v8     |            | v5.20.0-v5.22.0 | v5.24.0-v5.26.0 | no             |
 | v5.22.0    | 2025-01-16   | v8     | v8     |            | v5.20.0-v5.21.0 | v5.23.0-v5.26.0 | no             |
 | v5.21.0    | 2024-12-12   | v8     | v8     |            | v5.20.0         | v5.22.0-v5.26.0 | no             |
-| v5.20.0    | 2024-12-05   | v8     | **v8** | added      | not possible    | v5.21.0-v5.26.0 | no             |
+| v5.20.0    | 2024-12-05   | v8     | **v8** | added      | not supported   | v5.21.0-v5.26.0 | no             |
 | v5.19.0    | 2024-11-22   | v8     | v7     |            | v5.16.1-v5.18.0 | v5.20.0-v5.26.0 | no             |
 | v5.18.0    | 2024-11-06   | v8     | v7     |            | v5.16.1-v5.17.1 | v5.19.0-v5.26.0 | no             |
 | v5.17.1    | 2024-10-25   | v8     | v7     |            | v5.16.1-v5.17.0 | v5.18.0-v5.26.0 | no             |
 | v5.17.0    | 2024-10-17   | **v8** | v7     |            | v5.16.1-v5.16.2 | v5.17.1-v5.26.0 | no             |
 | v5.16.2    | 2024-10-03   | v7     | v7     |            | v5.16.1         | v5.17.0-v5.26.0 | no             |
-| v5.16.1    | 2024-09-26   | v7     | v7     | added      | not possible    | v5.16.2-v5.26.0 | no             |
-| v5.16.0    | 2024-09-19   | v7     | v7     | added      | not possible    | v5.16.1-v5.26.0 | no             |
+| v5.16.1    | 2024-09-26   | v7     | v7     | added      | not supported   | v5.16.2-v5.26.0 | no             |
+| v5.16.0    | 2024-09-19   | v7     | v7     | added      | not supported   | v5.16.1-v5.26.0 | no             |
 | v5.15.0    | 2024-07-30   | v7     | v7     |            | v5.14.0         | v5.16.0-v5.26.0 | no             |
-| v5.14.0    | 2024-07-05   | v7     | **v7** | added      | not possible    | v5.15.0-v5.26.0 | no             |
-| v5.13.0    | 2024-05-23   | v7     | v6     | added      | not possible    | v5.14.0-v5.16.2 | no             |
-| v5.12.0    | 2024-05-17   | v7     | v6     | added      | not possible    | v5.13.0-v5.16.2 | no             |
+| v5.14.0    | 2024-07-05   | v7     | **v7** | added      | not supported   | v5.15.0-v5.26.0 | no             |
+| v5.13.0    | 2024-05-23   | v7     | v6     | added      | not supported   | v5.14.0-v5.16.2 | no             |
+| v5.12.0    | 2024-05-17   | v7     | v6     | added      | not supported   | v5.13.0-v5.16.2 | no             |
 | v5.11.0    | 2024-04-22   | v7     | v6     |            | v5.6.0-v5.10.0  | v5.12.0-v5.16.2 | no             |
 | v5.10.0    | 2024-04-15   | v7     | v6     |            | v5.6.0-v5.9.0   | v5.11.0-v5.16.2 | no             |
 | v5.9.0     | 2024-03-22   | v7     | v6     |            | v5.6.0-v5.8.0   | v5.10.0-v5.16.2 | no             |
 | v5.8.0     | 2024-02-16   | v7     | v6     |            | v5.6.0-v5.7.0   | v5.9.0-v5.16.2  | no             |
 | v5.7.0     | 2024-01-31   | v7     | v6     |            | v5.6.0          | v5.8.0-v5.16.2  | no             |
-| v5.6.0     | 2024-01-12   | v7     | v6     | added      | not possible    | v5.7.0-v5.16.2  | no             |
+| v5.6.0     | 2024-01-12   | v7     | v6     | added      | not supported   | v5.7.0-v5.16.2  | no             |
 | v5.5.0     | 2023-12-15   | v7     | v6     |            | v5.1.0-v5.4.0   | v5.6.0-v5.16.2  | no             |
 | v5.4.0     | 2023-12-11   | v7     | v6     |            | v5.1.0-v5.3.1   | v5.5.0-v5.16.2  | no             |
 | v5.3.1     | 2023-11-08   | v7     | v6     |            | v5.1.0-v5.3.0   | v5.4.0-v5.16.2  | no             |
 | v5.3.0     | 2023-11-07   | **v7** | v6     |            | v5.1.0-v5.2.0   | v5.3.1-v5.16.2  | no             |
 | v5.2.0     | 2023-09-29   | v6     | v6     |            | v5.1.0          | v5.3.0-v5.16.2  | no             |
-| v5.1.0     | 2023-09-05   | v6     | **v6** |            | not possible    | v5.2.0-v5.16.2  | no             |
+| v5.1.0     | 2023-09-05   | v6     | **v6** |            | not supported   | v5.2.0-v5.16.2  | no             |
 | v5.0.1     | 2023-06-26   | v6     | v5     |            | v4.10.0-v5.0.0  | v5.1.0-v5.2.0   | no             |
 | **v5.0.0** | 2023-06-23   | **v6** | v5     |            | v4.10.0         | v5.0.1-v5.2.0   | **yes**        |
 | v4.10.0    | 2023-04-26   | v5     | v5     |            | n/a             | v5.0.0-v5.2.0   | no             |
@@ -91,4 +91,4 @@ See the [MongoDB documentation](https://www.mongodb.com/docs/manual/reference/co
 
 ### Migration code
 
-To support changes in the *Quality-time* functionality, data in the database may need to be restructured. To this end, the API-server may run migration code on startup. This migration code is idempotent, meaning that whenever data already has been migrated it does not make any changes. However, migration code is not reversible, meaning that going back a minor or major update is not possible when a release contains new migration code.
+To support changes in the *Quality-time* functionality, data in the database may need to be restructured. To this end, the API-server may run migration code on startup. This migration code is idempotent, meaning that whenever data already has been migrated it does not make any changes. However, migration code is not reversible, meaning that going back a minor or major update is not supported when a release contains new migration code.
