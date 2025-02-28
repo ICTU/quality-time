@@ -24,7 +24,7 @@ class JiraAverageIssueLeadTime(JiraIssues):
     def _create_entity(self, issue: dict, url: URL) -> Entity:
         """Extend to also add the lead time to the entity."""
         entity = super()._create_entity(issue, url)
-        entity["lead_time"] = self.__lead_time(issue["fields"])
+        entity["lead_time"] = str(self.__lead_time(issue["fields"]))
         return entity
 
     @classmethod
