@@ -22,7 +22,7 @@ class JiraTestCase(SourceCollectorTestCase):
         self.set_source_parameter("board", "Board 2")
         self.created = "2020-08-06T16:36:48.000+0200"
 
-    def issue(self, key: str = "1", **fields: str):
+    def issue(self, key: str = "1", **fields: str | dict[str, dict[str, str]]):
         """Create a Jira issue."""
         return {"id": key, "key": key, "fields": dict(created=self.created, summary=f"Summary {key}", **fields)}
 
