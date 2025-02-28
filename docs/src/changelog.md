@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- When measuring average issue lead time with Jira as source, the lead times per issue would not be collected. Fixes [#10929](https://github.com/ICTU/quality-time/issues/10929).
+
 ## v5.26.0 - 2025-02-27
 
 ### Added
