@@ -11,6 +11,7 @@ vi.mock("../../widgets/toast.jsx")
 
 beforeEach(() => {
     vi.resetAllMocks()
+    history.push("")
     get_report_pdf.get_report_pdf.mockImplementation(() => Promise.resolve({ ok: true }))
 })
 
@@ -56,7 +57,7 @@ test("DownloadAsPDFButton indicates loading on click", async () => {
     expectButtonIsLoading()
     expect(get_report_pdf.get_report_pdf).toHaveBeenCalledWith(
         "report_uuid",
-        "?report_url=http%3A%2F%2Flocalhost%3A3000%2F",
+        "?language=en-US&report_url=http%3A%2F%2Flocalhost%3A3000%2F%3Flanguage%3Den-US",
     )
     await waitFor(() => {
         expect(toast.showMessage).toHaveBeenCalledTimes(1)
@@ -70,7 +71,7 @@ test("DownloadAsPDFButton ignores a second click", async () => {
     expectButtonIsLoading()
     expect(get_report_pdf.get_report_pdf).toHaveBeenCalledWith(
         "report_uuid",
-        "?report_url=http%3A%2F%2Flocalhost%3A3000%2F",
+        "?language=en-US&report_url=http%3A%2F%2Flocalhost%3A3000%2F%3Flanguage%3Den-US",
     )
     await waitFor(() => {
         expect(toast.showMessage).toHaveBeenCalledTimes(1)
@@ -83,7 +84,17 @@ test("DownloadAsPDFButton ignores unregistered query parameters", async () => {
     await clickDownload()
     expect(get_report_pdf.get_report_pdf).toHaveBeenCalledWith(
         "report_uuid",
-        "?nr_dates=4&report_url=http%3A%2F%2Flocalhost%3A3000%2F%3Fnr_dates%3D4",
+        "?nr_dates=4&language=en-US&report_url=http%3A%2F%2Flocalhost%3A3000%2F%3Fnr_dates%3D4%26language%3Den-US",
+    )
+})
+
+test("DownloadAsPDFButton passes the language set in the user's browser", async () => {
+    vi.spyOn(navigator, "language", "get").mockImplementation(() => "nl-NL")
+    render(<DownloadAsPDFButton report_uuid="report_uuid" />)
+    await clickDownload()
+    expect(get_report_pdf.get_report_pdf).toHaveBeenCalledWith(
+        "report_uuid",
+        "?language=nl-NL&report_url=http%3A%2F%2Flocalhost%3A3000%2F%3Flanguage%3Dnl-NL",
     )
 })
 

@@ -1,5 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 
+import { formatDate, formatTime } from "../locale"
 import { datePropType, reportPropType } from "../sharedPropTypes"
 import { HyperLink } from "../widgets/HyperLink"
 
@@ -30,14 +31,4 @@ PageHeader.propTypes = {
     lastUpdate: datePropType,
     report: reportPropType,
     reportDate: datePropType,
-}
-
-// Hard code en-GB to get European style dates and times. See https://github.com/ICTU/quality-time/issues/8381.
-
-function formatDate(date) {
-    return date.toLocaleDateString("en-GB", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\//g, "-")
-}
-
-function formatTime(date) {
-    return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })
 }

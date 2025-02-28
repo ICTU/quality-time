@@ -451,7 +451,7 @@ The report title in the footer of the PDF will link to the online version of the
 
 To manually download a PDF version of a report, navigate to the report and click the "Download report as PDF" button in the menu bar to create and download the PDF report.
 
-The exported PDF report has the same metric table rows and columns hidden as in the user interface, and has the same metrics expanded as in the user interface. The exported PDF report also has the same date as the report visible in the user interface.
+The exported PDF report has the same metric table rows and columns hidden as in the user interface, and has the same metrics expanded as in the user interface. The exported PDF report also has the same date as the report visible in the user interface. Dates in the exported PDF are formatted according to the locale of the user's browser (but only English and Dutch are currently supported, see [https://github.com/ICTU/quality-time/issues/10710](https://github.com/ICTU/quality-time/issues/10710).
 
 ```{tip}
 It is also possible to download a PDF version of the reports overview. Navigate to the reports overview and click the "Download as PDF" button in the menu bar to create and download the PDF report.

@@ -62,7 +62,7 @@ export function AppUI({
         }
     }
     return (
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={adapterLocale(navigator.language)}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={adapterLocale(settings.language.value)}>
             <Menubar
                 email={email}
                 handleDateChange={handleDateChange}

@@ -108,6 +108,8 @@ For example, `https://www.quality-time.example.org/api/v3/report/<report_uuid>/p
 
 To export an older version of a report, add the `report_date` parameter with a date value in ISO-format (YYYY-MM-DD), for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?report_date=2020-09-01`.
 
+To set the locale of the exported report, use the `language` parameter with a language code, for example `https://www.quality-time.example.org/api/v3/report/<report_uuid>/pdf?language=nl-NL`. Note that the language of the report is always English, the given locale is only used to change the date format. Unfortunately, only English and Dutch are currently supported, see [https://github.com/ICTU/quality-time/issues/10710](https://github.com/ICTU/quality-time/issues/10710).
+
 Reports contain the report URL in the footer of the report.
 When exporting PDFs manually, the *Quality-time* frontend supplies the report URL to the endpoint.
 When using the endpoint directly to export a report to PDF, the report URL needs to be supplied as parameter.
