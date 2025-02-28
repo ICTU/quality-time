@@ -1,7 +1,7 @@
 import history from "history/browser"
 import { useState } from "react"
 
-const registeredURLSearchQueryKeys = new Set(["report_date", "report_url", "hide_toasts"])
+const registeredURLSearchQueryKeys = new Set(["hide_toasts", "language", "report_date", "report_url"])
 
 export function registeredURLSearchParams() {
     // Return registered URL search parameters only; to prevent untrusted URL redirection by the client.

@@ -5,6 +5,7 @@ import {
     useIntegerURLSearchQuery,
     useStringURLSearchQuery,
 } from "./hooks/url_search_query"
+import { adapterLocale } from "./locale"
 
 function urlSearchQueryKey(key, report_uuid) {
     // Make the settings changeable per report (and separately for the reports overview) by adding the report UUID as
@@ -30,6 +31,10 @@ export function useHiddenColumnsURLSearchQuery(report_uuid) {
 
 export function useHiddenTagsURLSearchQuery(report_uuid) {
     return useArrayURLSearchQuery(urlSearchQueryKey("hidden_tags", report_uuid))
+}
+
+export function useLanguageURLSearchQuery() {
+    return useStringURLSearchQuery("language", adapterLocale(navigator.language))
 }
 
 export function useMetricsToHideURLSearchQuery(report_uuid) {
@@ -88,6 +93,7 @@ export function useSettings(report_uuid) {
         hiddenCards: useHiddenCardsURLSearchQuery(report_uuid),
         hiddenColumns: useHiddenColumnsURLSearchQuery(report_uuid),
         hiddenTags: useHiddenTagsURLSearchQuery(report_uuid),
+        language: useLanguageURLSearchQuery(),
         metricsToHide: useMetricsToHideURLSearchQuery(report_uuid),
         nrDates: useNrDatesURLSearchQuery(report_uuid),
         showIssueSummary: useShowIssueSummaryURLSearchQuery(report_uuid),
@@ -114,6 +120,7 @@ export function resetSettings(settings) {
     settings.hiddenCards.reset()
     settings.hiddenColumns.reset()
     settings.hiddenTags.reset()
+    settings.language.reset()
     settings.metricsToHide.reset()
     settings.nrDates.reset()
     settings.showIssueCreationDate.reset()
@@ -134,6 +141,7 @@ export function allSettingsAreDefault(settings) {
         settings.hiddenCards.isDefault() &&
         settings.hiddenColumns.isDefault() &&
         settings.hiddenTags.isDefault() &&
+        settings.language.isDefault() &&
         settings.metricsToHide.isDefault() &&
         settings.nrDates.isDefault() &&
         settings.showIssueCreationDate.isDefault() &&

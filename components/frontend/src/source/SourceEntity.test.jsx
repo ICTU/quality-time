@@ -1,8 +1,9 @@
 import { Table, TableBody } from "@mui/material"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, renderHook, screen } from "@testing-library/react"
 
+import { formatDate } from "../locale"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceEntity } from "./SourceEntity"
 
@@ -48,15 +49,15 @@ it("renders the fixed status", async () => {
 
 it("renders the status end date", async () => {
     const { container } = renderSourceEntity({ status: "fixed", status_end_date: "3000-01-01" })
-    const expectedDate = new Date("3000-01-01").toLocaleDateString([], { dateStyle: "short" })
-    expect(screen.getAllByText(RegExp(expectedDate)).length).toBe(1)
+    const expectedDate = renderHook(() => formatDate(new Date("3000-01-01")))
+    expect(screen.getAllByText(RegExp(expectedDate.result.current)).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("does not render the status end date if the status is unconfirmed", async () => {
     const { container } = renderSourceEntity({ status: "unconfirmed", status_end_date: "3000-01-01" })
-    const expectedDate = new Date("3000-01-01").toLocaleDateString([], { dateStyle: "short" })
-    expect(screen.queryAllByText(RegExp(expectedDate)).length).toBe(0)
+    const expectedDate = renderHook(() => formatDate(new Date("3000-01-01")))
+    expect(screen.queryAllByText(RegExp(expectedDate.result.current)).length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -79,8 +80,8 @@ it("renders the status and rationale past end date", async () => {
         hide_ignored_entities: true,
         rationale: "Because",
     })
-    const expectedDate = new Date("2000-01-01").toLocaleDateString([], { dateStyle: "short" })
-    expect(screen.getAllByText(RegExp(expectedDate)).length).toBe(1)
+    const expectedDate = renderHook(() => formatDate(new Date("2000-01-01")))
+    expect(screen.getAllByText(RegExp(expectedDate.result.current)).length).toBe(1)
     expect(screen.getAllByText(/Because/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })

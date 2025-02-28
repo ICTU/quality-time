@@ -2,35 +2,22 @@ import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { bool, instanceOf, oneOfType, string } from "prop-types"
 
-dayjs.extend(relativeTime)
+import { formatDate, formatTime } from "../locale"
 
-function toLocaleString(date, noTime) {
-    let options = { dateStyle: "short" }
-    if (!noTime) {
-        options["timeStyle"] = "short"
-    }
-    return date.toLocaleString([], options)
-}
+dayjs.extend(relativeTime)
 
 export function TimeAgoWithDate({ children, date, dateFirst, noTime }) {
     if (!date) {
         return null
     }
-    const theDate = dayjs(date)
+    date = new Date(date)
     const prefix = children ? children + " " : ""
-    const delta = theDate.fromNow()
-    if (dateFirst) {
-        return (
-            <>
-                {prefix}
-                {toLocaleString(theDate.toDate(), noTime)} ({delta})
-            </>
-        )
-    }
+    const dateString = noTime ? formatDate(date) : formatDate(date) + ", " + formatTime(date)
+    const delta = dayjs(date).fromNow()
+    const timeAgo = dateFirst ? `${dateString} (${delta})` : `(${delta}) ${dateString}`
     return (
         <>
-            {prefix}
-            {delta} ({toLocaleString(theDate.toDate(), noTime)})
+            {prefix} {timeAgo}
         </>
     )
 }

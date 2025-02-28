@@ -36,8 +36,11 @@ export function DownloadAsPDFButton({ report_uuid }) {
     const [loading, setLoading] = useState(false)
     // Make sure the report_url contains only registered query parameters
     const query = registeredURLSearchParams()
-    const queryString = query.toString() ? "?" + query.toString() : ""
-    query.set("report_url", window.location.origin + window.location.pathname + queryString + window.location.hash)
+    query.set("language", navigator.language)
+    query.set(
+        "report_url",
+        window.location.origin + window.location.pathname + "?" + query.toString() + window.location.hash,
+    )
     const itemType = report_uuid ? "report" : "reports overview"
     return (
         <AppBarButton

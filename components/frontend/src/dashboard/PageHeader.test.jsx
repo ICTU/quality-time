@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react"
+import { render, renderHook, screen } from "@testing-library/react"
 import { vi } from "vitest"
 
+import { formatDate } from "../locale"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { mockGetAnimations } from "./MockAnimations"
 import { PageHeader } from "./PageHeader"
@@ -9,11 +10,7 @@ beforeEach(() => mockGetAnimations())
 
 afterEach(() => vi.restoreAllMocks())
 
-const mockReportDate = new Date("2024-03-24T12:34:56")
 const mockLastUpdate = new Date("2024-03-26T12:34:56")
-const mockDateOfToday = new Date()
-    .toLocaleDateString("en-GB", { year: "numeric", month: "2-digit", day: "2-digit" })
-    .replace(/\//g, "-")
 
 const report = {
     report_uuid: "report_uuid",
@@ -52,9 +49,10 @@ it("displays correct title for a report", async () => {
 })
 
 it("displays dates in en-GB format", async () => {
+    const mockReportDate = new Date("2024-03-24T12:34:56")
     const { container } = renderPageHeader({ lastUpdate: mockLastUpdate, report: report, reportDate: mockReportDate })
-    expect(screen.getByText(/Report date: 24-03-2024/)).toBeInTheDocument()
-    expect(screen.getByText(/Generated: 26-03-2024, 12:34/)).toBeInTheDocument()
+    expect(screen.getByText(/Report date: 24\/03\/2024/)).toBeInTheDocument()
+    expect(screen.getByText(/Generated: 26\/03\/2024, 12:34/)).toBeInTheDocument()
     await expectNoAccessibilityViolations(container)
 })
 
@@ -72,6 +70,7 @@ it("displays version link", async () => {
 
 it("displays today as report date if no report date is provided", async () => {
     const { container } = renderPageHeader({ lastUpdate: mockLastUpdate, report: report })
-    expect(screen.getByText(`Report date: ${mockDateOfToday}`)).toBeInTheDocument()
+    const expectedDate = renderHook(() => formatDate(new Date()))
+    expect(screen.getByText(`Report date: ${expectedDate.result.current}`)).toBeInTheDocument()
     await expectNoAccessibilityViolations(container)
 })
