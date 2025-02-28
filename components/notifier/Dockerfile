@@ -2,7 +2,7 @@ FROM python:3.13.2-alpine3.21 AS compile-image
 
 WORKDIR /home/notifier
 
-RUN apk add --no-cache gcc=14.2.0-r4 libffi-dev=3.4.6-r0 make=4.4.1-r2 && \
+RUN apk add --no-cache gcc=14.2.0-r4 libffi-dev=3.4.7-r0 make=4.4.1-r2 && \
     python -m venv venv
 ENV PATH="/home/notifier/venv/bin:$PATH"
 COPY notifier/requirements/requirements.txt /requirements.txt
