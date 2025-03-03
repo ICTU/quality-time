@@ -68,7 +68,9 @@ function EditScopeSelect({ editScope, setEditScope }) {
                 anchorEl={anchorEl}
                 open={open}
                 onClose={() => setAnchorEl(null)}
-                MenuListProps={{ "aria-labelledby": "edit-scope-button" }}
+                slotProps={{
+                    list: { "aria-labelledby": "edit-scope-button" },
+                }}
             >
                 {scopeOptions.map((option) => (
                     <MenuItem
