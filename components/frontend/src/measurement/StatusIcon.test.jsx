@@ -30,7 +30,7 @@ it("renders a popup with the date the status started", async () => {
     )
     await userEvent.hover(queryByLabelText(/Target met/))
     await waitFor(async () => {
-        expect(queryByText("4 days ago")).not.toBe(null)
+        expect(queryByText(/4 days ago/)).not.toBe(null)
         await expectNoAccessibilityViolations(container)
     })
 })

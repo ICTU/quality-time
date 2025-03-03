@@ -1,10 +1,13 @@
 import { Card, CardActionArea, CardContent, List, ListItem, Tooltip, Typography } from "@mui/material"
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
 import { bool, string } from "prop-types"
-import TimeAgo from "react-timeago"
 
 import { issueStatusPropType, metricPropType, settingsPropType, stringsPropType } from "../sharedPropTypes"
 import { getMetricIssueIds } from "../utils"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
+
+dayjs.extend(relativeTime)
 
 function IssueWithoutTracker({ issueId }) {
     return (
@@ -59,7 +62,7 @@ function cardDetails(issueStatus, settings) {
         details.push(
             <ListItem key="created">
                 <Typography noWrap variant="inherit">
-                    Created <TimeAgo date={issueStatus.created} />
+                    Created {dayjs(issueStatus.created).fromNow()}
                 </Typography>
             </ListItem>,
         )
@@ -68,7 +71,7 @@ function cardDetails(issueStatus, settings) {
         details.push(
             <ListItem key="updated">
                 <Typography noWrap variant="inherit">
-                    Updated <TimeAgo date={issueStatus.updated} />
+                    Updated {dayjs(issueStatus.updated).fromNow()}
                 </Typography>
             </ListItem>,
         )
@@ -77,7 +80,7 @@ function cardDetails(issueStatus, settings) {
         details.push(
             <ListItem key="duedate">
                 <Typography noWrap variant="inherit">
-                    Due <TimeAgo date={issueStatus.duedate} />
+                    Due {dayjs(issueStatus.duedate).fromNow()}
                 </Typography>
             </ListItem>,
         )
@@ -103,7 +106,7 @@ releaseStatus.propTypes = {
 }
 
 function release(issueStatus) {
-    const date = issueStatus.release_date ? <TimeAgo date={issueStatus.release_date} /> : null
+    const date = issueStatus.release_date ? dayjs(issueStatus.release_date).fromNow() : null
     return (
         <ListItem key="release">
             {prefixName(issueStatus.release_name, "Release")} {releaseStatus(issueStatus)} {date}
@@ -115,11 +118,7 @@ release.propTypes = {
 }
 
 function sprint(issueStatus) {
-    const sprintEnd = issueStatus.sprint_enddate ? (
-        <>
-            ends <TimeAgo date={issueStatus.sprint_enddate} />
-        </>
-    ) : null
+    const sprintEnd = issueStatus.sprint_enddate ? <>ends {dayjs(issueStatus.sprint_enddate).fromNow()}</> : null
     return (
         <ListItem key="sprint">
             {prefixName(issueStatus.sprint_name, "Sprint")} ({issueStatus.sprint_state}) {sprintEnd}

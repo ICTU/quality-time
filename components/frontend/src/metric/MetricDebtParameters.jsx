@@ -2,9 +2,9 @@ import { MenuItem } from "@mui/material"
 import Grid from "@mui/material/Grid2"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
 import { func, string } from "prop-types"
 import { useContext } from "react"
-import TimeAgo from "react-timeago"
 
 import { set_metric_attribute, set_metric_debt } from "../api/metric"
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
@@ -14,6 +14,8 @@ import { IssuesRows } from "../issue/IssuesRows"
 import { metricPropType, reportPropType } from "../sharedPropTypes"
 import { HyperLink } from "../widgets/HyperLink"
 import { Target } from "./Target"
+
+dayjs.extend(relativeTime)
 
 function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
     const permissions = useContext(Permissions)
@@ -64,11 +66,9 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const debtEndDateTime = metric.debt_end_date ? dayjs(metric.debt_end_date) : null
-    const helperText = metric.debt_end_date ? (
-        <TimeAgo date={debtEndDateTime} />
-    ) : (
-        "Accept technical debt until this date. After this date, or when the issues below have all been resolved, whichever happens first, the technical debt should be resolved and the technical debt target is no longer evaluated."
-    )
+    const helperText = metric.debt_end_date
+        ? debtEndDateTime.fromNow()
+        : "Accept technical debt until this date. After this date, or when the issues below have all been resolved, whichever happens first, the technical debt should be resolved and the technical debt target is no longer evaluated."
     return (
         <DatePicker
             defaultValue={debtEndDateTime}

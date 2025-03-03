@@ -123,8 +123,8 @@ it("displays the creation date in the popup", async () => {
     const { container, queryByText } = renderIssueStatus({ updated: false })
     await userEvent.hover(queryByText(/123/))
     await waitFor(async () => {
-        expect(queryByText("4 days ago")).not.toBe(null)
-        expect(queryByText("2 days ago")).toBe(null)
+        expect(queryByText(/4 days ago/)).not.toBe(null)
+        expect(queryByText(/2 days ago/)).toBe(null)
         await expectNoAccessibilityViolations(container)
     })
 })
@@ -146,8 +146,8 @@ it("displays the update date in the popup", async () => {
     const { container, queryByText } = renderIssueStatus({ updated: true })
     await userEvent.hover(queryByText(/123/))
     await waitFor(async () => {
-        expect(queryByText("4 days ago")).not.toBe(null)
-        expect(queryByText("2 days ago")).not.toBe(null)
+        expect(queryByText(/4 days ago/)).not.toBe(null)
+        expect(queryByText(/2 days ago/)).not.toBe(null)
         await expectNoAccessibilityViolations(container)
     })
 })
@@ -155,7 +155,7 @@ it("displays the update date in the popup", async () => {
 it("displays the due date in the label if configured", async () => {
     history.push("?show_issue_due_date=true")
     const { container, queryByText } = renderIssueStatus({ due: true })
-    expect(queryByText(/2 days from now/)).not.toBe(null)
+    expect(queryByText(/in 2 days/)).not.toBe(null)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -169,7 +169,7 @@ it("displays the due date in the popup", async () => {
     const { container, queryByText } = renderIssueStatus({ due: true })
     await userEvent.hover(queryByText(/123/))
     await waitFor(async () => {
-        expect(queryByText("2 days from now")).not.toBe(null)
+        expect(queryByText(/in 2 days/)).not.toBe(null)
         await expectNoAccessibilityViolations(container)
     })
 })
@@ -179,7 +179,7 @@ it("displays the planned release in the label if configured", async () => {
     const { container, queryByText } = renderIssueStatus({ release: true })
     expect(queryByText(/1.0/)).not.toBe(null)
     expect(queryByText(/planned/)).not.toBe(null)
-    expect(queryByText(/from now/)).not.toBe(null)
+    expect(queryByText(/in \d+ years/)).not.toBe(null)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -188,7 +188,7 @@ it("displays the released release in the label if configured", async () => {
     const { container, queryByText } = renderIssueStatus({ release: true, releaseReleased: true })
     expect(queryByText(/1.0/)).not.toBe(null)
     expect(queryByText(/released/)).not.toBe(null)
-    expect(queryByText(/from now/)).not.toBe(null)
+    expect(queryByText(/in \d+ years/)).not.toBe(null)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -223,7 +223,7 @@ it("displays the release in the popup", async () => {
     await waitFor(async () => {
         expect(queryByText(/1.0/)).not.toBe(null)
         expect(queryByText(/planned/)).not.toBe(null)
-        expect(queryByText(/from now/)).not.toBe(null)
+        expect(queryByText(/in \d+ years/)).not.toBe(null)
         await expectNoAccessibilityViolations(container)
     })
 })
@@ -244,7 +244,7 @@ it("displays the sprint in the label if configured", async () => {
     const { container, queryByText } = renderIssueStatus({ sprint: true })
     expect(queryByText(/Sprint 42/)).not.toBe(null)
     expect(queryByText(/active/)).not.toBe(null)
-    expect(queryByText(/from now/)).not.toBe(null)
+    expect(queryByText(/in \d+ years/)).not.toBe(null)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -271,7 +271,7 @@ it("displays the sprint in the popup", async () => {
     await waitFor(async () => {
         expect(queryByText(/Sprint 42/)).not.toBe(null)
         expect(queryByText(/active/)).not.toBe(null)
-        expect(queryByText(/from now/)).not.toBe(null)
+        expect(queryByText(/in \d+ years/)).not.toBe(null)
         await expectNoAccessibilityViolations(container)
     })
 })

@@ -2,9 +2,9 @@ import EditIcon from "@mui/icons-material/Edit"
 import { FormControl, IconButton, Menu, MenuItem, Typography } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
 import { bool, func, number, oneOfType, string } from "prop-types"
 import { useContext, useState } from "react"
-import TimeAgo from "react-timeago"
 
 import { set_source_parameter } from "../api/source"
 import { accessGranted, Permissions } from "../context/Permissions"
@@ -19,6 +19,8 @@ import {
 } from "../sharedPropTypes"
 import { dropdownOptions } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
+
+dayjs.extend(relativeTime)
 
 function EditScopeSelect({ editScope, setEditScope }) {
     const scopeOptions = [
@@ -167,7 +169,7 @@ export function SourceParameter({
         helperText = help
     }
     if (parameter_type === "date" && parameter_value) {
-        helperText = <TimeAgo date={dayjs(parameter_value)} />
+        helperText = dayjs(parameter_value).fromNow()
     }
     let parameterProps = {
         disabled: disabled,

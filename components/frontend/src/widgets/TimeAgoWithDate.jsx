@@ -1,5 +1,8 @@
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
 import { bool, instanceOf, oneOfType, string } from "prop-types"
-import TimeAgo from "react-timeago"
+
+dayjs.extend(relativeTime)
 
 function toLocaleString(date, noTime) {
     let options = { dateStyle: "short" }
@@ -13,20 +16,21 @@ export function TimeAgoWithDate({ children, date, dateFirst, noTime }) {
     if (!date) {
         return null
     }
-    const the_date = new Date(date)
+    const theDate = dayjs(date)
     const prefix = children ? children + " " : ""
+    const delta = theDate.fromNow()
     if (dateFirst) {
         return (
             <>
                 {prefix}
-                {toLocaleString(the_date, noTime)} (<TimeAgo date={the_date} />)
+                {toLocaleString(theDate.toDate(), noTime)} ({delta})
             </>
         )
     }
     return (
         <>
             {prefix}
-            <TimeAgo date={the_date} /> ({toLocaleString(the_date, noTime)})
+            {delta} ({toLocaleString(theDate.toDate(), noTime)})
         </>
     )
 }
