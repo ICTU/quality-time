@@ -4,7 +4,7 @@ import os
 import re
 import string
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, UTC
+from datetime import UTC, datetime, timedelta
 from http.cookies import Morsel
 from typing import cast
 
@@ -40,7 +40,7 @@ def delete_session(database: Database) -> None:
     """Delete the session."""
     session_id = cast(SessionId, str(bottle.request.get_cookie("session_id")))
     sessions.delete(database, session_id)
-    set_session_cookie(session_id, datetime.min)
+    set_session_cookie(session_id, datetime.min.replace(tzinfo=UTC))
 
 
 def set_session_cookie(session_id: SessionId, expires_datetime: datetime) -> None:

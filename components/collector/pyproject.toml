@@ -30,7 +30,7 @@ optional-dependencies.tools = [
     "mypy==1.15.0",
     "pip-audit==2.8.0",
     "pyproject-fmt==2.5.1",
-    "ruff==0.9.10",
+    "ruff==0.11.0",
     "vulture==2.14",
 ]
 
@@ -57,6 +57,7 @@ lint.ignore = [
     "ISC001", # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
     "PD",     # https://docs.astral.sh/ruff/rules/#pandas-vet-pd - pandas isn't used
     "PT",     # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
+    "TC006",  # https://docs.astral.sh/ruff/rules/runtime-cast-value/ - the rule claims it's often necessary to quote the first argument passed to cast(), but that's not the case in this code base
 ]
 lint.per-file-ignores.".vulture_ignore_list.py" = [
     "ALL",
