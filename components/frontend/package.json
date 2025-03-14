@@ -5,8 +5,8 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
-        "@mui/icons-material": "^6.4.7",
-        "@mui/material": "^6.4.7",
+        "@mui/icons-material": "^6.4.8",
+        "@mui/material": "^6.4.8",
         "@mui/x-date-pickers": "^7.27.1",
         "crypto-js": "^4.2.0",
         "dayjs": "^1.11.13",
@@ -42,7 +42,7 @@
         "@testing-library/react": "^16.2.0",
         "@testing-library/user-event": "^14.6.1",
         "@vitejs/plugin-react": "^4.3.4",
-        "@vitest/coverage-v8": "^3.0.8",
+        "@vitest/coverage-v8": "^3.0.9",
         "browserslist-to-esbuild": "^2.1.1",
         "eslint": "^9.20.1",
         "eslint-config-prettier": "^10.0.2",
@@ -56,8 +56,8 @@
         "jest-axe": "^10.0.0",
         "jsdom": "^26.0.0",
         "prettier": "^3.5.2",
-        "vite": "^6.1.1",
-        "vitest": "^3.0.8"
+        "vite": "^6.2.2",
+        "vitest": "^3.0.9"
     },
     "prettier": {
         "printWidth": 120,
