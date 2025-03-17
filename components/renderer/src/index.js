@@ -26,9 +26,10 @@ app.get("/api/render", async (req, res) => {
             timeout: 60000,
         });
         console.log(`URL ${url}: opened`);
-        await webPage.waitForSelector(".loader", { hidden: true });
+        await webPage.waitForSelector(".MuiCircularProgress-root", { hidden: true }); // Initial loader
+        await webPage.waitForSelector(".MuiSkeleton-root", { hidden: true }); // Measurement entities placeholder
         await webPage.waitForSelector("#dashboard.animated");
-        console.log(`URL ${url}: loader hidden and animations finished`);
+        console.log(`URL ${url}: loader hidden, measurement entities loaded, and animations finished`);
         const pdf = Buffer.from(
             await webPage.pdf({
                 printBackground: true,
