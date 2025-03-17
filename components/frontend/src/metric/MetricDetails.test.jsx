@@ -12,12 +12,14 @@ import * as source_api from "../api/source"
 import { DataModel } from "../context/DataModel"
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
+import * as toast from "../widgets/toast"
 import { MetricDetails } from "./MetricDetails"
 
 vi.mock("../api/fetch_server_api.js")
 vi.mock("../api/changelog.js")
 vi.mock("../api/measurement.js")
 vi.mock("../api/source.js")
+vi.mock("../widgets/toast.jsx")
 
 beforeEach(() => {
     history.push("")
@@ -78,6 +80,7 @@ const dataModel = {
 
 function getMetricMeasurementsSuccessfully(connection_error) {
     return Promise.resolve({
+        ok: true,
         measurements: [
             {
                 count: { value: "42" },
@@ -200,12 +203,25 @@ it("does not measure the metric if the metric source configuration is incomplete
     expect(fetch_server_api.fetch_server_api).not.toHaveBeenCalled()
 })
 
-it("fails to load measurements", async () => {
+it("fails to load measurements due to a failed promise", async () => {
     history.push("?expanded=metric_uuid:5")
     const { container } = await renderMetricDetails({
-        getMetricMeasurements: () => Promise.reject(new Error("failed to load measurements")),
+        getMetricMeasurements: () => Promise.reject(new Error("Failure")),
     })
     expect(screen.queryAllByText(/Loading measurements failed/).length).toBe(1)
+    expect(toast.showMessage).toHaveBeenCalledTimes(1)
+    expect(toast.showMessage).toHaveBeenCalledWith("error", "Could not fetch measurements", "Failure")
+    await expectNoAccessibilityViolations(container)
+})
+
+it("fails to load measurements due to an internal server error", async () => {
+    history.push("?expanded=metric_uuid:5")
+    const { container } = await renderMetricDetails({
+        getMetricMeasurements: () => Promise.resolve({ ok: false, statusText: "Internal Server Error" }),
+    })
+    expect(screen.queryAllByText(/Loading measurements failed/).length).toBe(1)
+    expect(toast.showMessage).toHaveBeenCalledTimes(1)
+    expect(toast.showMessage).toHaveBeenCalledWith("error", "Could not fetch measurements", "Internal Server Error")
     await expectNoAccessibilityViolations(container)
 })
 
