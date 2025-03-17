@@ -1,6 +1,5 @@
 """Login/logout."""
 
-import logging
 import os
 import re
 import string
@@ -19,6 +18,7 @@ from database.users import upsert_user, get_user
 from database import sessions
 from initialization.app_secrets import EXPORT_FIELDS_KEYS_NAME
 from utils.functions import uuid
+from utils.log import get_logger
 from utils.type import SessionId, User
 
 
@@ -85,6 +85,7 @@ class LDAPConfig:
 
 def verify_user(database: Database, username: str, password: str) -> User:
     """Authenticate the user and return whether they are authorized to login and their email address."""
+    logger = get_logger()
     ldap = LDAPConfig(username)
     try:
         ldap_server_pool = ServerPool([Server(url, get_info=ALL) for url in ldap.urls])
@@ -97,13 +98,13 @@ def verify_user(database: Database, username: str, password: str) -> User:
         # If the LDAP-server returned the user's password-hash, check the password against the hash, otherwise
         # attempt a bind operation using the user's distinguished name (dn) and password:
         if (password_hash := ldap_user.userPassword.value) and check_password(password_hash, password):
-            logging.info("LDAP password check succeeded")
+            logger.info("LDAP password check succeeded")
         else:  # pragma: no feature-test-cover
             with Connection(ldap_server_pool, user=ldap_user.entry_dn, password=password, auto_bind=AUTO_BIND_NO_TLS):
-                logging.info("LDAP bind succeeded")
+                logger.info("LDAP bind succeeded")
     except Exception as reason:  # noqa: BLE001
         user = User(username)
-        logging.warning("LDAP error: %s", reason)
+        logger.warning("LDAP error: %s", reason)
     else:
         user = get_user(database, username) or User(username)
         user.email = ldap_user.mail.value or ""

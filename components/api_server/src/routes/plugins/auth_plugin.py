@@ -1,6 +1,5 @@
 """Route authentication and authorization plugin."""
 
-import logging
 from collections.abc import Callable
 
 import bottle
@@ -8,6 +7,7 @@ import bottle
 from database import sessions
 from database.reports import latest_reports_overview
 from model.session import Session
+from utils.log import get_logger
 from utils.type import SessionId
 
 
@@ -61,5 +61,6 @@ class AuthPlugin:
     @staticmethod
     def abort(status_code: int, message: str, context, session_id: str) -> None:
         """Log the message and abort."""
-        logging.warning(message, context.method, context.rule, session_id)
+        logger = get_logger()
+        logger.warning(message, context.method, context.rule, session_id)
         bottle.abort(status_code, bottle.HTTP_CODES[status_code])

@@ -1,6 +1,5 @@
 """Search endpoint."""
 
-import logging
 from collections.abc import Sequence
 from typing import Literal, TypedDict, TYPE_CHECKING
 
@@ -11,6 +10,7 @@ from shared.utils.type import ItemId
 
 from database.reports import latest_reports
 from model.iterators import metrics, sources, subjects
+from utils.log import get_logger
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -78,11 +78,12 @@ def match_attribute(
 @bottle.post("/api/v3/<domain_object_type>/search", authentication_required=False)
 def search(domain_object_type: DomainObjectType, database: Database) -> SearchResults | ParseError | SearchError:
     """Search for domain objects of the specified type by attribute value."""
+    logger = get_logger()
     try:
         query = dict(bottle.request.json)
         attribute_name, attribute_value = set(query.items()).pop()
     except Exception as reason:  # noqa: BLE001
-        logging.warning("Parsing search query for %s failed: %s", domain_object_type, reason)
+        logger.warning("Parsing search query for %s failed: %s", domain_object_type, reason)
         return ParseError(domain_object_type=domain_object_type, error=str(reason), ok=False)
     try:
         reports = latest_reports(database)
@@ -96,6 +97,6 @@ def search(domain_object_type: DomainObjectType, database: Database) -> SearchRe
             if match_attribute(domain_object_type, domain_object, attribute_name, attribute_value)
         ]
     except Exception as reason:  # pragma: no feature-test-cover # noqa: BLE001
-        logging.warning("Searching for %s failed: %s", domain_object_type, reason)
+        logger.warning("Searching for %s failed: %s", domain_object_type, reason)
         return SearchError(domain_object_type=domain_object_type, error=str(reason), ok=False, search_query=query)
     return SearchResults(domain_object_type=domain_object_type, ok=True, search_query=query, uuids=uuids)

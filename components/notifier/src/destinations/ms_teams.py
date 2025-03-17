@@ -1,10 +1,9 @@
 """Microsoft Teams destination."""
 
-import logging
-
 import pymsteams
 
 from models.notification import MetricNotificationData, Notification
+from notifier_utilities.log import get_logger
 
 ICON_URL = "https://raw.githubusercontent.com/ICTU/quality-time/master/resources/icons/%s.png"
 
@@ -40,9 +39,10 @@ def create_connector_card(destination: str, notification: Notification) -> pymst
 
 def send_notification(destination: str, notification: Notification) -> None:
     """Send notification to Microsoft Teams using a Webhook."""
-    logging.info("Sending notification to configured teams webhook")
+    logger = get_logger()
+    logger.info("Sending notification to configured teams webhook")
     card = create_connector_card(destination, notification)
     try:
         card.send()
     except Exception:
-        logging.exception("Could not deliver notification")
+        logger.exception("Could not deliver notification")

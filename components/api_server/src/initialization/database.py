@@ -1,23 +1,25 @@
 """Database initialization."""
 
-import logging
 import os
 
 import pymongo
 from pymongo.database import Database
 
+from utils.log import get_logger
+
+from .app_secrets import initialize_secrets
 from .migrations import perform_migrations
 from .datamodel import import_datamodel
 from .report import import_example_reports, initialize_reports_overview
-from .app_secrets import initialize_secrets
 
 
 def init_database(database: Database) -> None:  # pragma: no feature-test-cover
     """Initialize the database contents."""
-    logging.info("Connected to database: %s", database)
+    logger = get_logger()
+    logger.info("Connected to database: %s", database)
     nr_reports = database.reports.count_documents({})
     nr_measurements = database.measurements.count_documents({})
-    logging.info("Database has %d report documents and %d measurement documents", nr_reports, nr_measurements)
+    logger.info("Database has %d report documents and %d measurement documents", nr_reports, nr_measurements)
     create_indexes(database)
     import_datamodel(database)
     initialize_secrets(database)

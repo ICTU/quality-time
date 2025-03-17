@@ -13,6 +13,7 @@ from shared.database.reports import get_reports
 from shared.model.metric import Metric
 from shared.model.report import get_metrics_from_reports
 
+from collector_utilities.log import get_logger
 from collector_utilities.type import JSONDict
 from database.measurements import create_measurement
 
@@ -32,12 +33,13 @@ class Collector:
     @staticmethod
     def record_health() -> None:
         """Record the current date and time in a file to allow for health checks."""
+        logger = get_logger()
         filename = pathlib.Path(config.HEALTH_CHECK_FILE)
         try:
             with filename.open("w", encoding="utf-8") as health_check:
                 health_check.write(datetime.now(tz=UTC).isoformat())
         except OSError as reason:
-            logging.error("Could not write health check time stamp to %s: %s", filename, reason)  # noqa: TRY400
+            logger.error("Could not write health check time stamp to %s: %s", filename, reason)  # noqa: TRY400
 
     async def start(self) -> NoReturn:
         """Start fetching measurements indefinitely."""
@@ -107,4 +109,5 @@ class Collector:
     def __log_tasks(self, event: str, warning_threshold: int = 0) -> None:
         """Log the number of running tasks."""
         level = logging.WARNING if len(self.running_tasks) > warning_threshold else logging.INFO
-        logging.log(level, "%s: %d task(s) currently running", event, len(self.running_tasks))
+        logger = get_logger()
+        logger.log(level, "%s: %d task(s) currently running", event, len(self.running_tasks))
