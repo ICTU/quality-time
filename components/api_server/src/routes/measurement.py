@@ -1,6 +1,5 @@
 """Measurement routes."""
 
-import logging
 import time
 from collections.abc import Iterator
 from typing import cast
@@ -17,6 +16,7 @@ from database import sessions
 from database.measurements import count_measurements, all_metric_measurements, measurements_in_period
 from database.reports import latest_report_for_uuids, latest_reports
 from utils.functions import report_date_time
+from utils.log import get_logger
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
 
@@ -67,6 +67,7 @@ def sse_pack(event_id: int, event: str, data: str, retry: str = "2000") -> str:
 @bottle.get("/api/internal/nr_measurements", authentication_required=False)
 def stream_nr_measurements(database: Database) -> Iterator[str]:
     """Return the number of measurements as server sent events."""
+    logger = get_logger()
     # Keep event IDs consistent
     event_id = int(bottle.request.get_header("Last-Event-Id", -1)) + 1
 
@@ -79,7 +80,7 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
 
     # Provide the current number of measurements and a retry value to use in case of connection failure
     nr_measurements = count_measurements(database)
-    logging.info("Initializing nr_measurements stream with %d measurements (event id = %d)", nr_measurements, event_id)
+    logger.info("Initializing nr_measurements stream with %d measurements (event id = %d)", nr_measurements, event_id)
     yield sse_pack(event_id, "init", str(nr_measurements))
     event_id += 1
 
@@ -92,7 +93,7 @@ def stream_nr_measurements(database: Database) -> Iterator[str]:
         time.sleep(10)
         nr_measurements = count_measurements(database)
         event_id += 1
-        logging.info("Updating nr_measurements stream with %d measurements (event id = %d)", nr_measurements, event_id)
+        logger.info("Updating nr_measurements stream with %d measurements (event id = %d)", nr_measurements, event_id)
         yield sse_pack(event_id, "delta", str(nr_measurements))
 
 

@@ -283,12 +283,13 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         mocked_open().write.assert_called_once_with(now.isoformat())
 
     @patch("pathlib.Path.open")
-    @patch("logging.error")
+    @patch("logging.getLogger")
     def test_fail_writing_health_check(self, mocked_log: Mock, mocked_open: Mock):
         """Test that a failure to open the health check file is logged, but otherwise ignored."""
+        logger = mocked_log.return_value = Mock()
         mocked_open.side_effect = OSError("Some error")
         self.collector.record_health()
-        mocked_log.assert_called_once_with(
+        logger.error.assert_called_once_with(
             "Could not write health check time stamp to %s: %s",
             pathlib.Path("/home/collector/health_check.txt"),
             mocked_open.side_effect,

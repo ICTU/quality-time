@@ -2,13 +2,16 @@
 
 from dataclasses import asdict, dataclass, field
 from typing import cast
-import logging
 
 from shared.utils.functions import first
 
 import requests
 
+from utils.log import get_logger
 from utils.type import URL
+
+
+logger = get_logger()
 
 
 @dataclass
@@ -128,7 +131,7 @@ class IssueTracker:
             response_json = self.__post_json(api_url, json)
         except Exception as reason:
             error = str(reason) if str(reason) else reason.__class__.__name__
-            logging.warning("Creating a new issue at %s failed: %s", api_url, error)
+            logger.warning("Creating a new issue at %s failed: %s", api_url, error)
             return "", error
         return response_json["key"], ""  # pragma: no feature-test-cover
 
@@ -148,7 +151,8 @@ class IssueTracker:
         try:
             json = cast(JiraIssueSuggestionJSON, self.__get_json(api_url))
         except Exception as reason:
-            logging.warning("Retrieving issue id suggestions from %s failed: %s", api_url, reason)
+            message = "Retrieving issue id suggestions from %s failed: %s"
+            logger.warning(message, self.suggestions_api % (self.url, "<query redacted>"), reason)
             return []
         return self._parse_suggestions(json)  # pragma: no feature-test-cover
 
@@ -178,7 +182,7 @@ class IssueTracker:
         try:
             projects = cast(JiraProjectsJSON, self.__get_json(api_url))
         except Exception as reason:
-            logging.warning("Getting issue tracker project options at %s failed: %s", api_url, reason)
+            logger.warning("Getting issue tracker project options at %s failed: %s", api_url, reason)
         return [Option(str(project["key"]), str(project["name"])) for project in projects]
 
     def __get_issue_type_options(self, projects: list[Option]) -> list[Option]:  # pragma: no feature-test-cover
@@ -191,7 +195,7 @@ class IssueTracker:
         try:
             issue_types = cast(JiraIssueTypesJSON, self.__get_json(api_url))["values"]
         except Exception as reason:
-            logging.warning("Getting issue tracker issue type options at %s failed: %s", api_url, reason)
+            logger.warning("Getting issue tracker issue type options at %s failed: %s", api_url, reason)
         issue_types = [issue_type for issue_type in issue_types if not issue_type["subtask"]]
         return [Option(str(issue_type["id"]), str(issue_type["name"])) for issue_type in issue_types]
 
@@ -207,7 +211,7 @@ class IssueTracker:
         try:
             fields = cast(JiraFieldsJSON, self.__get_json(api_url))["values"]
         except Exception as reason:
-            logging.warning("Getting issue tracker field options at %s failed: %s", api_url, reason)
+            logger.warning("Getting issue tracker field options at %s failed: %s", api_url, reason)
         return [Option(str(field["fieldId"]), str(field["name"])) for field in fields]
 
     def __get_epic_links(self, fields: list[Option]) -> list[Option]:  # pragma: no feature-test-cover
@@ -220,7 +224,7 @@ class IssueTracker:
         try:
             epics = cast(JiraEpicsJSON, self.__get_json(api_url))["issues"]
         except Exception as reason:
-            logging.warning("Getting epics at %s failed: %s", api_url, reason)
+            logger.warning("Getting epics at %s failed: %s", api_url, reason)
         return [
             Option(str(epic["key"]), f"{cast(dict[str, dict[str, str]], epic)['fields']['summary']} ({epic['key']})")
             for epic in epics

@@ -1,7 +1,6 @@
 """Source collector base classes."""
 
 import asyncio
-import logging
 import traceback
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
@@ -20,6 +19,7 @@ from collector_utilities.functions import (
     stable_traceback,
     tokenless,
 )
+from collector_utilities.log import get_logger
 from collector_utilities.type import URL, Response, Responses, Value
 from model import Entities, Entity, IssueStatus, SourceMeasurement, SourceParameters, SourceResponses
 
@@ -57,7 +57,8 @@ class SourceCollector:
                     subclass.source_type = source_type
                     return subclass
 
-        logging.warning("Couldn't find collector subclass for source %s and metric %s", source_type, metric_type)
+        logger = get_logger()
+        logger.warning("Couldn't find collector subclass for source %s and metric %s", source_type, metric_type)
         return None
 
     async def collect(self) -> SourceMeasurement:
@@ -91,21 +92,22 @@ class SourceCollector:
         This method should not be overridden because it makes sure the collection of source data never causes the
         collector to fail.
         """
+        logger = get_logger()
         api_url = safe_api_url = class_name = self.__class__.__name__
         try:
             api_url = await self._api_url()
             safe_api_url = tokenless(api_url) or class_name
-            logging.info("%s retrieving %s", class_name, safe_api_url)
+            logger.info("%s retrieving %s", class_name, safe_api_url)
             responses = await asyncio.wait_for(self._get_source_responses(api_url), timeout=self._session.timeout.total)
-            logging.info("%s retrieved %s", class_name, safe_api_url)
+            logger.info("%s retrieved %s", class_name, safe_api_url)
         except (TimeoutError, CollectorError, aiohttp.ClientError) as reason:
             error = self.__logsafe_exception(reason)
-            logging.warning("%s failed to retrieve %s: %s", class_name, safe_api_url, error)
+            logger.warning("%s failed to retrieve %s: %s", class_name, safe_api_url, error)
             responses = SourceResponses(api_url=URL(api_url), connection_error=error)
         except Exception as reason:
             error = stable_traceback(traceback.format_exc())
             reason_message = self.__logsafe_exception(reason)
-            logging.error("%s failed to retrieve %s: %s", class_name, safe_api_url, reason_message)  # noqa: TRY400
+            logger.error("%s failed to retrieve %s: %s", class_name, safe_api_url, reason_message)  # noqa: TRY400
             responses = SourceResponses(api_url=URL(api_url), connection_error=error)
         return responses
 

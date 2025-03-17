@@ -1,7 +1,6 @@
 """Database migrations."""
 
 from collections.abc import Sequence
-import logging
 
 import pymongo
 from pymongo.collection import Collection
@@ -9,12 +8,15 @@ from pymongo.database import Database
 
 from shared.model.metric import Metric
 
+from utils.log import get_logger
+
 
 def perform_migrations(database: Database) -> None:
     """Perform database migrations."""
+    logger = get_logger()
     for report in database.reports.find(filter={"last": True, "deleted": {"$exists": False}}):
         report_uuid = report["report_uuid"]
-        logging.info("Checking report %s for necessary updates", report_uuid)
+        logger.info("Checking report %s for necessary updates", report_uuid)
         if any(
             changes := [
                 change_accessibility_violation_metrics_to_violations(report),
@@ -26,11 +28,11 @@ def perform_migrations(database: Database) -> None:
             ]
         ):
             change_description = " and to ".join([change for change in changes if change])
-            logging.info("Updating report %s to %s", report_uuid, change_description)
+            logger.info("Updating report %s to %s", report_uuid, change_description)
             replace_document(database.reports, report)
-        logging.info("Checking report %s for necessary measurement updates", report_uuid)
+        logger.info("Checking report %s for necessary measurement updates", report_uuid)
         count = add_source_parameter_hash_to_latest_measurement(database, report)
-        logging.info("Updated %s measurements for report %s", count, report_uuid)
+        logger.info("Updated %s measurements for report %s", count, report_uuid)
 
 
 def change_accessibility_violation_metrics_to_violations(report) -> str:
@@ -203,7 +205,8 @@ def log_unknown_parameter_values(value_mapping: dict[str, str], old_values: list
     """Log old parameter values that do not exist in the mapping."""
     if unknown_values := [old_value for old_value in old_values if old_value not in value_mapping]:
         message = "Ignoring one or more unknown SonarQube parameter values of type '%s' in report %s: %s"
-        logging.warning(message, value_type, report["report_uuid"], ", ".join(unknown_values))
+        logger = get_logger()
+        logger.warning(message, value_type, report["report_uuid"], ", ".join(unknown_values))
 
 
 def new_parameter_values(value_mapping: dict[str, str], old_values: list[str]) -> list[str]:

@@ -19,6 +19,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 - Use the locale of the user's browser when exporting to PDF so that dates are formatted accordingly in the PDF. Fixes [#8381](https://github.com/ICTU/quality-time/issues/8381).
 - When measuring average issue lead time with Jira as source, the lead times per issue would not be collected. Fixes [#10929](https://github.com/ICTU/quality-time/issues/10929).
 
+### Changed
+
+- Add component and module names to the logging of Python components.
+
 ## v5.26.0 - 2025-02-27
 
 ### Added

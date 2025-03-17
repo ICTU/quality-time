@@ -46,16 +46,13 @@ class HealthCheckTest(unittest.TestCase):
         mocked_open().write.assert_called_once_with(now.isoformat())
 
     @patch("pathlib.Path.open")
-    @patch("logging.error")
-    def test_fail_writing_health_check(self, mocked_log: Mock, mocked_open: Mock):
+    @patch("logging.getLogger")
+    def test_fail_writing_health_check(self, mocked_get_logger: Mock, mocked_open: Mock):
         """Test that a failure to open the health check file is logged, but otherwise ignored."""
+        logger = mocked_get_logger.return_value = Mock()
         mocked_open.side_effect = OSError("Some error")
         record_health()
-        mocked_log.assert_called_once_with(
-            "Could not write health check time stamp to %s",
-            self.filename,
-            exc_info=True,
-        )
+        logger.exception.assert_called_once_with("Could not write health check time stamp to %s", self.filename)
 
 
 @patch("pathlib.Path.open", mock_open())
@@ -84,18 +81,19 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             },
         }
 
-    @patch("logging.error")
+    @patch("logging.getLogger")
     @patch("asyncio.sleep")
     @patch("notifier.notifier.get_reports_and_measurements")
-    async def test_exception(self, mocked_get: Mock, mocked_sleep: Mock, mocked_log_error: Mock):
+    async def test_exception(self, mocked_get: Mock, mocked_sleep: Mock, mocked_get_logger: Mock):
         """Test that an exception while retrieving the reports is handled."""
+        logger = mocked_get_logger.return_value = Mock()
         mocked_get.side_effect = OSError
         mocked_sleep.side_effect = RuntimeError
         with contextlib.suppress(RuntimeError):
             await notify(self.database)
 
-        mocked_log_error.assert_called_once()
-        self.assertEqual(mocked_log_error.mock_calls[0].args[0], "Getting reports and measurements failed")
+        logger.exception.assert_called_once()
+        self.assertEqual(logger.exception.mock_calls[0].args[0], "Getting reports and measurements failed")
 
     @patch("pymsteams.connectorcard.send")
     @patch("asyncio.sleep")
