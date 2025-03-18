@@ -213,16 +213,43 @@ it("shows ignored measurement entities", async () => {
         latest_measurement: {
             start: "2022-01-16T00:31:00",
             end: "2022-01-16T00:51:00",
-            count: { value: "42" },
+            count: { value: "1" },
             sources: [
-                { entity_user_data: { entity1: { status: "false_positive" }, entity2: { status: "confirmed" } } },
+                {
+                    entities: [{ key: "entity1" }, { key: "entity2" }],
+                    entity_user_data: { entity1: { status: "false_positive" }, entity2: { status: "confirmed" } },
+                },
                 {},
             ],
         },
     })
-    await userEvent.hover(screen.queryByText(/42/))
+    await userEvent.hover(screen.queryByText(/1/))
     await waitFor(async () => {
         expect(screen.queryByText(/Ignored foo/)).not.toBe(null)
+        await expectNoAccessibilityViolations(container)
+    })
+})
+
+it("does not show ignored measurement entities that no longer exist", async () => {
+    const { container } = renderMeasurementValue({
+        status: "target_met",
+        unit: "foo",
+        latest_measurement: {
+            start: "2022-01-16T00:31:00",
+            end: "2022-01-16T00:51:00",
+            count: { value: "1" },
+            sources: [
+                {
+                    entities: [{ key: "entity2" }],
+                    entity_user_data: { entity1: { status: "false_positive" }, entity2: { status: "confirmed" } },
+                },
+                {},
+            ],
+        },
+    })
+    await userEvent.hover(screen.queryByText(/1/))
+    await waitFor(async () => {
+        expect(screen.queryByText(/Ignored foo/)).toBe(null)
         await expectNoAccessibilityViolations(container)
     })
 })
