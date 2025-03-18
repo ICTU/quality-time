@@ -60,8 +60,10 @@ measurementValueLabel.propTypes = {
 function ignoredEntitiesCount(measurement) {
     const count = Object.fromEntries(IGNORABLE_SOURCE_ENTITY_STATUSES.map((status) => [status, 0]))
     measurement?.sources?.forEach((source) => {
-        Object.values(source.entity_user_data ?? {}).forEach((entity) => {
-            if (Object.keys(count).includes(entity.status)) {
+        // Ignore entity user data that refers to entities that no longer exist by checking the entity keys
+        const validKeys = (source.entities ?? []).map((entity) => entity.key)
+        Object.entries(source.entity_user_data ?? {}).forEach(([entityKey, entity]) => {
+            if (validKeys.includes(entityKey) && Object.keys(count).includes(entity.status)) {
                 count[entity.status]++
             }
         })
