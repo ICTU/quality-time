@@ -2,7 +2,6 @@
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import ClassVar
 
 from shared.model.metric import Metric
 
@@ -15,8 +14,6 @@ from .issue_status import IssueStatus
 @dataclass
 class SourceMeasurement:
     """Class to hold measurement values, entities, and error messages from collecting the measurement from a source."""
-
-    MAX_ENTITIES: ClassVar[int] = 100  # The maximum number of entities (e.g. violations, issues) to send to the server
 
     value: Value | None = None
     total: Value | None = "100"
@@ -56,7 +53,7 @@ class SourceMeasurement:
         return {
             "value": self.value,
             "total": self.total,
-            "entities": self.entities_to_store()[: self.MAX_ENTITIES],
+            "entities": self.entities_to_store(),
             "connection_error": self.connection_error,
             "parse_error": self.parse_error,
             "api_url": self.api_url,
