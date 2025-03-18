@@ -16,7 +16,7 @@ from .issue_status import IssueStatus
 class SourceMeasurement:
     """Class to hold measurement values, entities, and error messages from collecting the measurement from a source."""
 
-    MAX_ENTITIES: ClassVar[int] = 100  # The maximum number of entities (e.g. violations, issues) to send to the server
+    MAX_ENTITIES: ClassVar[int] = 250  # The maximum number of entities (e.g. violations, issues) to send to the server
 
     value: Value | None = None
     total: Value | None = "100"
