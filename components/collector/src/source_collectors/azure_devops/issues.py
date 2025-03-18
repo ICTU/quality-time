@@ -7,7 +7,7 @@ import aiohttp
 from base_collectors import SourceCollector
 from collector_utilities.functions import iterable_to_batches
 from collector_utilities.type import URL, Value
-from model import Entities, Entity, SourceMeasurement, SourceResponses
+from model import Entities, Entity, SourceResponses
 
 
 class AzureDevopsIssues(SourceCollector):
@@ -46,8 +46,7 @@ class AzureDevopsIssues(SourceCollector):
     async def _get_work_item_responses(self, auth: aiohttp.BasicAuth) -> SourceResponses:
         """Separately get each work item from the API."""
         api_url = await self._api_wit_url(endpoint="workitemsbatch")
-        batch_size = min(self.MAX_IDS_PER_WORK_ITEMS_API_CALL, SourceMeasurement.MAX_ENTITIES)
-        id_iter = iterable_to_batches(self._issue_ids_to_fetch, batch_size)
+        id_iter = iterable_to_batches(self._issue_ids_to_fetch, self.MAX_IDS_PER_WORK_ITEMS_API_CALL)
         responses = [
             await self._session.post(
                 api_url,

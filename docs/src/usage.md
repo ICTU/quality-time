@@ -363,7 +363,9 @@ To reorder sources, expand the metric in the metric table and click the sources 
 
 ### Configuring entities
 
-An entity is a measured entity, such as one single failed job in GitLab for a metric that measures failed GitLab jobs or a single violation in SonarQube for a metric that measures violations. What exactly an entity is, and what properties it has depends on what the metric in question is measuring. Not every metric will have entities.
+An entity is a measured entity, such as one single failed job in GitLab for a metric that measures failed GitLab jobs or a single violation in SonarQube for a metric that measures violations. What exactly an entity is, and what properties it has depends on what the metric in question is measuring.
+
+Not every metric will have entities. For example, the source up-to-dateness metric has "days" as unit. These are not shown as measurement entities. But, the issues metric does show the individual issues as measurement entities. To prevent performance issues and limit the storage capacity needed, Quality-time stores and shows at most 250 entities per metric.
 
 To add a source to a metric, expand the metric in the metric table and then click the tab with the source name. It will show a list of entities with all its details.
 
