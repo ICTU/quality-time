@@ -117,7 +117,7 @@ MetricDetailsButtonRow.propTypes = {
 function fetchMeasurements(reportDate, metric_uuid, setMeasurements, setMeasurementsStatus) {
     get_metric_measurements(metric_uuid, reportDate)
         .then(function (json) {
-            if (json.ok) {
+            if (json.ok ?? true) {
                 setMeasurements(json.measurements ?? [])
                 setMeasurementsStatus("loaded")
             } else {
