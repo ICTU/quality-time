@@ -27,7 +27,7 @@ services:
     ports:
       - "27017:27017"
   ldap:
-    image: bitnami/openldap:2.6.8
+    image: bitnami/openldap:2.6.9
     environment:
       - LDAP_ADMIN_PASSWORD=admin
       - LDAP_PORT_NUMBER=389
