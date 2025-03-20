@@ -1,5 +1,3 @@
-import "./Subject.css"
-
 import { Divider, Paper } from "@mui/material"
 import { bool, func, string } from "prop-types"
 import { useContext } from "react"
@@ -166,18 +164,16 @@ export function Subject({
 
     return (
         <Paper id={subject_uuid} elevation={5} sx={{ marginTop: "50px" }}>
-            <div className="sticky">
-                <SubjectTitle
-                    atReportsOverview={atReportsOverview}
-                    firstSubject={firstSubject}
-                    lastSubject={lastSubject}
-                    reload={reload}
-                    report={report}
-                    settings={settings}
-                    subject={subject}
-                    subject_uuid={subject_uuid}
-                />
-            </div>
+            <SubjectTitle
+                atReportsOverview={atReportsOverview}
+                firstSubject={firstSubject}
+                lastSubject={lastSubject}
+                reload={reload}
+                report={report}
+                settings={settings}
+                subject={subject}
+                subject_uuid={subject_uuid}
+            />
             <CommentSegment comment={subject.comment} />
             <Divider sx={{ padding: "0px" }} />
             <SubjectTable

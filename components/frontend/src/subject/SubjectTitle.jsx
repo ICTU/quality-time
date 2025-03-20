@@ -1,3 +1,5 @@
+import "./SubjectTitle.css"
+
 import HistoryIcon from "@mui/icons-material/History"
 import SettingsIcon from "@mui/icons-material/Settings"
 import { bool, func, object, string } from "prop-types"
@@ -7,6 +9,7 @@ import { delete_subject, set_subject_attribute } from "../api/subject"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
+import { zIndexSubjectTitle } from "../defaults"
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
 import { getSubjectType } from "../utils"
 import { ButtonRow } from "../widgets/ButtonRow"
@@ -71,38 +74,40 @@ export function SubjectTitle({
     const subjectTitle = (atReportsOverview ? report.title + " ❯ " : "") + subjectName
     const subjectUrl = `${window.location}#${subject_uuid}`
     return (
-        <HeaderWithDetails
-            header={subjectTitle}
-            item_uuid={subject_uuid}
-            level="h2"
-            settings={settings}
-            subheader={subject.subtitle}
-        >
-            <Tabs
+        <div className="sticky" style={{ zIndex: zIndexSubjectTitle }}>
+            <HeaderWithDetails
+                header={subjectTitle}
+                item_uuid={subject_uuid}
+                level="h2"
                 settings={settings}
-                tabs={[
-                    { label: "Configuration", icon: <SettingsIcon /> },
-                    { label: "Changelog", icon: <HistoryIcon /> },
-                ]}
-                uuid={subject_uuid}
+                subheader={subject.subtitle}
             >
-                <SubjectParameters
-                    subject={subject}
+                <Tabs
+                    settings={settings}
+                    tabs={[
+                        { label: "Configuration", icon: <SettingsIcon /> },
+                        { label: "Changelog", icon: <HistoryIcon /> },
+                    ]}
+                    uuid={subject_uuid}
+                >
+                    <SubjectParameters
+                        subject={subject}
+                        subject_uuid={subject_uuid}
+                        subject_name={subjectName}
+                        reload={reload}
+                    />
+                    <ChangeLog subject_uuid={subject_uuid} timestamp={report.timestamp} />
+                </Tabs>
+                <SubjectTitleButtonRow
                     subject_uuid={subject_uuid}
-                    subject_name={subjectName}
+                    firstSubject={firstSubject}
+                    lastSubject={lastSubject}
                     reload={reload}
+                    settings={settings}
+                    url={subjectUrl}
                 />
-                <ChangeLog subject_uuid={subject_uuid} timestamp={report.timestamp} />
-            </Tabs>
-            <SubjectTitleButtonRow
-                subject_uuid={subject_uuid}
-                firstSubject={firstSubject}
-                lastSubject={lastSubject}
-                reload={reload}
-                settings={settings}
-                url={subjectUrl}
-            />
-        </HeaderWithDetails>
+            </HeaderWithDetails>
+        </div>
     )
 }
 SubjectTitle.propTypes = {

@@ -1,9 +1,8 @@
-table.MuiTable-stickyHeader > thead {
+table.MuiTable-stickyHeader.subjectTable > thead {
     /* Make thead sticky by positioning the th's */
     position: sticky;
     /* Leave room for the menu bar and the subject title */
     top: 140px;
-    z-index: 2;
 }
 
 tbody td.MuiTableCell-root {
