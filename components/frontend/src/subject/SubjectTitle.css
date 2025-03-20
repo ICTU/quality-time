@@ -1,5 +1,4 @@
 div.sticky {
     position: sticky; /* Make the div sticky */
     top: 60px; /* The menu bar is about 60px high, move the top margin under it */
-    z-index: 3;
 }

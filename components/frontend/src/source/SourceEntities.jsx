@@ -16,6 +16,7 @@ import { bool, func, object, string } from "prop-types"
 import { useContext, useState } from "react"
 
 import { DataModel } from "../context/DataModel"
+import { zIndexInnerTableHeader } from "../defaults"
 import {
     alignmentPropType,
     entityAttributePropType,
@@ -300,8 +301,8 @@ export function SourceEntities({ loading, measurements, metric, metric_uuid, rel
     ))
     return (
         <TableContainer component={Paper} sx={{ maxHeight: "50vh" }}>
-            <Table padding="none" size="small">
-                <TableHead>{headers}</TableHead>
+            <Table padding="none" size="small" stickyHeader>
+                <TableHead sx={{ zIndex: zIndexInnerTableHeader }}>{headers}</TableHead>
                 <TableBody>{rows}</TableBody>
             </Table>
         </TableContainer>
