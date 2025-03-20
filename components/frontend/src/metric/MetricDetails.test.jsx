@@ -80,7 +80,6 @@ const dataModel = {
 
 function getMetricMeasurementsSuccessfully(connection_error) {
     return Promise.resolve({
-        ok: true,
         measurements: [
             {
                 count: { value: "42" },
@@ -201,6 +200,26 @@ it("does not measure the metric if the metric source configuration is incomplete
     await renderMetricDetails()
     fireEvent.click(screen.getByText(/Measure metric/))
     expect(fetch_server_api.fetch_server_api).not.toHaveBeenCalled()
+})
+
+it("loads an empty list of measurements", async () => {
+    history.push("?expanded=metric_uuid:5")
+    const { container } = await renderMetricDetails({
+        getMetricMeasurements: () => Promise.resolve({ measurements: [] }),
+    })
+    expect(screen.queryAllByText(/Loading measurements failed/).length).toBe(0)
+    expect(toast.showMessage).toHaveBeenCalledTimes(0)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("loads a missing list of measurements", async () => {
+    history.push("?expanded=metric_uuid:5")
+    const { container } = await renderMetricDetails({
+        getMetricMeasurements: () => Promise.resolve({}),
+    })
+    expect(screen.queryAllByText(/Loading measurements failed/).length).toBe(0)
+    expect(toast.showMessage).toHaveBeenCalledTimes(0)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("fails to load measurements due to a failed promise", async () => {
