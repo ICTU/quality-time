@@ -3,3 +3,9 @@
         max-height: none !important;
     }
 }
+
+table.MuiTable-stickyHeader.sourceTable > thead {
+    /* Make thead sticky by positioning the th's */
+    position: sticky;
+    z-index: 2;
+}

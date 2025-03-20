@@ -300,7 +300,7 @@ export function SourceEntities({ loading, measurements, metric, metric_uuid, rel
     ))
     return (
         <TableContainer component={Paper} sx={{ maxHeight: "50vh" }}>
-            <Table padding="none" size="small">
+            <Table className="sourceTable" padding="none" size="small" stickyHeader>
                 <TableHead>{headers}</TableHead>
                 <TableBody>{rows}</TableBody>
             </Table>
