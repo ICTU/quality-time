@@ -35,6 +35,7 @@ export function SubjectTable({
     return (
         <TableContainer sx={{ overflowX: "visible" }}>
             <Table
+                className="subjectTable"
                 stickyHeader
                 sx={{
                     "& .MuiTableCell-sizeMedium": {
