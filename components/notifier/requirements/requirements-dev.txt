@@ -813,9 +813,9 @@ pydantic-core==2.27.2 \
 pymsteams==0.2.3 \
     --hash=sha256:c0e59dd42708128cd8a9dc0b091b273683c586aa5668cb3a0e62146f9525e61b
     # via notifier (pyproject.toml)
-pytz==2025.1 \
-    --hash=sha256:89dd22dca55b46eac6eda23b2d72721bf1bdfef212645d81513ef5d03038de57 \
-    --hash=sha256:c2db42be2a2518b28e65f9207c4d05e6ff547d1efa4086469ef855e4ab70178e
+pytz==2025.2 \
+    --hash=sha256:360b9e3dbb49a209c21ad61809c7fb453643e048b38924c765813546746e81c3 \
+    --hash=sha256:5ddf76296dd8c44c26eb8f4b6f35488f3ccbf6fbbd7adee0b7262d43f0ec2f00
     # via mongomock
 requests==2.32.3 \
     --hash=sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760 \
