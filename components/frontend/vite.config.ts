@@ -12,6 +12,9 @@ export default defineConfig({
             },
         }),
     ],
+    resolve: {
+        conditions: ["mui-modern", "module", "browser", "development|production"],
+    },
     server: {
         open: true, // Ensure that the browser opens upon server start
         port: 3000, // Set default port to 3000

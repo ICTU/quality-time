@@ -1,5 +1,5 @@
 import { MenuItem } from "@mui/material"
-import Grid from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import { DatePicker } from "@mui/x-date-pickers"
 import dayjs from "dayjs"
 import { func, node, oneOf, string } from "prop-types"

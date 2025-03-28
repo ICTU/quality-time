@@ -1,7 +1,7 @@
 import HistoryIcon from "@mui/icons-material/History"
 import LockIcon from "@mui/icons-material/Lock"
 import SettingsIcon from "@mui/icons-material/Settings"
-import Grid from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import { func, shape } from "prop-types"
 import { useContext } from "react"
 

@@ -1,4 +1,4 @@
-import Grid from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import { bool, func, node, string } from "prop-types"
 import { useContext, useState } from "react"
 
