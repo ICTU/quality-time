@@ -26,7 +26,7 @@ script_dir() {
 }
 
 # For Windows compatibility; prevent path from ending with a ':'
-if command -v python &> /dev/null
+if command -v python &> /dev/null && python -V 2> /dev/null
 then
     export PYTHONPATH=$(python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH)
 fi
