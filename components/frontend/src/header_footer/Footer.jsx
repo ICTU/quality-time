@@ -20,7 +20,7 @@ import {
     Typography,
 } from "@mui/material"
 import { grey } from "@mui/material/colors"
-import Grid from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import { element, object, oneOfType, string } from "prop-types"
 
 import { alignmentPropType, childrenPropType, datePropType, reportPropType } from "../sharedPropTypes"

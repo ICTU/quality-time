@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import Grid from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import { func, objectOf, string } from "prop-types"
 import { useContext } from "react"
 

@@ -4,7 +4,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications"
 import SettingsIcon from "@mui/icons-material/Settings"
 import TimerIcon from "@mui/icons-material/Timer"
 import { Typography } from "@mui/material"
-import Grid from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import { func, oneOfType, string } from "prop-types"
 import { useContext } from "react"
 

@@ -1,5 +1,5 @@
 import { MenuItem, Stack } from "@mui/material"
-import Grid from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import { func } from "prop-types"
 import { useContext, useEffect, useState } from "react"
 

@@ -1,6 +1,6 @@
 import HistoryIcon from "@mui/icons-material/History"
 import SettingsIcon from "@mui/icons-material/Settings"
-import Grid from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import { bool, func, object, oneOfType, string } from "prop-types"
 import { useContext } from "react"
 
