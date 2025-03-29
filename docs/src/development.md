@@ -179,6 +179,8 @@ Functional React components are preferred over class-based components.
 
 Production code and unit tests are organized together in one `src` folder hierarchy.
 
+Variable and function names are camelCase. Constants are named in all uppercase.
+
 ### Adding metrics and sources
 
 *Quality-time* has been designed with the goal of making it easy to add new metrics and sources. The [data model](software.md#data-model) specifies all the details about metrics and sources, like the scale and unit of metrics, and the parameters needed for sources. In general, to add a new metric or source, only the data model and the [collector](software.md#collector) need to be changed.

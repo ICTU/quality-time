@@ -11,10 +11,10 @@ const metric = {
 }
 const dataModel = { metrics: { metric_type: { sources: ["source_type"] } } }
 
-function renderSourceStatus(metric, measurement_source) {
+function renderSourceStatus(metric, measurementSource) {
     return render(
         <DataModel.Provider value={dataModel}>
-            <SourceStatus metric={metric} measurement_source={measurement_source} />
+            <SourceStatus metric={metric} measurementSource={measurementSource} />
         </DataModel.Provider>,
     )
 }

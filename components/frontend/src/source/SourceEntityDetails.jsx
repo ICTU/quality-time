@@ -5,7 +5,7 @@ import dayjs from "dayjs"
 import { func, node, oneOf, string } from "prop-types"
 import { useContext } from "react"
 
-import { set_source_entity_attribute } from "../api/source"
+import { setSourceEntityAttribute } from "../api/source"
 import { accessGranted, EDIT_ENTITY_PERMISSION, Permissions } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import { entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
@@ -69,14 +69,14 @@ entityStatusOptions.propTypes = {
 
 export function SourceEntityDetails({
     entity,
-    metric_uuid,
+    metricUuid,
     name,
     rationale,
     reload,
     report,
     status,
-    status_end_date,
-    source_uuid,
+    statusEndDate,
+    sourceUuid,
 }) {
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_ENTITY_PERMISSION])
@@ -87,7 +87,7 @@ export function SourceEntityDetails({
                     disabled={disabled}
                     label={`${capitalize(name)} status`}
                     onChange={(value) =>
-                        set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "status", value, reload)
+                        setSourceEntityAttribute(metricUuid, sourceUuid, entity.key, "status", value, reload)
                     }
                     select
                     value={status}
@@ -101,19 +101,12 @@ export function SourceEntityDetails({
             </Grid>
             <Grid size={{ xs: 1, sm: 2, md: 3 }}>
                 <DatePicker
-                    defaultValue={status_end_date ? dayjs(status_end_date) : null}
+                    defaultValue={statusEndDate ? dayjs(statusEndDate) : null}
                     disabled={disabled}
-                    key={status_end_date}
+                    key={statusEndDate}
                     label={`${capitalize(name)} status end date`}
                     onChange={(value) =>
-                        set_source_entity_attribute(
-                            metric_uuid,
-                            source_uuid,
-                            entity.key,
-                            "status_end_date",
-                            value,
-                            reload,
-                        )
+                        setSourceEntityAttribute(metricUuid, sourceUuid, entity.key, "status_end_date", value, reload)
                     }
                     slotProps={{
                         field: { clearable: true },
@@ -132,7 +125,7 @@ export function SourceEntityDetails({
                     label={`${capitalize(name)} status rationale`}
                     multiline
                     onChange={(value) =>
-                        set_source_entity_attribute(metric_uuid, source_uuid, entity.key, "rationale", value, reload)
+                        setSourceEntityAttribute(metricUuid, sourceUuid, entity.key, "rationale", value, reload)
                     }
                     value={rationale}
                 />
@@ -142,12 +135,12 @@ export function SourceEntityDetails({
 }
 SourceEntityDetails.propTypes = {
     entity: entityPropType,
-    metric_uuid: string,
+    metricUuid: string,
     name: string,
     rationale: string,
     reload: func,
     report: reportPropType,
     status: entityStatusPropType,
-    status_end_date: string,
-    source_uuid: string,
+    statusEndDate: string,
+    sourceUuid: string,
 }

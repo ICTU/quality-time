@@ -44,9 +44,9 @@ async function renderSourceType(metricType, sourceType, mockSetSourceAttribute) 
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <DataModel.Provider value={dataModel}>
                     <SourceType
-                        metric_type={metricType}
-                        source_type={sourceType}
-                        set_source_attribute={mockSetSourceAttribute}
+                        metricType={metricType}
+                        sourceType={sourceType}
+                        setSourceAttribute={mockSetSourceAttribute}
                     />
                 </DataModel.Provider>
             </Permissions.Provider>,

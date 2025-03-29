@@ -5,7 +5,7 @@ import SettingsIcon from "@mui/icons-material/Settings"
 import { bool, func, object, string } from "prop-types"
 import { useContext } from "react"
 
-import { delete_subject, set_subject_attribute } from "../api/subject"
+import { deleteSubject, setSubjectAttribute } from "../api/subject"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
@@ -20,13 +20,13 @@ import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { Tabs } from "../widgets/Tabs"
 import { SubjectParameters } from "./SubjectParameters"
 
-function SubjectTitleButtonRow({ subject_uuid, firstSubject, lastSubject, reload, settings, url }) {
+function SubjectTitleButtonRow({ firstSubject, lastSubject, reload, settings, subjectUuid, url }) {
     const deleteButton = (
         <DeleteButton
             itemType="subject"
             onClick={() => {
-                delete_subject(subject_uuid, reload)
-                settings.expandedItems.deleteItem(subject_uuid)
+                deleteSubject(subjectUuid, reload)
+                settings.expandedItems.deleteItem(subjectUuid)
             }}
         />
     )
@@ -40,7 +40,7 @@ function SubjectTitleButtonRow({ subject_uuid, firstSubject, lastSubject, reload
                         last={lastSubject}
                         moveable="subject"
                         onClick={(direction) => {
-                            set_subject_attribute(subject_uuid, "position", direction, reload)
+                            setSubjectAttribute(subjectUuid, "position", direction, reload)
                         }}
                     />
                     <PermLinkButton itemType="subject" url={url} />
@@ -50,11 +50,11 @@ function SubjectTitleButtonRow({ subject_uuid, firstSubject, lastSubject, reload
     )
 }
 SubjectTitleButtonRow.propTypes = {
-    subject_uuid: string,
     firstSubject: bool,
     lastSubject: bool,
     reload: func,
     settings: settingsPropType,
+    subjectUuid: string,
     url: string,
 }
 
@@ -62,7 +62,7 @@ export function SubjectTitle({
     atReportsOverview,
     report,
     subject,
-    subject_uuid,
+    subjectUuid,
     firstSubject,
     lastSubject,
     reload,
@@ -72,12 +72,12 @@ export function SubjectTitle({
     const subjectType = getSubjectType(subject.type, dataModel.subjects)
     const subjectName = subject.name || subjectType.name
     const subjectTitle = (atReportsOverview ? report.title + " ❯ " : "") + subjectName
-    const subjectUrl = `${window.location}#${subject_uuid}`
+    const subjectUrl = `${window.location}#${subjectUuid}`
     return (
         <div className="sticky" style={{ zIndex: zIndexSubjectTitle }}>
             <HeaderWithDetails
                 header={subjectTitle}
-                item_uuid={subject_uuid}
+                itemUuid={subjectUuid}
                 level="h2"
                 settings={settings}
                 subheader={subject.subtitle}
@@ -88,18 +88,18 @@ export function SubjectTitle({
                         { label: "Configuration", icon: <SettingsIcon /> },
                         { label: "Changelog", icon: <HistoryIcon /> },
                     ]}
-                    uuid={subject_uuid}
+                    uuid={subjectUuid}
                 >
                     <SubjectParameters
                         subject={subject}
-                        subject_uuid={subject_uuid}
-                        subject_name={subjectName}
+                        subjectUuid={subjectUuid}
+                        subjectName={subjectName}
                         reload={reload}
                     />
-                    <ChangeLog subject_uuid={subject_uuid} timestamp={report.timestamp} />
+                    <ChangeLog subjectUuid={subjectUuid} timestamp={report.timestamp} />
                 </Tabs>
                 <SubjectTitleButtonRow
-                    subject_uuid={subject_uuid}
+                    subjectUuid={subjectUuid}
                     firstSubject={firstSubject}
                     lastSubject={lastSubject}
                     reload={reload}
@@ -118,5 +118,5 @@ SubjectTitle.propTypes = {
     report: reportPropType,
     settings: settingsPropType,
     subject: object,
-    subject_uuid: string,
+    subjectUuid: string,
 }

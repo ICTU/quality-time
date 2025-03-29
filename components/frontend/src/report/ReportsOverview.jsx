@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import { func } from "prop-types"
 
-import { add_report, copy_report } from "../api/report"
+import { addReport, copyReport } from "../api/report"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { PageHeader } from "../dashboard/PageHeader"
 import {
@@ -20,7 +20,7 @@ import { ButtonRow } from "../widgets/ButtonRow"
 import { AddButton } from "../widgets/buttons/AddButton"
 import { CopyButton } from "../widgets/buttons/CopyButton"
 import { CommentSegment } from "../widgets/CommentSegment"
-import { report_options } from "../widgets/menu_options"
+import { reportOptions } from "../widgets/menu_options"
 import { WarningMessage } from "../widgets/WarningMessage"
 import { ReportsOverviewDashboard } from "./ReportsOverviewDashboard"
 import { ReportsOverviewTitle } from "./ReportsOverviewTitle"
@@ -32,11 +32,11 @@ function ReportsOverviewButtonRow({ reload, reports }) {
             editableComponent={
                 <Box sx={{ paddingTop: "50px" }}>
                     <ButtonRow>
-                        <AddButton itemType={"report"} onClick={() => add_report(reload)} />
+                        <AddButton itemType={"report"} onClick={() => addReport(reload)} />
                         <CopyButton
                             itemType={"report"}
-                            get_options={() => report_options(reports)}
-                            onChange={(source_report_uuid) => copy_report(source_report_uuid, reload)}
+                            getOptions={() => reportOptions(reports)}
+                            onChange={(reportUuid) => copyReport(reportUuid, reload)}
                         />
                     </ButtonRow>
                 </Box>
@@ -50,7 +50,7 @@ ReportsOverviewButtonRow.propTypes = {
 }
 
 export function ReportsOverview({
-    changed_fields,
+    changedFields,
     dates,
     handleSort,
     lastUpdate,
@@ -58,23 +58,23 @@ export function ReportsOverview({
     openReport,
     reload,
     reports,
-    report_date,
-    reports_overview,
+    reportDate,
+    reportsOverview,
     settings,
 }) {
-    if (reports.length === 0 && report_date !== null) {
-        return <WarningMessage title="No reports found">{`Sorry, no reports existed at ${report_date}`}</WarningMessage>
+    if (reports.length === 0 && reportDate !== null) {
+        return <WarningMessage title="No reports found">{`Sorry, no reports existed at ${reportDate}`}</WarningMessage>
     }
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
     const reversedMeasurements = measurements.slice().sort((m1, m2) => (m1.start < m2.start ? 1 : -1))
     return (
         <div id="dashboard">
-            <PageHeader lastUpdate={lastUpdate} reportDate={report_date} />
-            <ReportsOverviewTitle reports_overview={reports_overview} reload={reload} settings={settings} />
-            <CommentSegment comment={reports_overview.comment} />
+            <PageHeader lastUpdate={lastUpdate} reportDate={reportDate} />
+            <ReportsOverviewTitle reportsOverview={reportsOverview} reload={reload} settings={settings} />
+            <CommentSegment comment={reportsOverview.comment} />
             <ReportsOverviewDashboard
                 dates={dates}
-                layout={reports_overview.layout ?? []}
+                layout={reportsOverview.layout ?? []}
                 measurements={reversedMeasurements}
                 onClickTag={(tag) => {
                     // If there are hidden tags (hiddenTags.length > 0), show the hidden tags.
@@ -90,13 +90,13 @@ export function ReportsOverview({
             />
             <Subjects
                 atReportsOverview={true}
-                changed_fields={changed_fields}
+                changedFields={changedFields}
                 dates={dates}
                 handleSort={handleSort}
                 measurements={measurements}
                 reload={reload}
                 reportsToShow={reports}
-                report_date={report_date}
+                reportDate={reportDate}
                 reports={reports}
                 settings={settings}
             />
@@ -105,7 +105,7 @@ export function ReportsOverview({
     )
 }
 ReportsOverview.propTypes = {
-    changed_fields: stringsPropType,
+    changedFields: stringsPropType,
     dates: datesPropType,
     handleSort: func,
     lastUpdate: datePropType,
@@ -113,7 +113,7 @@ ReportsOverview.propTypes = {
     reports: reportsPropType,
     openReport: func,
     reload: func,
-    report_date: optionalDatePropType,
-    reports_overview: reportsOverviewPropType,
+    reportDate: optionalDatePropType,
+    reportsOverview: reportsOverviewPropType,
     settings: settingsPropType,
 }

@@ -6,7 +6,7 @@ import relativeTime from "dayjs/plugin/relativeTime"
 import { bool, func, number, oneOfType, string } from "prop-types"
 import { useContext, useState } from "react"
 
-import { set_source_parameter } from "../api/source"
+import { setSourceParameter } from "../api/source"
 import { accessGranted, Permissions } from "../context/Permissions"
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { TextField } from "../fields/TextField"
@@ -110,7 +110,7 @@ sources.propTypes = {
     report: reportPropType,
 }
 
-function parameterValues(report, sourceType, parameterKey) {
+function collectParameterValues(report, sourceType, parameterKey) {
     // Collect all values in the current report used for this parameter, for this source type
     let values = new Set()
     sources(report).forEach((source) => {
@@ -127,7 +127,7 @@ function parameterValues(report, sourceType, parameterKey) {
     })
     return Array.from(values)
 }
-parameterValues.propTypes = {
+collectParameterValues.propTypes = {
     report: reportPropType,
     sourceType: string,
     parameterKey: string,
@@ -135,48 +135,48 @@ parameterValues.propTypes = {
 
 export function SourceParameter({
     help,
-    help_url,
-    parameter_key,
-    parameter_type,
-    parameter_name,
-    parameter_unit,
-    parameter_min,
-    parameter_max,
-    parameter_value,
-    parameter_values,
+    helpUrl,
+    parameterKey,
+    parameterType,
+    parameterName,
+    parameterUnit,
+    parameterMin,
+    parameterMax,
+    parameterValue,
+    parameterValues,
     placeholder,
     reload,
     report,
     required,
     requiredPermissions,
     source,
-    source_uuid,
+    sourceUuid,
     warning,
 }) {
     const [editScope, setEditScope] = useState("source")
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, requiredPermissions)
-    let label = parameter_name
+    let label = parameterName
     let helperText = null
-    if (help_url) {
+    if (helpUrl) {
         helperText = (
             <>
-                See <HyperLink url={help_url}>{help_url}</HyperLink> for more information.
+                See <HyperLink url={helpUrl}>{helpUrl}</HyperLink> for more information.
             </>
         )
     }
     if (help) {
         helperText = help
     }
-    if (parameter_type === "date" && parameter_value) {
-        helperText = dayjs(parameter_value).fromNow()
+    if (parameterType === "date" && parameterValue) {
+        helperText = dayjs(parameterValue).fromNow()
     }
     let parameterProps = {
         disabled: disabled,
         helperText: helperText,
         label: label,
         onChange: (value) => {
-            set_source_parameter(source_uuid, parameter_key, value, editScope, reload)
+            setSourceParameter(sourceUuid, parameterKey, value, editScope, reload)
             setEditScope("source") // Reset the edit scope of the parameter to source only
         },
         placeholder: placeholder,
@@ -184,11 +184,11 @@ export function SourceParameter({
     }
     const startAdornment = <EditScopeSelect editScope={editScope} setEditScope={setEditScope} />
     let parameterInput = null
-    if (parameter_type === "date") {
+    if (parameterType === "date") {
         parameterInput = (
             <DatePicker
                 {...parameterProps}
-                defaultValue={parameter_value ? dayjs(parameter_value) : null}
+                defaultValue={parameterValue ? dayjs(parameterValue) : null}
                 slotProps={{
                     field: { clearable: true },
                     textField: { helperText: helperText, InputProps: { startAdornment: startAdornment } },
@@ -198,26 +198,26 @@ export function SourceParameter({
             />
         )
     }
-    parameterProps["value"] = parameter_value
+    parameterProps["value"] = parameterValue
     parameterProps["startAdornment"] = startAdornment
-    if (parameter_type === "password") {
+    if (parameterType === "password") {
         parameterInput = <TextField {...parameterProps} type="password" />
     }
-    if (parameter_type === "integer") {
+    if (parameterType === "integer") {
         parameterInput = (
             <TextField
                 {...parameterProps}
-                max={parameter_max || null}
-                min={parameter_min || null}
+                max={parameterMax || null}
+                min={parameterMin || null}
                 type="number"
-                unit={parameter_unit}
+                unit={parameterUnit}
             />
         )
     }
-    if (parameter_type === "single_choice") {
+    if (parameterType === "single_choice") {
         parameterInput = (
             <TextField {...parameterProps} select>
-                {dropdownOptions(parameter_values).map((option) => (
+                {dropdownOptions(parameterValues).map((option) => (
                     <MenuItem key={option.key} value={option.value}>
                         {option.text}
                     </MenuItem>
@@ -225,38 +225,38 @@ export function SourceParameter({
             </TextField>
         )
     }
-    if (parameter_type === "multiple_choice") {
-        parameterInput = <MultipleChoiceField {...parameterProps} options={parameter_values} />
+    if (parameterType === "multiple_choice") {
+        parameterInput = <MultipleChoiceField {...parameterProps} options={parameterValues} />
     }
-    if (parameter_type === "multiple_choice_with_addition") {
-        parameterInput = <MultipleChoiceField {...parameterProps} options={parameter_values} freeSolo />
+    if (parameterType === "multiple_choice_with_addition") {
+        parameterInput = <MultipleChoiceField {...parameterProps} options={parameterValues} freeSolo />
     }
-    parameterProps["options"] = parameterValues(report, source.type, parameter_key)
-    if (parameter_type === "string") {
+    parameterProps["options"] = collectParameterValues(report, source.type, parameterKey)
+    if (parameterType === "string") {
         parameterInput = <TextField {...parameterProps} />
     }
-    if (parameter_type === "url") {
+    if (parameterType === "url") {
         parameterInput = <TextField {...parameterProps} error={warning} />
     }
     return parameterInput
 }
 SourceParameter.propTypes = {
     help: popupContentPropType,
-    help_url: string,
-    parameter_key: string,
-    parameter_type: string,
-    parameter_name: string,
-    parameter_unit: string,
-    parameter_min: number,
-    parameter_max: number,
-    parameter_value: oneOfType([string, stringsPropType]),
-    parameter_values: stringsPropType,
+    helpUrl: string,
+    parameterKey: string,
+    parameterType: string,
+    parameterName: string,
+    parameterUnit: string,
+    parameterMin: number,
+    parameterMax: number,
+    parameterValue: oneOfType([string, stringsPropType]),
+    parameterValues: stringsPropType,
     placeholder: string,
     reload: func,
     report: reportPropType,
     required: bool,
     requiredPermissions: permissionsPropType,
     source: sourcePropType,
-    source_uuid: string,
+    sourceUuid: string,
     warning: bool,
 }

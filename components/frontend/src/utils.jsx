@@ -180,11 +180,11 @@ export function getMetricResponseTimeLeft(metric, report) {
     return deadline === null ? null : deadline.getTime() - now.getTime()
 }
 
-function getMetricResponseOverruns(metric_uuid, metric, measurements, dataModel) {
+function getMetricResponseOverruns(metricUuid, metric, measurements, dataModel) {
     const scale = getMetricScale(metric, dataModel)
     let previousStatus
     const consolidatedMeasurements = []
-    const filteredMeasurements = measurements.filter((measurement) => measurement.metric_uuid === metric_uuid)
+    const filteredMeasurements = measurements.filter((measurement) => measurement.metric_uuid === metricUuid)
     filteredMeasurements.forEach((measurement) => {
         const status = measurement?.[scale]?.status || "unknown"
         if (status === previousStatus) {
@@ -197,8 +197,8 @@ function getMetricResponseOverruns(metric_uuid, metric, measurements, dataModel)
     return consolidatedMeasurements
 }
 
-export function getMetricResponseOverrun(metric_uuid, metric, report, measurements, dataModel) {
-    const consolidatedMeasurements = getMetricResponseOverruns(metric_uuid, metric, measurements, dataModel)
+export function getMetricResponseOverrun(metricUuid, metric, report, measurements, dataModel) {
+    const consolidatedMeasurements = getMetricResponseOverruns(metricUuid, metric, measurements, dataModel)
     const scale = getMetricScale(metric, dataModel)
     let totalOverrun = 0 // Amount of time the desired response time was not achieved for this metric
     const overruns = []
@@ -365,14 +365,14 @@ export function pluralize(word, count) {
 }
 
 export function niceNumber(number) {
-    let rounded_numbers = [10, 12, 15, 20, 30, 50, 75]
+    let roundedNumbers = [10, 12, 15, 20, 30, 50, 75]
     do {
-        for (let rounded_number of rounded_numbers) {
-            if (number <= (9 * rounded_number) / 10) {
-                return rounded_number
+        for (let roundedNumber of roundedNumbers) {
+            if (number <= (9 * roundedNumber) / 10) {
+                return roundedNumber
             }
         }
-        rounded_numbers = rounded_numbers.map((value) => {
+        roundedNumbers = roundedNumbers.map((value) => {
             return value * 10
         })
     } while (true) // eslint-disable-line no-constant-condition
@@ -415,10 +415,10 @@ export function days(timeInMs) {
     return Math.round(timeInMs / MILLISECONDS_PER_DAY)
 }
 
-export function isValidDate_YYYYMMDD(string) {
+export function isValidISODate(string) {
     if (/^\d{4}-\d{2}-\d{2}$/.test(string)) {
-        const milliseconds_since_epoch = Date.parse(string)
-        return !isNaN(milliseconds_since_epoch)
+        const millisecondsSinceEpoch = Date.parse(string)
+        return !isNaN(millisecondsSinceEpoch)
     }
     return false
 }
@@ -428,8 +428,8 @@ export function toISODateStringInCurrentTZ(date) {
     return `${String(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
 }
 
-export function getUserPermissions(username, email, report_date, permissions) {
-    if (username === null || report_date !== null) {
+export function getUserPermissions(username, email, reportDate, permissions) {
+    if (username === null || reportDate !== null) {
         return []
     }
     return PERMISSIONS.filter((permission) => {

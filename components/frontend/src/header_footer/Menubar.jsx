@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 import { optionalDatePropType, settingsPropType, uiModePropType } from "../sharedPropTypes"
 import { CollapseButton } from "./buttons/CollapseButton"
 import { DatePickerButton } from "./buttons/DatePickerButton"
-import { DownloadAsPDFButton } from "./buttons/DownloadAsPDFButton"
+import { DownloadAsPdfButton } from "./buttons/DownloadAsPdfButton"
 import { HomeButton } from "./buttons/HomeButton"
 import { LoginButton } from "./buttons/LoginButton"
 import { ResetSettingsButton } from "./buttons/ResetSettingsButton"
@@ -21,10 +21,10 @@ export function Menubar({
     onDate,
     openReportsOverview,
     panel,
-    report_date,
-    report_uuid,
+    reportDate,
+    reportUuid,
     settings,
-    set_user,
+    setUser,
     setUIMode,
     uiMode,
     user,
@@ -42,7 +42,7 @@ export function Menubar({
         }
     }, [])
 
-    const atReportsOverview = report_uuid === ""
+    const atReportsOverview = reportUuid === ""
     return (
         <>
             <AppBar
@@ -65,19 +65,19 @@ export function Menubar({
                         <ResetSettingsButton
                             atReportsOverview={atReportsOverview}
                             handleDateChange={handleDateChange}
-                            reportDate={report_date}
+                            reportDate={reportDate}
                             settings={settings}
                         />
                         <CollapseButton expandedItems={settings.expandedItems} />
-                        <DownloadAsPDFButton report_uuid={report_uuid} />
+                        <DownloadAsPdfButton reportUuid={reportUuid} />
                     </Stack>
                     <Stack direction="row" spacing={2}>
-                        <DatePickerButton onChange={(date) => onDate(date.$d)} reportDate={report_date} />
+                        <DatePickerButton onChange={(date) => onDate(date.$d)} reportDate={reportDate} />
                         <UIModeMenu setUIMode={setUIMode} uiMode={uiMode} />
                         {user !== null ? (
-                            <UserButton email={email} user={user} setUser={set_user} />
+                            <UserButton email={email} user={user} setUser={setUser} />
                         ) : (
-                            <LoginButton set_user={set_user} />
+                            <LoginButton setUser={setUser} />
                         )}
                     </Stack>
                 </Toolbar>
@@ -95,10 +95,10 @@ Menubar.propTypes = {
     onDate: func,
     openReportsOverview: func,
     panel: element,
-    report_date: optionalDatePropType,
-    report_uuid: string,
+    reportDate: optionalDatePropType,
+    reportUuid: string,
     settings: settingsPropType,
-    set_user: func,
+    setUser: func,
     setUIMode: func,
     uiMode: uiModePropType,
     user: string,

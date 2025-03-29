@@ -4,7 +4,7 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings, dataModel } from "../__fixtures__/fixtures"
-import * as fetch_server_api from "../api/fetch_server_api"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
@@ -16,7 +16,7 @@ import { ReportsOverview } from "./ReportsOverview"
 vi.mock("../api/fetch_server_api")
 
 beforeEach(() => {
-    fetch_server_api.fetch_server_api = vi.fn().mockReturnValue({ then: vi.fn().mockReturnValue({ finally: vi.fn() }) })
+    fetchServerApi.fetchServerApi = vi.fn().mockReturnValue({ then: vi.fn().mockReturnValue({ finally: vi.fn() }) })
     mockGetAnimations()
     history.push("")
 })
@@ -43,9 +43,9 @@ async function renderReportsOverview({
                             dates={[reportDate || new Date()]}
                             lastUpdate={new Date()}
                             measurements={[{ status: "target_met" }]}
-                            report_date={reportDate}
+                            reportDate={reportDate}
                             reports={reports}
-                            reports_overview={reportsOverview}
+                            reportsOverview={reportsOverview}
                             settings={settings}
                         />
                     </DataModel.Provider>
@@ -131,19 +131,19 @@ it("shows the report tag cards", async () => {
 })
 
 it("adds a report", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
+    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })
     await renderReportsOverview()
     fireEvent.click(screen.getByText(/Add report/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/new", {})
+    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "report/new", {})
 })
 
 it("copies a report", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
+    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })
     const reports = [{ report_uuid: "uuid", subjects: {}, title: "Existing report" }]
     await renderReportsOverview({ reports: reports })
     fireEvent.click(screen.getByText(/Copy report/))
     await act(async () => {
         fireEvent.click(screen.getAllByRole("menuitem")[1])
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "report/uuid/copy", {})
+    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "report/uuid/copy", {})
 })

@@ -21,7 +21,7 @@ import { ReportDashboard } from "./ReportDashboard"
 import { ReportTitle } from "./ReportTitle"
 
 export function Report({
-    changed_fields,
+    changedFields,
     dates,
     handleSort,
     lastUpdate,
@@ -29,13 +29,13 @@ export function Report({
     openReportsOverview,
     reload,
     report,
-    report_date,
+    reportDate,
     reports,
     settings,
 }) {
-    function navigate_to_subject(event, subject_uuid) {
+    function navigateToSubject(event, subjectUuid) {
         event.preventDefault()
-        const element = document.getElementById(subject_uuid)
+        const element = document.getElementById(subjectUuid)
         if (element) {
             element.scrollIntoView()
             window.scrollBy(0, 163) // Correct for menubar and subject title margin
@@ -45,7 +45,7 @@ export function Report({
     if (!report) {
         return (
             <WarningMessage title="Report not found">
-                {report_date ? `Sorry, this report didn't exist at ${report_date}` : "Sorry, this report doesn't exist"}
+                {reportDate ? `Sorry, this report didn't exist at ${reportDate}` : "Sorry, this report doesn't exist"}
             </WarningMessage>
         )
     }
@@ -53,15 +53,12 @@ export function Report({
     const reversedMeasurements = measurements.slice().sort((m1, m2) => (m1.start < m2.start ? 1 : -1))
     return (
         <div id="dashboard">
-            <PageHeader lastUpdate={lastUpdate} report={report} reportDate={report_date} />
+            <PageHeader lastUpdate={lastUpdate} report={report} reportDate={reportDate} />
             <Paper elevation={5} sx={{ marginTop: "20px" }}>
                 <ReportTitle
                     openReportsOverview={openReportsOverview}
-                    report={report}
-                    changed_fields={changed_fields}
                     reload={reload}
-                    report_date={report_date}
-                    reports={reports}
+                    report={report}
                     settings={settings}
                 />
                 <CommentSegment comment={report.comment} />
@@ -69,7 +66,7 @@ export function Report({
                 <ReportDashboard
                     dates={dates}
                     measurements={reversedMeasurements}
-                    onClick={(e, s) => navigate_to_subject(e, s)}
+                    onClick={(e, s) => navigateToSubject(e, s)}
                     onClickTag={(tag) => {
                         // If there are hidden tags (hiddenTags.length > 0), show the hidden tags.
                         // Otherwise, hide all tags in this report except the one clicked on.
@@ -84,14 +81,14 @@ export function Report({
             </Paper>
             <Subjects
                 atReportsOverview={false}
-                changed_fields={changed_fields}
+                changedFields={changedFields}
                 dates={dates}
                 handleSort={handleSort}
                 measurements={measurements}
                 reload={reload}
                 reports={reports}
                 reportsToShow={[report]}
-                report_date={report_date}
+                reportDate={reportDate}
                 settings={settings}
             />
             <SubjectsButtonRow reload={reload} report={report} reports={reports} settings={settings} />
@@ -99,7 +96,7 @@ export function Report({
     )
 }
 Report.propTypes = {
-    changed_fields: stringsPropType,
+    changedFields: stringsPropType,
     dates: datesPropType,
     handleSort: func,
     lastUpdate: datePropType,
@@ -107,7 +104,7 @@ Report.propTypes = {
     openReportsOverview: func,
     reload: func,
     report: reportPropType,
-    report_date: optionalDatePropType,
+    reportDate: optionalDatePropType,
     reports: reportsPropType,
     settings: settingsPropType,
 }

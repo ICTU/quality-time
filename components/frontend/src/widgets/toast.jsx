@@ -23,12 +23,12 @@ export function showMessage(type, title, description, messageId) {
 }
 
 export function showConnectionMessage(json) {
-    json.availability?.forEach(({ status_code, reason }) => {
-        if (status_code === 200) {
+    json.availability?.forEach(({ status_code: statusCode, reason }) => {
+        if (statusCode === 200) {
             showMessage("success", "URL connection OK")
         } else {
-            const status_code_text = status_code >= 0 ? "[HTTP status code " + status_code + "] " : ""
-            showMessage("warning", "URL connection error", status_code_text + reason)
+            const statusCodeText = statusCode >= 0 ? "[HTTP status code " + statusCode + "] " : ""
+            showMessage("warning", "URL connection error", statusCodeText + reason)
         }
     })
 }

@@ -7,8 +7,8 @@ import { SourceParameters } from "./SourceParameters"
 function renderSourceParameters({
     placeholder = "",
     type = "string",
-    source_parameter_value = null,
-    changed_param_keys = [],
+    sourceParameterValue = null,
+    changedParamKeys = [],
 }) {
     return render(
         <DataModel.Provider
@@ -51,9 +51,9 @@ function renderSourceParameters({
                 metric={{ type: "violations" }}
                 source={{
                     type: "source_type",
-                    parameters: { parameter_key: source_parameter_value },
+                    parameters: { parameter_key: sourceParameterValue },
                 }}
-                changed_param_keys={changed_param_keys}
+                changedParamKeys={changedParamKeys}
             />
         </DataModel.Provider>,
     )
@@ -78,19 +78,19 @@ it("renders a default value if the source parameter has no value", async () => {
 })
 
 it("renders the source parameter value", async () => {
-    const { container } = renderSourceParameters({ source_parameter_value: "Value" })
+    const { container } = renderSourceParameters({ sourceParameterValue: "Value" })
     expect(screen.queryAllByDisplayValue(/Value/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("does not render a warning if the url was reachable", async () => {
-    const { container } = renderSourceParameters({ type: "url", changed_param_keys: ["other_parameter_key"] })
+    const { container } = renderSourceParameters({ type: "url", changedParamKeys: ["other_parameter_key"] })
     expect(screen.getByDisplayValue(/Default value/)).toBeValid()
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders a warning if the url was not reachable", async () => {
-    const { container } = renderSourceParameters({ type: "url", changed_param_keys: ["parameter_key"] })
+    const { container } = renderSourceParameters({ type: "url", changedParamKeys: ["parameter_key"] })
     expect(screen.getByDisplayValue(/Default value/)).toBeInvalid()
     await expectNoAccessibilityViolations(container)
 })

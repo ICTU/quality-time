@@ -2,7 +2,7 @@ import { MenuItem, Stack, Typography } from "@mui/material"
 import { func, string } from "prop-types"
 import { useContext } from "react"
 
-import { set_metric_attribute } from "../api/metric"
+import { setMetricAttribute } from "../api/metric"
 import { DataModel } from "../context/DataModel"
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
@@ -44,7 +44,7 @@ export function usedMetricTypes(subject) {
     return Array.from(metricTypes)
 }
 
-export function MetricType({ subjectType, metricType, metric_uuid, reload }) {
+export function MetricType({ subjectType, metricType, metricUuid, reload }) {
     const dataModel = useContext(DataModel)
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
@@ -65,7 +65,7 @@ export function MetricType({ subjectType, metricType, metric_uuid, reload }) {
                 </>
             }
             label="Metric type"
-            onChange={(value) => set_metric_attribute(metric_uuid, "type", value, reload)}
+            onChange={(value) => setMetricAttribute(metricUuid, "type", value, reload)}
             select
             value={metricType}
         >
@@ -80,6 +80,6 @@ export function MetricType({ subjectType, metricType, metric_uuid, reload }) {
 MetricType.propTypes = {
     subjectType: string,
     metricType: string,
-    metric_uuid: string,
+    metricUuid: string,
     reload: func,
 }

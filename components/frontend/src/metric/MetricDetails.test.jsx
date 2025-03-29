@@ -5,10 +5,8 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
-import * as changelog_api from "../api/changelog"
-import * as fetch_server_api from "../api/fetch_server_api"
-import * as measurement_api from "../api/measurement"
-import * as source_api from "../api/source"
+import * as fetchServerApi from "../api/fetch_server_api"
+import * as measurementApi from "../api/measurement"
 import { DataModel } from "../context/DataModel"
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -16,14 +14,12 @@ import * as toast from "../widgets/toast"
 import { MetricDetails } from "./MetricDetails"
 
 vi.mock("../api/fetch_server_api.js")
-vi.mock("../api/changelog.js")
 vi.mock("../api/measurement.js")
-vi.mock("../api/source.js")
 vi.mock("../widgets/toast.jsx")
 
 beforeEach(() => {
     history.push("")
-    fetch_server_api.fetch_server_api.mockImplementation(() => Promise.resolve())
+    fetchServerApi.fetchServerApi.mockImplementation(() => Promise.resolve({ changelog: [] }))
 })
 
 afterEach(() => vi.restoreAllMocks())
@@ -78,7 +74,7 @@ const dataModel = {
     subjects: { subject_type: { metrics: ["violations"] } },
 }
 
-function getMetricMeasurementsSuccessfully(connection_error) {
+function getMetricMeasurementsSuccessfully(connectionError) {
     return Promise.resolve({
         measurements: [
             {
@@ -92,7 +88,7 @@ function getMetricMeasurementsSuccessfully(connection_error) {
                     {
                         source_uuid: "source_uuid",
                         entities: [{ key: "1" }],
-                        connection_error: connection_error,
+                        connection_error: connectionError,
                     },
                 ],
             },
@@ -102,16 +98,12 @@ function getMetricMeasurementsSuccessfully(connection_error) {
 
 async function renderMetricDetails({
     stopFilteringAndSorting = null,
-    connection_error = null,
+    connectionError = null,
     getMetricMeasurements = null,
 } = {}) {
-    measurement_api.get_metric_measurements.mockImplementation(() => {
-        return getMetricMeasurements ? getMetricMeasurements() : getMetricMeasurementsSuccessfully(connection_error)
+    measurementApi.getMetricMeasurements.mockImplementation(() => {
+        return getMetricMeasurements ? getMetricMeasurements() : getMetricMeasurementsSuccessfully(connectionError)
     })
-    source_api.set_source_entity_attribute.mockImplementation(
-        (_metric_uuid, _source_uuid, _entity_key, _attribute, _value, reload) => reload(),
-    )
-    changelog_api.get_changelog.mockImplementation(() => Promise.resolve({ changelog: [] }))
     let result
     const settings = createTestableSettings()
     await act(async () => {
@@ -120,13 +112,13 @@ async function renderMetricDetails({
                 <Permissions.Provider value={[EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION]}>
                     <DataModel.Provider value={dataModel}>
                         <MetricDetails
-                            metric_uuid="metric_uuid"
+                            metricUuid="metric_uuid"
                             reload={vi.fn()}
                             report={report}
                             reports={[report]}
                             settings={settings}
                             stopFilteringAndSorting={stopFilteringAndSorting}
-                            subject_uuid="subject_uuid"
+                            subjectUuid="subject_uuid"
                         />
                     </DataModel.Provider>
                 </Permissions.Provider>
@@ -158,7 +150,7 @@ it("removes the existing hashtag from the URL to share", async () => {
 })
 
 it("displays whether sources have errors", async () => {
-    const { container } = await renderMetricDetails({ connection_error: "Connection error" })
+    const { container } = await renderMetricDetails({ connectionError: "Connection error" })
     expect(screen.getByText(/Sources/)).toHaveClass("error")
     await expectNoAccessibilityViolations(container)
 })
@@ -174,21 +166,21 @@ it("moves the metric", async () => {
     await renderMetricDetails({ stopFilteringAndSorting: mockCallback })
     await act(async () => fireEvent.click(screen.getByRole("button", { name: /Move metric to the last row/ })))
     expect(mockCallback).toHaveBeenCalled()
-    expect(measurement_api.get_metric_measurements).toHaveBeenCalled()
+    expect(measurementApi.getMetricMeasurements).toHaveBeenCalled()
 })
 
 it("deletes the metric", async () => {
     history.push("?expanded=metric_uuid:1")
     await renderMetricDetails()
     fireEvent.click(screen.getByText(/Delete metric/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("delete", "metric/metric_uuid", {})
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("delete", "metric/metric_uuid", {})
     expect(history.location.search).toEqual("")
 })
 
 it("measures the metric", async () => {
     await renderMetricDetails()
     fireEvent.click(screen.getByText(/Measure metric/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith(
         "post",
         "metric/metric_uuid/attribute/measurement_requested",
         expect.objectContaining({}), // Ignore the attribute value, it's new Date().toISOString()
@@ -199,7 +191,7 @@ it("does not measure the metric if the metric source configuration is incomplete
     dataModel.sources["sonarqube"].parameters = { url: { mandatory: true, metrics: ["violations"] } }
     await renderMetricDetails()
     fireEvent.click(screen.getByText(/Measure metric/))
-    expect(fetch_server_api.fetch_server_api).not.toHaveBeenCalled()
+    expect(fetchServerApi.fetchServerApi).not.toHaveBeenCalled()
 })
 
 it("loads an empty list of measurements", async () => {
@@ -247,10 +239,17 @@ it("fails to load measurements due to an internal server error", async () => {
 it("reloads the measurements after editing a measurement entity", async () => {
     history.push("?expanded=metric_uuid:5")
     const { container } = await renderMetricDetails()
-    expect(measurement_api.get_metric_measurements).toHaveBeenCalledTimes(1)
+    expect(measurementApi.getMetricMeasurements).toHaveBeenCalledTimes(1)
     fireEvent.click(screen.getByRole("button", { name: "Expand/collapse" }))
     await expectNoAccessibilityViolations(container)
     fireEvent.mouseDown(screen.getByText("Unconfirm"))
     await act(async () => fireEvent.click(screen.getByText("Confirm")))
-    expect(measurement_api.get_metric_measurements).toHaveBeenCalledTimes(2)
+    expect(measurementApi.getMetricMeasurements).toHaveBeenCalledTimes(2)
+})
+
+it("loads the changelog", async () => {
+    history.push("?expanded=metric_uuid:3")
+    const { container } = await renderMetricDetails()
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("get", "changelog/metric/metric_uuid/5")
+    await expectNoAccessibilityViolations(container)
 })

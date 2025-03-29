@@ -226,14 +226,14 @@ sortedEntities.propTypes = {
     source: sourcePropType,
 }
 
-export function SourceEntities({ loading, measurements, metric, metric_uuid, reload, report, source_uuid }) {
+export function SourceEntities({ loading, measurements, metric, metricUuid, reload, report, sourceUuid }) {
     const dataModel = useContext(DataModel)
     const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false)
     const [sortColumn, setSortColumn] = useState(null)
     const [columnType, setColumnType] = useState("text")
     const [sortDirection, setSortDirection] = useState("ascending")
 
-    const sourceType = metric.sources[source_uuid].type
+    const sourceType = metric.sources[sourceUuid].type
     const metricEntities = dataModel.sources[sourceType]?.entities?.[metric.type]
 
     if (!metricEntities) {
@@ -259,7 +259,7 @@ export function SourceEntities({ loading, measurements, metric, metric_uuid, rel
         )
     }
     const lastMeasurement = measurements[measurements.length - 1]
-    const source = lastMeasurement.sources.find((source) => source.source_uuid === source_uuid)
+    const source = lastMeasurement.sources.find((source) => source.source_uuid === sourceUuid)
     if (!Array.isArray(source.entities) || source.entities.length === 0) {
         return (
             <InfoMessage title="Measurement details not available">
@@ -286,17 +286,17 @@ export function SourceEntities({ loading, measurements, metric, metric_uuid, rel
     const rows = entities.map((entity) => (
         <SourceEntity
             entity={entity}
-            entity_attributes={entityAttributes}
-            entity_name={metricEntities.name}
-            hide_ignored_entities={hideIgnoredEntities}
+            entityAttributes={entityAttributes}
+            entityName={metricEntities.name}
+            hideIgnoredEntities={hideIgnoredEntities}
             key={entity.key}
-            metric_uuid={metric_uuid}
+            metricUuid={metricUuid}
             reload={reload}
             report={report}
             status={entityStatus(source, entity)}
-            status_end_date={entityStatusEndDate(source, entity)}
+            statusEndDate={entityStatusEndDate(source, entity)}
             rationale={entityStatusRationale(source, entity)}
-            source_uuid={source.source_uuid}
+            sourceUuid={source.source_uuid}
         />
     ))
     return (
@@ -312,8 +312,8 @@ SourceEntities.propTypes = {
     loading: loadingPropType,
     measurements: measurementsPropType,
     metric: metricPropType,
-    metric_uuid: string,
+    metricUuid: string,
     reload: func,
     report: reportPropType,
-    source_uuid: string,
+    sourceUuid: string,
 }

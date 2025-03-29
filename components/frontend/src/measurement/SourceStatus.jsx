@@ -7,29 +7,29 @@ import { getMetricName, getSourceName } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 import { Label } from "../widgets/Label"
 
-export function SourceStatus({ metric, measurement_source }) {
+export function SourceStatus({ metric, measurementSource }) {
     const dataModel = useContext(DataModel)
     // Source may be deleted from report but still referenced in the latest measurement, be prepared:
-    if (!Object.keys(metric.sources).includes(measurement_source.source_uuid)) {
+    if (!Object.keys(metric.sources).includes(measurementSource.source_uuid)) {
         return null
     }
-    const source = metric.sources[measurement_source.source_uuid]
-    const source_name = getSourceName(source, dataModel)
+    const source = metric.sources[measurementSource.source_uuid]
+    const sourceName = getSourceName(source, dataModel)
     const configError = !dataModel.metrics[metric.type].sources.includes(source.type)
-    function source_label() {
-        return measurement_source.landing_url ? (
-            <HyperLink url={measurement_source.landing_url}>{source_name}</HyperLink>
+    function sourceLabel() {
+        return measurementSource.landing_url ? (
+            <HyperLink url={measurementSource.landing_url}>{sourceName}</HyperLink>
         ) : (
-            source_name
+            sourceName
         )
     }
-    if (configError || measurement_source.connection_error || measurement_source.parse_error) {
+    if (configError || measurementSource.connection_error || measurementSource.parse_error) {
         let content
         let header
         if (configError) {
-            content = `${source_name} cannot be used to measure ${getMetricName(metric, dataModel)}.`
+            content = `${sourceName} cannot be used to measure ${getMetricName(metric, dataModel)}.`
             header = "Configuration error"
-        } else if (measurement_source.connection_error) {
+        } else if (measurementSource.connection_error) {
             content = "Quality-time could not retrieve data from the source."
             header = "Connection error"
         } else {
@@ -46,15 +46,15 @@ export function SourceStatus({ metric, measurement_source }) {
                 }
             >
                 <span>
-                    <Label color="error">{source_label()}</Label>
+                    <Label color="error">{sourceLabel()}</Label>
                 </span>
             </Tooltip>
         )
     } else {
-        return source_label()
+        return sourceLabel()
     }
 }
 SourceStatus.propTypes = {
     metric: metricPropType,
-    measurement_source: measurementSourcePropType,
+    measurementSource: measurementSourcePropType,
 }

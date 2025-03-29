@@ -5,7 +5,7 @@ import { useState } from "react"
 
 import { ItemBreadcrumb } from "../ItemBreadcrumb"
 
-export function ActionAndItemPickerButton({ action, itemType, onChange, get_options, icon }) {
+export function ActionAndItemPickerButton({ action, itemType, onChange, getOptions, icon }) {
     const [anchorEl, setAnchorEl] = useState()
     const handleMenu = (event) => setAnchorEl(event.currentTarget)
     const onClick = (value) => {
@@ -49,7 +49,7 @@ export function ActionAndItemPickerButton({ action, itemType, onChange, get_opti
                         <ItemBreadcrumb {...breadcrumbProps} />
                     </Typography>
                 </MenuItem>
-                {get_options().map((option) => (
+                {getOptions().map((option) => (
                     <MenuItem key={option.key} onClick={() => onClick(option.value)}>
                         {option.content}
                     </MenuItem>
@@ -62,6 +62,6 @@ ActionAndItemPickerButton.propTypes = {
     action: string,
     itemType: string,
     onChange: func,
-    get_options: func,
+    getOptions: func,
     icon: element,
 }

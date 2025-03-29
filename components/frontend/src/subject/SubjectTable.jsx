@@ -17,7 +17,7 @@ import { SubjectTableFooter } from "./SubjectTableFooter"
 import { SubjectTableHeader } from "./SubjectTableHeader"
 
 export function SubjectTable({
-    changed_fields,
+    changedFields,
     dates,
     handleSort,
     measurements,
@@ -28,7 +28,7 @@ export function SubjectTable({
     reports,
     settings,
     subject,
-    subject_uuid,
+    subjectUuid,
 }) {
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
     const reversedMeasurements = measurements.slice().sort((m1, m2) => (m1.start < m2.start ? 1 : -1))
@@ -45,7 +45,7 @@ export function SubjectTable({
             >
                 <SubjectTableHeader columnDates={dates} handleSort={handleSort} settings={settings} />
                 <SubjectTableBody
-                    changed_fields={changed_fields}
+                    changedFields={changedFields}
                     dates={dates}
                     handleSort={handleSort}
                     measurements={measurements}
@@ -56,11 +56,9 @@ export function SubjectTable({
                     reports={reports}
                     reversedMeasurements={reversedMeasurements}
                     settings={settings}
-                    subject_uuid={subject_uuid}
+                    subjectUuid={subjectUuid}
                 />
                 <SubjectTableFooter
-                    subjectUuid={subject_uuid}
-                    subject={subject}
                     reload={reload}
                     reports={reports}
                     stopFilteringAndSorting={() => {
@@ -68,13 +66,15 @@ export function SubjectTable({
                         settings.hiddenTags.reset()
                         settings.metricsToHide.reset()
                     }}
+                    subject={subject}
+                    subjectUuid={subjectUuid}
                 />
             </Table>
         </TableContainer>
     )
 }
 SubjectTable.propTypes = {
-    changed_fields: stringsPropType,
+    changedFields: stringsPropType,
     dates: datesPropType,
     handleSort: func,
     measurements: measurementsPropType,
@@ -85,5 +85,5 @@ SubjectTable.propTypes = {
     reports: reportsPropType,
     settings: settingsPropType,
     subject: object,
-    subject_uuid: string,
+    subjectUuid: string,
 }

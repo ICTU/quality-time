@@ -112,9 +112,9 @@ function renderSourceEntities({
                 loading={loading}
                 measurements={measurements}
                 metric={metric}
-                metric_uuid="metric_uuid"
+                metricUuid="metric_uuid"
                 report={{ issue_tracker: null }}
-                source_uuid="source_uuid"
+                sourceUuid="source_uuid"
             />
         </DataModel.Provider>,
     )

@@ -46,7 +46,7 @@ export function TrendGraph({ metric, measurements, loading }) {
     const measurementValues = measurements.map((measurement) =>
         measurementAttributeAsNumber(metric, measurement, "value", dataModel),
     )
-    let max_y = niceNumber(Math.max(...measurementValues))
+    let maxY = niceNumber(Math.max(...measurementValues))
     let measurementPoints = [] // The measurement values as (x, y) coordinates
     measurements.forEach((measurement, index) => {
         measurementPoints.push(
@@ -77,7 +77,7 @@ export function TrendGraph({ metric, measurements, loading }) {
             <VictoryAxis label={"Time"} style={axisStyle} />
             <VictoryAxis
                 dependentAxis
-                domain={[0, max_y]}
+                domain={[0, maxY]}
                 label={unit}
                 style={axisStyle}
                 tickFormat={(t) => `${scaledNumber(t)}`}

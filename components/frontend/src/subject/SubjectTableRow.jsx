@@ -12,6 +12,7 @@ import { StatusIcon } from "../measurement/StatusIcon"
 import { TimeLeft } from "../measurement/TimeLeft"
 import { TrendSparkline } from "../measurement/TrendSparkline"
 import { MetricDetails } from "../metric/MetricDetails"
+import { measurementOnDate } from "../report/report_utils"
 import {
     dataModelPropType,
     datePropType,
@@ -36,7 +37,7 @@ import {
     getMetricTags,
     getMetricUnit,
 } from "../utils"
-import { DivWithHTML } from "../widgets/DivWithHTML"
+import { DivWithHtml } from "../widgets/DivWithHtml"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { Tag } from "../widgets/Tag"
 
@@ -150,36 +151,20 @@ DeltaCell.propTypes = {
     status: string,
 }
 
-function measurementOnDate(metric_uuid, measurements, date) {
-    const isoDateString = date.toISOString().split("T")[0]
-    return measurements?.find((m) => {
-        return (
-            m.metric_uuid === metric_uuid &&
-            m.start.split("T")[0] <= isoDateString &&
-            isoDateString <= m.end.split("T")[0]
-        )
-    })
-}
-measurementOnDate.propTypes = {
-    metric_uuid: string,
-    measurements: measurementsPropType,
-    date: datePropType,
-}
-
-function metricValueAndStatusOnDate(dataModel, metric, metric_uuid, measurements, date) {
-    const measurement = measurementOnDate(metric_uuid, measurements, date)
+function metricValueAndStatusOnDate(dataModel, metric, metricUuid, measurements, date) {
+    const measurement = measurementOnDate(date, measurements, metricUuid)
     const scale = getMetricScale(metric, dataModel)
     return [measurement?.[scale]?.value ?? "?", measurement?.[scale]?.status ?? "unknown"]
 }
 metricValueAndStatusOnDate.propTypes = {
     dataModel: dataModelPropType,
     metric: metricPropType,
-    metric_uuid: string,
+    metricUuid: string,
     measurements: measurementsPropType,
     date: datePropType,
 }
 
-function MeasurementCells({ dates, metric, metric_uuid, measurements, settings }) {
+function MeasurementCells({ dates, metric, metricUuid, measurements, settings }) {
     const dataModel = useContext(DataModel)
     const showDeltaColumns = settings.hiddenColumns.excludes("delta")
     const dateOrderAscending = settings.dateOrder.value === "ascending"
@@ -187,7 +172,7 @@ function MeasurementCells({ dates, metric, metric_uuid, measurements, settings }
     const cells = []
     let previousValue = "?"
     dates.forEach((date, index) => {
-        const [metricValue, status] = metricValueAndStatusOnDate(dataModel, metric, metric_uuid, measurements, date)
+        const [metricValue, status] = metricValueAndStatusOnDate(dataModel, metric, metricUuid, measurements, date)
         if (showDeltaColumns && index > 0) {
             cells.push(
                 <DeltaCell
@@ -214,19 +199,19 @@ function MeasurementCells({ dates, metric, metric_uuid, measurements, settings }
 MeasurementCells.propTypes = {
     dates: datesPropType,
     measurements: measurementsPropType,
-    metric_uuid: string,
+    metricUuid: string,
     metric: metricPropType,
     settings: settingsPropType,
 }
 
 export function SubjectTableRow({
-    changed_fields,
+    changedFields,
     dates,
     handleSort,
     index,
     lastIndex,
     measurements,
-    metric_uuid,
+    metricUuid,
     metric,
     reload,
     report,
@@ -234,7 +219,7 @@ export function SubjectTableRow({
     reports,
     reversedMeasurements,
     settings,
-    subject_uuid,
+    subjectUuid,
 }) {
     const dataModel = useContext(DataModel)
     const metricName = getMetricName(metric, dataModel)
@@ -247,12 +232,12 @@ export function SubjectTableRow({
             color={nrDates === 1 ? metric.status || "unknown" : ""}
             details={
                 <MetricDetails
-                    changed_fields={changed_fields}
-                    first_metric={index === 0}
-                    last_metric={index === lastIndex}
-                    metric_uuid={metric_uuid}
+                    changedFields={changedFields}
+                    isFirstMetric={index === 0}
+                    isLastMetric={index === lastIndex}
+                    metricUuid={metricUuid}
                     reload={reload}
-                    report_date={reportDate}
+                    reportDate={reportDate}
                     reports={reports}
                     report={report}
                     settings={settings}
@@ -261,26 +246,26 @@ export function SubjectTableRow({
                         settings.hiddenTags.reset()
                         settings.metricsToHide.reset()
                     }}
-                    subject_uuid={subject_uuid}
+                    subjectUuid={subjectUuid}
                 />
             }
-            expanded={settings.expandedItems.includes(metric_uuid)}
-            id={metric_uuid}
-            onExpand={() => settings.expandedItems.toggle(metric_uuid)}
+            expanded={settings.expandedItems.includes(metricUuid)}
+            id={metricUuid}
+            onExpand={() => settings.expandedItems.toggle(metricUuid)}
         >
             <TableCell>{metricName}</TableCell>
             {nrDates > 1 && (
                 <MeasurementCells
                     dates={dates}
                     metric={metric}
-                    metric_uuid={metric_uuid}
+                    metricUuid={metricUuid}
                     measurements={reversedMeasurements}
                     settings={settings}
                 />
             )}
             {nrDates === 1 && settings.hiddenColumns.excludes("trend") && (
                 <TableCell sx={{ width: "150px" }}>
-                    <TrendSparkline measurements={metric.recent_measurements} report_date={reportDate} scale={scale} />
+                    <TrendSparkline measurements={metric.recent_measurements} reportDate={reportDate} scale={scale} />
                 </TableCell>
             )}
             {nrDates === 1 && settings.hiddenColumns.excludes("status") && (
@@ -315,7 +300,7 @@ export function SubjectTableRow({
                 <TableCell>
                     <Overrun
                         metric={metric}
-                        metric_uuid={metric_uuid}
+                        metricUuid={metricUuid}
                         report={report}
                         measurements={measurements}
                         dates={dates}
@@ -324,7 +309,7 @@ export function SubjectTableRow({
             )}
             {settings.hiddenColumns.excludes("comment") && (
                 <TableCell>
-                    <DivWithHTML>{metric.comment}</DivWithHTML>
+                    <DivWithHtml>{metric.comment}</DivWithHtml>
                 </TableCell>
             )}
             {settings.hiddenColumns.excludes("issues") && (
@@ -343,13 +328,13 @@ export function SubjectTableRow({
     )
 }
 SubjectTableRow.propTypes = {
-    changed_fields: stringsPropType,
+    changedFields: stringsPropType,
     dates: datesPropType,
     handleSort: func,
     index: number,
     lastIndex: number,
     measurements: measurementsPropType,
-    metric_uuid: string,
+    metricUuid: string,
     metric: metricPropType,
     reload: func,
     report: reportPropType,
@@ -357,5 +342,5 @@ SubjectTableRow.propTypes = {
     reports: reportsPropType,
     reversedMeasurements: measurementsPropType,
     settings: settingsPropType,
-    subject_uuid: string,
+    subjectUuid: string,
 }

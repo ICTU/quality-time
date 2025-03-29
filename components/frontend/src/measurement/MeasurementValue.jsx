@@ -78,9 +78,9 @@ function ignoredEntitiesMessage(measurement, unit) {
     const count = ignoredEntitiesCount(measurement)
     let summary = `The measurement value excludes ${sum(count)} ${unit}.`
     let details = ""
-    Object.entries(count).forEach(([status, status_count]) => {
-        if (status_count > 0) {
-            details += `Marked as ${SOURCE_ENTITY_STATUS_NAME[status].toLowerCase()}: ${status_count}. `
+    Object.entries(count).forEach(([status, statusCount]) => {
+        if (statusCount > 0) {
+            details += `Marked as ${SOURCE_ENTITY_STATUS_NAME[status].toLowerCase()}: ${statusCount}. `
         }
     })
     return (

@@ -6,8 +6,8 @@ import { expectNoAccessibilityViolations } from "../testUtils"
 import { MeasurementValue } from "./MeasurementValue"
 
 function renderMeasurementValue({
-    latest_measurement = {},
-    measurement_requested = null,
+    latestMeasurement = {},
+    measurementRequested = null,
     reportDate = null,
     scale = "count",
     status = null,
@@ -24,8 +24,8 @@ function renderMeasurementValue({
         >
             <MeasurementValue
                 metric={{
-                    latest_measurement: latest_measurement,
-                    measurement_requested: measurement_requested,
+                    latest_measurement: latestMeasurement,
+                    measurement_requested: measurementRequested,
                     scale: scale,
                     sources: { source_uuid: { type: "source_type", parameters: { url: url } } },
                     status: status,
@@ -39,13 +39,13 @@ function renderMeasurementValue({
 }
 
 it("renders the value", async () => {
-    const { container } = renderMeasurementValue({ latest_measurement: { count: { value: "42" } } })
+    const { container } = renderMeasurementValue({ latestMeasurement: { count: { value: "42" } } })
     expect(screen.getAllByText(/42/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders an unkown value", async () => {
-    const { container } = renderMeasurementValue({ latest_measurement: { count: { value: null } } })
+    const { container } = renderMeasurementValue({ latestMeasurement: { count: { value: null } } })
     expect(screen.getAllByText(/\?/).length).toBe(1)
     expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
     await expectNoAccessibilityViolations(container)
@@ -60,7 +60,7 @@ it("renders a value that has not been measured yet", async () => {
 
 it("renders a value that can not be measured yet", async () => {
     const { container } = renderMeasurementValue({
-        latest_measurement: {
+        latestMeasurement: {
             count: { value: 1 },
             outdated: true,
             start: new Date().toISOString(),
@@ -75,7 +75,7 @@ it("renders a value that can not be measured yet", async () => {
 
 it("renders an outdated value", async () => {
     const { container } = renderMeasurementValue({
-        latest_measurement: {
+        latestMeasurement: {
             count: { value: 1 },
             outdated: true,
             start: new Date().toISOString(),
@@ -97,8 +97,8 @@ it("renders an outdated value", async () => {
 it("renders a value for which a measurement was requested", async () => {
     const now = new Date().toISOString()
     const { container } = renderMeasurementValue({
-        latest_measurement: { count: { value: 1 }, start: now, end: now },
-        measurement_requested: now,
+        latestMeasurement: { count: { value: 1 }, start: now, end: now },
+        measurementRequested: now,
     })
     const measurementValue = screen.getByText(/1/)
     expect(screen.getAllByTestId("LoopIcon").length).toBe(1)
@@ -113,8 +113,8 @@ it("renders a value for which a measurement was requested", async () => {
 it("renders a value for which a measurement was requested, but which is now up to date", async () => {
     const now = new Date().toISOString()
     const { container } = renderMeasurementValue({
-        latest_measurement: { count: { value: 1 }, start: now, end: now },
-        measurement_requested: "2024-01-01T00:00:00",
+        latestMeasurement: { count: { value: 1 }, start: now, end: now },
+        measurementRequested: "2024-01-01T00:00:00",
     })
     const measurementValue = screen.getByText(/1/)
     expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
@@ -130,7 +130,7 @@ it("renders a minutes value", async () => {
     const { container } = renderMeasurementValue({
         type: "duration",
         unit: "foo units",
-        latest_measurement: { count: { value: "42" } },
+        latestMeasurement: { count: { value: "42" } },
     })
     expect(screen.getAllByText(/42/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
@@ -140,7 +140,7 @@ it("renders an unknown minutes value", async () => {
     const { container } = renderMeasurementValue({
         type: "duration",
         unit: "foo units",
-        latest_measurement: { count: { value: null } },
+        latestMeasurement: { count: { value: null } },
     })
     expect(screen.getAllByText(/\?/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
@@ -151,7 +151,7 @@ it("renders a minutes percentage", async () => {
         type: "duration",
         scale: "percentage",
         unit: "foo units",
-        latest_measurement: { percentage: { value: "42" } },
+        latestMeasurement: { percentage: { value: "42" } },
     })
     expect(screen.getAllByText(/42%/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
@@ -162,7 +162,7 @@ it("renders an unknown minutes percentage", async () => {
         type: "duration",
         scale: "percentage",
         unit: "foo units",
-        latest_measurement: { percentage: { value: null } },
+        latestMeasurement: { percentage: { value: null } },
     })
     expect(screen.getAllByText(/\?%/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
@@ -171,7 +171,7 @@ it("renders an unknown minutes percentage", async () => {
 it("shows when the metric was last measured", async () => {
     const { container } = renderMeasurementValue({
         status: "target_met",
-        latest_measurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00", count: { value: "42" } },
+        latestMeasurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00", count: { value: "42" } },
     })
     await userEvent.hover(screen.queryByText(/42/))
     await waitFor(async () => {
@@ -182,7 +182,7 @@ it("shows when the metric was last measured", async () => {
 
 it("shows when the last measurement attempt was", async () => {
     const { container } = renderMeasurementValue({
-        latest_measurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00", count: { value: null } },
+        latestMeasurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00", count: { value: null } },
     })
     await userEvent.hover(screen.queryByText(/\?/))
     await waitFor(async () => {
@@ -195,7 +195,7 @@ it("shows when the last measurement attempt was", async () => {
 it("does not show an error message for past measurements that were recently measured at the time", async () => {
     const reportDate = new Date("2022-01-16T01:00:00")
     const { container } = renderMeasurementValue({
-        latest_measurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00" },
+        latestMeasurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00" },
         reportDate: reportDate,
     })
     await userEvent.hover(screen.queryByText(/\?/))
@@ -210,7 +210,7 @@ it("shows ignored measurement entities", async () => {
     const { container } = renderMeasurementValue({
         status: "target_met",
         unit: "foo",
-        latest_measurement: {
+        latestMeasurement: {
             start: "2022-01-16T00:31:00",
             end: "2022-01-16T00:51:00",
             count: { value: "1" },
@@ -234,7 +234,7 @@ it("does not show ignored measurement entities that no longer exist", async () =
     const { container } = renderMeasurementValue({
         status: "target_met",
         unit: "foo",
-        latest_measurement: {
+        latestMeasurement: {
             start: "2022-01-16T00:31:00",
             end: "2022-01-16T00:51:00",
             count: { value: "1" },

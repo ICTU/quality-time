@@ -1,38 +1,36 @@
-import { fetch_server_api } from "./fetch_server_api"
+import { fetchServerApi } from "./fetch_server_api"
 
-export function add_source(metric_uuid, subtype, reload) {
-    return fetch_server_api("post", `source/new/${metric_uuid}`, { type: subtype }).then(reload)
+export function addSource(metricUuid, subtype, reload) {
+    return fetchServerApi("post", `source/new/${metricUuid}`, { type: subtype }).then(reload)
 }
 
-export function copy_source(source_uuid, metric_uuid, reload) {
-    return fetch_server_api("post", `source/${source_uuid}/copy/${metric_uuid}`, {}).then(reload)
+export function copySource(sourceUuid, metricUuid, reload) {
+    return fetchServerApi("post", `source/${sourceUuid}/copy/${metricUuid}`, {}).then(reload)
 }
 
-export function move_source(source_uuid, metric_uuid, reload) {
-    return fetch_server_api("post", `source/${source_uuid}/move/${metric_uuid}`, {}).then(reload)
+export function moveSource(sourceUuid, metricUuid, reload) {
+    return fetchServerApi("post", `source/${sourceUuid}/move/${metricUuid}`, {}).then(reload)
 }
 
-export function delete_source(source_uuid, reload) {
-    return fetch_server_api("delete", `source/${source_uuid}`, {}).then(reload)
+export function deleteSource(sourceUuid, reload) {
+    return fetchServerApi("delete", `source/${sourceUuid}`, {}).then(reload)
 }
 
-export function set_source_attribute(source_uuid, attribute, value, reload) {
-    return fetch_server_api("post", `source/${source_uuid}/attribute/${attribute}`, {
+export function setSourceAttribute(sourceUuid, attribute, value, reload) {
+    return fetchServerApi("post", `source/${sourceUuid}/attribute/${attribute}`, {
         [attribute]: value,
     }).then(reload)
 }
 
-export function set_source_parameter(source_uuid, key, value, edit_scope, reload) {
-    return fetch_server_api("post", `source/${source_uuid}/parameter/${key}`, {
+export function setSourceParameter(sourceUuid, key, value, editScope, reload) {
+    return fetchServerApi("post", `source/${sourceUuid}/parameter/${key}`, {
         [key]: value,
-        edit_scope: edit_scope,
+        edit_scope: editScope,
     }).then(reload)
 }
 
-export function set_source_entity_attribute(metric_uuid, source_uuid, entity_key, attribute, value, reload) {
-    return fetch_server_api(
-        "post",
-        `measurement/${metric_uuid}/source/${source_uuid}/entity/${entity_key}/${attribute}`,
-        { [attribute]: value },
-    ).then(reload)
+export function setSourceEntityAttribute(metricUuid, sourceUuid, entityKey, attribute, value, reload) {
+    return fetchServerApi("post", `measurement/${metricUuid}/source/${sourceUuid}/entity/${entityKey}/${attribute}`, {
+        [attribute]: value,
+    }).then(reload)
 }
