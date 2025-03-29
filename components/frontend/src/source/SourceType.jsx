@@ -60,31 +60,31 @@ sourceTypeOptions.propTypes = {
     metricType: string,
 }
 
-export function SourceType({ metric_type, set_source_attribute, source_type }) {
+export function SourceType({ metricType, setSourceAttribute, sourceType }) {
     const dataModel = useContext(DataModel)
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
-    const options = sourceTypeOptions(dataModel, metric_type)
+    const options = sourceTypeOptions(dataModel, metricType)
     const sourceTypes = options.map((option) => option.key)
-    if (!sourceTypes.includes(source_type)) {
-        options.push(sourceTypeOption(source_type, dataModel.sources[source_type]))
+    if (!sourceTypes.includes(sourceType)) {
+        options.push(sourceTypeOption(sourceType, dataModel.sources[sourceType]))
     }
-    const sourceType = dataModel.sources[source_type]
-    const hasExtraDocs = sourceType?.documentation?.generic || sourceType?.documentation?.[metric_type]
+    const sourceTypeDocumentation = dataModel.sources[sourceType]?.documentation
+    const hasExtraDocs = sourceTypeDocumentation?.generic || sourceTypeDocumentation?.[metricType]
     const howToConfigure = ` for ${hasExtraDocs ? "additional " : ""}information on how to configure this source type.`
     return (
         <TextField
             disabled={disabled}
             helperText={
                 <>
-                    <ReadTheDocsLink url={referenceDocumentationURL(source_type)} />
+                    <ReadTheDocsLink url={referenceDocumentationURL(sourceType)} />
                     {howToConfigure}
                 </>
             }
             label="Source type"
-            onChange={(value) => set_source_attribute("type", value)}
+            onChange={(value) => setSourceAttribute("type", value)}
             select
-            value={source_type}
+            value={sourceType}
         >
             {options.map((option) => (
                 <MenuItem key={option.key} sx={{ width: "50vw" }} value={option.value}>
@@ -95,7 +95,7 @@ export function SourceType({ metric_type, set_source_attribute, source_type }) {
     )
 }
 SourceType.propTypes = {
-    metric_type: string,
-    set_source_attribute: func,
-    source_type: string,
+    metricType: string,
+    setSourceAttribute: func,
+    sourceType: string,
 }

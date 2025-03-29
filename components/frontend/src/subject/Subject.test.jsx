@@ -22,9 +22,9 @@ function renderSubject({
                 handleSort={() => vi.fn()}
                 measurements={[]}
                 report={reportToRender || report}
-                report_date={reportDate}
+                reportDate={reportDate}
                 settings={settings}
-                subject_uuid="subject_uuid"
+                subjectUuid="subject_uuid"
                 tags={[]}
             />
         </DataModel.Provider>,

@@ -5,7 +5,7 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
-import * as fetch_server_api from "../api/fetch_server_api"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { useExpandedItemsSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
@@ -13,7 +13,6 @@ import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTable } from "./SubjectTable"
 
 vi.mock("../api/fetch_server_api.js")
-fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: false })
 
 const metric = {
     unit: "testUnit",
@@ -105,7 +104,7 @@ function renderSubjectTable({ dates = [], expandedItems = null, settings = null 
                         reports={[]}
                         settings={settings}
                         subject={{ type: "subject_type", metrics: { 1: metric, 2: metric2 } }}
-                        subject_uuid="subject_uuid"
+                        subjectUuid="subject_uuid"
                     />
                 </LocalizationProvider>
             </DataModel.Provider>
@@ -115,6 +114,7 @@ function renderSubjectTable({ dates = [], expandedItems = null, settings = null 
 
 beforeEach(() => {
     history.push("")
+    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })
 })
 
 it("displays all the metrics", async () => {
@@ -239,7 +239,7 @@ it("moves a metric", async () => {
     history.push("?expanded=1:2")
     renderSubjectTable()
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Move metric to the next row" })))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/1/attribute/position", {
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "metric/1/attribute/position", {
         position: "next",
     })
 })
@@ -254,7 +254,7 @@ it("adds a source", async () => {
     await act(async () => fireEvent.click(addButton))
     await expectNoAccessibilityViolations(container)
     fireEvent.click(await screen.findByText("Source type"))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "source/new/1", {
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "source/new/1", {
         type: "source_type",
     })
 })

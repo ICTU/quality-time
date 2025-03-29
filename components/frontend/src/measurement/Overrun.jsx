@@ -21,9 +21,9 @@ function formatDays(days) {
     return `${days} ${pluralize("day", days)}`
 }
 
-export function Overrun({ metric_uuid, metric, report, measurements, dates }) {
+export function Overrun({ metricUuid, metric, report, measurements, dates }) {
     const dataModel = useContext(DataModel)
-    const { totalOverrun, overruns } = getMetricResponseOverrun(metric_uuid, metric, report, measurements, dataModel)
+    const { totalOverrun, overruns } = getMetricResponseOverrun(metricUuid, metric, report, measurements, dataModel)
     if (totalOverrun === 0) {
         return null
     }
@@ -92,6 +92,6 @@ Overrun.propTypes = {
     dates: datesPropType,
     measurements: measurementsPropType,
     metric: metricPropType,
-    metric_uuid: string,
+    metricUuid: string,
     report: reportPropType,
 }

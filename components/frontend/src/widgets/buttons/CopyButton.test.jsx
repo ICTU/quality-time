@@ -9,7 +9,7 @@ function renderCopyButton(itemType, mockCallback) {
         <CopyButton
             itemType={itemType}
             onChange={mockCallback}
-            get_options={() => {
+            getOptions={() => {
                 return [{ key: "1", text: "Item", value: "1", content: "Item" }]
             }}
         />,
@@ -18,7 +18,7 @@ function renderCopyButton(itemType, mockCallback) {
 
 Array("report", "subject", "metric", "source").forEach((itemType) => {
     test("CopyButton has the correct label", () => {
-        render(<CopyButton itemType={itemType} get_options={() => []} />)
+        render(<CopyButton itemType={itemType} getOptions={() => []} />)
         expect(screen.getAllByText(new RegExp(`Copy ${itemType}`)).length).toBe(1)
     })
 
@@ -47,13 +47,13 @@ Array("report", "subject", "metric", "source").forEach((itemType) => {
 
     test("CopyButton loads the options every time the menu is opened", async () => {
         const mockCallback = vi.fn()
-        let get_options_called = 0
+        let getOptionsCalled = 0
         render(
             <CopyButton
                 itemType={itemType}
                 onChange={mockCallback}
-                get_options={() => {
-                    get_options_called++
+                getOptions={() => {
+                    getOptionsCalled++
                     return [{ key: "1", text: "Item", value: "1", content: "Item" }]
                 }}
             />,
@@ -65,6 +65,6 @@ Array("report", "subject", "metric", "source").forEach((itemType) => {
         await act(async () => {
             fireEvent.click(screen.getByText(new RegExp(`Copy ${itemType}`)))
         })
-        expect(get_options_called).toBe(4)
+        expect(getOptionsCalled).toBe(4)
     })
 })

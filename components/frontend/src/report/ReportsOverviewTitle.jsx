@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid"
 import { func, shape } from "prop-types"
 import { useContext } from "react"
 
-import { set_reports_attribute } from "../api/report"
+import { setReportsAttribute } from "../api/report"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { accessGranted, EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { CommentField } from "../fields/CommentField"
@@ -16,7 +16,7 @@ import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { Tabs } from "../widgets/Tabs"
 import { setDocumentTitle } from "./document_title"
 
-function ReportsOverviewConfiguration({ reports_overview, reload }) {
+function ReportsOverviewConfiguration({ reportsOverview, reload }) {
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
@@ -26,8 +26,8 @@ function ReportsOverviewConfiguration({ reports_overview, reload }) {
                     disabled={disabled}
                     id="reports-overview-title"
                     label="Report overview title"
-                    onChange={(value) => set_reports_attribute("title", value, reload)}
-                    value={reports_overview.title}
+                    onChange={(value) => setReportsAttribute("title", value, reload)}
+                    value={reportsOverview.title}
                 />
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
@@ -35,29 +35,29 @@ function ReportsOverviewConfiguration({ reports_overview, reload }) {
                     disabled={disabled}
                     id="reports-overview-subtitle"
                     label="Report overview subtitle"
-                    onChange={(value) => set_reports_attribute("subtitle", value, reload)}
-                    value={reports_overview.subtitle}
+                    onChange={(value) => setReportsAttribute("subtitle", value, reload)}
+                    value={reportsOverview.subtitle}
                 />
             </Grid>
             <Grid size={{ xs: 1, sm: 2, md: 2 }}>
                 <CommentField
                     disabled={disabled}
                     id="reports-overview-comment"
-                    onChange={(value) => set_reports_attribute("comment", value, reload)}
-                    value={reports_overview.comment}
+                    onChange={(value) => setReportsAttribute("comment", value, reload)}
+                    value={reportsOverview.comment}
                 />
             </Grid>
         </Grid>
     )
 }
 ReportsOverviewConfiguration.propTypes = {
-    reports_overview: reportsOverviewPropType,
+    reportsOverview: reportsOverviewPropType,
     reload: func,
 }
 
 function setPermissions(permissions, permission, value, reload) {
     permissions[permission] = value
-    set_reports_attribute("permissions", permissions, reload)
+    setReportsAttribute("permissions", permissions, reload)
 }
 
 function PermissionsConfiguration({ permissions, reload }) {
@@ -100,17 +100,17 @@ PermissionsConfiguration.propTypes = {
     reload: func,
 }
 
-export function ReportsOverviewTitle({ reports_overview, reload, settings }) {
+export function ReportsOverviewTitle({ reportsOverview, reload, settings }) {
     const uuid = "reports_overview"
-    setDocumentTitle(reports_overview.title)
+    setDocumentTitle(reportsOverview.title)
 
     return (
         <HeaderWithDetails
-            header={reports_overview.title || "Reports overview"}
-            item_uuid={uuid}
+            header={reportsOverview.title || "Reports overview"}
+            itemUuid={uuid}
             level="h1"
             settings={settings}
-            subheader={reports_overview.subtitle}
+            subheader={reportsOverview.subtitle}
         >
             <Tabs
                 settings={settings}
@@ -121,15 +121,15 @@ export function ReportsOverviewTitle({ reports_overview, reload, settings }) {
                 ]}
                 uuid={uuid}
             >
-                <ReportsOverviewConfiguration reports_overview={reports_overview} reload={reload} />
-                <PermissionsConfiguration permissions={reports_overview.permissions ?? {}} reload={reload} />
+                <ReportsOverviewConfiguration reportsOverview={reportsOverview} reload={reload} />
+                <PermissionsConfiguration permissions={reportsOverview.permissions ?? {}} reload={reload} />
                 <ChangeLog />
             </Tabs>
         </HeaderWithDetails>
     )
 }
 ReportsOverviewTitle.propTypes = {
-    reports_overview: reportsOverviewPropType,
+    reportsOverview: reportsOverviewPropType,
     reload: func,
     settings: settingsPropType,
 }

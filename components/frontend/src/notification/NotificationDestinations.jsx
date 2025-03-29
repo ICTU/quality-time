@@ -4,9 +4,9 @@ import { func, objectOf, string } from "prop-types"
 import { useContext } from "react"
 
 import {
-    add_notification_destination,
-    delete_notification_destination,
-    set_notification_destination_attributes,
+    addNotificationDestination,
+    deleteNotificationDestination,
+    setNotificationDestinationAttributes,
 } from "../api/notification"
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions, ReadOnlyOrEditable } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
@@ -17,27 +17,22 @@ import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { HyperLink } from "../widgets/HyperLink"
 import { InfoMessage } from "../widgets/WarningMessage"
 
-function NotificationDestination({ destination, destination_uuid, reload, report_uuid }) {
+function NotificationDestination({ destination, destinationUuid, reload, reportUuid }) {
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const helpUrl =
         "https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook"
     const teamsHyperlink = <HyperLink url={helpUrl}>Microsoft Teams webhook URL</HyperLink>
     return (
-        <Stack key={destination_uuid} direction="column" spacing={2}>
+        <Stack key={destinationUuid} direction="column" spacing={2}>
             <Grid container spacing={2}>
                 <Grid size={4}>
                     <TextField
                         disabled={disabled}
-                        id={destination_uuid}
+                        id={destinationUuid}
                         label="Webhook name"
                         onChange={(value) => {
-                            set_notification_destination_attributes(
-                                report_uuid,
-                                destination_uuid,
-                                { name: value },
-                                reload,
-                            )
+                            setNotificationDestinationAttributes(reportUuid, destinationUuid, { name: value }, reload)
                         }}
                         value={destination.name}
                     />
@@ -48,9 +43,9 @@ function NotificationDestination({ destination, destination_uuid, reload, report
                         helperText={<>Paste a {teamsHyperlink} here.</>}
                         label="Webhook"
                         onChange={(value) => {
-                            set_notification_destination_attributes(
-                                report_uuid,
-                                destination_uuid,
+                            setNotificationDestinationAttributes(
+                                reportUuid,
+                                destinationUuid,
                                 { webhook: value, url: window.location.href },
                                 reload,
                             )
@@ -68,7 +63,7 @@ function NotificationDestination({ destination, destination_uuid, reload, report
                         rightButton={
                             <DeleteButton
                                 itemType="notification destination"
-                                onClick={() => delete_notification_destination(report_uuid, destination_uuid, reload)}
+                                onClick={() => deleteNotificationDestination(reportUuid, destinationUuid, reload)}
                             />
                         }
                     />
@@ -79,19 +74,19 @@ function NotificationDestination({ destination, destination_uuid, reload, report
 }
 NotificationDestination.propTypes = {
     destination: destinationPropType,
-    destination_uuid: string,
+    destinationUuid: string,
     reload: func,
-    report_uuid: string,
+    reportUuid: string,
 }
 
-export function NotificationDestinations({ destinations, reload, report_uuid }) {
-    const notification_destinations = []
-    Object.entries(destinations).forEach(([destination_uuid, destination]) => {
-        notification_destinations.push(
+export function NotificationDestinations({ destinations, reload, reportUuid }) {
+    const notificationDestinations = []
+    Object.entries(destinations).forEach(([destinationUuid, destination]) => {
+        notificationDestinations.push(
             <NotificationDestination
-                key={destination_uuid}
-                report_uuid={report_uuid}
-                destination_uuid={destination_uuid}
+                key={destinationUuid}
+                reportUuid={reportUuid}
+                destinationUuid={destinationUuid}
                 destination={destination}
                 reload={reload}
             />,
@@ -99,12 +94,12 @@ export function NotificationDestinations({ destinations, reload, report_uuid }) 
     })
     return (
         <Stack direction="column" spacing={1}>
-            {notification_destinations.length === 0 ? (
+            {notificationDestinations.length === 0 ? (
                 <InfoMessage title="No notification destinations">
                     No notification destinations have been configured yet.
                 </InfoMessage>
             ) : (
-                notification_destinations
+                notificationDestinations
             )}
             <ReadOnlyOrEditable
                 key="1"
@@ -113,7 +108,7 @@ export function NotificationDestinations({ destinations, reload, report_uuid }) 
                     <ButtonRow paddingLeft={0}>
                         <AddButton
                             itemType="notification destination"
-                            onClick={() => add_notification_destination(report_uuid, reload)}
+                            onClick={() => addNotificationDestination(reportUuid, reload)}
                         />
                     </ButtonRow>
                 }
@@ -124,5 +119,5 @@ export function NotificationDestinations({ destinations, reload, report_uuid }) 
 NotificationDestinations.propTypes = {
     destinations: objectOf(destinationPropType),
     reload: func,
-    report_uuid: string,
+    reportUuid: string,
 }

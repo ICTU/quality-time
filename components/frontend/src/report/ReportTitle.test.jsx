@@ -4,7 +4,7 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
-import * as fetch_server_api from "../api/fetch_server_api"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -12,7 +12,7 @@ import { ReportTitle } from "./ReportTitle"
 
 vi.mock("../api/fetch_server_api.js")
 
-beforeEach(() => (fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })))
+beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
 
 afterEach(() => vi.resetAllMocks())
 
@@ -22,7 +22,7 @@ function renderReportTitle() {
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <ReportTitle
                     report={{ report_uuid: "report_uuid", title: "Report" }}
-                    reload={() => {}}
+                    reload={vi.fn()}
                     settings={createTestableSettings()}
                 />
             </Permissions.Provider>
@@ -32,9 +32,9 @@ function renderReportTitle() {
 
 function expectFetch(method, api, body) {
     if (body) {
-        expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(method, api, body)
+        expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith(method, api, body)
     } else {
-        expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(method, api)
+        expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith(method, api)
     }
 }
 
@@ -200,7 +200,7 @@ describe("issue tracker tab", () => {
     beforeEach(() => history.push("?expanded=report_uuid:3"))
 
     it("sets the issue tracker type", async () => {
-        fetch_server_api.fetch_server_api.mockImplementation(() =>
+        fetchServerApi.fetchServerApi.mockImplementation(() =>
             Promise.resolve({ projects: [], issue_types: [], fields: [], epic_links: [] }),
         )
         const { container } = renderReportTitle()
@@ -244,7 +244,7 @@ describe("changelog tab", () => {
     beforeEach(() => history.push("?expanded=report_uuid:4"))
 
     it("loads the changelog", async () => {
-        fetch_server_api.fetch_server_api.mockImplementation(() => Promise.resolve({ changelog: [] }))
+        fetchServerApi.fetchServerApi.mockImplementation(() => Promise.resolve({ changelog: [] }))
         const { container } = renderReportTitle()
         expectFetch("get", "changelog/report/report_uuid/5")
         await expectNoAccessibilityViolations(container)

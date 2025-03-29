@@ -24,7 +24,7 @@ import {
 import { getReportsTags, getUserPermissions } from "./utils"
 
 export function AppUI({
-    changed_fields,
+    changedFields,
     dataModel,
     email,
     handleDateChange,
@@ -34,18 +34,18 @@ export function AppUI({
     openReportsOverview,
     openReport,
     reload,
-    report_date,
-    report_uuid,
+    reportDate,
+    reportUuid,
     reports,
-    reports_overview,
-    set_user,
+    reportsOverview,
+    setUser,
     user,
 }) {
     const { mode, setMode } = useColorScheme()
-    const user_permissions = getUserPermissions(user, email, report_date, reports_overview.permissions || {})
-    const atReportsOverview = report_uuid === ""
-    const current_report = atReportsOverview ? null : reports.filter((report) => report.report_uuid === report_uuid)[0]
-    const settings = useSettings(report_uuid)
+    const userPermissions = getUserPermissions(user, email, reportDate, reportsOverview.permissions || {})
+    const atReportsOverview = reportUuid === ""
+    const currentReport = atReportsOverview ? null : reports.filter((report) => report.report_uuid === reportUuid)[0]
+    const settings = useSettings(reportUuid)
 
     function handleSort(column) {
         if (column === null) {
@@ -61,6 +61,7 @@ export function AppUI({
             settings.sortColumn.set(column)
         }
     }
+
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={adapterLocale(settings.language.value)}>
             <Menubar
@@ -68,9 +69,9 @@ export function AppUI({
                 handleDateChange={handleDateChange}
                 openReportsOverview={openReportsOverview}
                 onDate={handleDateChange}
-                report_date={report_date}
-                report_uuid={report_uuid}
-                set_user={set_user}
+                reportDate={reportDate}
+                reportUuid={reportUuid}
+                setUser={setUser}
                 user={user}
                 panel={
                     <SettingsPanel
@@ -84,11 +85,11 @@ export function AppUI({
                 setUIMode={setMode}
                 uiMode={mode}
             />
-            <Permissions.Provider value={user_permissions}>
+            <Permissions.Provider value={userPermissions}>
                 <DataModel.Provider value={dataModel}>
                     <PageContent
-                        changed_fields={changed_fields}
-                        current_report={current_report}
+                        changedFields={changedFields}
+                        currentReport={currentReport}
                         handleSort={handleSort}
                         lastUpdate={lastUpdate}
                         loading={loading}
@@ -96,20 +97,20 @@ export function AppUI({
                         openReportsOverview={openReportsOverview}
                         openReport={openReport}
                         reload={reload}
-                        report_date={report_date}
-                        report_uuid={report_uuid}
+                        reportDate={reportDate}
+                        reportUuid={reportUuid}
                         reports={reports}
-                        reports_overview={reports_overview}
+                        reportsOverview={reportsOverview}
                         settings={settings}
                     />
                 </DataModel.Provider>
             </Permissions.Provider>
-            <Footer lastUpdate={lastUpdate} report={current_report} />
+            <Footer lastUpdate={lastUpdate} report={currentReport} />
         </LocalizationProvider>
     )
 }
 AppUI.propTypes = {
-    changed_fields: stringsPropType,
+    changedFields: stringsPropType,
     dataModel: object,
     email: string,
     handleDateChange: func,
@@ -119,10 +120,10 @@ AppUI.propTypes = {
     openReport: func,
     openReportsOverview: func,
     reload: func,
-    report_date: optionalDatePropType,
-    report_uuid: string,
+    reportDate: optionalDatePropType,
+    reportUuid: string,
     reports: reportsPropType,
-    reports_overview: reportsOverviewPropType,
-    set_user: func,
+    reportsOverview: reportsOverviewPropType,
+    setUser: func,
     user: string,
 }

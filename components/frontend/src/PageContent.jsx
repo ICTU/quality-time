@@ -4,7 +4,7 @@ import { bool, func, number, string } from "prop-types"
 import { useEffect, useState } from "react"
 import { ToastContainer } from "react-toastify"
 
-import { get_measurements } from "./api/measurement"
+import { getMeasurements } from "./api/measurement"
 import { useHashFragment } from "./hooks/hash_fragment"
 import { Report } from "./report/Report"
 import { ReportsOverview } from "./report/ReportsOverview"
@@ -36,8 +36,8 @@ function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
 }
 
 export function PageContent({
-    changed_fields,
-    current_report,
+    changedFields,
+    currentReport,
     handleSort,
     lastUpdate,
     loading,
@@ -45,22 +45,22 @@ export function PageContent({
     openReport,
     openReportsOverview,
     reload,
-    report_date,
-    report_uuid,
+    reportDate,
+    reportUuid,
     reports,
-    reports_overview,
+    reportsOverview,
     settings,
 }) {
     useHashFragment(!loading)
     const dates = getColumnDates(
-        report_date,
+        reportDate,
         settings.dateInterval.value,
         settings.dateOrder.value,
         settings.nrDates.value,
     )
     const [measurements, setMeasurements] = useState([])
     useEffect(() => {
-        const maxDate = report_date ? new Date(report_date) : new Date()
+        const maxDate = reportDate ? new Date(reportDate) : new Date()
         const minDate = dates
             .slice()
             .sort((d1, d2) => {
@@ -68,10 +68,10 @@ export function PageContent({
             })
             .at(0)
         minDate.setHours(minDate.getHours() - 1) // Get at least one hour of measurements
-        get_measurements(minDate, maxDate)
+        getMeasurements(minDate, maxDate)
             .then((json) => setMeasurements(json.measurements ?? []))
             .catch((error) => showMessage("error", "Could not fetch measurements", `${error.message}`))
-    }, [report_date, nrMeasurements, settings.dateInterval.value, settings.nrDates.value])
+    }, [reportDate, nrMeasurements, settings.dateInterval.value, settings.nrDates.value])
     let content
     if (loading) {
         content = (
@@ -89,21 +89,21 @@ export function PageContent({
         )
     } else {
         const commonProps = {
-            changed_fields: changed_fields,
+            changedFields: changedFields,
             dates: dates,
             handleSort: handleSort,
             measurements: measurements,
             reload: reload,
             reports: reports,
-            report_date: report_date,
+            reportDate: reportDate,
             settings: settings,
         }
-        if (report_uuid) {
+        if (reportUuid) {
             content = (
                 <Report
                     lastUpdate={lastUpdate}
                     openReportsOverview={openReportsOverview}
-                    report={current_report}
+                    report={currentReport}
                     {...commonProps}
                 />
             )
@@ -112,7 +112,7 @@ export function PageContent({
                 <ReportsOverview
                     lastUpdate={lastUpdate}
                     openReport={openReport}
-                    reports_overview={reports_overview}
+                    reportsOverview={reportsOverview}
                     {...commonProps}
                 />
             )
@@ -143,8 +143,8 @@ export function PageContent({
     )
 }
 PageContent.propTypes = {
-    changed_fields: stringsPropType,
-    current_report: reportPropType,
+    changedFields: stringsPropType,
+    currentReport: reportPropType,
     handleSort: func,
     lastUpdate: datePropType,
     loading: bool,
@@ -152,9 +152,9 @@ PageContent.propTypes = {
     openReport: func,
     openReportsOverview: func,
     reload: func,
-    report_date: optionalDatePropType,
-    report_uuid: string,
+    reportDate: optionalDatePropType,
+    reportUuid: string,
     reports: reportsPropType,
-    reports_overview: reportsOverviewPropType,
+    reportsOverview: reportsOverviewPropType,
     settings: settingsPropType,
 }

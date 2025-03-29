@@ -3,7 +3,7 @@ import { bool, func, string } from "prop-types"
 import { useState } from "react"
 
 import { entityAttributesPropType, entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
-import { DivWithHTML } from "../widgets/DivWithHTML"
+import { DivWithHtml } from "../widgets/DivWithHtml"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 import { IGNORABLE_SOURCE_ENTITY_STATUSES, SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
@@ -25,45 +25,45 @@ entityCanBeIgnored.propTypes = {
 }
 
 export function SourceEntity({
-    metric_uuid,
-    source_uuid,
-    hide_ignored_entities,
+    metricUuid,
+    sourceUuid,
+    hideIgnoredEntities,
     entity,
-    entity_name,
-    entity_attributes,
+    entityName,
+    entityAttributes,
     rationale,
     reload,
     report,
     status,
-    status_end_date,
+    statusEndDate,
 }) {
     const [expanded, setExpanded] = useState(false)
 
-    const ignoredEntity = entityCanBeIgnored(status, status_end_date)
-    if (hide_ignored_entities && ignoredEntity) {
+    const ignoredEntity = entityCanBeIgnored(status, statusEndDate)
+    if (hideIgnoredEntities && ignoredEntity) {
         return null
     }
     const style = ignoredEntity ? { textDecoration: "line-through" } : {}
     style["maxWidth"] = "60em"
     let statusClassName = "unknown_status"
-    for (let entity_attribute of entity_attributes) {
-        let cellContents = entity[entity_attribute.key]
-        if (entity_attribute.color?.[cellContents]) {
-            statusClassName = entity_attribute.color[cellContents] + "_status"
+    for (let entityAttribute of entityAttributes) {
+        let cellContents = entity[entityAttribute.key]
+        if (entityAttribute.color?.[cellContents]) {
+            statusClassName = entityAttribute.color[cellContents] + "_status"
             break
         }
     }
     const details = (
         <SourceEntityDetails
             entity={entity}
-            metric_uuid={metric_uuid}
-            name={entity_name}
+            metricUuid={metricUuid}
+            name={entityName}
             rationale={rationale}
             reload={reload}
             report={report}
-            source_uuid={source_uuid}
+            sourceUuid={sourceUuid}
             status={status}
-            status_end_date={status_end_date}
+            statusEndDate={statusEndDate}
         />
     )
     return (
@@ -79,36 +79,36 @@ export function SourceEntity({
         >
             <TableCell sx={style}>{SOURCE_ENTITY_STATUS_NAME[status]}</TableCell>
             <TableCell sx={style}>
-                {status === "unconfirmed" ? "" : <TimeAgoWithDate dateFirst noTime date={status_end_date} />}
+                {status === "unconfirmed" ? "" : <TimeAgoWithDate dateFirst noTime date={statusEndDate} />}
             </TableCell>
             <TableCell sx={style}>
-                <DivWithHTML>{rationale}</DivWithHTML>
+                <DivWithHtml>{rationale}</DivWithHtml>
             </TableCell>
             <TableCell sx={style}>
                 {entity.first_seen ? <TimeAgoWithDate dateFirst date={entity.first_seen} /> : ""}
             </TableCell>
-            {entity_attributes.map((entity_attribute) => (
+            {entityAttributes.map((entityAttribute) => (
                 <TableCell
-                    align={alignment(entity_attribute.type, entity_attribute.alignment)}
-                    key={entity_attribute.key}
+                    align={alignment(entityAttribute.type, entityAttribute.alignment)}
+                    key={entityAttribute.key}
                     sx={style}
                 >
-                    <SourceEntityAttribute entity={entity} entityAttribute={entity_attribute} />
+                    <SourceEntityAttribute entity={entity} entityAttribute={entityAttribute} />
                 </TableCell>
             ))}
         </TableRowWithDetails>
     )
 }
 SourceEntity.propTypes = {
-    metric_uuid: string,
-    source_uuid: string,
-    hide_ignored_entities: bool,
+    metricUuid: string,
+    sourceUuid: string,
+    hideIgnoredEntities: bool,
     entity: entityPropType,
-    entity_name: string,
-    entity_attributes: entityAttributesPropType,
+    entityName: string,
+    entityAttributes: entityAttributesPropType,
     rationale: string,
     reload: func,
     report: reportPropType,
     status: entityStatusPropType,
-    status_end_date: string,
+    statusEndDate: string,
 }

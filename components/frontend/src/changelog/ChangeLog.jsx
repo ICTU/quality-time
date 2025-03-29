@@ -3,7 +3,7 @@ import { Button, List, ListItem, ListItemAvatar, ListItemText, Stack, Typography
 import { string } from "prop-types"
 import React, { useEffect, useState } from "react"
 
-import { get_changelog } from "../api/changelog"
+import { getChangelog } from "../api/changelog"
 import { Avatar } from "../widgets/Avatar"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 import { showMessage } from "../widgets/toast"
@@ -24,25 +24,25 @@ Event.propTypes = {
     timestamp: string,
 }
 
-function ChangeLogWithoutMemo({ report_uuid, subject_uuid, metric_uuid, source_uuid, timestamp }) {
+function ChangeLogWithoutMemo({ reportUuid, subjectUuid, metricUuid, sourceUuid, timestamp }) {
     const [changes, setChanges] = useState([])
     const [nrChanges, setNrChanges] = useState(5)
     useEffect(() => {
         let didCancel = false
         let uuids = {}
-        if (report_uuid) {
-            uuids.report_uuid = report_uuid
+        if (reportUuid) {
+            uuids.report_uuid = reportUuid
         }
-        if (subject_uuid) {
-            uuids.subject_uuid = subject_uuid
+        if (subjectUuid) {
+            uuids.subject_uuid = subjectUuid
         }
-        if (metric_uuid) {
-            uuids.metric_uuid = metric_uuid
+        if (metricUuid) {
+            uuids.metric_uuid = metricUuid
         }
-        if (source_uuid) {
-            uuids.source_uuid = source_uuid
+        if (sourceUuid) {
+            uuids.source_uuid = sourceUuid
         }
-        get_changelog(nrChanges, uuids)
+        getChangelog(nrChanges, uuids)
             .then(function (json) {
                 if (!didCancel) {
                     setChanges(json.changelog || [])
@@ -53,19 +53,19 @@ function ChangeLogWithoutMemo({ report_uuid, subject_uuid, metric_uuid, source_u
         return () => {
             didCancel = true
         }
-    }, [report_uuid, subject_uuid, metric_uuid, source_uuid, timestamp, nrChanges])
+    }, [reportUuid, subjectUuid, metricUuid, sourceUuid, timestamp, nrChanges])
 
     let scope = "Changes in this instance of Quality-time"
-    if (report_uuid) {
+    if (reportUuid) {
         scope = "Changes in this report"
     }
-    if (subject_uuid) {
+    if (subjectUuid) {
         scope = "Changes to this subject"
     }
-    if (metric_uuid) {
+    if (metricUuid) {
         scope = "Changes to this metric and its sources"
     }
-    if (source_uuid) {
+    if (sourceUuid) {
         scope = "Changes to this source"
     }
 
@@ -94,10 +94,10 @@ function ChangeLogWithoutMemo({ report_uuid, subject_uuid, metric_uuid, source_u
     )
 }
 ChangeLogWithoutMemo.propTypes = {
-    report_uuid: string,
-    subject_uuid: string,
-    metric_uuid: string,
-    source_uuid: string,
+    reportUuid: string,
+    subjectUuid: string,
+    metricUuid: string,
+    sourceUuid: string,
     timestamp: string,
 }
 

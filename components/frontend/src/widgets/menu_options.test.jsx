@@ -1,9 +1,9 @@
 import { ItemBreadcrumb } from "./ItemBreadcrumb"
-import { metric_options, report_options, source_options, subject_options } from "./menu_options"
+import { metricOptions, reportOptions, sourceOptions, subjectOptions } from "./menu_options"
 
 it("contains the reports", () => {
     expect(
-        report_options([
+        reportOptions([
             { report_uuid: "report1", title: "B" },
             { report_uuid: "report2", title: "A" },
         ]),
@@ -15,7 +15,7 @@ it("contains the reports", () => {
 
 it("contains the subjects, except for the excluded report", () => {
     expect(
-        subject_options(
+        subjectOptions(
             [
                 { report_uuid: "report1", title: "B" },
                 { report_uuid: "report2", title: "A", subjects: { subject1: { name: "S" } } },
@@ -35,7 +35,7 @@ it("contains the subjects, except for the excluded report", () => {
 
 it("contains the metrics, except for the excluded subject", () => {
     expect(
-        metric_options(
+        metricOptions(
             [
                 {
                     report_uuid: "report1",
@@ -73,7 +73,7 @@ it("contains the metrics, except for the excluded subject", () => {
 
 it("contains the sources, except for the excluded metric", () => {
     expect(
-        source_options(
+        sourceOptions(
             [
                 {
                     report_uuid: "report1",

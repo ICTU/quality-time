@@ -10,7 +10,7 @@ it("returns null when the metric scale is version number", async () => {
 })
 
 it("renders an empty sparkline if there are no measurements", async () => {
-    const { container } = render(<TrendSparkline measurements={[]} />)
+    const { container } = render(<TrendSparkline />)
     expect(screen.queryAllByLabelText(/sparkline graph showing 0 different measurement values/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
@@ -52,7 +52,7 @@ it("renders old measurements", async () => {
     const { container } = render(
         <TrendSparkline
             measurements={[{ count: { value: "1" }, start: "2019-09-29", end: "2019-09-30" }]}
-            report_date={date}
+            reportDate={date}
             scale="count"
         />,
     )

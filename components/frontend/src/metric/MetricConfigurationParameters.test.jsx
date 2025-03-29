@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
-import * as fetch_server_api from "../api/fetch_server_api"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -39,35 +39,25 @@ const dataModel = {
     },
 }
 
-afterEach(() => {
-    vi.clearAllMocks()
-})
+beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
 
-async function renderMetricParameters(
-    scale = "count",
-    issue_ids = [],
-    report = { subjects: {} },
-    permissions = [EDIT_REPORT_PERMISSION],
-) {
+afterEach(() => vi.clearAllMocks())
+
+async function renderMetricParameters(scale = "count") {
     let result
     await act(async () => {
         result = render(
-            <Permissions.Provider value={permissions}>
+            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <DataModel.Provider value={dataModel}>
                     <MetricConfigurationParameters
                         subject={{ type: "subject_type" }}
                         metric={{
                             type: "violations",
-                            tags: [],
-                            accept_debt: false,
                             scale: scale,
-                            issue_ids: issue_ids,
                         }}
-                        metric_uuid="metric_uuid"
-                        reload={() => {
-                            /* Dummy implementation */
-                        }}
-                        report={report}
+                        metricUuid="metric_uuid"
+                        reload={vi.fn()}
+                        report={{ subjects: {} }}
                     />
                 </DataModel.Provider>
             </Permissions.Provider>,
@@ -85,11 +75,10 @@ async function typeInField(label, text, confirm = "Enter") {
 
 function expectMetricAttributePost(attribute, payload) {
     const endPoint = `metric/metric_uuid/attribute/${attribute}`
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", endPoint, { [attribute]: payload })
+    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", endPoint, { [attribute]: payload })
 }
 
 it("sets the metric name", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderMetricParameters()
     await typeInField(/Metric name/, "New metric name")
     expectMetricAttributePost("name", "New metric name")
@@ -127,7 +116,6 @@ it("changes the direction", async () => {
 })
 
 it("sets the metric unit for metrics with the count scale", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderMetricParameters()
     await typeInField(/Metric unit/, "New metric unit")
     expectMetricAttributePost("unit", "New metric unit")
@@ -135,7 +123,6 @@ it("sets the metric unit for metrics with the count scale", async () => {
 })
 
 it("sets the metric unit field for metrics with the percentage scale", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderMetricParameters("percentage")
     await typeInField(/Metric unit/, "New metric unit")
     expectMetricAttributePost("unit", "New metric unit")
@@ -148,8 +135,8 @@ it("skips the metric unit field for metrics with the version number scale", asyn
             <MetricConfigurationParameters
                 report={{ subjects: {} }}
                 subject={{ type: "subject_type" }}
-                metric={{ type: "source_version", tags: [], accept_debt: false }}
-                metric_uuid="metric_uuid"
+                metric={{ type: "source_version" }}
+                metricUuid="metric_uuid"
             />
         </DataModel.Provider>,
     )
@@ -158,7 +145,6 @@ it("skips the metric unit field for metrics with the version number scale", asyn
 })
 
 it("turns off evaluation of targets", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = await renderMetricParameters()
     await userEvent.type(screen.getByLabelText(/Evaluate metric targets/), "No{Enter}")
     expectMetricAttributePost("evaluate_targets", false)

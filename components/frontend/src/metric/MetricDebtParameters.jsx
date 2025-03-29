@@ -6,7 +6,7 @@ import relativeTime from "dayjs/plugin/relativeTime"
 import { func, string } from "prop-types"
 import { useContext } from "react"
 
-import { set_metric_attribute, set_metric_debt } from "../api/metric"
+import { setMetricAttribute, setMetricDebt } from "../api/metric"
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { CommentField } from "../fields/CommentField"
 import { TextField } from "../fields/TextField"
@@ -17,7 +17,7 @@ import { Target } from "./Target"
 
 dayjs.extend(relativeTime)
 
-function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
+function AcceptTechnicalDebt({ metric, metricUuid, reload }) {
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
@@ -33,9 +33,9 @@ function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
             onChange={(value) => {
                 const acceptDebt = value.startsWith("yes")
                 if (value.endsWith("completely")) {
-                    set_metric_debt(metric_uuid, acceptDebt, reload)
+                    setMetricDebt(metricUuid, acceptDebt, reload)
                 } else {
-                    set_metric_attribute(metric_uuid, "accept_debt", acceptDebt, reload)
+                    setMetricAttribute(metricUuid, "accept_debt", acceptDebt, reload)
                 }
             }}
             select
@@ -58,11 +58,11 @@ function AcceptTechnicalDebt({ metric, metric_uuid, reload }) {
 }
 AcceptTechnicalDebt.propTypes = {
     metric: metricPropType,
-    metric_uuid: string,
+    metricUuid: string,
     reload: func,
 }
 
-function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
+function TechnicalDebtEndDate({ metric, metricUuid, reload }) {
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const debtEndDateTime = metric.debt_end_date ? dayjs(metric.debt_end_date) : null
@@ -74,7 +74,7 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
             defaultValue={debtEndDateTime}
             disabled={disabled}
             label="Technical debt end date"
-            onChange={(value) => set_metric_attribute(metric_uuid, "debt_end_date", value, reload)}
+            onChange={(value) => setMetricAttribute(metricUuid, "debt_end_date", value, reload)}
             slotProps={{ field: { clearable: true }, textField: { helperText: helperText } }}
             sx={{ width: "100%" }}
             timezone="default"
@@ -83,24 +83,24 @@ function TechnicalDebtEndDate({ metric, metric_uuid, reload }) {
 }
 TechnicalDebtEndDate.propTypes = {
     metric: metricPropType,
-    metric_uuid: string,
+    metricUuid: string,
     reload: func,
 }
 
-export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
+export function MetricDebtParameters({ metric, metricUuid, reload, report }) {
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <Grid alignItems="flex-start" container spacing={{ xs: 1, sm: 2, md: 3 }} columns={{ xs: 1, sm: 3, md: 6 }}>
             <Grid size={{ xs: 1, sm: 1, md: 2 }}>
-                <AcceptTechnicalDebt metric={metric} metric_uuid={metric_uuid} reload={reload} />
+                <AcceptTechnicalDebt metric={metric} metricUuid={metricUuid} reload={reload} />
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 2 }}>
                 <Target
                     key={metric.debt_target}
-                    target_type="debt_target"
+                    targetType="debt_target"
                     metric={metric}
-                    metric_uuid={metric_uuid}
+                    metricUuid={metricUuid}
                     reload={reload}
                 />
             </Grid>
@@ -108,15 +108,15 @@ export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
                 <TechnicalDebtEndDate
                     key={metric.debt_end_date}
                     metric={metric}
-                    metric_uuid={metric_uuid}
+                    metricUuid={metricUuid}
                     reload={reload}
                 />
             </Grid>
-            <IssuesRows metric={metric} metric_uuid={metric_uuid} reload={reload} report={report} />
+            <IssuesRows metric={metric} metricUuid={metricUuid} reload={reload} report={report} />
             <Grid size={{ xs: 1, sm: 3, md: 6 }}>
                 <CommentField
                     disabled={disabled}
-                    onChange={(value) => set_metric_attribute(metric_uuid, "comment", value, reload)}
+                    onChange={(value) => setMetricAttribute(metricUuid, "comment", value, reload)}
                     value={metric.comment}
                 />
             </Grid>
@@ -125,7 +125,7 @@ export function MetricDebtParameters({ metric, metric_uuid, reload, report }) {
 }
 MetricDebtParameters.propTypes = {
     metric: metricPropType,
-    metric_uuid: string,
+    metricUuid: string,
     reload: func,
     report: reportPropType,
 }

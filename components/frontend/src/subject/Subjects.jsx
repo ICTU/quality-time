@@ -13,14 +13,14 @@ import { Subject } from "./Subject"
 
 export function Subjects({
     atReportsOverview,
-    changed_fields,
+    changedFields,
     dates,
     handleSort,
     measurements,
     reload,
     reports,
     reportsToShow,
-    report_date,
+    reportDate,
     settings,
 }) {
     // Assume max 3 subjects are visible below the dashboard when the page is initially rendered
@@ -29,26 +29,26 @@ export function Subjects({
     const subjects = []
     reportsToShow.forEach((report) => {
         const lastIndex = Object.keys(report.subjects).length - 1
-        Object.keys(report.subjects).forEach((subject_uuid, index) => {
+        Object.keys(report.subjects).forEach((subjectUuid, index) => {
             if (!visible && subjects.length > nrSubjectsVisibleOnInitialRender) {
                 return
             }
             subjects.push(
                 <Subject
                     atReportsOverview={atReportsOverview}
-                    changed_fields={changed_fields}
+                    changedFields={changedFields}
                     dates={dates}
                     firstSubject={index === 0}
                     handleSort={handleSort}
-                    key={subject_uuid}
+                    key={subjectUuid}
                     lastSubject={index === lastIndex}
                     measurements={measurements}
                     reload={reload}
                     report={report}
                     reports={reports}
-                    report_date={report_date}
+                    reportDate={reportDate}
                     settings={settings}
-                    subject_uuid={subject_uuid}
+                    subjectUuid={subjectUuid}
                 />,
             )
         })
@@ -57,13 +57,13 @@ export function Subjects({
 }
 Subjects.propTypes = {
     atReportsOverview: bool,
-    changed_fields: stringsPropType,
+    changedFields: stringsPropType,
     dates: datesPropType,
     handleSort: func,
     measurements: measurementsPropType,
     reload: func,
     reports: reportsPropType,
     reportsToShow: reportsPropType,
-    report_date: optionalDatePropType,
+    reportDate: optionalDatePropType,
     settings: settingsPropType,
 }

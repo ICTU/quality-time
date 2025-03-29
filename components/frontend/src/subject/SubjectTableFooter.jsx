@@ -2,7 +2,7 @@ import { TableCell, TableFooter, TableRow } from "@mui/material"
 import { func, string } from "prop-types"
 import { useContext } from "react"
 
-import { add_metric, copy_metric, move_metric } from "../api/metric"
+import { addMetric, copyMetric, moveMetric } from "../api/metric"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { allMetricTypeOptions, metricTypeOptions, usedMetricTypes } from "../metric/MetricType"
@@ -11,7 +11,7 @@ import { ButtonRow } from "../widgets/ButtonRow"
 import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
 import { CopyButton } from "../widgets/buttons/CopyButton"
 import { MoveButton } from "../widgets/buttons/MoveButton"
-import { metric_options } from "../widgets/menu_options"
+import { metricOptions } from "../widgets/menu_options"
 
 function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, reports, stopFilteringAndSorting }) {
     const dataModel = useContext(DataModel)
@@ -25,25 +25,25 @@ function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, reports, st
                         itemSubtypes={metricTypeOptions(dataModel, subject.type)}
                         onClick={(subtype) => {
                             stopFilteringAndSorting()
-                            add_metric(subjectUuid, subtype, reload)
+                            addMetric(subjectUuid, subtype, reload)
                         }}
                         usedItemSubtypeKeys={usedMetricTypes(subject)}
                     />
                     <CopyButton
                         itemType="metric"
-                        onChange={(source_metric_uuid) => {
+                        onChange={(metricUuid) => {
                             stopFilteringAndSorting()
-                            copy_metric(source_metric_uuid, subjectUuid, reload)
+                            copyMetric(metricUuid, subjectUuid, reload)
                         }}
-                        get_options={() => metric_options(reports, dataModel, subject.type)}
+                        getOptions={() => metricOptions(reports, dataModel, subject.type)}
                     />
                     <MoveButton
                         itemType="metric"
-                        onChange={(source_metric_uuid) => {
+                        onChange={(metricUuid) => {
                             stopFilteringAndSorting()
-                            move_metric(source_metric_uuid, subjectUuid, reload)
+                            moveMetric(metricUuid, subjectUuid, reload)
                         }}
-                        get_options={() => metric_options(reports, dataModel, subject.type, subjectUuid)}
+                        getOptions={() => metricOptions(reports, dataModel, subject.type, subjectUuid)}
                     />
                 </ButtonRow>
             </TableCell>

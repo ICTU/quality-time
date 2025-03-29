@@ -15,7 +15,7 @@ import { useState } from "react"
 
 import { login } from "../../api/auth"
 
-export function LoginButton({ set_user }) {
+export function LoginButton({ setUser }) {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
@@ -30,7 +30,7 @@ export function LoginButton({ set_user }) {
         login(username, password)
             .then(function (json) {
                 if (json.ok) {
-                    set_user(username, json.email, new Date(Date.parse(json.session_expiration_datetime)))
+                    setUser(username, json.email, new Date(Date.parse(json.session_expiration_datetime)))
                 } else {
                     setError("credentials")
                 }
@@ -95,5 +95,5 @@ export function LoginButton({ set_user }) {
     )
 }
 LoginButton.propTypes = {
-    set_user: func,
+    setUser: func,
 }

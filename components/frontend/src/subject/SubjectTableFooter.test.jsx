@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import { vi } from "vitest"
 
 import { dataModel, report } from "../__fixtures__/fixtures"
-import * as fetch_server_api from "../api/fetch_server_api"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -13,10 +13,11 @@ const stopFilteringAndSorting = vi.fn()
 
 vi.mock("../api/fetch_server_api.js")
 
+beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
+
 afterEach(() => vi.restoreAllMocks())
 
 it("shows the add metric button and adds a metric when clicked", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container, getByText } = render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={dataModel}>
@@ -35,14 +36,13 @@ it("shows the add metric button and adds a metric when clicked", async () => {
     await expectNoAccessibilityViolations(container)
     fireEvent.click(screen.getByText(/Metric type/))
     expect(stopFilteringAndSorting).toHaveBeenCalled()
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/new/subject_uuid", {
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "metric/new/subject_uuid", {
         type: "metric_type",
     })
     await expectNoAccessibilityViolations(container)
 })
 
 it("copies a metric when the copy button is clicked and a metric is selected", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={dataModel}>
@@ -62,12 +62,11 @@ it("copies a metric when the copy button is clicked and a metric is selected", a
     await act(async () => {
         fireEvent.click(screen.getAllByText(/M1/)[0])
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid/copy/subject_uuid", {})
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "metric/metric_uuid/copy/subject_uuid", {})
     await expectNoAccessibilityViolations(container)
 })
 
 it("moves a metric when the move button is clicked and a metric is selected", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = render(
         <DataModel.Provider value={dataModel}>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
@@ -87,6 +86,6 @@ it("moves a metric when the move button is clicked and a metric is selected", as
     await act(async () => {
         fireEvent.click(screen.getByText(/Subject 2 title/))
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "metric/metric_uuid3/move/subject_uuid", {})
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "metric/metric_uuid3/move/subject_uuid", {})
     await expectNoAccessibilityViolations(container)
 })

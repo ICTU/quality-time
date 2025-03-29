@@ -7,103 +7,100 @@ import {
 } from "./hooks/url_search_query"
 import { adapterLocale } from "./locale"
 
-function urlSearchQueryKey(key, report_uuid) {
+function urlSearchQueryKey(key, reportUuid) {
     // Make the settings changeable per report (and separately for the reports overview) by adding the report UUID as
     // postfix to the settings key:
-    return key + (report_uuid ? `_${report_uuid}` : "")
+    return key + (reportUuid ? `_${reportUuid}` : "")
 }
 
-export function useDateIntervalURLSearchQuery(report_uuid, defaultValue = 7) {
-    return useIntegerURLSearchQuery(urlSearchQueryKey("date_interval", report_uuid), defaultValue)
+export function useDateIntervalURLSearchQuery(reportUuid, defaultValue = 7) {
+    return useIntegerURLSearchQuery(urlSearchQueryKey("date_interval", reportUuid), defaultValue)
 }
 
-export function useDateOrderURLSearchQuery(report_uuid, defaultValue = "descending") {
-    return useStringURLSearchQuery(urlSearchQueryKey("date_order", report_uuid), defaultValue)
+export function useDateOrderURLSearchQuery(reportUuid, defaultValue = "descending") {
+    return useStringURLSearchQuery(urlSearchQueryKey("date_order", reportUuid), defaultValue)
 }
 
-export function useHiddenCardsURLSearchQuery(report_uuid) {
-    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_cards", report_uuid))
+export function useHiddenCardsURLSearchQuery(reportUuid) {
+    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_cards", reportUuid))
 }
 
-export function useHiddenColumnsURLSearchQuery(report_uuid) {
-    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_columns", report_uuid))
+export function useHiddenColumnsURLSearchQuery(reportUuid) {
+    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_columns", reportUuid))
 }
 
-export function useHiddenTagsURLSearchQuery(report_uuid) {
-    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_tags", report_uuid))
+export function useHiddenTagsURLSearchQuery(reportUuid) {
+    return useArrayURLSearchQuery(urlSearchQueryKey("hidden_tags", reportUuid))
 }
 
 export function useLanguageURLSearchQuery() {
     return useStringURLSearchQuery("language", adapterLocale(navigator.language))
 }
 
-export function useMetricsToHideURLSearchQuery(report_uuid) {
-    return useStringURLSearchQuery(
-        urlSearchQueryKey("metrics_to_hide", report_uuid),
-        report_uuid === "" ? "all" : "none",
-    )
+export function useMetricsToHideURLSearchQuery(reportUuid) {
+    return useStringURLSearchQuery(urlSearchQueryKey("metrics_to_hide", reportUuid), reportUuid === "" ? "all" : "none")
 }
 
-export function useNrDatesURLSearchQuery(report_uuid, defaultValue = 1) {
-    return useIntegerURLSearchQuery(urlSearchQueryKey("nr_dates", report_uuid), defaultValue)
+export function useNrDatesURLSearchQuery(reportUuid, defaultValue = 1) {
+    return useIntegerURLSearchQuery(urlSearchQueryKey("nr_dates", reportUuid), defaultValue)
 }
 
-export function useSortColumnURLSearchQuery(report_uuid, defaultValue = "") {
-    return useStringURLSearchQuery(urlSearchQueryKey("sort_column", report_uuid), defaultValue)
+export function useSortColumnURLSearchQuery(reportUuid, defaultValue = "") {
+    return useStringURLSearchQuery(urlSearchQueryKey("sort_column", reportUuid), defaultValue)
 }
 
-export function useSortDirectionURLSearchQuery(report_uuid, defaultValue = "ascending") {
-    return useStringURLSearchQuery(urlSearchQueryKey("sort_direction", report_uuid), defaultValue)
+export function useSortDirectionURLSearchQuery(reportUuid, defaultValue = "ascending") {
+    return useStringURLSearchQuery(urlSearchQueryKey("sort_direction", reportUuid), defaultValue)
 }
 
-export function useExpandedItemsSearchQuery(report_uuid) {
+export function useExpandedItemsSearchQuery(reportUuid) {
     // Use useIntegerMappingURLSearchQuery to handle expanded items and tabs. Key is the item, value is the tab index.
-    return useIntegerMappingURLSearchQuery(urlSearchQueryKey("expanded", report_uuid))
+    return useIntegerMappingURLSearchQuery(urlSearchQueryKey("expanded", reportUuid))
 }
 
-export function useShowIssueSummaryURLSearchQuery(report_uuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_summary", report_uuid))
+export function useShowIssueSummaryURLSearchQuery(reportUuid) {
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_summary", reportUuid))
 }
 
-export function useShowIssueCreationDateURLSearchQuery(report_uuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_creation_date", report_uuid))
+export function useShowIssueCreationDateURLSearchQuery(reportUuid) {
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_creation_date", reportUuid))
 }
 
-export function useShowIssueUpdateDateURLSearchQuery(report_uuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_update_date", report_uuid))
+export function useShowIssueUpdateDateURLSearchQuery(reportUuid) {
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_update_date", reportUuid))
 }
 
-export function useShowIssueDueDateURLSearchQuery(report_uuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_due_date", report_uuid))
+export function useShowIssueDueDateURLSearchQuery(reportUuid) {
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_due_date", reportUuid))
 }
 
-export function useShowIssueReleaseURLSearchQuery(report_uuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_release", report_uuid))
+export function useShowIssueReleaseURLSearchQuery(reportUuid) {
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_release", reportUuid))
 }
 
-export function useShowIssueSprintURLSearchQuery(report_uuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_sprint", report_uuid))
+export function useShowIssueSprintURLSearchQuery(reportUuid) {
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_sprint", reportUuid))
 }
 
-export function useSettings(report_uuid) {
+export function useSettings(reportUuid) {
     return {
-        dateInterval: useDateIntervalURLSearchQuery(report_uuid),
-        dateOrder: useDateOrderURLSearchQuery(report_uuid),
-        expandedItems: useExpandedItemsSearchQuery(report_uuid),
-        hiddenCards: useHiddenCardsURLSearchQuery(report_uuid),
-        hiddenColumns: useHiddenColumnsURLSearchQuery(report_uuid),
-        hiddenTags: useHiddenTagsURLSearchQuery(report_uuid),
+        dateInterval: useDateIntervalURLSearchQuery(reportUuid),
+        dateOrder: useDateOrderURLSearchQuery(reportUuid),
+        expandedItems: useExpandedItemsSearchQuery(reportUuid),
+        hiddenCards: useHiddenCardsURLSearchQuery(reportUuid),
+        hiddenColumns: useHiddenColumnsURLSearchQuery(reportUuid),
+        hiddenTags: useHiddenTagsURLSearchQuery(reportUuid),
         language: useLanguageURLSearchQuery(),
-        metricsToHide: useMetricsToHideURLSearchQuery(report_uuid),
-        nrDates: useNrDatesURLSearchQuery(report_uuid),
-        showIssueSummary: useShowIssueSummaryURLSearchQuery(report_uuid),
-        showIssueCreationDate: useShowIssueCreationDateURLSearchQuery(report_uuid),
-        showIssueUpdateDate: useShowIssueUpdateDateURLSearchQuery(report_uuid),
-        showIssueDueDate: useShowIssueDueDateURLSearchQuery(report_uuid),
-        showIssueRelease: useShowIssueReleaseURLSearchQuery(report_uuid),
-        showIssueSprint: useShowIssueSprintURLSearchQuery(report_uuid),
-        sortColumn: useSortColumnURLSearchQuery(report_uuid),
-        sortDirection: useSortDirectionURLSearchQuery(report_uuid),
+        metricsToHide: useMetricsToHideURLSearchQuery(reportUuid),
+        nrDates: useNrDatesURLSearchQuery(reportUuid),
+        showIssueSummary: useShowIssueSummaryURLSearchQuery(reportUuid),
+        showIssueCreationDate: useShowIssueCreationDateURLSearchQuery(reportUuid),
+        showIssueUpdateDate: useShowIssueUpdateDateURLSearchQuery(reportUuid),
+        showIssueDueDate: useShowIssueDueDateURLSearchQuery(reportUuid),
+        showIssueRelease: useShowIssueReleaseURLSearchQuery(reportUuid),
+        showIssueSprint: useShowIssueSprintURLSearchQuery(reportUuid),
+        sortColumn: useSortColumnURLSearchQuery(reportUuid),
+        sortDirection: useSortDirectionURLSearchQuery(reportUuid),
         reset: function () {
             resetSettings(this)
         },
