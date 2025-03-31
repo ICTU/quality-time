@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Make the JUnit timestamp parsing more robust. Fixes [#11044](https://github.com/ICTU/quality-time/issues/11044).
+
 ## v5.26.2 - 2025-03-20
 
 ### Fixed
