@@ -54,6 +54,9 @@
         "vite": "^6.2.4",
         "vitest": "^3.1.1"
     },
+    "overrides": {
+        "glob": "^11.0.1"
+    },
     "prettier": {
         "printWidth": 120,
         "semi": false,
