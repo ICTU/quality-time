@@ -1,6 +1,7 @@
 import { Chip, List, ListItem, ListItemIcon, ListItemText, Paper, TableHead, TableRow, Typography } from "@mui/material"
 import { bool, func, string } from "prop-types"
 
+import { zIndexTableHeader } from "../defaults"
 import { StatusIcon } from "../measurement/StatusIcon"
 import { STATUS_DESCRIPTION, STATUSES } from "../metric/status"
 import { datesPropType, settingsPropType } from "../sharedPropTypes"
@@ -297,7 +298,7 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
     }
     const nrDates = columnDates.length
     return (
-        <TableHead sx={{ bgcolor: "background.default" }}>
+        <TableHead sx={{ bgcolor: "background.default", zIndex: zIndexTableHeader }}>
             <TableRow>
                 <SortableTableHeaderCell colSpan="2" column="name" label="Metric" help={metricHelp} {...sortProps} />
                 {nrDates > 1 && (

@@ -2,14 +2,14 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
-import * as fetch_server_api from "../api/fetch_server_api"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { NotificationDestinations } from "./NotificationDestinations"
 
 vi.mock("../api/fetch_server_api.js")
 
-const notification_destinations = {
+const notificationDestinations = {
     destination_uuid1: {
         webhook: "",
         name: "new",
@@ -21,7 +21,7 @@ function renderNotificationDestinations(destinations) {
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <NotificationDestinations
                 destinations={destinations}
-                report_uuid={"report_uuid"}
+                reportUuid={"report_uuid"}
                 reload={() => {
                     /* No need to reload during tests */
                 }}
@@ -30,11 +30,12 @@ function renderNotificationDestinations(destinations) {
     )
 }
 
+beforeAll(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
+
 it("creates the first notification destination when the add notification destination button is clicked", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderNotificationDestinations({})
     fireEvent.click(screen.getByText(/Add notification destination/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith(
         "post",
         "report/report_uuid/notification_destination/new",
         { report_url: "http://localhost:3000/" },
@@ -43,10 +44,9 @@ it("creates the first notification destination when the add notification destina
 })
 
 it("creates a new notification destination when the add notification destination button is clicked", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
-    const { container } = renderNotificationDestinations(notification_destinations)
+    const { container } = renderNotificationDestinations(notificationDestinations)
     fireEvent.click(screen.getByText(/Add notification destination/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith(
         "post",
         "report/report_uuid/notification_destination/new",
         { report_url: "http://localhost:3000/" },
@@ -55,10 +55,9 @@ it("creates a new notification destination when the add notification destination
 })
 
 it("edits notification destination name attribute when it is changed in the input field", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
-    const { container } = renderNotificationDestinations(notification_destinations)
+    const { container } = renderNotificationDestinations(notificationDestinations)
     await userEvent.type(screen.getByLabelText(/Webhook name/), " changed{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith(
         "post",
         "report/report_uuid/notification_destination/destination_uuid1/attributes",
         { name: "new changed" },
@@ -67,10 +66,9 @@ it("edits notification destination name attribute when it is changed in the inpu
 })
 
 it("edits multiple notification destination attributes when they are changed in the input fields", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
-    const { container } = renderNotificationDestinations(notification_destinations)
+    const { container } = renderNotificationDestinations(notificationDestinations)
     await userEvent.type(screen.getByPlaceholderText(/https:\/\/example/), "new.webhook.com{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith(
         "post",
         "report/report_uuid/notification_destination/destination_uuid1/attributes",
         { webhook: "new.webhook.com", url: "http://localhost:3000/" },
@@ -79,10 +77,9 @@ it("edits multiple notification destination attributes when they are changed in 
 })
 
 it("removes the notification destination when the delete notification destination button is clicked", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
-    const { container } = renderNotificationDestinations(notification_destinations)
+    const { container } = renderNotificationDestinations(notificationDestinations)
     fireEvent.click(screen.getByText(/Delete notification destination/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith(
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith(
         "delete",
         "report/report_uuid/notification_destination/destination_uuid1",
         {},

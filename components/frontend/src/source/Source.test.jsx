@@ -4,7 +4,7 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
-import * as fetch_server_api from "../api/fetch_server_api"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -12,7 +12,10 @@ import { Source } from "./Source"
 
 vi.mock("../api/fetch_server_api.js")
 
-beforeEach(() => history.push(""))
+beforeEach(() => {
+    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })
+    history.push("")
+})
 
 afterEach(() => vi.clearAllMocks())
 
@@ -38,7 +41,7 @@ function renderSource(metric, props) {
                     metric={metric}
                     report={report}
                     settings={createTestableSettings()}
-                    source_uuid="source_uuid"
+                    sourceUuid="source_uuid"
                     {...props}
                 />
             </DataModel.Provider>
@@ -47,10 +50,9 @@ function renderSource(metric, props) {
 }
 
 it("invokes the callback on clicking delete", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderSource(metric)
     fireEvent.click(screen.getByText(/Delete source/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenNthCalledWith(1, "delete", "source/source_uuid", {})
+    expect(fetchServerApi.fetchServerApi).toHaveBeenNthCalledWith(1, "delete", "source/source_uuid", {})
     await expectNoAccessibilityViolations(container)
 })
 
@@ -59,7 +61,7 @@ it("changes the source type", async () => {
     fireEvent.mouseDown(screen.getByLabelText(/Source type/))
     await expectNoAccessibilityViolations(container)
     fireEvent.click(screen.getByText(/Source type 2/))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/type", {
+    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/type", {
         type: "source_type2",
     })
 })
@@ -67,19 +69,19 @@ it("changes the source type", async () => {
 it("changes the source name", async () => {
     renderSource(metric)
     await userEvent.type(screen.getByLabelText(/Source name/), "New source name{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/name", {
+    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/name", {
         name: "New source name",
     })
 })
 
 it("shows a connection error message", async () => {
-    const { container } = renderSource(metric, { measurement_source: { connection_error: "Oops" } })
+    const { container } = renderSource(metric, { measurementSource: { connection_error: "Oops" } })
     expect(screen.getAllByText(/Connection error/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows a parse error message", async () => {
-    const { container } = renderSource(metric, { measurement_source: { parse_error: "Oops" } })
+    const { container } = renderSource(metric, { measurementSource: { parse_error: "Oops" } })
     expect(screen.getAllByText(/Parse error/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
@@ -91,9 +93,8 @@ it("shows a config error message", async () => {
 })
 
 it("loads the changelog", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     history.push("?expanded=source_uuid:1")
     const { container } = renderSource(metric)
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("get", "changelog/source/source_uuid/5")
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("get", "changelog/source/source_uuid/5")
     await expectNoAccessibilityViolations(container)
 })

@@ -1,7 +1,7 @@
 import { func } from "prop-types"
 import { useContext } from "react"
 
-import { set_report_attribute } from "../api/report"
+import { setReportAttribute } from "../api/report"
 import { DataModel } from "../context/DataModel"
 import { CardDashboard } from "../dashboard/CardDashboard"
 import { IssuesCard } from "../dashboard/IssuesCard"
@@ -18,19 +18,19 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
     const nrMetrics = Math.max(nrMetricsInReport(report), 1)
     const subjectCards = []
     if (settings.hiddenCards.excludes("subjects")) {
-        Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
+        Object.entries(report.subjects).forEach(([subjectUuid, subject]) => {
             const metrics = visibleMetrics(subject.metrics, settings.metricsToHide.value, settings.hiddenTags.value)
             if (Object.keys(metrics).length > 0) {
                 const summary = {}
                 dates.forEach((date) => {
-                    summary[date] = summarizeMetricsOnDate(dataModel, metrics, measurements, date)
+                    summary[date] = summarizeMetricsOnDate(dataModel, date, measurements, metrics)
                 })
                 subjectCards.push(
                     <MetricSummaryCard
-                        header={getSubjectName(report.subjects[subject_uuid], dataModel)}
-                        key={subject_uuid}
+                        header={getSubjectName(report.subjects[subjectUuid], dataModel)}
+                        key={subjectUuid}
                         maxY={nrMetrics}
-                        onClick={(event) => onClick(event, subject_uuid)}
+                        onClick={(event) => onClick(event, subjectUuid)}
                         summary={summary}
                     />,
                 )
@@ -93,7 +93,7 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
             cards={subjectCards.concat(tagCards.concat(extraCards))}
             initialLayout={report.layout}
             saveLayout={function (newLayout) {
-                set_report_attribute(report.report_uuid, "layout", newLayout, reload)
+                setReportAttribute(report.report_uuid, "layout", newLayout, reload)
             }}
         />
     )

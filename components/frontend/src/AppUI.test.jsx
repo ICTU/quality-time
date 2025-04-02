@@ -5,7 +5,7 @@ import { axe } from "jest-axe"
 import { vi } from "vitest"
 
 import { dataModel, report } from "./__fixtures__/fixtures"
-import * as fetch_server_api from "./api/fetch_server_api"
+import * as fetchServerApi from "./api/fetch_server_api"
 import { AppUI } from "./AppUI"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 import { theme } from "./theme"
@@ -13,8 +13,8 @@ import { theme } from "./theme"
 vi.mock("./api/fetch_server_api.js")
 
 beforeEach(async () => {
-    fetch_server_api.api_with_report_date = (await vi.importActual("./api/fetch_server_api.js")).api_with_report_date
-    fetch_server_api.fetch_server_api = vi.fn().mockReturnValue({
+    fetchServerApi.apiWithReportDate = (await vi.importActual("./api/fetch_server_api.js")).apiWithReportDate
+    fetchServerApi.fetchServerApi = vi.fn().mockReturnValue({
         then: vi.fn().mockReturnValue({ catch: vi.fn().mockReturnValue({ finally: vi.fn() }) }),
     })
     mockGetAnimations()
@@ -32,10 +32,10 @@ async function renderAppUI(reports) {
                     dataModel={dataModel}
                     handleDateChange={vi.fn}
                     lastUpdate={new Date()}
-                    report_date={reports ? null : undefined}
-                    report_uuid={reports ? "report_uuid" : ""}
+                    reportDate={reports ? null : undefined}
+                    reportUuid={reports ? "report_uuid" : ""}
                     reports={reports ?? []}
-                    reports_overview={{}}
+                    reportsOverview={{}}
                     user="xxx"
                 />
             </ThemeProvider>,

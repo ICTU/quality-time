@@ -17,7 +17,7 @@ const dataModel = {
 function renderOverrun({ measurements = [], dates = [] } = {}) {
     return render(
         <DataModel.Provider value={dataModel}>
-            <Overrun dates={dates} metric={{ type: "metric_type" }} metric_uuid="uuid" measurements={measurements} />
+            <Overrun dates={dates} metric={{ type: "metric_type" }} metricUuid="uuid" measurements={measurements} />
         </DataModel.Provider>,
     )
 }

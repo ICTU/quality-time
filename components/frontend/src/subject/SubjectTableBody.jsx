@@ -13,7 +13,7 @@ import {
 import { SubjectTableRow } from "./SubjectTableRow"
 
 export function SubjectTableBody({
-    changed_fields,
+    changedFields,
     dates,
     handleSort,
     measurements,
@@ -24,22 +24,22 @@ export function SubjectTableBody({
     reports,
     reversedMeasurements,
     settings,
-    subject_uuid,
+    subjectUuid,
 }) {
     const lastIndex = metricEntries.length - 1
     return (
         <TableBody>
-            {metricEntries.map(([metric_uuid, metric], index) => {
+            {metricEntries.map(([metricUuid, metric], index) => {
                 return (
                     <SubjectTableRow
-                        changed_fields={changed_fields}
+                        changedFields={changedFields}
                         dates={dates}
                         handleSort={handleSort}
                         index={index}
-                        key={metric_uuid}
+                        key={metricUuid}
                         lastIndex={lastIndex}
                         measurements={measurements}
-                        metric_uuid={metric_uuid}
+                        metricUuid={metricUuid}
                         metric={metric}
                         reload={reload}
                         report={report}
@@ -47,7 +47,7 @@ export function SubjectTableBody({
                         reports={reports}
                         reversedMeasurements={reversedMeasurements}
                         settings={settings}
-                        subject_uuid={subject_uuid}
+                        subjectUuid={subjectUuid}
                     />
                 )
             })}
@@ -55,7 +55,7 @@ export function SubjectTableBody({
     )
 }
 SubjectTableBody.propTypes = {
-    changed_fields: stringsPropType,
+    changedFields: stringsPropType,
     dates: datesPropType,
     handleSort: func,
     measurements: measurementsPropType,
@@ -66,5 +66,5 @@ SubjectTableBody.propTypes = {
     reports: reportsPropType,
     reversedMeasurements: measurementsPropType,
     settings: settingsPropType,
-    subject_uuid: string,
+    subjectUuid: string,
 }

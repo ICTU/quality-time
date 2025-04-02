@@ -1,7 +1,7 @@
 import { array, func } from "prop-types"
 import { useContext } from "react"
 
-import { set_reports_attribute } from "../api/report"
+import { setReportsAttribute } from "../api/report"
 import { DataModel } from "../context/DataModel"
 import { CardDashboard } from "../dashboard/CardDashboard"
 import { LegendCard } from "../dashboard/LegendCard"
@@ -47,9 +47,9 @@ export function ReportsOverviewDashboard({
             nrMetrics = Math.max(nrMetrics, sum(tagSummary[tag][date]))
         })
     })
-    let report_cards = []
+    let reportCards = []
     if (settings.hiddenCards.excludes("reports")) {
-        report_cards = reports.map((report) => (
+        reportCards = reports.map((report) => (
             <MetricSummaryCard
                 key={report.report_uuid}
                 header={report.title}
@@ -94,10 +94,10 @@ export function ReportsOverviewDashboard({
     }
     return (
         <CardDashboard
-            cards={report_cards.concat(tagCards).concat(extraCards)}
+            cards={reportCards.concat(tagCards).concat(extraCards)}
             initialLayout={layout}
-            saveLayout={function (new_layout) {
-                set_reports_attribute("layout", new_layout, reload)
+            saveLayout={function (newLayout) {
+                setReportsAttribute("layout", newLayout, reload)
             }}
         />
     )

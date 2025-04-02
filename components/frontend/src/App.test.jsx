@@ -4,7 +4,7 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import * as auth from "./api/auth"
-import * as fetch_server_api from "./api/fetch_server_api"
+import * as fetchServerApi from "./api/fetch_server_api"
 import App from "./App"
 import { expectNoAccessibilityViolations } from "./testUtils"
 import * as toast from "./widgets/toast"
@@ -13,10 +13,10 @@ vi.mock("./api/fetch_server_api.js")
 vi.mock("./api/auth.js")
 vi.mock("./widgets/toast.jsx")
 
-function set_user_in_local_storage(session_expiration_datetime, email) {
+function setUserInLocalStorage(sessionExpirationDatetime, email) {
     localStorage.setItem("user", "admin")
     localStorage.setItem("email", email ?? "admin@example.org")
-    localStorage.setItem("session_expiration_datetime", session_expiration_datetime)
+    localStorage.setItem("session_expiration_datetime", sessionExpirationDatetime)
 }
 
 beforeAll(() => {
@@ -28,8 +28,8 @@ beforeAll(() => {
 
 beforeEach(async () => {
     history.push("")
-    fetch_server_api.api_with_report_date = (await vi.importActual("./api/fetch_server_api.js")).api_with_report_date
-    fetch_server_api.fetch_server_api = vi.fn().mockReturnValue({
+    fetchServerApi.apiWithReportDate = (await vi.importActual("./api/fetch_server_api.js")).apiWithReportDate
+    fetchServerApi.fetchServerApi = vi.fn().mockReturnValue({
         then: vi.fn().mockReturnValue({ catch: vi.fn().mockReturnValue({ finally: vi.fn() }) }),
     })
     auth.login = vi.fn().mockResolvedValue({
@@ -48,7 +48,7 @@ it("shows spinner", async () => {
 })
 
 it("sets the user from local storage", async () => {
-    set_user_in_local_storage("3000-02-23T22:00:50.945Z")
+    setUserInLocalStorage("3000-02-23T22:00:50.945Z")
     const { container } = render(<App />)
     expect(screen.getAllByText(/admin/).length).toBe(1)
     expect(screen.getAllByAltText(/Avatar for admin/).length).toBe(1)
@@ -56,7 +56,7 @@ it("sets the user from local storage", async () => {
 })
 
 it("does not set invalid email addresses", async () => {
-    set_user_in_local_storage("3000-02-23T22:00:50.945Z", "admin at example.org")
+    setUserInLocalStorage("3000-02-23T22:00:50.945Z", "admin at example.org")
     const { container } = render(<App />)
     expect(screen.getAllByText(/admin/).length).toBe(1)
     expect(screen.queryAllByAltText(/Avatar for admin/).length).toBe(0)
@@ -64,14 +64,14 @@ it("does not set invalid email addresses", async () => {
 })
 
 it("resets the user when the session is expired on mount", async () => {
-    set_user_in_local_storage("2000-02-23T22:00:50.945Z")
+    setUserInLocalStorage("2000-02-23T22:00:50.945Z")
     const { container } = render(<App />)
     expect(screen.queryAllByText(/admin/).length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
 
 it("resets the user when the user clicks logout", async () => {
-    set_user_in_local_storage("3000-02-23T22:00:50.945Z")
+    setUserInLocalStorage("3000-02-23T22:00:50.945Z")
     auth.logout = vi.fn().mockResolvedValue({ ok: true })
     const { container } = render(<App />)
     fireEvent.click(screen.getByText(/admin/))

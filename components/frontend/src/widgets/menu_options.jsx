@@ -1,43 +1,48 @@
 import { getMetricName, getSourceName, getSubjectName, getSubjectTypeMetrics } from "../utils"
 import { ItemBreadcrumb } from "./ItemBreadcrumb"
 
-export function metric_options(reports, dataModel, current_subject_type, current_subject_uuid) {
-    const subject_metrics = getSubjectTypeMetrics(current_subject_type, dataModel.subjects)
+function sortOptions(options) {
+    return options.sort((a, b) => a.text.localeCompare(b.text))
+}
+
+export function metricOptions(reports, dataModel, currentSubjectType, currentSubjectUuid) {
+    const subjectMetrics = getSubjectTypeMetrics(currentSubjectType, dataModel.subjects)
     let options = []
     reports.forEach((report) => {
-        Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-            if (subject_uuid === current_subject_uuid) {
+        Object.entries(report.subjects).forEach(([subjectUuid, subject]) => {
+            if (subjectUuid === currentSubjectUuid) {
                 return
             }
-            const subject_name = getSubjectName(subject, dataModel)
-            Object.entries(subject.metrics).forEach(([metric_uuid, metric]) => {
-                if (!subject_metrics.includes(metric.type)) {
+            const subjectName = getSubjectName(subject, dataModel)
+            Object.entries(subject.metrics).forEach(([metricUuid, metric]) => {
+                if (!subjectMetrics.includes(metric.type)) {
                     return
                 }
-                const metric_name = getMetricName(metric, dataModel)
+                const metricName = getMetricName(metric, dataModel)
                 options.push({
-                    content: <ItemBreadcrumb report={report.title} subject={subject_name} metric={metric_name} />,
-                    key: metric_uuid,
-                    text: report.title + subject_name + metric_name,
-                    value: metric_uuid,
+                    content: <ItemBreadcrumb report={report.title} subject={subjectName} metric={metricName} />,
+                    key: metricUuid,
+                    text: report.title + subjectName + metricName,
+                    value: metricUuid,
                 })
             })
         })
     })
-    options.sort((a, b) => a.text.localeCompare(b.text))
-    return options
+    return sortOptions(options)
 }
 
-export function report_options(reports) {
-    let options = []
-    reports.forEach((report) => {
-        options.push({ key: report.report_uuid, content: report.title, text: report.title, value: report.report_uuid })
-    })
-    options.sort((a, b) => a.text.localeCompare(b.text))
-    return options
+export function reportOptions(reports) {
+    return sortOptions(
+        reports.map((report) => ({
+            key: report.report_uuid,
+            content: report.title,
+            text: report.title,
+            value: report.report_uuid,
+        })),
+    )
 }
 
-export function source_options(reports, dataModel, currentMetricType, currentMetricUuid) {
+export function sourceOptions(reports, dataModel, currentMetricType, currentMetricUuid) {
     const metricSources = dataModel.metrics[currentMetricType].sources
     let options = []
     reports.forEach((report) => {
@@ -70,26 +75,24 @@ export function source_options(reports, dataModel, currentMetricType, currentMet
             })
         })
     })
-    options.sort((a, b) => a.text.localeCompare(b.text))
-    return options
+    return sortOptions(options)
 }
 
-export function subject_options(reports, dataModel, current_report_uuid) {
+export function subjectOptions(reports, dataModel, currentReportUuid) {
     let options = []
     reports.forEach((report) => {
-        if (report.report_uuid === current_report_uuid) {
+        if (report.report_uuid === currentReportUuid) {
             return
         }
-        Object.entries(report.subjects).forEach(([subject_uuid, subject]) => {
-            const subject_name = getSubjectName(subject, dataModel)
+        Object.entries(report.subjects).forEach(([subjectUuid, subject]) => {
+            const subjectName = getSubjectName(subject, dataModel)
             options.push({
-                content: <ItemBreadcrumb report={report.title} subject={subject_name} />,
-                key: subject_uuid,
-                text: report.title + subject_name,
-                value: subject_uuid,
+                content: <ItemBreadcrumb report={report.title} subject={subjectName} />,
+                key: subjectUuid,
+                text: report.title + subjectName,
+                value: subjectUuid,
             })
         })
     })
-    options.sort((a, b) => a.text.localeCompare(b.text))
-    return options
+    return sortOptions(options)
 }

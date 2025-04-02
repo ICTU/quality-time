@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
-import * as fetch_server_api from "../api/fetch_server_api"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -54,6 +54,22 @@ const report = {
                     type: "metric_type",
                     sources: {},
                 },
+                metric_with_two_sources: {
+                    name: "Metric with two sources",
+                    type: "metric_type",
+                    sources: {
+                        source_uuid1: {
+                            name: "Source 3",
+                            type: "source_type1",
+                            parameters: { url: "https://test.nl" },
+                        },
+                        source_uuid2: {
+                            name: "Source 4",
+                            type: "source_type1",
+                            parameters: { url: "https://test.nl" },
+                        },
+                    },
+                },
             },
         },
     },
@@ -67,13 +83,11 @@ function renderSources(props) {
                     report={report}
                     reports={[report]}
                     metric={report.subjects.subject_uuid.metrics.metric_uuid}
-                    metric_uuid="metric_uuid"
+                    metricUuid="metric_uuid"
                     measurement={{
                         sources: [{ source_uuid: "source_uuid", connection_error: "Oops" }],
                     }}
-                    reload={() => {
-                        /* Dummy implemention */
-                    }}
+                    reload={vi.fn()}
                     settings={createTestableSettings()}
                     {...props}
                 />
@@ -81,6 +95,8 @@ function renderSources(props) {
         </Permissions.Provider>,
     )
 }
+
+beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 0 })))
 
 it("shows a source", async () => {
     const { container } = renderSources()
@@ -108,7 +124,6 @@ it("shows errored sources", async () => {
 })
 
 it("creates a new source", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderSources()
     await act(async () => {
         fireEvent.click(screen.getByText(/Add source/))
@@ -117,14 +132,13 @@ it("creates a new source", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Source type 2/))
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenNthCalledWith(1, "post", "source/new/metric_uuid", {
+    expect(fetchServerApi.fetchServerApi).toHaveBeenNthCalledWith(1, "post", "source/new/metric_uuid", {
         type: "source_type2",
     })
     await expectNoAccessibilityViolations(container)
 })
 
 it("copies a source", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderSources()
     await act(async () => {
         fireEvent.click(screen.getByText(/Copy source/))
@@ -133,17 +147,11 @@ it("copies a source", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Source 1/))
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenNthCalledWith(
-        1,
-        "post",
-        "source/source_uuid/copy/metric_uuid",
-        {},
-    )
+    expect(fetchServerApi.fetchServerApi).toHaveBeenNthCalledWith(1, "post", "source/source_uuid/copy/metric_uuid", {})
     await expectNoAccessibilityViolations(container)
 })
 
 it("moves a source", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderSources()
     await act(async () => {
         fireEvent.click(screen.getByText(/Move source/))
@@ -152,7 +160,7 @@ it("moves a source", async () => {
     await act(async () => {
         fireEvent.click(screen.getByText(/Source 2/))
     })
-    expect(fetch_server_api.fetch_server_api).toHaveBeenNthCalledWith(
+    expect(fetchServerApi.fetchServerApi).toHaveBeenNthCalledWith(
         1,
         "post",
         "source/other_source_uuid/move/metric_uuid",
@@ -162,7 +170,6 @@ it("moves a source", async () => {
 })
 
 it("updates a parameter of a source", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 0 })
     const { container } = renderSources()
     await userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), "https://other{Enter}", {
         initialSelectionStart: 0,
@@ -173,7 +180,7 @@ it("updates a parameter of a source", async () => {
         fireEvent.click(screen.getByDisplayValue("Source 1"))
     })
     expect(screen.getAllByDisplayValue("https://other").length).toBe(1)
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "source/source_uuid/parameter/url", {
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "source/source_uuid/parameter/url", {
         edit_scope: "source",
         url: "https://other",
     })
@@ -182,7 +189,7 @@ it("updates a parameter of a source", async () => {
 })
 
 it("mass updates a parameter of a source", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 })
+    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 })
     const { container } = renderSources()
     fireEvent.click(screen.getByLabelText(/Edit scope/))
     await expectNoAccessibilityViolations(container)
@@ -197,10 +204,20 @@ it("mass updates a parameter of a source", async () => {
         fireEvent.click(screen.getByDisplayValue("Source 1"))
     })
     expect(screen.getAllByDisplayValue("https://other").length).toBe(1)
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "source/source_uuid/parameter/url", {
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "source/source_uuid/parameter/url", {
         edit_scope: "subject",
         url: "https://other",
     })
     expect(toast.showMessage).toHaveBeenCalledTimes(1)
     await expectNoAccessibilityViolations(container)
+})
+
+it("repositions a source", async () => {
+    renderSources({ metric: report.subjects.subject_uuid.metrics.metric_with_two_sources })
+    await act(async () =>
+        fireEvent.click(screen.getAllByRole("button", { name: /Move source to the last position/ })[0]),
+    )
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "source/source_uuid1/attribute/position", {
+        position: "last",
+    })
 })

@@ -1,9 +1,9 @@
-import Grid from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import { bool, func, node, string } from "prop-types"
 import { useContext, useState } from "react"
 
-import { add_metric_issue, set_metric_attribute } from "../api/metric"
-import { get_report_issue_tracker_suggestions } from "../api/report"
+import { addMetricIssue, setMetricAttribute } from "../api/metric"
+import { getReportIssueTrackerSuggestions } from "../api/report"
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { metricPropType, reportPropType } from "../sharedPropTypes"
@@ -13,7 +13,7 @@ import { AddItemIcon } from "../widgets/icons"
 import { showMessage } from "../widgets/toast"
 import { WarningMessage } from "../widgets/WarningMessage"
 
-function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, metric_uuid, target, reload }) {
+function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, metricUuid, target, reload }) {
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
@@ -23,7 +23,7 @@ function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, me
             icon={<AddItemIcon />}
             itemType="issue"
             onClick={() =>
-                add_metric_issue(metric_uuid, reload, (error) => showMessage("error", "Could not create issue", error))
+                addMetricIssue(metricUuid, reload, (error) => showMessage("error", "Could not create issue", error))
             }
             popup={
                 <>
@@ -37,12 +37,12 @@ function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, me
 CreateIssueButton.propTypes = {
     issueTrackerConfigured: bool,
     issueTrackerInstruction: node,
-    metric_uuid: string,
+    metricUuid: string,
     target: string,
     reload: func,
 }
 
-function IssueIdentifiers({ entityKey, issueTrackerInstruction, metric, metric_uuid, report_uuid, target, reload }) {
+function IssueIdentifiers({ entityKey, issueTrackerInstruction, metric, metricUuid, reportUuid, target, reload }) {
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const issueStatusHelp = `Identifiers of issues in the configured issue tracker that track the progress of fixing this ${target}.
@@ -58,10 +58,10 @@ function IssueIdentifiers({ entityKey, issueTrackerInstruction, metric, metric_u
             helperText={issueStatusHelp}
             key={issueIds} // Make sure the multiple choice input is rerendered when the issue ids change
             label="Issue identifiers"
-            onChange={(value) => set_metric_attribute(metric_uuid, "issue_ids", value, reload)}
+            onChange={(value) => setMetricAttribute(metricUuid, "issue_ids", value, reload)}
             onInputChange={(_event, query) => {
                 if (query) {
-                    get_report_issue_tracker_suggestions(report_uuid, query)
+                    getReportIssueTrackerSuggestions(reportUuid, query)
                         .then((suggestionsResponse) => {
                             const suggestionOptions = suggestionsResponse.suggestions.map((s) => ({
                                 id: s.key,
@@ -84,13 +84,13 @@ IssueIdentifiers.propTypes = {
     entityKey: string,
     issueTrackerInstruction: node,
     metric: metricPropType,
-    metric_uuid: string,
-    report_uuid: string,
+    metricUuid: string,
+    reportUuid: string,
     target: string,
     reload: func,
 }
 
-export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
+export function IssuesRows({ metric, metricUuid, reload, report, target }) {
     const parameters = report?.issue_tracker?.parameters
     const issueTrackerConfigured = Boolean(
         report?.issue_tracker?.type && parameters?.url && parameters?.project_key && parameters?.issue_type,
@@ -101,8 +101,8 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
     const issueIdentifiersProps = {
         issueTrackerInstruction: issueTrackerInstruction,
         metric: metric,
-        metric_uuid: metric_uuid,
-        report_uuid: report.report_uuid,
+        metricUuid: metricUuid,
+        reportUuid: report.report_uuid,
         target: target ?? "metric",
         reload: reload,
     }
@@ -112,7 +112,7 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
                 <CreateIssueButton
                     issueTrackerConfigured={issueTrackerConfigured}
                     issueTrackerInstruction={issueTrackerInstruction}
-                    metric_uuid={metric_uuid}
+                    metricUuid={metricUuid}
                     target={target ?? "metric"}
                     reload={reload}
                 />
@@ -157,7 +157,7 @@ export function IssuesRows({ metric, metric_uuid, reload, report, target }) {
 IssuesRows.propTypes = {
     entityKey: string,
     metric: metricPropType,
-    metric_uuid: string,
+    metricUuid: string,
     reload: func,
     report: reportPropType,
     target: string,

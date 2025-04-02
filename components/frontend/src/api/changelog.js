@@ -1,17 +1,13 @@
-import { fetch_server_api } from "./fetch_server_api"
+import { fetchServerApi } from "./fetch_server_api"
 
-export function get_changelog(nr_changes, uuids) {
-    if (Object.keys(uuids).includes("source_uuid")) {
-        return fetch_server_api("get", `changelog/source/${uuids.source_uuid}/${nr_changes}`)
+export function getChangelog(nrChanges, uuids) {
+    const entityTypes = ["source", "metric", "subject", "report"]
+
+    for (const entityType of entityTypes) {
+        const uuidKey = `${entityType}_uuid`
+        if (Object.keys(uuids).includes(uuidKey)) {
+            return fetchServerApi("get", `changelog/${entityType}/${uuids[uuidKey]}/${nrChanges}`)
+        }
     }
-    if (Object.keys(uuids).includes("metric_uuid")) {
-        return fetch_server_api("get", `changelog/metric/${uuids.metric_uuid}/${nr_changes}`)
-    }
-    if (Object.keys(uuids).includes("subject_uuid")) {
-        return fetch_server_api("get", `changelog/subject/${uuids.subject_uuid}/${nr_changes}`)
-    }
-    if (Object.keys(uuids).includes("report_uuid")) {
-        return fetch_server_api("get", `changelog/report/${uuids.report_uuid}/${nr_changes}`)
-    }
-    return fetch_server_api("get", `changelog/${nr_changes}`)
+    return fetchServerApi("get", `changelog/${nrChanges}`)
 }

@@ -6,14 +6,14 @@ import { childrenPropType, settingsPropType } from "../sharedPropTypes"
 import { Header } from "./Header"
 import { CaretRight } from "./icons"
 
-export function HeaderWithDetails({ children, header, item_uuid, level, settings, subheader }) {
-    const showDetails = Boolean(settings.expandedItems.includes(item_uuid))
+export function HeaderWithDetails({ children, header, itemUuid, level, settings, subheader }) {
+    const showDetails = Boolean(settings.expandedItems.includes(itemUuid))
     return (
         <Accordion
             disableGutters // Prevent the accordion summary from moving down when expanding the accordion
             elevation={0}
             expanded={showDetails}
-            onChange={() => settings.expandedItems.toggle(item_uuid)}
+            onChange={() => settings.expandedItems.toggle(itemUuid)}
             slotProps={{ transition: { unmountOnExit: true } }} // Make testing for (dis)appearance of contents easier
             slots={{ heading: "div" }}
             sx={{
@@ -23,10 +23,10 @@ export function HeaderWithDetails({ children, header, item_uuid, level, settings
             }}
         >
             <AccordionSummary
-                aria-controls={showDetails ? `accordion-content-${item_uuid}` : null}
+                aria-controls={showDetails ? `accordion-content-${itemUuid}` : null}
                 aria-label="Expand/collapse"
                 expandIcon={<CaretRight size={{ h1: "48px", h2: "32px", h3: "24px" }[level]} />}
-                id={`accordion-header-${item_uuid}`}
+                id={`accordion-header-${itemUuid}`}
                 sx={{
                     border: "0",
                     flexDirection: "row-reverse",
@@ -49,7 +49,7 @@ export function HeaderWithDetails({ children, header, item_uuid, level, settings
 HeaderWithDetails.propTypes = {
     children: childrenPropType,
     header: string,
-    item_uuid: string,
+    itemUuid: string,
     level: string,
     settings: settingsPropType,
     subheader: string,

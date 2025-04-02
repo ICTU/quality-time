@@ -4,11 +4,11 @@ import NotificationsIcon from "@mui/icons-material/Notifications"
 import SettingsIcon from "@mui/icons-material/Settings"
 import TimerIcon from "@mui/icons-material/Timer"
 import { Typography } from "@mui/material"
-import Grid from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import { func, oneOfType, string } from "prop-types"
 import { useContext } from "react"
 
-import { delete_report, set_report_attribute } from "../api/report"
+import { deleteReport, setReportAttribute } from "../api/report"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions, ReadOnlyOrEditable } from "../context/Permissions"
 import { CommentField } from "../fields/CommentField"
@@ -36,7 +36,7 @@ function ReportConfiguration({ reload, report }) {
                     disabled={disabled}
                     id="report_title"
                     label="Report title"
-                    onChange={(value) => set_report_attribute(report.report_uuid, "title", value, reload)}
+                    onChange={(value) => setReportAttribute(report.report_uuid, "title", value, reload)}
                     value={report.title}
                 />
             </Grid>
@@ -45,7 +45,7 @@ function ReportConfiguration({ reload, report }) {
                     disabled={disabled}
                     id="report-subtitle"
                     label="Report subtitle"
-                    onChange={(value) => set_report_attribute(report.report_uuid, "subtitle", value, reload)}
+                    onChange={(value) => setReportAttribute(report.report_uuid, "subtitle", value, reload)}
                     value={report.subtitle}
                 />
             </Grid>
@@ -53,7 +53,7 @@ function ReportConfiguration({ reload, report }) {
                 <CommentField
                     disabled={disabled}
                     id="report-comment"
-                    onChange={(value) => set_report_attribute(report.report_uuid, "comment", value, reload)}
+                    onChange={(value) => setReportAttribute(report.report_uuid, "comment", value, reload)}
                     value={report.comment}
                 />
             </Grid>
@@ -81,7 +81,7 @@ function DesiredResponseTimeInput({ reload, report, status }) {
             label={label}
             onChange={(value) => {
                 desiredResponseTimes[status] = parseInt(value)
-                set_report_attribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
+                setReportAttribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
             }}
             type="number"
             value={getDesiredResponseTime(report, status)?.toString()}
@@ -137,13 +137,13 @@ ReactionTimes.propTypes = {
     report: reportPropType,
 }
 
-function ReportTitleButtonRow({ report_uuid, openReportsOverview, settings, url }) {
+function ReportTitleButtonRow({ reportUuid, openReportsOverview, settings, url }) {
     const deleteButton = (
         <DeleteButton
             itemType="report"
             onClick={() => {
-                delete_report(report_uuid, openReportsOverview)
-                settings.expandedItems.deleteItem(report_uuid)
+                deleteReport(reportUuid, openReportsOverview)
+                settings.expandedItems.deleteItem(reportUuid)
             }}
         />
     )
@@ -159,20 +159,20 @@ function ReportTitleButtonRow({ report_uuid, openReportsOverview, settings, url 
     )
 }
 ReportTitleButtonRow.propTypes = {
-    report_uuid: string,
+    reportUuid: string,
     openReportsOverview: func,
     settings: settingsPropType,
     url: string,
 }
 
-export function ReportTitle({ report, openReportsOverview, reload, settings }) {
-    const report_uuid = report.report_uuid
+export function ReportTitle({ openReportsOverview, reload, report, settings }) {
+    const reportUuid = report.report_uuid
     const reportUrl = `${window.location}`
     setDocumentTitle(report.title)
     return (
         <HeaderWithDetails
             header={report.title}
-            item_uuid={report.report_uuid}
+            itemUuid={reportUuid}
             level="h1"
             settings={settings}
             subheader={report.subtitle}
@@ -186,20 +186,20 @@ export function ReportTitle({ report, openReportsOverview, reload, settings }) {
                     { label: "Issue tracker", icon: <AssignmentIcon /> },
                     { label: "Changelog", icon: <HistoryIcon /> },
                 ]}
-                uuid={report_uuid}
+                uuid={reportUuid}
             >
                 <ReportConfiguration report={report} reload={reload} />
                 <ReactionTimes report={report} reload={reload} />
                 <NotificationDestinations
                     destinations={report.notification_destinations || {}}
-                    report_uuid={report_uuid}
+                    reportUuid={reportUuid}
                     reload={reload}
                 />
                 <IssueTracker report={report} reload={reload} />
-                <ChangeLog report_uuid={report_uuid} timestamp={report.timestamp} />
+                <ChangeLog reportUuid={reportUuid} timestamp={report.timestamp} />
             </Tabs>
             <ReportTitleButtonRow
-                report_uuid={report_uuid}
+                reportUuid={reportUuid}
                 openReportsOverview={openReportsOverview}
                 settings={settings}
                 url={reportUrl}

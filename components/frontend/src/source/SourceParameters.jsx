@@ -1,5 +1,5 @@
 import { Paper, Stack, Typography } from "@mui/material"
-import Grid from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import { func, string } from "prop-types"
 import { useContext } from "react"
 
@@ -32,7 +32,7 @@ function applicableParameters(allParameters, remainingParameters, parameterGroup
     return parameterKeys.filter((parameterKey) => allParameters[parameterKey]?.metrics?.includes(metric.type))
 }
 
-export function SourceParameters({ changed_param_keys, metric, reload, report, source, source_uuid }) {
+export function SourceParameters({ changedParamKeys, metric, reload, report, source, sourceUuid }) {
     const dataModel = useContext(DataModel)
     const metricUnit = formatMetricScaleAndUnit(metric, dataModel)
     const allParameters = dataModel.sources[source.type].parameters
@@ -49,25 +49,25 @@ export function SourceParameters({ changed_param_keys, metric, reload, report, s
                 <SourceParameter
                     report={report}
                     source={source}
-                    source_uuid={source_uuid}
-                    parameter_key={parameterKey}
-                    parameter_type={allParameters[parameterKey].type}
-                    parameter_name={allParameters[parameterKey].name}
-                    parameter_unit={allParameters[parameterKey].unit || metricUnit}
-                    parameter_min={allParameters[parameterKey].min_value || null}
-                    parameter_max={allParameters[parameterKey].max_value || null}
-                    parameter_value={
+                    sourceUuid={sourceUuid}
+                    parameterKey={parameterKey}
+                    parameterType={allParameters[parameterKey].type}
+                    parameterName={allParameters[parameterKey].name}
+                    parameterUnit={allParameters[parameterKey].unit || metricUnit}
+                    parameterMin={allParameters[parameterKey].min_value || null}
+                    parameterMax={allParameters[parameterKey].max_value || null}
+                    parameterValue={
                         source.parameters?.[parameterKey]
                             ? source.parameters[parameterKey]
                             : allParameters[parameterKey].default_value
                     }
-                    parameter_values={allParameters[parameterKey].values || []}
-                    help_url={allParameters[parameterKey].help_url}
+                    parameterValues={allParameters[parameterKey].values || []}
+                    helpUrl={allParameters[parameterKey].help_url}
                     help={allParameters[parameterKey].help}
                     requiredPermissions={[EDIT_REPORT_PERMISSION]}
                     placeholder={allParameters[parameterKey].placeholder || ""}
                     required={allParameters[parameterKey].mandatory}
-                    warning={changed_param_keys?.indexOf(parameterKey) !== -1}
+                    warning={changedParamKeys?.indexOf(parameterKey) !== -1}
                     reload={reload}
                 />
             </div>
@@ -90,10 +90,10 @@ export function SourceParameters({ changed_param_keys, metric, reload, report, s
     )
 }
 SourceParameters.propTypes = {
-    changed_param_keys: stringsPropType,
+    changedParamKeys: stringsPropType,
     metric: metricPropType,
     reload: func,
     report: reportPropType,
     source: sourcePropType,
-    source_uuid: string,
+    sourceUuid: string,
 }

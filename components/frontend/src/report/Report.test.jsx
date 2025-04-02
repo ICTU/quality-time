@@ -4,7 +4,7 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings, dataModel } from "../__fixtures__/fixtures"
-import * as fetch_server_api from "../api/fetch_server_api"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
@@ -16,7 +16,7 @@ import { Report } from "./Report"
 vi.mock("../api/fetch_server_api.js")
 
 beforeEach(() => {
-    fetch_server_api.fetch_server_api = vi.fn().mockReturnValue({ then: vi.fn().mockReturnValue({ finally: vi.fn() }) })
+    fetchServerApi.fetchServerApi = vi.fn().mockReturnValue({ then: vi.fn().mockReturnValue({ finally: vi.fn() }) })
     mockGetAnimations()
     history.push("")
 })
@@ -53,7 +53,7 @@ async function renderReport({
     dates = [new Date()],
     handleSort = vi.fn(),
     hiddenTags = null,
-    report_date = null,
+    reportDate = null,
 } = {}) {
     const settings = createTestableSettings()
     if (hiddenTags) {
@@ -72,7 +72,7 @@ async function renderReport({
                             measurements={[]}
                             reports={[reportToRender]}
                             report={reportToRender}
-                            report_date={report_date}
+                            reportDate={reportDate}
                             settings={settings}
                         />
                     </DataModel.Provider>
@@ -96,7 +96,7 @@ it("shows an error message if there is no report", async () => {
 })
 
 it("shows an error message if there was no report", async () => {
-    const { container } = await renderReport({ report_date: new Date("2020-01-01") })
+    const { container } = await renderReport({ reportDate: new Date("2020-01-01") })
     expect(screen.getAllByText(/Sorry, this report didn't exist/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })

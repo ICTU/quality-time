@@ -1,22 +1,20 @@
-import { fetch_server_api } from "./fetch_server_api"
+import { fetchServerApi } from "./fetch_server_api"
 
-export function add_notification_destination(report_uuid, reload) {
+export function addNotificationDestination(reportUuid, reload) {
     const reportUrl = window.location.href.split("?")[0]
-    return fetch_server_api("post", `report/${report_uuid}/notification_destination/new`, {
+    return fetchServerApi("post", `report/${reportUuid}/notification_destination/new`, {
         report_url: reportUrl,
     }).then(reload)
 }
 
-export function delete_notification_destination(report_uuid, destination_uuid, reload) {
-    return fetch_server_api("delete", `report/${report_uuid}/notification_destination/${destination_uuid}`, {}).then(
-        reload,
-    )
+export function deleteNotificationDestination(reportUuid, destinationUuid, reload) {
+    return fetchServerApi("delete", `report/${reportUuid}/notification_destination/${destinationUuid}`, {}).then(reload)
 }
 
-export function set_notification_destination_attributes(report_uuid, destination_uuid, attributes, reload) {
-    return fetch_server_api(
+export function setNotificationDestinationAttributes(reportUuid, destinationUuid, attributes, reload) {
+    return fetchServerApi(
         "post",
-        `report/${report_uuid}/notification_destination/${destination_uuid}/attributes`,
+        `report/${reportUuid}/notification_destination/${destinationUuid}/attributes`,
         attributes,
     ).then(reload)
 }

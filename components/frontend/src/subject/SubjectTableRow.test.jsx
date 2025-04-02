@@ -7,16 +7,14 @@ import { DataModel } from "../context/DataModel"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTableRow } from "./SubjectTableRow"
 
-beforeEach(() => {
-    history.push("")
-})
+beforeEach(() => history.push(""))
 
 function renderSubjectTableRow({
     comment = "",
     direction = "<",
     ascending = false,
     scale = "count",
-    evaluate_targets = undefined,
+    evaluateTargets = undefined,
 } = {}) {
     const dates = [new Date("2024-01-03"), new Date("2024-01-02"), new Date("2024-01-01")]
     const reverseMeasurements = [
@@ -55,16 +53,17 @@ function renderSubjectTableRow({
                         metric={{
                             comment: comment,
                             direction: direction,
-                            evaluate_targets: evaluate_targets,
+                            evaluate_targets: evaluateTargets,
                             recent_measurements: [],
                             scale: scale,
                             type: "metric_type",
                             unit: "things",
                         }}
-                        metric_uuid="metric_uuid"
+                        metricUuid="metric_uuid"
                         report={report}
                         reversedMeasurements={reverseMeasurements}
                         settings={createTestableSettings()}
+                        subjectUuid="subject_uuid"
                     />
                 </TableBody>
             </Table>
@@ -101,7 +100,7 @@ it("takes the metric direction into account", async () => {
 
 it("works for informative metrics", async () => {
     history.push("?nr_dates=3&date_interval=1")
-    const { container } = renderSubjectTableRow({ evaluate_targets: false })
+    const { container } = renderSubjectTableRow({ evaluateTargets: false })
     expect(screen.getAllByText("+2").length).toBe(1)
     expect(screen.getAllByLabelText("Metric type changed from 10 to 12 things by +2 things").length).toBe(1)
     expect(screen.getAllByText("-4").length).toBe(1)

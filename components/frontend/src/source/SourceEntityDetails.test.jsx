@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event"
 import dayjs from "dayjs"
 import { vi } from "vitest"
 
-import * as source from "../api/source"
+import * as sourceApi from "../api/source"
 import { EDIT_ENTITY_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceEntityDetails } from "./SourceEntityDetails"
@@ -14,24 +14,26 @@ vi.mock("../api/source.js")
 
 const reload = vi.fn
 
-function renderSourceEntityDetails({ report = null, status_end_date = null } = {}) {
+function renderSourceEntityDetails({ report = null, statusEndDate = null } = {}) {
     return render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Permissions.Provider value={[EDIT_ENTITY_PERMISSION]}>
                 <SourceEntityDetails
-                    metric_uuid="metric_uuid"
-                    source_uuid="source_uuid"
+                    metricUuid="metric_uuid"
+                    sourceUuid="source_uuid"
                     entity={{ key: "key" }}
                     status="unconfirmed"
                     name="violation"
                     reload={reload}
                     report={report}
-                    status_end_date={status_end_date}
+                    statusEndDate={statusEndDate}
                 />
             </Permissions.Provider>
         </LocalizationProvider>,
     )
 }
+
+beforeEach(() => (sourceApi.setSourceEntityAttribute = vi.fn()))
 
 it("shows the default desired response times when the report has no desired response times", async () => {
     const { container } = renderSourceEntityDetails()
@@ -81,11 +83,10 @@ it("shows no desired response times when the report has been configured to not h
 })
 
 it("changes the entity status", async () => {
-    source.set_source_entity_attribute = vi.fn()
     const { container } = renderSourceEntityDetails()
     fireEvent.mouseDown(screen.getByText("Unconfirm"))
     fireEvent.click(screen.getByText(/Confirm/))
-    expect(source.set_source_entity_attribute).toHaveBeenCalledWith(
+    expect(sourceApi.setSourceEntityAttribute).toHaveBeenCalledWith(
         "metric_uuid",
         "source_uuid",
         "key",
@@ -97,17 +98,15 @@ it("changes the entity status", async () => {
 })
 
 it("shows the entity status end date", async () => {
-    source.set_source_entity_attribute = vi.fn()
-    const { container } = renderSourceEntityDetails({ status_end_date: "20250112" })
+    const { container } = renderSourceEntityDetails({ statusEndDate: "20250112" })
     expect(screen.queryAllByDisplayValue("01/12/2025").length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("changes the entity status end date", async () => {
-    source.set_source_entity_attribute = vi.fn()
     const { container } = renderSourceEntityDetails()
     await userEvent.type(screen.getByPlaceholderText(/YYYY/), "01012222{Enter}")
-    expect(source.set_source_entity_attribute).toHaveBeenCalledWith(
+    expect(sourceApi.setSourceEntityAttribute).toHaveBeenCalledWith(
         "metric_uuid",
         "source_uuid",
         "key",
@@ -119,11 +118,10 @@ it("changes the entity status end date", async () => {
 })
 
 it("changes the rationale", async () => {
-    source.set_source_entity_attribute = vi.fn()
     const { container } = renderSourceEntityDetails()
     await userEvent.type(screen.getByLabelText(/rationale/), "Rationale")
     await userEvent.tab()
-    expect(source.set_source_entity_attribute).toHaveBeenCalledWith(
+    expect(sourceApi.setSourceEntityAttribute).toHaveBeenCalledWith(
         "metric_uuid",
         "source_uuid",
         "key",

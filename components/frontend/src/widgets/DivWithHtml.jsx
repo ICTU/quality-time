@@ -1,10 +1,10 @@
-import "./DivWithHTML.css"
+import "./DivWithHtml.css"
 
 import { createRef, useLayoutEffect, useState } from "react"
 
 import { childrenPropType } from "../sharedPropTypes"
 
-export function DivWithHTML({ children }) {
+export function DivWithHtml({ children }) {
     const minHeight = 15
     const maxHeight = 60
     const ref = createRef()
@@ -30,6 +30,6 @@ export function DivWithHTML({ children }) {
         />
     )
 }
-DivWithHTML.propTypes = {
+DivWithHtml.propTypes = {
     children: childrenPropType,
 }

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
-import * as fetch_server_api from "../api/fetch_server_api"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -41,14 +41,7 @@ function renderMetricTarget(metric) {
     return render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={dataModel}>
-                <Target
-                    metric={metric}
-                    metric_uuid="metric_uuid"
-                    target_type="target"
-                    reload={() => {
-                        /* Dummy implementation */
-                    }}
-                />
+                <Target metric={metric} metricUuid="metric_uuid" targetType="target" reload={vi.fn()} />
             </DataModel.Provider>
         </Permissions.Provider>,
     )
@@ -61,13 +54,14 @@ async function typeInField(label, text) {
     })
 }
 
+beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
+
 function expectMetricAttributePost(attribute, payload) {
     const endPoint = `metric/metric_uuid/attribute/${attribute}`
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", endPoint, { [attribute]: payload })
+    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", endPoint, { [attribute]: payload })
 }
 
 it("sets the metric integer target", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricTarget({ type: "violations", target: "10" })
     await typeInField("10", "42")
     expectMetricAttributePost("target", "42")
@@ -75,7 +69,6 @@ it("sets the metric integer target", async () => {
 })
 
 it("sets the metric version target", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricTarget({ type: "source_version", target: "10" })
     await typeInField("10", "4.2")
     expectMetricAttributePost("target", "4.2")

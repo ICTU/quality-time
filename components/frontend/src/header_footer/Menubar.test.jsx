@@ -4,7 +4,7 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
-import * as fetch_server_api from "../api/fetch_server_api"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { Menubar } from "./Menubar"
 
@@ -14,122 +14,111 @@ beforeEach(() => history.push(""))
 
 afterEach(() => vi.resetAllMocks())
 
+const CREDENTIALS = { username: "user@example.org", password: "secret" }
+
 function renderMenubar({
     openReportsOverview = null,
     panel = null,
-    report_uuid = "report_uuid",
-    set_user = null,
+    reportUuid = "report_uuid",
+    setUser = null,
     user = null,
 } = {}) {
     const settings = createTestableSettings()
     return render(
         <Menubar
-            onDate={() => {
-                /* Dummy handler */
-            }}
+            onDate={vi.fn()}
             openReportsOverview={openReportsOverview}
             panel={panel}
-            report_uuid={report_uuid}
+            reportUuid={reportUuid}
             settings={settings}
-            set_user={set_user}
+            setUser={setUser}
             user={user}
         />,
     )
 }
 
+async function enterCredentials(container) {
+    fireEvent.click(screen.getByText(/Login/))
+    await expectNoAccessibilityViolations(container)
+    fireEvent.change(screen.getByLabelText("Username"), { target: { value: CREDENTIALS.username } })
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: CREDENTIALS.password } })
+    await act(async () => fireEvent.click(screen.getByText(/Submit/)))
+}
+
 it("logs in", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({
+    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({
         ok: true,
         email: "user@example.org",
         session_expiration_datetime: "2021-02-24T13:10:00+00:00",
     })
-    const set_user = vi.fn()
-    const { container } = renderMenubar({ set_user: set_user })
-    fireEvent.click(screen.getByText(/Login/))
-    await expectNoAccessibilityViolations(container)
-    fireEvent.change(screen.getByLabelText("Username"), { target: { value: "user@example.org" } })
-    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "secret" } })
-    await act(async () => fireEvent.click(screen.getByText(/Submit/)))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "login", {
-        username: "user@example.org",
-        password: "secret",
-    })
-    const expected_date = new Date(Date.parse("2021-02-24T13:10:00+00:00"))
-    expect(set_user).toHaveBeenCalledWith("user@example.org", "user@example.org", expected_date)
+    const setUser = vi.fn()
+    const { container } = renderMenubar({ setUser: setUser })
+    await enterCredentials(container)
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "login", CREDENTIALS)
+    const expectedDate = new Date(Date.parse("2021-02-24T13:10:00+00:00"))
+    expect(setUser).toHaveBeenCalledWith("user@example.org", "user@example.org", expectedDate)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows invalid credential message", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: false })
-    const set_user = vi.fn()
-    const { container } = renderMenubar({ set_user: set_user })
-    fireEvent.click(screen.getByText(/Login/))
-    fireEvent.change(screen.getByLabelText("Username"), { target: { value: "user@example.org" } })
-    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "secret" } })
-    await act(async () => fireEvent.click(screen.getByText(/Submit/)))
+    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: false })
+    const setUser = vi.fn()
+    const { container } = renderMenubar({ setUser: setUser })
+    await enterCredentials(container)
     expect(screen.getAllByText(/Invalid credentials/).length).toBe(1)
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "login", {
-        username: "user@example.org",
-        password: "secret",
-    })
-    expect(set_user).not.toHaveBeenCalled()
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "login", CREDENTIALS)
+    expect(setUser).not.toHaveBeenCalled()
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows connection error message", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockRejectedValue(new Error("Async error message"))
-    const set_user = vi.fn()
-    const { container } = renderMenubar({ set_user: set_user })
-    fireEvent.click(screen.getByText(/Login/))
-    fireEvent.change(screen.getByLabelText("Username"), { target: { value: "user@example.org" } })
-    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "secret" } })
-    await act(async () => fireEvent.click(screen.getByText(/Submit/)))
+    fetchServerApi.fetchServerApi = vi.fn().mockRejectedValue(new Error("Async error message"))
+    const setUser = vi.fn()
+    const { container } = renderMenubar({ setUser: setUser })
+    await enterCredentials(container)
     expect(screen.getAllByText(/Connection error/).length).toBe(1)
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "login", {
-        username: "user@example.org",
-        password: "secret",
-    })
-    expect(set_user).not.toHaveBeenCalled()
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "login", CREDENTIALS)
+    expect(setUser).not.toHaveBeenCalled()
     await expectNoAccessibilityViolations(container)
 })
 
 it("closes the dialog on cancel", async () => {
-    const set_user = vi.fn()
-    const { container } = renderMenubar({ set_user: set_user })
+    const setUser = vi.fn()
+    const { container } = renderMenubar({ setUser: setUser })
     fireEvent.click(screen.getByText(/Login/))
     await act(async () => fireEvent.click(screen.getByText(/Cancel/)))
     await waitFor(async () => {
         expect(screen.queryAllByLabelText("Username").length).toBe(0)
         await expectNoAccessibilityViolations(container)
     })
-    expect(set_user).not.toHaveBeenCalled()
+    expect(setUser).not.toHaveBeenCalled()
 })
 
 it("closes the dialog on escape", async () => {
-    const set_user = vi.fn()
-    renderMenubar({ set_user: set_user })
+    const setUser = vi.fn()
+    renderMenubar({ setUser: setUser })
     fireEvent.click(screen.getByText(/Login/))
     await userEvent.keyboard("{Escape}")
     await waitFor(() => {
         expect(screen.queryAllByLabelText("Username").length).toBe(0)
     })
-    expect(set_user).not.toHaveBeenCalled()
+    expect(setUser).not.toHaveBeenCalled()
 })
 
 it("logs out", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
-    const set_user = vi.fn()
-    const { container } = renderMenubar({ set_user: set_user, user: "jadoe" })
+    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })
+    const setUser = vi.fn()
+    const { container } = renderMenubar({ setUser: setUser, user: "jadoe" })
     fireEvent.click(screen.getByRole("button", { name: "User options" }))
     fireEvent.click(screen.getByRole("menuitem", { name: "Logout" }))
-    expect(fetch_server_api.fetch_server_api).toHaveBeenCalledWith("post", "logout", {})
-    expect(set_user).toHaveBeenCalledWith(null)
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "logout", {})
+    expect(setUser).toHaveBeenCalledWith(null)
     await expectNoAccessibilityViolations(container)
 })
 
 it("does not go to home page if on reports overview", async () => {
     const openReportsOverview = vi.fn()
-    const { container } = renderMenubar({ report_uuid: "", openReportsOverview: openReportsOverview })
+    const { container } = renderMenubar({ reportUuid: "", openReportsOverview: openReportsOverview })
     act(() => {
         fireEvent.click(screen.getByAltText(/Go to reports overview/))
     })
@@ -162,7 +151,7 @@ it("shows the view panel on menu item click", async () => {
 })
 
 it("shows the view panel on space", async () => {
-    renderMenubar({ report_uuid: "", panel: <div>Hello</div> })
+    renderMenubar({ reportUuid: "", panel: <div>Hello</div> })
     await userEvent.type(screen.getByText(/Settings/), " ")
     expect(screen.getAllByText(/Hello/).length).toBe(1)
 })

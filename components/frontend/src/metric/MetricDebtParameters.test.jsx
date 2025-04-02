@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event"
 import dayjs from "dayjs"
 import { vi } from "vitest"
 
-import * as fetch_server_api from "../api/fetch_server_api"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -37,22 +37,22 @@ const dataModel = {
     },
 }
 
-function renderMetricDebtParameters({ accept_debt = false, debt_end_date = null } = {}) {
+function renderMetricDebtParameters({ acceptDebt = false, debtEndDate = null } = {}) {
     return render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <DataModel.Provider value={dataModel}>
                     <MetricDebtParameters
                         metric={{
-                            accept_debt: accept_debt,
-                            debt_end_date: debt_end_date,
+                            accept_debt: acceptDebt,
+                            debt_end_date: debtEndDate,
                             issue_ids: [],
                             issue_status: [],
                             scale: "count",
                             tags: [],
                             type: "violations",
                         }}
-                        metric_uuid="metric_uuid"
+                        metricUuid="metric_uuid"
                         reload={vi.fn()}
                         report={{ subjects: {} }}
                     />
@@ -63,47 +63,41 @@ function renderMetricDebtParameters({ accept_debt = false, debt_end_date = null 
     )
 }
 
-beforeEach(() => {
-    vi.resetAllMocks()
-})
+beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
+
+afterEach(() => vi.resetAllMocks())
 
 it("accepts technical debt", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricDebtParameters()
     await userEvent.type(screen.getByLabelText(/Accept technical debt/), "Yes{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
-        "post",
-        "metric/metric_uuid/attribute/accept_debt",
-        { accept_debt: true },
-    )
+    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/accept_debt", {
+        accept_debt: true,
+    })
     await expectNoAccessibilityViolations(container)
 })
 
 it("accepts technical debt and sets target and end date", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricDebtParameters()
     await userEvent.type(screen.getByLabelText(/Accept technical debt/), "Yes, and{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/debt", {
+    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "metric/metric_uuid/debt", {
         accept_debt: true,
     })
     await expectNoAccessibilityViolations(container)
 })
 
 it("unaccepts technical debt and resets target and end date", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
-    const { container } = renderMetricDebtParameters({ accept_debt: true })
+    const { container } = renderMetricDebtParameters({ acceptDebt: true })
     await userEvent.type(screen.getByLabelText(/Accept technical debt/), "No, and{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/debt", {
+    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "metric/metric_uuid/debt", {
         accept_debt: false,
     })
     await expectNoAccessibilityViolations(container)
 })
 
 it("adds a comment", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricDebtParameters()
     await userEvent.type(screen.getByLabelText(/Comment/), "Keep cool{Tab}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/comment", {
+    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/comment", {
         comment: "Keep cool",
     })
     await expectNoAccessibilityViolations(container)
@@ -112,15 +106,14 @@ it("adds a comment", async () => {
 it("undoes changes to a comment", async () => {
     const { container } = renderMetricDebtParameters()
     await userEvent.type(screen.getByLabelText(/Comment/), "Keep cool{Escape}")
-    expect(fetch_server_api.fetch_server_api).not.toHaveBeenCalled()
+    expect(fetchServerApi.fetchServerApi).not.toHaveBeenCalled()
     await expectNoAccessibilityViolations(container)
 })
 
 it("sets the technical debt end date", async () => {
-    fetch_server_api.fetch_server_api = vi.fn().mockResolvedValue({ ok: true })
     const { container } = renderMetricDebtParameters()
     await userEvent.type(screen.getByPlaceholderText(/YYYY/), "12312022{Enter}")
-    expect(fetch_server_api.fetch_server_api).toHaveBeenLastCalledWith(
+    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith(
         "post",
         "metric/metric_uuid/attribute/debt_end_date",
         { debt_end_date: dayjs("2022-12-31") },
@@ -129,7 +122,7 @@ it("sets the technical debt end date", async () => {
 })
 
 it("shows days ago for the technical debt end date", async () => {
-    const { container } = renderMetricDebtParameters({ debt_end_date: "2000-01-01" })
+    const { container } = renderMetricDebtParameters({ debtEndDate: "2000-01-01" })
     expect(screen.getAllByText(/years ago/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })

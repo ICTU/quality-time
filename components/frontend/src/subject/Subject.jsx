@@ -1,5 +1,3 @@
-import "./Subject.css"
-
 import { Divider, Paper } from "@mui/material"
 import { bool, func, string } from "prop-types"
 import { useContext } from "react"
@@ -35,7 +33,7 @@ import { SubjectTable } from "./SubjectTable"
 import { SubjectTitle } from "./SubjectTitle"
 
 function sortMetrics(dataModel, metrics, sortDirection, sortColumn, report, measurements) {
-    const status_order = {
+    const statusOrder = {
         unknown: "0",
         target_not_met: "1",
         near_target_met: "2",
@@ -45,29 +43,29 @@ function sortMetrics(dataModel, metrics, sortDirection, sortColumn, report, meas
     }
     const sorters = {
         name: (m1, m2) => {
-            const m1_name = getMetricName(m1[1], dataModel)
-            const m2_name = getMetricName(m2[1], dataModel)
-            return m1_name.localeCompare(m2_name)
+            const m1Name = getMetricName(m1[1], dataModel)
+            const m2Name = getMetricName(m2[1], dataModel)
+            return m1Name.localeCompare(m2Name)
         },
         measurement: (m1, m2) => {
-            const m1_measurement = getMetricValue(m1[1], dataModel)
-            const m2_measurement = getMetricValue(m2[1], dataModel)
-            return m1_measurement.localeCompare(m2_measurement, undefined, { numeric: true })
+            const m1Measurement = getMetricValue(m1[1], dataModel)
+            const m2Measurement = getMetricValue(m2[1], dataModel)
+            return m1Measurement.localeCompare(m2Measurement, undefined, { numeric: true })
         },
         target: (m1, m2) => {
-            const m1_target = getMetricTarget(m1[1])
-            const m2_target = getMetricTarget(m2[1])
-            return m1_target.localeCompare(m2_target, undefined, { numeric: true })
+            const m1Target = getMetricTarget(m1[1])
+            const m2Target = getMetricTarget(m2[1])
+            return m1Target.localeCompare(m2Target, undefined, { numeric: true })
         },
         comment: (m1, m2) => {
-            const m1_comment = getMetricComment(m1[1])
-            const m2_comment = getMetricComment(m2[1])
-            return m1_comment.localeCompare(m2_comment)
+            const m1Comment = getMetricComment(m1[1])
+            const m2Comment = getMetricComment(m2[1])
+            return m1Comment.localeCompare(m2Comment)
         },
         status: (m1, m2) => {
-            const m1_status = status_order[getMetricStatus(m1[1])]
-            const m2_status = status_order[getMetricStatus(m2[1])]
-            return m1_status.localeCompare(m2_status)
+            const m1Status = statusOrder[getMetricStatus(m1[1])]
+            const m2Status = statusOrder[getMetricStatus(m2[1])]
+            return m1Status.localeCompare(m2Status)
         },
         source: (m1, m2) => {
             let m1SourceNames = Object.values(m1[1].sources).map((source) => getSourceName(source, dataModel))
@@ -77,29 +75,29 @@ function sortMetrics(dataModel, metrics, sortDirection, sortColumn, report, meas
             return m1SourceNames.join().localeCompare(m2SourceNames.join())
         },
         issues: (m1, m2) => {
-            const m1_issues = getMetricIssueIds(m1[1]).join()
-            const m2_issues = getMetricIssueIds(m2[1]).join()
-            return m1_issues.localeCompare(m2_issues)
+            const m1Issues = getMetricIssueIds(m1[1]).join()
+            const m2Issues = getMetricIssueIds(m2[1]).join()
+            return m1Issues.localeCompare(m2Issues)
         },
         tags: (m1, m2) => {
-            const m1_tags = getMetricTags(m1[1]).join()
-            const m2_tags = getMetricTags(m2[1]).join()
-            return m1_tags.localeCompare(m2_tags)
+            const m1Tags = getMetricTags(m1[1]).join()
+            const m2Tags = getMetricTags(m2[1]).join()
+            return m1Tags.localeCompare(m2Tags)
         },
         unit: (m1, m2) => {
-            const m1_unit = getMetricUnit(m1[1], dataModel)
-            const m2_unit = getMetricUnit(m2[1], dataModel)
-            return m1_unit.localeCompare(m2_unit)
+            const m1Unit = getMetricUnit(m1[1], dataModel)
+            const m2Unit = getMetricUnit(m2[1], dataModel)
+            return m1Unit.localeCompare(m2Unit)
         },
         time_left: (m1, m2) => {
-            const m1_time_left = getMetricResponseTimeLeft(m1[1], report) ?? 0
-            const m2_time_left = getMetricResponseTimeLeft(m2[1], report) ?? 0
-            return m1_time_left - m2_time_left
+            const m1TimeLeft = getMetricResponseTimeLeft(m1[1], report) ?? 0
+            const m2TimeLeft = getMetricResponseTimeLeft(m2[1], report) ?? 0
+            return m1TimeLeft - m2TimeLeft
         },
         overrun: (m1, m2) => {
-            const m1_overrun = getMetricResponseOverrun(m1[0], m1[1], report, measurements, dataModel)
-            const m2_overrun = getMetricResponseOverrun(m2[0], m2[1], report, measurements, dataModel)
-            return m1_overrun.totalOverrun - m2_overrun.totalOverrun
+            const m1Overrun = getMetricResponseOverrun(m1[0], m1[1], report, measurements, dataModel)
+            const m2Overrun = getMetricResponseOverrun(m2[0], m2[1], report, measurements, dataModel)
+            return m1Overrun.totalOverrun - m2Overrun.totalOverrun
         },
     }
     metrics.sort(sorters[sortColumn])
@@ -133,20 +131,20 @@ subjectIsEmptyDueToFilters.propTypes = {
 
 export function Subject({
     atReportsOverview,
-    changed_fields,
+    changedFields,
     dates,
     firstSubject,
     handleSort,
     lastSubject,
     measurements,
     report,
-    report_date,
+    reportDate,
     reports,
     settings,
-    subject_uuid,
+    subjectUuid,
     reload,
 }) {
-    const subject = report.subjects[subject_uuid]
+    const subject = report.subjects[subjectUuid]
     const metrics = visibleMetrics(subject.metrics, settings.metricsToHide.value, settings.hiddenTags.value)
     const dataModel = useContext(DataModel)
     if (subjectIsEmptyDueToFilters(atReportsOverview, metrics, subject.metrics, settings)) {
@@ -165,50 +163,48 @@ export function Subject({
     }
 
     return (
-        <Paper id={subject_uuid} elevation={5} sx={{ marginTop: "50px" }}>
-            <div className="sticky">
-                <SubjectTitle
-                    atReportsOverview={atReportsOverview}
-                    firstSubject={firstSubject}
-                    lastSubject={lastSubject}
-                    reload={reload}
-                    report={report}
-                    settings={settings}
-                    subject={subject}
-                    subject_uuid={subject_uuid}
-                />
-            </div>
+        <Paper id={subjectUuid} elevation={5} sx={{ marginTop: "50px" }}>
+            <SubjectTitle
+                atReportsOverview={atReportsOverview}
+                firstSubject={firstSubject}
+                lastSubject={lastSubject}
+                reload={reload}
+                report={report}
+                settings={settings}
+                subject={subject}
+                subjectUuid={subjectUuid}
+            />
             <CommentSegment comment={subject.comment} />
             <Divider sx={{ padding: "0px" }} />
             <SubjectTable
-                changed_fields={changed_fields}
+                changedFields={changedFields}
                 dates={dates}
                 handleSort={handleSort}
                 measurements={measurements}
                 metricEntries={metricEntries}
                 reload={reload}
                 report={report}
-                reportDate={report_date}
+                reportDate={reportDate}
                 reports={reports}
                 settings={settings}
                 subject={subject}
-                subject_uuid={subject_uuid}
+                subjectUuid={subjectUuid}
             />
         </Paper>
     )
 }
 Subject.propTypes = {
     atReportsOverview: bool,
-    changed_fields: stringsPropType,
+    changedFields: stringsPropType,
     dates: datesPropType,
     firstSubject: bool,
     handleSort: func,
     lastSubject: bool,
     measurements: measurementsPropType,
     report: reportPropType,
-    report_date: optionalDatePropType,
+    reportDate: optionalDatePropType,
     reports: reportsPropType,
     settings: settingsPropType,
-    subject_uuid: string,
+    subjectUuid: string,
     reload: func,
 }

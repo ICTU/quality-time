@@ -1,10 +1,10 @@
 import HistoryIcon from "@mui/icons-material/History"
 import SettingsIcon from "@mui/icons-material/Settings"
-import Grid from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import { bool, func, object, oneOfType, string } from "prop-types"
 import { useContext } from "react"
 
-import { delete_source, set_source_attribute } from "../api/source"
+import { deleteSource, setSourceAttribute } from "../api/source"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { DataModel } from "../context/DataModel"
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions, ReadOnlyOrEditable } from "../context/Permissions"
@@ -27,26 +27,24 @@ import { WarningMessage } from "../widgets/WarningMessage"
 import { SourceParameters } from "./SourceParameters"
 import { SourceType } from "./SourceType"
 
-function select_sources_parameter_keys(changed_fields, source_uuid) {
-    return changed_fields
-        ? changed_fields.filter((field) => field.source_uuid === source_uuid).map((field) => field.parameter_key)
+function selectSourcesParameterKeys(changedFields, sourceUuid) {
+    return changedFields
+        ? changedFields.filter((field) => field.source_uuid === sourceUuid).map((field) => field.parameter_key)
         : []
 }
 
-function SourceButtonRow({ first_source, last_source, reload, source_uuid }) {
-    const deleteButton = <DeleteButton itemType="source" onClick={() => delete_source(source_uuid, reload)} />
+function SourceButtonRow({ firstSource, lastSource, reload, sourceUuid }) {
+    const deleteButton = <DeleteButton itemType="source" onClick={() => deleteSource(sourceUuid, reload)} />
     return (
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
                 <ButtonRow paddingBottom={1} paddingLeft={0} paddingRight={0} paddingTop={2} rightButton={deleteButton}>
                     <ReorderButtonGroup
-                        first={first_source}
-                        last={last_source}
+                        first={firstSource}
+                        last={lastSource}
                         moveable="source"
-                        onClick={(direction) => {
-                            set_source_attribute(source_uuid, "position", direction, reload)
-                        }}
+                        onClick={(direction) => setSourceAttribute(sourceUuid, "position", direction, reload)}
                     />
                 </ButtonRow>
             }
@@ -54,35 +52,35 @@ function SourceButtonRow({ first_source, last_source, reload, source_uuid }) {
     )
 }
 SourceButtonRow.propTypes = {
-    first_source: bool,
-    last_source: bool,
+    firstSource: bool,
+    lastSource: bool,
     reload: func,
-    source_uuid: string,
+    sourceUuid: string,
 }
 
 function Parameters({
-    changed_fields,
-    config_error,
-    connection_error,
+    changedFields,
+    configError,
+    connectionError,
     metric,
-    parse_error,
+    parseError,
     reload,
     report,
     source,
-    source_uuid,
+    sourceUuid,
 }) {
     const dataModel = useContext(DataModel)
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
-    const source_type = dataModel.sources[source.type]
+    const sourceType = dataModel.sources[source.type]
     return (
         <Grid container alignItems="flex-start" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 2, md: 2 }}>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <SourceType
-                    metric_type={metric.type}
-                    set_source_attribute={(a, v) => set_source_attribute(source_uuid, a, v, reload)}
-                    source_uuid={source_uuid}
-                    source_type={source.type}
+                    metricType={metric.type}
+                    setSourceAttribute={(a, v) => setSourceAttribute(sourceUuid, a, v, reload)}
+                    sourceUuid={sourceUuid}
+                    sourceType={source.type}
                 />
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
@@ -90,72 +88,72 @@ function Parameters({
                     disabled={disabled}
                     id="source-name"
                     label="Source name"
-                    placeholder={source_type.name}
-                    onChange={(value) => set_source_attribute(source_uuid, "name", value, reload)}
+                    placeholder={sourceType.name}
+                    onChange={(value) => setSourceAttribute(sourceUuid, "name", value, reload)}
                     value={source.name}
                 />
             </Grid>
             <Grid size={{ xs: 1, sm: 2, md: 2 }}>
                 <SourceParameters
-                    changed_param_keys={select_sources_parameter_keys(changed_fields, source_uuid)}
+                    changedParamKeys={selectSourcesParameterKeys(changedFields, sourceUuid)}
                     metric={metric}
                     reload={reload}
                     report={report}
                     source={source}
-                    source_uuid={source_uuid}
+                    sourceUuid={sourceUuid}
                 />
             </Grid>
-            {connection_error && (
+            {connectionError && (
                 <Grid size={{ xs: 1, sm: 2, md: 2 }}>
                     <WarningMessage pre title="Connection error">
-                        {connection_error}
+                        {connectionError}
                     </WarningMessage>
                 </Grid>
             )}
-            {parse_error && (
+            {parseError && (
                 <Grid size={{ xs: 1, sm: 2, md: 2 }}>
                     <WarningMessage pre title="Parse error">
-                        {parse_error}
+                        {parseError}
                     </WarningMessage>
                 </Grid>
             )}
-            {config_error && (
+            {configError && (
                 <Grid size={{ xs: 1, sm: 2, md: 2 }}>
-                    <WarningMessage title="Configuration error">{config_error}</WarningMessage>
+                    <WarningMessage title="Configuration error">{configError}</WarningMessage>
                 </Grid>
             )}
         </Grid>
     )
 }
 Parameters.propTypes = {
-    changed_fields: stringsPropType,
-    config_error: oneOfType([object, string]),
-    connection_error: string,
+    changedFields: stringsPropType,
+    configError: oneOfType([object, string]),
+    connectionError: string,
     metric: metricPropType,
-    parse_error: string,
+    parseError: string,
     reload: func,
     report: reportPropType,
     source: sourcePropType,
-    source_uuid: string,
+    sourceUuid: string,
 }
 
 export function Source({
-    changed_fields,
-    first_source,
-    last_source,
-    measurement_source,
+    changedFields,
+    firstSource,
+    lastSource,
+    measurementSource,
     metric,
     reload,
     report,
     settings,
-    source_uuid,
+    sourceUuid,
 }) {
     const dataModel = useContext(DataModel)
-    const source = metric.sources[source_uuid]
+    const source = metric.sources[sourceUuid]
     const sourceName = getSourceName(source, dataModel)
     const metricName = getMetricName(metric, dataModel)
-    const connectionError = measurement_source?.connection_error || ""
-    const parseError = measurement_source?.parse_error || ""
+    const connectionError = measurementSource?.connection_error || ""
+    const parseError = measurementSource?.parse_error || ""
     const configErrorMessage = (
         <>
             <p>
@@ -192,38 +190,38 @@ export function Source({
                     { error: anyError, label: "Configuration", icon: <SettingsIcon /> },
                     { label: "Changelog", icon: <HistoryIcon /> },
                 ]}
-                uuid={source_uuid}
+                uuid={sourceUuid}
             >
                 <Parameters
                     metric={metric}
                     source={source}
-                    source_uuid={source_uuid}
-                    connection_error={connectionError}
-                    parse_error={parseError}
-                    config_error={configError}
+                    sourceUuid={sourceUuid}
+                    connectionError={connectionError}
+                    parseError={parseError}
+                    configError={configError}
                     report={report}
-                    changed_fields={changed_fields}
+                    changedFields={changedFields}
                     reload={reload}
                 />
-                <ChangeLog source_uuid={source_uuid} timestamp={report.timestamp} />
+                <ChangeLog sourceUuid={sourceUuid} timestamp={report.timestamp} />
             </Tabs>
             <SourceButtonRow
-                first_source={first_source}
-                last_source={last_source}
+                firstSource={firstSource}
+                lastSource={lastSource}
                 reload={reload}
-                source_uuid={source_uuid}
+                sourceUuid={sourceUuid}
             />
         </>
     )
 }
 Source.propTypes = {
-    changed_fields: stringsPropType,
-    first_source: bool,
-    last_source: bool,
-    measurement_source: measurementSourcePropType,
+    changedFields: stringsPropType,
+    firstSource: bool,
+    lastSource: bool,
+    measurementSource: measurementSourcePropType,
     metric: metricPropType,
     reload: func,
     report: reportPropType,
     settings: settingsPropType,
-    source_uuid: string,
+    sourceUuid: string,
 }

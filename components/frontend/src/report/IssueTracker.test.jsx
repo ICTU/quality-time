@@ -2,14 +2,14 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
-import * as report_api from "../api/report"
+import * as reportApi from "../api/report"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { IssueTracker } from "./IssueTracker"
 
 vi.mock("../api/report.js")
-report_api.get_report_issue_tracker_options.mockImplementation(() =>
+reportApi.getReportIssueTrackerOptions.mockImplementation(() =>
     Promise.resolve({
         projects: [{ key: "PRJ", name: "Project name" }],
         issue_types: [{ key: "Bug", name: "Bug" }],
@@ -18,11 +18,9 @@ report_api.get_report_issue_tracker_options.mockImplementation(() =>
     }),
 )
 
-const reload = () => {
-    /* Dummy implementation */
-}
+const reload = vi.fn()
 
-async function renderIssueTracker({ report = { report_uuid: "report_uuid", title: "Report" }, help_url = "" } = {}) {
+async function renderIssueTracker({ report = { report_uuid: "report_uuid", title: "Report" }, helpUrl = "" } = {}) {
     let result
     await act(async () => {
         result = render(
@@ -32,7 +30,7 @@ async function renderIssueTracker({ report = { report_uuid: "report_uuid", title
                         jira: {
                             name: "Jira",
                             issue_tracker: true,
-                            parameters: { private_token: { help_url: help_url } },
+                            parameters: { private_token: { help_url: helpUrl } },
                         },
                     },
                 }}
@@ -47,23 +45,17 @@ async function renderIssueTracker({ report = { report_uuid: "report_uuid", title
 }
 
 it("sets the issue tracker type", async () => {
-    //await act(async () => renderIssueTracker())
     const { container } = await renderIssueTracker()
     fireEvent.mouseDown(screen.getByLabelText(/Issue tracker type/))
     fireEvent.click(screen.getByText("Jira"))
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
-        "report_uuid",
-        "type",
-        "jira",
-        reload,
-    )
+    expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith("report_uuid", "type", "jira", reload)
     await expectNoAccessibilityViolations(container)
 })
 
 it("sets the issue tracker url", async () => {
     const { container } = await renderIssueTracker()
     await userEvent.type(screen.getByLabelText(/URL/), "https://jira{Enter}")
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
+    expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "url",
         "https://jira",
@@ -75,7 +67,7 @@ it("sets the issue tracker url", async () => {
 it("sets the issue tracker username", async () => {
     const { container } = await renderIssueTracker()
     await userEvent.type(screen.getByLabelText(/Username/), "janedoe{Enter}")
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
+    expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "username",
         "janedoe",
@@ -87,7 +79,7 @@ it("sets the issue tracker username", async () => {
 it("sets the issue tracker password", async () => {
     const { container } = await renderIssueTracker()
     await userEvent.type(screen.getByLabelText(/Password/), "secret{Enter}")
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
+    expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "password",
         "secret",
@@ -99,7 +91,7 @@ it("sets the issue tracker password", async () => {
 it("sets the issue tracker private token", async () => {
     const { container } = await renderIssueTracker()
     await userEvent.type(screen.getByLabelText(/Private token/), "secret{Enter}")
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
+    expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "private_token",
         "secret",
@@ -111,7 +103,7 @@ it("sets the issue tracker private token", async () => {
 it("does not show the issue tracker private token help url if there is no issue tracker", async () => {
     const { container } = await renderIssueTracker({
         report: { report_uuid: "report_uuid", title: "Report", issue_tracker: {} },
-        help_url: "https://help",
+        helpUrl: "https://help",
     })
     expect(container.querySelector("a")).toBe(null)
     await expectNoAccessibilityViolations(container)
@@ -134,7 +126,7 @@ it("shows the issue tracker private token help url", async () => {
             title: "Report",
             issue_tracker: { type: "jira" },
         },
-        help_url: "https://help",
+        helpUrl: "https://help",
     })
     expect(container.querySelector("a")).toHaveAttribute("href", "https://help")
     await expectNoAccessibilityViolations(container)
@@ -144,7 +136,7 @@ it("sets the issue tracker project", async () => {
     const { container } = await renderIssueTracker()
     fireEvent.mouseDown(screen.getByLabelText(/Project for new issues/))
     fireEvent.click(screen.getByText(/Project name/))
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
+    expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "project_key",
         "PRJ",
@@ -157,7 +149,7 @@ it("sets the issue tracker issue type", async () => {
     const { container } = await renderIssueTracker()
     fireEvent.mouseDown(screen.getByLabelText(/Issue type/))
     fireEvent.click(screen.getByText(/Bug/))
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
+    expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "issue_type",
         "Bug",
@@ -169,7 +161,7 @@ it("sets the issue tracker issue type", async () => {
 it("sets the issue tracker issue labels", async () => {
     const { container } = await renderIssueTracker()
     await userEvent.type(screen.getByLabelText(/Labels/), "Label{Enter}")
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
+    expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "issue_labels",
         ["Label"],
@@ -182,7 +174,7 @@ it("sets the issue tracker epic link", async () => {
     const { container } = await renderIssueTracker()
     fireEvent.mouseDown(screen.getByLabelText(/Epic link/))
     fireEvent.click(screen.getByText(/FOO-420/))
-    expect(report_api.set_report_issue_tracker_attribute).toHaveBeenLastCalledWith(
+    expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "epic_link",
         "FOO-420",
@@ -231,7 +223,7 @@ it("does not show the issue labels warning with issue type that supports labels"
 })
 
 it("does show the issue labels warning with issue type that does not support labels", async () => {
-    report_api.get_report_issue_tracker_options.mockImplementation(() =>
+    reportApi.getReportIssueTrackerOptions.mockImplementation(() =>
         Promise.resolve({
             projects: [{ key: "PRJ", name: "Project name" }],
             issue_types: [{ key: "Bug", name: "Bug" }],

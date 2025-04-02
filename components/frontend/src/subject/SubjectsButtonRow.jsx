@@ -1,7 +1,7 @@
 import { func } from "prop-types"
 import { useContext } from "react"
 
-import { add_subject, copy_subject, move_subject } from "../api/subject"
+import { addSubject, copySubject, moveSubject } from "../api/subject"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { reportPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
@@ -9,7 +9,7 @@ import { ButtonRow } from "../widgets/ButtonRow"
 import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
 import { CopyButton } from "../widgets/buttons/CopyButton"
 import { MoveButton } from "../widgets/buttons/MoveButton"
-import { subject_options } from "../widgets/menu_options"
+import { subjectOptions } from "../widgets/menu_options"
 import { subjectTypes } from "./SubjectType"
 
 export function SubjectsButtonRow({ reload, report, reports, settings }) {
@@ -28,25 +28,25 @@ export function SubjectsButtonRow({ reload, report, reports, settings }) {
                         itemSubtypes={subjectTypes(dataModel.subjects)}
                         onClick={(subtype) => {
                             stopFiltering()
-                            add_subject(report.report_uuid, subtype, reload)
+                            addSubject(report.report_uuid, subtype, reload)
                         }}
                         sort={false} // Don't sort the subjects by name because it's a hierarchy defined in the data model
                     />
                     <CopyButton
                         itemType="subject"
-                        onChange={(source_subject_uuid) => {
+                        onChange={(subjectUuid) => {
                             stopFiltering()
-                            copy_subject(source_subject_uuid, report.report_uuid, reload)
+                            copySubject(subjectUuid, report.report_uuid, reload)
                         }}
-                        get_options={() => subject_options(reports, dataModel)}
+                        getOptions={() => subjectOptions(reports, dataModel)}
                     />
                     <MoveButton
                         itemType="subject"
-                        onChange={(source_subject_uuid) => {
+                        onChange={(subjectUuid) => {
                             stopFiltering()
-                            move_subject(source_subject_uuid, report.report_uuid, reload)
+                            moveSubject(subjectUuid, report.report_uuid, reload)
                         }}
-                        get_options={() => subject_options(reports, dataModel, report.report_uuid)}
+                        getOptions={() => subjectOptions(reports, dataModel, report.report_uuid)}
                     />
                 </ButtonRow>
             }

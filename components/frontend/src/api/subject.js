@@ -1,23 +1,23 @@
-import { fetch_server_api } from "./fetch_server_api"
+import { fetchServerApi } from "./fetch_server_api"
 
-export function add_subject(report_uuid, subjectType, reload) {
-    return fetch_server_api("post", `subject/new/${report_uuid}`, { type: subjectType }).then(reload)
+export function addSubject(reportUuid, subjectType, reload) {
+    return fetchServerApi("post", `subject/new/${reportUuid}`, { type: subjectType }).then(reload)
 }
 
-export function copy_subject(subject_uuid, report_uuid, reload) {
-    return fetch_server_api("post", `subject/${subject_uuid}/copy/${report_uuid}`, {}).then(reload)
+export function copySubject(subjectUuid, reportUuid, reload) {
+    return fetchServerApi("post", `subject/${subjectUuid}/copy/${reportUuid}`, {}).then(reload)
 }
 
-export function move_subject(subject_uuid, report_uuid, reload) {
-    return fetch_server_api("post", `subject/${subject_uuid}/move/${report_uuid}`, {}).then(reload)
+export function moveSubject(subjectUuid, reportUuid, reload) {
+    return fetchServerApi("post", `subject/${subjectUuid}/move/${reportUuid}`, {}).then(reload)
 }
 
-export function delete_subject(subject_uuid, reload) {
-    return fetch_server_api("delete", `subject/${subject_uuid}`, {}).then(reload)
+export function deleteSubject(subjectUuid, reload) {
+    return fetchServerApi("delete", `subject/${subjectUuid}`, {}).then(reload)
 }
 
-export function set_subject_attribute(subject_uuid, attribute, value, reload) {
-    return fetch_server_api("post", `subject/${subject_uuid}/attribute/${attribute}`, {
+export function setSubjectAttribute(subjectUuid, attribute, value, reload) {
+    return fetchServerApi("post", `subject/${subjectUuid}/attribute/${attribute}`, {
         [attribute]: value,
     }).then(reload)
 }

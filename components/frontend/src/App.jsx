@@ -8,12 +8,12 @@ import { Component } from "react"
 
 import { login } from "./api/auth"
 import { getDataModel } from "./api/datamodel"
-import { nr_measurements_api } from "./api/measurement"
-import { get_report, get_reports_overview } from "./api/report"
+import { nrMeasurementsApi } from "./api/measurement"
+import { getReport, getReportsOverview } from "./api/report"
 import { AppUI } from "./AppUI"
 import { registeredURLSearchParams } from "./hooks/url_search_query"
 import { theme } from "./theme"
-import { isValidDate_YYYYMMDD, toISODateStringInCurrentTZ } from "./utils"
+import { isValidISODate, toISODateStringInCurrentTZ } from "./utils"
 import { showConnectionMessage, showMessage } from "./widgets/toast"
 
 class App extends Component {
@@ -23,39 +23,39 @@ class App extends Component {
             dataModel: {},
             lastUpdate: new Date(),
             reports: [],
-            report_uuid: "",
-            report_date: null,
-            reports_overview: {},
+            reportDate: null,
+            reportUuid: "",
+            reportsOverview: {},
             nrMeasurements: 0,
             nrMeasurementsStreamConnected: true, // Assume initial connection will be successful
             loading: true,
             user: null,
             email: null,
         }
-        history.listen(({ location, action }) => this.on_history({ location, action }))
+        history.listen(({ location, action }) => this.onHistory({ location, action }))
     }
 
-    on_history({ location, action }) {
+    onHistory({ location, action }) {
         if (action === Action.Pop) {
             const pathname = location.pathname
-            const report_uuid = pathname.slice(1, pathname.length)
-            this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload())
+            const reportUuid = pathname.slice(1, pathname.length)
+            this.setState({ reportUuid: reportUuid, loading: true }, () => this.reload())
         }
     }
 
     componentDidMount() {
         const pathname = history.location.pathname
-        const report_uuid = decodeURI(pathname.slice(1, pathname.length))
-        const report_date_iso_string = registeredURLSearchParams().get("report_date") || ""
+        const reportUuid = decodeURI(pathname.slice(1, pathname.length))
+        const reportDateISOString = registeredURLSearchParams().get("report_date") || ""
         let reportDate = null
-        if (isValidDate_YYYYMMDD(report_date_iso_string)) {
-            reportDate = new Date(report_date_iso_string)
+        if (isValidISODate(reportDateISOString)) {
+            reportDate = new Date(reportDateISOString)
             reportDate.setHours(23, 59, 59)
         }
         this.loginForwardAuth()
         this.initUserSession()
         this.connectToNrMeasurementsEventSource()
-        this.setState({ report_uuid: report_uuid, report_date: reportDate, loading: true }, () => this.reload())
+        this.setState({ reportUuid: reportUuid, reportDate: reportDate, loading: true }, () => this.reload())
     }
 
     componentWillUnmount() {
@@ -65,25 +65,25 @@ class App extends Component {
     reload(json) {
         if (json) {
             showConnectionMessage(json)
-            this.changed_fields = json.availability
-                ? json.availability.filter((url_key) => url_key.status_code !== 200)
+            this.changedFields = json.availability
+                ? json.availability.filter((urlKey) => urlKey.status_code !== 200)
                 : null
-            this.check_session(json)
+            this.checkSession(json)
         }
-        const show_error = () => showMessage("error", "Server unreachable", "Couldn't load data from the server.")
-        this.loadAndSetState(show_error)
+        const showError = () => showMessage("error", "Server unreachable", "Couldn't load data from the server.")
+        this.loadAndSetState(showError)
     }
 
-    loadAndSetState(show_error) {
-        const report_uuid = this.state.report_uuid
-        const reportDate = this.state.report_date
-        Promise.all([getDataModel(reportDate), get_reports_overview(reportDate), get_report(report_uuid, reportDate)])
-            .then(([dataModel, reports_overview, reports]) => {
-                if (this.state.report_uuid !== report_uuid) {
+    loadAndSetState(showError) {
+        const reportUuid = this.state.reportUuid
+        const reportDate = this.state.reportDate
+        Promise.all([getDataModel(reportDate), getReportsOverview(reportDate), getReport(reportUuid, reportDate)])
+            .then(([dataModel, reportsOverview, reports]) => {
+                if (this.state.reportUuid !== reportUuid) {
                     return // User navigated to a different report or to the overview page, cancel update
                 }
                 if (dataModel.ok === false || reports.ok === false) {
-                    show_error()
+                    showError()
                 } else {
                     const now = new Date()
                     this.setState({
@@ -91,15 +91,15 @@ class App extends Component {
                         lastUpdate: now,
                         loading: false,
                         reports: reports.reports || [],
-                        reports_overview: reports_overview,
+                        reportsOverview: reportsOverview,
                     })
                 }
                 return null
             })
-            .catch(show_error)
+            .catch(showError)
     }
 
-    check_session(json) {
+    checkSession(json) {
         if (json.ok === false && json.status === 401) {
             this.setUserSession()
             if (this.loginForwardAuth() === false) {
@@ -115,7 +115,7 @@ class App extends Component {
             parsed.set("report_date", toISODateStringInCurrentTZ(date))
             const now = new Date()
             date.setHours(now.getHours(), now.getMinutes())
-            if (!this.state.report_date) {
+            if (!this.state.reportDate) {
                 // We're time traveling from the present, warn the user
                 showMessage(
                     "info",
@@ -130,28 +130,28 @@ class App extends Component {
         }
         const search = parsed.toString().replace(/%2C/g, ",") // No need to encode commas
         history.replace({ search: search.length > 0 ? "?" + search : "" })
-        this.setState({ report_date: date, loading: true }, () => this.reload())
+        this.setState({ reportDate: date, loading: true }, () => this.reload())
     }
 
     openReportsOverview() {
         if (history.location.pathname !== "/") {
-            this.history_push("/")
-            this.setState({ report_uuid: "", loading: true }, () => this.reload())
+            this.historyPush("/")
+            this.setState({ reportUuid: "", loading: true }, () => this.reload())
         }
     }
 
-    openReport(report_uuid) {
-        this.history_push(encodeURI(report_uuid))
-        this.setState({ report_uuid: report_uuid, loading: true }, () => this.reload())
+    openReport(reportUuid) {
+        this.historyPush(encodeURI(reportUuid))
+        this.setState({ reportUuid: reportUuid, loading: true }, () => this.reload())
     }
 
-    history_push(target) {
+    historyPush(target) {
         const search = registeredURLSearchParams().toString().replace(/%2C/g, ",") // No need to encode commas
         history.push(target + (search.length > 0 ? "?" + search : ""))
     }
 
     connectToNrMeasurementsEventSource() {
-        this.source = new EventSource(nr_measurements_api)
+        this.source = new EventSource(nrMeasurementsApi)
         let self = this
         this.source.addEventListener("init", (message) => {
             const newNrMeasurements = Number(message.data)
@@ -242,22 +242,22 @@ class App extends Component {
             <ThemeProvider theme={theme}>
                 <CssBaseline enableColorScheme />
                 <AppUI
-                    changed_fields={this.changed_fields}
+                    changedFields={this.changedFields}
                     dataModel={this.state.dataModel}
                     email={this.state.email}
                     openReportsOverview={() => this.openReportsOverview()}
                     handleDateChange={(date) => this.handleDateChange(date)}
-                    key={this.state.report_uuid} // Make sure the AppUI is refreshed whenever the current report changes
+                    key={this.state.reportUuid} // Make sure the AppUI is refreshed whenever the current report changes
                     lastUpdate={this.state.lastUpdate}
                     loading={this.state.loading}
                     nrMeasurements={this.state.nrMeasurements}
-                    openReport={(report_uuid) => this.openReport(report_uuid)}
+                    openReport={(reportUuid) => this.openReport(reportUuid)}
                     reload={(json) => this.reload(json)}
-                    report_date={this.state.report_date}
-                    report_uuid={this.state.report_uuid}
+                    reportDate={this.state.reportDate}
+                    reportUuid={this.state.reportUuid}
                     reports={this.state.reports}
-                    reports_overview={this.state.reports_overview}
-                    set_user={(username, email, sessionExpirationDateTime) =>
+                    reportsOverview={this.state.reportsOverview}
+                    setUser={(username, email, sessionExpirationDateTime) =>
                         this.setUserSession(username, email, sessionExpirationDateTime)
                     }
                     user={this.state.user}
