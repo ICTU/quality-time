@@ -74,7 +74,7 @@ def add_query(url: URL, query: str) -> URL:
 
 def sha1_hash(string: str) -> str:
     """Return a sha1 hash of the string."""
-    sha1 = hashlib.sha1(string.encode("utf-8"), usedforsecurity=False)  # noqa: DUO130,RUF100
+    sha1 = hashlib.sha1(string.encode("utf-8"), usedforsecurity=False)  # noqa: RUF100
     return sha1.hexdigest()
 
 

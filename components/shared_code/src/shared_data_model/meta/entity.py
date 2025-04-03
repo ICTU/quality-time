@@ -23,6 +23,7 @@ class Color(StrEnum):
 class EntityAttributeType(StrEnum):
     """Type of the entity attribute. If not specified, the entity attribute type is string."""
 
+    BOOLEAN = "boolean"
     DATE = "date"
     DATETIME = "datetime"
     FLOAT = "float"

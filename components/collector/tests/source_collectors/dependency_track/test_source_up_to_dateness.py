@@ -33,6 +33,7 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
         self.few_days_ago_timestamp = round(self.few_days_ago.timestamp() * 1000)
         return [
             DependencyTrackProject(
+                isLatest=True,
                 name="Project 1",
                 version="1.1",
                 uuid="p1",
@@ -40,6 +41,7 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 metrics=DependencyTrackMetrics(lastOccurrence=self.few_days_ago_timestamp),
             ),
             DependencyTrackProject(
+                isLatest=False,
                 name="Project 2",
                 version="1.2",
                 uuid="p2",
@@ -48,22 +50,26 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
             ),
         ]
 
-    def entities(self) -> list[dict[str, str]]:
+    def entities(self) -> list[dict[str, str | bool]]:
         """Create the expected entities."""
         return [
             {
                 "key": "p1",
                 "last_bom_analysis": self.few_days_ago.isoformat(),
                 "last_bom_import": self.yesterday.isoformat(),
+                "is_latest": "true",
                 "project": "Project 1",
                 "project_landing_url": "/projects/p1",
+                "version": "1.1",
             },
             {
                 "key": "p2",
+                "is_latest": "false",
                 "last_bom_analysis": self.day_before_yesterday.isoformat(),
                 "last_bom_import": self.last_week.isoformat(),
                 "project": "Project 2",
                 "project_landing_url": "/projects/p2",
+                "version": "1.2",
             },
         ]
 
@@ -78,10 +84,11 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
         projects.append(
             DependencyTrackProject(
                 name="Project 3",
-                version="1.3",
                 uuid="p3",
                 lastBomImport=self.last_week_timestamp,
+                isLatest=True,
                 metrics=DependencyTrackMetrics(),
+                version="1.3",
             )
         )
         entities = self.entities()
@@ -90,8 +97,10 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 "key": "p3",
                 "last_bom_analysis": "",
                 "last_bom_import": self.last_week.isoformat(),
+                "is_latest": "true",
                 "project": "Project 3",
                 "project_landing_url": "/projects/p3",
+                "version": "1.3",
             }
         )
         response = await self.collect(get_request_json_return_value=projects)
@@ -113,8 +122,10 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 "key": "p3",
                 "last_bom_analysis": "",
                 "last_bom_import": "",
+                "is_latest": "false",
                 "project": "Project 3",
                 "project_landing_url": "/projects/p3",
+                "version": "1.3",
             }
         )
         response = await self.collect(get_request_json_return_value=projects)
@@ -156,6 +167,12 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
         self.set_source_parameter("project_event_types", ["last BOM analysis"])
         response = await self.collect(get_request_json_return_value=self.projects())
         self.assert_measurement(response, value="4", landing_url=self.LANDING_URL, entities=self.entities())
+
+    async def test_filter_by_latest_project(self):
+        """Test that projects can be filtered by being the latest project version."""
+        self.set_source_parameter("only_include_latest_project_versions", "yes")
+        response = await self.collect(get_request_json_return_value=self.projects())
+        self.assert_measurement(response, value="1", landing_url=self.LANDING_URL, entities=self.entities()[:1])
 
     async def test_source_up_to_dateness_with_pagination(self):
         """Test that the source up-to-dateness can be measured when pagination is needed."""

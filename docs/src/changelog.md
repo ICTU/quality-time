@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Added
+
+- When measuring source up-to-dateness with Dependency-Track as source, allow for including only project versions that are the latest version. Also show project versions and whether the project version is the latest version in the measurement details. Closes [#11001](https://github.com/ICTU/quality-time/issues/11001).
+
 ### Fixed
 
 - Make measurement entity table headers sticky again. Fixes [#11036](https://github.com/ICTU/quality-time/issues/11036).

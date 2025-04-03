@@ -114,6 +114,7 @@ export const entityAttributePropType = shape({
 export const entityAttributesPropType = arrayOf(entityAttributePropType)
 
 export const entityAttributeTypePropType = oneOf([
+    "boolean",
     "date",
     "datetime",
     "integer",

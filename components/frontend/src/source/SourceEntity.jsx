@@ -6,8 +6,8 @@ import { entityAttributesPropType, entityPropType, entityStatusPropType, reportP
 import { DivWithHtml } from "../widgets/DivWithHtml"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
+import { alignment } from "./source_entity_alignment"
 import { IGNORABLE_SOURCE_ENTITY_STATUSES, SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
-import { alignment } from "./SourceEntities"
 import { SourceEntityAttribute } from "./SourceEntityAttribute"
 import { SourceEntityDetails } from "./SourceEntityDetails"
 

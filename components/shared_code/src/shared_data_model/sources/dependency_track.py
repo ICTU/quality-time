@@ -11,6 +11,7 @@ from shared_data_model.parameters import (
     MultipleChoiceWithAdditionParameter,
     PrivateToken,
     Severities,
+    SingleChoiceParameter,
 )
 
 ALL_DEPENDENCY_TRACK_METRICS = ["dependencies", "security_warnings", "source_up_to_dateness", "source_version"]
@@ -99,6 +100,14 @@ DEPENDENCY_TRACK = Source(
             values=["last BOM analysis", "last BOM import"],
             metrics=["source_up_to_dateness"],
         ),
+        "only_include_latest_project_versions": SingleChoiceParameter(
+            name="Only include latest project versions",
+            short_name="include latest only",
+            values=["yes", "no"],
+            default_value="no",
+            help="Only include project versions that are marked as latest.",
+            metrics=["source_up_to_dateness"],
+        ),
     },
     entities={
         "dependencies": Entity(
@@ -125,6 +134,8 @@ DEPENDENCY_TRACK = Source(
             name="project",
             attributes=[
                 EntityAttribute(name="Project", url="project_landing_url"),
+                EntityAttribute(name="Version"),
+                EntityAttribute(name="Latest", key="is_latest", type=EntityAttributeType.BOOLEAN),
                 EntityAttribute(name="Last BOM import", type=EntityAttributeType.DATETIME),
                 EntityAttribute(name="Last BOM analysis", type=EntityAttributeType.DATETIME),
             ],
