@@ -84,3 +84,15 @@ it("renders preformatted text", async () => {
     expect(screen.getByTestId("pre-wrapped")).toBeInTheDocument()
     await expectNoAccessibilityViolations(container)
 })
+
+it("renders a boolean that is true", async () => {
+    const { container } = renderSourceEntityAttribute({ boolean: "true" }, { key: "boolean", type: "boolean" })
+    expect(screen.queryAllByText(/✅/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("renders a boolean that is false", async () => {
+    const { container } = renderSourceEntityAttribute({ boolean: "false" }, { key: "boolean", type: "boolean" })
+    expect(screen.queryAllByText(/✅/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
+})

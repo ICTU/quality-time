@@ -13,6 +13,7 @@ class DependencyTrackTestCase(SourceCollectorTestCase):
     def projects(self, version: str = "1.4") -> list[DependencyTrackProject]:
         """Create the Dependency-Track projects fixture."""
         project = DependencyTrackProject(
+            isLatest=False,
             name="project name",
             uuid="project uuid",
             lastBomImport=0,

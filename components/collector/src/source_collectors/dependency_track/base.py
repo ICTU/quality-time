@@ -24,8 +24,9 @@ class DependencyTrackProject(TypedDict):
     lastBomImport: int
     name: str
     uuid: str
-    version: NotRequired[str]
+    isLatest: NotRequired[bool]
     metrics: NotRequired[DependencyTrackMetrics]
+    version: NotRequired[str]
 
 
 class DependencyTrackBase(SourceCollector):
@@ -83,8 +84,7 @@ class DependencyTrackBase(SourceCollector):
             if self._project_matches(project, project_names, project_versions):
                 yield project
 
-    @staticmethod
-    def _project_matches(project: DependencyTrackProject, names: list[str], versions: list[str]) -> bool:
+    def _project_matches(self, project: DependencyTrackProject, names: list[str], versions: list[str]) -> bool:
         """Return whether the project name matches the project names and versions."""
         project_matches_name = match_string_or_regular_expression(project["name"], names) if names else True
         project_version = project.get("version", "unknown")

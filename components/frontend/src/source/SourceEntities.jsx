@@ -18,7 +18,6 @@ import { useContext, useState } from "react"
 import { DataModel } from "../context/DataModel"
 import { zIndexInnerTableHeader } from "../defaults"
 import {
-    alignmentPropType,
     entityAttributePropType,
     entityAttributesPropType,
     entityAttributeTypePropType,
@@ -35,6 +34,7 @@ import { IgnoreIcon, ShowIcon } from "../widgets/icons"
 import { LoadingPlaceHolder } from "../widgets/Placeholder"
 import { SortableTableHeaderCell } from "../widgets/TableHeaderCell"
 import { FailedToLoadMeasurementsWarningMessage, InfoMessage } from "../widgets/WarningMessage"
+import { alignment } from "./source_entity_alignment"
 import { SourceEntity } from "./SourceEntity"
 
 function entityStatus(source, entity) {
@@ -59,26 +59,6 @@ function entityStatusRationale(source, entity) {
 entityStatusRationale.propTypes = {
     source: sourcePropType,
     entity: entityPropType,
-}
-
-export function alignment(attributeType, attributeAlignment) {
-    if (attributeAlignment === "left" || attributeAlignment === "right") {
-        return attributeAlignment
-    }
-    // The attribute has no explicitly set alignment, use the attribute type to determine the alignment
-    return {
-        date: "left",
-        datetime: "left",
-        float: "right",
-        integer: "right",
-        integer_percentage: "right",
-        minutes: "right",
-        text: "left",
-    }[attributeType]
-}
-alignment.propTypes = {
-    attributeType: entityAttributeTypePropType,
-    attributeAlignment: alignmentPropType,
 }
 
 function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
@@ -203,6 +183,7 @@ function sortedEntities(columnType, sortColumn, sortDirection, source) {
                 entityStatus(source, entity) === "unconfirmed" ? "" : entityStatusRationale(source, entity)
         } else {
             parse = {
+                boolean: (entity) => entity[sortColumn],
                 integer: (entity) => parseInt(entity[sortColumn], 10),
                 integer_percentage: (entity) => parseInt(entity[sortColumn], 10),
                 float: (entity) => parseFloat(entity[sortColumn]),
