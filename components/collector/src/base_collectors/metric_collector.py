@@ -60,10 +60,10 @@ class MetricCollector:
         for source in self._metric["sources"].values():
             collector_class = SourceCollector.get_subclass(source["type"], self._metric["type"])
             if collector_class and self.__has_all_mandatory_parameters(source):
-                collectors.append(collector_class(self.__session, source).collect())
+                collectors.append(collector_class(self.__session, source))
             else:
                 return []
-        return collectors
+        return [collector.collect() for collector in collectors]
 
     def __issue_status_collectors(self) -> list[Coroutine]:
         """Create the issue status collector for the metric."""

@@ -20,6 +20,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Fixed
 
+- Prevent "RuntimeWarning: coroutine 'SourceCollector.collect' was never awaited" in the collector logs. Fixes [#11015](https://github.com/ICTU/quality-time/issues/11015).
 - Make measurement entity table headers sticky again. Fixes [#11036](https://github.com/ICTU/quality-time/issues/11036).
 - Make the JUnit timestamp parsing more robust. Fixes [#11044](https://github.com/ICTU/quality-time/issues/11044).
 
