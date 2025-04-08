@@ -1,6 +1,7 @@
 import { Chip, TableCell, Tooltip, Typography } from "@mui/material"
 import { bool, func, number, object, string } from "prop-types"
-import { useContext } from "react"
+import React, { useContext, useRef } from "react"
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator"
 
 import { DataModel } from "../context/DataModel"
 import { IssueStatus } from "../issue/IssueStatus"
@@ -40,6 +41,7 @@ import {
 import { DivWithHtml } from "../widgets/DivWithHtml"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { Tag } from "../widgets/Tag"
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 
 function didValueIncrease(dateOrderAscending, metricValue, previousValue, scale) {
     let value = metricValue
@@ -209,6 +211,31 @@ MeasurementCells.propTypes = {
     settings: settingsPropType,
 }
 
+function expandOrCollapseItem(expand, metric_uuid, expandedItems) {
+    if (expand) {
+        expandedItems.toggle(`${metric_uuid}:0`)
+    } else {
+        const items = expandedItems.value.filter((each) => each?.startsWith(metric_uuid))
+        expandedItems.toggle(items[0])
+    }
+}
+
+const DragHandleButton = React.forwardRef(({ label, ...props }, ref) => (
+    <button
+        ref={ref}
+        {...props}
+        style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'grab',
+            padding: 0,
+        }}
+        aria-label={label}
+    >
+        <DragIndicatorIcon fontSize="small" />
+    </button>
+));
+
 export function SubjectTableRow({
     changedFields,
     columnsToHide,
@@ -226,14 +253,32 @@ export function SubjectTableRow({
     reversedMeasurements,
     settings,
     subjectUuid,
+    onDragStart,
+    onDragEnter,
+    onDrop,
+    isDropTarget,
 }) {
     const dataModel = useContext(DataModel)
     const metricName = getMetricName(metric, dataModel)
     const scale = getMetricScale(metric, dataModel)
     const unit = getMetricUnit(metric, dataModel)
     const nrDates = dates.length
+
+    const rowRef = useRef(null);
+    const dragHandleRef = useRef(null);
+
+    const isExpanded = settings.expandedItems.value.some((item) => item?.startsWith(metric_uuid));
+
     return (
         <TableRowWithDetails
+            ref={rowRef}
+            onDragEnter={() => onDragEnter(index)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={onDrop}
+            style={{
+                borderTop: isDropTarget ? "2px solid #1976d2" : undefined,
+                transition: "border 0.2s ease-in-out",
+            }}
             className={nrDates === 1 ? metric.status || "unknown" : ""}
             color={nrDates === 1 ? metric.status || "unknown" : ""}
             details={
@@ -330,8 +375,24 @@ export function SubjectTableRow({
                     ))}
                 </TableCell>
             )}
+            {!isExpanded && (
+                <ReadOnlyOrEditable
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    editableComponent={
+                        <TableCell>
+                            <DragHandleButton
+                                ref={dragHandleRef}
+                                label="Drag to reorder"
+                                draggable
+                                onDragStart={(e) => onDragStart(index, rowRef, e)}
+                            />
+                        </TableCell>
+                    }
+                />
+            )}
+            {isExpanded && <TableCell />}
         </TableRowWithDetails>
-    )
+    );
 }
 SubjectTableRow.propTypes = {
     changedFields: stringsPropType,
@@ -350,4 +411,8 @@ SubjectTableRow.propTypes = {
     reversedMeasurements: measurementsPropType,
     settings: settingsPropType,
     subjectUuid: string,
+    onDragStart: func,
+    onDragEnter: func,
+    onDrop: func,
+    isDropTarget: func,
 }

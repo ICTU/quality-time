@@ -1,5 +1,6 @@
 import { TableBody } from "@mui/material"
 import { array, func, string } from "prop-types"
+import React, { useEffect, useRef, useState } from "react"
 
 import {
     datesPropType,
@@ -11,6 +12,23 @@ import {
     stringsPropType,
 } from "../sharedPropTypes"
 import { SubjectTableRow } from "./SubjectTableRow"
+import { set_metric_attribute } from "../api/metric"
+
+function copyAllComputedStyles(sourceNode, targetNode) {
+    const sourceStyles = getComputedStyle(sourceNode);
+    for (const key of sourceStyles) {
+        try {
+            targetNode.style[key] = sourceStyles.getPropertyValue(key);
+        } catch {}
+    }
+
+    // Recursively copy to children
+    const sourceChildren = Array.from(sourceNode.children);
+    const targetChildren = Array.from(targetNode.children);
+    for (let i = 0; i < sourceChildren.length; i++) {
+        copyAllComputedStyles(sourceChildren[i], targetChildren[i]);
+    }
+}
 
 export function SubjectTableBody({
     changedFields,
@@ -18,7 +36,7 @@ export function SubjectTableBody({
     dates,
     handleSort,
     measurements,
-    metricEntries,
+    metricEntries: incomingMetricEntries,
     reload,
     report,
     reportDate,
@@ -27,11 +45,117 @@ export function SubjectTableBody({
     settings,
     subjectUuid,
 }) {
-    const lastIndex = metricEntries.length - 1
+    const [metricEntries, setMetricEntries] = useState(incomingMetricEntries);
+    const [dragOverIndex, setDragOverIndex] = useState(null);
+
+    useEffect(() => {
+        console.log("incomingMetricEntries changed", incomingMetricEntries)
+        setMetricEntries(incomingMetricEntries);
+    }, [incomingMetricEntries]);
+
+    console.log(metricEntries.map(([metric_uuid, index]) => index));
+
+
+    const dragItem = useRef(null);
+    const dragOverItem = useRef(null);
+
+    const handleDragStart = (index, rowRef, event) => {
+        dragItem.current = index;
+        event.dataTransfer.effectAllowed = "move";
+
+        if (rowRef?.current) {
+            const clonedRow = rowRef.current.cloneNode(true);
+
+            copyAllComputedStyles(rowRef.current, clonedRow);
+
+            const wrapper = document.createElement("table");
+            const tbody = document.createElement("tbody");
+
+            wrapper.appendChild(tbody);
+            tbody.appendChild(clonedRow);
+
+            wrapper.style.position = "absolute";
+            wrapper.style.top = "-9999px";
+            wrapper.style.left = "-9999px";
+            wrapper.style.borderCollapse = "collapse";
+            wrapper.style.tableLayout = "auto"
+            wrapper.style.width = `${rowRef.current.offsetWidth}px`;
+
+            document.body.appendChild(wrapper);
+
+            const rowRect = rowRef.current.getBoundingClientRect();
+            const offsetX = event.clientX - rowRect.left;
+            const offsetY = event.clientY - rowRect.top;
+
+            // Shift the ghost slightly left of the cursor, but not out of bounds
+            const adjustedOffsetX = Math.max(0, offsetX);
+
+            event.dataTransfer.setDragImage(wrapper, adjustedOffsetX, offsetY);
+
+            setTimeout(() => {
+                document.body.removeChild(wrapper);
+            }, 0);
+        }
+    };
+
+    const handleDragEnter = (index) => {
+        setDragOverIndex(index);
+        dragOverItem.current = index;
+    };
+
+    const handleDrop = () => {
+        const dragFrom = dragItem.current;
+        const dragTo = dragOverItem.current;
+
+        if (dragFrom == null || dragTo == null || dragFrom === dragTo) return;
+
+        const updated = [...metricEntries];
+        const [moved] = updated.splice(dragFrom, 1);
+        updated.splice(dragTo, 0, moved);
+
+        setMetricEntries(updated);
+        dragItem.current = null;
+        dragOverItem.current = null;
+        setDragOverIndex(null);
+
+        const [movedUUID] = moved;
+
+        set_metric_attribute(movedUUID, "position_index", dragTo, reload);
+    };
+
+    useEffect(() => {
+        const handleDragEnd = () => {
+            dragItem.current = null;
+            dragOverItem.current = null;
+            setDragOverIndex(null);
+        };
+
+        window.addEventListener("dragend", handleDragEnd);
+        return () => {
+            window.removeEventListener("dragend", handleDragEnd);
+        };
+    }, []);
+
+    const lastIndex = metricEntries.length - 1;
+
     return (
         <TableBody>
-            {metricEntries.map(([metricUuid, metric], index) => {
-                return (
+            {metricEntries.map(([metricUuid, metric], index) => (
+                <React.Fragment key={metric_uuid}>
+                    {dragOverIndex === index && (
+                        <tr style={{ height: "4px" }}>
+                            <td colSpan="100%">
+                                <div
+                                    style={{
+                                        height: "2px",
+                                        backgroundColor: "#1976d2",
+                                        marginTop: "1px",
+                                        marginBottom: "1px",
+                                    }}
+                                />
+                            </td>
+                        </tr>
+                    )}
                     <SubjectTableRow
                         changedFields={changedFields}
                         dates={dates}
@@ -50,9 +174,13 @@ export function SubjectTableBody({
                         reversedMeasurements={reversedMeasurements}
                         settings={settings}
                         subjectUuid={subjectUuid}
+                        onDragStart={handleDragStart}
+                        onDragEnter={handleDragEnter}
+                        onDrop={handleDrop}
+                        isDropTarget={dragOverIndex === index}
                     />
-                )
-            })}
+                </React.Fragment>
+            ))}
         </TableBody>
     )
 }
