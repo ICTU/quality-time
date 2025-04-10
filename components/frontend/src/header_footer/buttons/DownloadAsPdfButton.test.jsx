@@ -6,13 +6,10 @@ import * as fetchServerApi from "../../api/fetch_server_api"
 import * as toast from "../../widgets/toast"
 import { DownloadAsPdfButton } from "./DownloadAsPdfButton"
 
-vi.mock("../../api/fetch_server_api.js")
-vi.mock("../../widgets/toast.jsx")
-
 beforeEach(() => {
-    vi.resetAllMocks()
     history.push("")
-    fetchServerApi.fetchServerApi.mockImplementation(() => Promise.resolve({ ok: true }))
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() => Promise.resolve({ ok: true }))
+    vi.spyOn(toast, "showMessage")
 })
 
 test("DownloadAsPdfButton has the correct label for reports overview", () => {

@@ -2,12 +2,15 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
+import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceType } from "./SourceType"
 
-vi.mock("../api/fetch_server_api.js")
+beforeEach(() => {
+    vi.spyOn(fetchServerApi, "fetchServerApi")
+})
 
 const dataModel = {
     metrics: {

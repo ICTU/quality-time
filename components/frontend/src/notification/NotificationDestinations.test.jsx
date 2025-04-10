@@ -7,8 +7,6 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { NotificationDestinations } from "./NotificationDestinations"
 
-vi.mock("../api/fetch_server_api.js")
-
 const notificationDestinations = {
     destination_uuid1: {
         webhook: "",
@@ -30,7 +28,7 @@ function renderNotificationDestinations(destinations) {
     )
 }
 
-beforeAll(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
+beforeAll(() => vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true }))
 
 it("creates the first notification destination when the add notification destination button is clicked", async () => {
     const { container } = renderNotificationDestinations({})

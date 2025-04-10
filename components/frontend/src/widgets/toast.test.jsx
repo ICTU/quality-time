@@ -6,10 +6,9 @@ import { showConnectionMessage, showMessage } from "./toast"
 
 vi.mock("react-toastify")
 
-beforeEach(() => {
-    vi.resetAllMocks()
-    history.push("")
-})
+beforeEach(() => history.push(""))
+
+afterEach(() => vi.resetAllMocks())
 
 it("shows a message", () => {
     showMessage("error", "Error", "Description")

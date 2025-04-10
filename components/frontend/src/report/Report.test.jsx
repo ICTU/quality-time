@@ -13,10 +13,8 @@ import { expectNoAccessibilityViolations } from "../testUtils"
 import { theme } from "../theme"
 import { Report } from "./Report"
 
-vi.mock("../api/fetch_server_api.js")
-
 beforeEach(() => {
-    fetchServerApi.fetchServerApi = vi.fn().mockReturnValue({ then: vi.fn().mockReturnValue({ finally: vi.fn() }) })
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockReturnValue({ then: vi.fn().mockReturnValue({ finally: vi.fn() }) })
     mockGetAnimations()
     history.push("")
 })

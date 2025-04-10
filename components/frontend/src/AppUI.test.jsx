@@ -10,11 +10,8 @@ import { AppUI } from "./AppUI"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 import { theme } from "./theme"
 
-vi.mock("./api/fetch_server_api.js")
-
 beforeEach(async () => {
-    fetchServerApi.apiWithReportDate = (await vi.importActual("./api/fetch_server_api.js")).apiWithReportDate
-    fetchServerApi.fetchServerApi = vi.fn().mockReturnValue({
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockReturnValue({
         then: vi.fn().mockReturnValue({ catch: vi.fn().mockReturnValue({ finally: vi.fn() }) }),
     })
     mockGetAnimations()

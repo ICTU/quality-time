@@ -9,8 +9,6 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceParameter } from "./SourceParameter"
 
-vi.mock("../api/fetch_server_api.js")
-
 const report = {
     subjects: {
         subject_uuid: {
@@ -71,7 +69,7 @@ function renderSourceParameter({
     )
 }
 
-beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
+beforeEach(() => vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true }))
 
 it("renders an url parameter", async () => {
     const { container } = renderSourceParameter({})

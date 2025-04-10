@@ -11,9 +11,9 @@ import { SubjectTableFooter } from "./SubjectTableFooter"
 
 const stopFilteringAndSorting = vi.fn()
 
-vi.mock("../api/fetch_server_api.js")
-
-beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
+beforeEach(() => {
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
+})
 
 afterEach(() => vi.restoreAllMocks())
 

@@ -8,11 +8,7 @@ import * as fetchServerApi from "../api/fetch_server_api"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { Menubar } from "./Menubar"
 
-vi.mock("../api/fetch_server_api.js")
-
 beforeEach(() => history.push(""))
-
-afterEach(() => vi.resetAllMocks())
 
 const CREDENTIALS = { username: "user@example.org", password: "secret" }
 
@@ -46,7 +42,7 @@ async function enterCredentials(container) {
 }
 
 it("logs in", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({
         ok: true,
         email: "user@example.org",
         session_expiration_datetime: "2021-02-24T13:10:00+00:00",
@@ -61,7 +57,7 @@ it("logs in", async () => {
 })
 
 it("shows invalid credential message", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: false })
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: false })
     const setUser = vi.fn()
     const { container } = renderMenubar({ setUser: setUser })
     await enterCredentials(container)
@@ -72,7 +68,7 @@ it("shows invalid credential message", async () => {
 })
 
 it("shows connection error message", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockRejectedValue(new Error("Async error message"))
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockRejectedValue(new Error("Async error message"))
     const setUser = vi.fn()
     const { container } = renderMenubar({ setUser: setUser })
     await enterCredentials(container)
@@ -106,7 +102,7 @@ it("closes the dialog on escape", async () => {
 })
 
 it("logs out", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
     const setUser = vi.fn()
     const { container } = renderMenubar({ setUser: setUser, user: "jadoe" })
     fireEvent.click(screen.getByRole("button", { name: "User options" }))

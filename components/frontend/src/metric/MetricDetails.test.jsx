@@ -13,13 +13,10 @@ import { expectNoAccessibilityViolations } from "../testUtils"
 import * as toast from "../widgets/toast"
 import { MetricDetails } from "./MetricDetails"
 
-vi.mock("../api/fetch_server_api.js")
-vi.mock("../api/measurement.js")
-vi.mock("../widgets/toast.jsx")
-
 beforeEach(() => {
     history.push("")
-    fetchServerApi.fetchServerApi.mockImplementation(() => Promise.resolve({ changelog: [] }))
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() => Promise.resolve({ changelog: [] }))
+    vi.spyOn(toast, "showMessage")
 })
 
 afterEach(() => vi.restoreAllMocks())
@@ -101,7 +98,7 @@ async function renderMetricDetails({
     connectionError = null,
     getMetricMeasurements = null,
 } = {}) {
-    measurementApi.getMetricMeasurements.mockImplementation(() => {
+    vi.spyOn(measurementApi, "getMetricMeasurements").mockImplementation(() => {
         return getMetricMeasurements ? getMetricMeasurements() : getMetricMeasurementsSuccessfully(connectionError)
     })
     let result

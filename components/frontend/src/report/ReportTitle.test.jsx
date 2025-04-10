@@ -10,11 +10,9 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { ReportTitle } from "./ReportTitle"
 
-vi.mock("../api/fetch_server_api.js")
-
-beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
-
-afterEach(() => vi.resetAllMocks())
+beforeEach(() => {
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
+})
 
 function renderReportTitle() {
     return render(
