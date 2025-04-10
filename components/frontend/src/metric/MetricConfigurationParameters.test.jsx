@@ -8,8 +8,6 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
 
-vi.mock("../api/fetch_server_api.js")
-
 const dataModel = {
     scales: {
         count: { name: "Count" },
@@ -39,7 +37,7 @@ const dataModel = {
     },
 }
 
-beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
+beforeEach(() => vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true }))
 
 afterEach(() => vi.clearAllMocks())
 

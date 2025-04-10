@@ -8,8 +8,6 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { MetricType } from "./MetricType"
 
-vi.mock("../api/fetch_server_api.js")
-
 const dataModel = {
     subjects: {
         subject_type: {
@@ -58,7 +56,7 @@ function renderMetricType(metricType) {
 }
 
 it("sets the metric type", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
     const { container } = renderMetricType("violations")
     await userEvent.type(screen.getByRole("combobox"), "Source version{Enter}")
     expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/type", {

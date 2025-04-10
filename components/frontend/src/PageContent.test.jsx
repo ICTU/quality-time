@@ -10,12 +10,10 @@ import { PageContent } from "./PageContent"
 import { expectNoAccessibilityViolations } from "./testUtils"
 
 vi.mock("react-toastify")
-vi.mock("./api/fetch_server_api.js")
 
 beforeEach(async () => {
     vi.useFakeTimers("modern")
-    fetchServerApi.apiWithReportDate = (await vi.importActual("./api/fetch_server_api.js")).apiWithReportDate
-    fetchServerApi.fetchServerApi.mockImplementation(() => Promise.resolve({ ok: true, measurements: [] }))
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() => Promise.resolve({ ok: true, measurements: [] }))
     mockGetAnimations()
     history.push("")
 })
@@ -119,8 +117,9 @@ it("fetches measurements if nr dates > 1 and time traveling", async () => {
 
 it("fails to load measurements", async () => {
     fetchServerApi.fetchServerApi.mockImplementation(() => Promise.reject(new Error("Error description")))
+    const toast = vi.spyOn(reactToastify, "toast")
     await renderPageContent()
-    expect(reactToastify.toast.mock.calls[0][0]).toStrictEqual(
+    expect(toast.mock.calls[0][0]).toStrictEqual(
         <div>
             <b>Could not fetch measurements</b>
             <p>Error description</p>

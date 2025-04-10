@@ -13,10 +13,8 @@ import { expectNoAccessibilityViolations } from "../testUtils"
 import { theme } from "../theme"
 import { ReportsOverview } from "./ReportsOverview"
 
-vi.mock("../api/fetch_server_api")
-
 beforeEach(() => {
-    fetchServerApi.fetchServerApi = vi.fn().mockReturnValue({ then: vi.fn().mockReturnValue({ finally: vi.fn() }) })
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockReturnValue({ then: vi.fn().mockReturnValue({ finally: vi.fn() }) })
     mockGetAnimations()
     history.push("")
 })
@@ -131,14 +129,14 @@ it("shows the report tag cards", async () => {
 })
 
 it("adds a report", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })
+    fetchServerApi.fetchServerApi.mockResolvedValue({ ok: true })
     await renderReportsOverview()
     fireEvent.click(screen.getByText(/Add report/))
     expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "report/new", {})
 })
 
 it("copies a report", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })
+    fetchServerApi.fetchServerApi.mockResolvedValue({ ok: true })
     const reports = [{ report_uuid: "uuid", subjects: {}, title: "Existing report" }]
     await renderReportsOverview({ reports: reports })
     fireEvent.click(screen.getByText(/Copy report/))
