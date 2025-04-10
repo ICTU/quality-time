@@ -2,6 +2,9 @@
 
 from collections.abc import Sequence
 from datetime import datetime
+from typing import Literal
+
+from shared_data_model import DATA_MODEL
 
 from base_collectors import TimePassedCollector
 from collector_utilities.date_time import datetime_from_timestamp
@@ -47,6 +50,7 @@ class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector
                     project_landing_url=f"{landing_url}/projects/{uuid}",
                     version=project.get("version", ""),
                     is_latest="true" if self._is_latest(project) else "false",
+                    up_to_date=self._up_to_dateness(project),
                 )
                 entities.append(entity)
         return entities
@@ -87,3 +91,23 @@ class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector
     def _is_latest(project: DependencyTrackProject) -> bool:
         """Return whether the project is the latest version."""
         return project.get("isLatest", False)
+
+    def _up_to_dateness(self, project: DependencyTrackProject) -> str:
+        """Return the up-to-dateness of the project."""
+        date_times = self._project_event_datetimes(project)
+        if not date_times:
+            return "unknown"
+        # Use the minimum of the project's last BOM-import and last BOM-analysis dates as the project's up-to-dateness:
+        min_date_time = self.days(self.minimum(date_times))
+        if self._target_met(min_date_time, "target"):
+            return "yes"
+        if self._target_met(min_date_time, "near_target"):
+            return "nearly"
+        return "no"
+
+    def _target_met(self, value: int, target_type: Literal["target", "near_target"]) -> bool:
+        """Return whether the value meets the target value."""
+        target = int(self._metric.get(target_type) or getattr(DATA_MODEL.metrics[self._metric["type"]], target_type))
+        # In practice, the direction of the metric should always be "<" (smaller is better), but the user can change
+        # the direction, so better be prepared:
+        return value <= target if self.metric_direction == "<" else value >= target

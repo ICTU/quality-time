@@ -138,6 +138,15 @@ DEPENDENCY_TRACK = Source(
                 EntityAttribute(name="Latest", key="is_latest", type=EntityAttributeType.BOOLEAN),
                 EntityAttribute(name="Last BOM import", type=EntityAttributeType.DATETIME),
                 EntityAttribute(name="Last BOM analysis", type=EntityAttributeType.DATETIME),
+                EntityAttribute(
+                    name="Up-to-date",
+                    color={
+                        "nearly": Color.WARNING,
+                        "no": Color.NEGATIVE,
+                        "yes": Color.POSITIVE,
+                        "unknown": Color.ACTIVE,
+                    },
+                ),
             ],
         ),
     },

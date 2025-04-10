@@ -10,6 +10,7 @@ from typing import ClassVar, TypedDict, cast
 import aiohttp
 from packaging.version import Version
 
+from shared.utils.type import Direction
 from shared_data_model import DATA_MODEL
 
 from collector_utilities.date_time import days_ago, days_to_go
@@ -34,8 +35,9 @@ class SourceCollector:
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
     subclasses: ClassVar[set[type["SourceCollector"]]] = set()
 
-    def __init__(self, session: aiohttp.ClientSession, source) -> None:
+    def __init__(self, session: aiohttp.ClientSession, metric, source) -> None:
         self._session = session
+        self._metric = metric
         self._issue_id = ""
         self.__parameters = SourceParameters(source)
 
@@ -223,6 +225,14 @@ class SourceCollector:
         url = str(self.__parameters.api_url())
         return URL(url.removesuffix("xml") + "html" if url.endswith(".xml") else url)
 
+    @property
+    def metric_direction(self) -> Direction:
+        """Return the metric direction."""
+        return cast(
+            Direction,
+            str(self._metric.get("direction") or DATA_MODEL.metrics[self._metric["type"]].direction.value),
+        )
+
 
 class BranchType(TypedDict):
     """Branch."""
@@ -342,10 +352,9 @@ class TimeCollector(SourceCollector):
         """Return the time between the current date time and the specified date time."""
         raise NotImplementedError  # pragma: no cover
 
-    @staticmethod
-    def minimum(date_times: Sequence[datetime]) -> datetime:
+    def minimum(self, date_times: Sequence[datetime]) -> datetime:
         """Allow for overriding what the minimum of the datetimes is: the newest or the oldest."""
-        return min(date_times)
+        return min(date_times) if self.metric_direction == "<" else max(date_times)
 
 
 class TimePassedCollector(TimeCollector):
@@ -411,9 +420,9 @@ class TransactionEntity(Entity):
 class SlowTransactionsCollector(SourceCollector):
     """Base class for slow transactions collectors."""
 
-    def __init__(self, session: aiohttp.ClientSession, source) -> None:
+    def __init__(self, session: aiohttp.ClientSession, metric, source) -> None:
         """Extend to set up the parameters."""
-        super().__init__(session, source)
+        super().__init__(session, metric, source)
         self.__transactions_to_include = cast(list[str], self._parameter("transactions_to_include"))
         self.__transactions_to_ignore = cast(list[str], self._parameter("transactions_to_ignore"))
         self.__response_time_to_evaluate = cast(str, self._parameter("response_time_to_evaluate"))
