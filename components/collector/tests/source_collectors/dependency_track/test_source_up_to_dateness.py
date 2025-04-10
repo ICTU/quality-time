@@ -60,6 +60,7 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 "is_latest": "true",
                 "project": "Project 1",
                 "project_landing_url": "/projects/p1",
+                "up_to_date": "yes",
                 "version": "1.1",
             },
             {
@@ -69,6 +70,7 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 "last_bom_import": self.last_week.isoformat(),
                 "project": "Project 2",
                 "project_landing_url": "/projects/p2",
+                "up_to_date": "nearly",
                 "version": "1.2",
             },
         ]
@@ -100,6 +102,7 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 "is_latest": "true",
                 "project": "Project 3",
                 "project_landing_url": "/projects/p3",
+                "up_to_date": "nearly",
                 "version": "1.3",
             }
         )
@@ -125,6 +128,7 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 "is_latest": "false",
                 "project": "Project 3",
                 "project_landing_url": "/projects/p3",
+                "up_to_date": "unknown",
                 "version": "1.3",
             }
         )
@@ -166,7 +170,10 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
         """Test that projects can be filtered by event type."""
         self.set_source_parameter("project_event_types", ["last BOM analysis"])
         response = await self.collect(get_request_json_return_value=self.projects())
-        self.assert_measurement(response, value="4", landing_url=self.LANDING_URL, entities=self.entities())
+        entities = self.entities()
+        entities[0]["up_to_date"] = "nearly"
+        entities[1]["up_to_date"] = "yes"
+        self.assert_measurement(response, value="4", landing_url=self.LANDING_URL, entities=entities)
 
     async def test_filter_by_latest_project(self):
         """Test that projects can be filtered by being the latest project version."""
@@ -181,3 +188,12 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
         response = await self.collect(get_request_json_return_value=self.projects())
         self.assert_measurement(response, value="7", landing_url=self.LANDING_URL, entities=self.entities())
         DependencyTrackBase.PAGE_SIZE = default_size
+
+    async def test_source_up_to_dateness_with_reversed_direction(self):
+        """Test that the source up-to-dateness can be measured if the metric direction has been reversed."""
+        self.metric["direction"] = ">"
+        response = await self.collect(get_request_json_return_value=self.projects())
+        entities = self.entities()
+        entities[0]["up_to_date"] = "no"
+        entities[1]["up_to_date"] = "yes"
+        self.assert_measurement(response, value="1", landing_url=self.LANDING_URL, entities=entities)

@@ -58,7 +58,7 @@ class EntityAttribute(NamedModel):
     def set_key(self) -> Self:
         """Set the key to the lower case version of the name if there's no key."""
         if self.key is None:
-            self.key = self.name.lower().replace(" ", "_")
+            self.key = self.name.lower().replace(" ", "_").replace("-", "_")
         return self
 
 

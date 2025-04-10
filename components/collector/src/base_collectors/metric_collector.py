@@ -60,7 +60,7 @@ class MetricCollector:
         for source in self._metric["sources"].values():
             collector_class = SourceCollector.get_subclass(source["type"], self._metric["type"])
             if collector_class and self.__has_all_mandatory_parameters(source):
-                collectors.append(collector_class(self.__session, source))
+                collectors.append(collector_class(self.__session, self._metric, source))
             else:
                 return []
         return [collector.collect() for collector in collectors]
@@ -72,7 +72,7 @@ class MetricCollector:
         has_tracker = bool(tracker_type and tracker.get("parameters", {}).get("url"))
         if has_tracker and (collector_class := SourceCollector.get_subclass(tracker_type, "issue_status")):
             return [
-                collector_class(self.__session, tracker).collect_issue_status(issue_id)
+                collector_class(self.__session, self._metric, tracker).collect_issue_status(issue_id)
                 for issue_id in self._metric.get("issue_ids", [])
             ]
         return []

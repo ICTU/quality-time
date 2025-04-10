@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- When measuring source-up-to-dateness with Dependency-Track as source, also show the up-to-dateness of individual projects in the measurement details. Closes [#10545](https://github.com/ICTU/quality-time/issues/10545).
+
 ## v5.27.0 - 2025-04-04
 
 ### Added

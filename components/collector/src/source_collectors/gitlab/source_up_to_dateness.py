@@ -87,8 +87,7 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabPipelineBase):
         error_message = "No pipelines found within the lookback period"
         raise CollectorError(error_message)
 
-    @staticmethod
-    def minimum(date_times: Sequence[datetime]) -> datetime:
+    def minimum(self, date_times: Sequence[datetime]) -> datetime:
         """Override to return the newest datetime."""
         return max(date_times)
 
@@ -96,11 +95,11 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabPipelineBase):
 class GitLabSourceUpToDateness(SourceCollector, ABC):
     """Factory class to create a collector to get the up-to-dateness of either pipelines or files."""
 
-    def __new__(cls, session: aiohttp.ClientSession, source) -> Self:
+    def __new__(cls, session: aiohttp.ClientSession, metric, source) -> Self:
         """Create an instance of either the file up-to-dateness collector or the jobs up-to-dateness collector."""
         file_path = source.get("parameters", {}).get("file_path")
         collector_class = GitLabFileUpToDateness if file_path else GitLabPipelineUpToDateness
-        instance = collector_class(session, source)
+        instance = collector_class(session, metric, source)
         instance.source_type = cls.source_type
         return cast(Self, instance)
 

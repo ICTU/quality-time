@@ -72,7 +72,7 @@ class CollectorTest(SourceCollectorTestCase):
 
         with patch("aiohttp.ClientSession.get", side_effect=Exception):
             async with aiohttp.ClientSession() as session:
-                response = await FailingLandingUrl(session, self.sources["source_id"]).collect()
+                response = await FailingLandingUrl(session, self.metric, self.sources["source_id"]).collect()
         self.assertEqual("https://api_url", response.landing_url)
 
     async def test_default_parameter_value_supersedes_empty_string(self):
@@ -97,6 +97,6 @@ class CollectorTest(SourceCollectorTestCase):
                 return bool(entity["key"] != "1")
 
         async with aiohttp.ClientSession() as session:
-            collector = ThreeParsedEntities(session, {})
+            collector = ThreeParsedEntities(session, self.metric, {})
             measurement = await collector._parse_source_responses(SourceResponses())  # noqa: SLF001
         self.assertEqual(["0", "2"], [entity["key"] for entity in measurement.entities])
