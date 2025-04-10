@@ -10,9 +10,6 @@ import { expectNoAccessibilityViolations } from "../testUtils"
 import * as toast from "../widgets/toast"
 import { Sources } from "./Sources"
 
-vi.mock("../api/fetch_server_api.js")
-vi.mock("../widgets/toast.jsx")
-
 const dataModel = {
     metrics: { metric_type: { sources: ["source_type1", "source_type2"] } },
     sources: {
@@ -96,7 +93,10 @@ function renderSources(props) {
     )
 }
 
-beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 0 })))
+beforeEach(() => {
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true, nr_sources_mass_edited: 0 })
+    vi.spyOn(toast, "showMessage")
+})
 
 it("shows a source", async () => {
     const { container } = renderSources()
@@ -189,7 +189,7 @@ it("updates a parameter of a source", async () => {
 })
 
 it("mass updates a parameter of a source", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 })
+    fetchServerApi.fetchServerApi.mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 })
     const { container } = renderSources()
     fireEvent.click(screen.getByLabelText(/Edit scope/))
     await expectNoAccessibilityViolations(container)
