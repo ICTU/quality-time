@@ -6,7 +6,7 @@
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
         "@mui/icons-material": "^7.0.1",
-        "@mui/material": "^7.0.1",
+        "@mui/material": "^7.0.2",
         "@mui/x-date-pickers": "^7.28.3",
         "crypto-js": "^4.2.0",
         "dayjs": "^1.11.13",
