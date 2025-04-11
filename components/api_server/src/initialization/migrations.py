@@ -203,7 +203,8 @@ def change_unmerged_branches_metrics_to_inactive_branches(report) -> str:
 
 def log_unknown_parameter_values(value_mapping: dict[str, str], old_values: list[str], value_type: str, report) -> None:
     """Log old parameter values that do not exist in the mapping."""
-    if unknown_values := [old_value for old_value in old_values if old_value not in value_mapping]:
+    known_values = list(value_mapping.keys()) + list(value_mapping.values())
+    if unknown_values := [old_value for old_value in old_values if old_value not in known_values]:
         message = "Ignoring one or more unknown SonarQube parameter values of type '%s' in report %s: %s"
         logger = get_logger()
         logger.warning(message, value_type, report["report_uuid"], ", ".join(unknown_values))
