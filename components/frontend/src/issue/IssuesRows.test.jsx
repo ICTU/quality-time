@@ -8,12 +8,7 @@ import { expectNoAccessibilityViolations } from "../testUtils"
 import * as toast from "../widgets/toast"
 import { IssuesRows } from "./IssuesRows"
 
-vi.mock("../api/fetch_server_api.js")
-vi.mock("../widgets/toast.jsx")
-
-afterEach(() => {
-    vi.resetAllMocks()
-})
+beforeAll(() => vi.spyOn(fetchServerApi, "fetchServerApi"))
 
 const reportWithIssueTracker = {
     issue_tracker: {
@@ -94,9 +89,7 @@ it("shows a parse error", async () => {
 
 it("creates an issue", async () => {
     window.open = vi.fn()
-    fetchServerApi.fetchServerApi = vi
-        .fn()
-        .mockResolvedValue({ ok: true, error: "", issue_url: "https://tracker/foo-42" })
+    fetchServerApi.fetchServerApi.mockResolvedValue({ ok: true, error: "", issue_url: "https://tracker/foo-42" })
     const { container } = renderIssuesRow({ report: reportWithIssueTracker })
     fireEvent.click(screen.getByText(/Create new issue/))
     expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", {
@@ -106,7 +99,7 @@ it("creates an issue", async () => {
 })
 
 it("tries to create an issue", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: false, error: "Dummy", issue_url: "" })
+    fetchServerApi.fetchServerApi.mockResolvedValue({ ok: false, error: "Dummy", issue_url: "" })
     const { container } = renderIssuesRow({ report: reportWithIssueTracker })
     fireEvent.click(screen.getByText(/Create new issue/))
     expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", {
@@ -122,7 +115,7 @@ it("disables the create issue button if the user has no permissions", async () =
 })
 
 it("adds an issue id", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
+    fetchServerApi.fetchServerApi.mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
     const { container } = renderIssuesRow()
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), "FOO-42{Enter}")
     expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/issue_ids", {
@@ -132,7 +125,7 @@ it("adds an issue id", async () => {
 })
 
 it("shows issue id suggestions", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
+    fetchServerApi.fetchServerApi.mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
     const { container } = renderIssuesRow({
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
     })
@@ -142,13 +135,14 @@ it("shows issue id suggestions", async () => {
 })
 
 it("shows an error message if fetching suggestions fails", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockRejectedValue(new Error("fetching suggestions failed"))
+    fetchServerApi.fetchServerApi.mockRejectedValue(new Error("fetching suggestions failed"))
+    const showMessage = vi.spyOn(toast, "showMessage")
     const { container } = renderIssuesRow({
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
     })
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), "u")
-    expect(toast.showMessage).toHaveBeenCalledTimes(1)
-    expect(toast.showMessage).toHaveBeenCalledWith(
+    expect(showMessage).toHaveBeenCalledTimes(1)
+    expect(showMessage).toHaveBeenCalledWith(
         "error",
         "Could not fetch issue identifiers",
         "Error: fetching suggestions failed",
@@ -157,7 +151,7 @@ it("shows an error message if fetching suggestions fails", async () => {
 })
 
 it("shows no issue id suggestions without a query", async () => {
-    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
+    fetchServerApi.fetchServerApi.mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
     const { container } = renderIssuesRow({
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
     })

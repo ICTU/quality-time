@@ -3,15 +3,10 @@ import dayjs from "dayjs"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import * as auth from "./api/auth"
 import * as fetchServerApi from "./api/fetch_server_api"
 import App from "./App"
 import { expectNoAccessibilityViolations } from "./testUtils"
 import * as toast from "./widgets/toast"
-
-vi.mock("./api/fetch_server_api.js")
-vi.mock("./api/auth.js")
-vi.mock("./widgets/toast.jsx")
 
 function setUserInLocalStorage(sessionExpirationDatetime, email) {
     localStorage.setItem("user", "admin")
@@ -28,18 +23,12 @@ beforeAll(() => {
 
 beforeEach(async () => {
     history.push("")
-    fetchServerApi.apiWithReportDate = (await vi.importActual("./api/fetch_server_api.js")).apiWithReportDate
-    fetchServerApi.fetchServerApi = vi.fn().mockReturnValue({
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockReturnValue({
         then: vi.fn().mockReturnValue({ catch: vi.fn().mockReturnValue({ finally: vi.fn() }) }),
-    })
-    auth.login = vi.fn().mockResolvedValue({
-        ok: false,
     })
 })
 
-afterEach(() => {
-    vi.restoreAllMocks()
-})
+afterEach(() => vi.restoreAllMocks())
 
 it("shows spinner", async () => {
     const { container } = render(<App />)
@@ -72,7 +61,6 @@ it("resets the user when the session is expired on mount", async () => {
 
 it("resets the user when the user clicks logout", async () => {
     setUserInLocalStorage("3000-02-23T22:00:50.945Z")
-    auth.logout = vi.fn().mockResolvedValue({ ok: true })
     const { container } = render(<App />)
     fireEvent.click(screen.getByText(/admin/))
     fireEvent.click(screen.getByText(/Logout/))

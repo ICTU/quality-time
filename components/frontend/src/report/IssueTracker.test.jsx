@@ -8,15 +8,17 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { IssueTracker } from "./IssueTracker"
 
-vi.mock("../api/report.js")
-reportApi.getReportIssueTrackerOptions.mockImplementation(() =>
-    Promise.resolve({
-        projects: [{ key: "PRJ", name: "Project name" }],
-        issue_types: [{ key: "Bug", name: "Bug" }],
-        fields: [{ key: "labels", name: "Labels" }],
-        epic_links: [{ key: "FOO-420", name: "FOO-420" }],
-    }),
-)
+beforeEach(() => {
+    vi.spyOn(reportApi, "setReportIssueTrackerAttribute")
+    vi.spyOn(reportApi, "getReportIssueTrackerOptions").mockImplementation(() =>
+        Promise.resolve({
+            projects: [{ key: "PRJ", name: "Project name" }],
+            issue_types: [{ key: "Bug", name: "Bug" }],
+            fields: [{ key: "labels", name: "Labels" }],
+            epic_links: [{ key: "FOO-420", name: "FOO-420" }],
+        }),
+    )
+})
 
 const reload = vi.fn()
 

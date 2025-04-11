@@ -10,8 +10,6 @@ import { EDIT_ENTITY_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceEntityDetails } from "./SourceEntityDetails"
 
-vi.mock("../api/source.js")
-
 const reload = vi.fn
 
 function renderSourceEntityDetails({ report = null, statusEndDate = null } = {}) {
@@ -33,7 +31,9 @@ function renderSourceEntityDetails({ report = null, statusEndDate = null } = {})
     )
 }
 
-beforeEach(() => (sourceApi.setSourceEntityAttribute = vi.fn()))
+beforeEach(() => {
+    vi.spyOn(sourceApi, "setSourceEntityAttribute")
+})
 
 it("shows the default desired response times when the report has no desired response times", async () => {
     const { container } = renderSourceEntityDetails()

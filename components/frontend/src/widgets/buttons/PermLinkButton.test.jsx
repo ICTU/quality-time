@@ -4,7 +4,9 @@ import { vi } from "vitest"
 import * as toast from "../toast"
 import { PermLinkButton } from "./PermLinkButton"
 
-vi.mock("../toast.jsx")
+beforeEach(() => {
+    vi.spyOn(toast, "showMessage")
+})
 
 test("PermLinkButton is not shown in an insecure context", () => {
     Object.assign(window, { isSecureContext: false })
@@ -13,7 +15,6 @@ test("PermLinkButton is not shown in an insecure context", () => {
 })
 
 test("PermLinkButton copies URL to clipboard", async () => {
-    toast.showMessage = vi.fn()
     Object.assign(window, { isSecureContext: true })
     Object.assign(navigator, {
         clipboard: { writeText: vi.fn().mockImplementation(() => Promise.resolve()) },
@@ -27,7 +28,6 @@ test("PermLinkButton copies URL to clipboard", async () => {
 })
 
 test("PermLinkButton shows error message if copying fails", async () => {
-    toast.showMessage = vi.fn()
     Object.assign(window, { isSecureContext: true })
     Object.assign(navigator, {
         clipboard: {

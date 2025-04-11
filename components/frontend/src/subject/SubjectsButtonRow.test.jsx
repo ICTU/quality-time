@@ -6,25 +6,15 @@ import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
+import * as subject from "../widgets/menu_options"
 import { SubjectsButtonRow } from "./SubjectsButtonRow"
 
-vi.mock("../api/fetch_server_api.js")
-
-vi.mock("../widgets/menu_options", async () => {
-    const originalModule = await vi.importActual("../api/subject.js")
-
-    return {
-        __esModule: true,
-        ...originalModule,
-        subjectOptions: vi.fn(() => [
-            { key: "1", text: "dummy option 1", content: "dummy option 1" },
-            { key: "2", text: "dummy option 2", content: "dummy option 2" },
-        ]),
-    }
-})
-
 beforeEach(() => {
-    fetchServerApi.fetchServerApi = vi.fn().mockReturnValue({ then: vi.fn().mockReturnValue({ finally: vi.fn() }) })
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockReturnValue({ then: vi.fn().mockReturnValue({ finally: vi.fn() }) })
+    vi.spyOn(subject, "subjectOptions").mockReturnValue([
+        { key: "1", text: "dummy option 1", content: "dummy option 1" },
+        { key: "2", text: "dummy option 2", content: "dummy option 2" },
+    ])
 })
 
 afterEach(() => vi.clearAllMocks())

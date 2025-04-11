@@ -11,8 +11,6 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { MetricDebtParameters } from "./MetricDebtParameters"
 
-vi.mock("../api/fetch_server_api.js")
-
 const dataModel = {
     subjects: {
         subject_type: {
@@ -63,9 +61,9 @@ function renderMetricDebtParameters({ acceptDebt = false, debtEndDate = null } =
     )
 }
 
-beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
-
-afterEach(() => vi.resetAllMocks())
+beforeEach(() => {
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
+})
 
 it("accepts technical debt", async () => {
     const { container } = renderMetricDebtParameters()

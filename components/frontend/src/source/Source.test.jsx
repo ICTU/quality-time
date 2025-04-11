@@ -10,10 +10,8 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { Source } from "./Source"
 
-vi.mock("../api/fetch_server_api.js")
-
 beforeEach(() => {
-    fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
     history.push("")
 })
 

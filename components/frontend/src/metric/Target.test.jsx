@@ -8,8 +8,6 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { Target } from "./Target"
 
-vi.mock("../api/fetch_server_api.js")
-
 const dataModel = {
     metrics: {
         violations: {
@@ -54,7 +52,7 @@ async function typeInField(label, text) {
     })
 }
 
-beforeEach(() => (fetchServerApi.fetchServerApi = vi.fn().mockResolvedValue({ ok: true })))
+beforeEach(() => vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true }))
 
 function expectMetricAttributePost(attribute, payload) {
     const endPoint = `metric/metric_uuid/attribute/${attribute}`
