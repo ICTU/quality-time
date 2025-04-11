@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - When measuring source-up-to-dateness with Dependency-Track as source, also show the up-to-dateness of individual projects in the measurement details. Closes [#10545](https://github.com/ICTU/quality-time/issues/10545).
 
+### Fixed
+
+- The API-server would incorrectly log about encountering unknown SonarQube parameter values when running migration code at startup. Fixes [#11119](https://github.com/ICTU/quality-time/issues/11119).
+
 ## v5.27.0 - 2025-04-04
 
 ### Added
