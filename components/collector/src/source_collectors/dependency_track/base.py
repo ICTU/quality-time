@@ -89,7 +89,9 @@ class DependencyTrackBase(SourceCollector):
         project_matches_name = match_string_or_regular_expression(project["name"], names) if names else True
         project_version = project.get("version", "unknown")
         project_matches_version = match_string_or_regular_expression(project_version, versions) if versions else True
-        return project_matches_name and project_matches_version
+        only_include_latest_project_version = self._parameter("only_include_latest_project_versions")
+        project_matches_latest = not (only_include_latest_project_version == "yes" and not self._is_latest(project))
+        return project_matches_name and project_matches_version and project_matches_latest
 
     @staticmethod
     def _latest_version_status(version: str, latest: str) -> Literal["unknown", "up-to-date", "update possible"]:
@@ -99,6 +101,11 @@ class DependencyTrackBase(SourceCollector):
         if latest == version:
             return "up-to-date"
         return "update possible"
+
+    @staticmethod
+    def _is_latest(project: DependencyTrackProject) -> bool:
+        """Return whether the project is the latest version."""
+        return project.get("isLatest", False)
 
 
 class DependencyTrackLatestVersionStatusBase(DependencyTrackBase):
