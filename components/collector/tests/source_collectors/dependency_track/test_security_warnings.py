@@ -101,6 +101,12 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
         response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
         self.assert_measurement(response, value="1", entities=self.entities())
 
+    async def test_filter_by_latest_project(self):
+        """Test that projects can be filtered by being the latest project version."""
+        self.set_source_parameter("only_include_latest_project_versions", "yes")
+        response = await self.collect(get_request_json_side_effect=[self.projects()])
+        self.assert_measurement(response, value="0", entities=[])
+
     async def test_include_by_component_name(self):
         """Test filtering by component name."""
         self.set_source_parameter("components_to_include", ["other component"])

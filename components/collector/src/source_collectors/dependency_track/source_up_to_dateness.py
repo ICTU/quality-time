@@ -65,13 +65,6 @@ class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector
             datetimes.append(datetime)
         return datetimes
 
-    def _project_matches(self, project: DependencyTrackProject, names: list[str], versions: list[str]) -> bool:
-        """Return whether the project name matches the project names and versions."""
-        only_include_latest_project_version = self._parameter("only_include_latest_project_versions")
-        if only_include_latest_project_version == "yes" and not self._is_latest(project):
-            return False
-        return super()._project_matches(project, names, versions)
-
     @classmethod
     def _last_bom_import_datetime(cls, project: DependencyTrackProject) -> datetime | None:
         """Return the last BOM import datetime for the project."""
@@ -86,11 +79,6 @@ class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector
     def _timestamp_to_datetime(timestamp: int | None) -> datetime | None:
         """Convert the timestamp to a datetime."""
         return None if timestamp is None else datetime_from_timestamp(timestamp)
-
-    @staticmethod
-    def _is_latest(project: DependencyTrackProject) -> bool:
-        """Return whether the project is the latest version."""
-        return project.get("isLatest", False)
 
     def _up_to_dateness(self, project: DependencyTrackProject) -> str:
         """Return the up-to-dateness of the project."""

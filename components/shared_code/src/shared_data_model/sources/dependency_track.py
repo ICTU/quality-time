@@ -106,7 +106,7 @@ DEPENDENCY_TRACK = Source(
             values=["yes", "no"],
             default_value="no",
             help="Only include project versions that are marked as latest.",
-            metrics=["source_up_to_dateness"],
+            metrics=["dependencies", "security_warnings", "source_up_to_dateness"],
         ),
     },
     entities={

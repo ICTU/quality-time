@@ -116,3 +116,9 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         self.set_source_parameter("project_versions", ["1.2", "1.3"])
         response = await self.collect(get_request_json_return_value=self.projects(version=""))
         self.assert_measurement(response, value="0", entities=[])
+
+    async def test_filter_by_latest_project(self):
+        """Test that projects can be filtered by being the latest project version."""
+        self.set_source_parameter("only_include_latest_project_versions", "yes")
+        response = await self.collect(get_request_json_side_effect=[self.projects()])
+        self.assert_measurement(response, value="0", entities=[])
