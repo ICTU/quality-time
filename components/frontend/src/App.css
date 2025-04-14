@@ -1,3 +1,9 @@
 html {
-    scroll-padding-top: 204px; /* height of sticky header */
+    height: 100%; /* Make sure the footer can be at the bottom of the page */
+    scroll-padding-top: 204px; /* Height of sticky header */
+}
+body {
+    display: flex; /* Stretch the body... */
+    flex-direction: column; /* ...vertically... */
+    min-height: 100%; /* ...to fill the entire vertical space, so the footer is always at the bottom */
 }
