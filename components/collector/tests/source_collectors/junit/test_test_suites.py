@@ -23,14 +23,16 @@ class JUnitTestSuitesTest(JUnitCollectorTestCase):
         self,
         name: str,
         result: str,
+        *,
         passed: int = 0,
         errored: int = 0,
         failed: int = 0,
         skipped: int = 0,
+        key: str = "",
     ) -> dict[str, str]:
         """Create a JUnit measurement entity."""
         return {
-            "key": name,
+            "key": key or name,
             "suite_name": name,
             "suite_result": result,
             "tests": str(passed + errored + failed + skipped),
@@ -60,7 +62,7 @@ class JUnitTestSuitesTest(JUnitCollectorTestCase):
     async def test_one_top_level_test_suite(self):
         """Test that a JUnit XML file with one top level test suite works."""
         xml = """
-        <testsuite name="ts1" timestamp="2009-12-19T17:58:59" failures="0" errors="1" skipped="0" tests="1">
+        <testsuite name="ts1" timestamp="2009-12-19T17:58:59" failures="0" errors="1" tests="1">
             <testcase name="tc1" classname="cn"><error/></testcase>
         </testsuite>
         """
@@ -72,11 +74,22 @@ class JUnitTestSuitesTest(JUnitCollectorTestCase):
         """Test that a JUnit XML file with one top level nested test suite works."""
         xml = """
         <testsuite name="ts1" timestamp="2009-12-19T17:58:59" failures="0" errors="1" skipped="0" tests="1">
-            <testsuite name="ts1-1" timestamp="2009-12-19T17:58:59" failures="0" errors="1" skipped="0" tests="1">
+            <testsuite name="ts1-1" timestamp="2009-12-19T17:58:59" failures="0" errors="1" tests="1">
                 <testcase name="tc1" classname="cn"><error/></testcase>
             </testsuite>
         </testsuite>
         """
         response = await self.collect(get_request_text=xml)
         expected_entities = [self.create_entity("ts1-1", "errored", errored=1)]
+        self.assert_measurement(response, value="1", total="1", entities=expected_entities)
+
+    async def test_use_id_for_key_if_available(self):
+        """Test that the test suite id is used as entity key."""
+        xml = """
+        <testsuite id="id1" name="ts1" timestamp="2009-12-19T17:58:59" failures="0" errors="1" tests="1">
+            <testcase name="tc1" classname="cn"><error/></testcase>
+        </testsuite>
+        """
+        response = await self.collect(get_request_text=xml)
+        expected_entities = [self.create_entity("ts1", "errored", errored=1, key="id1")]
         self.assert_measurement(response, value="1", total="1", entities=expected_entities)
