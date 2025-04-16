@@ -28,8 +28,8 @@ class SonarQubeViolations(SonarQubeCollector):
         url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
-        # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
-        # the number of "entities" sent to the server anyway (that limit is 100 currently).
+        # If there's more than 500 issues only the first 500 are returned.
+        # Issue: https://github.com/ICTU/quality-time/issues/11004
         api = f"{url}/api/issues/search?componentKeys={component}&branch={branch}&resolved=false&ps={self.PAGE_SIZE}"
         return URL(api + self._url_parameters())
 
