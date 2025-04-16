@@ -1,9 +1,11 @@
-FROM node:23.10.0-alpine3.21
+FROM node:23.11.0-bookworm-slim
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
 
-RUN apk add --no-cache chromium=135.0.7049.52-r0
+RUN apt-get update && \
+    apt-get --no-install-recommends -y install chromium=135.0.7049.84-1~deb12u1 && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/renderer
 COPY package*.json /home/renderer/

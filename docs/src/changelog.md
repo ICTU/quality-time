@@ -23,6 +23,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - Keep the footer at the bottom of the page even if the browser window is very tall. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
 - The API-server would incorrectly log about encountering unknown SonarQube parameter values when running migration code at startup. Fixes [#11119](https://github.com/ICTU/quality-time/issues/11119).
+- The renderer would use 100% CPU while idling. Fixed by using a different base image (Debian) for the renderer with a different version of Chromium. Fixes [#11131](https://github.com/ICTU/quality-time/issues/11131).
 
 ## v5.27.0 - 2025-04-04
 
