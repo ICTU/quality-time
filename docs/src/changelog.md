@@ -24,6 +24,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 - Keep the footer at the bottom of the page even if the browser window is very tall. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
 - The API-server would incorrectly log about encountering unknown SonarQube parameter values when running migration code at startup. Fixes [#11119](https://github.com/ICTU/quality-time/issues/11119).
 - The renderer component would use 100% CPU while idling. Fixed by downgrading the renderer base image to Alpine 3.20 so the renderer uses a slightly older version of Chromium that does not suffer from this issue. Fixes [#11131](https://github.com/ICTU/quality-time/issues/11131).
+- When measuring test suites with JUnit XML as source, the count of test suites would be incorrect if the test suite names are not unique. Fixed by using the test suite id to disambiguate suites, if available. Fixes [#11138](https://github.com/ICTU/quality-time/issues/11138).
 
 ## v5.27.0 - 2025-04-04
 

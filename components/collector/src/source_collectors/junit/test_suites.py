@@ -33,29 +33,33 @@ class JUnitTestSuites(XMLFileSourceCollector):
         results_to_count = cast(list[str], self._parameter("test_result"))
         return entity["suite_result"] in results_to_count
 
-    @staticmethod
-    def __entity(suite: Element) -> Entity:
+    @classmethod
+    def __entity(cls, suite: Element) -> Entity:
         """Transform a test case into a test suite entity."""
-        name = suite.get("name", "unknown")
+        suite_name = suite.get("name", "unknown")
         tests = len(suite.findall("testcase"))
         skipped = int(suite.get("skipped", 0))
         failed = int(suite.get("failures", 0))
         errored = int(suite.get("errors", 0))
         passed = tests - (errored + failed + skipped)
-        suite_result = "passed"
-        if errored:
-            suite_result = "errored"
-        elif failed:
-            suite_result = "failed"
-        elif skipped:
-            suite_result = "skipped"
         return Entity(
-            key=name,
-            suite_name=name,
-            suite_result=suite_result,
+            key=suite.get("id") or suite_name,
+            suite_name=suite_name,
+            suite_result=cls.__suite_result(errored, failed, skipped),
             tests=str(tests),
             passed=str(passed),
             errored=str(errored),
             failed=str(failed),
             skipped=str(skipped),
         )
+
+    @staticmethod
+    def __suite_result(errored: int, failed: int, skipped: int) -> str:
+        """Return the result of a test suite."""
+        if errored:
+            return "errored"
+        if failed:
+            return "failed"
+        if skipped:
+            return "skipped"
+        return "passed"
