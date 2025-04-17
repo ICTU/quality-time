@@ -94,6 +94,7 @@ def move_item_to_index(
     item_to_move: Subject | Metric | Source,
     new_index: int,
 ) -> tuple[int, int]:
+    """Change the item position to a specific index."""
     items_dict: ItemsDictType
     if isinstance(container, Report):
         items_dict = cast(ItemsDictType, container.subjects_dict)
