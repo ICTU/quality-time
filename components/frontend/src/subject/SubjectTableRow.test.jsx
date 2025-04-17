@@ -6,6 +6,7 @@ import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtu
 import { DataModel } from "../context/DataModel"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTableRow } from "./SubjectTableRow"
+import {EDIT_REPORT_PERMISSION, Permissions} from "../context/Permissions"
 
 beforeEach(() => {
     history.push("")
@@ -17,6 +18,9 @@ function renderSubjectTableRow({
     ascending = false,
     scale = "count",
     evaluate_targets = undefined,
+    expanded = false,
+    isDropTarget = false,
+    permissions = "",
 } = {}) {
     const dates = [new Date("2024-01-03"), new Date("2024-01-02"), new Date("2024-01-01")]
     const reverseMeasurements = [
@@ -46,29 +50,38 @@ function renderSubjectTableRow({
         dates.reverse()
     }
     return render(
-        <DataModel.Provider value={dataModel}>
-            <Table>
-                <TableBody>
-                    <SubjectTableRow
-                        dates={dates}
-                        measurements={[]}
-                        metric={{
-                            comment: comment,
-                            direction: direction,
-                            evaluate_targets: evaluate_targets,
-                            recent_measurements: [],
-                            scale: scale,
-                            type: "metric_type",
-                            unit: "things",
-                        }}
-                        metric_uuid="metric_uuid"
-                        report={report}
-                        reversedMeasurements={reverseMeasurements}
-                        settings={createTestableSettings()}
-                    />
-                </TableBody>
-            </Table>
-        </DataModel.Provider>,
+        <Permissions.Provider value={[permissions]}>
+            <DataModel.Provider value={dataModel}>
+                <Table>
+                    <TableBody>
+                        <SubjectTableRow
+                            dates={dates}
+                            measurements={[]}
+                            metric={{
+                                comment: comment,
+                                direction: direction,
+                                evaluate_targets: evaluate_targets,
+                                recent_measurements: [],
+                                scale: scale,
+                                type: "metric_type",
+                                unit: "things",
+                            }}
+                            metric_uuid="metric_uuid"
+                            report={report}
+                            reversedMeasurements={reverseMeasurements}
+                            settings={createTestableSettings({
+                                expandedItems: {
+                                    value: expanded ? ["metric_uuid:0"] : [],
+                                    toggle: vi.fn(),
+                                },
+                                hiddenTags: { reset: vi.fn() },
+                                metricsToHide: { reset: vi.fn() },
+                            })}
+                        />
+                    </TableBody>
+                </Table>
+            </DataModel.Provider>
+        </Permissions.Provider>,
     )
 }
 
@@ -127,4 +140,14 @@ it("shows the delta column for the version scale", async () => {
     expect(screen.getAllByText("-").length).toBe(1)
     expect(screen.getAllByLabelText("Metric type improved from 1.2 to 0.8").length).toBe(1)
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows the drag handle when row is not expanded and user is authenticated", () => {
+    renderSubjectTableRow({permissions: EDIT_REPORT_PERMISSION})
+    expect(screen.getByLabelText("Drag to reorder")).toBeInTheDocument()
+})
+
+it("shows no drag handle when row is expanded", () => {
+    renderSubjectTableRow({ expanded: true })
+    expect(screen.queryByLabelText("Drag to reorder")).not.toBeInTheDocument()
 })

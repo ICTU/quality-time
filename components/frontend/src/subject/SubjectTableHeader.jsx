@@ -7,6 +7,8 @@ import { datesPropType, settingsPropType } from "../sharedPropTypes"
 import { HyperLink } from "../widgets/HyperLink"
 import { IgnoreIcon, TriangleRightIcon } from "../widgets/icons"
 import { SortableTableHeaderCell, UnsortableTableHeaderCell } from "../widgets/TableHeaderCell"
+import {EDIT_REPORT_PERMISSION, ReadOnlyOrEditable} from "../context/Permissions";
+import ReorderIcon from '@mui/icons-material/Reorder';
 
 function Expand({ children }) {
     return (
@@ -351,6 +353,16 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
                 {settings.hiddenColumns.excludes("tags") && (
                     <SortableTableHeaderCell column="tags" label="Tags" help={tagsHelp} {...sortProps} />
                 )}
+                <ReadOnlyOrEditable
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    editableComponent={
+                        <UnsortableTableHeaderCell
+                            label="Drag to reorder"
+                            help="Drag to reorder"
+                            icon={<ReorderIcon fontSize="small"/>}
+                        />
+                    }
+                />
             </TableRow>
         </TableHead>
     )
