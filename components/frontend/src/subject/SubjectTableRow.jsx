@@ -223,6 +223,7 @@ function expandOrCollapseItem(expand, metric_uuid, expandedItems) {
 const DragHandleButton = React.forwardRef(({ label, ...props }, ref) => (
     <button
         ref={ref}
+        type="button"
         {...props}
         style={{
             background: 'none',
@@ -232,9 +233,12 @@ const DragHandleButton = React.forwardRef(({ label, ...props }, ref) => (
         }}
         aria-label={label}
     >
-        <DragIndicatorIcon fontSize="small" />
+        <DragIndicatorIcon fontSize="small"/>
     </button>
-));
+))
+DragHandleButton.propTypes = {
+    label: string,
+}
 
 export function SubjectTableRow({
     changedFields,
@@ -267,7 +271,7 @@ export function SubjectTableRow({
     const rowRef = useRef(null);
     const dragHandleRef = useRef(null);
 
-    const isExpanded = settings.expandedItems.value.some((item) => item?.startsWith(metric_uuid));
+    const anyRowExpanded = settings.expandedItems.value.length > 0;
 
     return (
         <TableRowWithDetails
@@ -276,8 +280,8 @@ export function SubjectTableRow({
             onDragOver={(e) => e.preventDefault()}
             onDrop={onDrop}
             style={{
-                borderTop: isDropTarget ? "2px solid #1976d2" : undefined,
-                transition: "border 0.2s ease-in-out",
+                transition: 'transform 150ms ease',
+                transform: isDropTarget ? 'translateY(10px)' : 'none',
             }}
             className={nrDates === 1 ? metric.status || "unknown" : ""}
             color={nrDates === 1 ? metric.status || "unknown" : ""}
@@ -375,7 +379,7 @@ export function SubjectTableRow({
                     ))}
                 </TableCell>
             )}
-            {!isExpanded && (
+            {!anyRowExpanded && (
                 <ReadOnlyOrEditable
                     requiredPermissions={[EDIT_REPORT_PERMISSION]}
                     editableComponent={
@@ -390,7 +394,7 @@ export function SubjectTableRow({
                     }
                 />
             )}
-            {isExpanded && <TableCell />}
+            {anyRowExpanded && <TableCell />}
         </TableRowWithDetails>
     );
 }
@@ -414,5 +418,5 @@ SubjectTableRow.propTypes = {
     onDragStart: func,
     onDragEnter: func,
     onDrop: func,
-    isDropTarget: func,
+    isDropTarget: bool,
 }
