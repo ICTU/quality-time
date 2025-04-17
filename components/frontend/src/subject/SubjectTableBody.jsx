@@ -36,7 +36,7 @@ export function SubjectTableBody({
     dates,
     handleSort,
     measurements,
-    metricEntries: incomingMetricEntries,
+    metricEntries,
     reload,
     report,
     reportDate,
@@ -45,16 +45,7 @@ export function SubjectTableBody({
     settings,
     subjectUuid,
 }) {
-    const [metricEntries, setMetricEntries] = useState(incomingMetricEntries);
     const [dragOverIndex, setDragOverIndex] = useState(null);
-
-    useEffect(() => {
-        console.log("incomingMetricEntries changed", incomingMetricEntries)
-        setMetricEntries(incomingMetricEntries);
-    }, [incomingMetricEntries]);
-
-    console.log(metricEntries.map(([metric_uuid, index]) => index));
-
 
     const dragItem = useRef(null);
     const dragOverItem = useRef(null);
@@ -75,8 +66,6 @@ export function SubjectTableBody({
             tbody.appendChild(clonedRow);
 
             wrapper.style.position = "absolute";
-            wrapper.style.top = "-9999px";
-            wrapper.style.left = "-9999px";
             wrapper.style.borderCollapse = "collapse";
             wrapper.style.tableLayout = "auto"
             wrapper.style.width = `${rowRef.current.offsetWidth}px`;
@@ -103,24 +92,21 @@ export function SubjectTableBody({
         dragOverItem.current = index;
     };
 
-    const handleDrop = () => {
+    const handleDrop = (e) => {
+        e.preventDefault();
         const dragFrom = dragItem.current;
-        const dragTo = dragOverItem.current;
+        const dropTarget = dragOverItem.current;
 
-        if (dragFrom == null || dragTo == null || dragFrom === dragTo) return;
+        if (dragFrom == null || dropTarget == null || dragFrom === dropTarget) return;
 
-        const updated = [...metricEntries];
-        const [moved] = updated.splice(dragFrom, 1);
-        updated.splice(dragTo, 0, moved);
+        const [movedUUID] = metricEntries[dragFrom];
 
-        setMetricEntries(updated);
         dragItem.current = null;
         dragOverItem.current = null;
         setDragOverIndex(null);
 
-        const [movedUUID] = moved;
-
-        set_metric_attribute(movedUUID, "position_index", dragTo, reload);
+        // Persist to backend and reload
+        set_metric_attribute(movedUUID, "position_index", dropTarget, reload);
     };
 
     useEffect(() => {
@@ -143,14 +129,15 @@ export function SubjectTableBody({
             {metricEntries.map(([metricUuid, metric], index) => (
                 <React.Fragment key={metric_uuid}>
                     {dragOverIndex === index && (
-                        <tr style={{ height: "4px" }}>
+                        <tr style={{ height: '4px' }}>
                             <td colSpan="100%">
                                 <div
                                     style={{
-                                        height: "2px",
-                                        backgroundColor: "#1976d2",
-                                        marginTop: "1px",
-                                        marginBottom: "1px",
+                                        height: '4px',
+                                        backgroundColor: '#1976d2',
+                                        boxShadow: '0 0 3px rgba(25, 118, 210, 0.8)',
+                                        borderRadius: '2px',
+                                        margin: '2px 0',
                                     }}
                                 />
                             </td>
@@ -176,7 +163,7 @@ export function SubjectTableBody({
                         subjectUuid={subjectUuid}
                         onDragStart={handleDragStart}
                         onDragEnter={handleDragEnter}
-                        onDrop={handleDrop}
+                        onDrop={(e) => handleDrop(e)}
                         isDropTarget={dragOverIndex === index}
                     />
                 </React.Fragment>
