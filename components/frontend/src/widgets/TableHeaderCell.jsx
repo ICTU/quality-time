@@ -1,5 +1,5 @@
 import { TableCell, TableSortLabel, Tooltip } from "@mui/material"
-import { func, string } from "prop-types"
+import PropTypes, { func, string } from "prop-types"
 
 import {
     alignmentPropType,
@@ -9,19 +9,58 @@ import {
     sortDirectionPropType,
 } from "../sharedPropTypes"
 
-function TableHeaderCellContents({ help, label }) {
-    return help ? (
-        <Tooltip slotProps={{ tooltip: { sx: { maxWidth: "30em" } } }} title={help}>
-            <span>{label}</span>
-        </Tooltip>
-    ) : (
-        label
-    )
+function TableHeaderCellContents({ help, label, icon }) {
+    if (help && icon) {
+        return (
+            <Tooltip slotProps={{tooltip: {sx: {maxWidth: "30em"}}}} title={help} disableInteractive>
+                <span
+                    style={{display: "inline-flex", alignItems: "center"}}
+                >
+                    {icon}
+                    <ScreenReaderLabel>{label}</ScreenReaderLabel>
+                </span>
+            </Tooltip>
+        )
+    } else if (help) {
+        return (
+            <Tooltip slotProps={{ tooltip: { sx: { maxWidth: "30em" } } }} title={help}>
+                <span>{label}</span>
+            </Tooltip>
+        )
+    } else if (icon) {
+        return (
+            icon
+        )
+    } else {
+        return (
+            label
+        )
+    }
 }
 TableHeaderCellContents.propTypes = {
     help: popupContentPropType,
     label: labelPropType,
+    icon: PropTypes.node,
 }
+
+const ScreenReaderLabel = ({ children }) => (
+    <span style={{
+        position: "absolute",
+        width: 1,
+        height: 1,
+        padding: 0,
+        overflow: "hidden",
+        clip: "rect(0,0,0,0)",
+        whiteSpace: "nowrap",
+        border: 0,
+    }}>
+        {children}
+    </span>
+)
+ScreenReaderLabel.propTypes = {
+    children: PropTypes.node,
+}
+
 
 function MuiSortDirection(sortDirection) {
     return sortDirection === "ascending" ? "asc" : "desc"
@@ -70,10 +109,10 @@ SortableTableHeaderCell.propTypes = {
     textAlign: alignmentPropType,
 }
 
-export function UnsortableTableHeaderCell({ colSpan, help, label, textAlign, width }) {
+export function UnsortableTableHeaderCell({ colSpan, help, label, textAlign, width, icon }) {
     return (
-        <TableCell align={textAlign} colSpan={colSpan} width={width}>
-            <TableHeaderCellContents help={help} label={label} />
+        <TableCell align={textAlign} colSpan={colSpan} width={width} aria-label={label}>
+            <TableHeaderCellContents help={help} label={label} icon={icon}/>
         </TableCell>
     )
 }
@@ -83,4 +122,5 @@ UnsortableTableHeaderCell.propTypes = {
     label: labelPropType,
     textAlign: string,
     width: string,
+    icon: PropTypes.node,
 }

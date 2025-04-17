@@ -94,7 +94,6 @@ def move_item_to_index(
     item_to_move: Subject | Metric | Source,
     new_index: int,
 ) -> tuple[int, int]:
-
     items_dict: ItemsDictType
     if isinstance(container, Report):
         items_dict = cast(ItemsDictType, container.subjects_dict)
@@ -106,27 +105,22 @@ def move_item_to_index(
     item_keys = list(items_dict.keys())
     old_index = item_keys.index(item_to_move.uuid)
 
-    # Clamp new_index within bounds
-    new_index = max(0, min(new_index, len(items_dict) - 1))
+    # Clamp index
+    new_index = max(0, min(new_index, len(item_keys) - 1))
 
     if old_index == new_index:
-        return old_index, new_index  # no-op
+        return old_index, new_index  # no change
 
-    # Remove and re-insert in new order
-    del items_dict[item_to_move.uuid]
-    reordered_items = {}
-    for i, key in enumerate(item_keys):
-        if key == item_to_move.uuid:
-            continue  # already removed
-        if i == new_index:
-            reordered_items[item_to_move.uuid] = item_to_move
-        reordered_items[key] = items_dict[key]
+    # Remove the item key
+    item_keys.pop(old_index)
 
-    # If new_index is at the end
-    if len(reordered_items) < len(items_dict):
-        reordered_items[item_to_move.uuid] = item_to_move
+    # Insert the item key at the new index
+    item_keys.insert(new_index, item_to_move.uuid)
 
-    # Replace original dict
+    # Rebuild the dict in the new order
+    reordered_items = {key: items_dict.get(key, item_to_move) for key in item_keys}
+
+    # Assign the new dict back to the container
     if isinstance(container, Report):
         container["subjects"] = reordered_items
     elif isinstance(container, Subject):
