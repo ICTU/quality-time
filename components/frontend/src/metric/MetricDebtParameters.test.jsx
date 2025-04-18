@@ -110,7 +110,7 @@ it("undoes changes to a comment", async () => {
 
 it("sets the technical debt end date", async () => {
     const { container } = renderMetricDebtParameters()
-    await userEvent.type(screen.getByPlaceholderText(/YYYY/), "12312022{Enter}")
+    await userEvent.type(screen.getAllByLabelText(/Technical debt end date/)[0], "12312022{Enter}")
     expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith(
         "post",
         "metric/metric_uuid/attribute/debt_end_date",

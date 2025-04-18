@@ -104,7 +104,7 @@ it("renders a date parameter", async () => {
         parameterType: "date",
         parameterValue: "2021-10-10",
     })
-    expect(screen.queryAllByLabelText(/Date/).length).toBe(1)
+    expect(screen.queryAllByLabelText(/Date/, { selector: "input" }).length).toBe(1)
     expect(screen.queryAllByDisplayValue("10/10/2021").length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
@@ -115,8 +115,8 @@ it("renders a date parameter without date", async () => {
         parameterType: "date",
         parameterValue: "",
     })
-    expect(screen.queryAllByLabelText(/Date/).length).toBe(1)
-    expect(screen.queryAllByPlaceholderText(/YYYY/).length).toBe(1)
+    expect(screen.queryAllByLabelText(/Date/, { selector: "input" }).length).toBe(1)
+    expect(screen.queryAllByPlaceholderText(/YYYY/).length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
 

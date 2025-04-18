@@ -105,7 +105,7 @@ it("shows the entity status end date", async () => {
 
 it("changes the entity status end date", async () => {
     const { container } = renderSourceEntityDetails()
-    await userEvent.type(screen.getByPlaceholderText(/YYYY/), "01012222{Enter}")
+    await userEvent.type(screen.getAllByLabelText(/Violation status end date/)[0], "01012222{Enter}")
     expect(sourceApi.setSourceEntityAttribute).toHaveBeenCalledWith(
         "metric_uuid",
         "source_uuid",
