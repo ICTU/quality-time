@@ -15,6 +15,9 @@ const theme1 = createTheme({
         MuiTextField: {
             defaultProps: { variant: "filled" },
         },
+        MuiPickersTextField: {
+            defaultProps: { variant: "filled" }, // Should be the same as MuiTextField, see https://mui.com/x/migration/migration-pickers-v7/
+        },
     },
     palette: {
         primary: {
