@@ -21,6 +21,7 @@ def default_metric_attributes(metric_type: str):
         "scale": metric.default_scale,
         "unit": None,
         "addition": metric.addition,
+        "evaluate_targets": metric.evaluate_targets,
         "accept_debt": False,
         "debt_target": None,
         "direction": None,

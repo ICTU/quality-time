@@ -47,6 +47,7 @@ class Metric(DocumentedModel):
     direction: Direction = Direction.FEWER_IS_BETTER
     target: str = "0"
     near_target: str = "10"
+    evaluate_targets: bool = True
     sources: list[str] = Field(..., min_length=1)
     tags: list[Tag] = []
     rationale: str = ""  # Answers the question "Why measure this metric?", included in documentation and UI

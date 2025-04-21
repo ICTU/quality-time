@@ -10,6 +10,13 @@ Feature: metric
     When the client creates a metric
     Then the metric type is "violations"
 
+  Scenario: add metric that is not evaluated by default
+    When the client creates a metric with type "software_version"
+    And the client creates a source with type "sonarqube"
+    And the collector measures "1.1" with status "informative"
+    And the client waits a second
+    Then the metric status is "informative"
+
   Scenario: delete metric
     Given an existing metric
     When the client deletes the metric

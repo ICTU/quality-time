@@ -25,19 +25,20 @@ class DefaultAttributesTest(DataModelTestCase):
         self.assertEqual(
             {
                 "name": None,
-                "type": "dependencies",
+                "type": "software_version",
                 "accept_debt": False,
-                "addition": "sum",
+                "addition": "min",
                 "debt_target": None,
                 "direction": None,
-                "near_target": "10",
-                "target": "0",
-                "scale": "count",
+                "evaluate_targets": False,
+                "near_target": "0.9",
+                "target": "1.0",
+                "scale": "version_number",
                 "sources": {},
-                "tags": ["maintainability"],
+                "tags": ["ci"],
                 "unit": None,
             },
-            default_metric_attributes("dependencies"),
+            default_metric_attributes("software_version"),
         )
 
     def test_default_subject_attributes(self):

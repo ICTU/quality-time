@@ -113,6 +113,7 @@ def metric_section(metric_key: str, metric: Metric, level: int) -> str:
         markdown += markdown_paragraph(f"*More information* {explanation}")
         if explanation_urls := metric.explanation_urls:  # pragma: no branch
             markdown += see_also_links(explanation_urls)
+    markdown += definition_list("Evaluate metric against target by default", "Yes" if metric.evaluate_targets else "No")
     markdown += definition_list("Default target", metric_target(metric))
     markdown += definition_list("Scales", *metric_scales(metric))
     markdown += definition_list("Default tags", *[tag.value for tag in metric.tags])
