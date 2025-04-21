@@ -208,6 +208,7 @@ class Metric(DescribedModel):
     direction: Direction = Direction.FEWER_IS_BETTER
     target: str = "0"
     near_target: str = "10"
+    evaluate_targets: bool = True
     sources: list[str] = Field(..., min_items=1)
     tags: list[Tag] = []
     rationale: str = ""  # Answers the question "Why measure this metric?", included in documentation and UI
@@ -228,6 +229,8 @@ The `addition` determines how values from multiple sources are combined: possibl
 The `direction` specifies whether smaller measurement values are better or worse.
 
 The `target` is the default target value for the metric. The `near_target` is when the metric becomes red. Values between `target` and `near_target` are yellow.
+
+The `evaluate_targets` flag determines whether the metric is "Informative" or not. If `evaluate_targets` is `True`, the measurement values are compared to the `target` and `near_target` and the metric status depends on the result of the comparison. If `evaluate_targets` is `False`, the metric status is "Informative" regardless of the measurement value. Unless there are no measurements, in which case the status is "Unknown". Note that the user can change any metric from being evaluated to informative and vice versa, so all metrics should have a `target` and `near_target` value.
 
 The list of `sources` contains the keys of source types that support this metric type.
 

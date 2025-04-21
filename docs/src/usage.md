@@ -247,7 +247,7 @@ The "Metric {index}`unit <Unit>`" derives its default value from the metric type
 
 The "Metric {index}`target <Target>`" determines at what value a measurement is below or above target. In the example below only measurement values of 0 are on target. The "Metric near target" determines when the measurement value is sufficiently close to the target to no longer require immediate action. Metrics near their target are yellow.
 
-If you don't want to evaluate the metric against targets, but only want to track its measurement value, you can set the "Evaluate metric targets?" field to "No". The metric status will always be "Informative", unless the source data is missing.
+If you don't want to evaluate the metric against targets, but only want to track its measurement value, you can set the "Evaluate metric targets?" field to "No". The metric status will always be "Informative", unless the source data is missing. Vice versa, if a metric is "Informative" by default you can set the "Evaluate metric targets?" field to "Yes" to have the metric be evaluated against targets.
 
 ```{index} Technical debt
 ```

@@ -434,6 +434,7 @@ report(s).
         direction=Direction.MORE_IS_BETTER,
         target="1.0",
         near_target="0.9",
+        evaluate_targets=False,
         sources=[
             "performancetest_runner",
             "sonarqube",
