@@ -496,9 +496,9 @@ requests-sse==0.3.2 \
     --hash=sha256:3e17bd324e500c9b11c7c23dd00af3f0222070328134bda67a8917985cfc4127 \
     --hash=sha256:c3399b689f6e7bf0eac7c2031211d66ffbb3ab77afc6c9226a71c73c06609f61
     # via feature-tests (pyproject.toml)
-setuptools==78.1.0 \
-    --hash=sha256:18fd474d4a82a5f83dac888df697af65afa82dec7323d09c3e37d1f14288da54 \
-    --hash=sha256:3e386e96793c8702ae83d17b853fb93d3e09ef82ec62722e61da5cd22376dcd8
+setuptools==79.0.0 \
+    --hash=sha256:9828422e7541213b0aacb6e10bbf9dd8febeaa45a48570e09b6d100e063fc9f9 \
+    --hash=sha256:b9ab3a104bedb292323f53797b00864e10e434a3ab3906813a7169e4745b912a
     # via
     #   zope-event
     #   zope-interface
