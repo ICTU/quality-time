@@ -6,7 +6,7 @@ from shared.utils.functions import first
 from shared.model.subject import Subject
 from unittest.mock import Mock
 
-from model.actions import copy_metric, copy_report, copy_source, copy_subject, move_metric_to_index, move_item
+from model.actions import copy_metric, copy_report, copy_source, copy_subject, move_metric_to_index
 
 
 class CopySourceTest(unittest.TestCase):
