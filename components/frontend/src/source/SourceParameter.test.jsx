@@ -36,11 +36,8 @@ const report = {
 }
 
 function renderSourceParameter({
-    help = "",
-    helpUrl = "",
+    parameter = { name: "URL", type: "url" },
     parameterKey = "key1",
-    parameterName = "URL",
-    parameterType = "url",
     parameterValue = "https://test",
     parameterValues = [],
     placeholder = "placeholder",
@@ -50,11 +47,8 @@ function renderSourceParameter({
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <SourceParameter
-                    help={help}
-                    helpUrl={helpUrl}
+                    parameter={parameter}
                     parameterKey={parameterKey}
-                    parameterName={parameterName}
-                    parameterType={parameterType}
                     parameterValue={parameterValue}
                     parameterValues={parameterValues}
                     placeholder={placeholder}
@@ -86,22 +80,21 @@ it("renders an url parameter with warning", async () => {
 })
 
 it("renders a string parameter", async () => {
-    const { container } = renderSourceParameter({ parameterName: "String", parameterType: "string" })
+    const { container } = renderSourceParameter({ parameter: { name: "String", type: "string" } })
     expect(screen.queryAllByLabelText(/String/).length).toBe(1)
     expect(screen.queryAllByDisplayValue(/https/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders a password parameter", async () => {
-    const { container } = renderSourceParameter({ parameterName: "Password", parameterType: "password" })
+    const { container } = renderSourceParameter({ parameter: { name: "Password", type: "password" } })
     expect(screen.queryAllByLabelText(/Password/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders a date parameter", async () => {
     const { container } = renderSourceParameter({
-        parameterName: "Date",
-        parameterType: "date",
+        parameter: { name: "Date", type: "date" },
         parameterValue: "2021-10-10",
     })
     expect(screen.queryAllByLabelText(/Date/, { selector: "input" }).length).toBe(1)
@@ -110,26 +103,21 @@ it("renders a date parameter", async () => {
 })
 
 it("renders a date parameter without date", async () => {
-    const { container } = renderSourceParameter({
-        parameterName: "Date",
-        parameterType: "date",
-        parameterValue: "",
-    })
+    const { container } = renderSourceParameter({ parameter: { name: "Date", type: "date" }, parameterValue: "" })
     expect(screen.queryAllByLabelText(/Date/, { selector: "input" }).length).toBe(1)
     expect(screen.queryAllByPlaceholderText(/YYYY/).length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders an integer parameter", async () => {
-    const { container } = renderSourceParameter({ parameterName: "Integer", parameterType: "integer" })
+    const { container } = renderSourceParameter({ parameter: { name: "Integer", type: "integer" } })
     expect(screen.queryAllByLabelText(/Integer/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("doesn't change an integer parameter with mouse wheel", async () => {
     const { container } = renderSourceParameter({
-        parameterName: "Integer",
-        parameterType: "integer",
+        parameter: { name: "Integer", type: "integer" },
         parameterValue: "10",
     })
     fireEvent.wheel(screen.getByLabelText(/Integer/, { target: { scrollLeft: 500 } }))
@@ -139,10 +127,8 @@ it("doesn't change an integer parameter with mouse wheel", async () => {
 
 it("renders a single choice parameter", async () => {
     const { container } = renderSourceParameter({
-        parameterName: "Single choice",
-        parameterType: "single_choice",
+        parameter: { name: "Single choice", type: "single_choice", values: ["option 1", "option 2"] },
         parameterValue: "option 1",
-        parameterValues: ["option 1", "option 2"],
     })
     expect(screen.queryAllByLabelText(/Single choice/).length).toBe(1)
     expect(screen.queryAllByText(/option 1/).length).toBe(1)
@@ -151,10 +137,8 @@ it("renders a single choice parameter", async () => {
 
 it("renders a multiple choice parameter", async () => {
     const { container } = renderSourceParameter({
-        parameterName: "Multiple choice",
-        parameterType: "multiple_choice",
+        parameter: { name: "Multiple choice", type: "multiple_choice", values: ["option 1", "option 2", "option 3"] },
         parameterValue: ["option 1", "option 2"],
-        parameterValues: ["option 1", "option 2", "option 3"],
     })
     expect(screen.queryAllByLabelText(/Multiple choice/).length).toBe(1)
     expect(screen.queryAllByText(/option 1/).length).toBe(1)
@@ -163,29 +147,29 @@ it("renders a multiple choice parameter", async () => {
 
 it("renders a multiple choice with addition parameter", async () => {
     const { container } = renderSourceParameter({
-        parameterName: "Multiple choice with addition",
-        parameterType: "multiple_choice_with_addition",
+        parameter: { name: "Multiple choice with addition", type: "multiple_choice_with_addition" },
         parameterValue: ["option 1", "option 2"],
-        placeholder: null,
     })
     expect(screen.queryAllByLabelText(/Multiple choice/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders nothing on unknown parameter type", async () => {
-    const { container } = renderSourceParameter({ parameterName: "Unknown", parameterType: "unknown" })
+    const { container } = renderSourceParameter({ parameter: { name: "Unknown", type: "unknown" } })
     expect(screen.queryAllByText(/Unknown/).length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders a help url", async () => {
-    const { container } = renderSourceParameter({ helpUrl: "https://help" })
+    const { container } = renderSourceParameter({
+        parameter: { name: "String", type: "string", help_url: "https://help" },
+    })
     expect(screen.queryAllByTitle(/Opens new window/)[0].closest("a").href).toBe("https://help/")
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders a help text", async () => {
-    const { container } = renderSourceParameter({ help: "Help text" })
+    const { container } = renderSourceParameter({ parameter: { name: "String", type: "string", help: "Help text" } })
     expect(screen.queryAllByText(/Help text/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })

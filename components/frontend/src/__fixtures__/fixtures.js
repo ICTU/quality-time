@@ -30,7 +30,16 @@ export const dataModel = {
         metric_type: { name: "Metric type", tags: [] },
     },
     sources: {
-        source_type: { name: "Source type", metrics: ["metric_type"], parameters: {} },
+        source_type: {
+            name: "Source type name",
+            metrics: ["metric_type"],
+            parameters: { url: { type: "url", name: "URL" } },
+        },
+        source_type_without_location_parameters: {
+            name: "Source type without location parameters",
+            metrics: ["metric_type"],
+            parameters: {},
+        },
     },
 }
 
@@ -46,7 +55,13 @@ export const report = {
                     type: "metric_type",
                     tags: ["other tag"],
                     target: "1",
-                    sources: { source_uuid: { name: "Source", type: "source_type" } },
+                    sources: {
+                        source_uuid: {
+                            name: "Source",
+                            type: "source_type",
+                            parameters: { url: "https://source1.org" },
+                        },
+                    },
                     status: "target_not_met",
                     recent_measurements: [],
                     latest_measurement: { count: 1 },
@@ -58,7 +73,13 @@ export const report = {
                     tags: ["tag"],
                     target: "2",
                     issue_ids: ["ABC-42"],
-                    sources: { source_uuid2: { name: "Source 2", type: "source_type" } },
+                    sources: {
+                        source_uuid2: {
+                            name: "Source 2",
+                            type: "source_type",
+                            parameters: { url: "https://sourc2.org" },
+                        },
+                    },
                     status: "informative",
                     recent_measurements: [],
                     latest_measurement: { count: 2 },

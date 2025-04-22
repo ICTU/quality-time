@@ -50,23 +50,11 @@ export function SourceParameters({ changedParamKeys, metric, reload, report, sou
                     report={report}
                     source={source}
                     sourceUuid={sourceUuid}
+                    parameter={allParameters[parameterKey]}
                     parameterKey={parameterKey}
-                    parameterType={allParameters[parameterKey].type}
-                    parameterName={allParameters[parameterKey].name}
-                    parameterUnit={allParameters[parameterKey].unit || metricUnit}
-                    parameterMin={allParameters[parameterKey].min_value || null}
-                    parameterMax={allParameters[parameterKey].max_value || null}
-                    parameterValue={
-                        source.parameters?.[parameterKey]
-                            ? source.parameters[parameterKey]
-                            : allParameters[parameterKey].default_value
-                    }
-                    parameterValues={allParameters[parameterKey].values || []}
-                    helpUrl={allParameters[parameterKey].help_url}
-                    help={allParameters[parameterKey].help}
+                    parameterValue={source.parameters?.[parameterKey]}
                     requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                    placeholder={allParameters[parameterKey].placeholder || ""}
-                    required={allParameters[parameterKey].mandatory}
+                    unit={metricUnit}
                     warning={changedParamKeys?.indexOf(parameterKey) !== -1}
                     reload={reload}
                 />

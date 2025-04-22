@@ -234,8 +234,18 @@ describe("issue tracker tab", () => {
     })
 })
 
-describe("tags tab", () => {
+describe("sources tab", () => {
     beforeEach(() => history.push("?expanded=report_uuid:4"))
+
+    it("shows the sources, if available", async () => {
+        const { container } = renderReportTitle()
+        expect(screen.getAllByText(/No sources have been configured yet/).length).toBe(1)
+        await expectNoAccessibilityViolations(container)
+    })
+})
+
+describe("tags tab", () => {
+    beforeEach(() => history.push("?expanded=report_uuid:5"))
 
     it("shows the tags", async () => {
         const { container } = renderReportTitle()
@@ -245,7 +255,7 @@ describe("tags tab", () => {
 })
 
 describe("changelog tab", () => {
-    beforeEach(() => history.push("?expanded=report_uuid:5"))
+    beforeEach(() => history.push("?expanded=report_uuid:6"))
 
     it("loads the changelog", async () => {
         fetchServerApi.fetchServerApi.mockImplementation(() => Promise.resolve({ changelog: [] }))

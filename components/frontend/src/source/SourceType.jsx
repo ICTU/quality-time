@@ -21,29 +21,36 @@ sourceTypeDescription.propTypes = {
     sourceType: sourceTypePropType,
 }
 
+export function SourceTypeRichDescription({ sourceTypeKey }) {
+    const dataModel = useContext(DataModel)
+    const sourceType = dataModel.sources[sourceTypeKey]
+    return (
+        <Stack direction="row" sx={{ maxWidth: "40vw" }}>
+            <span style={{ paddingRight: "10px" }}>
+                <Logo logo={sourceTypeKey} alt={sourceType.name} />
+            </span>
+            <Stack direction="column">
+                <Stack direction="row" alignItems="center">
+                    {sourceType.name}
+                    {sourceType.deprecated && <Chip color="warning" label="Deprecated" sx={{ marginLeft: "8px" }} />}
+                </Stack>
+                <Typography variant="body2" sx={{ whiteSpace: "normal" }}>
+                    {sourceTypeDescription(sourceType)}
+                </Typography>
+            </Stack>
+        </Stack>
+    )
+}
+SourceTypeRichDescription.propTypes = {
+    sourceTypeKey: string,
+}
+
 export function sourceTypeOption(key, sourceType) {
     return {
         key: key,
         text: sourceType.name,
         value: key,
-        content: (
-            <Stack direction="row" sx={{ maxWidth: "40vw" }}>
-                <span style={{ paddingRight: "10px" }}>
-                    <Logo logo={key} alt={sourceType.name} />
-                </span>
-                <Stack direction="column">
-                    <Stack direction="row" alignItems="center">
-                        {sourceType.name}
-                        {sourceType.deprecated && (
-                            <Chip color="warning" label="Deprecated" sx={{ marginLeft: "8px" }} />
-                        )}
-                    </Stack>
-                    <Typography variant="body2" sx={{ whiteSpace: "normal" }}>
-                        {sourceTypeDescription(sourceType)}
-                    </Typography>
-                </Stack>
-            </Stack>
-        ),
+        content: <SourceTypeRichDescription sourceTypeKey={key} />,
     }
 }
 sourceTypeOption.propTypes = {

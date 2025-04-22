@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Added
 
+- Add an overview of sources used in reports that allows for changing the location parameters (url, credentials) of sources. Expand a report title and navigate to the 'Sources' tab to access it. Closes [#9214](https://github.com/ICTU/quality-time/issues/9214).
 - Allow for zooming trend graphs by drawing a rectangle in the trend graph. Closes [#11423](https://github.com/ICTU/quality-time/issues/11423).
 
 ## v5.32.1 - 2025-06-12
