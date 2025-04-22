@@ -89,19 +89,14 @@ def move_item(
 
     return old_index, new_index
 
-def move_item_to_index(
-    container: Report | Subject | Metric,
-    item_to_move: Subject | Metric | Source,
+def move_metric_to_index(
+    container: Subject,
+    item_to_move: Metric,
     new_index: int,
 ) -> tuple[int, int]:
-    """Change the item position to a specific index."""
+    """Change a metric position to a specific index within the subject."""
     items_dict: ItemsDictType
-    if isinstance(container, Report):
-        items_dict = cast(ItemsDictType, container.subjects_dict)
-    elif isinstance(container, Subject):
-        items_dict = cast(ItemsDictType, container.metrics_dict)
-    else:
-        items_dict = cast(ItemsDictType, container.sources_dict)
+    items_dict = container.metrics_dict
 
     item_keys = list(items_dict.keys())
     old_index = item_keys.index(item_to_move.uuid)
@@ -122,11 +117,6 @@ def move_item_to_index(
     reordered_items = {key: items_dict.get(key, item_to_move) for key in item_keys}
 
     # Assign the new dict back to the container
-    if isinstance(container, Report):
-        container["subjects"] = reordered_items
-    elif isinstance(container, Subject):
-        container["metrics"] = reordered_items
-    else:
-        container["sources"] = reordered_items
+    container["metrics"] = reordered_items
 
     return old_index, new_index
