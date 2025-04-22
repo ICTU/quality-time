@@ -110,24 +110,15 @@ class CopyReportTest(unittest.TestCase):
         report_copy = copy_report(self.report)
         self.assertEqual("Subject", first(report_copy["subjects"].values())["name"])
 
+
 class MoveItemToIndexTest(unittest.TestCase):
     """Unit tests for the move item to index action."""
 
     def setUp(self):
         """Override to set up the subject under test."""
         self.data_model = {
-            "metrics": {
-                "security_warnings": {
-                    "name": "Security warnings",
-                    "unit": "warnings",
-                    "tags": []
-                }
-            },
-            "subjects": {
-                "software": {
-                    "name": "Software"
-                }
-            }
+            "metrics": {"security_warnings": {"name": "Security warnings", "unit": "warnings", "tags": []}},
+            "subjects": {"software": {"name": "Software"}},
         }
 
         self.subject_data = {
@@ -149,7 +140,7 @@ class MoveItemToIndexTest(unittest.TestCase):
                     "type": "security_warnings",
                     "sources": {},
                 },
-            }
+            },
         }
 
         # Provide a dummy report object since Subject requires it
@@ -162,7 +153,6 @@ class MoveItemToIndexTest(unittest.TestCase):
             subject_uuid="subject_uuid",
             report=self.report,
         )
-
 
     def test_move_metric_to_index(self):
         """Test that a metric can be moved to a specific index."""
@@ -181,7 +171,4 @@ class MoveItemToIndexTest(unittest.TestCase):
         old_index, new_index = move_metric_to_index(self.subject, metric_to_move, 1)
 
         self.assertEqual((1, 1), (old_index, new_index))
-        self.assertEqual(
-            list(self.subject["metrics"].keys()),
-            ["metric_uuid_1", "metric_uuid_2", "metric_uuid_3"]
-        )
+        self.assertEqual(list(self.subject["metrics"].keys()), ["metric_uuid_1", "metric_uuid_2", "metric_uuid_3"])
