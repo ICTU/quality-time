@@ -98,21 +98,20 @@ SourceSegment.propTypes = {
     sourceUuid: string,
 }
 
+export function reloadAfterMassEditSource(json, reload) {
+    const nrSources = json.nr_sources_mass_edited
+    if (nrSources > 0) {
+        showMessage("info", `Changed ${nrSources} ${pluralize("source", nrSources)}`)
+    }
+    reload(json)
+}
+
 export function Sources({ reports, report, metric, metricUuid, measurement, changedFields, reload, settings }) {
     const dataModel = useContext(DataModel)
     const measurementSources = measurement?.sources ?? []
     const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
         Object.keys(dataModel.sources).includes(metric.sources[sourceUuid].type),
     )
-
-    const reloadSource = (json) => {
-        const nrSources = json.nr_sources_mass_edited
-        if (nrSources > 0) {
-            showMessage("info", `Changed ${nrSources} ${pluralize("source", nrSources)}`)
-        }
-        reload(json)
-    }
-
     const lastIndex = sourceUuids.length - 1
     const sourceSegments = sourceUuids.map((sourceUuid, index) => {
         return (
@@ -125,7 +124,7 @@ export function Sources({ reports, report, metric, metricUuid, measurement, chan
                 lastIndex={lastIndex}
                 measurementSource={measurementSources.find((source) => source.source_uuid === sourceUuid)}
                 changedFields={changedFields}
-                reload={reloadSource}
+                reload={(json) => reloadAfterMassEditSource(json, reload)}
                 settings={settings}
             />
         )

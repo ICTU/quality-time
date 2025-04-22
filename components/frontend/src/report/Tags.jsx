@@ -88,7 +88,7 @@ export function Tags({ reload, report }) {
                 <TableHead>
                     <TableRow>
                         <TableCell colSpan={2}>Tag</TableCell>
-                        <TableCell align="right">Number of metrics</TableCell>
+                        <TableCell align="right">Number of metrics having the tag</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

@@ -3,20 +3,14 @@ import { FormControl, IconButton, Menu, MenuItem, Typography } from "@mui/materi
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
-import { bool, func, number, oneOfType, string } from "prop-types"
+import { bool, func, object, oneOfType, string } from "prop-types"
 import { useContext, useState } from "react"
 
 import { setSourceParameter } from "../api/source"
 import { accessGranted, Permissions } from "../context/Permissions"
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { TextField } from "../fields/TextField"
-import {
-    permissionsPropType,
-    popupContentPropType,
-    reportPropType,
-    sourcePropType,
-    stringsPropType,
-} from "../sharedPropTypes"
+import { permissionsPropType, reportPropType, sourcePropType, stringsPropType } from "../sharedPropTypes"
 import { dropdownOptions } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 
@@ -134,42 +128,38 @@ collectParameterValues.propTypes = {
 }
 
 export function SourceParameter({
-    help,
-    helpUrl,
+    fixedEditScope,
+    parameter,
     parameterKey,
-    parameterType,
-    parameterName,
-    parameterUnit,
-    parameterMin,
-    parameterMax,
     parameterValue,
-    parameterValues,
-    placeholder,
     reload,
     report,
-    required,
     requiredPermissions,
     source,
     sourceUuid,
+    unit,
     warning,
 }) {
-    const [editScope, setEditScope] = useState("source")
+    const [editScope, setEditScope] = useState(fixedEditScope ?? "source")
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, requiredPermissions)
-    let label = parameterName
+    const parameterType = parameter?.type
+    const value = parameterValue || parameter?.default_value
+    const parameterValues = parameter?.values || []
+    let label = parameter?.name
     let helperText = null
-    if (helpUrl) {
+    if (parameter?.help_url) {
         helperText = (
             <>
-                See <HyperLink url={helpUrl}>{helpUrl}</HyperLink> for more information.
+                See <HyperLink url={parameter.help_url}>{parameter.help_url}</HyperLink> for more information.
             </>
         )
     }
-    if (help) {
-        helperText = help
+    if (parameter?.help) {
+        helperText = parameter.help
     }
-    if (parameterType === "date" && parameterValue) {
-        helperText = dayjs(parameterValue).fromNow()
+    if (parameterType === "date" && value) {
+        helperText = dayjs(value).fromNow()
     }
     let parameterProps = {
         disabled: disabled,
@@ -177,18 +167,20 @@ export function SourceParameter({
         label: label,
         onChange: (value) => {
             setSourceParameter(sourceUuid, parameterKey, value, editScope, reload)
-            setEditScope("source") // Reset the edit scope of the parameter to source only
+            if (!fixedEditScope) {
+                setEditScope("source") // Reset the edit scope of the parameter to source only
+            }
         },
-        placeholder: placeholder,
-        required: required,
+        placeholder: parameter?.placeholder || "",
+        required: parameter?.mandatory,
     }
-    const startAdornment = <EditScopeSelect editScope={editScope} setEditScope={setEditScope} />
+    const startAdornment = fixedEditScope ? null : <EditScopeSelect editScope={editScope} setEditScope={setEditScope} />
     let parameterInput = null
     if (parameterType === "date") {
         parameterInput = (
             <DatePicker
                 {...parameterProps}
-                defaultValue={parameterValue ? dayjs(parameterValue) : null}
+                defaultValue={value ? dayjs(value) : null}
                 slotProps={{
                     field: { clearable: true },
                     textField: { helperText: helperText, InputProps: { startAdornment: startAdornment } },
@@ -198,7 +190,7 @@ export function SourceParameter({
             />
         )
     }
-    parameterProps["value"] = parameterValue
+    parameterProps["value"] = value
     parameterProps["startAdornment"] = startAdornment
     if (parameterType === "password") {
         parameterInput = <TextField {...parameterProps} type="password" />
@@ -207,10 +199,10 @@ export function SourceParameter({
         parameterInput = (
             <TextField
                 {...parameterProps}
-                max={parameterMax || null}
-                min={parameterMin || null}
+                max={parameter?.max_value || null}
+                min={parameter?.min_value || null}
                 type="number"
-                unit={parameterUnit}
+                unit={parameter?.unit || unit}
             />
         )
     }
@@ -241,22 +233,15 @@ export function SourceParameter({
     return parameterInput
 }
 SourceParameter.propTypes = {
-    help: popupContentPropType,
-    helpUrl: string,
+    fixedEditScope: string,
+    parameter: object,
     parameterKey: string,
-    parameterType: string,
-    parameterName: string,
-    parameterUnit: string,
-    parameterMin: number,
-    parameterMax: number,
     parameterValue: oneOfType([string, stringsPropType]),
-    parameterValues: stringsPropType,
-    placeholder: string,
     reload: func,
     report: reportPropType,
-    required: bool,
     requiredPermissions: permissionsPropType,
     source: sourcePropType,
     sourceUuid: string,
+    unit: string,
     warning: bool,
 }

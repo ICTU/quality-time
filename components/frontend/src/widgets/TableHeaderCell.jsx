@@ -70,14 +70,15 @@ SortableTableHeaderCell.propTypes = {
     textAlign: alignmentPropType,
 }
 
-export function UnsortableTableHeaderCell({ help, label, textAlign, width }) {
+export function UnsortableTableHeaderCell({ colSpan, help, label, textAlign, width }) {
     return (
-        <TableCell align={textAlign} width={width}>
+        <TableCell align={textAlign} colSpan={colSpan} width={width}>
             <TableHeaderCellContents help={help} label={label} />
         </TableCell>
     )
 }
 UnsortableTableHeaderCell.propTypes = {
+    colSpan: string,
     help: popupContentPropType,
     label: labelPropType,
     textAlign: string,

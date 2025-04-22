@@ -96,3 +96,38 @@ summarizeReportsOnDate.propTypes = {
     settings: settingsPropType,
     tag: string,
 }
+
+export function reportSources(report) {
+    const sourceIds = new Set()
+    const sources = {}
+    Object.values(report.subjects ?? {}).forEach((subject) => {
+        Object.values(subject.metrics ?? {}).forEach((metric) => {
+            Object.entries(metric.sources ?? {}).forEach(([sourceUuid, source]) => {
+                const reportSource = {
+                    name: source.name ?? "",
+                    type: source.type,
+                    url: source.parameters?.url ?? "",
+                    landing_url: source.parameters?.landing_url ?? "",
+                    username: source.parameters?.username ?? "",
+                    password: source.parameters?.password ?? "",
+                    private_token: source.parameters?.private_token ?? "",
+                }
+                const sourceId = JSON.stringify(reportSource)
+                if (sourceIds.has(sourceId)) {
+                    sources[sourceId].nrMetrics += 1
+                } else {
+                    reportSource["uuid"] = sourceUuid
+                    sources[sourceId] = reportSource
+                    sources[sourceId].nrMetrics = 1
+                    sourceIds.add(sourceId)
+                }
+            })
+        })
+    })
+    const sortedSources = Object.values(sources)
+    sortedSources.sort((s1, s2) => (s1.name || s1.type).localeCompare(s2.name || s2.type))
+    return sortedSources
+}
+reportSources.propTypes = {
+    report: reportPropType,
+}
