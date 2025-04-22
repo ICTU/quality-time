@@ -89,6 +89,7 @@ def move_item(
 
     return old_index, new_index
 
+
 def move_metric_to_index(
     container: Subject,
     item_to_move: Metric,
@@ -96,7 +97,7 @@ def move_metric_to_index(
 ) -> tuple[int, int]:
     """Change a metric position to a specific index within the subject."""
     items_dict: ItemsDictType
-    items_dict = container.metrics_dict
+    items_dict = cast(ItemsDictType, container.metrics_dict)
 
     item_keys = list(items_dict.keys())
     old_index = item_keys.index(item_to_move.uuid)
