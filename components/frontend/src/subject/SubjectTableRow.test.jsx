@@ -17,7 +17,6 @@ function renderSubjectTableRow({
     scale = "count",
     evaluateTargets = undefined,
     expanded = false,
-    isDropTarget = false,
     permissions = "",
 } = {}) {
     const dates = [new Date("2024-01-03"), new Date("2024-01-02"), new Date("2024-01-01")]
@@ -142,7 +141,7 @@ it("shows the delta column for the version scale", async () => {
 })
 
 it("shows the drag handle when row is not expanded and user is authenticated", () => {
-    renderSubjectTableRow({permissions: EDIT_REPORT_PERMISSION})
+    renderSubjectTableRow({ permissions: EDIT_REPORT_PERMISSION })
     expect(screen.getByLabelText("Drag to reorder")).toBeInTheDocument()
 })
 
