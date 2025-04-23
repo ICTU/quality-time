@@ -1,7 +1,8 @@
-import { TableBody } from "@mui/material";
-import { array, func, string } from "prop-types";
-import React, {useEffect, useRef, useState} from "react";
+import { TableBody } from "@mui/material"
+import { array, func, string } from "prop-types"
+import React, { useEffect, useRef, useState } from "react"
 
+import { set_metric_attribute } from "../api/metric"
 import {
     datesPropType,
     measurementsPropType,
@@ -10,25 +11,9 @@ import {
     reportsPropType,
     settingsPropType,
     stringsPropType,
-} from "../sharedPropTypes";
-import { SubjectTableRow } from "./SubjectTableRow";
-import {set_metric_attribute} from "../api/metric";
-
-function copyAllComputedStyles(sourceNode, targetNode) {
-    const sourceStyles = getComputedStyle(sourceNode);
-    for (const key of sourceStyles) {
-        try {
-            targetNode.style[key] = sourceStyles.getPropertyValue(key);
-        } catch {}
-    }
-
-    // Recursively copy to children
-    const sourceChildren = Array.from(sourceNode.children);
-    const targetChildren = Array.from(targetNode.children);
-    for (let i = 0; i < sourceChildren.length; i++) {
-        copyAllComputedStyles(sourceChildren[i], targetChildren[i]);
-    }
-}
+} from "../sharedPropTypes"
+import { SubjectTableRow } from "./SubjectTableRow"
+import { createDragGhost } from "../utils"
 
 export function SubjectTableBody({
     changed_fields,
@@ -44,99 +29,70 @@ export function SubjectTableBody({
     settings,
     subject_uuid,
 }) {
-    const [dragOverIndex, setDragOverIndex] = useState(null);
+    const [dragOverIndex, setDragOverIndex] = useState(null)
 
-    const dragItem = useRef(null);
-    const dragOverItem = useRef(null);
+    const dragItem = useRef(null)
+    const dragOverItem = useRef(null)
 
     const handleDragStart = (index, rowRef, event) => {
-        dragItem.current = index;
-        event.dataTransfer.effectAllowed = "move";
+        dragItem.current = index
+        event.dataTransfer.effectAllowed = "move"
 
-        if (rowRef?.current) {
-            const clonedRow = rowRef.current.cloneNode(true);
-
-            copyAllComputedStyles(rowRef.current, clonedRow);
-
-            const wrapper = document.createElement("table");
-            const tbody = document.createElement("tbody");
-
-            wrapper.appendChild(tbody);
-            tbody.appendChild(clonedRow);
-
-            wrapper.style.position = "absolute";
-            wrapper.style.borderCollapse = "collapse";
-            wrapper.style.tableLayout = "auto"
-            wrapper.style.width = `${rowRef.current.offsetWidth}px`;
-
-            document.body.appendChild(wrapper);
-
-            const rowRect = rowRef.current.getBoundingClientRect();
-            const offsetX = event.clientX - rowRect.left;
-            const offsetY = event.clientY - rowRect.top;
-
-            // Shift the ghost slightly left of the cursor, but not out of bounds
-            const adjustedOffsetX = Math.max(0, offsetX);
-
-            event.dataTransfer.setDragImage(wrapper, adjustedOffsetX, offsetY);
-
-            setTimeout(() => {
-                document.body.removeChild(wrapper);
-            }, 0);
-        }
-    };
+        createDragGhost(rowRef, event)
+    }
 
     const handleDragEnter = (index) => {
-        setDragOverIndex(index);
-        dragOverItem.current = index;
-    };
+        setDragOverIndex(index)
+        dragOverItem.current = index
+    }
 
     const handleDrop = (e) => {
-        e.preventDefault();
-        const dragFrom = dragItem.current;
-        const dropTarget = dragOverItem.current;
+        e.preventDefault()
+        const dragFrom = dragItem.current
+        const dropTarget = dragOverItem.current
 
-        if (dragFrom == null || dropTarget == null || dragFrom === dropTarget) return;
+        if (dragFrom == null || dropTarget == null || dragFrom === dropTarget) return
 
-        const [movedUUID] = metricEntries[dragFrom];
+        const [movedUUID] = metricEntries[dragFrom]
 
-        dragItem.current = null;
-        dragOverItem.current = null;
-        setDragOverIndex(null);
+        dragItem.current = null
+        dragOverItem.current = null
+        setDragOverIndex(null)
 
         // Persist to backend and reload
-        set_metric_attribute(movedUUID, "position_index", dropTarget, reload);
-    };
+        set_metric_attribute(movedUUID, "position_index", dropTarget, reload)
+    }
 
     useEffect(() => {
         const handleDragEnd = () => {
-            dragItem.current = null;
-            dragOverItem.current = null;
-            setDragOverIndex(null);
-        };
+            dragItem.current = null
+            dragOverItem.current = null
+            setDragOverIndex(null)
+        }
 
-        window.addEventListener("dragend", handleDragEnd);
+        window.addEventListener("dragend", handleDragEnd)
         return () => {
-            window.removeEventListener("dragend", handleDragEnd);
-        };
-    }, []);
+            window.removeEventListener("dragend", handleDragEnd)
+        }
+    }, [])
 
-    const lastIndex = metricEntries.length - 1;
+    const lastIndex = metricEntries.length - 1
 
     return (
         <TableBody>
             {metricEntries.map(([metric_uuid, metric], index) => (
                 <React.Fragment key={metric_uuid}>
                     {dragOverIndex === index && (
-                        <tr style={{ height: '4px' }}>
+                        <tr style={{ height: "4px" }}>
                             <td colSpan="100%">
                                 <div
+                                    data-testid={`drop-indicator-${index}`}
                                     style={{
-                                        height: '4px',
-                                        backgroundColor: '#1976d2',
-                                        boxShadow: '0 0 3px rgba(25, 118, 210, 0.8)',
-                                        borderRadius: '2px',
-                                        margin: '2px 0',
+                                        height: "4px",
+                                        backgroundColor: "#1976d2",
+                                        boxShadow: "0 0 3px rgba(25, 118, 210, 0.8)",
+                                        borderRadius: "2px",
+                                        margin: "2px 0",
                                     }}
                                 />
                             </td>
@@ -166,9 +122,8 @@ export function SubjectTableBody({
                 </React.Fragment>
             ))}
         </TableBody>
-    );
+    )
 }
-
 SubjectTableBody.propTypes = {
     changed_fields: stringsPropType,
     dates: datesPropType,
@@ -182,4 +137,4 @@ SubjectTableBody.propTypes = {
     reversedMeasurements: measurementsPropType,
     settings: settingsPropType,
     subject_uuid: string,
-};
+}
