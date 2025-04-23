@@ -453,3 +453,51 @@ export function sum(object) {
 sum.propTypes = {
     object: oneOf([arrayOf(number), objectOf(number)]),
 }
+
+export function copyAllComputedStyles(sourceNode, targetNode) {
+    const sourceStyles = getComputedStyle(sourceNode)
+    for (let i = 0; i < sourceStyles.length; i++) {
+        const property = sourceStyles.item(i)
+        targetNode.style[property] = sourceStyles.getPropertyValue(property)
+    }
+
+    // Recursively copy to children
+    const sourceChildren = Array.from(sourceNode.children)
+    const targetChildren = Array.from(targetNode.children)
+    for (let i = 0; i < sourceChildren.length; i++) {
+        copyAllComputedStyles(sourceChildren[i], targetChildren[i])
+    }
+}
+
+
+export function createDragGhost(rowRef, event) {
+    // ideally this helper function should be e2e tested
+    if (!rowRef?.current) return
+
+    const clonedRow = rowRef.current.cloneNode(true)
+    copyAllComputedStyles(rowRef.current, clonedRow)
+
+    const wrapper = document.createElement("table")
+    const tbody = document.createElement("tbody")
+
+    wrapper.appendChild(tbody)
+    tbody.appendChild(clonedRow)
+
+    wrapper.style.position = "absolute"
+    wrapper.style.borderCollapse = "collapse"
+    wrapper.style.tableLayout = "auto"
+    wrapper.style.width = `${rowRef.current.offsetWidth}px`
+
+    document.body.appendChild(wrapper)
+
+    const rowRect = rowRef.current.getBoundingClientRect()
+    const offsetX = event.clientX - rowRect.left
+    const offsetY = event.clientY - rowRect.top
+    const adjustedOffsetX = Math.max(0, offsetX)
+
+    event.dataTransfer.setDragImage(wrapper, adjustedOffsetX, offsetY)
+
+    setTimeout(() => {
+        document.body.removeChild(wrapper)
+    }, 0)
+}

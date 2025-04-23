@@ -1,3 +1,4 @@
+import ReorderIcon from "@mui/icons-material/Reorder"
 import { Chip, List, ListItem, ListItemIcon, ListItemText, Paper, TableHead, TableRow, Typography } from "@mui/material"
 import { bool, func, string } from "prop-types"
 
@@ -8,8 +9,7 @@ import { datesPropType, settingsPropType, stringsPropType } from "../sharedPropT
 import { HyperLink } from "../widgets/HyperLink"
 import { IgnoreIcon, TriangleRightIcon } from "../widgets/icons"
 import { SortableTableHeaderCell, UnsortableTableHeaderCell } from "../widgets/TableHeaderCell"
-import {EDIT_REPORT_PERMISSION, ReadOnlyOrEditable} from "../context/Permissions";
-import ReorderIcon from '@mui/icons-material/Reorder';
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 
 function Expand({ children }) {
     return (
@@ -360,7 +360,7 @@ export function SubjectTableHeader({ columnDates, columnsToHide, handleSort, set
                         <UnsortableTableHeaderCell
                             label="Drag to reorder"
                             help="Drag to reorder"
-                            icon={<ReorderIcon fontSize="small"/>}
+                            icon={<ReorderIcon fontSize="small" />}
                         />
                     }
                 />

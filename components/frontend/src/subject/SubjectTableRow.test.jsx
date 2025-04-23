@@ -17,7 +17,6 @@ function renderSubjectTableRow({
     scale = "count",
     evaluateTargets = undefined,
     expanded = false,
-    isDropTarget = false,
     permissions = "",
 } = {}) {
     const dates = [new Date("2024-01-03"), new Date("2024-01-02"), new Date("2024-01-01")]

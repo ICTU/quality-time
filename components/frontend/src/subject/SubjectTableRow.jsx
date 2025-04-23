@@ -1,7 +1,7 @@
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator"
 import { Chip, TableCell, Tooltip, Typography } from "@mui/material"
 import { bool, func, number, object, string } from "prop-types"
 import React, { useContext, useRef } from "react"
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator"
 
 import { DataModel } from "../context/DataModel"
 import { IssueStatus } from "../issue/IssueStatus"
@@ -226,14 +226,14 @@ const DragHandleButton = React.forwardRef(({ label, ...props }, ref) => (
         type="button"
         {...props}
         style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'grab',
+            background: "none",
+            border: "none",
+            cursor: "grab",
             padding: 0,
         }}
         aria-label={label}
     >
-        <DragIndicatorIcon fontSize="small"/>
+        <DragIndicatorIcon fontSize="small" />
     </button>
 ))
 DragHandleButton.propTypes = {
@@ -268,20 +268,21 @@ export function SubjectTableRow({
     const unit = getMetricUnit(metric, dataModel)
     const nrDates = dates.length
 
-    const rowRef = useRef(null);
-    const dragHandleRef = useRef(null);
+    const rowRef = useRef(null)
+    const dragHandleRef = useRef(null)
 
-    const anyRowExpanded = settings.expandedItems.value.length > 0;
+    const anyRowExpanded = settings.expandedItems.value.length > 0
 
     return (
         <TableRowWithDetails
+            data-testid={`metric-row-${index}`}
             ref={rowRef}
             onDragEnter={() => onDragEnter(index)}
             onDragOver={(e) => e.preventDefault()}
             onDrop={onDrop}
             style={{
-                transition: 'transform 150ms ease',
-                transform: isDropTarget ? 'translateY(10px)' : 'none',
+                transition: "transform 150ms ease",
+                transform: isDropTarget ? "translateY(10px)" : "none",
             }}
             className={nrDates === 1 ? metric.status || "unknown" : ""}
             color={nrDates === 1 ? metric.status || "unknown" : ""}
@@ -396,7 +397,7 @@ export function SubjectTableRow({
             )}
             {anyRowExpanded && <TableCell />}
         </TableRowWithDetails>
-    );
+    )
 }
 SubjectTableRow.propTypes = {
     changedFields: stringsPropType,

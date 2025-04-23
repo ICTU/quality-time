@@ -24,7 +24,7 @@ import {
     scaledNumber,
     sortWithLocaleCompare,
     sum,
-    visibleMetrics,
+    visibleMetrics, copyAllComputedStyles, createDragGhost,
 } from "./utils"
 
 const dataModel = {
@@ -538,4 +538,105 @@ it("returns the reference documentation URL", () => {
     expect(referenceDocumentationURL("(bracketed)")).toBe(`${url}#bracketed`)
     // Name with forward slash
     expect(referenceDocumentationURL("forward/slash")).toBe(`${url}#forwardslash`)
+})
+
+it("copies styles from source to target", () => {
+    const source = document.createElement("div")
+    const target = document.createElement("div")
+
+    source.style.color = "red"
+    source.style.margin = "10px"
+
+    // Add a computedStyle shim because jsdom doesn't implement computed styles
+    window.getComputedStyle = (el) => ({
+        length: 2,
+        0: "color",
+        1: "margin",
+        item: (i) => (i === 0 ? "color" : "margin"),
+        getPropertyValue: (prop) => el.style[prop],
+    })
+
+    copyAllComputedStyles(source, target)
+
+    expect(target.style.color).toBe("red")
+    expect(target.style.margin).toBe("10px")
+})
+
+it("recursively copies child styles", () => {
+    const source = document.createElement("div")
+    const child = document.createElement("div")
+    child.style.fontSize = "12px"
+    source.appendChild(child)
+
+    const target = document.createElement("div")
+    const targetChild = document.createElement("div")
+    target.appendChild(targetChild)
+
+    window.getComputedStyle = (el) => ({
+        length: 1,
+        0: "fontSize",
+        item: (i) => "fontSize",
+        getPropertyValue: (prop) => el.style[prop],
+    })
+
+    copyAllComputedStyles(source, target)
+
+    expect(targetChild.style.fontSize).toBe("12px")
+})
+
+describe("createDragGhost", () => {
+    beforeEach(() => {
+        // Mock getComputedStyle to simulate a CSSStyleDeclaration-like object
+        window.getComputedStyle = vi.fn().mockImplementation((el) => ({
+            length: 2,
+            0: "color",
+            1: "margin",
+            getPropertyValue: (prop) => el.style[prop] || "",
+            item: (i) => (i === 0 ? "color" : "margin"),
+        }))
+
+        vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+        vi.clearAllMocks()
+        vi.useRealTimers()
+    })
+
+    it("creates and removes a ghost drag image", () => {
+        const row = document.createElement("tr")
+        row.style.color = "red"
+        row.style.margin = "10px"
+        row.getBoundingClientRect = () => ({ left: 10, top: 20 })
+        Object.defineProperty(row, "offsetWidth", { value: 120 })
+
+        const rowRef = { current: row }
+
+        const setDragImage = vi.fn()
+        const event = {
+            clientX: 30,
+            clientY: 40,
+            dataTransfer: { setDragImage, effectAllowed: "" },
+        }
+
+        const appendChild = vi.spyOn(document.body, "appendChild")
+        const removeChild = vi.spyOn(document.body, "removeChild")
+
+        createDragGhost(rowRef, event)
+
+        expect(appendChild).toHaveBeenCalled()
+        expect(setDragImage).toHaveBeenCalledWith(expect.any(HTMLElement), 20, 20)
+
+        // Fast-forward the timeout to remove the wrapper
+        vi.runAllTimers()
+        expect(removeChild).toHaveBeenCalled()
+    })
+
+    it("does nothing when rowRef is null", () => {
+        const setDragImage = vi.fn()
+        const event = { dataTransfer: { setDragImage } }
+
+        createDragGhost(null, event)
+        expect(setDragImage).not.toHaveBeenCalled()
+    })
 })
