@@ -14,9 +14,13 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
-### Added
+### Changed
 
 - Changed the "software version" metric to be "informative" by default. Closes [#10847](https://github.com/ICTU/quality-time/issues/10847).
+
+### Fixed
+
+- Don't magically create an HTML landing URL for XML sources. Fixes [#11136](https://github.com/ICTU/quality-time/issues/11136).
 
 ## v5.28.0 - 2025-04-17
 
