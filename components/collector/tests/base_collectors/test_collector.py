@@ -115,6 +115,25 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             await self._fetch_measurements(mock_async_get_request)
         post.assert_called_once_with(self.database, self.expected_measurement())
 
+    async def test_fetch_successful_with_landing_url(self):
+        """Test fetching a test metric with a landing URL."""
+        report = create_report()
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["landing_url"] = (
+            "https://example.org"
+        )
+        mock_async_get_request = AsyncMock()
+        mock_async_get_request.json.side_effect = [self.pip_json]
+        with patch(self.create_measurement) as post:
+            self.client["quality_time_db"]["reports"].insert_one(report)
+            await self._fetch_measurements(mock_async_get_request)
+        post.assert_called_once_with(
+            self.database,
+            self.expected_measurement(
+                source_parameter_hash="86ca213b598583330e2290438f2417a2",
+                landing_url="https://example.org",
+            ),
+        )
+
     async def test_fetch_without_sources(self):
         """Test fetching measurement for a metric without sources."""
         report_with_no_source = create_report()

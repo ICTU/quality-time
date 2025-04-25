@@ -217,13 +217,9 @@ class SourceCollector:
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Return a user-friendly landing url.
 
-        Return the user supplied landing url parameter if there is one, otherwise translate the url parameter into
-        a default landing url.
+        Return the user supplied landing url parameter if there is one, otherwise return the API URL.
         """
-        if landing_url := self.__parameters.landing_url():
-            return landing_url
-        url = str(self.__parameters.api_url())
-        return URL(url.removesuffix("xml") + "html" if url.endswith(".xml") else url)
+        return self.__parameters.landing_url() or self.__parameters.api_url()
 
     @property
     def metric_direction(self) -> Direction:
