@@ -8,9 +8,9 @@ behave==1.2.6 \
     --hash=sha256:b9662327aa53294c1351b0a9c369093ccec1d21026f050c3bd9b3e5cccf81a86 \
     --hash=sha256:ebda1a6c9e5bfe95c5f9f0a2794e01c7098b3dde86c10a95d8621c5907ff6f1c
     # via feature-tests (pyproject.toml)
-certifi==2025.1.31 \
-    --hash=sha256:3d5da6925056f6f18f119200434a4780a94263f10d1c21d032a6f6b2baa20651 \
-    --hash=sha256:ca78db4565a652026a4db2bcdf68f2fb589ea80d0be70e03929ed730746b84fe
+certifi==2025.4.26 \
+    --hash=sha256:0a816057ea3cdefcef70270d2c515e4506bbc954f417fa5ade2021213bb8f0c6 \
+    --hash=sha256:30350364dfe371162649852c63336a15c70c6510c2ad5015b21c2345311805f3
     # via requests
 charset-normalizer==3.4.1 \
     --hash=sha256:0167ddc8ab6508fe81860a57dd472b2ef4060e8d378f0cc555707126830f2537 \
@@ -292,9 +292,9 @@ requests-sse==0.3.2 \
     --hash=sha256:3e17bd324e500c9b11c7c23dd00af3f0222070328134bda67a8917985cfc4127 \
     --hash=sha256:c3399b689f6e7bf0eac7c2031211d66ffbb3ab77afc6c9226a71c73c06609f61
     # via feature-tests (pyproject.toml)
-setuptools==79.0.1 \
-    --hash=sha256:128ce7b8f33c3079fd1b067ecbb4051a66e8526e7b65f6cec075dfc650ddfa88 \
-    --hash=sha256:e147c0549f27767ba362f9da434eab9c5dc0045d5304feb602a0af001089fc51
+setuptools==80.0.0 \
+    --hash=sha256:a38f898dcd6e5380f4da4381a87ec90bd0a7eec23d204a5552e80ee3cab6bd27 \
+    --hash=sha256:c40a5b3729d58dd749c0f08f1a07d134fb8a0a3d7f87dc33e7c5e1f762138650
     # via
     #   zope-event
     #   zope-interface
