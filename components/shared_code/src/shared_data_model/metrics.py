@@ -415,11 +415,11 @@ report(s).
     "slow_transactions": Metric(
         name="Slow transactions",
         description="The number of transactions slower than their target response time.",
-        rationale="Transations slower than their target response time indicate performance problems that need "
+        rationale="Transactions slower than their target response time indicate performance problems that need "
         "attention.",
         unit=Unit.TRANSACTIONS,
         near_target="5",
-        sources=["gatling", "manual_number", "jmeter_csv", "jmeter_json", "performancetest_runner"],
+        sources=["gatling", "grafana_k6", "manual_number", "jmeter_csv", "jmeter_json", "performancetest_runner"],
         tags=[Tag.PERFORMANCE],
     ),
     "software_version": Metric(

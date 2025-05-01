@@ -51,6 +51,10 @@ export function SourceEntityAttribute({ entity, entityAttribute }) {
         if (type.includes("date")) {
             cellContents = <DateAttribute cellContents={cellContents} type={type} />
         }
+        if (type === "float") {
+            const number = Math.round(10 * Number(cellContents)) / 10
+            cellContents = number.toLocaleString(undefined, { useGrouping: true })
+        }
         if (type === "status") {
             cellContents = <StatusIcon status={cellContents} />
         }

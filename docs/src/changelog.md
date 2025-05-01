@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Added
+
+- Add Grafana k6 summary.json reports as source for the 'slow transactions' metric. Closes [#11169](https://github.com/ICTU/quality-time/issues/11169).
+
 ### Changed
 
 - Changed the "software version" metric to be "informative" by default. Closes [#10847](https://github.com/ICTU/quality-time/issues/10847).
