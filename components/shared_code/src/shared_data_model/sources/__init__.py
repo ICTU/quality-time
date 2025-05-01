@@ -16,6 +16,7 @@ from .gatling import GATLING
 from .generic_json import GENERIC_JSON
 from .github import GITHUB
 from .gitlab import GITLAB
+from .grafana_k6 import GRAFANA_K6
 from .harbor import HARBOR, HARBOR_JSON
 from .jacoco import JACOCO, JACOCO_JENKINS_PLUGIN
 from .jenkins import JENKINS, JENKINS_TEST_REPORT
@@ -63,6 +64,7 @@ SOURCES = {
     "generic_json": GENERIC_JSON,
     "github": GITHUB,
     "gitlab": GITLAB,
+    "grafana_k6": GRAFANA_K6,
     "harbor": HARBOR,
     "harbor_json": HARBOR_JSON,
     "jacoco": JACOCO,
