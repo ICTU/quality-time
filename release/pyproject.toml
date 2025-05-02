@@ -16,7 +16,7 @@ optional-dependencies.tools = [
     "mypy==1.15.0",
     "pip-audit==2.9.0",
     "pyproject-fmt==2.5.1",
-    "ruff==0.11.7",
+    "ruff==0.11.8",
     "vulture==2.14",
 ]
 
