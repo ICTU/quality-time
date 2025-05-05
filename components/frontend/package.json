@@ -39,7 +39,7 @@
         "@vitejs/plugin-react": "^4.4.1",
         "@vitest/coverage-v8": "^3.1.2",
         "browserslist-to-esbuild": "^2.1.1",
-        "eslint": "^9.25.1",
+        "eslint": "^9.26.0",
         "eslint-config-prettier": "^10.1.2",
         "eslint-plugin-jest": "^28.11.0",
         "eslint-plugin-prettier": "^5.2.6",
