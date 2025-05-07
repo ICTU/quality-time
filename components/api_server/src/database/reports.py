@@ -79,17 +79,22 @@ def latest_reports(database: Database) -> list[Report]:
     return cast(list[Report], get_reports(database, Report))
 
 
+type AggregationPipeline = list[dict[str, dict[str, int | str | dict[str, str]]]]
+
+
 def latest_reports_before_timestamp(database: Database, data_model: dict, max_iso_timestamp: str) -> list[Report]:
     """Return the latest, undeleted, reports in the reports collection before the max timestamp."""
-    report_filter = {"timestamp": {"$lte": max_iso_timestamp}} if max_iso_timestamp else {}
-    report_uuids = database.reports.distinct("report_uuid", report_filter)
-    report_dicts = []
-    for report_uuid in report_uuids:
-        report_filter["report_uuid"] = report_uuid
-        report_dict = database.reports.find_one(report_filter, sort=TIMESTAMP_DESCENDING)
-        if report_dict and "deleted" not in report_dict:
-            report_dicts.append(report_dict)
-    return [Report(data_model, report_dict) for report_dict in report_dicts]
+    pipeline: AggregationPipeline = [
+        {"$sort": {"timestamp": pymongo.DESCENDING}},
+        # Group reports by report uuid and add the first report, which is the latest due to the sorting, to the group:
+        {"$group": {"_id": "$report_uuid", "latestReport": {"$first": "$$ROOT"}}},
+        # Replace the group by the latest report:
+        {"$replaceRoot": {"newRoot": "$latestReport"}},
+    ]
+    if max_iso_timestamp:
+        pipeline.insert(0, {"$match": {"timestamp": {"$lte": max_iso_timestamp}}})
+    report_dicts = database.reports.aggregate(pipeline)
+    return [Report(data_model, report_dict) for report_dict in report_dicts if "deleted" not in report_dict]
 
 
 def latest_report_for_uuids(all_reports: list[Report], *uuids: ItemId) -> list[Report]:

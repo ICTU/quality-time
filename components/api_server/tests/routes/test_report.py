@@ -37,8 +37,8 @@ class ReportTestCase(DataModelTestCase):
         super().setUp()
         self.database.sessions.find_one.return_value = JENNY
         self.report = Report(self.database.datamodels.find_one(), create_report())
-        self.database.reports.find.return_value = [self.report]
         self.database.reports.find_one.return_value = self.report
+        self.database.reports.aggregate.return_value = [self.report]
         self.database.measurements.find.return_value = []
 
     def assert_report_not_found(self, response):
@@ -372,9 +372,7 @@ class ReportTest(ReportTestCase):
     def setUp(self):
         """Extend to set up a database with a report and a user session."""
         super().setUp()
-        self.database.reports.distinct.return_value = [REPORT_ID]
         self.database.measurements.find_one.return_value = {"sources": []}
-        self.database.measurements.aggregate.return_value = []
 
     def test_get_report(self):
         """Test that a report can be retrieved."""
@@ -399,13 +397,12 @@ class ReportTest(ReportTestCase):
 
     def test_get_report_and_info_about_other_reports(self):
         """Test that a report can be retrieved, and that other reports are also returned."""
-        self.database.reports.distinct.return_value = [REPORT_ID2, REPORT_ID]
-        self.database.reports.find_one.side_effect = [{"_id": "id2", "report_uuid": REPORT_ID2}, self.report]
+        self.database.reports.aggregate.return_value = [{"_id": "id2", "report_uuid": REPORT_ID2}, self.report]
         self.assertEqual(2, len(get_report(self.database, REPORT_ID)["reports"]))
 
     def test_get_report_missing(self):
         """Test that a non-existant report can not be retrieved."""
-        self.database.reports.distinct.return_value = []
+        self.database.reports.aggregate.return_value = []
         self.assertEqual([], get_report(self.database, ReportId("report does not exist"))["reports"])
 
     @patch("bottle.request")
