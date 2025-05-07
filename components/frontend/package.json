@@ -5,8 +5,8 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
-        "@mui/icons-material": "^7.0.2",
-        "@mui/material": "^7.0.2",
+        "@mui/icons-material": "^7.1.0",
+        "@mui/material": "^7.1.0",
         "@mui/x-date-pickers": "^8.2.0",
         "crypto-js": "^4.2.0",
         "dayjs": "^1.11.13",
@@ -51,7 +51,7 @@
         "jest-axe": "^10.0.0",
         "jsdom": "^26.1.0",
         "prettier": "^3.5.2",
-        "vite": "^6.3.4",
+        "vite": "^6.3.5",
         "vitest": "^3.1.3"
     },
     "overrides": {
