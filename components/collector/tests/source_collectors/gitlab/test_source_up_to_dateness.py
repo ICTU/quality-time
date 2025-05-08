@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 from datetime import datetime
+from http import HTTPStatus
 from unittest.mock import AsyncMock, Mock, _patch, patch
 
+from aiohttp import ClientResponseError, RequestInfo
+from aiohttp.client_reqrep import URL, CIMultiDict, CIMultiDictProxy
 from dateutil.tz import tzutc
 
 from collector_utilities.date_time import days_ago, parse_datetime
@@ -25,22 +28,44 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
         self.expected_age = days_ago(datetime(2019, 1, 1, 9, 6, 12, tzinfo=tzutc()))
 
     @staticmethod
-    def patched_client_session_head() -> _patch[AsyncMock]:
+    def patched_client_session_head(*responses: ClientResponseError) -> _patch[AsyncMock]:
         """Return a patched version of the client session head method."""
         head_response = Mock(headers={"X-Gitlab-Last-Commit-Id": "commit-sha"})
-        return patch("aiohttp.ClientSession.head", AsyncMock(side_effect=[head_response, head_response]))
+        head_responses = responses or [head_response, head_response]
+        return patch("aiohttp.ClientSession.head", AsyncMock(side_effect=head_responses))
+
+    @staticmethod
+    def client_response_error(status: int) -> ClientResponseError:
+        """Create a client response error with the given status code."""
+        request_info = RequestInfo(URL("https://gitlab.com/irrelevant"), "GET", headers=CIMultiDictProxy(CIMultiDict()))
+        return ClientResponseError(request_info, history=(), status=status)
 
     async def test_source_up_to_dateness_file(self):
         """Test that the age of a file in a repo can be measured."""
+        not_found = self.client_response_error(HTTPStatus.NOT_FOUND)
         with self.patched_client_session_head():
             response = await self.collect(
-                get_request_json_side_effect=[[], self.commit_json, {"web_url": "https://gitlab.com/project"}],
+                get_request_json_side_effect=[not_found, self.commit_json, {"web_url": "https://gitlab.com/project"}],
             )
         self.assert_measurement(
             response,
             value=str(self.expected_age),
             landing_url="https://gitlab.com/project/blob/branch/file",
         )
+
+    async def test_source_up_to_dateness_non_existing_file(self):
+        """Test that the age of a non-existing file in a repo cannot be measured."""
+        not_found = self.client_response_error(HTTPStatus.NOT_FOUND)
+        with self.patched_client_session_head(not_found):
+            response = await self.collect(get_request_json_side_effect=[not_found])
+        self.assert_measurement(response, connection_error="404", landing_url="https://gitlab")
+
+    async def test_source_up_to_dateness_internal_server_error(self):
+        """Test that the age of a file in a repo cannot be measured if GitLab returns a server error."""
+        server_error = self.client_response_error(HTTPStatus.INTERNAL_SERVER_ERROR)
+        with self.patched_client_session_head():
+            response = await self.collect(get_request_json_side_effect=[server_error])
+        self.assert_measurement(response, connection_error="500", landing_url="https://gitlab")
 
     async def test_source_up_to_dateness_folder(self):
         """Test that the age of a folder in a repo can be measured."""
