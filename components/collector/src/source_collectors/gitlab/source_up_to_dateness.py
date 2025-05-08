@@ -5,6 +5,7 @@ import itertools
 from abc import ABC
 from collections.abc import Sequence
 from datetime import datetime
+from http import HTTPStatus
 from typing import Self, cast
 from urllib.parse import quote
 
@@ -48,8 +49,17 @@ class GitLabFileUpToDateness(GitLabProjectBase):
         tree_api = await self._gitlab_api_url(
             f"repository/tree?path={file_path}&ref={self._parameter('branch', quote=True)}",
         )
-        tree_response = (await super()._get_source_responses(tree_api))[0]
-        tree = await tree_response.json()
+        try:
+            tree_response = (await super()._get_source_responses(tree_api))[0]
+            tree = await tree_response.json()
+        except aiohttp.ClientResponseError as message:
+            if first_call and message.status == HTTPStatus.NOT_FOUND:
+                # The repository/tree endpoint always returns 404 for file paths since GitLab v17.7, so we ignore the
+                # error. If the path is a file and does not exist, retrieving the last commit will fail and that
+                # error will then tell the user they entered the path of a non-existing file.
+                tree = []
+            else:
+                raise
         file_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "blob"]
         folder_paths = [quote(item["path"], safe="") for item in tree if item["type"] == "tree"]
         if not tree and first_call:
