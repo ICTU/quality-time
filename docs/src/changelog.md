@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Fixed
+
+- Measuring source up-to-dateness of files stored in GitLab >= v17.7 would fail with Quality-time reporting a connection error (status code 404 and message "Not found"). Fixes [#11209](https://github.com/ICTU/quality-time/issues/11209).
+
 ### Changed
 
 - Increase the number of measurement entities (violations, issues, etc.) stored per measurement to 250 max. Closes [#6278](https://github.com/ICTU/quality-time/issues/6278).
