@@ -22,6 +22,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - Increase the number of measurement entities (violations, issues, etc.) stored per measurement to 250 max. Closes [#6278](https://github.com/ICTU/quality-time/issues/6278).
 
+### Added
+
+- When measuring missing metrics, allow for filtering metrics by source type. Closes [#11109](https://github.com/ICTU/quality-time/issues/11109).
+
 ## v5.29.0 - 2025-05-08
 
 ### Added
