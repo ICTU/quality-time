@@ -101,8 +101,10 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
             "subject_uuid": f"{subject_uuid}",
             "subject_type": expected_subject_type,
             "subject_type_url": subject_type["reference_documentation_url"],
-            "metric_type": self.data_model["metrics"][metric_type]["name"],
+            "metric_type": metric_type,
+            "metric_type_name": self.data_model["metrics"][metric_type]["name"],
             "metric_type_url": self.data_model["metrics"][metric_type]["reference_documentation_url"],
+            "source_types": QualityTimeMissingMetrics.supporting_source_types(self.data_model, metric_type),
         }
 
     async def test_nr_of_metrics(self):
@@ -125,7 +127,7 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         self.assert_measurement(response, parse_error="No reports found with title or id")
 
     async def test_subjects_to_ignore_by_name(self):
-        """Test that the number of non-ignored missing metrics is returned when filtered by name."""
+        """Test that the number of non-ignored missing metrics is returned when filtered by subject name."""
         self.add_report_fixture()
         subjects_to_ignore = ["Subject2"]
         self.set_source_parameter("subjects_to_ignore", subjects_to_ignore)
@@ -139,7 +141,7 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         )
 
     async def test_subjects_to_ignore_by_uuid(self):
-        """Test that the number of non-ignored missing metrics is returned when filtered by uuid."""
+        """Test that the number of non-ignored missing metrics is returned when filtered by subject uuid."""
         self.add_report_fixture()
         subjects_to_ignore = ["s2"]
         self.set_source_parameter("subjects_to_ignore", subjects_to_ignore)
@@ -165,3 +167,25 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
             total=str(self.nr_supported_metric_types()),
             value=str(len(entities)),
         )
+
+    async def test_source_types_to_include(self):
+        """Test that the number of non-ignored missing metrics is returned when filtered by source type."""
+        self.set_source_parameter("source_types_to_include", ["Jira"])
+        response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
+        entities = [
+            self.create_entity(self.reports["reports"][0], "s1", "Software", "S1", metric_type)
+            for metric_type in ("issues", "test_cases")
+        ]
+        self.assert_measurement(
+            response,
+            entities=entities,
+            total=str(self.nr_supported_metric_types()),
+            value=str(len(entities)),
+        )
+
+    async def test_source_types_to_include_combined_with_ignored_subject(self):
+        """Test that the number of non-ignored missing metrics is returned when filtered by source type and subject."""
+        self.set_source_parameter("source_types_to_include", ["Jira"])
+        self.set_source_parameter("subjects_to_ignore", ["s1"])
+        response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
+        self.assert_measurement(response, entities=[], total=str(self.nr_supported_metric_types()), value="0")

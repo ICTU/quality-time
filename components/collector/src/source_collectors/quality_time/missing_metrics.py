@@ -25,16 +25,20 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Get the metric entities from the responses."""
         datamodel_response, reports_response = responses
-        data_model = await datamodel_response.json()
+        self.data_model = await datamodel_response.json()
         reports = await self._get_reports(reports_response)
         landing_url = await self._landing_url(responses)
-        total = self.__nr_of_possible_metric_types(data_model, reports)
-        entities = self.__missing_metric_type_entities(data_model, reports, landing_url)
+        total = self.__nr_of_possible_metric_types(self.data_model, reports)
+        entities = self.__missing_metric_type_entities(self.data_model, reports, landing_url)
         included_entities = Entities(entity for entity in entities if self._include_entity(entity))
         return SourceMeasurement(total=str(total), entities=included_entities)
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the entity in the measurement."""
+        source_types_to_include = set(self._parameter("source_types_to_include"))
+        metric_source_types = set(self.data_model["metrics"][entity["metric_type"]]["sources"])
+        if source_types_to_include and not (source_types_to_include & metric_source_types):
+            return False
         subjects_to_ignore = self._parameter("subjects_to_ignore")
         if not subjects_to_ignore:
             return True
@@ -89,8 +93,10 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
                 subject_uuid=f"{subject_uuid}",
                 subject_type=subject_type_name,
                 subject_type_url=subject_type["reference_documentation_url"],
-                metric_type=data_model["metrics"][metric_type]["name"],
+                metric_type=metric_type,
+                metric_type_name=data_model["metrics"][metric_type]["name"],
                 metric_type_url=data_model["metrics"][metric_type]["reference_documentation_url"],
+                source_types=self.supporting_source_types(data_model, metric_type),
             )
             for metric_type in self.__missing_metric_types(data_model, subject)
         )
@@ -119,3 +125,9 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
             if composite_subject_type := cls.subject_type(subject_type.get("subjects", {}), subject_type_name):
                 return composite_subject_type
         return {}
+
+    @staticmethod
+    def supporting_source_types(data_model: dict, metric_type: str) -> str:
+        """Return a comma-separated list of names of source types that support the given metric type."""
+        source_types = data_model["metrics"][metric_type]["sources"]
+        return ", ".join(sorted([data_model["sources"][source_type]["name"] for source_type in source_types]))
