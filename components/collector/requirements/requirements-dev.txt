@@ -828,9 +828,9 @@ soupsieve==2.7 \
     --hash=sha256:6e60cc5c1ffaf1cebcc12e8188320b72071e922c2e897f737cadce79ad5d30c4 \
     --hash=sha256:ad282f9b6926286d2ead4750552c8a6142bc4c783fd66b0293547c8fe6ae126a
     # via beautifulsoup4
-types-beautifulsoup4==4.12.0.20241020 \
-    --hash=sha256:158370d08d0cd448bd11b132a50ff5279237a5d4b5837beba074de152a513059 \
-    --hash=sha256:c95e66ce15a4f5f0835f7fbc5cd886321ae8294f977c495424eaf4225307fd30
+types-beautifulsoup4==4.12.0.20250204 \
+    --hash=sha256:57ce9e75717b63c390fd789c787d267a67eb01fa6d800a03b9bdde2e877ed1eb \
+    --hash=sha256:f083d8edcbd01279f8c3995b56cfff2d01f1bb894c3b502ba118d36fbbc495bf
     # via collector (pyproject.toml)
 types-html5lib==1.1.11.20241018 \
     --hash=sha256:3f1e064d9ed2c289001ae6392c84c93833abb0816165c6ff0abfc304a779f403 \
