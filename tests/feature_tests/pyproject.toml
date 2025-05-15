@@ -9,14 +9,14 @@ classifiers = [
 dependencies = [
     "asserts==0.13.1",
     "behave==1.2.6",
-    "gevent==24.11.1",
-    "pymongo==4.10.1",
+    "gevent==25.5.1",
+    "pymongo==4.12.1",
     "requests==2.32.3",
-    "requests-sse==0.3.2",
+    "requests-sse==0.5.1",
 ]
 optional-dependencies.dev = [
-    "coverage==7.6.9",
-    "types-requests==2.32.0.20241016",
+    "coverage==7.8.0",
+    "types-requests==2.32.0.20250328",
     "unittest-xml-reporting==3.2.0",   # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
