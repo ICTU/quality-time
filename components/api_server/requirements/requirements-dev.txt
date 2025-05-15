@@ -747,9 +747,9 @@ types-pyasn1==0.6.0.20250208 \
     --hash=sha256:14c6a0463555fb74ec81aca67ad2eb6d8409895359238511a3eceda7b5426235 \
     --hash=sha256:4a4fef8801efa983a88a1db52f6d7ac70cb1ad48abf25fad59134237603d5334
     # via types-ldap3
-types-requests==2.32.0.20250328 \
-    --hash=sha256:72ff80f84b15eb3aa7a8e2625fffb6a93f2ad5a0c20215fc1dcfa61117bcb2a2 \
-    --hash=sha256:c9e67228ea103bd811c96984fac36ed2ae8da87a36a633964a21f199d60baf32
+types-requests==2.32.0.20250515 \
+    --hash=sha256:09c8b63c11318cb2460813871aaa48b671002e59fda67ca909e9883777787581 \
+    --hash=sha256:f8eba93b3a892beee32643ff836993f15a785816acca21ea0ffa006f05ef0fb2
     # via api-server (pyproject.toml)
 typing-extensions==4.13.2 \
     --hash=sha256:a439e7c04b49fec3e5d3e2beaa21755cadbbdc391694e28ccdd36ca4a1408f8c \
