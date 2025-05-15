@@ -8,7 +8,7 @@ classifiers = [
 ]
 dependencies = [
     "aiohttp==3.11.11",
-    "pymsteams==0.2.3",
+    "pymsteams==0.2.5",
 ]
 
 optional-dependencies.dev = [

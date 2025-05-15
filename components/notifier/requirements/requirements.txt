@@ -512,8 +512,9 @@ propcache==0.3.1 \
     # via
     #   aiohttp
     #   yarl
-pymsteams==0.2.3 \
-    --hash=sha256:c0e59dd42708128cd8a9dc0b091b273683c586aa5668cb3a0e62146f9525e61b
+pymsteams==0.2.5 \
+    --hash=sha256:9f76ca3a3de17b49ce3c5c314ee0e88b8bd2be78fc66f693ade1b7cabf23af70 \
+    --hash=sha256:bda78f36c4a59baa10fa21928980349a841b03c78dc7d6020f230aea4aeab2b7
     # via notifier (pyproject.toml)
 requests==2.32.3 \
     --hash=sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760 \
