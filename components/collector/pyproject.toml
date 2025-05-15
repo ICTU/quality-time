@@ -11,7 +11,7 @@ dependencies = [
     "aiohttp==3.11.11",
     "beautifulsoup4==4.12.3",
     "defusedxml==0.7.1",
-    "packaging==24.2",
+    "packaging==25.0",
     "pymongo==4.10.1",
     "python-dateutil==2.9.0.post0",
     "typing-extensions==4.13.2",
