@@ -303,7 +303,7 @@ report(s).
         direction=Direction.MORE_IS_BETTER,
         target="30",
         near_target="25",
-        sources=["gatling", "jmeter_csv", "manual_number", "performancetest_runner"],
+        sources=["gatling", "grafana_k6", "jmeter_csv", "manual_number", "performancetest_runner"],
         tags=[Tag.PERFORMANCE],
     ),
     "performancetest_stability": Metric(

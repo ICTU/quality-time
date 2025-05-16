@@ -60,6 +60,7 @@ from .gitlab.pipeline_duration import GitLabPipelineDuration
 from .gitlab.source_up_to_dateness import GitLabSourceUpToDateness
 from .gitlab.source_version import GitLabSourceVersion
 from .gitlab.unused_jobs import GitLabUnusedJobs
+from .grafana_k6.performancetest_duration import GrafanaK6PerformanceTestDuration
 from .grafana_k6.slow_transactions import GrafanaK6SlowTransactions
 from .harbor.security_warnings import HarborSecurityWarnings
 from .harbor_json.security_warnings import HarborJSONSecurityWarnings

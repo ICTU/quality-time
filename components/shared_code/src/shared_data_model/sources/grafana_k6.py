@@ -8,6 +8,7 @@ from shared_data_model.parameters import access_parameters
 
 FLOAT = EntityAttributeType.FLOAT
 HELP = "response time (milliseconds)"
+ALL_GRAFANA_K6_METRICS = ["performancetest_duration", "slow_transactions"]
 
 GRAFANA_K6 = Source(
     name="Grafana k6",
@@ -17,7 +18,7 @@ GRAFANA_K6 = Source(
     ),
     url=HttpUrl("https://k6.io"),
     parameters={
-        **access_parameters(["slow_transactions"], source_type="Grafana k6 summary.json", source_type_format="JSON"),
+        **access_parameters(ALL_GRAFANA_K6_METRICS, source_type="Grafana k6 summary.json", source_type_format="JSON"),
     },
     entities={
         "slow_transactions": Entity(

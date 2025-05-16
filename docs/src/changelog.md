@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Add Grafana k6 summary.json reports as source for the 'performancetest duration' metric. Closes [#11170](https://github.com/ICTU/quality-time/issues/11170).
+
 ## v5.30.0 - 2025-05-15
 
 ### Fixed
