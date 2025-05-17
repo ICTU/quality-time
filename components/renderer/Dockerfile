@@ -1,4 +1,4 @@
-FROM node:23.10.0-alpine3.20
+FROM node:23.11.1-alpine3.20
 
 # Note the base image is alpine3.20 as work-around for this issue: https://github.com/ICTU/quality-time/issues/11131
 
