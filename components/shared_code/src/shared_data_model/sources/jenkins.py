@@ -124,6 +124,14 @@ the "Username" field and the private token in the "**Password**" field.
                 "unused_jobs",
             ],
         ),
+        "grace_days": Days(
+            name="Number of days after which to count failed jobs as failed",
+            short_name="grace days",
+            help="Count failed jobs as failed only when it has been failing for at least the number of 'grace days'.",
+            min_value="0",
+            default_value="0",
+            metrics=["failed_jobs"],
+        ),
         "lookback_days": Days(
             name="Number of days to look back for selecting job builds",
             short_name="number of days to look back",
