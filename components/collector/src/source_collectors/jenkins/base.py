@@ -48,9 +48,9 @@ class JenkinsJobs(SourceCollector):
         return Entities(
             [
                 Entity(
-                    build_date=self.__build_date(job),
-                    build_datetime=self.__build_datetime(job),
-                    build_result=self.__build_result(job),
+                    build_date=self.__job_build_date(job),
+                    build_datetime=self.__job_build_datetime(job),
+                    build_result=self.__job_build_result(job),
                     key=job["name"],
                     name=job["name"],
                     url=job["url"],
@@ -83,19 +83,24 @@ class JenkinsJobs(SourceCollector):
         """Return whether to include this build or not."""
         return True
 
-    def __build_datetime(self, job: Job) -> datetime | None:
+    def __job_build_datetime(self, job: Job) -> datetime | None:
         """Return the datetime of the most recent build of the job."""
         builds = self._builds(job)
         return datetime_from_timestamp(int(builds[0]["timestamp"])) if builds else None
 
-    def __build_date(self, job: Job) -> str:
+    def __job_build_date(self, job: Job) -> str:
         """Return the date of the most recent build of the job."""
-        build_datetime = self.__build_datetime(job)
+        build_datetime = self.__job_build_datetime(job)
         return str(build_datetime.date()) if build_datetime else ""
 
-    def __build_result(self, job: Job) -> str:
+    def __job_build_result(self, job: Job) -> str:
         """Return the result of the most recent build of the job."""
         for build in self._builds(job):
-            if status := build.get("result"):
-                return str(status).capitalize().replace("_", " ")
+            if "result" in build:
+                return self._build_result(build)
         return "Not built"
+
+    @staticmethod
+    def _build_result(build: Build) -> str:
+        """Return the result of the build."""
+        return str(build.get("result", "Not built")).capitalize().replace("_", " ")

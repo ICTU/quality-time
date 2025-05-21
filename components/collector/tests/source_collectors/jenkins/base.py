@@ -18,4 +18,3 @@ class JenkinsTestCase(SourceCollectorTestCase):
             {"timestamp": 1552686531953},
         ]
         self.job_url = "https://job"
-        self.job2_url = "https://job2"

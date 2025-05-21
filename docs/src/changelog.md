@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 ### Added
 
 - Add Grafana k6 summary.json reports as source for the 'performancetest duration' metric. Closes [#11170](https://github.com/ICTU/quality-time/issues/11170).
+- Allow for ignoring failed Jenkins jobs for a while before Quality-time reports them as failed. Closes [#11320](https://github.com/ICTU/quality-time/issues/11320).
 
 ## v5.30.0 - 2025-05-15
 
