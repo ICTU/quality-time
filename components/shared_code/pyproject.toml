@@ -9,7 +9,7 @@ classifiers = [
 dependencies = [
     "bottle==0.13.3",
     "packaging==25.0",
-    "pydantic==2.11.4",
+    "pydantic==2.11.5",
     "pymongo==4.12.1",
     "python-dateutil==2.9.0.post0",
 ]
@@ -25,9 +25,9 @@ optional-dependencies.tools = [
     "fixit==2.1.0",
     "mypy==1.15.0",
     "pip-audit==2.9.0",
-    "pydantic==2.11.4",     # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
+    "pydantic==2.11.5",     # Needed because pipx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.6.0",
-    "ruff==0.11.10",
+    "ruff==0.11.11",
     "vulture==2.14",
 ]
 
