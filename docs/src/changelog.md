@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Allow for bulk rename and removal of tags. Expand a report's title and navigate to the 'Tags' tab. Closes [#11245](https://github.com/ICTU/quality-time/issues/11245) and [#11280](https://github.com/ICTU/quality-time/issues/11280).
+
 ## v5.31.0 - 2025-05-22
 
 ### Added

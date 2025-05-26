@@ -20,7 +20,7 @@ export function TableRowWithDetails(props) {
                     },
                 }}
             >
-                <TableCell align="center" sx={{ padding: "0px" }}>
+                <TableCell align="center" padding="checkbox" /* Make sure the column does not stretch */>
                     <ExpandButton expand={expanded} onClick={() => onExpand(!expanded)} />
                 </TableCell>
                 {children}

@@ -120,6 +120,31 @@ class ReportTest(DataModelTestCase):
         """Test that passing neither a source or a metric uuid throws an exception."""
         self.assertRaises(RuntimeError, self.report.instance_and_parents_for_uuid)
 
+    def test_delete_tag(self):
+        """Test that a tag can be deleted from all metrics in the report."""
+        self.assertEqual([REPORT_ID, SUBJECT_ID, METRIC_ID], self.report.delete_tag("tag"))
+        for metric in self.report.metrics:
+            self.assertNotIn("tag", metric["tags"])
+
+    def test_delete_tag_not_found(self):
+        """Test that deleting a tag that is not in the report does not change the tags."""
+        tags = {metric.uuid: metric.get("tags", []) for metric in self.report.metrics}
+        self.assertEqual([], self.report.delete_tag("non-existing tag"))
+        self.assertEqual(tags, {metric.uuid: metric.get("tags", []) for metric in self.report.metrics})
+
+    def test_rename_tag(self):
+        """Test that a tag can be renamed for all metrics in the report."""
+        tags = {metric.uuid: metric.get("tags", []) for metric in self.report.metrics}
+        expected_tags = {uuid: ["new tag" if tag == "tag" else tag for tag in tags] for (uuid, tags) in tags.items()}
+        self.assertEqual([REPORT_ID, SUBJECT_ID, METRIC_ID], self.report.rename_tag("tag", "new tag"))
+        self.assertEqual(expected_tags, {metric.uuid: metric.get("tags", []) for metric in self.report.metrics})
+
+    def test_rename_tag_not_found(self):
+        """Test that renaming a tag that is not in the report does not change the tags."""
+        expected_tags = {metric.uuid: metric.get("tags", []) for metric in self.report.metrics}
+        self.assertEqual([], self.report.rename_tag("non-existing tag", "new tag"))
+        self.assertEqual(expected_tags, {metric.uuid: metric.get("tags", []) for metric in self.report.metrics})
+
 
 class TestMetrics(unittest.TestCase):
     """Test set for metrics."""

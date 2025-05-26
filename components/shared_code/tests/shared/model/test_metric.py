@@ -182,3 +182,45 @@ class MetricTest(unittest.TestCase):
         metric1 = self.create_metric(sources=self.create_source_arguments_for_metric(multiple=True))
         metric2 = self.create_metric(sources=self.create_source_arguments_for_metric(multiple=True, reverse=True))
         self.assertEqual(metric1.source_parameter_hash(), metric2.source_parameter_hash())
+
+    def test_delete_non_existing_tag(self):
+        """Test deleting a non-existing tag from a metric."""
+        metric = self.create_metric()
+        self.assertFalse(metric.delete_tag("foo"))
+        self.assertNotIn("tags", metric)
+
+    def test_delete_existing_tag(self):
+        """Test deleting an existing tag from a metric."""
+        metric = self.create_metric(tags=["foo"])
+        self.assertTrue(metric.delete_tag("foo"))
+        self.assertEqual([], metric["tags"])
+
+    def test_delete_existing_tag_from_multiple_tags(self):
+        """Test deleting an existing tag from a metric with multiple tags."""
+        metric = self.create_metric(tags=["foo", "bar"])
+        self.assertTrue(metric.delete_tag("foo"))
+        self.assertEqual(["bar"], metric["tags"])
+
+    def test_rename_non_existing_tag(self):
+        """Test renaming a non-existing tag."""
+        metric = self.create_metric()
+        self.assertFalse(metric.rename_tag("foo", "bar"))
+        self.assertNotIn("tags", metric)
+
+    def test_rename_existing_tag(self):
+        """Test renaming an existing tag."""
+        metric = self.create_metric(tags=["foo"])
+        self.assertTrue(metric.rename_tag("foo", "bar"))
+        self.assertEqual(["bar"], metric["tags"])
+
+    def test_rename_existing_tag_among_multiple_tags(self):
+        """Test renaming an existing tag among multiple tags."""
+        metric = self.create_metric(tags=["foo", "bar"])
+        self.assertTrue(metric.rename_tag("bar", "baz"))
+        self.assertEqual(["foo", "baz"], metric["tags"])
+
+    def test_rename_existing_tag_to_existing_tag(self):
+        """Test renaming an existing tag to an existing tag."""
+        metric = self.create_metric(tags=["foo", "bar"])
+        self.assertTrue(metric.rename_tag("foo", "bar"))
+        self.assertEqual(["bar"], metric["tags"])

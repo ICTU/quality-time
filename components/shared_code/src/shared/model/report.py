@@ -3,7 +3,7 @@
 from typing import cast
 
 from shared.model.source import Source
-from shared.utils.type import Color, MetricId, ReportId, SourceId, Status, SubjectId
+from shared.utils.type import Color, ItemId, MetricId, ReportId, SourceId, Status, SubjectId
 
 from .measurement import Measurement
 from .metric import Metric
@@ -130,6 +130,22 @@ class Report(dict):
             return source, metric, subject
         msg = "metric_uuid and source_uuid cannot both be None"  # pragma: no feature-test-cover
         raise RuntimeError(msg)  # pragma: no feature-test-cover
+
+    def delete_tag(self, tag: str) -> list[ItemId]:
+        """Delete a tag from the report and return the uuids of the affected subjects and metrics."""
+        uuids = []
+        for subject_uuid, subject in self.subjects_dict.items():
+            if metric_uuids := subject.delete_tag(tag):
+                uuids.extend([subject_uuid, *metric_uuids])
+        return [self.uuid, *uuids] if uuids else []
+
+    def rename_tag(self, tag: str, new_tag: str) -> list[ItemId]:
+        """Rename a tag in the report and return the uuids of the affected subjects and metrics."""
+        uuids = []
+        for subject_uuid, subject in self.subjects_dict.items():
+            if metric_uuids := subject.rename_tag(tag, new_tag):
+                uuids.extend([subject_uuid, *metric_uuids])
+        return [self.uuid, *uuids] if uuids else []
 
 
 def get_metrics_from_reports(reports: list[Report]) -> dict[MetricId, Metric]:  # pragma: no feature-test-cover

@@ -239,6 +239,8 @@ Metrics can have zero or more arbitrary "{index}`Tags <Tag>`". Most metric have 
 :class: only-dark
 ```
 
+Bulk rename and removal of tags is possible via the report title. Expand the report title and navigate to the 'Tags' tab.
+
 The "Metric {index}`scale <Scale>`" field determines what scale to use to measure the metric. Most metrics support either the "Count" scale, the "Percentage" scale, or both. For example, with the duplicated lines metric, setting the metric scale to "Percentage" means that the percentage of lines that are duplicated is shown instead of the count of duplicated lines.
 
 The "Metric {index}`direction <Direction>`" determines whether lower measurement values are considered to be better or worse. Usually, the default direction is correct. An example of a metric where you might want to change the direction is the "tests" metric. When used to measure the number of tests, more tests is better. But, when used to measure the number of failing tests, fewer is better.

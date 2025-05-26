@@ -196,3 +196,17 @@ def set_technical_debt_desired_response_time(context: Context, status: str, time
         f"report/{report_uuid}/attribute/desired_response_times",
         {"desired_response_times": desired_response_times},
     )
+
+
+@when('the client removes the tag "{tag}" from the report')
+def remove_tag(context: Context, tag: str) -> None:
+    """Remove the tag from all metrics in the report."""
+    report_uuid = context.uuid["report"]
+    context.delete(f"report/{report_uuid}/tag/{tag}")
+
+
+@when('the client renames the tag "{tag}" to "{new_tag}"')
+def rename_tag(context: Context, tag: str, new_tag: str) -> None:
+    """Rename a tag for all metric in the report."""
+    report_uuid = context.uuid["report"]
+    context.post(f"report/{report_uuid}/tag/{tag}", {"tag": new_tag})

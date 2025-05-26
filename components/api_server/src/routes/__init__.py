@@ -29,6 +29,7 @@ from .notification import (
 )
 from .report import (
     delete_report,
+    delete_tag,
     export_report_as_json,
     export_report_as_pdf,
     get_report,
@@ -40,6 +41,7 @@ from .report import (
     post_report_attribute,
     post_report_issue_tracker_attribute,
     post_report_new,
+    rename_tag,
 )
 from .reports_overview import export_reports_overview_as_pdf, get_reports_overview, post_reports_overview_attribute
 from .search import search
