@@ -9,6 +9,7 @@ from shared.utils.type import ReportId
 
 from routes import (
     delete_report,
+    delete_tag,
     export_report_as_json,
     export_report_as_pdf,
     get_report,
@@ -20,6 +21,7 @@ from routes import (
     post_report_import,
     post_report_new,
     post_report_issue_tracker_attribute,
+    rename_tag,
 )
 from utils.functions import asymmetric_encrypt
 
@@ -655,3 +657,55 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         request.json = mocked_report
         response = post_report_import(self.database)
         self.assertIn("error", response)
+
+
+class ReportTagsTest(ReportTestCase):
+    """Unit tests for deleting and renaming tags."""
+
+    def test_delete_existing_tag(self):
+        """Test that an existing tag can be deleted."""
+        self.assertEqual({"ok": True}, delete_tag(self.database, REPORT_ID, "security"))
+        inserted = self.database.reports.insert_one.call_args_list[0][0][0]
+        self.assertEqual([], inserted["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["tags"])
+        self.assertEqual(
+            {
+                "uuids": [METRIC_ID, REPORT_ID, SUBJECT_ID],
+                "email": JENNY["email"],
+                "description": "Jenny Doe deleted tag 'security' from all metrics in report 'Report'.",
+            },
+            inserted["delta"],
+        )
+
+    def test_delete_non_existing_tag(self):
+        """Test that deleting a non-existing tag does nothing."""
+        self.assertEqual(
+            {"ok": False, "error": "Cannot find tag 'non-existing tag' in report 'Report'."},
+            delete_tag(self.database, REPORT_ID, "non-existing tag"),
+        )
+        self.database.reports.insert_one.assert_not_called()
+
+    @patch("bottle.request")
+    def test_rename_existing_tag(self, request):
+        """Test that an existing tag can be renamed."""
+        request.json = {"tag": "safety"}
+        self.assertEqual({"ok": True}, rename_tag(self.database, REPORT_ID, "security"))
+        inserted = self.database.reports.insert_one.call_args_list[0][0][0]
+        self.assertEqual(["safety"], inserted["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["tags"])
+        self.assertEqual(
+            {
+                "uuids": [METRIC_ID, REPORT_ID, SUBJECT_ID],
+                "email": JENNY["email"],
+                "description": ("Jenny Doe renamed tag 'security' to 'safety' for all metrics in report 'Report'."),
+            },
+            inserted["delta"],
+        )
+
+    @patch("bottle.request")
+    def test_rename_non_existing_tag(self, request):
+        """Test that renaming a non-existing tag does nothing."""
+        request.json = {"tag": "safety"}
+        self.assertEqual(
+            {"ok": False, "error": "Cannot find tag 'non-existing tag' in report 'Report'."},
+            rename_tag(self.database, REPORT_ID, "non-existing tag"),
+        )
+        self.database.reports.insert_one.assert_not_called()

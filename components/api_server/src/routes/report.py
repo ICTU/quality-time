@@ -236,3 +236,24 @@ def get_report_issue_tracker_options(database: Database, report: Report):  # noq
     """Get options for the issue tracker attributes such as project key and issue type."""
     issue_tracker = report.issue_tracker()
     return issue_tracker.get_options().as_dict() | {"ok": True}
+
+
+@bottle.delete("/api/internal/report/<report_uuid>/tag/<tag>", permissions_required=[EDIT_REPORT_PERMISSION])
+@with_report(pass_report_uuid=False)
+def delete_tag(database: Database, report: Report, tag: str):
+    """Delete a tag from all metrics in a report."""
+    if changed_uuids := report.delete_tag(tag):
+        delta_description = f"{{user}} deleted tag '{tag}' from all metrics in report '{report.name}'."
+        return insert_new_report(database, delta_description, changed_uuids, report)
+    return {"ok": False, "error": f"Cannot find tag '{tag}' in report '{report.name}'."}
+
+
+@bottle.post("/api/internal/report/<report_uuid>/tag/<tag>", permissions_required=[EDIT_REPORT_PERMISSION])
+@with_report(pass_report_uuid=False)
+def rename_tag(database: Database, report: Report, tag: str):
+    """Rename a tag for all metrics in a report."""
+    new_value = dict(bottle.request.json)["tag"]
+    if changed_uuids := report.rename_tag(tag, new_value):
+        delta_description = f"{{user}} renamed tag '{tag}' to '{new_value}' for all metrics in report '{report.name}'."
+        return insert_new_report(database, delta_description, changed_uuids, report)
+    return {"ok": False, "error": f"Cannot find tag '{tag}' in report '{report.name}'."}

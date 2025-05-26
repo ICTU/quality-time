@@ -65,3 +65,19 @@ class Subject(dict):
             metric_measurements = [measurement for measurement in metric_measurements if measurement.sources_exist()]
             summary["metrics"][metric.uuid] = metric.summarize(metric_measurements)
         return summary
+
+    def delete_tag(self, tag: str) -> list[MetricId]:
+        """Delete a tag from the subject and return the UUIDs of the affected metrics."""
+        uuids = []
+        for metric_uuid, metric in self.metrics_dict.items():
+            if metric.delete_tag(tag):
+                uuids.append(metric_uuid)
+        return uuids
+
+    def rename_tag(self, tag: str, new_tag: str) -> list[MetricId]:
+        """Rename a tag in the report and return the UUIDs of the affected metrics."""
+        uuids = []
+        for metric_uuid, metric in self.metrics_dict.items():
+            if metric.rename_tag(tag, new_tag):
+                uuids.append(metric_uuid)
+        return uuids

@@ -1,6 +1,7 @@
 import AssignmentIcon from "@mui/icons-material/Assignment"
 import HistoryIcon from "@mui/icons-material/History"
 import NotificationsIcon from "@mui/icons-material/Notifications"
+import SellOutlinedIcon from "@mui/icons-material/SellOutlined"
 import SettingsIcon from "@mui/icons-material/Settings"
 import TimerIcon from "@mui/icons-material/Timer"
 import { func, string } from "prop-types"
@@ -19,6 +20,7 @@ import { setDocumentTitle } from "./document_title"
 import { IssueTracker } from "./IssueTracker"
 import { ReactionTimes } from "./ReactionTimes"
 import { ReportConfiguration } from "./ReportConfiguration"
+import { Tags } from "./Tags"
 
 function ReportTitleButtonRow({ reportUuid, openReportsOverview, settings, url }) {
     const deleteButton = (
@@ -67,6 +69,7 @@ export function ReportTitle({ openReportsOverview, reload, report, settings }) {
                     { label: "Desired reaction times", icon: <TimerIcon /> },
                     { label: "Notifications", icon: <NotificationsIcon /> },
                     { label: "Issue tracker", icon: <AssignmentIcon /> },
+                    { label: "Tags", icon: <SellOutlinedIcon /> },
                     { label: "Changelog", icon: <HistoryIcon /> },
                 ]}
                 uuid={reportUuid}
@@ -79,6 +82,7 @@ export function ReportTitle({ openReportsOverview, reload, report, settings }) {
                     reload={reload}
                 />
                 <IssueTracker report={report} reload={reload} />
+                <Tags reload={reload} report={report} />
                 <ChangeLog reportUuid={reportUuid} timestamp={report.timestamp} />
             </Tabs>
             <ReportTitleButtonRow

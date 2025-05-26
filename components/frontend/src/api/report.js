@@ -50,3 +50,11 @@ export function getReportIssueTrackerOptions(reportUuid) {
 export function getReportIssueTrackerSuggestions(reportUuid, query) {
     return fetchServerApi("get", `report/${reportUuid}/issue_tracker/suggestions/${query}`)
 }
+
+export function deleteTag(reportUuid, tag, reload) {
+    return fetchServerApi("delete", `report/${reportUuid}/tag/${tag}`).then(reload)
+}
+
+export function renameTag(reportUuid, tag, newTag, reload) {
+    return fetchServerApi("post", `report/${reportUuid}/tag/${tag}`, { tag: newTag }).then(reload)
+}

@@ -71,6 +71,41 @@ Feature: report
     When the client gets the metric status summary
     Then the report metric status summary is returned
 
+  Scenario: remove a tag from all metrics in a report
+    Given an existing report with title "Scenario: remove tag"
+    And an existing subject
+    And an existing metric with tags "security, maintainability"
+    When the client removes the tag "security" from the report
+    Then the metric tags is "maintainability"
+
+  Scenario: remove a non-existing tag from all metrics in a report
+    Given an existing report with title "Scenario: remove non-existing tag"
+    And an existing subject
+    And an existing metric with tags "maintainability"
+    When the client removes the tag "security" from the report
+    Then the metric tags is "maintainability"
+
+  Scenario: rename a tag for all metrics in a report
+    Given an existing report with title "Scenario: rename tag"
+    And an existing subject
+    And an existing metric with tags "security, maintainability"
+    When the client renames the tag "security" to "safety"
+    Then the metric tags is "maintainability, safety"
+
+  Scenario: rename a tag for all metrics in a report to an existing tag
+    Given an existing report with title "Scenario: rename tag to existing"
+    And an existing subject
+    And an existing metric with tags "security, maintainability"
+    When the client renames the tag "security" to "maintainability"
+    Then the metric tags is "maintainability"
+
+  Scenario: rename a non-existing tag for all metrics in a report
+    Given an existing report with title "Scenario: rename non-existing tag"
+    And an existing subject
+    And an existing metric with tags "maintainability"
+    When the client renames the tag "security" to "safety"
+    Then the metric tags is "maintainability"
+
   Scenario: export report as PDF
     When the client creates a report
     And the client downloads the report as PDF

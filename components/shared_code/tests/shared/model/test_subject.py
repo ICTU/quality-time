@@ -4,7 +4,7 @@ from shared.model.metric import Metric
 from shared.model.report import Report
 from shared.model.subject import Subject
 
-from tests.fixtures import METRIC_ID, SUBJECT_ID
+from tests.fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 from tests.shared.base import DataModelTestCase
 
 
@@ -13,7 +13,16 @@ class SubjectTest(DataModelTestCase):
 
     def setUp(self) -> None:
         """Override to create a database fixture."""
-        self.report = Report(self.DATA_MODEL, {"title": "Report"})
+        self.source_data: dict = {}
+        self.metric_data = {"type": "violations", "sources": {SOURCE_ID: self.source_data}, "tags": ["tag"]}
+        self.subject_data = {"metrics": {METRIC_ID: self.metric_data}}
+        report_data = {
+            "report_uuid": REPORT_ID,
+            "title": "Report",
+            "subjects": {SUBJECT_ID: self.subject_data},
+        }
+        self.report = Report(self.DATA_MODEL, report_data)
+        self.subject = self.report.subjects[0]
 
     def test_equality(self):
         """Test that two subjects with the same uuid are equal."""
@@ -80,3 +89,28 @@ class SubjectTest(DataModelTestCase):
             },
             subject.summarize({}),
         )
+
+    def test_delete_tag(self):
+        """Test that a tag can be deleted from all metrics in the subjec."""
+        self.assertEqual([METRIC_ID], self.subject.delete_tag("tag"))
+        for metric in self.subject.metrics:
+            self.assertNotIn("tag", metric["tags"])
+
+    def test_delete_tag_not_found(self):
+        """Test that deleting a tag that is not in the subject does not change the tags."""
+        tags = {metric.uuid: metric.get("tags", []) for metric in self.subject.metrics}
+        self.assertEqual([], self.subject.delete_tag("non-existing tag"))
+        self.assertEqual(tags, {metric.uuid: metric.get("tags", []) for metric in self.subject.metrics})
+
+    def test_rename_tag(self):
+        """Test that a tag can be renamed for all metrics in the subject."""
+        tags = {metric.uuid: metric.get("tags", []) for metric in self.subject.metrics}
+        expected_tags = {uuid: ["new tag" if tag == "tag" else tag for tag in tags] for (uuid, tags) in tags.items()}
+        self.assertEqual([METRIC_ID], self.subject.rename_tag("tag", "new tag"))
+        self.assertEqual(expected_tags, {metric.uuid: metric.get("tags", []) for metric in self.subject.metrics})
+
+    def test_rename_tag_not_found(self):
+        """Test that renaming a tag that is not in the subject does not change the tags."""
+        expected_tags = {metric.uuid: metric.get("tags", []) for metric in self.subject.metrics}
+        self.assertEqual([], self.subject.rename_tag("non-existing tag", "new tag"))
+        self.assertEqual(expected_tags, {metric.uuid: metric.get("tags", []) for metric in self.subject.metrics})

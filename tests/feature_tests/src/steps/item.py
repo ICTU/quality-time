@@ -1,7 +1,7 @@
 """Generic step implementations for reports, subjects, metrics, and sources."""
 
 import json
-from typing import cast
+from typing import Any, cast
 
 from asserts import assert_equal, assert_false, assert_true
 from behave import given, then, when
@@ -125,9 +125,11 @@ def check_item_attribute(context: Context, item: str, attribute: str, value: str
         expected_value = None if value == "None" else value
 
     keys = attribute.split(".")
-    actual_value = get_item(context, item)
+    actual_value: Any = get_item(context, item)
     for key in keys:
         actual_value = actual_value[key]
+    if attribute in ("tags", "issue_ids"):  # convert lists to comma separated values
+        actual_value = ", ".join(actual_value)
 
     assert_equal(expected_value, actual_value)
 

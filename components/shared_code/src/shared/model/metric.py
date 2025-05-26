@@ -172,3 +172,19 @@ class Metric(dict):
         sources = [source for _, source in sorted(self.sources_dict.items())]  # Make hash independent of source order
         source_parameters = [source.get("parameters") for source in sources]
         return md5_hash(str(source_parameters))
+
+    def delete_tag(self, tag: str) -> bool:
+        """Delete a tag from the metric if the metric has it. Return whether the metric was affected."""
+        if tag in self.get("tags", []):
+            self["tags"].remove(tag)
+            return True
+        return False
+
+    def rename_tag(self, tag: str, new_tag: str) -> bool:
+        """Rename a tag in the metric if the metric has it. Return whether the metric was affected."""
+        if tag in self.get("tags", []):
+            self["tags"].remove(tag)
+            if new_tag not in self["tags"]:
+                self["tags"].append(new_tag)
+            return True
+        return False

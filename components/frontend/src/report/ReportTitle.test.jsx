@@ -7,33 +7,29 @@ import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectFetch, expectNoAccessibilityViolations } from "../testUtils"
 import { ReportTitle } from "./ReportTitle"
 
 beforeEach(() => {
     vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
 })
 
-function renderReportTitle() {
+function renderReportTitle({ tags = ["foo"] } = {}) {
     return render(
         <DataModel.Provider value={{ sources: { jira: { name: "Jira", issue_tracker: true } } }}>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <ReportTitle
-                    report={{ report_uuid: "report_uuid", title: "Report" }}
+                    report={{
+                        report_uuid: "report_uuid",
+                        title: "Report",
+                        subjects: { subject_uuid: { metrics: { metric_uuid: { tags: tags } } } },
+                    }}
                     reload={vi.fn()}
                     settings={createTestableSettings()}
                 />
             </Permissions.Provider>
         </DataModel.Provider>,
     )
-}
-
-function expectFetch(method, api, body) {
-    if (body) {
-        expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith(method, api, body)
-    } else {
-        expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith(method, api)
-    }
 }
 
 it("deletes the report", async () => {
@@ -238,8 +234,18 @@ describe("issue tracker tab", () => {
     })
 })
 
-describe("changelog tab", () => {
+describe("tags tab", () => {
     beforeEach(() => history.push("?expanded=report_uuid:4"))
+
+    it("shows the tags", async () => {
+        const { container } = renderReportTitle()
+        expect(screen.getAllByText(/Tags/).length).toBe(1)
+        await expectNoAccessibilityViolations(container)
+    })
+})
+
+describe("changelog tab", () => {
+    beforeEach(() => history.push("?expanded=report_uuid:5"))
 
     it("loads the changelog", async () => {
         fetchServerApi.fetchServerApi.mockImplementation(() => Promise.resolve({ changelog: [] }))
