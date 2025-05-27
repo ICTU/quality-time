@@ -364,20 +364,6 @@ export function pluralize(word, count) {
     return word + (count === 1 ? "" : "s")
 }
 
-export function niceNumber(number) {
-    let roundedNumbers = [10, 12, 15, 20, 30, 50, 75]
-    do {
-        for (let roundedNumber of roundedNumbers) {
-            if (number <= (9 * roundedNumber) / 10) {
-                return roundedNumber
-            }
-        }
-        roundedNumbers = roundedNumbers.map((value) => {
-            return value * 10
-        })
-    } while (true) // eslint-disable-line no-constant-condition
-}
-
 export function scaledNumber(number) {
     const scale = ["", "k", "m"]
     const exponent = Math.floor(Math.log(number) / Math.log(1000))

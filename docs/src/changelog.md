@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Added
 
+- Add panning and zooming to metric trend graphs, color data points according to status, and show a tooltip with details on hovering data points. Closes [#3587](https://github.com/ICTU/quality-time/issues/3587) and [#3588](https://github.com/ICTU/quality-time/issues/3588).
 - Allow for bulk rename and removal of tags. Expand a report's title and navigate to the 'Tags' tab. Closes [#11245](https://github.com/ICTU/quality-time/issues/11245) and [#11280](https://github.com/ICTU/quality-time/issues/11280).
 
 ## v5.31.0 - 2025-05-22
