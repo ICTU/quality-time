@@ -1,12 +1,24 @@
 import { useTheme } from "@mui/material"
-import { useContext } from "react"
-import { VictoryAxis, VictoryChart, VictoryLabel, VictoryLine, VictoryTheme } from "victory"
+import { useContext, useState } from "react"
+import {
+    createContainer,
+    Point,
+    VictoryAxis,
+    VictoryBrushContainer,
+    VictoryChart,
+    VictoryLabel,
+    VictoryLine,
+    VictoryScatter,
+    VictoryTheme,
+    VictoryTooltip,
+} from "victory"
 
 import { DataModel } from "../context/DataModel"
 import { loadingPropType, measurementsPropType, metricPropType } from "../sharedPropTypes"
-import { capitalize, formatMetricScaleAndUnit, getMetricName, getMetricScale, niceNumber, scaledNumber } from "../utils"
+import { capitalize, formatMetricScaleAndUnit, getMetricName, getMetricScale, scaledNumber } from "../utils"
 import { LoadingPlaceHolder } from "../widgets/Placeholder"
 import { FailedToLoadMeasurementsWarningMessage, InfoMessage, WarningMessage } from "../widgets/WarningMessage"
+import { STATUS_COLORS, STATUS_NAME } from "./status"
 
 function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
     const scale = getMetricScale(metric, dataModel)
@@ -16,10 +28,13 @@ function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
 
 export function TrendGraph({ metric, measurements, loading }) {
     const dataModel = useContext(DataModel)
-    const color = useTheme().palette.text.secondary
+    const [visibleDomain, setVisibleDomain] = useState({})
+    const primaryColor = useTheme().palette.text.primary
+    const secondaryColor = useTheme().palette.text.secondary
     const bgcolor = useTheme().palette.background.secondary
     const fontFamily = useTheme().typography.fontFamily
     const chartHeight = 250
+    const chartWidth = 750
     const estimatedTotalChartHeight = chartHeight + 200 // Estimate of the height including title and axis
     if (getMetricScale(metric, dataModel) === "version_number") {
         return (
@@ -42,52 +57,121 @@ export function TrendGraph({ metric, measurements, loading }) {
         )
     }
     const metricName = getMetricName(metric, dataModel)
+    const scale = getMetricScale(metric, dataModel)
     const unit = capitalize(formatMetricScaleAndUnit(metric, dataModel))
     const measurementValues = measurements.map((measurement) =>
         measurementAttributeAsNumber(metric, measurement, "value", dataModel),
     )
-    let maxY = niceNumber(Math.max(...measurementValues))
+    let maxY = Math.max(...measurementValues)
     let measurementPoints = [] // The measurement values as (x, y) coordinates
     measurements.forEach((measurement, index) => {
-        measurementPoints.push(
-            { y: measurementValues[index], x: new Date(measurement.start) },
-            { y: measurementValues[index], x: new Date(measurement.end) },
-        )
+        const status = measurement[scale]?.status ?? "unknown"
+        measurementPoints.push({ y: measurementValues[index], x: new Date(measurement.start), status: status })
+        if (measurement.start !== measurement.end) {
+            measurementPoints.push({ y: measurementValues[index], x: new Date(measurement.end), status: status })
+        }
     })
     const axisStyle = {
-        axisLabel: { padding: 30, fontSize: 11, fill: color, fontFamily: fontFamily },
-        tickLabels: { fontSize: 8, fill: color, fontFamily: fontFamily },
+        axisLabel: { padding: 30, fontSize: 11, fill: secondaryColor, fontFamily: fontFamily },
+        tickLabels: { fontSize: 8, fill: secondaryColor, fontFamily: fontFamily },
     }
+    const toolTipStyle = { fill: bgcolor, fontSize: 7, fontFamily: fontFamily }
+    const VictoryZoomVoronoiContainer = createContainer("zoom", "voronoi")
     return (
-        <VictoryChart
-            aria-label={`Trend graph for the metric ${metricName}`}
-            height={chartHeight}
-            scale={{ x: "time", y: "linear" }}
-            style={{ parent: { height: "100%", background: bgcolor }, fontFamily: fontFamily }}
-            theme={VictoryTheme.material}
-            width={750}
-        >
-            <VictoryLabel
-                x={375}
-                y={20}
-                style={{ fill: color, fontFamily: fontFamily }}
-                text={metricName}
-                textAnchor="middle"
-            />
-            <VictoryAxis label={"Time"} style={axisStyle} />
-            <VictoryAxis
-                dependentAxis
-                domain={[0, maxY]}
-                label={unit}
-                style={axisStyle}
-                tickFormat={(t) => `${scaledNumber(t)}`}
-            />
-            <VictoryLine
-                data={measurementPoints}
-                interpolation="stepBefore"
-                style={{ data: { stroke: color, strokeWidth: 2 } }}
-            />
-        </VictoryChart>
+        <div>
+            <VictoryChart
+                aria-label={`Trend graph for the metric ${metricName}`}
+                containerComponent={
+                    <VictoryZoomVoronoiContainer
+                        responsive={true}
+                        zoomDimension="x"
+                        zoomDomain={visibleDomain}
+                        onZoomDomainChange={setVisibleDomain}
+                    />
+                }
+                height={chartHeight}
+                padding={{
+                    top: 50,
+                    left: 50,
+                    right: 30,
+                    bottom: 30,
+                }}
+                scale={{ x: "time", y: "linear" }}
+                style={{ parent: { height: "100%", background: bgcolor }, fontFamily: fontFamily }}
+                theme={VictoryTheme.material}
+                width={chartWidth}
+            >
+                <VictoryLabel
+                    x={375}
+                    y={20}
+                    style={{ fill: secondaryColor, fontFamily: fontFamily }}
+                    text={metricName}
+                    textAnchor="middle"
+                />
+                <VictoryAxis style={axisStyle} />
+                <VictoryAxis
+                    dependentAxis
+                    domain={[0, maxY]}
+                    label={unit}
+                    style={axisStyle}
+                    tickFormat={(t) => `${scaledNumber(t)}`}
+                />
+                <VictoryLine
+                    data={measurementPoints}
+                    interpolation="stepBefore"
+                    style={{
+                        data: { stroke: secondaryColor, strokeWidth: 1 },
+                    }}
+                />
+                <VictoryScatter
+                    data={measurementPoints}
+                    dataComponent={<Point data-testid="Point" />}
+                    style={{
+                        data: {
+                            fill: ({ datum }) => STATUS_COLORS[datum.status],
+                            stroke: secondaryColor,
+                            strokeWidth: 1,
+                        },
+                    }}
+                    labelComponent={<VictoryTooltip style={toolTipStyle} />}
+                    labels={({ datum }) => {
+                        const date = datum.x.toLocaleString([], { dateStyle: "short", timeStyle: "short" })
+                        const status = STATUS_NAME[datum.status].toLowerCase()
+                        return `${datum.y} ${unit} (${status}) on ${date}`
+                    }}
+                />
+            </VictoryChart>
+            <VictoryChart
+                aria-label={`Brush graph for the metric ${metricName}`}
+                containerComponent={
+                    <VictoryBrushContainer
+                        brushDimension="x"
+                        brushDomain={visibleDomain}
+                        brushStyle={{ fill: primaryColor, fillOpacity: 0.2 }}
+                        defaultBrushArea="move" // Move the brush area when the user clicks outside the brush area
+                        onBrushDomainChange={setVisibleDomain}
+                    />
+                }
+                height={50}
+                padding={{
+                    top: 0,
+                    left: 50,
+                    right: 30,
+                    bottom: 30,
+                }}
+                scale={{ x: "time", y: "linear" }}
+                style={{ parent: { height: "100%", background: bgcolor }, fontFamily: fontFamily }}
+                theme={VictoryTheme.material}
+                width={chartWidth}
+            >
+                <VictoryAxis label={"Time"} style={axisStyle} />
+                <VictoryLine
+                    data={measurementPoints}
+                    interpolation="stepBefore"
+                    style={{ data: { stroke: secondaryColor, strokeWidth: 1 } }}
+                />
+            </VictoryChart>
+        </div>
     )
 }
 TrendGraph.propTypes = {

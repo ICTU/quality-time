@@ -18,7 +18,6 @@ import {
     isMeasurementRequested,
     isMeasurementStale,
     isSourceConfigurationComplete,
-    niceNumber,
     nrMetricsInReport,
     nrMetricsInReports,
     referenceDocumentationURL,
@@ -48,26 +47,6 @@ it("capitalizes strings", () => {
     expect(capitalize("aB")).toBe("AB")
     expect(capitalize("AB")).toBe("AB")
     expect(capitalize("a_b")).toBe("A b")
-})
-
-it("rounds numbers nicely", () => {
-    expect(niceNumber(0)).toBe(10)
-    expect(niceNumber(1)).toBe(10)
-    expect(niceNumber(9)).toBe(10)
-    expect(niceNumber(10)).toBe(12)
-    expect(niceNumber(12)).toBe(15)
-    expect(niceNumber(15)).toBe(20)
-    expect(niceNumber(16)).toBe(20)
-    expect(niceNumber(17)).toBe(20)
-    expect(niceNumber(39)).toBe(50)
-    expect(niceNumber(40)).toBe(50)
-    expect(niceNumber(41)).toBe(50)
-    expect(niceNumber(79)).toBe(100)
-    expect(niceNumber(80)).toBe(100)
-    expect(niceNumber(81)).toBe(100)
-    expect(niceNumber(90)).toBe(100)
-    expect(niceNumber(100)).toBe(120)
-    expect(niceNumber(125)).toBe(150)
 })
 
 it("adds a scale", () => {

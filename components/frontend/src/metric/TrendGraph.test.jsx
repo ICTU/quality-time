@@ -1,4 +1,6 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import { vi } from "vitest"
 
 import { DataModel } from "../context/DataModel"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -24,6 +26,25 @@ it("renders the measurements", async () => {
         measurements: [{ count: { value: "1" }, start: "2019-09-29", end: "2019-09-30" }],
     })
     expect(screen.getAllByText(/Time/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("renders the tooltip", async () => {
+    // Mock the getScreenCTM function, see https://docs.jointjs.com/learn/testing/jest/#jsdom-and-svg-apis
+    const createSVGMatrix = () => ({
+        inverse: vi.fn().mockImplementation(createSVGMatrix),
+    })
+    Object.defineProperty(globalThis.SVGElement.prototype, "getScreenCTM", {
+        writable: true,
+        value: vi.fn().mockImplementation(createSVGMatrix),
+    })
+    const { container } = renderTrendgraph({
+        measurements: [{ count: { value: "1", status: "target_met" }, start: "2019-09-29", end: "2019-09-30" }],
+    })
+    userEvent.hover(screen.getAllByTestId(/Point/)[0])
+    await waitFor(async () => {
+        expect(screen.getAllByText(/1 violations \(target met\) on/).length).toBe(1)
+    })
     await expectNoAccessibilityViolations(container)
 })
 
