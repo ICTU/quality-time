@@ -1,13 +1,12 @@
-import { render, fireEvent, screen } from "@testing-library/react"
-import React from "react"
-import { vi } from "vitest"
+import { render, screen } from "@testing-library/react"
 import history from "history/browser"
+import { vi } from "vitest"
+
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
-
-import { SubjectTableBody } from "./SubjectTableBody"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
+import { SubjectTableBody } from "./SubjectTableBody"
 
 const metric = {
     unit: "testUnit",
@@ -34,11 +33,6 @@ const dataModel = {
         subject_type: { metrics: ["metric_type"] },
     },
 }
-const dates = [
-    new Date("2020-01-15T00:00:00+00:00"),
-    new Date("2020-01-14T00:00:00+00:00"),
-    new Date("2020-01-13T00:00:00+00:00"),
-]
 
 function renderSubjectTableBody({ dates = [], expandedItems = null, settings = null } = {}) {
     settings = settings ?? createTestableSettings()
@@ -89,7 +83,7 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
                             },
                             title: "Report title",
                         }}
-                        metricEntries={Object.entries({1: metric, 2: metric2 })}
+                        metricEntries={Object.entries({ 1: metric, 2: metric2 })}
                         reports={[]}
                         settings={settings}
                         subject_uuid="subject_uuid"
@@ -110,4 +104,3 @@ it("shows the correct number of rows", async () => {
     expect(screen.queryAllByTestId(/^metric-row-/).length).toBe(2)
     await expectNoAccessibilityViolations(container)
 })
-

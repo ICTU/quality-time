@@ -1,12 +1,13 @@
 import { Table, TableBody } from "@mui/material"
 import { render, screen } from "@testing-library/react"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTableRow } from "./SubjectTableRow"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 
 beforeEach(() => history.push(""))
 
