@@ -15,22 +15,6 @@ import {
 import { createDragGhost } from "../utils"
 import { SubjectTableRow } from "./SubjectTableRow"
 
-function copyAllComputedStyles(sourceNode, targetNode) {
-    const sourceStyles = getComputedStyle(sourceNode)
-    for (const key of sourceStyles) {
-        try {
-            targetNode.style[key] = sourceStyles.getPropertyValue(key)
-        } catch {}
-    }
-
-    // Recursively copy to children
-    const sourceChildren = Array.from(sourceNode.children)
-    const targetChildren = Array.from(targetNode.children)
-    for (let i = 0; i < sourceChildren.length; i++) {
-        copyAllComputedStyles(sourceChildren[i], targetChildren[i])
-    }
-}
-
 export function SubjectTableBody({
     changedFields,
     columnsToHide,

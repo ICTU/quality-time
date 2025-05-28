@@ -3,6 +3,8 @@ import { defaultDesiredResponseTimes } from "./defaults"
 import {
     addCounts,
     capitalize,
+    copyAllComputedStyles,
+    createDragGhost,
     DOCUMENTATION_URL,
     getMetricResponseDeadline,
     getMetricResponseOverrun,
@@ -24,7 +26,7 @@ import {
     scaledNumber,
     sortWithLocaleCompare,
     sum,
-    visibleMetrics, copyAllComputedStyles, createDragGhost,
+    visibleMetrics,
 } from "./utils"
 
 const dataModel = {

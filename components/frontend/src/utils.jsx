@@ -469,7 +469,6 @@ export function copyAllComputedStyles(sourceNode, targetNode) {
     }
 }
 
-
 export function createDragGhost(rowRef, event) {
     // ideally this helper function should be e2e tested
     if (!rowRef?.current) return
