@@ -6,7 +6,7 @@ import { createTestableSettings } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
 
 import { SubjectTableBody } from "./SubjectTableBody"
-import {EDIT_REPORT_PERMISSION, Permissions} from "../context/Permissions"
+import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 
 const metric = {
