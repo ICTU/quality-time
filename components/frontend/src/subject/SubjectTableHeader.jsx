@@ -2,6 +2,7 @@ import ReorderIcon from "@mui/icons-material/Reorder"
 import { Chip, List, ListItem, ListItemIcon, ListItemText, Paper, TableHead, TableRow, Typography } from "@mui/material"
 import { bool, func, string } from "prop-types"
 
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { zIndexTableHeader } from "../defaults"
 import { StatusIcon } from "../measurement/StatusIcon"
 import { STATUS_DESCRIPTION, STATUSES } from "../metric/status"
@@ -9,7 +10,6 @@ import { datesPropType, settingsPropType, stringsPropType } from "../sharedPropT
 import { HyperLink } from "../widgets/HyperLink"
 import { IgnoreIcon, TriangleRightIcon } from "../widgets/icons"
 import { SortableTableHeaderCell, UnsortableTableHeaderCell } from "../widgets/TableHeaderCell"
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 
 function Expand({ children }) {
     return (

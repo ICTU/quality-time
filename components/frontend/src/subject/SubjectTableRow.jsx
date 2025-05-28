@@ -4,6 +4,7 @@ import { bool, func, number, object, string } from "prop-types"
 import React, { useContext, useRef } from "react"
 
 import { DataModel } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { IssueStatus } from "../issue/IssueStatus"
 import { MeasurementSources } from "../measurement/MeasurementSources"
 import { MeasurementTarget } from "../measurement/MeasurementTarget"
@@ -41,7 +42,6 @@ import {
 import { DivWithHtml } from "../widgets/DivWithHtml"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { Tag } from "../widgets/Tag"
-import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 
 function didValueIncrease(dateOrderAscending, metricValue, previousValue, scale) {
     let value = metricValue
@@ -211,31 +211,24 @@ MeasurementCells.propTypes = {
     settings: settingsPropType,
 }
 
-function expandOrCollapseItem(expand, metric_uuid, expandedItems) {
-    if (expand) {
-        expandedItems.toggle(`${metric_uuid}:0`)
-    } else {
-        const items = expandedItems.value.filter((each) => each?.startsWith(metric_uuid))
-        expandedItems.toggle(items[0])
-    }
-}
-
-const DragHandleButton = React.forwardRef(({ label, ...props }, ref) => (
-    <button
-        ref={ref}
-        type="button"
-        {...props}
-        style={{
-            background: "none",
-            border: "none",
-            cursor: "grab",
-            padding: 0,
-        }}
-        aria-label={label}
-    >
-        <DragIndicatorIcon fontSize="small" />
-    </button>
-))
+const DragHandleButton = React.forwardRef(function DragHandleButton({ label, ...props }, ref) {
+    return (
+        <button
+            ref={ref}
+            type="button"
+            {...props}
+            style={{
+                background: "none",
+                border: "none",
+                cursor: "grab",
+                padding: 0,
+            }}
+            aria-label={label}
+        >
+            <DragIndicatorIcon fontSize="small" />
+        </button>
+    )
+})
 DragHandleButton.propTypes = {
     label: string,
 }
