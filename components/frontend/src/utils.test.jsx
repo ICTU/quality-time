@@ -1,3 +1,5 @@
+import { vi } from "vitest"
+
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from "./context/Permissions"
 import { defaultDesiredResponseTimes } from "./defaults"
 import {
@@ -577,7 +579,7 @@ it("recursively copies child styles", () => {
     window.getComputedStyle = (el) => ({
         length: 1,
         0: "fontSize",
-        item: (i) => "fontSize",
+        item: () => "fontSize",
         getPropertyValue: (prop) => el.style[prop],
     })
 
