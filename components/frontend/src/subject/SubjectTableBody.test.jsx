@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
@@ -103,4 +103,12 @@ it("shows the correct number of rows", async () => {
     const { container } = renderSubjectTableBody()
     expect(screen.queryAllByTestId(/^metric-row-/).length).toBe(2)
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows drop indicator when dragging over a row", () => {
+    renderSubjectTableBody()
+    // Simulate drag enter on the 2nd row
+    const row = screen.getByTestId("metric-row-1")
+    fireEvent.dragEnter(row)
+    expect(screen.getByTestId("drop-indicator-1")).toBeInTheDocument()
 })
