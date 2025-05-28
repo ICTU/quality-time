@@ -2,6 +2,7 @@ import { TableBody } from "@mui/material"
 import { array, func, string } from "prop-types"
 import React, { useEffect, useRef, useState } from "react"
 
+import { setMetricAttribute } from "../api/metric"
 import {
     datesPropType,
     measurementsPropType,
@@ -11,23 +12,22 @@ import {
     settingsPropType,
     stringsPropType,
 } from "../sharedPropTypes"
-import { SubjectTableRow } from "./SubjectTableRow"
-import { set_metric_attribute } from "../api/metric"
 import { createDragGhost } from "../utils"
+import { SubjectTableRow } from "./SubjectTableRow"
 
 function copyAllComputedStyles(sourceNode, targetNode) {
-    const sourceStyles = getComputedStyle(sourceNode);
+    const sourceStyles = getComputedStyle(sourceNode)
     for (const key of sourceStyles) {
         try {
-            targetNode.style[key] = sourceStyles.getPropertyValue(key);
+            targetNode.style[key] = sourceStyles.getPropertyValue(key)
         } catch {}
     }
 
     // Recursively copy to children
-    const sourceChildren = Array.from(sourceNode.children);
-    const targetChildren = Array.from(targetNode.children);
+    const sourceChildren = Array.from(sourceNode.children)
+    const targetChildren = Array.from(targetNode.children)
     for (let i = 0; i < sourceChildren.length; i++) {
-        copyAllComputedStyles(sourceChildren[i], targetChildren[i]);
+        copyAllComputedStyles(sourceChildren[i], targetChildren[i])
     }
 }
 
@@ -77,7 +77,7 @@ export function SubjectTableBody({
         setDragOverIndex(null)
 
         // Persist to backend and reload
-        set_metric_attribute(movedUUID, "position_index", dropTarget, reload)
+        setMetricAttribute(movedUUID, "position_index", dropTarget, reload)
     }
 
     useEffect(() => {
