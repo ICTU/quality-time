@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Added
 
+- Allow for reordering of metrics by dragging and dropping. Patch contributed by Ricardo Deden (the/experts.). Closes [#3131](https://github.com/ICTU/quality-time/issues/3131)
 - Allow for bulk rename and removal of tags. Expand a report's title and navigate to the 'Tags' tab. Closes [#11245](https://github.com/ICTU/quality-time/issues/11245) and [#11280](https://github.com/ICTU/quality-time/issues/11280).
 
 ## v5.31.0 - 2025-05-22
