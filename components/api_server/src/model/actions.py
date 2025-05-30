@@ -95,3 +95,36 @@ def move_item(
         container["sources"] = reordered_items
 
     return old_index, new_index
+
+
+def move_metric_to_index(
+    container: Subject,
+    item_to_move: Metric,
+    new_index: int,
+) -> tuple[int, int]:
+    """Change a metric position to a specific index within the subject."""
+    items_dict: ItemsDictType
+    items_dict = cast(ItemsDictType, container.metrics_dict)
+
+    item_keys = list(items_dict.keys())
+    old_index = item_keys.index(item_to_move.uuid)
+
+    # Clamp index
+    new_index = max(0, min(new_index, len(item_keys) - 1))
+
+    if old_index == new_index:
+        return old_index, new_index  # no change
+
+    # Remove the item key
+    item_keys.pop(old_index)
+
+    # Insert the item key at the new index
+    item_keys.insert(new_index, item_to_move.uuid)
+
+    # Rebuild the dict in the new order
+    reordered_items = {key: items_dict.get(key, item_to_move) for key in item_keys}
+
+    # Assign the new dict back to the container
+    container["metrics"] = reordered_items
+
+    return old_index, new_index
