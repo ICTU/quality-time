@@ -30,15 +30,20 @@ export function SubjectTableBody({
     settings,
     subjectUuid,
 }) {
+    const [entries, setEntries] = useState(metricEntries)
     const [dragOverIndex, setDragOverIndex] = useState(null)
 
     const dragItem = useRef(null)
     const dragOverItem = useRef(null)
 
+    useEffect(() => {
+        // Keep local entries in sync when external entries change
+        setEntries(metricEntries)
+    }, [metricEntries])
+
     const handleDragStart = (index, rowRef, event) => {
         dragItem.current = index
         event.dataTransfer.effectAllowed = "move"
-
         createDragGhost(rowRef, event)
     }
 
@@ -54,14 +59,25 @@ export function SubjectTableBody({
 
         if (dragFrom == null || dropTarget == null || dragFrom === dropTarget) return
 
-        const [movedUUID] = metricEntries[dragFrom]
+        const updatedEntries = [...entries]
+        const [movedEntry] = updatedEntries.splice(dragFrom, 1)
+        updatedEntries.splice(dropTarget, 0, movedEntry)
+
+        // Optimistically update local UI
+        setEntries(updatedEntries)
 
         dragItem.current = null
         dragOverItem.current = null
         setDragOverIndex(null)
 
-        // Persist to backend and reload
-        setMetricAttribute(movedUUID, "position_index", dropTarget, reload)
+        const [movedUUID] = movedEntry
+
+        setMetricAttribute(movedUUID, "position_index", dropTarget)
+            .then(reload)
+            .catch((error) => {
+                console.error("Failed to update metric position:", error)
+                reload()
+            })
     }
 
     useEffect(() => {
@@ -77,11 +93,11 @@ export function SubjectTableBody({
         }
     }, [])
 
-    const lastIndex = metricEntries.length - 1
+    const lastIndex = entries.length - 1
 
     return (
         <TableBody>
-            {metricEntries.map(([metricUuid, metric], index) => (
+            {entries.map(([metricUuid, metric], index) => (
                 <React.Fragment key={metricUuid}>
                     {dragOverIndex === index && (
                         <tr style={{ height: "4px" }}>
