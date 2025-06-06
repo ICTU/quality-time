@@ -12,7 +12,7 @@ dependencies = [
     "selenium==4.33.0",
 ]
 optional-dependencies.dev = [
-    "types-requests==2.32.0.20250515",
+    "types-requests==2.32.0.20250602",
 ]
 optional-dependencies.tools = [
     "bandit==1.8.3",
