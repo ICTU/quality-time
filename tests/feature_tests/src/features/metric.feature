@@ -130,6 +130,13 @@ Feature: metric
     Then the subject's first metric has name "B"
     And the subject's last metric has name "A"
 
+  Scenario: change metric index
+    Given an existing metric with name "A"
+    And an existing metric with name "B"
+    When the client changes the metric position_index to "1"
+    Then the subject's first metric has name "B"
+    And the subject's last metric has name "A"
+
   Scenario: add comment without html
     Given an existing metric
     When the client changes the metric comment to "Text"
