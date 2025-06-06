@@ -270,9 +270,10 @@ export function SubjectTableRow({
         <TableRowWithDetails
             data-testid={`metric-row-${index}`}
             ref={rowRef}
+            onDragStart={(e) => onDragStart(index, rowRef, e)}
             onDragEnter={() => onDragEnter(index)}
-            onDragOver={(e) => e.preventDefault()}
             onDrop={onDrop}
+            onDragOver={(e) => e.preventDefault()}
             style={{
                 transition: "transform 150ms ease",
                 transform: isDropTarget ? "translateY(10px)" : "none",

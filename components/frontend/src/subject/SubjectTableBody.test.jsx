@@ -1,12 +1,29 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { createEvent, fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
+import { setMetricAttribute } from "../api/metric"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTableBody } from "./SubjectTableBody"
+
+vi.mock("../utils", async () => {
+    const actual = await vi.importActual("../utils")
+    return {
+        ...actual,
+        createDragGhost: vi.fn(),
+    }
+})
+
+vi.mock("../api/metric", async () => {
+    const actual = await vi.importActual("../api/metric")
+    return {
+        ...actual,
+        setMetricAttribute: vi.fn().mockResolvedValue({}),
+    }
+})
 
 const metric = {
     unit: "testUnit",
@@ -111,4 +128,71 @@ it("shows drop indicator when dragging over a row", () => {
     const row = screen.getByTestId("metric-row-1")
     fireEvent.dragEnter(row)
     expect(screen.getByTestId("drop-indicator-1")).toBeInTheDocument()
+})
+
+it("sets up drag start correctly", () => {
+    renderSubjectTableBody()
+    const row = screen.getByTestId("metric-row-0")
+    const dragStartEvent = createEvent.dragStart(row)
+    dragStartEvent.dataTransfer = {
+        effectAllowed: "",
+        setDragImage: vi.fn(),
+    }
+
+    fireEvent(row, dragStartEvent)
+
+    expect(dragStartEvent.dataTransfer.effectAllowed).toBe("move")
+})
+
+it("handles drag end by resetting drag state", async () => {
+    renderSubjectTableBody({})
+
+    const row0 = screen.getByTestId("metric-row-0")
+    const row1 = screen.getByTestId("metric-row-1")
+
+    const dragStartEvent = createEvent.dragStart(row0)
+    dragStartEvent.dataTransfer = {
+        effectAllowed: "",
+        setDragImage: vi.fn(), // needed if `createDragGhost` sets it
+    }
+    fireEvent(row0, dragStartEvent)
+
+    fireEvent.dragEnter(row1)
+
+    const dropEvent = createEvent.drop(row1)
+    dropEvent.preventDefault = vi.fn()
+    fireEvent(row1, dropEvent)
+
+    // Drop indicator should no longer be visible
+    expect(screen.queryByTestId("drop-indicator-1")).not.toBeInTheDocument()
+})
+
+it("handles drop by reordering metrics", () => {
+    renderSubjectTableBody()
+
+    const row0 = screen.getByTestId("metric-row-0")
+    const row1 = screen.getByTestId("metric-row-1")
+
+    const dragStartEvent = createEvent.dragStart(row0)
+    dragStartEvent.dataTransfer = { effectAllowed: "", setDragImage: vi.fn() }
+    fireEvent(row0, dragStartEvent)
+
+    // Simulate drag enter to set drop index
+    fireEvent.dragEnter(row1)
+
+    const dropEvent = createEvent.drop(row1)
+    dropEvent.preventDefault = vi.fn()
+    fireEvent(row1, dropEvent)
+
+    // Check API call
+    expect(setMetricAttribute).toHaveBeenCalledWith("1", "position_index", 1)
+
+    // Check reorder by verifying row contents
+    const rows = screen.getAllByTestId(/metric-row-/)
+
+    const firstRowText = rows[0].textContent
+    const secondRowText = rows[1].textContent
+
+    expect(firstRowText).toContain("name_2")
+    expect(secondRowText).toContain("name_1")
 })
