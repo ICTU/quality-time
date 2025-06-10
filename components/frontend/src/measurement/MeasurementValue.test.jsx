@@ -44,7 +44,7 @@ it("renders the value", async () => {
     await expectNoAccessibilityViolations(container)
 })
 
-it("renders an unkown value", async () => {
+it("renders an unknown value", async () => {
     const { container } = renderMeasurementValue({ latestMeasurement: { count: { value: null } } })
     expect(screen.getAllByText(/\?/).length).toBe(1)
     expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)

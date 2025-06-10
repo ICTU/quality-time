@@ -116,7 +116,7 @@ deltaLabel.propTypes = {
     previousValue: string,
 }
 
-function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousValue, status }) {
+function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousValue }) {
     const dataModel = useContext(DataModel)
     let label = null
     if (index > 0 && previousValue !== "?" && metricValue !== "?" && previousValue !== metricValue) {
@@ -136,11 +136,7 @@ function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousVal
             </Tooltip>
         )
     }
-    return (
-        <TableCell align="right" className={status}>
-            {label}
-        </TableCell>
-    )
+    return <TableCell align="right">{label}</TableCell>
 }
 DeltaCell.propTypes = {
     dateOrderAscending: bool,
@@ -148,7 +144,6 @@ DeltaCell.propTypes = {
     index: number,
     metricValue: string,
     previousValue: string,
-    status: string,
 }
 
 function metricValueAndStatusOnDate(dataModel, metric, metricUuid, measurements, date) {
@@ -182,12 +177,22 @@ function MeasurementCells({ dates, metric, metricUuid, measurements, settings })
                     metric={metric}
                     metricValue={metricValue}
                     previousValue={previousValue}
-                    status={status}
                 />,
             )
         }
         cells.push(
-            <TableCell align="right" className={status} key={date}>
+            <TableCell
+                align="right"
+                key={date}
+                sx={{
+                    bgcolor: `${status}.bgcolor`,
+                    "&.MuiTableCell-hover": {
+                        "&:hover": {
+                            backgroundColor: `${status}.hover`,
+                        },
+                    },
+                }}
+            >
                 {formatMetricValue(scale, metricValue)}
                 {formatMetricScale(metric, dataModel)}
             </TableCell>,
