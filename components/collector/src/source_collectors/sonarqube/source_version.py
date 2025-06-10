@@ -12,7 +12,7 @@ class SonarQubeSourceVersion(VersionCollector):
     async def _api_url(self) -> URL:
         """Extend to add the project analyses path and parameters."""
         url = await super()._api_url()
-        return URL(f"{url}/api/server/version")
+        return URL(f"{url}/api/v2/analysis/version")
 
     async def _parse_source_response_version(self, response: Response) -> Version:
         """Override to parse the SonarQube version."""
