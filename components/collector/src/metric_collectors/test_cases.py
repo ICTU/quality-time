@@ -141,5 +141,5 @@ class TestCases(MetricCollector):
     @classmethod
     def test_result(cls, entity: Entity) -> TestResult:
         """Return the (uniformized) test result of the entity."""
-        test_result = entity["test_result"].lower()
+        test_result = cast(TestResult, entity["test_result"].lower())
         return cls.UNIFORMIZED_TEST_RESULTS.get(test_result, test_result)

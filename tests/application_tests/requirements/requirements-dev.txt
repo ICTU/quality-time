@@ -138,18 +138,22 @@ pluggy==1.6.0 \
     --hash=sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3 \
     --hash=sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746
     # via pytest
+pygments==2.19.1 \
+    --hash=sha256:61c16d2a8576dc0649d9f39e089b5f02bcd27fba10d8fb4dcc28173f7a45151f \
+    --hash=sha256:9ea1544ad55cecf4b8242fab6dd35a93bbce657034b0611ee383099054ab6d8c
+    # via pytest
 pysocks==1.7.1 \
     --hash=sha256:08e69f092cc6dbe92a0fdd16eeb9b9ffbc13cadfe5ca4c7bd92ffb078b293299 \
     --hash=sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5 \
     --hash=sha256:3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0
     # via urllib3
-pytest==8.3.5 \
-    --hash=sha256:c69214aa47deac29fad6c2a4f590b9c4a9fdb16a403176fe154b79c0b4d4d820 \
-    --hash=sha256:f4efe70cc14e511565ac476b57c279e12a855b11f48f212af1080ef2263d3845
+pytest==8.4.0 \
+    --hash=sha256:14d920b48472ea0dbf68e45b96cd1ffda4705f33307dcc86c676c1b5104838a6 \
+    --hash=sha256:f40f825768ad76c0977cbacdf1fd37c6f7a468e460ea6a0636078f8972d4517e
     # via axe-selenium-python
-requests==2.32.3 \
-    --hash=sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760 \
-    --hash=sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6
+requests==2.32.4 \
+    --hash=sha256:27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c \
+    --hash=sha256:27d0316682c8a29834d3264820024b62a36942083d52caf2f14c0591336d3422
     # via application-tests (pyproject.toml)
 selenium==4.33.0 \
     --hash=sha256:af9ea757813918bddfe05cc677bf63c8a0cd277ebf8474b3dd79caa5727fca85 \
@@ -175,9 +179,9 @@ trio-websocket==0.12.2 \
     --hash=sha256:22c72c436f3d1e264d0910a3951934798dcc5b00ae56fc4ee079d46c7cf20fae \
     --hash=sha256:df605665f1db533f4a386c94525870851096a223adcb97f72a07e8b4beba45b6
     # via selenium
-types-requests==2.32.0.20250515 \
-    --hash=sha256:09c8b63c11318cb2460813871aaa48b671002e59fda67ca909e9883777787581 \
-    --hash=sha256:f8eba93b3a892beee32643ff836993f15a785816acca21ea0ffa006f05ef0fb2
+types-requests==2.32.0.20250602 \
+    --hash=sha256:ee603aeefec42051195ae62ca7667cd909a2f8128fdf8aad9e8a5219ecfab3bf \
+    --hash=sha256:f4f335f87779b47ce10b8b8597b409130299f6971ead27fead4fe7ba6ea3e726
     # via application-tests (pyproject.toml)
 typing-extensions==4.13.2 \
     --hash=sha256:a439e7c04b49fec3e5d3e2beaa21755cadbbdc391694e28ccdd36ca4a1408f8c \
