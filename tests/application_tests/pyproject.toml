@@ -8,19 +8,19 @@ classifiers = [
 ]
 dependencies = [
     "axe-selenium-python==2.1.6",
-    "requests==2.32.3",
+    "requests==2.32.4",
     "selenium==4.33.0",
 ]
 optional-dependencies.dev = [
-    "types-requests==2.32.0.20250515",
+    "types-requests==2.32.0.20250602",
 ]
 optional-dependencies.tools = [
     "bandit==1.8.3",
     "fixit==2.1.0",
-    "mypy==1.15.0",
+    "mypy==1.16.0",
     "pip-audit==2.9.0",
     "pyproject-fmt==2.6.0",
-    "ruff==0.11.11",
+    "ruff==0.11.13",
     "vulture==2.14",
 ]
 

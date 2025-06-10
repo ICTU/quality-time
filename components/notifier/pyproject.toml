@@ -7,7 +7,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-    "aiohttp==3.12.2",
+    "aiohttp==3.12.11",
     "pymsteams==0.2.5",
 ]
 
@@ -20,10 +20,10 @@ optional-dependencies.dev = [
 optional-dependencies.tools = [
     "bandit==1.8.3",
     "fixit==2.1.0",
-    "mypy==1.15.0",
+    "mypy==1.16.0",
     "pip-audit==2.9.0",
     "pyproject-fmt==2.6.0",
-    "ruff==0.11.11",
+    "ruff==0.11.13",
     "vulture==2.14",
 ]
 
