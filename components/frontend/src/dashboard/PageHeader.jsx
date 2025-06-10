@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 
-import { formatDate, formatTime } from "../locale"
+import { formatDate, formatTime } from "../datetime"
 import { datePropType, reportPropType } from "../sharedPropTypes"
 import { HyperLink } from "../widgets/HyperLink"
 

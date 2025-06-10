@@ -2,7 +2,7 @@ import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { bool, instanceOf, oneOfType, string } from "prop-types"
 
-import { formatDate, formatTime } from "../locale"
+import { formatDate, formatTime } from "../datetime"
 
 dayjs.extend(relativeTime)
 

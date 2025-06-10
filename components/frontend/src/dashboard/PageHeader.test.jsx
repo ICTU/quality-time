@@ -1,7 +1,7 @@
 import { render, renderHook, screen } from "@testing-library/react"
 import { vi } from "vitest"
 
-import { formatDate } from "../locale"
+import { formatDate } from "../datetime"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { mockGetAnimations } from "./MockAnimations"
 import { PageHeader } from "./PageHeader"
