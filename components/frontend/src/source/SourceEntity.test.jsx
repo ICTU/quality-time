@@ -3,7 +3,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { fireEvent, render, renderHook, screen } from "@testing-library/react"
 
-import { formatDate } from "../locale"
+import { formatDate } from "../datetime"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceEntity } from "./SourceEntity"
 

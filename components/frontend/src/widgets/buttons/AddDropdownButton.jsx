@@ -18,16 +18,7 @@ import { AddItemIcon } from "../icons"
 
 function FilterCheckbox({ label, filter, setFilter }) {
     return (
-        <FormControlLabel
-            control={
-                <Checkbox
-                    checked={filter}
-                    inputProps={{ "aria-label": "controlled" }}
-                    onChange={() => setFilter(!filter)}
-                />
-            }
-            label={label}
-        />
+        <FormControlLabel control={<Checkbox checked={filter} onChange={() => setFilter(!filter)} />} label={label} />
     )
 }
 FilterCheckbox.propTypes = {

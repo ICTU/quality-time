@@ -40,6 +40,7 @@ class MetricTest(unittest.TestCase):
         self, status: str = "", measurement_timestamp: str = "", outdated: bool = False, **kwargs
     ) -> dict[str, None | str | list | dict]:
         """Return an expected summary."""
+        latest_measurement: None | dict[str, dict | list | str | bool]
         if measurement_timestamp:
             latest_measurement = {
                 "count": {"value": 1, "start": measurement_timestamp},
@@ -48,6 +49,8 @@ class MetricTest(unittest.TestCase):
                 "start": measurement_timestamp,
                 "status": status,
             }
+            if outdated:
+                latest_measurement["outdated"] = True
             recent_measurements = [
                 {
                     "count": {"status": status, "value": 1},
@@ -70,8 +73,6 @@ class MetricTest(unittest.TestCase):
         }
         if measurement_timestamp:
             summary["issue_status"] = []
-        if outdated:
-            summary["latest_measurement"]["outdated"] = True
         return summary
 
     def test_summarize_empty_metric(self):
