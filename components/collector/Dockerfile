@@ -1,8 +1,8 @@
-FROM python:3.13.4-alpine3.21 AS compile-image
+FROM python:3.13.4-alpine3.22 AS compile-image
 
 WORKDIR /home/collector
 
-RUN apk add --no-cache gcc=14.2.0-r4 libffi-dev=3.4.7-r0 make=4.4.1-r2 && \
+RUN apk add --no-cache gcc=14.2.0-r6 libffi-dev=3.4.8-r0 make=4.4.1-r3 && \
     python -m venv venv
 ENV PATH="/home/collector/venv/bin:$PATH"
 COPY collector/requirements/requirements.txt /requirements.txt
@@ -11,7 +11,7 @@ COPY shared_code /home/shared_code/
 COPY collector/requirements/requirements-internal.txt /requirements-internal.txt
 RUN pip install --no-cache-dir --use-pep517 -r /requirements-internal.txt
 
-FROM python:3.13.4-alpine3.21
+FROM python:3.13.4-alpine3.22
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time collector"
