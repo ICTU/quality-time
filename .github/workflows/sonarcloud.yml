@@ -33,7 +33,7 @@ jobs:
         if: env.SONAR_TOKEN != null
         uses: actions/setup-node@v4.4.0
         with:
-          node-version: "22"
+          node-version: "24"
       - name: Collector
         if: env.SONAR_TOKEN != null
         working-directory: components/collector

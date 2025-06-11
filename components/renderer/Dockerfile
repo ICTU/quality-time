@@ -1,11 +1,11 @@
-FROM node:23.11.1-alpine3.20
+FROM node:24.2.0-bookworm-slim
 
-# Note the base image is alpine3.20 as work-around for this issue: https://github.com/ICTU/quality-time/issues/11131
+# Note the base image is bookworm and not alpine as work-around for this issue: https://github.com/ICTU/quality-time/issues/11131
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
 
-RUN apk add --no-cache chromium=131.0.6778.108-r0
+RUN apt-get -y update && apt-get install -y --no-install-recommends chromium=137.0.7151.68-1~deb12u1 && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/renderer
 COPY package*.json /home/renderer/
