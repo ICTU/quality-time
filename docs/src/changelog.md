@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Changed
+
+- Don't zoom trend graphs on scroll. Closes [#11442](https://github.com/ICTU/quality-time/issues/11442).
+
 ## v5.32.1 - 2025-06-12
 
 ### Fixed
