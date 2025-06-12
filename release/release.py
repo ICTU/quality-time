@@ -166,7 +166,7 @@ def main() -> None:
     check_preconditions(bump, current_version)
     if check_preconditions_only:
         return
-    cmd = ["pipx", "run", bump_my_version_spec(), "bump"]
+    cmd = ["uvx", bump_my_version_spec(), "bump"]
     if bump == "release":
         cmd.append("pre_release_label")  # Bump the pre-release label from "rc" to "final" (being optional and omitted)
     elif bump == "rc":
