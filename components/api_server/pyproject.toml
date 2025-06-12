@@ -14,15 +14,15 @@ dependencies = [
     "ldap3==2.9.1",
     "lxml==5.4.0",
     "lxml-html-clean==0.4.2",
-    "pymongo==4.12.1",
+    "pymongo==4.13.1",
     "requests==2.32.4",
 ]
 optional-dependencies.dev = [
-    "coverage==7.8.2",
+    "coverage==7.9.0",
     "pydantic==2.11.5",                # Needed for importing the data model in the tests from the shared code component
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.20250516",
-    "types-requests==2.32.0.20250602",
+    "types-requests==2.32.4.20250611",
     "unittest-xml-reporting==3.2.0",   # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
