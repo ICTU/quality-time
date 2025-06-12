@@ -83,10 +83,14 @@ export function TrendGraph({ metric, measurements, loading }) {
                 aria-label={`Trend graph for the metric ${metricName}`}
                 containerComponent={
                     <VictoryZoomVoronoiContainer
+                        allowZoom={false} // Disable zoom via scrolling
                         responsive={true}
                         zoomDimension="x"
                         zoomDomain={visibleDomain}
                         onZoomDomainChange={setVisibleDomain}
+                        events={{
+                            onWheelCapture: (event) => event.stopPropagation(), // Needed to make normal scroll work
+                        }}
                     />
                 }
                 height={chartHeight}
