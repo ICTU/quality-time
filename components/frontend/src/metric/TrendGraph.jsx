@@ -152,7 +152,7 @@ export function TrendGraph({ metric, measurements, loading }) {
                         brushDimension="x"
                         brushDomain={visibleDomain}
                         brushStyle={{ fill: primaryColor, fillOpacity: 0.2 }}
-                        defaultBrushArea="move" // Move the brush area when the user clicks outside the brush area
+                        defaultBrushArea="all" // Clear the brush area when the user clicks outside it
                         onBrushDomainChange={setVisibleDomain}
                     />
                 }
