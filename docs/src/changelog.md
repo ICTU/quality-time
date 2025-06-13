@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 ### Changed
 
 - Don't zoom trend graphs on scroll. Closes [#11442](https://github.com/ICTU/quality-time/issues/11442).
+- Refresh SonarQube language rules to be up to date with version 2025.3 of SonarQube. Closes [#11422](https://github.com/ICTU/quality-time/issues/11422).
 
 ## v5.32.1 - 2025-06-12
 
