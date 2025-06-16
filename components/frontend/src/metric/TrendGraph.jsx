@@ -1,5 +1,5 @@
 import { useTheme } from "@mui/material"
-import { useContext, useState } from "react"
+import { useContext, useMemo, useState } from "react"
 import {
     createContainer,
     Point,
@@ -29,6 +29,9 @@ function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
 export function TrendGraph({ metric, measurements, loading }) {
     const dataModel = useContext(DataModel)
     const [visibleDomain, setVisibleDomain] = useState({})
+    // Force Victory to recalculate internal coordinate transforms when the domain changes to prevent mouse
+    // coordinate misalignments:
+    const domainKey = useMemo(() => JSON.stringify(visibleDomain), [visibleDomain])
     const primaryColor = useTheme().palette.text.primary
     const secondaryColor = useTheme().palette.text.secondary
     const bgcolor = useTheme().palette.background.secondary
@@ -76,21 +79,25 @@ export function TrendGraph({ metric, measurements, loading }) {
         tickLabels: { fontSize: 8, fill: secondaryColor, fontFamily: fontFamily },
     }
     const toolTipStyle = { fill: bgcolor, fontSize: 7, fontFamily: fontFamily }
-    const VictoryZoomVoronoiContainer = createContainer("zoom", "voronoi")
+    const ZoomContainer = createContainer("selection", "zoom")
     return (
-        <div>
+        <>
             <VictoryChart
+                key={domainKey}
                 aria-label={`Trend graph for the metric ${metricName}`}
                 containerComponent={
-                    <VictoryZoomVoronoiContainer
+                    <ZoomContainer
+                        allowPan={false} // Disable panning because it interferes with selecting
                         allowZoom={false} // Disable zoom via scrolling
-                        responsive={true}
-                        zoomDimension="x"
-                        zoomDomain={visibleDomain}
-                        onZoomDomainChange={setVisibleDomain}
                         events={{
                             onWheelCapture: (event) => event.stopPropagation(), // Needed to make normal scroll work
                         }}
+                        onSelection={(_points, bounds) => setVisibleDomain(bounds)}
+                        responsive={true}
+                        selectionDimension="x"
+                        style={{ cursor: "zoom-in" }}
+                        zoomDimension="x"
+                        zoomDomain={visibleDomain}
                     />
                 }
                 height={chartHeight}
@@ -101,7 +108,10 @@ export function TrendGraph({ metric, measurements, loading }) {
                     bottom: 30,
                 }}
                 scale={{ x: "time", y: "linear" }}
-                style={{ parent: { height: "100%", background: bgcolor }, fontFamily: fontFamily }}
+                style={{
+                    background: { cursor: "zoom-in", fillOpacity: 0 },
+                    fontFamily: fontFamily,
+                }}
                 theme={VictoryTheme.material}
                 width={chartWidth}
             >
@@ -164,7 +174,10 @@ export function TrendGraph({ metric, measurements, loading }) {
                     bottom: 30,
                 }}
                 scale={{ x: "time", y: "linear" }}
-                style={{ parent: { height: "100%", background: bgcolor }, fontFamily: fontFamily }}
+                style={{
+                    background: { cursor: "zoom-out", fillOpacity: 0 },
+                    fontFamily: fontFamily,
+                }}
                 theme={VictoryTheme.material}
                 width={chartWidth}
             >
@@ -175,7 +188,7 @@ export function TrendGraph({ metric, measurements, loading }) {
                     style={{ data: { stroke: secondaryColor, strokeWidth: 1 } }}
                 />
             </VictoryChart>
-        </div>
+        </>
     )
 }
 TrendGraph.propTypes = {
