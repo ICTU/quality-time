@@ -7,7 +7,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-    "bottle==0.13.3",
+    "bottle==0.13.4",
     "packaging==25.0",
     "pydantic==2.11.5",
     "pymongo==4.13.1",
