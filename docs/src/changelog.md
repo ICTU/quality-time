@@ -16,9 +16,13 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Changed
 
+- Refresh SonarQube language rules to be up to date with version 2025.3 of SonarQube. Closes [#11422](https://github.com/ICTU/quality-time/issues/11422).
 - Clicking outside the trend graph's zoom brush now resets the zoom level, instead of moving the visible data points. Closes [#11441](https://github.com/ICTU/quality-time/issues/11441).
 - Don't zoom trend graphs on scroll. Closes [#11442](https://github.com/ICTU/quality-time/issues/11442).
-- Refresh SonarQube language rules to be up to date with version 2025.3 of SonarQube. Closes [#11422](https://github.com/ICTU/quality-time/issues/11422).
+
+### Added
+
+- Allow for zooming trend graphs by drawing a rectangle in the trend graph. Closes [#11423](https://github.com/ICTU/quality-time/issues/11423).
 
 ## v5.32.1 - 2025-06-12
 
