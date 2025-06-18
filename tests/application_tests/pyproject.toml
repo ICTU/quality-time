@@ -15,12 +15,12 @@ optional-dependencies.dev = [
     "types-requests==2.32.4.20250611",
 ]
 optional-dependencies.tools = [
-    "bandit==1.8.3",
+    "bandit==1.8.5",
     "fixit==2.1.0",
     "mypy==1.16.1",
     "pip-audit==2.9.0",
     "pyproject-fmt==2.6.0",
-    "ruff==0.11.13",
+    "ruff==0.12.0",
     "vulture==2.14",
 ]
 

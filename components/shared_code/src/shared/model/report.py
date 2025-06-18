@@ -21,7 +21,7 @@ STATUS_COLOR_MAPPING = cast(
 )
 
 
-class Report(dict):
+class Report(dict):  # noqa: PLW1641
     """Class representing a report."""
 
     def __init__(self, data_model: dict, report_data: dict) -> None:

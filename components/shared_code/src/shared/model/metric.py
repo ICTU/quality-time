@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from .measurement import Measurement
 
 
-class Metric(dict):
+class Metric(dict):  # noqa: PLW1641
     """Class representing a metric."""
 
     def __init__(

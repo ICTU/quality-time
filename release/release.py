@@ -174,7 +174,7 @@ def main() -> None:
     else:
         cmd.append(bump)
     subprocess.run(cmd, check=True)  # noqa: S603
-    subprocess.run(("git", "push", "--follow-tags"), check=True)  # noqa: S603
+    subprocess.run(("git", "push", "--follow-tags"), check=True)
 
 
 if __name__ == "__main__":

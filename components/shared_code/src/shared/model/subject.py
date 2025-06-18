@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from .report import Report
 
 
-class Subject(dict):
+class Subject(dict):  # noqa: PLW1641
     """Class representing a subject."""
 
     def __init__(self, data_model: dict, subject_data: dict, subject_uuid: SubjectId, report: "Report") -> None:

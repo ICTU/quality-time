@@ -19,9 +19,9 @@ class APIServerHealthcheckTestCase(unittest.TestCase):
         response.__enter__.return_value = response
         return response
 
-    def run_haelthcheck(self) -> None:
+    def run_healthcheck(self) -> None:
         """Run the healthcheck."""
-        import healthcheck  # noqa: F401
+        import healthcheck  # noqa: F401,PLC0415
 
     def tearDown(self) -> None:
         """Remove the healthcheck module."""
@@ -30,17 +30,17 @@ class APIServerHealthcheckTestCase(unittest.TestCase):
     def test_healthy(self, mock_urlopen, mock_exit):
         """Test that the server is healthy."""
         mock_urlopen.return_value = self.create_response()
-        self.run_haelthcheck()
+        self.run_healthcheck()
         mock_exit.assert_called_once_with(0)
 
     def test_unhealthy_json(self, mock_urlopen, mock_exit):
         """Test that the server is unhealthy."""
         mock_urlopen.return_value = self.create_response(healthy=False)
-        self.run_haelthcheck()
+        self.run_healthcheck()
         mock_exit.assert_called_once_with(1)
 
     def test_unhealthy_status(self, mock_urlopen, mock_exit):
         """Test that the server is unhealthy."""
         mock_urlopen.return_value = self.create_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
-        self.run_haelthcheck()
+        self.run_healthcheck()
         mock_exit.assert_called_once_with(1)
