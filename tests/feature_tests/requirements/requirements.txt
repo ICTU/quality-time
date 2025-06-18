@@ -286,9 +286,9 @@ requests==2.32.4 \
     # via
     #   feature-tests (pyproject.toml)
     #   requests-sse
-requests-sse==0.5.1 \
-    --hash=sha256:29165526fc138698f6fa4e88a8613ca8e1bd9b4b82f5d3220c60724cec60da96 \
-    --hash=sha256:42df8ad8b8428a44b3f27d2501b68d3f2dd6eaa8cf4cc82e9e53cc3d18eea9cd
+requests-sse==0.5.2 \
+    --hash=sha256:2bcb7cf905074b18ff9f7322716234c1188dfde805bba38300b37c6b5ae3a20a \
+    --hash=sha256:ebd9da245c2bb02bc070617e16b37a260a7386abf6cd9b2a250a6529a92c74cf
     # via feature-tests (pyproject.toml)
 setuptools==80.9.0 \
     --hash=sha256:062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922 \
