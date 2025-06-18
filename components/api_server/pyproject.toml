@@ -26,7 +26,7 @@ optional-dependencies.dev = [
     "unittest-xml-reporting==3.2.0",   # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
-    "bandit==1.8.3",
+    "bandit==1.8.5",
     "fixit==2.1.0",
     "mypy==1.16.1",
     "pip-audit==2.9.0",
