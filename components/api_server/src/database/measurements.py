@@ -56,7 +56,7 @@ def all_metric_measurements(database: Database, metric_uuid: MetricId, max_iso_t
     all_measurements_stripped = list(
         database.measurements.find(measurement_filter, sort=START_ASCENDING, projection=NO_MEASUREMENT_DETAILS),
     )
-    return all_measurements_stripped[:-1] + [latest_measurement]
+    return [*all_measurements_stripped[:-1], latest_measurement]
 
 
 def recent_measurements(

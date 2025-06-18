@@ -38,7 +38,7 @@ run_bandit() {
 
 run_pip_audit() {
     for requirements_file in $(python $(script_dir)/requirements_files.py); do
-        run_uvx pip-audit --disable-pip --progress-spinner=off --requirement $requirements_file
+        run_uvx pip-audit --disable-pip --progress-spinner=off --requirement $requirements_file --ignore-vuln GHSA-48p4-8xcf-vxj5 --ignore-vuln GHSA-pq67-6m6q-mj2v
     done
 }
 

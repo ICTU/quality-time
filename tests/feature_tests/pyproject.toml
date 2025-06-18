@@ -12,7 +12,7 @@ dependencies = [
     "gevent==25.5.1",
     "pymongo==4.13.2",
     "requests==2.32.4",
-    "requests-sse==0.5.1",
+    "requests-sse==0.5.2",
 ]
 optional-dependencies.dev = [
     "coverage==7.9.1",
@@ -20,12 +20,12 @@ optional-dependencies.dev = [
     "unittest-xml-reporting==3.2.0",   # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
-    "bandit==1.8.3",
+    "bandit==1.8.5",
     "fixit==2.1.0",
     "mypy==1.16.1",
     "pip-audit==2.9.0",
     "pyproject-fmt==2.6.0",
-    "ruff==0.11.13",
+    "ruff==0.12.0",
     "vulture==2.14",
 ]
 
