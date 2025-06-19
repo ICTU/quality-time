@@ -1,4 +1,4 @@
-FROM python:3.13.4-alpine3.22 AS compile-image
+FROM python:3.13.5-alpine3.22 AS compile-image
 
 WORKDIR /home/notifier
 
@@ -11,7 +11,7 @@ COPY shared_code /home/shared_code/
 COPY notifier/requirements/requirements-internal.txt /requirements-internal.txt
 RUN pip install --no-cache-dir --use-pep517 -r /requirements-internal.txt
 
-FROM python:3.13.4-alpine3.22
+FROM python:3.13.5-alpine3.22
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time notifier"
