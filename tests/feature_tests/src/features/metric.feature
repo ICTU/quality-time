@@ -127,15 +127,15 @@ Feature: metric
     Given an existing metric with name "A"
     And an existing metric with name "B"
     When the client changes the metric position to "first"
-    Then the subject's first metric has name "B"
-    And the subject's last metric has name "A"
+    Then the subject's first metric has name "A"
+    And the subject's last metric has name "B"
 
   Scenario: change metric index
     Given an existing metric with name "A"
     And an existing metric with name "B"
-    When the client changes the metric position_index to "1"
-    Then the subject's first metric has name "B"
-    And the subject's last metric has name "A"
+    When the client changes the metric position_index to "0"
+    Then the subject's metric with index "0" has name "B"
+    And the subject's metric with index "1" has name "A"
 
   Scenario: add comment without html
     Given an existing metric

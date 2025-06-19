@@ -168,6 +168,20 @@ def check_container_contains_item(context: Context, container: str, item: str) -
     assert_true(context.uuid[item] in get_container(context, container)[f"{item}s"])
 
 
+@then('the {container}\'s {item} at index "{index_input}" has "{name}" "{value}"')
+def check_item_index(
+    context: Context,
+    container: str,
+    item: str,
+    index_input: str,
+    name: str,
+    value: str,
+) -> None:
+    """Assert that the container's item with the specified attribute at index has the expected value."""
+    index = int(index_input)
+    items = list(get_container(context, container)[f"{item}s"].values())
+    assert_equal(value, items[index]["index"][name])
+
 @then('''the {container}'s {position} {item} has {attribute} "{value}"''')
 def check_item_order(  # noqa: PLR0913
     context: Context,
@@ -179,11 +193,12 @@ def check_item_order(  # noqa: PLR0913
 ) -> None:
     """Check that the container item at position has an attribute with the specified value."""
     index = {"first": 0, "last": -1}[position]
+    print(f"Items: {list(get_container(context, container)[f"{item}s"].values())}")
+    print(f"Items: {list(get_container(context, container)[f"{item}s"].values())[index][attribute]}")
     assert_equal(
         value,
         list(get_container(context, container)[f"{item}s"].values())[index][attribute],
     )
-
 
 @then("the {container} contains {number} {children}")
 def check_nr_children(context: Context, container: str, number: str, children: str) -> None:
