@@ -39,13 +39,7 @@ function TagEditor({ reload, report, tag }) {
             </Grid>
             {!disabled && (
                 <Grid>
-                    <DeleteButton
-                        itemType="tag"
-                        onClick={() => {
-                            console.log(tag)
-                            deleteTag(report.report_uuid, tag, reload)
-                        }}
-                    />
+                    <DeleteButton itemType="tag" onClick={() => deleteTag(report.report_uuid, tag, reload)} />
                 </Grid>
             )}
         </Grid>

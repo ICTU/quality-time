@@ -2,7 +2,7 @@ import { useEffect } from "react"
 
 function waitForElementById(id, callback) {
     const interval = setInterval(() => {
-        const element = document.getElementById(id)
+        const element = document?.getElementById(id)
         if (element !== null) {
             clearInterval(interval)
             callback(element)
