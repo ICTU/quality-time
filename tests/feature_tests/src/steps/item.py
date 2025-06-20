@@ -179,8 +179,6 @@ def check_item_index(
 ) -> None:
     """Assert that the container's item with the specified attribute at index has the expected value."""
     items = list(get_container(context, container)[f"{item}s"].values())
-    print(f"Items: {items[0]}, {items[1]}")  # Debugging output
-    print(f"Items: {items}")  # Debugging output
     actual_value = str(items[index][attribute])
     assert_equal(actual_value, value)
 
