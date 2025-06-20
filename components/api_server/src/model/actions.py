@@ -109,7 +109,7 @@ def move_metric_to_index(
 
 
 def _reorder_items_dict(
-    items_dict: MutableMapping[str, dict],
+    items_dict: ItemsDictType,
     item_to_move: Subject | Metric | Source,
     new_index: int,
 ) -> dict[str, dict]:
