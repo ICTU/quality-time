@@ -134,8 +134,8 @@ Feature: metric
     Given an existing metric with name "A"
     And an existing metric with name "B"
     When the client changes the metric position_index to "0"
-    Then the subject's metric indexed at 0 has name "B"
-    And the subject's metric indexed at 1 has name "A"
+    Then the subject's metric at index 0 has name "B"
+    And the subject's metric at index 1 has name "A"
 
   Scenario: add comment without html
     Given an existing metric
