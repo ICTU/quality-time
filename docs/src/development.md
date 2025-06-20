@@ -444,7 +444,7 @@ The `test.sh` shell script will start a server under coverage and then run the [
 It's also possible to run a subset of the feature tests by passing the feature file as argument:
 
 ```console
-tests/feature_tests/ci/test.sh tests/feature_tests/features/metric.feature
+tests/feature_tests/ci/test.sh tests/feature_tests/src/features/metric.feature
 ```
 
 ### Application tests
