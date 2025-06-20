@@ -182,6 +182,7 @@ def check_item_index(  # noqa: PLR0913
     actual_value = str(items[index][attribute])
     assert_equal(actual_value, value)
 
+
 @then('''the {container}'s {position} {item} has {attribute} "{value}"''')
 def check_item_order(  # noqa: PLR0913
     context: Context,
@@ -197,6 +198,7 @@ def check_item_order(  # noqa: PLR0913
         value,
         list(get_container(context, container)[f"{item}s"].values())[index][attribute],
     )
+
 
 @then("the {container} contains {number} {children}")
 def check_nr_children(context: Context, container: str, number: str, children: str) -> None:
