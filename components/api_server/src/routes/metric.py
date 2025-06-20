@@ -124,7 +124,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     if metric_attribute == "position":
         old_value, new_value = move_item(subject, metric, new_value)
     elif metric_attribute == "position_index":
-        old_value, new_value = move_metric_to_index(subject, metric, new_value)
+        old_value, new_value = move_metric_to_index(subject, metric, int(new_value))
     else:
         old_value = metric.get(metric_attribute) or ""
     if old_value == new_value:

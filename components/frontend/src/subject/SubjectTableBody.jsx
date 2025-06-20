@@ -72,12 +72,10 @@ export function SubjectTableBody({
 
         const [movedUUID] = movedEntry
 
-        setMetricAttribute(movedUUID, "position_index", dropTarget)
-            .then(reload)
-            .catch((error) => {
-                console.error("Failed to update metric position:", error)
-                reload()
-            })
+        setMetricAttribute(movedUUID, "position_index", dropTarget, reload).catch((error) => {
+            console.error("Failed to update metric position:", error)
+            reload()
+        })
     }
 
     useEffect(() => {

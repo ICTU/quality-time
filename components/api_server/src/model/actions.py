@@ -69,16 +69,8 @@ def move_item(
         "previous": max(0, old_index - 1),
         "next": min(nr_items - 1, old_index + 1),
     }[new_position]
-    # Dicts are guaranteed to be (insertion) ordered starting in Python 3.7, but there's no API to change the order so
-    # we construct a new dict in the right order and insert that in the report.
-    reordered_items: dict[str, dict] = {}
-    del items_dict[item_to_move.uuid]
-    for item_id, item in items_dict.items():
-        if len(reordered_items) == new_index:
-            reordered_items[item_to_move.uuid] = item_to_move
-        reordered_items[item_id] = item
-    if len(reordered_items) == new_index:
-        reordered_items[item_to_move.uuid] = item_to_move
+
+    reordered_items = _reorder_items_dict(items_dict, item_to_move, new_index)
 
     if isinstance(container, Report):
         container["subjects"] = reordered_items
@@ -100,24 +92,35 @@ def move_metric_to_index(
     items_dict = cast(ItemsDictType, container.metrics_dict)
 
     item_keys = list(items_dict.keys())
+    # Clamp new index
+    new_index = max(0, min(new_index, len(item_keys) - 1))
     old_index = item_keys.index(item_to_move.uuid)
 
-    # Clamp index
-    new_index = max(0, min(new_index, len(item_keys) - 1))
-
     if old_index == new_index:
-        return old_index, new_index  # no change
+        return old_index, new_index
 
-    # Remove the item key
-    item_keys.pop(old_index)
-
-    # Insert the item key at the new index
-    item_keys.insert(new_index, item_to_move.uuid)
-
-    # Rebuild the dict in the new order
-    reordered_items = {key: items_dict.get(key, item_to_move) for key in item_keys}
+    # Create a new reordered dict
+    reordered_items = _reorder_items_dict(items_dict, item_to_move, new_index)
 
     # Assign the new dict back to the container
     container["metrics"] = reordered_items
 
     return old_index, new_index
+
+def _reorder_items_dict(
+    items_dict: MutableMapping[str, dict],
+    item_to_move: Any,
+    new_index: int,
+) -> dict[str, dict]:
+    """Return a reordered dict with item_to_move at new_index."""
+    # Dicts are guaranteed to be (insertion) ordered starting in Python 3.7, but there's no API to change the order so
+    # we construct a new dict in the right order and insert that in the report.
+    reordered_items: dict[str, dict] = {}
+    del items_dict[item_to_move.uuid]
+    for idx, (item_id, item) in enumerate(items_dict.items()):
+        if len(reordered_items) == new_index:
+            reordered_items[item_to_move.uuid] = item_to_move
+        reordered_items[item_id] = item
+    if len(reordered_items) == new_index:
+        reordered_items[item_to_move.uuid] = item_to_move
+    return reordered_items
