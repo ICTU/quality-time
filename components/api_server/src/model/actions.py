@@ -107,9 +107,10 @@ def move_metric_to_index(
 
     return old_index, new_index
 
+
 def _reorder_items_dict(
     items_dict: MutableMapping[str, dict],
-    item_to_move: Any,
+    item_to_move: Subject | Metric | Source,
     new_index: int,
 ) -> dict[str, dict]:
     """Return a reordered dict with item_to_move at new_index."""
@@ -117,7 +118,7 @@ def _reorder_items_dict(
     # we construct a new dict in the right order and insert that in the report.
     reordered_items: dict[str, dict] = {}
     del items_dict[item_to_move.uuid]
-    for idx, (item_id, item) in enumerate(items_dict.items()):
+    for _idx, (item_id, item) in enumerate(items_dict.items()):
         if len(reordered_items) == new_index:
             reordered_items[item_to_move.uuid] = item_to_move
         reordered_items[item_id] = item
