@@ -168,11 +168,11 @@ def check_container_contains_item(context: Context, container: str, item: str) -
     assert_true(context.uuid[item] in get_container(context, container)[f"{item}s"])
 
 
-@then('the {container}\'s {item} indexed at {index:d} has {attribute} "{value}"')
+@then('the {container}\'s {item} at index {index:d} has {attribute} "{value}"')
 def check_item_index(  # noqa: PLR0913
     context: Context,
     container: str,
-    item: int,
+    item: str,
     index: int,
     attribute: str,
     value: str,
