@@ -169,10 +169,10 @@ def check_container_contains_item(context: Context, container: str, item: str) -
 
 
 @then('the {container}\'s {item} indexed at {index:d} has {attribute} "{value}"')
-def check_item_index(
+def check_item_index(  # noqa: PLR0913
     context: Context,
     container: str,
-    item: str,
+    item: int,
     index: int,
     attribute: str,
     value: str,
