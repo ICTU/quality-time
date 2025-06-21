@@ -197,7 +197,7 @@ def check_nr_children(context: Context, container: str, number: str, children: s
         assert_equal(number, str(len(container_instance[children])))
 
 
-@then('the {container} contains a {item} at index {index:d} with {attribute} "{value}"')
+@then('the {container} has a {item} at index {index:d} with {attribute} "{value}"')
 def check_item_index(  # noqa: PLR0913
         context: Context,
         container: str,
