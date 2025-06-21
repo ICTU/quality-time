@@ -110,7 +110,7 @@ Feature: metric
     Then the metric technical debt end date is empty
     When the client does not accept the technical debt
     And the client sets the debt_target_met desired response time to 10
-    And the client.accepts the technical debt
+    And the client accepts the technical debt
     Then the metric technical debt end date is not empty
 
   Scenario: change metric name
