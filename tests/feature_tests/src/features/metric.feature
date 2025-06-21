@@ -110,7 +110,7 @@ Feature: metric
     Then the metric technical debt end date is empty
     When the client does not accept the technical debt
     And the client sets the debt_target_met desired response time to 10
-    And the client accepts the technical debt
+    And the client.accepts the technical debt
     Then the metric technical debt end date is not empty
 
   Scenario: change metric name
@@ -134,8 +134,8 @@ Feature: metric
     Given an existing metric with name "A"
     And an existing metric with name "B"
     When the client changes the metric position_index to "0"
-    Then the subject contains a metric at index 0 with name "B"
-    And the subject contains a metric at index 1 with name "A"
+    Then the subject has a metric at index 0 with name "B"
+    And the subject has a metric at index 1 with name "A"
 
   Scenario: add comment without html
     Given an existing metric
