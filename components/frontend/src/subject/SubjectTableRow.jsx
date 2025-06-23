@@ -264,6 +264,7 @@ export function SubjectTableRow({
     const dragHandleRef = useRef(null)
 
     const anyRowExpanded = settings.expandedItems.value.length > 0
+    const rowsAreSorted = settings.sortColumn.value !== ""
 
     return (
         <TableRowWithDetails
@@ -373,7 +374,7 @@ export function SubjectTableRow({
                     ))}
                 </TableCell>
             )}
-            {!anyRowExpanded && (
+            {!anyRowExpanded && !rowsAreSorted && (
                 <ReadOnlyOrEditable
                     requiredPermissions={[EDIT_REPORT_PERMISSION]}
                     editableComponent={
@@ -388,7 +389,7 @@ export function SubjectTableRow({
                     }
                 />
             )}
-            {anyRowExpanded && <TableCell />}
+            {(anyRowExpanded || rowsAreSorted) && <TableCell />}
         </TableRowWithDetails>
     )
 }
