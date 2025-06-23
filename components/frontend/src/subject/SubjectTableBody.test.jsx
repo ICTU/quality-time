@@ -56,8 +56,29 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
     )
 }
 
+function simulateDragAndDrop() {
+    renderSubjectTableBody()
+
+    const row0 = screen.getByTestId("metric-row-0")
+    const row1 = screen.getByTestId("metric-row-1")
+
+    // Simulate drag start on the first row
+    const dragStartEvent = createEvent.dragStart(row0)
+    dragStartEvent.dataTransfer = { effectAllowed: "", setDragImage: vi.fn() }
+    fireEvent(row0, dragStartEvent)
+
+    // Simulate drag enter on the second row
+    fireEvent.dragEnter(row1)
+
+    // Simulate drop on the second row
+    const dropEvent = createEvent.drop(row1)
+    dropEvent.preventDefault = vi.fn()
+    fireEvent(row1, dropEvent)
+}
+
 beforeEach(() => {
     history.push("")
+    setMetricAttribute.mockClear()
 })
 
 it("shows the correct number of rows", async () => {
@@ -112,21 +133,7 @@ it("handles drag end by resetting drag state", async () => {
 })
 
 it("handles drop by reordering metrics", () => {
-    renderSubjectTableBody()
-
-    const row0 = screen.getByTestId("metric-row-0")
-    const row1 = screen.getByTestId("metric-row-1")
-
-    const dragStartEvent = createEvent.dragStart(row0)
-    dragStartEvent.dataTransfer = { effectAllowed: "", setDragImage: vi.fn() }
-    fireEvent(row0, dragStartEvent)
-
-    // Simulate drag enter to set drop index
-    fireEvent.dragEnter(row1)
-
-    const dropEvent = createEvent.drop(row1)
-    dropEvent.preventDefault = vi.fn()
-    fireEvent(row1, dropEvent)
+    simulateDragAndDrop()
 
     // Check API call
     expect(setMetricAttribute).toHaveBeenCalledWith("1", "position_index", 1, expect.any(Function))
@@ -139,4 +146,55 @@ it("handles drop by reordering metrics", () => {
 
     expect(firstRowText).toContain("M2")
     expect(secondRowText).toContain("M1")
+})
+
+it("does not reorder metrics if drop target is the same as drag source", () => {
+    renderSubjectTableBody()
+
+    const row0 = screen.getByTestId("metric-row-0")
+
+    // Simulate drag start on the first row
+    const dragStartEvent = createEvent.dragStart(row0)
+    dragStartEvent.dataTransfer = { effectAllowed: "", setDragImage: vi.fn() }
+    fireEvent(row0, dragStartEvent)
+
+    // Simulate dragging over the same row
+    fireEvent.dragEnter(row0)
+
+    // Simulate drop on the same row
+
+    const dropEvent = createEvent.drop(row0)
+    dropEvent.preventDefault = vi.fn()
+    fireEvent(row0, dropEvent)
+
+    // Verify no API call was made
+    expect(setMetricAttribute).not.toHaveBeenCalled()
+})
+
+it("Shows a console log if API call fails", async () => {
+    // Mock setMetricAttribute to reject
+    setMetricAttribute.mockRejectedValueOnce(new Error("API error"))
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+
+    simulateDragAndDrop()
+
+    // Wait for the promise to settle
+    await Promise.resolve()
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith("Failed to update metric position:", expect.any(Error))
+    consoleErrorSpy.mockRestore()
+})
+
+it("resets drag state on dragend", () => {
+    renderSubjectTableBody()
+
+    const row1 = screen.getByTestId("metric-row-1")
+    fireEvent.dragEnter(row1)
+    expect(screen.getByTestId("drop-indicator-1")).toBeInTheDocument()
+
+    // Simulate dragend on window
+    fireEvent(window, new Event("dragend"))
+
+    // Drop indicator should be gone
+    expect(screen.queryByTestId("drop-indicator-1")).not.toBeInTheDocument()
 })
