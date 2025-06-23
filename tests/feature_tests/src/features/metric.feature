@@ -137,6 +137,13 @@ Feature: metric
     Then the subject has a metric at index 0 with name "B"
     And the subject has a metric at index 1 with name "A"
 
+  Scenario: move metric to its current index (no-op)
+    Given an existing metric with name "A"
+    And an existing metric with name "B"
+    When the client changes the metric position_index to "1"
+    Then the subject has a metric at index 0 with name "A"
+    And the subject has a metric at index 1 with name "B"
+
   Scenario: add comment without html
     Given an existing metric
     When the client changes the metric comment to "Text"
