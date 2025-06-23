@@ -6,19 +6,20 @@ from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     MultipleChoiceParameter,
-    MultipleChoiceWithAdditionParameter,
     TestResult,
+    TransactionsToIgnore,
+    TransactionsToInclude,
     access_parameters,
 )
 
-TRANSACTION_METRICS = ["slow_transactions", "tests"]
 ALL_PERFORMANCETEST_RUNNER_METRICS = [
-    *TRANSACTION_METRICS,
     "performancetest_duration",
     "performancetest_stability",
     "scalability",
+    "slow_transactions",
     "software_version",
     "source_up_to_dateness",
+    "tests",
 ]
 
 PERFORMANCETEST_RUNNER = Source(
@@ -35,19 +36,8 @@ PERFORMANCETEST_RUNNER = Source(
             api_values={"high": "red", "warning": "yellow"},
             metrics=["slow_transactions"],
         ),
-        "transactions_to_ignore": MultipleChoiceWithAdditionParameter(
-            name="Transactions to ignore (regular expressions or transaction names)",
-            short_name="transactions to ignore",
-            help="Transactions to ignore can be specified by transaction name or by regular expression.",
-            metrics=TRANSACTION_METRICS,
-        ),
-        "transactions_to_include": MultipleChoiceWithAdditionParameter(
-            name="Transactions to include (regular expressions or transaction names)",
-            short_name="transactions to include",
-            help="Transactions to include can be specified by transaction name or by regular expression.",
-            placeholder="all",
-            metrics=TRANSACTION_METRICS,
-        ),
+        "transactions_to_ignore": TransactionsToIgnore(),
+        "transactions_to_include": TransactionsToInclude(),
         **access_parameters(
             ALL_PERFORMANCETEST_RUNNER_METRICS,
             source_type="Performancetest-runner report",

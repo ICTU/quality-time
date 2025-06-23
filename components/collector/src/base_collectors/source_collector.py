@@ -408,8 +408,8 @@ class TransactionEntity(Entity):
         name, response_time = self["name"], float(self[response_time_to_evaluate])
         for transaction_specific_target_response_time in transaction_specific_target_response_times:
             re_or_name, target = transaction_specific_target_response_time.rsplit(":", maxsplit=1)
-            if match_string_or_regular_expression(name, [re_or_name]) and response_time <= float(target):
-                return False
+            if match_string_or_regular_expression(name, [re_or_name]):
+                return response_time > float(target)
         return bool(response_time > target_response_time)
 
 
@@ -421,7 +421,7 @@ class SlowTransactionsCollector(SourceCollector):
         super().__init__(session, metric, source)
         self.__transactions_to_include = cast(list[str], self._parameter("transactions_to_include"))
         self.__transactions_to_ignore = cast(list[str], self._parameter("transactions_to_ignore"))
-        self.__response_time_to_evaluate = cast(str, self._parameter("response_time_to_evaluate"))
+        self._response_time_to_evaluate = cast(str, self._parameter("response_time_to_evaluate"))
         self.__target_response_time = float(cast(int, self._parameter("target_response_time")))
         self.__transaction_specific_target_response_times = cast(
             list[str],
@@ -434,7 +434,7 @@ class SlowTransactionsCollector(SourceCollector):
             self.__transactions_to_include,
             self.__transactions_to_ignore,
         ) and entity.is_slow(
-            self.__response_time_to_evaluate,
+            self._response_time_to_evaluate,
             self.__target_response_time,
             self.__transaction_specific_target_response_times,
         )

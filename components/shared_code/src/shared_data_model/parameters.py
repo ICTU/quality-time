@@ -227,6 +227,65 @@ class ResultType(MultipleChoiceParameter):
     metrics: list[str] = ["job_runs_within_time_period"]
 
 
+class TransactionsToIgnore(MultipleChoiceWithAdditionParameter):
+    """Transactions to ignore parameter."""
+
+    name: str = "Transactions to ignore (regular expressions or transaction names)"
+    short_name: str = "transactions to ignore"
+    help: str = "Transactions to ignore can be specified by transaction name or by regular expression."
+    metrics: list[str] = ["slow_transactions", "tests"]
+
+
+class TransactionsToInclude(MultipleChoiceWithAdditionParameter):
+    """Transactions to include parameter."""
+
+    name: str = "Transactions to include (regular expressions or transaction names)"
+    short_name: str = "transactions to include"
+    help: str = "Transactions to include can be specified by transaction name or by regular expression."
+    placeholder: str = "all transactions"
+    metrics: list[str] = ["slow_transactions", "tests"]
+
+
+PERCENTILE_50, PERCENTILE_75, PERCENTILE_90, PERCENTILE_95, PERCENTILE_98, PERCENTILE_99 = (
+    f"{percentile}th percentile" for percentile in (50, 75, 90, 95, 98, 99)
+)
+
+
+class ResponseTimeToEvaluate(SingleChoiceParameter):
+    """Response time to evaluate parameter."""
+
+    name: str = "Response time type to evaluate against the target response time"
+    short_name: str = "response time types to evaluate"
+    help: str = "Which response time type to compare with the target response time to determine slow transactions."
+    metrics: list[str] = ["slow_transactions"]
+
+
+class TargetResponseTime(IntegerParameter):
+    """Target response time parameter."""
+
+    name: str = "Target response time"
+    short_name: str = "target response time"
+    help: str = "The response times of the transactions should be less than or equal to the target response time."
+    default_value: str = "1000"
+    unit: str = "milliseconds"
+    metrics: list[str] = ["slow_transactions"]
+
+
+class TransactionSpecificTargetResponseTimes(MultipleChoiceWithAdditionParameter):
+    """Transaction-specific target response times parameter."""
+
+    name: str = (
+        "Transaction-specific target response times (regular expressions or transaction names:target response time)"
+    )
+    short_name: str = "transactions-specific target response times"
+    help: str = (
+        "Transactions-specific target responses times (in milliseconds) can be specified by transaction name or by "
+        "regular expression, separated from the target response time by a colon, e.g.: '/api/v?/search/.*:1500'."
+    )
+    placeholder: str = "none"
+    metrics: list[str] = ["slow_transactions"]
+
+
 def access_parameters(
     metrics: list[str],
     include: dict[str, bool] | None = None,

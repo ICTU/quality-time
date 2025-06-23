@@ -28,18 +28,21 @@ class GrafanaK6SlowTransactionsTest(SourceCollectorTestCase):
             },
         },
     }
-    EXPECTED_ENTITIES: ClassVar = [
-        {
-            "key": "http_req_duration",
-            "name": "http_req_duration",
+
+    def expected_entity(
+        self, name: str = "http_req_duration", thresholds: str = "Expected p(98)<200 but got 241"
+    ) -> dict[str, str]:
+        """Return an expected entity."""
+        return {
+            "key": name,
+            "name": name,
             "count": "950",
             "average_response_time": "29.550348787368417",
             "median_response_time": "8.16256",
             "max_response_time": "483.387151",
             "min_response_time": "1.716026",
-            "thresholds": "Expected p(98)<200 but got 241",
+            "thresholds": thresholds,
         }
-    ]
 
     async def test_empty_json(self):
         """Test that the number of slow transactions is 0 if the JSON is empty."""
@@ -61,7 +64,7 @@ class GrafanaK6SlowTransactionsTest(SourceCollectorTestCase):
     async def test_one_metric_that_is_not_ok(self):
         """Test that the number of slow transactions is 1 if the JSON has one metric that is not ok."""
         response = await self.collect(get_request_json_return_value=self.GRAFANA_K6_JSON)
-        self.assert_measurement(response, value="1", entities=self.EXPECTED_ENTITIES)
+        self.assert_measurement(response, value="1", entities=[self.expected_entity()])
 
     async def test_two_metrics_one_ok_one_not_ok(self):
         """Test that the number of slow transactions is 1 if the JSON has two metrics, one of which is not ok."""
@@ -69,4 +72,52 @@ class GrafanaK6SlowTransactionsTest(SourceCollectorTestCase):
         grafana_k6_json["metrics"]["http_req_duration2"] = deepcopy(grafana_k6_json["metrics"]["http_req_duration"])
         grafana_k6_json["metrics"]["http_req_duration2"]["thresholds"] = {"p(98)<1000": {"ok": True}}
         response = await self.collect(get_request_json_return_value=grafana_k6_json)
-        self.assert_measurement(response, value="1", entities=self.EXPECTED_ENTITIES)
+        self.assert_measurement(response, value="1", entities=[self.expected_entity()])
+
+    async def test_ignore_transaction(self):
+        """Test that a transaction can be ignored."""
+        self.set_source_parameter("transactions_to_ignore", ["http_req_duration"])
+        response = await self.collect(get_request_json_return_value=self.GRAFANA_K6_JSON)
+        self.assert_measurement(response, value="0")
+
+    async def test_include_transaction(self):
+        """Test that a transaction can be included."""
+        grafana_k6_json = deepcopy(self.GRAFANA_K6_JSON)
+        grafana_k6_json["metrics"]["https_req_duration"] = deepcopy(grafana_k6_json["metrics"]["http_req_duration"])
+        self.set_source_parameter("transactions_to_include", ["http_req.*"])
+        response = await self.collect(get_request_json_return_value=grafana_k6_json)
+        self.assert_measurement(response, value="1", entities=[self.expected_entity()])
+
+    async def test_override_threshold(self):
+        """Test that the threshold can be overridden by specifying a different response time to evaluate."""
+        self.set_source_parameter("response_time_to_evaluate", "average")
+        self.set_source_parameter("target_response_time", "10")
+        response = await self.collect(get_request_json_return_value=self.GRAFANA_K6_JSON)
+        self.assert_measurement(response, value="1", entities=[self.expected_entity()])
+        self.set_source_parameter("target_response_time", "100")
+        response = await self.collect(get_request_json_return_value=self.GRAFANA_K6_JSON)
+        self.assert_measurement(response, value="0")
+
+    async def test_override_threshold_with_transaction_specific_response_time(self):
+        """Test that the threshold can be overridden by specifying a transaction-specific response time to evaluate."""
+        self.set_source_parameter("response_time_to_evaluate", "median")
+        self.set_source_parameter("transaction_specific_target_response_times", ["http.*:5"])
+        response = await self.collect(get_request_json_return_value=self.GRAFANA_K6_JSON)
+        self.assert_measurement(response, value="1", entities=[self.expected_entity()])
+        self.set_source_parameter("transaction_specific_target_response_times", ["http.*:10"])
+        response = await self.collect(get_request_json_return_value=self.GRAFANA_K6_JSON)
+        self.assert_measurement(response, value="0")
+
+    async def test_that_metrics_that_do_not_meet_the_threshhold_are_included_if_the_threshold_is_overridden(self):
+        """Test that the number of slow transactions is 1 if the JSON has two metrics, one of which is not ok."""
+        self.set_source_parameter("response_time_to_evaluate", "maximum")
+        self.set_source_parameter("target_response_time", "400")
+        grafana_k6_json = deepcopy(self.GRAFANA_K6_JSON)
+        grafana_k6_json["metrics"]["http_req_duration2"] = deepcopy(grafana_k6_json["metrics"]["http_req_duration"])
+        grafana_k6_json["metrics"]["http_req_duration2"]["thresholds"] = {"p(98)<1000": {"ok": True}}
+        response = await self.collect(get_request_json_return_value=grafana_k6_json)
+        expected_entities = [
+            self.expected_entity(),
+            self.expected_entity("http_req_duration2", "Expected p(98)<1000 but got 241"),
+        ]
+        self.assert_measurement(response, value="2", entities=expected_entities)
