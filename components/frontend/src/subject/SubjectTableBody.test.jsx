@@ -35,17 +35,19 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
             <DataModel.Provider value={dataModel}>
                 <table>
                     <SubjectTableBody
+                        columnsToHide={[]}
                         dates={dates}
                         handleSort={vi.fn()}
-                        reportDate={new Date("2020-01-15T00:00:00+00:00")}
-                        reload={vi.fn()}
-                        reversedMeasurements={[]}
-                        report={report}
+                        measurements={[]}
                         metricEntries={Object.entries({
                             1: report.subjects.subject_uuid.metrics.metric_uuid,
                             2: report.subjects.subject_uuid.metrics.metric_uuid2,
                         })}
+                        reload={vi.fn()}
+                        report={report}
+                        reportDate={new Date("2020-01-15T00:00:00+00:00")}
                         reports={[]}
+                        reversedMeasurements={[]}
                         settings={settings}
                         subject_uuid="subject_uuid"
                         tags={[]}

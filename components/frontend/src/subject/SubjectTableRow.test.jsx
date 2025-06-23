@@ -151,3 +151,34 @@ it("shows no drag handle when row is expanded", () => {
     renderSubjectTableRow({ expanded: true })
     expect(screen.queryByLabelText("Drag to reorder")).not.toBeInTheDocument()
 })
+
+it("shows no drag handle when rows are sorted", () => {
+    // Simulate a sorted state by passing a non-empty sortColumn
+    const settings = createTestableSettings()
+    render(
+        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+            <DataModel.Provider value={dataModel}>
+                <Table>
+                    <TableBody>
+                        <SubjectTableRow
+                            columnsToHide={[]}
+                            dates={[new Date("2024-01-03")]}
+                            measurements={[]}
+                            metric={report.subjects.subject_uuid.metrics.metric_uuid}
+                            metricUuid="metric_uuid"
+                            report={report}
+                            reversedMeasurements={[]}
+                            settings={{
+                                ...settings,
+                                // Ensure the settings object has a .sortColumn property with a .value
+                                sortColumn: { value: "metric" },
+                            }}
+                            subjectUuid="subject_uuid"
+                        />
+                    </TableBody>
+                </Table>
+            </DataModel.Provider>
+        </Permissions.Provider>,
+    )
+    expect(screen.queryByLabelText("Drag to reorder")).not.toBeInTheDocument()
+})

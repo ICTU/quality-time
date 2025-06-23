@@ -8,7 +8,6 @@ from shared.model.source import Source
 from shared.model.subject import Subject
 from shared.utils.functions import first
 from shared.utils.type import MetricId, SourceId, SubjectId
-from shared.model.subject import Subject
 from unittest.mock import Mock
 
 from model.actions import copy_metric, copy_report, copy_source, copy_subject, move_metric_to_index
