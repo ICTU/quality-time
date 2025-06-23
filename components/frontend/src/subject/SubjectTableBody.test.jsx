@@ -185,7 +185,7 @@ it("handles drop by reordering metrics", () => {
     fireEvent(row1, dropEvent)
 
     // Check API call
-    expect(setMetricAttribute).toHaveBeenCalledWith("1", "position_index", 1)
+    expect(setMetricAttribute).toHaveBeenCalledWith("1", "position_index", 1, expect.any(Function))
 
     // Check reorder by verifying row contents
     const rows = screen.getAllByTestId(/metric-row-/)
