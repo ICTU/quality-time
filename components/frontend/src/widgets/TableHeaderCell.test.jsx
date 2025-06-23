@@ -36,12 +36,12 @@ it("shows the help of the sortable header", async () => {
     })
 })
 
-function renderUnsortableTableHeaderCell(help) {
+function renderUnsortableTableHeaderCell(help, icon) {
     render(
         <Table>
             <TableHead>
                 <TableRow>
-                    <UnsortableTableHeaderCell label="Header" help={help} />
+                    <UnsortableTableHeaderCell label="Header" help={help} icon={icon} />
                 </TableRow>
             </TableHead>
         </Table>,
@@ -59,4 +59,10 @@ it("shows the help of the unsortable header", async () => {
     await waitFor(() => {
         expect(screen.queryAllByText(/Help/).length).toBe(1)
     })
+})
+
+it("shows the icon of the unsortable header", () => {
+    const icon = <span>Icon</span>
+    renderUnsortableTableHeaderCell(null, icon)
+    expect(screen.queryAllByText(/Icon/).length).toBe(1)
 })
