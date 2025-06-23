@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
@@ -179,7 +179,12 @@ it("changes the value of a parameter of a source without parameter layout", asyn
         },
         ["source_uuid:0"],
     )
-    await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
+    // Find the element that contains the input with the correct value
+    const urlInput = screen.getByDisplayValue("https://source.org")
+    // Drill up to the closest parent element that represents the details panel
+    // Here, we assume the label is unique within this context
+    const urlInputLabel = within(urlInput.closest("div")).getByLabelText(/URL/)
+    await userEvent.type(urlInputLabel, "/new{Enter}")
     expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/url", {
         url: "https://source.org/new",
         edit_scope: "report",
