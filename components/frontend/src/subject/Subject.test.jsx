@@ -83,7 +83,7 @@ it("hides an empty subject if metrics with tags are hidden", async () => {
 })
 
 function expectOrder(metricNames) {
-    expect(screen.getAllByText(/M\d/).map((element) => element.innerHTML)).toStrictEqual(metricNames)
+    expect(screen.getAllByText(/M\d/).map((element) => element.textContent.trim())).toStrictEqual(metricNames)
 }
 
 for (const attribute of [
