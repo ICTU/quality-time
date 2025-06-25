@@ -4,7 +4,3 @@ table.MuiTable-stickyHeader.subjectTable > thead {
     /* Leave room for the menu bar and the subject title */
     top: 140px;
 }
-
-tbody td.MuiTableCell-root {
-    padding: 4px;
-}

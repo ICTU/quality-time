@@ -178,16 +178,15 @@ it("renders a message if there are no measurements", async () => {
 
 it("shows the hide ignored entities button", async () => {
     const { container } = renderSourceEntities()
-    const hideEntitiesButton = screen.getAllByRole("button")[0]
-    expect(hideEntitiesButton).toHaveAttribute("aria-label", "Hide ignored entities")
+    expect(screen.getAllByText("Hide ignored entities").length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the show ignored entities button", async () => {
     const { container } = renderSourceEntities()
-    const hideEntitiesButton = screen.getAllByRole("button")[0]
+    const hideEntitiesButton = screen.getByText("Hide ignored entities")
     await userEvent.click(hideEntitiesButton)
-    expect(hideEntitiesButton).toHaveAttribute("aria-label", "Show ignored entities")
+    expect(hideEntitiesButton).toHaveTextContent("Show ignored entities")
     await expectNoAccessibilityViolations(container)
 })
 

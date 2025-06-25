@@ -25,13 +25,14 @@ export function HeaderWithDetails({ children, header, itemUuid, level, settings,
             <AccordionSummary
                 aria-controls={showDetails ? `accordion-content-${itemUuid}` : null}
                 aria-label="Expand/collapse"
-                expandIcon={<CaretRight size={{ h1: "48px", h2: "32px", h3: "24px" }[level]} />}
+                expandIcon={<CaretRight size={{ h1: "4rem", h2: "3rem", h3: "2rem" }[level]} />}
                 id={`accordion-header-${itemUuid}`}
                 sx={{
                     border: "0",
                     flexDirection: "row-reverse",
                     height: "80px",
                     padding: "0px",
+                    paddingLeft: "0.5rem",
                     [`& .${accordionSummaryClasses.expandIconWrapper}.${accordionSummaryClasses.expanded}`]: {
                         transform: "rotate(90deg)",
                     },

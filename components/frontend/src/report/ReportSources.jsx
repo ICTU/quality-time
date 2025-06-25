@@ -4,7 +4,6 @@ import { useContext } from "react"
 
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
-import { zIndexTableHeader } from "../defaults"
 import { reportPropType, settingsPropType, sourcePropType } from "../sharedPropTypes"
 import { SourceParameter } from "../source/SourceParameter"
 import { reloadAfterMassEditSource } from "../source/Sources"
@@ -58,18 +57,11 @@ export function ReportSources({ reload, report, settings }) {
         return <InfoMessage title="No sources">No sources have been configured yet.</InfoMessage>
     }
     return (
-        <TableContainer sx={{ overflowX: "visible" }}>
-            <Table
-                stickyHeader
-                sx={{
-                    "& .MuiTableCell-sizeMedium": {
-                        padding: "8px 8px",
-                    },
-                }}
-            >
-                <TableHead sx={{ bgcolor: "background.default", zIndex: zIndexTableHeader }}>
+        <TableContainer>
+            <Table size="small">
+                <TableHead>
                     <TableRow>
-                        <UnsortableTableHeaderCell colSpan="2" label="Source" />
+                        <UnsortableTableHeaderCell label="Source" />
                         <UnsortableTableHeaderCell label="Source type" />
                         <UnsortableTableHeaderCell label="URL" />
                         <UnsortableTableHeaderCell textAlign="right" label="Number of metrics using the source" />

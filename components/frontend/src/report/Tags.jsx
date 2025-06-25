@@ -78,10 +78,10 @@ export function Tags({ reload, report }) {
         return <InfoMessage title="No tags">None of the metrics in this report have tags.</InfoMessage>
     return (
         <TableContainer>
-            <Table>
+            <Table size="small">
                 <TableHead>
                     <TableRow>
-                        <TableCell colSpan={2}>Tag</TableCell>
+                        <TableCell>Tag</TableCell>
                         <TableCell align="right">Number of metrics having the tag</TableCell>
                     </TableRow>
                 </TableHead>

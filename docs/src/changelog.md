@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Fixed
+
+- Don't show expand/collapse buttons in PDF-exports. Fixes [#11555](https://github.com/ICTU/quality-time/issues/11555).
+
 ### Added
 
 - When measuring 'slow transactions' using Grafana k6 as source, allow for filtering transactions and configuring the response times to evaluate. Closes [#11462](https://github.com/ICTU/quality-time/issues/11462).

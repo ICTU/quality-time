@@ -39,7 +39,7 @@ export function SubjectTable({
                 stickyHeader
                 sx={{
                     "& .MuiTableCell-sizeMedium": {
-                        padding: "8px 8px",
+                        padding: "8px",
                     },
                 }}
             >

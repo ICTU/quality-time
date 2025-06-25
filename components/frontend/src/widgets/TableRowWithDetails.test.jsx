@@ -1,4 +1,4 @@
-import { Table, TableBody } from "@mui/material"
+import { Table, TableBody, TableCell } from "@mui/material"
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
@@ -9,7 +9,9 @@ function renderTableRowWithDetails(expanded, onExpand) {
     render(
         <Table>
             <TableBody>
-                <TableRowWithDetails expanded={expanded} onExpand={onExpand} details={"Details"} />
+                <TableRowWithDetails expanded={expanded} onExpand={onExpand} details={"Details"}>
+                    <TableCell></TableCell>
+                </TableRowWithDetails>
             </TableBody>
         </Table>,
     )

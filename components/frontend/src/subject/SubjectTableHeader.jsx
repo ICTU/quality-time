@@ -300,7 +300,7 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
     return (
         <TableHead sx={{ bgcolor: "background.default", zIndex: zIndexTableHeader }}>
             <TableRow>
-                <SortableTableHeaderCell colSpan="2" column="name" label="Metric" help={metricHelp} {...sortProps} />
+                <SortableTableHeaderCell column="name" label="Metric" help={metricHelp} {...sortProps} />
                 {nrDates > 1 && (
                     <MeasurementHeaderCells
                         columnDates={columnDates}

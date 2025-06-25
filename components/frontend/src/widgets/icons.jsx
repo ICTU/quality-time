@@ -14,15 +14,22 @@ export function AddItemIcon() {
     return <AddIcon fontSize="inherit" sx={{ verticalAlign: "middle" }} />
 }
 
+const caretSx = {
+    verticalAlign: "middle",
+    "@media print": {
+        display: "none !important",
+    },
+}
+
 export function CaretDown({ size }) {
-    return <ArrowDropDownIcon title="expand" sx={{ verticalAlign: "middle", fontSize: size }} />
+    return <ArrowDropDownIcon title="expand" sx={{ ...caretSx, fontSize: size }} />
 }
 CaretDown.propTypes = {
     size: string.isRequired,
 }
 
 export function CaretRight({ size }) {
-    return <ArrowRightIcon title="expand" sx={{ verticalAlign: "middle", fontSize: size }} />
+    return <ArrowRightIcon title="expand" sx={{ ...caretSx, fontSize: size }} />
 }
 CaretRight.propTypes = {
     size: string.isRequired,
