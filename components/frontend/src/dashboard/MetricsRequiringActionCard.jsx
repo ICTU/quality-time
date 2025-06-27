@@ -1,4 +1,3 @@
-import { Chip, TableCell, TableRow } from "@mui/material"
 import { bool, func } from "prop-types"
 
 import { STATUS_NAME, STATUSES_REQUIRING_ACTION } from "../metric/status"
@@ -27,36 +26,15 @@ metricStatuses.propTypes = {
     reports: reportsPropType,
 }
 
-function tableRows(reports) {
-    const statuses = metricStatuses(reports)
-    const rows = Object.keys(statuses).map((status) => (
-        <TableRow key={status}>
-            <TableCell sx={{ fontSize: "12px", paddingLeft: "0px" }}>{STATUS_NAME[status]}</TableCell>
-            <TableCell sx={{ paddingRight: "0px", textAlign: "right" }}>
-                <Chip color={status} label={statuses[status]} size="small" sx={{ borderRadius: 1 }} />
-            </TableCell>
-        </TableRow>
-    ))
-    rows.push(
-        <TableRow key="total">
-            <TableCell sx={{ fontSize: "12px", paddingLeft: "0px" }}>
-                <b>Total</b>
-            </TableCell>
-            <TableCell sx={{ paddingRight: "0px", textAlign: "right" }}>
-                <Chip color="total" label={sum(Object.values(statuses))} size="small" sx={{ borderRadius: 1 }} />
-            </TableCell>
-        </TableRow>,
-    )
-    return rows
-}
-tableRows.propTypes = {
-    reports: reportsPropType,
-}
-
 export function MetricsRequiringActionCard({ onClick, reports, selected }) {
+    const statuses = metricStatuses(reports)
+    const total = sum(Object.values(statuses))
     return (
         <FilterCardWithTable onClick={onClick} selected={selected} title="Action required">
-            {tableRows(reports)}
+            {Object.entries(statuses).map(([status, count]) => (
+                <FilterCardWithTable.Row key={status} color={status} label={STATUS_NAME[status]} value={count} />
+            ))}
+            <FilterCardWithTable.Row key="total" color="total" label={<b>Total</b>} value={total} />
         </FilterCardWithTable>
     )
 }
