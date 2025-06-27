@@ -38,7 +38,7 @@ class UtilTests(unittest.TestCase):
 
     def test_sanitize_html(self):
         """Test that URLs are converted to anchors."""
-        self.assertEqual(f'<p><a href="{self.URL}" target="_blank">{self.URL}</a></p>', sanitize_html(self.URL))
+        self.assertEqual(f'<a href="{self.URL}" target="_blank">{self.URL}</a>', sanitize_html(self.URL))
 
     def test_sanitize_html_does_mot_convert_text_to_html(self):
         """Test that text without HTML does not get converted to HTML."""
