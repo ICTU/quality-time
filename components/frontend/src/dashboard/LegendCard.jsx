@@ -18,7 +18,7 @@ export function LegendCard() {
 
     return (
         <DashboardCard title="Legend" titleFirst={true}>
-            <List sx={{ padding: "0px", paddingLeft: "0px" }}>{listItems}</List>
+            <List sx={{ padding: "0px", paddingLeft: "0px", whiteSpace: "nowrap" }}>{listItems}</List>
         </DashboardCard>
     )
 }

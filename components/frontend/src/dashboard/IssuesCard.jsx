@@ -1,4 +1,3 @@
-import { Chip, TableCell, TableRow } from "@mui/material"
 import { bool, func } from "prop-types"
 
 import { reportPropType } from "../sharedPropTypes"
@@ -29,25 +28,13 @@ issueStatuses.propTypes = {
     report: reportPropType,
 }
 
-function tableRows(report) {
-    const statuses = issueStatuses(report)
-    return Object.keys(statuses).map((status) => (
-        <TableRow key={status}>
-            <TableCell sx={{ fontSize: "12px", paddingLeft: "0px" }}>{capitalize(status)}</TableCell>
-            <TableCell sx={{ paddingRight: "0px", textAlign: "right" }}>
-                <Chip color={status} label={`${statuses[status]}`} size="small" sx={{ borderRadius: 1 }} />
-            </TableCell>
-        </TableRow>
-    ))
-}
-tableRows.propTypes = {
-    report: reportPropType,
-}
-
 export function IssuesCard({ onClick, report, selected }) {
+    const statuses = issueStatuses(report)
     return (
         <FilterCardWithTable onClick={onClick} selected={selected} title="Issues">
-            {tableRows(report)}
+            {Object.entries(statuses).map(([status, count]) => (
+                <FilterCardWithTable.Row key={status} color={status} label={capitalize(status)} value={count} />
+            ))}
         </FilterCardWithTable>
     )
 }
