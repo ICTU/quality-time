@@ -204,12 +204,13 @@ export function MetricDetails({
     Object.entries(metric.sources).forEach(([sourceUuid, source]) => {
         const sourceName = getSourceName(source, dataModel)
         tabs.push({
+            key: sourceUuid,
             image: <Logo logo={source.type} alt={sourceName} width="21px" height="21px" marginBottom="6px" />,
             label: sourceName,
         })
         panes.push(
             <SourceEntities
-                key={metricUuid}
+                key={sourceUuid}
                 loading={measurementsStatus}
                 measurements={measurements}
                 metric={metric}

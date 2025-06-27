@@ -8,18 +8,23 @@ function waitForElementById(id, callback) {
             callback(element)
         }
     }, 100) // Check every 100ms
+    return interval
 }
 
 export function useHashFragment(trigger = true) {
     // Hook to automatically scroll to the element indicated by the URL hash after rendering
     useEffect(() => {
+        if (!trigger) return // Only scroll if trigger is true, e.g. after loading data has finished
+        let interval
         const scrollToHashElement = () => {
             const { hash } = window.location
-            waitForElementById(hash?.replace("#", ""), (element) => element.scrollIntoView(true))
+            interval = waitForElementById(hash?.replace("#", ""), (element) => element.scrollIntoView(true))
         }
-        if (!trigger) return // Only scroll if trigger is true, e.g. after loading data has finished
         scrollToHashElement()
         window.addEventListener("hashchange", scrollToHashElement)
-        return window.removeEventListener("hashchange", scrollToHashElement)
+        return () => {
+            window.removeEventListener("hashchange", scrollToHashElement)
+            clearInterval(interval)
+        }
     }, [trigger])
 }

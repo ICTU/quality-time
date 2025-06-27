@@ -59,7 +59,7 @@ Feature: report
   Scenario: add comment with URL
     Given an existing report
     When the client changes the report comment to "https://example-url.org"
-    Then the report comment is "<p><a href="https://example-url.org" target="_blank">https://example-url.org</a></p>"
+    Then the report comment is "<a href="https://example-url.org" target="_blank">https://example-url.org</a>"
 
   Scenario: add comment with link that has a target
     Given an existing report

@@ -27,7 +27,7 @@ export function Tabs({ children, settings, tabs, uuid }) {
                         <Tab
                             id={`tab-${tabsId}-${index}`}
                             icon={tab.icon || tab.image}
-                            key={tab.label}
+                            key={tab.key ?? tab.label}
                             label={tabLabel}
                         />
                     )
