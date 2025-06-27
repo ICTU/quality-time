@@ -264,12 +264,12 @@ class PostMetricAttributeTest(PostMetricAttributeTestCase):
         self.assertEqual({"ok": True}, post_metric_attribute(METRIC_ID, "comment", self.database))
         updated_report = self.updated_report()
         self.assertEqual(
-            '<p>Comment with url <a href="https://google.com" target="_blank">https://google.com</a></p>',
+            'Comment with url <a href="https://google.com" target="_blank">https://google.com</a>',
             updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["comment"],
         )
         self.assert_delta(
-            """comment of metric 'name' of subject 'Subject' in report 'Report' from '' to '<p>Comment with url """
-            """<a href="https://google.com" target="_blank">https://google.com</a></p>'""",
+            """comment of metric 'name' of subject 'Subject' in report 'Report' from '' to 'Comment with url """
+            """<a href="https://google.com" target="_blank">https://google.com</a>'""",
             report=updated_report,
         )
 

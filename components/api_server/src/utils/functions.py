@@ -78,12 +78,10 @@ def sanitize_html(html_text: str) -> str:
         keys = anchor.keys()
         if "href" in keys and "target" not in keys:
             anchor.set("target", "_blank")
-    sanitized_html = tostring(html_tree, encoding=str)
-    # The clean_html function creates HTML elements. That means if the user enters a simple text string it gets
-    # enclosed in a <p> tag. Remove it to not confuse users that haven't entered any HTML:
-    if sanitized_html.count("<") == 2:  # noqa: PLR2004
-        sanitized_html = re.sub("</?p>", "", sanitized_html)
-    return sanitized_html
+    sanitized_html = str(tostring(html_tree, encoding=str))
+    # The clean_html function creates HTML elements. That means mixing simple text strings with HTML get
+    # enclosed in a <span> tag. Remove any outer span tags to keep the string as simple as possible:
+    return sanitized_html.removeprefix("<span>").removesuffix("</span>")
 
 
 def symmetric_encrypt(message: bytes) -> tuple[bytes, bytes]:
