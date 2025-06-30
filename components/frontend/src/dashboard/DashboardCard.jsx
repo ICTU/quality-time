@@ -21,7 +21,6 @@ export function DashboardCard({ children, onClick, selected, title, titleFirst }
     // The components below get a height of 100% to make sure they fill the available space of their container
     return (
         <Card
-            elevation={2}
             onClick={onClick}
             sx={{
                 border: 1,
@@ -29,7 +28,6 @@ export function DashboardCard({ children, onClick, selected, title, titleFirst }
                 height: "100%",
                 "&:hover": { boxShadow: "4", borderColor: "text.primary" },
             }}
-            variant="elevation"
         >
             <CardActionArea disableRipple={!onClick} sx={{ height: "100%" }}>
                 <CardContent sx={{ paddingBottom: titleFirst ? "0px" : "10px", paddingTop: "0px", height: "100%" }}>

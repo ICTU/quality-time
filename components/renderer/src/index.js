@@ -35,7 +35,7 @@ app.get("/api/render", async (req, res) => {
                 printBackground: true,
                 format: "A4",
                 timeout: 60000,
-                scale: 0.7,
+                scale: 0.5, // With scale 0.5 the dashboard fits exactly. Larger scale makes the dashboard too wide.
                 margin: {
                     top: "25px",
                     bottom: "25px",
