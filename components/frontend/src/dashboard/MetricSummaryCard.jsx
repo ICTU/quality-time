@@ -1,5 +1,3 @@
-import "./MetricSummaryCard.css"
-
 import { useTheme } from "@mui/material"
 import { bool, func, number, object, oneOfType, string } from "prop-types"
 import { VictoryContainer, VictoryLabel, VictoryTooltip } from "victory"

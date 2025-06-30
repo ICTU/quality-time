@@ -16,6 +16,8 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Fixed
 
+- The shadow of tables and cards would be too wide in the PDF-exports. Fixes [#11569](https://github.com/ICTU/quality-time/issues/11569).
+- The dashboard and subject tables would be too wide in the PDF-exports. Lower the PDF scale to make them narrower. Fixes [#11570](https://github.com/ICTU/quality-time/issues/11570).
 - When the "Action required" and "Issues" cards become narrower, truncate the labels so that the counts column remains visible. Fixes [#11571](https://github.com/ICTU/quality-time/issues/11571).
 
 ## v5.34.0 - 2025-06-26
