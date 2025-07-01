@@ -16,8 +16,8 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
         self.entities = [
             {
                 "key": "m2",
-                "report": "R1",
-                "subject": "S1",
+                "report": "Report 1",
+                "subject": "Subject 1",
                 "metric": "Violations",
                 "report_url": f"{self.url}/r1",
                 "subject_url": f"{self.url}/r1#s1",

@@ -37,15 +37,21 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
         """Return whether to include the entity in the measurement."""
         source_types_to_include = set(self._parameter("source_types_to_include"))
         metric_source_types = set(self.data_model["metrics"][entity["metric_type"]]["sources"])
-        if source_types_to_include and not (source_types_to_include & metric_source_types):
+        if not (source_types_to_include & metric_source_types):
             return False
-        subjects_to_ignore = self._parameter("subjects_to_ignore")
-        if not subjects_to_ignore:
-            return True
-        return not match_string_or_regular_expression(
-            entity["subject"],
-            subjects_to_ignore,
-        ) and not match_string_or_regular_expression(entity["subject_uuid"], subjects_to_ignore)
+
+        if subjects_to_include := self._parameter("subjects_to_include"):
+            subject_name_matches = match_string_or_regular_expression(entity["subject"], subjects_to_include)
+            subject_uuid_matches = match_string_or_regular_expression(entity["subject_uuid"], subjects_to_include)
+            if not (subject_name_matches or subject_uuid_matches):
+                return False
+
+        if subjects_to_ignore := self._parameter("subjects_to_ignore"):
+            subject_name_matches = match_string_or_regular_expression(entity["subject"], subjects_to_ignore)
+            subject_uuid_matches = match_string_or_regular_expression(entity["subject_uuid"], subjects_to_ignore)
+            if subject_name_matches or subject_uuid_matches:
+                return False
+        return True
 
     def __nr_of_possible_metric_types(self, data_model: dict, reports: list[dict]) -> int:
         """Return the number of possible metric types in the reports."""
