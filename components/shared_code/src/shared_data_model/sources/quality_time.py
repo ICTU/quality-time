@@ -194,6 +194,13 @@ QUALITY_TIME = Source(
             help="Ignore metric types that are missing in the subjects to ignore.",
             metrics=["missing_metrics"],
         ),
+        "subjects_to_include": MultipleChoiceWithAdditionParameter(
+            name="Subjects to include (subject names or identifiers)",
+            short_name="subjects to include",
+            help="If provided, only count metric types that are missing in the subjects to include.",
+            placeholder="all subjects",
+            metrics=["missing_metrics"],
+        ),
         "tags": MultipleChoiceWithAdditionParameter(
             name="Tags",
             help="If provided, only count metrics with one ore more of the given tags.",

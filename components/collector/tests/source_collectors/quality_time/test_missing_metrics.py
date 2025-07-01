@@ -23,7 +23,7 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         """Add a report to the reports fixture."""
         self.reports["reports"].append(
             {
-                "title": "R3",
+                "title": "Report 3",
                 "report_uuid": "r3",
                 "subjects": {
                     "s2": {
@@ -107,17 +107,17 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
             "source_types": QualityTimeMissingMetrics.supporting_source_types(self.data_model, metric_type),
         }
 
+    def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: list | str | None) -> None:
+        """Extend to add total."""
+        attributes["total"] = str(self.nr_supported_metric_types())
+        return super().assert_measurement(measurement, source_index=source_index, **attributes)
+
     async def test_nr_of_metrics(self):
         """Test that the number of missing metrics is returned."""
         self.add_report_fixture()
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
         entities = self.entities(expected_subject_types={"s2": "Software source code"})
-        self.assert_measurement(
-            response,
-            entities=entities,
-            total=str(self.nr_supported_metric_types()),
-            value=str(len(entities)),
-        )
+        self.assert_measurement(response, entities=entities, value=str(len(entities)))
 
     async def test_nr_of_missing_metrics_without_correct_report(self):
         """Test that an error is thrown for reports that don't exist."""
@@ -133,12 +133,7 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         self.set_source_parameter("subjects_to_ignore", subjects_to_ignore)
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
         entities = self.entities(subjects_to_ignore, expected_subject_types={"s2": "Software source code"})
-        self.assert_measurement(
-            response,
-            entities=entities,
-            total=str(self.nr_supported_metric_types()),
-            value=str(len(entities)),
-        )
+        self.assert_measurement(response, entities=entities, value=str(len(entities)))
 
     async def test_subjects_to_ignore_by_uuid(self):
         """Test that the number of non-ignored missing metrics is returned when filtered by subject uuid."""
@@ -147,12 +142,23 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         self.set_source_parameter("subjects_to_ignore", subjects_to_ignore)
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
         entities = self.entities(subjects_to_ignore, expected_subject_types={"s2": "Software source code"})
-        self.assert_measurement(
-            response,
-            entities=entities,
-            total=str(self.nr_supported_metric_types()),
-            value=str(len(entities)),
-        )
+        self.assert_measurement(response, entities=entities, value=str(len(entities)))
+
+    async def test_subjects_to_include_by_name(self):
+        """Test that the number of non-ignored missing metrics is returned when filtered by subject name."""
+        self.add_report_fixture()
+        self.set_source_parameter("subjects_to_include", ["Subject 1"])
+        response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
+        entities = self.entities(subjects_to_ignore=["Subject 2"])
+        self.assert_measurement(response, entities=entities, value=str(len(entities)))
+
+    async def test_subjects_to_include_by_uuid(self):
+        """Test that the number of non-ignored missing metrics is returned when filtered by subject uuid."""
+        self.add_report_fixture()
+        self.set_source_parameter("subjects_to_include", ["s1"])
+        response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
+        entities = self.entities(subjects_to_ignore=["Subject 2"])
+        self.assert_measurement(response, entities=entities, value=str(len(entities)))
 
     async def test_subject_without_overridden_subject_name(self):
         """Test that the default subject name is used for subjects that don't have an overridden name."""
@@ -161,31 +167,21 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         entities = self.entities(
             expected_subject_names={"s2": "Software source code"}, expected_subject_types={"s2": "Software source code"}
         )
-        self.assert_measurement(
-            response,
-            entities=entities,
-            total=str(self.nr_supported_metric_types()),
-            value=str(len(entities)),
-        )
+        self.assert_measurement(response, entities=entities, value=str(len(entities)))
 
     async def test_source_types_to_include(self):
         """Test that the number of non-ignored missing metrics is returned when filtered by source type."""
         self.set_source_parameter("source_types_to_include", ["Jira"])
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
         entities = [
-            self.create_entity(self.reports["reports"][0], "s1", "Software", "S1", metric_type)
+            self.create_entity(self.reports["reports"][0], "s1", "Software", "Subject 1", metric_type)
             for metric_type in ("issues", "test_cases")
         ]
-        self.assert_measurement(
-            response,
-            entities=entities,
-            total=str(self.nr_supported_metric_types()),
-            value=str(len(entities)),
-        )
+        self.assert_measurement(response, entities=entities, value=str(len(entities)))
 
     async def test_source_types_to_include_combined_with_ignored_subject(self):
         """Test that the number of non-ignored missing metrics is returned when filtered by source type and subject."""
         self.set_source_parameter("source_types_to_include", ["Jira"])
         self.set_source_parameter("subjects_to_ignore", ["s1"])
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
-        self.assert_measurement(response, entities=[], total=str(self.nr_supported_metric_types()), value="0")
+        self.assert_measurement(response, entities=[], value="0")

@@ -15,12 +15,12 @@ class QualityTimeTestCase(SourceCollectorTestCase):
         self.reports = {
             "reports": [
                 {
-                    "title": "R1",
+                    "title": "Report 1",
                     "report_uuid": "r1",
                     "subjects": {
                         "s1": {
                             "type": "software",
-                            "name": "S1",
+                            "name": "Subject 1",
                             "metrics": {
                                 "m1": {
                                     "tags": ["security"],
@@ -86,7 +86,7 @@ class QualityTimeTestCase(SourceCollectorTestCase):
                         },
                     },
                 },
-                {"title": "R2", "report_uuid": "r2"},
+                {"title": "Report 2", "report_uuid": "r2"},
             ],
         }
 
