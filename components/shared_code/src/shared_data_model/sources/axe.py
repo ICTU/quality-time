@@ -4,12 +4,16 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import MultipleChoiceParameter, MultipleChoiceWithAdditionParameter, access_parameters
+from shared_data_model.parameters import (
+    MultipleChoiceWithAdditionParameter,
+    MultipleChoiceWithDefaultsParameter,
+    access_parameters,
+)
 
 ALL_AXE_CORE_METRICS = ["source_up_to_dateness", "source_version", "violations"]
 
 
-IMPACT = MultipleChoiceParameter(
+IMPACT = MultipleChoiceWithDefaultsParameter(
     name="Impact levels",
     help="If provided, only count accessibility violations with the selected impact levels.",
     placeholder="all impact levels",
@@ -48,7 +52,7 @@ ELEMENT_EXCLUDE_FILTER = MultipleChoiceWithAdditionParameter(
     metrics=["violations"],
 )
 
-RESULT_TYPES = MultipleChoiceParameter(
+RESULT_TYPES = MultipleChoiceWithDefaultsParameter(
     name="Result types",
     help="Limit which result types to count.",
     default_value=["violations"],

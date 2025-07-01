@@ -135,13 +135,34 @@ it("renders a single choice parameter", async () => {
     await expectNoAccessibilityViolations(container)
 })
 
-it("renders a multiple choice parameter", async () => {
+it("renders a multiple choice parameter with default", async () => {
     const { container } = renderSourceParameter({
-        parameter: { name: "Multiple choice", type: "multiple_choice", values: ["option 1", "option 2", "option 3"] },
-        parameterValue: ["option 1", "option 2"],
+        parameter: {
+            name: "Multiple choice",
+            type: "multiple_choice_with_defaults",
+            values: ["option 1", "option 2"],
+            default_value: ["option 1"],
+        },
+        parameterValue: null,
     })
     expect(screen.queryAllByLabelText(/Multiple choice/).length).toBe(1)
     expect(screen.queryAllByText(/option 1/).length).toBe(1)
+    expect(screen.queryAllByText(/option 2/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("renders a multiple choice parameter without defaults", async () => {
+    const { container } = renderSourceParameter({
+        parameter: {
+            name: "Multiple choice",
+            type: "multiple_choice_without_defaults",
+            values: ["option 1", "option 2"],
+        },
+        parameterValue: [],
+    })
+    expect(screen.queryAllByLabelText(/Multiple choice/).length).toBe(1)
+    expect(screen.queryAllByText(/option 1/).length).toBe(0)
+    expect(screen.queryAllByText(/option 2/).length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
 

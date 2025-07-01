@@ -13,8 +13,8 @@ from shared_data_model.parameters import (
     Days,
     FailureType,
     MergeRequestState,
-    MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
+    MultipleChoiceWithDefaultsParameter,
     PrivateToken,
     ResultType,
     StringParameter,
@@ -208,7 +208,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             metrics=["pipeline_duration"],
         ),
         "merge_request_state": MergeRequestState(values=["opened", "locked", "merged", "closed"]),
-        "approval_state": MultipleChoiceParameter(
+        "approval_state": MultipleChoiceWithDefaultsParameter(
             name="Approval states to include (requires GitLab Premium)",
             short_name="approval states",
             help_url=HttpUrl("https://docs.gitlab.com/ee/user/project/merge_requests/approvals/"),
@@ -217,7 +217,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             placeholder="all approval states",
             metrics=["merge_requests"],
         ),
-        "pipeline_statuses_to_include": MultipleChoiceParameter(
+        "pipeline_statuses_to_include": MultipleChoiceWithDefaultsParameter(
             name="Pipeline statuses to include",
             short_name="pipeline statuses",
             values=[
@@ -237,7 +237,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             placeholder="all pipeline statuses",
             metrics=["pipeline_duration", "source_up_to_dateness"],
         ),
-        "pipeline_triggers_to_include": MultipleChoiceParameter(
+        "pipeline_triggers_to_include": MultipleChoiceWithDefaultsParameter(
             name="Pipeline triggers to include",
             short_name="pipeline triggers",
             values=[

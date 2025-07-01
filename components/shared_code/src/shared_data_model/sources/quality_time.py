@@ -14,8 +14,9 @@ from shared_data_model.meta.unit import Unit
 from shared_data_model.parameters import (
     URL,
     IntegerParameter,
-    MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
+    MultipleChoiceWithDefaultsParameter,
+    MultipleChoiceWithoutDefaultsParameter,
 )
 
 ALL_QUALITY_TIME_METRICS = ["metrics", "missing_metrics", "source_up_to_dateness", "source_version"]
@@ -128,7 +129,7 @@ QUALITY_TIME = Source(
             validate_on=[],
             metrics=ALL_QUALITY_TIME_METRICS,
         ),
-        "status": MultipleChoiceParameter(
+        "status": MultipleChoiceWithDefaultsParameter(
             name="Metric statuses",
             placeholder="all statuses",
             values=[
@@ -164,7 +165,7 @@ QUALITY_TIME = Source(
             placeholder="all reports",
             metrics=["metrics", "source_up_to_dateness", "missing_metrics"],
         ),
-        "metric_type": MultipleChoiceParameter(
+        "metric_type": MultipleChoiceWithDefaultsParameter(
             name="Metric types",
             help="If provided, only count metrics with the selected metric types.",
             placeholder="all metric types",
@@ -172,7 +173,7 @@ QUALITY_TIME = Source(
             api_values=ALL_METRICS,
             metrics=["metrics"],
         ),
-        "source_type": MultipleChoiceParameter(
+        "source_type": MultipleChoiceWithDefaultsParameter(
             name="Source types",
             help="If provided, only count metrics with one or more sources of the selected source types.",
             placeholder="all source types",
@@ -180,7 +181,15 @@ QUALITY_TIME = Source(
             api_values=ALL_SOURCES,
             metrics=["metrics"],
         ),
-        "source_types_to_include": MultipleChoiceParameter(
+        "source_types_to_ignore": MultipleChoiceWithoutDefaultsParameter(
+            name="Source types to ignore",
+            help="If provided, ignore metric types all of whose source types are ignored.",
+            values=list(ALL_SOURCES.keys()),
+            api_values=ALL_SOURCES,
+            placeholder="none",
+            metrics=["missing_metrics"],
+        ),
+        "source_types_to_include": MultipleChoiceWithDefaultsParameter(
             name="Source types to include",
             help="If provided, only count metric types that need one or more of the selected source types.",
             values=list(ALL_SOURCES.keys()),
@@ -189,13 +198,13 @@ QUALITY_TIME = Source(
             metrics=["missing_metrics"],
         ),
         "subjects_to_ignore": MultipleChoiceWithAdditionParameter(
-            name="Subjects to ignore (subject names or identifiers)",
+            name="Subjects to ignore (regular expressions, subject names, or identifiers)",
             short_name="subjects to ignore",
             help="Ignore metric types that are missing in the subjects to ignore.",
             metrics=["missing_metrics"],
         ),
         "subjects_to_include": MultipleChoiceWithAdditionParameter(
-            name="Subjects to include (subject names or identifiers)",
+            name="Subjects to include (regular expressions, subject names, or identifiers)",
             short_name="subjects to include",
             help="If provided, only count metric types that are missing in the subjects to include.",
             placeholder="all subjects",

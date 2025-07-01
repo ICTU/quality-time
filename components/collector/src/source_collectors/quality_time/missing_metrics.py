@@ -35,23 +35,31 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the entity in the measurement."""
-        source_types_to_include = set(self._parameter("source_types_to_include"))
         metric_source_types = set(self.data_model["metrics"][entity["metric_type"]]["sources"])
+
+        source_types_to_include = set(self._parameter("source_types_to_include"))
         if not (source_types_to_include & metric_source_types):
             return False
 
-        if subjects_to_include := self._parameter("subjects_to_include"):
-            subject_name_matches = match_string_or_regular_expression(entity["subject"], subjects_to_include)
-            subject_uuid_matches = match_string_or_regular_expression(entity["subject_uuid"], subjects_to_include)
-            if not (subject_name_matches or subject_uuid_matches):
-                return False
+        source_types_to_ignore = set(self._parameter("source_types_to_ignore"))
+        if metric_source_types - source_types_to_ignore == set():
+            return False
 
-        if subjects_to_ignore := self._parameter("subjects_to_ignore"):
-            subject_name_matches = match_string_or_regular_expression(entity["subject"], subjects_to_ignore)
-            subject_uuid_matches = match_string_or_regular_expression(entity["subject_uuid"], subjects_to_ignore)
-            if subject_name_matches or subject_uuid_matches:
-                return False
+        subjects_to_include = self._parameter("subjects_to_include")
+        if subjects_to_include and not self.__subject_matches(entity, subjects_to_include):
+            return False
+
+        subjects_to_ignore = self._parameter("subjects_to_ignore")
+        if subjects_to_ignore and self.__subject_matches(entity, subjects_to_ignore):  # noqa: SIM103
+            return False
+
         return True
+
+    def __subject_matches(self, entity: Entity, subjects_to_match: list[str] | str) -> bool:
+        """Return whether the entity's subject matches the subjects to match by name or UUID."""
+        subject_name_matches = match_string_or_regular_expression(entity["subject"], subjects_to_match)
+        subject_uuid_matches = match_string_or_regular_expression(entity["subject_uuid"], subjects_to_match)
+        return subject_name_matches or subject_uuid_matches
 
     def __nr_of_possible_metric_types(self, data_model: dict, reports: list[dict]) -> int:
         """Return the number of possible metric types in the reports."""

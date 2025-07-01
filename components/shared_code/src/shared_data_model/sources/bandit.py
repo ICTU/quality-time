@@ -4,7 +4,7 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import MultipleChoiceParameter, Severities, access_parameters
+from shared_data_model.parameters import MultipleChoiceWithDefaultsParameter, Severities, access_parameters
 
 ALL_BANDIT_METRICS = ["security_warnings", "source_up_to_dateness"]
 
@@ -14,7 +14,7 @@ BANDIT = Source(
     url=HttpUrl("https://github.com/PyCQA/bandit"),
     parameters={
         "severities": Severities(values=["low", "medium", "high"]),
-        "confidence_levels": MultipleChoiceParameter(
+        "confidence_levels": MultipleChoiceWithDefaultsParameter(
             name="Confidence levels",
             help="If provided, only count security warnings with the selected confidence levels.",
             placeholder="all confidence levels",

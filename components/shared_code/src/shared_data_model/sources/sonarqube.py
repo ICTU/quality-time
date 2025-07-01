@@ -7,8 +7,8 @@ from shared_data_model.meta.entity import Color, Entity, EntityAttribute, Entity
 from shared_data_model.meta.source import Configuration, Source
 from shared_data_model.parameters import (
     URL,
-    MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
+    MultipleChoiceWithDefaultsParameter,
     PrivateToken,
     Severities,
     SingleChoiceParameter,
@@ -382,14 +382,14 @@ SONARQUBE = Source(
             values=["info", "low", "medium", "high", "blocker"],
             metrics=["security_warnings", "suppressed_violations", "violations"],
         ),
-        "impacted_software_qualities": MultipleChoiceParameter(
+        "impacted_software_qualities": MultipleChoiceWithDefaultsParameter(
             name="Impacted software qualities",
             placeholder="all impacted software qualities",
             help_url=HttpUrl("https://docs.sonarsource.com/sonarqube/latest/user-guide/clean-code/software-qualities/"),
             values=["maintainability", "reliability", "security"],
             metrics=["suppressed_violations", "violations"],
         ),
-        "clean_code_attribute_categories": MultipleChoiceParameter(
+        "clean_code_attribute_categories": MultipleChoiceWithDefaultsParameter(
             name="Clean code attribute categories",
             placeholder="all clean code attribute categories",
             help_url=HttpUrl(
@@ -398,7 +398,7 @@ SONARQUBE = Source(
             values=["adaptable", "consistent", "intentional", "responsible"],
             metrics=["suppressed_violations", "violations"],
         ),
-        "hotspot_statuses": MultipleChoiceParameter(
+        "hotspot_statuses": MultipleChoiceWithDefaultsParameter(
             name="Security hotspot statuses",
             short_name="hotspot statuses",
             help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/security-hotspots/"),
@@ -407,7 +407,7 @@ SONARQUBE = Source(
             default_value=["to review", "acknowledged"],
             metrics=["security_warnings"],
         ),
-        "review_priorities": MultipleChoiceParameter(
+        "review_priorities": MultipleChoiceWithDefaultsParameter(
             name="Security hotspot review priorities",
             short_name="review priorities",
             help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/security-hotspots/"),
@@ -415,7 +415,7 @@ SONARQUBE = Source(
             values=["low", "medium", "high"],
             metrics=["security_warnings"],
         ),
-        "effort_types": MultipleChoiceParameter(
+        "effort_types": MultipleChoiceWithDefaultsParameter(
             name="Types of effort",
             short_name="effort types",
             placeholder="all effort types",
@@ -434,7 +434,7 @@ SONARQUBE = Source(
             },
             metrics=["remediation_effort"],
         ),
-        "security_types": MultipleChoiceParameter(
+        "security_types": MultipleChoiceWithDefaultsParameter(
             name="Security issue types",
             placeholder=ISSUE_SECURITY_TYPE,
             help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/rules/overview/"),
