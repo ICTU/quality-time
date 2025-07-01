@@ -50,7 +50,7 @@ class DataModelTest(MetaModelTestCase):
             parameters={
                 "metric_type": {
                     "name": "Metric type",
-                    "type": "multiple_choice",
+                    "type": "multiple_choice_with_defaults",
                     "placeholder": "all",
                     "default_value": [],
                     "values": ["Metric", "Other metric"],
@@ -58,7 +58,7 @@ class DataModelTest(MetaModelTestCase):
                 },
                 "source_type": {
                     "name": "Source type",
-                    "type": "multiple_choice",
+                    "type": "multiple_choice_with_defaults",
                     "placeholder": "all",
                     "default_value": [],
                     "values": kwargs.get("source_type_values") or ["Quality-time", "Source"],

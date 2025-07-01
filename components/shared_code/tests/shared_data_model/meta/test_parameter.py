@@ -43,12 +43,14 @@ class ParameterTest(MetaModelTestCase):
     def test_check_placeholder(self):
         """Test that multiple choice parameters need a placeholder."""
         expected_message = "Parameter Parameter is multiple choice but has no placeholder"
-        self.check_parameter_validation_error(expected_message, type="multiple_choice")
+        self.check_parameter_validation_error(expected_message, type="multiple_choice_with_defaults")
 
     def test_check_default_value(self):
         """Test that multiple choice parameters have a list as default value."""
         expected_message = "Parameter Parameter is multiple choice but default_value is not a list"
-        self.check_parameter_validation_error(expected_message, type="multiple_choice", placeholder="placeholder")
+        self.check_parameter_validation_error(
+            expected_message, type="multiple_choice_with_defaults", placeholder="placeholder"
+        )
 
     def test_check_default_value_empty(self):
         """Test that multiple choice parameters with addition have an empty list as default value."""
@@ -63,7 +65,7 @@ class ParameterTest(MetaModelTestCase):
         """Test that multiple choice parameters have at least two values."""
         self.check_parameter_validation_error(
             self.TOO_FEW_VALUES,
-            type="multiple_choice",
+            type="multiple_choice_with_defaults",
             values=["value"],
             default_value=[],
             placeholder="placeholder",
@@ -73,7 +75,7 @@ class ParameterTest(MetaModelTestCase):
         """Test that multiple choice parameters have at least two values."""
         self.check_parameter_validation_error(
             self.TOO_FEW_VALUES,
-            type="multiple_choice",
+            type="multiple_choice_with_defaults",
             values=[],
             default_value=[],
             placeholder="placeholder",
@@ -83,7 +85,7 @@ class ParameterTest(MetaModelTestCase):
         """Test that multiple choice parameters have at least two values."""
         self.check_parameter_validation_error(
             self.TOO_FEW_VALUES,
-            type="multiple_choice",
+            type="multiple_choice_with_defaults",
             default_value=[],
             placeholder="placeholder",
         )

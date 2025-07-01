@@ -7,8 +7,8 @@ from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     URL,
     LandingURL,
-    MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
+    MultipleChoiceWithDefaultsParameter,
     PrivateToken,
     Severities,
     SingleChoiceParameter,
@@ -82,7 +82,7 @@ DEPENDENCY_TRACK = Source(
             short_name="components to ignore",
             metrics=["dependencies", "security_warnings"],
         ),
-        "latest_version_status": MultipleChoiceParameter(
+        "latest_version_status": MultipleChoiceWithDefaultsParameter(
             name="Latest version statuses",
             short_name="statuses",
             placeholder="all statuses",
@@ -91,7 +91,7 @@ DEPENDENCY_TRACK = Source(
             metrics=["dependencies", "security_warnings"],
         ),
         "severities": Severities(values=["Unassigned", "Info", "Low", "Medium", "High", "Critical"]),
-        "project_event_types": MultipleChoiceParameter(
+        "project_event_types": MultipleChoiceWithDefaultsParameter(
             name="Project event types",
             short_name="event types",
             placeholder="all event types",

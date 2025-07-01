@@ -61,14 +61,40 @@ class SingleChoiceParameter(Parameter):
     type: ParameterType = ParameterType.SINGLE_CHOICE
 
 
-class MultipleChoiceParameter(Parameter):
-    """Multiple choice parameter."""
+class MultipleChoiceWithDefaultsParameter(Parameter):
+    """Multiple choice parameter with default value.
 
-    type: ParameterType = ParameterType.MULTIPLE_CHOICE
+    If the default value is not set, the default value equals all possible values.
+    """
+
+    type: ParameterType = ParameterType.MULTIPLE_CHOICE_WITH_DEFAULTS
     default_value: str | list[str] = []
 
+    @model_validator(mode="after")
+    def set_default_value(self) -> Self:
+        """Make the default value equal to all values, if it was not set explicitly."""
+        if not self.default_value and self.values:
+            self.default_value = self.values
+        return self
 
-class MultipleChoiceWithAdditionParameter(MultipleChoiceParameter):
+
+class MultipleChoiceWithoutDefaultsParameter(Parameter):
+    """Multiple choice parameter without default value."""
+
+    type: ParameterType = ParameterType.MULTIPLE_CHOICE_WITHOUT_DEFAULTS
+    default_value: str | list[str] = []
+    placeholder: str = "none"
+
+    @model_validator(mode="after")
+    def check_default_value(self) -> Self:
+        """Check that the default value is empty."""
+        if self.default_value != []:
+            msg = f"Parameter {self.name} has default value {self.default_value}, should be an empty list"
+            raise ValueError(msg)
+        return self
+
+
+class MultipleChoiceWithAdditionParameter(MultipleChoiceWithDefaultsParameter):
     """Multiple choice parameter that allows the user to add additional options."""
 
     type: ParameterType = ParameterType.MULTIPLE_CHOICE_WITH_ADDITION
@@ -105,7 +131,7 @@ class Days(IntegerParameter):
     min_value: str = "1"
 
 
-class FixAvailability(MultipleChoiceParameter):
+class FixAvailability(MultipleChoiceWithDefaultsParameter):
     """Fix availability for security warnings."""
 
     name: str = "Fix availability"
@@ -115,7 +141,7 @@ class FixAvailability(MultipleChoiceParameter):
     values: list[str] | None = ["fix available", "no fix available"]
 
 
-class Severities(MultipleChoiceParameter):
+class Severities(MultipleChoiceWithDefaultsParameter):
     """Security warning severities."""
 
     name: str = "Severities"
@@ -130,7 +156,7 @@ class Severities(MultipleChoiceParameter):
         return self
 
 
-class TestResult(MultipleChoiceParameter):
+class TestResult(MultipleChoiceWithDefaultsParameter):
     """Test result parameter."""
 
     name: str = "Test results"
@@ -187,7 +213,7 @@ class TargetBranchesToInclude(MultipleChoiceWithAdditionParameter):
     metrics: list[str] = ["merge_requests"]
 
 
-class BranchMergeStatus(MultipleChoiceParameter):
+class BranchMergeStatus(MultipleChoiceWithDefaultsParameter):
     """Branch merge status."""
 
     name: str = "Branch merge status"
@@ -198,7 +224,7 @@ class BranchMergeStatus(MultipleChoiceParameter):
     values: list[str] = ["merged", "unmerged"]
 
 
-class MergeRequestState(MultipleChoiceParameter):
+class MergeRequestState(MultipleChoiceWithDefaultsParameter):
     """Merge request states parameter."""
 
     name: str = "Merge request states"
@@ -208,7 +234,7 @@ class MergeRequestState(MultipleChoiceParameter):
     metrics: list[str] = ["merge_requests"]
 
 
-class FailureType(MultipleChoiceParameter):
+class FailureType(MultipleChoiceWithDefaultsParameter):
     """Failure type parameter."""
 
     name: str = "Failure types"
@@ -217,7 +243,7 @@ class FailureType(MultipleChoiceParameter):
     metrics: list[str] = ["failed_jobs"]
 
 
-class ResultType(MultipleChoiceParameter):
+class ResultType(MultipleChoiceWithDefaultsParameter):
     """Build result type parameter."""
 
     name: str = "Build result types"

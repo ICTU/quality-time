@@ -5,7 +5,7 @@ from pydantic import HttpUrl
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
-    MultipleChoiceParameter,
+    MultipleChoiceWithDefaultsParameter,
     TestResult,
     TransactionsToIgnore,
     TransactionsToInclude,
@@ -28,7 +28,7 @@ PERFORMANCETEST_RUNNER = Source(
     url=HttpUrl("https://github.com/ICTU/performancetest-runner"),
     parameters={
         "test_result": TestResult(values=["failed", "success"]),
-        "thresholds": MultipleChoiceParameter(
+        "thresholds": MultipleChoiceWithDefaultsParameter(
             name="Thresholds",
             help="If provided, only count transactions that surpass the selected thresholds.",
             placeholder="all thresholds",

@@ -11,7 +11,7 @@ from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     URL,
     MergeRequestState,
-    MultipleChoiceParameter,
+    MultipleChoiceWithDefaultsParameter,
     PrivateToken,
     StringParameter,
     TargetBranchesToInclude,
@@ -70,7 +70,7 @@ GITHUB = Source(
             values=["Open", "Merged", "Closed"],
             api_values={"Open": "OPEN", "Merged": "MERGED", "Closed": "CLOSED"},
         ),
-        "review_decision": MultipleChoiceParameter(
+        "review_decision": MultipleChoiceWithDefaultsParameter(
             name="Review decision",
             values=["Approved", "Changes requested", "Review required", "Unknown"],
             api_values={

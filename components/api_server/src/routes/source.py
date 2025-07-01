@@ -183,7 +183,7 @@ def _new_parameter_value(source, parameter_key: str) -> str | list[str]:
     """Return the new parameter value and if necessary, remove any obsolete multiple choice values."""
     new_value = dict(bottle.request.json)[parameter_key]
     source_parameter = DATA_MODEL.sources[source.type].parameters[parameter_key]
-    if source_parameter.type == "multiple_choice":
+    if source_parameter.type in ("multiple_choice_with_defaults", "multiple_choice_without_defaults"):
         new_value = [value for value in new_value if value in (source_parameter.values or [])]
     return cast(str, new_value)
 

@@ -4,14 +4,14 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import MultipleChoiceParameter, access_parameters
+from shared_data_model.parameters import MultipleChoiceWithDefaultsParameter, access_parameters
 
 COMPOSER = Source(
     name="Composer",
     description="A Dependency Manager for PHP.",
     url=HttpUrl("https://getcomposer.org/"),
     parameters={
-        "latest_version_status": MultipleChoiceParameter(
+        "latest_version_status": MultipleChoiceWithDefaultsParameter(
             name="Latest version statuses",
             short_name="statuses",
             placeholder="all statuses",

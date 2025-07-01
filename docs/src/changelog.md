@@ -23,6 +23,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 ### Added
 
 - When measuring missing metrics, allow for configuring 'subjects to include' to only count missing metrics in the configured subjects. Closes [#11106](https://github.com/ICTU/quality-time/issues/11106).
+- When measuring missing metrics, allow for configuring 'source types to ignore' so that metrics that need source types that are not available are not reported. Closes [#11604](https://github.com/ICTU/quality-time/issues/11604).
 
 ## v5.34.0 - 2025-06-26
 

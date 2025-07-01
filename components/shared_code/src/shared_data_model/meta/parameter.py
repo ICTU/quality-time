@@ -12,7 +12,8 @@ class ParameterType(StrEnum):
 
     DATE = "date"
     INTEGER = "integer"
-    MULTIPLE_CHOICE = "multiple_choice"
+    MULTIPLE_CHOICE_WITH_DEFAULTS = "multiple_choice_with_defaults"
+    MULTIPLE_CHOICE_WITHOUT_DEFAULTS = "multiple_choice_without_defaults"
     MULTIPLE_CHOICE_WITH_ADDITION = "multiple_choice_with_addition"
     PASSWORD = "password"  # nosec # noqa: S105
     SINGLE_CHOICE = "single_choice"
@@ -77,7 +78,7 @@ class Parameter(NamedModel):
     @model_validator(mode="after")
     def check_values(self) -> Self:
         """Check that the number of values of the parameter matches the parameter type."""
-        if self.type == ParameterType.MULTIPLE_CHOICE and (self.values is None or len(self.values) <= 1):
+        if self.is_multiple_choice_without_addition() and (self.values is None or len(self.values) <= 1):
             msg = f"Parameter {self.name} is multiple choice but has fewer than two values"
             raise ValueError(msg)
         if self.is_multiple_choice_with_addition() and self.values:
@@ -98,7 +99,14 @@ class Parameter(NamedModel):
 
     def is_multiple_choice(self) -> bool:
         """Return whether the parameter is multiple choice."""
-        return self.type in (ParameterType.MULTIPLE_CHOICE, ParameterType.MULTIPLE_CHOICE_WITH_ADDITION)
+        return self.is_multiple_choice_with_addition() or self.is_multiple_choice_without_addition()
+
+    def is_multiple_choice_without_addition(self) -> bool:
+        """Return whether the parameter is multiple choice without addition."""
+        return self.type in (
+            ParameterType.MULTIPLE_CHOICE_WITH_DEFAULTS,
+            ParameterType.MULTIPLE_CHOICE_WITHOUT_DEFAULTS,
+        )
 
     def is_multiple_choice_with_addition(self) -> bool:
         """Return whether the parameter is multiple choice with addition."""

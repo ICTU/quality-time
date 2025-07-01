@@ -13,8 +13,8 @@ from shared_data_model.parameters import (
     Days,
     FailureType,
     MergeRequestState,
-    MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
+    MultipleChoiceWithDefaultsParameter,
     PrivateToken,
     ResultType,
     StringParameter,
@@ -142,7 +142,7 @@ AZURE_DEVOPS = Source(
             placeholder="all test run names",
             metrics=["tests"],
         ),
-        "test_run_states_to_include": MultipleChoiceParameter(
+        "test_run_states_to_include": MultipleChoiceWithDefaultsParameter(
             name="States of the test runs to include",
             short_name="test run states",
             help="Limit which test runs to include by test run state.",

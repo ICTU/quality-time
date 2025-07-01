@@ -179,6 +179,15 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         ]
         self.assert_measurement(response, entities=entities, value=str(len(entities)))
 
+    async def test_source_types_to_ignore(self):
+        """Test that the number of non-ignored missing metrics is returned when filtered by source type."""
+        self.set_source_parameter(
+            "source_types_to_ignore",
+            QualityTimeMissingMetrics.supporting_source_types(self.data_model, "tests").split(", "),
+        )
+        response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
+        self.assertNotIn("tests", [entity["metric_type"] for entity in response.sources[0].entities])
+
     async def test_source_types_to_include_combined_with_ignored_subject(self):
         """Test that the number of non-ignored missing metrics is returned when filtered by source type and subject."""
         self.set_source_parameter("source_types_to_include", ["Jira"])

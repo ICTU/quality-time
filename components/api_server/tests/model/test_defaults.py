@@ -14,7 +14,7 @@ class DefaultAttributesTest(DataModelTestCase):
             "landing_url": "",
             "password": "",
             "private_token": "",
-            "severities": [],
+            "severities": ["low", "medium", "high"],
             "url": "",
             "username": "",
         }

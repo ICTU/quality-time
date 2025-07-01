@@ -7,8 +7,8 @@ from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     URL,
     Days,
-    MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
+    MultipleChoiceWithDefaultsParameter,
     StringParameter,
 )
 
@@ -37,7 +37,7 @@ LISTS_TO_IGNORE_PARAMETER = MultipleChoiceWithAdditionParameter(
     metrics=ALL_TRELLO_METRICS,
 )
 
-CARDS_TO_COUNT_PARAMETER = MultipleChoiceParameter(
+CARDS_TO_COUNT_PARAMETER = MultipleChoiceWithDefaultsParameter(
     name="Cards to count",
     short_name="cards",
     placeholder="all cards",

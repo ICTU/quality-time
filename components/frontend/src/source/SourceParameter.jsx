@@ -217,7 +217,7 @@ export function SourceParameter({
             </TextField>
         )
     }
-    if (parameterType === "multiple_choice") {
+    if (parameterType === "multiple_choice_with_defaults" || parameterType === "multiple_choice_without_defaults") {
         parameterInput = <MultipleChoiceField {...parameterProps} options={parameterValues} />
     }
     if (parameterType === "multiple_choice_with_addition") {

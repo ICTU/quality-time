@@ -5,8 +5,8 @@ from pydantic import HttpUrl
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
-    MultipleChoiceParameter,
     MultipleChoiceWithAdditionParameter,
+    MultipleChoiceWithDefaultsParameter,
     SingleChoiceParameter,
     access_parameters,
 )
@@ -28,7 +28,7 @@ OWASP_ZAP = Source(
             values=["alert types", "alert instances"],
             metrics=["security_warnings"],
         ),
-        "risks": MultipleChoiceParameter(
+        "risks": MultipleChoiceWithDefaultsParameter(
             name="Risks",
             help="If provided, only count security warnings with the selected risks.",
             placeholder="all risks",
