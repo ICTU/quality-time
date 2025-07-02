@@ -62,7 +62,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         with self._patched_get(mock_async_get_request, side_effect):
             async with aiohttp.ClientSession() as session:
                 for _ in range(number):
-                    await self.collector.collect_metrics(session)
+                    self.collector.collect_metrics(session)
                     await asyncio.gather(*self.collector.running_tasks)  # Wait for the running tasks to finish
 
     def expected_source(self, **kwargs: str | None) -> dict[str, str | None | list[dict[str, str]]]:

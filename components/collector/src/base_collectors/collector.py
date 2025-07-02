@@ -56,11 +56,11 @@ class Collector:
             while True:
                 self.__log_tasks("Waking up")
                 self.record_health()
-                await self.collect_metrics(session)
+                self.collect_metrics(session)
                 self.__log_tasks(f"Going to sleep for {config.SLEEP_DURATION} seconds", config.MEASUREMENT_LIMIT)
                 await asyncio.sleep(config.SLEEP_DURATION)
 
-    async def collect_metrics(self, session: aiohttp.ClientSession) -> None:
+    def collect_metrics(self, session: aiohttp.ClientSession) -> None:
         """Collect measurements for metrics, prioritizing edited metrics."""
         reports = get_reports(self.database)
         metrics = get_metrics_from_reports(reports)
