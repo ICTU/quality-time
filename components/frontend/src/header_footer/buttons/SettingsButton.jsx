@@ -4,17 +4,18 @@ import { bool, func } from "prop-types"
 
 import { AppBarButton } from "./AppBarbutton"
 
-export function SettingsButton({ settingsPanelVisible, setSettingsPanelVisible }) {
+export function SettingsButton({ isSettingsPanelVisible, setIsSettingsPanelVisible }) {
     return (
         <AppBarButton
-            startIcon={settingsPanelVisible ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
-            onClick={() => setSettingsPanelVisible(!settingsPanelVisible)}
+            tooltip="Hide or show cards, columns, metrics, tags, and issue details, change sort order of columns"
+            startIcon={isSettingsPanelVisible ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+            onClick={() => setIsSettingsPanelVisible(!isSettingsPanelVisible)}
         >
             Settings
         </AppBarButton>
     )
 }
 SettingsButton.propTypes = {
-    settingsPanelVisible: bool,
-    setSettingsPanelVisible: func,
+    isSettingsPanelVisible: bool,
+    setIsSettingsPanelVisible: func,
 }

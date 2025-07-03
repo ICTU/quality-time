@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - Fix links in PDF-exports not being clickable. Fixes [#11636](https://github.com/ICTU/quality-time/issues/11636).
 
+### Changed
+
+- Replace the report date picker with a panel that contains the report date picker and the settings for number of dates, time between dates, and date order. Closes [#11616](https://github.com/ICTU/quality-time/issues/11616).
+
 ## v5.35.0 - 2025-07-04
 
 ### Fixed

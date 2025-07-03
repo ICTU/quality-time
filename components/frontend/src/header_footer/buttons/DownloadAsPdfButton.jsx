@@ -52,7 +52,7 @@ export function DownloadAsPdfButton({ reportUuid }) {
                 })
             }}
             startIcon={<PictureAsPdf />}
-            tooltip={`Generate a PDF version of the ${itemType} as currently displayed. This may take some time.`}
+            tooltip={`Generate a PDF version of the ${itemType} as currently displayed—this may take a few seconds`}
         >
             Download as PDF
         </AppBarButton>

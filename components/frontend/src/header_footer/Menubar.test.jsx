@@ -1,3 +1,5 @@
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
@@ -21,15 +23,17 @@ function renderMenubar({
 } = {}) {
     const settings = createTestableSettings()
     return render(
-        <Menubar
-            onDate={vi.fn()}
-            openReportsOverview={openReportsOverview}
-            panel={panel}
-            reportUuid={reportUuid}
-            settings={settings}
-            setUser={setUser}
-            user={user}
-        />,
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Menubar
+                onDate={vi.fn()}
+                openReportsOverview={openReportsOverview}
+                panel={panel}
+                reportUuid={reportUuid}
+                settings={settings}
+                setUser={setUser}
+                user={user}
+            />
+        </LocalizationProvider>,
     )
 }
 
@@ -139,31 +143,37 @@ it("goes to home page on keypress", async () => {
     expect(openReportsOverview).toHaveBeenCalled()
 })
 
-it("shows the view panel on menu item click", async () => {
+it("shows and hides the settings panel on button click", async () => {
     const { container } = renderMenubar({ panel: <div>Hello</div> })
     fireEvent.click(screen.getByText(/Settings/))
     expect(screen.getAllByText(/Hello/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
+    fireEvent.click(screen.getByText(/Settings/))
+    await waitFor(() => expect(screen.queryAllByText(/Hello/).length).toBe(0))
 })
 
-it("shows the view panel on space", async () => {
+it("shows and hides the settings panel on keypress", async () => {
     renderMenubar({ reportUuid: "", panel: <div>Hello</div> })
     await userEvent.type(screen.getByText(/Settings/), " ")
     expect(screen.getAllByText(/Hello/).length).toBe(1)
-})
-
-it("hides the view panel on click", async () => {
-    renderMenubar({ panel: <div>Hello</div> })
-    fireEvent.click(screen.getByText(/Settings/))
-    expect(screen.getAllByText(/Hello/).length).toBe(1)
-    fireEvent.click(screen.getByText(/Settings/))
+    await userEvent.type(screen.getByText(/Hello/), "{Escape}")
     await waitFor(() => expect(screen.queryAllByText(/Hello/).length).toBe(0))
 })
 
-it("hides the view panel on escape", async () => {
-    renderMenubar({ panel: <div>Hello</div> })
+it("shows and hides the report period panel on button click", async () => {
+    const { container } = renderMenubar({ panel: <div>Hello</div> })
+    fireEvent.click(screen.getByText(/today/))
+    expect(screen.getAllByText(/Report date/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
+    fireEvent.click(screen.getByText(/today/))
+    await waitFor(() => expect(screen.queryAllByText(/Report date/).length).toBe(0))
+})
+
+it("switches from settings to report period panel", async () => {
+    const { container } = renderMenubar({ panel: <div>Hello</div> })
     fireEvent.click(screen.getByText(/Settings/))
-    expect(screen.getAllByText(/Hello/).length).toBe(1)
-    await userEvent.keyboard("{Escape}")
-    await waitFor(() => expect(screen.queryAllByText(/Hello/).length).toBe(0))
+    fireEvent.click(screen.getByText(/today/))
+    expect(screen.queryAllByText(/Hello/).length).toBe(0)
+    expect(screen.getAllByText(/Report date/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })
