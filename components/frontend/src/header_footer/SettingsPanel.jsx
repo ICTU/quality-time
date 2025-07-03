@@ -1,11 +1,8 @@
 import { bool, func } from "prop-types"
 
 import { settingsPropType, stringsPropType } from "../sharedPropTypes"
-import { DateOrderMenu } from "./settings_menu/DateOrderMenu"
-import { NumberOfDatesMenu } from "./settings_menu/NumberOfDatesMenu"
 import { SettingsMenuGroup } from "./settings_menu/SettingsMenu"
 import { SortColumnMenu } from "./settings_menu/SortColumnMenu"
-import { TimeBetweenDatesMenu } from "./settings_menu/TimeBetweenDatesMenu"
 import { VisibleCardMenu } from "./settings_menu/VisibleCardMenu"
 import { VisibleColumnMenu } from "./settings_menu/VisibleColumnsMenu"
 import { VisibleIssueDetailsMenu } from "./settings_menu/VisibleIssueDetailsMenu"
@@ -20,9 +17,6 @@ export function SettingsPanel({ atReportsOverview, handleSort, settings, tags })
             <VisibleTagMenu tags={tags} settings={settings} />
             <VisibleColumnMenu settings={settings} />
             <SortColumnMenu handleSort={handleSort} settings={settings} />
-            <NumberOfDatesMenu settings={settings} />
-            <TimeBetweenDatesMenu settings={settings} />
-            <DateOrderMenu settings={settings} />
             <VisibleIssueDetailsMenu settings={settings} />
         </SettingsMenuGroup>
     )

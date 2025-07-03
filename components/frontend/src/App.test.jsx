@@ -30,6 +30,10 @@ beforeEach(async () => {
 
 afterEach(() => vi.restoreAllMocks())
 
+function reportDateButton() {
+    return screen.getByLabelText(/Change report date/, { selector: "button" })
+}
+
 it("shows spinner", async () => {
     const { container } = render(<App />)
     expect(screen.getAllByLabelText(/Loading/).length).toBe(1)
@@ -68,8 +72,8 @@ it("resets the user when the user clicks logout", async () => {
     await expectNoAccessibilityViolations(container)
 })
 
-async function selectDate(container) {
-    fireEvent.click(screen.getByLabelText("Report date"))
+async function select15thOfPreviousMonth(container) {
+    fireEvent.click(reportDateButton())
     await expectNoAccessibilityViolations(container)
     fireEvent.click(screen.getByRole("button", { name: "Previous month" }))
     fireEvent.click(screen.getAllByRole("gridcell", { name: "15" })[0])
@@ -77,36 +81,36 @@ async function selectDate(container) {
 
 it("handles a date change", async () => {
     const { container } = render(<App />)
-    await selectDate(container)
-    const expectedDate = dayjs().subtract(1, "month").date(15).toDate().toDateString()
-    expect(screen.getByLabelText("Report date").textContent).toMatch(expectedDate)
+    await select15thOfPreviousMonth(container)
+    const expectedDate = dayjs().subtract(1, "month").date(15).toDate().toLocaleDateString()
+    expect(reportDateButton().textContent).toMatch(expectedDate)
     await expectNoAccessibilityViolations(container)
 })
 
 it("handles a date change between two dates in the past", async () => {
     history.push("/?report_date=2022-03-13")
     const { container } = render(<App />)
-    await selectDate(container)
-    const expectedDate = dayjs().subtract(1, "month").date(15).toDate().toDateString()
-    expect(screen.getByLabelText("Report date").textContent).toMatch(expectedDate)
+    await select15thOfPreviousMonth(container)
+    const expectedDate = dayjs("2022-03-13").subtract(1, "month").date(15).toDate().toLocaleDateString()
+    expect(reportDateButton().textContent).toMatch(expectedDate)
     await expectNoAccessibilityViolations(container)
 })
 
 it("reads the report date query parameter", async () => {
     history.push("/?report_date=2020-03-13")
     const { container } = render(<App />)
-    const expectedDate = dayjs("2020-03-13").toDate().toDateString()
-    expect(screen.getByLabelText("Report date").textContent).toMatch(expectedDate)
+    const expectedDate = dayjs("2020-03-13").toDate().toLocaleDateString()
+    expect(reportDateButton().textContent).toMatch(expectedDate)
     await expectNoAccessibilityViolations(container)
 })
 
 it("handles a date reset", async () => {
     history.push("/?report_date=2020-03-13")
     const { container } = render(<App />)
-    fireEvent.click(screen.getByLabelText("Report date"))
+    fireEvent.click(reportDateButton())
     await expectNoAccessibilityViolations(container)
     fireEvent.click(screen.getByRole("button", { name: "Today" }))
-    expect(screen.getByLabelText("Report date").textContent).toMatch(/today/)
+    expect(reportDateButton().textContent).toMatch(/today/)
     await expectNoAccessibilityViolations(container)
 })
 
