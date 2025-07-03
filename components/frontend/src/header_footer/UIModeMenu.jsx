@@ -13,7 +13,7 @@ export function UIModeMenu({ setUIMode, uiMode }) {
         setUIMode(mode)
     }
     return (
-        <Tooltip placement="left" title="Change dark/light mode">
+        <Tooltip title="Change dark/light mode">
             <span /* https://mui.com/material-ui/react-tooltip/#disabled-elements */>
                 <IconButton
                     aria-label="Dark/light mode"

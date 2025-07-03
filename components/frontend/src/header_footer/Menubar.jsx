@@ -6,13 +6,14 @@ import { useEffect, useState } from "react"
 
 import { optionalDatePropType, settingsPropType, uiModePropType } from "../sharedPropTypes"
 import { CollapseButton } from "./buttons/CollapseButton"
-import { DatePickerButton } from "./buttons/DatePickerButton"
 import { DownloadAsPdfButton } from "./buttons/DownloadAsPdfButton"
 import { HomeButton } from "./buttons/HomeButton"
 import { LoginButton } from "./buttons/LoginButton"
+import { ReportPeriodButton } from "./buttons/ReportPeriodButton"
 import { ResetSettingsButton } from "./buttons/ResetSettingsButton"
 import { SettingsButton } from "./buttons/SettingsButton"
 import { UserButton } from "./buttons/UserButton"
+import { ReportPeriodPanel } from "./ReportPeriodPanel"
 import { UIModeMenu } from "./UIModeMenu"
 
 export function Menubar({
@@ -29,16 +30,16 @@ export function Menubar({
     uiMode,
     user,
 }) {
-    const [settingsPanelVisible, setSettingsPanelVisible] = useState(false)
+    const [visibleSettingsPanel, setVisibleSettingsPanel] = useState("")
     useEffect(() => {
-        function closePanels(event) {
+        function closeDrawer(event) {
             if (event.key === "Escape") {
-                setSettingsPanelVisible(false)
+                setVisibleSettingsPanel("")
             }
         }
-        window.addEventListener("keydown", closePanels)
+        window.addEventListener("keydown", closeDrawer)
         return () => {
-            window.removeEventListener("keydown", closePanels)
+            window.removeEventListener("keydown", closeDrawer)
         }
     }, [])
 
@@ -55,12 +56,14 @@ export function Menubar({
                     <Stack direction="row" spacing={2} sx={{ flexGrow: 1 }}>
                         <HomeButton
                             atReportsOverview={atReportsOverview}
-                            openReportsOverview={openReportsOverview}
-                            setSettingsPanelVisible={setSettingsPanelVisible}
+                            openReportsOverview={() => {
+                                setVisibleSettingsPanel("")
+                                openReportsOverview()
+                            }}
                         />
                         <SettingsButton
-                            setSettingsPanelVisible={setSettingsPanelVisible}
-                            settingsPanelVisible={settingsPanelVisible}
+                            setSettingsPanelVisible={(visible) => setVisibleSettingsPanel(visible ? "settings" : "")}
+                            settingsPanelVisible={visibleSettingsPanel === "settings"}
                         />
                         <ResetSettingsButton
                             atReportsOverview={atReportsOverview}
@@ -72,19 +75,29 @@ export function Menubar({
                         <DownloadAsPdfButton reportUuid={reportUuid} />
                     </Stack>
                     <Stack direction="row" spacing={2}>
-                        <DatePickerButton onChange={(date) => onDate(date.$d)} reportDate={reportDate} />
+                        <ReportPeriodButton
+                            reportDate={reportDate}
+                            setSettingsPanelVisible={(visible) =>
+                                setVisibleSettingsPanel(visible ? "reportperiod" : "")
+                            }
+                            settingsPanelVisible={visibleSettingsPanel === "reportperiod"}
+                        />
                         <UIModeMenu setUIMode={setUIMode} uiMode={uiMode} />
-                        {user !== null ? (
-                            <UserButton email={email} user={user} setUser={setUser} />
-                        ) : (
+                        {user === null ? (
                             <LoginButton setUser={setUser} />
+                        ) : (
+                            <UserButton email={email} user={user} setUser={setUser} />
                         )}
                     </Stack>
                 </Toolbar>
             </AppBar>
-            <Drawer anchor="top" open={settingsPanelVisible} onClose={() => setSettingsPanelVisible(false)}>
+            <Drawer anchor="top" open={visibleSettingsPanel} onClose={() => setVisibleSettingsPanel("")}>
                 <Toolbar /* Add an empty toolbar to the drawer so the panel is not partly hidden by the appbar. */ />
-                {panel}
+                {visibleSettingsPanel === "settings" ? (
+                    panel
+                ) : (
+                    <ReportPeriodPanel onChange={onDate} reportDate={reportDate} settings={settings} />
+                )}
             </Drawer>
         </>
     )
