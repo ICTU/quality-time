@@ -34,6 +34,7 @@ export function SubjectTableBody({
 
     const dragItem = useRef(null)
     const dragOverItem = useRef(null)
+    const tableIdRef = useRef(subjectUuid)
 
     useEffect(() => {
         // Keep local entries in sync when external entries change
@@ -43,16 +44,24 @@ export function SubjectTableBody({
     const handleDragStart = (index, rowRef, event) => {
         dragItem.current = index
         event.dataTransfer.effectAllowed = "move"
+        event.dataTransfer.setData("application/x-table-id", tableIdRef.current)
         createDragGhost(rowRef, event)
+        // Set a global variable to track the active drag table
+        window.__activeDragTableId = tableIdRef.current
     }
 
-    const handleDragEnter = (index) => {
+    const handleDragEnter = (index, event) => {
+        // Use a global variable as fallback for test env and browsers that don't propagate dataTransfer
+        const dragTableId = event?.dataTransfer?.getData("application/x-table-id") || window.__activeDragTableId
+        if (dragTableId !== tableIdRef.current) return
         setDragOverIndex(index)
         dragOverItem.current = index
     }
 
     const handleDrop = (e) => {
         e.preventDefault()
+        const dragTableId = e.dataTransfer?.getData("application/x-table-id") || window.__activeDragTableId
+        if (dragTableId !== tableIdRef.current) return
         const dragFrom = dragItem.current
         const dropTarget = dragOverItem.current
 
@@ -68,6 +77,7 @@ export function SubjectTableBody({
         dragItem.current = null
         dragOverItem.current = null
         setDragOverIndex(null)
+        window.__activeDragTableId = undefined
 
         const [movedUUID] = movedEntry
 
@@ -82,6 +92,7 @@ export function SubjectTableBody({
             dragItem.current = null
             dragOverItem.current = null
             setDragOverIndex(null)
+            window.__activeDragTableId = undefined
         }
 
         window.addEventListener("dragend", handleDragEnd)
@@ -130,7 +141,7 @@ export function SubjectTableBody({
                         settings={settings}
                         subjectUuid={subjectUuid}
                         onDragStart={handleDragStart}
-                        onDragEnter={handleDragEnter}
+                        onDragEnter={(e) => handleDragEnter(index, e)}
                         onDrop={(e) => handleDrop(e)}
                         isDropTarget={dragOverIndex === index}
                     />
