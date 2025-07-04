@@ -3,15 +3,12 @@ import { bool, func } from "prop-types"
 
 import { AppBarButton } from "./AppBarbutton"
 
-export function HomeButton({ atReportsOverview, openReportsOverview, setSettingsPanelVisible }) {
+export function HomeButton({ atReportsOverview, openReportsOverview }) {
     const label = "Go to reports overview"
     return (
         <AppBarButton
             disabled={atReportsOverview}
-            onClick={() => {
-                setSettingsPanelVisible(false)
-                openReportsOverview()
-            }}
+            onClick={openReportsOverview}
             startIcon={<img height="28px" width="28px" src="/favicon.ico" alt={label} />}
             sx={{ textTransform: "none" }}
             tooltip={label}
@@ -23,5 +20,4 @@ export function HomeButton({ atReportsOverview, openReportsOverview, setSettings
 HomeButton.propTypes = {
     atReportsOverview: bool,
     openReportsOverview: func,
-    setSettingsPanelVisible: func,
 }

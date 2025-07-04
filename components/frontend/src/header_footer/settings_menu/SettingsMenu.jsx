@@ -1,17 +1,18 @@
 import { MenuItem, MenuList, Stack, Tooltip, Typography } from "@mui/material"
-import { bool, func, number, oneOfType, string } from "prop-types"
+import { bool, func, number, oneOf, oneOfType, string } from "prop-types"
 
 import { childrenPropType, popupContentPropType } from "../../sharedPropTypes"
 
-export function SettingsMenuGroup({ children }) {
+export function SettingsMenuGroup({ children, justify }) {
     return (
-        <Stack direction="row" spacing={1} sx={{ justifyContent: "space-between", padding: "16px" }}>
+        <Stack direction="row" spacing={5} sx={{ justifyContent: justify ?? "left", padding: "16px" }}>
             {children}
         </Stack>
     )
 }
 SettingsMenuGroup.propTypes = {
     children: childrenPropType,
+    justify: oneOf(["left", "right"]),
 }
 
 export function SettingsMenu({ children, title }) {

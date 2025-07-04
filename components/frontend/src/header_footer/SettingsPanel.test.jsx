@@ -25,8 +25,6 @@ function renderSettingsPanel({
             handleDateChange={handleDateChange}
             handleSort={handleSort}
             settings={{
-                dateInterval: settings.dateInterval,
-                dateOrder: settings.dateOrder,
                 hiddenCards: settings.hiddenCards,
                 hiddenColumns: settings.hiddenColumns,
                 hiddenTags: settings.hiddenTags,
@@ -128,54 +126,6 @@ it("sorts a column by keypress", async () => {
     renderSettingsPanel({ handleSort: handleSort })
     await userEvent.type(screen.getAllByText(/Comment/)[1], " ")
     expect(handleSort).toHaveBeenCalledWith("comment")
-})
-
-it("sets the number of dates", async () => {
-    history.push("?nr_dates=2")
-    renderSettingsPanel()
-    fireEvent.click(screen.getByText(/7 dates/))
-    expect(history.location.search).toBe("?nr_dates=7")
-})
-
-it("sets the number of dates by keypress", async () => {
-    renderSettingsPanel()
-    await userEvent.type(screen.getByText(/5 dates/), " ")
-    expect(history.location.search).toBe("?nr_dates=5")
-})
-
-it("sets the date interval to weeks", async () => {
-    history.push("?nr_dates=2")
-    renderSettingsPanel()
-    await act(async () => fireEvent.click(screen.getByText(/2 weeks/)))
-    expect(history.location.search).toBe("?nr_dates=2&date_interval=14")
-})
-
-it("sets the date interval to one day", () => {
-    history.push("?nr_dates=2")
-    renderSettingsPanel()
-    fireEvent.click(screen.getByText(/1 day/))
-    expect(history.location.search).toBe("?nr_dates=2&date_interval=1")
-})
-
-it("sets the date interval by keypress", async () => {
-    history.push("?nr_dates=2&date_interval=7")
-    renderSettingsPanel()
-    await userEvent.type(screen.getByText(/1 day/), " ")
-    expect(history.location.search).toBe("?nr_dates=2&date_interval=1")
-})
-
-it("sorts the dates descending", () => {
-    history.push("?nr_dates=2&date_order=ascending")
-    renderSettingsPanel()
-    fireEvent.click(screen.getByText(/Descending/))
-    expect(history.location.search).toBe("?nr_dates=2")
-})
-
-it("sorts the dates ascending by keypress", async () => {
-    history.push("?nr_dates=2")
-    renderSettingsPanel()
-    await userEvent.type(screen.getByText(/Ascending/), " ")
-    expect(history.location.search).toBe("?nr_dates=2&date_order=ascending")
 })
 
 it("shows issue summaries", async () => {
