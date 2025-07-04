@@ -50,6 +50,21 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
                         subject_uuid="subject_uuid"
                         tags={[]}
                     />
+                    <SubjectTableBody
+                        dates={[]}
+                        handleSort={vi.fn()}
+                        reportDate={new Date("2020-01-15T00:00:00+00:00")}
+                        reload={vi.fn()}
+                        reversedMeasurements={[]}
+                        report={report}
+                        metricEntries={Object.entries({
+                            1: report.subjects.subject_uuid.metrics.metric_uuid,
+                            2: report.subjects.subject_uuid.metrics.metric_uuid2,
+                        })}
+                        reports={[]}
+                        settings={createTestableSettings()}
+                        subjectUuid="subject_uuid_1"
+                    />
                 </table>
             </DataModel.Provider>
         </Permissions.Provider>,
@@ -197,4 +212,25 @@ it("resets drag state on dragend", () => {
 
     // Drop indicator should be gone
     expect(screen.queryByTestId("drop-indicator-1")).not.toBeInTheDocument()
+})
+
+it("shows drop indicator only for the correct table", () => {
+    renderSubjectTableBody()
+    // Get rows from both tables
+    const row0_table1 = screen.getAllByTestId("metric-row-0")[0]
+    const row0_table2 = screen.getAllByTestId("metric-row-0")[1]
+
+    // Simulate drag start on the first row of the first table
+    const dragStartEvent = createEvent.dragStart(row0_table1)
+    dragStartEvent.dataTransfer = { effectAllowed: "", setDragImage: vi.fn(), setData: vi.fn(), getData: vi.fn() }
+    fireEvent(row0_table1, dragStartEvent)
+
+    // Simulate drag enter on the first row of the first table (should show indicator)
+    fireEvent.dragEnter(row0_table1, { dataTransfer: dragStartEvent.dataTransfer })
+    expect(screen.getAllByTestId("drop-indicator-0").length).toBe(1)
+
+    // Simulate drag enter on the first row of the second table (should NOT show indicator)
+    fireEvent.dragEnter(row0_table2, { dataTransfer: dragStartEvent.dataTransfer })
+    // There should still be only one drop indicator, for the first table
+    expect(screen.getAllByTestId("drop-indicator-0").length).toBe(1)
 })
