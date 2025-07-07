@@ -1,7 +1,6 @@
 html {
     height: 100%; /* Make sure the footer can be at the bottom of the page */
     scroll-padding-top: 204px; /* Height of sticky header */
-    -webkit-filter: opacity(1); /* Make sure the paper elevation looks good in the PDF-export */
 }
 body {
     display: flex; /* Stretch the body... */
