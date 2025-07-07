@@ -26,6 +26,7 @@ app.get("/api/render", async (req, res) => {
             timeout: 60000,
         });
         console.log(`URL ${url}: opened`);
+        await webPage.addStyleTag({ content: ".MuiPaper-elevation: {-webkit-filter: blur(0);}" }); // Fix box shadows
         await webPage.waitForSelector(".MuiCircularProgress-root", { hidden: true }); // Initial loader
         await webPage.waitForSelector(".MuiSkeleton-root", { hidden: true }); // Measurement entities placeholder
         await webPage.waitForSelector("#dashboard.animated");
