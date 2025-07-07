@@ -14,7 +14,7 @@ dependencies = [
     "packaging==25.0",
     "pymongo==4.13.2",
     "python-dateutil==2.9.0.post0",
-    "typing-extensions==4.14.0",
+    "typing-extensions==4.14.1",
 ]
 
 optional-dependencies.dev = [
