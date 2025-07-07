@@ -10,7 +10,7 @@ dependencies = [
     "gitpython==3.1.44",
 ]
 optional-dependencies.tools = [
-    "bandit==1.8.5",
+    "bandit==1.8.6",
     "bump-my-version==1.2.0",
     "fixit==2.1.0",
     "mypy==1.16.1",
