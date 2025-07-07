@@ -14,7 +14,7 @@ dependencies = [
     "packaging==25.0",
     "pymongo==4.13.2",
     "python-dateutil==2.9.0.post0",
-    "typing-extensions==4.14.0",
+    "typing-extensions==4.14.1",
 ]
 
 optional-dependencies.dev = [
@@ -26,7 +26,7 @@ optional-dependencies.dev = [
     "unittest-xml-reporting==3.2.0",         # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
-    "bandit==1.8.5",
+    "bandit==1.8.6",
     "fixit==2.1.0",
     "mypy==1.16.1",
     "pip-audit==2.9.0",
