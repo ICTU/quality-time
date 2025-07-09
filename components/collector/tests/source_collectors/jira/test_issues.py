@@ -55,3 +55,22 @@ class JiraIssuesTest(JiraTestCase):
         )
         self.assert_measurement(result, value="1", entities=[self.entity()])
         self.assertIn(f"&maxResults={JiraIssues.DEFAULT_MAX_RESULTS}&", get_mock.mock_calls[2].args[0])
+
+    async def test_api_v2(self):
+        """Test that the Jira API version used is v2 by default."""
+        issues_json = {"total": 1, "issues": [self.issue()]}
+        _, get_mock, _ = await self.collect(
+            get_request_json_side_effect=[[{"id": "field", "name": "Field"}], 50, issues_json, issues_json],
+            return_mocks=True,
+        )
+        self.assertTrue(get_mock.mock_calls[2].startswith("https://jira/rest/api/2"))
+
+    async def test_api_v3(self):
+        """Test that the Jira API version can be set to v3."""
+        self.set_source_parameter("api_version", "v3")
+        issues_json = {"total": 1, "issues": [self.issue()]}
+        _, get_mock, _ = await self.collect(
+            get_request_json_side_effect=[[{"id": "field", "name": "Field"}], 50, issues_json, issues_json],
+            return_mocks=True,
+        )
+        self.assertTrue(get_mock.mock_calls[2].startswith("https://jira/rest/api/3"))

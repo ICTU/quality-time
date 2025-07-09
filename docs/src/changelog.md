@@ -22,6 +22,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - Replace the report date picker with a panel that contains the report date picker and the settings for number of dates, time between dates, and date order. Closes [#11616](https://github.com/ICTU/quality-time/issues/11616).
 
+### Added
+
+- When configuring Jira as source, allow for picking the Jira API version. Closes [#11652](https://github.com/ICTU/quality-time/issues/11652).
+
 ## v5.35.0 - 2025-07-04
 
 ### Fixed
