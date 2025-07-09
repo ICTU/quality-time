@@ -352,8 +352,13 @@ class UnmergedToInactiveBranchesTest(MigrationTestCase):
     def setUp(self):
         """Create test fixture."""
         super().setUp()
-        self.sources = {SOURCE_ID: {"type": "gitlab", "parameters": {}}}
-        self.expected_sources = {SOURCE_ID: {"type": "gitlab", "parameters": {"branch_merge_status": ["unmerged"]}}}
+        self.sources = {SOURCE_ID: {"type": "gitlab", "parameters": {"project": "namespace/project"}}}
+        self.expected_sources = {
+            SOURCE_ID: {
+                "type": "gitlab",
+                "parameters": {"project_or_group": "namespace/project", "branch_merge_status": ["unmerged"]},
+            }
+        }
 
     def test_report_with_unmerged_branches_metric(self):
         """Test that an unmerged branches metric is migrated."""
@@ -381,3 +386,36 @@ class UnmergedToInactiveBranchesTest(MigrationTestCase):
             sources=self.expected_sources,
         )
         self.check_inserted_report(inserted_report)
+
+
+class ProjectToProjectOrGroupParameterTest(MigrationTestCase):
+    """Unit tests for the project to project-or-group GitLab parameter migration."""
+
+    def setUp(self):
+        """Create test fixture."""
+        super().setUp()
+        self.sources = {
+            SOURCE_ID: {"type": "gitlab", "parameters": {"project": "namespace/project"}},
+            SOURCE_ID2: {"type": "azure_devops"},
+        }
+        self.expected_sources = {
+            SOURCE_ID: {"type": "gitlab", "parameters": {"project_or_group": "namespace/project"}},
+            SOURCE_ID2: {"type": "azure_devops"},
+        }
+
+    def test_report_with_project_parameter(self):
+        """Test that an project parameter is migrated."""
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="inactive_branches", sources=self.sources),
+        ]
+        perform_migrations(self.database)
+        inserted_report = self.inserted_report(metric_type="inactive_branches", sources=self.expected_sources)
+        self.check_inserted_report(inserted_report)
+
+    def test_idempotency(self):
+        """Test that the project parameter is not migrated when it has been changed already."""
+        self.database.reports.find.return_value = [
+            self.existing_report(metric_type="inactive_branches", sources=self.expected_sources),
+        ]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()

@@ -25,6 +25,7 @@ def perform_migrations(database: Database) -> None:
                 change_ci_subject_types_to_development_environment(report),
                 change_sonarqube_parameters(report),
                 change_unmerged_branches_metrics_to_inactive_branches(report),
+                change_inactive_branches_project_parameter_to_project_or_group(report),
             ]
         ):
             change_description = " and to ".join([change for change in changes if change])
@@ -198,6 +199,22 @@ def change_unmerged_branches_metrics_to_inactive_branches(report) -> str:
         if not metric.get("name"):
             metric["name"] = "Unmerged branches"
         change = "metric type 'unmerged_branches' to 'inactive_branches'"
+    return change
+
+
+def change_inactive_branches_project_parameter_to_project_or_group(report) -> str:
+    """Change the parameter 'project' of the metric 'inactive branches' to 'project_or_group'."""
+    # Added after Quality-time v5.37.0, see https://github.com/ICTU/quality-time/issues/7991
+    change = ""
+    for metric in metrics(report, ["inactive_branches"]):
+        for source in metric.get("sources", {}).values():
+            if source["type"] == "gitlab" and "project" in source["parameters"]:
+                source["parameters"]["project_or_group"] = source["parameters"]["project"]
+                del source["parameters"]["project"]
+                change = (
+                    "the parameter 'project' of source type 'gitlab' to 'project_or_group' "
+                    "for metric type 'inactive_branches'"
+                )
     return change
 
 

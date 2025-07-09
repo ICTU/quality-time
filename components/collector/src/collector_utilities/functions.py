@@ -62,14 +62,15 @@ def hashless(url: URL) -> URL:
     return URL(urllib.parse.urlunsplit((scheme, netloc, path, query, fragment)))
 
 
-def add_query(url: URL, query: str) -> URL:
+def add_query(url: URL, *queries: str) -> URL:
     """Add the query to the URL.
 
-    For example, adding "a=b&c=d" to "https://example.org" returns "https://example.org?a=b&c=d".
+    For example, adding "a=b" and "c=d" to "https://example.org" returns "https://example.org?a=b&c=d".
     """
-    if not query:
+    queries = tuple(query for query in queries if query)  # Weed out empty queries
+    if not queries:
         return url
-    return URL(f"{url}{'&' if '?' in url else '?'}{query}")
+    return URL(f"{url}{'&' if '?' in url else '?'}{'&'.join(queries)}")
 
 
 def sha1_hash(string: str) -> str:
