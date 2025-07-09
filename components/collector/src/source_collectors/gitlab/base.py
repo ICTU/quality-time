@@ -19,6 +19,8 @@ from model import Entities, Entity, SourceResponses
 class GitLabBase(SourceCollector, ABC):
     """Base class for GitLab collectors."""
 
+    PAGE_SIZE = "per_page=100"
+
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to follow GitLab pagination links, if necessary."""
         all_responses = responses = await super()._get_source_responses(*urls)
@@ -54,7 +56,7 @@ class GitLabProjectBase(GitLabBase, ABC):
         url = await super()._api_url()
         project = self._parameter("project", quote=True)
         api_url = URL(f"{url}/api/v4/projects/{project}" + (f"/{api}" if api else ""))
-        return add_query(api_url, "per_page=100")
+        return add_query(api_url, self.PAGE_SIZE)
 
 
 class GitLabJobsBase(GitLabProjectBase):

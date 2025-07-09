@@ -125,13 +125,19 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             metrics=[
                 "change_failure_rate",
                 "failed_jobs",
-                "inactive_branches",
                 "job_runs_within_time_period",
                 "pipeline_duration",
                 "merge_requests",
                 "source_up_to_dateness",
                 "unused_jobs",
             ],
+        ),
+        "project_or_group": StringParameter(
+            name="Project (name with namespace or id) or group (name or id)",
+            short_name="project or group",
+            mandatory=True,
+            help_url=HttpUrl("https://docs.gitlab.com/ee/user/project/"),
+            metrics=["inactive_branches"],
         ),
         "private_token": PrivateToken(
             name="Private token (with read_api scope)",

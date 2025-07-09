@@ -1,7 +1,6 @@
 """GitLab unit test base classes."""
 
 from datetime import datetime
-from typing import Final
 
 from dateutil.tz import tzutc
 
@@ -11,14 +10,16 @@ from tests.source_collectors.source_collector_test_case import SourceCollectorTe
 class FakeResponse:
     """Fake GitLab response."""
 
-    links: Final[dict] = {}
-
-    def __init__(self, fake_json) -> None:
+    def __init__(self, fake_json, links=None) -> None:
         self.fake_json = fake_json
+        self.links = links or {}
 
     async def json(self):
         """Return the fake JSON."""
         return self.fake_json
+
+    async def read(self):
+        """Fake a read method."""
 
 
 class GitLabTestCase(SourceCollectorTestCase):

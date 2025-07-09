@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- When measuring inactive branches using GitLab, allow for selecting a group of projects in addition to a single project. Closes [#7991](https://github.com/ICTU/quality-time/issues/7991).
+
 ## v5.37.0 - 2025-08-06
 
 ### Fixed

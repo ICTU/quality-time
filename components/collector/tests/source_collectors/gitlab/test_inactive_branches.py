@@ -1,10 +1,14 @@
 """Unit tests for the GitLab inactive branches collector."""
 
 from datetime import datetime
+from http import HTTPStatus
 
+import aiohttp
+import multidict
+import yarl
 from dateutil.tz import tzutc
 
-from .base import GitLabTestCase
+from .base import FakeResponse, GitLabTestCase
 
 
 class GitLabInactiveBranchesTest(GitLabTestCase):
@@ -16,6 +20,7 @@ class GitLabInactiveBranchesTest(GitLabTestCase):
     def setUp(self):
         """Extend to setup fixtures."""
         super().setUp()
+        self.set_source_parameter("project_or_group", "namespace/project")
         self.set_source_parameter("branches_to_ignore", ["ignored_.*"])
         main = self.create_branch("main", default=True)
         unmerged = self.create_branch("unmerged_branch")
@@ -27,7 +32,29 @@ class GitLabInactiveBranchesTest(GitLabTestCase):
         self.unmerged_branch_entity = self.create_entity("unmerged_branch", merged=False)
         self.merged_branch_entity = self.create_entity("merged_branch", merged=True)
         self.entities = [self.unmerged_branch_entity, self.merged_branch_entity]
-        self.landing_url = "https://gitlab/namespace/project/-/branches"
+        self.group_landing_url = "https://gitlab/namespace/project"
+        self.project_landing_url = self.group_landing_url + "/-/branches"
+
+    @staticmethod
+    def response_error(status: HTTPStatus = HTTPStatus.NOT_FOUND) -> aiohttp.ClientResponseError:
+        """Create a fake client response error."""
+        request_info = aiohttp.RequestInfo(yarl.URL(), "", multidict.CIMultiDictProxy(multidict.CIMultiDict()))
+        return aiohttp.ClientResponseError(request_info, (), status=status)
+
+    @classmethod
+    def group_does_not_exist(cls) -> aiohttp.ClientResponseError:
+        """Return the response for an non-existing group."""
+        return cls.response_error()
+
+    @staticmethod
+    def group_exists() -> FakeResponse:
+        """Return the response for an existing group."""
+        return FakeResponse({})
+
+    @staticmethod
+    def group_projects() -> FakeResponse:
+        """Return a fake response with the projects of a group."""
+        return FakeResponse([{"path_with_namespace": "group/project"}])
 
     def create_branch(
         self, name: str, *, default: bool = False, merged: bool = False, active: bool = False
@@ -52,28 +79,71 @@ class GitLabInactiveBranchesTest(GitLabTestCase):
             "url": self.WEB_URL,
         }
 
-    async def test_inactive_branches(self):
-        """Test that the number of inactive branches can be measured."""
-        response = await self.collect(get_request_json_return_value=self.branches)
-        self.assert_measurement(response, value="2", entities=self.entities, landing_url=self.landing_url)
+    async def test_project_inactive_branches(self):
+        """Test that the number of inactive branches of a project can be measured."""
+        responses = [self.group_does_not_exist(), FakeResponse(self.branches), self.group_does_not_exist()]
+        measurement = await self.collect(get_request_side_effect=responses)
+        self.assert_measurement(measurement, value="2", entities=self.entities, landing_url=self.project_landing_url)
 
-    async def test_unmerged_inactive_branches(self):
-        """Test that the number of unmerged inactive branches can be measured."""
+    async def test_group_inactive_branches(self):
+        """Test that the number of inactive branches of a group of projects can be measured."""
+        responses = [self.group_exists(), self.group_projects(), FakeResponse(self.branches), self.group_exists()]
+        measurement = await self.collect(get_request_side_effect=responses)
+        self.assert_measurement(measurement, value="2", entities=self.entities, landing_url=self.group_landing_url)
+
+    async def test_project_unmerged_inactive_branches(self):
+        """Test that the number of unmerged inactive branches of a project can be measured."""
         self.set_source_parameter("branch_merge_status", ["unmerged"])
-        response = await self.collect(get_request_json_return_value=self.branches)
+        responses = [self.group_does_not_exist(), FakeResponse(self.branches), self.group_does_not_exist()]
+        measurement = await self.collect(get_request_side_effect=responses)
         self.assert_measurement(
-            response, value="1", entities=[self.unmerged_branch_entity], landing_url=self.landing_url
+            measurement, value="1", entities=[self.unmerged_branch_entity], landing_url=self.project_landing_url
         )
 
-    async def test_merged_inactive_branches(self):
-        """Test that the number of merged inactive branches can be measured."""
-        self.set_source_parameter("branch_merge_status", ["merged"])
-        response = await self.collect(get_request_json_return_value=self.branches)
-        self.assert_measurement(response, value="1", entities=[self.merged_branch_entity], landing_url=self.landing_url)
+    async def test_group_unmerged_inactive_branches(self):
+        """Test that the number of unmerged inactive branches of a group of projects can be measured."""
+        self.set_source_parameter("branch_merge_status", ["unmerged"])
+        responses = [self.group_exists(), self.group_projects(), FakeResponse(self.branches), self.group_exists()]
+        measurement = await self.collect(get_request_side_effect=responses)
+        self.assert_measurement(
+            measurement, value="1", entities=[self.unmerged_branch_entity], landing_url=self.group_landing_url
+        )
 
-    async def test_pagination(self):
-        """Test that pagination works."""
-        branches = [self.branches[:3], self.branches[3:]]
-        links = {"next": {"url": "https://gitlab/next_page"}}
-        response = await self.collect(get_request_json_side_effect=branches, get_request_links=links)
-        self.assert_measurement(response, value="2", entities=self.entities, landing_url=self.landing_url)
+    async def test_project_merged_inactive_branches(self):
+        """Test that the number of merged inactive branches of a project can be measured."""
+        self.set_source_parameter("branch_merge_status", ["merged"])
+        responses = [self.group_does_not_exist(), FakeResponse(self.branches), self.group_does_not_exist()]
+        measurement = await self.collect(get_request_side_effect=responses)
+        self.assert_measurement(
+            measurement, value="1", entities=[self.merged_branch_entity], landing_url=self.project_landing_url
+        )
+
+    async def test_group_merged_inactive_branches(self):
+        """Test that the number of merged inactive branches of a group of projects can be measured."""
+        self.set_source_parameter("branch_merge_status", ["merged"])
+        responses = [self.group_exists(), self.group_projects(), FakeResponse(self.branches), self.group_exists()]
+        measurement = await self.collect(get_request_side_effect=responses)
+        self.assert_measurement(
+            measurement, value="1", entities=[self.merged_branch_entity], landing_url=self.group_landing_url
+        )
+
+    async def test_project_pagination(self):
+        """Test that pagination works when getting the branches of a project."""
+        page1 = FakeResponse(self.branches[:3], links={"next": {"url": "https://gitlab/next_page"}})
+        page2 = FakeResponse(self.branches[3:])
+        responses = [self.group_does_not_exist(), page1, page2, self.group_does_not_exist()]
+        measurement = await self.collect(get_request_side_effect=responses)
+        self.assert_measurement(measurement, value="2", entities=self.entities, landing_url=self.project_landing_url)
+
+    async def test_group_pagination(self):
+        """Test that pagination works when getting the branches of a group of projects."""
+        page1 = FakeResponse(self.branches[:3], links={"next": {"url": "https://gitlab/next_page"}})
+        page2 = FakeResponse(self.branches[3:])
+        responses = [self.group_exists(), self.group_projects(), page1, page2, self.group_exists()]
+        measurement = await self.collect(get_request_side_effect=responses)
+        self.assert_measurement(measurement, value="2", entities=self.entities, landing_url=self.group_landing_url)
+
+    async def test_groups_endpoint_failure(self):
+        """Test that a groups endpoint failure results in a failed measurement."""
+        measurement = await self.collect(get_request_side_effect=[self.response_error(HTTPStatus.FORBIDDEN)])
+        self.assert_measurement(measurement, connection_error="403", landing_url="https://gitlab")
