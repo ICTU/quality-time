@@ -7,6 +7,7 @@ from shared_data_model.meta.entity import Color, Entity, EntityAttribute, Entity
 from shared_data_model.meta.source import Source
 from shared_data_model.meta.unit import Unit
 from shared_data_model.parameters import (
+    APIVersion,
     Days,
     IntegerParameter,
     SingleChoiceParameter,
@@ -60,6 +61,12 @@ JIRA = Source(
     url=HttpUrl("https://www.atlassian.com/software/jira"),
     issue_tracker=True,
     parameters={
+        "api_version": APIVersion(
+            values=["v2", "v3"],
+            api_values={"v2": "2", "v3": "3"},
+            default_value="v2",
+            metrics=ALL_JIRA_METRICS,
+        ),
         "board": StringParameter(
             name="Board (name or id)",
             short_name="board",

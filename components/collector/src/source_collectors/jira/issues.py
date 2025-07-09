@@ -23,7 +23,7 @@ class JiraIssues(JiraBase):
     async def _api_url(self) -> URL:
         """Extend to get the fields from Jira and create a field name to field id mapping."""
         url = await super()._api_url()
-        fields_url = URL(f"{url}/rest/api/2/field")
+        fields_url = URL(f"{url}/rest/api/{self._rest_api_version}/field")
         response = (await super()._get_source_responses(fields_url))[0]
         self._field_ids = {}
         for field in await response.json():
@@ -33,7 +33,7 @@ class JiraIssues(JiraBase):
         jql = str(self._parameter("jql", quote=True))
         fields = self._fields()
         max_results = await self._determine_max_results()
-        return URL(f"{url}/rest/api/2/search?jql={jql}&fields={fields}&maxResults={max_results}")
+        return URL(f"{url}/rest/api/{self._rest_api_version}/search?jql={jql}&fields={fields}&maxResults={max_results}")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the JQL query to the landing URL."""
@@ -123,7 +123,8 @@ class JiraIssues(JiraBase):
         """Maximum number of issues to retrieve per page."""
         if isinstance(self.max_results, int):  # NB: using cached_property is not doable on asyncio coroutine
             return self.max_results
-        preference_url = URL(f"{self._parameter('url')}/rest/api/2/mypreferences?key=jira.search.views.default.max")
+        url = self._parameter("url")
+        preference_url = URL(f"{url}/rest/api/{self._rest_api_version}/mypreferences?key=jira.search.views.default.max")
         result_value = await (await super()._get_source_responses(preference_url))[0].json()
         self.max_results = result_value if isinstance(result_value, int) else self.DEFAULT_MAX_RESULTS
         return self.max_results

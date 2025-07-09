@@ -20,3 +20,8 @@ class JiraBase(SourceCollector):
         if token := self._parameter("private_token"):
             headers["Authorization"] = f"Bearer {token}"
         return headers
+
+    @property
+    def _rest_api_version(self) -> str:
+        """Return the Jira REST API version set by the user."""
+        return str(self._parameter("api_version"))

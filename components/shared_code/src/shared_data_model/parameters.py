@@ -124,6 +124,14 @@ class PrivateToken(Password):
     validation_path: str = ""  # URL path to use for the validation of tokens
 
 
+class APIVersion(SingleChoiceParameter):
+    """API version to use."""
+
+    name: str = "API version"
+    mandatory: bool = True
+    help: str | None = "Version of the API (application programming interface) to use for retrieving information."
+
+
 class Days(IntegerParameter):
     """Number of days parameter."""
 

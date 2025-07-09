@@ -9,14 +9,14 @@ import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { ReportSources } from "./ReportSources"
 
-function renderReportSources(report, expandedItems) {
+function renderReportSources(report, expandedItems, theDataModel) {
     const settings = createTestableSettings()
     if (expandedItems) {
         settings.expandedItems.value = expandedItems
     }
     return render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
+            <DataModel.Provider value={theDataModel ?? dataModel}>
                 <ReportSources reload={vi.fn()} report={report} settings={settings} />
             </DataModel.Provider>
             ,
@@ -106,7 +106,7 @@ it("shows the default source name if the source doesn't have an own name", async
     await expectNoAccessibilityViolations(container)
 })
 
-it("changes a parameter value", async () => {
+it("changes the value of a parameter of a source without parameter layout", async () => {
     const { container } = renderReportSources(
         {
             subjects: {
@@ -126,6 +126,39 @@ it("changes a parameter value", async () => {
     await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
     expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/url", {
         url: "https://source.org/new",
+        edit_scope: "report",
+    })
+    await expectNoAccessibilityViolations(container)
+})
+
+it("changes the value of a parameter of a source with parameter layout", async () => {
+    const theDataModel = { ...dataModel }
+    theDataModel.sources["source_type"].parameters = {
+        api_version: { name: "API version", type: "string" },
+    }
+    theDataModel.sources["source_type"].parameter_layout = {
+        location: { parameters: ["api_version"] },
+    }
+    const { container } = renderReportSources(
+        {
+            subjects: {
+                subject_uuid: {
+                    metrics: {
+                        metric_uuid: {
+                            sources: {
+                                source_uuid: { type: "source_type", parameters: { api_version: "2" } },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        ["source_uuid:0"],
+        theDataModel,
+    )
+    await userEvent.type(screen.getByLabelText(/API version/), "3{Enter}")
+    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/api_version", {
+        api_version: "3",
         edit_scope: "report",
     })
     await expectNoAccessibilityViolations(container)

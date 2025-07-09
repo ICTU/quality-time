@@ -13,10 +13,12 @@ import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { InfoMessage } from "../widgets/WarningMessage"
 import { reportSources } from "./report_utils"
 
-export function SourceParameters({ reload, report, source, sourceUuid }) {
+function SourceParameters({ reload, report, source, sourceUuid }) {
     const dataModel = useContext(DataModel)
-    const allParameters = dataModel.sources[source.type].parameters
-    const locationParameterKeys = ["url", "landing_url", "username", "password", "private_token"]
+    const sourceType = dataModel.sources[source.type]
+    const allParameters = sourceType.parameters
+    const defaultLocationParameterKeys = ["url", "landing_url", "username", "password", "private_token"]
+    const locationParameterKeys = sourceType?.parameter_layout?.location?.parameters ?? defaultLocationParameterKeys
     let parameters
     if (new Set(Object.keys(allParameters)).intersection(new Set(locationParameterKeys)).size === 0) {
         parameters = <InfoMessage title="No location parameters">This source has no location parameters.</InfoMessage>
