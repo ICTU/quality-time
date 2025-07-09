@@ -9,7 +9,7 @@ classifiers = [
 dependencies = [
     "axe-selenium-python==2.1.6",
     "requests==2.32.4",
-    "selenium==4.34.1",
+    "selenium==4.34.2",
 ]
 optional-dependencies.dev = [
     "types-requests==2.32.4.20250611",
