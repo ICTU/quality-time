@@ -10,9 +10,9 @@ axe-selenium-python==2.1.6 \
     --hash=sha256:21d10014c0bc3c999c1bfab54b9ef6a5d67f200ffca3db3629e0b315b3f1f136 \
     --hash=sha256:9203ff59c79edcfbcbd676ae55ca35f257e9afb663adbcbc210e3b0d802255ae
     # via application-tests (pyproject.toml)
-certifi==2025.6.15 \
-    --hash=sha256:2e0c7ce7cb5d8f8634ca55d2ba7e6ec2689a2fd6537d8dec1296a477a4910057 \
-    --hash=sha256:d747aa5a8b9bbbb1bb8c22bb13e22bd1f18e9796defa16bab421f7f7a317323b
+certifi==2025.7.9 \
+    --hash=sha256:c1d2ec05395148ee10cf672ffc28cd37ea0ab0d99f9cc74c43e588cbd111b079 \
+    --hash=sha256:d842783a14f8fdd646895ac26f719a061408834473cfc10203f6a575beb15d39
     # via
     #   requests
     #   selenium
@@ -155,8 +155,9 @@ requests==2.32.4 \
     --hash=sha256:27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c \
     --hash=sha256:27d0316682c8a29834d3264820024b62a36942083d52caf2f14c0591336d3422
     # via application-tests (pyproject.toml)
-selenium==4.34.1 \
-    --hash=sha256:1a67bee7b80dca39528666f2fa40827ee9733a831e43ff1abcad1db5bcd6f0df
+selenium==4.34.2 \
+    --hash=sha256:0f6d147595f08c6d4bad87b34c39dcacb4650aedc78e3956c8eac1bb752a3854 \
+    --hash=sha256:ea208f7db9e3b26e58c4a817ea9dd29454576d6ea55937d754df079ad588e1ad
     # via
     #   application-tests (pyproject.toml)
     #   axe-selenium-python
