@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Fixed
 
+- Add a note to the Dependency-Track private token parameter to indicate which API permissions the token needs. Fixes [#9169](https://github.com/ICTU/quality-time/issues/9169).
 - Fix links in PDF-exports not being clickable. Fixes [#11636](https://github.com/ICTU/quality-time/issues/11636).
 
 ### Changed
