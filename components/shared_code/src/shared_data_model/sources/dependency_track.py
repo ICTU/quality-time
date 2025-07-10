@@ -54,7 +54,7 @@ DEPENDENCY_TRACK = Source(
             metrics=ALL_DEPENDENCY_TRACK_METRICS,
         ),
         "private_token": PrivateToken(
-            name="API key",
+            name="API key (with view_portfolio and view_vulnerability permissions)",
             help_url=HttpUrl("https://docs.dependencytrack.org/integrations/rest-api/"),
             metrics=["dependencies", "source_up_to_dateness", "security_warnings"],
         ),
