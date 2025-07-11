@@ -36,6 +36,9 @@ where = [
     "src",
 ]
 
+[tool.setuptools.package-data]
+"*" = [ "*.png" ]
+
 [tool.ruff]
 line-length = 120
 src = [
@@ -100,7 +103,7 @@ disable_error_code = "valid-type" # mypy does not yet support PEP 695, Type Para
 
 [[tool.mypy.overrides]]
 module = [
-    "pymongo",
     "bottle",
+    "pymongo",
 ]
 ignore_missing_imports = true

@@ -11,6 +11,7 @@ dependencies = [
     "gitpython==3.1.44",
     "myst-parser==2.0.0",
     "pydantic==2.11.7",         # Needed for generating the reference docs from the data model
+    "shared-code",
     "sphinx==7.2.6",
     "sphinx-copybutton==0.5.2",
     "sphinx-design==0.5.0",
@@ -92,3 +93,6 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
+
+[tool.uv.sources]
+shared-code = { path = "../components/shared_code", editable = true }

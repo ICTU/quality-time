@@ -11,8 +11,7 @@ export PROXY_PORT=8080
 docker compose build --progress quiet database api_server renderer frontend www
 docker compose up --detach database ldap
 cd components/api_server || exit
-uv venv
-ci/pip-install.sh
+ci/install-dependencies.sh
 .venv/bin/coverage erase
 RENDERER_HOST=localhost .venv/bin/python tests/quality_time_api_server_under_coverage.py &> ../../build/quality_time_api_server.log &
 sleep 5  # Give server time to start up
@@ -21,8 +20,7 @@ cd ../..
 # we can measure the coverage of the startup code, including the containers that depend on the API-server.
 docker compose up --detach api_server renderer frontend www
 cd tests/feature_tests
-uv venv
-ci/pip-install.sh
+ci/install-dependencies.sh
 cd ../..
 sleep 5  # Give components time to start up
 tests/feature_tests/.venv/bin/coverage erase

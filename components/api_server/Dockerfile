@@ -1,28 +1,22 @@
-FROM python:3.13.5-alpine3.22 AS compile-image
-
-WORKDIR /home/server
-
-RUN apk add --no-cache g++=14.2.0-r6 gcc=14.2.0-r6 libffi-dev=3.4.8-r0 make=4.4.1-r3 && \
-    python -m venv venv
-ENV PATH="/home/server/venv/bin:$PATH"
-COPY api_server/requirements/requirements.txt /requirements.txt
-RUN pip install --no-cache-dir --require-hashes -r /requirements.txt
-COPY api_server/requirements/requirements-internal.txt /requirements-internal.txt
-COPY shared_code /home/shared_code/
-RUN pip install --no-cache-dir --use-pep517 -r /requirements-internal.txt
-
 FROM python:3.13.5-alpine3.22
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time API-server"
 
-RUN adduser -S server
+ENV UV_COMPILE_BYTECODE=1 UV_NO_CACHE=1 UV_PYTHON_DOWNLOADS=0 VIRTUAL_ENV=/home/server/venv
+
 WORKDIR /home/server
+
+RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv \
+    --mount=type=bind,source=shared_code,target=/home/shared_code,rw \
+    --mount=type=bind,source=api_server/uv.lock,target=/home/server/uv.lock \
+    --mount=type=bind,source=api_server/pyproject.toml,target=/home/server/pyproject.toml \
+    uv sync --active --locked --no-dev --no-install-project
+
+RUN adduser -S server
 USER server
 
-COPY --from=compile-image /home/server/venv /home/server/venv
 COPY api_server/src /home/server
-COPY shared_code /home/shared_code
 
 HEALTHCHECK CMD ["python", "/home/server/healthcheck.py"]
 

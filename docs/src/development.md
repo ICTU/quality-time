@@ -12,7 +12,7 @@ If you want to get *Quality-time* up and running quickly, for example for a demo
 
 #### Install prerequisites
 
-Prerequisites are Docker and Git for both scenario's. For scenario 2 you also need Python 3.13, [uv](https://github.com/astral-sh/uv), and a recent version of Node.js (we currently use Node.js v22).
+Prerequisites are Docker and Git for both scenario's. For scenario 2 you also need Python 3.13, [uv](https://github.com/astral-sh/uv), and a recent version of Node.js (we currently use Node.js v24).
 
 Clone this repository:
 
@@ -71,7 +71,7 @@ Open another terminal and run the API-server:
 cd components/api_server
 uv venv
 . .venv/bin/activate  # on Windows: venv\Scripts\activate
-ci/pip-install.sh
+ci/install-dependencies.sh
 python src/quality_time_server.py
 ```
 
@@ -87,7 +87,7 @@ curl http://localhost:5001/api/v3/docs | jq .
 If you're new to Python virtual environments, note that:
 - Creating a virtual environment (`uv venv`) has to be done once. Only when the Python version changes, you want to recreate the virtual environment.
 - Activating the virtual environment (`. .venv/bin/activate`) has to be done every time you open a new shell and want to use the Python installed in the virtual environment.
-- Installing the requirements (`ci/pip-install.sh`) has to be repeated when the dependencies, specified in the requirements files, change.
+- Installing the requirements (`ci/install-dependencies.sh`) has to be repeated when the dependencies, specified in the requirements files, change.
 ```
 
 ```{seealso}
@@ -103,7 +103,7 @@ Open another terminal and run the collector:
 cd components/collector
 uv venv
 . .venv/bin/activate  # on Windows: venv\Scripts\activate
-ci/pip-install.sh
+ci/install-dependencies.sh
 python src/quality_time_collector.py
 ```
 
@@ -125,7 +125,7 @@ Open another terminal and run the frontend:
 
 ```console
 cd components/frontend
-npm install --ignore-scripts
+ci/install-dependencies.sh
 npm run start
 ```
 
@@ -139,7 +139,7 @@ Optionally, open yet another terminal and run the notifier:
 cd components/notifier
 uv venv
 . .venv/bin/activate  # on Windows: venv\Scripts\activate
-ci/pip-install.sh
+ci/install-dependencies.sh
 python src/quality_time_notifier.py
 ```
 
@@ -158,7 +158,7 @@ To create a virtual environment for the shared component and install the depende
 cd components/shared_code
 uv venv
 . .venv/bin/activate  # on Windows: venv\Scripts\activate
-ci/pip-install.sh
+ci/install-dependencies.sh
 ```
 
 ### Coding style
@@ -466,7 +466,7 @@ To generate the documentation locally:
 cd docs
 uv venv
 . .venv/bin/activate  # on Windows: venv\Scripts\activate
-ci/pip-install.sh
+ci/install-dependencies.sh
 make html
 open build/html/index.html
 ```
@@ -489,7 +489,7 @@ Make sure the release folder is the current directory, and you have the dependen
 cd release
 uv venv
 . .venv/bin/activate
-ci/pip-install.sh
+ci/install-dependencies.sh
 ```
 
 Run the release script with `--help` to show help information, including the current release.

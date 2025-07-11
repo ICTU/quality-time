@@ -1,6 +1,7 @@
 """Data model unit tests."""
 
-from typing import ClassVar, cast
+from pathlib import Path
+from typing import ClassVar
 from unittest.mock import Mock, patch
 
 from pydantic import HttpUrl
@@ -67,15 +68,6 @@ class DataModelTest(MetaModelTestCase):
             },
         )
 
-    @staticmethod
-    def mock_path(path_class: Mock, exists: bool = True) -> Mock:
-        """Return a mock path that does or does not exist."""
-        path = cast(Mock, path_class.return_value)
-        path.parent = path
-        path.__truediv__.return_value = path
-        path.exists.return_value = exists
-        return path
-
     def test_invalid_scales(self):
         """Test that invalid scales throw an error."""
         extra_model_kwargs = {
@@ -92,34 +84,23 @@ class DataModelTest(MetaModelTestCase):
         """Test that sources have a URL."""
         self.check_data_model_validation_error("Source source has no URL", sources={"source": self.source(url=None)})
 
-    @patch("pathlib.Path")
-    def test_missing_logo(self, path_class: Mock):
+    def test_missing_logo(self):
         """Test that a validation error occurs when a logo is missing."""
-        extra_model_kwargs = {
-            "scales": {"count": self.scale()},
-            "metrics": {"metric": self.metric()},
-            "sources": {"source": self.source()},
-        }
-        self.mock_path(path_class, exists=False)
-        self.check_data_model_validation_error("No logo exists for source", **extra_model_kwargs)
+        self.check_data_model_validation_error("No logo exists for source", sources={"source": self.source()})
 
-    @patch("pathlib.Path")
-    def test_missing_source(self, path_class: Mock):
+    @patch("pathlib.Path.glob", Mock(return_value=[Path("missing.png"), Path("source.png")]))
+    def test_missing_source(self):
         """Test that a validation error occurs when a logo exists, but the source is missing."""
         extra_model_kwargs = {
             "scales": {"count": self.scale()},
             "metrics": {"metric": self.metric()},
             "sources": {"source": self.source()},
         }
-        logo_path = self.mock_path(path_class)
-        logo_path.glob.return_value = [logo_path]
-        logo_path.stem = "non_existing_source"
         self.check_data_model_validation_error("No source exists for ", **extra_model_kwargs)
 
-    @patch("pathlib.Path")
-    def test_source_parameters(self, path_class: Mock):
+    @patch("pathlib.Path.glob", Mock(return_value=[Path("source.png")]))
+    def test_source_parameters(self):
         """Test that the sources have at least one parameter for each metric supported by the source."""
-        self.mock_path(path_class, exists=True)
         extra_model_kwargs = {
             "scales": {"count": self.scale()},
             "metrics": {"metric": self.metric()},
@@ -127,8 +108,8 @@ class DataModelTest(MetaModelTestCase):
         }
         self.check_data_model_validation_error("No parameters for metric metric in source source", **extra_model_kwargs)
 
-    @patch("pathlib.Path")
-    def test_source_parameters_list_valid_metric(self, path_class):
+    @patch("pathlib.Path.glob", Mock(return_value=[Path("source.png"), Path("other_source.png")]))
+    def test_source_parameters_list_valid_metric(self):
         """Test that the metrics listed by the source parameters are metrics that list the source."""
         extra_model_kwargs = {
             "scales": {"count": self.scale()},
@@ -143,18 +124,16 @@ class DataModelTest(MetaModelTestCase):
             "but that metric doesn't list other_source as allowed source"
         )
         self.check_data_model_validation_error(expected_message, **extra_model_kwargs)
-        path_class.assert_called_once()
 
-    @patch("pathlib.Path")
-    def test_configuration_refers_to_existing_metric(self, path_class):
+    @patch("pathlib.Path.glob", Mock(return_value=[Path("source.png")]))
+    def test_configuration_refers_to_existing_metric(self):
         """Test that source configurations refer to metrics that exist."""
         extra_model_kwargs = {"sources": {"source": self.source(configuration=self.CONFIGURATION)}}
         expected_message = "Configuration config of source source refers to non-existing metric metric"
         self.check_data_model_validation_error(expected_message, **extra_model_kwargs)
-        path_class.assert_called_once()
 
-    @patch("pathlib.Path")
-    def test_configuration_refers_to_metric_that_refers_to_source(self, path_class):
+    @patch("pathlib.Path.glob", Mock(return_value=[Path("invalid_source.png"), Path("source.png")]))
+    def test_configuration_refers_to_metric_that_refers_to_source(self):
         """Test that source configurations refer to metrics that list the source as supported source."""
         extra_model_kwargs = {
             "scales": {"count": self.scale()},
@@ -169,10 +148,9 @@ class DataModelTest(MetaModelTestCase):
             "but metric doesn't list invalid_source as source"
         )
         self.check_data_model_validation_error(expected_message, **extra_model_kwargs)
-        path_class.assert_called_once()
 
-    @patch("pathlib.Path")
-    def test_metrics_belong_to_at_least_one_subject(self, path_class):
+    @patch("pathlib.Path.glob", Mock(return_value=[Path("quality_time.png"), Path("source.png")]))
+    def test_metrics_belong_to_at_least_one_subject(self):
         """Test that metrics belong to at least one subject."""
         extra_model_kwargs = {
             "scales": {"count": self.scale()},
@@ -186,10 +164,9 @@ class DataModelTest(MetaModelTestCase):
             },
         }
         self.check_data_model_validation_error("Metric metric is not listed in any subject", **extra_model_kwargs)
-        path_class.assert_called_once()
 
-    @patch("pathlib.Path")
-    def test_quality_time_lists_all_metric_types(self, path_class):
+    @patch("pathlib.Path.glob", Mock(return_value=[Path("quality_time.png"), Path("source.png")]))
+    def test_quality_time_lists_all_metric_types(self):
         """Test that Quality-time lists all metric types as possible values for its metric_type parameter."""
         extra_model_kwargs = {
             "scales": {"count": self.scale()},
@@ -201,10 +178,9 @@ class DataModelTest(MetaModelTestCase):
         }
         expected_message = "Parameter metric_type of source quality_time doesn't list all metric types"
         self.check_data_model_validation_error(expected_message, **extra_model_kwargs)
-        path_class.assert_called_once()
 
-    @patch("pathlib.Path")
-    def test_quality_time_lists_all_source_types(self, path_class):
+    @patch("pathlib.Path.glob", Mock(return_value=[Path("quality_time.png"), Path("source.png")]))
+    def test_quality_time_lists_all_source_types(self):
         """Test that the Quality-time source lists all sources as possible values for its source type parameter."""
         extra_model_kwargs = {
             "scales": {"count": self.scale()},
@@ -219,4 +195,3 @@ class DataModelTest(MetaModelTestCase):
         }
         expected_message = "Parameter source_type of source quality_time doesn't list source types: Quality-time"
         self.check_data_model_validation_error(expected_message, **extra_model_kwargs)
-        path_class.assert_called_once()

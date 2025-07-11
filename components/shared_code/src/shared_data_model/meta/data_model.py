@@ -1,9 +1,10 @@
 """Data model model."""
 
-import pathlib
 from typing import Self
 
 from pydantic import model_validator
+
+from shared_data_model.logos import get_logo_names
 
 from .metric import Metric
 from .scale import Scale
@@ -55,15 +56,14 @@ class DataModel(SubjectContainer):
 
     def check_logos(self) -> None:
         """Check that a logo exists for each source and vice versa."""
-        logos_path = pathlib.Path(__file__).parent.parent / "logos"
+        logo_names = get_logo_names()
         for source_type in self.sources:
-            logo_path = logos_path / f"{source_type}.png"
-            if not logo_path.exists():
-                msg = f"No logo exists for {source_type}"
+            if source_type not in logo_names:
+                msg = f"No logo exists for source {source_type}"
                 raise ValueError(msg)
-        for logo_path in logos_path.glob("*.png"):
-            if logo_path.stem not in self.sources:
-                msg = f"No source exists for {logo_path}"
+        for logo_name in logo_names:
+            if logo_name not in self.sources:
+                msg = f"No source exists for logo {logo_name}"
                 raise ValueError(msg)
 
     def check_source_has_parameters_for_each_supported_metric(self) -> None:

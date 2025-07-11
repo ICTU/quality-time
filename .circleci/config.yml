@@ -25,8 +25,7 @@ jobs:
           cd $component
           mkdir -p build
           pip install uv
-          uv venv
-          ci/pip-install.sh
+          ci/install-dependencies.sh
           ci/unittest.sh
           ci/quality.sh
       - store_artifacts:
@@ -52,7 +51,7 @@ jobs:
       - checkout
       - run: |
           cd components/frontend
-          npm install --ignore-scripts
+          ci/install-dependencies.sh
           ci/unittest.sh
           ci/quality.sh
 
@@ -64,15 +63,12 @@ jobs:
       - run: |
           pip install uv
           cd docs
-          npm install --ignore-scripts
-          uv venv
-          ci/pip-install.sh
+          ci/install-dependencies.sh
           ci/unittest.sh
           ci/quality.sh
       - run: |
           cd release
-          uv venv
-          ci/pip-install.sh
+          ci/install-dependencies.sh
           ci/quality.sh
 
   application_tests:
