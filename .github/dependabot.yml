@@ -6,7 +6,7 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 5
 
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: "/components/collector"
     allow:
       - dependency-type: "direct"
@@ -45,7 +45,7 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 5
 
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: "/components/notifier"
     allow:
       - dependency-type: "direct"
@@ -91,7 +91,7 @@ updates:
       - dependency-name: "python"
     open-pull-requests-limit: 5
 
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: "/components/api_server"
     allow:
       - dependency-type: "direct"
@@ -99,7 +99,7 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 5
 
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: "/components/shared_code"
     allow:
       - dependency-type: "direct"
@@ -123,7 +123,7 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 5
 
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: "/docs"
     allow:
       - dependency-type: "direct"
@@ -131,7 +131,7 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 5
 
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: "/release"
     allow:
       - dependency-type: "direct"
@@ -139,7 +139,7 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 5
 
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: "/tests/application_tests"
     allow:
       - dependency-type: "direct"
@@ -147,7 +147,7 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 5
 
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: "/tests/feature_tests"
     allow:
       - dependency-type: "direct"

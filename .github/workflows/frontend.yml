@@ -20,8 +20,8 @@ jobs:
       - name: npm install, build, and test
         run: |
           cd components/frontend
-          npm ci
-          npm run --ignore-scripts build --if-present
+          ci/install-dependencies.sh
+          ci/build.sh
           ci/unittest.sh
           ci/quality.sh
         env:

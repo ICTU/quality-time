@@ -12,11 +12,10 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with:
-          version: "0.5.29"
+          version: "0.7.20"
       - name: Install dependencies, run unit tests and check quality
         run: |
           cd components/collector
-          uv venv
-          ci/pip-install.sh
+          ci/install-dependencies.sh
           ci/unittest.sh
           ci/quality.sh

@@ -16,6 +16,7 @@ import pathlib
 import sys
 
 sys.path.insert(0, str(pathlib.Path().cwd()))
+sys.path.insert(0, str(pathlib.Path().cwd().parent.parent / "components" / "shared_code" / "src"))
 
 # Build reference manual with overview of subjects, metrics, and sources.
 import create_reference_md

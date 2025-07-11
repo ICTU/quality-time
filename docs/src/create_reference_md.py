@@ -30,7 +30,7 @@ AdmonitionType = Literal[
 def get_model_name(model: NamedModel) -> str:
     """Return the name of the model."""
     # This function could easily be a lambda, but then we can't add type information
-    return model.name
+    return str(model.name)
 
 
 def data_model_metric_items() -> list[tuple[str, Metric]]:
@@ -206,7 +206,7 @@ def decapitalize(name: str) -> str:
 
 def metric_source_slug(metric_name: str, source_name: str) -> str:
     """Return a slug for the metric source combination."""
-    return slugify(f"{metric_name} from {source_name}")
+    return str(slugify(f"{metric_name} from {source_name}"))
 
 
 def metric_source_section(metric_key: str, source_key: str) -> str:

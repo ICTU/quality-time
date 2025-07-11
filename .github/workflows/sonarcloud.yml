@@ -28,7 +28,7 @@ jobs:
         if: env.SONAR_TOKEN != null
         uses: astral-sh/setup-uv@v6
         with:
-          version: "0.5.29"
+          version: "0.7.20"
       - name: Set up Node
         if: env.SONAR_TOKEN != null
         uses: actions/setup-node@v4.4.0
@@ -38,8 +38,7 @@ jobs:
         if: env.SONAR_TOKEN != null
         working-directory: components/collector
         run: |
-          uv venv
-          ci/pip-install.sh
+          ci/install-dependencies.sh
           ci/unittest.sh
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
           .venv/bin/python -m xmlrunner --output-file build/unittests.xml
@@ -47,8 +46,7 @@ jobs:
         if: env.SONAR_TOKEN != null
         working-directory: components/notifier
         run: |
-          uv venv
-          ci/pip-install.sh
+          ci/install-dependencies.sh
           ci/unittest.sh
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
           .venv/bin/python -m xmlrunner --output-file build/unittests.xml
@@ -56,8 +54,7 @@ jobs:
         if: env.SONAR_TOKEN != null
         working-directory: components/api_server
         run: |
-          uv venv
-          ci/pip-install.sh
+          ci/install-dependencies.sh
           ci/unittest.sh
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
           .venv/bin/python -m xmlrunner --output-file build/unittests.xml
@@ -65,8 +62,7 @@ jobs:
         if: env.SONAR_TOKEN != null
         working-directory: components/shared_code
         run: |
-          uv venv
-          ci/pip-install.sh
+          ci/install-dependencies.sh
           ci/unittest.sh
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
           .venv/bin/python -m xmlrunner --output-file build/unittests.xml
@@ -74,8 +70,8 @@ jobs:
         if: env.SONAR_TOKEN != null
         working-directory: components/frontend
         run: |
-          npm install --ignore-scripts
-          npm run --ignore-scripts build --if-present
+          ci/install-dependencies.sh
+          ci/build.sh
           npm test -- --coverage
         env:
           CI: true
