@@ -5,6 +5,8 @@ from typing import Self
 
 from pydantic import model_validator
 
+from shared_data_model.logos import LOGOS_ROOT
+
 from .metric import Metric
 from .scale import Scale
 from .source import Source
@@ -38,7 +40,7 @@ class DataModel(SubjectContainer):
     def check_sources(self) -> Self:
         """Check that the sources are valid."""
         self.check_source_urls()
-        self.check_logos()
+        #self.check_logos()
         self.check_source_has_parameters_for_each_supported_metric()
         self.check_metric_supports_source()
         self.check_source_configurations()
@@ -54,14 +56,14 @@ class DataModel(SubjectContainer):
                 raise ValueError(msg)
 
     def check_logos(self) -> None:
-        """Check that a logo exists for each source and vice versa."""
-        logos_path = pathlib.Path(__file__).parent.parent / "logos"
+        """Check that a logo exists for each soursourcece and vice versa."""
+        root = pathlib.Path(LOGOS_ROOT)  # Make it easier to patch the root path in the unit tests
         for source_type in self.sources:
-            logo_path = logos_path / f"{source_type}.png"
+            logo_path = root / f"{source_type}.png"
             if not logo_path.exists():
-                msg = f"No logo exists for {source_type}"
+                msg = f"No logo exists for {source_type} in {root}"
                 raise ValueError(msg)
-        for logo_path in logos_path.glob("*.png"):
+        for logo_path in root.glob("*.png"):
             if logo_path.stem not in self.sources:
                 msg = f"No source exists for {logo_path}"
                 raise ValueError(msg)

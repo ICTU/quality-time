@@ -16,6 +16,7 @@ dependencies = [
     "lxml-html-clean==0.4.2",
     "pymongo==4.13.2",
     "requests==2.32.4",
+    "shared-code",
 ]
 optional-dependencies.dev = [
     "coverage==7.9.2",
@@ -116,3 +117,6 @@ module = [
     "lxml_html_clean",
 ]
 ignore_missing_imports = true
+
+[tool.uv.sources]
+shared-code = { path = "../shared_code", package = true }

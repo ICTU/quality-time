@@ -9,6 +9,7 @@ classifiers = [
 dependencies = [
     "aiohttp==3.12.14",
     "pymsteams==0.2.5",
+    "shared-code",
 ]
 
 optional-dependencies.dev = [
@@ -90,3 +91,6 @@ module = [
     "pymsteams",
 ]
 ignore_missing_imports = true
+
+[tool.uv.sources]
+shared-code = { path = "../shared_code", package = true }

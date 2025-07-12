@@ -13,6 +13,5 @@ build/
 ci/
 Dockerfile
 README.md
-requirements/requirements-dev.txt
 tests/
 venv
