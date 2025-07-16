@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Fix dataformat difference between Jira cloud and server version, where sprint custom fields are returned as a dict instead of text. Fixes [#11672](https://github.com/ICTU/quality-time/issues/11672).
+
 ## v5.36.0 - 2025-07-10
 
 ### Fixed
