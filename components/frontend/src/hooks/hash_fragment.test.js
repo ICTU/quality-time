@@ -18,9 +18,8 @@ it("does not scroll if trigger is false", () => {
         return { scrollIntoView: mockScrollIntoView }
     }
     renderHook(() => useHashFragment(false))
-    vi.advanceTimersByTime(100)
+    expect(vi.getTimerCount()).toBe(0)
     expect(mockScrollIntoView).not.toHaveBeenCalled()
-    expect(window.addEventListener).not.toHaveBeenCalled()
 })
 
 it("does not scroll if trigger is true but no element found", () => {
@@ -28,9 +27,11 @@ it("does not scroll if trigger is true but no element found", () => {
     document.getElementById = () => {
         return null
     }
-    renderHook(() => useHashFragment(true))
+    const { unmount } = renderHook(() => useHashFragment(true))
+    expect(vi.getTimerCount()).toBe(1)
     vi.advanceTimersByTime(100)
-    expect(window.addEventListener).toHaveBeenCalled()
+    unmount()
+    expect(vi.getTimerCount()).toBe(0)
 })
 
 it("does scroll if trigger is true and element found", () => {
@@ -39,8 +40,10 @@ it("does scroll if trigger is true and element found", () => {
     document.getElementById = () => {
         return { scrollIntoView: mockScrollIntoView }
     }
-    renderHook(() => useHashFragment(true))
+    const { unmount } = renderHook(() => useHashFragment(true))
+    expect(vi.getTimerCount()).toBe(1)
     vi.advanceTimersByTime(100)
+    unmount()
+    expect(vi.getTimerCount()).toBe(0)
     expect(mockScrollIntoView).toHaveBeenCalled()
-    expect(window.addEventListener).toHaveBeenCalled()
 })
