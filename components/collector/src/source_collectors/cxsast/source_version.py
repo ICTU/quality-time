@@ -1,12 +1,16 @@
 """Checkmarx CxSAST source version collector."""
 
+from typing import TYPE_CHECKING
+
 from packaging.version import Version
 
 from base_collectors import VersionCollector
 from collector_utilities.type import URL, Response
-from model import SourceResponses
 
 from .base import CxSASTBase
+
+if TYPE_CHECKING:
+    from model import SourceResponses
 
 
 class CxSASTSourceVersion(CxSASTBase, VersionCollector):

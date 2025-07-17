@@ -1,15 +1,18 @@
 """Measurements collection."""
 
-from typing import NewType
+from typing import TYPE_CHECKING, NewType
 
 from pymongo import DESCENDING
-from pymongo.database import Database
 
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
 from shared.utils.functions import iso_timestamp
 
 from database.reports import latest_metric
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
+
 
 MeasurementId = NewType("MeasurementId", str)
 

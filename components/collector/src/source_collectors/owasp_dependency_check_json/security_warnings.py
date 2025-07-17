@@ -1,9 +1,13 @@
 """OWASP Dependency-Check JSON security warnings collector."""
 
-from model import Entity
+from typing import TYPE_CHECKING
 
 from .dependencies import OWASPDependencyCheckJSONDependencies
-from .json_types import Dependency, OWASPDependencyCheckJSON, Vulnerability
+
+if TYPE_CHECKING:
+    from model import Entity
+
+    from .json_types import Dependency, OWASPDependencyCheckJSON, Vulnerability
 
 
 class OWASPDependencyCheckJSONSecurityWarnings(OWASPDependencyCheckJSONDependencies):

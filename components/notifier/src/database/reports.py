@@ -2,15 +2,15 @@
 
 from typing import TYPE_CHECKING
 
-from pymongo.database import Database
-
 from shared.database.reports import get_reports
-from shared.model.measurement import Measurement
 from shared.model.report import Report, get_metrics_from_reports
 
 from .measurements import get_recent_measurements
 
 if TYPE_CHECKING:
+    from pymongo.database import Database
+
+    from shared.model.measurement import Measurement
     from shared.model.metric import Metric
     from shared.utils.type import MetricId
 

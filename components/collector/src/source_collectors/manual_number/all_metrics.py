@@ -1,8 +1,12 @@
 """Metric collector that returns a manually entered number."""
 
+from typing import TYPE_CHECKING
+
 from base_collectors import SourceCollector
-from collector_utilities.type import Value
-from model import Entities, SourceResponses
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Value
+    from model import Entities, SourceResponses
 
 
 class ManualNumber(SourceCollector):

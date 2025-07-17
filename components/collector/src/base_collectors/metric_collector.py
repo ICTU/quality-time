@@ -1,23 +1,26 @@
 """Metric collector base classes."""
 
 import asyncio
-from collections.abc import Coroutine
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
-import aiohttp
-
-from shared.model.metric import Metric
 from shared_data_model import DATA_MODEL
 
 from model import MetricMeasurement
 
 from .source_collector import SourceCollector, SourceParameters
 
+if TYPE_CHECKING:
+    from collections.abc import Coroutine
+
+    import aiohttp
+
+    from shared.model.metric import Metric
+
 
 class MetricCollector:
     """Collect measurements for a specific metric."""
 
-    subclasses: ClassVar[set[type["MetricCollector"]]] = set()
+    subclasses: ClassVar[set[type[MetricCollector]]] = set()
 
     def __init__(self, session: aiohttp.ClientSession, metric: Metric) -> None:
         self.__session = session
@@ -32,7 +35,7 @@ class MetricCollector:
         super().__init_subclass__()
 
     @classmethod
-    def get_subclass(cls, metric_type: str) -> type["MetricCollector"]:
+    def get_subclass(cls, metric_type: str) -> type[MetricCollector]:
         """Return the subclass registered for the metric type. Return this class if no subclass is found."""
         for subclass in cls.subclasses:
             if subclass.__name__.lower() == metric_type.replace("_", ""):

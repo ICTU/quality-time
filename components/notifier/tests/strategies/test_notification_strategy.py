@@ -2,14 +2,17 @@
 
 import unittest
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
-from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.model.report import Report
 
 from strategies.notification_strategy import NotificationFinder
 
 from tests.fixtures import METRIC_ID, METRIC_ID2, NOTIFICATION_DESTINATION_ID, REPORT_ID, REPORT_ID2, SUBJECT_ID
+
+if TYPE_CHECKING:
+    from shared.model.measurement import Measurement
 
 
 class StrategiesTests(unittest.TestCase):

@@ -1,13 +1,14 @@
 """Performancetest-runner performancetest stability collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from bs4 import Tag
 
-from collector_utilities.type import Response, Value
-from model import Entities, SourceResponses
-
 from .base import PerformanceTestRunnerBaseClass
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response, Value
+    from model import Entities, SourceResponses
 
 
 class PerformanceTestRunnerPerformanceTestStability(PerformanceTestRunnerBaseClass):

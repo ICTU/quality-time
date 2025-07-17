@@ -1,14 +1,16 @@
 """Performancetest-runner software version collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from bs4 import Tag
 from packaging.version import Version
 
 from base_collectors import VersionCollector
-from collector_utilities.type import Response
 
 from .base import PerformanceTestRunnerBaseClass
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response
 
 
 class PerformanceTestRunnerSoftwareVersion(PerformanceTestRunnerBaseClass, VersionCollector):

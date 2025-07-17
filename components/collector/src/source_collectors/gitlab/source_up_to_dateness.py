@@ -3,10 +3,8 @@
 import asyncio
 import itertools
 from abc import ABC
-from collections.abc import Sequence
-from datetime import datetime
 from http import HTTPStatus
-from typing import Self, cast
+from typing import TYPE_CHECKING, Self, cast
 from urllib.parse import quote
 
 import aiohttp
@@ -18,6 +16,10 @@ from collector_utilities.type import URL, Response, Value
 from model import Entities, SourceMeasurement, SourceResponses
 
 from .base import GitLabPipelineBase, GitLabProjectBase
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from datetime import datetime
 
 
 class GitLabFileUpToDateness(GitLabProjectBase):

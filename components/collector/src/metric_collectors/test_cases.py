@@ -1,11 +1,14 @@
 """Test cases collector."""
 
 import re
-from collections.abc import Sequence
-from typing import ClassVar, Literal, cast
+from typing import TYPE_CHECKING, ClassVar, Literal, cast
 
 from base_collectors import MetricCollector
 from model import Entities, Entity, MetricMeasurement, SourceMeasurement
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
 
 TestResult = Literal["untested", "passed", "skipped", "failed", "errored"]
 TestResultAggregationStrategy = Literal["strict", "lenient"]

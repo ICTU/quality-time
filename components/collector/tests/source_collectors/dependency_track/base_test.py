@@ -1,9 +1,13 @@
 """Base classes for Dependency-Track collector unit tests."""
 
-from model.measurement import MetricMeasurement
+from typing import TYPE_CHECKING
+
 from source_collectors.dependency_track.json_types import DependencyTrackMetrics, DependencyTrackProject
 
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+
+if TYPE_CHECKING:
+    from model.measurement import MetricMeasurement
 
 
 class DependencyTrackTestCase(SourceCollectorTestCase):

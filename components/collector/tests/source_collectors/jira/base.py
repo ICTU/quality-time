@@ -1,12 +1,14 @@
 """Unit tests for the Jira metric source."""
 
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 from unittest.mock import patch
 
-from model import MetricMeasurement
 from source_collectors.jira.issues import JiraIssues
 
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+
+if TYPE_CHECKING:
+    from model import MetricMeasurement
 
 
 class JiraTestCase(SourceCollectorTestCase):

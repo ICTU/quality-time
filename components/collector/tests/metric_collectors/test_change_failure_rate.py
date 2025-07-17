@@ -3,7 +3,7 @@
 import unittest
 from copy import deepcopy
 from datetime import datetime, timedelta
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 from unittest.mock import AsyncMock, patch
 
 from dateutil.tz import tzlocal, tzutc
@@ -12,10 +12,12 @@ from shared.model.metric import Metric
 
 from base_collectors import config
 from base_collectors.metric_collector import MetricCollector
-from model import MetricMeasurement
 from source_collectors.jira.change_failure_rate import JiraChangeFailureRate
 
 from tests.fixtures import METRIC_ID
+
+if TYPE_CHECKING:
+    from model import MetricMeasurement
 
 
 class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):

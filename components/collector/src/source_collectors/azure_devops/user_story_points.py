@@ -1,12 +1,14 @@
 """Azure DevOps Server user story points collector."""
 
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 from collector_utilities.functions import decimal_round_half_up
-from collector_utilities.type import Value
-from model import Entities, Entity, SourceResponses
 
 from .issues import AzureDevopsIssues
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Value
+    from model import Entities, Entity, SourceResponses
 
 
 class AzureDevopsUserStoryPoints(AzureDevopsIssues):

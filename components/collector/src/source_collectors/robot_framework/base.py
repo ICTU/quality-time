@@ -1,10 +1,13 @@
 """Robot Framework collector base classes."""
 
 from abc import ABC
+from typing import TYPE_CHECKING
 
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.type import URL
-from model import SourceResponses
+
+if TYPE_CHECKING:
+    from model import SourceResponses
 
 
 class RobotFrameworkBaseClass(XMLFileSourceCollector, ABC):

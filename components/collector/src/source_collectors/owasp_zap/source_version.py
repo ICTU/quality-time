@@ -1,10 +1,14 @@
 """OWASP ZAP source version collector."""
 
+from typing import TYPE_CHECKING
+
 from packaging.version import Version
 
 from base_collectors import VersionCollector, XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
-from collector_utilities.type import Response
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response
 
 
 class OWASPZAPSourceVersion(XMLFileSourceCollector, VersionCollector):

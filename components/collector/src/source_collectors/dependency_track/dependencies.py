@@ -1,12 +1,14 @@
 """Dependency-Track security warnings collector."""
 
-from typing import NotRequired, TypedDict
+from typing import TYPE_CHECKING, NotRequired, TypedDict
 
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
 from .base import DependencyTrackLatestVersionStatusBase
-from .json_types import DependencyTrackProject
+
+if TYPE_CHECKING:
+    from .json_types import DependencyTrackProject
 
 
 class DependencyTrackRepositoryMetaData(TypedDict):

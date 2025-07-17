@@ -1,10 +1,14 @@
 """GitLab CI-pipeline duration collector."""
 
+from typing import TYPE_CHECKING
+
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.type import Value
-from model import Entities, SourceResponses
 
 from .base import GitLabPipelineBase
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Value
+    from model import Entities, SourceResponses
 
 
 class GitLabPipelineDuration(GitLabPipelineBase):

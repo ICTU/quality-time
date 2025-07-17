@@ -1,10 +1,14 @@
 """Gatling performancetest duration collector."""
 
+from typing import TYPE_CHECKING
+
 from collector_utilities.date_time import parse_duration
-from collector_utilities.type import Value
-from model import Entities, SourceResponses
 
 from .base import GatlingHTMLCollector
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Value
+    from model import Entities, SourceResponses
 
 
 class GatlingPerformanceTestDuration(GatlingHTMLCollector):

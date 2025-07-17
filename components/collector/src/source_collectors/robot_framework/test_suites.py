@@ -1,13 +1,16 @@
 """Robot Framework test suites collector."""
 
-from typing import cast
-from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
+from typing import TYPE_CHECKING, cast
 
 from collector_utilities.functions import parse_source_response_xml
-from collector_utilities.type import Response
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import RobotFrameworkBaseClass
+
+if TYPE_CHECKING:
+    from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
+
+    from collector_utilities.type import Response
 
 
 class RobotFrameworkTestSuites(RobotFrameworkBaseClass):

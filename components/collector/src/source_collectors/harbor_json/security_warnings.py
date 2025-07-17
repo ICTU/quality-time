@@ -1,12 +1,14 @@
 """Harbor JSON security warnings collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from base_collectors import JSONFileSourceCollector, SecurityWarningsSourceCollector
-from collector_utilities.type import JSON
 from model import Entities, Entity
 
 from .json_types import REPORT_MIME_TYPE, HarborJSON
+
+if TYPE_CHECKING:
+    from collector_utilities.type import JSON
 
 
 class HarborJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceCollector):

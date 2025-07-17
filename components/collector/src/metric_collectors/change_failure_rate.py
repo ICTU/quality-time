@@ -1,13 +1,15 @@
 """Change failure rate collector."""
 
-from collections.abc import Sequence
 from datetime import datetime
 from itertools import pairwise
-from typing import ClassVar, cast
+from typing import TYPE_CHECKING, ClassVar, cast
 
 from base_collectors import MetricCollector
 from collector_utilities.date_time import MAX_DATETIME, parse_datetime
 from model import Entities, Entity, MetricMeasurement, SourceMeasurement
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 class ChangeFailureRate(MetricCollector):

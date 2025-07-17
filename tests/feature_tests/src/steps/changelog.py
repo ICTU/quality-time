@@ -1,8 +1,12 @@
 """Step implementations for changelogs."""
 
+from typing import TYPE_CHECKING
+
 from asserts import assert_equal
 from behave import then
-from behave.runner import Context
+
+if TYPE_CHECKING:
+    from behave.runner import Context
 
 
 @then("the {item} changelog reads")

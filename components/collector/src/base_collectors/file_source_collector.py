@@ -5,9 +5,8 @@ import zipfile
 from abc import ABC
 from http import HTTPStatus
 from json import loads
-from typing import ClassVar, cast
+from typing import TYPE_CHECKING, ClassVar, cast
 from urllib.parse import urlparse
-from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 from bs4 import BeautifulSoup, Tag
 
@@ -16,6 +15,9 @@ from collector_utilities.type import JSON, URL, ElementMap, Response, Responses
 from model import Entities, SourceResponses
 
 from .source_collector import SourceCollector
+
+if TYPE_CHECKING:
+    from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 
 class FakeResponse:

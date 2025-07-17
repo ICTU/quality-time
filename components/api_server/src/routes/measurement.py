@@ -1,11 +1,9 @@
 """Measurement routes."""
 
 import time
-from collections.abc import Iterator
-from typing import cast
+from typing import cast, TYPE_CHECKING
 
 import bottle
-from pymongo.database import Database
 
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
@@ -19,6 +17,11 @@ from utils.functions import report_date_time
 from utils.log import get_logger
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from pymongo.database import Database
 
 
 @bottle.post(

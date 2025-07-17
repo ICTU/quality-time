@@ -1,11 +1,13 @@
 """Azure DevOps unused jobs collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from collector_utilities.date_time import days_ago, parse_datetime
-from model import Entity
 
 from .base import AzureDevopsJobs
+
+if TYPE_CHECKING:
+    from model import Entity
 
 
 class AzureDevopsUnusedJobs(AzureDevopsJobs):

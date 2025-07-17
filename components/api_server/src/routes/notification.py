@@ -1,16 +1,20 @@
 """Notification routes."""
 
 import bottle
-from pymongo.database import Database
-
-from shared.utils.type import ItemId, ReportId, NotificationDestinationId
+from typing import TYPE_CHECKING
 
 from database.reports import insert_new_report
-from model.report import Report
 from utils.functions import uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 from .report import with_report
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
+
+    from shared.utils.type import ItemId, ReportId, NotificationDestinationId
+
+    from model.report import Report
 
 
 @bottle.post(

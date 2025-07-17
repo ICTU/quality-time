@@ -1,10 +1,11 @@
 """Base classes for Harbor JSON collector unit tests."""
 
-from typing import ClassVar
-
-from source_collectors.harbor_json.json_types import HarborJSON
+from typing import TYPE_CHECKING, ClassVar
 
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+
+if TYPE_CHECKING:
+    from source_collectors.harbor_json.json_types import HarborJSON
 
 
 class HarborJSONCollectorTestCase(SourceCollectorTestCase):

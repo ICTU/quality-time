@@ -1,11 +1,13 @@
 """Jenkins unused jobs collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from collector_utilities.date_time import days_ago
-from model import Entity
 
 from .base import JenkinsJobs
+
+if TYPE_CHECKING:
+    from model import Entity
 
 
 class JenkinsUnusedJobs(JenkinsJobs):

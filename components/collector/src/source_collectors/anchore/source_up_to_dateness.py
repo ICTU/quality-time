@@ -1,13 +1,15 @@
 """Anchore source up-to-dateness collector."""
 
-from datetime import datetime
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from shared.utils.date_time import now
 
 from base_collectors import JSONFileSourceCollector, TimePassedCollector
 from collector_utilities.date_time import parse_datetime
 from collector_utilities.type import URL, Response
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class AnchoreSourceUpToDateness(JSONFileSourceCollector, TimePassedCollector):

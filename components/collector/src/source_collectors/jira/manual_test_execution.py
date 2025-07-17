@@ -1,14 +1,18 @@
 """Jira manual test execution collector."""
 
-from datetime import datetime
+from typing import TYPE_CHECKING
 
 from shared.utils.date_time import now
 
 from collector_utilities.date_time import days_ago, parse_datetime
-from collector_utilities.type import URL
-from model import Entity
 
 from .issues import JiraIssues
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from collector_utilities.type import URL
+    from model import Entity
 
 
 class JiraManualTestExecution(JiraIssues):

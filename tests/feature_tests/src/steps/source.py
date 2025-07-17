@@ -1,12 +1,15 @@
 """Step implementations for sources."""
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from asserts import assert_equal, assert_in, assert_not_equal, assert_true
 from behave import then, when
-from behave.runner import Context
 
 from item import get_item
+
+if TYPE_CHECKING:
+    from behave.runner import Context
 
 
 def sanitize_value(value: str) -> str | list[str]:

@@ -1,12 +1,13 @@
 """Base classes for OWASP Dependency-Check JSON collectors."""
 
 from abc import ABC
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.exceptions import JSONAttributeError
 
-from .json_types import OWASPDependencyCheckJSON
+if TYPE_CHECKING:
+    from .json_types import OWASPDependencyCheckJSON
 
 
 class OWASPDependencyCheckJSONBase(JSONFileSourceCollector, ABC):

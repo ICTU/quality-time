@@ -1,13 +1,15 @@
 """Strategies for notifying users about metrics."""
 
 from datetime import datetime
-
-from shared.model.measurement import Measurement
-from shared.model.metric import Metric
-from shared.model.report import Report
+from typing import TYPE_CHECKING
 
 from models.metric_notification_data import NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS_CHANGE, MetricNotificationData
 from models.notification import Notification
+
+if TYPE_CHECKING:
+    from shared.model.measurement import Measurement
+    from shared.model.metric import Metric
+    from shared.model.report import Report
 
 
 class NotificationFinder:

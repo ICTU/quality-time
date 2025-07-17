@@ -4,16 +4,17 @@ import asyncio
 import pathlib
 from datetime import UTC, datetime
 from os import getenv
-from typing import NoReturn
-
-from pymongo.database import Database
-
-from shared.model.measurement import Measurement
+from typing import TYPE_CHECKING, NoReturn
 
 from database.reports import get_reports_and_measurements
 from destinations.ms_teams import send_notification
 from notifier_utilities.log import get_logger
 from strategies.notification_strategy import NotificationFinder
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
+
+    from shared.model.measurement import Measurement
 
 
 async def notify(database: Database, sleep_duration: int = 60) -> NoReturn:

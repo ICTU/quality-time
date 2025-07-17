@@ -1,10 +1,14 @@
 """SonarQube suppressed violations collector."""
 
+from typing import TYPE_CHECKING
+
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
-from model import Entity, SourceMeasurement, SourceResponses
 
 from .violations import SonarQubeViolations
+
+if TYPE_CHECKING:
+    from model import Entity, SourceMeasurement, SourceResponses
 
 
 class SonarQubeSuppressedViolations(SonarQubeViolations):

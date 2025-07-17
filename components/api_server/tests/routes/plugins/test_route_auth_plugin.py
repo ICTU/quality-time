@@ -2,15 +2,19 @@
 
 import logging
 from datetime import datetime, UTC
-from unittest.mock import Mock
+from typing import TYPE_CHECKING
 
 import bottle
 
 from routes.plugins import AuthPlugin, InjectionPlugin
 from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
-from utils.type import User
 
 from tests.base import DatabaseTestCase
+
+if TYPE_CHECKING:
+    from unittest.mock import Mock
+
+    from utils.type import User
 
 
 class AuthPluginTest(DatabaseTestCase):

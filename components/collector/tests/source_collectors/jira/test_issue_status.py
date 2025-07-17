@@ -1,8 +1,11 @@
 """Unit tests for the Jira issue status collector."""
 
-from model.issue_status import IssueStatusCategory
+from typing import TYPE_CHECKING
 
 from .base import JiraTestCase
+
+if TYPE_CHECKING:
+    from model.issue_status import IssueStatusCategory
 
 
 class JiraIssuesTest(JiraTestCase):

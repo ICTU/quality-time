@@ -1,12 +1,16 @@
 """Unit tests for the database initialization."""
 
 import unittest
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, patch
 
 import mongomock
-import pymongo
 
 from shared.initialization.database import get_database, mongo_client
+
+if TYPE_CHECKING:
+    from pymongo import MongoClient
+
 
 OS_ENVIRON_GET = "shared.initialization.database.os.environ.get"
 
@@ -14,7 +18,7 @@ OS_ENVIRON_GET = "shared.initialization.database.os.environ.get"
 class TestConnectionParams(unittest.TestCase):
     """Test the database connection parameters."""
 
-    def _assert_dbclient_host_url(self, client: pymongo.MongoClient, expected_url: str) -> None:
+    def _assert_dbclient_host_url(self, client: MongoClient, expected_url: str) -> None:
         """Assert that the dbclient was initialized with expected url."""
         self.assertEqual(expected_url, client._init_kwargs["host"])  # noqa: SLF001
 

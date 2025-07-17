@@ -3,6 +3,8 @@ omit =
     */venv/*
     */.venv/*
 branch = True
+# The default core `sysmon` is not supported with gevent:
+core = ctrace
 parallel = True
 concurrency =
     gevent

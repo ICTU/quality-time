@@ -1,11 +1,13 @@
 """Generic step implementations for reports, subjects, metrics, and sources."""
 
 import json
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from asserts import assert_equal, assert_false, assert_true
 from behave import given, then, when
-from behave.runner import Context
+
+if TYPE_CHECKING:
+    from behave.runner import Context
 
 
 @given("an existing {item}")

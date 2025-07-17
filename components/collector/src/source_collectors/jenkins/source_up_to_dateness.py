@@ -1,10 +1,15 @@
 """Jenkins source up-to-dateness collector."""
 
+from typing import TYPE_CHECKING
+
 from collector_utilities.date_time import days_ago
-from model import SourceMeasurement, SourceResponses
 
 from .base import JenkinsJobs
-from .json_types import Build
+
+if TYPE_CHECKING:
+    from model import SourceMeasurement, SourceResponses
+
+    from .json_types import Build
 
 
 class JenkinsSourceUpToDateness(JenkinsJobs):

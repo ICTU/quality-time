@@ -2,11 +2,13 @@
 
 import json
 import pathlib
-
-from pymongo.database import Database
+from typing import TYPE_CHECKING
 
 from database.reports import insert_new_report, insert_new_reports_overview, latest_reports_overview, report_exists
 from utils.log import get_logger
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 def initialize_reports_overview(database: Database) -> None:

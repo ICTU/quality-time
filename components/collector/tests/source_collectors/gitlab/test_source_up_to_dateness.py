@@ -1,7 +1,5 @@
 """Unit tests for the GitLab source up-to-dateness collector."""
 
-from __future__ import annotations
-
 from datetime import datetime
 from http import HTTPStatus
 from unittest.mock import AsyncMock, Mock, _patch, patch

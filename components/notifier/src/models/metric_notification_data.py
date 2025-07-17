@@ -1,11 +1,13 @@
 """Metric data needed for notifications."""
 
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
-from shared.model.measurement import Measurement
-from shared.model.metric import Metric, MetricId
-from shared.model.subject import Subject
 from shared_data_model import DATA_MODEL
+
+if TYPE_CHECKING:
+    from shared.model.measurement import Measurement
+    from shared.model.metric import Metric, MetricId
+    from shared.model.subject import Subject
 
 NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS: Final = 1
 NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS_CHANGE: Final = 2

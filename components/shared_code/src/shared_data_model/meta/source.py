@@ -1,12 +1,14 @@
 """Data model source model."""
 
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
 from pydantic import Field, HttpUrl, SerializeAsAny, model_validator
 
 from .base import DescribedModel, NamedModel
-from .entity import Entity
 from .parameter import DEFAULT_PARAMETER_LAYOUT, Parameter, ParameterGroup
+
+if TYPE_CHECKING:
+    from .entity import Entity
 
 
 class Configuration(NamedModel):

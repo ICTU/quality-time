@@ -1,11 +1,15 @@
 """Jacoco coverage report source up-to-dateness collector."""
 
-from datetime import datetime
+from typing import TYPE_CHECKING
 
 from base_collectors import TimePassedCollector, XMLFileSourceCollector
 from collector_utilities.date_time import datetime_from_timestamp
 from collector_utilities.functions import parse_source_response_xml
-from collector_utilities.type import Response
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from collector_utilities.type import Response
 
 
 class JacocoSourceUpToDateness(XMLFileSourceCollector, TimePassedCollector):

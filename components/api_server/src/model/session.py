@@ -1,8 +1,10 @@
 """Session model class."""
 
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
-from utils.type import SessionData
+if TYPE_CHECKING:
+    from utils.type import SessionData
 
 
 class Session:

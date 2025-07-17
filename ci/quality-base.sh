@@ -33,7 +33,10 @@ run_pyproject_fmt() {
 }
 
 run_bandit() {
-    run_uvx bandit --configfile pyproject.toml --quiet --recursive $(python_files_and_folders)
+    # Bandit doesn't support Python 3.14 yet.
+    # Upstream issue: https://github.com/PyCQA/bandit/issues/1314.
+    # Upstream PR: https://github.com/PyCQA/bandit/pull/1288
+    run uvx --python 3.13 $(spec bandit @) --configfile pyproject.toml --quiet --recursive $(python_files_and_folders)
 }
 
 run_pip_audit() {

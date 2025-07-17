@@ -1,15 +1,17 @@
 """Collector base classes for the Checkmarx CxSAST product."""
 
 from abc import ABC
-from typing import cast
-
-import aiohttp
+from typing import TYPE_CHECKING, cast
 
 from shared.utils.functions import first
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL, Response
-from model import SourceResponses
+
+if TYPE_CHECKING:
+    from aiohttp import ClientResponse
+
+    from model import SourceResponses
 
 
 class CxSASTBase(SourceCollector, ABC):
@@ -47,7 +49,7 @@ class CxSASTBase(SourceCollector, ABC):
         token_response = await self.__api_post("auth/identity/connect/token", credentials)
         self.__token = (await token_response.json())["access_token"]
 
-    async def __api_post(self, api: str, data) -> aiohttp.ClientResponse:
+    async def __api_post(self, api: str, data) -> ClientResponse:
         """Post to the API and return the response."""
         return await self._session.post(f"{await self._api_url()}/cxrestapi/{api}", data=data)
 

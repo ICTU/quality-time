@@ -1,10 +1,12 @@
 """Cargo audit security warnings collector."""
 
-from typing import Literal, TypedDict, cast
+from typing import TYPE_CHECKING, Literal, TypedDict, cast
 
 from base_collectors import JSONFileSourceCollector, SecurityWarningsSourceCollector
-from collector_utilities.type import JSON
 from model import Entities, Entity
+
+if TYPE_CHECKING:
+    from collector_utilities.type import JSON
 
 
 class Advisory(TypedDict):

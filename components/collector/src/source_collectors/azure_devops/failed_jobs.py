@@ -1,8 +1,11 @@
 """Azure DevOps failed jobs collector."""
 
-from model import Entity
+from typing import TYPE_CHECKING
 
 from .base import AzureDevopsJobs
+
+if TYPE_CHECKING:
+    from model import Entity
 
 
 class AzureDevopsFailedJobs(AzureDevopsJobs):

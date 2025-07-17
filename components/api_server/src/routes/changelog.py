@@ -1,13 +1,15 @@
 """Changelog routes."""
 
-from typing import TypedDict
+from typing import TypedDict, TYPE_CHECKING
 
 import bottle
-from pymongo.database import Database
-
-from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
 
 from database import measurements, reports
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
+
+    from shared.utils.type import MetricId, ReportId, SourceId, SubjectId
 
 
 class ChangelogEntry(TypedDict):

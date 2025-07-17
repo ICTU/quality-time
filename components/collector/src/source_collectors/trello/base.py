@@ -1,13 +1,16 @@
 """Trello metric collector base classes."""
 
 from abc import ABC
+from typing import TYPE_CHECKING
 
 from shared.utils.functions import first
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import add_query
 from collector_utilities.type import URL
-from model import SourceResponses
+
+if TYPE_CHECKING:
+    from model import SourceResponses
 
 
 class TrelloBase(SourceCollector, ABC):

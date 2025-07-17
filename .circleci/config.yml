@@ -87,7 +87,7 @@ jobs:
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker compose build && docker compose up -d
           docker ps
-          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 ghcr.io/astral-sh/uv:python3.13-bookworm tests/application_tests/ci/test.sh
+          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 ghcr.io/astral-sh/uv:python3.14-bookworm tests/application_tests/ci/test.sh
           docker ps
           docker compose logs > build/containers.log
       - run:

@@ -1,11 +1,14 @@
 """Unit tests for database migrations."""
 
-from collections.abc import Mapping
+from typing import TYPE_CHECKING
 
 from initialization.migrations import perform_migrations
 
 from tests.base import DataModelTestCase, disable_logging
 from tests.fixtures import SourceId, REPORT_ID, SUBJECT_ID, METRIC_ID, METRIC_ID2, METRIC_ID3, SOURCE_ID, SOURCE_ID2
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 
 class MigrationTestCase(DataModelTestCase):

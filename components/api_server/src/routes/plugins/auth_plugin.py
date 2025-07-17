@@ -1,14 +1,16 @@
 """Route authentication and authorization plugin."""
 
-from collections.abc import Callable
-
 import bottle
+from typing import TYPE_CHECKING
 
 from database import sessions
 from database.reports import latest_reports_overview
 from model.session import Session
 from utils.log import get_logger
 from utils.type import SessionId
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 EDIT_REPORT_PERMISSION = "edit_reports"

@@ -2,10 +2,13 @@
 
 import contextlib
 import os
-from collections.abc import Generator
+from typing import TYPE_CHECKING
 
 import pymongo
 from pymongo import database
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 @contextlib.contextmanager

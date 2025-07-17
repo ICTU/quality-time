@@ -1,12 +1,15 @@
 """GitLab job runs within time period collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from collector_utilities.date_time import days_ago
-from model import Entity, SourceResponses
 
 from .base import GitLabJobsBase
-from .json_types import Job
+
+if TYPE_CHECKING:
+    from model import Entity, SourceResponses
+
+    from .json_types import Job
 
 
 class GitLabJobRunsWithinTimePeriod(GitLabJobsBase):

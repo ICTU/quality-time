@@ -1,11 +1,9 @@
 """Source routes."""
 
-from typing import Any, cast
+from typing import Any, cast, TYPE_CHECKING
 
 import bottle
-from pymongo.database import Database
 
-from shared.utils.type import ItemId, MetricId, SourceId
 from shared_data_model import DATA_MODEL
 from shared_data_model.parameters import PrivateToken
 
@@ -13,12 +11,18 @@ from database.reports import insert_new_report, latest_report_for_uuids, latest_
 from model.actions import copy_source, move_item
 from model.defaults import default_source_parameters
 from model.queries import is_password_parameter
-from model.report import Report
 from model.transformations import change_source_parameter
 from utils.functions import check_url_availability, uuid
 from utils.type import EditScope
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
+
+    from shared.utils.type import ItemId, MetricId, SourceId
+
+    from model.report import Report
 
 
 @bottle.post("/api/internal/source/new/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])

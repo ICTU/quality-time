@@ -1,11 +1,14 @@
 """Performancetest-runner slow transactions collector."""
 
-from bs4 import Tag
+from typing import TYPE_CHECKING
 
 from collector_utilities.functions import match_string_or_regular_expression
 from model import Entities, Entity, SourceResponses
 
 from .base import PerformanceTestRunnerBaseClass
+
+if TYPE_CHECKING:
+    from bs4 import Tag
 
 
 class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):

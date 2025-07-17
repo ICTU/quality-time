@@ -1,15 +1,18 @@
 """Performancetest-runner source up-to-dateness collector."""
 
-from datetime import datetime
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from bs4 import Tag
 
 from base_collectors import TimePassedCollector
 from collector_utilities.date_time import datetime_from_parts
-from collector_utilities.type import Response
 
 from .base import PerformanceTestRunnerBaseClass
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from collector_utilities.type import Response
 
 
 class PerformanceTestRunnerSourceUpToDateness(PerformanceTestRunnerBaseClass, TimePassedCollector):

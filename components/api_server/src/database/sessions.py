@@ -1,12 +1,15 @@
 """Sessions collection."""
 
-from datetime import datetime
-from typing import cast
+from typing import cast, TYPE_CHECKING
 
 import bottle
-from pymongo.database import Database
 
 from utils.type import SessionData, SessionId, User
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from pymongo.database import Database
 
 
 def upsert(database: Database, user: User, session_id: SessionId, session_expiration_datetime: datetime) -> None:

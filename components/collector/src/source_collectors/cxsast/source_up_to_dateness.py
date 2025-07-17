@@ -1,10 +1,14 @@
 """Checkmarx CxSAST source up-to-dateness collector."""
 
+from typing import TYPE_CHECKING
+
 from collector_utilities.date_time import days_ago, parse_datetime
-from collector_utilities.type import Value
-from model import Entities, SourceResponses
 
 from .base import CxSASTScanBase
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Value
+    from model import Entities, SourceResponses
 
 
 class CxSASTSourceUpToDateness(CxSASTScanBase):

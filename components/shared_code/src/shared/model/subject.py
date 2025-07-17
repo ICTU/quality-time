@@ -4,17 +4,17 @@ from typing import TYPE_CHECKING, cast
 
 from shared.utils.type import MetricId, SubjectId
 
-from .measurement import Measurement
 from .metric import Metric
 
 if TYPE_CHECKING:
+    from .measurement import Measurement
     from .report import Report
 
 
 class Subject(dict):  # noqa: PLW1641
     """Class representing a subject."""
 
-    def __init__(self, data_model: dict, subject_data: dict, subject_uuid: SubjectId, report: "Report") -> None:
+    def __init__(self, data_model: dict, subject_data: dict, subject_uuid: SubjectId, report: Report) -> None:
         """Instantiate a subject."""
         self.__data_model = data_model
         self.uuid = subject_uuid

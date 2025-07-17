@@ -1,9 +1,13 @@
 """Route value injection plugin."""
 
 import inspect
-from collections.abc import Callable
+from annotationlib import Format
+from typing import TYPE_CHECKING
 
-from bottle import Bottle, Route
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from bottle import Bottle, Route
 
 
 class InjectionPlugin[ValueType]:
@@ -33,9 +37,9 @@ class InjectionPlugin[ValueType]:
         value = configuration.get("value", self.value)
         keyword = configuration.get("keyword", self.keyword)
 
-        # Test if the original callback accepts a keyword parameter.
-        # Ignore it if it does not need a value.
-        parameter_names = inspect.signature(context.callback).parameters.keys()
+        # Test if the original callback accepts a keyword parameter. Ignore it if it does not need a value.
+        # Pass annotation_format=Format.STRING so types can be imported under an "if TYPE_CHECKING:" block.
+        parameter_names = inspect.signature(context.callback, annotation_format=Format.STRING).parameters.keys()
         if keyword not in parameter_names:
             return callback
 

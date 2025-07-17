@@ -1,8 +1,13 @@
 """Generate a public and private key pair if it doesn't already exist."""
 
+from typing import TYPE_CHECKING
+
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from pymongo.database import Database
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
+
 
 EXPORT_FIELDS_KEYS_NAME = "export_fields_keys"
 EXPORT_FIELDS_USAGE_DESCRIPTION = """

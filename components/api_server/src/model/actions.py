@@ -1,7 +1,7 @@
 """Model operations."""
 
 from collections.abc import MutableMapping
-from typing import cast
+from typing import cast, TYPE_CHECKING
 
 from shared.model.subject import Subject
 from shared.model.metric import Metric
@@ -10,7 +10,9 @@ from shared.utils.type import ItemId, MetricId, SourceId, SubjectId
 
 from model.report import Report
 from utils.functions import uuid
-from utils.type import Position
+
+if TYPE_CHECKING:
+    from utils.type import Position
 
 
 def copy_item[Item: Metric | Report | Source | Subject](item: Item, **kwargs) -> Item:

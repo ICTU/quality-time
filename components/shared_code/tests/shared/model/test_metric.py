@@ -2,14 +2,16 @@
 
 import unittest
 from datetime import date
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.utils.functions import iso_timestamp
-from shared.utils.type import SourceId
 
 from tests.fixtures import METRIC_ID, SOURCE_ID, SOURCE_ID2
+
+if TYPE_CHECKING:
+    from shared.utils.type import SourceId
 
 
 class MetricTest(unittest.TestCase):

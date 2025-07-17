@@ -4,11 +4,13 @@ import functools
 import json
 import logging
 import unittest
-from collections.abc import Callable
 from unittest.mock import Mock
-from typing import ClassVar, cast
+from typing import ClassVar, cast, TYPE_CHECKING
 
 from shared_data_model import DATA_MODEL_JSON
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class DatabaseTestCase(unittest.TestCase):

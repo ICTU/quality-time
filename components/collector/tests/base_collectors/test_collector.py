@@ -1,7 +1,5 @@
 """Unit tests for the collector main script."""
 
-from __future__ import annotations
-
 import asyncio
 import logging
 import pathlib

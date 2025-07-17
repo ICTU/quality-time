@@ -1,11 +1,13 @@
 """Snyk metrics security warnings collector."""
 
-from collections.abc import Collection
-from typing import Literal, cast
+from typing import TYPE_CHECKING, Literal, cast
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.type import JSON, JSONDict
 from model import Entities, Entity
+
+if TYPE_CHECKING:
+    from collections.abc import Collection
 
 Severity = Literal["low", "medium", "high"]
 

@@ -2,12 +2,15 @@
 
 import json
 from abc import ABC
+from typing import TYPE_CHECKING
 
 from bs4 import BeautifulSoup
 
 from base_collectors import HTMLFileSourceCollector
-from collector_utilities.type import Response
 from model import SourceMeasurement, SourceResponses
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response
 
 
 class NCoverBase(HTMLFileSourceCollector, ABC):

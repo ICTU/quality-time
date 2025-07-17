@@ -3,9 +3,9 @@
 from dataclasses import asdict, dataclass, field
 from typing import cast
 
-from shared.utils.functions import first
-
 import requests
+
+from shared.utils.functions import first
 
 from utils.log import get_logger
 from utils.type import URL

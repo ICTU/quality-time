@@ -1,9 +1,12 @@
 """Wait step implementations."""
 
 import time
+from typing import TYPE_CHECKING
 
 from behave import when
-from behave.runner import Context
+
+if TYPE_CHECKING:
+    from behave.runner import Context
 
 
 @when("the client waits a second")

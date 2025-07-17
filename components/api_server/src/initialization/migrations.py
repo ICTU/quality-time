@@ -1,14 +1,17 @@
 """Database migrations."""
 
-from collections.abc import Sequence
-
 import pymongo
-from pymongo.collection import Collection
-from pymongo.database import Database
+from typing import TYPE_CHECKING
 
 from shared.model.metric import Metric
 
 from utils.log import get_logger
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from pymongo.database import Database
+    from pymongo.collection import Collection
 
 
 def perform_migrations(database: Database) -> None:

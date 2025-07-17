@@ -1,7 +1,11 @@
 """Step implementations for notification destinations."""
 
+from typing import TYPE_CHECKING
+
 from behave import given, when
-from behave.runner import Context
+
+if TYPE_CHECKING:
+    from behave.runner import Context
 
 
 @given("a notification destination")

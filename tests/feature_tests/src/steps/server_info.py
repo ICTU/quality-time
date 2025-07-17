@@ -1,8 +1,12 @@
 """Step implementations for server info."""
 
+from typing import TYPE_CHECKING
+
 from asserts import assert_equal, assert_in
 from behave import given, then, when
-from behave.runner import Context
+
+if TYPE_CHECKING:
+    from behave.runner import Context
 
 
 @when("the client gets the server information")

@@ -1,10 +1,14 @@
 """Bitbucket merge requests collector."""
 
+from typing import TYPE_CHECKING
+
 from base_collectors import MergeRequestCollector
-from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
 from .base import BitbucketProjectBase
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL
 
 
 class BitbucketMergeRequests(MergeRequestCollector, BitbucketProjectBase):

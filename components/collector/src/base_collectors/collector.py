@@ -4,13 +4,11 @@ import asyncio
 import logging
 import pathlib
 from datetime import UTC, datetime, timedelta
-from typing import Any, NoReturn, cast
+from typing import TYPE_CHECKING, Any, NoReturn, cast
 
 import aiohttp
-from pymongo.database import Database
 
 from shared.database.reports import get_reports
-from shared.model.metric import Metric
 from shared.model.report import get_metrics_from_reports
 
 from collector_utilities.log import get_logger
@@ -19,6 +17,11 @@ from database.measurements import create_measurement
 
 from . import config
 from .metric_collector import MetricCollector
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
+
+    from shared.model.metric import Metric
 
 
 class Collector:

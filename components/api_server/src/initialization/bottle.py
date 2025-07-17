@@ -1,10 +1,14 @@
 """Initialize bottle."""
 
+from typing import TYPE_CHECKING
+
 import bottle
-from pymongo.database import Database
 
 from routes import *  # noqa: F403
 from routes.plugins import AuthPlugin, InjectionPlugin
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 def init_bottle(database: Database) -> None:
