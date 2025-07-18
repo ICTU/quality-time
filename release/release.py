@@ -39,7 +39,7 @@ def get_version() -> str:
     return cast(git.TagObject, latest_tag.tag).tag.strip("v")
 
 
-def parse_arguments() -> tuple[str, str, bool]:
+def parse_arguments() -> tuple[str, str, bool, bool]:
     """Return the command line arguments."""
     current_version = get_version()
     description = f"Release Quality-time. Current version is {current_version}."
@@ -67,8 +67,13 @@ def parse_arguments() -> tuple[str, str, bool]:
         action="store_true",
         help="only check the preconditions and then exit",
     )
+    parser.add_argument(
+        "--no-git-push",
+        action="store_true",
+        help="do not run git push as final step",
+    )
     arguments = parser.parse_args()
-    return arguments.bump, current_version, arguments.check_preconditions_only
+    return arguments.bump, current_version, arguments.check_preconditions_only, arguments.no_git_push
 
 
 def check_preconditions(bump: str, current_version: str) -> None:
@@ -160,7 +165,7 @@ def bump_my_version_spec() -> str:
 def main() -> None:
     """Create the release."""
     os.environ["RELEASE_DATE"] = utc_today().isoformat()  # Used by bump-my-version to update CHANGELOG.md
-    bump, current_version, check_preconditions_only = parse_arguments()
+    bump, current_version, check_preconditions_only, no_git_push = parse_arguments()
     # See https://github.com/callowayproject/bump-my-version?tab=readme-ov-file#add-support-for-pre-release-versions
     # for how bump-my-version deals with pre-release versions
     check_preconditions(bump, current_version)
@@ -174,7 +179,23 @@ def main() -> None:
     else:
         cmd.append(bump)
     subprocess.run(cmd, check=True)  # noqa: S603
-    subprocess.run(("git", "push", "--follow-tags"), check=True)
+    for python_project_folder in [
+        "../components/api_server",
+        "../components/collector",
+        "../components/notifier",
+        "../components/shared_code",
+        "../docs",
+        "../release",
+        "../tests/feature_tests",
+        "../tests/application_tests",
+    ]:
+        subprocess.run(("uv", "lock"), cwd=python_project_folder, check=True)
+    subprocess.run(("git", "add", "**/uv.lock"), cwd="..", check=True)
+    subprocess.run(("git", "commit", "--amend", "--no-edit"), check=True)
+    # move the git tag that was just created by bumpversion, instead of figuring it out again
+    subprocess.run(("git", "tag", "--force", f"v{get_version()}"), check=True)  # noqa: S603
+    if not no_git_push:
+        subprocess.run(("git", "push", "--follow-tags"), check=True)
 
 
 if __name__ == "__main__":
