@@ -2,6 +2,7 @@
 
 from unittest.mock import patch
 
+from model import MetricMeasurement
 from source_collectors.jira.issues import JiraIssues
 
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
@@ -22,7 +23,7 @@ class JiraTestCase(SourceCollectorTestCase):
         self.set_source_parameter("board", "Board 2")
         self.created = "2020-08-06T16:36:48.000+0200"
 
-    def issue(self, key: str = "1", **fields: str | dict[str, dict[str, str]]):
+    def issue(self, key: str = "1", **fields: str | dict[str, dict[str, str]]) -> dict:
         """Create a Jira issue."""
         return {"id": key, "key": key, "fields": dict(created=self.created, summary=f"Summary {key}", **fields)}
 
@@ -48,7 +49,7 @@ class JiraTestCase(SourceCollectorTestCase):
             **kwargs,
         )
 
-    async def get_response(self, issues_json, fields_json=None):
+    async def get_response(self, issues_json, fields_json=None) -> MetricMeasurement | None | tuple:
         """Get the collector's response."""
         with patch.object(JiraIssues, "max_results", 50):
             return await self.collect(

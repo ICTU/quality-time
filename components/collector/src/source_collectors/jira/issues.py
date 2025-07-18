@@ -113,10 +113,15 @@ class JiraIssues(JiraBase):
         return "issuetype,summary,created,updated,status,priority" + (f",{sprint_field_id}" if sprint_field_id else "")
 
     @classmethod
-    def __get_sprint_names(cls, sprint_texts: list[str]) -> str:
-        """Parse the sprint name from the sprint text."""
-        matches = [cls.SPRINT_NAME_RE.search(sprint_text) for sprint_text in sprint_texts]
-        sprint_names = [match.group(1) for match in matches if match]
+    def __get_sprint_names(cls, sprint_entries: list[str | dict]) -> str:
+        """Parse the sprint names from a list of sprint texts or dicts."""
+        sprint_names = []
+        for sprint_entry in sprint_entries:
+            # Difference between Jira cloud and server version, see https://github.com/ICTU/quality-time/issues/11672
+            if isinstance(sprint_entry, dict):
+                sprint_names.append(sprint_entry["name"])
+            elif match := cls.SPRINT_NAME_RE.search(sprint_entry):
+                sprint_names.append(match.group(1))
         return ", ".join(sorted(sprint_names))
 
     async def _determine_max_results(self) -> int:

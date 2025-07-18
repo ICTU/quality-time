@@ -54,7 +54,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         post_request_json_return_value: dict | None = None,
         post_request_json_side_effect=None,
         return_mocks: bool = False,
-    ):
+    ) -> MetricMeasurement | None | tuple:
         """Collect the metric."""
         get_response = self.__get_response(
             get_request_json_return_value,
