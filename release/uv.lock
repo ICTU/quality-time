@@ -59,7 +59,7 @@ wheels = [
 
 [[package]]
 name = "bump-my-version"
-version = "1.2.0"
+version = "1.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -72,9 +72,9 @@ dependencies = [
     { name = "tomlkit" },
     { name = "wcmatch" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a4/b6/c45043a404e0878e3abeff1c25c87df78777c33760e7459901e0504f003a/bump_my_version-1.2.0.tar.gz", hash = "sha256:5120d798aaf26468a37ca0f127992dc036688b8e5e106adc8870b13c2a2df22d", size = 1136170, upload-time = "2025-06-07T14:36:12.097Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d2/1c/2f26665d4be4f1b82b2dfe46f3bd7901582863ddf1bd597309b5d0a5e6d4/bump_my_version-1.2.1.tar.gz", hash = "sha256:96c48f880c149c299312f983d06b50e0277ffc566e64797bf3a6c240bce2dfcc", size = 1137281, upload-time = "2025-07-19T11:52:03.235Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1f/e4/715484178fa80279cd67fd06c6641a4611c5ea580acdc221ad715b39d85c/bump_my_version-1.2.0-py3-none-any.whl", hash = "sha256:201e6b103ff0f2b240c9d0a6eb83db382840b1f78eb78f6d77726bed39a326d8", size = 59560, upload-time = "2025-06-07T14:36:10.232Z" },
+    { url = "https://files.pythonhosted.org/packages/5c/f4/40db87f649d9104c5fe69706cc455e24481b90024b2aacb64cc0ef205536/bump_my_version-1.2.1-py3-none-any.whl", hash = "sha256:ddb41d5f30abdccce9d2dc873e880bdf04ec8c7e7237c73a4c893aa10b7d7587", size = 59567, upload-time = "2025-07-19T11:52:01.343Z" },
 ]
 
 [[package]]
@@ -698,7 +698,7 @@ tools = [
 [package.metadata]
 requires-dist = [
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.8.6" },
-    { name = "bump-my-version", marker = "extra == 'tools'", specifier = "==1.2.0" },
+    { name = "bump-my-version", marker = "extra == 'tools'", specifier = "==1.2.1" },
     { name = "fixit", marker = "extra == 'tools'", specifier = "==2.1.0" },
     { name = "gitpython", specifier = "==3.1.44" },
     { name = "mypy", marker = "extra == 'tools'", specifier = "==1.17.0" },
