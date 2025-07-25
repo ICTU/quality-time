@@ -8,7 +8,7 @@ classifiers = [
 ]
 dependencies = [
     "furo==2023.9.10",
-    "gitpython==3.1.44",
+    "gitpython==3.1.45",
     "myst-parser==2.0.0",
     "pydantic==2.11.7",         # Needed for generating the reference docs from the data model
     "shared-code",
@@ -27,7 +27,7 @@ optional-dependencies.tools = [
     "pip-audit==2.9.0",
     "pydantic==2.11.7",     # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.6.0",
-    "ruff==0.12.4",
+    "ruff==0.12.5",
     "vale==3.0.3.0",        # Documentation grammar and style checker
     "vulture==2.14",
 ]
