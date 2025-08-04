@@ -76,6 +76,10 @@ const theme2 = createTheme(theme1, {
             color: { main: theme1.palette.error.main },
             name: "edit_scope_reports",
         }),
+        entity_status_count_badge: theme1.palette.augmentColor({
+            color: { main: grey[300] },
+            name: "entity_status_count_badge",
+        }),
     },
     typography: {
         h1: {
