@@ -11,7 +11,7 @@ import { IGNORABLE_SOURCE_ENTITY_STATUSES, SOURCE_ENTITY_STATUS_NAME } from "./s
 import { SourceEntityAttribute } from "./SourceEntityAttribute"
 import { SourceEntityDetails } from "./SourceEntityDetails"
 
-function entityCanBeIgnored(status, statusEndDateString) {
+export function entityCanBeIgnored(status, statusEndDateString) {
     const statusEndDate = new Date(statusEndDateString)
     const now = new Date()
     if (statusEndDate < now) {
@@ -77,7 +77,9 @@ export function SourceEntity({
             onExpand={setExpanded}
             style={{ maxHeight: "100px", overflow: "auto" }}
         >
-            <TableCell sx={style}>{SOURCE_ENTITY_STATUS_NAME[status]}</TableCell>
+            <TableCell colSpan={2} sx={{ paddingLeft: "6px", ...style }}>
+                {SOURCE_ENTITY_STATUS_NAME[status]}
+            </TableCell>
             <TableCell sx={style}>
                 {status === "unconfirmed" ? "" : <TimeAgoWithDate dateFirst noTime date={statusEndDate} />}
             </TableCell>

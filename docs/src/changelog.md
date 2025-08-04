@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Changed
+
+- Replace the button to hide ignored measurement entities at the bottom of entity tables with an icon button in the table header. Also add a badge with the number of ignored measurement entities. Closes [#11702](https://github.com/ICTU/quality-time/issues/11702).
+
 ## v5.36.1 - 2025-07-18
 
 ### Fixed

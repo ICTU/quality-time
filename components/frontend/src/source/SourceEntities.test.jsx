@@ -178,15 +178,35 @@ it("renders a message if there are no measurements", async () => {
 
 it("shows the hide ignored entities button", async () => {
     const { container } = renderSourceEntities()
-    expect(screen.getAllByText("Hide ignored entities").length).toBe(1)
+    expect(screen.getAllByLabelText(/Hide the 0 entities that have been/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows the hide ignored entities button with one ignored entity", async () => {
+    const fixture = JSON.parse(JSON.stringify(sourceFixture))
+    fixture.entity_user_data["2"].status_end_date = "3000-01-01"
+    const { container } = renderSourceEntities({ measurements: [{ sources: [fixture] }] })
+    expect(screen.getAllByLabelText(/Hide the 1 entity name that has been/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows the hide ignored entities button with two ignored entities", async () => {
+    const fixture = JSON.parse(JSON.stringify(sourceFixture))
+    fixture.entity_user_data["1"].status = "false_positive"
+    fixture.entity_user_data["1"].status_end_date = "3000-01-01"
+    fixture.entity_user_data["2"].status_end_date = "3000-01-01"
+    const { container } = renderSourceEntities({ measurements: [{ sources: [fixture] }] })
+    expect(screen.getAllByLabelText(/Hide the 2 entities that have been/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the show ignored entities button", async () => {
-    const { container } = renderSourceEntities()
-    const hideEntitiesButton = screen.getByText("Hide ignored entities")
-    await userEvent.click(hideEntitiesButton)
-    expect(hideEntitiesButton).toHaveTextContent("Show ignored entities")
+    const fixture = JSON.parse(JSON.stringify(sourceFixture))
+    fixture.entity_user_data["2"].status_end_date = "3000-01-01"
+    const { container } = renderSourceEntities({ measurements: [{ sources: [fixture] }] })
+    const hideEntitiesTooltip = screen.getByLabelText(/Hide the 1 entity name that has been/)
+    await userEvent.click(hideEntitiesTooltip.firstChild) // Get the button inside the tooltip
+    expect(hideEntitiesTooltip).toHaveAccessibleName(/Show the 1 entity name that has been/)
     await expectNoAccessibilityViolations(container)
 })
 

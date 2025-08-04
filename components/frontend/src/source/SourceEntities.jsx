@@ -1,8 +1,18 @@
 import "./SourceEntities.css"
 
 import HelpIcon from "@mui/icons-material/Help"
-import { Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Tooltip } from "@mui/material"
-import { bool, func, object, string } from "prop-types"
+import {
+    Badge,
+    IconButton,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Tooltip,
+} from "@mui/material"
+import { bool, func, number, object, string } from "prop-types"
 import { useContext, useState } from "react"
 
 import { DataModel } from "../context/DataModel"
@@ -20,14 +30,12 @@ import {
     sourcePropType,
 } from "../sharedPropTypes"
 import { capitalize } from "../utils"
-import { ButtonRow } from "../widgets/ButtonRow"
-import { ActionButton } from "../widgets/buttons/ActionButton"
 import { IgnoreIcon, ShowIcon } from "../widgets/icons"
 import { LoadingPlaceHolder } from "../widgets/Placeholder"
 import { SortableTableHeaderCell } from "../widgets/TableHeaderCell"
 import { FailedToLoadMeasurementsWarningMessage, InfoMessage } from "../widgets/WarningMessage"
 import { alignment } from "./source_entity_alignment"
-import { SourceEntity } from "./SourceEntity"
+import { entityCanBeIgnored, SourceEntity } from "./SourceEntity"
 
 function entityStatus(source, entity) {
     return source.entity_user_data?.[entity.key]?.status ?? "unconfirmed"
@@ -89,8 +97,14 @@ EntityAttributeHeaderCell.propTypes = {
     sortDirection: sortDirectionPropType,
 }
 
-function sourceEntitiesHeaders(entityAttributes, metricEntities, sortProps) {
-    const entityName = metricEntities.name
+function sourceEntitiesHeaders(
+    entityAttributes,
+    hideIgnoredEntities,
+    metricEntities,
+    nrIgnoredEntities,
+    setHideIgnoredEntities,
+    sortProps,
+) {
     function handleSort(column, columnType) {
         sortProps.setColumnType(columnType)
         if (column === sortProps.sortColumn) {
@@ -99,14 +113,34 @@ function sourceEntitiesHeaders(entityAttributes, metricEntities, sortProps) {
             sortProps.setSortColumn(column)
         }
     }
+    const action = hideIgnoredEntities ? "Show" : "Hide"
+    const entityNameSingular = metricEntities.name
+    const entityNamePlural = metricEntities.name_plural
+    const entityNameOrNames = nrIgnoredEntities === 1 ? entityNameSingular : entityNamePlural
+    const hasOrHave = nrIgnoredEntities === 1 ? "has" : "have"
+    const tooltip = `${action} the ${nrIgnoredEntities} ${entityNameOrNames} that ${hasOrHave} been marked as fixed, false positive, or won't fix.`
     return (
         <TableRow>
+            <TableCell sx={{ paddingRight: "6px" }}>
+                <Tooltip title={tooltip}>
+                    <span /* https://mui.com/material-ui/react-tooltip/#disabled-elements */>
+                        <IconButton
+                            disabled={nrIgnoredEntities === 0}
+                            onClick={() => setHideIgnoredEntities(!hideIgnoredEntities)}
+                        >
+                            <Badge badgeContent={nrIgnoredEntities} color={"entity_status_count_badge"} showZero>
+                                {hideIgnoredEntities ? <ShowIcon /> : <IgnoreIcon />}
+                            </Badge>
+                        </IconButton>
+                    </span>
+                </Tooltip>
+            </TableCell>
             <SortableTableHeaderCell
                 column="entity_status"
                 handleSort={(column) => handleSort(column, "text")}
                 {...sortProps}
             >
-                {`${capitalize(entityName)} status`}
+                {`${capitalize(entityNameSingular)} status`}
             </SortableTableHeaderCell>
             <SortableTableHeaderCell
                 column="status_end_date"
@@ -127,7 +161,7 @@ function sourceEntitiesHeaders(entityAttributes, metricEntities, sortProps) {
                 handleSort={(column) => handleSort(column, "datetime")}
                 {...sortProps}
             >
-                {capitalize(entityName)} first seen
+                {capitalize(entityNameSingular)} first seen
             </SortableTableHeaderCell>
             {entityAttributes.map((entityAttribute) => (
                 <EntityAttributeHeaderCell entityAttribute={entityAttribute} key={entityAttribute.key} {...sortProps} />
@@ -137,7 +171,10 @@ function sourceEntitiesHeaders(entityAttributes, metricEntities, sortProps) {
 }
 sourceEntitiesHeaders.propTypes = {
     entityAttributes: entityAttributesPropType,
+    hideIgnoredEntities: bool,
     metricEntities: object,
+    nrIgnoredEntities: number,
+    setHideIgnoredEntities: func,
     sortProps: object,
 }
 
@@ -177,33 +214,6 @@ sortedEntities.propTypes = {
     sortColumn: string,
     sortDirection: sortDirectionPropType,
     source: sourcePropType,
-}
-
-function Footer({ entityNamePlural, hideIgnoredEntities, setHideIgnoredEntities }) {
-    const action = hideIgnoredEntities ? "Show" : "Hide"
-    const hideIgnoredEntitiesTooltip = `${action} ${entityNamePlural} that have been marked as fixed, false positive, or won't fix.`
-    return (
-        <TableFooter>
-            <TableRow>
-                <TableCell colSpan={99}>
-                    <ButtonRow paddingLeft={0} paddingRight={0}>
-                        <ActionButton
-                            action={hideIgnoredEntities ? "Show" : "Hide"}
-                            itemType={`ignored ${entityNamePlural}`}
-                            startIcon={hideIgnoredEntities ? <ShowIcon /> : <IgnoreIcon />}
-                            onClick={() => setHideIgnoredEntities(!hideIgnoredEntities)}
-                            popup={hideIgnoredEntitiesTooltip}
-                        />
-                    </ButtonRow>
-                </TableCell>
-            </TableRow>
-        </TableFooter>
-    )
-}
-Footer.propTypes = {
-    entityNamePlural: string.isRequired,
-    hideIgnoredEntities: bool.isRequired,
-    setHideIgnoredEntities: func.isRequired,
 }
 
 export function SourceEntities({ loading, measurements, metric, metricUuid, reload, report, sourceUuid }) {
@@ -255,7 +265,6 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
         sortColumn: sortColumn,
         sortDirection: sortDirection,
     }
-    const headers = sourceEntitiesHeaders(entityAttributes, metricEntities, sortProps)
     const entities = sortedEntities(columnType, sortColumn, sortDirection, source)
     const rows = entities.map((entity) => (
         <SourceEntity
@@ -273,17 +282,22 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
             sourceUuid={source.source_uuid}
         />
     ))
-    const entityNamePlural = metricEntities.name_plural
+    const nrIgnoredEntities = entities.filter((entity) =>
+        entityCanBeIgnored(entityStatus(source, entity), entityStatusEndDate(source, entity)),
+    ).length
+    const headers = sourceEntitiesHeaders(
+        entityAttributes,
+        hideIgnoredEntities,
+        metricEntities,
+        nrIgnoredEntities,
+        setHideIgnoredEntities,
+        sortProps,
+    )
     return (
         <TableContainer sx={{ maxHeight: "50vh" }}>
             <Table padding="none" size="small" stickyHeader>
                 <TableHead sx={{ zIndex: zIndexInnerTableHeader }}>{headers}</TableHead>
                 <TableBody>{rows}</TableBody>
-                <Footer
-                    entityNamePlural={entityNamePlural}
-                    hideIgnoredEntities={hideIgnoredEntities}
-                    setHideIgnoredEntities={setHideIgnoredEntities}
-                />
             </Table>
         </TableContainer>
     )
