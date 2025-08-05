@@ -192,8 +192,8 @@ def main() -> None:
         subprocess.run(("uv", "lock"), cwd=python_project_folder, check=True)
     subprocess.run(("git", "add", "**/uv.lock"), cwd="..", check=True)
     subprocess.run(("git", "commit", "--amend", "--no-edit"), check=True)
-    # move the git tag that was just created by bumpversion, instead of figuring it out again
-    subprocess.run(("git", "tag", "--force", f"v{get_version()}"), check=True)  # noqa: S603
+    # Move the git tag that was just created by bumpversion, instead of figuring it out again
+    subprocess.run(("git", "tag", "--annotate", "--force", f"v{get_version()}"), check=True)  # noqa: S603
     if not no_git_push:
         subprocess.run(("git", "push", "--follow-tags"), check=True)
 
