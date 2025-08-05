@@ -6,10 +6,10 @@ import datetime
 import os
 import pathlib
 import re
-import subprocess
 import sys
 import tomllib
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from subprocess import run
 from typing import Any, cast
 
 import git
@@ -178,7 +178,7 @@ def main() -> None:
         cmd.append("pre_release_number")  # Bump the release candidate number, when already on a -rc version
     else:
         cmd.append(bump)
-    subprocess.run(cmd, check=True)  # noqa: S603
+    run(cmd, check=True)  # noqa: S603
     for python_project_folder in [
         "../components/api_server",
         "../components/collector",
@@ -189,13 +189,16 @@ def main() -> None:
         "../tests/feature_tests",
         "../tests/application_tests",
     ]:
-        subprocess.run(("uv", "lock"), cwd=python_project_folder, check=True)
-    subprocess.run(("git", "add", "**/uv.lock"), cwd="..", check=True)
-    subprocess.run(("git", "commit", "--amend", "--no-edit"), check=True)
-    # Move the git tag that was just created by bumpversion, instead of figuring it out again
-    subprocess.run(("git", "tag", "--annotate", "--force", f"v{get_version()}"), check=True)  # noqa: S603
+        run(("uv", "lock"), cwd=python_project_folder, check=True)
+    run(("git", "add", "**/uv.lock"), cwd="..", check=True)
+    run(("git", "commit", "--amend", "--no-edit"), check=True)
+    # Move the git tag that was just created by bump-my-version:
+    version = f"v{get_version()}"
+    git_log_cmd = ("git", "log", "-n1", '--pretty=format:"%s"', version)
+    message = run(git_log_cmd, capture_output=True, text=True, check=True).stdout.strip()  # noqa: S603
+    run(("git", "tag", "--annotate", "--force", version, "--message", message), check=True)  # noqa: S603
     if not no_git_push:
-        subprocess.run(("git", "push", "--follow-tags"), check=True)
+        run(("git", "push", "--follow-tags"), check=True)
 
 
 if __name__ == "__main__":
