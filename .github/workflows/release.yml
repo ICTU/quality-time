@@ -79,3 +79,5 @@ jobs:
           cd helm
           helm package .
           helm push quality-time-*.tgz oci://registry-1.docker.io/ictu
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
