@@ -81,3 +81,5 @@ jobs:
           helm push quality-time-*.tgz oci://registry-1.docker.io/ictu
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
+        with:
+          prerelease: contains(github.ref_name, "rc")
