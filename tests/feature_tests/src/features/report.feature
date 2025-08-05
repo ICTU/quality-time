@@ -121,12 +121,12 @@ Feature: report
     And the client creates a source
     And the client sets the source parameter url to "https://public"
     And the client sets the source parameter password to "secret"
-    And the client downloads the report as json
-    Then the client receives the json
+    And the client downloads the report as JSON
+    Then the client receives the JSON
 
   Scenario: export nonexisting report as JSON
     When the client downloads the report non_existing_report_uuid as json
-    Then the client receives no json
+    Then the client receives no JSON
 
   Scenario: export report as JSON with own public key
     When the client creates a report
@@ -134,13 +134,13 @@ Feature: report
     And the client creates a metric
     And the client creates a source
     And the client sets the source parameter password to "['secret_1', 'secret_2']"
-    And the client downloads the report as json with his own public key
-    Then the client receives the json
+    And the client downloads the report as JSON with his own public key
+    Then the client receives the JSON
 
   Scenario: export JSON report by unauthenticated client
     When the client creates a report
     And the client logs out
-    And the client downloads the report as json
+    And the client downloads the report as JSON
     Then the server tells the client to log in
 
   Scenario: re-import report
@@ -151,7 +151,7 @@ Feature: report
     And the client sets the source parameter password to "['secret_1', 'secret_2']"
     And the client creates a source
     And the client sets the source parameter password to "secret"
-    And the client downloads the report as json
+    And the client downloads the report as JSON
     And the client re-imports a report
     Then the report title is "New report"
 
