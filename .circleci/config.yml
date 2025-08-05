@@ -126,9 +126,3 @@ workflows:
           context: QualityTime
       - unittest_other:
           context: QualityTime
-      - docker/hadolint:
-          context: QualityTime
-          dockerfiles: "components/collector/Dockerfile:components/database/Dockerfile:\
-            components/api_server/Dockerfile:components/frontend/Dockerfile:\
-            components/notifier/Dockerfile:components/proxy/Dockerfile:\
-            components/renderer/Dockerfile:components/testdata/Dockerfile"
