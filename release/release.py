@@ -194,7 +194,7 @@ def main() -> None:
     run(("git", "commit", "--amend", "--no-edit"), check=True)
     # Move the git tag that was just created by bump-my-version:
     version = f"v{get_version()}"
-    git_log_cmd = ("git", "log", "-n1", '--pretty=format:"%s"', version)
+    git_log_cmd = ("git", "log", "-n1", "--pretty=format:%s", version)
     message = run(git_log_cmd, capture_output=True, text=True, check=True).stdout.strip()  # noqa: S603
     run(("git", "tag", "--annotate", "--force", version, "--message", message), check=True)  # noqa: S603
     if not no_git_push:

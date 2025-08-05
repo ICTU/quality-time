@@ -18,8 +18,6 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - Replace the button to hide ignored measurement entities at the bottom of entity tables with an icon button in the table header. Also add a badge with the number of ignored measurement entities. Closes [#11702](https://github.com/ICTU/quality-time/issues/11702).
 
-## v5.36.1 - 2025-07-18
-
 ### Fixed
 
 - Fix dataformat difference between Jira cloud and server version, where sprint custom fields are returned as a dict instead of text. Fixes [#11672](https://github.com/ICTU/quality-time/issues/11672).
