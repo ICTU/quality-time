@@ -21,7 +21,7 @@ The table below contains the *Quality-time* releases since the last minor of the
 
 | Version    | Date       | Mongo  | FC     | Migrations | Downgrade       | Upgrade         | Manual changes |
 |------------|------------|--------|--------|------------|-----------------|-----------------|----------------|
-| v5.37.0    | 2025-08-05 | v8     | v8     |            | v5.26.0-v5.36.0 | n/a             | no             |
+| v5.37.0    | 2025-08-06 | v8     | v8     |            | v5.26.0-v5.36.0 | n/a             | no             |
 | v5.36.0    | 2025-07-10 | v8     | v8     |            | v5.26.0-v5.35.0 | v5.37.0         | no             |
 | v5.35.0    | 2025-07-04 | v8     | v8     |            | v5.26.0-v5.34.0 | v5.36.0-v5.37.0 | no             |
 | v5.34.0    | 2025-06-26 | v8     | v8     |            | v5.26.0-v5.33.0 | v5.35.0-v5.37.0 | no             |
