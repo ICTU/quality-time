@@ -95,11 +95,11 @@ def replace_report_uuids(*reports) -> None:
     """Change all uuids in this report."""
     for report in reports:
         report["report_uuid"] = uuid()
-        for subject_uuid in list(report.get("subjects", {})):
+        for subject_uuid in report.get("subjects", {}).copy():
             subject = report["subjects"][uuid()] = report["subjects"].pop(subject_uuid)
-            for metric_uuid in list(subject.get("metrics", {})):
+            for metric_uuid in subject.get("metrics", {}).copy():
                 metric = subject["metrics"][uuid()] = subject["metrics"].pop(metric_uuid)
-                for source_uuid in list(metric.get("sources")):
+                for source_uuid in metric.get("sources").copy():
                     metric["sources"][uuid()] = metric["sources"].pop(source_uuid)
 
 

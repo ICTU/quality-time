@@ -447,7 +447,7 @@ export function addCounts(object1, object2) {
 }
 
 export function sum(object) {
-    const list = typeof object == Array ? object : Object.values(object)
+    const list = Object.values(object) // Works for both arrays and objects
     return list.reduce((a, b) => a + b, 0)
 }
 sum.propTypes = {
