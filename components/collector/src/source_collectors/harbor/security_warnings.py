@@ -31,12 +31,15 @@ class HarborBase(SourceCollector, ABC):
         return all_responses
 
     async def _check_credentials(self) -> None:
-        """Check that the credentials are valid.
+        """Check that the user credentials are valid.
+
+        Only works for real users. Robot users don't have a /current endpoint.
 
         This needs to be done explicitly because Harbor doesn't throw an error on invalid credentials but quietly only
         returns public projects, making it hard for the user to see that there is something wrong.
         """
-        if self._parameter("username"):
+        username = cast(str, self._parameter("username"))
+        if username and not username.startswith("robot_"):
             # This will raise an exception for status >= 400:
             await super()._get_source_responses(URL(await self._api_url() + "/users/current"))
 

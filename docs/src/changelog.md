@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Fixed
+
+- Skip credential check for Harbor robot users (it only works for regular users). Fixes [#11353](https://github.com/ICTU/quality-time/issues/11353).
+
 ### Added
 
 - When measuring inactive branches using GitLab, allow for selecting a group of projects in addition to a single project. Closes [#7991](https://github.com/ICTU/quality-time/issues/7991).
