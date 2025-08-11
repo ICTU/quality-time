@@ -5,6 +5,18 @@ import aiohttp
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
+class FakeResponse:
+    """Fake GitLab response."""
+
+    def __init__(self, fake_json) -> None:
+        self.fake_json = fake_json
+        self.links: dict[str, dict[str, str]] = {}
+
+    async def json(self):
+        """Return the fake JSON."""
+        return self.fake_json
+
+
 class HarborSecurityWarningsTest(SourceCollectorTestCase):
     """Unit tests for the Harbor security warnings collector."""
 
@@ -65,6 +77,13 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
         self.set_source_parameter("password", "invalid")
         response = await self.collect(get_request_json_side_effect=aiohttp.ClientError)
         self.assert_measurement(response, connection_error="ClientError")
+
+    async def test_credentials_test_is_skipped_for_robot_users(self):
+        """Test that the credentials test is skipped for robot users."""
+        self.set_source_parameter("username", "robot_user")
+        self.set_source_parameter("password", "invalid")
+        response = await self.collect(get_request_side_effect=[FakeResponse({})])
+        self.assert_measurement(response, value="0", entities=[])
 
     async def test_no_projects(self):
         """Test that there are no security warnings if there are no projects."""
