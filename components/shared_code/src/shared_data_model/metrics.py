@@ -549,11 +549,11 @@ test case metric is different than other metrics because it combines data from t
 more sources for the test cases, and one or more sources for the test results. The test case metric then matches the
 test results with the test cases.
 
-Currently, only {index}`Jira` is supported as source for the test cases. {index}`JUnit`, {index}`TestNG`, and
-{index}`Robot Framework` are supported as source for the test results. So, to configure the test cases metric, you need
-to add at least one Jira source and one JUnit, TestNG, Robot Framework source. In addition, to allow the test case
-metric to match test cases from Jira with test results from the JUnit, TestNG, or Robot Framework XML files, the test
-results should mention Jira issue keys in their title or description.
+Currently, only {index}`Jira` is supported as source for the test cases. Test report sources such as {index}`JUnit`,
+{index}`TestNG`, and {index}`Robot Framework` are supported as source for the test results. To configure the test cases
+metric, you need to add at least one Jira source and one test report source. In addition, to allow the test case
+metric to match test cases from Jira with test results from the test reports files, the test results should mention
+Jira issue keys in the title or description of tests or the name of test suites.
 
 Suppose you have configured Jira with the query: `project = "My Project" and type = "Logical Test Case"` and this
 results in these test cases:
@@ -568,7 +568,7 @@ results in these test cases:
 Also suppose your JUnit XML has the following test results:
 
 ```xml
-<testsuite tests="5" errors="0" failures="1" skipped="1">
+<testsuite name="suite 1" tests="5" errors="0" failures="1" skipped="1">
 <testcase name="MP-1; step 1">
     <failure />
 </testcase>
@@ -593,9 +593,47 @@ one passed, and one untested test case:
 | MP-3 | Test case 3 | passed      |
 | MP-4 | Test case 4 | untested    |
 
-If multiple test results in the JUnit, TestNG, or Robot Framework XML file map to one Jira test case (as with MP-1 and
-MP-3 above), the 'worst' test result is reported. Possible test results from worst to best are: errored, failed,
-skipped, and passed. Test cases not found in the test results are listed as untested (as with MP-4 above).""",
+If multiple test results in the test report file map to one Jira test case (as with MP-1 and MP-3 above), the 'worst'
+test result is reported. Possible test results from worst to best are: errored, failed, skipped, and passed. Test cases
+not found in the test results are listed as untested (as with MP-4 above).
+
+In addition to linking individual test results to Jira test cases, it's also possible to link test suites to Jira test
+cases. For example:
+
+```xml
+<testsuites>
+    <testsuite name="suite 1;MP-1" tests="3" errors="0" failures="1" skipped="2">
+        <testcase name="test case 1">
+            <failure />
+        </testcase>
+        <testcase name="test case 2">
+            <skipped />
+        </testcase>
+        <testcase name="test case 3">
+            <skipped />
+        </testcase>
+    </testsuite>
+    <testsuite name="suite 2;MP-2" tests="2" errors="0" failures="0" skipped="0">
+        <testcase name="test case 4"/>
+        <testcase name="test case 5"/>
+    </testsuite>
+</testsuites>
+```
+
+The test case metric will combine the JUnit XML file with the test cases from Jira and report one failed, one passed,
+and two untested test cases:
+
+| Key  | Summary     | Test result |
+|------|-------------|-------------|
+| MP-1 | Test case 1 | failed      |
+| MP-2 | Test case 2 | passed      |
+| MP-3 | Test case 3 | untested    |
+| MP-4 | Test case 4 | untested    |
+
+Like before, if multiple test results in the test report file map to one Jira test case (as with MP-1 and MP-2 above),
+the 'worst' test result is reported. Test cases not found in the test results are listed as untested (as with MP-3 and
+MP-4 above).
+""",
         scales=["count", "percentage"],
         unit=Unit.TEST_CASES,
         direction=Direction.MORE_IS_BETTER,

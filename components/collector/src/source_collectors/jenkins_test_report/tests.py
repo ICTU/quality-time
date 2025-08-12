@@ -1,13 +1,19 @@
 """Jenkins test report metric tests collector."""
 
-from typing import ClassVar, cast
+from typing import ClassVar, TypedDict, cast
 
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 TestCase = dict[str, str]
-Suite = dict[str, list[TestCase]]
+
+
+class Suite(TypedDict):
+    """Jenkins test report suite JSON."""
+
+    cases: list[TestCase]
+    name: str
 
 
 class JenkinsTestReportTests(SourceCollector):
@@ -35,7 +41,7 @@ class JenkinsTestReportTests(SourceCollector):
         suites: list[Suite] = []
         for result in results:
             suites.extend(result["suites"])
-        entities = [self.__entity(case) for suite in suites for case in suite.get("cases", [])]
+        entities = [self.__entity(case, suite) for suite in suites for case in suite.get("cases", [])]
         return SourceMeasurement(
             value=str(value),
             total=str(total),
@@ -47,7 +53,7 @@ class JenkinsTestReportTests(SourceCollector):
         statuses = cast(list[str], self._parameter("test_result"))
         return entity["test_result"] in statuses
 
-    def __entity(self, case: TestCase) -> Entity:
+    def __entity(self, case: TestCase, suite: Suite) -> Entity:
         """Transform a test case into a test case entity."""
         name = case.get("name", "<nameless test case>")
         return Entity(
@@ -56,6 +62,7 @@ class JenkinsTestReportTests(SourceCollector):
             class_name=case.get("className", ""),
             test_result=self.__status(case),
             age=str(case.get("age", 0)),
+            suite_name=suite.get("name", ""),
         )
 
     @staticmethod

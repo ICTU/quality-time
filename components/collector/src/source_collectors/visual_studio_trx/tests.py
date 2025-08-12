@@ -6,7 +6,7 @@ from xml.etree.ElementTree import Element  # nosec # Element is not available fr
 
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml_with_namespace
-from collector_utilities.type import Namespaces
+from collector_utilities.type import ElementMap, Namespaces
 from metric_collectors.test_cases import TestCases
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
@@ -21,10 +21,11 @@ class VisualStudioTRXTests(XMLFileSourceCollector):
         total = 0
         for response in responses:
             tree, namespaces = await parse_source_response_xml_with_namespace(response)
+            parent_map = self.parent_map(tree)
             for result in tree.findall(".//ns:UnitTestResult", namespaces):
                 test_results[result.attrib["testId"]] = result.attrib["outcome"]
             for test in tree.findall(".//ns:UnitTest", namespaces):
-                parsed_entity = self.__entity(test, test_results[test.attrib["id"]], namespaces)
+                parsed_entity = self.__entity(test, test_results[test.attrib["id"]], namespaces, parent_map)
                 if self._include_entity(parsed_entity):
                     entities.append(parsed_entity)
                 total += 1
@@ -35,8 +36,8 @@ class VisualStudioTRXTests(XMLFileSourceCollector):
         test_results_to_count = cast(list[str], self._parameter("test_result"))
         return entity["test_result"] in test_results_to_count
 
-    @staticmethod
-    def __entity(test: Element, result: str, namespaces: Namespaces) -> Entity:
+    @classmethod
+    def __entity(cls, test: Element, result: str, namespaces: Namespaces, parent_map: ElementMap) -> Entity:
         """Transform a test case into a test entity."""
         name = test.attrib["name"]
         category_items = test.findall(".//ns:TestCategoryItem", namespaces)
@@ -45,4 +46,5 @@ class VisualStudioTRXTests(XMLFileSourceCollector):
         if matches:
             name += f" ({', '.join(sorted(matches))})"
         key = test.attrib["id"]
-        return Entity(key=key, name=name, test_result=result)
+        suite_names = cls.parent_names(test, parent_map)
+        return Entity(key=key, name=name, test_result=result, suite_names=suite_names)

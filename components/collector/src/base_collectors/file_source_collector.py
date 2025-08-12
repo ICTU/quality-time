@@ -7,11 +7,12 @@ from http import HTTPStatus
 from json import loads
 from typing import ClassVar, cast
 from urllib.parse import urlparse
+from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 from bs4 import BeautifulSoup, Tag
 
 from collector_utilities.exceptions import ZipfileError
-from collector_utilities.type import JSON, URL, Response, Responses
+from collector_utilities.type import JSON, URL, ElementMap, Response, Responses
 from model import Entities, SourceResponses
 
 from .source_collector import SourceCollector
@@ -122,3 +123,18 @@ class XMLFileSourceCollector(FileSourceCollector, ABC):
     """Base class for source collectors that retrieve XML files."""
 
     file_extensions: ClassVar[list[str]] = ["xml"]
+
+    @staticmethod
+    def parent_map(tree: Element) -> ElementMap:
+        """Return a map of child to parent relationships."""
+        return {child: parent for parent in tree.iter() for child in parent}
+
+    @staticmethod
+    def parent_names(element: Element, parent_map: ElementMap, separator: str = "/") -> str:
+        """Return the parent names as one string in which the names are joined by the separator."""
+        names: list[str] = []
+        while (parent := parent_map.get(element)) is not None:
+            if name := parent.attrib.get("name"):
+                names.insert(0, name)
+            element = parent
+        return separator.join(names)
