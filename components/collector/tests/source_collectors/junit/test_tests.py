@@ -8,74 +8,30 @@ class JUnitTestsTest(JUnitCollectorTestCase):
 
     METRIC_TYPE = "tests"
 
+    def junit_entity(self, *, name: str, test_result: str, host_name: str, suite_names: str) -> dict[str, str]:
+        """Create a JUnit entity."""
+        return {
+            "suite_names": suite_names,
+            "key": f"cn:{host_name}:{name}",
+            "old_key": f"cn:{name}",
+            "name": name,
+            "class_name": "cn",
+            "host_name": host_name,
+            "test_result": test_result,
+        }
+
     def setUp(self):
         """Extend to set up JUnit test data."""
         super().setUp()
         self.expected_entities = [
-            {
-                "key": "cn:h1:tc1",
-                "old_key": "cn:tc1",
-                "name": "tc1",
-                "class_name": "cn",
-                "host_name": "h1",
-                "test_result": "passed",
-            },
-            {
-                "key": "cn:h1:tc2",
-                "old_key": "cn:tc2",
-                "name": "tc2",
-                "class_name": "cn",
-                "host_name": "h1",
-                "test_result": "failed",
-            },
-            {
-                "key": "cn:h2:tc3",
-                "old_key": "cn:tc3",
-                "name": "tc3",
-                "class_name": "cn",
-                "host_name": "h2",
-                "test_result": "errored",
-            },
-            {
-                "key": "cn:h2:tc4",
-                "old_key": "cn:tc4",
-                "name": "tc4",
-                "class_name": "cn",
-                "host_name": "h2",
-                "test_result": "skipped",
-            },
-            {
-                "key": "cn::tc5",
-                "old_key": "cn:tc5",
-                "name": "tc5",
-                "class_name": "cn",
-                "host_name": "",
-                "test_result": "errored",
-            },
-            {
-                "key": "cn::tc6",
-                "old_key": "cn:tc6",
-                "name": "tc6",
-                "class_name": "cn",
-                "host_name": "",
-                "test_result": "failed",
-            },
-            {
-                "key": "cn::tc7",
-                "old_key": "cn:tc7",
-                "name": "tc7",
-                "class_name": "cn",
-                "host_name": "",
-                "test_result": "skipped",
-            },
-            {
-                "key": "cn::tc8",
-                "old_key": "cn:tc8",
-                "name": "tc8",
-                "class_name": "cn",
-                "host_name": "",
-                "test_result": "passed",
-            },
+            self.junit_entity(name="tc1", test_result="passed", host_name="h1", suite_names="ts1"),
+            self.junit_entity(name="tc2", test_result="failed", host_name="h1", suite_names="ts1"),
+            self.junit_entity(name="tc3", test_result="errored", host_name="h2", suite_names="ts1"),
+            self.junit_entity(name="tc4", test_result="skipped", host_name="h2", suite_names="ts1"),
+            self.junit_entity(name="tc5", test_result="errored", host_name="", suite_names="ts2"),
+            self.junit_entity(name="tc6", test_result="failed", host_name="", suite_names="ts3"),
+            self.junit_entity(name="tc7", test_result="skipped", host_name="", suite_names="ts4"),
+            self.junit_entity(name="tc8", test_result="passed", host_name="", suite_names="ts5"),
         ]
 
     async def test_tests(self):
@@ -91,24 +47,7 @@ class JUnitTestsTest(JUnitCollectorTestCase):
             response,
             value="2",
             total="8",
-            entities=[
-                {
-                    "key": "cn:h1:tc2",
-                    "old_key": "cn:tc2",
-                    "name": "tc2",
-                    "class_name": "cn",
-                    "host_name": "h1",
-                    "test_result": "failed",
-                },
-                {
-                    "key": "cn::tc6",
-                    "old_key": "cn:tc6",
-                    "name": "tc6",
-                    "class_name": "cn",
-                    "host_name": "",
-                    "test_result": "failed",
-                },
-            ],
+            entities=[entity for entity in self.expected_entities if entity["test_result"] == "failed"],
         )
 
     async def test_zipped_junit_report(self):
@@ -160,14 +99,5 @@ class JUnitTestsTest(JUnitCollectorTestCase):
             response,
             value="1",
             total="1",
-            entities=[
-                {
-                    "key": "cn::tc1",
-                    "old_key": "cn:tc1",
-                    "name": "tc1",
-                    "class_name": "cn",
-                    "host_name": "",
-                    "test_result": "errored",
-                },
-            ],
+            entities=[self.junit_entity(name="tc1", test_result="errored", host_name="", suite_names="ts1/ts1-1")],
         )

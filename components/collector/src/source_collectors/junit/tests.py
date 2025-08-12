@@ -5,6 +5,7 @@ from xml.etree.ElementTree import Element  # nosec # Element is not available fr
 
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
+from collector_utilities.type import ElementMap
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
@@ -19,13 +20,14 @@ class JUnitTests(XMLFileSourceCollector):
         total = 0
         for response in responses:
             tree = await parse_source_response_xml(response)
+            parent_map = self.parent_map(tree)
             for test_case in tree.findall(".//testcase"):
                 test_case_test_result = "passed"
                 for test_result, junit_status_node in self.JUNIT_STATUS_NODES.items():
                     if test_case.find(junit_status_node) is not None:
                         test_case_test_result = test_result
                         break
-                parsed_entity = self.__entity(test_case, test_case_test_result)
+                parsed_entity = self.__entity(test_case, test_case_test_result, parent_map)
                 if self._include_entity(parsed_entity):
                     entities.append(parsed_entity)
                 total += 1
@@ -36,14 +38,21 @@ class JUnitTests(XMLFileSourceCollector):
         test_statuses_to_count = cast(list[str], self._parameter("test_result"))
         return entity["test_result"] in test_statuses_to_count
 
-    @staticmethod
-    def __entity(case_node: Element, case_result: str) -> Entity:
+    @classmethod
+    def __entity(cls, case_node: Element, case_result: str, parent_map: ElementMap) -> Entity:
         """Transform a test case into a test case entity."""
         class_name = case_node.get("classname", "")
         host_name = case_node.get("hostname", "")
         name = case_node.get("name", "unknown")
         key = f"{class_name}:{host_name}:{name}"
         old_key = f"{class_name}:{name}"  # Key was changed after v5.25.0, enable migration of user entity data
+        suite_names = cls.parent_names(case_node, parent_map)
         return Entity(
-            key=key, old_key=old_key, name=name, class_name=class_name, host_name=host_name, test_result=case_result
+            key=key,
+            old_key=old_key,
+            name=name,
+            class_name=class_name,
+            host_name=host_name,
+            suite_names=suite_names,
+            test_result=case_result,
         )

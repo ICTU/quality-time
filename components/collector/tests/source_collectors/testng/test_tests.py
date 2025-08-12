@@ -34,6 +34,7 @@ class TestNGTestsTest(TestNGCollectorTestCase):
             "class_name": "class1",
             "name": "method2",
             "description": "description2",
+            "suite_names": "suite1/test1/class1",
             "test_result": "passed",
         },
         {
@@ -41,6 +42,7 @@ class TestNGTestsTest(TestNGCollectorTestCase):
             "class_name": "class1",
             "name": "method3",
             "description": "description3",
+            "suite_names": "suite1/test1/class1",
             "test_result": "failed",
         },
     ]

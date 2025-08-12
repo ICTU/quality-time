@@ -1,8 +1,11 @@
 """Quality-time specific types."""
 
 from typing import Any, NewType
+from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 import aiohttp
+
+ElementMap = dict[Element, Element]
 
 ErrorMessage = None | str
 Job = dict[str, Any]

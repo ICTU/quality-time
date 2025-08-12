@@ -16,11 +16,13 @@ class VisualStudioTRXTestReportTest(VisualStudioTRXCollectorTestCase):
                 "key": "446a0829-8d87-1082-ab45-b2ab9f846325",
                 "name": "BestaandeZaakOpenen (JIRA-224, JIRA-225)",
                 "test_result": "Passed",
+                "suite_names": "",
             },
             {
                 "key": "63eb0c90-d1fc-a21e-6fc0-3974b0cc65db",
                 "name": "BestaandeZaakOpenen2",
                 "test_result": "Failed",
+                "suite_names": "",
             },
         ]
 

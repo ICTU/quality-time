@@ -8,6 +8,19 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
 
     METRIC_TYPE = "tests"
 
+    def jenkins_entity(
+        self, *, class_name: str, name: str, test_result: str, age: str, suite_name: str = ""
+    ) -> dict[str, str]:
+        """Create a Jenkins entity."""
+        return {
+            "class_name": class_name,
+            "key": name,
+            "name": name,
+            "test_result": test_result,
+            "age": age,
+            "suite_name": suite_name,
+        }
+
     async def test_nr_of_tests(self):
         """Test that the number of tests is returned."""
         jenkins_json = {
@@ -28,8 +41,8 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
             value="2",
             total="2",
             entities=[
-                {"class_name": "c1", "key": "tc1", "name": "tc1", "test_result": "failed", "age": "1"},
-                {"class_name": "c2", "key": "tc2", "name": "tc2", "test_result": "passed", "age": "0"},
+                self.jenkins_entity(class_name="c1", name="tc1", test_result="failed", age="1"),
+                self.jenkins_entity(class_name="c2", name="tc2", test_result="passed", age="0"),
             ],
         )
 
@@ -59,8 +72,8 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
             value="2",
             total="2",
             entities=[
-                {"class_name": "c1", "key": "tc1", "name": "tc1", "test_result": "failed", "age": "2"},
-                {"class_name": "c2", "key": "tc2", "name": "tc2", "test_result": "passed", "age": "0"},
+                self.jenkins_entity(class_name="c1", name="tc1", test_result="failed", age="2"),
+                self.jenkins_entity(class_name="c2", name="tc2", test_result="passed", age="0"),
             ],
         )
 
@@ -75,12 +88,15 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
                         {"status": "FAILED", "name": "tc1", "className": "c1", "age": 3},
                         {"status": "PASSED", "name": "tc2", "className": "c2", "age": 0},
                     ],
+                    "name": "test suite",
                 },
             ],
         }
         self.set_source_parameter("test_result", ["passed"])
         response = await self.collect(get_request_json_return_value=jenkins_json)
-        expected_entities = [{"class_name": "c2", "key": "tc2", "name": "tc2", "test_result": "passed", "age": "0"}]
+        expected_entities = [
+            self.jenkins_entity(class_name="c2", name="tc2", test_result="passed", age="0", suite_name="test suite"),
+        ]
         self.assert_measurement(response, value="1", total="2", entities=expected_entities)
 
     async def test_nr_of_failed_tests(self):
@@ -101,7 +117,7 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
         self.set_source_parameter("test_result", ["failed"])
         response = await self.collect(get_request_json_return_value=jenkins_json)
         expected_entities = [
-            {"class_name": "c1", "key": "tc1", "name": "tc1", "test_result": "failed", "age": "1"},
-            {"class_name": "c2", "key": "tc2", "name": "tc2", "test_result": "failed", "age": "2"},
+            self.jenkins_entity(class_name="c1", name="tc1", test_result="failed", age="1"),
+            self.jenkins_entity(class_name="c2", name="tc2", test_result="failed", age="2"),
         ]
         self.assert_measurement(response, value="2", total="3", entities=expected_entities)

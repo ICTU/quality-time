@@ -32,11 +32,12 @@ class TestNGTests(XMLFileSourceCollector):
     def __entities(cls, tree: Element, test_results_to_count: list[str]) -> Entities:
         """Transform the test methods into entities."""
         # Unfortunately, there's no DTD or XSD for the testng-result.xml format (see
-        # https://github.com/cbeust/testng/issues/2371), so we have to make some assumptions about elements and
+        # https://github.com/testng-team/testng/issues/2371), so we have to make some assumptions about elements and
         # attributes here. We use element.attribute[key] to access attributes that we assume are mandatory so that we
         # get attribute errors if the assumption proves to be wrong. Note: the base source collector class will catch
         # these attribute errors, if any, and make them visible in the UI as measurements with parse errors.
         entities = Entities()
+        parent_map = cls.parent_map(tree)
         for test_class in tree.findall(".//class"):
             class_name = test_class.attrib["name"]
             for test_method in test_class.findall(".//test-method"):
@@ -46,7 +47,15 @@ class TestNGTests(XMLFileSourceCollector):
                 name = test_method.attrib["name"]
                 description = test_method.get("description", "")  # Description is optional
                 key = f"{class_name}_{name}"
+                suite_names = cls.parent_names(test_method, parent_map)
                 entities.append(
-                    Entity(key=key, name=name, description=description, class_name=class_name, test_result=test_result),
+                    Entity(
+                        key=key,
+                        name=name,
+                        description=description,
+                        class_name=class_name,
+                        test_result=test_result,
+                        suite_names=suite_names,
+                    ),
                 )
         return entities
