@@ -4,7 +4,7 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import TestResult, access_parameters
+from shared_data_model.parameters import TestResult, TestResultAggregationStrategy, access_parameters
 
 ALL_TESTNG_METRICS = ["source_up_to_dateness", "test_cases", "test_suites", "tests"]
 
@@ -26,6 +26,7 @@ TESTNG = Source(
     url=HttpUrl("https://testng.org"),
     parameters={
         "test_result": TestResult(metrics=["test_suites", "tests"], values=["failed", "ignored", "passed", "skipped"]),
+        "test_result_aggregation_strategy": TestResultAggregationStrategy(),
         **access_parameters(ALL_TESTNG_METRICS, source_type="TestNG report", source_type_format="XML"),
     },
     entities={
