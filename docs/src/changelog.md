@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 - When measuring inactive branches using GitLab, allow for selecting a group of projects in addition to a single project. Closes [#7991](https://github.com/ICTU/quality-time/issues/7991).
 - When measuring test cases, also look for Jira ids in the test suite names. Closes [#11193](https://github.com/ICTU/quality-time/issues/11193).
+- When measuring test cases, allow for aggregating test results either strictly or leniently. See the documentation on the [test cases metric](https://quality-time.readthedocs.io/en/latest/reference.html#test-cases). Closes [#11193](https://github.com/ICTU/quality-time/issues/11193).
 
 ## v5.37.0 - 2025-08-06
 

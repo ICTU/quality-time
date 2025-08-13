@@ -4,7 +4,7 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import TestResult, access_parameters
+from shared_data_model.parameters import TestResult, TestResultAggregationStrategy, access_parameters
 
 ALL_VISUAL_STUDIO_TRX_METRICS = ["source_up_to_dateness", "test_cases", "tests"]
 
@@ -60,6 +60,7 @@ VISUAL_STUDIO_TRX = Source(
                 "Warning",
             ],
         ),
+        "test_result_aggregation_strategy": TestResultAggregationStrategy(),
         **access_parameters(ALL_VISUAL_STUDIO_TRX_METRICS, source_type="Visual Studio TRX", source_type_format="XML"),
     },
     entities={"tests": TEST_ENTITIES, "test_cases": TEST_ENTITIES},

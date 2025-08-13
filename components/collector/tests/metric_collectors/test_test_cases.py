@@ -194,3 +194,29 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         self.assert_equal_entities([self.jira_entity("key-2")], measurement.sources[0].entities)
         self.assertEqual("1", measurement.sources[0].value)
         self.assertEqual("0", measurement.sources[1].value)
+
+    async def test_strict_test_result_aggregation(self):
+        """Test that test results can be aggregated strictly."""
+        self.response.text = AsyncMock(return_value=self.TESTNG_XML)
+        jira = {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql", "test_result": ["failed"]}}
+        testng = {
+            "type": "testng",
+            "parameters": {"url": self.test_report_url, "test_result_aggregation_strategy": "strict"},
+        }
+        measurement = await self.collect({"jira": jira, "testng": testng})
+        self.assert_equal_entities([self.jira_entity("key-1", test_result="failed")], measurement.sources[0].entities)
+        self.assertEqual("1", measurement.sources[0].value)
+        self.assertEqual("0", measurement.sources[1].value)
+
+    async def test_lenient_test_result_aggregation(self):
+        """Test that test results can be aggregated leniently."""
+        self.response.text = AsyncMock(return_value=self.TESTNG_XML)
+        jira = {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql", "test_result": ["passed"]}}
+        testng = {
+            "type": "testng",
+            "parameters": {"url": self.test_report_url, "test_result_aggregation_strategy": "lenient"},
+        }
+        measurement = await self.collect({"jira": jira, "testng": testng})
+        self.assert_equal_entities([self.jira_entity("key-1", test_result="passed")], measurement.sources[0].entities)
+        self.assertEqual("1", measurement.sources[0].value)
+        self.assertEqual("0", measurement.sources[1].value)

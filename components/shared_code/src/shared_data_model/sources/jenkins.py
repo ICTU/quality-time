@@ -13,6 +13,7 @@ from shared_data_model.parameters import (
     ResultType,
     StringParameter,
     TestResult,
+    TestResultAggregationStrategy,
     access_parameters,
 )
 
@@ -212,6 +213,7 @@ JENKINS_TEST_REPORT = Source(
     url=HttpUrl("https://plugins.jenkins.io/junit"),
     parameters={
         "test_result": TestResult(values=["failed", "passed", "skipped"]),
+        "test_result_aggregation_strategy": TestResultAggregationStrategy(),
         **jenkins_access_parameters(
             ALL_JENKINS_TEST_REPORT_METRICS,
             kwargs={

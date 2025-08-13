@@ -8,6 +8,8 @@ from base_collectors import MetricCollector
 from model import Entities, Entity, MetricMeasurement, SourceMeasurement
 
 TestResult = Literal["untested", "passed", "skipped", "failed", "errored"]
+TestResultAggregationStrategy = Literal["strict", "lenient"]
+TestResultAggregationMap = dict[tuple[TestResult, TestResult], dict[TestResultAggregationStrategy, TestResult]]
 
 
 class TestCases(MetricCollector):
@@ -19,27 +21,27 @@ class TestCases(MetricCollector):
     # case and the next test result found. The value is the resulting test result. For example,
     # {("passed", "skipped"), "skipped"} means that if a test case has passed so far and we see a skipped test result,
     # the updated test result state of the test case is skipped.
-    TEST_RESULT_STATE: ClassVar[dict[tuple[TestResult, TestResult], TestResult]] = {
-        ("untested", "passed"): "passed",
-        ("untested", "skipped"): "skipped",
-        ("untested", "failed"): "failed",
-        ("untested", "errored"): "errored",
-        ("passed", "passed"): "passed",
-        ("passed", "skipped"): "skipped",
-        ("passed", "failed"): "failed",
-        ("passed", "errored"): "errored",
-        ("skipped", "passed"): "skipped",
-        ("skipped", "skipped"): "skipped",
-        ("skipped", "failed"): "failed",
-        ("skipped", "errored"): "errored",
-        ("failed", "passed"): "failed",
-        ("failed", "skipped"): "failed",
-        ("failed", "failed"): "failed",
-        ("failed", "errored"): "errored",
-        ("errored", "passed"): "errored",
-        ("errored", "skipped"): "errored",
-        ("errored", "failed"): "errored",
-        ("errored", "errored"): "errored",
+    TEST_RESULT_STATE: ClassVar[TestResultAggregationMap] = {
+        ("untested", "passed"): {"strict": "passed", "lenient": "passed"},
+        ("untested", "skipped"): {"strict": "skipped", "lenient": "skipped"},
+        ("untested", "failed"): {"strict": "failed", "lenient": "failed"},
+        ("untested", "errored"): {"strict": "errored", "lenient": "errored"},
+        ("passed", "passed"): {"strict": "passed", "lenient": "passed"},
+        ("passed", "skipped"): {"strict": "skipped", "lenient": "passed"},
+        ("passed", "failed"): {"strict": "failed", "lenient": "passed"},
+        ("passed", "errored"): {"strict": "errored", "lenient": "passed"},
+        ("skipped", "passed"): {"strict": "skipped", "lenient": "passed"},
+        ("skipped", "skipped"): {"strict": "skipped", "lenient": "skipped"},
+        ("skipped", "failed"): {"strict": "failed", "lenient": "skipped"},
+        ("skipped", "errored"): {"strict": "errored", "lenient": "skipped"},
+        ("failed", "passed"): {"strict": "failed", "lenient": "passed"},
+        ("failed", "skipped"): {"strict": "failed", "lenient": "skipped"},
+        ("failed", "failed"): {"strict": "failed", "lenient": "failed"},
+        ("failed", "errored"): {"strict": "errored", "lenient": "failed"},
+        ("errored", "passed"): {"strict": "errored", "lenient": "passed"},
+        ("errored", "skipped"): {"strict": "errored", "lenient": "skipped"},
+        ("errored", "failed"): {"strict": "errored", "lenient": "failed"},
+        ("errored", "errored"): {"strict": "errored", "lenient": "errored"},
     }
     # Mapping to uniformize the test results from different sources:
     UNIFORMIZED_TEST_RESULTS: ClassVar[dict[str, TestResult]] = {
@@ -84,11 +86,17 @@ class TestCases(MetricCollector):
                 source.parse_error = "No test case keys found in this source"
             return measurement
         # Derive the test result of the test cases from the test results of the tests
-        for entity in self.test_report_entities(measurement.sources):
-            for test_case_key in self.referenced_test_cases(entity) & test_case_keys:
-                test_result_so_far = cast(TestResult, test_cases[test_case_key]["test_result"])
-                test_result = self.test_result(entity)
-                test_cases[test_case_key]["test_result"] = self.TEST_RESULT_STATE[(test_result_so_far, test_result)]
+        for source in self.test_report_sources(measurement.sources):
+            strategy = cast(
+                TestResultAggregationStrategy,
+                self._parameters[source.source_uuid].get("test_result_aggregation_strategy"),
+            )
+            for entity in source.get_entities():
+                for test_case_key in self.referenced_test_cases(entity) & test_case_keys:
+                    test_result_so_far = cast(TestResult, test_cases[test_case_key]["test_result"])
+                    test_result = self.test_result(entity)
+                    new_state = self.TEST_RESULT_STATE[(test_result_so_far, test_result)][strategy]
+                    test_cases[test_case_key]["test_result"] = new_state
         # Set the value of the test report sources to zero as this metric only counts test cases
         for source in self.test_report_sources(measurement.sources):
             source.value = "0"
@@ -115,10 +123,6 @@ class TestCases(MetricCollector):
     def test_case_sources(self, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
         """Return the test case sources."""
         return [source for source in sources if self.source_type(source) in self.TEST_CASE_SOURCE_TYPES]
-
-    def test_report_entities(self, sources: Sequence[SourceMeasurement]) -> list[Entity]:
-        """Return the test entities."""
-        return [entity for source in self.test_report_sources(sources) for entity in source.get_entities()]
 
     def test_report_sources(self, sources: Sequence[SourceMeasurement]) -> list[SourceMeasurement]:
         """Return the test report sources."""

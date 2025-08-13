@@ -177,6 +177,22 @@ class TestResult(MultipleChoiceWithDefaultsParameter):
     metrics: list[str] = ["tests"]
 
 
+class TestResultAggregationStrategy(SingleChoiceParameter):
+    """Test result aggregation strategy."""
+
+    name: str = "Test result aggregation strategy"
+    short_name: str = "test result aggregation"
+    help: str = (
+        "How to aggregate test results of individual tests to create the result of a test case. "
+        "Strict (default) assigns the worst result of the tests to the test case they belong to. "
+        "Lenient assigns the best result of the tests to the test case they belong to. "
+        "Possible test results are, from worst to best: errored, failed, skipped, and passed."
+    )
+    default_value: str | list[str] = "strict"
+    values: list[str] | None = ["strict", "lenient"]
+    metrics: list[str] = ["test_cases"]
+
+
 class Upvotes(IntegerParameter):
     """Minimum number of merge request up-votes parameter."""
 

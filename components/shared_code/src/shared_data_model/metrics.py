@@ -593,9 +593,12 @@ one passed, and one untested test case:
 | MP-3 | Test case 3 | passed      |
 | MP-4 | Test case 4 | untested    |
 
-If multiple test results in the test report file map to one Jira test case (as with MP-1 and MP-3 above), the 'worst'
-test result is reported. Possible test results from worst to best are: errored, failed, skipped, and passed. Test cases
-not found in the test results are listed as untested (as with MP-4 above).
+If multiple test results in the test report file map to one Jira test case (as with MP-1 and MP-3 above), by default
+the test results are aggregated strictly, meaning that the 'worst' test result for each test case is reported.
+Possible test results from worst to best are: errored, failed, skipped, and passed. Test cases not found in the test
+results are listed as untested (as with MP-4 above). It is also possible to aggregate the test results leniently,
+meaning that the 'best' test result for each test case is reported. Use the 'test result aggregation strategy'
+parameter of test report sources to switch between strict and lenient.
 
 In addition to linking individual test results to Jira test cases, it's also possible to link test suites to Jira test
 cases. For example:
