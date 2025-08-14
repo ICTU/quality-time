@@ -107,7 +107,6 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
-disable_error_code = "valid-type" # mypy does not yet support PEP 695, Type Parameter Syntax. See https://github.com/python/mypy/issues/15238
 
 [[tool.mypy.overrides]]
 module = [
