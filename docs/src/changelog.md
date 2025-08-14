@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Measuring inactive branches with GitLab as source would fail with a '404 not found' if the 'project or group' parameter value would contain one or more slashes. Fixes [#11809](https://github.com/ICTU/quality-time/issues/11809).
+
 ## v5.38.0 - 2025-08-13
 
 ### Fixed
