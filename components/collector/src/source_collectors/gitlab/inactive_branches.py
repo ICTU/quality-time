@@ -3,7 +3,6 @@
 from datetime import datetime
 from http import HTTPStatus
 from typing import cast
-from urllib.parse import quote
 
 import aiohttp
 
@@ -49,10 +48,7 @@ class GitLabInactiveBranches[Branch: GitLabBranchType](GitLabBase, InactiveBranc
         else:
             projects = [project_or_group]
         repo_branches_urls = [
-            add_query(
-                URL(f"{await self._api_url()}/api/v4/projects/{quote(project, safe='')}/repository/branches"),
-                self.PAGE_SIZE,
-            )
+            add_query(URL(f"{await self._api_url()}/api/v4/projects/{project}/repository/branches"), self.PAGE_SIZE)
             for project in projects
         ]
         return await super()._get_source_responses(*repo_branches_urls)
