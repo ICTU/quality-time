@@ -39,7 +39,8 @@ class HarborBase(SourceCollector, ABC):
         returns public projects, making it hard for the user to see that there is something wrong.
         """
         username = cast(str, self._parameter("username"))
-        if username and not username.startswith("robot_"):
+        robot_account_prefix = cast(str, self._parameter("robot_account_prefix"))
+        if username and not username.startswith(robot_account_prefix):
             # This will raise an exception for status >= 400:
             await super()._get_source_responses(URL(await self._api_url() + "/users/current"))
 

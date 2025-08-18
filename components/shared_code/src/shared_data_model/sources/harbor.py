@@ -8,6 +8,7 @@ from shared_data_model.parameters import (
     FixAvailability,
     MultipleChoiceWithAdditionParameter,
     Severities,
+    StringParameter,
     access_parameters,
 )
 
@@ -53,6 +54,16 @@ HARBOR = Source(
         ),
         "severities": Severities(values=["unknown", "low", "medium", "high", "critical"]),
         "fix_availability": FixAvailability(),
+        "robot_account_prefix": StringParameter(
+            name="Robot account prefix",
+            help_url=HttpUrl(
+                "https://goharbor.io/docs/2.3.0/administration/robot-accounts/#configure-robot-account-prefix"
+            ),
+            default_value="robot",
+            mandatory=True,
+            placeholder="robot account prefix",
+            metrics=["security_warnings"],
+        ),
         **access_parameters(
             ALL_HARBOR_METRICS,
             include={"private_token": False, "landing_url": False},
