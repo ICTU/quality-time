@@ -130,7 +130,15 @@ class ParameterGroup(NamedModel):
 DEFAULT_PARAMETER_LAYOUT = {
     "location": ParameterGroup(
         name="Source location and credentials",
-        parameters=["url", "api_version", "landing_url", "username", "password", "private_token"],
+        parameters=[
+            "url",
+            "api_version",
+            "landing_url",
+            "username",
+            "password",
+            "private_token",
+            "robot_account_prefix",
+        ],
     ),
     "filter": ParameterGroup(name="Source filters"),
 }
