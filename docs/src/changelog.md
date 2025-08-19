@@ -20,6 +20,7 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ### Added
 
+- When measuring suppressed violations with SonarQube as source, also count `noqa` suppressions (using SonarQube rule S1309). Closes [#11811](https://github.com/ICTU/quality-time/issues/11811).
 - Add a parameter to Harbor sources to set the robot account prefix. Closes [#11822](https://github.com/ICTU/quality-time/issues/11822).
 
 ## v5.38.1 - 2025-08-14
