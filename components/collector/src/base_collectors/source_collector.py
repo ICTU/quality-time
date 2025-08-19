@@ -319,7 +319,7 @@ class SecurityWarningsSourceCollector(SourceCollector):
         if self.FIX_AVAILABILITY_PARAMETER in DATA_MODEL.sources[self.source_type].parameters:
             fix_availability = self._parameter(self.FIX_AVAILABILITY_PARAMETER)
             fix = entity[self.ENTITY_FIX_AVAILABILITY_ATTRIBUTE]
-            fix_available = fix and fix != "None"
+            fix_available = fix and fix not in ("None", "0")
             entity_should_have_fix_but_does_not = fix_availability == ["fix available"] and not fix_available
             entity_should_not_have_fix_but_does = fix_availability == ["no fix available"] and fix_available
             if entity_should_have_fix_but_does_not or entity_should_not_have_fix_but_does:

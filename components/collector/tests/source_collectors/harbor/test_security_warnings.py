@@ -32,13 +32,13 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
         super().setUp()
         self.expected_entity = {
             "artifact": "sha256:43f789166",
-            "fixable": 0,
+            "fixable": "0",
             "highest_severity": "Unknown",
             "key": "sha256:43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e",
             "project": self.PROJECT_NAME,
             "repository": "tianon/postgres-upgrade",
             "tags": "",
-            "total": 1,
+            "total": "1",
             "url": (
                 "https://harbor/harbor/projects/3/repositories/tianon%2Fpostgres-upgrade/artifacts-tab/artifacts/"
                 "sha256:43f7891666042ef31c08d6e7fefc68bd0e98545cdd2dfa846b23d3fd9d71cb2e"

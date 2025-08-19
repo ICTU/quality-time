@@ -56,11 +56,42 @@ class HarborScannerVulnerabilityReportError(CollectorError):
         super().__init__("Harbor scanner vulnerability report contains no known format")
 
 
-class ScanOverview(TypedDict):
-    """Type for the scan overview dict in the Harbor response."""
+class Project(TypedDict):
+    """Harbor project."""
 
-    scan_status: str
-    summary: dict[str, int]
+    name: str
+
+
+class ScanSummary(TypedDict):
+    """Type for the scan summary in a scan overview in the Harbor response."""
+
+    fixable: int
+    total: int
+
+
+class ScanOverview(TypedDict):
+    """Type for the scan overview in the Harbor response."""
+
+    key: str
+    scan_status: str  # The status of the report generating process
+    severity: str  # The overall severity
+    summary: ScanSummary
+
+
+class ArtifactTag(TypedDict):
+    """Artifact tag."""
+
+    name: str
+
+
+class Artifact(TypedDict):
+    """Harbor artifact type."""
+
+    addition_links: dict[str, dict[str, str]]
+    digest: str
+    project_id: str
+    scan_overview: dict[str, ScanOverview]
+    tags: list[ArtifactTag]
 
 
 class HarborSecurityWarnings(HarborBase, SecurityWarningsSourceCollector):
@@ -91,7 +122,7 @@ class HarborSecurityWarnings(HarborBase, SecurityWarningsSourceCollector):
         projects_to_include = self._parameter("projects_to_include")
         return bool(projects_to_include and not match_string_or_regular_expression(project_name, projects_to_include))
 
-    async def _get_source_responses_for_project(self, project, repositories_api: URL) -> SourceResponses:
+    async def _get_source_responses_for_project(self, project: Project, repositories_api: URL) -> SourceResponses:
         """Return the source responses for a specific project."""
         responses = SourceResponses()
         repositories_responses = await super()._get_source_responses(repositories_api)
@@ -125,7 +156,7 @@ class HarborSecurityWarnings(HarborBase, SecurityWarningsSourceCollector):
             entities.extend([await self._create_entity(artifact) for artifact in artifacts])
         return entities
 
-    async def _create_entity(self, artifact: dict) -> Entity:
+    async def _create_entity(self, artifact: Artifact) -> Entity:
         """Create an entity from the artifact."""
         scan_overview = self._scan_overview(artifact)
         scan_summary = scan_overview["summary"]
@@ -146,21 +177,22 @@ class HarborSecurityWarnings(HarborBase, SecurityWarningsSourceCollector):
             artifact=digest[:16],
             highest_severity=scan_overview.get("severity", "Unknown"),
             tags=", ".join(sorted(tag["name"] for tag in (artifact.get("tags") or []))),
-            total=scan_summary.get("total", 0),
-            fixable=scan_summary.get("fixable", 0),
+            total=str(scan_summary.get("total", 0)),
+            fixable=str(scan_summary.get("fixable", 0)),
         )
 
-    def _has_scan_with_warnings(self, artifact) -> bool:
+    @classmethod
+    def _has_scan_with_warnings(cls, artifact: Artifact) -> bool:
         """Return whether the artifact has a scan and the scan has security warnings."""
         if "scan_overview" in artifact:
-            scan_overview = self._scan_overview(artifact)
+            scan_overview = cls._scan_overview(artifact)
             if scan_overview.get("scan_status", "").lower() == "success":
                 scan_summary = scan_overview["summary"]
                 return bool(scan_summary.get("total", 0) > 0)
         return False
 
     @staticmethod
-    def _scan_overview(artifact) -> ScanOverview:
+    def _scan_overview(artifact: Artifact) -> ScanOverview:
         """Return the scan overview or raise an exception."""
         vulnerability_report_keys = (
             "application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0",
@@ -168,5 +200,5 @@ class HarborSecurityWarnings(HarborBase, SecurityWarningsSourceCollector):
         )
         for key in vulnerability_report_keys:
             if key in artifact["scan_overview"]:
-                return cast(ScanOverview, artifact["scan_overview"][key])
+                return artifact["scan_overview"][key]
         raise HarborScannerVulnerabilityReportError
