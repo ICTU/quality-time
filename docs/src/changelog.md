@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the latest version, pl
 
 ## [Unreleased]
 
+### Fixed
+
+- When measuring security warnings with Harbor as source, the total and fixable columns of the reported artifacts would be empty regardless of the number of fixable and total number of vulnerabilities. Fixes [#11825](https://github.com/ICTU/quality-time/issues/11825).
+
 ### Added
 
 - Add a parameter to Harbor sources to set the robot account prefix. Closes [#11822](https://github.com/ICTU/quality-time/issues/11822).
