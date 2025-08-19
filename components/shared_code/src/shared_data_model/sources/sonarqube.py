@@ -273,6 +273,7 @@ SONARQUBE = Source(
                 "php:NoSonar",
                 "plsql:NoSonarCheck",
                 "python:NoSonar",
+                "python:S1309",
                 "tsql:NoSonar",
                 "typescript:S1291",
             ],
