@@ -57,7 +57,6 @@ export function VisibleColumnMenu({ settings }) {
             <Divider />
             <SettingsMenuItem
                 active={!settings.hideEmptyColumns.value}
-                help={"Show empty columns?"}
                 onClick={settings.hideEmptyColumns.set}
                 onClickData={!settings.hideEmptyColumns.value}
             >

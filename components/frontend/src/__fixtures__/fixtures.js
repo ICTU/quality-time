@@ -2,7 +2,6 @@ import { renderHook } from "@testing-library/react"
 
 import {
     allSettingsAreDefault,
-    entries,
     resetSettings,
     useDateIntervalURLSearchQuery,
     useDateOrderURLSearchQuery,
@@ -135,9 +134,6 @@ export function createTestableSettings() {
         },
         allDefault: function () {
             return allSettingsAreDefault(this)
-        },
-        entries: function () {
-            return entries(this)
         },
     }
 }

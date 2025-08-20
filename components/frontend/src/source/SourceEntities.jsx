@@ -21,13 +21,14 @@ import {
     entityAttributePropType,
     entityAttributesPropType,
     entityAttributeTypePropType,
-    entityPropType,
     loadingPropType,
     measurementsPropType,
     metricPropType,
     reportPropType,
+    settingsPropType,
     sortDirectionPropType,
     sourcePropType,
+    stringsPropType,
 } from "../sharedPropTypes"
 import { capitalize } from "../utils"
 import { IgnoreIcon, ShowIcon } from "../widgets/icons"
@@ -35,31 +36,9 @@ import { LoadingPlaceHolder } from "../widgets/Placeholder"
 import { SortableTableHeaderCell } from "../widgets/TableHeaderCell"
 import { FailedToLoadMeasurementsWarningMessage, InfoMessage } from "../widgets/WarningMessage"
 import { alignment } from "./source_entity_alignment"
+import { determineColumnsToHide } from "./source_entity_column"
+import { entityStatus, entityStatusEndDate, entityStatusRationale } from "./source_entity_status"
 import { entityCanBeIgnored, SourceEntity } from "./SourceEntity"
-
-function entityStatus(source, entity) {
-    return source.entity_user_data?.[entity.key]?.status ?? "unconfirmed"
-}
-entityStatus.propTypes = {
-    source: sourcePropType,
-    entity: entityPropType,
-}
-
-function entityStatusEndDate(source, entity) {
-    return source.entity_user_data?.[entity.key]?.status_end_date ?? ""
-}
-entityStatusEndDate.propTypes = {
-    source: sourcePropType,
-    entity: entityPropType,
-}
-
-function entityStatusRationale(source, entity) {
-    return source.entity_user_data?.[entity.key]?.rationale ?? ""
-}
-entityStatusRationale.propTypes = {
-    source: sourcePropType,
-    entity: entityPropType,
-}
 
 function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
     function handleSort(column) {
@@ -98,6 +77,7 @@ EntityAttributeHeaderCell.propTypes = {
 }
 
 function sourceEntitiesHeaders(
+    columnsToHide,
     entityAttributes,
     hideIgnoredEntities,
     metricEntities,
@@ -142,20 +122,24 @@ function sourceEntitiesHeaders(
             >
                 {`${capitalize(entityNameSingular)} status`}
             </SortableTableHeaderCell>
-            <SortableTableHeaderCell
-                column="status_end_date"
-                handleSort={(column) => handleSort(column, "date")}
-                {...sortProps}
-            >
-                Status end date
-            </SortableTableHeaderCell>
-            <SortableTableHeaderCell
-                column="rationale"
-                handleSort={(column) => handleSort(column, "text")}
-                {...sortProps}
-            >
-                Status rationale
-            </SortableTableHeaderCell>
+            {!columnsToHide.includes("status_end_date") && (
+                <SortableTableHeaderCell
+                    column="status_end_date"
+                    handleSort={(column) => handleSort(column, "date")}
+                    {...sortProps}
+                >
+                    Status end date
+                </SortableTableHeaderCell>
+            )}
+            {!columnsToHide.includes("rationale") && (
+                <SortableTableHeaderCell
+                    column="rationale"
+                    handleSort={(column) => handleSort(column, "text")}
+                    {...sortProps}
+                >
+                    Status rationale
+                </SortableTableHeaderCell>
+            )}
             <SortableTableHeaderCell
                 column="first_seen"
                 handleSort={(column) => handleSort(column, "datetime")}
@@ -170,6 +154,7 @@ function sourceEntitiesHeaders(
     )
 }
 sourceEntitiesHeaders.propTypes = {
+    columnsToHide: stringsPropType,
     entityAttributes: entityAttributesPropType,
     hideIgnoredEntities: bool,
     metricEntities: object,
@@ -216,7 +201,7 @@ sortedEntities.propTypes = {
     source: sourcePropType,
 }
 
-export function SourceEntities({ loading, measurements, metric, metricUuid, reload, report, sourceUuid }) {
+export function SourceEntities({ loading, measurements, metric, metricUuid, reload, report, settings, sourceUuid }) {
     const dataModel = useContext(DataModel)
     const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false)
     const [sortColumn, setSortColumn] = useState(null)
@@ -266,8 +251,10 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
         sortDirection: sortDirection,
     }
     const entities = sortedEntities(columnType, sortColumn, sortDirection, source)
+    const columnsToHide = determineColumnsToHide(settings, source, entities)
     const rows = entities.map((entity) => (
         <SourceEntity
+            columnsToHide={columnsToHide}
             entity={entity}
             entityAttributes={entityAttributes}
             entityName={metricEntities.name}
@@ -286,6 +273,7 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
         entityCanBeIgnored(entityStatus(source, entity), entityStatusEndDate(source, entity)),
     ).length
     const headers = sourceEntitiesHeaders(
+        columnsToHide,
         entityAttributes,
         hideIgnoredEntities,
         metricEntities,
@@ -309,5 +297,6 @@ SourceEntities.propTypes = {
     metricUuid: string,
     reload: func,
     report: reportPropType,
+    settings: settingsPropType,
     sourceUuid: string,
 }
