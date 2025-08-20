@@ -41,7 +41,7 @@ it("sets a boolean value", () => {
 })
 
 it("resets a boolean value", () => {
-    const { result } = renderHook(() => useBooleanURLSearchQuery("key", 0))
+    const { result } = renderHook(() => useBooleanURLSearchQuery("key"))
     act(() => {
         result.current.set(true)
     })

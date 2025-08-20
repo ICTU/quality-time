@@ -28,6 +28,7 @@ function renderSettingsPanel({
                 hiddenCards: settings.hiddenCards,
                 hiddenColumns: settings.hiddenColumns,
                 hiddenTags: settings.hiddenTags,
+                hideEmptyColumns: settings.hideEmptyColumns,
                 metricsToHide: settings.metricsToHide,
                 nrDates: settings.nrDates,
                 showIssueCreationDate: settings.showIssueCreationDate,
@@ -102,6 +103,19 @@ it("shows a column", async () => {
     history.push("?hidden_columns=status")
     renderSettingsPanel()
     fireEvent.click(screen.getAllByText(/Status/)[0])
+    expect(history.location.search).toBe("")
+})
+
+it("hides empty columns", async () => {
+    renderSettingsPanel()
+    fireEvent.click(screen.getByText(/Empty columns/))
+    expect(history.location.search).toBe("?hide_empty_columns=true")
+})
+
+it("show empty columns", async () => {
+    history.push("?hide_empty_columns=true")
+    renderSettingsPanel()
+    fireEvent.click(screen.getByText(/Empty columns/))
     expect(history.location.search).toBe("")
 })
 

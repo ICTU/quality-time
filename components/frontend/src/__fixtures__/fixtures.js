@@ -2,6 +2,7 @@ import { renderHook } from "@testing-library/react"
 
 import {
     allSettingsAreDefault,
+    entries,
     resetSettings,
     useDateIntervalURLSearchQuery,
     useDateOrderURLSearchQuery,
@@ -9,6 +10,7 @@ import {
     useHiddenCardsURLSearchQuery,
     useHiddenColumnsURLSearchQuery,
     useHiddenTagsURLSearchQuery,
+    useHideEmptyColumnsURLSearchQuery,
     useLanguageURLSearchQuery,
     useMetricsToHideURLSearchQuery,
     useNrDatesURLSearchQuery,
@@ -116,6 +118,7 @@ export function createTestableSettings() {
         hiddenCards: testableQuery(useHiddenCardsURLSearchQuery),
         hiddenColumns: testableQuery(useHiddenColumnsURLSearchQuery),
         hiddenTags: testableQuery(useHiddenTagsURLSearchQuery),
+        hideEmptyColumns: testableQuery(useHideEmptyColumnsURLSearchQuery),
         language: testableQuery(useLanguageURLSearchQuery),
         metricsToHide: testableQuery(useMetricsToHideURLSearchQuery),
         nrDates: testableQuery(useNrDatesURLSearchQuery),
@@ -132,6 +135,9 @@ export function createTestableSettings() {
         },
         allDefault: function () {
             return allSettingsAreDefault(this)
+        },
+        entries: function () {
+            return entries(this)
         },
     }
 }
