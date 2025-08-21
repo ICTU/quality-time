@@ -20,11 +20,10 @@ def find_user(database: Database) -> User | None:
 
 
 @bottle.get("/api/internal/settings", authentication_required=True)
-def get_settings(database: Database) -> dict:
+def get_settings(database: Database) -> dict[str, defaultdict]:
     """Retrieve settings for user."""
-    user = find_user(database)
-    # Ignore MyPy because there is always a user since auth_required is true for this endpoint
-    return {"settings": user.settings}  # type: ignore[union-attr]
+    user = cast(User, find_user(database))  # There is always a user since auth_required is true for this endpoint
+    return {"settings": user.settings}
 
 
 @bottle.put("/api/internal/settings", authentication_required=True)
