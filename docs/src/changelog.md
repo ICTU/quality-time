@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## Note before upgrading
 
-If your currently installed *Quality-time* version is not the latest version, please first check the upgrade path in the [versioning policy](versioning.md) before upgrading.
+If your currently installed *Quality-time* version is not the penultimate version, please first check the upgrade path in the [versioning policy](versioning.md) before upgrading.
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
