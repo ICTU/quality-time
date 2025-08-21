@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
+import { createTestableSettings } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceEntities } from "./SourceEntities"
@@ -114,6 +115,7 @@ function renderSourceEntities({
                 metric={metric}
                 metricUuid="metric_uuid"
                 report={{ issue_tracker: null }}
+                settings={createTestableSettings()}
                 sourceUuid="source_uuid"
             />
         </DataModel.Provider>,

@@ -4,7 +4,7 @@ import { bool, func, string } from "prop-types"
 import { zIndexTableHeader } from "../defaults"
 import { StatusIcon } from "../measurement/StatusIcon"
 import { STATUS_DESCRIPTION, STATUSES } from "../metric/status"
-import { datesPropType, settingsPropType } from "../sharedPropTypes"
+import { datesPropType, settingsPropType, stringsPropType } from "../sharedPropTypes"
 import { HyperLink } from "../widgets/HyperLink"
 import { IgnoreIcon, TriangleRightIcon } from "../widgets/icons"
 import { SortableTableHeaderCell, UnsortableTableHeaderCell } from "../widgets/TableHeaderCell"
@@ -290,7 +290,7 @@ MeasurementHeaderCells.propTypes = {
     showDeltaColumns: bool,
 }
 
-export function SubjectTableHeader({ columnDates, handleSort, settings }) {
+export function SubjectTableHeader({ columnDates, columnsToHide, handleSort, settings }) {
     const sortProps = {
         sortColumn: settings.sortColumn.value,
         sortDirection: settings.sortDirection,
@@ -304,16 +304,16 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
                 {nrDates > 1 && (
                     <MeasurementHeaderCells
                         columnDates={columnDates}
-                        showDeltaColumns={settings.hiddenColumns.excludes("delta")}
+                        showDeltaColumns={!columnsToHide.includes("delta")}
                     />
                 )}
-                {nrDates === 1 && settings.hiddenColumns.excludes("trend") && (
+                {!columnsToHide.includes("trend") && (
                     <UnsortableTableHeaderCell width="2" label="Trend (7 days)" help={trendHelp} />
                 )}
-                {nrDates === 1 && settings.hiddenColumns.excludes("status") && (
+                {!columnsToHide.includes("status") && (
                     <SortableTableHeaderCell column="status" label="Status" help={statusHelp()} {...sortProps} />
                 )}
-                {nrDates === 1 && settings.hiddenColumns.excludes("measurement") && (
+                {!columnsToHide.includes("measurement") && (
                     <SortableTableHeaderCell
                         column="measurement"
                         label="Measurement"
@@ -322,7 +322,7 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
                         {...sortProps}
                     />
                 )}
-                {nrDates === 1 && settings.hiddenColumns.excludes("target") && (
+                {!columnsToHide.includes("target") && (
                     <SortableTableHeaderCell
                         column="target"
                         label="Target"
@@ -331,25 +331,25 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
                         {...sortProps}
                     />
                 )}
-                {settings.hiddenColumns.excludes("unit") && (
+                {!columnsToHide.includes("unit") && (
                     <SortableTableHeaderCell column="unit" label="Unit" help={unitHelp} {...sortProps} />
                 )}
-                {settings.hiddenColumns.excludes("source") && (
+                {!columnsToHide.includes("source") && (
                     <SortableTableHeaderCell column="source" label="Sources" help={sourcesHelp} {...sortProps} />
                 )}
-                {settings.hiddenColumns.excludes("time_left") && (
+                {!columnsToHide.includes("time_left") && (
                     <SortableTableHeaderCell column="time_left" label="Time left" help={timeLeftHelp} {...sortProps} />
                 )}
-                {nrDates > 1 && settings.hiddenColumns.excludes("overrun") && (
+                {!columnsToHide.includes("overrun") && (
                     <SortableTableHeaderCell column="overrun" label="Overrun" help={overrunHelp} {...sortProps} />
                 )}
-                {settings.hiddenColumns.excludes("comment") && (
+                {!columnsToHide.includes("comment") && (
                     <SortableTableHeaderCell column="comment" label="Comment" help={commentHelp} {...sortProps} />
                 )}
-                {settings.hiddenColumns.excludes("issues") && (
+                {!columnsToHide.includes("issues") && (
                     <SortableTableHeaderCell column="issues" label="Issues" help={issuesHelp} {...sortProps} />
                 )}
-                {settings.hiddenColumns.excludes("tags") && (
+                {!columnsToHide.includes("tags") && (
                     <SortableTableHeaderCell column="tags" label="Tags" help={tagsHelp} {...sortProps} />
                 )}
             </TableRow>
@@ -358,6 +358,7 @@ export function SubjectTableHeader({ columnDates, handleSort, settings }) {
 }
 SubjectTableHeader.propTypes = {
     columnDates: datesPropType,
+    columnsToHide: stringsPropType,
     handleSort: func,
     settings: settingsPropType,
 }

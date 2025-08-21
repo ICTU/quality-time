@@ -216,6 +216,7 @@ export function MetricDetails({
                 metricUuid={metricUuid}
                 reload={measurementsReload}
                 report={report}
+                settings={settings}
                 sourceUuid={sourceUuid}
             />,
         )

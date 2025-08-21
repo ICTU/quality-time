@@ -14,6 +14,7 @@ import { SubjectTableRow } from "./SubjectTableRow"
 
 export function SubjectTableBody({
     changedFields,
+    columnsToHide,
     dates,
     handleSort,
     measurements,
@@ -34,6 +35,7 @@ export function SubjectTableBody({
                     <SubjectTableRow
                         changedFields={changedFields}
                         dates={dates}
+                        columnsToHide={columnsToHide}
                         handleSort={handleSort}
                         index={index}
                         key={metricUuid}
@@ -56,6 +58,7 @@ export function SubjectTableBody({
 }
 SubjectTableBody.propTypes = {
     changedFields: stringsPropType,
+    columnsToHide: stringsPropType,
     dates: datesPropType,
     handleSort: func,
     measurements: measurementsPropType,

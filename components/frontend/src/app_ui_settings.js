@@ -29,6 +29,10 @@ export function useHiddenColumnsURLSearchQuery(reportUuid) {
     return useArrayURLSearchQuery(urlSearchQueryKey("hidden_columns", reportUuid))
 }
 
+export function useHideEmptyColumnsURLSearchQuery(reportUuid) {
+    return useBooleanURLSearchQuery(urlSearchQueryKey("hide_empty_columns", reportUuid))
+}
+
 export function useHiddenTagsURLSearchQuery(reportUuid) {
     return useArrayURLSearchQuery(urlSearchQueryKey("hidden_tags", reportUuid))
 }
@@ -89,6 +93,7 @@ export function useSettings(reportUuid) {
         expandedItems: useExpandedItemsSearchQuery(reportUuid),
         hiddenCards: useHiddenCardsURLSearchQuery(reportUuid),
         hiddenColumns: useHiddenColumnsURLSearchQuery(reportUuid),
+        hideEmptyColumns: useHideEmptyColumnsURLSearchQuery(reportUuid),
         hiddenTags: useHiddenTagsURLSearchQuery(reportUuid),
         language: useLanguageURLSearchQuery(),
         metricsToHide: useMetricsToHideURLSearchQuery(reportUuid),
@@ -117,6 +122,7 @@ export function resetSettings(settings) {
     settings.hiddenCards.reset()
     settings.hiddenColumns.reset()
     settings.hiddenTags.reset()
+    settings.hideEmptyColumns.reset()
     settings.language.reset()
     settings.metricsToHide.reset()
     settings.nrDates.reset()
@@ -138,6 +144,7 @@ export function allSettingsAreDefault(settings) {
         settings.hiddenCards.isDefault() &&
         settings.hiddenColumns.isDefault() &&
         settings.hiddenTags.isDefault() &&
+        settings.hideEmptyColumns.isDefault() &&
         settings.language.isDefault() &&
         settings.metricsToHide.isDefault() &&
         settings.nrDates.isDefault() &&

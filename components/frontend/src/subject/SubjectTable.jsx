@@ -2,7 +2,9 @@ import "./SubjectTable.css"
 
 import { Table, TableContainer } from "@mui/material"
 import { array, func, object, string } from "prop-types"
+import { useContext } from "react"
 
+import { DataModel } from "../context/DataModel"
 import {
     datesPropType,
     measurementsPropType,
@@ -12,6 +14,7 @@ import {
     settingsPropType,
     stringsPropType,
 } from "../sharedPropTypes"
+import { determineColumnsToHide } from "./subject_column"
 import { SubjectTableBody } from "./SubjectTableBody"
 import { SubjectTableFooter } from "./SubjectTableFooter"
 import { SubjectTableHeader } from "./SubjectTableHeader"
@@ -30,8 +33,10 @@ export function SubjectTable({
     subject,
     subjectUuid,
 }) {
+    const dataModel = useContext(DataModel)
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
     const reversedMeasurements = measurements.slice().sort((m1, m2) => (m1.start < m2.start ? 1 : -1))
+    const columnsToHide = determineColumnsToHide(dataModel, measurements, metricEntries, dates.length, report, settings)
     return (
         <TableContainer sx={{ overflowX: "visible" }}>
             <Table
@@ -43,10 +48,16 @@ export function SubjectTable({
                     },
                 }}
             >
-                <SubjectTableHeader columnDates={dates} handleSort={handleSort} settings={settings} />
+                <SubjectTableHeader
+                    columnDates={dates}
+                    columnsToHide={columnsToHide}
+                    handleSort={handleSort}
+                    settings={settings}
+                />
                 <SubjectTableBody
                     changedFields={changedFields}
                     dates={dates}
+                    columnsToHide={columnsToHide}
                     handleSort={handleSort}
                     measurements={measurements}
                     metricEntries={metricEntries}

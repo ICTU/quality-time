@@ -48,6 +48,7 @@ function renderSubjectTableRow({
             <Table>
                 <TableBody>
                     <SubjectTableRow
+                        columnsToHide={[]}
                         dates={dates}
                         measurements={[]}
                         metric={{

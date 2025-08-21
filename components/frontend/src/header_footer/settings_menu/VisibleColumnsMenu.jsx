@@ -1,3 +1,4 @@
+import Divider from "@mui/material/Divider"
 import { bool, string } from "prop-types"
 
 import { popupContentPropType, settingsPropType, stringsURLSearchQueryPropType } from "../../sharedPropTypes"
@@ -53,6 +54,14 @@ export function VisibleColumnMenu({ settings }) {
             <VisibleColumnMenuItem column="comment" {...visibleColumnMenuItemProps} />
             <VisibleColumnMenuItem column="issues" {...visibleColumnMenuItemProps} />
             <VisibleColumnMenuItem column="tags" {...visibleColumnMenuItemProps} />
+            <Divider />
+            <SettingsMenuItem
+                active={!settings.hideEmptyColumns.value}
+                onClick={settings.hideEmptyColumns.set}
+                onClickData={!settings.hideEmptyColumns.value}
+            >
+                Empty columns
+            </SettingsMenuItem>
         </SettingsMenu>
     )
 }

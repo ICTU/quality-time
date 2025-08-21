@@ -211,6 +211,7 @@ MeasurementCells.propTypes = {
 
 export function SubjectTableRow({
     changedFields,
+    columnsToHide,
     dates,
     handleSort,
     index,
@@ -268,40 +269,40 @@ export function SubjectTableRow({
                     settings={settings}
                 />
             )}
-            {nrDates === 1 && settings.hiddenColumns.excludes("trend") && (
+            {!columnsToHide.includes("trend") && (
                 <TableCell sx={{ width: "150px" }}>
                     <TrendSparkline measurements={metric.recent_measurements} reportDate={reportDate} scale={scale} />
                 </TableCell>
             )}
-            {nrDates === 1 && settings.hiddenColumns.excludes("status") && (
+            {!columnsToHide.includes("status") && (
                 <TableCell>
                     <Typography sx={{ paddingLeft: "6px", fontSize: "24px" }}>
                         <StatusIcon status={metric.status} statusStart={metric.status_start} />
                     </Typography>
                 </TableCell>
             )}
-            {nrDates === 1 && settings.hiddenColumns.excludes("measurement") && (
+            {!columnsToHide.includes("measurement") && (
                 <TableCell align="right">
                     <MeasurementValue metric={metric} reportDate={reportDate} />
                 </TableCell>
             )}
-            {nrDates === 1 && settings.hiddenColumns.excludes("target") && (
+            {!columnsToHide.includes("target") && (
                 <TableCell align="right">
                     <MeasurementTarget metric={metric} />
                 </TableCell>
             )}
-            {settings.hiddenColumns.excludes("unit") && <TableCell>{unit}</TableCell>}
-            {settings.hiddenColumns.excludes("source") && (
+            {!columnsToHide.includes("unit") && <TableCell>{unit}</TableCell>}
+            {!columnsToHide.includes("source") && (
                 <TableCell>
                     <MeasurementSources metric={metric} />
                 </TableCell>
             )}
-            {settings.hiddenColumns.excludes("time_left") && (
+            {!columnsToHide.includes("time_left") && (
                 <TableCell>
                     <TimeLeft metric={metric} report={report} />
                 </TableCell>
             )}
-            {nrDates > 1 && settings.hiddenColumns.excludes("overrun") && (
+            {!columnsToHide.includes("overrun") && (
                 <TableCell>
                     <Overrun
                         metric={metric}
@@ -312,17 +313,17 @@ export function SubjectTableRow({
                     />
                 </TableCell>
             )}
-            {settings.hiddenColumns.excludes("comment") && (
+            {!columnsToHide.includes("comment") && (
                 <TableCell>
                     <DivWithHtml>{metric.comment}</DivWithHtml>
                 </TableCell>
             )}
-            {settings.hiddenColumns.excludes("issues") && (
+            {!columnsToHide.includes("issues") && (
                 <TableCell>
                     <IssueStatus metric={metric} issueTrackerMissing={!report.issue_tracker} settings={settings} />
                 </TableCell>
             )}
-            {settings.hiddenColumns.excludes("tags") && (
+            {!columnsToHide.includes("tags") && (
                 <TableCell>
                     {getMetricTags(metric).map((tag) => (
                         <Tag key={tag} tag={tag} />
@@ -334,6 +335,7 @@ export function SubjectTableRow({
 }
 SubjectTableRow.propTypes = {
     changedFields: stringsPropType,
+    columnsToHide: stringsPropType,
     dates: datesPropType,
     handleSort: func,
     index: number,

@@ -256,3 +256,11 @@ it("adds a source", async () => {
         type: "source_type",
     })
 })
+
+it("hides empty columns", async () => {
+    history.push("?hide_empty_columns=true")
+    renderSubjectTable()
+    expect(screen.queryAllByText(/Comment/).length).toBe(0)
+    expect(screen.queryAllByText(/Issues/).length).toBe(0)
+    expect(screen.queryAllByText(/Tags/).length).toBe(1) // Not empty
+})

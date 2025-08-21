@@ -2,7 +2,13 @@ import { TableCell } from "@mui/material"
 import { bool, func, string } from "prop-types"
 import { useState } from "react"
 
-import { entityAttributesPropType, entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
+import {
+    entityAttributesPropType,
+    entityPropType,
+    entityStatusPropType,
+    reportPropType,
+    stringsPropType,
+} from "../sharedPropTypes"
 import { DivWithHtml } from "../widgets/DivWithHtml"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
@@ -25,6 +31,7 @@ entityCanBeIgnored.propTypes = {
 }
 
 export function SourceEntity({
+    columnsToHide,
     metricUuid,
     sourceUuid,
     hideIgnoredEntities,
@@ -80,12 +87,16 @@ export function SourceEntity({
             <TableCell colSpan={2} sx={{ paddingLeft: "6px", ...style }}>
                 {SOURCE_ENTITY_STATUS_NAME[status]}
             </TableCell>
-            <TableCell sx={style}>
-                {status === "unconfirmed" ? "" : <TimeAgoWithDate dateFirst noTime date={statusEndDate} />}
-            </TableCell>
-            <TableCell sx={style}>
-                <DivWithHtml>{rationale}</DivWithHtml>
-            </TableCell>
+            {!columnsToHide.includes("status_end_date") && (
+                <TableCell sx={style}>
+                    {status === "unconfirmed" ? "" : <TimeAgoWithDate dateFirst noTime date={statusEndDate} />}
+                </TableCell>
+            )}
+            {!columnsToHide.includes("rationale") && (
+                <TableCell sx={style}>
+                    <DivWithHtml>{rationale}</DivWithHtml>
+                </TableCell>
+            )}
             <TableCell sx={style}>
                 {entity.first_seen ? <TimeAgoWithDate dateFirst date={entity.first_seen} /> : ""}
             </TableCell>
@@ -102,6 +113,7 @@ export function SourceEntity({
     )
 }
 SourceEntity.propTypes = {
+    columnsToHide: stringsPropType,
     metricUuid: string,
     sourceUuid: string,
     hideIgnoredEntities: bool,

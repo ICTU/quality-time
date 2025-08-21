@@ -19,6 +19,7 @@ function renderSourceEntity({
             <Table>
                 <TableBody>
                     <SourceEntity
+                        columnsToHide={[]}
                         entity={{ attr1: "good", attr2: "bad", first_seen: firstSeen }}
                         entityAttributes={[{ key: "attr1" }, { key: "attr2", color: { bad: "warning" } }]}
                         entityName="entity"
