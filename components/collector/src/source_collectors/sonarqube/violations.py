@@ -58,7 +58,7 @@ class SonarQubeViolations(SonarQubeCollector):
         return "" if parameter_value == self.__default_value(parameter_key) else f"&{query_parameter}={parameter_value}"
 
     def __rules_url_parameter(self) -> str:
-        """Return the rules url parameter, if any."""
+        """Return the rules URL parameter, if any."""
         rules = (
             DATA_MODEL.sources[self.source_type].configuration[self.rules_configuration].value
             if self.rules_configuration

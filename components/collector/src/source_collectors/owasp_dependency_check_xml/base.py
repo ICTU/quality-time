@@ -1,4 +1,4 @@
-"""Base classes for OWASP Dependency Check collectors."""
+"""Base classes for OWASP Dependency-Check XML collectors."""
 
 from abc import ABC
 from typing import ClassVar
@@ -6,8 +6,8 @@ from typing import ClassVar
 from base_collectors import XMLFileSourceCollector
 
 
-class OWASPDependencyCheckBase(XMLFileSourceCollector, ABC):
-    """Base class for OWASP Dependency Check collectors."""
+class OWASPDependencyCheckXMLBase(XMLFileSourceCollector, ABC):
+    """Base class for OWASP Dependency-Check XML collectors."""
 
     allowed_root_tags: ClassVar[list[str]] = [
         f"{{https://jeremylong.github.io/DependencyCheck/dependency-check.{version}.xsd}}analysis"

@@ -81,7 +81,7 @@ class SourceCollector:
         return issue_status
 
     async def _api_url(self) -> URL:
-        """Translate the url parameter into the API url."""
+        """Translate the URL parameter into the API url."""
         return self.__parameters.api_url()
 
     def _parameter(self, parameter_key: str, quote: bool = False) -> str | list[str]:
@@ -215,10 +215,11 @@ class SourceCollector:
             return await self._api_url()
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
-        """Return a user-friendly landing url.
+        """Return a user-friendly landing url. Can be overridden to base the landing URL on the source responses."""
+        return self._get_landing_url_from_parameters()
 
-        Return the user supplied landing url parameter if there is one, otherwise return the API URL.
-        """
+    def _get_landing_url_from_parameters(self) -> URL:
+        """Return the user supplied landing URL parameter if there is one, otherwise return the API URL."""
         return self.__parameters.landing_url() or self.__parameters.api_url()
 
     @property

@@ -330,7 +330,7 @@ If you add multiple sources for one metric the measurement values of each source
 
 #### Editing sources
 
-After you've added a source, you can change the source type using the "Source type" drop-down menu. The available source types depend on the metric type. E.g. OWASP Dependency Check supports the security warnings metric type, but GitLab does not so GitLab is not shown.
+After you've added a source, you can change the source type using the "Source type" drop-down menu. The available source types depend on the metric type. E.g. OWASP Dependency-Check supports the security warnings metric type, but GitLab does not so GitLab is not shown.
 
 By default, the name of the source equals the source type but this can be overridden using the "Source name" field.
 

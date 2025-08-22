@@ -415,7 +415,7 @@
                             }
                         },
                         "3b43dc7f-4ced-4a3f-ac7d-8d43c7bc574e": {
-                            "type": "owasp_dependency_check",
+                            "type": "owasp_dependency_check_xml",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/owasp-dependency-check/dependency-check-report.xml",
                                 "landing_url": "http://localhost:8000/reports/owasp-dependency-check/dependency-check-report.html",
@@ -452,7 +452,7 @@
                     "type": "security_warnings",
                     "sources": {
                         "38dee1e7-5408-4fd5-93bd-9891e20092cc": {
-                            "type": "owasp_dependency_check",
+                            "type": "owasp_dependency_check_xml",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/owasp-dependency-check/dependency-check-report.xml",
                                 "landing_url": "http://localhost:8000/reports/owasp-dependency-check/dependency-check-report.html",
@@ -576,7 +576,7 @@
                     "type": "source_up_to_dateness",
                     "sources": {
                         "8413bbe3-68f0-42fa-a7e4-e7017acd90c7": {
-                            "type": "owasp_dependency_check",
+                            "type": "owasp_dependency_check_xml",
                             "parameters": {
                                 "url": "http://testdata:8000/reports/owasp-dependency-check/dependency-check-report.xml",
                                 "landing_url": "http://localhost:8000/reports/owasp-dependency-check/dependency-check-report.html",
