@@ -65,14 +65,14 @@ function renderSourceParameter({
 
 beforeEach(() => vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true }))
 
-it("renders an url parameter", async () => {
+it("renders an URL parameter", async () => {
     const { container } = renderSourceParameter({})
     expect(screen.queryAllByLabelText(/URL/).length).toBe(1)
     expect(screen.getByDisplayValue(/https:\/\/test/)).toBeValid()
     await expectNoAccessibilityViolations(container)
 })
 
-it("renders an url parameter with warning", async () => {
+it("renders an URL parameter with warning", async () => {
     const { container } = renderSourceParameter({ warning: true })
     expect(screen.queryAllByLabelText(/URL/).length).toBe(1)
     expect(screen.getByDisplayValue(/https:\/\/test/)).not.toBeValid()

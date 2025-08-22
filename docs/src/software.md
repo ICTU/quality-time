@@ -463,6 +463,7 @@ Add the example file(s) to the [test data reports](https://github.com/ICTU/quali
 
 - `cobertura.xml` was copied from [https://github.com/Bachmann1234/diff_cover/blob/main/diff_cover/tests/fixtures/dotnet_coverage.xml](https://github.com/Bachmann1234/diff_cover/blob/0af9969e5f12420f90f29d8f2c94633b5d2a1aff/tests/fixtures/dotnet_coverage.xml).
 - `testng-results.xml` was copied from [https://github.com/richie-b/AtnApiTest/blob/master/test-output/testng-results.xml](https://github.com/richie-b/AtnApiTest/blob/c8ab706bcf386e471488ad94e627eedca613e73e/test-output/testng-results.xml).
+- `dependency-check-report.json` was copied from [https://github.com/dependency-check/dependency-check-sonar-plugin/blob/aa8ad90d1add5b289a878b15eb2cf27fdda91eca/sonar-dependency-check-plugin/src/test/resources/reportWithCvssV4/dependency-check-report.json](https://github.com/dependency-check/dependency-check-sonar-plugin/blob/aa8ad90d1add5b289a878b15eb2cf27fdda91eca/sonar-dependency-check-plugin/src/test/resources/reportWithCvssV4/dependency-check-report.json).
 
 ## Test LDAP server
 

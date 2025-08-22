@@ -121,3 +121,11 @@ def iterable_to_batches(iterable: Iterable, batch_size: int) -> Iterable:
 def decimal_round_half_up(dec: Decimal | float) -> int:
     """Round decimal or float to nearest integer, with ties going away from zero."""
     return int(Decimal(dec).to_integral_value(ROUND_HALF_UP))
+
+
+def stabilize(path_or_url: str, reg_exps: list[str], replacement: str = "") -> str:
+    """Return a stabilized version of the path or URL by removing variable parts with the regular expression."""
+    stable_path_or_url = path_or_url
+    for reg_exp in reg_exps:
+        stable_path_or_url = re.sub(reg_exp, replacement, stable_path_or_url)
+    return stable_path_or_url

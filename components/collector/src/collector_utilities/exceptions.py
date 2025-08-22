@@ -21,6 +21,15 @@ class XMLRootElementError(CollectorError):
         super().__init__(f'The XML root element should be one of "{allowed_root_tags}" but is "{tag}"')
 
 
+class JSONAttributeError(CollectorError):
+    """A JSON attribute has an incorrect value."""
+
+    def __init__(self, allowed_values: Collection[str], key: str, value: str) -> None:
+        comparison = "equal to" if len(allowed_values) == 1 else "one of"
+        values = ", ".join(f'"{value}"' for value in allowed_values)
+        super().__init__(f'The value of the JSON attribute "{key}" should be {comparison} {values} but is "{value}"')
+
+
 class NotFoundError(CollectorError):
     """Something could not be found."""
 

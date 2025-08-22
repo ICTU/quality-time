@@ -1,15 +1,15 @@
-"""OWASP Dependency Check security warnings collector."""
+"""OWASP Dependency-Check XML security warnings collector."""
 
 from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 from collector_utilities.type import Namespaces
 from model import Entity
 
-from .dependencies import OWASPDependencyCheckDependencies
+from .dependencies import OWASPDependencyCheckXMLDependencies
 
 
-class OWASPDependencyCheckSecurityWarnings(OWASPDependencyCheckDependencies):
-    """Collector to get security warnings from the OWASP Dependency Check XML report."""
+class OWASPDependencyCheckXMLSecurityWarnings(OWASPDependencyCheckXMLDependencies):
+    """Collector to get security warnings from the OWASP Dependency-Check XML report."""
 
     def _dependencies(self, tree: Element, namespaces: Namespaces) -> list[Element]:
         """Override to return vulnerable dependencies only."""

@@ -26,6 +26,7 @@ def perform_migrations(database: Database) -> None:
                 change_sonarqube_parameters(report),
                 change_unmerged_branches_metrics_to_inactive_branches(report),
                 change_inactive_branches_project_parameter_to_project_or_group(report),
+                change_owasp_dependency_check_to_owasp_dependency_check_xml(report),
             ]
         ):
             change_description = " and to ".join([change for change in changes if change])
@@ -215,6 +216,18 @@ def change_inactive_branches_project_parameter_to_project_or_group(report) -> st
                     "the parameter 'project' of source type 'gitlab' to 'project_or_group' "
                     "for metric type 'inactive_branches'"
                 )
+    return change
+
+
+def change_owasp_dependency_check_to_owasp_dependency_check_xml(report) -> str:
+    """Add XML to the OWASP Dependency-Check source key. Return a description of the change, if any."""
+    # Added after Quality-time v5.39.0, see https://github.com/ICTU/quality-time/issues/11851
+    change = ""
+    for metric in metrics(report, ("dependencies", "security_warnings", "source_up_to_dateness", "source_version")):
+        for source in metric.get("sources", {}).values():
+            if source["type"] == "owasp_dependency_check":
+                source["type"] = "owasp_dependency_check_xml"
+                change = "change its owasp_dependency_check sources to owasp_dependency_check_xml"
     return change
 
 
