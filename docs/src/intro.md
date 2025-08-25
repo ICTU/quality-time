@@ -1,6 +1,6 @@
 # About *Quality-time*
 
-*Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as GitLab, SonarQube, Jira, Azure DevOps, and OWASP Dependency Check, to provide an overview of the quality of software products, processes, and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
+*Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as GitLab, SonarQube, Jira, Azure DevOps, and OWASP Dependency-Check, to provide an overview of the quality of software products, processes, and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
 
 Technically, *Quality-time* consists of a React frontend, a Mongo database server, and a number of backend components written in Python: a worker component to collect measurement data from the sources, a worker component to send notifications, an API-server for the frontend, and an API-server for the worker components.
 

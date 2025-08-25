@@ -366,7 +366,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         self.source_4 = Source(
             SOURCE_ID4,
             None,
-            {"name": "Source 4", "type": "owasp_dependency_check", "parameters": {"username": self.OLD_VALUE}},
+            {"name": "Source 4", "type": "owasp_dependency_check_xml", "parameters": {"username": self.OLD_VALUE}},
         )
         self.sources2 = {
             SOURCE_ID5: Source(

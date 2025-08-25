@@ -1,4 +1,4 @@
-"""OWASP Dependency Check source up-to-dateness collector."""
+"""OWASP Dependency-Check XML source up-to-dateness collector."""
 
 from datetime import datetime
 
@@ -7,11 +7,11 @@ from collector_utilities.date_time import parse_datetime
 from collector_utilities.functions import parse_source_response_xml_with_namespace
 from collector_utilities.type import Response
 
-from .base import OWASPDependencyCheckBase
+from .base import OWASPDependencyCheckXMLBase
 
 
-class OWASPDependencyCheckSourceUpToDateness(OWASPDependencyCheckBase, TimePassedCollector):
-    """Collector to collect the OWASP Dependency Check report age."""
+class OWASPDependencyCheckXMLSourceUpToDateness(OWASPDependencyCheckXMLBase, TimePassedCollector):
+    """Collector to collect the OWASP Dependency-Check XML report age."""
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to parse the report date from the XML."""
