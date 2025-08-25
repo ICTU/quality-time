@@ -19,7 +19,7 @@ dependencies = [
     "shared-code",
 ]
 optional-dependencies.dev = [
-    "coverage==7.10.4",
+    "coverage==7.10.5",
     "pydantic==2.11.7",                # Needed for importing the data model in the tests from the shared code component
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.20250622",
