@@ -4,7 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: uv
     directory: "/components/collector"
@@ -12,7 +12,7 @@ updates:
       - dependency-type: "direct"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/collector"
@@ -20,7 +20,7 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "python"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/database"
@@ -29,7 +29,7 @@ updates:
     ignore:
       - dependency-name: "mongo"
         update-types: ["version-update:semver-major", "version-update:semver-minor"] # Patches only, please
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/frontend"
@@ -37,13 +37,13 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "node"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: npm
     directory: "/components/frontend"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: uv
     directory: "/components/notifier"
@@ -51,7 +51,7 @@ updates:
       - dependency-type: "direct"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/notifier"
@@ -59,13 +59,13 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "python"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/proxy"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/renderer"
@@ -73,7 +73,7 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "node"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: npm
     directory: "/components/renderer"
@@ -81,7 +81,7 @@ updates:
       - dependency-type: "direct"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/api_server"
@@ -89,7 +89,7 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "python"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: uv
     directory: "/components/api_server"
@@ -97,7 +97,7 @@ updates:
       - dependency-type: "direct"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: uv
     directory: "/components/shared_code"
@@ -105,7 +105,7 @@ updates:
       - dependency-type: "direct"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/testdata"
@@ -113,7 +113,7 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "python"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: npm
     directory: "/docs"
@@ -121,7 +121,7 @@ updates:
       - dependency-type: "direct"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: uv
     directory: "/docs"
@@ -129,7 +129,7 @@ updates:
       - dependency-type: "direct"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: uv
     directory: "/release"
@@ -137,7 +137,7 @@ updates:
       - dependency-type: "direct"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: uv
     directory: "/tests/application_tests"
@@ -145,7 +145,7 @@ updates:
       - dependency-type: "direct"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
 
   - package-ecosystem: uv
     directory: "/tests/feature_tests"
@@ -153,4 +153,4 @@ updates:
       - dependency-type: "direct"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
