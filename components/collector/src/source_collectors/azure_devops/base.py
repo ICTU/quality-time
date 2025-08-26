@@ -3,13 +3,16 @@
 import urllib.parse
 from abc import ABC
 from datetime import datetime
+from typing import Any
 
 from base_collectors import SourceCollector
 from collector_utilities.date_time import parse_datetime
 from collector_utilities.exceptions import NotFoundError
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import URL, Job, Response
+from collector_utilities.type import URL, Response
 from model import Entities, Entity, SourceResponses
+
+type Job = dict[str, Any]
 
 
 class AzureDevopsRepositoryBase(SourceCollector, ABC):

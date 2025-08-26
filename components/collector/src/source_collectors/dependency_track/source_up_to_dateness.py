@@ -12,7 +12,8 @@ from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
-from .base import DependencyTrackBase, DependencyTrackProject
+from .base import DependencyTrackBase
+from .json_types import DependencyTrackProject
 
 
 class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector):

@@ -5,15 +5,14 @@ from xml.etree.ElementTree import Element  # nosec # Element is not available fr
 
 import aiohttp
 
-ElementMap = dict[Element, Element]
+type ElementMap = dict[Element, Element]
 
-ErrorMessage = None | str
-Job = dict[str, Any]
-JSONList = list[dict[str, Any]]
-JSONDict = dict[str, Any]
-JSON = JSONDict | JSONList
-Namespaces = dict[str, str]  # Namespace prefix to Namespace URI mapping
-Response = aiohttp.ClientResponse
-Responses = list[Response]
+type ErrorMessage = None | str
+type JSONList = list[dict[str, Any]]
+type JSONDict = dict[str, Any]
+type JSON = JSONDict | JSONList
+type Namespaces = dict[str, str]  # Namespace prefix to Namespace URI mapping
+type Response = aiohttp.ClientResponse
+type Responses = list[Response]
 URL = NewType("URL", str)
 Value = None | str

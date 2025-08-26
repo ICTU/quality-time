@@ -6,7 +6,8 @@ from typing import cast
 from collector_utilities.date_time import datetime_from_timestamp
 from model import Entity
 
-from .base import Build, JenkinsJobs
+from .base import JenkinsJobs
+from .json_types import Build
 
 
 class JenkinsFailedJobs(JenkinsJobs):

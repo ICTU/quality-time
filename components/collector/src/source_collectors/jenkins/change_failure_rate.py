@@ -6,7 +6,8 @@ from typing import cast
 from collector_utilities.date_time import datetime_from_timestamp, days_ago
 from model import Entities, Entity, SourceResponses
 
-from .base import Build, JenkinsJobs, Job
+from .base import JenkinsJobs
+from .json_types import Build, Job
 
 
 class JenkinsChangeFailureRate(JenkinsJobs):

@@ -2,8 +2,8 @@
 
 from model import Entity
 
-from .base import Dependency, OWASPDependencyCheckJSON, Vulnerability
 from .dependencies import OWASPDependencyCheckJSONDependencies
+from .json_types import Dependency, OWASPDependencyCheckJSON, Vulnerability
 
 
 class OWASPDependencyCheckJSONSecurityWarnings(OWASPDependencyCheckJSONDependencies):

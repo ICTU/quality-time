@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING
 
 from base_collectors import SourceCollector
 from collector_utilities.date_time import datetime_from_timestamp
@@ -14,24 +14,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
     from datetime import datetime
 
-
-class Build(TypedDict):
-    """Jenkins build."""
-
-    duration: int
-    result: str
-    timestamp: int
-    url: str
-
-
-class Job(TypedDict):
-    """Jenkins job."""
-
-    buildable: bool
-    builds: Sequence[Build]
-    jobs: Sequence[Job]
-    name: str
-    url: str
+    from .json_types import Build, Job
 
 
 class JenkinsJobs(SourceCollector):

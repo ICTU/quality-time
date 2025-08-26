@@ -2,7 +2,7 @@
 
 from typing import ClassVar
 
-from source_collectors.harbor_json.base import HarborJSON
+from source_collectors.harbor_json.json_types import HarborJSON
 
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 

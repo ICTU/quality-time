@@ -3,10 +3,10 @@
 from typing import cast
 
 from collector_utilities.date_time import days_ago
-from collector_utilities.type import Job
 from model import Entity, SourceResponses
 
 from .base import GitLabJobsBase
+from .json_types import Job
 
 
 class GitLabJobRunsWithinTimePeriod(GitLabJobsBase):
