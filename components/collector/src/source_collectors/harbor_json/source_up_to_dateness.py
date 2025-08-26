@@ -6,7 +6,7 @@ from base_collectors import JSONFileSourceCollector, TimePassedCollector
 from collector_utilities.date_time import parse_datetime
 from collector_utilities.type import Response
 
-from .base import REPORT_MIME_TYPE
+from .json_types import REPORT_MIME_TYPE
 
 
 class HarborJSONSourceUpToDateness(JSONFileSourceCollector, TimePassedCollector):

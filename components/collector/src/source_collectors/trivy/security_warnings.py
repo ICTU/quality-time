@@ -6,7 +6,7 @@ from base_collectors import JSONFileSourceCollector, SecurityWarningsSourceColle
 from collector_utilities.type import JSON
 from model import Entities, Entity
 
-from .base import TrivyJSON
+from .json_types import TrivyJSON
 
 
 class TrivyJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceCollector):

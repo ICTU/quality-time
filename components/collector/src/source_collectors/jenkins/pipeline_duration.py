@@ -10,7 +10,7 @@ from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
 from model import Entities, SourceResponses
 
-from .base import Build, Job
+from .json_types import Build, Job
 
 
 class JSON(TypedDict):

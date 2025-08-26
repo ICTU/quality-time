@@ -99,10 +99,10 @@ class PostMetricAttributeTestCase(MetricTestCase):
         report: Report | None = None,
     ):
         """Assert that the report delta contains the correct data."""
-        report = report if report is not None else self.report
+        report_to_check = self.report if report is None else report
         uuids = sorted(uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID])
         description = f"John Doe changed the {description}."
-        self.assertDictEqual({"uuids": uuids, "email": email, "description": description}, report["delta"])
+        self.assertDictEqual({"uuids": uuids, "email": email, "description": description}, report_to_check["delta"])
 
     def create_measurement(self, debt_target: str | None = None, status: str | None = None, target: str = "10"):
         """Create a measurement fixture."""

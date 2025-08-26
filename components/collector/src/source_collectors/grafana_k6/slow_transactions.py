@@ -8,7 +8,7 @@ from base_collectors import JSONFileSourceCollector, SlowTransactionsCollector, 
 from collector_utilities.type import JSON
 from model import Entities
 
-from .base import Metric, SummaryJSON
+from .json_types import Metric, SummaryJSON
 
 
 def is_default_response_time(response_time_to_evaluate: str) -> bool:

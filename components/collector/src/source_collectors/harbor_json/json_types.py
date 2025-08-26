@@ -1,4 +1,4 @@
-"""Base classes for Harbor JSON collectors."""
+"""Harbor JSON types."""
 
 from typing import Final, TypedDict
 

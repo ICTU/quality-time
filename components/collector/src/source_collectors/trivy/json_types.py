@@ -1,4 +1,4 @@
-"""Base classes for Trivy JSON collectors."""
+"""Trivy JSON types."""
 
 from typing import NotRequired, TypedDict
 

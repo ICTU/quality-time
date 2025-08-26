@@ -1,6 +1,6 @@
 """Base classes for Dependency-Track collector unit tests."""
 
-from source_collectors.dependency_track.base import DependencyTrackMetrics, DependencyTrackProject
+from source_collectors.dependency_track.json_types import DependencyTrackMetrics, DependencyTrackProject
 
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 

@@ -6,7 +6,7 @@ from base_collectors import JSONFileSourceCollector, SecurityWarningsSourceColle
 from collector_utilities.type import JSON
 from model import Entities, Entity
 
-from .base import REPORT_MIME_TYPE, HarborJSON
+from .json_types import REPORT_MIME_TYPE, HarborJSON
 
 
 class HarborJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceCollector):

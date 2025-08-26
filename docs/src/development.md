@@ -173,6 +173,8 @@ Methods that can or should be overridden in subclasses have a name with one lead
 
 Production code and unit tests are organized in parallel hierarchies. Each Python component has a `src` with the production code and a `tests` folder with the unit tests. The folder layout of the `tests` follows the layout of the `src` hierarchy.
 
+The source collectors in the collector (`components/collector/src/sourc_collectors`) are organized by the source collector identifier that is also used in the data model. Each source collector folder has a Python file for each metric that the source supports. For example, the source collector folder `components/collector/src/sourc_collectors/anchore` has a file `security_warnings.py` that contains the code that collects the data for the security warnings metric from Anchore. Shared base classes for a source collector are located in a `base.py` file. Shared JSON types that represent the JSON returned by the source are located in `json_types.py`.
+
 #### {index}`JavaScript <pair: Coding style;JavaScript>`
 
 Functional React components are preferred over class-based components.

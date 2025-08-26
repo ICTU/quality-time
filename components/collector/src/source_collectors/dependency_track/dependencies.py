@@ -5,7 +5,8 @@ from typing import NotRequired, TypedDict
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
-from .base import DependencyTrackLatestVersionStatusBase, DependencyTrackProject
+from .base import DependencyTrackLatestVersionStatusBase
+from .json_types import DependencyTrackProject
 
 
 class DependencyTrackRepositoryMetaData(TypedDict):

@@ -7,7 +7,8 @@ from base_collectors import TimePassedCollector
 from collector_utilities.date_time import parse_datetime
 from collector_utilities.type import Response
 
-from .base import OWASPDependencyCheckJSON, OWASPDependencyCheckJSONBase
+from .base import OWASPDependencyCheckJSONBase
+from .json_types import OWASPDependencyCheckJSON
 
 
 class OWASPDependencyCheckJSONSourceUpToDateness(OWASPDependencyCheckJSONBase, TimePassedCollector):

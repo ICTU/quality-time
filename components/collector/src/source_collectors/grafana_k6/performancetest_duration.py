@@ -7,7 +7,7 @@ from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import Value
 from model import Entities, SourceResponses
 
-from .base import SummaryJSON
+from .json_types import SummaryJSON
 
 
 class GrafanaK6PerformanceTestDuration(JSONFileSourceCollector):

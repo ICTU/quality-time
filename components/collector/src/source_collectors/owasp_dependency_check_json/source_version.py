@@ -7,7 +7,8 @@ from packaging.version import Version
 from base_collectors import VersionCollector
 from collector_utilities.type import Response
 
-from .base import OWASPDependencyCheckJSON, OWASPDependencyCheckJSONBase
+from .base import OWASPDependencyCheckJSONBase
+from .json_types import OWASPDependencyCheckJSON
 
 
 class OWASPDependencyCheckJSONSourceVersion(OWASPDependencyCheckJSONBase, VersionCollector):

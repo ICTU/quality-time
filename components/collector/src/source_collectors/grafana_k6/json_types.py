@@ -1,4 +1,4 @@
-"""Base classes for Grafana k6 collectors."""
+"""Grafana k6 JSON types."""
 
 from typing import Literal, NotRequired
 

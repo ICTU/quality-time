@@ -52,7 +52,7 @@ class GitLabPipelineDurationTest(GitLabTestCase):
         response = await self.collect()
         self.assert_measurement(response, value="10", landing_url=self.landing_url)
 
-    @patch("source_collectors.gitlab.base.datetime", MOCK_DATETIME)
+    @patch("source_collectors.gitlab.json_types.datetime", MOCK_DATETIME)
     async def test_duration_without_updated(self):
         """Test that start and now are used when the pipeline has no updated datetime."""
         del self.pipeline_json[0]["updated_at"]

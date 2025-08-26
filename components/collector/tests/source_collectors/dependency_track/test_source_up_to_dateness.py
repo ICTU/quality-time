@@ -4,11 +4,8 @@ from datetime import datetime, timedelta
 
 from dateutil.tz import tzlocal
 
-from source_collectors.dependency_track.base import (
-    DependencyTrackBase,
-    DependencyTrackMetrics,
-    DependencyTrackProject,
-)
+from source_collectors.dependency_track.base import DependencyTrackBase
+from source_collectors.dependency_track.json_types import DependencyTrackMetrics, DependencyTrackProject
 
 from .base_test import DependencyTrackTestCase
 

@@ -6,7 +6,8 @@ from collector_utilities.functions import sha1_hash, stabilize
 from collector_utilities.type import JSON
 from model import Entities, Entity
 
-from .base import Dependency, OWASPDependencyCheckJSON, OWASPDependencyCheckJSONBase
+from .base import OWASPDependencyCheckJSONBase
+from .json_types import Dependency, OWASPDependencyCheckJSON
 
 
 class OWASPDependencyCheckJSONDependencies(OWASPDependencyCheckJSONBase):

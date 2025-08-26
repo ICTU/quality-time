@@ -1,32 +1,14 @@
 """Dependency-Track base collector."""
 
 from collections.abc import AsyncIterator
-from typing import Literal, NotRequired, TypedDict, cast
+from typing import Literal, cast
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import add_query, match_string_or_regular_expression
 from collector_utilities.type import URL, Response
 from model import Entity, SourceResponses
 
-
-class DependencyTrackMetrics(TypedDict, total=False):
-    """Project metrics as returned by Dependency-Track."""
-
-    # Last occurrence is a Unix timestamp of the datetime of the last BOM analysis
-    lastOccurrence: int
-
-
-class DependencyTrackProject(TypedDict):
-    """Project as returned by Dependency-Track."""
-
-    # Last BOM import is a Unix timestamp, despite the Dependency-Tracker Swagger docs saying it's a datetime string
-    # See https://github.com/DependencyTrack/dependency-track/issues/840
-    lastBomImport: int
-    name: str
-    uuid: str
-    isLatest: NotRequired[bool]
-    metrics: NotRequired[DependencyTrackMetrics]
-    version: NotRequired[str]
+from .json_types import DependencyTrackProject
 
 
 class DependencyTrackBase(SourceCollector):
