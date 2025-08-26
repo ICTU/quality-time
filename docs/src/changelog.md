@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Add support for OWASP Dependency-Check JSON reports as source for the 'dependencies', 'security warnings', 'source up-to-dateness', and 'source version' metrics. Closes [#11851](https://github.com/ICTU/quality-time/issues/11851).
+
 ## v5.39.0 - 2025-08-21
 
 ### Fixed
@@ -680,7 +686,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Added
 
 - Add a metric for tracking todo and fixme comments in source code. Closes [#5630](https://github.com/ICTU/quality-time/issues/5630).
-- Support version 4.0 of the OWASP Dependency Check DTD (OWASP Dependency Check version 9). Closes [#7655](https://github.com/ICTU/quality-time/issues/7655).
+- Support version 4.0 of the OWASP Dependency-Check DTD (OWASP Dependency-Check version 9). Closes [#7655](https://github.com/ICTU/quality-time/issues/7655).
 
 ### Changed
 
@@ -919,7 +925,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 - Tags were not printed correctly in the reference manual. Fixes [#5282](https://github.com/ICTU/quality-time/issues/5282).
 - Prevent users from entering negative desired response times. Fixes [#5328](https://github.com/ICTU/quality-time/issues/5328).
 - Update default value in calendar date source upon restart of external server. Partially fixes [#5448](https://github.com/ICTU/quality-time/issues/5448).
-- In addition to version 3.1, also support version 3.0 of the OWASP Dependency Check XSD. Closes [#5586](https://github.com/ICTU/quality-time/issues/5586).
+- In addition to version 3.1, also support version 3.0 of the OWASP Dependency-Check XSD. Closes [#5586](https://github.com/ICTU/quality-time/issues/5586).
 
 ### Added
 
@@ -954,7 +960,7 @@ If your currently installed *Quality-time* version is v4.0.0 or older, please re
 - When using cloc as source for the LOC (Size) metric with the `--by-file` option, *Quality-time* can filter the cloc data by filename. When also setting the scale of the LOC metric to percentage, this enables tracking the percentage of test code. Closes [#4958](https://github.com/ICTU/quality-time/issues/4958).
 - Make the description of subjects, metrics, and sources in the UI of *Quality-time* link to the relevant documentation on Read-The-Docs. Closes [#5121](https://github.com/ICTU/quality-time/issues/5121).
 - Make the web page title reflect the report title. Closes [#5129](https://github.com/ICTU/quality-time/issues/5129).
-- Support version 3.1 of the OWASP Dependency Check XSD. Closes [#5251](https://github.com/ICTU/quality-time/issues/5251).
+- Support version 3.1 of the OWASP Dependency-Check XSD. Closes [#5251](https://github.com/ICTU/quality-time/issues/5251).
 
 ### Changed
 
@@ -1302,7 +1308,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 - If a metric did not have sources (with all mandatory parameters configured), the status of issues would not be collected. Fixes [#3221](https://github.com/ICTU/quality-time/issues/3221).
 - Allow for specifying zip files as Gatling source. Fixes [#3226](https://github.com/ICTU/quality-time/issues/3226).
-- Remove spaces from file paths in OWASP Dependency Check security warnings before applying the regular expressions to remove variable parts from the file paths. Unfortunately, this may change the key of some OWASP Dependency Check security warnings, causing the status (false positive, won't fix, etc.) of the warning in *Quality-time* to be lost. Fixed as part of [#3259](https://github.com/ICTU/quality-time/issues/3259).
+- Remove spaces from file paths in OWASP Dependency-Check security warnings before applying the regular expressions to remove variable parts from the file paths. Unfortunately, this may change the key of some OWASP Dependency-Check security warnings, causing the status (false positive, won't fix, etc.) of the warning in *Quality-time* to be lost. Fixed as part of [#3259](https://github.com/ICTU/quality-time/issues/3259).
 
 ### Changed
 
@@ -1313,7 +1319,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 ### Added
 
 - Add a button to the settings panel to collapse all expanded metrics at once. Closes [#3133](https://github.com/ICTU/quality-time/issues/3133).
-- Show the key of OWASP Dependency Check security warnings in the measurement entity details to allow for verification of the regular expressions used to remove variable parts from file paths. Closes [#3259](https://github.com/ICTU/quality-time/issues/3259).
+- Show the key of OWASP Dependency-Check security warnings in the measurement entity details to allow for verification of the regular expressions used to remove variable parts from file paths. Closes [#3259](https://github.com/ICTU/quality-time/issues/3259).
 
 ## v3.31.0 - 2022-01-13
 
@@ -1339,7 +1345,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 - Explain in the [documentation](https://quality-time.readthedocs.io/en/latest/usage.html#via-the-api) how to include the correct report URL in the footer when exporting reports to PDF via the API. Closes [#2954](https://github.com/ICTU/quality-time/issues/2954).
 - In addition to the 90th percentile, also allow for evaluating the 95th and 99th percentile transaction response time when using JMeter CSV or JSON as source for the 'slow transactions' metric. Closes [#3084](https://github.com/ICTU/quality-time/issues/3084).
 - Add support for Gatling as source for the 'slow transactions', 'tests', 'performancetest duration', 'source up-to-dateness', and 'source version' metrics. Closes [#3085](https://github.com/ICTU/quality-time/issues/3085), [#3086](https://github.com/ICTU/quality-time/issues/3086), [#3087](https://github.com/ICTU/quality-time/issues/3087), [#3088](https://github.com/ICTU/quality-time/issues/3088), and [#3089](https://github.com/ICTU/quality-time/issues/3089).
-- The dependencies in OWASP Dependency Check reports do not always have unique keys. However, *Quality-time* needs dependencies to be uniquely identifiable to detect whether the dependencies change between measurements. If needed, *Quality-time* generates keys for dependencies itself, based on the dependencies' file paths. If for some reason the file path changes between measurements, however, the key changes as well. To remediate this, allow for ignoring parts of file paths using regular expressions, when measuring 'dependencies' or 'security warnings' with OWASP Dependency Check as source. Closes [#3099](https://github.com/ICTU/quality-time/issues/3099).
+- The dependencies in OWASP Dependency-Check reports do not always have unique keys. However, *Quality-time* needs dependencies to be uniquely identifiable to detect whether the dependencies change between measurements. If needed, *Quality-time* generates keys for dependencies itself, based on the dependencies' file paths. If for some reason the file path changes between measurements, however, the key changes as well. To remediate this, allow for ignoring parts of file paths using regular expressions, when measuring 'dependencies' or 'security warnings' with OWASP Dependency-Check as source. Closes [#3099](https://github.com/ICTU/quality-time/issues/3099).
 - After changing multiple source parameters at once, show a toaster message with the number of sources updated. Closes [#3137](https://github.com/ICTU/quality-time/issues/3137).
 - In the metric trend view (selectable via the hamburger menu), allow for setting the interval between dates to one day, in addition to one or more weeks. Closes [#3182](https://github.com/ICTU/quality-time/issues/3182).
 - Allow for sorting the metrics when displayed in the trend view. Closes [#3207](https://github.com/ICTU/quality-time/issues/3207).
@@ -1458,7 +1464,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Fixed
 
-- In addition to "low", "medium", "high", and "critical", the OWASP Dependency Check may report vulnerabilities with severity "moderate". Allow for using this severity for filtering vulnerabilities. Fixes [#2337](https://github.com/ICTU/quality-time/issues/2337).
+- In addition to "low", "medium", "high", and "critical", the OWASP Dependency-Check may report vulnerabilities with severity "moderate". Allow for using this severity for filtering vulnerabilities. Fixes [#2337](https://github.com/ICTU/quality-time/issues/2337).
 - When measuring 'missing metrics', count missing metric types per subject instead of per report. Fixes [#2352](https://github.com/ICTU/quality-time/issues/2352).
 - Add subject name to metrics in MS Teams notifications, so it's clear which metric changed status when different subjects have metrics with the same name. Fixes [#2353](https://github.com/ICTU/quality-time/issues/2353).
 - After copying a metric, subject, or report, the same item could not be copied again. Fixes [#2364](https://github.com/ICTU/quality-time/issues/2364).
@@ -1637,7 +1643,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 - The frontend would reload the change log every time the server notified the frontend about the number of measurements, causing unnecessary updates of the UI. Fixes [#1555](https://github.com/ICTU/quality-time/issues/1555).
 - When the user opens a report in the frontend, don't send unneeded data to the frontend. Fixes [#1764](https://github.com/ICTU/quality-time/issues/1764).
 - Don't crash the notifier when a metric has an unknown (white) status. Fixes [#1802](https://github.com/ICTU/quality-time/issues/1802).
-- Some dependencies in the OWASP Dependency Check report have no hash. In those cases *Quality-time* would create a hash based on the file path of the dependency. However, file paths aren't necessarily unique across dependencies. Add the file name to the hash to make it unique. Fixes [#1819](https://github.com/ICTU/quality-time/issues/1819).
+- Some dependencies in the OWASP Dependency-Check report have no hash. In those cases *Quality-time* would create a hash based on the file path of the dependency. However, file paths aren't necessarily unique across dependencies. Add the file name to the hash to make it unique. Fixes [#1819](https://github.com/ICTU/quality-time/issues/1819).
 
 ### Added
 
@@ -1695,7 +1701,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Removed
 
-- Remove support for the source "OWASP Dependency Check Jenkins plugin". Fixes [#1666](https://github.com/ICTU/quality-time/issues/1666).
+- Remove support for the source "OWASP Dependency-Check Jenkins plugin". Fixes [#1666](https://github.com/ICTU/quality-time/issues/1666).
 
 ### Fixed
 
@@ -1805,7 +1811,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Added
 
-- Support version 2.4 and 2.5 of the OWASP Dependency Check XSD. Closes [#1460](https://github.com/ICTU/quality-time/issues/1460).
+- Support version 2.4 and 2.5 of the OWASP Dependency-Check XSD. Closes [#1460](https://github.com/ICTU/quality-time/issues/1460).
 - Allow for hiding the trend, target, source, comment, and tags columns in the metric tables. This can be done through the 'hamburger' menu on the top left side of each metric table. Closes [#1464](https://github.com/ICTU/quality-time/issues/1464).
 
 ### Fixed
@@ -1953,7 +1959,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 - Add [cloc](https://github.com/AlDanial/cloc) as source for the 'size' metric. As opposed to SonarQube, cloc makes it easy to exclude certain programming languages from the size measurement. Closes [#460](https://github.com/ICTU/quality-time/issues/460).
 - When using Azure DevOps as source for the 'tests' metric, allow for filtering tests by test run name and show the test runs as detail information. Closes [#1215](https://github.com/ICTU/quality-time/issues/1215).
 - Add a button to the menu bar to scroll to the dashboard. Closes [#1231](https://github.com/ICTU/quality-time/issues/1231).
-- Add OWASP Dependency Check as source for the 'dependencies' metric. Closes [#1239](https://github.com/ICTU/quality-time/issues/1239).
+- Add OWASP Dependency-Check as source for the 'dependencies' metric. Closes [#1239](https://github.com/ICTU/quality-time/issues/1239).
 
 ### Changed
 
@@ -1967,7 +1973,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 - When using Jira as source for the 'ready user story points' metric, changing the status of a user story in the details tab didn't work. Fixes [#1230](https://github.com/ICTU/quality-time/issues/1230).
 - When using Jira as source for the 'ready user story points' metric, changing the status of a user story in the details tab to won't fix, false positive or fixed would reduce the total number of story points with one instead of the number of story points of the ignored user story. Fixes [#1233](https://github.com/ICTU/quality-time/issues/1233).
 - The `git clone` URL in the [README.md](https://github.com/ICTU/quality-time/blob/master/README.md) required people to have a public SSH key added to their GitHub account. Replaced with a HTTPS URL which doesn't have this issue. Fixes [#1235](https://github.com/ICTU/quality-time/issues/1235).
-- When using the OWASP Dependency Check as source for the 'security warnings' metric, changing the status of a warning in the details tab didn't work. Fixes [#1238](https://github.com/ICTU/quality-time/issues/1238).
+- When using the OWASP Dependency-Check as source for the 'security warnings' metric, changing the status of a warning in the details tab didn't work. Fixes [#1238](https://github.com/ICTU/quality-time/issues/1238).
 - The trend sparkline graphs, showing the trend over the last week, would always use the full width, even when there was less than a week of data. Fixes [#1241](https://github.com/ICTU/quality-time/issues/1241).
 
 ## v2.3.2 - 2020-06-10
@@ -2281,7 +2287,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Fixed
 
-- Determining the encoding of large OWASP Dependency Check XML reports was slow. Fixes [#803](https://github.com/ICTU/quality-time/issues/803).
+- Determining the encoding of large OWASP Dependency-Check XML reports was slow. Fixes [#803](https://github.com/ICTU/quality-time/issues/803).
 
 ## v0.19.0 - 2019-11-17
 
@@ -2329,7 +2335,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 ### Added
 
 - Allow for ignoring Jenkins jobs by name or regular expression. Closes [#747](https://github.com/ICTU/quality-time/issues/747).
-- For sources that are comprised of static reports, it is now possible to specify a zip file with reports as URL. *Quality-time* will unzip the file before processing its contents as normal. So far, this has been implemented for Axe CSV reports, Bandit JSON reports, JaCoCo XML reports, JUnit XML reports, NCover HTML reports, OJAudit XML reports, OpenVAS XML reports, OWASP Dependency Check XML reports, OWASP ZAP XML reports, Performancetest-runner HTML reports, Pyup.io Safety JSON reports, and Robot Framework XML reports. Closes [#748](https://github.com/ICTU/quality-time/issues/748).
+- For sources that are comprised of static reports, it is now possible to specify a zip file with reports as URL. *Quality-time* will unzip the file before processing its contents as normal. So far, this has been implemented for Axe CSV reports, Bandit JSON reports, JaCoCo XML reports, JUnit XML reports, NCover HTML reports, OJAudit XML reports, OpenVAS XML reports, OWASP Dependency-Check XML reports, OWASP ZAP XML reports, Performancetest-runner HTML reports, Pyup.io Safety JSON reports, and Robot Framework XML reports. Closes [#748](https://github.com/ICTU/quality-time/issues/748).
 
 ## v0.15.0 - 2019-10-30
 
@@ -2503,7 +2509,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 ### Fixed
 
 - When generating keys for OWASP ZAP security warnings, strip any hashes from the application URLs to ensure the keys are stable. Fixes [#541](https://github.com/ICTU/quality-time/issues/541).
-- In addition to version 2.0 also support version 2.1 and 2.2 of the OWASP Dependency Check XML format. Fixes [#543](https://github.com/ICTU/quality-time/issues/543).
+- In addition to version 2.0 also support version 2.1 and 2.2 of the OWASP Dependency-Check XML format. Fixes [#543](https://github.com/ICTU/quality-time/issues/543).
 
 ## v0.7.0 - 2019-08-14
 
@@ -2512,7 +2518,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 - Users can now select a suggestion and edit it in input fields with suggestions. Closes [#197](https://github.com/ICTU/quality-time/issues/197).
 - Users can now login with both their canonical LDAP name as well as with their LDAP user id. Closes [#492](https://github.com/ICTU/quality-time/issues/492).
 - Allow for using (a safe subset of) HTML and URLs in metric comment fields. Closes [#511](https://github.com/ICTU/quality-time/issues/511).
-- Added OWASP Dependency Check Jenkins plugin as possible source for the security warnings metric. Closes [#535](https://github.com/ICTU/quality-time/issues/535).
+- Added OWASP Dependency-Check Jenkins plugin as possible source for the security warnings metric. Closes [#535](https://github.com/ICTU/quality-time/issues/535).
 
 ### Fixed
 

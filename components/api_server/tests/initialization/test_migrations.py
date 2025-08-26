@@ -350,7 +350,7 @@ class UnmergedToInactiveBranchesTest(MigrationTestCase):
     """Unit tests for the unmerged to inactive branches migration."""
 
     def setUp(self):
-        """Create test fixture."""
+        """Create test fixtures."""
         super().setUp()
         self.sources = {SOURCE_ID: {"type": "gitlab", "parameters": {"project": "namespace/project"}}}
         self.expected_sources = {
@@ -392,7 +392,7 @@ class ProjectToProjectOrGroupParameterTest(MigrationTestCase):
     """Unit tests for the project to project-or-group GitLab parameter migration."""
 
     def setUp(self):
-        """Create test fixture."""
+        """Create test fixtures."""
         super().setUp()
         self.sources = {
             SOURCE_ID: {"type": "gitlab", "parameters": {"project": "namespace/project"}},
@@ -419,3 +419,34 @@ class ProjectToProjectOrGroupParameterTest(MigrationTestCase):
         ]
         perform_migrations(self.database)
         self.database.reports.replace_one.assert_not_called()
+
+
+class OWASPDependencyCheckToOWASPDependencyCheckXMLTest(MigrationTestCase):
+    """Unit tests for the OWASP Dependency-Check to OWASP Dependency-Check XML migration."""
+
+    def setUp(self):
+        """Create test fixtures."""
+        super().setUp()
+        self.sources = {SOURCE_ID: {"type": "owasp_dependency_check", "parameters": {"url": "https://report"}}}
+        self.expected_sources = {
+            SOURCE_ID: {"type": "owasp_dependency_check_xml", "parameters": {"url": "https://report"}}
+        }
+
+    def test_report_with_owasp_dependency_check_source(self):
+        """Test that a OWASP Dependency-Check source is migrated."""
+        for metric_type in ("dependencies", "security_warnings", "source_up_to_dateness", "source_version"):
+            with self.subTest(metric_type=metric_type):
+                existing_report = self.existing_report(metric_type=metric_type, sources=self.sources)
+                self.database.reports.find.return_value = [existing_report]
+                perform_migrations(self.database)
+                inserted_report = self.inserted_report(metric_type="dependencies", sources=self.expected_sources)
+                self.check_inserted_report(inserted_report)
+
+    def test_idempotency(self):
+        """Test that a migrated OWASP Dependency-Check source is unchanged."""
+        for metric_type in ("dependencies", "security_warnings", "source_up_to_dateness", "source_version"):
+            with self.subTest(metric_type=metric_type):
+                existing_report = self.existing_report(metric_type=metric_type, sources=self.expected_sources)
+                self.database.reports.find.return_value = [existing_report]
+                perform_migrations(self.database)
+                self.database.reports.replace_one.assert_not_called()

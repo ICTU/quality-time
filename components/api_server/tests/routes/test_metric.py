@@ -70,7 +70,7 @@ class PostMetricAttributeTestCase(MetricTestCase):
                                 "accept_debt": False,
                                 "tags": [tag.value for tag in DATA_MODEL.metrics["security_warnings"].tags],
                                 "sources": {
-                                    SOURCE_ID: {"type": "owasp_dependency_check"},
+                                    SOURCE_ID: {"type": "owasp_dependency_check_xml"},
                                     SOURCE_ID2: {"type": "snyk"},
                                 },
                             },
@@ -178,7 +178,7 @@ class PostMetricAttributeTest(PostMetricAttributeTestCase):
         updated_report = self.updated_report()
         updated_metric = updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]
         self.assertEqual(
-            {SOURCE_ID: {"type": "owasp_dependency_check"}, SOURCE_ID2: {"type": "snyk"}},
+            {SOURCE_ID: {"type": "owasp_dependency_check_xml"}, SOURCE_ID2: {"type": "snyk"}},
             updated_metric["sources"],
         )
         self.assertEqual(["maintainability", "user-supplied tag"], updated_metric["tags"])

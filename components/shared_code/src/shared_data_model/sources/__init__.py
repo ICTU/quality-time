@@ -28,7 +28,7 @@ from .ncover import NCOVER
 from .npm import NPM
 from .ojaudit import OJAUDIT
 from .openvas import OPENVAS
-from .owasp_dependency_check import OWASP_DEPENDENCY_CHECK
+from .owasp_dependency_check import OWASP_DEPENDENCY_CHECK_JSON, OWASP_DEPENDENCY_CHECK_XML
 from .owasp_zap import OWASP_ZAP
 from .performancetest_runner import PERFORMANCETEST_RUNNER
 from .pip import PIP
@@ -80,7 +80,8 @@ SOURCES = {
     "npm": NPM,
     "ojaudit": OJAUDIT,
     "openvas": OPENVAS,
-    "owasp_dependency_check": OWASP_DEPENDENCY_CHECK,
+    "owasp_dependency_check_xml": OWASP_DEPENDENCY_CHECK_XML,
+    "owasp_dependency_check_json": OWASP_DEPENDENCY_CHECK_JSON,
     "owasp_zap": OWASP_ZAP,
     "performancetest_runner": PERFORMANCETEST_RUNNER,
     "pip": PIP,

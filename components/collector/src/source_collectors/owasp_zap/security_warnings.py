@@ -7,7 +7,7 @@ from xml.etree.ElementTree import Element  # nosec # Element is not available fr
 from shared.utils.functions import md5_hash
 
 from base_collectors import XMLFileSourceCollector
-from collector_utilities.functions import hashless, parse_source_response_xml
+from collector_utilities.functions import hashless, parse_source_response_xml, stabilize
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
@@ -51,11 +51,8 @@ class OWASPZAPSecurityWarnings(XMLFileSourceCollector):
 
     def __stable_url(self, url: URL) -> URL:
         """Return the url without the variable parts."""
-        reg_exps = self._parameter("variable_url_regexp")
-        stable_url = cast(str, url)
-        for reg_exp in reg_exps:
-            stable_url = re.sub(reg_exp, "variable-part-removed", stable_url)
-        return URL(stable_url)
+        reg_exps = cast(list[str], self._parameter("variable_url_regexp"))
+        return URL(stabilize(url, reg_exps, "variable-part-removed"))
 
     @staticmethod
     async def __alerts(responses: SourceResponses, risks: list[str]) -> list[Element]:

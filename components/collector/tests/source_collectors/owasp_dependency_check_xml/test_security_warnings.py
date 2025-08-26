@@ -1,12 +1,12 @@
-"""Unit tests for the OWASP Dependency Check security warnings collector."""
+"""Unit tests for the OWASP Dependency-Check XML security warnings collector."""
 
-from source_collectors.owasp_dependency_check.dependencies import OWASPDependencyCheckBase
+from source_collectors.owasp_dependency_check_xml.base import OWASPDependencyCheckXMLBase
 
-from .base import OWASPDependencyCheckTestCase
+from .base import OWASPDependencyCheckXMLTestCase
 
 
-class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
-    """Unit tests for the OWASP Dependency Check security warnings collector."""
+class OWASPDependencyCheckXMLSecurityWarningsTest(OWASPDependencyCheckXMLTestCase):
+    """Unit tests for the OWASP Dependency-Check XML security warnings collector."""
 
     METRIC_TYPE = "security_warnings"
 
@@ -16,7 +16,7 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
         expected_entities = [
             {
                 "key": "12345",
-                "url": "https://owasp_dependency_check#l1_12345",
+                "url": "https://owasp_dependency_check_xml#l1_12345",
                 "highest_severity": "Medium",
                 "nr_vulnerabilities": "2",
                 "file_name": self.file_name,
@@ -47,7 +47,7 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
         expected_entities = [
             {
                 "key": "12345",
-                "url": "https://owasp_dependency_check#l1_12345",
+                "url": "https://owasp_dependency_check_xml#l1_12345",
                 "highest_severity": "Low",
                 "nr_vulnerabilities": "1",
                 "file_name": self.file_name,
@@ -114,10 +114,8 @@ class OWASPDependencyCheckSecurityWarningsTest(OWASPDependencyCheckTestCase):
         <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd">
         </analysis>"""
         response = await self.collect(get_request_text=xml)
-        self.assert_measurement(
-            response,
-            parse_error=f"""The XML root element should be one of \
-"{OWASPDependencyCheckBase.allowed_root_tags}" but is \
-"{{https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd}}analysis"\
-""",
+        expected_error = (
+            f'The XML root element should be one of "{OWASPDependencyCheckXMLBase.allowed_root_tags}" but is '
+            '"{https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd}analysis"'
         )
+        self.assert_measurement(response, parse_error=expected_error)

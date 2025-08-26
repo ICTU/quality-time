@@ -1,17 +1,17 @@
-"""OWASP Dependency Check dependencies collector."""
+"""OWASP Dependency-Check XML dependencies collector."""
 
-import re
+from typing import cast
 from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
-from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
+from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash, stabilize
 from collector_utilities.type import Namespaces
 from model import Entities, Entity, SourceResponses
 
-from .base import OWASPDependencyCheckBase
+from .base import OWASPDependencyCheckXMLBase
 
 
-class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
-    """Collector to get the dependencies from the OWASP Dependency Check XML report."""
+class OWASPDependencyCheckXMLDependencies(OWASPDependencyCheckXMLBase):
+    """Collector to get the dependencies from the OWASP Dependency-Check XML report."""
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the dependencies from the XML."""
@@ -40,7 +40,7 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
     ) -> Entity:
         """Parse the entity from the dependency."""
         file_path = dependency.findtext("ns:filePath", default="", namespaces=namespaces)
-        stable_file_path = self.__stable_file_path(file_path.strip())
+        stable_file_path = stabilize(file_path.strip(), cast(list[str], self._parameter("variable_file_path_regexp")))
         file_name = dependency.findtext("ns:fileName", default="", namespaces=namespaces)
         sha1 = dependency.findtext("ns:sha1", namespaces=namespaces)
         # We can only generate an entity landing url if a sha1 is present in the XML, but unfortunately not all
@@ -54,10 +54,3 @@ class OWASPDependencyCheckDependencies(OWASPDependencyCheckBase):
             file_name=file_name,
             url=entity_landing_url,
         )
-
-    def __stable_file_path(self, file_path: str) -> str:
-        """Return a stable file path by excluding variable parts specified by the user."""
-        reg_exps = self._parameter("variable_file_path_regexp")
-        for reg_exp in reg_exps:
-            file_path = re.sub(reg_exp, "", file_path)
-        return file_path

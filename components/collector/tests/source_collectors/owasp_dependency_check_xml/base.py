@@ -1,12 +1,12 @@
-"""Base classes for OWASP dependency check collector unit tests."""
+"""Base classes for OWASP Dependency-Check XML collector unit tests."""
 
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
-class OWASPDependencyCheckTestCase(SourceCollectorTestCase):
-    """Base class for OWASP dependency check collector unit tests."""
+class OWASPDependencyCheckXMLTestCase(SourceCollectorTestCase):
+    """Base class for OWASP Dependency-Check XML collector unit tests."""
 
-    SOURCE_TYPE = "owasp_dependency_check"
+    SOURCE_TYPE = "owasp_dependency_check_xml"
 
     def setUp(self):
         """Extend to set up test data."""

@@ -42,7 +42,7 @@ Feature: measurement
 
   Scenario: the metric has a version number scale
     Given an existing metric with type "source_version"
-    And an existing source with type "owasp_dependency_check"
+    And an existing source with type "owasp_dependency_check_xml"
     When the collector measures "1.2.3"
     And the client changes the metric target to "1.2.2"
     Then the metric latest_measurement.version_number.value is "1.2.3"
@@ -50,7 +50,7 @@ Feature: measurement
 
  Scenario: the metric has a version number scale, but the measurement target is invalid
     Given an existing metric with type "source_version"
-    And an existing source with type "owasp_dependency_check"
+    And an existing source with type "owasp_dependency_check_xml"
     When the collector measures "2.3.4"
     And the client changes the metric target to "invalid version"
     Then the metric status is "target_met"
