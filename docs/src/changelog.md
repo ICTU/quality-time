@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
+- When creating a Jira issue from Quality-time, include source landing URLs in the issue instead of source API URLs if possible. Closes [#8283](https://github.com/ICTU/quality-time/issues/8283).
 - Add support for OWASP Dependency-Check JSON reports as source for the 'dependencies', 'security warnings', 'source up-to-dateness', and 'source version' metrics. Closes [#11851](https://github.com/ICTU/quality-time/issues/11851).
 
 ## v5.39.0 - 2025-08-21
