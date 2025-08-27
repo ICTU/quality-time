@@ -209,7 +209,7 @@ def create_issue_text(metric: Metric, measured_value: Value) -> tuple[str, str]:
     """Create an issue description for the metric."""
     metric_url = dict(bottle.request.json)["metric_url"]
     source_names = ", ".join([source.name or DATA_MODEL.sources[str(source.type)].name for source in metric.sources])
-    source_urls = [url for url in [source.get("parameters", {}).get("url") for source in metric.sources] if url]
+    source_urls = [url for url in [get_source_url(source) for source in metric.sources] if url]
     percentage = "%" if metric.scale() == "percentage" else ""
     issue_summary = f"Fix {measured_value}{percentage} {metric.unit} from {source_names}"
     source_url_str = f"\nPlease go to {', '.join(source_urls)} for more details." if source_urls else ""
@@ -218,3 +218,9 @@ def create_issue_text(metric: Metric, measured_value: Value) -> tuple[str, str]:
         f"{measured_value}{percentage} {metric.unit} from {source_names}.{source_url_str}\n"
     )
     return issue_summary, issue_description
+
+
+def get_source_url(source: dict[str, dict[str, str]]) -> str:
+    """Get the URL from the source. Prefer landing URL over API URL."""
+    parameters = source.get("parameters", {})
+    return parameters.get("landing_url", "") or parameters.get("url", "")

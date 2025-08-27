@@ -613,6 +613,19 @@ class MetricIssueTest(DataModelTestCase):
         self.assert_issue_inserted()
 
     @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
+    def test_add_metric_issue_with_landing_url(self, requests_post):
+        """Test that the metric landing URL is used if available."""
+        self.sources[SOURCE_ID]["parameters"]["landing_url"] = "https://zap/landing"
+        description = self.expected_json["fields"]["description"]
+        self.expected_json["fields"]["description"] = description.replace("https://zap", "https://zap/landing")
+        response = Mock()
+        response.json.return_value = {"key": "FOO-42"}
+        requests_post.return_value = response
+        self.assertEqual({"ok": True, "issue_url": self.ISSUE_URL}, add_metric_issue(METRIC_ID, self.database))
+        self.assert_issue_posted(requests_post)
+        self.assert_issue_inserted()
+
+    @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
     def test_add_metric_issue_with_percentage_scale(self, requests_post):
         """Test that an issue with the percentage scale can be added to the issue tracker."""
         self.measurement["percentage"] = {"status": "target_not_met", "value": "21"}
