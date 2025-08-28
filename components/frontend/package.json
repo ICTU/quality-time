@@ -9,7 +9,7 @@
         "@mui/material": "^7.3.1",
         "@mui/x-date-pickers": "^8.10.2",
         "crypto-js": "^4.2.0",
-        "dayjs": "^1.11.13",
+        "dayjs": "^1.11.14",
         "history": "^5.3.0",
         "prop-types": "^15.8.1",
         "react": "^19.1.1",
