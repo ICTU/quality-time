@@ -175,7 +175,7 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
         entities = [
             self.create_entity(self.reports["reports"][0], "s1", "Software", "Subject 1", metric_type)
-            for metric_type in ("issues", "test_cases")
+            for metric_type in ("issues", "test_cases", "time_remaining")
         ]
         self.assert_measurement(response, entities=entities, value=str(len(entities)))
 

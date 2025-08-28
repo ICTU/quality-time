@@ -3,18 +3,10 @@
 from typing import TypedDict
 from urllib.parse import parse_qs, urlparse
 
-from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
-from .base import JiraBase
-
-
-class Board(TypedDict):
-    """Type for Jira boards."""
-
-    id: int
-    name: str
+from .base import JiraBoardBase
 
 
 class Points(TypedDict):
@@ -32,15 +24,15 @@ class Sprint(TypedDict):
     goal: str
 
 
-SprintPoints = dict[str, Points]
+type SprintPoints = dict[str, Points]
 
 
-class JiraVelocity(JiraBase):
+class JiraVelocity(JiraBoardBase):
     """Collector to get sprint velocity from Jira."""
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to pass the Greenhopper velocity chart API."""
-        board_id = await self.__board_id(urls[0])
+        board_id = await self._board_id(urls[0])
         api_url = URL(f"{urls[0]}/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId={board_id}")
         return await super()._get_source_responses(api_url)
 
@@ -97,22 +89,3 @@ class JiraVelocity(JiraBase):
         api_url = await self._api_url()
         board_id = parse_qs(urlparse(str(responses.api_url)).query)["rapidViewId"][0]
         return URL(f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=velocityChart")
-
-    async def __board_id(self, api_url: URL) -> str:
-        """Return the board id."""
-        last = False
-        start_at = 0
-        boards: list[Board] = []
-        while not last:
-            url = URL(f"{api_url}/rest/agile/1.0/board?startAt={start_at}")
-            response = (await super()._get_source_responses(url))[0]
-            json = await response.json()
-            boards.extend(json["values"])
-            start_at += json["maxResults"]
-            last = json["isLast"]
-        board_name_or_id = str(self._parameter("board")).lower()
-        matching_boards = [b for b in boards if board_name_or_id in (str(b["id"]), b["name"].lower().strip())]
-        if not matching_boards:
-            message = f"Could not find a Jira board with id or name '{board_name_or_id}' at {api_url}"
-            raise CollectorError(message)
-        return str(matching_boards[0]["id"])

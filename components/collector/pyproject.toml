@@ -41,7 +41,6 @@ line-length = 120
 src = [
     "src",
 ]
-
 lint.select = [
     "ALL",
 ]
