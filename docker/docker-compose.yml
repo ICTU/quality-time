@@ -91,8 +91,8 @@ services:
     environment:
       - PROXY_HOST=${PROXY_HOST:-www}
       - PROXY_PORT=${PROXY_PORT:-80}
-      - LC_ALL=${LC_ALL:-en_GB.UTF-8}  # Set the date format in the PDF export to DD-MM-YYYY
-      - TZ=${TZ:-Europe/Amsterdam}  # Make the PDF export use the correct timezone
+      - LC_ALL=${LC_ALL:-en_GB.UTF-8} # Set the date format in the PDF export to DD-MM-YYYY
+      - TZ=${TZ:-Europe/Amsterdam} # Make the PDF export use the correct timezone
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
 volumes:

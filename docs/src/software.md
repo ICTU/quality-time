@@ -41,7 +41,6 @@ For testing purposes there a few additional components:
 
 - A web server serving [test data](#test-data).
 - A [test LDAP server](#test-ldap-server).
-- A tool to administer users in the LDAP server (phpldapadmin).
 - A tool to view and edit the database contents (mongo-express).
 
 ## Frontend
@@ -467,11 +466,11 @@ Add the example file(s) to the [test data reports](https://github.com/ICTU/quali
 
 ## Test LDAP server
 
-A test LDAP server with test users is included for development and testing purposes. An admin interface (phpldapadmin) is included to administer users in this LDAP server.
+A test LDAP server with test users is included for development and testing purposes.
 
 ### Health check
 
-The test LDAP server container currently has no health check.
+The test LDAP server container has no health check.
 
 ### LDAP users
 
@@ -482,7 +481,7 @@ The LDAP database has two users:
 | Jane Doe | `janedoe@example.org` | `jadoe`  | `secret` |
 | John Doe | `johndoe@example.org` | `jodoe`  | `secret` |
 
-The `{ARGON2}` hashes for the `userPassword`s in the LDIF-files were generated using [argon2-cffi](https://github.com/hynek/argon2-cffi):
+The `{ARGON2}` hashes for the `userPassword`s in `components/testldap/bootstrap/data.ldif` were generated using [argon2-cffi](https://github.com/hynek/argon2-cffi):
 
 ```python
 >>> from argon2 import PasswordHasher
