@@ -41,7 +41,6 @@ For testing purposes there a few additional components:
 
 - A web server serving [test data](#test-data).
 - A [test LDAP server](#test-ldap-server).
-- A tool to administer users in the LDAP server (phpldapadmin).
 - A tool to view and edit the database contents (mongo-express).
 
 ## Frontend
@@ -443,7 +442,7 @@ This component contains test data for the example reports. The Docker image is p
 
 ### Health check
 
-The test data container currently has no health check.
+The test data container has no health check.
 
 ### Running the test data component
 
@@ -459,7 +458,7 @@ python3 -m http.server
 
 Add the example file(s) to the [test data reports](https://github.com/ICTU/quality-time/tree/master/components/testdata/reports) and update one or more of the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared/example-reports) in the shared code component.
 
-### Acknowledgements
+### Acknowledgements test data
 
 - `cobertura.xml` was copied from [https://github.com/Bachmann1234/diff_cover/blob/main/diff_cover/tests/fixtures/dotnet_coverage.xml](https://github.com/Bachmann1234/diff_cover/blob/0af9969e5f12420f90f29d8f2c94633b5d2a1aff/tests/fixtures/dotnet_coverage.xml).
 - `testng-results.xml` was copied from [https://github.com/richie-b/AtnApiTest/blob/master/test-output/testng-results.xml](https://github.com/richie-b/AtnApiTest/blob/c8ab706bcf386e471488ad94e627eedca613e73e/test-output/testng-results.xml).
@@ -467,11 +466,11 @@ Add the example file(s) to the [test data reports](https://github.com/ICTU/quali
 
 ## Test LDAP server
 
-A test LDAP server with test users is included for development and testing purposes. An admin interface (phpldapadmin) is included to administer users in this LDAP server.
+A test LDAP server with test users is included for development and testing purposes. It is based on [slapd-server-mock](https://github.com/docker-ThoTeam/slapd-server-mock).
 
 ### Health check
 
-The test LDAP server container currently has no health check.
+The test LDAP server container has no health check.
 
 ### LDAP users
 
@@ -482,7 +481,7 @@ The LDAP database has two users:
 | Jane Doe | `janedoe@example.org` | `jadoe`  | `secret` |
 | John Doe | `johndoe@example.org` | `jodoe`  | `secret` |
 
-The `{ARGON2}` hashes for the `userPassword`s in the LDIF-files were generated using [argon2-cffi](https://github.com/hynek/argon2-cffi):
+The `{ARGON2}` hashes for the `userPassword`s in `components/testldap/bootstrap/data.ldif` were generated using [argon2-cffi](https://github.com/hynek/argon2-cffi):
 
 ```python
 >>> from argon2 import PasswordHasher

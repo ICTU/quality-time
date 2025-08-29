@@ -12,6 +12,16 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Changed
+
+- The Docker image used for running a test LDAP server (bitnami/openldap) while developing Quality-time is deprecated. Replace it with a Debian image with OpenLDAP. Closes [#11865](https://github.com/ICTU/quality-time/issues/11865).
+
+### Removed
+
+- Remove the Docker image (osixia/phpldapadmin:0.9.0) for managing LDAP data from the Quality-time Docker composition. The image is not maintained. Since the tool was only meant for testing but was hardly ever used, it is not replaced.
+
 ## v5.40.0 - 2025-08-29
 
 ### Added

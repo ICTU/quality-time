@@ -1,5 +1,5 @@
 # Extra services and overridden parameters for testing in a CI-environment.
-# Mongo-express and PHPLDAPAdmin are not started.
+# Mongo-express is not started.
 
 services:
   www:
@@ -27,13 +27,7 @@ services:
     ports:
       - "27017:27017"
   ldap:
-    image: bitnami/openldap:2.6.9
-    environment:
-      - LDAP_ADMIN_PASSWORD=admin
-      - LDAP_PORT_NUMBER=389
-      - LDAP_SKIP_DEFAULT_TREE=yes
-    volumes:
-      - "./ldap_ldifs:/ldifs"
+    build: ../components/testldap
     ports:
       - "389:389"
   renderer:
