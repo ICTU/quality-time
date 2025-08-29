@@ -329,6 +329,13 @@ class PostMetricAttributeTest(PostMetricAttributeTestCase):
         self.database.reports.insert_one.assert_not_called()
         self.assertEqual([METRIC_ID, METRIC_ID2], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
 
+    def test_post_position_index(self, request):
+        """Test that a metric can be moved to a specific index."""
+        request.json = {"position_index": 1}
+        self.assertEqual({"ok": True}, post_metric_attribute(METRIC_ID, "position_index", self.database))
+        self.database.reports.insert_one.assert_called_once()
+        self.assertEqual([METRIC_ID2, METRIC_ID], list(self.report["subjects"][SUBJECT_ID]["metrics"].keys()))
+
 
 @patch("bottle.request")
 class PostMetricDebtTest(PostMetricAttributeTestCase):
