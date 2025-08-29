@@ -89,6 +89,7 @@ from .jira.manual_test_duration import JiraManualTestDuration
 from .jira.manual_test_execution import JiraManualTestExecution
 from .jira.source_version import JiraSourceVersion
 from .jira.test_cases import JiraTestCases
+from .jira.time_remaining import JiraTimeRemaining
 from .jira.user_story_points import JiraUserStoryPoints
 from .jira.velocity import JiraVelocity
 from .jmeter_csv.performancetest_duration import JMeterCSVPerformanceTestDuration

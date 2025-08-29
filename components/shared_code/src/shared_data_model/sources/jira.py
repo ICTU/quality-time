@@ -44,6 +44,7 @@ ALL_JIRA_METRICS = [
     "manual_test_execution",
     "source_version",
     "test_cases",
+    "time_remaining",
     "user_story_points",
     "velocity",
 ]
@@ -58,6 +59,11 @@ JIRA = Source(
     name="Jira",
     description="Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project "
     "management.",
+    documentation={
+        "time_remaining": (
+            "Time remaining is the time until the end date of the active sprint of the configured Jira board."
+        )
+    },
     url=HttpUrl("https://www.atlassian.com/software/jira"),
     issue_tracker=True,
     parameters={
@@ -74,7 +80,7 @@ JIRA = Source(
                 "https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/",
             ),
             mandatory=True,
-            metrics=["velocity"],
+            metrics=["time_remaining", "velocity"],
         ),
         "jql": StringParameter(
             name="Issue query in JQL (Jira Query Language)",

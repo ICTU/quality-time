@@ -708,7 +708,7 @@ MP-4 above).
         addition=Addition.MIN,
         target="28",
         near_target="14",
-        sources=["calendar"],
+        sources=["calendar", "jira"],
     ),
     "todo_and_fixme_comments": Metric(
         name="Todo and fixme comments",
