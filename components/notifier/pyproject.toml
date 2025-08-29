@@ -1,6 +1,6 @@
 [project]
 name = "notifier"
-version = "5.40.0-rc.0"
+version = "5.40.0"
 requires-python = ">=3.13"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
