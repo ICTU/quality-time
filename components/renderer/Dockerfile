@@ -3,7 +3,7 @@ FROM node:24.6.0-alpine3.22
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
 
-RUN apk add --no-cache chromium=139.0.7258.138-r0
+RUN apk add --no-cache chromium=139.0.7258.154-r0
 
 WORKDIR /home/renderer
 COPY package*.json /home/renderer/
