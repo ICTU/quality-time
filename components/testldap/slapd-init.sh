@@ -28,7 +28,7 @@ make_snakeoil_certificate() {
     openssl req -subj "/CN=${LDAP_DOMAIN}" \
                 -new \
                 -newkey rsa:2048 \
-                -days 365 \
+                -days 3650 \
                 -nodes \
                 -x509 \
                 -keyout ${LDAP_SSL_KEY} \
@@ -39,7 +39,7 @@ make_snakeoil_certificate() {
 
 
 configure_features() {
-    echo "Configure custom attributes/extension/conf (MSAD extension, TLS, loging...)"
+    echo "Configure custom attributes/extension/conf (MSAD extension, TLS, logging...)"
     ldapmodify -Y EXTERNAL -H ldapi:/// -f ${BOOTSTRAP_DIR}/config.ldif -Q
 }
 
