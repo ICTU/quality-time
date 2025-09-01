@@ -31,7 +31,7 @@ wheels = [
 
 [[package]]
 name = "behave"
-version = "1.3.1"
+version = "1.3.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama" },
@@ -41,9 +41,9 @@ dependencies = [
     { name = "parse-type" },
     { name = "six" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/74/6f/7d7c3bacf3d2e3209a5db760f3625cb943c5f044d1d21d8dd33e54e69cdc/behave-1.3.1.tar.gz", hash = "sha256:2a1f3a2490242132c4daf0732d9b65c99be6fef1f787f97fd028ea5a402025ff", size = 887256, upload-time = "2025-08-11T18:54:50.208Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1d/78/80eb78386127e22470d2fb831b9105d8decce756851b8970a48dc33a033f/behave-1.3.2.tar.gz", hash = "sha256:a1ef97c9e05ca4c19e60302d07ee1092480d2632c2e96abb30bb69a08b1681fb", size = 889462, upload-time = "2025-08-29T21:30:47.72Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/53/52/25901596ed8d22eb235a5634ca70280c6b66c4477daa8aef914deb582183/behave-1.3.1-py2.py3-none-any.whl", hash = "sha256:71b2dc00664de83c3aad61c91e5b3051b7b860aa2053e24db4742edecb800d21", size = 222099, upload-time = "2025-08-11T18:54:48.166Z" },
+    { url = "https://files.pythonhosted.org/packages/0d/8b/35fc1456c1056fcf0a1378eda289775e1ff8842d7ce5ff372954aecbca48/behave-1.3.2-py2.py3-none-any.whl", hash = "sha256:c602d34a7050a19d2281ab86bbc64086308fd187aac94bc1cbc1eca255225e7a", size = 223205, upload-time = "2025-08-29T21:30:45.748Z" },
 ]
 
 [[package]]
@@ -284,7 +284,7 @@ tools = [
 requires-dist = [
     { name = "asserts", specifier = "==0.13.1" },
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.8.6" },
-    { name = "behave", specifier = "==1.3.1" },
+    { name = "behave", specifier = "==1.3.2" },
     { name = "coverage", marker = "extra == 'dev'", specifier = "==7.10.5" },
     { name = "fixit", marker = "extra == 'tools'", specifier = "==2.1.0" },
     { name = "gevent", specifier = "==25.8.1" },
