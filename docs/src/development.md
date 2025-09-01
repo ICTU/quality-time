@@ -49,10 +49,8 @@ The advantage of this scenario is that you don't need to rebuild the bespoke con
 Open a terminal and start the [standard containers](software.md#standard-components) and [test components](software.md#test-components) with docker compose:
 
 ```console
-docker compose up database ldap phpldapadmin mongo-express testdata
+docker compose up database ldap mongo-express testdata
 ```
-
-{index}`PHP-LDAP-admin` is served at [http://localhost:3890](http://localhost:3890) and can be used to inspect and edit the {index}`LDAP` database. Click login, check the "Anonymous" box and click "Authenticate" to login.
 
 {index}`Mongo-express` is served at [http://localhost:8081](http://localhost:8081) and can be used to inspect and edit the database contents.
 
@@ -573,4 +571,4 @@ Base images used in the Docker containers, and additionally installed software, 
 - [Proxy](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile): the Nginx base image.
 - [Renderer](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile): the Node base image, the curl version, the Chromium version, and the npm version.
 - [Test data](https://github.com/ICTU/quality-time/blob/master/components/testdata/Dockerfile): the Python base image.
-- Container images directly specified in compose files used for [development](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.override.yml) and [continuous integration](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.ci.yml): `mongo-express`, `ldap`, `phpldapadmin`, and `selenium`.
+- Container images directly specified in compose files used for [development](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.override.yml) and [continuous integration](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.ci.yml): `mongo-express`, `ldap`, and `selenium`.

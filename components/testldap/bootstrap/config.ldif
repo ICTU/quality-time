@@ -1,0 +1,19 @@
+version: 1
+
+# Configure TLS
+dn: cn=config
+changetype: modify
+replace: olcTLSCertificateFile
+olcTLSCertificateFile: /etc/ldap/ssl/ldap.crt
+-
+replace: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /etc/ldap/ssl/ldap.key
+-
+replace: olcTLSVerifyClient
+olcTLSVerifyClient: never
+
+# Configure logging
+dn: cn=config
+changetype: modify
+replace: olcLogLevel
+olcLogLevel: stats

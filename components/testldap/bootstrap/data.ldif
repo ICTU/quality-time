@@ -1,0 +1,31 @@
+dn: cn=Jane Doe,dc=example,dc=org
+changetype: add
+uid: jadoe
+cn: Jane Doe
+sn: 4
+objectClass: top
+objectClass: posixAccount
+objectClass: inetOrgPerson
+loginShell: /bin/bash
+homeDirectory: /home/jadoe
+uidNumber: 14583103
+gidNumber: 14564100
+userPassword: {ARGON2}$argon2id$v=19$m=65536,t=3,p=4$rTmNv6FmvVQaSIXzLvcStQ$F2qtxHsklGS+sgWMrbekjeUn4bWbMvt3Liqsw7jOV1I
+mail: janedoe@example.org
+gecos: Jane User
+
+dn: cn=John Doe,dc=example,dc=org
+changetype: add
+uid: jodoe
+cn: John Doe
+sn: 3
+objectClass: top
+objectClass: posixAccount
+objectClass: inetOrgPerson
+loginShell: /bin/bash
+homeDirectory: /home/jodoe
+uidNumber: 14583102
+gidNumber: 14564100
+userPassword: {ARGON2}$argon2id$v=19$m=65536,t=3,p=4$aH5Wxb8qIkQL6qT4Uv6iMg$/Lp5apcrXLvFX1GRdWCZKFSxtS7Dvg2vQivs51qtFEk
+mail: johndoe@example.org
+gecos: John User
