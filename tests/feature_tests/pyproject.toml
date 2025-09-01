@@ -15,7 +15,7 @@ dependencies = [
     "requests-sse==0.5.2",
 ]
 optional-dependencies.dev = [
-    "coverage==7.10.5",
+    "coverage==7.10.6",
     "types-requests==2.32.4.20250809",
     "unittest-xml-reporting==3.2.0",   # Needed to generate JUnit XML output for Sonarcloud.io
 ]
