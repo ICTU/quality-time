@@ -13,7 +13,6 @@ COMPOSER = Source(
     parameters={
         "latest_version_status": MultipleChoiceWithDefaultsParameter(
             name="Latest version statuses",
-            short_name="statuses",
             placeholder="all statuses",
             help="Limit which latest version statuses to show. The status 'safe update possible' means that based "
             "on semantic versioning the update should be backwards compatible.",

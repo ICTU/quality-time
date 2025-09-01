@@ -277,7 +277,6 @@ The `parameters` describe the parameters that need to be entered by the user to 
 class Parameter(NamedModel):
     """Source parameter model."""
 
-    short_name: str | None = None
     help: str | None = None
     help_url: HttpsUrl | None = None
     type: ParameterType
@@ -291,7 +290,7 @@ class Parameter(NamedModel):
     validate_on: list[str] | None = None
 ```
 
-Each parameter has a `name` (via `NamedModel`) and a `short_name` used as label in the user interface. The parameter can have a `help` string or a `help_url` (but not both).
+Each parameter has a `name` (via `NamedModel`) used as label in the user interface. The parameter can have a `help` string or a `help_url` (but not both).
 
 The `type` specifies the type of the parameter and the widget used to get user input. Possible values are amongst others `string`, `password`, `integer`, and `multiple_choice`.
 

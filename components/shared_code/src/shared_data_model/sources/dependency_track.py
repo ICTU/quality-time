@@ -61,30 +61,25 @@ DEPENDENCY_TRACK = Source(
         "project_names": MultipleChoiceWithAdditionParameter(
             name="Project names (regular expressions or project names)",
             placeholder="all project names",
-            short_name="project names",
             metrics=["dependencies", "security_warnings", "source_up_to_dateness"],
         ),
         "project_versions": MultipleChoiceWithAdditionParameter(
             name="Project versions (regular expressions or versions)",
             placeholder="all project versions",
-            short_name="project versions",
             metrics=["dependencies", "security_warnings", "source_up_to_dateness"],
         ),
         "components_to_include": MultipleChoiceWithAdditionParameter(
             name="Components to include (regular expressions or component names)",
             placeholder="all components",
-            short_name="components to include",
             metrics=["dependencies", "security_warnings"],
         ),
         "components_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Components to ignore (regular expressions or component names)",
             placeholder="none",
-            short_name="components to ignore",
             metrics=["dependencies", "security_warnings"],
         ),
         "latest_version_status": MultipleChoiceWithDefaultsParameter(
             name="Latest version statuses",
-            short_name="statuses",
             placeholder="all statuses",
             help="Limit which latest version statuses to show.",
             values=["up-to-date", "update possible", "unknown"],
@@ -93,7 +88,6 @@ DEPENDENCY_TRACK = Source(
         "severities": Severities(values=["Unassigned", "Info", "Low", "Medium", "High", "Critical"]),
         "project_event_types": MultipleChoiceWithDefaultsParameter(
             name="Project event types",
-            short_name="event types",
             placeholder="all event types",
             default_value=["last BOM import"],
             help="Project event types to consider for measuring the up-to-dateness.",
@@ -102,7 +96,6 @@ DEPENDENCY_TRACK = Source(
         ),
         "only_include_latest_project_versions": SingleChoiceParameter(
             name="Only include latest project versions",
-            short_name="include latest only",
             values=["yes", "no"],
             default_value="no",
             help="Only include project versions that are marked as latest.",

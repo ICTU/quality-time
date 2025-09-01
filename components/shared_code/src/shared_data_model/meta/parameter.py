@@ -26,7 +26,6 @@ class Parameter(NamedModel):
 
     model_config = ConfigDict(validate_default=True)
 
-    short_name: str = ""
     help: str | None = None
     help_url: HttpUrl | None = None
     type: ParameterType
@@ -38,13 +37,6 @@ class Parameter(NamedModel):
     values: list[str] | None = None
     api_values: dict[str, str] | None = None
     validate_on: list[str] | None = None
-
-    @model_validator(mode="after")
-    def set_short_name(self) -> Self:
-        """Set the short name if no value was supplied."""
-        if not self.short_name:
-            self.short_name = self.name.lower()
-        return self
 
     @model_validator(mode="after")
     def check_help(self) -> Self:

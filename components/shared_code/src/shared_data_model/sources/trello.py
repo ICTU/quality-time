@@ -26,20 +26,17 @@ ISSUE_ENTITY = Entity(
 
 INACTIVE_DAYS_PARAMETER = Days(
     name="Number of days without activity after which to consider cards inactive",
-    short_name="number of days without activity",
     default_value="30",
     metrics=["issues"],
 )
 
 LISTS_TO_IGNORE_PARAMETER = MultipleChoiceWithAdditionParameter(
     name="Lists to ignore (title or id)",
-    short_name="lists to ignore",
     metrics=ALL_TRELLO_METRICS,
 )
 
 CARDS_TO_COUNT_PARAMETER = MultipleChoiceWithDefaultsParameter(
     name="Cards to count",
-    short_name="cards",
     placeholder="all cards",
     values=["inactive", "overdue"],
     metrics=["issues"],
@@ -63,7 +60,6 @@ TRELLO = Source(
         ),
         "api_key": StringParameter(
             name="API key",
-            short_name="API key",
             help_url=TRELLO_APP_KEY_URL,
             metrics=ALL_TRELLO_METRICS,
         ),
@@ -74,7 +70,6 @@ TRELLO = Source(
         ),
         "board": StringParameter(
             name="Board (title or id)",
-            short_name="board",
             help_url=HttpUrl(f"{TRELLO_URL}/1/members/me/boards?fields=name"),
             mandatory=True,
             metrics=ALL_TRELLO_METRICS,

@@ -16,13 +16,11 @@ CLOC = Source(
     parameters={
         "languages_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Languages to ignore (regular expressions or language names)",
-            short_name="languages to ignore",
             help_url=HttpUrl("https://github.com/AlDanial/cloc#recognized-languages-"),
             metrics=["loc"],
         ),
         "files_to_include": MultipleChoiceWithAdditionParameter(
             name="Files to include (regular expressions or file names)",
-            short_name="files to include",
             help="Note that filtering files only works when the cloc report is generated with the --by-file option.",
             placeholder="all",
             metrics=["loc"],

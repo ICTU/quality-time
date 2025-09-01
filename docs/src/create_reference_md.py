@@ -238,18 +238,17 @@ def parameter_paragraph(parameters: list[Parameter], mandatory: bool) -> str:
 
 def parameter_description(parameter: Parameter) -> str:
     """Return the Markdown version of the parameter."""
-    short_name = parameter.short_name
     help_text = " " + parameter.help if parameter.help else ""
     if parameter.type in ("single_choice", "multiple_choice_with_defaults", "multiple_choice_without_defaults"):
         parameter_type = parameter.type.replace("_", " ")
         values = ", ".join(sorted([f"`{value}`" for value in parameter.values or []]))
-        values_text = f" This is a {parameter_type} parameter. Possible {short_name} are: {values}."
+        values_text = f" This is a {parameter_type} parameter. Possible values are: {values}."
     else:
         values_text = ""
     default_value = parameter.default_value
     if isinstance(default_value, list):
         default_value = (
-            [f"all {short_name}"] if default_value == parameter.values else [f"`{value}`" for value in default_value]
+            ["all values"] if default_value == parameter.values else [f"`{value}`" for value in default_value]
         )
     elif default_value:
         default_value = [f"`{default_value}`"]

@@ -40,7 +40,6 @@ class URL(Parameter):
     """URL parameter."""
 
     name: str = "URL"
-    short_name: str = "URL"
     mandatory: bool = True
     validate_on: list[str] = ["username", "password", "private_token"]
     type: ParameterType = ParameterType.URL
@@ -51,8 +50,6 @@ class LandingURL(StringParameter):
 
     This is a string parameter because Quality-time doesn't validate these URLs.
     """
-
-    short_name: str = "URL"
 
 
 class SingleChoiceParameter(Parameter):
@@ -105,14 +102,12 @@ class Username(StringParameter):
     """User to be used for authentication."""
 
     name: str = "Username for basic authentication"
-    short_name: str = "username"
 
 
 class Password(Parameter):
     """Password parameter."""
 
     name: str = "Password for basic authentication"
-    short_name: str = "password"
     type: ParameterType = ParameterType.PASSWORD
 
 
@@ -120,7 +115,6 @@ class PrivateToken(Password):
     """Private token for authentication."""
 
     name: str = "Private token"
-    short_name: str = "private token"
     validation_path: str = ""  # URL path to use for the validation of tokens
 
 
@@ -181,7 +175,6 @@ class TestResultAggregationStrategy(SingleChoiceParameter):
     """Test result aggregation strategy."""
 
     name: str = "Test result aggregation strategy"
-    short_name: str = "test result aggregation"
     help: str = (
         "How to aggregate test results of individual tests to create the result of a test case. "
         "Strict (default) assigns the worst result of the tests to the test case they belong to. "
@@ -197,7 +190,6 @@ class Upvotes(IntegerParameter):
     """Minimum number of merge request up-votes parameter."""
 
     name: str = "Minimum number of upvotes"
-    short_name: str = "minimum upvotes"
     help: str = "Only count merge requests with fewer than the minimum number of upvotes."
     unit: Unit = Unit.UPVOTES
     metrics: list[str] = ["merge_requests"]
@@ -215,7 +207,6 @@ class Branches(MultipleChoiceWithAdditionParameter):
     """Branches parameter."""
 
     name: str = "Branches (regular expressions or branch names)"
-    short_name: str = "branches"
     placeholder: str = "all branches"
     metrics: list[str] = ["pipeline_duration"]
 
@@ -224,7 +215,6 @@ class BranchesToIgnore(MultipleChoiceWithAdditionParameter):
     """Branches to ignore parameter."""
 
     name: str = "Branches to ignore (regular expressions or branch names)"
-    short_name: str = "branches to ignore"
     metrics: list[str] = ["inactive_branches"]
 
 
@@ -232,7 +222,6 @@ class TargetBranchesToInclude(MultipleChoiceWithAdditionParameter):
     """Target branches to include parameter."""
 
     name: str = "Target branches to include (regular expressions or branch names)"
-    short_name: str = "target branches to include"
     placeholder: str = "all target branches"
     metrics: list[str] = ["merge_requests"]
 
@@ -241,7 +230,6 @@ class BranchMergeStatus(MultipleChoiceWithDefaultsParameter):
     """Branch merge status."""
 
     name: str = "Branch merge status"
-    short_name: str = "merge status"
     help: str = "Limit which merge states to count."
     placeholder: str = "all merge states"
     metrics: list[str] = ["inactive_branches"]
@@ -252,7 +240,6 @@ class MergeRequestState(MultipleChoiceWithDefaultsParameter):
     """Merge request states parameter."""
 
     name: str = "Merge request states"
-    short_name: str = "states"
     help: str = "Limit which merge request states to count."
     placeholder: str = "all states"
     metrics: list[str] = ["merge_requests"]
@@ -271,7 +258,6 @@ class ResultType(MultipleChoiceWithDefaultsParameter):
     """Build result type parameter."""
 
     name: str = "Build result types"
-    short_name: str = "result types"
     help: str = "Limit which build result types to include."
     placeholder: str = "all result types"
     metrics: list[str] = ["job_runs_within_time_period"]
@@ -281,7 +267,6 @@ class TransactionsToIgnore(MultipleChoiceWithAdditionParameter):
     """Transactions to ignore parameter."""
 
     name: str = "Transactions to ignore (regular expressions or transaction names)"
-    short_name: str = "transactions to ignore"
     help: str = "Transactions to ignore can be specified by transaction name or by regular expression."
     metrics: list[str] = ["slow_transactions", "tests"]
 
@@ -290,7 +275,6 @@ class TransactionsToInclude(MultipleChoiceWithAdditionParameter):
     """Transactions to include parameter."""
 
     name: str = "Transactions to include (regular expressions or transaction names)"
-    short_name: str = "transactions to include"
     help: str = "Transactions to include can be specified by transaction name or by regular expression."
     placeholder: str = "all transactions"
     metrics: list[str] = ["slow_transactions", "tests"]
@@ -305,7 +289,6 @@ class ResponseTimeToEvaluate(SingleChoiceParameter):
     """Response time to evaluate parameter."""
 
     name: str = "Response time type to evaluate against the target response time"
-    short_name: str = "response time types to evaluate"
     help: str = "Which response time type to compare with the target response time to determine slow transactions."
     metrics: list[str] = ["slow_transactions"]
 
@@ -314,7 +297,6 @@ class TargetResponseTime(IntegerParameter):
     """Target response time parameter."""
 
     name: str = "Target response time"
-    short_name: str = "target response time"
     help: str = "The response times of the transactions should be less than or equal to the target response time."
     default_value: str = "1000"
     unit: str = "milliseconds"
@@ -327,7 +309,6 @@ class TransactionSpecificTargetResponseTimes(MultipleChoiceWithAdditionParameter
     name: str = (
         "Transaction-specific target response times (regular expressions or transaction names:target response time)"
     )
-    short_name: str = "transactions-specific target response times"
     help: str = (
         "Transactions-specific target responses times (in milliseconds) can be specified by transaction name or by "
         "regular expression, separated from the target response time by a colon, e.g.: '/api/v?/search/.*:1500'."

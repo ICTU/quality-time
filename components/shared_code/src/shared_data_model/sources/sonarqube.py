@@ -350,7 +350,6 @@ SONARQUBE = Source(
         ),
         "branch": StringParameter(
             name="Branch (only supported by commercial SonarQube editions)",
-            short_name="branch",
             help_url=HttpUrl(
                 "https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/branch-analysis/introduction/"
             ),
@@ -359,7 +358,6 @@ SONARQUBE = Source(
         ),
         "languages_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Languages to ignore (regular expressions or language names)",
-            short_name="languages to ignore",
             help_url=HttpUrl(
                 "https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/languages/overview/"
             ),
@@ -401,7 +399,6 @@ SONARQUBE = Source(
         ),
         "hotspot_statuses": MultipleChoiceWithDefaultsParameter(
             name="Security hotspot statuses",
-            short_name="hotspot statuses",
             help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/security-hotspots/"),
             placeholder="acknowledged, to review",
             values=["to review", "acknowledged", "safe", "fixed"],
@@ -410,7 +407,6 @@ SONARQUBE = Source(
         ),
         "review_priorities": MultipleChoiceWithDefaultsParameter(
             name="Security hotspot review priorities",
-            short_name="review priorities",
             help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/security-hotspots/"),
             placeholder="all review priorities",
             values=["low", "medium", "high"],
@@ -418,7 +414,6 @@ SONARQUBE = Source(
         ),
         "effort_types": MultipleChoiceWithDefaultsParameter(
             name="Types of effort",
-            short_name="effort types",
             placeholder="all effort types",
             help_url=HttpUrl(
                 "https://docs.sonarsource.com/sonarqube-server/latest/user-guide/code-metrics/metrics-definition/"
@@ -445,7 +440,6 @@ SONARQUBE = Source(
         ),
         "tags": MultipleChoiceWithAdditionParameter(
             name="Tags to include",
-            short_name="tags",
             placeholder="all tags",
             help_url=HttpUrl(
                 "https://docs.sonarsource.com/sonarqube-server/latest/user-guide/rules/built-in-rule-tags/"

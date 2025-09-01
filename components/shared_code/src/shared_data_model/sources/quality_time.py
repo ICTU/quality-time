@@ -153,7 +153,6 @@ QUALITY_TIME = Source(
         ),
         "min_status_duration": IntegerParameter(
             name="Minimum metric status duration",
-            short_name="minimum status duration",
             help="Only count metrics whose status has not changed for the given number of days.",
             unit=Unit.DAYS,
             min_value="0",
@@ -162,7 +161,6 @@ QUALITY_TIME = Source(
         ),
         "reports": MultipleChoiceWithAdditionParameter(
             name="Report names or identifiers",
-            short_name="reports",
             placeholder="all reports",
             metrics=["metrics", "source_up_to_dateness", "missing_metrics"],
         ),
@@ -200,13 +198,11 @@ QUALITY_TIME = Source(
         ),
         "subjects_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Subjects to ignore (regular expressions, subject names, or identifiers)",
-            short_name="subjects to ignore",
             help="Ignore metric types that are missing in the subjects to ignore.",
             metrics=["missing_metrics"],
         ),
         "subjects_to_include": MultipleChoiceWithAdditionParameter(
             name="Subjects to include (regular expressions, subject names, or identifiers)",
-            short_name="subjects to include",
             help="If provided, only count metric types that are missing in the subjects to include.",
             placeholder="all subjects",
             metrics=["missing_metrics"],

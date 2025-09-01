@@ -21,7 +21,6 @@ OWASP_ZAP = Source(
     parameters={
         "alerts": SingleChoiceParameter(
             name="Count alert types or alert instances",
-            short_name="count alert types or instances setting",
             help="Determine whether to count each alert type in the OWASP ZAP report as a security warning or to "
             "count each alert instance (URL).",
             default_value="alert instances",
@@ -38,7 +37,6 @@ OWASP_ZAP = Source(
         ),
         "variable_url_regexp": MultipleChoiceWithAdditionParameter(
             name="Parts of URLs to ignore (regular expressions)",
-            short_name="parts of URLs to ignore",
             help="Parts of URLs to ignore can be specified by regular expression. The parts of URLs that match one "
             "or more of the regular expressions are removed. If, after applying the regular expressions, multiple "
             "warnings are the same only one is reported.",

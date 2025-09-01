@@ -94,13 +94,11 @@ the "Username" field and the private token in the "**Password**" field.
         "branches": Branches(help="Branches only apply to multibranch pipelines."),
         "inactive_days": Days(
             name="Number of days without builds after which to consider CI-jobs unused",
-            short_name="number of days without builds",
             default_value="90",
             metrics=["unused_jobs"],
         ),
         "jobs_to_include": MultipleChoiceWithAdditionParameter(
             name="Jobs to include (regular expressions or job names)",
-            short_name="jobs to include",
             help="Jobs to include can be specified by job name or by regular expression. "
             "Use {parent job name}/{child job name} for the names of nested jobs.",
             placeholder="all",
@@ -114,7 +112,6 @@ the "Username" field and the private token in the "**Password**" field.
         ),
         "jobs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Jobs to ignore (regular expressions or job names)",
-            short_name="jobs to ignore",
             help="Jobs to ignore can be specified by job name or by regular expression. "
             "Use {parent job name}/{child job name} for the names of nested jobs.",
             metrics=[
@@ -127,7 +124,6 @@ the "Username" field and the private token in the "**Password**" field.
         ),
         "grace_days": Days(
             name="Number of days after which to count failed jobs as failed",
-            short_name="grace days",
             help="Count failed jobs as failed only when it has been failing for at least the number of 'grace days'.",
             min_value="0",
             default_value="0",
@@ -135,13 +131,11 @@ the "Username" field and the private token in the "**Password**" field.
         ),
         "lookback_days": Days(
             name="Number of days to look back for selecting job builds",
-            short_name="number of days to look back",
             default_value="90",
             metrics=["change_failure_rate", "job_runs_within_time_period"],
         ),
         "pipeline": StringParameter(
             name="Pipeline (multibranch pipeline name)",
-            short_name="pipeline",
             mandatory=True,
             metrics=["pipeline_duration"],
         ),

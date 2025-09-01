@@ -40,14 +40,12 @@ BITBUCKET = Source(
         ),
         "owner": StringParameter(
             name="Owner (name of owner of the repository)",
-            short_name="owner",
             mandatory=True,
             help_url=HttpUrl("https://support.atlassian.com/bitbucket-cloud/docs/create-a-project/"),
             metrics=ALL_BITBUCKET_METRICS,
         ),
         "repository": StringParameter(
             name="Repository (name of the repository)",
-            short_name="repository",
             help_url=HttpUrl("https://support.atlassian.com/bitbucket-cloud/docs/create-a-git-repository/"),
             mandatory=True,
             metrics=ALL_BITBUCKET_METRICS,
@@ -61,7 +59,6 @@ BITBUCKET = Source(
         "branch_merge_status": BranchMergeStatus(),
         "inactive_days": Days(
             name="Number of days since last commit after which to consider branches inactive",
-            short_name="number of days since last commit",
             default_value="7",
             metrics=["inactive_branches"],
         ),
