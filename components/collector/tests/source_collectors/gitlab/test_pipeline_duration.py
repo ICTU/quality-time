@@ -21,21 +21,27 @@ class GitLabPipelineDurationTest(GitLabTestCase):
         super().setUp()
         self.landing_url = "https://gitlab/project/-/pipelines/1"
         self.pipeline_schedules_json = [{"id": "pipeline schedule id", "description": "pipeline description"}]
-        self.scheduled_pipelines_json = [{"id": "pipeline id"}]
-        self.pipeline_json = [
-            {
-                "id": "pipeline id",
-                "iid": "iid",
-                "project_id": "project id",
-                "name": "Pipeline name",
-                "created_at": "2022-09-21T01:05:14.197Z",
-                "updated_at": "2022-09-21T01:15:14.175Z",
-                "ref": "branch",
-                "status": "success",
-                "source": "push",
-                "web_url": self.landing_url,
-            },
-        ]
+        self.scheduled_pipelines_json = [{"id": "pipeline 1"}]
+        self.pipeline_json = [self.create_pipeline_run()]
+
+    def create_pipeline_run(
+        self,
+        pipeline_id: str = "1",
+        created_at: str = "2022-09-21T01:05:14.197Z",
+        updated_at: str = "2022-09-21T01:15:14.175Z",
+    ):
+        """Create a pipeline run."""
+        return {
+            "id": f"pipeline {pipeline_id}",
+            "project_id": "project id",
+            "name": "Pipeline name",
+            "created_at": created_at,
+            "updated_at": updated_at,
+            "ref": "branch",
+            "status": "success",
+            "source": "push",
+            "web_url": self.landing_url,
+        }
 
     async def collect(self):
         """Override to pass the GitLab pipeline JSON responses."""
@@ -70,3 +76,13 @@ class GitLabPipelineDurationTest(GitLabTestCase):
         self.set_source_parameter("pipeline_schedules_to_include", ["pipeline description"])
         response = await self.collect()
         self.assert_measurement(response, value="10", landing_url=self.landing_url)
+
+    async def test_report_latest_pipeline_instead_of_slowest(self):
+        """Test that the latest instead of the slowest pipeline can be selected."""
+        self.set_source_parameter("pipeline_selection", "latest")
+        latest = self.create_pipeline_run(
+            pipeline_id="2", created_at="2025-09-01T00:00:00", updated_at="2025-09-01T00:05:00"
+        )
+        self.pipeline_json.append(latest)
+        response = await self.collect()
+        self.assert_measurement(response, value="5", landing_url=self.landing_url)

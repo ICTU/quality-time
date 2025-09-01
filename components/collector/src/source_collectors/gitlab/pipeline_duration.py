@@ -13,6 +13,9 @@ class GitLabPipelineDuration(GitLabPipelineBase):
     async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Parse the value from the responses."""
         if durations := [int(entity["duration"]) for entity in included_entities]:
-            return str(max(durations))
+            if self._parameter("pipeline_selection") == "slowest":
+                return str(max(durations))
+            included_entities.sort(key=lambda entity: entity["updated"] or entity["created"])
+            return str(included_entities[-1]["duration"])
         error_message = "No pipelines found within the lookback period"
         raise CollectorError(error_message)
