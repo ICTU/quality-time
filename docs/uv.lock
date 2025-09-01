@@ -920,7 +920,7 @@ dependencies = [
 requires-dist = [
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.8.6" },
     { name = "bottle", specifier = "==0.13.4" },
-    { name = "coverage", marker = "extra == 'dev'", specifier = "==7.10.5" },
+    { name = "coverage", marker = "extra == 'dev'", specifier = "==7.10.6" },
     { name = "fixit", marker = "extra == 'tools'", specifier = "==2.1.0" },
     { name = "mongomock", marker = "extra == 'dev'", specifier = "==4.3.0" },
     { name = "mypy", marker = "extra == 'tools'", specifier = "==1.17.1" },
