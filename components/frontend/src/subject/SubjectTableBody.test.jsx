@@ -49,7 +49,7 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
                         })}
                         reports={[]}
                         settings={settings}
-                        subject_uuid="subject_uuid"
+                        subjectUuid="subject_uuid"
                         tags={[]}
                     />
                     <SubjectTableBody
