@@ -83,7 +83,7 @@ function simulateDragAndDrop() {
 
     // Simulate drag start on the first row
     const dragStartEvent = createEvent.dragStart(row0)
-    dragStartEvent.dataTransfer = { effectAllowed: "", setDragImage: vi.fn() }
+    dragStartEvent.dataTransfer = { effectAllowed: "", setDragImage: vi.fn(), setData: vi.fn() }
     fireEvent(row0, dragStartEvent)
 
     // Simulate drag enter on the second row
@@ -121,6 +121,7 @@ it("sets up drag start correctly", () => {
     dragStartEvent.dataTransfer = {
         effectAllowed: "",
         setDragImage: vi.fn(),
+        setData: vi.fn(),
     }
 
     fireEvent(row, dragStartEvent)
@@ -138,6 +139,7 @@ it("handles drag end by resetting drag state", async () => {
     dragStartEvent.dataTransfer = {
         effectAllowed: "",
         setDragImage: vi.fn(), // needed if `createDragGhost` sets it
+        setData: vi.fn(),
     }
     fireEvent(row0, dragStartEvent)
 
@@ -174,7 +176,7 @@ it("does not reorder metrics if drop target is the same as drag source", () => {
 
     // Simulate drag start on the first row
     const dragStartEvent = createEvent.dragStart(row0)
-    dragStartEvent.dataTransfer = { effectAllowed: "", setDragImage: vi.fn() }
+    dragStartEvent.dataTransfer = { effectAllowed: "", setDragImage: vi.fn(), setData: vi.fn() }
     fireEvent(row0, dragStartEvent)
 
     // Simulate dragging over the same row
