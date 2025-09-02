@@ -1,6 +1,8 @@
+import ReorderIcon from "@mui/icons-material/Reorder"
 import { Chip, List, ListItem, ListItemIcon, ListItemText, Paper, TableHead, TableRow, Typography } from "@mui/material"
 import { bool, func, string } from "prop-types"
 
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { zIndexTableHeader } from "../defaults"
 import { StatusIcon } from "../measurement/StatusIcon"
 import { STATUS_DESCRIPTION, STATUSES } from "../metric/status"
@@ -352,6 +354,16 @@ export function SubjectTableHeader({ columnDates, columnsToHide, handleSort, set
                 {!columnsToHide.includes("tags") && (
                     <SortableTableHeaderCell column="tags" label="Tags" help={tagsHelp} {...sortProps} />
                 )}
+                <ReadOnlyOrEditable
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    editableComponent={
+                        <UnsortableTableHeaderCell
+                            label="Drag to reorder"
+                            help="Drag to reorder"
+                            icon={<ReorderIcon fontSize="small" />}
+                        />
+                    }
+                />
             </TableRow>
         </TableHead>
     )
