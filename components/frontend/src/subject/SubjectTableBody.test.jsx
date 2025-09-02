@@ -38,6 +38,7 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
                         dates={dates}
                         columnsToHide={[]}
                         handleSort={vi.fn()}
+                        measurements={[]}
                         reportDate={new Date("2020-01-15T00:00:00+00:00")}
                         reload={vi.fn()}
                         reversedMeasurements={[]}
@@ -55,6 +56,7 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
                         dates={[]}
                         columnsToHide={[]}
                         handleSort={vi.fn()}
+                        measurements={[]}
                         reportDate={new Date("2020-01-15T00:00:00+00:00")}
                         reload={vi.fn()}
                         reversedMeasurements={[]}
