@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Added
+
+- When measuring pipeline duration with GitLab as source, allow for measuring the latest pipeline in the set of pipelines that match the filter criteria instead of the slowest. Closes [#11860](https://github.com/ICTU/quality-time/issues/11860).
+
 ### Changed
 
 - The Docker image used for running a test LDAP server (bitnami/openldap) while developing Quality-time is deprecated. Replace it with a Debian image with OpenLDAP. Closes [#11865](https://github.com/ICTU/quality-time/issues/11865).
