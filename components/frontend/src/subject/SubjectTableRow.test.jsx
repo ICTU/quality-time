@@ -53,7 +53,8 @@ function renderSubjectTableRow({
                 <Table>
                     <TableBody>
                         <SubjectTableRow
-                            columnsToHide={[]}dates={dates}
+                            columnsToHide={[]}
+                            dates={dates}
                             measurements={[]}
                             metric={{
                                 comment: comment,
@@ -171,6 +172,7 @@ it("shows no drag handle when rows are sorted", () => {
                                 // Ensure the settings object has a .sortColumn property with a .value
                                 sortColumn: { value: "metric" },
                             }}
+                            columnsToHide={[]}
                             subjectUuid="subject_uuid"
                         />
                     </TableBody>
