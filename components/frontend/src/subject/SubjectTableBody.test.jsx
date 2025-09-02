@@ -78,8 +78,8 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
 function simulateDragAndDrop() {
     renderSubjectTableBody()
 
-    const row0 = screen.getByTestId("metric-row-0")
-    const row1 = screen.getByTestId("metric-row-1")
+    const row0 = screen.getByTestId("metric-row-0-subject_uuid")
+    const row1 = screen.getByTestId("metric-row-1-subject_uuid")
 
     // Simulate drag start on the first row
     const dragStartEvent = createEvent.dragStart(row0)
@@ -102,21 +102,21 @@ beforeEach(() => {
 
 it("shows the correct number of rows", async () => {
     const { container } = renderSubjectTableBody()
-    expect(screen.queryAllByTestId(/^metric-row-/).length).toBe(2)
+    expect(screen.queryAllByTestId(/^metric-row-/).length).toBe(4) // 2 rows per table, 2 tables
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows drop indicator when dragging over a row", () => {
     renderSubjectTableBody()
     // Simulate drag enter on the 2nd row
-    const row = screen.getByTestId("metric-row-1")
+    const row = screen.getByTestId("metric-row-1-subject_uuid")
     fireEvent.dragEnter(row)
     expect(screen.getByTestId("drop-indicator-1")).toBeInTheDocument()
 })
 
 it("sets up drag start correctly", () => {
     renderSubjectTableBody()
-    const row = screen.getByTestId("metric-row-0")
+    const row = screen.getByTestId("metric-row-0-subject_uuid")
     const dragStartEvent = createEvent.dragStart(row)
     dragStartEvent.dataTransfer = {
         effectAllowed: "",
@@ -131,8 +131,8 @@ it("sets up drag start correctly", () => {
 it("handles drag end by resetting drag state", async () => {
     renderSubjectTableBody({})
 
-    const row0 = screen.getByTestId("metric-row-0")
-    const row1 = screen.getByTestId("metric-row-1")
+    const row0 = screen.getByTestId("metric-row-0-subject_uuid")
+    const row1 = screen.getByTestId("metric-row-1-subject_uuid")
 
     const dragStartEvent = createEvent.dragStart(row0)
     dragStartEvent.dataTransfer = {
@@ -170,7 +170,7 @@ it("handles drop by reordering metrics", () => {
 it("does not reorder metrics if drop target is the same as drag source", () => {
     renderSubjectTableBody()
 
-    const row0 = screen.getByTestId("metric-row-0")
+    const row0 = screen.getByTestId("metric-row-0-subject_uuid")
 
     // Simulate drag start on the first row
     const dragStartEvent = createEvent.dragStart(row0)
@@ -207,7 +207,7 @@ it("Shows a console log if API call fails", async () => {
 it("resets drag state on dragend", () => {
     renderSubjectTableBody()
 
-    const row1 = screen.getByTestId("metric-row-1")
+    const row1 = screen.getByTestId("metric-row-1-subject_uuid")
     fireEvent.dragEnter(row1)
     expect(screen.getByTestId("drop-indicator-1")).toBeInTheDocument()
 
@@ -221,8 +221,8 @@ it("resets drag state on dragend", () => {
 it("shows drop indicator only for the correct table", () => {
     renderSubjectTableBody()
     // Get rows from both tables
-    const row0_table1 = screen.getAllByTestId("metric-row-0")[0]
-    const row0_table2 = screen.getAllByTestId("metric-row-0")[1]
+    const row0_table1 = screen.getAllByTestId("metric-row-0-suject_uuid")
+    const row0_table2 = screen.getAllByTestId("metric-row-0-subject_uuid_1")
 
     // Simulate drag start on the first row of the first table
     const dragStartEvent = createEvent.dragStart(row0_table1)

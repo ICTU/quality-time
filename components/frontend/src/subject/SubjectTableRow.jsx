@@ -269,7 +269,7 @@ export function SubjectTableRow({
 
     return (
         <TableRowWithDetails
-            data-testid={`metric-row-${index}`}
+            data-testid={`metric-row-${index}-${subjectUuid}`}
             ref={rowRef}
             onDragStart={(e) => onDragStart(index, rowRef, e)}
             onDragEnter={() => onDragEnter(index)}
