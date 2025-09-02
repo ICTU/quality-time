@@ -36,6 +36,7 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
                 <table>
                     <SubjectTableBody
                         dates={dates}
+                        columnsToHide={[]}
                         handleSort={vi.fn()}
                         reportDate={new Date("2020-01-15T00:00:00+00:00")}
                         reload={vi.fn()}
@@ -52,6 +53,7 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
                     />
                     <SubjectTableBody
                         dates={[]}
+                        columnsToHide={[]}
                         handleSort={vi.fn()}
                         reportDate={new Date("2020-01-15T00:00:00+00:00")}
                         reload={vi.fn()}
