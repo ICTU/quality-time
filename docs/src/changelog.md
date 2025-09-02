@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Fixed
+
+- When pasting an URL with a hash in a comment field, the hash would not be included in the generated link. Fixes [#11850](https://github.com/ICTU/quality-time/issues/11850).
+
 ### Added
 
 - When measuring pipeline duration with GitLab as source, allow for measuring the latest pipeline in the set of pipelines that match the filter criteria instead of the slowest. Closes [#11860](https://github.com/ICTU/quality-time/issues/11860).

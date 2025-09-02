@@ -16,6 +16,7 @@ from cryptography.fernet import Fernet
 # and Dlint complains 'insecure use of XML modules, prefer "defusedxml"'
 # but we give autolink_html clean html, so ignore the warning:
 from lxml_html_clean import autolink_html, clean_html  # nosec
+from lxml_html_clean.clean import _link_regexes  # type: ignore[attr-defined]
 from lxml.html import fromstring, tostring  # nosec
 
 from shared.utils.type import ItemId
@@ -69,9 +70,16 @@ def _headers(source_parameters) -> dict:
     return {}
 
 
+# This is the link regexp used by lxml_html_clean.clean with a '#' added:
+_link_with_hash_regexp = re.compile(
+    r"(?P<body>https?://(?P<host>[a-z0-9._-]+)(?:/[/\-_.,a-z0-9%&?#;=~]*)?(?:\([/\-_.,a-z0-9%&?;=~]*\))?)",
+    re.IGNORECASE,
+)
+
+
 def sanitize_html(html_text: str) -> str:
     """Clean dangerous tags from the HTML and convert urls into anchors."""
-    sanitized_html = str(autolink_html(clean_html(html_text)))
+    sanitized_html = str(autolink_html(clean_html(html_text), link_regexes=[_link_with_hash_regexp, *_link_regexes]))
     html_tree = fromstring(sanitized_html)
     # Give anchors without target a default target of _blank so they open in a new tab or window:
     for anchor in html_tree.iter("a"):
