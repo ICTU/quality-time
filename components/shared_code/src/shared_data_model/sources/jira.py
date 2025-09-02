@@ -75,7 +75,6 @@ JIRA = Source(
         ),
         "board": StringParameter(
             name="Board (name or id)",
-            short_name="board",
             help_url=HttpUrl(
                 "https://support.atlassian.com/jira-software-cloud/docs/what-is-a-jira-software-board/",
             ),
@@ -84,7 +83,6 @@ JIRA = Source(
         ),
         "jql": StringParameter(
             name="Issue query in JQL (Jira Query Language)",
-            short_name="issue query",
             mandatory=True,
             help_url=HttpUrl(
                 "https://support.atlassian.com/jira-software-cloud/docs/"
@@ -104,26 +102,22 @@ JIRA = Source(
             name="Number of days to look back for selecting issues",
             help="Issues are selected if they are completed and have been updated within the number of days "
             "configured.",
-            short_name="number of days to look back",
             default_value="90",
             metrics=["change_failure_rate", "average_issue_lead_time"],
         ),
         "manual_test_duration_field": StringParameter(
             name="Manual test duration field (name or id)",
-            short_name="manual test duration field",
             help_url=CUSTOM_FIELD_ID_HELP_URL,
             mandatory=True,
             metrics=["manual_test_duration"],
         ),
         "manual_test_execution_frequency_field": StringParameter(
             name="Manual test execution frequency field (name or id)",
-            short_name="manual test execution frequency field",
             help_url=CUSTOM_FIELD_ID_HELP_URL,
             metrics=["manual_test_execution"],
         ),
         "manual_test_execution_frequency_default": Days(
             name="Default expected manual test execution frequency (days)",
-            short_name="default expected manual test execution frequency",
             help="Specify how often the manual tests should be executed. For example, if the sprint length is "
             "three weeks, manual tests should be executed at least once every 21 days.",
             mandatory=True,
@@ -132,7 +126,6 @@ JIRA = Source(
         ),
         "story_points_field": StringParameter(
             name="Story points field (name or id)",
-            short_name="story points field",
             help_url=CUSTOM_FIELD_ID_HELP_URL,
             mandatory=True,
             default_value="Story Points",
@@ -147,7 +140,6 @@ JIRA = Source(
             help="Velocity is defined as the number of user story points realized per sprint. By default, velocity "
             "is calculated by averaging the number of user story points realized in the three most recently "
             "completed sprints. The number of sprints to use can be changed via this parameter.",
-            short_name="number of sprints",
             mandatory=True,
             unit=Unit.SPRINTS,
             min_value="1",
@@ -156,7 +148,6 @@ JIRA = Source(
         ),
         "velocity_type": SingleChoiceParameter(
             name="Type of velocity",
-            short_name="velocity type",
             help="Whether to report the number of story points committed to, the number of story points actually "
             "completed, or the difference between the two.",
             mandatory=True,

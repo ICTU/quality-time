@@ -43,14 +43,12 @@ GITHUB = Source(
         ),
         "owner": StringParameter(
             name="Owner (name of owner of the repository)",
-            short_name="owner",
             mandatory=True,
             help_url=HttpUrl("https://docs.github.com/en/account-and-profile"),
             metrics=ALL_GITHUB_METRICS,
         ),
         "repository": StringParameter(
             name="Repository (name of the repository)",
-            short_name="repository",
             help_url=HttpUrl("https://docs.github.com/en/repositories/creating-and-managing-repositories"),
             mandatory=True,
             metrics=ALL_GITHUB_METRICS,
@@ -58,7 +56,6 @@ GITHUB = Source(
         "private_token": PrivateToken(
             name="Fine-grained personal access token with repository permission 'Pull requests' set to "
             "access level 'Read-only'.",
-            short_name="Personal access token",
             help_url=HttpUrl(
                 "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/"
                 "managing-your-personal-access-tokens"

@@ -86,7 +86,6 @@ AZURE_DEVOPS = Source(
         ),
         "wiql": StringParameter(
             name="Issue query in WIQL (Work Item Query Language)",
-            short_name="issue query",
             mandatory=False,
             help="This should only contain the WHERE clause of a WIQL query, as the selected fields are static. "
             "For example, use the following clause to hide issues marked as done: \"[System.State] <> 'Done'\". "
@@ -95,7 +94,6 @@ AZURE_DEVOPS = Source(
         ),
         "file_path": StringParameter(
             name="File or folder path",
-            short_name="path",
             help="Use the date and time the path was last changed to determine the up-to-dateness. If no path "
             "is specified, the pipeline is used to determine the up-to-dateness.",
             placeholder="none",
@@ -103,7 +101,6 @@ AZURE_DEVOPS = Source(
         ),
         "repository": StringParameter(
             name="Repository (name or id)",
-            short_name="repository",
             placeholder="default repository",
             metrics=["inactive_branches", "merge_requests", "source_up_to_dateness"],
         ),
@@ -116,13 +113,11 @@ AZURE_DEVOPS = Source(
         "branch_merge_status": BranchMergeStatus(),
         "inactive_days": Days(
             name="Number of days since last commit after which to consider branches inactive",
-            short_name="number of days since last commit",
             default_value="7",
             metrics=["inactive_branches"],
         ),
         "inactive_job_days": Days(
             name="Number of days since last build after which to consider pipelines inactive",
-            short_name="number of days since last build",
             default_value="21",
             metrics=["unused_jobs"],
         ),
@@ -137,14 +132,12 @@ AZURE_DEVOPS = Source(
         ),
         "test_run_names_to_include": MultipleChoiceWithAdditionParameter(
             name="Names of test runs to include (regular expressions or test run names)",
-            short_name="test run names",
             help="Limit which test runs to include by test run name.",
             placeholder="all test run names",
             metrics=["tests"],
         ),
         "test_run_states_to_include": MultipleChoiceWithDefaultsParameter(
             name="States of the test runs to include",
-            short_name="test run states",
             help="Limit which test runs to include by test run state.",
             placeholder="all test run states",
             values=["aborted", "completed", "in progress", "not started"],
@@ -158,7 +151,6 @@ AZURE_DEVOPS = Source(
         ),
         "jobs_to_include": MultipleChoiceWithAdditionParameter(
             name="Pipelines to include (regular expressions or pipeline names)",
-            short_name="pipelines to include",
             help="Pipelines to include can be specified by pipeline name or by regular expression. "
             "Use {folder name}/{pipeline name} for the names of pipelines in folders.",
             placeholder="all",
@@ -172,7 +164,6 @@ AZURE_DEVOPS = Source(
         ),
         "jobs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Pipelines to ignore (regular expressions or pipeline names)",
-            short_name="pipelines to ignore",
             help="Pipelines to ignore can be specified by pipeline name or by regular expression. "
             "Use {folder name}/{pipeline name} for the names of pipelines in folders.",
             metrics=[
@@ -185,7 +176,6 @@ AZURE_DEVOPS = Source(
         ),
         "lookback_days_pipeline_runs": Days(
             name="Number of days to look back for selecting pipeline runs",
-            short_name="number of days to look back",
             default_value="90",
             metrics=["change_failure_rate", "job_runs_within_time_period"],
         ),
@@ -193,7 +183,6 @@ AZURE_DEVOPS = Source(
             name="Number of days to look back for work items",
             help="Work items are selected if they are completed and have been updated within the number of days "
             "configured.",
-            short_name="number of days to look back",
             default_value="90",
             metrics=["average_issue_lead_time", "change_failure_rate"],
         ),

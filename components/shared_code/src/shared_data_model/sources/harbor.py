@@ -26,28 +26,24 @@ HARBOR = Source(
     parameters={
         "projects_to_include": MultipleChoiceWithAdditionParameter(
             name="Projects to include (regular expressions or project names)",
-            short_name="projects to include",
             help="Projects to include can be specified by project name or by regular expression.",
             placeholder="all",
             metrics=["security_warnings"],
         ),
         "projects_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Projects to ignore (regular expressions or project names)",
-            short_name="projects to ignore",
             help="Projects to ignore can be specified by project name or by regular expression.",
             placeholder="none",
             metrics=["security_warnings"],
         ),
         "repositories_to_include": MultipleChoiceWithAdditionParameter(
             name="Repositories to include (regular expressions or repository names)",
-            short_name="repositories to include",
             help="Repositories to include can be specified by repository name or by regular expression.",
             placeholder="all",
             metrics=["security_warnings"],
         ),
         "repositories_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Repositories to ignore (regular expressions or repository names)",
-            short_name="repositories to ignore",
             help="Repositories to ignore can be specified by repository name or by regular expression.",
             placeholder="none",
             metrics=["security_warnings"],

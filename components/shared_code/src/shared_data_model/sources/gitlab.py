@@ -119,7 +119,6 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         ),
         "project": StringParameter(
             name="Project (name with namespace or id)",
-            short_name="project",
             mandatory=True,
             help_url=HttpUrl("https://docs.gitlab.com/ee/user/project/"),
             metrics=[
@@ -134,7 +133,6 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         ),
         "project_or_group": StringParameter(
             name="Project (name with namespace or id) or group (name or id)",
-            short_name="project or group",
             mandatory=True,
             help_url=HttpUrl("https://docs.gitlab.com/ee/user/project/"),
             metrics=["inactive_branches"],
@@ -146,7 +144,6 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         ),
         "file_path": StringParameter(
             name="File or folder path",
-            short_name="path",
             help="Use the date and time the path was last changed to determine the up-to-dateness. If no path "
             "is specified, the pipeline is used to determine the up-to-dateness.",
             metrics=["source_up_to_dateness"],
@@ -157,26 +154,22 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         "branch_merge_status": BranchMergeStatus(),
         "refs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Branches and tags to ignore (regular expressions, branch names or tag names)",
-            short_name="branches and tags to ignore",
             help_url=GITLAB_BRANCH_HELP_URL,
             metrics=["change_failure_rate", "failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
         "refs_to_include": MultipleChoiceWithAdditionParameter(
             name="Branches and tags to include (regular expressions, branch names or tag names)",
-            short_name="branches and tags to include",
             help_url=GITLAB_BRANCH_HELP_URL,
             placeholder="all branches and tags",
             metrics=["change_failure_rate", "failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
         "inactive_days": Days(
             name="Number of days since last commit after which to consider branches inactive",
-            short_name="number of days since last commit",
             default_value="7",
             metrics=["inactive_branches"],
         ),
         "inactive_job_days": Days(
             name="Number of days without builds after which to consider CI-jobs unused",
-            short_name="number of days without builds",
             default_value="90",
             metrics=["unused_jobs"],
         ),
@@ -184,20 +177,17 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         "result_type": ResultType(values=["canceled", "failed", "skipped", "success"]),
         "jobs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Jobs to ignore (regular expressions or job names)",
-            short_name="jobs to ignore",
             help="Jobs to ignore can be specified by job name or by regular expression.",
             metrics=["change_failure_rate", "failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
         "jobs_to_include": MultipleChoiceWithAdditionParameter(
             name="Jobs to include (regular expressions or job names)",
-            short_name="jobs to include",
             help="Jobs to include can be specified by job name or by regular expression.",
             placeholder="all jobs",
             metrics=["change_failure_rate", "failed_jobs", "job_runs_within_time_period", "unused_jobs"],
         ),
         "lookback_days": Days(
             name="Number of days to look back for selecting pipeline jobs",
-            short_name="number of days to look back",
             default_value="90",
             metrics=[
                 "change_failure_rate",
@@ -209,14 +199,12 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         ),
         "lookback_days_pipelines": Days(
             name="Number of days to look back for selecting pipelines",
-            short_name="number of days to look back",
             default_value="7",
             metrics=["pipeline_duration"],
         ),
         "merge_request_state": MergeRequestState(values=["opened", "locked", "merged", "closed"]),
         "approval_state": MultipleChoiceWithDefaultsParameter(
             name="Approval states to include (requires GitLab Premium)",
-            short_name="approval states",
             help_url=HttpUrl("https://docs.gitlab.com/ee/user/project/merge_requests/approvals/"),
             values=["approved", "not approved", "unknown"],
             api_values={"approved": "yes", "not approved": "no", "unknown": "?"},
@@ -225,7 +213,6 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         ),
         "pipeline_statuses_to_include": MultipleChoiceWithDefaultsParameter(
             name="Pipeline statuses to include",
-            short_name="pipeline statuses",
             values=[
                 "created",
                 "waiting for resource",
@@ -245,7 +232,6 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         ),
         "pipeline_triggers_to_include": MultipleChoiceWithDefaultsParameter(
             name="Pipeline triggers to include",
-            short_name="pipeline triggers",
             values=[
                 "push",
                 "web",
@@ -275,7 +261,6 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         ),
         "pipeline_schedules_to_include": MultipleChoiceWithAdditionParameter(
             name="Pipeline schedules to include",
-            short_name="pipeline schedules",
             help="Pipeline schedules to include can be specified by description or by regular expression.",
             placeholder="all pipeline schedules",
             metrics=["pipeline_duration", "source_up_to_dateness"],

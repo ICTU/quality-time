@@ -17,7 +17,6 @@ CXSAST = Source(
     parameters={
         "project": StringParameter(
             name="Project (name or id)",
-            short_name="project",
             mandatory=True,
             metrics=["security_warnings", "source_up_to_dateness"],
         ),

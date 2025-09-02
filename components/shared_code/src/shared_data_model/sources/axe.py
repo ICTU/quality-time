@@ -23,7 +23,6 @@ IMPACT = MultipleChoiceWithDefaultsParameter(
 
 TAGS_TO_INCLUDE = MultipleChoiceWithAdditionParameter(
     name="Tags to include (regular expressions or tags)",
-    short_name="tags to include",
     help="Tags to include can be specified by tag or by regular expression.",
     placeholder="all",
     metrics=["violations"],
@@ -31,14 +30,12 @@ TAGS_TO_INCLUDE = MultipleChoiceWithAdditionParameter(
 
 TAGS_TO_IGNORE = MultipleChoiceWithAdditionParameter(
     name="Tags to ignore (regular expressions or tags)",
-    short_name="tags to ignore",
     help="Tags to ignore can be specified by tag or by regular expression.",
     metrics=["violations"],
 )
 
 ELEMENT_INCLUDE_FILTER = MultipleChoiceWithAdditionParameter(
     name="Elements to include (regular expressions)",
-    short_name="element include filter",
     help="Elements to include can be specified by regular expression.",
     placeholder="all",
     metrics=["violations"],
@@ -46,7 +43,6 @@ ELEMENT_INCLUDE_FILTER = MultipleChoiceWithAdditionParameter(
 
 ELEMENT_EXCLUDE_FILTER = MultipleChoiceWithAdditionParameter(
     name="Elements to exclude (regular expressions)",
-    short_name="element exclude filter",
     help="Elements to exclude can be specified by regular expression.",
     placeholder="none",
     metrics=["violations"],

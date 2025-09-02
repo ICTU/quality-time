@@ -34,7 +34,6 @@ SECURITY_WARNING_ATTRIBUTES = [
 ]
 VARIABLE_FILE_PATH_REGEXP_PARAMETER = MultipleChoiceWithAdditionParameter(
     name="Parts of file paths to ignore (regular expressions)",
-    short_name="parts of file paths to ignore",
     help="Parts of file paths to ignore can be specified by regular expression. The parts of file paths "
     "that match one or more of the regular expressions are removed. If, after applying the regular "
     "expressions, multiple warnings are the same only one is reported.",
