@@ -26,8 +26,6 @@ from utils.functions import (
 class UtilTests(unittest.TestCase):
     """Unit tests for the utility methods."""
 
-    URL = "https://example-url.org/"
-
     def test_uuid(self):
         """Test the expected length of the uuid."""
         self.assertEqual(36, len(uuid()))
@@ -35,6 +33,12 @@ class UtilTests(unittest.TestCase):
     def test_md5_hash(self):
         """Test that the hash works."""
         self.assertEqual("bc9189406be84ec297464a514221406d", md5_hash("XXX"))
+
+
+class SanitizeTest(unittest.TestCase):
+    """Unit tests for the sanitize method."""
+
+    URL = "https://example-url.org/"
 
     def test_sanitize_html(self):
         """Test that URLs are converted to anchors."""
@@ -46,18 +50,20 @@ class UtilTests(unittest.TestCase):
 
     def test_sanitize_html_does_not_change_target(self):
         """Test that existing target attributes are not changed."""
-        self.assertEqual(
-            f'<a href="{self.URL}" target="_top">{self.URL}</a>',
-            sanitize_html(f'<a href="{self.URL}" target="_top">{self.URL}</a>'),
-        )
-        self.assertEqual(
-            f'<a href="{self.URL}" target="_blank">{self.URL}</a>',
-            sanitize_html(f'<a href="{self.URL}" target="_blank">{self.URL}</a>'),
-        )
+        for target in ("top", "blank"):
+            self.assertEqual(
+                f'<a href="{self.URL}" target="_{target}">{self.URL}</a>',
+                sanitize_html(f'<a href="{self.URL}" target="_{target}">{self.URL}</a>'),
+            )
 
     def test_sanitize_html_does_not_add_target_without_href(self):
         """Test that a target attribute is not added when there's no href attribute."""
         self.assertEqual(f"<a>{self.URL}</a>", sanitize_html(f"<a>{self.URL}</a>"))
+
+    def test_sanitize_html_with_hash(self):
+        """Test that URLs with hashes are converted to anchors."""
+        url = self.URL + "page.html#hash"
+        self.assertEqual(f'<a href="{url}" target="_blank">{url}</a>', sanitize_html(url))
 
 
 @patch("utils.functions.bottle.request")
