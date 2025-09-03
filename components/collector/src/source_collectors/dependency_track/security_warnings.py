@@ -61,13 +61,14 @@ class DependencyTrackSecurityWarnings(SecurityWarningsSourceCollector, Dependenc
         component = finding["component"]
         project_uuid = component["project"]
         vulnerability = finding["vulnerability"]
+        vulnerability_id = vulnerability["vulnId"]
         current_version = component["version"]
         latest_version = component.get("latestVersion", "unknown")
         return Entity(
             component=component["name"],
             component_landing_url=f"{landing_url}/components/{component['uuid']}",
             description=vulnerability["description"],
-            identifier=vulnerability["vulnId"],
+            identifier=vulnerability_id,
             key=finding["matrix"],  # Matrix is a combination of project, component, and vulnerability
             latest=latest_version,
             latest_version_status=self._latest_version_status(current_version, latest_version),
@@ -75,5 +76,6 @@ class DependencyTrackSecurityWarnings(SecurityWarningsSourceCollector, Dependenc
             project_landing_url=f"{landing_url}/projects/{project_uuid}",
             project_version=self._projects[project_uuid].get("version", ""),
             severity=vulnerability["severity"].capitalize(),
+            uuid=vulnerability_id,
             version=current_version,
         )

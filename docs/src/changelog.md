@@ -18,6 +18,14 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - When copying a metric, also copy the status, status end date, and status rationale of the measurement entities. Fixes [#7403](https://github.com/ICTU/quality-time/issues/7403).
 
+### Added
+
+- When measuring security warnings using multiple sources, detect CVEs reported by multiple sources and adjust the count of security warnings accordingly. Closes [#9212](https://github.com/ICTU/quality-time/issues/9212).
+
+### Changed
+
+- Don't limit the number of security warnings stored per measurement so Quality-time can detect CVEs reported by multiple sources. Prerequisite for [#9212](https://github.com/ICTU/quality-time/issues/9212).
+
 ## v5.41.0 - 2025-09-05
 
 ### Fixed

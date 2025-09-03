@@ -18,6 +18,7 @@ class HarborJSONSecurityWarningsTest(HarborJSONCollectorTestCase):
             "severity": "Low",
             "version": "2.2.4",
             "fix_version": "2.2.5",
+            "uuid": "CVE-2011-3374",
             "url": "https://avd.aquasec.com/nvd/cve-2011-3374",
         },
         {
@@ -28,6 +29,7 @@ class HarborJSONSecurityWarningsTest(HarborJSONCollectorTestCase):
             "severity": "High",
             "version": "1.9.0-2",
             "fix_version": "",
+            "uuid": "CVE-2020-22218",
             "url": "https://avd.aquasec.com/nvd/cve-2020-22218",
         },
     ]

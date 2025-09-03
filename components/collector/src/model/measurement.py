@@ -16,8 +16,6 @@ from .issue_status import IssueStatus
 class SourceMeasurement:
     """Class to hold measurement values, entities, and error messages from collecting the measurement from a source."""
 
-    MAX_ENTITIES: ClassVar[int] = 250  # The maximum number of entities (e.g. violations, issues) to send to the server
-
     value: Value | None = None
     total: Value | None = "100"
     entities: Entities | None = None
@@ -51,12 +49,12 @@ class SourceMeasurement:
             for entity in self.get_entities()
         ]
 
-    def as_dict(self) -> dict[str, Value | JSONList | ErrorMessage | URL | None]:
+    def as_dict(self, max_entities: int | None = None) -> dict[str, Value | JSONList | ErrorMessage | URL | None]:
         """Return the source measurement as dict."""
         return {
             "value": self.value,
             "total": self.total,
-            "entities": self.entities_to_store()[: self.MAX_ENTITIES],
+            "entities": self.entities_to_store()[:max_entities],
             "connection_error": self.connection_error,
             "parse_error": self.parse_error,
             "api_url": self.api_url,
@@ -69,6 +67,8 @@ class SourceMeasurement:
 class MetricMeasurement:
     """Class to hold measurements from one or more sources for one metric."""
 
+    DEFAULT_MAX_ENTITIES: ClassVar[int] = 250
+
     metric: Metric
     sources: Sequence[SourceMeasurement]
     issue_statuses: Sequence[IssueStatus]
@@ -80,10 +80,16 @@ class MetricMeasurement:
         """Return whether this measurement has one or more errors."""
         return any(source_measurement.has_error for source_measurement in self.sources)
 
+    @property
+    def max_entities(self) -> int | None:
+        """Return the maximum number of entities (violations, issues, etc.) to store per source per measurement."""
+        # We don't limit the number of security warnings so we can detect duplicate CVEs between different sources
+        return None if self.metric.type() == "security_warnings" else self.DEFAULT_MAX_ENTITIES
+
     def as_dict(self) -> dict:
         """Return the metric measurement as dict."""
         measurement = {
-            "sources": [source_measurement.as_dict() for source_measurement in self.sources],
+            "sources": [source_measurement.as_dict(self.max_entities) for source_measurement in self.sources],
             "has_error": self.has_error,
             "metric_uuid": self.metric_uuid,
             "report_uuid": self.report_uuid,

@@ -545,6 +545,7 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
         parse_error: str | None = None,
         total: str | None = None,
         value: str | None = None,
+        entities: list[dict[str, str]] | None = None,
     ) -> Source:
         """Create a source fixture."""
         self.source_count += 1
@@ -558,6 +559,7 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
                 "parse_error": parse_error,
                 "total": total,
                 "value": value,
+                "entities": entities or [],
             },
         )
 
@@ -589,6 +591,34 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
             sources=[self.source(metric, value="10"), self.source(metric, value="20")],
         )
         self.assertEqual("20", measurement["count"]["value"])
+
+    def test_add_two_sources_with_entities_with_equal_uuids(self):
+        """Test that if two sources contain entities with the same UUID, the count is adjusted."""
+        metric = self.metric()
+        measurement = self.measurement(
+            metric,
+            sources=[
+                self.source(metric, value="1", entities=[{"key": "entity 1", "uuid": "uuid 1"}]),
+                self.source(metric, value="1", entities=[{"key": "entity 2", "uuid": "uuid 1"}]),
+            ],
+        )
+        self.assertEqual("1", measurement["count"]["value"])
+        self.assertTrue(measurement["sources"][0]["entities"][0]["uuid_duplicate"])
+        self.assertTrue(measurement["sources"][1]["entities"][0]["uuid_duplicate"])
+
+    def test_add_two_sources_with_entities_with_different_uuids(self):
+        """Test that if two sources contain entities with different UUIDs, the count is not adjusted."""
+        metric = self.metric()
+        measurement = self.measurement(
+            metric,
+            sources=[
+                self.source(metric, value="1", entities=[{"key": "entity 1", "uuid": "uuid 1"}]),
+                self.source(metric, value="1", entities=[{"key": "entity 2", "uuid": "uuid 2"}]),
+            ],
+        )
+        self.assertEqual("2", measurement["count"]["value"])
+        self.assertFalse(measurement["sources"][0]["entities"][0]["uuid_duplicate"])
+        self.assertFalse(measurement["sources"][1]["entities"][0]["uuid_duplicate"])
 
     def test_ignored_entities(self):
         """Test that the number of ignored entities is subtracted."""

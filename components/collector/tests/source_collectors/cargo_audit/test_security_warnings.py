@@ -20,6 +20,10 @@ class CargoAuditSecurityWarningsTest(SourceCollectorTestCase):
                             "id": "RUSTSEC-2022-0090",
                             "title": "`libsqlite3-sys` via C SQLite CVE-2022-35737",
                             "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-35737",
+                            "aliases": [
+                                "CVE-2020-26235",
+                                "GHSA-wcg3-cvx6-7396",
+                            ],
                         },
                         "versions": {
                             "patched": [
@@ -70,6 +74,7 @@ class CargoAuditSecurityWarningsTest(SourceCollectorTestCase):
                 "advisory_id": "RUSTSEC-2022-0090",
                 "advisory_title": "`libsqlite3-sys` via C SQLite CVE-2022-35737",
                 "advisory_url": "https://nvd.nist.gov/vuln/detail/CVE-2022-35737",
+                "uuid": "CVE-2020-26235",
                 "versions_patched": ">=0.25.1",
                 "warning_type": "vulnerability",
             },

@@ -39,6 +39,7 @@ class TrivyJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceC
                         package_name=package_name,
                         installed_version=vulnerability["InstalledVersion"],
                         fixed_version=vulnerability.get("FixedVersion", ""),
+                        uuid=vulnerability_id,
                         url=url,
                     ),
                 )

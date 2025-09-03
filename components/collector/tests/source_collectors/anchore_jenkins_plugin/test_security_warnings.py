@@ -32,6 +32,7 @@ class AnchoreJenkinsPluginSecurityWarningsTest(SourceCollectorTestCase):
             "fix": fix,
             "severity": severity,
             "package": package,
+            "uuid": cve,
         }
 
     async def test_warnings(self):
