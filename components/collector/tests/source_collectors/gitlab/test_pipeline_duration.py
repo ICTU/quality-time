@@ -53,10 +53,34 @@ class GitLabPipelineDurationTest(GitLabTestCase):
             ]
         )
 
-    async def test_duration(self):
-        """Test that the duration is returned."""
+    async def test_report_slowest_duration(self):
+        """Test that the duration of the slowest pipeline is returned."""
+        slowest = self.create_pipeline_run(
+            pipeline_id="2", created_at="2025-09-01T00:00:00", updated_at="2025-09-01T00:20:00"
+        )
+        self.pipeline_json.append(slowest)
         response = await self.collect()
-        self.assert_measurement(response, value="10", landing_url=self.landing_url)
+        self.assert_measurement(response, value="20", landing_url=self.landing_url)
+
+    async def test_report_latest_pipeline(self):
+        """Test that the duration of the latest pipeline is reported."""
+        self.set_source_parameter("pipeline_selection", "latest")
+        latest = self.create_pipeline_run(
+            pipeline_id="2", created_at="2025-09-01T00:00:00", updated_at="2025-09-01T00:05:00"
+        )
+        self.pipeline_json.append(latest)
+        response = await self.collect()
+        self.assert_measurement(response, value="5", landing_url=self.landing_url)
+
+    async def test_report_average_duration(self):
+        """Test that the average duration is reported."""
+        self.set_source_parameter("pipeline_selection", "average")
+        second = self.create_pipeline_run(
+            pipeline_id="2", created_at="2025-09-01T00:00:00", updated_at="2025-09-01T00:20:00"
+        )
+        self.pipeline_json.append(second)
+        response = await self.collect()
+        self.assert_measurement(response, value="15", landing_url=self.landing_url)
 
     @patch("source_collectors.gitlab.json_types.datetime", MOCK_DATETIME)
     async def test_duration_without_updated(self):
@@ -76,13 +100,3 @@ class GitLabPipelineDurationTest(GitLabTestCase):
         self.set_source_parameter("pipeline_schedules_to_include", ["pipeline description"])
         response = await self.collect()
         self.assert_measurement(response, value="10", landing_url=self.landing_url)
-
-    async def test_report_latest_pipeline_instead_of_slowest(self):
-        """Test that the latest instead of the slowest pipeline can be selected."""
-        self.set_source_parameter("pipeline_selection", "latest")
-        latest = self.create_pipeline_run(
-            pipeline_id="2", created_at="2025-09-01T00:00:00", updated_at="2025-09-01T00:05:00"
-        )
-        self.pipeline_json.append(latest)
-        response = await self.collect()
-        self.assert_measurement(response, value="5", landing_url=self.landing_url)

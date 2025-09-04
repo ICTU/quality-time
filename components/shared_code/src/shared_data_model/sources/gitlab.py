@@ -267,9 +267,9 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             metrics=["pipeline_duration", "source_up_to_dateness"],
         ),
         "pipeline_selection": SingleChoiceParameter(
-            name="Pipeline to select",
-            help="Which pipeline to select from the set of pipelines that match the filter criteria?",
-            values=["latest", "slowest"],
+            name="Pipeline selection",
+            help="Which pipeline(s) to select from the set of pipelines that match the filter criteria?",
+            values=["average", "latest", "slowest"],
             default_value="slowest",
             metrics=["pipeline_duration"],
         ),
