@@ -268,7 +268,6 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         ),
         "pipeline_selection": SingleChoiceParameter(
             name="Pipeline to select",
-            short_name="pipeline selection",
             help="Which pipeline to select from the set of pipelines that match the filter criteria?",
             values=["latest", "slowest"],
             default_value="slowest",
