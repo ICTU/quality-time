@@ -49,7 +49,7 @@ class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector
                     last_bom_import="" if last_bom_import is None else last_bom_import.isoformat(),
                     project=project["name"],
                     project_landing_url=f"{landing_url}/projects/{uuid}",
-                    version=project.get("version", ""),
+                    project_version=project.get("version", ""),
                     is_latest="true" if self._is_latest(project) else "false",
                     up_to_date=self._up_to_dateness(project),
                 )

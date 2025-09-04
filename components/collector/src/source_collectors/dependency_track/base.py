@@ -45,9 +45,9 @@ class DependencyTrackBase(SourceCollector):
                 page_nr += 1
         return responses
 
-    async def _get_project_uuids(self) -> dict[str, str]:
-        """Return a mapping of project UUIDs to project names."""
-        return {project["uuid"]: project["name"] async for project in self._get_projects()}
+    async def _get_projects_by_uuid(self) -> dict[str, DependencyTrackProject]:
+        """Return a mapping of project UUIDs to projects."""
+        return {project["uuid"]: project async for project in self._get_projects()}
 
     async def _get_projects(self) -> AsyncIterator[DependencyTrackProject]:
         """Return the Dependency-Track projects."""

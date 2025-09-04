@@ -57,8 +57,8 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 "is_latest": "true",
                 "project": "Project 1",
                 "project_landing_url": "/projects/p1",
+                "project_version": "1.1",
                 "up_to_date": "yes",
-                "version": "1.1",
             },
             {
                 "key": "p2",
@@ -67,8 +67,8 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 "last_bom_import": self.last_week.isoformat(),
                 "project": "Project 2",
                 "project_landing_url": "/projects/p2",
+                "project_version": "1.2",
                 "up_to_date": "nearly",
-                "version": "1.2",
             },
         ]
 
@@ -99,8 +99,8 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 "is_latest": "true",
                 "project": "Project 3",
                 "project_landing_url": "/projects/p3",
+                "project_version": "1.3",
                 "up_to_date": "nearly",
-                "version": "1.3",
             }
         )
         response = await self.collect(get_request_json_return_value=projects)
@@ -125,8 +125,8 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 "is_latest": "false",
                 "project": "Project 3",
                 "project_landing_url": "/projects/p3",
+                "project_version": "1.3",
                 "up_to_date": "unknown",
-                "version": "1.3",
             }
         )
         response = await self.collect(get_request_json_return_value=projects)

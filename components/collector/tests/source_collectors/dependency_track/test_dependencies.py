@@ -33,6 +33,7 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
                 "latest_version_status": latest_version_status,
                 "project": "project name",
                 "project_landing_url": "/projects/project uuid",
+                "project_version": "1.4",
                 "version": "1.0",
             },
         ]

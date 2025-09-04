@@ -21,6 +21,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Added
 
 - When measuring pipeline duration with GitLab as source, allow for measuring the latest pipeline in the set of pipelines that match the filter criteria instead of the slowest. Closes [#11860](https://github.com/ICTU/quality-time/issues/11860).
+- When measuring dependencies or security warnings with Dependency-Track as source, also show the project version in the measurement details. Closes [#11895](https://github.com/ICTU/quality-time/issues/11895).
 
 ### Changed
 

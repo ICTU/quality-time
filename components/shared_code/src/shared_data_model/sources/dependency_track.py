@@ -20,6 +20,10 @@ DEPENDENCY_TRACK_DESCRIPTION = (
     "Dependency-Track is a component analysis platform that allows organizations to identify and "
     "reduce risk in the software supply chain."
 )
+PROJECT_ATTRIBUTES = [
+    EntityAttribute(name="Project", url="project_landing_url"),
+    EntityAttribute(name="Project version"),
+]
 VERSION_ATTRIBUTES = [
     EntityAttribute(name="Current version", key="version"),
     EntityAttribute(name="Latest version", key="latest"),
@@ -107,7 +111,7 @@ DEPENDENCY_TRACK = Source(
             name="dependency",
             name_plural="dependencies",
             attributes=[
-                EntityAttribute(name="Project", url="project_landing_url"),
+                *PROJECT_ATTRIBUTES,
                 EntityAttribute(name="Component", url="component_landing_url"),
                 *VERSION_ATTRIBUTES,
             ],
@@ -115,7 +119,7 @@ DEPENDENCY_TRACK = Source(
         "security_warnings": Entity(
             name="security warning",
             attributes=[
-                EntityAttribute(name="Project", url="project_landing_url"),
+                *PROJECT_ATTRIBUTES,
                 EntityAttribute(name="Component", url="component_landing_url"),
                 EntityAttribute(name="Identifier"),
                 EntityAttribute(name="Description"),
@@ -126,8 +130,7 @@ DEPENDENCY_TRACK = Source(
         "source_up_to_dateness": Entity(
             name="project",
             attributes=[
-                EntityAttribute(name="Project", url="project_landing_url"),
-                EntityAttribute(name="Version"),
+                *PROJECT_ATTRIBUTES,
                 EntityAttribute(name="Latest", key="is_latest", type=EntityAttributeType.BOOLEAN),
                 EntityAttribute(name="Last BOM import", type=EntityAttributeType.DATETIME),
                 EntityAttribute(name="Last BOM analysis", type=EntityAttributeType.DATETIME),

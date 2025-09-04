@@ -43,8 +43,8 @@ class DependencyTrackSecurityWarnings(SecurityWarningsSourceCollector, Dependenc
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to get the findings."""
         api_url = await self._api_url()
-        self._project_uuids = await self._get_project_uuids()
-        project_finding_urls = [URL(f"{api_url}/finding/project/{uuid}") for uuid in self._project_uuids]
+        self._projects = await self._get_projects_by_uuid()
+        project_finding_urls = [URL(f"{api_url}/finding/project/{uuid}") for uuid in self._projects]
         return await super()._get_source_responses(*project_finding_urls)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
@@ -71,8 +71,9 @@ class DependencyTrackSecurityWarnings(SecurityWarningsSourceCollector, Dependenc
             key=finding["matrix"],  # Matrix is a combination of project, component, and vulnerability
             latest=latest_version,
             latest_version_status=self._latest_version_status(current_version, latest_version),
-            project=self._project_uuids[project_uuid],  # Name of the project
+            project=self._projects[project_uuid]["name"],
             project_landing_url=f"{landing_url}/projects/{project_uuid}",
+            project_version=self._projects[project_uuid].get("version", ""),
             severity=vulnerability["severity"].capitalize(),
             version=current_version,
         )
