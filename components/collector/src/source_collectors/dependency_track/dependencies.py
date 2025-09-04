@@ -31,7 +31,7 @@ class DependencyTrackDependencies(DependencyTrackLatestVersionStatusBase):
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to get the components."""
         api_url = await self._api_url()
-        project_uuids = await self._get_project_uuids()
+        project_uuids = await self._get_projects_by_uuid()
         project_components_urls = [URL(f"{api_url}/component/project/{uuid}") for uuid in project_uuids]
         return await super()._get_source_responses(*project_components_urls)
 
@@ -57,5 +57,6 @@ class DependencyTrackDependencies(DependencyTrackLatestVersionStatusBase):
             latest_version_status=self._latest_version_status(current_version, latest_version),
             project=project["name"],
             project_landing_url=f"{landing_url}/projects/{project['uuid']}",
+            project_version=project.get("version", ""),
             version=current_version,
         )
