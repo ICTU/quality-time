@@ -26,8 +26,8 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Changed
 
-- The Docker image used for running a test LDAP server (bitnami/openldap) while developing Quality-time is deprecated. Replace it with a Debian image with OpenLDAP. Closes [#11865](https://github.com/ICTU/quality-time/issues/11865).
 - Include SBOM attestation when releasing Quality-time container images to Docker Hub. Closes [#9208](https://github.com/ICTU/quality-time/issues/9208).
+- The Docker image used for running a test LDAP server (bitnami/openldap) while developing Quality-time is deprecated. Replace it with a Debian image with OpenLDAP. Closes [#11865](https://github.com/ICTU/quality-time/issues/11865).
 
 ### Removed
 
