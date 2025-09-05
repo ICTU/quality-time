@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- When copying a metric, also copy the status of the metric's measurement details. Fixes [#7403](https://github.com/ICTU/quality-time/issues/7403).
+
 ## v5.41.0 - 2025-09-05
 
 ### Fixed

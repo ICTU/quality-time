@@ -6,8 +6,9 @@ import bottle
 from pymongo.database import Database
 
 from shared.database.measurements import insert_new_measurement, latest_measurement, latest_successful_measurement
+from shared.model.measurement import Measurement
 from shared.model.metric import Metric
-from shared.utils.type import MetricId, SubjectId, Value
+from shared.utils.type import MetricId, ReportId, SubjectId, Value
 from shared_data_model import DATA_MODEL
 
 from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
@@ -43,16 +44,38 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
     target_report = source_and_target_reports[1]
     source_metric, source_subject = source_report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     target_subject = target_report.subjects_dict[subject_uuid]
-    metric_copy_uuid = cast(MetricId, uuid())
-    target_subject.metrics_dict[metric_copy_uuid] = copy_metric(source_metric)
+    new_metric_uuid = cast(MetricId, uuid())
+    new_metric = target_subject.metrics_dict[new_metric_uuid] = copy_metric(source_metric)
     description = (
         f"{{user}} copied the metric '{source_metric.name}' of subject '{source_subject.name}' from report "
         f"'{source_report.name}' to subject '{target_subject.name}' in report '{target_report.name}'."
     )
-    uuids = [target_report.uuid, target_subject.uuid, metric_copy_uuid]
+    uuids = [target_report.uuid, target_subject.uuid, new_metric_uuid]
     result = insert_new_report(database, description, uuids, target_report)
-    result["new_metric_uuid"] = metric_copy_uuid
+    result["new_metric_uuid"] = new_metric_uuid
+    old_measurement = cast(Measurement, latest_measurement(database, source_metric))
+    new_measurement = copy_measurement(old_measurement, source_metric, new_metric, new_metric_uuid, target_report.uuid)
+    insert_new_measurement(database, new_measurement)
     return result
+
+
+def copy_measurement(
+    source_measurement: Measurement,
+    source_metric: Metric,
+    target_metric: Metric,
+    target_metric_uuid: MetricId,
+    target_report_uuid: ReportId,
+) -> Measurement:
+    """Create a copy of the measurement for the target metric in the target report."""
+    measurement = source_measurement.copy()
+    measurement["metric_uuid"] = target_metric_uuid
+    measurement["report_uuid"] = target_report_uuid
+    old_source_uuids = source_metric.get("sources", {}).keys()
+    new_source_uuids = target_metric.get("sources", {}).keys()
+    source_uuid_mapping = dict(zip(old_source_uuids, new_source_uuids, strict=True))
+    for source in measurement["sources"]:
+        source["source_uuid"] = source_uuid_mapping[source["source_uuid"]]
+    return measurement
 
 
 @bottle.post(

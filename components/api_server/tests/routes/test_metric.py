@@ -6,6 +6,7 @@ import requests
 
 from shared_data_model.meta.metric import Unit
 from shared_data_model import DATA_MODEL
+from shared.utils.functions import first
 
 from model.report import Report
 
@@ -453,7 +454,18 @@ class MetricTest(MetricTestCase):
         self.report = Report(self.DATA_MODEL, create_report())
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
+        self.database.measurements.find_one.return_value = {
+            "metric_uuid": METRIC_ID,
+            "_id": "id",
+            "sources": [{"source_uuid": SOURCE_ID}],
+        }
+        self.database.measurements.insert_one.side_effect = self.insert_one_measurement
         self.database.sessions.find_one.return_value = JOHN
+
+    def insert_one_measurement(self, measurement) -> None:
+        """Mock inserting a measurement into the database."""
+        measurement["_id"] = "new_id"
+        self.inserted_measurement = measurement
 
     def assert_delta(self, description: str, uuids: list[str] | None = None, email: str = JOHN["email"], report=None):
         """Assert that the report delta contains the correct data."""
@@ -476,16 +488,23 @@ class MetricTest(MetricTestCase):
         )
 
     def test_copy_metric(self):
-        """Test that a metric can be copied."""
+        """Test that a metric can be copied and that the last measurement of the source metric is copied too."""
         self.assertTrue(post_metric_copy(METRIC_ID, SUBJECT_ID, self.database)["ok"])
         self.database.reports.insert_one.assert_called_once()
+        self.database.measurements.insert_one.assert_called_once()
         updated_report = self.updated_report()
         inserted_metrics = updated_report["subjects"][SUBJECT_ID]["metrics"]
         self.assertEqual(2, len(inserted_metrics))
+        inserted_metric_uuid = list(inserted_metrics.keys())[1]
+        self.assertEqual(inserted_metric_uuid, self.inserted_measurement["metric_uuid"])
+        inserted_source_uuid = first(
+            updated_report["subjects"][SUBJECT_ID]["metrics"][inserted_metric_uuid]["sources"].keys()
+        )
+        self.assertEqual(inserted_source_uuid, self.inserted_measurement["sources"][0]["source_uuid"])
         self.assert_delta(
             "John Doe copied the metric 'Metric' of subject 'Subject' from report 'Report' to subject 'Subject' in "
             "report 'Report'.",
-            uuids=[REPORT_ID, SUBJECT_ID, list(inserted_metrics.keys())[1]],
+            uuids=[REPORT_ID, SUBJECT_ID, inserted_metric_uuid],
             report=updated_report,
         )
 

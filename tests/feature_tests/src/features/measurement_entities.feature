@@ -94,3 +94,14 @@ Feature: measurement entities
     When the client sets the status of entity 1 to "confirmed"
     And the client waits a second
     Then the metric status is "target_met"
+
+  Scenario: copy a metric with an entity that is false positive
+    Given an existing metric with type "user_story_points"
+    And an existing source with type "azure_devops"
+    When the collector measures "120"
+      | key | story_points |
+      | 1   | 100          |
+      | 2   | 20           |
+    And the client sets the status of entity 1 to "false_positive"
+    And the client copies the metric
+    Then the metric status is "target_not_met"
