@@ -1,6 +1,6 @@
 [project]
 name = "shared-code"
-version = "5.40.0"
+version = "5.41.0-rc.0"
 requires-python = ">=3.13"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
