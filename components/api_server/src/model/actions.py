@@ -1,12 +1,12 @@
 """Model operations."""
 
 from collections.abc import MutableMapping
-from typing import Any, cast
+from typing import cast
 
 from shared.model.subject import Subject
 from shared.model.metric import Metric
 from shared.model.source import Source
-from shared.utils.type import ItemId
+from shared.utils.type import ItemId, MetricId, SourceId, SubjectId
 
 from model.report import Report
 from utils.functions import uuid
@@ -21,34 +21,27 @@ def copy_item[Item: Metric | Report | Source | Subject](item: Item, **kwargs) ->
     return item_copy
 
 
-def copy_source(source: Source) -> Source:
+def copy_source(source_uuid: SourceId, source: Source) -> Source:
     """Return a copy of the source."""
-    return copy_item(source)
+    return copy_item(source, copied_from=source_uuid)
 
 
-def copy_metric(metric: Metric) -> Metric:
+def copy_metric(metric_uuid: MetricId, metric: Metric) -> Metric:
     """Return a copy of the metric and its sources."""
-    kwargs: dict[str, Any] = {
-        "sources": {uuid(): copy_source(source) for source in metric["sources"].values()},
-    }
-    return copy_item(metric, **kwargs)
+    sources = {uuid(): copy_source(source_uuid, source) for source_uuid, source in metric["sources"].items()}
+    return copy_item(metric, copied_from=metric_uuid, sources=sources)
 
 
-def copy_subject(subject: Subject) -> Subject:
+def copy_subject(subject_uuid: SubjectId, subject: Subject) -> Subject:
     """Return a copy of the subject, its metrics, and their sources."""
-    kwargs: dict[str, Any] = {
-        "metrics": {uuid(): copy_metric(metric) for metric in subject["metrics"].values()},
-    }
-    return copy_item(subject, **kwargs)
+    metrics = {uuid(): copy_metric(metric_uuid, metric) for metric_uuid, metric in subject["metrics"].items()}
+    return copy_item(subject, copied_from=subject_uuid, metrics=metrics)
 
 
 def copy_report(report: Report) -> Report:
     """Return a copy of the report, its subjects, their metrics, and their sources."""
-    return copy_item(
-        report,
-        report_uuid=uuid(),
-        subjects={uuid(): copy_subject(subject) for subject in report["subjects"].values()},
-    )
+    subjects = {uuid(): copy_subject(subject_uuid, subject) for subject_uuid, subject in report["subjects"].items()}
+    return copy_item(report, report_uuid=uuid(), subjects=subjects, copied_from={"report": report.uuid})
 
 
 type ItemsDictType = MutableMapping[ItemId, Metric | Source | Subject]
