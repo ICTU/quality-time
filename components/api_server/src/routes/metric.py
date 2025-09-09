@@ -5,7 +5,7 @@ from typing import Any, cast
 import bottle
 from pymongo.database import Database
 
-from shared.database.measurements import insert_new_measurement, latest_measurement, latest_successful_measurement
+from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.metric import Metric
 from shared.utils.type import MetricId, SubjectId, Value
 from shared_data_model import DATA_MODEL
@@ -44,7 +44,7 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
     source_metric, source_subject = source_report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
     target_subject = target_report.subjects_dict[subject_uuid]
     metric_copy_uuid = cast(MetricId, uuid())
-    target_subject.metrics_dict[metric_copy_uuid] = copy_metric(source_metric)
+    target_subject.metrics_dict[metric_copy_uuid] = copy_metric(metric_uuid, source_metric)
     description = (
         f"{{user}} copied the metric '{source_metric.name}' of subject '{source_subject.name}' from report "
         f"'{source_report.name}' to subject '{target_subject.name}' in report '{target_report.name}'."
@@ -187,7 +187,7 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
     """Add a new issue to the metric using the configured issue tracker."""
     report = latest_report_for_uuids(latest_reports(database), metric_uuid)[0]
     metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
-    last_measurement = latest_successful_measurement(database, metric)
+    last_measurement = latest_measurement(database, metric, skip_measurements_with_error=True)
     measured_value = last_measurement.value() if last_measurement else "missing"
     issue_tracker = report.issue_tracker()
     issue_key, error = issue_tracker.create_issue(*create_issue_text(metric, measured_value))

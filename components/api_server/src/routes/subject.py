@@ -40,7 +40,7 @@ def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: 
     target_report = source_and_target_reports[1]
     subject = source_report.subjects_dict[subject_uuid]
     subject_copy_uuid = cast(SubjectId, uuid())
-    target_report.subjects_dict[subject_copy_uuid] = copy_subject(subject)
+    target_report.subjects_dict[subject_copy_uuid] = copy_subject(subject_uuid, subject)
     delta_description = (
         f"{{user}} copied the subject '{subject.name}' from report "
         f"'{source_report.name}' to report '{target_report.name}'."

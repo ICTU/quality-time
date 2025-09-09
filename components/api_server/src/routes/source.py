@@ -47,7 +47,7 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
     source, source_metric, source_subject = reports[0].instance_and_parents_for_uuid(source_uuid=source_uuid)
     target_metric, target_subject = reports[1].instance_and_parents_for_uuid(metric_uuid=metric_uuid)
 
-    target_metric["sources"][(source_copy_uuid := uuid())] = copy_source(source)
+    target_metric["sources"][(source_copy_uuid := uuid())] = copy_source(source_uuid, source)
     delta_description = (
         f"{{user}} copied the source '{source.name}' of metric '{source_metric.name}' of subject "
         f"'{source_subject.name}' from report '{reports[0].name}' "
