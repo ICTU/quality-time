@@ -2,7 +2,7 @@
 
 from unittest.mock import Mock
 
-from shared.database.measurements import insert_new_measurement, latest_measurement, latest_successful_measurement
+from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 
@@ -35,12 +35,15 @@ class LatestMeasurementsTest(MeasurementsTestCase):
 
     def test_no_latest_successful_measurement(self):
         """Test no successful measurements found."""
-        self.assertIsNone(latest_successful_measurement(self.database, self.metric))
+        self.assertIsNone(latest_measurement(self.database, self.metric, skip_measurements_with_error=True))
 
     def test_latest_successful_measurement(self):
         """Test that a successful measurement is found."""
         self.database.measurements.find_one.return_value = {}
-        self.assertEqual(Measurement(self.metric), latest_successful_measurement(self.database, self.metric))
+        self.assertEqual(
+            Measurement(self.metric),
+            latest_measurement(self.database, self.metric, skip_measurements_with_error=True),
+        )
 
 
 class InsertNewMeasurementsTest(MeasurementsTestCase):

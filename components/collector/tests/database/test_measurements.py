@@ -6,7 +6,7 @@ import mongomock
 
 from database.measurements import create_measurement
 
-from tests.fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
+from tests.fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, create_report
 
 
 class TestMeasurements(unittest.TestCase):
@@ -17,7 +17,13 @@ class TestMeasurements(unittest.TestCase):
         self.client: mongomock.MongoClient = mongomock.MongoClient()
         self.database = self.client["quality_time_db"]
 
-    def measurement_data(self, first_seen: str = "2023-07-18", source_parameter_hash: str = "hash") -> dict:
+    def measurement_data(
+        self,
+        first_seen: str = "2023-07-18",
+        source_parameter_hash: str = "hash",
+        metric_uuid: str = METRIC_ID,
+        source_uuid: str = SOURCE_ID,
+    ) -> dict:
         """Create the measurement data."""
         return {
             "start": "2023-07-19T16:50:47+00:000",
@@ -26,17 +32,17 @@ class TestMeasurements(unittest.TestCase):
             "sources": [
                 {
                     "type": "sonarqube",
-                    "source_uuid": SOURCE_ID,
+                    "source_uuid": source_uuid,
                     "name": "Source",
                     "parameters": {"url": "https://url", "password": "password"},
                     "parse_error": None,
                     "connection_error": None,
                     "value": "10",
                     "total": "100",
-                    "entities": [{"key": "key", "first_seen": first_seen}],
+                    "entities": [{"key": "1", "first_seen": first_seen}],
                 },
             ],
-            "metric_uuid": METRIC_ID,
+            "metric_uuid": metric_uuid,
             "report_uuid": REPORT_ID,
             "source_parameter_hash": source_parameter_hash,
         }
@@ -106,3 +112,60 @@ class TestMeasurements(unittest.TestCase):
         self.database["reports"].insert_one(create_report(report_uuid=REPORT_ID, measurement_requested="3000-01-01"))
         create_measurement(self.database, self.measurement_data())
         self.assertEqual(2, len(list(self.database.measurements.find())))
+
+    def test_create_measurement_for_copied_metric(self):
+        """Test that the entity user data are copied from the original measurement."""
+        report = create_report(report_uuid=REPORT_ID)
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {
+            "type": "dependencies",
+            "copied_from": METRIC_ID,
+            "sources": {SOURCE_ID2: {"type": "pip", "copied_from": SOURCE_ID}},
+        }
+        self.database["reports"].insert_one(report)
+        entity_user_data = {"1": {"status": "false_positive", "status_end_date": "2026-03-10"}}
+        self.database["measurements"].insert_one(
+            {
+                "report_uuid": REPORT_ID,
+                "metric_uuid": METRIC_ID,
+                "sources": [
+                    {
+                        "source_uuid": SOURCE_ID,
+                        "parse_error": None,
+                        "connection_error": None,
+                        "value": "42",
+                        "entities": [{"key": "1"}],
+                        "entity_user_data": entity_user_data,
+                    },
+                ],
+            },
+        )
+        create_measurement(self.database, self.measurement_data(metric_uuid=METRIC_ID2, source_uuid=SOURCE_ID2))
+        inserted_measurement = self.database.measurements.find_one(filter={"metric_uuid": METRIC_ID2})
+        self.assertEqual(entity_user_data, inserted_measurement["sources"][0]["entity_user_data"])
+
+    def test_create_measurement_for_copied_metric_without_measurement(self):
+        """Test that the entity user data are not copied from the original measurement if it has no measurements."""
+        report = create_report(report_uuid=REPORT_ID)
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {
+            "type": "dependencies",
+            "copied_from": METRIC_ID,
+            "sources": {SOURCE_ID2: {"type": "pip", "copied_from": SOURCE_ID}},
+        }
+        self.database["reports"].insert_one(report)
+        create_measurement(self.database, self.measurement_data(metric_uuid=METRIC_ID2, source_uuid=SOURCE_ID2))
+        inserted_measurement = self.database.measurements.find_one(filter={"metric_uuid": METRIC_ID2})
+        self.assertNotIn("entity_user_data", inserted_measurement["sources"][0])
+
+    def test_create_measurement_for_copied_metric_without_origin(self):
+        """Test that the entity user data are not copied if the original metric was deleted."""
+        report = create_report(report_uuid=REPORT_ID)
+        report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {
+            "type": "dependencies",
+            "copied_from": METRIC_ID,
+            "sources": {SOURCE_ID2: {"type": "pip", "copied_from": SOURCE_ID}},
+        }
+        del report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]
+        self.database["reports"].insert_one(report)
+        create_measurement(self.database, self.measurement_data(metric_uuid=METRIC_ID2, source_uuid=SOURCE_ID2))
+        inserted_measurement = self.database.measurements.find_one(filter={"metric_uuid": METRIC_ID2})
+        self.assertNotIn("entity_user_data", inserted_measurement["sources"][0])

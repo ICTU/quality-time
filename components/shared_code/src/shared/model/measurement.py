@@ -249,17 +249,27 @@ class Measurement(dict):
 
     def copy_entity_first_seen_timestamps(self, measurement: Measurement) -> None:  # pragma: no feature-test-cover
         """Copy the first seen timestamps of the measurement's entities to this measurement."""
-        old_sources = {source["source_uuid"]: source for source in measurement.sources()}
-        for new_source in self.sources():
-            if old_source := old_sources.get(new_source["source_uuid"]):
-                new_source.copy_entity_first_seen_timestamps(old_source)
+        for old_source, new_source in self.source_pairs(measurement):
+            new_source.copy_entity_first_seen_timestamps(old_source)
 
     def copy_entity_user_data(self, measurement: Measurement) -> None:  # pragma: no feature-test-cover
         """Copy the entity user data from the measurement to this measurement."""
-        old_sources = {source["source_uuid"]: source for source in measurement.sources()}
-        for new_source in self.sources():
-            if old_source := old_sources.get(new_source["source_uuid"]):
-                new_source.copy_entity_user_data(old_source)
+        for old_source, new_source in self.source_pairs(measurement):
+            new_source.copy_entity_user_data(old_source)
+
+    def source_pairs(
+        self, previous_measurement: Measurement
+    ) -> list[tuple[Source, Source]]:  # pragma: no feature-test-cover
+        """Return matching old/new source pairs."""
+        old_sources = {source["source_uuid"]: source for source in previous_measurement.sources()}
+        for source_uuid, source in self.metric["sources"].items():
+            if "copied_from" in source:
+                old_sources[source_uuid] = old_sources[source["copied_from"]]
+        return [
+            (old_source, new_source)
+            for new_source in self.sources()
+            if (old_source := old_sources.get(new_source["source_uuid"]))
+        ]
 
     def update_measurement(self) -> None:
         """Update the measurement targets, values, and statuses."""

@@ -7,22 +7,16 @@ from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 
 
-def latest_measurement(database: Database, metric: Metric) -> Measurement | None:
+def latest_measurement(
+    database: Database, metric: Metric, *, skip_measurements_with_error: bool = False
+) -> Measurement | None:
     """Return the latest measurement."""
-    latest = database.measurements.find_one(filter={"metric_uuid": metric.uuid}, sort=[("start", pymongo.DESCENDING)])
+    measurement_filter: dict[str, bool | str] = {"metric_uuid": metric.uuid}
+    sort_options = [("start", pymongo.DESCENDING)]
+    if skip_measurements_with_error:
+        measurement_filter["has_error"] = False
+    latest = database.measurements.find_one(filter=measurement_filter, sort=sort_options)
     return None if latest is None else Measurement(metric, latest)
-
-
-def latest_successful_measurement(
-    database: Database,
-    metric: Metric,
-) -> Measurement | None:  # pragma: no feature-test-cover
-    """Return the latest successful measurement."""
-    latest_successful = database.measurements.find_one(
-        {"metric_uuid": metric.uuid, "has_error": False},
-        sort=[("start", pymongo.DESCENDING)],
-    )
-    return None if latest_successful is None else Measurement(metric, latest_successful)
 
 
 def insert_new_measurement(database: Database, measurement: Measurement) -> Measurement:
