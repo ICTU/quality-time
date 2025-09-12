@@ -5,7 +5,6 @@ Feature: measurement entities
     Given a logged-in client
     And an existing report
     And an existing subject
-    And an existing metric with type "complex_units"
 
   Scenario: when an entity key changes, a new measurement is added with the new key and the old status
     Given an existing metric with type "user_story_points"

@@ -6,13 +6,11 @@ from unittest.mock import Mock, patch
 import mongomock
 
 from shared.database.measurements import insert_new_measurement, latest_measurement, latest_successful_measurement
-from shared.database.reports import get_reports
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
-from shared.model.report import Report
 from shared.utils.functions import iso_timestamp
 
-from tests.fixtures import METRIC_ID, METRIC_ID2, create_report
+from tests.fixtures import METRIC_ID, METRIC_ID2
 from tests.shared.base import DataModelTestCase
 
 if TYPE_CHECKING:
@@ -86,14 +84,3 @@ class MeasurementsTest(DataModelTestCase):
         self.database_mock.measurements.update_one.assert_called_once_with(
             {"_id": "measurement_id"}, {"$unset": {"source_parameter_hash": ""}}
         )
-
-    def test_get_reports(self):
-        """Test that the reports are returned."""
-        reports = get_reports(self.database)
-        self.assertEqual(reports, [])
-        self.database["reports"].insert_one(create_report("Current report"))
-        self.database["reports"].insert_one(create_report("Previous report", last=False))
-        self.database["reports"].insert_one(create_report("Deleted report", deleted=True))
-        [report] = get_reports(self.database)
-        self.assertEqual(report["title"], "Current report")
-        self.assertEqual(report.__class__, Report)

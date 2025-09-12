@@ -17,11 +17,10 @@ def create_report(
     title: str = "Title",
     report_uuid: str = "report1",
     last: bool = True,
-    deleted: bool | None = None,
     metric_id: MetricId = METRIC_ID,
 ) -> dict:
     """Return a fake report."""
-    report = {
+    return {
         "report_uuid": report_uuid,
         "title": title,
         "subjects": {
@@ -61,8 +60,3 @@ def create_report(
         "issue_tracker": {"type": "jira", "parameters": {"username": "jadoe", "password": "secret"}},
         "last": last,
     }
-    if deleted is not None:
-        report.update({"deleted": deleted})
-        return report
-
-    return report
