@@ -59,7 +59,7 @@ wheels = [
 
 [[package]]
 name = "bump-my-version"
-version = "1.2.1"
+version = "1.2.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -72,9 +72,9 @@ dependencies = [
     { name = "tomlkit" },
     { name = "wcmatch" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d2/1c/2f26665d4be4f1b82b2dfe46f3bd7901582863ddf1bd597309b5d0a5e6d4/bump_my_version-1.2.1.tar.gz", hash = "sha256:96c48f880c149c299312f983d06b50e0277ffc566e64797bf3a6c240bce2dfcc", size = 1137281, upload-time = "2025-07-19T11:52:03.235Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ef/df/1bec1ba4fcdbd65825b018a9f6598ca03531eafb6d7ec978d08121d44c06/bump_my_version-1.2.2.tar.gz", hash = "sha256:76292bf9f827bf0c039f351a00f8aa74f5348cb796d0d7b2d7d59755f403093c", size = 1147090, upload-time = "2025-09-13T13:09:33.227Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5c/f4/40db87f649d9104c5fe69706cc455e24481b90024b2aacb64cc0ef205536/bump_my_version-1.2.1-py3-none-any.whl", hash = "sha256:ddb41d5f30abdccce9d2dc873e880bdf04ec8c7e7237c73a4c893aa10b7d7587", size = 59567, upload-time = "2025-07-19T11:52:01.343Z" },
+    { url = "https://files.pythonhosted.org/packages/6f/ce/d92d04d91f13b41c8abc40f3f960bb1e6da9c97cf2c997f20ba9734e658c/bump_my_version-1.2.2-py3-none-any.whl", hash = "sha256:d8d2a2cddb2dae54f902f05b65f3fea6afd5e332218608360d7c92a4b9e51f57", size = 59543, upload-time = "2025-09-13T13:09:31.469Z" },
 ]
 
 [[package]]
@@ -532,7 +532,7 @@ wheels = [
 
 [[package]]
 name = "pydantic"
-version = "2.11.7"
+version = "2.11.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
@@ -540,9 +540,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "typing-inspection" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/00/dd/4325abf92c39ba8623b5af936ddb36ffcfe0beae70405d456ab1fb2f5b8c/pydantic-2.11.7.tar.gz", hash = "sha256:d989c3c6cb79469287b1569f7447a17848c998458d49ebe294e975b9baf0f0db", size = 788350, upload-time = "2025-06-14T08:33:17.137Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ff/5d/09a551ba512d7ca404d785072700d3f6727a02f6f3c24ecfd081c7cf0aa8/pydantic-2.11.9.tar.gz", hash = "sha256:6b8ffda597a14812a7975c90b82a8a2e777d9257aba3453f973acd3c032a18e2", size = 788495, upload-time = "2025-09-13T11:26:39.325Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6a/c0/ec2b1c8712ca690e5d61979dee872603e92b8a32f94cc1b72d53beab008a/pydantic-2.11.7-py3-none-any.whl", hash = "sha256:dde5df002701f6de26248661f6835bbe296a47bf73990135c7d07ce741b9623b", size = 444782, upload-time = "2025-06-14T08:33:14.905Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/d3/108f2006987c58e76691d5ae5d200dd3e0f532cb4e5fa3560751c3a1feba/pydantic-2.11.9-py3-none-any.whl", hash = "sha256:c42dd626f5cfc1c6950ce6205ea58c93efa406da65f479dcb4029d5934857da2", size = 444855, upload-time = "2025-09-13T11:26:36.909Z" },
 ]
 
 [[package]]
@@ -598,11 +598,11 @@ wheels = [
 
 [[package]]
 name = "pyparsing"
-version = "3.2.3"
+version = "3.2.4"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/bb/22/f1129e69d94ffff626bdb5c835506b3a5b4f3d070f17ea295e12c2c6f60f/pyparsing-3.2.3.tar.gz", hash = "sha256:b9c13f1ab8b3b542f72e28f634bad4de758ab3ce4546e4301970ad6fa77c38be", size = 1088608, upload-time = "2025-03-25T05:01:28.114Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/98/c9/b4594e6a81371dfa9eb7a2c110ad682acf985d96115ae8b25a1d63b4bf3b/pyparsing-3.2.4.tar.gz", hash = "sha256:fff89494f45559d0f2ce46613b419f632bbb6afbdaed49696d322bcf98a58e99", size = 1098809, upload-time = "2025-09-13T05:47:19.732Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/05/e7/df2285f3d08fee213f2d041540fa4fc9ca6c2d44cf36d3a035bf2a8d2bcc/pyparsing-3.2.3-py3-none-any.whl", hash = "sha256:a749938e02d6fd0b59b356ca504a24982314bb090c383e3cf201c95ef7e2bfcf", size = 111120, upload-time = "2025-03-25T05:01:24.908Z" },
+    { url = "https://files.pythonhosted.org/packages/53/b8/fbab973592e23ae313042d450fc26fa24282ebffba21ba373786e1ce63b4/pyparsing-3.2.4-py3-none-any.whl", hash = "sha256:91d0fcde680d42cd031daf3a6ba20da3107e08a75de50da58360e7d94ab24d36", size = 113869, upload-time = "2025-09-13T05:47:17.863Z" },
 ]
 
 [[package]]
@@ -713,7 +713,7 @@ tools = [
 [package.metadata]
 requires-dist = [
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.8.6" },
-    { name = "bump-my-version", marker = "extra == 'tools'", specifier = "==1.2.1" },
+    { name = "bump-my-version", marker = "extra == 'tools'", specifier = "==1.2.2" },
     { name = "fixit", marker = "extra == 'tools'", specifier = "==2.1.0" },
     { name = "gitpython", specifier = "==3.1.45" },
     { name = "mypy", marker = "extra == 'tools'", specifier = "==1.18.1" },
