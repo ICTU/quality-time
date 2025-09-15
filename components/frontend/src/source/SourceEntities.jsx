@@ -235,7 +235,7 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
     }
     const lastMeasurement = measurements[measurements.length - 1]
     const source = lastMeasurement.sources.find((source) => source.source_uuid === sourceUuid)
-    if (!Array.isArray(source.entities) || source.entities.length === 0) {
+    if (!Array.isArray(source?.entities) || source.entities.length === 0) {
         return (
             <InfoMessage title="Measurement details not available">
                 There are currently no measurement details available.
