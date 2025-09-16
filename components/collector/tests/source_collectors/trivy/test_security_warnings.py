@@ -20,6 +20,7 @@ class TrivyJSONSecurityWarningsTest(TrivyJSONTestCase):
                 "package_name": "curl",
                 "installed_version": "7.61.0-r0",
                 "fixed_version": "7.61.1-r1",
+                "uuid": "CVE-2018-16840",
                 "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-16840",
             },
             {
@@ -31,6 +32,7 @@ class TrivyJSONSecurityWarningsTest(TrivyJSONTestCase):
                 "package_name": "curl",
                 "installed_version": "7.61.1-r0",
                 "fixed_version": "",
+                "uuid": "CVE-2019-3822",
                 "url": "https://curl.haxx.se/docs/CVE-2019-3822.html",
             },
             {
@@ -42,6 +44,7 @@ class TrivyJSONSecurityWarningsTest(TrivyJSONTestCase):
                 "package_name": "python",
                 "installed_version": "3.13.1",
                 "fixed_version": "",
+                "uuid": "CVE-2024-5432",
                 "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-5432",
             },
             {
@@ -53,6 +56,7 @@ class TrivyJSONSecurityWarningsTest(TrivyJSONTestCase):
                 "installed_version": "3.4.1",
                 "level": "LOW",
                 "fixed_version": "",
+                "uuid": "CVE-2025-6298",
                 "url": "",
             },
         ]

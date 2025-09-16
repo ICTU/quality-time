@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
+from collections import Counter
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, ClassVar, Self, cast
 
@@ -113,12 +114,27 @@ class CountScaleMeasurement(ScaleMeasurement):
         sources = self._measurement.sources()
         values = [int(str(source.value())) - source.value_of_entities_to_ignore() for source in sources]
         add = self._metric.addition()
-        return str(add(values))
+        return str(add([*values, -self._number_of_duplicate_entities(sources)]))
 
     def _better_or_equal(self, value1: str | None, value2: str | None) -> bool:
         """Override to convert the values to integers before comparing."""
         better_or_equal = {">": int.__ge__, "<": int.__le__}[self["direction"]]
         return better_or_equal(int(value1 or 0), int(value2 or 0))
+
+    def _number_of_duplicate_entities(self, sources: Sequence[Source]) -> int:
+        """Count the number of duplicate entities using the entity UUID field."""
+        uuid_counter: Counter[str] = Counter()
+        # Count the UUIDs:
+        for source in sources:
+            uuid_counter.update([entity["uuid"] for entity in source.get("entities", []) if "uuid" in entity])
+        # Subtract the UUIDs that occur only once:
+        uuid_counter -= Counter(uuid_counter.keys())
+        # Mark the entities with duplicate UUIDs so the UI can show duplicates (FIXME: side effect):
+        for source in sources:
+            for entity in [entity for entity in source.get("entities", []) if "uuid" in entity]:
+                entity["uuid_duplicate"] = entity["uuid"] in uuid_counter
+        # Return the number of entities that are duplicates:
+        return sum(uuid_counter.values())
 
 
 class PercentageScaleMeasurement(ScaleMeasurement):
