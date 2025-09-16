@@ -11,6 +11,7 @@ class Unit(StrEnum):
     CI_JOBS = "CI-jobs"
     CI_JOB_RUNS = "CI-job runs"
     COMPLEX_UNITS = "complex units"
+    COMPLIANCE = "compliance"
     DAYS = "days"
     DEPENDENCIES = "dependencies"
     DOWNVOTES = "downvotes"

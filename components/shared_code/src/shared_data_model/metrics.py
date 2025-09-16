@@ -79,6 +79,17 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
         sources=["manual_number", "sonarqube"],
         tags=[Tag.MAINTAINABILITY, Tag.TESTABILITY],
     ),
+    "compliance": Metric(
+        name="Compliance",
+        description="Keep track of compliance against standards or regulations.",
+        rationale="Measure compliance to report progress and keep track of improvement actions.",
+        direction=Direction.MORE_IS_BETTER,
+        scales=["percentage"],
+        unit=Unit.COMPLIANCE,
+        sources=["manual_number"],
+        target="100",
+        near_target="80",
+    ),
     "dependencies": Metric(
         name="Dependencies",
         description="The number of (outdated) dependencies.",

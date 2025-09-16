@@ -23,6 +23,7 @@ source.""",
             metrics=[
                 "commented_out_code",
                 "complex_units",
+                "compliance",
                 "dependencies",
                 "duplicated_lines",
                 "failed_jobs",
