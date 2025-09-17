@@ -42,7 +42,14 @@ export function TextField({
     const startInputAdornment = startAdornment ? (
         <InputAdornment position="start">{startAdornment}</InputAdornment>
     ) : null
-    const endInputAdornment = endAdornment ? <InputAdornment position="end">{endAdornment}</InputAdornment> : null
+    const endInputAdornment = endAdornment ? (
+        <InputAdornment
+            position="end"
+            sx={{ marginTop: "16px" }} // Adjust margin to vertically align the unit with the input field
+        >
+            {endAdornment}
+        </InputAdornment>
+    ) : null
     return (
         <MUITextField
             defaultValue={textValue ?? ""}

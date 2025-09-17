@@ -28,6 +28,7 @@ SUBJECTS = {
                 ],
             ),
         },
+        metrics=["compliance"],
     ),
     "process": Subject(
         name="Process",
@@ -75,14 +76,12 @@ SUBJECTS = {
                 ],
             ),
         },
-        metrics=[
-            "time_remaining",
-        ],
+        metrics=["compliance", "time_remaining"],
     ),
     "report": Subject(
         name="Quality report",
         description="A software quality report.",
-        metrics=["metrics", "missing_metrics"],
+        metrics=["compliance", "metrics", "missing_metrics"],
     ),
     "software": Subject(
         name="Software",
@@ -130,14 +129,11 @@ SUBJECTS = {
                 ],
             ),
         },
-        metrics=[
-            "slow_transactions",
-            "performancetest_stability",
-        ],
+        metrics=["compliance", "slow_transactions", "performancetest_stability"],
     ),
     "team": Subject(
         name="Team",
         description="A team developing, maintaining and/or operating custom software.",
-        metrics=["sentiment", "velocity"],
+        metrics=["compliance", "sentiment", "velocity"],
     ),
 }

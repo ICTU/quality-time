@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - When copying a metric, also copy the status, status end date, and status rationale of the measurement entities. Fixes [#7403](https://github.com/ICTU/quality-time/issues/7403).
 
+### Added
+
+- Add a 'compliance' metric to track compliance to standards or regulations. Manual number is the only supported source at the moment. Closes [#11824](https://github.com/ICTU/quality-time/issues/11824).
+
 ## v5.41.0 - 2025-09-05
 
 ### Fixed

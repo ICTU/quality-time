@@ -26,6 +26,7 @@ ALL_METRICS = {
     "CI-pipeline duration": "pipeline_duration",
     "Commented out code": "commented_out_code",
     "Complex units": "complex_units",
+    "Compliance": "compliance",
     "Dependencies": "dependencies",
     "Duplicated lines": "duplicated_lines",
     "Failed CI-jobs": "failed_jobs",
