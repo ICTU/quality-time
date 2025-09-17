@@ -14,7 +14,7 @@ dependencies = [
     "ldap3==2.9.1",
     "lxml==6.0.0",
     "lxml-html-clean==0.4.2",
-    "pymongo==4.15.0",
+    "pymongo==4.15.1",
     "requests==2.32.5",
     "shared-code",
 ]
