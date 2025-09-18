@@ -135,6 +135,33 @@ it("shows the default source name if the source doesn't have an own name", async
     await expectNoAccessibilityViolations(container)
 })
 
+it("considers a source without name the same as a source that has a name equal to the default name", async () => {
+    const { container } = renderReportSources({
+        subjects: {
+            subject_uuid: {
+                metrics: {
+                    metric_uuid1: {
+                        sources: {
+                            source_uuid1: { type: "source_type", parameters: { url: "https://sonarqube.org" } },
+                        },
+                    },
+                    metric_uuid2: {
+                        sources: {
+                            source_uuid2: {
+                                type: "source_type",
+                                name: "Source type name",
+                                parameters: { url: "https://sonarqube.org" },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    })
+    expect(screen.getAllByText("Source type name").length).toBe(2) // Source type and source name are equal
+    await expectNoAccessibilityViolations(container)
+})
+
 it("changes the value of a parameter of a source without parameter layout", async () => {
     const { container } = renderReportSources(
         {

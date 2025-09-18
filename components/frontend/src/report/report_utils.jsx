@@ -11,7 +11,7 @@ import {
     reportsPropType,
     settingsPropType,
 } from "../sharedPropTypes"
-import { addCounts, getMetricScale, getMetricTags, visibleMetrics } from "../utils"
+import { addCounts, getMetricScale, getMetricTags, getSourceName, visibleMetrics } from "../utils"
 
 export function measurementOnDate(date, measurements, metricUuid) {
     const isoDateString = date.toISOString().split("T")[0]
@@ -97,14 +97,14 @@ summarizeReportsOnDate.propTypes = {
     tag: string,
 }
 
-export function reportSources(report) {
+export function reportSources(dataModel, report) {
     const sourceIds = new Set()
     const sources = {}
     Object.values(report.subjects ?? {}).forEach((subject) => {
         Object.values(subject.metrics ?? {}).forEach((metric) => {
             Object.entries(metric.sources ?? {}).forEach(([sourceUuid, source]) => {
                 const reportSource = {
-                    name: source.name ?? "",
+                    name: getSourceName(source, dataModel),
                     type: source.type,
                     url: source.parameters?.url ?? "",
                     landing_url: source.parameters?.landing_url ?? "",
@@ -130,5 +130,6 @@ export function reportSources(report) {
     return sortedSources
 }
 reportSources.propTypes = {
+    dataModel: dataModelPropType,
     report: reportPropType,
 }

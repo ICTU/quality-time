@@ -54,7 +54,7 @@ SourceParameters.propTypes = {
 
 export function ReportSources({ reload, report, settings }) {
     const dataModel = useContext(DataModel)
-    const sources = reportSources(report)
+    const sources = reportSources(dataModel, report)
     if (sources.length === 0) {
         return <InfoMessage title="No sources">No sources have been configured yet.</InfoMessage>
     }
