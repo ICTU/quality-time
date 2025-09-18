@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Fixed
 
 - When copying a metric, also copy the status, status end date, and status rationale of the measurement entities. Fixes [#7403](https://github.com/ICTU/quality-time/issues/7403).
+- When measuring failed jobs with GitLab as source, the measurement details show the failed jobs including the date of the most recent failed build. However, the column header would read "Date of most recent build", which would be incorrect if there have been successful builds after the failed build. Column header now reads "Date of most recent failed build". Fixes [#11973](https://github.com/ICTU/quality-time/issues/11973).
 - Jira sources with only the API-version different would be considered equal in the report source overview. Fixes [#11986](https://github.com/ICTU/quality-time/issues/11986).
 - In the report source overview, don't consider sources different if one has no name (so the default name is used) and the other has a name equal to the default name. Fixes [#11987](https://github.com/ICTU/quality-time/issues/11987).
 
