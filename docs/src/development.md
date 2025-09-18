@@ -553,22 +553,6 @@ The Docker images are `quality-time_database`, `quality-time_renderer`, `quality
 
 ## Maintenance
 
-### Python and JavaScript dependencies
-
-Keeping dependencies up-to-date is an important aspect of software maintenance. Python (pip) and JavaScript (npm) dependencies are kept up-to-date via the [Dependabot GitHub action](https://github.com/ICTU/quality-time/blob/master/.github/dependabot.yml).
+Keeping dependencies up-to-date is an important aspect of software maintenance. Dependencies are kept up-to-date via the [Dependabot GitHub action](https://github.com/ICTU/quality-time/blob/master/.github/dependabot.yml).
 
 For Python, we follow the [dependency management practice described by James Bennett](https://www.b-list.org/weblog/2022/may/13/boring-python-dependencies/), to a large extent.
-
-### Docker images
-
-Base images used in the Docker containers, and additionally installed software, need to be upgraded by hand from time to time. These are:
-
-- [API-server](https://github.com/ICTU/quality-time/blob/master/components/api_server/Dockerfile): the Python base image.
-- [Collector](https://github.com/ICTU/quality-time/blob/master/components/collector/Dockerfile): the Python base image.
-- [Notifier](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile): the Python base image.
-- [Frontend](https://github.com/ICTU/quality-time/blob/master/components/frontend/Dockerfile): the Node base image, the curl version, the npm version, and the serve version.
-- [Database](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile): the {index}`MongoDB` base image.
-- [Proxy](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile): the Nginx base image.
-- [Renderer](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile): the Node base image, the curl version, the Chromium version, and the npm version.
-- [Test data](https://github.com/ICTU/quality-time/blob/master/components/testdata/Dockerfile): the Python base image.
-- Container images directly specified in compose files used for [development](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.override.yml) and [continuous integration](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.ci.yml): `mongo-express`, `ldap`, and `selenium`.
