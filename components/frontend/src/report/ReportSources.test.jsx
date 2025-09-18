@@ -90,6 +90,35 @@ it("counts the metrics using the same source", async () => {
     await expectNoAccessibilityViolations(container)
 })
 
+it("considers sources different if only the API-version differs", async () => {
+    const { container } = renderReportSources({
+        subjects: {
+            subject_uuid: {
+                metrics: {
+                    metric_uuid1: {
+                        sources: {
+                            source_uuid1: {
+                                type: "source_type",
+                                parameters: { url: "https://source.org", api_version: "v2" },
+                            },
+                        },
+                    },
+                    metric_uuid2: {
+                        sources: {
+                            source_uuid2: {
+                                type: "source_type",
+                                parameters: { url: "https://source.org", api_version: "v3" },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    })
+    expect(screen.getAllByText("1").length).toBe(2) // Two sources, each used once
+    await expectNoAccessibilityViolations(container)
+})
+
 it("shows the default source name if the source doesn't have an own name", async () => {
     const { container } = renderReportSources({
         subjects: {
@@ -156,7 +185,7 @@ it("changes the value of a parameter of a source with parameter layout", async (
         ["source_uuid:0"],
         theDataModel,
     )
-    await userEvent.type(screen.getByLabelText(/API version/), "3{Enter}")
+    await userEvent.type(screen.getByLabelText(/API version/), "{Backspace}3{Enter}")
     expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/api_version", {
         api_version: "3",
         edit_scope: "report",
