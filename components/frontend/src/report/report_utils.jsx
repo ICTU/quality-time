@@ -111,6 +111,7 @@ export function reportSources(report) {
                     username: source.parameters?.username ?? "",
                     password: source.parameters?.password ?? "",
                     private_token: source.parameters?.private_token ?? "",
+                    api_version: source.parameters?.api_version ?? "",
                 }
                 const sourceId = JSON.stringify(reportSource)
                 if (sourceIds.has(sourceId)) {

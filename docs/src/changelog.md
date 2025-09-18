@@ -17,6 +17,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Fixed
 
 - When copying a metric, also copy the status, status end date, and status rationale of the measurement entities. Fixes [#7403](https://github.com/ICTU/quality-time/issues/7403).
+- Jira sources with only the API-version different would be considered equal in the report source overview. Fixes [#11986](https://github.com/ICTU/quality-time/issues/11986).
 
 ### Added
 
