@@ -35,12 +35,16 @@ ALL_GITLAB_METRICS = [
     "unused_jobs",
 ]
 
+JOB_ENTITY_ATTRIBUTES = [
+    EntityAttribute(name="Job name", key="name", url="url"),
+    EntityAttribute(name="Job stage", key="stage"),
+    EntityAttribute(name="Branch or tag", key="branch"),
+]
+
 JOB_ENTITY = Entity(
     name="job",
     attributes=[
-        EntityAttribute(name="Job name", key="name", url="url"),
-        EntityAttribute(name="Job stage", key="stage"),
-        EntityAttribute(name="Branch or tag", key="branch"),
+        *JOB_ENTITY_ATTRIBUTES,
         EntityAttribute(
             name="Result of most recent build",
             key="build_result",
@@ -287,7 +291,24 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
                 EntityAttribute(name="Date of most recent build", key="build_date", type=EntityAttributeType.DATE),
             ],
         ),
-        "failed_jobs": JOB_ENTITY,
+        "failed_jobs": Entity(
+            name="job",
+            attributes=[
+                *JOB_ENTITY_ATTRIBUTES,
+                EntityAttribute(
+                    name="Result of most recent failed build",
+                    key="build_result",
+                    color={
+                        "canceled": Color.ACTIVE,
+                        "failed": Color.NEGATIVE,
+                        "skipped": Color.WARNING,
+                    },
+                ),
+                EntityAttribute(
+                    name="Date of most recent failed build", key="build_date", type=EntityAttributeType.DATE
+                ),
+            ],
+        ),
         "job_runs_within_time_period": JOB_ENTITY,
         "merge_requests": Entity(
             name="merge request",
