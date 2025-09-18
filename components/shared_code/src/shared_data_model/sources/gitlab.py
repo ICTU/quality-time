@@ -89,8 +89,7 @@ GitLab. In that case, you still use the JUnit (or JaCoCo, or Axe...) source, but
 Depending on where the document is stored in GitLab, there are two scenarios; the source is a build artifact of a GitLab
 CI pipeline, or the source is stored in a GitLab repository:
 
-1. When the metric source is a build artifact of a GitLab CI pipeline, use [URLs of the following format](https://docs.\
-gitlab.com/ee/api/job_artifacts.html#download-a-single-artifact-file-from-specific-tag-or-branch):
+1. When the metric source is a build artifact of a GitLab CI pipeline, use [URLs of the following format](https://docs.gitlab.com/api/job_artifacts/#download-a-single-artifact-file-by-reference-name):
 
     `https://<gitlab-server>/api/v4/projects/<project-id>/jobs/artifacts/<branch>/raw/<path>/<to>/<file-name>?\
 job=<job-name>`
@@ -100,6 +99,13 @@ job=<job-name>`
 
     If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/\
 profile/personal_access_tokens.html) with the scope `read_api` in the private token field.
+
+    ```{warning}
+    Artifacts can only be downloaded from a
+    [completed pipeline with status `success`](https://docs.gitlab.com/api/job_artifacts/#download-a-single-artifact-file-by-reference-name).
+    Consider setting `allow_failure: true` on
+    [test jobs](https://docs.gitlab.com/ci/quick_start/tutorial/#add-test-jobs) in the pipeline.
+    ```
 
 2.  When the metric source is a file stored in a GitLab repository, use [URLs of the following format](https://docs.\
 gitlab.com/ee/api/repository_files.html#get-raw-file-from-repository):
