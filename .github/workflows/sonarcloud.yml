@@ -89,6 +89,6 @@ jobs:
           touch components/shared_code/src/__init__.py
       - name: Sonarcloud scan
         if: env.SONAR_TOKEN != null
-        uses: sonarsource/sonarqube-scan-action@v5.3.1
+        uses: sonarsource/sonarqube-scan-action@v6.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
