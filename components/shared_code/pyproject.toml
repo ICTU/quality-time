@@ -23,7 +23,7 @@ optional-dependencies.dev = [
 optional-dependencies.tools = [
     "bandit==1.8.6",
     "fixit==2.1.0",
-    "mypy==1.18.1",
+    "mypy==1.18.2",
     "pip-audit==2.9.0",
     "pydantic==2.11.7",     # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.6.0",
