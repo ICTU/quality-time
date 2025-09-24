@@ -143,6 +143,8 @@ To use the import and export endpoints you need to be authenticated. For example
 curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' https://quality-time.example.org/api/v3/login
 ```
 
+Replace the username and password with the username and password you use to login to *Quality-time*.
+
 ### Exporting reports
 
 The exporting endpoint is available via `https://quality-time.source.org/api/v3/report/<report-uuid>/json?public_key=<public-key>`.
@@ -182,7 +184,12 @@ curl --output public_key.json https://quality-time.destination.org/api/v3/public
 And then encode the public key as follows:
 
 ```console
-$ python3 -c 'import json; import urllib.parse; key = json.load(open("public_key.json"))["public_key"]; print(urllib.parse.quote_plus(key))'
+python3 -c 'import json; import urllib.parse; key = json.load(open("public_key.json"))["public_key"]; print(urllib.parse.quote_plus(key))'
+```
+
+This prints the public key, looking something like:
+
+```console
 -----BEGIN+PUBLIC+KEY----- ... encoded public key ... -----END+PUBLIC+KEY-----%0A
 ```
 
@@ -192,10 +199,15 @@ The importing endpoint is available via `https://quality-time.destination.org/ap
 The import endpoint accepts JSON content only.
 See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared/example-reports) for the format.
 
-For example, using curl, and assuming you have logged in as shown above:
+For example, using curl, assuming you have logged in as shown above, and that the report filename is `report.json`:
 
 ```console
-$ curl --cookie cookie.txt --request POST --header "Content-Type: application/json" --data @report.json https://quality-time.destination.org/api/v3/report/import
+curl --cookie cookie.txt --request POST --header "Content-Type: application/json" --data @report.json https://quality-time.destination.org/api/v3/report/import
+```
+
+On success, you'll see a reply like this:
+
+```console
 {"ok": true, "new_report_uuid": "97a3e341-44ce-4f2b-4471-36e5f2f34cf6"}
 ```
 
@@ -213,18 +225,18 @@ Tying the previous two sections together, these steps export a report from a sou
 
 ```console
 # Get the public key of the destination Quality-time
-$ curl --output public_key.json https://quality-time.destination.org/api/v3/public_key
+curl --output public_key.json https://quality-time.destination.org/api/v3/public_key
 # Encode the public key
-$ python3 -c 'import json; import urllib.parse; key = json.load(open("public_key.json"))["public_key"]; print(urllib.parse.quote_plus(key))'
+python3 -c 'import json; import urllib.parse; key = json.load(open("public_key.json"))["public_key"]; print(urllib.parse.quote_plus(key))'
 -----BEGIN+PUBLIC+KEY-----encoded-public-key-----END+PUBLIC+KEY-----%0A
 # Log in to the source Quality-time
-$ curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' https://quality-time.source.org/api/v3/login
+curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' https://quality-time.source.org/api/v3/login
 # Copy the public key and use it in the next line to export the report
-$ curl --cookie cookie.txt --output report.json https://quality-time.source.org/api/v3/report/1352450b-30fa-4a82-aec5-7b5d0017ee13/json?public_key=-----BEGIN+PUBLIC+KEY-----encoded-public-key-----END+PUBLIC+KEY-----%0A
+curl --cookie cookie.txt --output report.json https://quality-time.source.org/api/v3/report/1352450b-30fa-4a82-aec5-7b5d0017ee13/json?public_key=-----BEGIN+PUBLIC+KEY-----encoded-public-key-----END+PUBLIC+KEY-----%0A
 # Log in to the destination Quality-time
-$ curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' https://quality-time.destination.org/api/v3/login
+curl --cookie-jar cookie.txt --request POST --header "Content-Type: application/json" --data '{"username": "jadoe", "password": "secret"}' https://quality-time.destination.org/api/v3/login
 # Import the report in the destination Quality-time
-$ curl --cookie cookie.txt --request POST --header "Content-Type: application/json" --data @report.json https://quality-time.destination.org/api/v3/report/import
+curl --cookie cookie.txt --request POST --header "Content-Type: application/json" --data @report.json https://quality-time.destination.org/api/v3/report/import
 ```
 
 ## Monitoring metric statuses
