@@ -12,4 +12,4 @@ class DependencyTrackSourceVersionTest(DependencyTrackTestCase):
     async def test_source_version(self):
         """Test that the source version can be measured."""
         response = await self.collect(get_request_json_return_value={"version": "4.8.2"})
-        self.assert_measurement(response, value="4.8.2", landing_url="https://dependency_track")
+        self.assert_measurement(response, value="4.8.2", landing_url=self.landing_url)

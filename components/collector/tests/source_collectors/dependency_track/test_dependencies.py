@@ -27,12 +27,12 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         return [
             {
                 "component": "component name",
-                "component_landing_url": "/components/component-uuid",
+                "component_landing_url": f"{self.landing_url}/components/component-uuid",
                 "key": "component-uuid",
                 "latest": latest_version,
                 "latest_version_status": latest_version_status,
                 "project": "project name",
-                "project_landing_url": "/projects/project uuid",
+                "project_landing_url": f"{self.landing_url}/projects/project uuid",
                 "project_version": "1.4",
                 "version": "1.0",
             },

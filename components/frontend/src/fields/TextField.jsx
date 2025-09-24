@@ -54,7 +54,7 @@ export function TextField({
         <MUITextField
             defaultValue={textValue ?? ""}
             disabled={disabled || (select && children.length === 0)}
-            error={error}
+            error={error || (required && !textValue)}
             fullWidth
             helperText={helperText}
             id={id}
