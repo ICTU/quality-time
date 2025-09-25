@@ -52,6 +52,7 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
                 "project_landing_url": "/projects/project uuid",
                 "project_version": "1.4",
                 "severity": "Unassigned",
+                "uuid": "CVE-123",
                 "version": "1",
             },
         ]

@@ -18,12 +18,14 @@ class AnchoreSecurityWarnings(JSONFileSourceCollector, SecurityWarningsSourceCol
     @staticmethod
     def _create_entity(vulnerability: dict[str, str], filename: str) -> Entity:
         """Create an entity from the vulnerability."""
+        cve = vulnerability["vuln"]
         return Entity(
             # Include the filename in the hash so that it is unique even when multiple images contain the
             # same package with the same vulnerability. Don't add a colon so existing hashes stay the same
             # if the source is not a zipped report (filename is an empty string in that case).
             key=md5_hash(f"{filename}{vulnerability['vuln']}:{vulnerability['package']}"),
-            cve=vulnerability["vuln"],
+            cve=cve,
+            uuid=cve,
             filename=filename,
             package=vulnerability["package"],
             severity=vulnerability["severity"],
