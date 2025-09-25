@@ -624,7 +624,7 @@ describe("createDragGhost", () => {
         }
 
         const appendChild = vi.spyOn(document.body, "appendChild")
-        const removeChild = vi.spyOn(document.body, "removeChild")
+        const removeChild = vi.spyOn(Element.prototype, "remove")
 
         createDragGhost(rowRef, event)
 
