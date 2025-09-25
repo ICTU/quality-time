@@ -164,11 +164,17 @@ export function Source({
             <ul>
                 <li>
                     Change the type of the metric (back) to a type that is supported by{" "}
-                    <HyperLink url={referenceDocumentationURL(sourceName)}>{sourceName}</HyperLink>.
+                    <HyperLink url={referenceDocumentationURL(dataModel.metrics[metric.type].name)}>
+                        {sourceName}
+                    </HyperLink>
+                    .
                 </li>
                 <li>
                     Change the type of this source to a type that supports{" "}
-                    <HyperLink url={referenceDocumentationURL(metricName)}>{metricName}</HyperLink>.
+                    <HyperLink url={referenceDocumentationURL(dataModel.sources[source.type].name)}>
+                        {metricName}
+                    </HyperLink>
+                    .
                 </li>
                 <li>Move this source to another metric.</li>
                 <li>Remove this source altogether.</li>

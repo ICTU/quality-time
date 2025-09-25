@@ -19,8 +19,8 @@ afterEach(() => vi.clearAllMocks())
 
 const dataModel = {
     metrics: {
-        metric_type: { sources: ["source_type1", "source_type2"] },
-        unsupported_metric: { sources: [] },
+        metric_type: { name: "Metric type 1", sources: ["source_type1", "source_type2"] },
+        unsupported_metric: { name: "Metric type 2", sources: [] },
     },
     sources: {
         source_type1: { name: "Source type 1", parameters: {} },

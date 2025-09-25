@@ -84,7 +84,7 @@ export function SourceType({ metricType, setSourceAttribute, sourceType }) {
             disabled={disabled}
             helperText={
                 <>
-                    <ReadTheDocsLink url={referenceDocumentationURL(sourceType)} />
+                    <ReadTheDocsLink url={referenceDocumentationURL(dataModel.sources[sourceType].name)} />
                     {howToConfigure}
                 </>
             }

@@ -122,3 +122,10 @@ it("deletes the subject", async () => {
     expect(history.location.search).toEqual("")
     await expectNoAccessibilityViolations(container)
 })
+
+it("uses the name of the subject type for the documentation link", async () => {
+    const { container } = await renderSubjectTitle()
+    const readTheDocsLink = screen.getByRole("link", { name: "Read the Docs" })
+    expect(readTheDocsLink).toHaveAttribute("href", expect.stringContaining("#default-subject-type"))
+    await expectNoAccessibilityViolations(container)
+})

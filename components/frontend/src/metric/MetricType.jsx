@@ -60,7 +60,7 @@ export function MetricType({ subjectType, metricType, metricUuid, reload }) {
             disabled={disabled}
             helperText={
                 <>
-                    <ReadTheDocsLink url={referenceDocumentationURL(metricType)} />
+                    <ReadTheDocsLink url={referenceDocumentationURL(dataModel.metrics[metricType].name)} />
                     {howToConfigure}
                 </>
             }
