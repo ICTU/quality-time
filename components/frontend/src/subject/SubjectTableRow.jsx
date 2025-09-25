@@ -253,7 +253,6 @@ export function SubjectTableRow({
     onDragStart,
     onDragEnter,
     onDrop,
-    isDropTarget,
 }) {
     const dataModel = useContext(DataModel)
     const metricName = getMetricName(metric, dataModel)
@@ -413,5 +412,4 @@ SubjectTableRow.propTypes = {
     onDragStart: func,
     onDragEnter: func,
     onDrop: func,
-    isDropTarget: bool,
 }

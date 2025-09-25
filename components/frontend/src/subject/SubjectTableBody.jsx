@@ -134,7 +134,6 @@ export function SubjectTableBody({
                         onDragStart={handleDragStart}
                         onDragEnter={handleDragEnter}
                         onDrop={(e) => handleDrop(e)}
-                        isDropTarget={dragOverIndex === index}
                     />
                 </React.Fragment>
             ))}
