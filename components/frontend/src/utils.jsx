@@ -497,6 +497,6 @@ export function createDragGhost(rowRef, event) {
     event.dataTransfer.setDragImage(wrapper, adjustedOffsetX, offsetY)
 
     setTimeout(() => {
-        document.body.removeChild(wrapper)
+        wrapper.remove()
     }, 0)
 }

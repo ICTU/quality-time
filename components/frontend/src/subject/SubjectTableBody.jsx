@@ -85,9 +85,9 @@ export function SubjectTableBody({
             setDragOverIndex(null)
         }
 
-        window.addEventListener("dragend", handleDragEnd)
+        globalThis.addEventListener("dragend", handleDragEnd)
         return () => {
-            window.removeEventListener("dragend", handleDragEnd)
+            globalThis.removeEventListener("dragend", handleDragEnd)
         }
     }, [])
 
