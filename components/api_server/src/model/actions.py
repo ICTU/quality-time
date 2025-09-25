@@ -118,7 +118,7 @@ def _reorder_items_dict(
     # we construct a new dict in the right order and insert that in the report.
     reordered_items: dict[str, dict] = {}
     del items_dict[item_to_move.uuid]
-    for _idx, (item_id, item) in enumerate(items_dict.items()):
+    for item_id, item in items_dict.items():
         if len(reordered_items) == new_index:
             reordered_items[item_to_move.uuid] = item_to_move
         reordered_items[item_id] = item

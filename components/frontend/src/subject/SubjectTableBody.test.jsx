@@ -173,7 +173,7 @@ it("does not reorder metrics if drop target is the same as drag source", () => {
     expect(setMetricAttribute).not.toHaveBeenCalled()
 })
 
-it("Shows a console log if API call fails", async () => {
+it("shows a console log if API call fails", async () => {
     // Mock setMetricAttribute to reject
     setMetricAttribute.mockRejectedValueOnce(new Error("API error"))
     const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})

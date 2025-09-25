@@ -277,7 +277,6 @@ export function SubjectTableRow({
             onDragOver={(e) => e.preventDefault()}
             style={{
                 transition: "transform 150ms ease",
-                transform: isDropTarget ? "translateY(10px)" : "none",
             }}
             className={nrDates === 1 ? metric.status || "unknown" : ""}
             color={nrDates === 1 ? metric.status || "unknown" : ""}
