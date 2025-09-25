@@ -20,6 +20,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - Small improvements to the documentation about importing reports. Fixes [#12013](https://github.com/ICTU/quality-time/issues/12013).
 - Make the landing URL of Dependency-Track sources mandatory, since without it Quality-time sends users to the Dependency-Track API. Fixes [#11896](https://github.com/ICTU/quality-time/issues/11896).
 
+### Added
+
+- Allow for reordering of metrics by dragging and dropping. Patch contributed by Ricardo Deden (the/experts). Closes [#3131](https://github.com/ICTU/quality-time/issues/3131).
+
 ## v5.42.0 - 2025-09-18
 
 ### Fixed
