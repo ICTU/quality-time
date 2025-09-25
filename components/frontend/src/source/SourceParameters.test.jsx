@@ -5,10 +5,12 @@ import { expectNoAccessibilityViolations } from "../testUtils"
 import { SourceParameters } from "./SourceParameters"
 
 function renderSourceParameters({
+    changedParamKeys = [],
+    defaultValue = "Default value",
+    mandatory = false,
     placeholder = "",
     type = "string",
     sourceParameterValue = null,
-    changedParamKeys = [],
 }) {
     return render(
         <DataModel.Provider
@@ -18,18 +20,19 @@ function renderSourceParameters({
                     source_type: {
                         parameters: {
                             parameter_key: {
-                                default_value: "Default value",
+                                default_value: defaultValue,
+                                mandatory: mandatory,
+                                metrics: ["violations"],
+                                name: "Parameter",
                                 placeholder: placeholder,
                                 type: type,
-                                name: "Parameter",
-                                metrics: ["violations"],
                             },
                             other_parameter_key: {
                                 default_value: "Other parameter default",
+                                metrics: ["violations"],
+                                name: "Other parameter",
                                 placeholder: "Other parameter placeholder",
                                 type: type,
-                                name: "Other parameter",
-                                metrics: ["violations"],
                             },
                         },
                         parameter_layout: {
@@ -80,6 +83,18 @@ it("renders a default value if the source parameter has no value", async () => {
 it("renders the source parameter value", async () => {
     const { container } = renderSourceParameters({ sourceParameterValue: "Value" })
     expect(screen.queryAllByDisplayValue(/Value/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("does not render a warning if a mandatory parameter has a value", async () => {
+    const { container } = renderSourceParameters({ defaultValue: "Value", mandatory: true })
+    expect(screen.getByDisplayValue(/Value/)).toBeValid()
+    await expectNoAccessibilityViolations(container)
+})
+
+it("renders a warning if a mandatory parameter has no value", async () => {
+    const { container } = renderSourceParameters({ defaultValue: "", placeholder: "Placeholder", mandatory: true })
+    expect(screen.getByPlaceholderText(/Placeholder/)).toBeInvalid()
     await expectNoAccessibilityViolations(container)
 })
 

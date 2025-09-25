@@ -53,8 +53,8 @@ DEPENDENCY_TRACK = Source(
         "landing_url": LandingURL(
             name="URL of the Dependency-Track instance",
             help="URL of the Dependency-Track instance, with port if necessary, but without path. For example, "
-            "'https://www.dependencytrack.example.org'. If provided, users clicking the source URL will visit this URL "
-            "instead of the Dependency-Track API.",
+            "'https://www.dependencytrack.example.org'.",
+            mandatory=True,
             metrics=ALL_DEPENDENCY_TRACK_METRICS,
         ),
         "private_token": PrivateToken(
