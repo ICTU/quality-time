@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
+- Links from Quality-time to the documentation on Read-the-Docs would be incorrect for some sources. Fixes [#11977](https://github.com/ICTU/quality-time/issues/11977).
 - Small improvements to the documentation about importing reports. Fixes [#12013](https://github.com/ICTU/quality-time/issues/12013).
 - Make the landing URL of Dependency-Track sources mandatory, since without it Quality-time sends users to the Dependency-Track API. Fixes [#11896](https://github.com/ICTU/quality-time/issues/11896).
 

@@ -49,18 +49,19 @@ subjectTypes.propTypes = {
 }
 
 export function SubjectType({ subjectType, setValue }) {
+    const dataModel = useContext(DataModel)
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <TextField
             disabled={disabled}
-            helperText={<ReadTheDocsLink url={referenceDocumentationURL(subjectType.value)} />}
+            helperText={<ReadTheDocsLink url={referenceDocumentationURL(dataModel.subjects[subjectType].name)} />}
             label="Subject type"
             onChange={(value) => setValue(value)}
             select
             value={subjectType}
         >
-            {subjectTypes(useContext(DataModel).subjects).map((subjectType) => (
+            {subjectTypes(dataModel.subjects).map((subjectType) => (
                 <MenuItem key={subjectType.key} value={subjectType.value}>
                     {subjectType.content}
                 </MenuItem>

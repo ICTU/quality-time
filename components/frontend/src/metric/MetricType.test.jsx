@@ -37,6 +37,9 @@ const dataModel = {
             default_scale: "count",
             scales: ["count"],
         },
+        failed_jobs: {
+            name: "Failed CI-jobs",
+        },
     },
 }
 
@@ -80,5 +83,12 @@ it("shows the metric type read the docs URL", async () => {
 it("shows the metric type has extra documentation", async () => {
     const { container } = renderMetricType("source_version")
     expect(screen.queryAllByText(/for additional information on how to configure this metric type/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("uses the name of the metric type for the documentation link", async () => {
+    const { container } = renderMetricType("failed_jobs")
+    const readTheDocsLink = screen.getByRole("link", { name: "Read the Docs" })
+    expect(readTheDocsLink).toHaveAttribute("href", expect.stringContaining("#failed-ci-jobs"))
     await expectNoAccessibilityViolations(container)
 })

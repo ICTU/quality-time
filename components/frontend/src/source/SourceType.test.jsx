@@ -15,7 +15,7 @@ beforeEach(() => {
 const dataModel = {
     metrics: {
         violations: {
-            sources: ["sonarqube", "gitlab"],
+            sources: ["sonarqube", "gitlab", "source_type"],
             unit: "violations",
             direction: "<",
             name: "Violations",
@@ -36,6 +36,9 @@ const dataModel = {
         },
         unsupported: {
             name: "Unsupported",
+        },
+        source_type: {
+            name: "Name differs from key",
         },
     },
 }
@@ -100,5 +103,12 @@ it("shows that the source type has extra generic documentation", async () => {
 it("shows that the source type has extra metric-specific documentation", async () => {
     const { container } = await renderSourceType("violations", "sonarqube")
     expect(screen.getAllByText(/additional information on how to configure this source type/).length).toBe(1)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("uses the name of the source type for the documentation link", async () => {
+    const { container } = await renderSourceType("violations", "source_type")
+    const readTheDocsLink = screen.getByRole("link", { name: "Read the Docs" })
+    expect(readTheDocsLink).toHaveAttribute("href", expect.stringContaining("#name-differs-from-key"))
     await expectNoAccessibilityViolations(container)
 })
