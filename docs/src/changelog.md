@@ -12,13 +12,19 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Changed
+
+- When using Gatling performance reports as source, Quality-time now parses the Gatling HTML file instead of the JSON and log files that Gatling no longer exposes as part of the report. Fixes [#11955](https://github.com/ICTU/quality-time/issues/11955).
+
 ## v5.43.0 - 2025-09-26
 
 ### Fixed
 
+- Make the landing URL of Dependency-Track sources mandatory, since without it Quality-time sends users to the Dependency-Track API. Fixes [#11896](https://github.com/ICTU/quality-time/issues/11896).
 - Links from Quality-time to the documentation on Read-the-Docs would be incorrect for some sources. Fixes [#11977](https://github.com/ICTU/quality-time/issues/11977).
 - Small improvements to the documentation about importing reports. Fixes [#12013](https://github.com/ICTU/quality-time/issues/12013).
-- Make the landing URL of Dependency-Track sources mandatory, since without it Quality-time sends users to the Dependency-Track API. Fixes [#11896](https://github.com/ICTU/quality-time/issues/11896).
 
 ### Added
 

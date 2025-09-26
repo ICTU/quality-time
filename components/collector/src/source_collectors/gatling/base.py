@@ -1,44 +1,32 @@
 """Base classes for Gatling collectors."""
 
-import re
-from typing import ClassVar
+from abc import ABC
+from typing import cast
 
-from base_collectors import FileSourceCollector, JSONFileSourceCollector, SourceCollector
-from collector_utilities.type import URL
-from model import SourceResponses
+from bs4 import Tag
 
-
-class GatlingCollector(SourceCollector):
-    """Base class for Gatling collectors."""
-
-    INDEX_HTML = "/index.html"
-    FILEPATH = "subclass responsibility"
-
-    async def _api_url(self) -> URL:
-        """Extend to translate the HTML URL into a URL to the Gatling file that the collector needs."""
-        api_url = await super()._api_url()
-        if api_url.endswith(self.INDEX_HTML):
-            return URL(api_url.removesuffix(self.INDEX_HTML) + self.FILEPATH)
-        return api_url
+from base_collectors import HTMLFileSourceCollector
+from collector_utilities.type import Response
 
 
-class GatlingJSONCollector(JSONFileSourceCollector, GatlingCollector):
-    """Base class for Gatling collectors that read the stats.json file."""
+class GatlingHTMLCollector(HTMLFileSourceCollector, ABC):
+    """Base class for Gatling HTML collectors."""
 
-    FILEPATH = "/js/stats.json"
+    async def simulation_information(self, response: Response, label: str) -> str:
+        """Return the simulation information labeled with the label.
 
+        Gatling simulation meta information is contained in two sibling spans: the first span has the
+        "simulation-information-label" CSS class and the label as contents, the second span contains the information.
+        """
+        soup = await self._soup(response)
+        label_span = soup.find("span", {"class": "simulation-information-label"}, string=f"{label}: ")
+        if label_span and (parent := label_span.parent):
+            return str(parent.find_all("span")[1].get_text())  # The second span contains the information
+        return ""
 
-class GatlingLogCollector(FileSourceCollector, GatlingCollector):
-    """Base class for Gatling collectors that read the simulation.log file."""
-
-    file_extensions: ClassVar[list[str]] = ["log"]
-    FILEPATH = "/simulation.log"
-
-    @classmethod
-    async def _timestamps(cls, responses: SourceResponses) -> set[int]:
-        """Return the timestamps in the simulation.log."""
-        timestamps = set()
-        for response in responses:
-            text = await response.text()
-            timestamps |= {int(timestamp) for timestamp in re.findall(r"\d{13}", text)}
-        return timestamps
+    def get_column(self, row: Tag, css_class: str) -> str:
+        """Return the value in the column with the specified CSS class."""
+        td = cast("Tag", row.find("td", class_=css_class))
+        if span := cast("Tag", td.find("span", class_="ellipsed-name")):
+            return span.get_text()
+        return td.get_text()
