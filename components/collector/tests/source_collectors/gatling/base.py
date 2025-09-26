@@ -1,7 +1,5 @@
 """Base classes for Gatling collectors."""
 
-from typing import ClassVar
-
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -9,48 +7,67 @@ class GatlingTestCase(SourceCollectorTestCase):
     """Base class for Gatling collector unit tests."""
 
     SOURCE_TYPE = "gatling"
-    API1 = "Foo"
-    API2 = "Bar"
-    GATLING_JSON: ClassVar[dict[str, dict[str, dict[str, dict[str, str | dict[str, int | float | str]]]]]] = {
-        "contents": {
-            "transaction1": {
-                "stats": {
-                    "name": API1,
-                    "numberOfRequests": {"total": 123, "ok": 121, "ko": 2},
-                    "meanResponseTime": {"total": 110},
-                    "minResponseTime": {"total": 50.0},
-                    "maxResponseTime": {"total": 250.0000004},
-                    "percentiles1": {"total": 100.0},
-                    "percentiles2": {"total": 115.0},
-                    "percentiles3": {"total": 135.0},
-                    "percentiles4": {"total": 195.0},
-                },
-            },
-            "transaction2": {
-                "stats": {
-                    "name": API2,
-                    "numberOfRequests": {"total": 125, "ok": 121, "ko": 4},
-                    "meanResponseTime": {"total": 110.56},
-                    "minResponseTime": {"total": 40.0},
-                    "maxResponseTime": {"total": 2500.03223},
-                    "percentiles1": {"total": 90.0},
-                    "percentiles2": {"total": 120.0},
-                    "percentiles3": {"total": 150.0},
-                    "percentiles4": {"total": 190.0},
-                },
-            },
-        },
-    }
-    GATLING_LOG = """ASSERTION AAECAAIBAAAAAAAAACRA
-    RUN     api.CombinedSimulations combinedsimulations     1638907423554           3.3.1
-    USER    Get Token       1       START   1638907424543   1638907424543
-    REQUEST 1               GetToken        1638907424608   1638907424842   OK
-    USER    Get Token       1       END     1638907424543   1638907424919
-    USER    FooListSimulation       2       START   1638907434539   1638907434539
-    USER    BarListSimulation       3       START   1638907434539   1638907434539
-    USER    FooListSimulation       4       START   1638907435040   1638907435040
-    USER    BarListSimulation       6       START   1638907435040   1638907435040
-    REQUEST 2                FooList 1638907460541   1638907520543   KO      i.g.h.c.i.RequestTimeoutException: \
-        Request timeout to app.example.org/1.2.3.4:80 after 60000 ms
-    USER    FooListSimulation       2       END     1638907460540   1638907520543
-    """
+    TRANSACTION1 = "Transaction 1"
+    TRANSACTION2 = "Transaction 2"
+    GATLING_STATS_HTML = """
+<table id="container_statistics_body" class="statistics-in extensible-geant">
+    <tbody>
+        <tr data-parent="ROOT">
+            <td class="total col-1">
+                <div class="expandable-container">
+                    <span id="req_t1-2031010915" style="margin-left: 0px;" class="expand-button hidden">&nbsp;</span>
+                    <a href="req_t1-2031010915.html" class="withTooltip">
+                        <span class="table-cell-tooltip" id="parent-stats-table-req_t1-2031010915"
+                        data-toggle="popover" data-placement="right" data-container="body" data-content="">
+                            <span onmouseover="isEllipsed('stats-table-req_t1-2031010915')"
+                            id="stats-table-req_t1-2031010915" class="ellipsed-name">Transaction 1</span>
+                        </span>
+                    </a>
+                    <span class="value" style="display:none;">0</span>
+                </div>
+            </td>
+            <td class="value total col-2">1</td>
+            <td class="value ok col-3">1</td>
+            <td class="value ko col-4">-</td>
+            <td class="value ko col-5">0</td>
+            <td class="value total col-6">0</td>
+            <td class="value total col-7">317</td>
+            <td class="value total col-8">317</td>
+            <td class="value total col-9">317</td>
+            <td class="value total col-10">317</td>
+            <td class="value total col-11">317</td>
+            <td class="value total col-12">317</td>
+            <td class="value total col-13">317</td>
+            <td class="value total col-14">0</td>
+        </tr>
+        <tr data-parent="ROOT">
+            <td class="total col-1">
+                <div class="expandable-container">
+                    <span id="req_t2-1955276709" style="margin-left: 0px;" class="expand-button hidden">&nbsp;</span>
+                    <a href="req_t2-1955276709.html" class="withTooltip">
+                        <span class="table-cell-tooltip" id="parent-stats-table-req_t2-1955276709"
+                        data-toggle="popover" data-placement="right" data-container="body" data-content="">
+                            <span onmouseover="isEllipsed('stats-table-req_t2-1955276709')"
+                            id="stats-table-req_t2-1955276709" class="ellipsed-name">Transaction 2</span>
+                        </span>
+                    </a>
+                    <span class="value" style="display:none;">0</span>
+                </div>
+            </td>
+            <td class="value total col-2">2520</td>
+            <td class="value ok col-3">2516</td>
+            <td class="value ko col-4">4</td>
+            <td class="value ko col-5">0.16</td>
+            <td class="value total col-6">9.88</td>
+            <td class="value total col-7">6</td>
+            <td class="value total col-8">8</td>
+            <td class="value total col-9">9</td>
+            <td class="value total col-10">13</td>
+            <td class="value total col-11">24</td>
+            <td class="value total col-12">756</td>
+            <td class="value total col-13">10</td>
+            <td class="value total col-14">22</td>
+        </tr>
+    </tbody>
+</table>
+"""
