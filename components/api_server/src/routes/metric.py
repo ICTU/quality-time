@@ -11,7 +11,7 @@ from shared.utils.type import MetricId, SubjectId, Value
 from shared_data_model import DATA_MODEL
 
 from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
-from model.actions import copy_metric, move_item
+from model.actions import copy_metric, move_item, move_metric_to_index
 from model.defaults import default_metric_attributes
 from utils.functions import sanitize_html, uuid
 
@@ -123,6 +123,8 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     old_value: Any
     if metric_attribute == "position":
         old_value, new_value = move_item(subject, metric, new_value)
+    elif metric_attribute == "position_index":
+        old_value, new_value = move_metric_to_index(subject, metric, int(new_value))
     else:
         old_value = metric.get(metric_attribute) or ""
     if old_value == new_value:

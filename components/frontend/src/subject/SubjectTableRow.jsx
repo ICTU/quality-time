@@ -1,8 +1,10 @@
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator"
 import { Chip, TableCell, Tooltip, Typography } from "@mui/material"
 import { bool, func, number, object, string } from "prop-types"
-import { useContext } from "react"
+import React, { useContext, useRef } from "react"
 
 import { DataModel } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { IssueStatus } from "../issue/IssueStatus"
 import { MeasurementSources } from "../measurement/MeasurementSources"
 import { MeasurementTarget } from "../measurement/MeasurementTarget"
@@ -209,6 +211,28 @@ MeasurementCells.propTypes = {
     settings: settingsPropType,
 }
 
+const DragHandleButton = React.forwardRef(function DragHandleButton({ label, ...props }, ref) {
+    return (
+        <button
+            ref={ref}
+            type="button"
+            {...props}
+            style={{
+                background: "none",
+                border: "none",
+                cursor: "grab",
+                padding: 0,
+            }}
+            aria-label={label}
+        >
+            <DragIndicatorIcon fontSize="small" />
+        </button>
+    )
+})
+DragHandleButton.propTypes = {
+    label: string,
+}
+
 export function SubjectTableRow({
     changedFields,
     columnsToHide,
@@ -226,14 +250,33 @@ export function SubjectTableRow({
     reversedMeasurements,
     settings,
     subjectUuid,
+    onDragStart,
+    onDragEnter,
+    onDrop,
 }) {
     const dataModel = useContext(DataModel)
     const metricName = getMetricName(metric, dataModel)
     const scale = getMetricScale(metric, dataModel)
     const unit = getMetricUnit(metric, dataModel)
     const nrDates = dates.length
+
+    const rowRef = useRef(null)
+    const dragHandleRef = useRef(null)
+
+    const anyRowExpanded = settings.expandedItems.value.length > 0
+    const rowsAreSorted = settings.sortColumn.value !== ""
+
     return (
         <TableRowWithDetails
+            data-testid={`metric-row-${index}`}
+            ref={rowRef}
+            onDragStart={(e) => onDragStart(index, rowRef, e)}
+            onDragEnter={() => onDragEnter(index)}
+            onDrop={onDrop}
+            onDragOver={(e) => e.preventDefault()}
+            style={{
+                transition: "transform 150ms ease",
+            }}
             className={nrDates === 1 ? metric.status || "unknown" : ""}
             color={nrDates === 1 ? metric.status || "unknown" : ""}
             details={
@@ -330,6 +373,22 @@ export function SubjectTableRow({
                     ))}
                 </TableCell>
             )}
+            {!anyRowExpanded && !rowsAreSorted && (
+                <ReadOnlyOrEditable
+                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                    editableComponent={
+                        <TableCell>
+                            <DragHandleButton
+                                ref={dragHandleRef}
+                                label="Drag to reorder"
+                                draggable
+                                onDragStart={(e) => onDragStart(index, rowRef, e)}
+                            />
+                        </TableCell>
+                    }
+                />
+            )}
+            {(anyRowExpanded || rowsAreSorted) && <TableCell />}
         </TableRowWithDetails>
     )
 }
@@ -350,4 +409,7 @@ SubjectTableRow.propTypes = {
     reversedMeasurements: measurementsPropType,
     settings: settingsPropType,
     subjectUuid: string,
+    onDragStart: func,
+    onDragEnter: func,
+    onDrop: func,
 }

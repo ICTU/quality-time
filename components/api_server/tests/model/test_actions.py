@@ -8,8 +8,9 @@ from shared.model.source import Source
 from shared.model.subject import Subject
 from shared.utils.functions import first
 from shared.utils.type import MetricId, SourceId, SubjectId
+from unittest.mock import Mock
 
-from model.actions import copy_metric, copy_report, copy_source, copy_subject
+from model.actions import copy_metric, copy_report, copy_source, copy_subject, move_metric_to_index
 from model.report import Report
 
 
@@ -125,3 +126,66 @@ class CopyReportTest(unittest.TestCase):
         """Test that the subjects are copied too."""
         report_copy = copy_report(self.report)
         self.assertEqual("Subject", first(report_copy["subjects"].values())["name"])
+
+
+class MoveItemToIndexTest(unittest.TestCase):
+    """Unit tests for the move item to index action."""
+
+    def setUp(self):
+        """Override to set up the subject under test."""
+        self.data_model = {
+            "metrics": {"security_warnings": {"name": "Security warnings", "unit": "warnings", "tags": []}},
+            "subjects": {"software": {"name": "Software"}},
+        }
+
+        self.subject_data = {
+            "name": "Subject",
+            "type": "software",
+            "metrics": {
+                "metric_uuid_1": {
+                    "name": "Metric 1",
+                    "type": "security_warnings",
+                    "sources": {},
+                },
+                "metric_uuid_2": {
+                    "name": "Metric 2",
+                    "type": "security_warnings",
+                    "sources": {},
+                },
+                "metric_uuid_3": {
+                    "name": "Metric 3",
+                    "type": "security_warnings",
+                    "sources": {},
+                },
+            },
+        }
+
+        # Provide a dummy report object since Subject requires it
+        self.report = Mock()
+
+        # Now instantiate the Subject object correctly
+        self.subject = Subject(
+            data_model=self.data_model,
+            subject_data=self.subject_data,
+            subject_uuid="subject_uuid",
+            report=self.report,
+        )
+
+    def test_move_metric_to_index(self):
+        """Test that a metric can be moved to a specific index."""
+        metric_to_move = self.subject["metrics"]["metric_uuid_1"]
+        old_index, new_index = move_metric_to_index(self.subject, metric_to_move, 2)
+
+        self.assertEqual((0, 2), (old_index, new_index))
+        self.assertEqual(
+            list(self.subject["metrics"].keys()),
+            ["metric_uuid_2", "metric_uuid_3", "metric_uuid_1"],
+        )
+
+    def test_move_metric_noop(self):
+        """Test that moving a metric to the same index results in no change."""
+        metric_to_move = self.subject["metrics"]["metric_uuid_2"]
+        old_index, new_index = move_metric_to_index(self.subject, metric_to_move, 1)
+
+        self.assertEqual((1, 1), (old_index, new_index))
+        self.assertEqual(list(self.subject["metrics"].keys()), ["metric_uuid_1", "metric_uuid_2", "metric_uuid_3"])

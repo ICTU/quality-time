@@ -1,9 +1,11 @@
 import { Table, TableBody } from "@mui/material"
 import { render, screen } from "@testing-library/react"
 import history from "history/browser"
+import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTableRow } from "./SubjectTableRow"
 
@@ -15,6 +17,8 @@ function renderSubjectTableRow({
     ascending = false,
     scale = "count",
     evaluateTargets = undefined,
+    expanded = false,
+    permissions = "",
 } = {}) {
     const dates = [new Date("2024-01-03"), new Date("2024-01-02"), new Date("2024-01-01")]
     const reverseMeasurements = [
@@ -44,31 +48,40 @@ function renderSubjectTableRow({
         dates.reverse()
     }
     return render(
-        <DataModel.Provider value={dataModel}>
-            <Table>
-                <TableBody>
-                    <SubjectTableRow
-                        columnsToHide={[]}
-                        dates={dates}
-                        measurements={[]}
-                        metric={{
-                            comment: comment,
-                            direction: direction,
-                            evaluate_targets: evaluateTargets,
-                            recent_measurements: [],
-                            scale: scale,
-                            type: "metric_type",
-                            unit: "things",
-                        }}
-                        metricUuid="metric_uuid"
-                        report={report}
-                        reversedMeasurements={reverseMeasurements}
-                        settings={createTestableSettings()}
-                        subjectUuid="subject_uuid"
-                    />
-                </TableBody>
-            </Table>
-        </DataModel.Provider>,
+        <Permissions.Provider value={[permissions]}>
+            <DataModel.Provider value={dataModel}>
+                <Table>
+                    <TableBody>
+                        <SubjectTableRow
+                            columnsToHide={[]}
+                            dates={dates}
+                            measurements={[]}
+                            metric={{
+                                comment: comment,
+                                direction: direction,
+                                evaluate_targets: evaluateTargets,
+                                recent_measurements: [],
+                                scale: scale,
+                                type: "metric_type",
+                                unit: "things",
+                            }}
+                            metricUuid="metric_uuid"
+                            report={report}
+                            reversedMeasurements={reverseMeasurements}
+                            settings={createTestableSettings({
+                                expandedItems: {
+                                    value: expanded ? ["metric_uuid:0"] : [],
+                                    toggle: vi.fn(),
+                                },
+                                hiddenTags: { reset: vi.fn() },
+                                metricsToHide: { reset: vi.fn() },
+                            })}
+                            subjectUuid="subject_uuid"
+                        />
+                    </TableBody>
+                </Table>
+            </DataModel.Provider>
+        </Permissions.Provider>,
     )
 }
 
@@ -127,4 +140,45 @@ it("shows the delta column for the version scale", async () => {
     expect(screen.getAllByText("-").length).toBe(1)
     expect(screen.getAllByLabelText("Metric type improved from 1.2 to 0.8").length).toBe(1)
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows the drag handle when row is not expanded and user is authenticated", () => {
+    renderSubjectTableRow({ permissions: EDIT_REPORT_PERMISSION })
+    expect(screen.getByLabelText("Drag to reorder")).toBeInTheDocument()
+})
+
+it("shows no drag handle when row is expanded", () => {
+    renderSubjectTableRow({ expanded: true })
+    expect(screen.queryByLabelText("Drag to reorder")).not.toBeInTheDocument()
+})
+
+it("shows no drag handle when rows are sorted", () => {
+    // Simulate a sorted state by passing a non-empty sortColumn
+    const settings = createTestableSettings()
+    render(
+        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+            <DataModel.Provider value={dataModel}>
+                <Table>
+                    <TableBody>
+                        <SubjectTableRow
+                            columnsToHide={[]}
+                            dates={[new Date("2024-01-03")]}
+                            measurements={[]}
+                            metric={report.subjects.subject_uuid.metrics.metric_uuid}
+                            metricUuid="metric_uuid"
+                            report={report}
+                            reversedMeasurements={[]}
+                            settings={{
+                                ...settings,
+                                // Ensure the settings object has a .sortColumn property with a .value
+                                sortColumn: { value: "metric" },
+                            }}
+                            subjectUuid="subject_uuid"
+                        />
+                    </TableBody>
+                </Table>
+            </DataModel.Provider>
+        </Permissions.Provider>,
+    )
+    expect(screen.queryByLabelText("Drag to reorder")).not.toBeInTheDocument()
 })

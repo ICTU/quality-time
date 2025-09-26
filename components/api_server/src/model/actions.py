@@ -69,6 +69,51 @@ def move_item(
         "previous": max(0, old_index - 1),
         "next": min(nr_items - 1, old_index + 1),
     }[new_position]
+
+    reordered_items = _reorder_items_dict(items_dict, item_to_move, new_index)
+
+    if isinstance(container, Report):
+        container["subjects"] = reordered_items
+    elif isinstance(container, Subject):
+        container["metrics"] = reordered_items
+    else:
+        container["sources"] = reordered_items
+
+    return old_index, new_index
+
+
+def move_metric_to_index(
+    container: Subject,
+    item_to_move: Metric,
+    new_index: int,
+) -> tuple[int, int]:
+    """Change a metric position to a specific index within the subject."""
+    items_dict: ItemsDictType
+    items_dict = cast(ItemsDictType, container.metrics_dict)
+
+    item_keys = list(items_dict.keys())
+    # Clamp new index
+    new_index = max(0, min(new_index, len(item_keys) - 1))
+    old_index = item_keys.index(item_to_move.uuid)
+
+    if old_index == new_index:
+        return old_index, new_index
+
+    # Create a new reordered dict
+    reordered_items = _reorder_items_dict(items_dict, item_to_move, new_index)
+
+    # Assign the new dict back to the container
+    container["metrics"] = reordered_items
+
+    return old_index, new_index
+
+
+def _reorder_items_dict(
+    items_dict: ItemsDictType,
+    item_to_move: Subject | Metric | Source,
+    new_index: int,
+) -> dict[str, dict]:
+    """Return a reordered dict with item_to_move at new_index."""
     # Dicts are guaranteed to be (insertion) ordered starting in Python 3.7, but there's no API to change the order so
     # we construct a new dict in the right order and insert that in the report.
     reordered_items: dict[str, dict] = {}
@@ -79,12 +124,4 @@ def move_item(
         reordered_items[item_id] = item
     if len(reordered_items) == new_index:
         reordered_items[item_to_move.uuid] = item_to_move
-
-    if isinstance(container, Report):
-        container["subjects"] = reordered_items
-    elif isinstance(container, Subject):
-        container["metrics"] = reordered_items
-    else:
-        container["sources"] = reordered_items
-
-    return old_index, new_index
+    return reordered_items
