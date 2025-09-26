@@ -1,10 +1,13 @@
 """Date and time utilities."""
 
+import re
 from datetime import datetime, timedelta
 from typing import Final
 
 from dateutil.parser import parse
 from dateutil.tz import tzlocal, tzutc
+
+from .functions import decimal_round_half_up
 
 MIN_DATETIME: Final = datetime.min.replace(tzinfo=tzutc())
 MAX_DATETIME: Final = datetime.max.replace(tzinfo=tzutc())
@@ -26,6 +29,17 @@ def parse_datetime(text: str) -> datetime:
     """Parse the datetime from the text. If the text does not contain a timezone add the local timezone."""
     date_time = parse(text)
     return date_time.replace(tzinfo=tzlocal()) if date_time.tzinfo is None else date_time
+
+
+def parse_duration(text: str) -> int:
+    """Parse the duration in minutes from the text. Expects '<nr>h <nr>m <nr>s' with all groups optional."""
+    regexp = r"(?:(?P<hours>\d+)h\s*)?(?:(?P<minutes>\d+)m\s*)?(?:(?P<seconds>\d+)s\s*)?"
+    if not (match := re.fullmatch(regexp, text.strip())):
+        return 0
+    hours = int(match.group("hours") or 0)
+    minutes = int(match.group("minutes") or 0)
+    seconds = int(match.group("seconds") or 0)
+    return decimal_round_half_up(60 * hours + minutes + seconds / 60)
 
 
 def datetime_from_parts(  # noqa: PLR0913
