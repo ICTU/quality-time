@@ -1,5 +1,5 @@
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator"
-import { Chip, TableCell, Tooltip, Typography } from "@mui/material"
+import { Chip, Stack, TableCell, Tooltip, Typography } from "@mui/material"
 import { bool, func, number, object, string } from "prop-types"
 import React, { useContext, useRef } from "react"
 
@@ -211,6 +211,23 @@ MeasurementCells.propTypes = {
     settings: settingsPropType,
 }
 
+function MetricName({ metric }) {
+    const dataModel = useContext(DataModel)
+    const name = getMetricName(metric, dataModel)
+    if (metric.secondary_name) {
+        return (
+            <Stack>
+                {name}
+                <Typography sx={{ fontSize: "90%" }}>{metric.secondary_name}</Typography>
+            </Stack>
+        )
+    }
+    return name
+}
+MetricName.propTypes = {
+    metric: metricPropType,
+}
+
 const DragHandleButton = React.forwardRef(function DragHandleButton({ label, ...props }, ref) {
     return (
         <button
@@ -255,7 +272,6 @@ export function SubjectTableRow({
     onDrop,
 }) {
     const dataModel = useContext(DataModel)
-    const metricName = getMetricName(metric, dataModel)
     const scale = getMetricScale(metric, dataModel)
     const unit = getMetricUnit(metric, dataModel)
     const nrDates = dates.length
@@ -302,7 +318,9 @@ export function SubjectTableRow({
             id={metricUuid}
             onExpand={() => settings.expandedItems.toggle(metricUuid)}
         >
-            <TableCell>{metricName}</TableCell>
+            <TableCell>
+                <MetricName metric={metric} />
+            </TableCell>
             {nrDates > 1 && (
                 <MeasurementCells
                     dates={dates}

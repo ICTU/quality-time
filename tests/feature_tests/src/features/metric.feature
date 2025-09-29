@@ -123,6 +123,11 @@ Feature: metric
     When the client changes the metric name to "Metric"
     Then the metric name is "Metric"
 
+  Scenario: change metric secondary name
+    Given an existing metric
+    When the client changes the metric secondary_name to "Secondary name"
+    Then the metric secondary_name is "Secondary name"
+
   Scenario: change metric position
     Given an existing metric with name "A"
     And an existing metric with name "B"
