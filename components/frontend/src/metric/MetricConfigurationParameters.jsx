@@ -55,6 +55,24 @@ MetricName.propTypes = {
     reload: func,
 }
 
+function MetricSecondaryName({ metric, metricUuid, reload }) {
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
+    return (
+        <TextField
+            disabled={disabled}
+            label="Metric secondary name"
+            onChange={(value) => setMetricAttribute(metricUuid, "secondary_name", value, reload)}
+            value={metric.secondary_name}
+        />
+    )
+}
+MetricSecondaryName.propTypes = {
+    metric: metricPropType,
+    metricUuid: string,
+    reload: func,
+}
+
 function Tags({ metric, metricUuid, reload, report }) {
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
@@ -214,7 +232,10 @@ export function MetricConfigurationParameters({ metric, metricUuid, reload, repo
                 />
             </Grid>
             <Grid size={1}>
-                <MetricName {...commonParameterProps} />
+                <Stack spacing={{ xs: 1, sm: 1, md: 1 }}>
+                    <MetricName {...commonParameterProps} />
+                    <MetricSecondaryName {...commonParameterProps} />
+                </Stack>
             </Grid>
             <Grid size={1}>
                 <Tags report={report} {...commonParameterProps} />

@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - When using Gatling performance reports as source, Quality-time now parses the Gatling HTML file instead of the JSON and log files that Gatling no longer exposes as part of the report. Fixes [#11955](https://github.com/ICTU/quality-time/issues/11955).
 
+### Added
+
+- Metrics can have an optional secondary name. Closes [#12023](https://github.com/ICTU/quality-time/issues/12023).
+
 ## v5.43.0 - 2025-09-26
 
 ### Fixed

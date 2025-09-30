@@ -19,6 +19,8 @@ function renderSubjectTableRow({
     evaluateTargets = undefined,
     expanded = false,
     permissions = "",
+    name = "",
+    secondaryName = "",
 } = {}) {
     const dates = [new Date("2024-01-03"), new Date("2024-01-02"), new Date("2024-01-01")]
     const reverseMeasurements = [
@@ -60,8 +62,10 @@ function renderSubjectTableRow({
                                 comment: comment,
                                 direction: direction,
                                 evaluate_targets: evaluateTargets,
+                                name: name,
                                 recent_measurements: [],
                                 scale: scale,
+                                secondary_name: secondaryName,
                                 type: "metric_type",
                                 unit: "things",
                             }}
@@ -181,4 +185,22 @@ it("shows no drag handle when rows are sorted", () => {
         </Permissions.Provider>,
     )
     expect(screen.queryByLabelText("Drag to reorder")).not.toBeInTheDocument()
+})
+
+it("shows the metric type as name if the metric has no name", async () => {
+    const { container } = renderSubjectTableRow()
+    expect(screen.getAllByText("Metric type").length).toBe(1)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows the metric name", async () => {
+    const { container } = renderSubjectTableRow({ name: "Metric name" })
+    expect(screen.getAllByText("Metric name").length).toBe(1)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows the metric secondary name", async () => {
+    const { container } = renderSubjectTableRow({ secondaryName: "Secondary name" })
+    expect(screen.getAllByText("Secondary name").length).toBe(1)
+    await expectNoAccessibilityViolations(container)
 })

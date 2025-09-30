@@ -83,6 +83,13 @@ it("sets the metric name", async () => {
     await expectNoAccessibilityViolations(container)
 })
 
+it("sets the metric secondary name", async () => {
+    const { container } = await renderMetricParameters()
+    await typeInField(/Metric secondary name/, "New metric secondary name")
+    expectMetricAttributePost("secondary_name", "New metric secondary name")
+    await expectNoAccessibilityViolations(container)
+})
+
 it("adds a tag on enter", async () => {
     const { container } = await renderMetricParameters()
     await typeInField(/Metric tags/, "New tag", "Enter")

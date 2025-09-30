@@ -138,6 +138,20 @@ class PostMetricAttributeTest(PostMetricAttributeTestCase):
             report=updated_report,
         )
 
+    def test_post_metric_secondary_name(self, request):
+        """Test that the metric secondary name can be changed."""
+        request.json = {"secondary_name": "Secondary name"}
+        self.assertEqual({"ok": True}, post_metric_attribute(METRIC_ID, "secondary_name", self.database))
+        updated_report = self.updated_report()
+        self.assertEqual(
+            "Secondary name",
+            updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["secondary_name"],
+        )
+        self.assert_delta(
+            "secondary_name of metric 'name' of subject 'Subject' in report 'Report' from '' to 'Secondary name'",
+            report=updated_report,
+        )
+
     @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_post_metric_type(self, request):
         """Test that the metric type can be changed and that sources are not removed."""
