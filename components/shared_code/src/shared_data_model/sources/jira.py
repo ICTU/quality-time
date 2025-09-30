@@ -59,11 +59,6 @@ JIRA = Source(
     name="Jira",
     description="Jira is a proprietary issue tracker developed by Atlassian supporting bug tracking and agile project "
     "management.",
-    documentation={
-        "time_remaining": (
-            "Time remaining is the time until the end date of the active sprint of the configured Jira board."
-        )
-    },
     url=HttpUrl("https://www.atlassian.com/software/jira"),
     issue_tracker=True,
     parameters={
@@ -134,6 +129,14 @@ JIRA = Source(
         "test_result": TestResult(
             metrics=["test_cases"],
             values=["errored", "failed", "passed", "skipped", "untested"],
+        ),
+        "time_remaining_event": SingleChoiceParameter(
+            name="Time remaining until",
+            help="Time remaining measures the time remaining until the selected event. Note: the only event supported "
+            "at the moment is the end date of the active sprint of the configured Jira board.",
+            values=["end of active sprint"],
+            default_value="end of active sprint",
+            metrics=["time_remaining"],
         ),
         "velocity_sprints": IntegerParameter(
             name="Number of sprints to base velocity on",
