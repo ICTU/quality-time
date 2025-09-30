@@ -197,7 +197,7 @@ This prints the public key, looking something like:
 
 The importing endpoint is available via `https://quality-time.destination.org/api/v3/report/import`.
 The import endpoint accepts JSON content only.
-See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared/example-reports) for the format.
+See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/api_server/src/example-reports) for the format.
 
 For example, using curl, assuming you have logged in as shown above, and that the report filename is `report.json`:
 
