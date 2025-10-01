@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 
+import { expectText } from "../../testUtils"
 import { AddButton } from "./AddButton"
 
 test("AddButton has the correct label", () => {
     render(<AddButton itemType="bar" />)
-    expect(screen.getAllByText(/bar/).length).toBe(1)
+    expectText(/bar/)
 })

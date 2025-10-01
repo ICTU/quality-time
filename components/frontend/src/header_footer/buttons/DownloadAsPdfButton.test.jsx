@@ -1,8 +1,9 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../../api/fetch_server_api"
+import { asyncClickText, expectFetch, expectLabelText } from "../../testUtils"
 import * as toast from "../../widgets/toast"
 import { DownloadAsPdfButton } from "./DownloadAsPdfButton"
 
@@ -14,21 +15,17 @@ beforeEach(() => {
 
 test("DownloadAsPdfButton has the correct label for reports overview", () => {
     render(<DownloadAsPdfButton />)
-    // toBe(2) due to 10840-menubar-color-contrast-for-disabled-items
-    expect(screen.getAllByLabelText(/Generate a PDF version/).length).toBe(2)
+    expectLabelText(/Generate a PDF version/, 2) // 2 due to 10840-menubar-color-contrast-for-disabled-items
 })
 
 test("DownloadAsPdfButton has the correct label for a report", () => {
     render(<DownloadAsPdfButton reportUuid={"report_uuid"} />)
-    // toBe(2) due to 10840-menubar-color-contrast-for-disabled-items
-    expect(screen.getAllByLabelText(/Generate a PDF version/).length).toBe(2)
+    expectLabelText(/Generate a PDF version/, 2) // 2 due to 10840-menubar-color-contrast-for-disabled-items
 })
 
 async function clickDownload(nrClicks = 1) {
     for (let step = 0; step < nrClicks; step++) {
-        await act(async () => {
-            fireEvent.click(screen.getByText(/Download as PDF/))
-        })
+        await asyncClickText(/Download as PDF/)
     }
 }
 
@@ -52,7 +49,7 @@ test("DownloadAsPdfButton indicates loading on click", async () => {
     render(<DownloadAsPdfButton reportUuid="report_uuid" />)
     await clickDownload()
     expectButtonIsLoading()
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith(
+    expectFetch(
         "get",
         "report/report_uuid/pdf?language=en-US&report_url=http%3A%2F%2Flocalhost%3A3000%2F%3Flanguage%3Den-US",
         {},
@@ -68,7 +65,7 @@ test("DownloadAsPdfButton ignores a second click", async () => {
     render(<DownloadAsPdfButton reportUuid="report_uuid" />)
     await clickDownload(2)
     expectButtonIsLoading()
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith(
+    expectFetch(
         "get",
         "report/report_uuid/pdf?language=en-US&report_url=http%3A%2F%2Flocalhost%3A3000%2F%3Flanguage%3Den-US",
         {},
@@ -83,7 +80,7 @@ test("DownloadAsPdfButton ignores unregistered query parameters", async () => {
     history.push("?unregister_key=value&nr_dates=4")
     render(<DownloadAsPdfButton reportUuid="report_uuid" />)
     await clickDownload()
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith(
+    expectFetch(
         "get",
         "report/report_uuid/pdf?nr_dates=4&language=en-US&report_url=http%3A%2F%2Flocalhost%3A3000%2F%3Fnr_dates%3D4%26language%3Den-US",
         {},
@@ -95,7 +92,7 @@ test("DownloadAsPdfButton passes the language set in the user's browser", async 
     vi.spyOn(navigator, "language", "get").mockImplementation(() => "nl-NL")
     render(<DownloadAsPdfButton reportUuid="report_uuid" />)
     await clickDownload()
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith(
+    expectFetch(
         "get",
         "report/report_uuid/pdf?language=nl-NL&report_url=http%3A%2F%2Flocalhost%3A3000%2F%3Flanguage%3Dnl-NL",
         {},

@@ -5,7 +5,7 @@ import { vi } from "vitest"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { MetricType } from "./MetricType"
 
 const dataModel = {
@@ -62,27 +62,25 @@ it("sets the metric type", async () => {
     vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
     const { container } = renderMetricType("violations")
     await userEvent.type(screen.getByRole("combobox"), "Source version{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/type", {
-        type: "source_version",
-    })
+    expectFetch("post", "metric/metric_uuid/attribute/type", { type: "source_version" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the metric type even when not supported by the subject type", async () => {
     const { container } = renderMetricType("unsupported")
-    expect(screen.queryAllByText(/Unsupported/).length).toBe(1)
+    expectText(/Unsupported/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the metric type read the docs URL", async () => {
     const { container } = renderMetricType("violations")
-    expect(screen.queryAllByText(/Read the Docs/).length).toBe(1)
+    expectText(/Read the Docs/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the metric type has extra documentation", async () => {
     const { container } = renderMetricType("source_version")
-    expect(screen.queryAllByText(/for additional information on how to configure this metric type/).length).toBe(1)
+    expectText(/for additional information on how to configure this metric type/)
     await expectNoAccessibilityViolations(container)
 })
 

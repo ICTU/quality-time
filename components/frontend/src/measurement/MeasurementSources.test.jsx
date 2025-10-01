@@ -1,7 +1,7 @@
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 
 import { DataModel } from "../context/DataModel"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { MeasurementSources } from "./MeasurementSources"
 
 const dataModel = { metrics: { metric_type: { sources: ["source_type"] } } }
@@ -25,7 +25,7 @@ it("renders one measurement source", async () => {
         { source_uuid: { type: "source_type", name: "Source name" } },
         { sources: [{ source_uuid: "source_uuid" }] },
     )
-    expect(screen.getAllByText(/Source name/).length).toBe(1)
+    expectText(/Source name/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -39,6 +39,6 @@ it("renders multiple measurement sources", async () => {
             sources: [{ source_uuid: "source_uuid1" }, { source_uuid: "source_uuid2" }],
         },
     )
-    expect(screen.getAllByText(/Source name 1, Source name 2/).length).toBe(1)
+    expectText(/Source name 1, Source name 2/)
     await expectNoAccessibilityViolations(container)
 })

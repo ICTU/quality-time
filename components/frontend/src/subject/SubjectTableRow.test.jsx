@@ -1,12 +1,18 @@
 import { Table, TableBody } from "@mui/material"
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import {
+    expectLabelText,
+    expectNoAccessibilityViolations,
+    expectNoLabelText,
+    expectNoText,
+    expectText,
+} from "../testUtils"
 import { SubjectTableRow } from "./SubjectTableRow"
 
 beforeEach(() => history.push(""))
@@ -92,68 +98,68 @@ function renderSubjectTableRow({
 it("shows the delta column", async () => {
     history.push("?nr_dates=3&date_interval=1")
     const { container } = renderSubjectTableRow()
-    expect(screen.getAllByText("+2").length).toBe(1)
-    expect(screen.getAllByLabelText("Metric type worsened from 10 to 12 things by +2 things").length).toBe(1)
-    expect(screen.getAllByText("-4").length).toBe(1)
-    expect(screen.getAllByLabelText("Metric type improved from 12 to 8 things by -4 things").length).toBe(1)
+    expectText("+2")
+    expectLabelText("Metric type worsened from 10 to 12 things by +2 things")
+    expectText("-4")
+    expectLabelText("Metric type improved from 12 to 8 things by -4 things")
     await expectNoAccessibilityViolations(container)
 })
 
 it("hides the delta column", async () => {
     history.push("?nr_dates=2&hidden_columns=delta")
     const { container } = renderSubjectTableRow()
-    expect(screen.queryAllByText("+2").length).toBe(0)
+    expectNoText("+2")
     await expectNoAccessibilityViolations(container)
 })
 
 it("takes the metric direction into account", async () => {
     history.push("?nr_dates=3&date_interval=1")
     const { container } = renderSubjectTableRow({ direction: ">" })
-    expect(screen.getAllByText("+2").length).toBe(1)
-    expect(screen.getAllByLabelText("Metric type improved from 10 to 12 things by +2 things").length).toBe(1)
-    expect(screen.getAllByText("-4").length).toBe(1)
-    expect(screen.getAllByLabelText("Metric type worsened from 12 to 8 things by -4 things").length).toBe(1)
+    expectText("+2")
+    expectLabelText("Metric type improved from 10 to 12 things by +2 things")
+    expectText("-4")
+    expectLabelText("Metric type worsened from 12 to 8 things by -4 things")
     await expectNoAccessibilityViolations(container)
 })
 
 it("works for informative metrics", async () => {
     history.push("?nr_dates=3&date_interval=1")
     const { container } = renderSubjectTableRow({ evaluateTargets: false })
-    expect(screen.getAllByText("+2").length).toBe(1)
-    expect(screen.getAllByLabelText("Metric type changed from 10 to 12 things by +2 things").length).toBe(1)
-    expect(screen.getAllByText("-4").length).toBe(1)
-    expect(screen.getAllByLabelText("Metric type changed from 12 to 8 things by -4 things").length).toBe(1)
+    expectText("+2")
+    expectLabelText("Metric type changed from 10 to 12 things by +2 things")
+    expectText("-4")
+    expectLabelText("Metric type changed from 12 to 8 things by -4 things")
     await expectNoAccessibilityViolations(container)
 })
 
 it("takes the date order into account", async () => {
     history.push("?nr_dates=3&date_interval=1&date_order=ascending")
     const { container } = renderSubjectTableRow({ ascending: true })
-    expect(screen.getAllByText("+2").length).toBe(1)
-    expect(screen.getAllByLabelText("Metric type worsened from 10 to 12 things by +2 things").length).toBe(1)
-    expect(screen.getAllByText("-4").length).toBe(1)
-    expect(screen.getAllByLabelText("Metric type improved from 12 to 8 things by -4 things").length).toBe(1)
+    expectText("+2")
+    expectLabelText("Metric type worsened from 10 to 12 things by +2 things")
+    expectText("-4")
+    expectLabelText("Metric type improved from 12 to 8 things by -4 things")
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the delta column for the version scale", async () => {
     history.push("?nr_dates=3&date_interval=1")
     const { container } = renderSubjectTableRow({ scale: "version_number" })
-    expect(screen.getAllByText("+").length).toBe(1)
-    expect(screen.getAllByLabelText("Metric type worsened from 1.0 to 1.2").length).toBe(1)
-    expect(screen.getAllByText("-").length).toBe(1)
-    expect(screen.getAllByLabelText("Metric type improved from 1.2 to 0.8").length).toBe(1)
+    expectText("+")
+    expectLabelText("Metric type worsened from 1.0 to 1.2")
+    expectText("-")
+    expectLabelText("Metric type improved from 1.2 to 0.8")
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the drag handle when row is not expanded and user is authenticated", () => {
     renderSubjectTableRow({ permissions: EDIT_REPORT_PERMISSION })
-    expect(screen.getByLabelText("Drag to reorder")).toBeInTheDocument()
+    expectLabelText("Drag to reorder")
 })
 
 it("shows no drag handle when row is expanded", () => {
     renderSubjectTableRow({ expanded: true })
-    expect(screen.queryByLabelText("Drag to reorder")).not.toBeInTheDocument()
+    expectNoLabelText("Drag to reorder")
 })
 
 it("shows no drag handle when rows are sorted", () => {
@@ -184,23 +190,23 @@ it("shows no drag handle when rows are sorted", () => {
             </DataModel.Provider>
         </Permissions.Provider>,
     )
-    expect(screen.queryByLabelText("Drag to reorder")).not.toBeInTheDocument()
+    expectNoLabelText("Drag to reorder")
 })
 
 it("shows the metric type as name if the metric has no name", async () => {
     const { container } = renderSubjectTableRow()
-    expect(screen.getAllByText("Metric type").length).toBe(1)
+    expectText("Metric type")
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the metric name", async () => {
     const { container } = renderSubjectTableRow({ name: "Metric name" })
-    expect(screen.getAllByText("Metric name").length).toBe(1)
+    expectText("Metric name")
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the metric secondary name", async () => {
     const { container } = renderSubjectTableRow({ secondaryName: "Secondary name" })
-    expect(screen.getAllByText("Secondary name").length).toBe(1)
+    expectText("Secondary name")
     await expectNoAccessibilityViolations(container)
 })

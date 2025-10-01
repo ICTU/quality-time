@@ -7,7 +7,7 @@ import { vi } from "vitest"
 
 import * as sourceApi from "../api/source"
 import { EDIT_ENTITY_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { clickText, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { SourceEntityDetails } from "./SourceEntityDetails"
 
 const reload = vi.fn
@@ -45,7 +45,7 @@ it("shows the default desired response times when the report has no desired resp
         "Ignore this violation for 180 days because it will not be fixed.",
     ]
     expectedMenuItemDescriptions.forEach((description) => {
-        expect(screen.queryAllByText(description).length).toBe(1)
+        expectText(description)
     })
     await expectNoAccessibilityViolations(container)
 })
@@ -61,7 +61,7 @@ it("shows the configured desired response times", async () => {
         "Ignore this violation for 100 days because it will not be fixed.",
     ]
     expectedMenuItemDescriptions.forEach((description) => {
-        expect(screen.queryAllByText(description).length).toBe(1)
+        expectText(description)
     })
     await expectNoAccessibilityViolations(container)
 })
@@ -77,7 +77,7 @@ it("shows no desired response times when the report has been configured to not h
         "Ignore this violation because it will not be fixed.",
     ]
     expectedMenuItemDescriptions.forEach((description) => {
-        expect(screen.queryAllByText(description).length).toBe(1)
+        expectText(description)
     })
     await expectNoAccessibilityViolations(container)
 })
@@ -85,7 +85,7 @@ it("shows no desired response times when the report has been configured to not h
 it("changes the entity status", async () => {
     const { container } = renderSourceEntityDetails()
     fireEvent.mouseDown(screen.getByText("Unconfirm"))
-    fireEvent.click(screen.getByText(/Confirm/))
+    clickText(/Confirm/)
     expect(sourceApi.setSourceEntityAttribute).toHaveBeenCalledWith(
         "metric_uuid",
         "source_uuid",

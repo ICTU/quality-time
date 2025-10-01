@@ -6,7 +6,7 @@ import { vi } from "vitest"
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectFetch, expectNoAccessibilityViolations } from "../testUtils"
 import { ReportsOverviewTitle } from "./ReportsOverviewTitle"
 
 beforeEach(() => {
@@ -27,27 +27,21 @@ function renderReportsOverviewTitle() {
 it("sets the title", async () => {
     const { container } = renderReportsOverviewTitle()
     await userEvent.type(screen.getByLabelText(/Report overview title/), "{Delete}New title{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "reports_overview/attribute/title", {
-        title: "New title",
-    })
+    expectFetch("post", "reports_overview/attribute/title", { title: "New title" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("sets the subtitle", async () => {
     const { container } = renderReportsOverviewTitle()
     await userEvent.type(screen.getByLabelText(/Report overview subtitle/), "{Delete}New subtitle{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "reports_overview/attribute/subtitle", {
-        subtitle: "New subtitle",
-    })
+    expectFetch("post", "reports_overview/attribute/subtitle", { subtitle: "New subtitle" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("sets the comment", async () => {
     const { container } = renderReportsOverviewTitle()
     await userEvent.type(screen.getByLabelText(/Comment/), "{Delete}New comment{Shift>}{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "reports_overview/attribute/comment", {
-        comment: "New comment",
-    })
+    expectFetch("post", "reports_overview/attribute/comment", { comment: "New comment" })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -55,9 +49,7 @@ it("sets the edit report permission", async () => {
     history.push("?expanded=reports_overview:1")
     const { container } = renderReportsOverviewTitle()
     await userEvent.type(screen.getByLabelText(/Users allowed to edit reports/), "jadoe{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "reports_overview/attribute/permissions", {
-        permissions: { edit_reports: ["jadoe"] },
-    })
+    expectFetch("post", "reports_overview/attribute/permissions", { permissions: { edit_reports: ["jadoe"] } })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -65,15 +57,13 @@ it("sets the edit entities permission", async () => {
     history.push("?expanded=reports_overview:1")
     const { container } = renderReportsOverviewTitle()
     await userEvent.type(screen.getByLabelText(/Users allowed to edit measured entities/), "jodoe{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "reports_overview/attribute/permissions", {
-        permissions: { edit_entities: ["jodoe"] },
-    })
+    expectFetch("post", "reports_overview/attribute/permissions", { permissions: { edit_entities: ["jodoe"] } })
     await expectNoAccessibilityViolations(container)
 })
 
 it("loads the changelog", async () => {
     history.push("?expanded=reports_overview:2")
     const { container } = renderReportsOverviewTitle()
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("get", "changelog/5")
+    expectFetch("get", "changelog/5")
     await expectNoAccessibilityViolations(container)
 })

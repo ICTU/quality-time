@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { MetricsRequiringActionCard } from "./MetricsRequiringActionCard"
 
 const report = {
@@ -31,7 +31,7 @@ function renderMetricsRequiringActionCard({ selected = false } = {}) {
 
 it("shows the correct title", async () => {
     const { container } = renderMetricsRequiringActionCard()
-    expect(screen.getByText(/Action required/)).toBeInTheDocument()
+    expectText(/Action required/)
     await expectNoAccessibilityViolations(container)
 })
 

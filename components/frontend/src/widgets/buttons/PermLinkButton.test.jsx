@@ -1,6 +1,7 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import { vi } from "vitest"
 
+import { asyncClickText, expectNoText } from "../../testUtils"
 import * as toast from "../toast"
 import { PermLinkButton } from "./PermLinkButton"
 
@@ -11,7 +12,7 @@ beforeEach(() => {
 test("PermLinkButton is not shown in an insecure context", () => {
     Object.assign(window, { isSecureContext: false })
     render(<PermLinkButton itemType="metric" url="https://example.org" />)
-    expect(screen.queryAllByText(/Share/).length).toBe(0)
+    expectNoText(/Share/)
 })
 
 test("PermLinkButton copies URL to clipboard", async () => {
@@ -20,9 +21,7 @@ test("PermLinkButton copies URL to clipboard", async () => {
         clipboard: { writeText: vi.fn().mockImplementation(() => Promise.resolve()) },
     })
     render(<PermLinkButton itemType="metric" url="https://example.org" />)
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Share/))
-    })
+    await asyncClickText(/Share/)
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith("https://example.org")
     expect(toast.showMessage).toHaveBeenCalledWith("success", "Copied URL to clipboard")
 })
@@ -35,8 +34,6 @@ test("PermLinkButton shows error message if copying fails", async () => {
         },
     })
     render(<PermLinkButton itemType="metric" url="https://example.org" />)
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Share/))
-    })
+    await asyncClickText(/Share/)
     expect(toast.showMessage).toHaveBeenCalledWith("error", "Could not copy URL to clipboard", "Error: fail")
 })

@@ -6,7 +6,15 @@ import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import {
+    clickLabeledElement,
+    clickText,
+    expectFetch,
+    expectNoAccessibilityViolations,
+    expectNoFetch,
+    expectNoText,
+    expectText,
+} from "../testUtils"
 import { SourceParameter } from "./SourceParameter"
 
 const report = {
@@ -121,7 +129,7 @@ it("doesn't change an integer parameter with mouse wheel", async () => {
         parameterValue: "10",
     })
     fireEvent.wheel(screen.getByLabelText(/Integer/, { target: { scrollLeft: 500 } }))
-    expect(fetchServerApi.fetchServerApi).not.toHaveBeenCalled()
+    expectNoFetch()
     await expectNoAccessibilityViolations(container)
 })
 
@@ -131,7 +139,7 @@ it("renders a single choice parameter", async () => {
         parameterValue: "option 1",
     })
     expect(screen.queryAllByLabelText(/Single choice/).length).toBe(1)
-    expect(screen.queryAllByText(/option 1/).length).toBe(1)
+    expectText(/option 1/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -146,8 +154,8 @@ it("renders a multiple choice parameter with default", async () => {
         parameterValue: null,
     })
     expect(screen.queryAllByLabelText(/Multiple choice/).length).toBe(1)
-    expect(screen.queryAllByText(/option 1/).length).toBe(1)
-    expect(screen.queryAllByText(/option 2/).length).toBe(0)
+    expectText(/option 1/)
+    expectNoText(/option 2/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -161,8 +169,8 @@ it("renders a multiple choice parameter without defaults", async () => {
         parameterValue: [],
     })
     expect(screen.queryAllByLabelText(/Multiple choice/).length).toBe(1)
-    expect(screen.queryAllByText(/option 1/).length).toBe(0)
-    expect(screen.queryAllByText(/option 2/).length).toBe(0)
+    expectNoText(/option 1/)
+    expectNoText(/option 2/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -177,7 +185,7 @@ it("renders a multiple choice with addition parameter", async () => {
 
 it("renders nothing on unknown parameter type", async () => {
     const { container } = renderSourceParameter({ parameter: { name: "Unknown", type: "unknown" } })
-    expect(screen.queryAllByText(/Unknown/).length).toBe(0)
+    expectNoText(/Unknown/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -191,36 +199,30 @@ it("renders a help url", async () => {
 
 it("renders a help text", async () => {
     const { container } = renderSourceParameter({ parameter: { name: "String", type: "string", help: "Help text" } })
-    expect(screen.queryAllByText(/Help text/).length).toBe(1)
+    expectText(/Help text/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("changes the value", async () => {
     const { container } = renderSourceParameter({})
     await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", {
-        key1: "https://test/new",
-        edit_scope: "source",
-    })
+    expectFetch("post", "source/source_uuid/parameter/key1", { key1: "https://test/new", edit_scope: "source" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("changes the value via mass edit", async () => {
     const { container } = renderSourceParameter({})
-    fireEvent.click(screen.getByLabelText(/Edit scope/))
-    fireEvent.click(screen.getByText(/Apply change to subject/))
+    clickLabeledElement(/Edit scope/)
+    clickText(/Apply change to subject/)
     await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/key1", {
-        key1: "https://test/new",
-        edit_scope: "subject",
-    })
+    expectFetch("post", "source/source_uuid/parameter/key1", { key1: "https://test/new", edit_scope: "subject" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("closes the mass edit menu", async () => {
     const { container } = renderSourceParameter({})
-    fireEvent.click(screen.getByLabelText(/Edit scope/))
+    clickLabeledElement(/Edit scope/)
     await userEvent.keyboard("{Escape}")
-    expect(fetchServerApi.fetchServerApi).not.toHaveBeenCalled()
+    expectNoFetch()
     await expectNoAccessibilityViolations(container)
 })

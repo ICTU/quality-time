@@ -1,10 +1,11 @@
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 
+import { expectText } from "../testUtils"
 import { CommentSegment } from "./CommentSegment"
 
 it("shows the comment", () => {
     render(<CommentSegment comment="Comment" />)
-    expect(screen.getByText(/Comment/)).not.toBe(null)
+    expectText(/Comment/)
 })
 
 it("doesn't show the comment if it's empty", () => {

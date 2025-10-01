@@ -1,8 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
+import { clickText, expectSearch, expectText } from "../testUtils"
 import { HeaderWithDetails } from "./HeaderWithDetails"
 
 beforeEach(() => {
@@ -15,8 +16,8 @@ it("expands the details on click", () => {
             <p>Hello</p>
         </HeaderWithDetails>,
     )
-    fireEvent.click(screen.getByText("Expand"))
-    expect(history.location.search).toBe("?expanded=uuid%3A0")
+    clickText("Expand")
+    expectSearch("?expanded=uuid%3A0")
 })
 
 it("expands the details on space", async () => {
@@ -27,7 +28,7 @@ it("expands the details on space", async () => {
     )
     await userEvent.tab()
     await userEvent.keyboard(" ")
-    expect(history.location.search).toBe("?expanded=uuid%3A0")
+    expectSearch("?expanded=uuid%3A0")
 })
 
 it("is expanded on load when listed in the query string", () => {
@@ -37,5 +38,5 @@ it("is expanded on load when listed in the query string", () => {
             <p>Hello</p>
         </HeaderWithDetails>,
     )
-    expect(screen.getAllByText("Hello").length).toBe(1)
+    expectText("Hello")
 })

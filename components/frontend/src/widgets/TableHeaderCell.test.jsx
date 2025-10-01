@@ -1,8 +1,8 @@
 import { Table, TableHead, TableRow } from "@mui/material"
-import { render, screen, waitFor } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { render } from "@testing-library/react"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
+import { expectText, expectTextAfterWait, hoverText } from "../testUtils"
 import { SortableTableHeaderCell, UnsortableTableHeaderCell } from "./TableHeaderCell"
 
 function renderSortableTableHeaderCell(help) {
@@ -25,15 +25,13 @@ function renderSortableTableHeaderCell(help) {
 
 it("shows the label of the sortable header", () => {
     renderSortableTableHeaderCell()
-    expect(screen.queryAllByText(/Header/).length).toBe(1)
+    expectText(/Header/)
 })
 
 it("shows the help of the sortable header", async () => {
     renderSortableTableHeaderCell("Help")
-    await userEvent.hover(screen.queryByText(/Header/))
-    await waitFor(() => {
-        expect(screen.queryAllByText(/Help/).length).toBe(1)
-    })
+    await hoverText(/Header/)
+    await expectTextAfterWait(/Help/)
 })
 
 function renderUnsortableTableHeaderCell(help, icon) {
@@ -50,19 +48,17 @@ function renderUnsortableTableHeaderCell(help, icon) {
 
 it("shows the label of the unsortable header", () => {
     renderUnsortableTableHeaderCell()
-    expect(screen.queryAllByText(/Header/).length).toBe(1)
+    expectText(/Header/)
 })
 
 it("shows the help of the unsortable header", async () => {
     renderUnsortableTableHeaderCell("Help")
-    await userEvent.hover(screen.queryByText(/Header/))
-    await waitFor(() => {
-        expect(screen.queryAllByText(/Help/).length).toBe(1)
-    })
+    await hoverText(/Header/)
+    await expectTextAfterWait(/Help/)
 })
 
 it("shows the icon of the unsortable header", () => {
     const icon = <span>Icon</span>
     renderUnsortableTableHeaderCell(null, icon)
-    expect(screen.queryAllByText(/Icon/).length).toBe(1)
+    expectText(/Icon/)
 })

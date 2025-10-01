@@ -7,7 +7,7 @@ import { createTestableSettings } from "./__fixtures__/fixtures"
 import * as fetchServerApi from "./api/fetch_server_api"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 import { PageContent } from "./PageContent"
-import { expectNoAccessibilityViolations } from "./testUtils"
+import { expectFetch, expectNoAccessibilityViolations, expectText } from "./testUtils"
 
 vi.mock("react-toastify")
 
@@ -46,13 +46,13 @@ async function renderPageContent({ loading = false, reports = [], reportDate = n
 
 it("shows the reports overview", async () => {
     const { container } = await renderPageContent({ reportDate: new Date(2023, 10, 25) })
-    expect(screen.getAllByText(/Sorry, no reports/).length).toBe(1)
+    expectText(/Sorry, no reports/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows that the report is missing", async () => {
     const { container } = await renderPageContent({ reports: [{}], reportUuid: "uuid" })
-    expect(screen.getAllByText(/Sorry, this report doesn't exist/).length).toBe(1)
+    expectText(/Sorry, this report doesn't exist/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -62,7 +62,7 @@ it("shows that the report was missing", async () => {
         reports: [{}],
         reportUuid: "uuid",
     })
-    expect(screen.getAllByText(/Sorry, this report didn't exist/).length).toBe(1)
+    expectText(/Sorry, this report didn't exist/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -76,10 +76,7 @@ function expectMeasurementsCall(date, offset = 0) {
     const minReportDate = new Date(date)
     minReportDate.setDate(minReportDate.getDate() - offset)
     minReportDate.setHours(minReportDate.getHours() - 1)
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith(
-        "get",
-        `measurements?report_date=${date.toISOString()}&min_report_date=${minReportDate.toISOString()}`,
-    )
+    expectFetch("get", `measurements?report_date=${date.toISOString()}&min_report_date=${minReportDate.toISOString()}`)
 }
 
 it("fetches measurements", async () => {

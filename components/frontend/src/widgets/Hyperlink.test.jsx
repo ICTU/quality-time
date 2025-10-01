@@ -1,11 +1,12 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import { vi } from "vitest"
 
+import { clickText, expectText } from "../testUtils"
 import { HyperLink } from "./HyperLink"
 
 it("shows the hyperlink", () => {
     render(<HyperLink url="https://url">Link</HyperLink>)
-    expect(screen.queryAllByText("Link").length).toBe(1)
+    expectText("Link")
 })
 
 it("does not propagate a click event", () => {
@@ -15,6 +16,6 @@ it("does not propagate a click event", () => {
             <HyperLink url="https://url">Link</HyperLink>
         </button>,
     )
-    fireEvent.click(screen.getByText(/Link/))
+    clickText(/Link/)
     expect(eventHandler).not.toHaveBeenCalled()
 })

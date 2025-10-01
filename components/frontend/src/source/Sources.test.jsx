@@ -6,7 +6,15 @@ import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import {
+    asyncClickButton,
+    asyncClickText,
+    clickLabeledElement,
+    clickText,
+    expectFetch,
+    expectNoAccessibilityViolations,
+    expectText,
+} from "../testUtils"
 import * as toast from "../widgets/toast"
 import { Sources } from "./Sources"
 
@@ -106,7 +114,7 @@ it("shows a source", async () => {
 
 it("shows a message if there are no sources", async () => {
     const { container } = renderSources({ metric: report.subjects.subject_uuid.metrics.metric_without_sources })
-    expect(screen.getAllByText(/No sources have been configured/).length).toBe(1)
+    expectText(/No sources have been configured/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -119,19 +127,15 @@ it("doesn't show sources not in the data model", async () => {
 
 it("shows errored sources", async () => {
     const { container } = renderSources()
-    expect(screen.getAllByText(/Connection error/).length).toBe(1)
+    expectText(/Connection error/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("creates a new source", async () => {
     const { container } = renderSources()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Add source/))
-    })
+    await asyncClickText(/Add source/)
     await expectNoAccessibilityViolations(container)
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Source type 2/))
-    })
+    await asyncClickText(/Source type 2/)
     expect(fetchServerApi.fetchServerApi).toHaveBeenNthCalledWith(1, "post", "source/new/metric_uuid", {
         type: "source_type2",
     })
@@ -140,26 +144,18 @@ it("creates a new source", async () => {
 
 it("copies a source", async () => {
     const { container } = renderSources()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Copy source/))
-    })
+    await asyncClickText(/Copy source/)
     await expectNoAccessibilityViolations(container)
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Source 1/))
-    })
+    await asyncClickText(/Source 1/)
     expect(fetchServerApi.fetchServerApi).toHaveBeenNthCalledWith(1, "post", "source/source_uuid/copy/metric_uuid", {})
     await expectNoAccessibilityViolations(container)
 })
 
 it("moves a source", async () => {
     const { container } = renderSources()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Move source/))
-    })
+    await asyncClickText(/Move source/)
     await expectNoAccessibilityViolations(container)
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Source 2/))
-    })
+    await asyncClickText(/Source 2/)
     expect(fetchServerApi.fetchServerApi).toHaveBeenNthCalledWith(
         1,
         "post",
@@ -180,10 +176,7 @@ it("updates a parameter of a source", async () => {
         fireEvent.click(screen.getByDisplayValue("Source 1"))
     })
     expect(screen.getAllByDisplayValue("https://other").length).toBe(1)
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "source/source_uuid/parameter/url", {
-        edit_scope: "source",
-        url: "https://other",
-    })
+    expectFetch("post", "source/source_uuid/parameter/url", { edit_scope: "source", url: "https://other" })
     expect(toast.showMessage).toHaveBeenCalledTimes(0)
     await expectNoAccessibilityViolations(container)
 })
@@ -191,10 +184,10 @@ it("updates a parameter of a source", async () => {
 it("mass updates a parameter of a source", async () => {
     fetchServerApi.fetchServerApi.mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 })
     const { container } = renderSources()
-    fireEvent.click(screen.getByLabelText(/Edit scope/))
+    clickLabeledElement(/Edit scope/)
     await expectNoAccessibilityViolations(container)
-    fireEvent.click(screen.getByText(/Apply change to subject/))
-    expect(screen.getAllByText(/Apply change to subject/).length).toBe(1)
+    clickText(/Apply change to subject/)
+    expectText(/Apply change to subject/)
     await userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), "https://other{Enter}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 15,
@@ -204,20 +197,13 @@ it("mass updates a parameter of a source", async () => {
         fireEvent.click(screen.getByDisplayValue("Source 1"))
     })
     expect(screen.getAllByDisplayValue("https://other").length).toBe(1)
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "source/source_uuid/parameter/url", {
-        edit_scope: "subject",
-        url: "https://other",
-    })
+    expectFetch("post", "source/source_uuid/parameter/url", { edit_scope: "subject", url: "https://other" })
     expect(toast.showMessage).toHaveBeenCalledTimes(1)
     await expectNoAccessibilityViolations(container)
 })
 
 it("repositions a source", async () => {
     renderSources({ metric: report.subjects.subject_uuid.metrics.metric_with_two_sources })
-    await act(async () =>
-        fireEvent.click(screen.getAllByRole("button", { name: /Move source to the last position/ })[0]),
-    )
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "source/source_uuid1/attribute/position", {
-        position: "last",
-    })
+    await asyncClickButton(/Move source to the last position/, 0)
+    expectFetch("post", "source/source_uuid1/attribute/position", { position: "last" })
 })

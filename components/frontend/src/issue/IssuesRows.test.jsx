@@ -1,10 +1,10 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { clickText, expectFetch, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import * as toast from "../widgets/toast"
 import { IssuesRows } from "./IssuesRows"
 
@@ -43,13 +43,13 @@ function renderIssuesRow({
 
 it("does not show an error message if the metric has no issues and no issue tracker is configured", async () => {
     const { container } = renderIssuesRow()
-    expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(0)
+    expectNoText(/No issue tracker configured/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("does not show an error message if the metric has no issues and an issue tracker is configured", async () => {
     const { container } = renderIssuesRow({ report: { issue_tracker: { type: "Jira" } } })
-    expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(0)
+    expectNoText(/No issue tracker configured/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -63,27 +63,27 @@ it("does not show an error message if the metric has issues and an issue tracker
             },
         },
     })
-    expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(0)
+    expectNoText(/No issue tracker configured/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows an error message if the metric has issues but no issue tracker is configured", async () => {
     const { container } = renderIssuesRow({ issueIds: ["FOO-42"] })
-    expect(screen.queryAllByText(/No issue tracker configured/).length).toBe(1)
+    expectText(/No issue tracker configured/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows a connection error", async () => {
     const { container } = renderIssuesRow({ issueStatus: [{ issue_id: "FOO-43", connection_error: "Oops" }] })
-    expect(screen.queryAllByText(/Connection error/).length).toBe(1)
-    expect(screen.queryAllByText(/Oops/).length).toBe(1)
+    expectText(/Connection error/)
+    expectText(/Oops/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows a parse error", async () => {
     const { container } = renderIssuesRow({ issueStatus: [{ issue_id: "FOO-43", parse_error: "Oops" }] })
-    expect(screen.queryAllByText(/Parse error/).length).toBe(1)
-    expect(screen.queryAllByText(/Oops/).length).toBe(1)
+    expectText(/Parse error/)
+    expectText(/Oops/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -91,8 +91,8 @@ it("creates an issue", async () => {
     window.open = vi.fn()
     fetchServerApi.fetchServerApi.mockResolvedValue({ ok: true, error: "", issue_url: "https://tracker/foo-42" })
     const { container } = renderIssuesRow({ report: reportWithIssueTracker })
-    fireEvent.click(screen.getByText(/Create new issue/))
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", {
+    clickText(/Create new issue/)
+    expectFetch("post", "metric/metric_uuid/issue/new", {
         metric_url: "http://localhost:3000/#metric_uuid",
     })
     await expectNoAccessibilityViolations(container)
@@ -101,8 +101,8 @@ it("creates an issue", async () => {
 it("tries to create an issue", async () => {
     fetchServerApi.fetchServerApi.mockResolvedValue({ ok: false, error: "Dummy", issue_url: "" })
     const { container } = renderIssuesRow({ report: reportWithIssueTracker })
-    fireEvent.click(screen.getByText(/Create new issue/))
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "metric/metric_uuid/issue/new", {
+    clickText(/Create new issue/)
+    expectFetch("post", "metric/metric_uuid/issue/new", {
         metric_url: "http://localhost:3000/#metric_uuid",
     })
     await expectNoAccessibilityViolations(container)
@@ -118,7 +118,7 @@ it("adds an issue id", async () => {
     fetchServerApi.fetchServerApi.mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
     const { container } = renderIssuesRow()
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), "FOO-42{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "metric/metric_uuid/attribute/issue_ids", {
+    expectFetch("post", "metric/metric_uuid/attribute/issue_ids", {
         issue_ids: ["FOO-42"],
     })
     await expectNoAccessibilityViolations(container)
@@ -130,7 +130,7 @@ it("shows issue id suggestions", async () => {
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
     })
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), "u")
-    expect(screen.queryAllByText(/FOO-42: Suggestion/).length).toBe(1)
+    expectText(/FOO-42: Suggestion/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -156,9 +156,9 @@ it("shows no issue id suggestions without a query", async () => {
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
     })
     await userEvent.type(screen.getByRole("combobox"), "s")
-    expect(screen.queryAllByText(/FOO-42: Suggestion/).length).toBe(1)
+    expectText(/FOO-42: Suggestion/)
     await expectNoAccessibilityViolations(container)
     await userEvent.clear(screen.getByRole("combobox"))
-    expect(screen.queryAllByText(/FOO-42: Suggestion/).length).toBe(0)
+    expectNoText(/FOO-42: Suggestion/)
     await expectNoAccessibilityViolations(container)
 })

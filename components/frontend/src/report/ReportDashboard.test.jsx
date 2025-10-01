@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@mui/material/styles"
-import { fireEvent, render, renderHook, screen } from "@testing-library/react"
+import { render, renderHook } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
@@ -7,7 +7,7 @@ import { createTestableSettings } from "../__fixtures__/fixtures"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { clickText, expectNoAccessibilityViolations, expectNoText, expectSearch, expectText } from "../testUtils"
 import { theme } from "../theme"
 import { ReportDashboard } from "./ReportDashboard"
 
@@ -58,10 +58,10 @@ function renderDashboard({ hiddenTags = null, dates = [new Date()], onClick = vi
 
 it("shows the dashboard", async () => {
     const { container } = renderDashboard({ reportToRender: report })
-    expect(screen.getAllByText(/Subject title/).length).toBe(1)
-    expect(screen.getAllByText(/Legend/).length).toBe(1)
-    expect(screen.getAllByText(/tag/).length).toBe(1)
-    expect(screen.getAllByText(/other/).length).toBe(1)
+    expectText(/Subject title/)
+    expectText(/Legend/)
+    expectText(/tag/)
+    expectText(/other/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -69,9 +69,9 @@ it("hides tags", async () => {
     history.push("?hidden_tags=other")
     const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
     const { container } = renderDashboard({ reportToRender: report, hiddenTags: hiddenTags.result.current })
-    expect(screen.getAllByText(/Subject title/).length).toBe(1)
-    expect(screen.getAllByText(/tag/).length).toBe(1)
-    expect(screen.queryAllByText(/other/).length).toBe(0)
+    expectText(/Subject title/)
+    expectText(/tag/)
+    expectNoText(/other/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -79,16 +79,16 @@ it("hides a subject if all its tags are hidden", async () => {
     history.push("?hidden_tags=other,tag")
     const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
     const { container } = renderDashboard({ reportToRender: report, hiddenTags: hiddenTags.result.current })
-    expect(screen.queryAllByText(/Subject title/).length).toBe(0)
-    expect(screen.queryAllByText(/tag/).length).toBe(0)
-    expect(screen.queryAllByText(/other/).length).toBe(0)
+    expectNoText(/Subject title/)
+    expectNoText(/tag/)
+    expectNoText(/other/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("expands the subject title on click", async () => {
     const onClick = vi.fn()
     const { container } = renderDashboard({ reportToRender: report, onClick: onClick })
-    fireEvent.click(screen.getByText(/Subject title/))
+    clickText(/Subject title/)
     expect(onClick).toHaveBeenCalledWith(expect.anything(), "subject_uuid")
     await expectNoAccessibilityViolations(container)
 })
@@ -96,65 +96,65 @@ it("expands the subject title on click", async () => {
 it("hides the subject cards", async () => {
     history.push("?hidden_cards=subjects")
     const { container } = renderDashboard({ reportToRender: report })
-    expect(screen.queryAllByText(/Subject title/).length).toBe(0)
-    expect(screen.getAllByText(/Action required/).length).toBe(1)
-    expect(screen.getAllByText(/tag/).length).toBe(1)
-    expect(screen.getAllByText(/other/).length).toBe(1)
+    expectNoText(/Subject title/)
+    expectText(/Action required/)
+    expectText(/tag/)
+    expectText(/other/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("hides the tag cards", async () => {
     history.push("?hidden_cards=tags")
     const { container } = renderDashboard({ reportToRender: report })
-    expect(screen.getAllByText(/Subject title/).length).toBe(1)
-    expect(screen.getAllByText(/Action required/).length).toBe(1)
-    expect(screen.queryAllByText(/tag/).length).toBe(0)
-    expect(screen.queryAllByText(/other/).length).toBe(0)
+    expectText(/Subject title/)
+    expectText(/Action required/)
+    expectNoText(/tag/)
+    expectNoText(/other/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("hides the required actions cards", async () => {
     history.push("?hidden_cards=action_required")
     const { container } = renderDashboard({ reportToRender: report })
-    expect(screen.getAllByText(/Subject title/).length).toBe(1)
-    expect(screen.queryAllByText(/Action required/).length).toBe(0)
-    expect(screen.getAllByText(/tag/).length).toBe(1)
-    expect(screen.getAllByText(/other/).length).toBe(1)
+    expectText(/Subject title/)
+    expectNoText(/Action required/)
+    expectText(/tag/)
+    expectText(/other/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("hides metrics not requiring action", async () => {
     const { container } = renderDashboard({ reportToRender: report })
-    fireEvent.click(screen.getByText(/Action required/))
-    expect(history.location.search).toEqual("?metrics_to_hide=no_action_required")
+    clickText(/Action required/)
+    expectSearch("?metrics_to_hide=no_action_required")
     await expectNoAccessibilityViolations(container)
 })
 
 it("unhides metrics not requiring action", async () => {
     history.push("?metrics_to_hide=no_action_required")
     const { container } = renderDashboard({ reportToRender: report })
-    fireEvent.click(screen.getByText(/Action required/))
-    expect(history.location.search).toEqual("")
+    clickText(/Action required/)
+    expectSearch("")
     await expectNoAccessibilityViolations(container)
 })
 
 it("hides the legend card", async () => {
     history.push("?hidden_cards=legend")
     const { container } = renderDashboard({ reportToRender: report })
-    expect(screen.queryAllByText(/Legend/).length).toBe(0)
+    expectNoText(/Legend/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("does not show the issues card without issue tracker", async () => {
     const { container } = renderDashboard({ reportToRender: report })
-    expect(screen.queryAllByText(/Issues/).length).toBe(0)
+    expectNoText(/Issues/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("does show the issues card with issue tracker", async () => {
     report["issue_tracker"] = { type: "jira" }
     const { container } = renderDashboard({ reportToRender: report })
-    expect(screen.queryAllByText(/Issues/).length).toBe(1)
+    expectText(/Issues/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -162,15 +162,15 @@ it("hides the issues card", async () => {
     history.push("?hidden_cards=issues")
     report["issue_tracker"] = { type: "jira" }
     const { container } = renderDashboard({ reportToRender: report })
-    expect(screen.queryAllByText(/Issues/).length).toBe(0)
+    expectNoText(/Issues/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("hides metrics without issues", async () => {
     report["issue_tracker"] = { type: "jira" }
     const { container } = renderDashboard({ reportToRender: report })
-    fireEvent.click(screen.getByText(/Issues/))
-    expect(history.location.search).toEqual("?metrics_to_hide=no_issues")
+    clickText(/Issues/)
+    expectSearch("?metrics_to_hide=no_issues")
     await expectNoAccessibilityViolations(container)
 })
 
@@ -178,7 +178,7 @@ it("unhides metrics without issues", async () => {
     report["issue_tracker"] = { type: "jira" }
     history.push("?metrics_to_hide=no_issues")
     const { container } = renderDashboard({ reportToRender: report })
-    fireEvent.click(screen.getByText(/Issues/))
-    expect(history.location.search).toEqual("")
+    clickText(/Issues/)
+    expectSearch("")
     await expectNoAccessibilityViolations(container)
 })

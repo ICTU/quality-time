@@ -1,8 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../../__fixtures__/fixtures"
+import { clickText, expectSearch } from "../../testUtils"
 import { ResetSettingsButton } from "./ResetSettingsButton"
 
 beforeEach(() => {
@@ -39,8 +40,8 @@ it("resets the settings", async () => {
         reportDate: new Date("2023-01-01"),
         settings: settings,
     })
-    fireEvent.click(screen.getAllByText(/Reset settings/)[0])
-    expect(history.location.search).toEqual("")
+    clickText(/Reset settings/, 0)
+    expectSearch("")
     expect(handleDateChange).toHaveBeenCalledWith(null)
 })
 
@@ -52,6 +53,6 @@ it("does not reset the settings when all have the default value", async () => {
         handleDateChange: handleDateChange,
         settings: settings,
     })
-    fireEvent.click(screen.getAllByText(/Reset settings/)[0])
+    clickText(/Reset settings/, 0)
     expect(handleDateChange).not.toHaveBeenCalled()
 })

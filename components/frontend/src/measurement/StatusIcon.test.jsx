@@ -1,7 +1,7 @@
-import { render, waitFor } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectNoAccessibilityViolations, expectTextAfterWait } from "../testUtils"
 import { StatusIcon } from "./StatusIcon"
 
 it("renders a checkmark if the status is target met", async () => {
@@ -25,12 +25,8 @@ it("renders a question mark if the status is missing", async () => {
 it("renders a popup with the date the status started", async () => {
     let startDate = new Date()
     startDate.setDate(startDate.getDate() - 4)
-    const { container, queryByLabelText, queryByText } = render(
-        <StatusIcon status="target_met" statusStart={startDate} />,
-    )
+    const { container, queryByLabelText } = render(<StatusIcon status="target_met" statusStart={startDate} />)
     await userEvent.hover(queryByLabelText(/Target met/))
-    await waitFor(async () => {
-        expect(queryByText(/4 days ago/)).not.toBe(null)
-        await expectNoAccessibilityViolations(container)
-    })
+    await expectTextAfterWait(/4 days ago/)
+    await expectNoAccessibilityViolations(container)
 })

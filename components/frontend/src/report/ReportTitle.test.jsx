@@ -7,7 +7,14 @@ import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectFetch, expectNoAccessibilityViolations } from "../testUtils"
+import {
+    asyncClickLabeledElement,
+    asyncClickText,
+    expectFetch,
+    expectNoAccessibilityViolations,
+    expectSearch,
+    expectText,
+} from "../testUtils"
 import { ReportTitle } from "./ReportTitle"
 
 beforeEach(() => {
@@ -36,11 +43,9 @@ function renderReportTitle({ tags = ["foo"], issueTrackerType = null } = {}) {
 it("deletes the report", async () => {
     history.push("?expanded=report_uuid:0")
     const { container } = renderReportTitle()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Delete report/))
-    })
+    await asyncClickText(/Delete report/)
     expectFetch("delete", "report/report_uuid", {})
-    expect(history.location.search).toEqual("")
+    expectSearch("")
     await expectNoAccessibilityViolations(container)
 })
 
@@ -83,9 +88,7 @@ describe("desired reaction times tab", () => {
 
     it("sets the unknown status reaction time", async () => {
         const { container } = renderReportTitle()
-        await act(async () => {
-            fireEvent.click(screen.getByLabelText("Unknown"))
-        })
+        await asyncClickLabeledElement("Unknown")
         await userEvent.type(screen.getByLabelText("Unknown"), "4{Enter}}", {
             initialSelectionStart: 0,
             initialSelectionEnd: 1,
@@ -186,7 +189,7 @@ describe("notification destinations tab", () => {
 
     it("shows the notification destinations", async () => {
         const { container } = renderReportTitle()
-        expect(screen.getAllByText(/No notification destinations/).length).toBe(2)
+        expectText(/No notification destinations/, 2)
         await expectNoAccessibilityViolations(container)
     })
 })
@@ -240,7 +243,7 @@ describe("sources tab", () => {
 
     it("shows the sources, if available", async () => {
         const { container } = renderReportTitle()
-        expect(screen.getAllByText(/No sources have been configured yet/).length).toBe(1)
+        expectText(/No sources have been configured yet/)
         await expectNoAccessibilityViolations(container)
     })
 })
@@ -250,7 +253,7 @@ describe("tags tab", () => {
 
     it("shows the tags", async () => {
         const { container } = renderReportTitle()
-        expect(screen.getAllByText(/Tags/).length).toBe(1)
+        expectText(/Tags/)
         await expectNoAccessibilityViolations(container)
     })
 })
