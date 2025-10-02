@@ -21,7 +21,7 @@ import {
     reportsPropType,
     stringsPropType,
 } from "./sharedPropTypes"
-import { getReportsTags, getUserPermissions } from "./utils"
+import { getReportsTags, getReportTags, getUserPermissions } from "./utils"
 
 export function AppUI({
     changedFields,
@@ -78,7 +78,7 @@ export function AppUI({
                         atReportsOverview={atReportsOverview}
                         handleSort={handleSort}
                         settings={settings}
-                        tags={getReportsTags(reports)}
+                        tags={atReportsOverview ? getReportsTags(reports) : getReportTags(currentReport)}
                     />
                 }
                 settings={settings}
