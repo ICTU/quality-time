@@ -12,7 +12,7 @@ dependencies = [
     "beautifulsoup4==4.13.4",
     "defusedxml==0.7.1",
     "packaging==25.0",
-    "pymongo==4.15.1",
+    "pymongo==4.15.2",
     "python-dateutil==2.9.0.post0",
     "shared-code",
     "typing-extensions==4.14.1",
@@ -31,7 +31,7 @@ optional-dependencies.tools = [
     "fixit==2.1.0",
     "mypy==1.18.2",
     "pip-audit==2.9.0",
-    "pyproject-fmt==2.6.0",
+    "pyproject-fmt==2.7.0",
     "ruff==0.13.2",
     "vulture==2.14",
 ]

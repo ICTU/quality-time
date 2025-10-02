@@ -10,7 +10,7 @@ dependencies = [
     "bottle==0.13.4",
     "packaging==25.0",
     "pydantic==2.11.7",
-    "pymongo==4.15.1",
+    "pymongo==4.15.2",
     "python-dateutil==2.9.0.post0",
 ]
 
@@ -26,7 +26,7 @@ optional-dependencies.tools = [
     "mypy==1.18.2",
     "pip-audit==2.9.0",
     "pydantic==2.11.7",     # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
-    "pyproject-fmt==2.6.0",
+    "pyproject-fmt==2.7.0",
     "ruff==0.13.2",
     "vulture==2.14",
 ]
