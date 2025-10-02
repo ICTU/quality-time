@@ -14,12 +14,13 @@ beforeEach(() => {
     vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
 })
 
-function renderReportTitle({ tags = ["foo"] } = {}) {
+function renderReportTitle({ tags = ["foo"], issueTrackerType = null } = {}) {
     return render(
         <DataModel.Provider value={{ sources: { jira: { name: "Jira", issue_tracker: true } } }}>
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <ReportTitle
                     report={{
+                        issue_tracker: { type: issueTrackerType },
                         report_uuid: "report_uuid",
                         title: "Report",
                         subjects: { subject_uuid: { metrics: { metric_uuid: { tags: tags } } } },
@@ -206,28 +207,28 @@ describe("issue tracker tab", () => {
     })
 
     it("sets the issue tracker url", async () => {
-        const { container } = renderReportTitle()
+        const { container } = renderReportTitle({ issueTrackerType: "jira" })
         await userEvent.type(screen.getByLabelText(/URL/), "https://jira{Enter}")
         expectFetch("post", "report/report_uuid/issue_tracker/url", { url: "https://jira" })
         await expectNoAccessibilityViolations(container)
     })
 
     it("sets the issue tracker username", async () => {
-        const { container } = renderReportTitle()
+        const { container } = renderReportTitle({ issueTrackerType: "jira" })
         await userEvent.type(screen.getByLabelText(/Username/), "janedoe{Enter}")
         expectFetch("post", "report/report_uuid/issue_tracker/username", { username: "janedoe" })
         await expectNoAccessibilityViolations(container)
     })
 
     it("sets the issue tracker password", async () => {
-        const { container } = renderReportTitle()
+        const { container } = renderReportTitle({ issueTrackerType: "jira" })
         await userEvent.type(screen.getByLabelText(/Password/), "secret{Enter}")
         expectFetch("post", "report/report_uuid/issue_tracker/password", { password: "secret" })
         await expectNoAccessibilityViolations(container)
     })
 
     it("sets the issue tracker private token", async () => {
-        const { container } = renderReportTitle()
+        const { container } = renderReportTitle({ issueTrackerType: "jira" })
         await userEvent.type(screen.getByLabelText(/Private token/), "secret{Enter}")
         expectFetch("post", "report/report_uuid/issue_tracker/private_token", { private_token: "secret" })
         await expectNoAccessibilityViolations(container)

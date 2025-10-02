@@ -83,6 +83,9 @@ export function IssueTracker({ report, reload }) {
     const projectKey = report.issue_tracker?.parameters?.project_key
     const issueType = report.issue_tracker?.parameters?.issue_type
     const epicLink = report.issue_tracker?.parameters?.epic_link
+    // The onChange handler below would erronously save the string "None" as report.issue_tracker.type. That has been
+    // fixed in v5.44.0, but we have to take into account that the database may still contain "None":
+    const issueTrackerFieldDisabled = disabled || !report.issue_tracker?.type || report.issue_tracker?.type === "None"
     return (
         <Grid alignItems="flex-start" container spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 2, md: 2 }}>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
@@ -90,7 +93,9 @@ export function IssueTracker({ report, reload }) {
                     disabled={disabled}
                     id="tracker-type"
                     label="Issue tracker type"
-                    onChange={(value) => setReportIssueTrackerAttribute(reportUuid, "type", value, reload)}
+                    onChange={(value) =>
+                        setReportIssueTrackerAttribute(reportUuid, "type", value === "None" ? "" : value, reload)
+                    }
                     select
                     value={report.issue_tracker?.type ?? "None"}
                 >
@@ -104,7 +109,7 @@ export function IssueTracker({ report, reload }) {
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <TextField
                     id="tracker_url"
-                    disabled={disabled}
+                    disabled={issueTrackerFieldDisabled}
                     label="Issue tracker URL"
                     onChange={(value) => setReportIssueTrackerAttribute(reportUuid, "url", value, reload)}
                     required={!!report.issue_tracker?.type}
@@ -113,7 +118,7 @@ export function IssueTracker({ report, reload }) {
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <TextField
-                    disabled={disabled}
+                    disabled={issueTrackerFieldDisabled}
                     id="tracker-username"
                     label="Username for basic authentication"
                     onChange={(value) => setReportIssueTrackerAttribute(reportUuid, "username", value, reload)}
@@ -122,7 +127,7 @@ export function IssueTracker({ report, reload }) {
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <TextField
-                    disabled={disabled}
+                    disabled={issueTrackerFieldDisabled}
                     id="tracker-password"
                     label="Password for basic authentication"
                     onChange={(value) => setReportIssueTrackerAttribute(reportUuid, "password", value, reload)}
@@ -132,7 +137,7 @@ export function IssueTracker({ report, reload }) {
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <TextField
-                    disabled={disabled}
+                    disabled={issueTrackerFieldDisabled}
                     id="tracker-token"
                     helperText={privateTokenHelp}
                     label="Private token"
@@ -144,7 +149,7 @@ export function IssueTracker({ report, reload }) {
             <Grid size={{ xs: 1, sm: 1, md: 1 }} />
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <TextField
-                    disabled={disabled}
+                    disabled={issueTrackerFieldDisabled}
                     error={!!report.issue_tracker?.type && projectKey && !projectValid}
                     helperText="The projects available for new issues are determined by the configured credentials"
                     id="tracker-project-key"
@@ -164,7 +169,7 @@ export function IssueTracker({ report, reload }) {
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <TextField
-                    disabled={disabled}
+                    disabled={issueTrackerFieldDisabled}
                     error={!!report.issue_tracker?.type && issueType && !issueTypeValid}
                     helperText="The issue types available for new issues are determined by the selected project"
                     id="tracker-issue-type"
@@ -185,7 +190,7 @@ export function IssueTracker({ report, reload }) {
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <Stack spacing={2}>
                     <TextField
-                        disabled={disabled}
+                        disabled={issueTrackerFieldDisabled}
                         helperText="The epics available for new issues are determined by the selected project"
                         id="tracker-issue-epic-link"
                         label="Epic link for new issues"
@@ -211,7 +216,7 @@ export function IssueTracker({ report, reload }) {
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <Stack spacing={2}>
                     <MultipleChoiceField
-                        disabled={disabled}
+                        disabled={issueTrackerFieldDisabled}
                         freeSolo
                         helperText="Spaces in labels are allowed here, but they will be replaced by underscores in Jira"
                         id="tracker-issue-labels"
