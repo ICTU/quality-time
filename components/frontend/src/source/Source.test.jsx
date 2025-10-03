@@ -7,7 +7,7 @@ import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { clickText, expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { Source } from "./Source"
 
 beforeEach(() => {
@@ -49,7 +49,7 @@ function renderSource(metric, props) {
 
 it("invokes the callback on clicking delete", async () => {
     const { container } = renderSource(metric)
-    fireEvent.click(screen.getByText(/Delete source/))
+    clickText(/Delete source/)
     expect(fetchServerApi.fetchServerApi).toHaveBeenNthCalledWith(1, "delete", "source/source_uuid", {})
     await expectNoAccessibilityViolations(container)
 })
@@ -58,41 +58,37 @@ it("changes the source type", async () => {
     const { container } = renderSource(metric)
     fireEvent.mouseDown(screen.getByLabelText(/Source type/))
     await expectNoAccessibilityViolations(container)
-    fireEvent.click(screen.getByText(/Source type 2/))
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/type", {
-        type: "source_type2",
-    })
+    clickText(/Source type 2/)
+    expectFetch("post", "source/source_uuid/attribute/type", { type: "source_type2" })
 })
 
 it("changes the source name", async () => {
     renderSource(metric)
     await userEvent.type(screen.getByLabelText(/Source name/), "New source name{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "source/source_uuid/attribute/name", {
-        name: "New source name",
-    })
+    expectFetch("post", "source/source_uuid/attribute/name", { name: "New source name" })
 })
 
 it("shows a connection error message", async () => {
     const { container } = renderSource(metric, { measurementSource: { connection_error: "Oops" } })
-    expect(screen.getAllByText(/Connection error/).length).toBe(1)
+    expectText(/Connection error/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows a parse error message", async () => {
     const { container } = renderSource(metric, { measurementSource: { parse_error: "Oops" } })
-    expect(screen.getAllByText(/Parse error/).length).toBe(1)
+    expectText(/Parse error/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows a config error message", async () => {
     const { container } = renderSource({ type: "unsupported_metric", sources: { source_uuid: source } })
-    expect(screen.getAllByText(/Configuration error/).length).toBe(1)
+    expectText(/Configuration error/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("loads the changelog", async () => {
     history.push("?expanded=source_uuid:1")
     const { container } = renderSource(metric)
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("get", "changelog/source/source_uuid/5")
+    expectFetch("get", "changelog/source/source_uuid/5")
     await expectNoAccessibilityViolations(container)
 })

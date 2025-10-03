@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
+- Fix broken links in the documentation. Fixes [#12033](https://github.com/ICTU/quality-time/issues/12033).
 - Disable issue tracker fields until the user picks an issue tracker type. Fixes [#12039](https://github.com/ICTU/quality-time/issues/12039).
 
 ### Changed
@@ -26,10 +27,6 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - Metrics can have an optional secondary name. Closes [#12023](https://github.com/ICTU/quality-time/issues/12023).
 - When measuring time remaining with Jira as source, add a parameter to select the event until which to measure the time remaining so it is clear what time is being measured. Only value supported at the moment is the end of the active sprint. Closes [#11893](https://github.com/ICTU/quality-time/issues/11893).
-
-### Fixed
-
-- Fix broken links in the documentation. Fixes [#12033](https://github.com/ICTU/quality-time/issues/12033).
 
 ## v5.43.0 - 2025-09-26
 

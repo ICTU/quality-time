@@ -1,18 +1,17 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { clickLabeledElement, clickText, expectNoAccessibilityViolations } from "../testUtils"
 import { UIModeMenu } from "./UIModeMenu"
 
-const openUIModeMenu = () => fireEvent.click(screen.getByLabelText(/Dark\/light mode/))
-const click = (mode) => fireEvent.click(screen.getByText(mode))
+const openUIModeMenu = () => clickLabeledElement(/Dark\/light mode/)
 
 it("sets dark mode", async () => {
     const setUIMode = vi.fn()
     const { container } = render(<UIModeMenu setUIMode={setUIMode} />)
     openUIModeMenu()
-    click("Dark mode")
+    clickText("Dark mode")
     expect(setUIMode).toHaveBeenCalledWith("dark")
     await expectNoAccessibilityViolations(container)
 })
@@ -21,7 +20,7 @@ it("sets light mode", async () => {
     const setUIMode = vi.fn()
     const { container } = render(<UIModeMenu setUIMode={setUIMode} uiMode="dark" />)
     openUIModeMenu()
-    click("Light mode")
+    clickText("Light mode")
     expect(setUIMode).toHaveBeenCalledWith("light")
     await expectNoAccessibilityViolations(container)
 })
@@ -30,7 +29,7 @@ it("sets follows os mode", () => {
     const setUIMode = vi.fn()
     render(<UIModeMenu setUIMode={setUIMode} uiMode="dark" />)
     openUIModeMenu()
-    click("Follow OS setting")
+    clickText("Follow OS setting")
     expect(setUIMode).toHaveBeenCalledWith("system")
 })
 

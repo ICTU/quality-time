@@ -7,7 +7,14 @@ import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import {
+    asyncClickButton,
+    asyncClickText,
+    clickText,
+    expectFetch,
+    expectNoAccessibilityViolations,
+    expectSearch,
+} from "../testUtils"
 import { SubjectTitle } from "./SubjectTitle"
 
 beforeEach(() => {
@@ -60,66 +67,52 @@ async function renderSubjectTitle(subjectType = "subject_type") {
 it("changes the subject type", async () => {
     const { container } = await renderSubjectTitle()
     fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
-    await userEvent.click(screen.getByText(/Other subject type/))
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/type", {
-        type: "subject_type2",
-    })
+    clickText(/Other subject type/)
+    expectFetch("post", "subject/subject_uuid/attribute/type", { type: "subject_type2" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("changes the subject title", async () => {
     const { container } = await renderSubjectTitle()
     await userEvent.type(screen.getByLabelText(/Subject title/), "{Delete}New title{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/name", {
-        name: "New title",
-    })
+    expectFetch("post", "subject/subject_uuid/attribute/name", { name: "New title" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("changes the subject subtitle", async () => {
     const { container } = await renderSubjectTitle()
     await userEvent.type(screen.getByLabelText(/Subject subtitle/), "{Delete}New subtitle{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/subtitle", {
-        subtitle: "New subtitle",
-    })
+    expectFetch("post", "subject/subject_uuid/attribute/subtitle", { subtitle: "New subtitle" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("changes the subject comment", async () => {
     const { container } = await renderSubjectTitle()
     await userEvent.type(screen.getByLabelText(/Comment/), "{Delete}New comment{Shift>}{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/comment", {
-        comment: "New comment",
-    })
+    expectFetch("post", "subject/subject_uuid/attribute/comment", { comment: "New comment" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("loads the changelog", async () => {
     history.push("?expanded=subject_uuid:1")
     const { container } = await renderSubjectTitle()
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("get", "changelog/subject/subject_uuid/5")
+    expectFetch("get", "changelog/subject/subject_uuid/5")
     await expectNoAccessibilityViolations(container)
 })
 
 it("moves the subject", async () => {
     const { container } = await renderSubjectTitle()
-    await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: /Move subject to the next position/ }))
-    })
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "subject/subject_uuid/attribute/position", {
-        position: "next",
-    })
+    await asyncClickButton(/Move subject to the next position/)
+    expectFetch("post", "subject/subject_uuid/attribute/position", { position: "next" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("deletes the subject", async () => {
     history.push("?expanded=subject_uuid:0")
     const { container } = await renderSubjectTitle()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Delete subject/))
-    })
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("delete", "subject/subject_uuid", {})
-    expect(history.location.search).toEqual("")
+    await asyncClickText(/Delete subject/)
+    expectFetch("delete", "subject/subject_uuid", {})
+    expectSearch("")
     await expectNoAccessibilityViolations(container)
 })
 

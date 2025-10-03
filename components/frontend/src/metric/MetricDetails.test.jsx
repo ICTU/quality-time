@@ -9,7 +9,18 @@ import * as fetchServerApi from "../api/fetch_server_api"
 import * as measurementApi from "../api/measurement"
 import { DataModel } from "../context/DataModel"
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import {
+    asyncClickButton,
+    asyncClickText,
+    clickButton,
+    clickText,
+    expectFetch,
+    expectNoAccessibilityViolations,
+    expectNoFetch,
+    expectNoText,
+    expectSearch,
+    expectText,
+} from "../testUtils"
 import * as toast from "../widgets/toast"
 import { MetricDetails } from "./MetricDetails"
 
@@ -128,7 +139,7 @@ async function renderMetricDetails({
 it("shows the trend graph tab even if the metric scale is version number", async () => {
     report.subjects["subject_uuid"].metrics["metric_uuid"].scale = "version_number"
     const { container } = await renderMetricDetails()
-    expect(screen.queryAllByText(/Trend graph/).length).toBe(1)
+    expectText(/Trend graph/)
     report.subjects["subject_uuid"].metrics["metric_uuid"].scale = "count"
     await expectNoAccessibilityViolations(container)
 })
@@ -140,9 +151,7 @@ it("removes the existing hashtag from the URL to share", async () => {
         clipboard: { writeText: vi.fn().mockImplementation(() => Promise.resolve()) },
     })
     await renderMetricDetails()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Share/))
-    })
+    await asyncClickText(/Share/)
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith("http://localhost:3000/#metric_uuid")
 })
 
@@ -161,7 +170,7 @@ it("displays whether sources have warnings", async () => {
 it("moves the metric", async () => {
     const mockCallback = vi.fn()
     await renderMetricDetails({ stopFilteringAndSorting: mockCallback })
-    await act(async () => fireEvent.click(screen.getByRole("button", { name: /Move metric to the last row/ })))
+    await asyncClickButton(/Move metric to the last row/)
     expect(mockCallback).toHaveBeenCalled()
     expect(measurementApi.getMetricMeasurements).toHaveBeenCalled()
 })
@@ -169,15 +178,15 @@ it("moves the metric", async () => {
 it("deletes the metric", async () => {
     history.push("?expanded=metric_uuid:1")
     await renderMetricDetails()
-    fireEvent.click(screen.getByText(/Delete metric/))
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("delete", "metric/metric_uuid", {})
-    expect(history.location.search).toEqual("")
+    clickText(/Delete metric/)
+    expectFetch("delete", "metric/metric_uuid", {})
+    expectSearch("")
 })
 
 it("measures the metric", async () => {
     await renderMetricDetails()
-    fireEvent.click(screen.getByText(/Measure metric/))
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith(
+    clickText(/Measure metric/)
+    expectFetch(
         "post",
         "metric/metric_uuid/attribute/measurement_requested",
         expect.objectContaining({}), // Ignore the attribute value, it's new Date().toISOString()
@@ -187,8 +196,8 @@ it("measures the metric", async () => {
 it("does not measure the metric if the metric source configuration is incomplete", async () => {
     dataModel.sources["sonarqube"].parameters = { url: { mandatory: true, metrics: ["violations"] } }
     await renderMetricDetails()
-    fireEvent.click(screen.getByText(/Measure metric/))
-    expect(fetchServerApi.fetchServerApi).not.toHaveBeenCalled()
+    clickText(/Measure metric/)
+    expectNoFetch()
 })
 
 it("loads an empty list of measurements", async () => {
@@ -196,7 +205,7 @@ it("loads an empty list of measurements", async () => {
     const { container } = await renderMetricDetails({
         getMetricMeasurements: () => Promise.resolve({ measurements: [] }),
     })
-    expect(screen.queryAllByText(/Loading measurements failed/).length).toBe(0)
+    expectNoText(/Loading measurements failed/)
     expect(toast.showMessage).toHaveBeenCalledTimes(0)
     await expectNoAccessibilityViolations(container)
 })
@@ -206,7 +215,7 @@ it("loads a missing list of measurements", async () => {
     const { container } = await renderMetricDetails({
         getMetricMeasurements: () => Promise.resolve({}),
     })
-    expect(screen.queryAllByText(/Loading measurements failed/).length).toBe(0)
+    expectNoText(/Loading measurements failed/)
     expect(toast.showMessage).toHaveBeenCalledTimes(0)
     await expectNoAccessibilityViolations(container)
 })
@@ -216,7 +225,7 @@ it("fails to load measurements due to a failed promise", async () => {
     const { container } = await renderMetricDetails({
         getMetricMeasurements: () => Promise.reject(new Error("Failure")),
     })
-    expect(screen.queryAllByText(/Loading measurements failed/).length).toBe(1)
+    expectText(/Loading measurements failed/)
     expect(toast.showMessage).toHaveBeenCalledTimes(1)
     expect(toast.showMessage).toHaveBeenCalledWith("error", "Could not fetch measurements", "Failure")
     await expectNoAccessibilityViolations(container)
@@ -227,7 +236,7 @@ it("fails to load measurements due to an internal server error", async () => {
     const { container } = await renderMetricDetails({
         getMetricMeasurements: () => Promise.resolve({ ok: false, statusText: "Internal Server Error" }),
     })
-    expect(screen.queryAllByText(/Loading measurements failed/).length).toBe(1)
+    expectText(/Loading measurements failed/)
     expect(toast.showMessage).toHaveBeenCalledTimes(1)
     expect(toast.showMessage).toHaveBeenCalledWith("error", "Could not fetch measurements", "Internal Server Error")
     await expectNoAccessibilityViolations(container)
@@ -237,16 +246,16 @@ it("reloads the measurements after editing a measurement entity", async () => {
     history.push("?expanded=metric_uuid:5")
     const { container } = await renderMetricDetails()
     expect(measurementApi.getMetricMeasurements).toHaveBeenCalledTimes(1)
-    fireEvent.click(screen.getByRole("button", { name: "Expand/collapse" }))
+    clickButton("Expand/collapse")
     await expectNoAccessibilityViolations(container)
     fireEvent.mouseDown(screen.getByText("Unconfirm"))
-    await act(async () => fireEvent.click(screen.getByText("Confirm")))
+    await asyncClickText("Confirm")
     expect(measurementApi.getMetricMeasurements).toHaveBeenCalledTimes(2)
 })
 
 it("loads the changelog", async () => {
     history.push("?expanded=metric_uuid:3")
     const { container } = await renderMetricDetails()
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("get", "changelog/metric/metric_uuid/5")
+    expectFetch("get", "changelog/metric/metric_uuid/5")
     await expectNoAccessibilityViolations(container)
 })

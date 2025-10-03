@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 
 import { DataModel } from "../context/DataModel"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { SourceParameters } from "./SourceParameters"
 
 function renderSourceParameters({
@@ -112,8 +112,8 @@ it("renders a warning if the url was not reachable", async () => {
 
 it("renders parameter groups", async () => {
     const { container } = renderSourceParameters({})
-    expect(screen.queryAllByText(/Location parameters/).length).toBe(1)
-    expect(screen.queryAllByText(/Other parameters/).length).toBe(1)
+    expectText(/Location parameters/)
+    expectText(/Other parameters/)
     await expectNoAccessibilityViolations(container)
 })
 

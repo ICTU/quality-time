@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { IssuesCard } from "./IssuesCard"
 
 const report = {
@@ -26,7 +26,7 @@ function renderIssuesCard({ selected = false } = {}) {
 
 it("shows the correct title", async () => {
     const { container } = renderIssuesCard()
-    expect(screen.getByText(/Issues/)).toBeInTheDocument()
+    expectText(/Issues/)
     await expectNoAccessibilityViolations(container)
 })
 

@@ -1,8 +1,8 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { act, render, waitFor } from "@testing-library/react"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { asyncClickText, expectNoAccessibilityViolations } from "../testUtils"
 import * as toast from "../widgets/toast"
 import { ChangeLog } from "./ChangeLog"
 
@@ -62,7 +62,7 @@ it("loads more changes", async () => {
     fetchServerApi.fetchServerApi.mockImplementation(() =>
         Promise.resolve({ changelog: [{ timestamp: "2020-01-01" }, { timestamp: "2020-01-02" }] }),
     )
-    await act(async () => fireEvent.click(screen.getByText(/Load more changes/)))
+    await asyncClickText(/Load more changes/)
     expectNrEventsToBe(2)
     await expectNoAccessibilityViolations(container)
 })
@@ -71,7 +71,7 @@ it("shows error when loading more changes fails", async () => {
     const { container } = await renderChangeLog({ sourceUuid: "uuid" })
     fetchServerApi.fetchServerApi.mockImplementation(() => Promise.reject(new Error("Couldn't retrieve changelog")))
     const showMessage = vi.spyOn(toast, "showMessage")
-    await act(async () => fireEvent.click(screen.getByText(/Load more changes/)))
+    await asyncClickText(/Load more changes/)
     await waitFor(async () => {
         expect(showMessage).toHaveBeenCalledTimes(1)
         await expectNoAccessibilityViolations(container)

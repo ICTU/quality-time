@@ -1,9 +1,16 @@
-import { render, screen, waitFor } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import {
+    clickText,
+    expectLabelText,
+    expectNoAccessibilityViolations,
+    expectNoText,
+    expectText,
+    expectTextAfterWait,
+} from "../testUtils"
 import { SourceEntities } from "./SourceEntities"
 
 const dataModel = {
@@ -126,12 +133,8 @@ it("renders a message if the metric does not support measurement entities", asyn
     const { container } = renderSourceEntities({
         metric: { type: "metric_type", sources: { source_uuid: { type: "source_type_without_entities" } } },
     })
-    expect(screen.getAllByText(/Measurement details not supported/).length).toBe(1)
-    expect(
-        screen.getAllByText(
-            /Showing individual items is not supported when using Source type without entities as source./,
-        ).length,
-    ).toBe(1)
+    expectText(/Measurement details not supported/)
+    expectText(/Showing individual items is not supported when using Source type without entities as source./)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -142,12 +145,8 @@ it("renders a message if the metric does not support measurement entities and ha
             sources: { source_uuid: { type: "source_type_without_entities" } },
         },
     })
-    expect(screen.getAllByText(/Measurement details not supported/).length).toBe(1)
-    expect(
-        screen.getAllByText(
-            /Showing individual entities is not supported when using Source type without entities as source./,
-        ).length,
-    ).toBe(1)
+    expectText(/Measurement details not supported/)
+    expectText(/Showing individual entities is not supported when using Source type without entities as source./)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -155,32 +154,32 @@ it("renders a message if the metric does not have measurement entities", async (
     const { container } = renderSourceEntities({
         measurements: [{ sources: [{ source_uuid: "source_uuid", entities: [] }] }],
     })
-    expect(screen.getAllByText(/Measurement details not available/).length).toBe(1)
+    expectText(/Measurement details not available/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders a message if the measurements failed to load", async () => {
     const { container } = renderSourceEntities({ loading: "failed" })
-    expect(screen.getAllByText(/Loading measurements failed/).length).toBe(1)
+    expectText(/Loading measurements failed/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders a placeholder while the measurements are loading", async () => {
     const { container } = renderSourceEntities({ loading: "loading" })
     expect(container.firstChild.className).toContain("MuiSkeleton-rectangular")
-    expect(screen.queryAllByText("AAA").length).toBe(0)
+    expectNoText("AAA")
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders a message if there are no measurements", async () => {
     const { container } = renderSourceEntities({ measurements: [] })
-    expect(screen.getAllByText(/No measurements/).length).toBe(1)
+    expectText(/No measurements/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the hide ignored entities button", async () => {
     const { container } = renderSourceEntities()
-    expect(screen.getAllByLabelText(/Hide the 0 entities that have been/).length).toBe(1)
+    expectLabelText(/Hide the 0 entities that have been/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -188,7 +187,7 @@ it("shows the hide ignored entities button with one ignored entity", async () =>
     const fixture = JSON.parse(JSON.stringify(sourceFixture))
     fixture.entity_user_data["2"].status_end_date = "3000-01-01"
     const { container } = renderSourceEntities({ measurements: [{ sources: [fixture] }] })
-    expect(screen.getAllByLabelText(/Hide the 1 entity name that has been/).length).toBe(1)
+    expectLabelText(/Hide the 1 entity name that has been/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -198,7 +197,7 @@ it("shows the hide ignored entities button with two ignored entities", async () 
     fixture.entity_user_data["1"].status_end_date = "3000-01-01"
     fixture.entity_user_data["2"].status_end_date = "3000-01-01"
     const { container } = renderSourceEntities({ measurements: [{ sources: [fixture] }] })
-    expect(screen.getAllByLabelText(/Hide the 2 entities that have been/).length).toBe(1)
+    expectLabelText(/Hide the 2 entities that have been/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -215,13 +214,13 @@ it("shows the show ignored entities button", async () => {
 async function expectColumnIsSortedCorrectly(header, ascending) {
     const { container } = renderSourceEntities()
     expectOrder(["C", "B", "A"]) // Initial order
-    await userEvent.click(screen.getByText(header))
+    clickText(header)
     expectOrder(ascending)
     await expectNoAccessibilityViolations(container)
-    await userEvent.click(screen.getByText(header))
+    clickText(header)
     expectOrder(ascending.toReversed())
     await expectNoAccessibilityViolations(container)
-    await userEvent.click(screen.getByText(header))
+    clickText(header)
     expectOrder(ascending)
 }
 
@@ -272,7 +271,5 @@ it("sorts the entities by minutes", async () => {
 it("shows help", async () => {
     renderSourceEntities()
     await userEvent.hover(screen.queryByTestId("HelpIcon"))
-    await waitFor(() => {
-        expect(screen.queryByText(/help/)).not.toBe(null)
-    })
+    await expectTextAfterWait(/help/)
 })

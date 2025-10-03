@@ -5,7 +5,7 @@ import { vi } from "vitest"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { clickText, expectFetch, expectNoAccessibilityViolations, expectNoText } from "../testUtils"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
 
 const dataModel = {
@@ -73,7 +73,7 @@ async function typeInField(label, text, confirm = "Enter") {
 
 function expectMetricAttributePost(attribute, payload) {
     const endPoint = `metric/metric_uuid/attribute/${attribute}`
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", endPoint, { [attribute]: payload })
+    expectFetch("post", endPoint, { [attribute]: payload })
 }
 
 it("sets the metric name", async () => {
@@ -107,7 +107,7 @@ it("adds a tag on tab", async () => {
 it("changes the scale", async () => {
     const { container } = await renderMetricParameters()
     fireEvent.mouseDown(screen.getByLabelText(/Metric scale/))
-    fireEvent.click(screen.getByText(/Percentage/))
+    clickText(/Percentage/)
     expectMetricAttributePost("scale", "percentage")
     await expectNoAccessibilityViolations(container)
 })
@@ -115,7 +115,7 @@ it("changes the scale", async () => {
 it("changes the direction", async () => {
     const { container } = await renderMetricParameters()
     fireEvent.mouseDown(screen.getByLabelText(/direction/))
-    fireEvent.click(screen.getByText(/More violations is better/))
+    clickText(/More violations is better/)
     expectMetricAttributePost("direction", ">")
     await expectNoAccessibilityViolations(container)
 })
@@ -145,7 +145,7 @@ it("skips the metric unit field for metrics with the version number scale", asyn
             />
         </DataModel.Provider>,
     )
-    expect(screen.queryAllByText(/Metric unit/).length).toBe(0)
+    expectNoText(/Metric unit/)
     await expectNoAccessibilityViolations(container)
 })
 

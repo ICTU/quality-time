@@ -7,7 +7,16 @@ import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import {
+    asyncClickText,
+    clickButton,
+    clickMenuItem,
+    clickText,
+    expectFetch,
+    expectNoAccessibilityViolations,
+    expectNoText,
+    expectText,
+} from "../testUtils"
 import { Menubar } from "./Menubar"
 
 beforeEach(() => history.push(""))
@@ -38,11 +47,11 @@ function renderMenubar({
 }
 
 async function enterCredentials(container) {
-    fireEvent.click(screen.getByText(/Login/))
+    clickText(/Login/)
     await expectNoAccessibilityViolations(container)
     fireEvent.change(screen.getByLabelText("Username"), { target: { value: CREDENTIALS.username } })
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: CREDENTIALS.password } })
-    await act(async () => fireEvent.click(screen.getByText(/Submit/)))
+    await asyncClickText(/Submit/)
 }
 
 it("logs in", async () => {
@@ -54,7 +63,7 @@ it("logs in", async () => {
     const setUser = vi.fn()
     const { container } = renderMenubar({ setUser: setUser })
     await enterCredentials(container)
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "login", CREDENTIALS)
+    expectFetch("post", "login", CREDENTIALS)
     const expectedDate = new Date(Date.parse("2021-02-24T13:10:00+00:00"))
     expect(setUser).toHaveBeenCalledWith("user@example.org", "user@example.org", expectedDate)
     await expectNoAccessibilityViolations(container)
@@ -65,8 +74,8 @@ it("shows invalid credential message", async () => {
     const setUser = vi.fn()
     const { container } = renderMenubar({ setUser: setUser })
     await enterCredentials(container)
-    expect(screen.getAllByText(/Invalid credentials/).length).toBe(1)
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "login", CREDENTIALS)
+    expectText(/Invalid credentials/)
+    expectFetch("post", "login", CREDENTIALS)
     expect(setUser).not.toHaveBeenCalled()
     await expectNoAccessibilityViolations(container)
 })
@@ -76,8 +85,8 @@ it("shows connection error message", async () => {
     const setUser = vi.fn()
     const { container } = renderMenubar({ setUser: setUser })
     await enterCredentials(container)
-    expect(screen.getAllByText(/Connection error/).length).toBe(1)
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "login", CREDENTIALS)
+    expectText(/Connection error/)
+    expectFetch("post", "login", CREDENTIALS)
     expect(setUser).not.toHaveBeenCalled()
     await expectNoAccessibilityViolations(container)
 })
@@ -85,8 +94,8 @@ it("shows connection error message", async () => {
 it("closes the dialog on cancel", async () => {
     const setUser = vi.fn()
     const { container } = renderMenubar({ setUser: setUser })
-    fireEvent.click(screen.getByText(/Login/))
-    await act(async () => fireEvent.click(screen.getByText(/Cancel/)))
+    clickText(/Login/)
+    await asyncClickText(/Cancel/)
     await waitFor(async () => {
         expect(screen.queryAllByLabelText("Username").length).toBe(0)
         await expectNoAccessibilityViolations(container)
@@ -97,7 +106,7 @@ it("closes the dialog on cancel", async () => {
 it("closes the dialog on escape", async () => {
     const setUser = vi.fn()
     renderMenubar({ setUser: setUser })
-    fireEvent.click(screen.getByText(/Login/))
+    clickText(/Login/)
     await userEvent.keyboard("{Escape}")
     await waitFor(() => {
         expect(screen.queryAllByLabelText("Username").length).toBe(0)
@@ -109,9 +118,9 @@ it("logs out", async () => {
     vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
     const setUser = vi.fn()
     const { container } = renderMenubar({ setUser: setUser, user: "jadoe" })
-    fireEvent.click(screen.getByRole("button", { name: "User options" }))
-    fireEvent.click(screen.getByRole("menuitem", { name: "Logout" }))
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "logout", {})
+    clickButton("User options")
+    clickMenuItem("Logout")
+    expectFetch("post", "logout", {})
     expect(setUser).toHaveBeenCalledWith(null)
     await expectNoAccessibilityViolations(container)
 })
@@ -145,35 +154,35 @@ it("goes to home page on keypress", async () => {
 
 it("shows and hides the settings panel on button click", async () => {
     const { container } = renderMenubar({ panel: <div>Hello</div> })
-    fireEvent.click(screen.getByText(/Settings/))
-    expect(screen.getAllByText(/Hello/).length).toBe(1)
+    clickText(/Settings/)
+    expectText(/Hello/)
     await expectNoAccessibilityViolations(container)
-    fireEvent.click(screen.getByText(/Settings/))
-    await waitFor(() => expect(screen.queryAllByText(/Hello/).length).toBe(0))
+    clickText(/Settings/)
+    await waitFor(() => expectNoText(/Hello/))
 })
 
 it("shows and hides the settings panel on keypress", async () => {
     renderMenubar({ reportUuid: "", panel: <div>Hello</div> })
     await userEvent.type(screen.getByText(/Settings/), " ")
-    expect(screen.getAllByText(/Hello/).length).toBe(1)
+    expectText(/Hello/)
     await userEvent.type(screen.getByText(/Hello/), "{Escape}")
-    await waitFor(() => expect(screen.queryAllByText(/Hello/).length).toBe(0))
+    await waitFor(() => expectNoText(/Hello/))
 })
 
 it("shows and hides the report period panel on button click", async () => {
     const { container } = renderMenubar({ panel: <div>Hello</div> })
-    fireEvent.click(screen.getByText(/today/))
-    expect(screen.getAllByText(/Report date/).length).toBe(1)
+    clickText(/today/)
+    expectText(/Report date/)
     await expectNoAccessibilityViolations(container)
-    fireEvent.click(screen.getByText(/today/))
-    await waitFor(() => expect(screen.queryAllByText(/Report date/).length).toBe(0))
+    clickText(/today/)
+    await waitFor(() => expectNoText(/Report date/))
 })
 
 it("switches from settings to report period panel", async () => {
     const { container } = renderMenubar({ panel: <div>Hello</div> })
-    fireEvent.click(screen.getByText(/Settings/))
-    fireEvent.click(screen.getByText(/today/))
-    expect(screen.queryAllByText(/Hello/).length).toBe(0)
-    expect(screen.getAllByText(/Report date/).length).toBe(1)
+    clickText(/Settings/)
+    clickText(/today/)
+    expectNoText(/Hello/)
+    expectText(/Report date/)
     await expectNoAccessibilityViolations(container)
 })

@@ -1,5 +1,6 @@
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 
+import { expectNoText, expectText } from "../testUtils"
 import { Permissions, ReadOnlyOrEditable } from "./Permissions"
 
 function MockComponent1() {
@@ -19,8 +20,8 @@ it("shows the read only component if no permissions are present", () => {
             />
         </Permissions.Provider>,
     )
-    expect(screen.queryAllByText("One").length).toBe(1)
-    expect(screen.queryAllByText("Two").length).toBe(0)
+    expectText("One")
+    expectNoText("Two")
 })
 
 it("shows the read only component if not all permissions are present", () => {
@@ -33,8 +34,8 @@ it("shows the read only component if not all permissions are present", () => {
             />
         </Permissions.Provider>,
     )
-    expect(screen.queryAllByText("One").length).toBe(1)
-    expect(screen.queryAllByText("Two").length).toBe(0)
+    expectText("One")
+    expectNoText("Two")
 })
 
 it("shows the editable only component", () => {
@@ -47,8 +48,8 @@ it("shows the editable only component", () => {
             />
         </Permissions.Provider>,
     )
-    expect(screen.queryAllByText("One").length).toBe(0)
-    expect(screen.queryAllByText("Two").length).toBe(1)
+    expectNoText("One")
+    expectText("Two")
 })
 
 it("shows the editable only component if no permissions are needed", () => {
@@ -61,8 +62,8 @@ it("shows the editable only component if no permissions are needed", () => {
             />
         </Permissions.Provider>,
     )
-    expect(screen.queryAllByText("One").length).toBe(0)
-    expect(screen.queryAllByText("Two").length).toBe(1)
+    expectNoText("One")
+    expectText("Two")
 })
 
 it("shows the read-only component if required permissions are missing", () => {
@@ -71,6 +72,6 @@ it("shows the read-only component if required permissions are missing", () => {
             <ReadOnlyOrEditable readOnlyComponent={<MockComponent1 />} editableComponent={<MockComponent2 />} />
         </Permissions.Provider>,
     )
-    expect(screen.queryAllByText("One").length).toBe(1)
-    expect(screen.queryAllByText("Two").length).toBe(0)
+    expectText("One")
+    expectNoText("Two")
 })

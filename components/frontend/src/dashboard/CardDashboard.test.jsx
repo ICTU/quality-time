@@ -1,9 +1,9 @@
 import { ThemeProvider } from "@mui/material/styles"
-import { fireEvent, render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import { vi } from "vitest"
 
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { clickText, expectNoAccessibilityViolations } from "../testUtils"
 import { theme } from "../theme"
 import { CardDashboard } from "./CardDashboard"
 import { MetricSummaryCard } from "./MetricSummaryCard"
@@ -62,7 +62,7 @@ it("does not save the layout after click", async () => {
         initialLayout: [{ h: 6, w: 4, x: 0, y: 0 }],
         saveLayout: mockCallback,
     })
-    fireEvent.click(screen.getByText("Card"))
+    clickText("Card")
     expect(mockCallback).not.toHaveBeenCalled()
     await expectNoAccessibilityViolations(container)
 })

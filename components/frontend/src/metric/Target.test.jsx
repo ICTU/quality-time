@@ -5,7 +5,7 @@ import { vi } from "vitest"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { Target } from "./Target"
 
 const dataModel = {
@@ -56,7 +56,7 @@ beforeEach(() => vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ 
 
 function expectMetricAttributePost(attribute, payload) {
     const endPoint = `metric/metric_uuid/attribute/${attribute}`
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", endPoint, { [attribute]: payload })
+    expectFetch("post", endPoint, { [attribute]: payload })
 }
 
 it("sets the metric integer target", async () => {
@@ -75,6 +75,6 @@ it("sets the metric version target", async () => {
 
 it("displays the default target if changed", async () => {
     const { container } = renderMetricTarget({ type: "violations_with_default_target" })
-    expect(screen.queryAllByText(/Default/).length).toBe(1)
+    expectText(/Default/)
     await expectNoAccessibilityViolations(container)
 })

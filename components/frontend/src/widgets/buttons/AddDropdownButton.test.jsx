@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
+import { asyncClickRole, asyncClickText, expectNoText } from "../../testUtils"
 import { AddDropdownButton } from "./AddDropdownButton"
 
 function renderAddDropdownButton({ nrItems = 2, totalItems = 10, usedItemKeys = [], sort = true } = {}) {
@@ -35,21 +36,15 @@ function renderAddDropdownButton({ nrItems = 2, totalItems = 10, usedItemKeys = 
 
 test("AddDropdownButton mouse navigation", async () => {
     const mockCallback = renderAddDropdownButton()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Add foo/))
-    })
+    await asyncClickText(/Add foo/)
     expect(screen.getByLabelText(/Filter/)).toHaveFocus()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Sub 2/))
-    })
+    await asyncClickText(/Sub 2/)
     expect(mockCallback).toHaveBeenCalledWith("sub 2")
 })
 
 test("AddDropdownButton keyboard navigation", async () => {
     const mockCallback = renderAddDropdownButton()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Add foo/))
-    })
+    await asyncClickText(/Add foo/)
     expect(screen.getByLabelText(/Filter/)).toHaveFocus()
     await act(async () => {
         fireEvent.keyDown(screen.getByText(/Available/), { key: "ArrowDown" })
@@ -68,81 +63,57 @@ test("AddDropdownButton keyboard navigation", async () => {
 
 test("AddDropdownButton is sorted", async () => {
     renderAddDropdownButton()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Add foo/))
-    })
+    await asyncClickText(/Add foo/)
     expect(screen.getAllByText(/Sub/).map((item) => item.innerHTML)).toStrictEqual(["Sub 1", "Sub 2"])
 })
 
 test("AddDropdownButton is not sorted", async () => {
     renderAddDropdownButton({ sort: false })
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Add foo/))
-    })
+    await asyncClickText(/Add foo/)
     expect(screen.getAllByText(/Sub/).map((item) => item.innerHTML)).toStrictEqual(["Sub 2", "Sub 1"])
 })
 
 test("AddDropdownButton filter one item", async () => {
     renderAddDropdownButton({ nrItems: 6 })
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Add foo/))
-    })
+    await asyncClickText(/Add foo/)
     await userEvent.type(screen.getByRole("searchbox"), "Sub 3")
     expect(screen.getAllByText(/Sub/).map((item) => item.innerHTML)).toStrictEqual(["Sub 3"])
 })
 
 test("AddDropdownButton filter zero items", async () => {
     renderAddDropdownButton({ nrItems: 6 })
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Add foo/))
-    })
+    await asyncClickText(/Add foo/)
     await userEvent.type(screen.getByRole("searchbox"), "FOO{Enter}")
-    expect(screen.queryAllByText(/Sub/).length).toBe(0)
+    expectNoText(/Sub/)
 })
 
 test("AddDropdownButton select from all items", async () => {
     const mockCallback = renderAddDropdownButton()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Add foo/))
-    })
-    await act(async () => {
-        fireEvent.click(screen.getByRole("checkbox"))
-    })
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Sub 3/))
-    })
+    await asyncClickText(/Add foo/)
+    await asyncClickRole("checkbox")
+    await asyncClickText(/Sub 3/)
     expect(mockCallback).toHaveBeenCalledWith("sub 3")
 })
 
 test("AddDropdownButton hide used items", async () => {
     renderAddDropdownButton({ nrItems: 2, totalItems: 3, usedItemKeys: ["sub 1"] })
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Add foo/))
-    })
-    await act(async () => {
-        fireEvent.click(screen.getAllByRole("checkbox")[1])
-    })
-    expect(screen.queryAllByText(/Sub 1/).length).toBe(0)
+    await asyncClickText(/Add foo/)
+    await asyncClickRole("checkbox", undefined, 1)
+    expectNoText(/Sub 1/)
 })
 
 test("AddDropdownButton add all items by keyboard", async () => {
     const mockCallback = renderAddDropdownButton()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Add foo/))
-    })
+    await asyncClickText(/Add foo/)
     await userEvent.type(screen.getByRole("checkbox"), "{Enter}")
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Sub 3/))
-    })
+    await asyncClickText(/Sub 3/)
     expect(mockCallback).toHaveBeenCalledWith("sub 3")
 })
 
 test("AddDropdownButton menu can be closed without selecting an item", async () => {
     const mockCallback = renderAddDropdownButton()
-    await act(async () => {
-        fireEvent.click(screen.getByText(/Add foo/))
-    })
+    await asyncClickText(/Add foo/)
     await userEvent.keyboard("{Escape}")
-    expect(screen.queryAllByText(/Sub/).length).toBe(0)
+    expectNoText(/Sub/)
     expect(mockCallback).not.toHaveBeenCalled()
 })

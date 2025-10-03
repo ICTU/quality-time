@@ -6,7 +6,7 @@ import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtu
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { ReportSources } from "./ReportSources"
 
 function renderReportSources(report, expandedItems, theDataModel) {
@@ -28,19 +28,19 @@ beforeEach(() => vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ 
 
 it("shows a message if the report has no subjects", async () => {
     const { container } = renderReportSources({})
-    expect(screen.getAllByText(/No sources have been configured yet/).length).toBe(1)
+    expectText(/No sources have been configured yet/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows a message if none of the subjects has metrics", async () => {
     const { container } = renderReportSources({ subjects: { subject_uuid: {} } })
-    expect(screen.getAllByText(/No sources have been configured yet/).length).toBe(1)
+    expectText(/No sources have been configured yet/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the sources", async () => {
     const { container } = renderReportSources(report)
-    expect(screen.getAllByText(/Source 2/).length).toBe(1)
+    expectText(/Source 2/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -61,13 +61,13 @@ it("shows a message for sources without url", async () => {
         },
         ["source_uuid:0"],
     )
-    expect(screen.getAllByText(/This source has no location parameters/).length).toBe(1)
+    expectText(/This source has no location parameters/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("counts the metrics", async () => {
     const { container } = renderReportSources(report)
-    expect(screen.getAllByText("1").length).toBe(2) // Two sources, each used once
+    expectText("1", 2) // Two sources, each used once
     await expectNoAccessibilityViolations(container)
 })
 
@@ -86,7 +86,7 @@ it("counts the metrics using the same source", async () => {
             },
         },
     })
-    expect(screen.getAllByText("2").length).toBe(1)
+    expectText("2")
     await expectNoAccessibilityViolations(container)
 })
 
@@ -115,7 +115,7 @@ it("considers sources different if only the API-version differs", async () => {
             },
         },
     })
-    expect(screen.getAllByText("1").length).toBe(2) // Two sources, each used once
+    expectText("1", 2) // Two sources, each used once
     await expectNoAccessibilityViolations(container)
 })
 
@@ -131,7 +131,7 @@ it("shows the default source name if the source doesn't have an own name", async
             },
         },
     })
-    expect(screen.getAllByText("Source type name").length).toBe(2) // Source type and source name are equal
+    expectText("Source type name", 2) // Source type and source name are equal
     await expectNoAccessibilityViolations(container)
 })
 
@@ -158,7 +158,7 @@ it("considers a source without name the same as a source that has a name equal t
             },
         },
     })
-    expect(screen.getAllByText("Source type name").length).toBe(2) // Source type and source name are equal
+    expectText("Source type name", 2) // Source type and source name are equal
     await expectNoAccessibilityViolations(container)
 })
 
@@ -185,10 +185,7 @@ it("changes the value of a parameter of a source without parameter layout", asyn
     // Here, we assume the label is unique within this context
     const urlInputLabel = within(urlInput.closest("div")).getByLabelText(/URL/)
     await userEvent.type(urlInputLabel, "/new{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/url", {
-        url: "https://source.org/new",
-        edit_scope: "report",
-    })
+    expectFetch("post", "source/source_uuid/parameter/url", { url: "https://source.org/new", edit_scope: "report" })
     await expectNoAccessibilityViolations(container)
 })
 
@@ -218,10 +215,7 @@ it("changes the value of a parameter of a source with parameter layout", async (
         theDataModel,
     )
     await userEvent.type(screen.getByLabelText(/API version/), "{Backspace}3{Enter}")
-    expect(fetchServerApi.fetchServerApi).toHaveBeenLastCalledWith("post", "source/source_uuid/parameter/api_version", {
-        api_version: "3",
-        edit_scope: "report",
-    })
+    expectFetch("post", "source/source_uuid/parameter/api_version", { api_version: "3", edit_scope: "report" })
     await expectNoAccessibilityViolations(container)
 })
 

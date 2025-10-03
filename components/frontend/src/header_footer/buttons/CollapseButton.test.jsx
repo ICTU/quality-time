@@ -1,8 +1,9 @@
-import { fireEvent, render, renderHook, screen } from "@testing-library/react"
+import { render, renderHook } from "@testing-library/react"
 import history from "history/browser"
 
 import { createTestableSettings } from "../../__fixtures__/fixtures"
 import { useExpandedItemsSearchQuery } from "../../app_ui_settings"
+import { clickButton } from "../../testUtils"
 import { CollapseButton } from "./CollapseButton"
 
 beforeEach(() => history.push(""))
@@ -17,7 +18,7 @@ it("resets the expanded items", () => {
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
     expect(expandedItems.result.current.value).toStrictEqual(["tab:0"])
     renderCollapseButton({ expandedItems: expandedItems.result.current })
-    fireEvent.click(screen.getByRole("button", { name: /Collapse all/ }))
+    clickButton(/Collapse all/)
     expandedItems.rerender()
     expect(expandedItems.result.current.value).toStrictEqual([])
 })
@@ -26,7 +27,7 @@ it("doesn't change the expanded items if there are none", () => {
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
     expect(expandedItems.result.current.value).toStrictEqual([])
     renderCollapseButton({ expandedItems: expandedItems.result.current })
-    fireEvent.click(screen.getByRole("button", { name: /Collapse all/ }))
+    clickButton(/Collapse all/)
     expandedItems.rerender()
     expect(expandedItems.result.current.value).toStrictEqual([])
 })

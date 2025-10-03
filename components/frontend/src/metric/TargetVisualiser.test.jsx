@@ -1,7 +1,7 @@
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 
 import { DataModel } from "../context/DataModel"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { TargetVisualiser } from "./TargetVisualiser"
 
 const dataModel = {
@@ -40,11 +40,11 @@ function renderVisualiser(metric) {
 }
 
 function expectVisible(...matchers) {
-    matchers.forEach((matcher) => expect(screen.queryAllByText(matcher).length).toBe(1))
+    matchers.forEach((matcher) => expectText(matcher))
 }
 
 function expectNotVisible(...matchers) {
-    matchers.forEach((matcher) => expect(screen.queryAllByText(matcher).length).toBe(0))
+    matchers.forEach((matcher) => expectNoText(matcher))
 }
 
 it("shows help for evaluated metric without tech debt", async () => {

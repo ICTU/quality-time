@@ -1,8 +1,9 @@
 import { Table, TableBody, TableCell } from "@mui/material"
-import { fireEvent, render, screen } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
+import { clickButton, expectNoText, expectText } from "../testUtils"
 import { TableRowWithDetails } from "./TableRowWithDetails"
 
 function renderTableRowWithDetails(expanded, onExpand) {
@@ -19,18 +20,18 @@ function renderTableRowWithDetails(expanded, onExpand) {
 
 it("shows the details when expanded", () => {
     renderTableRowWithDetails(true)
-    expect(screen.queryAllByText(/Details/).length).toBe(1)
+    expectText(/Details/)
 })
 
 it("does not show the details when collapsed", () => {
     renderTableRowWithDetails(false)
-    expect(screen.queryAllByText(/Details/).length).toBe(0)
+    expectNoText(/Details/)
 })
 
 it("calls the expand callback when clicked", () => {
     const onExpand = vi.fn()
     renderTableRowWithDetails(false, onExpand)
-    fireEvent.click(screen.getByRole("button"))
+    clickButton()
     expect(onExpand).toHaveBeenCalledWith(true)
 })
 

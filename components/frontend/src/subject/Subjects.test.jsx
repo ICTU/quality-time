@@ -1,9 +1,9 @@
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import history from "history/browser"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { Subjects } from "./Subjects"
 
 function renderSubjects(reports) {
@@ -29,7 +29,7 @@ beforeEach(() => {
 
 it("shows the subjects", async () => {
     const { container } = renderSubjects([report])
-    expect(screen.getAllByText(/Subject/).length).toBe(2)
+    expectText(/Subject/, 2)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -80,8 +80,8 @@ it("does not render invisible subjects", async () => {
         title: "Report 2 title",
     }
     const { container } = renderSubjects([report, report2])
-    expect(screen.getAllByText(/Report 2 Subject 1/).length).toBe(1)
-    expect(screen.getAllByText(/Report 2 Subject 2/).length).toBe(1)
-    expect(screen.queryAllByText(/Report 2 Subject 3/).length).toBe(0)
+    expectText(/Report 2 Subject 1/)
+    expectText(/Report 2 Subject 2/)
+    expectNoText(/Report 2 Subject 3/)
     await expectNoAccessibilityViolations(container)
 })

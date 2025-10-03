@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@mui/material/styles"
-import { act, fireEvent, render, renderHook, screen } from "@testing-library/react"
+import { act, render, renderHook } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
@@ -9,7 +9,7 @@ import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { clickText, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { theme } from "../theme"
 import { Report } from "./Report"
 
@@ -83,32 +83,32 @@ async function renderReport({
 
 it("shows the report", async () => {
     const { container } = await renderReport({ reportToRender: report })
-    expect(screen.getAllByText(/Subject title/).length).toBe(2) // Once as dashboard card and once as subject header
+    expectText(/Subject title/, 2) // Once as dashboard card and once as subject header
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows an error message if there is no report", async () => {
     const { container } = await renderReport()
-    expect(screen.getAllByText(/Sorry, this report doesn't exist/).length).toBe(1)
+    expectText(/Sorry, this report doesn't exist/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows an error message if there was no report", async () => {
     const { container } = await renderReport({ reportDate: new Date("2020-01-01") })
-    expect(screen.getAllByText(/Sorry, this report didn't exist/).length).toBe(1)
+    expectText(/Sorry, this report didn't exist/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("hides columns on load", async () => {
     history.push("?hidden_columns=status")
     await renderReport({ reportToRender: report })
-    expect(screen.queryByText(/Status/)).toBe(null)
+    expectNoText(/Status/)
 })
 
 it("sorts the column", async () => {
     let handleSort = vi.fn()
     await renderReport({ reportToRender: report, handleSort: handleSort })
-    fireEvent.click(screen.getByText(/Comment/))
+    clickText(/Comment/)
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
@@ -116,7 +116,7 @@ it("sorts the column descending", async () => {
     history.push("?sort_column=comment")
     let handleSort = vi.fn()
     await renderReport({ reportToRender: report, handleSort: handleSort })
-    fireEvent.click(screen.getByText(/Comment/))
+    clickText(/Comment/)
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
@@ -124,7 +124,7 @@ it("stops sorting", async () => {
     history.push("?sort_column=issues&sort_direction=descending")
     let handleSort = vi.fn()
     await renderReport({ reportToRender: report, handleSort: handleSort })
-    fireEvent.click(screen.getByText(/Issues/))
+    clickText(/Issues/)
     expect(handleSort).toHaveBeenCalledWith("issues")
 })
 
@@ -132,8 +132,8 @@ it("stop sorting on add metric", async () => {
     history.push("?sort_column=status")
     let handleSort = vi.fn()
     await renderReport({ reportToRender: report, handleSort: handleSort })
-    fireEvent.click(screen.getByText(/Add metric/))
-    fireEvent.click(screen.getByText(/Metric type/))
+    clickText(/Add metric/)
+    clickText(/Metric type/)
     expect(handleSort).toHaveBeenCalledWith(null)
 })
 
@@ -141,14 +141,14 @@ it("sorts another column", async () => {
     history.push("?sort_column=issues")
     let handleSort = vi.fn()
     await renderReport({ reportToRender: report, handleSort: handleSort })
-    fireEvent.click(screen.getByText(/Comment/))
+    clickText(/Comment/)
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
 it("hides tags", async () => {
     const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
     await renderReport({ reportToRender: report, hiddenTags: hiddenTags.result.current })
-    fireEvent.click(screen.getAllByText(/tag/)[0])
+    clickText(/tag/, 0)
     hiddenTags.rerender()
     expect(hiddenTags.result.current.value).toStrictEqual(["other"])
 })
@@ -157,8 +157,8 @@ it("shows hidden tags", async () => {
     history.push("?hidden_tags=other")
     const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
     await renderReport({ reportToRender: report, hiddenTags: hiddenTags.result.current })
-    expect(screen.queryAllByText("other").length).toBe(0)
-    fireEvent.click(screen.getAllByText(/tag/)[0])
+    expectNoText("other")
+    clickText(/tag/, 0)
     hiddenTags.rerender()
     expect(hiddenTags.result.current.value).toStrictEqual([])
 })
@@ -166,7 +166,7 @@ it("shows hidden tags", async () => {
 it("hides subjects if empty", async () => {
     history.push("?hidden_tags=tag,other")
     await renderReport({ reportToRender: report })
-    expect(screen.queryAllByText(/Subject title/).length).toBe(0)
+    expectNoText(/Subject title/)
 })
 
 it("navigates to subject", async () => {
@@ -175,7 +175,7 @@ it("navigates to subject", async () => {
     const mockScrollBy = vi.fn()
     window.scrollBy = mockScrollBy
     await renderReport({ reportToRender: report })
-    fireEvent.click(screen.getAllByText(/Subject title/)[0])
+    clickText(/Subject title/, 0)
     expect(mockScroll).toHaveBeenCalledWith()
     expect(mockScrollBy).toHaveBeenCalledWith(0, 163)
 })

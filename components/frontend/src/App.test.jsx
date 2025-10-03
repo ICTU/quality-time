@@ -5,7 +5,16 @@ import { vi } from "vitest"
 
 import * as fetchServerApi from "./api/fetch_server_api"
 import App from "./App"
-import { expectNoAccessibilityViolations } from "./testUtils"
+import {
+    clickButton,
+    clickRole,
+    clickText,
+    expectLabelText,
+    expectNoAccessibilityViolations,
+    expectNoLabelText,
+    expectNoText,
+    expectText,
+} from "./testUtils"
 import * as toast from "./widgets/toast"
 
 function setUserInLocalStorage(sessionExpirationDatetime, email) {
@@ -36,14 +45,14 @@ function reportDateButton() {
 
 it("shows spinner", async () => {
     const { container } = render(<App />)
-    expect(screen.getAllByLabelText(/Loading/).length).toBe(1)
+    expectLabelText(/Loading/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("sets the user from local storage", async () => {
     setUserInLocalStorage("3000-02-23T22:00:50.945Z")
     const { container } = render(<App />)
-    expect(screen.getAllByText(/admin/).length).toBe(1)
+    expectText(/admin/)
     expect(screen.getAllByAltText(/Avatar for admin/).length).toBe(1)
     await expectNoAccessibilityViolations(container)
 })
@@ -51,32 +60,32 @@ it("sets the user from local storage", async () => {
 it("does not set invalid email addresses", async () => {
     setUserInLocalStorage("3000-02-23T22:00:50.945Z", "admin at example.org")
     const { container } = render(<App />)
-    expect(screen.getAllByText(/admin/).length).toBe(1)
-    expect(screen.queryAllByAltText(/Avatar for admin/).length).toBe(0)
+    expectText(/admin/)
+    expectNoLabelText(/Avatar for admin/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("resets the user when the session is expired on mount", async () => {
     setUserInLocalStorage("2000-02-23T22:00:50.945Z")
     const { container } = render(<App />)
-    expect(screen.queryAllByText(/admin/).length).toBe(0)
+    expectNoText(/admin/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("resets the user when the user clicks logout", async () => {
     setUserInLocalStorage("3000-02-23T22:00:50.945Z")
     const { container } = render(<App />)
-    fireEvent.click(screen.getByText(/admin/))
-    fireEvent.click(screen.getByText(/Logout/))
-    expect(screen.queryAllByText(/admin/).length).toBe(0)
+    clickText(/admin/)
+    clickText(/Logout/)
+    expectNoText(/admin/)
     await expectNoAccessibilityViolations(container)
 })
 
 async function select15thOfPreviousMonth(container) {
     fireEvent.click(reportDateButton())
     await expectNoAccessibilityViolations(container)
-    fireEvent.click(screen.getByRole("button", { name: "Previous month" }))
-    fireEvent.click(screen.getAllByRole("gridcell", { name: "15" })[0])
+    clickButton("Previous month")
+    clickRole("gridcell", "15", 0)
 }
 
 it("handles a date change", async () => {
@@ -109,7 +118,7 @@ it("handles a date reset", async () => {
     const { container } = render(<App />)
     fireEvent.click(reportDateButton())
     await expectNoAccessibilityViolations(container)
-    fireEvent.click(screen.getByRole("button", { name: "Today" }))
+    clickButton("Today")
     expect(reportDateButton().textContent).toMatch(/today/)
     await expectNoAccessibilityViolations(container)
 })

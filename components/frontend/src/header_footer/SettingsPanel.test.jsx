@@ -1,10 +1,10 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { asyncClickText, clickText, expectNoAccessibilityViolations, expectSearch } from "../testUtils"
 import { SettingsPanel } from "./SettingsPanel"
 
 beforeEach(() => {
@@ -49,88 +49,89 @@ function renderSettingsPanel({
 
 it("hides the metrics not requiring action", async () => {
     const { container } = renderSettingsPanel()
-    fireEvent.click(screen.getByText(/Metrics requiring action/))
-    expect(history.location.search).toBe("?metrics_to_hide=no_action_required")
+    clickText(/Metrics requiring action/)
+    expectSearch("?metrics_to_hide=no_action_required")
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows all metrics", async () => {
     history.push("?metrics_to_hide=no_action_required")
     renderSettingsPanel()
-    fireEvent.click(screen.getByText(/All metrics/))
-    expect(history.location.search).toBe("")
+    clickText(/All metrics/)
+    expectSearch("")
 })
 
 it("shows all metrics by keypress", async () => {
     history.push("?metrics_to_hide=no_action_required")
     renderSettingsPanel()
     await userEvent.type(screen.getByText(/All metrics/), " ")
-    expect(history.location.search).toBe("")
+    expectSearch("")
 })
 
 it("hides a tag", async () => {
     renderSettingsPanel({ tags: ["security"] })
-    fireEvent.click(screen.getByText(/security/))
-    expect(history.location.search).toBe("?hidden_tags=security")
+    clickText(/security/)
+    expectSearch("?hidden_tags=security")
 })
 
 it("hides a tag by keypress", async () => {
     renderSettingsPanel({ tags: ["security"] })
     await userEvent.type(screen.getAllByText(/security/)[0], " ")
-    expect(history.location.search).toBe("?hidden_tags=security")
+    expectSearch("?hidden_tags=security")
 })
 
 it("shows a tag", async () => {
     history.push("?hidden_tags=security")
     renderSettingsPanel({ tags: ["security"] })
-    fireEvent.click(screen.getAllByText(/security/)[0])
-    expect(history.location.search).toBe("")
+    clickText(/security/, 0)
+    expectSearch("")
 })
 
 it("hides a column", async () => {
     renderSettingsPanel()
-    fireEvent.click(screen.getByText(/Trend/))
-    expect(history.location.search).toBe("?hidden_columns=trend")
+    clickText(/Trend/)
+    expectSearch("?hidden_columns=trend")
 })
 
 it("hides a column by keypress", async () => {
     renderSettingsPanel()
     await userEvent.type(screen.getAllByText(/Comment/)[0], " ")
-    expect(history.location.search).toBe("?hidden_columns=comment")
+    expectSearch("?hidden_columns=comment")
 })
 
 it("shows a column", async () => {
     history.push("?hidden_columns=status")
     renderSettingsPanel()
-    fireEvent.click(screen.getAllByText(/Status/)[0])
-    expect(history.location.search).toBe("")
+    clickText(/Status/, 0)
+    expectSearch("")
 })
 
 it("hides empty columns", async () => {
     renderSettingsPanel()
-    fireEvent.click(screen.getByText(/Empty columns/))
-    expect(history.location.search).toBe("?hide_empty_columns=true")
+    clickText(/Empty columns/)
+    expectSearch("?hide_empty_columns=true")
 })
 
 it("show empty columns", async () => {
     history.push("?hide_empty_columns=true")
     renderSettingsPanel()
-    fireEvent.click(screen.getByText(/Empty columns/))
-    expect(history.location.search).toBe("")
+    clickText(/Empty columns/)
+    expectSearch("")
 })
 
 it("changes the sorting of an unsorted column", async () => {
     const handleSort = vi.fn()
     renderSettingsPanel({ handleSort: handleSort })
-    fireEvent.click(screen.getAllByText(/Comment/)[1])
+    clickText(/Comment/, 1)
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
-;["ascending", "descending"].forEach((sortOrder) => {
+
+Array("ascending", "descending").forEach((sortOrder) => {
     it("changes the sorting of a column", async () => {
         history.push(`?sort_column=comment&sort_direction=${sortOrder}`)
         const handleSort = vi.fn()
         renderSettingsPanel({ handleSort: handleSort })
-        fireEvent.click(screen.getAllByText(/Comment/)[1])
+        clickText(/Comment/, 1)
         expect(handleSort).toHaveBeenCalledWith("comment")
     })
 })
@@ -144,32 +145,30 @@ it("sorts a column by keypress", async () => {
 
 it("shows issue summaries", async () => {
     renderSettingsPanel()
-    await act(async () => {
-        fireEvent.click(screen.getAllByText(/Summary/)[0])
-    })
-    expect(history.location.search).toBe("?show_issue_summary=true")
+    await asyncClickText(/Summary/, 0)
+    expectSearch("?show_issue_summary=true")
 })
 
 it("shows issue summaries by keypress", async () => {
     renderSettingsPanel()
     await userEvent.type(screen.getAllByText(/Summary/)[0], " ")
-    expect(history.location.search).toBe("?show_issue_summary=true")
+    expectSearch("?show_issue_summary=true")
 })
 
 it("hides the reports cards", async () => {
     renderSettingsPanel()
-    await act(async () => fireEvent.click(screen.getByText(/Reports/)))
-    expect(history.location.search).toBe("?hidden_cards=reports")
+    await asyncClickText(/Reports/)
+    expectSearch("?hidden_cards=reports")
 })
 
 it("hides the subject cards", async () => {
     renderSettingsPanel({ atReportsOverview: false })
-    await act(async () => fireEvent.click(screen.getByText(/Subjects/)))
-    expect(history.location.search).toBe("?hidden_cards=subjects")
+    await asyncClickText(/Subjects/)
+    expectSearch("?hidden_cards=subjects")
 })
 
 it("hides the tag cards", async () => {
     renderSettingsPanel()
-    await act(async () => fireEvent.click(screen.getAllByText(/Tags/)[0]))
-    expect(history.location.search).toBe("?hidden_cards=tags")
+    await asyncClickText(/Tag/, 0)
+    expectSearch("?hidden_cards=tags")
 })

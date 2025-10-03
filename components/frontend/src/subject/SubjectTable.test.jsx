@@ -9,7 +9,15 @@ import * as fetchServerApi from "../api/fetch_server_api"
 import { useExpandedItemsSearchQuery } from "../app_ui_settings"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import {
+    asyncClickButton,
+    asyncClickRole,
+    clickButton,
+    expectFetch,
+    expectNoAccessibilityViolations,
+    expectNoText,
+    expectText,
+} from "../testUtils"
 import { SubjectTable } from "./SubjectTable"
 
 const metric = {
@@ -119,7 +127,7 @@ it("displays all the metrics", async () => {
     const { container } = renderSubjectTable()
     const metricNames = ["name_1", "name_2"]
     metricNames.forEach((metricName) => {
-        expect(screen.queryAllByText(metricName).length).toBe(1)
+        expectText(metricName)
     })
     await expectNoAccessibilityViolations(container)
 })
@@ -127,89 +135,88 @@ it("displays all the metrics", async () => {
 it("shows the date columns", async () => {
     const { container } = renderSubjectTable({ dates: dates })
     dates.forEach((date) => {
-        expect(screen.queryAllByText(date.toLocaleDateString()).length).toBe(1)
+        expectText(date.toLocaleDateString())
     })
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the source column", () => {
     renderSubjectTable()
-    expect(screen.queryAllByText(/Source/).length).toBe(1)
+    expectText(/Source/)
 })
 
 it("hides the source column", () => {
     history.push("?hidden_columns=source")
     renderSubjectTable()
-    expect(screen.queryAllByText(/Source/).length).toBe(0)
+    expectNoText(/Source/)
 })
 
 it("shows the time left column", () => {
     renderSubjectTable()
-    expect(screen.queryAllByText(/Time left/).length).toBe(1)
+    expectText(/Time left/)
 })
 
 it("hides the time left column", () => {
     history.push("?hidden_columns=time_left")
     renderSubjectTable()
-    expect(screen.queryAllByText(/Time left/).length).toBe(0)
+    expectNoText(/Time left/)
 })
 
 it("does not show the overrun column when showing one date", () => {
     renderSubjectTable()
-    expect(screen.queryAllByText(/[Oo]verrun/).length).toBe(0)
+    expectNoText(/[Oo]verrun/)
 })
 
 it("shows the overrun column when showing multiple dates", () => {
     renderSubjectTable({ dates: dates })
-    expect(screen.queryAllByText(/[Oo]verrun/).length).toBe(1)
+    expectText(/[Oo]verrun/)
 })
 
 it("hides the overrun column when showing multiple dates", () => {
     history.push("?hidden_columns=overrun")
     renderSubjectTable()
-    expect(screen.queryAllByText(/[Oo]verrun/).length).toBe(0)
+    expectNoText(/[Oo]verrun/)
 })
 
 it("shows the comment column", () => {
     renderSubjectTable()
-    expect(screen.queryAllByText(/Comment/).length).toBe(1)
+    expectText(/Comment/)
 })
 
 it("hides the comment column", () => {
     history.push("?hidden_columns=comment")
     renderSubjectTable()
-    expect(screen.queryAllByText(/Comment/).length).toBe(0)
+    expectNoText(/Comment/)
 })
 
 it("shows the issue column", () => {
     renderSubjectTable()
-    expect(screen.queryAllByText(/Issues/).length).toBe(1)
+    expectText(/Issues/)
 })
 
 it("hides the issue column", () => {
     history.push("?hidden_columns=issues")
     renderSubjectTable()
-    expect(screen.queryAllByText(/Issues/).length).toBe(0)
+    expectNoText(/Issues/)
 })
 
 it("shows the tags column", () => {
     renderSubjectTable()
-    expect(screen.queryAllByText(/Tags/).length).toBe(1)
-    expect(screen.queryAllByText(/Tag 1/).length).toBe(1)
+    expectText(/Tags/)
+    expectText(/Tag 1/)
 })
 
 it("hides the tags column", () => {
     history.push("?hidden_columns=tags")
     renderSubjectTable()
-    expect(screen.queryAllByText(/Tags/).length).toBe(0)
-    expect(screen.queryAllByText(/Tag 1/).length).toBe(0)
+    expectNoText(/Tags/)
+    expectNoText(/Tag 1/)
 })
 
 it("expands the details via the button", async () => {
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
     const { container } = renderSubjectTable({ expandedItems: expandedItems.result.current })
-    const expand = screen.getAllByRole("button", { name: "Expand/collapse" })[0]
-    fireEvent.click(expand)
+    clickButton("Expand/collapse", 0)
     expandedItems.rerender()
     await expectNoAccessibilityViolations(container)
     expect(expandedItems.result.current.value).toStrictEqual(["1:0"])
@@ -219,8 +226,7 @@ it("collapses the details via the button", async () => {
     history.push("?expanded=1:0")
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
     renderSubjectTable({ expandedItems: expandedItems.result.current })
-    const expand = screen.getAllByRole("button", { name: "Expand/collapse" })[0]
-    await act(async () => fireEvent.click(expand))
+    await asyncClickButton("Expand/collapse", 0)
     expandedItems.rerender()
     expect(expandedItems.result.current.value).toStrictEqual([])
 })
@@ -229,38 +235,32 @@ it("expands the details via the url", async () => {
     history.push("?expanded=1:0")
     const { container } = renderSubjectTable()
     await act(async () => {}) // Wait for hooks to finish
-    expect(screen.queryAllByText("Configuration").length).toBe(1)
+    expectText("Configuration")
     await expectNoAccessibilityViolations(container)
 })
 
 it("moves a metric", async () => {
     history.push("?expanded=1:2")
     renderSubjectTable()
-    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Move metric to the next row" })))
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "metric/1/attribute/position", {
-        position: "next",
-    })
+    await asyncClickButton("Move metric to the next row")
+    expectFetch("post", "metric/1/attribute/position", { position: "next" })
 })
 
 it("adds a source", async () => {
     history.push("?expanded=1:1")
     const { container } = renderSubjectTable()
-    await act(async () => {
-        fireEvent.click(screen.getByRole("tab", { name: /Sources/ }))
-    })
+    await asyncClickRole("tab", /Sources/)
     const addButton = await screen.findByText("Add source")
     await act(async () => fireEvent.click(addButton))
     await expectNoAccessibilityViolations(container)
     fireEvent.click(await screen.findByText("Source type"))
-    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "source/new/1", {
-        type: "source_type",
-    })
+    expectFetch("post", "source/new/1", { type: "source_type" })
 })
 
 it("hides empty columns", async () => {
     history.push("?hide_empty_columns=true")
     renderSubjectTable()
-    expect(screen.queryAllByText(/Comment/).length).toBe(0)
-    expect(screen.queryAllByText(/Issues/).length).toBe(0)
-    expect(screen.queryAllByText(/Tags/).length).toBe(1) // Not empty
+    expectNoText(/Comment/)
+    expectNoText(/Issues/)
+    expectText(/Tags/) // Not empty
 })

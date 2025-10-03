@@ -1,7 +1,8 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
+import { asyncClickText, clickText, expectNoText, expectText } from "../../testUtils"
 import { CopyButton } from "./CopyButton"
 
 function renderCopyButton(itemType, mockCallback) {
@@ -19,29 +20,23 @@ function renderCopyButton(itemType, mockCallback) {
 Array("report", "subject", "metric", "source").forEach((itemType) => {
     test("CopyButton has the correct label", () => {
         render(<CopyButton itemType={itemType} getOptions={() => []} />)
-        expect(screen.getAllByText(new RegExp(`Copy ${itemType}`)).length).toBe(1)
+        expectText(new RegExp(`Copy ${itemType}`))
     })
 
     test("CopyButton can be used to select an item", async () => {
         const mockCallback = vi.fn()
         renderCopyButton(itemType, mockCallback)
-        await act(async () => {
-            fireEvent.click(screen.getByText(new RegExp(`Copy ${itemType}`)))
-        })
-        await act(async () => {
-            fireEvent.click(screen.getByText(/Item/))
-        })
+        await asyncClickText(new RegExp(`Copy ${itemType}`))
+        await asyncClickText(/Item/)
         expect(mockCallback).toHaveBeenCalledWith("1")
     })
 
     test("CopyButton menu can be closed without selecting an item", async () => {
         const mockCallback = vi.fn()
         renderCopyButton(itemType, mockCallback)
-        await act(async () => {
-            fireEvent.click(screen.getByText(new RegExp(`Copy ${itemType}`)))
-        })
+        await asyncClickText(new RegExp(`Copy ${itemType}`))
         await userEvent.keyboard("{Escape}")
-        expect(screen.queryAllByText(/Item/).length).toBe(0)
+        expectNoText(/Item/)
         expect(mockCallback).not.toHaveBeenCalled()
     })
 
@@ -58,13 +53,9 @@ Array("report", "subject", "metric", "source").forEach((itemType) => {
                 }}
             />,
         )
-        await act(async () => {
-            fireEvent.click(screen.getByText(new RegExp(`Copy ${itemType}`)))
-        })
-        fireEvent.click(screen.getByText(/Item/))
-        await act(async () => {
-            fireEvent.click(screen.getByText(new RegExp(`Copy ${itemType}`)))
-        })
+        await asyncClickText(new RegExp(`Copy ${itemType}`))
+        clickText(/Item/)
+        await asyncClickText(new RegExp(`Copy ${itemType}`))
         expect(getOptionsCalled).toBe(4)
     })
 })

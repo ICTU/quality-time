@@ -4,7 +4,7 @@ import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import { DataModel } from "../context/DataModel"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { Subject } from "./Subject"
 
 function renderSubject({
@@ -37,26 +37,26 @@ beforeEach(() => {
 
 it("shows the subject title", async () => {
     const { container } = renderSubject({ dates: [new Date(2022, 3, 26)] })
-    expect(screen.queryAllByText("Subject 1 title").length).toBe(1)
+    expectText("Subject 1 title")
     await expectNoAccessibilityViolations(container)
 })
 
 it("shows the subject title at the reports overview", async () => {
     const { container } = renderSubject({ atReportsOverview: true, dates: [new Date(2022, 3, 26)] })
-    expect(screen.queryAllByText("Report title ❯ Subject 1 title").length).toBe(1)
+    expectText("Report title ❯ Subject 1 title")
     await expectNoAccessibilityViolations(container)
 })
 
 it("hides metrics not requiring action", async () => {
     history.push("?metrics_to_hide=no_action_required")
     renderSubject()
-    expect(screen.queryAllByText(/M\d/).length).toBe(1)
+    expectText(/M\d/)
 })
 
 it("hides the subject if all metrics are hidden", async () => {
     history.push("?hidden_tags=tag,other tag")
     renderSubject()
-    expect(screen.queryAllByText("Subject 1 title").length).toBe(0)
+    expectNoText("Subject 1 title")
 })
 
 const reportWithEmptySubject = {
@@ -67,19 +67,19 @@ const reportWithEmptySubject = {
 
 it("does not hide an empty subject if no metrics are hidden", async () => {
     renderSubject(reportWithEmptySubject)
-    expect(screen.queryAllByText("Subject 1 title").length).toBe(1)
+    expectText("Subject 1 title")
 })
 
 it("hides an empty subject if metrics that require action are hidden", async () => {
     history.push("?metrics_to_hide=no_action_required")
     renderSubject(reportWithEmptySubject)
-    expect(screen.queryAllByText("Subject 1 title").length).toBe(0)
+    expectNoText("Subject 1 title")
 })
 
 it("hides an empty subject if metrics with tags are hidden", async () => {
     history.push("?hidden_tags=tag,other tag")
     renderSubject(reportWithEmptySubject)
-    expect(screen.queryAllByText("Subject 1 title").length).toBe(0)
+    expectNoText("Subject 1 title")
 })
 
 function expectOrder(metricNames) {

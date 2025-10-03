@@ -1,8 +1,14 @@
-import { render, screen, waitFor } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { render, screen } from "@testing-library/react"
 
 import { DataModel } from "../context/DataModel"
-import { expectNoAccessibilityViolations } from "../testUtils"
+import {
+    expectNoAccessibilityViolations,
+    expectNoText,
+    expectNoTextAfterWait,
+    expectText,
+    expectTextAfterWait,
+    hoverText,
+} from "../testUtils"
 import { MeasurementValue } from "./MeasurementValue"
 
 function renderMeasurementValue({
@@ -40,20 +46,20 @@ function renderMeasurementValue({
 
 it("renders the value", async () => {
     const { container } = renderMeasurementValue({ latestMeasurement: { count: { value: "42" } } })
-    expect(screen.getAllByText(/42/).length).toBe(1)
+    expectText(/42/)
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders an unknown value", async () => {
     const { container } = renderMeasurementValue({ latestMeasurement: { count: { value: null } } })
-    expect(screen.getAllByText(/\?/).length).toBe(1)
+    expectText(/\?/)
     expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
 
 it("renders a value that has not been measured yet", async () => {
     const { container } = renderMeasurementValue()
-    expect(screen.getAllByText(/\?/).length).toBe(1)
+    expectText(/\?/)
     expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
@@ -68,7 +74,7 @@ it("renders a value that can not be measured yet", async () => {
         },
         url: "",
     })
-    expect(screen.getAllByText(/1/).length).toBe(1)
+    expectText(/1/)
     expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
     await expectNoAccessibilityViolations(container)
 })
@@ -82,15 +88,10 @@ it("renders an outdated value", async () => {
             end: new Date().toISOString(),
         },
     })
-    const measurementValue = screen.getByText(/1/)
     expect(screen.getAllByTestId("LoopIcon").length).toBe(1)
-    await userEvent.hover(measurementValue)
-    await waitFor(() => {
-        expect(screen.queryByText(/Latest measurement out of date/)).not.toBe(null)
-        expect(
-            screen.queryByText(/The source configuration of this metric was changed after the latest measurement/),
-        ).not.toBe(null)
-    })
+    await hoverText(/1/)
+    await expectTextAfterWait(/Latest measurement out of date/)
+    expectText(/The source configuration of this metric was changed after the latest measurement/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -100,13 +101,10 @@ it("renders a value for which a measurement was requested", async () => {
         latestMeasurement: { count: { value: 1 }, start: now, end: now },
         measurementRequested: now,
     })
-    const measurementValue = screen.getByText(/1/)
     expect(screen.getAllByTestId("LoopIcon").length).toBe(1)
-    await userEvent.hover(measurementValue)
-    await waitFor(() => {
-        expect(screen.queryByText(/Measurement requested/)).not.toBe(null)
-        expect(screen.queryByText(/An update of the latest measurement was requested by a user/)).not.toBe(null)
-    })
+    await hoverText(/1/)
+    await expectTextAfterWait(/Measurement requested/)
+    expectText(/An update of the latest measurement was requested by a user/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -116,14 +114,11 @@ it("renders a value for which a measurement was requested, but which is now up t
         latestMeasurement: { count: { value: 1 }, start: now, end: now },
         measurementRequested: "2024-01-01T00:00:00",
     })
-    const measurementValue = screen.getByText(/1/)
     expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
-    await userEvent.hover(measurementValue)
-    await waitFor(async () => {
-        expect(screen.queryByText(/Measurement requested/)).toBe(null)
-        expect(screen.queryByText(/An update of the latest measurement was requested by a user/)).toBe(null)
-        await expectNoAccessibilityViolations(container)
-    })
+    await hoverText(/1/)
+    await expectNoTextAfterWait(/Measurement requested/)
+    expectNoText(/An update of the latest measurement was requested by a user/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("renders a minutes value", async () => {
@@ -132,7 +127,7 @@ it("renders a minutes value", async () => {
         unit: "foo units",
         latestMeasurement: { count: { value: "42" } },
     })
-    expect(screen.getAllByText(/42/).length).toBe(1)
+    expectText(/42/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -142,7 +137,7 @@ it("renders an unknown minutes value", async () => {
         unit: "foo units",
         latestMeasurement: { count: { value: null } },
     })
-    expect(screen.getAllByText(/\?/).length).toBe(1)
+    expectText(/\?/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -153,7 +148,7 @@ it("renders a minutes percentage", async () => {
         unit: "foo units",
         latestMeasurement: { percentage: { value: "42" } },
     })
-    expect(screen.getAllByText(/42%/).length).toBe(1)
+    expectText(/42%/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -164,7 +159,7 @@ it("renders an unknown minutes percentage", async () => {
         unit: "foo units",
         latestMeasurement: { percentage: { value: null } },
     })
-    expect(screen.getAllByText(/\?%/).length).toBe(1)
+    expectText(/\?%/)
     await expectNoAccessibilityViolations(container)
 })
 
@@ -173,23 +168,19 @@ it("shows when the metric was last measured", async () => {
         status: "target_met",
         latestMeasurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00", count: { value: "42" } },
     })
-    await userEvent.hover(screen.queryByText(/42/))
-    await waitFor(async () => {
-        expect(screen.queryByText(/The metric was last measured/)).not.toBe(null)
-        await expectNoAccessibilityViolations(container)
-    })
+    await hoverText(/42/)
+    await expectTextAfterWait(/The metric was last measured/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows when the last measurement attempt was", async () => {
     const { container } = renderMeasurementValue({
         latestMeasurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00", count: { value: null } },
     })
-    await userEvent.hover(screen.queryByText(/\?/))
-    await waitFor(async () => {
-        expect(screen.queryByText(/This metric was not recently measured/)).not.toBe(null)
-        expect(screen.queryByText(/Last measurement attempt/)).not.toBe(null)
-        await expectNoAccessibilityViolations(container)
-    })
+    await hoverText(/\?/)
+    await expectTextAfterWait(/This metric was not recently measured/)
+    expectText(/Last measurement attempt/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not show an error message for past measurements that were recently measured at the time", async () => {
@@ -198,12 +189,10 @@ it("does not show an error message for past measurements that were recently meas
         latestMeasurement: { start: "2022-01-16T00:31:00", end: "2022-01-16T00:51:00" },
         reportDate: reportDate,
     })
-    await userEvent.hover(screen.queryByText(/\?/))
-    await waitFor(async () => {
-        expect(screen.queryByText(/This metric was not recently measured/)).toBe(null)
-        expect(screen.queryByText(/Last measurement attempt/)).not.toBe(null)
-        await expectNoAccessibilityViolations(container)
-    })
+    await hoverText(/\?/)
+    await expectNoTextAfterWait(/This metric was not recently measured/)
+    expectText(/Last measurement attempt/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("shows ignored measurement entities", async () => {
@@ -223,11 +212,9 @@ it("shows ignored measurement entities", async () => {
             ],
         },
     })
-    await userEvent.hover(screen.queryByText(/1/))
-    await waitFor(async () => {
-        expect(screen.queryByText(/Ignored foo/)).not.toBe(null)
-        await expectNoAccessibilityViolations(container)
-    })
+    await hoverText(/1/)
+    await expectTextAfterWait(/Ignored foo/)
+    await expectNoAccessibilityViolations(container)
 })
 
 it("does not show ignored measurement entities that no longer exist", async () => {
@@ -247,9 +234,7 @@ it("does not show ignored measurement entities that no longer exist", async () =
             ],
         },
     })
-    await userEvent.hover(screen.queryByText(/1/))
-    await waitFor(async () => {
-        expect(screen.queryByText(/Ignored foo/)).toBe(null)
-        await expectNoAccessibilityViolations(container)
-    })
+    await hoverText(/1/)
+    await expectNoTextAfterWait(/Ignored foo/)
+    await expectNoAccessibilityViolations(container)
 })
