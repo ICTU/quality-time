@@ -28,7 +28,9 @@ app.get("/api/render", async (req, res) => {
         console.log(`URL ${url}: opened`);
         await webPage.addStyleTag({ content: ".MuiPaper-elevation: {-webkit-filter: blur(0);}" }); // Fix box shadows
         await webPage.waitForSelector(".MuiCircularProgress-root", { hidden: true }); // Initial loader
+        console.log(`URL ${url}: loader hidden`);
         await webPage.waitForSelector(".MuiSkeleton-root", { hidden: true }); // Measurement entities placeholder
+        console.log(`URL ${url}: loader hidden, measurement entities loaded`);
         await webPage.waitForSelector("#dashboard.animated");
         console.log(`URL ${url}: loader hidden, measurement entities loaded, and animations finished`);
         const pdf = Buffer.from(
