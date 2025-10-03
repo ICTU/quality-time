@@ -268,7 +268,7 @@ wheels = [
 
 [[package]]
 name = "feature-tests"
-version = "5.44.0rc0"
+version = "5.44.0"
 source = { virtual = "." }
 dependencies = [
     { name = "asserts" },
