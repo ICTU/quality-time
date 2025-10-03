@@ -299,6 +299,9 @@ visibleMetrics.propTypes = {
 }
 
 export function getReportTags(report, hiddenTags) {
+    if (!report) {
+        return []
+    }
     const tags = new Set()
     Object.values(report.subjects).forEach((subject) => {
         Object.values(subject.metrics).forEach((metric) => {

@@ -356,29 +356,35 @@ it("returns the metric response overrun when there are two measurements with dif
     })
 })
 
-it("returns the tags of an empty report", () => {
-    expect(getReportTags({ subjects: {} })).toStrictEqual([])
-})
+describe("getReportsTags", () => {
+    it("returns an empty list of tags if the report is null", () => {
+        expect(getReportTags(null)).toStrictEqual([])
+    })
 
-it("returns the tags of a report with one tag", () => {
-    expect(
-        getReportTags({
-            subjects: { subject_uud: { metrics: { metric_uuid: { tags: ["tag"] } } } },
-        }),
-    ).toStrictEqual(["tag"])
-})
+    it("returns the tags of an empty report", () => {
+        expect(getReportTags({ subjects: {} })).toStrictEqual([])
+    })
 
-it("does not return hidden tags", () => {
-    expect(
-        getReportTags(
-            {
-                subjects: {
-                    subject_uud: { metrics: { metric_uuid: { tags: ["tag", "hidden"] } } },
+    it("returns the tags of a report with one tag", () => {
+        expect(
+            getReportTags({
+                subjects: { subject_uud: { metrics: { metric_uuid: { tags: ["tag"] } } } },
+            }),
+        ).toStrictEqual(["tag"])
+    })
+
+    it("does not return hidden tags", () => {
+        expect(
+            getReportTags(
+                {
+                    subjects: {
+                        subject_uud: { metrics: { metric_uuid: { tags: ["tag", "hidden"] } } },
+                    },
                 },
-            },
-            ["hidden"],
-        ),
-    ).toStrictEqual(["tag"])
+                ["hidden"],
+            ),
+        ).toStrictEqual(["tag"])
+    })
 })
 
 it("hides metrics not requiring action or without issues", () => {
