@@ -57,9 +57,9 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
         ]
 
     async def test_no_projects(self):
-        """Test that there are no security warnings if there are no projects."""
+        """Test that an error is thrown if there are no projects."""
         response = await self.collect(get_request_json_return_value=[])
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_no_projects_found(response)
 
     async def test_one_project_without_vulnerabilities(self):
         """Test one project without vulnerabilities."""
@@ -79,9 +79,15 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
 
     async def test_filter_by_project_name(self):
         """Test filtering projects by name."""
+        self.set_source_parameter("project_names", ["project name"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(response, value="1", entities=self.entities())
+
+    async def test_filter_by_project_name_without_match(self):
+        """Test filtering projects by name."""
         self.set_source_parameter("project_names", ["other project"])
         response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_no_projects_found(response)
 
     async def test_filter_by_project_regular_expression(self):
         """Test filtering projects by regular expression."""
@@ -91,9 +97,15 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
 
     async def test_filter_by_project_version(self):
         """Test filtering projects by version."""
+        self.set_source_parameter("project_versions", ["1.2", "1.3", "1.4"])
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(response, value="1", entities=self.entities())
+
+    async def test_filter_by_project_version_without_match(self):
+        """Test filtering projects by version."""
         self.set_source_parameter("project_versions", ["1.2", "1.3"])
         response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_no_projects_found(response)
 
     async def test_filter_by_project_name_and_version(self):
         """Test filtering projects by name and version."""
@@ -105,8 +117,14 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
     async def test_filter_by_latest_project(self):
         """Test that projects can be filtered by being the latest project version."""
         self.set_source_parameter("only_include_latest_project_versions", "yes")
-        response = await self.collect(get_request_json_side_effect=[self.projects()])
-        self.assert_measurement(response, value="0", entities=[])
+        response = await self.collect(get_request_json_side_effect=[self.projects(is_latest=True), self.findings()])
+        self.assert_measurement(response, value="1", entities=self.entities())
+
+    async def test_filter_by_latest_project_without_match(self):
+        """Test that projects can be filtered by being the latest project version."""
+        self.set_source_parameter("only_include_latest_project_versions", "yes")
+        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_no_projects_found(response)
 
     async def test_include_by_component_name(self):
         """Test filtering by component name."""

@@ -41,7 +41,7 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
     async def test_no_projects(self):
         """Test that there are no dependencies if there are no projects."""
         response = await self.collect(get_request_json_return_value=[])
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_no_projects_found(response)
 
     async def test_no_vulnerabilities(self):
         """Test one project without dependencies."""
@@ -85,7 +85,7 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         """Test filtering projects by name without match."""
         self.set_source_parameter("project_names", ["other project"])
         response = await self.collect(get_request_json_return_value=self.projects())
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_no_projects_found(response)
 
     async def test_filter_by_project_regular_expression(self):
         """Test filtering projects by regular expression."""
@@ -103,7 +103,7 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         """Test filtering projects by version without a match."""
         self.set_source_parameter("project_versions", ["1.2", "1.3"])
         response = await self.collect(get_request_json_return_value=self.projects())
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_no_projects_found(response)
 
     async def test_filter_by_project_name_and_version(self):
         """Test filtering projects by name and version."""
@@ -116,10 +116,10 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         """Test filtering projects by version."""
         self.set_source_parameter("project_versions", ["1.2", "1.3"])
         response = await self.collect(get_request_json_return_value=self.projects(version=""))
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_no_projects_found(response)
 
     async def test_filter_by_latest_project(self):
         """Test that projects can be filtered by being the latest project version."""
         self.set_source_parameter("only_include_latest_project_versions", "yes")
         response = await self.collect(get_request_json_side_effect=[self.projects()])
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_no_projects_found(response)
