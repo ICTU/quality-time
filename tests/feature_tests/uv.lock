@@ -75,11 +75,11 @@ filecache = [
 
 [[package]]
 name = "certifi"
-version = "2025.8.3"
+version = "2025.10.5"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/dc/67/960ebe6bf230a96cda2e0abcf73af550ec4f090005363542f0765df162e0/certifi-2025.8.3.tar.gz", hash = "sha256:e564105f78ded564e3ae7c923924435e1daa7463faeab5bb932bc53ffae63407", size = 162386, upload-time = "2025-08-03T03:07:47.08Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4c/5b/b6ce21586237c77ce67d01dc5507039d444b630dd76611bbca2d8e5dcd91/certifi-2025.10.5.tar.gz", hash = "sha256:47c09d31ccf2acf0be3f701ea53595ee7e0b8fa08801c6624be771df09ae7b43", size = 164519, upload-time = "2025-10-05T04:12:15.808Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e5/48/1549795ba7742c948d2ad169c1c8cdbae65bc450d6cd753d124b17c8cd32/certifi-2025.8.3-py3-none-any.whl", hash = "sha256:f6c12493cfb1b06ba2ff328595af9350c65d6644968e5d3a2ffd78699af217a5", size = 161216, upload-time = "2025-08-03T03:07:45.777Z" },
+    { url = "https://files.pythonhosted.org/packages/e4/37/af0d2ef3967ac0d6113837b44a4f0bfe1328c2b9763bd5b1744520e5cfed/certifi-2025.10.5-py3-none-any.whl", hash = "sha256:0f212c2744a9bb6de0c56639a6f68afe01ecd92d91f14ae897c4fe7bbeeef0de", size = 163286, upload-time = "2025-10-05T04:12:14.03Z" },
 ]
 
 [[package]]
@@ -226,11 +226,11 @@ wheels = [
 
 [[package]]
 name = "cucumber-tag-expressions"
-version = "6.2.0"
+version = "7.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a2/81/32a2dc51c0720b34f642a6e79da6d89525c1eafd8902798026c233201f6f/cucumber_tag_expressions-6.2.0.tar.gz", hash = "sha256:b60aa2cdbf9ac43e28d9b0e4fd49edf9f09d5d941257d2912f5228f9d166c023", size = 41459, upload-time = "2025-05-25T12:30:43.25Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4e/37/2e59554d623fcd899f9d3f8c8d41a9b88f847f48ba0c3ba64cc88d851b98/cucumber_tag_expressions-7.0.0.tar.gz", hash = "sha256:3acb919113eb361930519f4280b23e1df58a0201b9512d25470a2e9eea8868ed", size = 42173, upload-time = "2025-10-03T16:23:02.149Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/30/99/0e9ac5b8429f39a05de5cd4731eac57738ce030dcd852aefe36a7102a4ce/cucumber_tag_expressions-6.2.0-py2.py3-none-any.whl", hash = "sha256:f94404b656831c56a3815da5305ac097003884d2ae64fa51f5f4fad82d97e583", size = 9333, upload-time = "2025-05-25T12:30:41.408Z" },
+    { url = "https://files.pythonhosted.org/packages/e6/10/44a74996f3cc7f7c5c4a62ff2eb3c45c575be677e52acb062e4fcc22015b/cucumber_tag_expressions-7.0.0-py2.py3-none-any.whl", hash = "sha256:c95ee130c0f28b356f8a92495481383e1bf8ebcdb761e0ce72826f905fbd9c9f", size = 10248, upload-time = "2025-10-03T16:23:00.596Z" },
 ]
 
 [[package]]
