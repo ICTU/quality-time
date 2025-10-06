@@ -1,13 +1,13 @@
 import { bool, func } from "prop-types"
 
 import { reportPropType } from "../sharedPropTypes"
-import { capitalize } from "../utils"
+import { capitalize, sum } from "../utils"
 import { FilterCardWithTable } from "./FilterCardWithTable"
 
 function issueStatuses(report) {
     // The issue status is unknown when the issue was added recently and the status hasn't been collected yet
     // or when collecting the issue status from the issue tracker failed
-    const statuses = { todo: 0, doing: 0, done: 0, unknown: 0 }
+    const statuses = { unknown: 0, todo: 0, doing: 0, done: 0 }
     Object.values(report.subjects).forEach((subject) => {
         Object.values(subject.metrics).forEach((metric) => {
             let nrIssuesWithKnownStatus = 0
@@ -30,8 +30,9 @@ issueStatuses.propTypes = {
 
 export function IssuesCard({ onClick, report, selected }) {
     const statuses = issueStatuses(report)
+    const total = sum(Object.values(statuses))
     return (
-        <FilterCardWithTable onClick={onClick} selected={selected} title="Issues">
+        <FilterCardWithTable onClick={onClick} selected={selected} title="Issues" total={total}>
             {Object.entries(statuses).map(([status, count]) => (
                 <FilterCardWithTable.Row key={status} color={status} label={capitalize(status)} value={count} />
             ))}

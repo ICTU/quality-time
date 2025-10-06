@@ -10,7 +10,7 @@ export function LegendCard() {
             <StatusIcon status={status} />
             <ListItemText
                 primary={STATUS_SHORT_NAME[status]}
-                slotProps={{ primary: { typography: { fontSize: "12px" } } }}
+                slotProps={{ primary: { typography: { fontSize: "1.1em" } } }}
                 sx={{ marginLeft: "10px" }}
             />
         </ListItem>
@@ -18,7 +18,7 @@ export function LegendCard() {
 
     return (
         <DashboardCard title="Legend" titleFirst={true}>
-            <List sx={{ padding: "0px", paddingLeft: "0px", whiteSpace: "nowrap" }}>{listItems}</List>
+            <List sx={{ padding: "0px", whiteSpace: "nowrap" }}>{listItems}</List>
         </DashboardCard>
     )
 }

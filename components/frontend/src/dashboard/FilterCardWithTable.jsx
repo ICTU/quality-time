@@ -1,14 +1,17 @@
 import { Chip, Table, TableBody, TableCell, TableRow } from "@mui/material"
-import { bool, func, string } from "prop-types"
+import { bool, func, number, string } from "prop-types"
 
 import { childrenPropType } from "../sharedPropTypes"
 import { DashboardCard } from "./DashboardCard"
 
-export function FilterCardWithTable({ children, onClick, selected, title }) {
+export function FilterCardWithTable({ children, onClick, selected, title, total }) {
     return (
         <DashboardCard onClick={onClick} selected={selected} title={title} titleFirst={true}>
-            <Table size="small">
-                <TableBody>{children}</TableBody>
+            <Table size="small" padding="none" height="75%">
+                <TableBody>
+                    {children}
+                    <Row key="total" color="total" label={<b>Total</b>} value={total} />
+                </TableBody>
             </Table>
         </DashboardCard>
     )
@@ -18,15 +21,21 @@ FilterCardWithTable.propTypes = {
     onClick: func,
     selected: bool,
     title: string,
+    total: number,
 }
 
 function Row({ color, label, value }) {
     return (
-        <TableRow>
+        <TableRow
+            sx={{
+                "&:last-child th, &:last-child td": {
+                    borderBottom: 0,
+                },
+            }}
+        >
             <TableCell
                 sx={{
-                    fontSize: "12px",
-                    paddingLeft: "0px",
+                    fontSize: "1.3em",
                     whiteSpace: "nowrap",
                     width: "100%",
                     maxWidth: 0,
