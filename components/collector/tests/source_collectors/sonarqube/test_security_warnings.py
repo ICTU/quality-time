@@ -9,15 +9,14 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     METRIC_TYPE = "security_warnings"
     SONARQUBE_URL = "https://sonarqube"
     API_URL = f"{SONARQUBE_URL}/api"
-    LANDING_URL = f"{SONARQUBE_URL}/project"
     BRANCH = "&branch=main"
     DASHBOARD_URL = f"{SONARQUBE_URL}/dashboard?id=id{BRANCH}"
     HOTSPOTS_API = f"{API_URL}/hotspots/search?projectKey=id{BRANCH}&ps=500"
-    HOTSPOTS_LANDING_URL = f"{LANDING_URL}/security_hotspots?id=id{BRANCH}"
+    HOTSPOTS_LANDING_URL = f"{SONARQUBE_URL}/security_hotspots?id=id{BRANCH}"
     ISSUES_API = (
         f"{API_URL}/issues/search?componentKeys=id&branch=main&resolved=false&ps=500&impactSoftwareQualities=SECURITY"
     )
-    ISSUES_LANDING_URL = f"{LANDING_URL}/issues?id=id{BRANCH}&resolved=false&impactSoftwareQualities=SECURITY"
+    ISSUES_LANDING_URL = f"{SONARQUBE_URL}/project/issues?id=id{BRANCH}&resolved=false&impactSoftwareQualities=SECURITY"
 
     def setUp(self):
         """Extend to set up SonarQube security warnings."""
