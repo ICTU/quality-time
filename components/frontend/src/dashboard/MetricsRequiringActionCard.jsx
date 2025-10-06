@@ -30,11 +30,10 @@ export function MetricsRequiringActionCard({ onClick, reports, selected }) {
     const statuses = metricStatuses(reports)
     const total = sum(Object.values(statuses))
     return (
-        <FilterCardWithTable onClick={onClick} selected={selected} title="Action required">
+        <FilterCardWithTable onClick={onClick} selected={selected} title="Action required" total={total}>
             {Object.entries(statuses).map(([status, count]) => (
                 <FilterCardWithTable.Row key={status} color={status} label={STATUS_NAME[status]} value={count} />
             ))}
-            <FilterCardWithTable.Row key="total" color="total" label={<b>Total</b>} value={total} />
         </FilterCardWithTable>
     )
 }
