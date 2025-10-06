@@ -16,7 +16,7 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
     METRIC_ADDITION = "min"
     METRIC_TYPE = "source_up_to_dateness"
 
-    def projects(self, version: str = "1.4") -> list[DependencyTrackProject]:
+    def projects(self, version: str = "1.4", *, is_latest: bool = False) -> list[DependencyTrackProject]:
         """Create Dependency-Track projects fixture."""
         now = datetime.now(tz=tzlocal()).replace(microsecond=0)
         self.yesterday = now - timedelta(days=1)

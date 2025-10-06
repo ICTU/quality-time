@@ -4,6 +4,7 @@ from collections.abc import AsyncIterator
 from typing import Literal, cast
 
 from base_collectors import SourceCollector
+from collector_utilities.exceptions import CollectorError
 from collector_utilities.functions import add_query, match_string_or_regular_expression
 from collector_utilities.type import URL, Response
 from model import Entity, SourceResponses
@@ -47,7 +48,10 @@ class DependencyTrackBase(SourceCollector):
 
     async def _get_projects_by_uuid(self) -> dict[str, DependencyTrackProject]:
         """Return a mapping of project UUIDs to projects."""
-        return {project["uuid"]: project async for project in self._get_projects()}
+        if projects := {project["uuid"]: project async for project in self._get_projects()}:
+            return projects
+        error_message = "No projects found"
+        raise CollectorError(error_message)
 
     async def _get_projects(self) -> AsyncIterator[DependencyTrackProject]:
         """Return the Dependency-Track projects."""

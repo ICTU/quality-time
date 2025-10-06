@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
+- When measuring security warnings or dependencies with Dependency-Track as source, throw an error if no projects match instead of reporting zero warnings or dependencies. Fixes [#11898](https://github.com/ICTU/quality-time/issues/11898).
 - Fix landing URL for SonarQube security hotspots. Fixes [#12059](https://github.com/ICTU/quality-time/issues/12059).
 
 ## v5.44.0 - 2025-10-03
