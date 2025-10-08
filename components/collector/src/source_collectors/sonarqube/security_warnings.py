@@ -35,8 +35,13 @@ class SonarQubeSecurityWarnings(SonarQubeViolations):
             api_urls.append(await super()._api_url())
         if self.__security_hotspots_selected():
             base_url = await SonarQubeCollector._api_url(self)  # noqa: SLF001
+            # Note we pass both the project and the deprecated projectKey parameter because Sonarcloud.io doesn't
+            # accept the project parameter. Tested October 8, 2025.
             api_urls.append(
-                URL(f"{base_url}/api/hotspots/search?projectKey={component}&branch={branch}&ps={self.PAGE_SIZE}")
+                URL(
+                    f"{base_url}/api/hotspots/search?project={component}&projectKey={component}&branch={branch}&"
+                    f"ps={self.PAGE_SIZE}"
+                )
             )
         return await super()._get_source_responses(*api_urls)
 

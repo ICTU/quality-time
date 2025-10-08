@@ -31,7 +31,7 @@ class SonarQubeViolations(SonarQubeCollector):
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 250 currently).
         # Issue: https://github.com/ICTU/quality-time/issues/11004
-        api = f"{url}/api/issues/search?componentKeys={component}&branch={branch}&resolved=false&ps={self.PAGE_SIZE}"
+        api = f"{url}/api/issues/search?projects={component}&branch={branch}&resolved=false&ps={self.PAGE_SIZE}"
         return URL(api + self._url_parameters())
 
     def _url_parameters(self) -> str:

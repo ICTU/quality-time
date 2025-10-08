@@ -32,9 +32,9 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         url = await SourceCollector._api_url(self)  # noqa: SLF001
         component = self._parameter("component")
         branch = self._parameter("branch")
-        all_issues_api_url = URL(f"{url}/api/issues/search?componentKeys={component}&branch={branch}")
+        all_issues_api_url = URL(f"{url}/api/issues/search?projects={component}&branch={branch}")
         resolved_issues_api_url = URL(
-            f"{all_issues_api_url}&statuses=RESOLVED&resolutions=WONTFIX,FALSE-POSITIVE&additionalFields=comments"
+            f"{all_issues_api_url}&resolved=yes&resolutions=WONTFIX,FALSE-POSITIVE&additionalFields=comments"
             f"{self._query_parameter('impact_severities', uppercase=True)}&ps={self.PAGE_SIZE}",
         )
         return await super()._get_source_responses(*[*urls, resolved_issues_api_url, all_issues_api_url])
