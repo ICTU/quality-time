@@ -14,7 +14,7 @@ dependencies = [
     "ldap3==2.9.1",
     "lxml==6.0.0",
     "lxml-html-clean==0.4.2",
-    "pymongo==4.15.2",
+    "pymongo==4.15.3",
     "requests==2.32.5",
     "shared-code",
 ]
@@ -32,7 +32,7 @@ optional-dependencies.tools = [
     "mypy==1.18.2",
     "pip-audit==2.9.0",
     "pyproject-fmt==2.7.0",
-    "ruff==0.13.3",
+    "ruff==0.14.0",
     "vulture==2.14",
 ]
 
