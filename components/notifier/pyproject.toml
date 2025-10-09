@@ -8,7 +8,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "aiohttp==3.12.14",
+    "aiohttp==3.13.0",
     "pymsteams==0.2.5",
     "shared-code",
 ]
@@ -16,7 +16,7 @@ dependencies = [
 optional-dependencies.dev = [
     "coverage==7.10.7",
     "mongomock==4.3.0",
-    "pydantic==2.11.7",              # Needed for importing the data model in the tests from the shared code component
+    "pydantic==2.12.0",              # Needed for importing the data model in the tests from the shared code component
     "unittest-xml-reporting==3.2.0", # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
@@ -24,7 +24,7 @@ optional-dependencies.tools = [
     "fixit==2.1.0",
     "mypy==1.18.2",
     "pip-audit==2.9.0",
-    "pyproject-fmt==2.9.0",
+    "pyproject-fmt==2.10.0",
     "ruff==0.14.0",
     "vulture==2.14",
 ]
