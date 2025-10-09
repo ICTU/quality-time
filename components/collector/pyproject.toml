@@ -5,6 +5,7 @@ requires-python = ">=3.13"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
     "aiogqlc==5.3.0",
@@ -23,7 +24,7 @@ optional-dependencies.dev = [
     "mongomock==4.3.0",
     "pydantic==2.11.7",                      # Needed for importing the data model in the tests from the shared code component
     "types-beautifulsoup4==4.12.0.20250516",
-    "types-python-dateutil==2.9.0.20250822",
+    "types-python-dateutil==2.9.0.20251008",
     "unittest-xml-reporting==3.2.0",         # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
@@ -31,10 +32,13 @@ optional-dependencies.tools = [
     "fixit==2.1.0",
     "mypy==1.18.2",
     "pip-audit==2.9.0",
-    "pyproject-fmt==2.7.0",
+    "pyproject-fmt==2.9.0",
     "ruff==0.14.0",
     "vulture==2.14",
 ]
+
+[tool.uv.sources]
+shared-code = { path = "../shared_code", package = true }
 
 [tool.ruff]
 line-length = 120
@@ -110,6 +114,3 @@ module = [
     "defusedxml",
 ]
 ignore_missing_imports = true
-
-[tool.uv.sources]
-shared-code = { path = "../shared_code", package = true }

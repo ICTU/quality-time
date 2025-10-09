@@ -5,6 +5,7 @@ requires-python = ">=3.13"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
     "furo==2023.9.10",
@@ -26,11 +27,14 @@ optional-dependencies.tools = [
     "mypy==1.18.2",
     "pip-audit==2.9.0",
     "pydantic==2.11.7",     # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
-    "pyproject-fmt==2.7.0",
+    "pyproject-fmt==2.9.0",
     "ruff==0.14.0",
     "vale==3.0.3.0",        # Documentation grammar and style checker
     "vulture==2.14",
 ]
+
+[tool.uv.sources]
+shared-code = { path = "../components/shared_code", editable = true }
 
 [tool.ruff]
 line-length = 120
@@ -93,6 +97,3 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
-
-[tool.uv.sources]
-shared-code = { path = "../components/shared_code", editable = true }

@@ -5,6 +5,7 @@ requires-python = ">=3.13"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
     "axe-selenium-python==2.1.6",
@@ -19,7 +20,7 @@ optional-dependencies.tools = [
     "fixit==2.1.0",
     "mypy==1.18.2",
     "pip-audit==2.9.0",
-    "pyproject-fmt==2.7.0",
+    "pyproject-fmt==2.9.0",
     "ruff==0.14.0",
     "vulture==2.14",
 ]
