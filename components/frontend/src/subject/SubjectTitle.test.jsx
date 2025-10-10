@@ -26,7 +26,10 @@ afterEach(() => vi.restoreAllMocks())
 
 const dataModel = {
     subjects: {
-        subject_type: { name: "Default subject type" },
+        subject_type: {
+            name: "Default subject type",
+            subjects: { nested_subject_type: { name: "Nested subject type" } },
+        },
         subject_type2: { name: "Other subject type" },
     },
     metrics: {
@@ -66,6 +69,22 @@ async function renderSubjectTitle(subjectType = "subject_type") {
 
 it("changes the subject type", async () => {
     const { container } = await renderSubjectTitle()
+    fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
+    clickText(/Other subject type/)
+    expectFetch("post", "subject/subject_uuid/attribute/type", { type: "subject_type2" })
+    await expectNoAccessibilityViolations(container)
+})
+
+it("changes the subject type to a nested type", async () => {
+    const { container } = await renderSubjectTitle()
+    fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
+    clickText(/Nested subject type/)
+    expectFetch("post", "subject/subject_uuid/attribute/type", { type: "nested_subject_type" })
+    await expectNoAccessibilityViolations(container)
+})
+
+it("changes the subject type from a nested type", async () => {
+    const { container } = await renderSubjectTitle("nested_subject_type")
     fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
     clickText(/Other subject type/)
     expectFetch("post", "subject/subject_uuid/attribute/type", { type: "subject_type2" })
