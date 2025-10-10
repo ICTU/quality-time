@@ -19,6 +19,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - When measuring security warnings or dependencies with Dependency-Track as source, throw an error if no projects match instead of reporting zero warnings or dependencies. Fixes [#11898](https://github.com/ICTU/quality-time/issues/11898).
 - Fix landing URL for SonarQube security hotspots. Fixes [#12059](https://github.com/ICTU/quality-time/issues/12059).
 - Make the "Issues" dashboard card consistent with other dashboard cards by putting the number of unknown issues on the first line and giving it a total number of issues. Fixes [#12080](https://github.com/ICTU/quality-time/issues/12080).
+- Don't crash the UI when expanding the title of a subject with a nested subject type. Fixes [#12105](https://github.com/ICTU/quality-time/issues/12105).
 
 ## v5.44.0 - 2025-10-03
 

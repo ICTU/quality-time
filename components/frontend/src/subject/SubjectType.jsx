@@ -7,7 +7,7 @@ import { DataModel } from "../context/DataModel"
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import { subjectPropType } from "../sharedPropTypes"
-import { referenceDocumentationURL } from "../utils"
+import { getSubjectType, referenceDocumentationURL } from "../utils"
 import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
 
 export function subjectTypes(subjectTypesMapping, level = 0) {
@@ -52,10 +52,11 @@ export function SubjectType({ subjectType, setValue }) {
     const dataModel = useContext(DataModel)
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
+    const subjectTypeName = getSubjectType(subjectType, dataModel.subjects).name
     return (
         <TextField
             disabled={disabled}
-            helperText={<ReadTheDocsLink url={referenceDocumentationURL(dataModel.subjects[subjectType].name)} />}
+            helperText={<ReadTheDocsLink url={referenceDocumentationURL(subjectTypeName)} />}
             label="Subject type"
             onChange={(value) => setValue(value)}
             select
