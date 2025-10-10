@@ -38,12 +38,14 @@ class AnchoreJenkinsPluginSecurityWarnings(SecurityWarningsSourceCollector):
 
     def _create_entity(self, vulnerability: list[str]) -> Entity:
         """Create an entity from the vulnerability."""
+        cve = vulnerability[self.CVE]
         return Entity(
             key=md5_hash(f"{vulnerability[self.TAG]}:{vulnerability[self.CVE]}:{vulnerability[self.PACKAGE]}"),
             tag=vulnerability[self.TAG],
-            cve=vulnerability[self.CVE],
+            cve=cve,
             package=vulnerability[self.PACKAGE],
             severity=vulnerability[self.SEVERITY],
             fix=vulnerability[self.FIX],
+            uuid=cve,
             url=vulnerability[self.CVE_URL],
         )

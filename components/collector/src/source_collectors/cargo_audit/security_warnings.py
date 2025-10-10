@@ -13,6 +13,7 @@ class Advisory(TypedDict):
     id: str
     title: str
     url: str
+    aliases: list[str]
 
 
 class Package(TypedDict):
@@ -63,9 +64,11 @@ class CargoAuditSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSource
             package_name = finding["package"]["name"]
             package_version = finding["package"]["version"]
             # Advisory can be None if a package is yanked:
-            advisory = finding["advisory"] or Advisory(id="", title="", url="")
+            advisory = finding["advisory"] or Advisory(id="", title="", url="", aliases=[])
             versions = finding["versions"] or {}  # Versions can be None if a package is yanked
             advisory_id = advisory["id"]
+            cves = [alias for alias in advisory.get("aliases", []) if alias.startswith("CVE-")]
+            optional_args = {"uuid": cves[0]} if cves else {}
             entities.append(
                 Entity(
                     key=f"{package_name}:{package_version}:{advisory_id}",
@@ -76,6 +79,7 @@ class CargoAuditSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSource
                     advisory_url=advisory["url"],
                     versions_patched=", ".join(versions.get("patched", [])),
                     warning_type=finding.get("kind", "vulnerability"),
+                    **optional_args,
                 ),
             )
         return entities

@@ -31,6 +31,7 @@ class HarborJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSource
                     fix_version=vulnerability["fix_version"],
                     severity=vulnerability["severity"],
                     description=vulnerability["description"],
+                    uuid=vulnerability_id,
                     url=vulnerability["links"][0],  # Assume the 1st link is at least as relevant as the others
                 ),
             )
