@@ -17,7 +17,7 @@ wheels = [
 
 [[package]]
 name = "api-server"
-version = "5.44.0"
+version = "5.44.1rc0"
 source = { virtual = "." }
 dependencies = [
     { name = "argon2-cffi" },
@@ -1160,7 +1160,7 @@ wheels = [
 
 [[package]]
 name = "shared-code"
-version = "5.44.0"
+version = "5.44.1rc0"
 source = { directory = "../shared_code" }
 dependencies = [
     { name = "bottle" },
