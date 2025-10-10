@@ -12,7 +12,8 @@ jobs:
           password: $DOCKERHUB_PASSWORD
     parallelism: 6
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - run: |
           case $CIRCLE_NODE_INDEX in
             0) component=components/collector;;
@@ -49,7 +50,8 @@ jobs:
           password: $DOCKERHUB_PASSWORD
     resource_class: large
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - run: |
           cd components/frontend
           ci/install-dependencies.sh
@@ -60,7 +62,8 @@ jobs:
     machine:
       image: default
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - run: |
           pip install uv
           cd docs
@@ -77,7 +80,8 @@ jobs:
       image: default
     parallelism: 1
     steps:
-      - checkout
+      - checkout:
+          merhod: blobless
       - run: |
           mkdir -p build
           export ENV=ci
@@ -104,7 +108,8 @@ jobs:
       image: default
     parallelism: 1
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - run: |
           pip install uv
           ./tests/feature_tests/ci/test.sh
