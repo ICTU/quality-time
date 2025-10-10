@@ -11,10 +11,10 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     API_URL = f"{SONARQUBE_URL}/api"
     BRANCH = "&branch=main"
     DASHBOARD_URL = f"{SONARQUBE_URL}/dashboard?id=id{BRANCH}"
-    HOTSPOTS_API = f"{API_URL}/hotspots/search?projectKey=id{BRANCH}&ps=500"
+    HOTSPOTS_API = f"{API_URL}/hotspots/search?project=id&projectKey=id{BRANCH}&ps=500"
     HOTSPOTS_LANDING_URL = f"{SONARQUBE_URL}/security_hotspots?id=id{BRANCH}"
     ISSUES_API = (
-        f"{API_URL}/issues/search?componentKeys=id&branch=main&resolved=false&ps=500&impactSoftwareQualities=SECURITY"
+        f"{API_URL}/issues/search?projects=id&branch=main&resolved=false&ps=500&impactSoftwareQualities=SECURITY"
     )
     ISSUES_LANDING_URL = f"{SONARQUBE_URL}/project/issues?id=id{BRANCH}&resolved=false&impactSoftwareQualities=SECURITY"
 
