@@ -107,6 +107,7 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
                 "key": f"{self.test_pipeline['id']}-{build_date_str}_1",  # safe_entity_key
                 "url": f"{self.url}/_build/results?buildId=6",
                 "build_date": str(now_dt),
+                "build_duration": "0",
                 "build_result": "succeeded",
                 "build_status": "completed",
             },

@@ -7,6 +7,7 @@ class JenkinsPipelineDurationTest(JenkinsTestCase):
     """Unit tests for the Jenkins pipeline duration collector."""
 
     METRIC_TYPE = "pipeline_duration"
+    METRIC_ADDITION = "max"
 
     def setUp(self):
         """Extend to set up Jenkins data."""

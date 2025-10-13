@@ -345,11 +345,11 @@ report(s).
         description="The duration of a CI-pipeline.",
         rationale="CI-pipelines that take too much time may signal something wrong with the build.",
         unit=Unit.MINUTES,
-        addition=Addition.MIN,
+        addition=Addition.MAX,
         direction=Direction.FEWER_IS_BETTER,
         target="10",
         near_target="15",
-        sources=["gitlab", "jenkins", "manual_number"],
+        sources=["azure_devops", "gitlab", "jenkins", "manual_number"],
         tags=[Tag.CI],
     ),
     "remediation_effort": Metric(

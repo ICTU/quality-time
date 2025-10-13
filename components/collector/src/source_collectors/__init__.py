@@ -16,6 +16,7 @@ from .azure_devops.inactive_branches import AzureDevopsInactiveBranches
 from .azure_devops.issues import AzureDevopsIssues
 from .azure_devops.job_runs_within_time_period import AzureDevopsJobRunsWithinTimePeriod
 from .azure_devops.merge_requests import AzureDevopsMergeRequests
+from .azure_devops.pipeline_duration import AzureDevopsPipelineDuration
 from .azure_devops.source_up_to_dateness import AzureDevopsSourceUpToDateness
 from .azure_devops.tests import AzureDevopsTests
 from .azure_devops.unused_jobs import AzureDevopsUnusedJobs

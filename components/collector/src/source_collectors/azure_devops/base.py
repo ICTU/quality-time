@@ -5,7 +5,7 @@ from abc import ABC
 from typing import TYPE_CHECKING, Any
 
 from base_collectors import SourceCollector
-from collector_utilities.date_time import parse_datetime
+from collector_utilities.date_time import minutes, parse_datetime
 from collector_utilities.exceptions import NotFoundError
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Response
@@ -64,6 +64,7 @@ class AzureDevopsJobs(SourceCollector):
             url = job["_links"]["web"]["href"]
             build_dt = self._latest_build_date_time(job)
             build_status = self._latest_build_result(job)
+            build_duration = self._latest_build_duration(job)
             entities.append(
                 Entity(
                     key=name,
@@ -71,6 +72,7 @@ class AzureDevopsJobs(SourceCollector):
                     url=url,
                     build_date=str(build_dt) if build_dt else "",
                     build_status=build_status,
+                    build_duration=str(build_duration) if build_duration is not None else "",
                 ),
             )
         return entities
@@ -95,6 +97,13 @@ class AzureDevopsJobs(SourceCollector):
             if "finishTime" in job["latestCompletedBuild"]
             else None
         )
+
+    def _latest_build_duration(self, job: Job) -> int | None:
+        """Return the duration (in minutes) of the latest build."""
+        if not (finish_time := self._latest_build_date_time(job)):
+            return None
+        start_time = parse_datetime(job["latestCompletedBuild"]["startTime"])
+        return minutes(finish_time - start_time)
 
     @staticmethod
     def __job_name(job: Job) -> str:
@@ -141,20 +150,23 @@ class AzureDevopsPipelines(SourceCollector):
         """Parse the entities from all runs of a pipeline."""
         entities = Entities()
         for pipeline_run in (await pipeline_response.json())["value"]:
-            if not bool(pipeline_run.get("finishedDate")):
+            if not bool(pipeline_finished := pipeline_run.get("finishedDate")):
                 continue  # The pipeline has not completed
 
             pipeline_id = pipeline_run["pipeline"]["id"]
             pipeline_name = pipeline_run["pipeline"]["name"]
+            pipeline_finished_dt = parse_datetime(pipeline_finished)
+            build_duration = pipeline_finished_dt - parse_datetime(pipeline_run["createdDate"])
             entities.append(
                 Entity(
                     key="-".join([str(pipeline_id), pipeline_run["name"]]),
                     name=pipeline_run["name"],
                     pipeline=pipeline_name,
                     url=pipeline_run["_links"]["web"]["href"],
-                    build_date=str(parse_datetime(pipeline_run["finishedDate"])),
+                    build_date=str(pipeline_finished_dt),
                     build_result=pipeline_run.get("result", "unknown"),
                     build_status=pipeline_run["state"],
+                    build_duration=str(minutes(build_duration)),
                 ),
             )
         return entities
