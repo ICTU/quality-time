@@ -17,6 +17,7 @@ from shared_data_model.parameters import (
     MultipleChoiceWithDefaultsParameter,
     PrivateToken,
     ResultType,
+    SingleChoiceParameter,
     StringParameter,
     TargetBranchesToInclude,
     TestResult,
@@ -31,6 +32,7 @@ ALL_AZURE_DEVOPS_METRICS = [
     "issues",
     "job_runs_within_time_period",
     "merge_requests",
+    "pipeline_duration",
     "source_up_to_dateness",
     "tests",
     "unused_jobs",
@@ -61,6 +63,7 @@ PIPELINE_ATTRIBUTES = [
         },
     ),
     EntityAttribute(name="Date of most recent build", key="build_date", type=EntityAttributeType.DATE),
+    EntityAttribute(name="Duration (minutes)", key="build_duration", type=EntityAttributeType.INTEGER),
 ]
 
 AZURE_DEVOPS = Source(
@@ -158,6 +161,7 @@ AZURE_DEVOPS = Source(
                 "change_failure_rate",
                 "failed_jobs",
                 "job_runs_within_time_period",
+                "pipeline_duration",
                 "source_up_to_dateness",
                 "unused_jobs",
             ],
@@ -170,6 +174,7 @@ AZURE_DEVOPS = Source(
                 "change_failure_rate",
                 "failed_jobs",
                 "job_runs_within_time_period",
+                "pipeline_duration",
                 "source_up_to_dateness",
                 "unused_jobs",
             ],
@@ -195,6 +200,13 @@ AZURE_DEVOPS = Source(
         "merge_request_state": MergeRequestState(
             values=["abandoned", "active", "completed", "not set"],
             api_values={"not set": "notSet"},
+        ),
+        "pipeline_selection": SingleChoiceParameter(
+            name="Pipeline selection",
+            help="Which pipeline(s) to select from the set of pipelines that match the filter criteria?",
+            values=["average", "latest", "slowest"],
+            default_value="slowest",
+            metrics=["pipeline_duration"],
         ),
         "upvotes": Upvotes(),
         "target_branches_to_include": TargetBranchesToInclude(
@@ -225,6 +237,7 @@ AZURE_DEVOPS = Source(
         "failed_jobs": Entity(name="failed pipeline", attributes=PIPELINE_ATTRIBUTES),
         "job_runs_within_time_period": Entity(name="pipeline", attributes=PIPELINE_ATTRIBUTES),
         "merge_requests": MERGE_REQUEST_ENTITY,
+        "pipeline_duration": Entity(name="pipeline", attributes=PIPELINE_ATTRIBUTES),
         "tests": Entity(
             name="test run",
             measured_attribute="counted_tests",
