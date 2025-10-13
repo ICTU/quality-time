@@ -1,4 +1,4 @@
-FROM python:3.13.7-alpine3.22
+FROM python:3.13.8-alpine3.22
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time notifier"
