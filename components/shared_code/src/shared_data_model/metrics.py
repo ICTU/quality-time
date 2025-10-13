@@ -349,7 +349,7 @@ report(s).
         direction=Direction.FEWER_IS_BETTER,
         target="10",
         near_target="15",
-        sources=["gitlab", "jenkins", "manual_number"],
+        sources=["azure_devops", "gitlab", "jenkins", "manual_number"],
         tags=[Tag.CI],
     ),
     "remediation_effort": Metric(
