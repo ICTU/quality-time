@@ -2,6 +2,8 @@
 
 from typing import TYPE_CHECKING
 
+import aiohttp
+
 from base_collectors import SourceCollector
 from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL
@@ -32,6 +34,17 @@ class JiraBase(SourceCollector):
     def _rest_api_version(self) -> str:
         """Return the Jira REST API version set by the user."""
         return str(self._parameter("api_version"))
+
+    @property
+    async def is_cloud(self) -> bool:
+        """Return whether the URL points to Jira Cloud or not."""
+        server_info_api = URL(f"{await super()._api_url()}/rest/api/{self._rest_api_version}/serverInfo")
+        try:
+            responses = await super()._get_source_responses(server_info_api)
+            json = await responses[0].json()
+            return bool(json.get("deploymentType") == "Cloud")
+        except (aiohttp.ClientError, AttributeError):
+            return False
 
 
 class JiraBoardBase(JiraBase):

@@ -53,6 +53,7 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
         ],
     }
     JIRA_CREATED: str = ISSUE_DT.isoformat()
+    JIRA_SERVER_INFO: ClassVar[dict] = {}
 
     def setUp(self) -> None:
         """Extend to set up test fixtures."""
@@ -163,6 +164,7 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
         """Test metric collection, when there are no deployment sources configured."""
         self.response.json.side_effect = [
             [],
+            self.JIRA_SERVER_INFO,
             self.tickets_json,
             self.tickets_json,
         ]
@@ -179,6 +181,7 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
         self.response.json.side_effect = [
             self.JENKINS_JOBS_JSON,
             [],
+            self.JIRA_SERVER_INFO,
             self.tickets_json,
             self.tickets_json,
         ]
@@ -202,6 +205,7 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
         self.response.json.side_effect = [
             self.JENKINS_JOBS_JSON,
             [],
+            self.JIRA_SERVER_INFO,
             self.tickets_json,
             self.tickets_json,
         ]
@@ -227,6 +231,7 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
             self.GITLAB_JOBS_JSON,
             self.GITLAB_JOBS_JSON,
             self.GITLAB_JOBS_JSON,
+            self.JIRA_SERVER_INFO,
             self.tickets_json,
             self.tickets_json,
         ]
