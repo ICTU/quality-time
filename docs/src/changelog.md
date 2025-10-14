@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- When the Jira source is a Jira Cloud instance, use the Jira Cloud endpoints. Fixes [#12093](https://github.com/ICTU/quality-time/issues/12093).
+
 ## v5.44.1 - 2025-10-10
 
 ### Fixed

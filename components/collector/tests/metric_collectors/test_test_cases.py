@@ -1,6 +1,7 @@
 """Unit tests for the test cases metric collector."""
 
 import unittest
+from typing import ClassVar
 from unittest.mock import AsyncMock, patch
 
 from shared.model.metric import Metric
@@ -58,6 +59,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
             </statistics>
         </robot>"""
     CREATED = "2020-08-06T16:36:48.000+0200"
+    JIRA_SERVER_INFO: ClassVar[dict] = {}
 
     def setUp(self) -> None:
         """Extend to set up test fixtures."""
@@ -66,7 +68,9 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         self.session.timeout.total = config.MEASUREMENT_TIMEOUT
         self.response = self.session.get.return_value = AsyncMock()
         self.test_cases_json = {"total": 2, "issues": [self.jira_issue(), self.jira_issue("key-2")]}
-        self.response.json = AsyncMock(side_effect=[[], self.test_cases_json, self.test_cases_json])
+        self.response.json = AsyncMock(
+            side_effect=[[], self.JIRA_SERVER_INFO, self.test_cases_json, self.test_cases_json]
+        )
         self.jira_url = "https://jira"
         self.test_report_url = "https://report_xml"
 
@@ -174,7 +178,9 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
                 },
             ],
         }
-        self.response.json = AsyncMock(side_effect=[[], jenkins_json, self.test_cases_json, self.test_cases_json])
+        self.response.json = AsyncMock(
+            side_effect=[[], jenkins_json, self.JIRA_SERVER_INFO, self.test_cases_json, self.test_cases_json]
+        )
         jira = {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql"}}
         jenkins_test_report = {"type": "jenkins_test_report", "parameters": {"url": self.test_report_url}}
         measurement = await self.collect({"jira": jira, "jenkins_test_report": jenkins_test_report})
