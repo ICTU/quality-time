@@ -44,7 +44,7 @@ export function AppUI({
     const { mode, setMode } = useColorScheme()
     const userPermissions = getUserPermissions(user, email, reportDate, reportsOverview.permissions || {})
     const atReportsOverview = reportUuid === ""
-    const currentReport = atReportsOverview ? null : reports.filter((report) => report.report_uuid === reportUuid)[0]
+    const currentReport = atReportsOverview ? null : reports.find((report) => report.report_uuid === reportUuid)
     const settings = useSettings(reportUuid)
 
     function handleSort(column) {

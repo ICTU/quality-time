@@ -8,6 +8,6 @@ export function getMetricMeasurements(metricUuid, date) {
 
 export function getMeasurements(minDate, maxDate) {
     const api = apiWithReportDate("measurements", maxDate)
-    const sep = api.indexOf("?") < 0 ? "?" : "&"
+    const sep = api.includes("?") ? "&" : "?"
     return fetchServerApi("get", api + `${sep}min_report_date=${minDate.toISOString()}`)
 }

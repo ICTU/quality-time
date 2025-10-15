@@ -10,7 +10,7 @@ export const PERMISSIONS = [EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION]
 export const Permissions = React.createContext(null)
 
 export function accessGranted(permissions, requiredPermissions) {
-    if (!(requiredPermissions instanceof Array)) {
+    if (typeof requiredPermissions !== typeof []) {
         return false
     }
     if (requiredPermissions.length === 0) {

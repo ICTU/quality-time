@@ -13,14 +13,13 @@ export function TrendSparkline({ measurements, reportDate, scale }) {
     let yValues = new Set()
     for (let measurement of measurements ?? []) {
         const value = measurement[scale]?.value ?? null
-        const y = value !== null ? Number(value) : null
+        const y = value === null ? null : Number(value)
         if (y !== null) {
             yValues.add(y)
         }
         const x1 = new Date(measurement.start)
         const x2 = new Date(measurement.end)
-        points.push({ y: y, x: x1 })
-        points.push({ y: y, x: x2 })
+        points.push({ y: y, x: x1 }, { y: y, x: x2 })
     }
     const now = reportDate ? new Date(reportDate) : new Date()
     let weekAgo = reportDate ? new Date(reportDate) : new Date()

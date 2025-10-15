@@ -5,6 +5,7 @@ import { vi } from "vitest"
 
 import * as fetchServerApi from "./api/fetch_server_api"
 import App from "./App"
+import { mockGetAnimations } from "./dashboard/MockAnimations"
 import {
     clickButton,
     clickRole,
@@ -33,6 +34,7 @@ beforeAll(() => {
 })
 
 beforeEach(async () => {
+    mockGetAnimations()
     history.push("")
     vi.spyOn(fetchServerApi, "fetchServerApi").mockReturnValue({
         then: vi.fn().mockReturnValue({ catch: vi.fn().mockReturnValue({ finally: vi.fn() }) }),

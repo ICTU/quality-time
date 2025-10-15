@@ -169,7 +169,7 @@ export function MetricDetails({
     anyError =
         anyError ||
         Object.values(metric.sources).some((source) => !dataModel.metrics[metric.type].sources.includes(source.type))
-    const metricUrl = `${window.location.href.split("#")[0]}#${metricUuid}`
+    const metricUrl = `${globalThis.location.href.split("#")[0]}#${metricUuid}`
     const panes = [
         <MetricConfigurationParameters
             key="1"
@@ -201,7 +201,7 @@ export function MetricDetails({
         { label: "Changelog", icon: <HistoryIcon /> },
         { label: "Trend graph", icon: <ShowChartIcon /> },
     ]
-    Object.entries(metric.sources).forEach(([sourceUuid, source]) => {
+    for (const [sourceUuid, source] of Object.entries(metric.sources)) {
         const sourceName = getSourceName(source, dataModel)
         tabs.push({
             image: <Logo logo={source.type} alt={sourceName} width="21px" height="21px" marginBottom="6px" />,
@@ -220,7 +220,7 @@ export function MetricDetails({
                 sourceUuid={sourceUuid}
             />,
         )
-    })
+    }
     return (
         <Stack>
             <Tabs settings={settings} tabs={tabs} uuid={metricUuid}>

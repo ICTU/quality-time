@@ -19,19 +19,19 @@ export const useBoundingBox = () => {
     const set = () => {
         setBoundingBox(getBoundingBox())
         clearTimeouts()
-        timeoutDelays.forEach((delay) => {
+        for (const delay of timeoutDelays) {
             timeoutIds.push(setTimeout(() => setBoundingBox(getBoundingBox()), delay))
-        })
+        }
     }
 
     useEffect(() => {
         set()
-        window.addEventListener("resize", set)
-        window.addEventListener("fullscreenchange", set)
+        globalThis.addEventListener("resize", set)
+        globalThis.addEventListener("fullscreenchange", set)
         return () => {
             clearTimeouts()
-            window.removeEventListener("resize", set)
-            window.removeEventListener("fullscreenchange", set)
+            globalThis.removeEventListener("resize", set)
+            globalThis.removeEventListener("fullscreenchange", set)
         }
     }, [])
 

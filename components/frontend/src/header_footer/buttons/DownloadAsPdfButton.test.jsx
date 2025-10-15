@@ -102,7 +102,7 @@ test("DownloadAsPdfButton passes the language set in the user's browser", async 
 
 test("DownloadAsPdfButton stops loading after returning pdf", async () => {
     HTMLAnchorElement.prototype.click = vi.fn() // Prevent "Not implemented: navigation (except hash changes)"
-    window.URL.createObjectURL = vi.fn()
+    globalThis.URL.createObjectURL = vi.fn()
     render(<DownloadAsPdfButton />)
     await clickDownload()
     expectButtonIsNotLoading()

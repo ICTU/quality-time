@@ -24,7 +24,7 @@ it("renders a link to the report url", async () => {
 
 it("renders a link to the report url from the search parameter", () => {
     Object.defineProperty(window, "location", { value: { search: "" } })
-    window.location.search = "?report_url=https://report/"
+    globalThis.location.search = "?report_url=https://report/"
     render(<Footer report={{ title: "Report title" }} />)
     expect(screen.getByText("Report title").closest("a")).toHaveAttribute("href", "https://report/")
 })

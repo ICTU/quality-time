@@ -16,7 +16,7 @@ import { TargetVisualiser } from "./TargetVisualiser"
 
 function metricScaleOptions(metricScales, dataModel) {
     let scaleOptions = []
-    metricScales.forEach((scale) => {
+    for (const scale of metricScales) {
         let scaleName = dataModel.scales ? dataModel.scales[scale].name : "Count"
         let scaleDescription = dataModel.scales ? dataModel.scales[scale].description : ""
         scaleOptions.push({
@@ -30,7 +30,7 @@ function metricScaleOptions(metricScales, dataModel) {
             text: scaleName,
             value: scale,
         })
-    })
+    }
     return scaleOptions
 }
 
