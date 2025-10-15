@@ -1,17 +1,17 @@
-const http = require('http');
+const http = require("node:http");
 
 const options = {
-    host: 'localhost',
-    method: 'GET',
+    host: "localhost",
+    method: "GET",
     port: process.env.RENDERER_PORT || 9000,
-    path: '/api/health',
+    path: "/api/health",
 };
 
 const healthCheck = http.request(options, (response) => {
     process.exit(response.statusCode == 200 ? 0 : 1);
 });
 
-healthCheck.on('error', function() {
+healthCheck.on("error", function () {
     process.exit(1);
 });
 

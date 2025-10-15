@@ -15,7 +15,7 @@ function nrMetricsLabel(nrMetrics) {
 
 function ariaChartLabel(summary) {
     let label = ""
-    Object.entries(summary).forEach(([date, count]) => {
+    for (const [date, count] of Object.entries(summary)) {
         const nrMetrics = sum(count)
         const nrMetricsLabel = nrMetrics === 0 ? "no metrics" : pluralize(`${nrMetrics} metric`, nrMetrics)
         const dateString = new Date(date).toLocaleDateString()
@@ -39,7 +39,7 @@ function ariaChartLabel(summary) {
             label += `, ${count.white} with unknown status`
         }
         label += ". "
-    })
+    }
     return label
 }
 

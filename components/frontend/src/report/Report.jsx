@@ -38,7 +38,7 @@ export function Report({
         const element = document.getElementById(subjectUuid)
         if (element) {
             element.scrollIntoView()
-            window.scrollBy(0, 163) // Correct for menubar and subject title margin
+            globalThis.scrollBy(0, 163) // Correct for menubar and subject title margin
         }
     }
 

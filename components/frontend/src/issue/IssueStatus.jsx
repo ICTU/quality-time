@@ -131,7 +131,7 @@ sprint.propTypes = {
 
 function prefixName(name, prefix) {
     // Prefix the name with prefix unless the name already contains the prefix
-    return name.toLowerCase().indexOf(prefix.toLowerCase()) < 0 ? `${prefix} ${name}` : name
+    return name.toLowerCase().includes(prefix.toLowerCase()) ? name : `${prefix} ${name}`
 }
 prefixName.propType = {
     name: string,
@@ -141,7 +141,7 @@ prefixName.propType = {
 function IssueCard({ issueStatus, settings, error }) {
     // The issue status can be unknown when the issue was added recently and the status hasn't been collected yet
     const color = error ? "error" : (issueStatus.status_category ?? "unknown")
-    const onClick = issueStatus.landing_url ? () => window.open(issueStatus.landing_url) : null
+    const onClick = issueStatus.landing_url ? () => globalThis.open(issueStatus.landing_url) : null
     return (
         <Card onClick={onClick} elevation={1} sx={{ display: "inline-flex", margin: "1px" }}>
             <CardActionArea disableRipple={!issueStatus.landing_url}>
@@ -258,7 +258,7 @@ function IssuesWithTracker({ issueIds, metric, settings }) {
     return (
         <>
             {issueStatuses
-                .filter((issueStatus) => issueIds.indexOf(issueStatus.issue_id) > -1)
+                .filter((issueStatus) => issueIds.includes(issueStatus.issue_id))
                 .map((issueStatus) => (
                     <IssueWithTracker key={issueStatus.issue_id} issueStatus={issueStatus} settings={settings} />
                 ))}

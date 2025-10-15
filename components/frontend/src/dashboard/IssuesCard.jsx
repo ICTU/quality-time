@@ -8,20 +8,20 @@ function issueStatuses(report) {
     // The issue status is unknown when the issue was added recently and the status hasn't been collected yet
     // or when collecting the issue status from the issue tracker failed
     const statuses = { unknown: 0, todo: 0, doing: 0, done: 0 }
-    Object.values(report.subjects).forEach((subject) => {
-        Object.values(subject.metrics).forEach((metric) => {
+    for (const subject of Object.values(report.subjects)) {
+        for (const metric of Object.values(subject.metrics)) {
             let nrIssuesWithKnownStatus = 0
             const issueStatus = metric.issue_status ?? []
-            issueStatus.forEach((issue) => {
+            for (const issue of issueStatus) {
                 if (issue.status_category) {
                     statuses[issue.status_category] += 1
                     nrIssuesWithKnownStatus += 1
                 }
-            })
+            }
             const nrIssues = metric.issue_ids?.length ?? 0
             statuses["unknown"] += nrIssues - nrIssuesWithKnownStatus
-        })
-    })
+        }
+    }
     return statuses
 }
 issueStatuses.propTypes = {

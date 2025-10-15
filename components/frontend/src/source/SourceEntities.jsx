@@ -178,12 +178,12 @@ function sortedEntities(columnType, sortColumn, sortDirection, source) {
         } else {
             parse = {
                 boolean: (entity) => entity[sortColumn],
-                integer: (entity) => parseInt(entity[sortColumn], 10),
-                integer_percentage: (entity) => parseInt(entity[sortColumn], 10),
-                float: (entity) => parseFloat(entity[sortColumn]),
+                integer: (entity) => Number.parseInt(entity[sortColumn], 10),
+                integer_percentage: (entity) => Number.parseInt(entity[sortColumn], 10),
+                float: (entity) => Number.parseFloat(entity[sortColumn]),
                 date: (entity) => Date.parse(entity[sortColumn]),
                 datetime: (entity) => Date.parse(entity[sortColumn]),
-                minutes: (entity) => parseInt(entity[sortColumn], 10),
+                minutes: (entity) => Number.parseInt(entity[sortColumn], 10),
                 text: (entity) => entity[sortColumn],
             }[columnType]
         }

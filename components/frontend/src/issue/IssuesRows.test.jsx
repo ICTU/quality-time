@@ -88,7 +88,7 @@ it("shows a parse error", async () => {
 })
 
 it("creates an issue", async () => {
-    window.open = vi.fn()
+    globalThis.open = vi.fn()
     fetchServerApi.fetchServerApi.mockResolvedValue({ ok: true, error: "", issue_url: "https://tracker/foo-42" })
     const { container } = renderIssuesRow({ report: reportWithIssueTracker })
     clickText(/Create new issue/)

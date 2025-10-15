@@ -46,7 +46,7 @@ function NotificationDestination({ destination, destinationUuid, reload, reportU
                             setNotificationDestinationAttributes(
                                 reportUuid,
                                 destinationUuid,
-                                { webhook: value, url: window.location.href },
+                                { webhook: value, url: globalThis.location.href },
                                 reload,
                             )
                         }}
@@ -81,7 +81,7 @@ NotificationDestination.propTypes = {
 
 export function NotificationDestinations({ destinations, reload, reportUuid }) {
     const notificationDestinations = []
-    Object.entries(destinations).forEach(([destinationUuid, destination]) => {
+    for (const [destinationUuid, destination] of Object.entries(destinations)) {
         notificationDestinations.push(
             <NotificationDestination
                 key={destinationUuid}
@@ -91,7 +91,7 @@ export function NotificationDestinations({ destinations, reload, reportUuid }) {
                 reload={reload}
             />,
         )
-    })
+    }
     return (
         <Stack direction="column" spacing={1}>
             {notificationDestinations.length === 0 ? (

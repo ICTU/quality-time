@@ -7,19 +7,19 @@ import { FilterCardWithTable } from "./FilterCardWithTable"
 
 function metricStatuses(reports) {
     const statuses = {}
-    STATUSES_REQUIRING_ACTION.forEach((status) => {
+    for (const status of STATUSES_REQUIRING_ACTION) {
         statuses[status] = 0
-    })
-    reports.forEach((report) => {
-        Object.values(report.subjects).forEach((subject) => {
-            Object.values(subject.metrics).forEach((metric) => {
+    }
+    for (const report of reports) {
+        for (const subject of Object.values(report.subjects)) {
+            for (const metric of Object.values(subject.metrics)) {
                 const status = getMetricStatus(metric)
                 if (STATUSES_REQUIRING_ACTION.includes(status)) {
                     statuses[status] += 1
                 }
-            })
-        })
-    })
+            }
+        }
+    }
     return statuses
 }
 metricStatuses.propTypes = {

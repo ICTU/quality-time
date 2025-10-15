@@ -407,7 +407,7 @@ export function days(timeInMs) {
 export function isValidISODate(string) {
     if (/^\d{4}-\d{2}-\d{2}$/.test(string)) {
         const millisecondsSinceEpoch = Date.parse(string)
-        return !isNaN(millisecondsSinceEpoch)
+        return !Number.isNaN(millisecondsSinceEpoch)
     }
     return false
 }

@@ -558,7 +558,7 @@ it("copies styles from source to target", () => {
     source.style.margin = "10px"
 
     // Add a computedStyle shim because jsdom doesn't implement computed styles
-    window.getComputedStyle = (el) => ({
+    globalThis.getComputedStyle = (el) => ({
         length: 2,
         0: "color",
         1: "margin",
@@ -582,7 +582,7 @@ it("recursively copies child styles", () => {
     const targetChild = document.createElement("div")
     target.appendChild(targetChild)
 
-    window.getComputedStyle = (el) => ({
+    globalThis.getComputedStyle = (el) => ({
         length: 1,
         0: "fontSize",
         item: () => "fontSize",
@@ -597,7 +597,7 @@ it("recursively copies child styles", () => {
 describe("createDragGhost", () => {
     beforeEach(() => {
         // Mock getComputedStyle to simulate a CSSStyleDeclaration-like object
-        window.getComputedStyle = vi.fn().mockImplementation((el) => ({
+        globalThis.getComputedStyle = vi.fn().mockImplementation((el) => ({
             length: 2,
             0: "color",
             1: "margin",
