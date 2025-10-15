@@ -1,9 +1,10 @@
 """Jenkins source."""
 
+from typing import TYPE_CHECKING
+
 from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
-from shared_data_model.meta.parameter import Parameter
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     Branches,
@@ -16,6 +17,10 @@ from shared_data_model.parameters import (
     TestResultAggregationStrategy,
     access_parameters,
 )
+
+if TYPE_CHECKING:
+    from shared_data_model.meta.parameter import Parameter
+
 
 AUTHENTICATION_URL = HttpUrl("https://www.jenkins.io/doc/book/system-administration/authenticating-scripted-clients/")
 

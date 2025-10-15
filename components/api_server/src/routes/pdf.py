@@ -1,12 +1,14 @@
 """Shared code to export reports overview and reports to PDF."""
 
 import os
+from typing import TYPE_CHECKING
 from urllib import parse
 
 import bottle
 import requests
 
-from shared.utils.type import ReportId
+if TYPE_CHECKING:
+    from shared.utils.type import ReportId
 
 
 def export_as_pdf(report_uuid: ReportId | None = None):

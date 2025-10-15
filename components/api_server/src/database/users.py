@@ -1,8 +1,11 @@
 """Users collection."""
 
-from pymongo.database import Database
+from typing import TYPE_CHECKING
 
 from utils.type import User
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 def upsert_user(database: Database, user: User) -> None:

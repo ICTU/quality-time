@@ -1,12 +1,15 @@
 """Quality-time source up-to-dateness collector."""
 
-from datetime import datetime
+from typing import TYPE_CHECKING
 
 from base_collectors import TimePassedCollector
 from collector_utilities.date_time import MIN_DATETIME, parse_datetime
 from collector_utilities.type import URL, Response
 
 from .base import QualityTimeCollector
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class QualityTimeSourceUpToDateness(QualityTimeCollector, TimePassedCollector):

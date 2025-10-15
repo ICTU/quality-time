@@ -1,8 +1,12 @@
 """Search step implementations for reports, subjects, metrics, and sources."""
 
+from typing import TYPE_CHECKING
+
 from asserts import assert_equal, assert_false, assert_in, assert_true
 from behave import then, when
-from behave.runner import Context
+
+if TYPE_CHECKING:
+    from behave.runner import Context
 
 
 @when('the client searches a {domain_object_type} with {attribute_name} "{attribute_value}"')

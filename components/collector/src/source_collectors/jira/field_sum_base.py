@@ -1,11 +1,12 @@
 """Base class for Jira collectors that sum a custom Jira field."""
 
-from typing import cast
-
-from collector_utilities.type import URL, Value
-from model import Entities, Entity
+from typing import TYPE_CHECKING, cast
 
 from .issues import JiraIssues
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL, Value
+    from model import Entities, Entity
 
 
 class JiraFieldSumBase(JiraIssues):

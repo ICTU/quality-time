@@ -1,6 +1,9 @@
 """Collector exceptions."""
 
-from collections.abc import Collection
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Collection
 
 
 class CollectorError(Exception):

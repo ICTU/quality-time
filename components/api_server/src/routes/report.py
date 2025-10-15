@@ -1,14 +1,11 @@
 """Report routes."""
 
-from collections.abc import Callable
 from functools import partial, wraps
 from http import HTTPStatus
-from typing import cast
+from typing import cast, TYPE_CHECKING
 
 import bottle
-from pymongo.database import Database
 
-from shared.utils.type import ReportId
 from shared_data_model import DATA_MODEL
 from shared_data_model.parameters import PrivateToken
 
@@ -18,7 +15,6 @@ from database.reports import insert_new_report, latest_report, latest_reports_be
 from initialization.app_secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.defaults import default_report_attributes
-from model.report import Report
 from model.transformations import (
     decrypt_credentials,
     encrypt_credentials,
@@ -29,6 +25,15 @@ from utils.functions import DecryptionError, check_url_availability, report_date
 
 from .pdf import export_as_pdf
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from pymongo.database import Database
+
+    from shared.utils.type import ReportId
+
+    from model.report import Report
 
 
 def with_report[ReturnType](route: Callable[..., ReturnType] | None = None, pass_report_uuid: bool = True):

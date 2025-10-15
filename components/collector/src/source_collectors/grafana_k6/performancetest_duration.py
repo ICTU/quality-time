@@ -1,13 +1,15 @@
 """Grafana k6 performancetest duration collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from base_collectors import JSONFileSourceCollector
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.type import Value
-from model import Entities, SourceResponses
 
 from .json_types import SummaryJSON
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Value
+    from model import Entities, SourceResponses
 
 
 class GrafanaK6PerformanceTestDuration(JSONFileSourceCollector):

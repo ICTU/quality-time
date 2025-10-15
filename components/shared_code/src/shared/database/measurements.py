@@ -1,10 +1,15 @@
 """Measurements collection."""
 
+from typing import TYPE_CHECKING
+
 import pymongo
-from pymongo.database import Database
 
 from shared.model.measurement import Measurement
-from shared.model.metric import Metric
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
+
+    from shared.model.metric import Metric
 
 
 def latest_measurement(

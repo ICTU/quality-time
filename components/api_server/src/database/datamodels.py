@@ -1,9 +1,12 @@
 """Data models collection."""
 
 import pymongo
-from pymongo.database import Database
+from typing import TYPE_CHECKING
 
 from shared.utils.functions import iso_timestamp
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 def latest_datamodel(database: Database, max_iso_timestamp: str = "") -> dict:

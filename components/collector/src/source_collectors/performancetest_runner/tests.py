@@ -1,14 +1,16 @@
 """Performancetest-runner tests collector."""
 
-from typing import ClassVar, cast
+from typing import TYPE_CHECKING, ClassVar, cast
 
 from bs4 import Tag
 
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import Response
 from model import SourceMeasurement, SourceResponses
 
 from .base import PerformanceTestRunnerBaseClass
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response
 
 
 class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):

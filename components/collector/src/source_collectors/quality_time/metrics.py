@@ -1,7 +1,6 @@
 """Quality-time metrics collector."""
 
-from datetime import datetime
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from shared.utils.date_time import now
 from shared_data_model import DATA_MODEL
@@ -11,6 +10,9 @@ from collector_utilities.type import URL, Response, Value
 from model import Entities, Entity, SourceResponses
 
 from .base import QualityTimeCollector
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 Measurements = list[dict[str, dict[str, str]]]
 

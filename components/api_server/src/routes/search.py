@@ -1,19 +1,20 @@
 """Search endpoint."""
 
-from collections.abc import Sequence
 from typing import Literal, TypedDict, TYPE_CHECKING
 
 import bottle
-from pymongo.database import Database
-
-from shared.utils.type import ItemId
 
 from database.reports import latest_reports
 from model.iterators import metrics, sources, subjects
 from utils.log import get_logger
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Sequence
+
+    from pymongo.database import Database
+
+    from shared.utils.type import ItemId
+
     from model.report import Report
 
 

@@ -1,14 +1,17 @@
 """Visual Studio TRX tests collector."""
 
 import re
-from typing import cast
-from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
+from typing import TYPE_CHECKING, cast
 
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml_with_namespace
-from collector_utilities.type import ElementMap, Namespaces
 from metric_collectors.test_cases import TestCases
 from model import Entities, Entity, SourceMeasurement, SourceResponses
+
+if TYPE_CHECKING:
+    from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
+
+    from collector_utilities.type import ElementMap, Namespaces
 
 
 class VisualStudioTRXTests(XMLFileSourceCollector):

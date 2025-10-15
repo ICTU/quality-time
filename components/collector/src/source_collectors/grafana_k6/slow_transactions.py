@@ -1,14 +1,16 @@
 """Grafana k6 slow transactions collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from shared_data_model import DATA_MODEL
 
 from base_collectors import JSONFileSourceCollector, SlowTransactionsCollector, TransactionEntity
-from collector_utilities.type import JSON
 from model import Entities
 
 from .json_types import Metric, SummaryJSON
+
+if TYPE_CHECKING:
+    from collector_utilities.type import JSON
 
 
 def is_default_response_time(response_time_to_evaluate: str) -> bool:

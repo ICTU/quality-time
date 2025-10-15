@@ -1,10 +1,14 @@
 """Anchore security warnings collector."""
 
+from typing import TYPE_CHECKING
+
 from shared.utils.functions import md5_hash
 
 from base_collectors import JSONFileSourceCollector, SecurityWarningsSourceCollector
-from collector_utilities.type import JSON
 from model import Entities, Entity
+
+if TYPE_CHECKING:
+    from collector_utilities.type import JSON
 
 
 class AnchoreSecurityWarnings(JSONFileSourceCollector, SecurityWarningsSourceCollector):

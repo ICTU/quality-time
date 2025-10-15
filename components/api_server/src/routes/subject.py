@@ -1,9 +1,8 @@
 """Subject routes."""
 
-from typing import cast
+from typing import cast, TYPE_CHECKING
 
 import bottle
-from pymongo.database import Database
 
 from shared.model.subject import Subject
 from shared.utils.type import ReportId, SubjectId
@@ -14,6 +13,9 @@ from model.defaults import default_subject_attributes
 from utils.functions import sanitize_html, uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 @bottle.post("/api/internal/subject/new/<report_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])

@@ -1,16 +1,19 @@
 """Jenkins CI-pipeline duration collector."""
 
-from collections.abc import Sequence
 from datetime import timedelta
-from typing import TypedDict, cast
+from typing import TYPE_CHECKING, TypedDict, cast
 
 from base_collectors import SourceCollector
 from collector_utilities.date_time import minutes
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
-from model import Entities, SourceResponses
 
 from .json_types import Build, Job
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from model import Entities, SourceResponses
 
 
 class JSON(TypedDict):

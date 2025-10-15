@@ -3,12 +3,9 @@
 import asyncio
 import traceback
 from abc import ABC, abstractmethod
-from collections.abc import Sequence
-from datetime import datetime
-from typing import ClassVar, TypedDict, cast
+from typing import TYPE_CHECKING, ClassVar, TypedDict, cast
 
 import aiohttp
-from packaging.version import Version
 
 from shared.utils.type import Direction
 from shared_data_model import DATA_MODEL
@@ -24,6 +21,12 @@ from collector_utilities.log import get_logger
 from collector_utilities.type import URL, Response, Responses, Value
 from model import Entities, Entity, IssueStatus, SourceMeasurement, SourceParameters, SourceResponses
 
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from datetime import datetime
+
+    from packaging.version import Version
+
 
 class SourceCollector:
     """Base class for source collectors.
@@ -33,7 +36,7 @@ class SourceCollector:
     """
 
     source_type = ""  # The source type is set on the subclass, when the subclass is registered
-    subclasses: ClassVar[set[type["SourceCollector"]]] = set()
+    subclasses: ClassVar[set[type[SourceCollector]]] = set()
 
     def __init__(self, session: aiohttp.ClientSession, metric, source) -> None:
         self._session = session
@@ -47,7 +50,7 @@ class SourceCollector:
         super().__init_subclass__()
 
     @classmethod
-    def get_subclass(cls, source_type: str, metric_type: str) -> type["SourceCollector"] | None:
+    def get_subclass(cls, source_type: str, metric_type: str) -> type[SourceCollector] | None:
         """Return the subclass registered for the source/metric name.
 
         First try to find a match on both source type and metric type. If no match is found, return the generic

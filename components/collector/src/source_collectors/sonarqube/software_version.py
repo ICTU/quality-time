@@ -1,11 +1,15 @@
 """Collectors for SonarQube."""
 
+from typing import TYPE_CHECKING
+
 from packaging.version import Version
 
 from base_collectors import VersionCollector
-from collector_utilities.type import Response
 
 from .base import SonarQubeProjectAnalysesBase
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response
 
 
 class SonarQubeSoftwareVersion(SonarQubeProjectAnalysesBase, VersionCollector):

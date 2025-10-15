@@ -1,15 +1,17 @@
 """Robot Framework tests collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from shared.utils.functions import first
 from shared_data_model import DATA_MODEL
 
 from collector_utilities.functions import parse_source_response_xml
-from collector_utilities.type import Response
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import RobotFrameworkBaseClass
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response
 
 
 class RobotFrameworkTests(RobotFrameworkBaseClass):

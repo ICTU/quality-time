@@ -1,12 +1,15 @@
 """Data model routes."""
 
 import bottle
-from pymongo.database import Database
+from typing import TYPE_CHECKING
 
 from shared.utils.functions import md5_hash
 
 from database.datamodels import latest_datamodel
 from utils.functions import report_date_time
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 @bottle.get("/api/internal/datamodel", authentication_required=False)

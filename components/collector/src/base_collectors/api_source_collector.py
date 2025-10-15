@@ -1,13 +1,17 @@
 """API source collector base classes."""
 
 from abc import ABC
-from datetime import datetime
+from typing import TYPE_CHECKING
 
 from collector_utilities.date_time import datetime_from_timestamp
 from collector_utilities.type import URL, Response
-from model import SourceResponses
 
 from .source_collector import SourceCollector, TimePassedCollector
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from model import SourceResponses
 
 
 class JenkinsPluginCollector(SourceCollector, ABC):

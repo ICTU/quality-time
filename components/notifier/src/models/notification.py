@@ -1,9 +1,11 @@
 """Notification."""
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-from models.metric_notification_data import MetricNotificationData
-from notifier_utilities.type import JSON
+if TYPE_CHECKING:
+    from models.metric_notification_data import MetricNotificationData
+    from notifier_utilities.type import JSON
 
 
 @dataclass

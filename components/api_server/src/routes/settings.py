@@ -1,14 +1,16 @@
 """Define all routes about settings."""
 
 from collections import defaultdict
-from typing import cast
+from typing import cast, TYPE_CHECKING
 
 import bottle
-from pymongo.database import Database
 
 from database.sessions import get
 from database.users import upsert_user, get_user
 from utils.type import SessionId, User
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 def find_user(database: Database) -> User | None:

@@ -1,8 +1,6 @@
 """Dependency-Track source up-to-dateness collector."""
 
-from collections.abc import Sequence
-from datetime import datetime
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from shared_data_model import DATA_MODEL
 
@@ -13,7 +11,12 @@ from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
 from .base import DependencyTrackBase
-from .json_types import DependencyTrackProject
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from datetime import datetime
+
+    from .json_types import DependencyTrackProject
 
 
 class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector):

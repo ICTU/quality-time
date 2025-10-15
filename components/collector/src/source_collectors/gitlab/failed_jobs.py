@@ -1,9 +1,13 @@
 """GitLab failed jobs collector."""
 
+from typing import TYPE_CHECKING
+
 from collector_utilities.type import URL
-from model import Entity
 
 from .base import GitLabJobsBase
+
+if TYPE_CHECKING:
+    from model import Entity
 
 
 class GitLabFailedJobs(GitLabJobsBase):

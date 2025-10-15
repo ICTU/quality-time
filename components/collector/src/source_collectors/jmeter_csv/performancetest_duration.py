@@ -1,9 +1,12 @@
 """JMeter CSV performancetest duration collector."""
 
-from collector_utilities.type import Value
-from model import Entities, SourceResponses
+from typing import TYPE_CHECKING
 
 from .base import JMeterCSVCollector
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Value
+    from model import Entities, SourceResponses
 
 
 class JMeterCSVPerformanceTestDuration(JMeterCSVCollector):

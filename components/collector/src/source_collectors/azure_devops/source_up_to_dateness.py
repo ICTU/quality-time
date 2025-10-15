@@ -1,10 +1,7 @@
 """Azure DevOps Server up-to-dateness collector."""
 
 from abc import ABC
-from datetime import datetime
-from typing import Self, cast
-
-import aiohttp
+from typing import TYPE_CHECKING, Self, cast
 
 from base_collectors import SourceCollector, TimePassedCollector
 from collector_utilities.date_time import MIN_DATETIME, parse_datetime
@@ -12,6 +9,11 @@ from collector_utilities.type import URL, Response
 from model import SourceMeasurement, SourceResponses
 
 from .base import AzureDevopsJobs, AzureDevopsRepositoryBase
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    import aiohttp
 
 
 class AzureDevopsFileUpToDateness(TimePassedCollector, AzureDevopsRepositoryBase):

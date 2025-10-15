@@ -1,9 +1,12 @@
 """Unit tests for the logging utilities."""
 
-import logging
 import unittest
+from typing import TYPE_CHECKING
 
 from shared.utils.log import get_logger
+
+if TYPE_CHECKING:
+    from logging import Logger
 
 
 class LogTest(unittest.TestCase):
@@ -16,7 +19,7 @@ class LogTest(unittest.TestCase):
     def test_get_logger_indirectly(self):
         """Test getting the logger via an extra function call."""
 
-        def get_logger_indirectly() -> logging.Logger:
+        def get_logger_indirectly() -> Logger:
             """Return the logger."""
             return get_logger("component", call_stack_depth=1)
 

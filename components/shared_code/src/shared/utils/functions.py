@@ -1,11 +1,14 @@
 """Utility functions."""
 
 import hashlib
-from collections.abc import Callable, Sequence
 from datetime import UTC, datetime
 from decimal import ROUND_HALF_UP, Decimal
+from typing import TYPE_CHECKING
 
-from .type import Direction
+if TYPE_CHECKING:
+    from collections.abc import Callable, Sequence
+
+    from .type import Direction
 
 
 def iso_timestamp() -> str:

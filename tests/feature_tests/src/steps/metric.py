@@ -1,10 +1,14 @@
 """Feature tests for metric specific attributes."""
 
+from typing import TYPE_CHECKING
+
 from asserts import assert_equal, assert_false, assert_is_none, assert_is_not_none, assert_true
 from behave import then, when
-from behave.runner import Context
 
 from item import get_item
+
+if TYPE_CHECKING:
+    from behave.runner import Context
 
 
 @then("the issue status {attribute} is '{value}'")

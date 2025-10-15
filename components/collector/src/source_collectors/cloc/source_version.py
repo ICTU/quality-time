@@ -1,9 +1,13 @@
 """cloc source version collector."""
 
+from typing import TYPE_CHECKING
+
 from packaging.version import Version
 
 from base_collectors import JSONFileSourceCollector, VersionCollector
-from collector_utilities.type import Response
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response
 
 
 class ClocSourceVersion(JSONFileSourceCollector, VersionCollector):

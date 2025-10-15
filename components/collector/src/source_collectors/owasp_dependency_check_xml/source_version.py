@@ -1,12 +1,16 @@
 """OWASP Dependency-Check XML source version collector."""
 
+from typing import TYPE_CHECKING
+
 from packaging.version import Version
 
 from base_collectors import VersionCollector
 from collector_utilities.functions import parse_source_response_xml_with_namespace
-from collector_utilities.type import Response
 
 from .base import OWASPDependencyCheckXMLBase
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response
 
 
 class OWASPDependencyCheckXMLSourceVersion(OWASPDependencyCheckXMLBase, VersionCollector):

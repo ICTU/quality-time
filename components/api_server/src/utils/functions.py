@@ -3,8 +3,7 @@
 import re
 import uuid as _uuid
 from base64 import b64decode, b64encode
-from collections.abc import Callable, Hashable, Iterable, Iterator
-from typing import cast
+from typing import cast, TYPE_CHECKING
 
 import bottle
 import requests
@@ -23,6 +22,9 @@ from shared.utils.type import ItemId
 from shared.utils.functions import iso_timestamp
 
 from .type import URL
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Hashable, Iterable, Iterator
 
 
 class DecryptionError(Exception):

@@ -1,12 +1,16 @@
 """Collectors for SonarQube."""
 
-from datetime import datetime
+from typing import TYPE_CHECKING
 
 from base_collectors import TimePassedCollector
 from collector_utilities.date_time import parse_datetime
-from collector_utilities.type import Response
 
 from .base import SonarQubeProjectAnalysesBase
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from collector_utilities.type import Response
 
 
 class SonarQubeSourceUpToDateness(SonarQubeProjectAnalysesBase, TimePassedCollector):

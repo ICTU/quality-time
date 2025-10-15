@@ -1,15 +1,19 @@
 """Measurements collection."""
 
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 import pymongo
-from pymongo.database import Database
 
 from shared.model.measurement import Measurement
-from shared.model.metric import Metric
 from shared.utils.functions import iso_timestamp
-from shared.utils.type import MetricId
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
+
+    from shared.model.metric import Metric
+    from shared.utils.type import MetricId
+
 
 # Projection options
 NO_ID = {"_id": False}

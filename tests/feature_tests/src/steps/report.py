@@ -4,12 +4,15 @@ import json
 import time
 import urllib
 from datetime import UTC, datetime, timedelta
+from typing import TYPE_CHECKING
 
 from asserts import assert_equal, assert_not_in
 from behave import then, when
-from behave.runner import Context
 
 from item import get_item
+
+if TYPE_CHECKING:
+    from behave.runner import Context
 
 
 @when("the client gets the metric status summary")

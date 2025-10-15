@@ -1,13 +1,16 @@
 """OJAudit violations collector."""
 
-from typing import cast
-from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
+from typing import TYPE_CHECKING, cast
 
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.exceptions import CollectorError
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash
-from collector_utilities.type import Namespaces
 from model import Entities, Entity, SourceMeasurement, SourceResponses
+
+if TYPE_CHECKING:
+    from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
+
+    from collector_utilities.type import Namespaces
 
 ModelFilePaths = dict[str, str]  # Model id to model file path mapping
 

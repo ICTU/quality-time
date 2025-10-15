@@ -1,13 +1,16 @@
 """Calendar source up-to-dateness collector."""
 
-from collections.abc import Sequence
-from datetime import datetime
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from base_collectors import TimePassedCollector
 from collector_utilities.date_time import MIN_DATETIME, parse_datetime
-from collector_utilities.type import Response
-from model import SourceResponses
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from datetime import datetime
+
+    from collector_utilities.type import Response
+    from model import SourceResponses
 
 
 class CalendarSourceUpToDateness(TimePassedCollector):

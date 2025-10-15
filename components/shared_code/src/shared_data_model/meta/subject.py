@@ -1,7 +1,5 @@
 """Data model subject."""
 
-from __future__ import annotations
-
 from pydantic import BaseModel, Field
 
 from .base import DocumentedModel

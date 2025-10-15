@@ -1,13 +1,16 @@
 """OWASP Dependency-Check XML dependencies collector."""
 
-from typing import cast
-from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
+from typing import TYPE_CHECKING, cast
 
 from collector_utilities.functions import parse_source_response_xml_with_namespace, sha1_hash, stabilize
-from collector_utilities.type import Namespaces
 from model import Entities, Entity, SourceResponses
 
 from .base import OWASPDependencyCheckXMLBase
+
+if TYPE_CHECKING:
+    from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
+
+    from collector_utilities.type import Namespaces
 
 
 class OWASPDependencyCheckXMLDependencies(OWASPDependencyCheckXMLBase):

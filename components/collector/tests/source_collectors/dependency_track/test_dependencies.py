@@ -1,8 +1,11 @@
 """Unit tests for the Dependency-Track security warnings collector."""
 
-from source_collectors.dependency_track.dependencies import DependencyTrackComponent
+from typing import TYPE_CHECKING
 
 from .base_test import DependencyTrackTestCase
+
+if TYPE_CHECKING:
+    from source_collectors.dependency_track.dependencies import DependencyTrackComponent
 
 
 class DependencyTrackDependenciesTest(DependencyTrackTestCase):

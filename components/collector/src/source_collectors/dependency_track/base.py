@@ -1,7 +1,6 @@
 """Dependency-Track base collector."""
 
-from collections.abc import AsyncIterator
-from typing import Literal, cast
+from typing import TYPE_CHECKING, Literal, cast
 
 from base_collectors import SourceCollector
 from collector_utilities.exceptions import CollectorError
@@ -9,7 +8,10 @@ from collector_utilities.functions import add_query, match_string_or_regular_exp
 from collector_utilities.type import URL, Response
 from model import Entity, SourceResponses
 
-from .json_types import DependencyTrackProject
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
+
+    from .json_types import DependencyTrackProject
 
 
 class DependencyTrackBase(SourceCollector):

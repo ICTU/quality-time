@@ -1,9 +1,9 @@
 """Unit tests for the subject routes."""
 
+from typing import TYPE_CHECKING
 from unittest.mock import patch
 
 from shared.model.report import Report
-from shared.utils.type import SubjectId
 
 from routes import (
     delete_subject,
@@ -15,6 +15,9 @@ from routes import (
 
 from tests.base import DataModelTestCase
 from tests.fixtures import REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
+
+if TYPE_CHECKING:
+    from shared.utils.type import SubjectId
 
 
 @patch("bottle.request")

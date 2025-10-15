@@ -1,14 +1,16 @@
 """OWASP Dependency-Check JSON source version collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from packaging.version import Version
 
 from base_collectors import VersionCollector
-from collector_utilities.type import Response
 
 from .base import OWASPDependencyCheckJSONBase
 from .json_types import OWASPDependencyCheckJSON
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response
 
 
 class OWASPDependencyCheckJSONSourceVersion(OWASPDependencyCheckJSONBase, VersionCollector):

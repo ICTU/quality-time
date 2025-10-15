@@ -1,7 +1,7 @@
 """Reports routes."""
 
 import bottle
-from pymongo.database import Database
+from typing import TYPE_CHECKING
 
 from database import sessions
 from database.reports import insert_new_reports_overview, latest_reports_overview
@@ -9,6 +9,9 @@ from utils.functions import report_date_time, sanitize_html
 
 from .pdf import export_as_pdf
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 @bottle.get("/api/internal/reports_overview", authentication_required=False)

@@ -1,8 +1,11 @@
 """Unit tests for the Jira user story points collector."""
 
-from model import MetricMeasurement
+from typing import TYPE_CHECKING
 
 from .base import JiraTestCase
+
+if TYPE_CHECKING:
+    from model import MetricMeasurement
 
 
 class JiraUserStoryPointsTest(JiraTestCase):

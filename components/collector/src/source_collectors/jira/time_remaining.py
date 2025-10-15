@@ -1,14 +1,18 @@
 """Jira time remaining collector."""
 
-from datetime import datetime
+from typing import TYPE_CHECKING
 from urllib.parse import urlsplit
 
 from base_collectors.source_collector import TimeRemainingCollector
 from collector_utilities.date_time import parse_datetime
 from collector_utilities.type import URL, Response
-from model import SourceResponses
 
 from .base import JiraBoardBase
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from model import SourceResponses
 
 
 class JiraTimeRemaining(JiraBoardBase, TimeRemainingCollector):

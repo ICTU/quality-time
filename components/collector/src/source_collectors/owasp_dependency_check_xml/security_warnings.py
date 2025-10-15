@@ -1,11 +1,14 @@
 """OWASP Dependency-Check XML security warnings collector."""
 
-from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
-
-from collector_utilities.type import Namespaces
-from model import Entity
+from typing import TYPE_CHECKING
 
 from .dependencies import OWASPDependencyCheckXMLDependencies
+
+if TYPE_CHECKING:
+    from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
+
+    from collector_utilities.type import Namespaces
+    from model import Entity
 
 
 class OWASPDependencyCheckXMLSecurityWarnings(OWASPDependencyCheckXMLDependencies):

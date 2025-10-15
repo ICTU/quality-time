@@ -1,13 +1,15 @@
 """Data model loader."""
 
 import json
-
-from pymongo.database import Database
+from typing import TYPE_CHECKING
 
 from shared_data_model import DATA_MODEL_JSON
 
 from database.datamodels import insert_new_datamodel, latest_datamodel
 from utils.log import get_logger
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 def import_datamodel(database: Database) -> None:  # pragma: no feature-test-cover

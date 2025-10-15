@@ -1,22 +1,27 @@
 """Reports collection."""
 
-from collections.abc import Sequence
-from typing import Any, cast
+from typing import Any, cast, TYPE_CHECKING
 
 import pymongo
-from pymongo.database import Database
 
 from shared.database.filters import DOES_EXIST, DOES_NOT_EXIST
 from shared.database.reports import get_reports
 from shared.utils.functions import iso_timestamp
-from shared.utils.type import ItemId, ReportId
 from shared_data_model import DATA_MODEL
 
 from model.report import Report
 from utils.functions import unique
-from utils.type import Change
 
 from . import sessions
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from pymongo.database import Database
+
+    from shared.utils.type import ItemId, ReportId
+
+    from utils.type import Change
 
 
 # Sort order:

@@ -1,9 +1,13 @@
 """Jenkins test report metric source up-to-dateness collector."""
 
+from typing import TYPE_CHECKING
+
 from base_collectors import SourceCollector
 from collector_utilities.date_time import datetime_from_timestamp, days_ago, parse_datetime
 from collector_utilities.type import URL, Value
-from model import Entities, SourceResponses
+
+if TYPE_CHECKING:
+    from model import Entities, SourceResponses
 
 
 class JenkinsTestReportSourceUpToDateness(SourceCollector):

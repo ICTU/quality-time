@@ -1,12 +1,16 @@
 """Robot Framework source version collector."""
 
+from typing import TYPE_CHECKING
+
 from packaging.version import Version
 
 from base_collectors import VersionCollector
 from collector_utilities.functions import parse_source_response_xml
-from collector_utilities.type import Response
 
 from .base import RobotFrameworkBaseClass
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response
 
 
 class RobotFrameworkSourceVersion(RobotFrameworkBaseClass, VersionCollector):

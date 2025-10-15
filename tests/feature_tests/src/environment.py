@@ -1,12 +1,17 @@
 """Code to run before and after certain events during testing."""
 
-from collections.abc import Iterator
 from contextlib import contextmanager
+from typing import TYPE_CHECKING
 
 import pymongo
 import requests
-from behave.model import Step
-from behave.runner import Context
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from behave.model import Step
+    from behave.runner import Context
+
 
 JSON_CONTENT_TYPE = "application/json"
 JSON = dict | list

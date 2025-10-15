@@ -1,15 +1,18 @@
 """Bitbucket inactive branches collector."""
 
-from datetime import datetime
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from base_collectors import BranchType, InactiveBranchesSourceCollector
 from collector_utilities.date_time import datetime_from_timestamp
 from collector_utilities.exceptions import NotFoundError
 from collector_utilities.type import URL
-from model import SourceResponses
 
 from .base import BitbucketProjectBase
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from model import SourceResponses
 
 
 class BitbucketBranchInfoError(NotFoundError):

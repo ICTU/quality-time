@@ -1,14 +1,17 @@
 """Axe-core accessibility violations collectors."""
 
-from collections.abc import Generator
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from shared.utils.functions import md5_hash
 
 from base_collectors import JSONFileSourceCollector, SourceCollector
 from collector_utilities.functions import match_string_or_regular_expression
-from collector_utilities.type import JSON
 from model import Entities, Entity
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
+    from collector_utilities.type import JSON
 
 
 class AxeViolationsCollector(SourceCollector):

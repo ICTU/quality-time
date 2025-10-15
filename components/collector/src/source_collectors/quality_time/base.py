@@ -1,11 +1,13 @@
 """Base classes for Quality-time collectors."""
 
 from abc import ABC
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from base_collectors import SourceCollector
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.type import Response
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response
 
 
 class QualityTimeCollector(SourceCollector, ABC):

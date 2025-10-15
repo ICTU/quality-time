@@ -1,8 +1,7 @@
 """GitLab inactive branches collector."""
 
-from datetime import datetime
 from http import HTTPStatus
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 import aiohttp
 
@@ -10,9 +9,13 @@ from base_collectors import BranchType, InactiveBranchesSourceCollector
 from collector_utilities.date_time import parse_datetime
 from collector_utilities.functions import add_query
 from collector_utilities.type import URL
-from model import SourceResponses
 
 from .base import GitLabBase
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from model import SourceResponses
 
 
 class GitLabBranchType(BranchType):

@@ -1,10 +1,13 @@
 """Step implementations for the data model feature."""
 
 import hashlib
+from typing import TYPE_CHECKING
 
 from asserts import assert_equal, assert_true
 from behave import then, when
-from behave.runner import Context
+
+if TYPE_CHECKING:
+    from behave.runner import Context
 
 
 def md5_hash(string: str) -> str:

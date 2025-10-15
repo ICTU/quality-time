@@ -1,14 +1,17 @@
 """Azure DevOps Server inactive branches collector."""
 
-from datetime import datetime
-from typing import TypedDict, cast
+from typing import TYPE_CHECKING, TypedDict, cast
 
 from base_collectors import BranchType, InactiveBranchesSourceCollector
 from collector_utilities.date_time import parse_datetime
 from collector_utilities.type import URL
-from model import SourceResponses
 
 from .base import AzureDevopsRepositoryBase
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from model import SourceResponses
 
 
 class Commit(TypedDict):

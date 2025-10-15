@@ -1,15 +1,18 @@
 """Measurement model classes."""
 
-from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import ClassVar
-
-from shared.model.metric import Metric
+from typing import TYPE_CHECKING, ClassVar
 
 from collector_utilities.type import URL, ErrorMessage, JSONList, Value
 
 from .entity import Entities
-from .issue_status import IssueStatus
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from shared.model.metric import Metric
+
+    from .issue_status import IssueStatus
 
 
 @dataclass

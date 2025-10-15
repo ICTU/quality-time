@@ -1,9 +1,10 @@
 """Issue status model class."""
 
 from dataclasses import dataclass
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
-from collector_utilities.type import URL, ErrorMessage
+if TYPE_CHECKING:
+    from collector_utilities.type import URL, ErrorMessage
 
 
 @dataclass

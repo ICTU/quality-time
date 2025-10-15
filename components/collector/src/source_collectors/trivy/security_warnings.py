@@ -1,12 +1,14 @@
 """Trivy JSON collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from base_collectors import JSONFileSourceCollector, SecurityWarningsSourceCollector
-from collector_utilities.type import JSON
 from model import Entities, Entity
 
 from .json_types import TrivyJSON
+
+if TYPE_CHECKING:
+    from collector_utilities.type import JSON
 
 
 class TrivyJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceCollector):

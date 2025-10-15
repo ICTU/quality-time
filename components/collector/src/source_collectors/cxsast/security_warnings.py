@@ -1,10 +1,14 @@
 """Checkmarx CxSAST security warnings collector."""
 
+from typing import TYPE_CHECKING
+
 from base_collectors import SourceCollector
 from collector_utilities.type import URL, Value
-from model import Entities, SourceResponses
 
 from .base import CxSASTScanBase
+
+if TYPE_CHECKING:
+    from model import Entities, SourceResponses
 
 
 class CxSASTSecurityWarnings(CxSASTScanBase):

@@ -2,13 +2,16 @@
 
 import pathlib
 import re
-from typing import Literal
-
-from pydantic import HttpUrl
+from typing import TYPE_CHECKING, Literal
 
 from shared.utils.functions import slugify
 from shared_data_model import DATA_MODEL
-from shared_data_model.meta import Metric, NamedModel, Parameter, Source, Subject
+
+if TYPE_CHECKING:
+    from pydantic import HttpUrl
+
+    from shared_data_model.meta import Metric, NamedModel, Parameter, Source, Subject
+
 
 # See https://pradyunsg.me/furo/reference/admonitions/
 AdmonitionType = Literal[

@@ -1,18 +1,21 @@
 """Model transformations."""
 
 import json
-from typing import cast
-
-from collections.abc import Iterator
 from json.decoder import JSONDecodeError
-
-from shared.utils.type import ItemId
+from typing import cast, TYPE_CHECKING
 
 from utils.functions import asymmetric_decrypt, asymmetric_encrypt, unique, uuid, DecryptionError
-from utils.type import EditScope
 
 from .iterators import sources as iter_sources
 from .queries import is_password_parameter
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from shared.utils.type import ItemId
+
+    from utils.type import EditScope
+
 
 CREDENTIALS_REPLACEMENT_TEXT = "this string replaces credentials"
 

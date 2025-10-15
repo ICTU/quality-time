@@ -4,6 +4,7 @@ import io
 import logging
 import unittest
 import zipfile
+from typing import TYPE_CHECKING
 from unittest.mock import DEFAULT as STOP_SENTINEL
 from unittest.mock import AsyncMock, PropertyMock, patch
 
@@ -12,9 +13,11 @@ import aiohttp
 from shared.model.metric import Metric
 
 from base_collectors import MetricCollector
-from model import MetricMeasurement
 
 from tests.fixtures import METRIC_ID
+
+if TYPE_CHECKING:
+    from model import MetricMeasurement
 
 
 class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):

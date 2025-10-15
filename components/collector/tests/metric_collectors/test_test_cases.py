@@ -1,17 +1,19 @@
 """Unit tests for the test cases metric collector."""
 
 import unittest
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 from unittest.mock import AsyncMock, patch
 
 from shared.model.metric import Metric
 
 from base_collectors import config
 from base_collectors.metric_collector import MetricCollector
-from model import MetricMeasurement
 from source_collectors.jira.issues import JiraIssues
 
 from tests.fixtures import METRIC_ID
+
+if TYPE_CHECKING:
+    from model import MetricMeasurement
 
 
 class TestCasesTest(unittest.IsolatedAsyncioTestCase):

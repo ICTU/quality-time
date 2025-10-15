@@ -1,13 +1,16 @@
 """Jenkins failed jobs collector."""
 
 from datetime import UTC, datetime, timedelta
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from collector_utilities.date_time import datetime_from_timestamp
-from model import Entity
 
 from .base import JenkinsJobs
-from .json_types import Build
+
+if TYPE_CHECKING:
+    from model import Entity
+
+    from .json_types import Build
 
 
 class JenkinsFailedJobs(JenkinsJobs):

@@ -1,11 +1,15 @@
 """Gatling source version collector."""
 
+from typing import TYPE_CHECKING
+
 from packaging.version import Version
 
 from base_collectors import VersionCollector
-from collector_utilities.type import Response
 
 from .base import GatlingHTMLCollector
+
+if TYPE_CHECKING:
+    from collector_utilities.type import Response
 
 
 class GatlingSourceVersion(GatlingHTMLCollector, VersionCollector):

@@ -1,12 +1,14 @@
 """Base classes for Gatling collectors."""
 
 from abc import ABC
-from typing import cast
-
-from bs4 import Tag
+from typing import TYPE_CHECKING, cast
 
 from base_collectors import HTMLFileSourceCollector
-from collector_utilities.type import Response
+
+if TYPE_CHECKING:
+    from bs4 import Tag
+
+    from collector_utilities.type import Response
 
 
 class GatlingHTMLCollector(HTMLFileSourceCollector, ABC):

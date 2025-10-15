@@ -1,13 +1,15 @@
 """OWASP Dependency-Check JSON dependencies collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from collector_utilities.functions import sha1_hash, stabilize
-from collector_utilities.type import JSON
 from model import Entities, Entity
 
 from .base import OWASPDependencyCheckJSONBase
 from .json_types import Dependency, OWASPDependencyCheckJSON
+
+if TYPE_CHECKING:
+    from collector_utilities.type import JSON
 
 
 class OWASPDependencyCheckJSONDependencies(OWASPDependencyCheckJSONBase):

@@ -1,10 +1,12 @@
 """Pyup.io Safety security warnings collector."""
 
-from typing import Final, cast
+from typing import TYPE_CHECKING, Final, cast
 
 from base_collectors import JSONFileSourceCollector
-from collector_utilities.type import JSON
 from model import Entities, Entity
+
+if TYPE_CHECKING:
+    from collector_utilities.type import JSON
 
 JSONSafety = list[list[str]]
 

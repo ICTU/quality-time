@@ -1,7 +1,6 @@
 """Axe HTML reporter accessibility violations collector."""
 
-from collections.abc import Iterator
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from bs4 import Tag
 
@@ -10,6 +9,9 @@ from shared.utils.functions import md5_hash
 from base_collectors import HTMLFileSourceCollector
 from model import Entities, Entity, SourceResponses
 from source_collectors.axe_core.violations import AxeViolationsCollector
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class AxeHTMLReporterViolations(HTMLFileSourceCollector, AxeViolationsCollector):

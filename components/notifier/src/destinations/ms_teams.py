@@ -1,9 +1,13 @@
 """Microsoft Teams destination."""
 
+from typing import TYPE_CHECKING
+
 import pymsteams
 
-from models.notification import MetricNotificationData, Notification
 from notifier_utilities.log import get_logger
+
+if TYPE_CHECKING:
+    from models.notification import MetricNotificationData, Notification
 
 ICON_URL = "https://raw.githubusercontent.com/ICTU/quality-time/master/resources/icons/%s.png"
 

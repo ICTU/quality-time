@@ -1,13 +1,15 @@
 """Jira average issue lead time collector."""
 
 from statistics import mean
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from collector_utilities.date_time import days_ago, parse_datetime
-from collector_utilities.type import URL, Value
-from model import Entities, Entity
 
 from .issues import JiraIssues
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL, Value
+    from model import Entities, Entity
 
 
 class JiraAverageIssueLeadTime(JiraIssues):

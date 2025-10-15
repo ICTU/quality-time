@@ -1,15 +1,18 @@
 """Azure DevOps Server change failure rate collector."""
 
-from datetime import datetime
 from itertools import pairwise
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from collector_utilities.date_time import MAX_DATETIME, days_ago, parse_datetime
-from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceResponses
 
 from .base import AzureDevopsPipelines
 from .issues import AzureDevopsIssues
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from collector_utilities.type import URL, Value
 
 
 class AzureDevopsChangeFailureRate(AzureDevopsIssues, AzureDevopsPipelines):

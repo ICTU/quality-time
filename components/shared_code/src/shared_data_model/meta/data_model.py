@@ -6,9 +6,11 @@ from pydantic import model_validator
 
 from shared_data_model.logos import get_logo_names
 
-from .metric import Metric
-from .scale import Scale
-from .source import Source
+# Ruff wants these imports in a TYPE_CHECKING block, but that makes Pydantic complain
+# that DataModel is not fully defined.
+from .metric import Metric  # noqa: TC001
+from .scale import Scale  # noqa:  TC001
+from .source import Source  # noqa: TC001
 from .subject import SubjectContainer
 
 

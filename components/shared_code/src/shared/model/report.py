@@ -1,13 +1,17 @@
 """A class that represents a report."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
-from shared.model.source import Source
 from shared.utils.type import Color, ItemId, MetricId, ReportId, SourceId, Status, SubjectId
 
-from .measurement import Measurement
-from .metric import Metric
 from .subject import Subject
+
+if TYPE_CHECKING:
+    from shared.model.source import Source
+
+    from .measurement import Measurement
+    from .metric import Metric
+
 
 STATUS_COLOR_MAPPING = cast(
     dict[Status, Color],

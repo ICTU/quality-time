@@ -1,9 +1,8 @@
 """Metric routes."""
 
-from typing import Any, cast
+from typing import Any, cast, TYPE_CHECKING
 
 import bottle
-from pymongo.database import Database
 
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.metric import Metric
@@ -16,6 +15,9 @@ from model.defaults import default_metric_attributes
 from utils.functions import sanitize_html, uuid
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 @bottle.post("/api/internal/metric/new/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])

@@ -1,9 +1,13 @@
 """Measurement entity model class."""
 
 import re
-from collections.abc import Iterable
+from typing import TYPE_CHECKING
 
 from shared.utils.functions import iso_timestamp
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
 
 QUOTED_SLASH = re.compile("%2f", re.IGNORECASE)
 

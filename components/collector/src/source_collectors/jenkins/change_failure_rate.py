@@ -1,13 +1,16 @@
 """Jenkins change failure rate deploys collector."""
 
-from collections.abc import Iterator, Sequence
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from collector_utilities.date_time import datetime_from_timestamp, days_ago
 from model import Entities, Entity, SourceResponses
 
 from .base import JenkinsJobs
-from .json_types import Build, Job
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator, Sequence
+
+    from .json_types import Build, Job
 
 
 class JenkinsChangeFailureRate(JenkinsJobs):

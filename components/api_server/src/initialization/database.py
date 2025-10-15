@@ -1,9 +1,9 @@
 """Database initialization."""
 
 import os
+from typing import TYPE_CHECKING
 
 import pymongo
-from pymongo.database import Database
 
 from utils.log import get_logger
 
@@ -11,6 +11,9 @@ from .app_secrets import initialize_secrets
 from .migrations import perform_migrations
 from .datamodel import import_datamodel
 from .report import import_example_reports, initialize_reports_overview
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 def init_database(database: Database) -> None:  # pragma: no feature-test-cover

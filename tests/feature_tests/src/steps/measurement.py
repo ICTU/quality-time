@@ -1,11 +1,14 @@
 """Step implementations for measurement."""
 
 from datetime import UTC, datetime, timedelta
+from typing import TYPE_CHECKING
 
 from asserts import assert_equal, assert_in
 from behave import given, then, when
-from behave.runner import Context
 from requests_sse import EventSource
+
+if TYPE_CHECKING:
+    from behave.runner import Context
 
 
 def create_measurement(  # noqa: PLR0913

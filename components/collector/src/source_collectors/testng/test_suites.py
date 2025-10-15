@@ -1,11 +1,13 @@
 """TestNG test suites collector."""
 
-from typing import cast
-from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
+from typing import TYPE_CHECKING, cast
 
 from base_collectors import XMLFileSourceCollector
 from collector_utilities.functions import parse_source_response_xml
 from model import Entities, Entity, SourceMeasurement, SourceResponses
+
+if TYPE_CHECKING:
+    from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 
 class TestNGTestSuites(XMLFileSourceCollector):

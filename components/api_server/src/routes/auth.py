@@ -6,13 +6,12 @@ import string
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from http.cookies import Morsel
-from typing import cast
+from typing import cast, TYPE_CHECKING
 
 import argon2
 import bottle
 from ldap3 import ALL, Connection, Server, ServerPool, AUTO_BIND_NO_TLS
 from ldap3.core import exceptions
-from pymongo.database import Database
 
 from database.users import upsert_user, get_user
 from database import sessions
@@ -20,6 +19,9 @@ from initialization.app_secrets import EXPORT_FIELDS_KEYS_NAME
 from utils.functions import uuid
 from utils.log import get_logger
 from utils.type import SessionId, User
+
+if TYPE_CHECKING:
+    from pymongo.database import Database
 
 
 def create_session(database: Database, user: User) -> datetime:

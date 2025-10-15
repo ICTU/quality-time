@@ -1,14 +1,18 @@
 """Gatling source up-to-dateness collector."""
 
-from datetime import datetime
+from typing import TYPE_CHECKING
 
 from shared.utils.date_time import now
 
 from base_collectors import TimePassedCollector
 from collector_utilities.date_time import parse_datetime
-from collector_utilities.type import Response
 
 from .base import GatlingHTMLCollector
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from collector_utilities.type import Response
 
 
 class GatlingSourceUpToDateness(GatlingHTMLCollector, TimePassedCollector):

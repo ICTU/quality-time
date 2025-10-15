@@ -12,7 +12,7 @@ If you want to get *Quality-time* up and running quickly, for example for a demo
 
 #### Install prerequisites
 
-Prerequisites are Docker and Git for both scenario's. For scenario 2 you also need Python 3.13, [uv](https://github.com/astral-sh/uv), and a recent version of Node.js (we currently use Node.js v24).
+Prerequisites are Docker and Git for both scenario's. For scenario 2 you also need Python 3.14, [uv](https://github.com/astral-sh/uv), and a recent version of Node.js (we currently use Node.js v24).
 
 Clone this repository:
 
@@ -453,7 +453,7 @@ The application tests in theory test all components through the frontend, but un
 
 ```console
 docker compose up -d
-docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 ghcr.io/astral-sh/uv:python3.13-bookworm tests/application_tests/ci/test.sh
+docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 ghcr.io/astral-sh/uv:python3.14-bookworm tests/application_tests/ci/test.sh
 ```
 
 ## Documentation and changelog

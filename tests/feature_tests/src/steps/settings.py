@@ -1,10 +1,13 @@
 """Steps for settings."""
 
 import json
+from typing import TYPE_CHECKING
 
 from asserts import assert_equal, assert_true
 from behave import then, when
-from behave.runner import Context
+
+if TYPE_CHECKING:
+    from behave.runner import Context
 
 
 @when("the client posts new settings")
