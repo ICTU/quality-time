@@ -189,7 +189,7 @@ wheels = [
 
 [[package]]
 name = "docs"
-version = "5.44.1"
+version = "5.44.2rc0"
 source = { virtual = "." }
 dependencies = [
     { name = "furo" },
@@ -893,7 +893,7 @@ wheels = [
 
 [[package]]
 name = "shared-code"
-version = "5.44.1"
+version = "5.44.2rc0"
 source = { editable = "../components/shared_code" }
 dependencies = [
     { name = "bottle" },

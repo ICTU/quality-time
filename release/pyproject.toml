@@ -1,6 +1,6 @@
 [project]
 name = "release"
-version = "5.44.1"
+version = "5.44.2-rc.0"
 requires-python = ">=3.14"
 classifiers = [
     "Programming Language :: Python :: 3 :: Only",
@@ -44,7 +44,7 @@ indent = 4
 keep_full_version = true # Don't remove trailing zero's from version specifiers
 
 [tool.bumpversion]
-current_version = "5.44.1"
+current_version = "5.44.2-rc.0"
 parse = """(?x)
     (?P<major>0|[1-9]\\d*)\\.
     (?P<minor>0|[1-9]\\d*)\\.
