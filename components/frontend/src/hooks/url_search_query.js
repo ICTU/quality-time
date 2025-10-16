@@ -30,7 +30,7 @@ function setURLSearchQuery(key, newValue, defaultValue, setValue) {
     } else {
         parsed.set(key, newValue)
     }
-    const search = parsed.toString().replace(/%2C/g, ",") // No need to encode commas
+    const search = parsed.toString().replaceAll("%2C", ",") // No need to encode commas
     history.replace({ search: search.length > 0 ? "?" + search : "" })
     setValue(newValue)
 }
@@ -54,16 +54,16 @@ export function useArrayURLSearchQuery(key) {
 
     function toggleURLSearchQuery(...items) {
         const newValue = []
-        value.forEach((item) => {
+        for (const item of value) {
             if (!items.includes(item)) {
                 newValue.push(item)
             }
-        })
-        items.forEach((item) => {
+        }
+        for (const item of items) {
             if (!value.includes(item)) {
                 newValue.push(item)
             }
-        })
+        }
         setURLSearchQuery(key, newValue, defaultValue, setValue)
     }
 
@@ -88,7 +88,7 @@ export function useIntegerMappingURLSearchQuery(key) {
     }
     hook.getItem = (itemKey) => {
         const item = hook._findItem(itemKey)
-        return item ? parseInt(item.split(":")[1], 10) : 0
+        return item ? Number.parseInt(item.split(":")[1], 10) : 0
     }
     hook._allItemsExcept = (itemKey) => {
         return hook.value.filter((eachItem) => eachItem.split(":")[0] !== itemKey)
@@ -118,7 +118,7 @@ export function useBooleanURLSearchQuery(key) {
 
 export function useIntegerURLSearchQuery(key, defaultValue) {
     const searchQueryValue = parseURLSearchQuery().get(key)
-    const parsedValue = typeof searchQueryValue === "string" ? parseInt(searchQueryValue, 10) : defaultValue
+    const parsedValue = typeof searchQueryValue === "string" ? Number.parseInt(searchQueryValue, 10) : defaultValue
     const [value, setValue] = useState(parsedValue)
     return createHook(key, value, defaultValue, setValue)
 }

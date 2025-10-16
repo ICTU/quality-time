@@ -45,12 +45,12 @@ metricStatusOnDate.propTypes = {
 export function summarizeMetricsOnDate(dataModel, date, measurements, metrics, tag) {
     // Summarize the number of metrics per color on the given date, and filtered by tag, if specified
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
-    Object.entries(metrics).forEach(([metricUuid, metric]) => {
+    for (const [metricUuid, metric] of Object.entries(metrics)) {
         if (!tag || getMetricTags(metric).indexOf(tag) >= 0) {
             const status = metricStatusOnDate(metricUuid, metric, measurements, date, dataModel)
             summary[STATUS_COLORS[status]] += 1
         }
-    })
+    }
     return summary
 }
 summarizeMetricsOnDate.propType = {
@@ -65,10 +65,10 @@ export function summarizeReportOnDate(dataModel, settings, report, measurements,
     // Summarize the number of metrics per color in the report on the given date, and filtered by tag, if specified
     let summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
     const metricsToHide = settings.metricsToHide.value === "all" ? "none" : settings.metricsToHide.value
-    Object.values(report.subjects).forEach((subject) => {
+    for (const subject of Object.values(report.subjects)) {
         const metrics = visibleMetrics(subject.metrics, metricsToHide, settings.hiddenTags.value)
         summary = addCounts(summary, summarizeMetricsOnDate(dataModel, date, measurements, metrics, tag))
-    })
+    }
     return summary
 }
 summarizeReportOnDate.propTypes = {
@@ -83,9 +83,9 @@ summarizeReportOnDate.propTypes = {
 export function summarizeReportsOnDate(dataModel, settings, reports, measurements, date, tag) {
     // Summarize the number of metrics per color in the reports on the given date, and filtered by tag, if specified
     let summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
-    reports.forEach((report) => {
+    for (const report of reports) {
         summary = addCounts(summary, summarizeReportOnDate(dataModel, settings, report, measurements, date, tag))
-    })
+    }
     return summary
 }
 summarizeReportsOnDate.propTypes = {
@@ -100,9 +100,9 @@ summarizeReportsOnDate.propTypes = {
 export function reportSources(dataModel, report) {
     const sourceIds = new Set()
     const sources = {}
-    Object.values(report.subjects ?? {}).forEach((subject) => {
-        Object.values(subject.metrics ?? {}).forEach((metric) => {
-            Object.entries(metric.sources ?? {}).forEach(([sourceUuid, source]) => {
+    for (const subject of Object.values(report.subjects ?? {})) {
+        for (const metric of Object.values(subject.metrics ?? {})) {
+            for (const [sourceUuid, source] of Object.entries(metric.sources ?? {})) {
                 const reportSource = {
                     name: getSourceName(source, dataModel),
                     type: source.type,
@@ -122,9 +122,9 @@ export function reportSources(dataModel, report) {
                     sources[sourceId].nrMetrics = 1
                     sourceIds.add(sourceId)
                 }
-            })
-        })
-    })
+            }
+        }
+    }
     const sortedSources = Object.values(sources)
     sortedSources.sort((s1, s2) => (s1.name || s1.type).localeCompare(s2.name || s2.type))
     return sortedSources

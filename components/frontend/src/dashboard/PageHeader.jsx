@@ -5,7 +5,7 @@ import { datePropType, reportPropType } from "../sharedPropTypes"
 import { HyperLink } from "../widgets/HyperLink"
 
 export function PageHeader({ lastUpdate, report, reportDate }) {
-    const reportURL = new URLSearchParams(window.location.search).get("report_url") ?? window.location.href
+    const reportURL = new URLSearchParams(globalThis.location.search).get("report_url") ?? globalThis.location.href
     const title = report?.title ?? "Reports overview"
     const changelogURL = `https://quality-time.readthedocs.io/en/v${import.meta.env.VITE_APP_VERSION}/changelog.html`
     return (

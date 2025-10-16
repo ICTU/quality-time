@@ -18,13 +18,13 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
     const nrMetrics = Math.max(nrMetricsInReport(report), 1)
     const subjectCards = []
     if (settings.hiddenCards.excludes("subjects")) {
-        Object.entries(report.subjects).forEach(([subjectUuid, subject]) => {
+        for (const [subjectUuid, subject] of Object.entries(report.subjects)) {
             const metrics = visibleMetrics(subject.metrics, settings.metricsToHide.value, settings.hiddenTags.value)
             if (Object.keys(metrics).length > 0) {
                 const summary = {}
-                dates.forEach((date) => {
+                for (const date of dates) {
                     summary[date] = summarizeMetricsOnDate(dataModel, date, measurements, metrics)
-                })
+                }
                 subjectCards.push(
                     <MetricSummaryCard
                         header={getSubjectName(report.subjects[subjectUuid], dataModel)}
@@ -35,7 +35,7 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
                     />,
                 )
             }
-        })
+        }
     }
     let tagCards = []
     if (settings.hiddenCards.excludes("tags")) {

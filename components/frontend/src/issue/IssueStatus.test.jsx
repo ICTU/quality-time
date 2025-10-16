@@ -76,18 +76,18 @@ it("displays the issue id", async () => {
 })
 
 it("opens the issue landing url", async () => {
-    window.open = vi.fn()
+    globalThis.open = vi.fn()
     const { container } = renderIssueStatus()
     clickText(/123/)
-    expect(window.open).toHaveBeenCalledWith("https://issue")
+    expect(globalThis.open).toHaveBeenCalledWith("https://issue")
     await expectNoAccessibilityViolations(container)
 })
 
 it("does not open an url if the issue has no landing url", async () => {
-    window.open = vi.fn()
+    globalThis.open = vi.fn()
     const { container } = renderIssueStatus({ landingUrl: "" })
     clickText(/123/)
-    expect(window.open).not.toHaveBeenCalled()
+    expect(globalThis.open).not.toHaveBeenCalled()
     await expectNoAccessibilityViolations(container)
 })
 

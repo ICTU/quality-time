@@ -8,15 +8,15 @@ function sortOptions(options) {
 export function metricOptions(reports, dataModel, currentSubjectType, currentSubjectUuid) {
     const subjectMetrics = getSubjectTypeMetrics(currentSubjectType, dataModel.subjects)
     let options = []
-    reports.forEach((report) => {
-        Object.entries(report.subjects).forEach(([subjectUuid, subject]) => {
+    for (const report of reports) {
+        for (const [subjectUuid, subject] of Object.entries(report.subjects)) {
             if (subjectUuid === currentSubjectUuid) {
-                return
+                continue
             }
             const subjectName = getSubjectName(subject, dataModel)
-            Object.entries(subject.metrics).forEach(([metricUuid, metric]) => {
+            for (const [metricUuid, metric] of Object.entries(subject.metrics)) {
                 if (!subjectMetrics.includes(metric.type)) {
-                    return
+                    continue
                 }
                 const metricName = getMetricName(metric, dataModel)
                 options.push({
@@ -25,9 +25,9 @@ export function metricOptions(reports, dataModel, currentSubjectType, currentSub
                     text: report.title + subjectName + metricName,
                     value: metricUuid,
                 })
-            })
-        })
-    })
+            }
+        }
+    }
     return sortOptions(options)
 }
 

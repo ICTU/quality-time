@@ -1,7 +1,7 @@
 import { fetchServerApi } from "./fetch_server_api"
 
 export function addNotificationDestination(reportUuid, reload) {
-    const reportUrl = window.location.href.split("?")[0]
+    const reportUrl = globalThis.location.href.split("?")[0]
     return fetchServerApi("post", `report/${reportUuid}/notification_destination/new`, {
         report_url: reportUrl,
     }).then(reload)

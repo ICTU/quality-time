@@ -72,7 +72,7 @@ export function SubjectTitle({
     const subjectType = getSubjectType(subject.type, dataModel.subjects)
     const subjectName = subject.name || subjectType.name
     const subjectTitle = (atReportsOverview ? report.title + " ❯ " : "") + subjectName
-    const subjectUrl = `${window.location}#${subjectUuid}`
+    const subjectUrl = `${globalThis.location}#${subjectUuid}`
     return (
         <div className="sticky" style={{ zIndex: zIndexSubjectTitle }}>
             <HeaderWithDetails

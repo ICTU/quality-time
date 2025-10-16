@@ -12,7 +12,7 @@ afterEach(() => {
 })
 
 it("does not scroll if trigger is false", () => {
-    window.addEventListener = vi.fn()
+    globalThis.addEventListener = vi.fn()
     const mockScrollIntoView = vi.fn()
     document.getElementById = () => {
         return { scrollIntoView: mockScrollIntoView }
@@ -23,7 +23,7 @@ it("does not scroll if trigger is false", () => {
 })
 
 it("does not scroll if trigger is true but no element found", () => {
-    window.addEventListener = vi.fn()
+    globalThis.addEventListener = vi.fn()
     document.getElementById = () => {
         return null
     }
@@ -35,7 +35,7 @@ it("does not scroll if trigger is true but no element found", () => {
 })
 
 it("does scroll if trigger is true and element found", () => {
-    window.addEventListener = vi.fn()
+    globalThis.addEventListener = vi.fn()
     const mockScrollIntoView = vi.fn()
     document.getElementById = () => {
         return { scrollIntoView: mockScrollIntoView }

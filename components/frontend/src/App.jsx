@@ -128,7 +128,7 @@ class App extends Component {
             parsed.delete("report_date")
             date = null
         }
-        const search = parsed.toString().replace(/%2C/g, ",") // No need to encode commas
+        const search = parsed.toString().replaceAll("%2C", ",") // No need to encode commas
         history.replace({ search: search.length > 0 ? "?" + search : "" })
         this.setState({ reportDate: date, loading: true }, () => this.reload())
     }
@@ -146,42 +146,40 @@ class App extends Component {
     }
 
     historyPush(target) {
-        const search = registeredURLSearchParams().toString().replace(/%2C/g, ",") // No need to encode commas
+        const search = registeredURLSearchParams().toString().replaceAll("%2C", ",") // No need to encode commas
         history.push(target + (search.length > 0 ? "?" + search : ""))
     }
 
     connectToNrMeasurementsEventSource() {
         this.source = new EventSource(nrMeasurementsApi)
-        let self = this
         this.source.addEventListener("init", (message) => {
             const newNrMeasurements = Number(message.data)
-            if (!self.state.nrMeasurementsStreamConnected) {
-                showMessage("success", "Connected to server", "Successfully reconnected to server.")
-                self.setState({ nrMeasurements: newNrMeasurements, nrMeasurementsStreamConnected: true }, () =>
-                    self.reload(),
-                )
+            if (this.state.nrMeasurementsStreamConnected) {
+                this.setState({ nrMeasurements: newNrMeasurements })
             } else {
-                self.setState({ nrMeasurements: newNrMeasurements })
+                showMessage("success", "Connected to server", "Successfully reconnected to server.")
+                this.setState({ nrMeasurements: newNrMeasurements, nrMeasurementsStreamConnected: true }, () =>
+                    this.reload(),
+                )
             }
         })
         this.source.addEventListener("delta", (message) => {
             const newNrMeasurements = Number(message.data)
-            if (newNrMeasurements !== self.state.nrMeasurements) {
-                self.setState({ nrMeasurements: newNrMeasurements }, () => self.reload())
+            if (newNrMeasurements !== this.state.nrMeasurements) {
+                this.setState({ nrMeasurements: newNrMeasurements }, () => this.reload())
             }
         })
         this.source.addEventListener("error", () => {
             showMessage("error", "Server unreachable", "Trying to reconnect to server...", "reconnecting")
-            self.setState({ nrMeasurementsStreamConnected: false })
+            this.setState({ nrMeasurementsStreamConnected: false })
         })
     }
 
     loginForwardAuth() {
-        let self = this
         login("", "")
-            .then(function (json) {
+            .then((json) => {
                 if (json.ok) {
-                    self.setUserSession(json.email, json.email, new Date(json.session_expiration_datetime))
+                    this.setUserSession(json.email, json.email, new Date(json.session_expiration_datetime))
                     return true
                 }
                 return false
@@ -214,14 +212,14 @@ class App extends Component {
 
     setUserSession(username, email, sessionExpirationDateTime) {
         if (username) {
-            const emailAddress = email && email.indexOf("@") > -1 ? email : null
+            const emailAddress = email?.includes("@") ? email : null
             this.setState({ user: username, email: emailAddress })
             localStorage.setItem("user", username)
             localStorage.setItem("email", emailAddress)
             localStorage.setItem("session_expiration_datetime", sessionExpirationDateTime.toISOString())
             this.sessionExpirationTimeoutId = setTimeout(
                 () => this.onUserSessionExpiration(),
-                sessionExpirationDateTime - new Date(),
+                sessionExpirationDateTime - Date.now(),
             )
         } else {
             this.setState({ user: null, email: null })

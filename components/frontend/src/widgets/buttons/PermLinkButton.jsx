@@ -5,7 +5,7 @@ import { OpenLink } from "../icons"
 import { showMessage } from "../toast"
 
 export function PermLinkButton({ itemType, url }) {
-    if (window.isSecureContext) {
+    if (globalThis.isSecureContext) {
         // Frontend runs in a secure context (https) so we can use the Clipboard API
         return (
             <Tooltip title={`Copy a permanent link to this ${itemType} to the clipboard`}>

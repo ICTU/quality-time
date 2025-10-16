@@ -126,7 +126,7 @@ it("changes the sorting of an unsorted column", async () => {
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
-Array("ascending", "descending").forEach((sortOrder) => {
+for (const sortOrder of Array("ascending", "descending")) {
     it("changes the sorting of a column", async () => {
         history.push(`?sort_column=comment&sort_direction=${sortOrder}`)
         const handleSort = vi.fn()
@@ -134,7 +134,7 @@ Array("ascending", "descending").forEach((sortOrder) => {
         clickText(/Comment/, 1)
         expect(handleSort).toHaveBeenCalledWith("comment")
     })
-})
+}
 
 it("sorts a column by keypress", async () => {
     const handleSort = vi.fn()
