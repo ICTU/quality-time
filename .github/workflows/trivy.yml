@@ -41,9 +41,8 @@ jobs:
         uses: actions/checkout@v5.0.0
 
       - name: Build image from Dockerfile
-        run: |
-          cd ${{ matrix.build_path }}
-          docker build -f ${{ matrix.docker_file }} -t docker.io/ictu/quality-time_${{ matrix.component }} .
+        working-directory: ${{ matrix.build_path }}
+        run: docker build -f ${{ matrix.docker_file }} -t docker.io/ictu/quality-time_${{ matrix.component }} .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master

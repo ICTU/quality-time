@@ -1,9 +1,8 @@
 import { createEvent, fireEvent, render, screen } from "@testing-library/react"
-import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
-import { setMetricAttribute } from "../api/metric"
+import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -14,14 +13,6 @@ vi.mock("../utils", async () => {
     return {
         ...actual,
         createDragGhost: vi.fn(),
-    }
-})
-
-vi.mock("../api/metric", async () => {
-    const actual = await vi.importActual("../api/metric")
-    return {
-        ...actual,
-        setMetricAttribute: vi.fn().mockResolvedValue({}),
     }
 })
 
@@ -79,9 +70,12 @@ function simulateDragAndDrop() {
 }
 
 beforeEach(() => {
-    history.push("")
-    setMetricAttribute.mockClear()
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockReturnValue({
+        then: vi.fn().mockReturnValue({ catch: vi.fn().mockReturnValue({ finally: vi.fn() }) }),
+    })
 })
+
+afterEach(() => vi.restoreAllMocks())
 
 it("shows the correct number of rows", async () => {
     const { container } = renderSubjectTableBody()
@@ -138,7 +132,9 @@ it("handles drop by reordering metrics", () => {
     simulateDragAndDrop()
 
     // Check API call
-    expect(setMetricAttribute).toHaveBeenCalledWith("1", "position_index", 1, expect.any(Function))
+    expect(fetchServerApi.fetchServerApi).toHaveBeenCalledWith("post", "metric/1/attribute/position_index", {
+        position_index: 1,
+    })
 
     // Check reorder by verifying row contents
     const rows = screen.getAllByTestId(/metric-row-/)
@@ -170,21 +166,15 @@ it("does not reorder metrics if drop target is the same as drag source", () => {
     fireEvent(row0, dropEvent)
 
     // Verify no API call was made
-    expect(setMetricAttribute).not.toHaveBeenCalled()
+    expect(fetchServerApi.fetchServerApi).not.toHaveBeenCalled()
 })
 
 it("shows a console log if API call fails", async () => {
-    // Mock setMetricAttribute to reject
-    setMetricAttribute.mockRejectedValueOnce(new Error("API error"))
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
+    vi.spyOn(console, "error").mockImplementation((error) => {
+        expect(error).toStrictEqual("Failed to update metric position:")
+    })
+    fetchServerApi.fetchServerApi.mockImplementation(() => Promise.reject(new Error("API error")))
     simulateDragAndDrop()
-
-    // Wait for the promise to settle
-    await Promise.resolve()
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Failed to update metric position:", expect.any(Error))
-    consoleErrorSpy.mockRestore()
 })
 
 it("resets drag state on dragend", () => {

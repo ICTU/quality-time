@@ -34,6 +34,7 @@ export default defineConfig({
             skipFull: true,
         },
         environment: "jsdom",
+        mockReset: true,
         setupFiles: "./src/setupTests.js",
         testTimeout: 15000,
     },

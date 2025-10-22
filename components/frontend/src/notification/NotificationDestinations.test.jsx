@@ -28,7 +28,7 @@ function renderNotificationDestinations(destinations) {
     )
 }
 
-beforeAll(() => vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true }))
+beforeEach(() => vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() => Promise.resolve({ ok: true })))
 
 it("creates the first notification destination when the add notification destination button is clicked", async () => {
     const { container } = renderNotificationDestinations({})

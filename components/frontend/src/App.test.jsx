@@ -24,10 +24,12 @@ function setUserInLocalStorage(sessionExpirationDatetime, email) {
 }
 
 beforeAll(() => {
-    global.EventSource = vi.fn(() => ({
-        addEventListener: vi.fn(),
-        close: vi.fn(),
-    }))
+    global.EventSource = function () {
+        return {
+            addEventListener: vi.fn(),
+            close: vi.fn(),
+        }
+    }
 })
 
 beforeEach(async () => {
@@ -124,18 +126,16 @@ it("handles a date reset", async () => {
 })
 
 it("handles the nr of measurements event source", async () => {
-    const eventSourceInstance = {
-        addEventListener: vi.fn(),
-        close: vi.fn(),
-    }
     const eventListeners = {}
-
-    eventSourceInstance.addEventListener.mockImplementation((event, listener) => {
-        eventListeners[event] = listener
-    })
-
     const showMessage = vi.spyOn(toast, "showMessage")
-    global.EventSource = vi.fn(() => eventSourceInstance)
+    global.EventSource = function () {
+        return {
+            addEventListener: function (event, listener) {
+                eventListeners[event] = listener
+            },
+            close: vi.fn(),
+        }
+    }
 
     render(<App />)
     await act(async () => eventListeners["init"]({ data: 42 }))

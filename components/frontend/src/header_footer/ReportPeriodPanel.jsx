@@ -1,9 +1,9 @@
 import { Stack, Typography } from "@mui/material"
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker"
 import dayjs from "dayjs"
-import { date, func } from "prop-types"
+import { func } from "prop-types"
 
-import { settingsPropType } from "../sharedPropTypes"
+import { datePropType, settingsPropType } from "../sharedPropTypes"
 import { DateOrderMenu } from "./settings_menu/DateOrderMenu"
 import { NumberOfDatesMenu } from "./settings_menu/NumberOfDatesMenu"
 import { SettingsMenuGroup } from "./settings_menu/SettingsMenu"
@@ -35,6 +35,6 @@ export function ReportPeriodPanel({ onChange, reportDate, settings }) {
 }
 ReportPeriodPanel.propTypes = {
     onChange: func,
-    reportDate: date,
+    reportDate: datePropType,
     settings: settingsPropType,
 }
