@@ -24,9 +24,10 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Your environment (please complete the following information):**
- - OS: [e.g. Linux]
- - Browser [e.g. Chrome, Safari]
- - Quality-time version [e.g. v4.0.0]
+- Operating system: [for example Linux Debian v13.1]
+- Browser: [for example Firefix v143.0, Safari v18.6]
+- Quality-time: [for example v5.44.1]
+- Source version: [if applicable add source versions, for example SonarQube v2025.2.0.105476, GitLab v17.11.4-ee]
 
 **Additional context**
 Add any other context about the problem here.
