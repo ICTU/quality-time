@@ -55,7 +55,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         resolution = issue.get("resolution", "").lower()
         entity["resolution"] = {"wontfix": "won't fix"}.get(resolution, resolution)
         comments = issue.get("comments", [])
-        comments_text = [f"{comment['login']}: {comment['markdown']}" for comment in comments]
+        comments_text = [f"{comment.get('login', 'SonarQube')}: {comment['markdown']}" for comment in comments]
         if comments_text:
             entity["rationale"] = "\n".join(comments_text)
         return entity
