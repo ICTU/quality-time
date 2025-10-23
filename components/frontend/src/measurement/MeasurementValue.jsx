@@ -59,15 +59,15 @@ measurementValueLabel.propTypes = {
 
 function ignoredEntitiesCount(measurement) {
     const count = Object.fromEntries(IGNORABLE_SOURCE_ENTITY_STATUSES.map((status) => [status, 0]))
-    measurement?.sources?.forEach((source) => {
+    for (const source of measurement?.sources ?? []) {
         // Ignore entity user data that refers to entities that no longer exist by checking the entity keys
         const validKeys = (source.entities ?? []).map((entity) => entity.key)
-        Object.entries(source.entity_user_data ?? {}).forEach(([entityKey, entity]) => {
+        for (const [entityKey, entity] of Object.entries(source.entity_user_data ?? {})) {
             if (validKeys.includes(entityKey) && Object.keys(count).includes(entity.status)) {
                 count[entity.status]++
             }
-        })
-    })
+        }
+    }
     return count
 }
 ignoredEntitiesCount.propTypes = {
@@ -78,11 +78,11 @@ function ignoredEntitiesMessage(measurement, unit) {
     const count = ignoredEntitiesCount(measurement)
     let summary = `The measurement value excludes ${sum(count)} ${unit}.`
     let details = ""
-    Object.entries(count).forEach(([status, statusCount]) => {
+    for (const [status, statusCount] of Object.entries(count)) {
         if (statusCount > 0) {
             details += `Marked as ${SOURCE_ENTITY_STATUS_NAME[status].toLowerCase()}: ${statusCount}. `
         }
-    })
+    }
     return (
         <p>
             {summary}

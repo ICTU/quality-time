@@ -19,10 +19,9 @@ import {
 } from "./sharedPropTypes"
 import { showMessage } from "./widgets/toast"
 
-function getColumnDates(reportDate, dateInterval, dateOrder, nrDates) {
+function getColumnDates(reportDate, dateInterval, dateOrder, nrDates = 1) {
     const baseDate = reportDate ? new Date(reportDate) : new Date()
     const intervalLength = dateInterval ?? 1 // dateInterval is in days
-    nrDates = nrDates ?? 1
     const columnDates = []
     for (let offset = 0; offset < nrDates * intervalLength; offset += intervalLength) {
         let date = new Date(baseDate)

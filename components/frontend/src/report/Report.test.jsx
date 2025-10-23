@@ -171,9 +171,9 @@ it("hides subjects if empty", async () => {
 
 it("navigates to subject", async () => {
     const mockScroll = vi.fn()
-    window.HTMLElement.prototype.scrollIntoView = mockScroll
+    globalThis.HTMLElement.prototype.scrollIntoView = mockScroll
     const mockScrollBy = vi.fn()
-    window.scrollBy = mockScrollBy
+    globalThis.scrollBy = mockScrollBy
     await renderReport({ reportToRender: report })
     clickText(/Subject title/, 0)
     expect(mockScroll).toHaveBeenCalledWith()

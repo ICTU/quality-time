@@ -40,7 +40,9 @@ export function allMetricTypeOptions(dataModel) {
 
 export function usedMetricTypes(subject) {
     const metricTypes = new Set()
-    Object.values(subject.metrics).forEach((metric) => metricTypes.add(metric.type))
+    for (const metric of Object.values(subject.metrics)) {
+        metricTypes.add(metric.type)
+    }
     return Array.from(metricTypes)
 }
 

@@ -54,7 +54,7 @@ ReportTitleButtonRow.propTypes = {
 
 export function ReportTitle({ openReportsOverview, reload, report, settings }) {
     const reportUuid = report.report_uuid
-    const reportUrl = `${window.location}`
+    const reportUrl = `${globalThis.location}`
     setDocumentTitle(report.title)
     return (
         <HeaderWithDetails

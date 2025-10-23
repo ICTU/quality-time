@@ -106,9 +106,9 @@ function SupportColumn() {
 
 function AboutReportColumn({ lastUpdate, report }) {
     lastUpdate = lastUpdate ?? new Date()
-    // When exporting to PDF, window.location.href may not be the correct URL. This is fixed by having the user's
+    // When exporting to PDF, globalThis.location.href may not be the correct URL. This is fixed by having the user's
     // browser pass the correct URL as search parameter and use that instead:
-    const reportURL = new URLSearchParams(window.location.search).get("report_url") ?? window.location.href
+    const reportURL = new URLSearchParams(globalThis.location.search).get("report_url") ?? globalThis.location.href
     return (
         <FooterColumn header="About this report" textAlign="center">
             <FooterItem url={reportURL}>{report.title}</FooterItem>

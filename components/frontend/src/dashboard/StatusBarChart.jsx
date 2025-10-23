@@ -22,7 +22,7 @@ export function StatusBarChart({ animate, colors, events, height, label, maxY, s
     // Create a VictoryBar for each status
     const bars = STATUSES.map((status) => {
         const data = []
-        Object.entries(summary).forEach(([date, count]) => {
+        for (const [date, count] of Object.entries(summary)) {
             const dateString = new Date(date).toLocaleDateString()
             const y = count[STATUS_COLORS[status]]
             data.push({
@@ -30,7 +30,7 @@ export function StatusBarChart({ animate, colors, events, height, label, maxY, s
                 y: y,
                 label: [dateString, STATUS_SHORT_NAME[status], nrMetricsLabel(y)],
             })
-        })
+        }
         return (
             <VictoryBar
                 events={events}

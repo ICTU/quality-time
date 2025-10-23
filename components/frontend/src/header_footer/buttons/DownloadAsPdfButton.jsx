@@ -18,7 +18,7 @@ function downloadPdf(reportUuid, queryString, callback) {
                     "HTTP code " + response.status + ": " + response.statusText,
                 )
             } else {
-                let url = window.URL.createObjectURL(response)
+                let url = globalThis.URL.createObjectURL(response)
                 let a = document.createElement("a")
                 a.href = url
                 const now = new Date()
@@ -39,7 +39,7 @@ export function DownloadAsPdfButton({ reportUuid }) {
     query.set("language", navigator.language)
     query.set(
         "report_url",
-        window.location.origin + window.location.pathname + "?" + query.toString() + window.location.hash,
+        globalThis.location.origin + globalThis.location.pathname + "?" + query.toString() + globalThis.location.hash,
     )
     const itemType = reportUuid ? "report" : "reports overview"
     return (

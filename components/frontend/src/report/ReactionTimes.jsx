@@ -26,7 +26,7 @@ function DesiredResponseTimeInput({ reload, report, status }) {
             id={inputId}
             label={label}
             onChange={(value) => {
-                desiredResponseTimes[status] = parseInt(value)
+                desiredResponseTimes[status] = Number.parseInt(value)
                 setReportAttribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
             }}
             type="number"
