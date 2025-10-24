@@ -9,7 +9,7 @@ classifiers = [
 dependencies = [
     "axe-selenium-python==2.1.6",
     "requests==2.32.5",
-    "selenium==4.36.0",
+    "selenium==4.37.0",
 ]
 optional-dependencies.dev = [
     "types-requests==2.32.4.20250913",
@@ -19,8 +19,8 @@ optional-dependencies.tools = [
     "fixit==2.1.0",
     "mypy==1.18.2",
     "pip-audit==2.9.0",
-    "pyproject-fmt==2.10.0",
-    "ruff==0.14.0",
+    "pyproject-fmt==2.11.0",
+    "ruff==0.14.2",
     "vulture==2.14",
 ]
 
