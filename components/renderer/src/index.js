@@ -59,7 +59,7 @@ app.get("/api/render", async (req, res) => {
 app.listen(RENDERER_PORT, async () => {
     try {
         browser = await puppeteer.launch({
-            executablePath: "/usr/bin/chromium-browser",
+            executablePath: "/usr/bin/chromium",
             defaultViewport: { width: 1500, height: 1000 },
             args: ["--disable-dev-shm-usage", "--no-sandbox"],
             // Opt in to new Chrome headless implementation, see https://developer.chrome.com/articles/new-headless/:

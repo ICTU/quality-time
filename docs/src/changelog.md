@@ -18,6 +18,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - When measuring suppressed violations with SonarQube as source, be prepared that SonarQube may add comments to violations without login. Fixes [#12136](https://github.com/ICTU/quality-time/issues/12136).
 
+### Changed
+
+- Use a Debian base image for the renderer instead of Alpine. Chromium cannot be pinned on Alpine, causing problem such as the need for updating Chromium at inconvenient moments and needing different versions of Chromium on different architectures. Fixes [#12163](https://github.com/ICTU/quality-time/issues/12163).
+
 ## v5.44.2 - 2025-10-16
 
 ### Fixed

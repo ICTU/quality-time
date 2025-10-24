@@ -1,9 +1,12 @@
-FROM node:24.10.0-alpine3.22
+FROM node:25.0.0-trixie-slim
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
 
-RUN apk add --no-cache chromium=141.0.7390.122-r0
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y chromium=141.0.7390.122-1~deb13u1 && \
+    rm -rf /var/lib/apt/lists/* && \
+    adduser renderer --disabled-password
 
 WORKDIR /home/renderer
 COPY package*.json /home/renderer/
@@ -11,7 +14,6 @@ RUN npm install --ignore-scripts
 
 COPY src/*js /home/renderer/
 
-RUN adduser renderer --disabled-password
 USER renderer
 
 HEALTHCHECK CMD ["node", "/home/renderer/healthcheck.cjs"]
