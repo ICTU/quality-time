@@ -1,6 +1,6 @@
 """Unit tests for the measurements collection."""
 
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.measurement import Measurement
@@ -37,6 +37,7 @@ class LatestMeasurementsTest(MeasurementsTestCase):
         """Test no successful measurements found."""
         self.assertIsNone(latest_measurement(self.database, self.metric, skip_measurements_with_error=True))
 
+    @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_latest_successful_measurement(self):
         """Test that a successful measurement is found."""
         self.database.measurements.find_one.return_value = {}
