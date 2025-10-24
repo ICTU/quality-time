@@ -37,7 +37,7 @@
         "@testing-library/react": "^16.3.0",
         "@testing-library/user-event": "^14.6.1",
         "@vitejs/plugin-react": "^5.0.4",
-        "@vitest/coverage-v8": "^4.0.1",
+        "@vitest/coverage-v8": "^4.0.2",
         "browserslist-to-esbuild": "^2.1.1",
         "eslint": "^9.38.0",
         "eslint-config-prettier": "^10.1.8",
