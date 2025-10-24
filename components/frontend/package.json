@@ -51,7 +51,7 @@
         "jest-axe": "^10.0.0",
         "jsdom": "^27.0.1",
         "prettier": "^3.6.2",
-        "vite": "^7.1.11",
+        "vite": "^7.1.12",
         "vitest": "^4.0.1"
     },
     "overrides": {
