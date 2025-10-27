@@ -16,7 +16,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Run application tests
         env:
-          QUALITY_TIME_VERSION: v5.44.3-rc.0
+          QUALITY_TIME_VERSION: v5.44.2
           ENV: ci
           PROXY_PORT: 8080
         run: |
