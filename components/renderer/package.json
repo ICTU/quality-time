@@ -1,6 +1,6 @@
 {
     "name": "quality-time-renderer",
-    "version": "5.44.3-rc.0",
+    "version": "5.44.2",
     "private": true,
     "type": "module",
     "proxy": "http://localhost:9000",
