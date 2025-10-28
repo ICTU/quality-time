@@ -3,11 +3,12 @@
 import json
 import time
 import urllib
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
 from asserts import assert_equal, assert_not_in
 from behave import then, when
+from dateutil.tz import tzutc
 
 from item import get_item
 
@@ -97,7 +98,7 @@ def reset_report_date(context: Context) -> None:
 def time_travel(context: Context) -> None:
     """Set a time in the past, but after the report was created."""
     time.sleep(1)  # Make sure the previously created report is older than the report date
-    context.report_date = datetime.now(tz=UTC).replace(microsecond=0).isoformat()[: -len("+00:00")] + "Z"
+    context.report_date = datetime.now(tz=tzutc()).replace(microsecond=0).isoformat()[: -len("+00:00")] + "Z"
     time.sleep(1)  # Make sure report date is in the past
 
 
@@ -160,7 +161,7 @@ def import_failed(context: Context) -> None:
 @then('the report has "{expected_number}" measurements')
 def get_measurements(context: Context, expected_number: str) -> None:
     """Get the recent measurements of a report."""
-    now = datetime.now(tz=UTC).replace(microsecond=0)
+    now = datetime.now(tz=tzutc()).replace(microsecond=0)
     context.report_date = (now + timedelta(days=10)).isoformat()
     context.min_report_date = (now - timedelta(days=10)).isoformat()
     response = context.get("measurements")

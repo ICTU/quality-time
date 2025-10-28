@@ -2,9 +2,11 @@
 
 import asyncio
 import pathlib
-from datetime import UTC, datetime
+from datetime import datetime
 from os import getenv
 from typing import TYPE_CHECKING, NoReturn
+
+from dateutil.tz import tzutc
 
 from database.reports import get_reports_and_measurements
 from destinations.ms_teams import send_notification
@@ -20,7 +22,7 @@ if TYPE_CHECKING:
 async def notify(database: Database, sleep_duration: int = 60) -> NoReturn:
     """Notify our users periodically of the number of red metrics."""
     logger = get_logger()
-    most_recent_measurement_seen = datetime.max.replace(tzinfo=UTC)
+    most_recent_measurement_seen = datetime.max.replace(tzinfo=tzutc())
     notification_finder = NotificationFinder()
     while True:
         record_health()
@@ -45,14 +47,14 @@ def record_health() -> None:
     filepath = pathlib.Path(getenv("HEALTH_CHECK_FILE", "/home/notifier/health_check.txt"))
     try:
         with filepath.open("w", encoding="utf-8") as health_check:
-            health_check.write(datetime.now(tz=UTC).isoformat())
+            health_check.write(datetime.now(tz=tzutc()).isoformat())
     except OSError:
         logger.exception("Could not write health check time stamp to %s", filepath)
 
 
 def most_recent_measurement_timestamp(measurements: list[Measurement]) -> datetime:
     """Return the most recent measurement timestamp."""
-    most_recent = datetime.min.replace(tzinfo=UTC)
+    most_recent = datetime.min.replace(tzinfo=tzutc())
     for measurement in measurements:
         most_recent = max(most_recent, datetime.fromisoformat(measurement["end"]))
     return most_recent

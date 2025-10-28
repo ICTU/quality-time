@@ -4,12 +4,13 @@ import os
 import re
 import string
 from dataclasses import dataclass, field
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 from http.cookies import Morsel
 from typing import cast, TYPE_CHECKING
 
 import argon2
 import bottle
+from dateutil.tz import tzutc
 from ldap3 import ALL, Connection, Server, ServerPool, AUTO_BIND_NO_TLS
 from ldap3.core import exceptions
 
@@ -32,7 +33,7 @@ def create_session(database: Database, user: User) -> datetime:
     """
     session_id = cast(SessionId, uuid())
     session_duration = int(os.getenv("USER_SESSION_DURATION", "120"))
-    session_expiration_datetime = datetime.now(UTC) + timedelta(hours=session_duration)
+    session_expiration_datetime = datetime.now(tzutc()) + timedelta(hours=session_duration)
     sessions.upsert(database, user, session_id, session_expiration_datetime)
     set_session_cookie(session_id, session_expiration_datetime)
     return session_expiration_datetime
@@ -42,7 +43,7 @@ def delete_session(database: Database) -> None:
     """Delete the session."""
     session_id = cast(SessionId, str(bottle.request.get_cookie("session_id")))
     sessions.delete(database, session_id)
-    set_session_cookie(session_id, datetime.min.replace(tzinfo=UTC))
+    set_session_cookie(session_id, datetime.min.replace(tzinfo=tzutc()))
 
 
 def set_session_cookie(session_id: SessionId, expires_datetime: datetime) -> None:
@@ -127,7 +128,9 @@ def login(database: Database) -> dict[str, bool | str]:
     else:
         username, password = get_credentials()
         user = verify_user(database, username, password)
-    session_expiration_datetime = create_session(database, user) if user.verified else datetime.min.replace(tzinfo=UTC)
+    session_expiration_datetime = (
+        create_session(database, user) if user.verified else datetime.min.replace(tzinfo=tzutc())
+    )
     return {
         "ok": user.verified,
         "email": user.email,

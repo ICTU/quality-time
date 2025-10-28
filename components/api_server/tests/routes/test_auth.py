@@ -1,10 +1,11 @@
 """Unit tests for the authorization routes."""
 
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 
 import argon2
 import bottle
+from dateutil.tz import tzutc
 import ldap3
 from ldap3.core import exceptions
 
@@ -48,7 +49,7 @@ class AuthTestCase(DatabaseTestCase):
 class LoginTests(AuthTestCase):
     """Unit tests for the login route."""
 
-    NOW = datetime(2021, 2, 21, 21, 8, 0, tzinfo=UTC)
+    NOW = datetime(2021, 2, 21, 21, 8, 0, tzinfo=tzutc())
     MOCK_DATETIME = Mock(now=Mock(return_value=NOW))
     USER_EMAIL = f"{USERNAME}@example.org"
     COMMON_NAME = "John Doe"
@@ -77,7 +78,7 @@ class LoginTests(AuthTestCase):
         self.login_nok = {
             "ok": False,
             "email": "",
-            "session_expiration_datetime": datetime.min.replace(tzinfo=UTC).isoformat(),
+            "session_expiration_datetime": datetime.min.replace(tzinfo=tzutc()).isoformat(),
         }
 
     def assert_ldap_connection_search_called(self):

@@ -1,6 +1,8 @@
 """Unit tests for the Checkmarx CxSAST source up-to-dateness collector."""
 
-from datetime import UTC, datetime
+from datetime import datetime
+
+from dateutil.tz import tzutc
 
 from collector_utilities.date_time import days_ago
 
@@ -22,7 +24,7 @@ class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
         ]
         post_json = {"access_token": "token"}
         response = await self.collect(get_request_json_side_effect=get_json, post_request_json_return_value=post_json)
-        expected_age = days_ago(datetime(2019, 1, 1, 9, 6, 12, tzinfo=UTC))
+        expected_age = days_ago(datetime(2019, 1, 1, 9, 6, 12, tzinfo=tzutc()))
         self.assert_measurement(
             response,
             value=str(expected_age),

@@ -3,10 +3,11 @@
 import contextlib
 import pathlib
 import unittest
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 from unittest.mock import Mock, mock_open, patch
 
 import mongomock
+from dateutil.tz import tzutc
 
 from shared.model.report import Report
 
@@ -20,11 +21,11 @@ class MostRecentMeasurementTimestampTests(unittest.TestCase):
 
     def test_no_measurements(self):
         """Test without measurements."""
-        self.assertEqual(datetime.min.replace(tzinfo=UTC), most_recent_measurement_timestamp([]))
+        self.assertEqual(datetime.min.replace(tzinfo=tzutc()), most_recent_measurement_timestamp([]))
 
     def test_one_measurement(self):
         """Test that the end timestamp of the measurement is returned."""
-        now = datetime.now(tz=UTC).replace(microsecond=0)
+        now = datetime.now(tz=tzutc()).replace(microsecond=0)
         measurement = {"end": now.isoformat()}
         self.assertEqual(now, most_recent_measurement_timestamp([measurement]))
 
@@ -40,7 +41,7 @@ class HealthCheckTest(unittest.TestCase):
     @patch("notifier.notifier.datetime")
     def test_writing_health_check(self, mocked_datetime: Mock, mocked_open: Mock):
         """Test that the current time is written to the health check file."""
-        mocked_datetime.now.return_value = now = datetime.now(tz=UTC)
+        mocked_datetime.now.return_value = now = datetime.now(tz=tzutc())
         record_health()
         mocked_open.assert_called_once_with("w", encoding="utf-8")
         mocked_open().write.assert_called_once_with(now.isoformat())
@@ -101,8 +102,8 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
     async def test_no_new_red_metrics(self, mocked_get: Mock, mocked_sleep: Mock, mocked_send: Mock):
         """Test that no notifications are sent if there are no new red metrics."""
         report_data = create_report_data()
-        now = datetime.now(tz=UTC).replace(microsecond=0).isoformat()
-        just_now = (datetime.now(tz=UTC).replace(microsecond=0) - timedelta(seconds=10)).isoformat()
+        now = datetime.now(tz=tzutc()).replace(microsecond=0).isoformat()
+        just_now = (datetime.now(tz=tzutc()).replace(microsecond=0) - timedelta(seconds=10)).isoformat()
         measurements = [
             {"metric_uuid": METRIC_ID2, "end": now, "start": now, "count": {"status": "target_not_met", "value": "10"}},
             {
@@ -137,8 +138,8 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             },
             "subjects": self.subjects,
         }
-        now = datetime.now(tz=UTC).replace(microsecond=0).isoformat()
-        just_now = (datetime.now(tz=UTC).replace(microsecond=0) - timedelta(days=1)).isoformat()
+        now = datetime.now(tz=tzutc()).replace(microsecond=0).isoformat()
+        just_now = (datetime.now(tz=tzutc()).replace(microsecond=0) - timedelta(days=1)).isoformat()
         measurements = [
             {"metric_uuid": METRIC_ID, "end": now, "start": now, "count": {"status": "target_not_met", "value": "0"}},
             {

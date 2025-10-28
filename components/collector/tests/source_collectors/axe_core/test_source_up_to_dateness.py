@@ -1,6 +1,8 @@
 """Unit tests for the Axe-core source up-to-dateness collector."""
 
-from datetime import UTC, datetime
+from datetime import datetime
+
+from dateutil.tz import tzutc
 
 from collector_utilities.date_time import days_ago
 
@@ -17,7 +19,7 @@ class AxeCoreSourceUpToDatenessTest(AxeCoreTestCase):
     def setUp(self):
         """Extend to set up test fixtures."""
         super().setUp()
-        self.expected_age = days_ago(datetime(2020, 9, 1, 14, 7, 9, tzinfo=UTC))
+        self.expected_age = days_ago(datetime(2020, 9, 1, 14, 7, 9, tzinfo=tzutc()))
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""

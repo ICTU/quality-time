@@ -1,7 +1,9 @@
 """Unit tests for the Azure DevOps Server average issue lead time collector."""
 
 from copy import deepcopy
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
+
+from dateutil.tz import tzutc
 
 from .base import AzureDevopsTestCase
 
@@ -15,7 +17,7 @@ class AzureDevopsAverageIssueLeadTimeTest(AzureDevopsTestCase):
         """Extend to add Azure DevOps average issue lead time fixtures."""
         super().setUp()
 
-        now_dt = datetime.now(tz=UTC)
+        now_dt = datetime.now(tz=tzutc())
         now_timestamp = now_dt.isoformat()
         yesterday_timestamp = (now_dt - timedelta(days=1)).isoformat()
         last_week_timestamp = (now_dt - timedelta(weeks=1)).isoformat()

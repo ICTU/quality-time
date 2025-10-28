@@ -1,8 +1,10 @@
 """Unit tests for the notification strategies."""
 
 import unittest
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import TYPE_CHECKING
+
+from dateutil.tz import tzutc
 
 from shared.model.metric import Metric
 from shared.model.report import Report
@@ -24,7 +26,7 @@ class StrategiesTests(unittest.TestCase):
     def setUp(self):
         """Override to create a reports JSON fixture."""
         self.notification_finder = NotificationFinder()
-        self.most_recent_measurement_seen = datetime.min.replace(tzinfo=UTC)
+        self.most_recent_measurement_seen = datetime.min.replace(tzinfo=tzutc())
         self.white_metric_status = "unknown"
         self.red_metric = self.metric(name="metric1", status="target_not_met")
         self.red_metric_measurements = [

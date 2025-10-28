@@ -1,7 +1,9 @@
 """Session model class."""
 
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import TYPE_CHECKING
+
+from dateutil.tz import tzutc
 
 if TYPE_CHECKING:
     from utils.type import SessionData
@@ -15,8 +17,10 @@ class Session:
 
     def is_valid(self) -> bool:
         """Return whether the session is valid."""
-        expiration_datetime = self.__session_data.get("session_expiration_datetime", datetime.min.replace(tzinfo=UTC))
-        return bool(expiration_datetime.replace(tzinfo=UTC) > datetime.now(tz=UTC))
+        expiration_datetime = self.__session_data.get(
+            "session_expiration_datetime", datetime.min.replace(tzinfo=tzutc())
+        )
+        return bool(expiration_datetime.replace(tzinfo=tzutc()) > datetime.now(tz=tzutc()))
 
     def is_authorized(self, authorized_users: list[str]) -> bool:
         """Return whether the session's user is an authorized user."""

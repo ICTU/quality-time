@@ -1,6 +1,8 @@
 """Unit tests for the Bandit source up-to-dateness collector."""
 
-from datetime import UTC, datetime
+from datetime import datetime
+
+from dateutil.tz import tzutc
 
 from collector_utilities.date_time import days_ago
 
@@ -17,5 +19,5 @@ class BanditSourceUpToDatenessTest(BanditTestCase):
         """Test that the source age in days is returned."""
         bandit_json = {"generated_at": "2019-07-12T07:38:47Z"}
         response = await self.collect(get_request_json_return_value=bandit_json)
-        expected_age = days_ago(datetime(2019, 7, 12, 7, 38, 47, tzinfo=UTC))
+        expected_age = days_ago(datetime(2019, 7, 12, 7, 38, 47, tzinfo=tzutc()))
         self.assert_measurement(response, value=str(expected_age))

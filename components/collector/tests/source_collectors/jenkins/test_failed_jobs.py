@@ -1,6 +1,8 @@
 """Unit tests for the Jenkins failed jobs collector."""
 
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
+
+from dateutil.tz import tzutc
 
 from collector_utilities.date_time import datetime_from_timestamp
 
@@ -29,7 +31,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
 
     def timestamp(self, days_ago: int = 0) -> int:
         """Return a Jenkins timestamp."""
-        return round((datetime.now(tz=UTC) - timedelta(days=days_ago)).timestamp() * 1000)
+        return round((datetime.now(tz=tzutc()) - timedelta(days=days_ago)).timestamp() * 1000)
 
     def expected_entity(
         self,

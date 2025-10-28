@@ -13,7 +13,6 @@ dependencies = [
     "pymongo==4.15.3",
     "python-dateutil==2.9.0.post0",
 ]
-
 optional-dependencies.dev = [
     "coverage==7.11.0",
     "mongomock==4.3.0",

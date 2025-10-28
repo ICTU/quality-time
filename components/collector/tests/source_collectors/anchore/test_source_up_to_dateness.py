@@ -1,7 +1,9 @@
 """Unit tests for the Anchore source up-to-dateness collector."""
 
 import json
-from datetime import UTC, datetime
+from datetime import datetime
+
+from dateutil.tz import tzutc
 
 from collector_utilities.date_time import days_ago
 
@@ -17,7 +19,7 @@ class AnchoreSourceUpToDatenessTest(AnchoreTestCase):
     def setUp(self):
         """Extend to set up test data."""
         super().setUp()
-        self.expected_age = days_ago(datetime(2020, 2, 7, 22, 53, 43, tzinfo=UTC))
+        self.expected_age = days_ago(datetime(2020, 2, 7, 22, 53, 43, tzinfo=tzutc()))
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""

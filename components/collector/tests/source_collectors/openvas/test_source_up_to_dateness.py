@@ -1,6 +1,8 @@
 """Unit tests for the OpenVAS source up-to-dateness collector."""
 
-from datetime import UTC, datetime
+from datetime import datetime
+
+from dateutil.tz import tzutc
 
 from collector_utilities.date_time import days_ago
 
@@ -21,5 +23,5 @@ class OpenVASSourceUpToDatenessTest(OpenVASTestCase):
     async def test_source_up_to_dateness(self):
         """Test that the report age in days is returned."""
         response = await self.collect(get_request_text=self.OPENVAS_XML)
-        expected_age = days_ago(datetime(2019, 4, 9, 17, 56, 14, tzinfo=UTC))
+        expected_age = days_ago(datetime(2019, 4, 9, 17, 56, 14, tzinfo=tzutc()))
         self.assert_measurement(response, value=str(expected_age))

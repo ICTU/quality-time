@@ -1,9 +1,10 @@
 """Test the measurements model."""
 
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import cast
 from unittest.mock import patch
 
+from dateutil.tz import tzutc
 from packaging.version import Version
 
 from shared.model.measurement import (
@@ -523,7 +524,7 @@ class SummarizeMeasurementTest(MeasurementTestCase):
 
     def test_summarize_with_non_default_start_date(self):
         """Test the measurement summary when the measurement has a specific start date."""
-        timestamp = (datetime.now(tz=UTC) - timedelta(days=1)).replace(microsecond=0).isoformat()
+        timestamp = (datetime.now(tz=tzutc()) - timedelta(days=1)).replace(microsecond=0).isoformat()
         measurement = self.measurement(self.metric(), start=timestamp, end=timestamp)
         self.assertEqual(
             {"count": {"value": None, "status": None}, "start": timestamp, "end": timestamp},
