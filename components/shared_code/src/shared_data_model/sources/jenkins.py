@@ -71,6 +71,7 @@ JOB_ENTITY = Entity(
             },
         ),
         EntityAttribute(name="Date of most recent build", key="build_date", type=EntityAttributeType.DATE),
+        EntityAttribute(name="Duration (minutes)", key="build_duration", type=EntityAttributeType.INTEGER),
     ],
 )
 
@@ -189,6 +190,7 @@ the "Username" field and the private token in the "**Password**" field.
                 ),
             ],
         ),
+        "pipeline_duration": JOB_ENTITY,
         "source_up_to_dateness": JOB_ENTITY,
         "unused_jobs": JOB_ENTITY,
     },

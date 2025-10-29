@@ -10,7 +10,6 @@ from model import Entities, Entity, SourceResponses
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
-    from datetime import datetime
 
     from .json_types import Build, Job
 
@@ -21,24 +20,31 @@ class JenkinsJobs(SourceCollector):
     async def _api_url(self) -> URL:
         """Extend to add the jobs API path and parameters."""
         url = await super()._api_url()
-        job_attrs = "buildable,color,url,name,builds[result,timestamp]"
+        job_attrs = "buildable,color,url,name,builds[duration,result,timestamp,url]"
         return URL(f"{url}/api/json?tree=jobs[{job_attrs},jobs[{job_attrs},jobs[{job_attrs}]]]")
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs."""
-        return Entities(
-            [
+        entities = Entities()
+        for job in self._jobs((await responses[0].json())["jobs"]):
+            builds = self._builds(job)
+            build = builds[0]  # latest build
+            job_build_datetime = datetime_from_timestamp(int(build["timestamp"])) if build else None
+            job_build_date = str(job_build_datetime.date()) if job_build_datetime else ""
+            job_build_duration = str(int(build["duration"] / 1000)) if build else ""
+            job_build_url = build["url"] if build else job["url"]
+            entities.append(
                 Entity(
-                    build_date=self.__job_build_date(job),
-                    build_datetime=self.__job_build_datetime(job),
+                    build_date=job_build_date,
+                    build_datetime=job_build_datetime,
+                    build_duration=job_build_duration,
                     build_result=self.__job_build_result(job),
                     key=job["name"],
                     name=job["name"],
-                    url=job["url"],
+                    url=job_build_url,
                 )
-                for job in self._jobs((await responses[0].json())["jobs"])
-            ],
-        )
+            )
+        return entities
 
     def _jobs(self, jobs: Sequence[Job], parent_job_name: str = "") -> Iterator[Job]:
         """Recursively return the jobs and their child jobs that need to be counted for the metric."""
@@ -63,16 +69,6 @@ class JenkinsJobs(SourceCollector):
     def _include_build(self, build: Build) -> bool:
         """Return whether to include this build or not."""
         return True
-
-    def __job_build_datetime(self, job: Job) -> datetime | None:
-        """Return the datetime of the most recent build of the job."""
-        builds = self._builds(job)
-        return datetime_from_timestamp(int(builds[0]["timestamp"])) if builds else None
-
-    def __job_build_date(self, job: Job) -> str:
-        """Return the date of the most recent build of the job."""
-        build_datetime = self.__job_build_datetime(job)
-        return str(build_datetime.date()) if build_datetime else ""
 
     def __job_build_result(self, job: Job) -> str:
         """Return the result of the most recent build of the job."""

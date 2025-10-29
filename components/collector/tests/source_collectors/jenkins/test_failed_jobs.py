@@ -37,6 +37,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         self,
         build_date: str = "",
         build_datetime: datetime | None = None,
+        build_duration: int = 42,
         build_result: str = "Failure",
         job_nr: int = 1,
     ):
@@ -46,6 +47,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
         return {
             "build_date": build_date,
             "build_datetime": build_datetime,
+            "build_duration": f"{build_duration}",
             "build_result": build_result,
             "key": f"job{job_nr}",
             "name": f"job{job_nr}",
@@ -64,7 +66,7 @@ class JenkinsFailedJobsTest(JenkinsTestCase):
     async def test_failed_jobs(self):
         """Test that the failed jobs are returned."""
         response = await self.collect(get_request_json_return_value=self.jenkins_json(nr_jobs=1))
-        self.assert_measurement(response, entities=[self.expected_entity()])
+        self.assert_measurement(response, entities=[self.expected_entity(build_duration=9)])
 
     async def test_ignore_unbuildable_failed_jobs(self):
         """Test that the unbuildable failed jobs are ignored."""

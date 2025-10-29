@@ -3,11 +3,12 @@
 from datetime import timedelta
 from typing import TYPE_CHECKING, TypedDict, cast
 
-from base_collectors import SourceCollector
 from collector_utilities.date_time import minutes
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
+from model import Entities, Entity
 
+from .base import JenkinsJobs
 from .json_types import Build, Job
 
 if TYPE_CHECKING:
@@ -23,13 +24,13 @@ class JSON(TypedDict):
     jobs: Sequence[Job]  # Multibranch pipelines have jobs that have builds
 
 
-class JenkinsPipelineDuration(SourceCollector):
+class JenkinsPipelineDuration(JenkinsJobs):
     """Jenkins CI-pipeline duration collector."""
 
     async def _api_url(self) -> URL:
         """Extend to add the job API path and parameters."""
         url = await super()._api_url()
-        pipeline_job = self._parameter("pipeline")
+        pipeline_job = self._parameter("pipeline")  # TODO - support selecting multiple pipelines like base JenkinsJobs?
         builds = "builds[duration,result,url]"
         # Add the builds parameter twice to get both builds of jobs as well as builds of multibranch pipelines:
         return URL(f"{url}/job/{pipeline_job}/api/json?tree=jobs[name,{builds}],{builds}")
@@ -37,7 +38,7 @@ class JenkinsPipelineDuration(SourceCollector):
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to return the selected build as landing URL if the pipeline has any, or else the pipeline itself."""
         if build := await self._build(responses):
-            return URL(build["url"])
+            return URL(build["url"])  # TODO - is this used? fold into JenkinsJobs?
         return URL(await super()._landing_url(responses) + f"/job/{self._parameter('pipeline')}")
 
     async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
