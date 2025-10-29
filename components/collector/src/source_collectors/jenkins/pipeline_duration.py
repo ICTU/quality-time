@@ -42,7 +42,7 @@ class JenkinsPipelineDuration(SourceCollector):
 
     async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Parse the value from the responses."""
-        build = await self._build(responses)
+        build = await self._build(responses)  # TODO - implement parameter pipeline_selection
         return str(minutes(timedelta(milliseconds=build["duration"]))) if build else "0"
 
     async def _build(self, responses: SourceResponses) -> Build | None:

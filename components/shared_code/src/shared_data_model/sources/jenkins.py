@@ -12,6 +12,7 @@ from shared_data_model.parameters import (
     FailureType,
     MultipleChoiceWithAdditionParameter,
     ResultType,
+    SingleChoiceParameter,
     StringParameter,
     TestResult,
     TestResultAggregationStrategy,
@@ -142,6 +143,13 @@ the "Username" field and the private token in the "**Password**" field.
         "pipeline": StringParameter(
             name="Pipeline (multibranch pipeline name)",
             mandatory=True,
+            metrics=["pipeline_duration"],
+        ),
+        "pipeline_selection": SingleChoiceParameter(
+            name="Pipeline selection",
+            help="Which pipeline(s) to select from the set of pipelines that match the filter criteria?",
+            values=["average", "latest", "slowest"],
+            default_value="slowest",
             metrics=["pipeline_duration"],
         ),
         "result_type": ResultType(

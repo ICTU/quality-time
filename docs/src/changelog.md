@@ -25,6 +25,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Added
 
 - Add Azure DevOps as possible source for the pipeline duration metric. Closes [#6423](https://github.com/ICTU/quality-time/issues/6423).
+- Allow for reporting of the average duration of the selected pipelines or the duration of the latest pipeline, when measuring pipeline duration with Jenkins as source. Closes [#12180](https://github.com/ICTU/quality-time/issues/12180).
 
 ## v5.44.2 - 2025-10-16
 
