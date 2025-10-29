@@ -22,6 +22,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - Use a Debian base image for the renderer instead of Alpine. Chromium cannot be pinned on Alpine, causing problem such as the need for updating Chromium at inconvenient moments and needing different versions of Chromium on different architectures. Fixes [#12163](https://github.com/ICTU/quality-time/issues/12163).
 
+### Added
+
+- Add Azure DevOps as possible source for the pipeline duration metric. Closes [#6423](https://github.com/ICTU/quality-time/issues/6423).
+
 ## v5.44.2 - 2025-10-16
 
 ### Fixed

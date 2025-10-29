@@ -339,6 +339,7 @@ SONARQUBE = Source(
             metrics=ALL_SONARQUBE_METRICS,
         ),
         "private_token": PrivateToken(
+            name="Private token (of type User Token)",
             help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/managing-tokens/"),
             metrics=ALL_SONARQUBE_METRICS,
         ),

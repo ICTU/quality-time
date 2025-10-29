@@ -12,7 +12,7 @@ class GitLabPipelineDurationTest(GitLabTestCase):
     """Unit tests for the CI-pipeline duration metric."""
 
     METRIC_TYPE = "pipeline_duration"
-    METRIC_ADDITION = "min"
+    METRIC_ADDITION = "max"
     NOW = datetime(2022, 9, 21, 1, 30, 14, 197, tzinfo=tzutc())
     MOCK_DATETIME = Mock(now=Mock(return_value=NOW))
 
@@ -93,7 +93,7 @@ class GitLabPipelineDurationTest(GitLabTestCase):
         """Test that an error is returned when no pipelines match."""
         self.set_source_parameter("branches", ["missing"])
         response = await self.collect()
-        self.assert_measurement(response, parse_error="No pipelines found within the lookback period")
+        self.assert_measurement(response, parse_error="No pipelines found with given filter(s)")
 
     async def test_filter_by_pipeline_description(self):
         """Test that pipelines can be filtered by pipeline description."""

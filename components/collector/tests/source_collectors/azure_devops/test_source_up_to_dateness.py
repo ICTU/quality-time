@@ -22,7 +22,11 @@ class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
                     "path": r"\\folder",
                     "name": "pipeline",
                     "_links": {"web": {"href": f"{self.url}/build"}},
-                    "latestCompletedBuild": {"result": "failed", "finishTime": self.timestamp},
+                    "latestCompletedBuild": {
+                        "result": "failed",
+                        "startTime": self.timestamp,
+                        "finishTime": self.timestamp,
+                    },
                 },
             ],
         }
