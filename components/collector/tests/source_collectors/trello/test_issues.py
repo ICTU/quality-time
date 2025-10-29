@@ -1,6 +1,8 @@
 """Unit tests for the Trello issues collector."""
 
-from datetime import UTC, datetime
+from datetime import datetime
+
+from dateutil.tz import tzutc
 
 from .base import TrelloTestCase
 
@@ -30,6 +32,6 @@ class TrelloIssuesTest(TrelloTestCase):
     async def test_inactive_issues(self):
         """Test inactive issues; when the parameter is set, only count this type."""
         self.set_source_parameter("cards_to_count", ["inactive"])
-        self.cards["cards"][0]["dateLastActivity"] = datetime.now(tz=UTC).isoformat()
+        self.cards["cards"][0]["dateLastActivity"] = datetime.now(tz=tzutc()).isoformat()
         response = await self.collect(get_request_json_side_effect=self.json)
         self.assert_measurement(response, value="1", entities=[self.entities[1]])

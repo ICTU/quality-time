@@ -1,9 +1,10 @@
 """Test the sessions."""
 
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 
 from database import sessions
+from dateutil.tz import tzutc
 from utils.type import SessionId, User
 
 from tests.base import DatabaseTestCase
@@ -21,7 +22,7 @@ class SessionsTest(DatabaseTestCase):
 
     def test_upsert(self):
         """Test upsert function."""
-        session_expiration_datetime = datetime(2019, 10, 18, 19, 22, 5, 99, tzinfo=UTC)
+        session_expiration_datetime = datetime(2019, 10, 18, 19, 22, 5, 99, tzinfo=tzutc())
         self.assertIsNone(
             sessions.upsert(
                 database=self.database,
@@ -50,7 +51,7 @@ class SessionsTest(DatabaseTestCase):
     @patch("bottle.request")
     def test_user(self, bottle_mock: Mock):
         """Test user function."""
-        session_expiration_datetime = datetime.now(tz=UTC) + timedelta(seconds=5)
+        session_expiration_datetime = datetime.now(tz=tzutc()) + timedelta(seconds=5)
         session = JOHN | {"session_id": "5", "session_expiration_datetime": session_expiration_datetime}
         self.database.sessions.find_one.return_value = session
         bottle_mock.get_cookie.return_value = 4

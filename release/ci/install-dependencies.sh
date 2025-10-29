@@ -1,3 +1,3 @@
 #!/bin/bash
 
-uv sync --locked
+uv sync --locked --extra dev

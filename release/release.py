@@ -13,6 +13,7 @@ from subprocess import run
 from typing import Any, cast
 
 import git
+from dateutil.tz import tzutc
 
 
 def get_release_folder() -> pathlib.Path:
@@ -152,7 +153,7 @@ def failed_preconditions_version_overview(current_version: str, root: pathlib.Pa
 
 def utc_today() -> datetime.date:
     """Return today in UTC."""
-    return datetime.datetime.now(tz=datetime.UTC).date()
+    return datetime.datetime.now(tz=tzutc()).date()
 
 
 def bump_my_version_spec() -> str:

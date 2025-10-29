@@ -578,6 +578,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "aiohttp" },
     { name = "pymsteams" },
+    { name = "python-dateutil" },
     { name = "shared-code" },
 ]
 
@@ -586,6 +587,7 @@ dev = [
     { name = "coverage" },
     { name = "mongomock" },
     { name = "pydantic" },
+    { name = "types-python-dateutil" },
     { name = "unittest-xml-reporting" },
 ]
 tools = [
@@ -610,8 +612,10 @@ requires-dist = [
     { name = "pydantic", marker = "extra == 'dev'", specifier = "==2.12.0" },
     { name = "pymsteams", specifier = "==0.2.5" },
     { name = "pyproject-fmt", marker = "extra == 'tools'", specifier = "==2.11.0" },
+    { name = "python-dateutil", specifier = "==2.9.0.post0" },
     { name = "ruff", marker = "extra == 'tools'", specifier = "==0.14.2" },
     { name = "shared-code", directory = "../shared_code" },
+    { name = "types-python-dateutil", marker = "extra == 'dev'", specifier = "==2.9.0.20251008" },
     { name = "unittest-xml-reporting", marker = "extra == 'dev'", specifier = "==3.2.0" },
     { name = "vulture", marker = "extra == 'tools'", specifier = "==2.14" },
 ]
@@ -1090,6 +1094,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/4d/93/630e10bacd897daeb9ff5a408f4e7cb0fc2f243e7e3ef00f9e6cf319b11c/trailrunner-1.4.0.tar.gz", hash = "sha256:3fe61e259e6b2e5192f321c265985b7a0dc18497ced62b2da244f08104978398", size = 15836, upload-time = "2023-03-27T07:54:35.515Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b1/29/21001afea86bac5016c3940b43de3ce4786b0d8337d4ea79bb903c649ce3/trailrunner-1.4.0-py3-none-any.whl", hash = "sha256:a286d39f2723f28d167347f41cf8f232832648709366e722f55cf5545772a48e", size = 11071, upload-time = "2023-03-27T07:54:32.514Z" },
+]
+
+[[package]]
+name = "types-python-dateutil"
+version = "2.9.0.20251008"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/fc/83/24ed25dd0c6277a1a170c180ad9eef5879ecc9a4745b58d7905a4588c80d/types_python_dateutil-2.9.0.20251008.tar.gz", hash = "sha256:c3826289c170c93ebd8360c3485311187df740166dbab9dd3b792e69f2bc1f9c", size = 16128, upload-time = "2025-10-08T02:51:34.93Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/da/af/5d24b8d49ef358468ecfdff5c556adf37f4fd28e336b96f923661a808329/types_python_dateutil-2.9.0.20251008-py3-none-any.whl", hash = "sha256:b9a5232c8921cf7661b29c163ccc56055c418ab2c6eabe8f917cbcc73a4c4157", size = 17934, upload-time = "2025-10-08T02:51:33.55Z" },
 ]
 
 [[package]]

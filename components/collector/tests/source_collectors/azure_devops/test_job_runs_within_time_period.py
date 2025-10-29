@@ -1,6 +1,8 @@
 """Unit tests for the Azure DevOps Server pipeline runs within time period collector."""
 
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
+
+from dateutil.tz import tzutc
 
 from .base import AzureDevopsPipelinesTestCase
 
@@ -62,7 +64,7 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
         """Test that the pipeline runs are filtered correctly by lookback_days."""
         self.set_source_parameter("lookback_days_pipeline_runs", "3")
 
-        now_dt = datetime.now(tz=UTC)
+        now_dt = datetime.now(tz=tzutc())
         now_timestamp = now_dt.isoformat()
         last_week_timestamp = (now_dt - timedelta(weeks=1)).isoformat()
 

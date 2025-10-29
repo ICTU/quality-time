@@ -1,6 +1,8 @@
 """Unit tests for the Gatling source-up-to-dateness collector."""
 
-from datetime import UTC, datetime
+from datetime import datetime
+
+from dateutil.tz import tzutc
 
 from collector_utilities.date_time import days_ago
 
@@ -27,5 +29,5 @@ class GatlingSourceUpToDatenessTest(GatlingTestCase):
                 <span>2025-09-10 11:39:26 GMT</span>
             </span>"""
         )
-        expected_age = days_ago(datetime(2025, 9, 10, 11, 39, 26, tzinfo=UTC))
+        expected_age = days_ago(datetime(2025, 9, 10, 11, 39, 26, tzinfo=tzutc()))
         self.assert_measurement(response, value=str(expected_age))

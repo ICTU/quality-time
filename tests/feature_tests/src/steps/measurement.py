@@ -1,10 +1,11 @@
 """Step implementations for measurement."""
 
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
 from asserts import assert_equal, assert_in
 from behave import given, then, when
+from dateutil.tz import tzutc
 from requests_sse import EventSource
 
 if TYPE_CHECKING:
@@ -26,7 +27,7 @@ def create_measurement(  # noqa: PLR0913
         for row in context.table:
             entity = {heading: row[heading] for heading in context.table.headings}
             entities.append(entity)
-    measurement_datetime = datetime.now(tz=UTC)
+    measurement_datetime = datetime.now(tz=tzutc())
     measurement_timestamp = measurement_datetime.replace(microsecond=0).isoformat()
     if issue_id:
         status_category = "done" if issue_status_name == "Completed" else "todo"
@@ -134,7 +135,7 @@ def check_nr_of_measurements_stream(context: Context, message_type: str) -> None
 @when("the client gets {the_current_or_past} reports overview measurements")
 def get_reports_overview_measurements(context: Context, the_current_or_past: str) -> None:
     """Get the reports overview measurements."""
-    now = datetime.now(tz=UTC)
+    now = datetime.now(tz=tzutc())
     last_week = now - timedelta(days=7)
     context.min_report_date = last_week.isoformat()
     if the_current_or_past == "past":

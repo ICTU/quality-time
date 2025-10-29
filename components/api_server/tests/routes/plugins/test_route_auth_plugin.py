@@ -1,10 +1,11 @@
 """Unit tests for the route authentication plugin."""
 
 import logging
-from datetime import datetime, UTC
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 import bottle
+from dateutil.tz import tzutc
 
 from routes.plugins import AuthPlugin, InjectionPlugin
 from routes.plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -29,7 +30,7 @@ class AuthPluginTest(DatabaseTestCase):
         self.session = {
             "user": "jadoe",
             "email": "jadoe@example.org",
-            "session_expiration_datetime": datetime.max.replace(tzinfo=UTC),
+            "session_expiration_datetime": datetime.max.replace(tzinfo=tzutc()),
         }
         self.injection_plugin = bottle.install(InjectionPlugin(self.database, "database"))
         self.auth_plugin = bottle.install(AuthPlugin())
@@ -54,7 +55,7 @@ class AuthPluginTest(DatabaseTestCase):
     def test_valid_session(self):
         """Test that session ids are authenticated."""
         self.database.sessions.find_one.return_value = {
-            "session_expiration_datetime": datetime.max.replace(tzinfo=UTC),
+            "session_expiration_datetime": datetime.max.replace(tzinfo=tzutc()),
         }
         route = bottle.Route(bottle.app(), "/", "POST", self.route, authentication_required=True)
         self.assertEqual((self.database, None), route.call())
@@ -62,7 +63,7 @@ class AuthPluginTest(DatabaseTestCase):
     def test_expired_session(self):
         """Test that the session is invalid when it's expired."""
         self.database.sessions.find_one.return_value = {
-            "session_expiration_datetime": datetime.min.replace(tzinfo=UTC),
+            "session_expiration_datetime": datetime.min.replace(tzinfo=tzutc()),
         }
         route = bottle.Route(bottle.app(), "/", "POST", self.route, authentication_required=True)
         self.assertEqual(401, route.call().status_code)

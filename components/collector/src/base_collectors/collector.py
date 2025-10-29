@@ -3,10 +3,11 @@
 import asyncio
 import logging
 import pathlib
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Any, NoReturn, cast
 
 import aiohttp
+from dateutil.tz import tzutc
 
 from shared.database.reports import get_reports
 from shared.model.report import get_metrics_from_reports
@@ -40,7 +41,7 @@ class Collector:
         filename = pathlib.Path(config.HEALTH_CHECK_FILE)
         try:
             with filename.open("w", encoding="utf-8") as health_check:
-                health_check.write(datetime.now(tz=UTC).isoformat())
+                health_check.write(datetime.now(tz=tzutc()).isoformat())
         except OSError as reason:
             logger.error("Could not write health check time stamp to %s: %s", filename, reason)  # noqa: TRY400
 
@@ -67,7 +68,7 @@ class Collector:
         """Collect measurements for metrics, prioritizing edited metrics."""
         reports = get_reports(self.database)
         metrics = get_metrics_from_reports(reports)
-        next_fetch = datetime.now(tz=UTC) + timedelta(seconds=config.MEASUREMENT_FREQUENCY)
+        next_fetch = datetime.now(tz=tzutc()) + timedelta(seconds=config.MEASUREMENT_FREQUENCY)
         nr_created_tasks = 0
         for metric_uuid, metric in self.__sorted_by_edit_status(cast(JSONDict, metrics)):
             if not self.__should_collect(metric_uuid, metric):
@@ -106,7 +107,7 @@ class Collector:
         Metric should be collected when the user changes the configuration or when it has been collected too long ago.
         """
         metric_edited = self.__previous_metrics.get(metric_uuid) != metric
-        metric_due = self.next_fetch.get(metric_uuid, datetime.min.replace(tzinfo=UTC)) <= datetime.now(tz=UTC)
+        metric_due = self.next_fetch.get(metric_uuid, datetime.min.replace(tzinfo=tzutc())) <= datetime.now(tz=tzutc())
         return metric_edited or metric_due
 
     def __log_tasks(self, event: str, warning_threshold: int = 0) -> None:

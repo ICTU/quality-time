@@ -1,8 +1,9 @@
 """Unit tests for the Quality-time source up-to-dateness collector."""
 
-from datetime import UTC, datetime
+from datetime import datetime
 
 from dateutil.parser import parse
+from dateutil.tz import tzutc
 
 from collector_utilities.date_time import days_ago
 
@@ -26,7 +27,7 @@ class QualityTimeSourceUpToDatenessTest(QualityTimeTestCase):
         """Test that the source up-to-dateness of a specific report can be measured."""
         self.set_source_parameter("reports", ["r2"])
         response = await self.collect(get_request_json_return_value=self.reports)
-        expected_age = days_ago(datetime.min.replace(tzinfo=UTC))
+        expected_age = days_ago(datetime.min.replace(tzinfo=tzutc()))
         self.assert_measurement(response, value=str(expected_age), total="0", entities=[])
 
     def assert_measurement(self, measurement, *, source_index: int = 0, **attributes: list | str | None) -> None:

@@ -1,8 +1,10 @@
 """Unit tests for the utility functions."""
 
 import unittest
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 from decimal import Decimal
+
+from dateutil.tz import tzutc
 
 from collector_utilities.date_time import days_ago
 from collector_utilities.functions import (
@@ -66,10 +68,10 @@ class DaysAgoTest(unittest.TestCase):
 
     def test_days_ago(self):
         """Test that the days ago works properly with timezones."""
-        self.assertEqual(0, days_ago(datetime.now(tz=UTC) - timedelta(hours=23)))
-        self.assertEqual(1, days_ago(datetime.now(tz=UTC) - timedelta(hours=24)))
-        self.assertEqual(1, days_ago(datetime.now(tz=UTC) - timedelta(hours=47)))
-        self.assertEqual(2, days_ago(datetime.now(tz=UTC) - timedelta(hours=48)))
+        self.assertEqual(0, days_ago(datetime.now(tz=tzutc()) - timedelta(hours=23)))
+        self.assertEqual(1, days_ago(datetime.now(tz=tzutc()) - timedelta(hours=24)))
+        self.assertEqual(1, days_ago(datetime.now(tz=tzutc()) - timedelta(hours=47)))
+        self.assertEqual(2, days_ago(datetime.now(tz=tzutc()) - timedelta(hours=48)))
 
 
 class StripHashTest(unittest.TestCase):

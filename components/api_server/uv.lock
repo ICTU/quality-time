@@ -24,6 +24,7 @@ dependencies = [
     { name = "lxml" },
     { name = "lxml-html-clean" },
     { name = "pymongo" },
+    { name = "python-dateutil" },
     { name = "requests" },
     { name = "shared-code" },
 ]
@@ -34,6 +35,7 @@ dev = [
     { name = "pydantic" },
     { name = "types-cryptography" },
     { name = "types-ldap3" },
+    { name = "types-python-dateutil" },
     { name = "types-requests" },
     { name = "unittest-xml-reporting" },
 ]
@@ -64,11 +66,13 @@ requires-dist = [
     { name = "pydantic", marker = "extra == 'dev'", specifier = "==2.12.0" },
     { name = "pymongo", specifier = "==4.15.3" },
     { name = "pyproject-fmt", marker = "extra == 'tools'", specifier = "==2.11.0" },
+    { name = "python-dateutil", specifier = "==2.9.0.post0" },
     { name = "requests", specifier = "==2.32.5" },
     { name = "ruff", marker = "extra == 'tools'", specifier = "==0.14.2" },
     { name = "shared-code", directory = "../shared_code" },
     { name = "types-cryptography", marker = "extra == 'dev'", specifier = "==3.3.23.2" },
     { name = "types-ldap3", marker = "extra == 'dev'", specifier = "==2.9.13.20250622" },
+    { name = "types-python-dateutil", marker = "extra == 'dev'", specifier = "==2.9.0.20251008" },
     { name = "types-requests", marker = "extra == 'dev'", specifier = "==2.32.4.20250913" },
     { name = "unittest-xml-reporting", marker = "extra == 'dev'", specifier = "==3.2.0" },
     { name = "vulture", marker = "extra == 'tools'", specifier = "==2.14" },
@@ -1108,6 +1112,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/69/92/bfe2385ee347c9d528adbd0fd8e5d7da6bcd18572cc42fd94e44c182dd69/types_pyasn1-0.6.0.20250914.tar.gz", hash = "sha256:236102553b76c938953037b7ae93d11d395d9413b7f2f8083d3b19d740f7eda6", size = 17109, upload-time = "2025-09-14T02:56:08.041Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6c/9d/5eb611d0db5b980cbb7d3eaca5baf187d5346f6371fdb6c708847539cea6/types_pyasn1-0.6.0.20250914-py3-none-any.whl", hash = "sha256:68ffeef3c28e1ed120b8b81a242f238f137543e68d466d84a97edcf3e4203b5b", size = 24052, upload-time = "2025-09-14T02:56:07.247Z" },
+]
+
+[[package]]
+name = "types-python-dateutil"
+version = "2.9.0.20251008"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/fc/83/24ed25dd0c6277a1a170c180ad9eef5879ecc9a4745b58d7905a4588c80d/types_python_dateutil-2.9.0.20251008.tar.gz", hash = "sha256:c3826289c170c93ebd8360c3485311187df740166dbab9dd3b792e69f2bc1f9c", size = 16128, upload-time = "2025-10-08T02:51:34.93Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/da/af/5d24b8d49ef358468ecfdff5c556adf37f4fd28e336b96f923661a808329/types_python_dateutil-2.9.0.20251008-py3-none-any.whl", hash = "sha256:b9a5232c8921cf7661b29c163ccc56055c418ab2c6eabe8f917cbcc73a4c4157", size = 17934, upload-time = "2025-10-08T02:51:33.55Z" },
 ]
 
 [[package]]

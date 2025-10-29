@@ -1,7 +1,9 @@
 """Jenkins failed jobs collector."""
 
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, cast
+
+from dateutil.tz import tzutc
 
 from collector_utilities.date_time import datetime_from_timestamp
 
@@ -25,5 +27,5 @@ class JenkinsFailedJobs(JenkinsJobs):
         if self._build_result(build) not in self._parameter("failure_type"):
             return True  # No need to apply the grace period to builds that have not failed
         grace_period = timedelta(days=int(cast(str, self._parameter("grace_days"))))
-        build_age = datetime.now(tz=UTC) - datetime_from_timestamp(int(build["timestamp"]))
+        build_age = datetime.now(tz=tzutc()) - datetime_from_timestamp(int(build["timestamp"]))
         return build_age > grace_period

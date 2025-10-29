@@ -1,10 +1,11 @@
 """Unit tests for the measurements collection."""
 
 import unittest
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
 import mongomock
+from dateutil.tz import tzutc
 
 from shared.database.reports import get_reports
 
@@ -56,9 +57,9 @@ class MeasurementsTest(unittest.TestCase):
         for report in reports:
             metrics.extend(report.metrics)
 
-        now = datetime.now(tz=UTC).replace(microsecond=0).isoformat()
-        just_now = (datetime.now(tz=UTC).replace(microsecond=0) - timedelta(hours=1)).isoformat()
-        older = (datetime.now(tz=UTC).replace(microsecond=0) - timedelta(days=1)).isoformat()
+        now = datetime.now(tz=tzutc()).replace(microsecond=0).isoformat()
+        just_now = (datetime.now(tz=tzutc()).replace(microsecond=0) - timedelta(hours=1)).isoformat()
+        older = (datetime.now(tz=tzutc()).replace(microsecond=0) - timedelta(days=1)).isoformat()
 
         measurements = [
             {

@@ -2,13 +2,14 @@
 
 import unittest
 from base64 import b64decode
-from datetime import datetime, UTC
+from datetime import datetime
 from unittest.mock import patch
 
 from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
+from dateutil.tz import tzutc
 
 from shared.utils.functions import md5_hash
 
@@ -72,7 +73,7 @@ class ReportDateTimeTest(unittest.TestCase):
 
     def setUp(self):
         """Override to setup the 'current' time."""
-        self.now = datetime(2019, 3, 3, 10, 4, 5, 567, tzinfo=UTC)
+        self.now = datetime(2019, 3, 3, 10, 4, 5, 567, tzinfo=tzutc())
         self.expected_time_stamp = "2019-03-03T10:04:05+00:00"
 
     def test_report_date_time(self, request):

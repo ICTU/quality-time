@@ -17,7 +17,6 @@ dependencies = [
     "shared-code",
     "typing-extensions==4.15.0",
 ]
-
 optional-dependencies.dev = [
     "coverage==7.11.0",
     "mongomock==4.3.0",

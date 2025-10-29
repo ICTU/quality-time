@@ -1,7 +1,9 @@
 """Test the source model."""
 
 import unittest
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta
+
+from dateutil.tz import tzutc
 
 from shared.model.source import Source
 
@@ -13,8 +15,8 @@ class SourceTest(unittest.TestCase):
 
     def test_copy_entity_user_data(self):
         """Test copy entity user data."""
-        now = datetime.now(tz=UTC).isoformat()
-        long_ago = (datetime.now(tz=UTC) - timedelta(days=30)).isoformat()
+        now = datetime.now(tz=tzutc()).isoformat()
+        long_ago = (datetime.now(tz=tzutc()) - timedelta(days=30)).isoformat()
         old_eud = {
             "key_1": {"orphaned_since": now},
             "key_2": {"orphaned_since": long_ago},
