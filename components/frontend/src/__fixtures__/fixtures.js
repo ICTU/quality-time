@@ -28,17 +28,26 @@ export const dataModel = {
         subject_type: { name: "Subject type", metrics: ["metric_type"] },
     },
     metrics: {
-        metric_type: { name: "Metric type", tags: [] },
+        metric_type: {
+            name: "Metric type",
+            tags: [],
+            sources: ["source_type", "source_type_without_location_parameters"],
+        },
+        metric_type2: {
+            name: "Metric type 2",
+            description: "Metric type description",
+            rationale: "Metric type rationale",
+            tags: [],
+            sources: ["source_type_without_location_parameters"],
+        },
     },
     sources: {
         source_type: {
             name: "Source type name",
-            metrics: ["metric_type"],
             parameters: { url: { type: "url", name: "URL" } },
         },
         source_type_without_location_parameters: {
             name: "Source type without location parameters",
-            metrics: ["metric_type"],
             parameters: {},
         },
     },
@@ -78,7 +87,7 @@ export const report = {
                         source_uuid2: {
                             name: "Source 2",
                             type: "source_type",
-                            parameters: { url: "https://sourc2.org" },
+                            parameters: { url: "https://source2.org" },
                         },
                     },
                     status: "informative",
