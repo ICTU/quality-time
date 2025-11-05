@@ -98,14 +98,14 @@ wheels = [
 
 [[package]]
 name = "click"
-version = "8.3.0"
+version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/46/61/de6cd827efad202d7057d93e0fed9294b96952e188f7384832791c7b2254/click-8.3.0.tar.gz", hash = "sha256:e7b8232224eba16f4ebe410c25ced9f7875cb5f3263ffc93cc3e8da705e229c4", size = 276943, upload-time = "2025-09-18T17:32:23.696Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593, upload-time = "2024-12-21T18:38:44.339Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/db/d3/9dcc0f5797f070ec8edf30fbadfb200e71d9db6b84d211e3b2085a7589a0/click-8.3.0-py3-none-any.whl", hash = "sha256:9b9f285302c6e3064f4330c05f05b81945b2a39544279343e6e7c5f27a9baddc", size = 107295, upload-time = "2025-09-18T17:32:22.42Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/d4/7ebdbd03970677812aac39c869717059dbb71a4cfc033ca6e5221787892c/click-8.1.8-py3-none-any.whl", hash = "sha256:63c132bbbed01578a06712a2d1f497bb62d9c1c0d329b7903a866228027263b2", size = 98188, upload-time = "2024-12-21T18:38:41.666Z" },
 ]
 
 [[package]]
@@ -196,7 +196,7 @@ wheels = [
 
 [[package]]
 name = "fixit"
-version = "2.1.0"
+version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -205,9 +205,9 @@ dependencies = [
     { name = "packaging" },
     { name = "trailrunner" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/49/22/fc513f039c17024fde3fe2ebe3bc93e4972f7717694613b1bc109068bfc1/fixit-2.1.0.tar.gz", hash = "sha256:b31665cb6491d659d8dfef5a6078a7e9f786e299826636d03d6bd91b6f71e95b", size = 219817, upload-time = "2023-10-26T02:37:14.329Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/91/23/a25dfe517889943ef15f8be4fc97cb2f388cb882c297bbf903f03e122314/fixit-2.2.0.tar.gz", hash = "sha256:ad22aea501f332eb46a316a1d409c384fd6f1e9fb5df7e89a0a74603814d8935", size = 230611, upload-time = "2025-11-04T19:50:28.852Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/48/91/635a1d52f36a546449031c63e54220c8a71e898bcd9cbccfe1181fc1812c/fixit-2.1.0-py3-none-any.whl", hash = "sha256:76b286c0abb9d6a63e5c7d1b6673a041c4356e93d70472e94a9ad2c447da7753", size = 83583, upload-time = "2023-10-26T02:37:12.574Z" },
+    { url = "https://files.pythonhosted.org/packages/45/37/b920fe6fcce10e733776b58d4e52087a5757dfa32fecc8664d718a4d5e3c/fixit-2.2.0-py3-none-any.whl", hash = "sha256:1cef72445e96649111067b5bbea891d6dedf3b1b63a6b59afcaef9d09ab8d639", size = 94066, upload-time = "2025-11-04T19:50:27.85Z" },
 ]
 
 [[package]]
@@ -772,7 +772,7 @@ requires-dist = [
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.8.6" },
     { name = "bottle", specifier = "==0.13.4" },
     { name = "coverage", marker = "extra == 'dev'", specifier = "==7.11.0" },
-    { name = "fixit", marker = "extra == 'tools'", specifier = "==2.1.0" },
+    { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.0" },
     { name = "mongomock", marker = "extra == 'dev'", specifier = "==4.3.0" },
     { name = "mypy", marker = "extra == 'tools'", specifier = "==1.18.2" },
     { name = "packaging", specifier = "==25.0" },
