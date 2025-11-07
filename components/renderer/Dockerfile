@@ -1,10 +1,10 @@
-FROM node:25.0.0-trixie-slim
+FROM node:25.1.0-trixie-slim
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y chromium=142.0.7444.59-1~deb13u1 && \
+    apt-get install --no-install-recommends -y chromium=142.0.7444.134-1~deb13u1 && \
     rm -rf /var/lib/apt/lists/* && \
     adduser renderer --disabled-password
 
