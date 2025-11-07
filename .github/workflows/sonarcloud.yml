@@ -28,12 +28,12 @@ jobs:
         if: env.SONAR_TOKEN != null
         uses: astral-sh/setup-uv@v7.1.2
         with:
-          version: "0.9.5"
+          version: "0.9.7"
       - name: Set up Node
         if: env.SONAR_TOKEN != null
         uses: actions/setup-node@v6.0.0
         with:
-          node-version: "25.0.0"
+          node-version: "25.1.0"
       - name: Collector
         if: env.SONAR_TOKEN != null
         working-directory: components/collector
