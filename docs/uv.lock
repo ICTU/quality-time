@@ -901,7 +901,7 @@ dependencies = [
 requires-dist = [
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.8.6" },
     { name = "bottle", specifier = "==0.13.4" },
-    { name = "coverage", marker = "extra == 'dev'", specifier = "==7.11.0" },
+    { name = "coverage", marker = "extra == 'dev'", specifier = "==7.11.3" },
     { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.0" },
     { name = "mongomock", marker = "extra == 'dev'", specifier = "==4.3.0" },
     { name = "mypy", marker = "extra == 'tools'", specifier = "==1.18.2" },
@@ -913,7 +913,7 @@ requires-dist = [
     { name = "pyproject-fmt", marker = "extra == 'tools'", specifier = "==2.11.1" },
     { name = "python-dateutil", specifier = "==2.9.0.post0" },
     { name = "ruff", marker = "extra == 'tools'", specifier = "==0.14.4" },
-    { name = "types-python-dateutil", marker = "extra == 'dev'", specifier = "==2.9.0.20251008" },
+    { name = "types-python-dateutil", marker = "extra == 'dev'", specifier = "==2.9.0.20251108" },
     { name = "unittest-xml-reporting", marker = "extra == 'dev'", specifier = "==3.2.0" },
     { name = "vulture", marker = "extra == 'tools'", specifier = "==2.14" },
 ]
