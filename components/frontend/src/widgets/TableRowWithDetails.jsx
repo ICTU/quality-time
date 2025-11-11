@@ -27,6 +27,7 @@ export function TableRowWithDetails(props) {
                             backgroundColor: `${color}.hover`,
                         },
                     },
+                    "& > *": { borderBottom: expanded ? "unset" : "set" },
                 }}
             >
                 {firstTableCellWithExpandButton}
@@ -34,7 +35,9 @@ export function TableRowWithDetails(props) {
             </TableRow>
             {expanded && (
                 <TableRow>
-                    <TableCell colSpan="99">{details}</TableCell>
+                    <TableCell colSpan="99" sx={{ paddingLeft: "50px" }}>
+                        {details}
+                    </TableCell>
                 </TableRow>
             )}
         </>

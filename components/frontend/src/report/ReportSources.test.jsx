@@ -1,12 +1,13 @@
-import { render, screen, within } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
-import { expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
+import { expectFetch, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { ReportSources } from "./ReportSources"
 
 function renderReportSources(report, expandedItems, theDataModel) {
@@ -19,7 +20,6 @@ function renderReportSources(report, expandedItems, theDataModel) {
             <DataModel.Provider value={theDataModel ?? dataModel}>
                 <ReportSources reload={vi.fn()} report={report} settings={settings} />
             </DataModel.Provider>
-            ,
         </Permissions.Provider>,
     )
 }
@@ -51,6 +51,7 @@ it("shows a message for sources without url", async () => {
                 subject_uuid: {
                     metrics: {
                         metric_uuid: {
+                            type: "metric_type",
                             sources: {
                                 source_uuid: { type: "source_type_without_location_parameters", parameters: {} },
                             },
@@ -67,7 +68,7 @@ it("shows a message for sources without url", async () => {
 
 it("counts the metrics", async () => {
     const { container } = renderReportSources(report)
-    expectText("1", 2) // Two sources, each used once
+    expectText("1", 2) // Two sources, each used once and each without unused metric types
     await expectNoAccessibilityViolations(container)
 })
 
@@ -115,7 +116,7 @@ it("considers sources different if only the API-version differs", async () => {
             },
         },
     })
-    expectText("1", 2) // Two sources, each used once
+    expectText("https://source.org", 2) // Two sources, each used once
     await expectNoAccessibilityViolations(container)
 })
 
@@ -179,12 +180,7 @@ it("changes the value of a parameter of a source without parameter layout", asyn
         },
         ["source_uuid:0"],
     )
-    // Find the element that contains the input with the correct value
-    const urlInput = screen.getByDisplayValue("https://source.org")
-    // Drill up to the closest parent element that represents the details panel
-    // Here, we assume the label is unique within this context
-    const urlInputLabel = within(urlInput.closest("div")).getByLabelText(/URL/)
-    await userEvent.type(urlInputLabel, "/new{Enter}")
+    await userEvent.type(screen.getAllByLabelText(/URL/)[0], "https://source.org/new{Enter}")
     expectFetch("post", "source/source_uuid/parameter/url", { url: "https://source.org/new", edit_scope: "report" })
     await expectNoAccessibilityViolations(container)
 })
@@ -232,6 +228,7 @@ function createReport(name1, name2) {
             subject_uuid: {
                 metrics: {
                     metric_uuid1: {
+                        type: "metric_type",
                         sources: {
                             source_uuid1: {
                                 type: "source_type",
@@ -241,6 +238,7 @@ function createReport(name1, name2) {
                         },
                     },
                     metric_uuid2: {
+                        type: "metric_type",
                         sources: {
                             source_uuid2: {
                                 type: "source_type",
@@ -270,5 +268,101 @@ it("sorts the sources by type if not all names are available", async () => {
 it("sorts the sources by type if no names are available", async () => {
     const { container } = renderReportSources(createReport("", ""))
     expectOrder(["https://source1.org", "https://source2.org"]) // Source order unchanged because the source types are equal
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows the metrics using the source", async () => {
+    history.push("?expanded=source_uuid:1")
+    const { container } = renderReportSources(report)
+    expectText("M1")
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows the secondary names of metrics using the source", async () => {
+    history.push("?expanded=source_uuid2:1") // Use the second metric and source for better test coverage
+    report.subjects["subject_uuid"].metrics["metric_uuid2"].secondary_name = "secondary name"
+    const { container } = renderReportSources(report)
+    expectText(/M2.*secondary name/)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("ignores an empty report", async () => {
+    history.push("?expanded=source_uuid:1")
+    const { container } = renderReportSources({})
+    await expectNoAccessibilityViolations(container)
+})
+
+it("ignores subjects without metrics", async () => {
+    history.push("?expanded=source_uuid:1")
+    const { container } = renderReportSources({ subjects: { subject_uuid: {} } })
+    expectNoText("M1")
+    await expectNoAccessibilityViolations(container)
+})
+
+it("ignores metrics without sources", async () => {
+    history.push("?expanded=source_uuid:1")
+    const { container } = renderReportSources({ subjects: { subject_uuid: { metrics: { metric_uuid: {} } } } })
+    expectNoText("M1")
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows the unused metric types", async () => {
+    history.push("?expanded=source_uuid2:2")
+    const report = {
+        subjects: {
+            subject_uuid: {
+                metrics: {
+                    metric_uuid: {
+                        type: "metric_type",
+                        sources: {
+                            source_uuid: {
+                                type: "source_type",
+                                parameters: { url: "https://example.org" },
+                            },
+                        },
+                    },
+                    metric_uuid2: {
+                        type: "metric_type",
+                        sources: {
+                            source_uuid2: {
+                                type: "source_type_without_location_parameters",
+                                parameters: { url: "https://example.org" },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    }
+    const { container } = renderReportSources(report)
+    expectText("Metric type 2")
+    const readTheDocsLink = screen.getByRole("link", { name: "Metric type 2" })
+    expect(readTheDocsLink).toHaveAttribute("href", expect.stringContaining("#metric-type-2"))
+    expectText("Metric type description")
+    expectText("Metric type rationale")
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows a message if there are no unused metric types", async () => {
+    history.push("?expanded=source_uuid:2")
+    const report = {
+        subjects: {
+            subject_uuid: {
+                metrics: {
+                    metric_uuid: {
+                        type: "metric_type",
+                        sources: {
+                            source_uuid: {
+                                type: "source_type",
+                                parameters: { url: "https://example.org" },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    }
+    const { container } = renderReportSources(report)
+    expectText("All metric types that this source supports are being used.")
     await expectNoAccessibilityViolations(container)
 })

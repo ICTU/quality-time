@@ -39,15 +39,7 @@ export function SubjectTable({
     const columnsToHide = determineColumnsToHide(dataModel, measurements, metricEntries, dates.length, report, settings)
     return (
         <TableContainer sx={{ overflowX: "visible" }}>
-            <Table
-                className="subjectTable"
-                stickyHeader
-                sx={{
-                    "& .MuiTableCell-sizeMedium": {
-                        padding: "8px",
-                    },
-                }}
-            >
+            <Table className="subjectTable" stickyHeader>
                 <SubjectTableHeader
                     columnDates={dates}
                     columnsToHide={columnsToHide}

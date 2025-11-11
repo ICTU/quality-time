@@ -106,7 +106,7 @@ SortableTableHeaderCell.propTypes = {
 
 export function UnsortableTableHeaderCell({ colSpan, help, label, textAlign, width, icon }) {
     return (
-        <TableCell align={textAlign} colSpan={colSpan} width={width} aria-label={label}>
+        <TableCell align={textAlign} colSpan={colSpan} width={width} aria-label={label} variant="head">
             <TableHeaderCellContents help={help} label={label} icon={icon} />
         </TableCell>
     )
