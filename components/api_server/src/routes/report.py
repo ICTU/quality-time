@@ -85,6 +85,7 @@ def get_report_metric_status_summary(database: Database, report: Report, report_
     return {"report_uuid": report_uuid, "title": summarized_report["title"], **summarized_report["summary"]}
 
 
+@bottle.post("/api/internal/report/import", permissions_required=[EDIT_REPORT_PERMISSION])
 @bottle.post("/api/v3/report/import", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
