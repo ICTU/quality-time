@@ -19,6 +19,7 @@ import { getReportsTags } from "../utils"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { AddButton } from "../widgets/buttons/AddButton"
 import { CopyButton } from "../widgets/buttons/CopyButton"
+import { ReportUploadButton } from "../widgets/buttons/ReportUploadButton"
 import { CommentSegment } from "../widgets/CommentSegment"
 import { reportOptions } from "../widgets/menu_options"
 import { WarningMessage } from "../widgets/WarningMessage"
@@ -32,12 +33,13 @@ function ReportsOverviewButtonRow({ reload, reports }) {
             editableComponent={
                 <Box sx={{ paddingTop: "50px" }}>
                     <ButtonRow>
-                        <AddButton itemType={"report"} onClick={() => addReport(reload)} />
+                        <AddButton itemType="report" onClick={() => addReport(reload)} />
                         <CopyButton
-                            itemType={"report"}
+                            itemType="report"
                             getOptions={() => reportOptions(reports)}
                             onChange={(reportUuid) => copyReport(reportUuid, reload)}
                         />
+                        <ReportUploadButton reload={reload} />
                     </ButtonRow>
                 </Box>
             }
