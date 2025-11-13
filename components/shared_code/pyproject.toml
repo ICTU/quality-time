@@ -1,8 +1,11 @@
 [project]
 name = "shared-code"
 version = "5.46.0"
-requires-python = ">=3.14"
+requires-python = ">=3.14.0,<=3.14"
 classifiers = [
+    "Framework :: Bottle",
+    "Framework :: Pydantic",
+    "Programming Language :: Python",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.14",
 ]
@@ -27,6 +30,7 @@ optional-dependencies.tools = [
     "pydantic==2.12.0",      # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.11.1",
     "ruff==0.14.4",
+    "troml==0.4.1",
     "vulture==2.14",
 ]
 

@@ -1,6 +1,6 @@
 version = 1
 revision = 3
-requires-python = ">=3.14"
+requires-python = "==3.14.0"
 
 [[package]]
 name = "asserts"
@@ -259,6 +259,7 @@ tools = [
     { name = "pip-audit" },
     { name = "pyproject-fmt" },
     { name = "ruff" },
+    { name = "troml" },
     { name = "vulture" },
 ]
 
@@ -278,6 +279,7 @@ requires-dist = [
     { name = "requests", specifier = "==2.32.5" },
     { name = "requests-sse", specifier = "==0.5.2" },
     { name = "ruff", marker = "extra == 'tools'", specifier = "==0.14.4" },
+    { name = "troml", marker = "extra == 'tools'", specifier = "==0.4.1" },
     { name = "types-python-dateutil", marker = "extra == 'dev'", specifier = "==2.9.0.20251108" },
     { name = "types-requests", marker = "extra == 'dev'", specifier = "==2.32.4.20250913" },
     { name = "unittest-xml-reporting", marker = "extra == 'dev'", specifier = "==3.2.0" },
@@ -839,6 +841,15 @@ wheels = [
 ]
 
 [[package]]
+name = "shellingham"
+version = "1.5.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/58/15/8b3609fd3830ef7b27b655beb4b4e9c62313a4e8da8c676e142cc210d58e/shellingham-1.5.4.tar.gz", hash = "sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de", size = 10310, upload-time = "2023-10-24T04:13:40.426Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e0/f9/0595336914c5619e5f28a1fb793285925a8cd4b432c9da0a987836c7f822/shellingham-1.5.4-py2.py3-none-any.whl", hash = "sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686", size = 9755, upload-time = "2023-10-24T04:13:38.866Z" },
+]
+
+[[package]]
 name = "six"
 version = "1.17.0"
 source = { registry = "https://pypi.org/simple" }
@@ -884,6 +895,15 @@ wheels = [
 ]
 
 [[package]]
+name = "tomlkit"
+version = "0.13.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cc/18/0bbf3884e9eaa38819ebe46a7bd25dcd56b67434402b66a58c4b8e552575/tomlkit-0.13.3.tar.gz", hash = "sha256:430cf247ee57df2b94ee3fbe588e71d362a941ebb545dec29b53961d61add2a1", size = 185207, upload-time = "2025-06-05T07:13:44.947Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bd/75/8539d011f6be8e29f339c42e633aae3cb73bffa95dd0f9adec09b9c58e85/tomlkit-0.13.3-py3-none-any.whl", hash = "sha256:c89c649d79ee40629a9fda55f8ace8c6a1b42deb912b2a8fd8d942ddadb606b0", size = 38901, upload-time = "2025-06-05T07:13:43.546Z" },
+]
+
+[[package]]
 name = "trailrunner"
 version = "1.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -893,6 +913,45 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/4d/93/630e10bacd897daeb9ff5a408f4e7cb0fc2f243e7e3ef00f9e6cf319b11c/trailrunner-1.4.0.tar.gz", hash = "sha256:3fe61e259e6b2e5192f321c265985b7a0dc18497ced62b2da244f08104978398", size = 15836, upload-time = "2023-03-27T07:54:35.515Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b1/29/21001afea86bac5016c3940b43de3ce4786b0d8337d4ea79bb903c649ce3/trailrunner-1.4.0-py3-none-any.whl", hash = "sha256:a286d39f2723f28d167347f41cf8f232832648709366e722f55cf5545772a48e", size = 11071, upload-time = "2023-03-27T07:54:32.514Z" },
+]
+
+[[package]]
+name = "troml"
+version = "0.4.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+    { name = "tomlkit" },
+    { name = "trove-classifiers" },
+    { name = "typer" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/89/e3/81d7e78cd1508435f02baea95325342f8e997ee25bfa9104c3d49e64e5ae/troml-0.4.1.tar.gz", hash = "sha256:d71b6ea5dcc503bb31937b05f7a7752076d00052c2a0c963f33a2325d0dc0c4b", size = 12620, upload-time = "2025-09-14T19:05:57.709Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/84/30/92d5e111c77a89df4267b359a1463e703d47b4e10dc7f33a4b49a2e3252b/troml-0.4.1-py3-none-any.whl", hash = "sha256:cac2bd3663f03af716c221e795500a9ca85eca6b4e27b816db10c89d04f35905", size = 13625, upload-time = "2025-09-14T19:05:56.388Z" },
+]
+
+[[package]]
+name = "trove-classifiers"
+version = "2025.9.11.17"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ca/9a/778622bc06632529817c3c524c82749a112603ae2bbcf72ee3eb33a2c4f1/trove_classifiers-2025.9.11.17.tar.gz", hash = "sha256:931ca9841a5e9c9408bc2ae67b50d28acf85bef56219b56860876dd1f2d024dd", size = 16975, upload-time = "2025-09-11T17:07:50.97Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e1/85/a4ff8758c66f1fc32aa5e9a145908394bf9cf1c79ffd1113cfdeb77e74e4/trove_classifiers-2025.9.11.17-py3-none-any.whl", hash = "sha256:5d392f2d244deb1866556457d6f3516792124a23d1c3a463a2e8668a5d1c15dd", size = 14158, upload-time = "2025-09-11T17:07:49.886Z" },
+]
+
+[[package]]
+name = "typer"
+version = "0.20.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+    { name = "rich" },
+    { name = "shellingham" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8f/28/7c85c8032b91dbe79725b6f17d2fffc595dff06a35c7a30a37bef73a1ab4/typer-0.20.0.tar.gz", hash = "sha256:1aaf6494031793e4876fb0bacfa6a912b551cf43c1e63c800df8b1a866720c37", size = 106492, upload-time = "2025-10-20T17:03:49.445Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/78/64/7713ffe4b5983314e9d436a90d5bd4f63b6054e2aca783a3cfc44cb95bbf/typer-0.20.0-py3-none-any.whl", hash = "sha256:5b463df6793ec1dca6213a3cf4c0f03bc6e322ac5e16e13ddd622a889489784a", size = 47028, upload-time = "2025-10-20T17:03:47.617Z" },
 ]
 
 [[package]]
