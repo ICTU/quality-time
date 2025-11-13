@@ -32,6 +32,10 @@ run_pyproject_fmt() {
     run_uvx pyproject-fmt --check pyproject.toml
 }
 
+run_troml() {
+    run_uvx troml check
+}
+
 run_bandit() {
     # Bandit doesn't support Python 3.14 yet.
     # Upstream issue: https://github.com/PyCQA/bandit/issues/1314.
@@ -61,6 +65,7 @@ check_python_quality() {
     run_fixit
     run_mypy
     run_pyproject_fmt
+    run_troml
     run_pip_audit
     run_bandit
     run_vulture
