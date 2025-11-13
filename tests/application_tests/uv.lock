@@ -30,7 +30,7 @@ tools = [
 requires-dist = [
     { name = "axe-selenium-python", specifier = "==2.1.6" },
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.8.6" },
-    { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.0" },
+    { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.1" },
     { name = "mypy", marker = "extra == 'tools'", specifier = "==1.18.2" },
     { name = "pip-audit", marker = "extra == 'tools'", specifier = "==2.9.0" },
     { name = "pyproject-fmt", marker = "extra == 'tools'", specifier = "==2.11.1" },
@@ -213,7 +213,7 @@ wheels = [
 
 [[package]]
 name = "fixit"
-version = "2.2.0"
+version = "2.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -222,9 +222,9 @@ dependencies = [
     { name = "packaging" },
     { name = "trailrunner" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/23/a25dfe517889943ef15f8be4fc97cb2f388cb882c297bbf903f03e122314/fixit-2.2.0.tar.gz", hash = "sha256:ad22aea501f332eb46a316a1d409c384fd6f1e9fb5df7e89a0a74603814d8935", size = 230611, upload-time = "2025-11-04T19:50:28.852Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3e/e8/1e8bda8e9e6e87dc5df4e2a9c8d1e64e21dcaf3a52fd46d1dbc0df1a6af6/fixit-2.2.1.tar.gz", hash = "sha256:98f7e30be083b4002fde8da47ae6d817e4dd174f675b848577d3a4f6e0c84954", size = 230639, upload-time = "2025-11-12T22:19:11.905Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/45/37/b920fe6fcce10e733776b58d4e52087a5757dfa32fecc8664d718a4d5e3c/fixit-2.2.0-py3-none-any.whl", hash = "sha256:1cef72445e96649111067b5bbea891d6dedf3b1b63a6b59afcaef9d09ab8d639", size = 94066, upload-time = "2025-11-04T19:50:27.85Z" },
+    { url = "https://files.pythonhosted.org/packages/a9/d2/dd14e5b4b2657135e075527f2b7bb606f23921d5778a0b9e8f5b6d23ff8b/fixit-2.2.1-py3-none-any.whl", hash = "sha256:943e9cdf96194b4c6dc230680dffe65035eb8fd3e7485ca99f8b417b6b5c56e4", size = 94093, upload-time = "2025-11-12T22:19:10.165Z" },
 ]
 
 [[package]]
@@ -565,7 +565,7 @@ wheels = [
 
 [[package]]
 name = "pytest"
-version = "9.0.0"
+version = "9.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
@@ -574,9 +574,9 @@ dependencies = [
     { name = "pluggy" },
     { name = "pygments" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/da/1d/eb34f286b164c5e431a810a38697409cca1112cee04b287bb56ac486730b/pytest-9.0.0.tar.gz", hash = "sha256:8f44522eafe4137b0f35c9ce3072931a788a21ee40a2ed279e817d3cc16ed21e", size = 1562764, upload-time = "2025-11-08T17:25:33.34Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/07/56/f013048ac4bc4c1d9be45afd4ab209ea62822fb1598f40687e6bf45dcea4/pytest-9.0.1.tar.gz", hash = "sha256:3e9c069ea73583e255c3b21cf46b8d3c56f6e3a1a8f6da94ccb0fcf57b9d73c8", size = 1564125, upload-time = "2025-11-12T13:05:09.333Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/72/99/cafef234114a3b6d9f3aaed0723b437c40c57bdb7b3e4c3a575bc4890052/pytest-9.0.0-py3-none-any.whl", hash = "sha256:e5ccdf10b0bac554970ee88fc1a4ad0ee5d221f8ef22321f9b7e4584e19d7f96", size = 373364, upload-time = "2025-11-08T17:25:31.811Z" },
+    { url = "https://files.pythonhosted.org/packages/0b/8b/6300fb80f858cda1c51ffa17075df5d846757081d11ab4aa35cef9e6258b/pytest-9.0.1-py3-none-any.whl", hash = "sha256:67be0030d194df2dfa7b556f2e56fb3c3315bd5c8822c6951162b92b32ce7dad", size = 373668, upload-time = "2025-11-12T13:05:07.379Z" },
 ]
 
 [[package]]

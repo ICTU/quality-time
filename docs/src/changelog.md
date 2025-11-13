@@ -12,6 +12,17 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Changed
+
+- Revert the Debian base image for the renderer back to Alpine and use an unpinned Chromium. Chromium cannot be pinned on Debian either. Fixes [#12163](https://github.com/ICTU/quality-time/issues/12163).
+
+### Added
+
+- Allow for importing reports via the UI. Closes [#11906](https://github.com/ICTU/quality-time/issues/11906).
+- Show used metrics and unused metric types in the source overview of reports. Closes [#12122](https://github.com/ICTU/quality-time/issues/12122).
+
 ## v5.45.0 - 2025-10-31
 
 ### Fixed
@@ -20,7 +31,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Changed
 
-- Use a Debian base image for the renderer instead of Alpine. Chromium cannot be pinned on Alpine, causing problem such as the need for updating Chromium at inconvenient moments and needing different versions of Chromium on different architectures. Fixes [#12163](https://github.com/ICTU/quality-time/issues/12163).
+- Use a Debian base image for the renderer instead of Alpine. Chromium cannot be pinned on Alpine, causing problems such as the need for updating Chromium at inconvenient moments and needing different versions of Chromium on different architectures. Fixes [#12163](https://github.com/ICTU/quality-time/issues/12163).
 
 ### Added
 
