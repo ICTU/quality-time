@@ -196,7 +196,7 @@ wheels = [
 
 [[package]]
 name = "fixit"
-version = "2.2.0"
+version = "2.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -205,9 +205,9 @@ dependencies = [
     { name = "packaging" },
     { name = "trailrunner" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/23/a25dfe517889943ef15f8be4fc97cb2f388cb882c297bbf903f03e122314/fixit-2.2.0.tar.gz", hash = "sha256:ad22aea501f332eb46a316a1d409c384fd6f1e9fb5df7e89a0a74603814d8935", size = 230611, upload-time = "2025-11-04T19:50:28.852Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3e/e8/1e8bda8e9e6e87dc5df4e2a9c8d1e64e21dcaf3a52fd46d1dbc0df1a6af6/fixit-2.2.1.tar.gz", hash = "sha256:98f7e30be083b4002fde8da47ae6d817e4dd174f675b848577d3a4f6e0c84954", size = 230639, upload-time = "2025-11-12T22:19:11.905Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/45/37/b920fe6fcce10e733776b58d4e52087a5757dfa32fecc8664d718a4d5e3c/fixit-2.2.0-py3-none-any.whl", hash = "sha256:1cef72445e96649111067b5bbea891d6dedf3b1b63a6b59afcaef9d09ab8d639", size = 94066, upload-time = "2025-11-04T19:50:27.85Z" },
+    { url = "https://files.pythonhosted.org/packages/a9/d2/dd14e5b4b2657135e075527f2b7bb606f23921d5778a0b9e8f5b6d23ff8b/fixit-2.2.1-py3-none-any.whl", hash = "sha256:943e9cdf96194b4c6dc230680dffe65035eb8fd3e7485ca99f8b417b6b5c56e4", size = 94093, upload-time = "2025-11-12T22:19:10.165Z" },
 ]
 
 [[package]]
@@ -766,7 +766,7 @@ requires-dist = [
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.8.6" },
     { name = "bottle", specifier = "==0.13.4" },
     { name = "coverage", marker = "extra == 'dev'", specifier = "==7.11.3" },
-    { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.0" },
+    { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.1" },
     { name = "mongomock", marker = "extra == 'dev'", specifier = "==4.3.0" },
     { name = "mypy", marker = "extra == 'tools'", specifier = "==1.18.2" },
     { name = "packaging", specifier = "==25.0" },
