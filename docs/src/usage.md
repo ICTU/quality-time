@@ -473,7 +473,9 @@ See the [API-documentation](api.md#export-to-pdf) for exporting reports via the 
 
 ## Export and import reports as JSON
 
-*Quality-time* provides functionality for importing and exporting reports in JSON format. This functionality can be used for backing up reports or for transferring reports from one *Quality-time* instance to another one. Currently, this functionality is only available via the [API](api.md#export-and-import-reports-as-json), with one endpoint for importing and one for exporting the JSON reports.
+*Quality-time* provides functionality for importing and exporting reports in JSON format. This functionality can be used to import template reports, to back up reports, or for transferring reports from one *Quality-time* instance to another one. Currently, only the import functionality is available via the user interface. Use the "Import report" button on the reports overview page to select a report in JSON format and import it. The button is only available to logged-in users.
+
+Both the import and the export functionality are available via the [API](api.md#export-and-import-reports-as-json).
 
 ```{index} Issue tracker
 ```
