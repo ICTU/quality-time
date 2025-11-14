@@ -10,7 +10,7 @@ classifiers = [
 ]
 dependencies = [
     "aiogqlc==5.3.0",
-    "aiohttp==3.13.1",
+    "aiohttp==3.13.2",
     "beautifulsoup4==4.14.2",
     "defusedxml==0.7.1",
     "packaging==25.0",
@@ -22,7 +22,7 @@ dependencies = [
 optional-dependencies.dev = [
     "coverage==7.11.3",
     "mongomock==4.3.0",
-    "pydantic==2.12.0",                      # Needed for importing the data model in the tests from the shared code component
+    "pydantic==2.12.4",                      # Needed for importing the data model in the tests from the shared code component
     "types-beautifulsoup4==4.12.0.20250516",
     "types-python-dateutil==2.9.0.20251108",
     "unittest-xml-reporting==3.2.0",         # Needed to generate JUnit XML output for Sonarcloud.io
@@ -33,7 +33,7 @@ optional-dependencies.tools = [
     "mypy==1.18.2",
     "pip-audit==2.9.0",
     "pyproject-fmt==2.11.1",
-    "ruff==0.14.4",
+    "ruff==0.14.5",
     "troml==0.4.1",
     "vulture==2.14",
 ]

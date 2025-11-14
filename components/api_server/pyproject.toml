@@ -11,7 +11,7 @@ classifiers = [
 dependencies = [
     "argon2-cffi==25.1.0",
     "bottle==0.13.4",
-    "cryptography==46.0.2",
+    "cryptography==46.0.3",
     "gevent==25.9.1",
     "ldap3==2.9.1",
     "lxml==6.0.2",
@@ -23,7 +23,7 @@ dependencies = [
 ]
 optional-dependencies.dev = [
     "coverage==7.11.3",
-    "pydantic==2.12.0",                      # Needed for importing the data model in the tests from the shared code component
+    "pydantic==2.12.4",                      # Needed for importing the data model in the tests from the shared code component
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.20250622",
     "types-python-dateutil==2.9.0.20251108",
@@ -36,7 +36,7 @@ optional-dependencies.tools = [
     "mypy==1.18.2",
     "pip-audit==2.9.0",
     "pyproject-fmt==2.11.1",
-    "ruff==0.14.4",
+    "ruff==0.14.5",
     "troml==0.4.1",
     "vulture==2.14",
 ]

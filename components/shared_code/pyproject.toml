@@ -12,7 +12,7 @@ classifiers = [
 dependencies = [
     "bottle==0.13.4",
     "packaging==25.0",
-    "pydantic==2.12.0",
+    "pydantic==2.12.4",
     "pymongo==4.15.4",
     "python-dateutil==2.9.0.post0",
 ]
@@ -27,9 +27,9 @@ optional-dependencies.tools = [
     "fixit==2.2.1",
     "mypy==1.18.2",
     "pip-audit==2.9.0",
-    "pydantic==2.12.0",      # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
+    "pydantic==2.12.4",      # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.11.1",
-    "ruff==0.14.4",
+    "ruff==0.14.5",
     "troml==0.4.1",
     "vulture==2.14",
 ]

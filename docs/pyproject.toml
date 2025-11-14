@@ -10,17 +10,17 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "furo==2023.9.10",
+    "furo==2025.9.25",
     "gitpython==3.1.45",
-    "myst-parser==2.0.0",
-    "pydantic==2.12.0",         # Needed for generating the reference docs from the data model
+    "myst-parser==4.0.1",
+    "pydantic==2.12.4",         # Needed for generating the reference docs from the data model
     "shared-code",
-    "sphinx==7.2.6",
+    "sphinx==8.2.3",
     "sphinx-copybutton==0.5.2",
-    "sphinx-design==0.5.0",
+    "sphinx-design==0.6.1",
 ]
 optional-dependencies.dev = [
-    "coverage==7.3.4",
+    "coverage==7.11.3",
     "unittest-xml-reporting==3.2.0", # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
@@ -28,11 +28,11 @@ optional-dependencies.tools = [
     "fixit==2.2.1",
     "mypy==1.18.2",
     "pip-audit==2.9.0",
-    "pydantic==2.12.0",      # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
+    "pydantic==2.12.4",      # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.11.1",
-    "ruff==0.14.4",
+    "ruff==0.14.5",
     "troml==0.4.1",
-    "vale==3.0.3.0",         # Documentation grammar and style checker
+    "vale==3.13.0.0",        # Documentation grammar and style checker
     "vulture==2.14",
 ]
 

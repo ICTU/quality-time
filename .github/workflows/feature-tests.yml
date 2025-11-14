@@ -17,11 +17,11 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7.1.3
         with:
-          version: "0.9.8"
+          version: "0.9.9"
       - name: Run feature tests
         run: ./tests/feature_tests/ci/test.sh
       - name: Upload artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v5.0.0
         if: always()
         with:
           name: build-artifacts

@@ -22,6 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5.0.0
       - name: Hadolint ${{ matrix.component }}
-        uses: hadolint@v3.1.0/hadolint@v3.1.0-action@v3.1.0
+        uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: components/${{ matrix.component }}/Dockerfile
