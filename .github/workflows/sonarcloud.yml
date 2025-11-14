@@ -28,7 +28,7 @@ jobs:
         if: env.SONAR_TOKEN != null
         uses: astral-sh/setup-uv@v7.1.3
         with:
-          version: "0.9.8"
+          version: "0.9.9"
       - name: Set up Node
         if: env.SONAR_TOKEN != null
         uses: actions/setup-node@v6.0.0

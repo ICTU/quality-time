@@ -24,7 +24,7 @@ jobs:
           esac
           cd $component
           mkdir -p build
-          pip install uv
+          pip install uv==0.9.9
           ci/install-dependencies.sh
           ci/unittest.sh
           ci/quality.sh
@@ -62,7 +62,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          pip install uv
+          pip install uv==0.9.9
           cd docs
           ci/install-dependencies.sh
           ci/unittest.sh
@@ -106,7 +106,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          pip install uv
+          pip install uv==0.9.9
           ./tests/feature_tests/ci/test.sh
       - store_artifacts:
           path: build
