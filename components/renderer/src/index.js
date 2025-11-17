@@ -4,6 +4,7 @@ import puppeteer from "puppeteer-core";
 import { sanitizeUrl } from "@braintree/sanitize-url";
 
 const app = express();
+app.disable("x-powered-by");
 const RENDERER_PORT = process.env.RENDERER_PORT || 9000;
 const PROXY = `${process.env.PROXY_HOST || "www"}:${process.env.PROXY_PORT || 80}`;
 const PROTOCOL = process.env.PROXY_PROTOCOL || "http";
