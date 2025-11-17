@@ -357,6 +357,11 @@ SONARQUBE = Source(
             default_value="main",
             metrics=PROJECT_METRICS,
         ),
+        "directories_to_include": MultipleChoiceWithAdditionParameter(
+            name="Directories to include",
+            placeholder="all directories",
+            metrics=PROJECT_METRICS,
+        ),
         "languages_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Languages to ignore (regular expressions or language names)",
             help_url=HttpUrl(

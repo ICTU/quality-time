@@ -34,12 +34,13 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         update_date: str | None = None,
         hotspot_status: str | None = None,
         tags: str | None = None,
+        hostname: str = "sonarqube",
     ) -> Entity:
         """Create an entity."""
         url = (
-            f"https://sonarqube/security_hotspots?id=id&branch=main&hotspots={key}"
+            f"https://{hostname}/security_hotspots?id=id&branch=main&hotspots={key}"
             if security_type == "security hotspot"
-            else f"https://sonarqube/project/issues?id=id&branch=main&issues={key}&open={key}"
+            else f"https://{hostname}/project/issues?id=id&branch=main&issues={key}&open={key}"
         )
         entity = Entity(
             key=key,

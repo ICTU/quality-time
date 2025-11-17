@@ -21,6 +21,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - When measuring suppressed violations with SonarQube as source, take the impacted software qualities into account if configured by the user. Fixes [#12263](https://github.com/ICTU/quality-time/issues/12263).
 - Source configurations in the report source overview did not display parameter values. Fixes [#12281](https://github.com/ICTU/quality-time/issues/12281).
 
+### Added
+
+- When measuring commented out code, complex units, long units, many parameters, security warnings, suppressed violations, todo and fixme comments or violations with SonarQube as source, allow for specifying directories to include. Closes [#12189](https://github.com/ICTU/quality-time/issues/12189).
+
 ## v5.46.0 - 2025-11-13
 
 ### Changed
