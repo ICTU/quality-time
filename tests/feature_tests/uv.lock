@@ -4,14 +4,14 @@ requires-python = "==3.14.0"
 
 [[package]]
 name = "asserts"
-version = "0.13.1"
+version = "0.14.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/aa/a1/4ebe27df4fee2e09c972d9789adb89eb3199cd8ae577a3907ab2a852becf/asserts-0.13.1.tar.gz", hash = "sha256:958a69024f9c95905d1391bfede613e9fef987dbf74a399ef3952836c2c2a3bd", size = 12842, upload-time = "2024-04-29T18:50:12.83Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f2/e7/31db2db2ee9c499e9cb027367a5a37631221ab316ff304f8eff3f5792c9a/asserts-0.14.0.tar.gz", hash = "sha256:d267a3af64915215b70b5a306662cb2ef895ec359b39585308e91bd3134fa1ab", size = 12935, upload-time = "2025-11-17T16:19:14.743Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8f/ec/1dd038c82f1dbe28daa0c9e7cffdf85bdc5b8161d23896f62da87754e834/asserts-0.13.1-py3-none-any.whl", hash = "sha256:f76aa6cc9950326801a4c0ecc2fcc57af2e604effe8fb7136d2802aec0b8f7b3", size = 12801, upload-time = "2024-04-29T18:50:10.495Z" },
+    { url = "https://files.pythonhosted.org/packages/ba/87/999ca201ec238725acbf09e52c84dca8051a3c09800cea0ee35ac882be9e/asserts-0.14.0-py3-none-any.whl", hash = "sha256:c9cf22949bf5581b53203079eec91654e82d30ee1b9834f322b96ecf61e80878", size = 13268, upload-time = "2025-11-17T16:19:13.52Z" },
 ]
 
 [[package]]
@@ -265,7 +265,7 @@ tools = [
 
 [package.metadata]
 requires-dist = [
-    { name = "asserts", specifier = "==0.13.1" },
+    { name = "asserts", specifier = "==0.14.0" },
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.8.6" },
     { name = "behave", specifier = "==1.3.3" },
     { name = "coverage", marker = "extra == 'dev'", specifier = "==7.11.3" },
