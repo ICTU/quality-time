@@ -180,7 +180,7 @@ it("changes the value of a parameter of a source without parameter layout", asyn
         },
         ["source_uuid:0"],
     )
-    await userEvent.type(screen.getAllByLabelText(/URL/)[0], "https://source.org/new{Enter}")
+    await userEvent.type(screen.getAllByLabelText(/URL/)[0], "/new{Enter}")
     expectFetch("post", "source/source_uuid/parameter/url", { url: "https://source.org/new", edit_scope: "report" })
     await expectNoAccessibilityViolations(container)
 })
