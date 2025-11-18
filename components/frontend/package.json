@@ -30,14 +30,14 @@
     },
     "devDependencies": {
         "@emotion/babel-plugin": "^11.13.5",
-        "@eslint/compat": "^1.4.1",
+        "@eslint/compat": "^2.0.0",
         "@eslint/js": "^9.39.1",
         "@testing-library/dom": "10.4.1",
         "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.0",
         "@testing-library/user-event": "^14.6.1",
         "@vitejs/plugin-react": "^5.1.1",
-        "@vitest/coverage-v8": "^4.0.9",
+        "@vitest/coverage-v8": "^4.0.10",
         "browserslist-to-esbuild": "^2.1.1",
         "eslint": "^9.39.1",
         "eslint-config-prettier": "^10.1.8",
@@ -52,7 +52,7 @@
         "jsdom": "^27.2.0",
         "prettier": "^3.6.2",
         "vite": "^7.2.2",
-        "vitest": "^4.0.9"
+        "vitest": "^4.0.10"
     },
     "overrides": {
         "glob": "^11.0.3"
