@@ -25,7 +25,7 @@ export function TextField({
     const [textValue, setTextValue] = useState(value)
 
     function submitIfChanged() {
-        if (textValue !== value) {
+        if (textValue !== value && isValid()) {
             onChange(textValue)
         }
     }
@@ -37,6 +37,16 @@ export function TextField({
         if (event.key === "Enter") {
             submitIfChanged()
         }
+    }
+
+    function isValid() {
+        if (required && !textValue) {
+            return false
+        }
+        if (type === "number") {
+            return /^\d+$/.test(textValue)
+        }
+        return true
     }
 
     const startInputAdornment = startAdornment ? (
@@ -54,7 +64,7 @@ export function TextField({
         <MUITextField
             defaultValue={textValue ?? ""}
             disabled={disabled || (select && children.length === 0)}
-            error={error || (required && !textValue)}
+            error={error || !isValid()}
             fullWidth
             helperText={helperText}
             id={id}

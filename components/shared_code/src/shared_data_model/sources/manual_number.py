@@ -13,7 +13,7 @@ MANUAL_NUMBER = Source(
 Because users have to keep the value up to date by hand, this source is only meant to be used as a temporary
 solution for when no automated source is available yet. For example, when the results of a security audit are only
 available in a PDF-report, a 'security warnings' metric can be added with the number of findings as manual number
-source.""",
+source. Note: only non-negative integer values (0, 1, 2, 3, ...) are allowed.""",
     },
     parameters={
         "number": IntegerParameter(

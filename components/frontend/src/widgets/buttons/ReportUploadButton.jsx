@@ -34,7 +34,6 @@ export function ReportUploadButton({ reload }) {
                     data-testid="report-import-input"
                     type="file"
                     onChange={(event) => {
-                        console.log(event.target.files)
                         if (event.target.files.length > 0) {
                             event.target.files[0]
                                 .text()
