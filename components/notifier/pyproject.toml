@@ -18,11 +18,11 @@ optional-dependencies.dev = [
     "coverage==7.11.3",
     "mongomock==4.3.0",
     "pydantic==2.12.4",                      # Needed for importing the data model in the tests from the shared code component
-    "types-python-dateutil==2.9.0.20251108",
+    "types-python-dateutil==2.9.0.20251115",
     "unittest-xml-reporting==3.2.0",         # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
-    "bandit==1.8.6",
+    "bandit==1.9.1",
     "fixit==2.2.1",
     "mypy==1.18.2",
     "pip-audit==2.9.0",
