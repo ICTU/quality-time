@@ -38,7 +38,7 @@ function SourceParameters({ reload, report, source, sourceUuid }) {
                 sourceUuid={sourceUuid}
                 parameter={allParameters[key]}
                 parameterKey={key}
-                parameterValue={source?.[key]}
+                parameterValue={source?.parameters?.[key]}
                 reload={(json) => reloadAfterMassEditSource(json, reload)}
                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
             />
