@@ -39,6 +39,8 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         all_issues_api_url = URL(f"{url}/api/issues/search?projects={component}&branch={branch}")
         resolved_issues_api_url = URL(
             f"{all_issues_api_url}&resolved=yes&resolutions=WONTFIX,FALSE-POSITIVE&additionalFields=comments"
+            f"{self._query_parameter('clean_code_attribute_categories', uppercase=True)}"
+            f"{self._query_parameter('impacted_software_qualities', uppercase=True)}"
             f"{self._query_parameter('impact_severities', uppercase=True)}&ps={self.PAGE_SIZE}",
         )
         return await super()._get_source_responses(*[*urls, resolved_issues_api_url, all_issues_api_url])
