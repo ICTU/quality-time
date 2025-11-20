@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Removed
+
+- Removed database migration code. As always, if your currently installed Quality-time version is not the penultimate version, check the upgrade path in the [versioning policy](versioning.md) before upgrading. Closes [#12289](https://github.com/ICTU/quality-time/issues/12289).
+
 ## v5.47.0 - 2025-11-20
 
 ### Fixed
