@@ -4,7 +4,7 @@ requires-python = "==3.14.0"
 
 [[package]]
 name = "application-tests"
-version = "5.46.0"
+version = "5.47.0rc0"
 source = { virtual = "." }
 dependencies = [
     { name = "axe-selenium-python" },
