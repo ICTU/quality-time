@@ -18,6 +18,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - Clarify in the product vision that checking the correct configuration of sources is out of scope for Quality-time. Fixes [#3821](https://github.com/ICTU/quality-time/issues/3821).
 - When using Cobertura XML files as source, be prepared for timestamps without milliseconds. Also, report an error if the timestamp is missing. Fixes [#12247](https://github.com/ICTU/quality-time/issues/12247).
+- Don't allow floats with the manual number source. Fixes [#12261](https://github.com/ICTU/quality-time/issues/12261).
 - When measuring suppressed violations with SonarQube as source, take the impacted software qualities into account if configured by the user. Fixes [#12263](https://github.com/ICTU/quality-time/issues/12263).
 - Source configurations in the report source overview did not display parameter values. Fixes [#12281](https://github.com/ICTU/quality-time/issues/12281).
 

@@ -118,8 +118,32 @@ it("renders a date parameter without date", async () => {
 })
 
 it("renders an integer parameter", async () => {
-    const { container } = renderSourceParameter({ parameter: { name: "Integer", type: "integer" } })
+    const { container } = renderSourceParameter({
+        parameter: { name: "Integer", type: "integer" },
+        parameterValue: "0",
+    })
     expect(screen.queryAllByLabelText(/Integer/).length).toBe(1)
+    expect(screen.getByLabelText(/Integer/)).toBeValid()
+    await expectNoAccessibilityViolations(container)
+})
+
+it("does not accept floats as number", async () => {
+    const { container } = renderSourceParameter({
+        parameter: { name: "Integer", type: "integer" },
+        parameterValue: "0.1",
+    })
+    expect(screen.queryAllByLabelText(/Integer/).length).toBe(1)
+    expect(screen.getByLabelText(/Integer/)).not.toBeValid()
+    await expectNoAccessibilityViolations(container)
+})
+
+it("does not accept negative integers as number", async () => {
+    const { container } = renderSourceParameter({
+        parameter: { name: "Integer", type: "integer" },
+        parameterValue: "-1",
+    })
+    expect(screen.queryAllByLabelText(/Integer/).length).toBe(1)
+    expect(screen.getByLabelText(/Integer/)).not.toBeValid()
     await expectNoAccessibilityViolations(container)
 })
 
