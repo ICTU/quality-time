@@ -1,6 +1,11 @@
 """Unit tests for the SonarQube violations collector."""
 
+from typing import TYPE_CHECKING
+
 from .base import SonarQubeTestCase
+
+if TYPE_CHECKING:
+    from model import Entity
 
 
 class SonarQubeViolationsTest(SonarQubeTestCase):
@@ -39,7 +44,10 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
                 },
             ],
         }
-        self.expected_entities = [
+
+    def expected_entities(self, hostname: str = "sonarqube") -> list[Entity]:
+        """Create the expected entities."""
+        return [
             self.entity(
                 key="violation1",
                 component="component1",
@@ -49,6 +57,7 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
                 creation_date="2020-08-30T22:48:53+0200",
                 update_date="2020-09-30T22:48:54+0200",
                 tags="bug",
+                hostname=hostname,
             ),
             self.entity(
                 key="violation2",
@@ -59,6 +68,7 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
                 creation_date="2019-08-30T21:48:52+0200",
                 update_date="2019-09-30T21:48:52+0200",
                 tags="bug, other tag",
+                hostname=hostname,
             ),
         ]
 
@@ -68,7 +78,7 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
         self.assert_measurement(
             response,
             value="2",
-            entities=self.expected_entities,
+            entities=self.expected_entities(),
             landing_url=self.issues_landing_url,
         )
 
@@ -78,11 +88,10 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
         self.json["total"] = 1
         del self.json["issues"][0]
         response = await self.collect(get_request_json_return_value=self.json)
-        del self.expected_entities[0]
         self.assert_measurement(
             response,
             value="1",
-            entities=self.expected_entities,
+            entities=self.expected_entities()[1:],
             landing_url=self.issues_landing_url + "&impactSeverities=MEDIUM",
         )
 
@@ -93,7 +102,7 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
         self.assert_measurement(
             response,
             value="2",
-            entities=self.expected_entities,
+            entities=self.expected_entities(),
             landing_url=self.issues_landing_url + "&impactSeverities=LOW,MEDIUM",
         )
 
@@ -104,7 +113,7 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
         self.assert_measurement(
             response,
             value="2",
-            entities=self.expected_entities,
+            entities=self.expected_entities(),
             landing_url=self.issues_landing_url + "&impactSoftwareQualities=MAINTAINABILITY,RELIABILITY",
         )
 
@@ -115,7 +124,7 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
         self.assert_measurement(
             response,
             value="2",
-            entities=self.expected_entities,
+            entities=self.expected_entities(),
             landing_url=self.issues_landing_url + "&cleanCodeAttributeCategories=CONSISTENT,INTENTIONAL",
         )
 
@@ -126,6 +135,42 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
         self.assert_measurement(
             response,
             value="2",
-            entities=self.expected_entities,
+            entities=self.expected_entities(),
             landing_url=self.issues_landing_url + "&tags=accessibility",
+        )
+
+    async def test_directories(self):
+        """Test that violations can be limited based on directories."""
+        self.set_source_parameter("directories_to_include", ["folder"])
+        response, get, _ = await self.collect(get_request_json_return_value=self.json, return_mocks=True)
+        self.assert_measurement(
+            response,
+            value="2",
+            entities=self.expected_entities(),
+            landing_url=self.issues_landing_url + "&directories=folder",
+        )
+        get.assert_called_with(
+            "https://sonarqube/api/issues/search?projects=id&branch=main&resolved=false&ps=500&components=id:folder",
+            allow_redirects=True,
+            headers={},
+            auth=None,
+        )
+
+    async def test_directories_with_sonarcloud(self):
+        """Test that violations can be limited based on directories."""
+        self.set_source_parameter("url", "https://sonarcloud.io")
+        self.set_source_parameter("directories_to_include", ["folder"])
+        response, get, _ = await self.collect(get_request_json_return_value=self.json, return_mocks=True)
+        self.assert_measurement(
+            response,
+            value="2",
+            entities=self.expected_entities(hostname="sonarcloud.io"),
+            landing_url=self.issues_landing_url.replace("sonarqube", "sonarcloud.io") + "&directories=folder",
+        )
+        get.assert_called_with(
+            "https://sonarcloud.io/api/issues/search?projects=id&branch=main&resolved=false&ps=500&"
+            "componentKeys=id:folder",
+            allow_redirects=True,
+            headers={},
+            auth=None,
         )

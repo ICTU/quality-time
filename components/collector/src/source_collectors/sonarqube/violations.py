@@ -1,6 +1,7 @@
 """SonarQube violations collector."""
 
 from typing import cast
+from urllib.parse import urlparse
 
 from shared_data_model import DATA_MODEL
 
@@ -21,6 +22,8 @@ class SonarQubeViolations(SonarQubeCollector):
         component = self._parameter("component")
         branch = self._parameter("branch")
         landing_url = f"{url}/project/issues?id={component}&branch={branch}&resolved=false"
+        if directories := self._parameter("directories_to_include"):
+            landing_url += f"&directories={','.join(sorted(directories))}"
         return URL(landing_url + self._url_parameters())
 
     async def _api_url(self) -> URL:
@@ -32,6 +35,10 @@ class SonarQubeViolations(SonarQubeCollector):
         # the number of "entities" sent to the server anyway (that limit is 250 currently).
         # Issue: https://github.com/ICTU/quality-time/issues/11004
         api = f"{url}/api/issues/search?projects={component}&branch={branch}&resolved=false&ps={self.PAGE_SIZE}"
+        if directories := self._parameter("directories_to_include"):
+            key = "componentKeys" if urlparse(url).hostname == "sonarcloud.io" else "components"
+            directory_keys = [f"{component}:{directory}" for directory in directories]
+            api += f"&{key}={','.join(sorted(directory_keys))}"
         return URL(api + self._url_parameters())
 
     def _url_parameters(self) -> str:
