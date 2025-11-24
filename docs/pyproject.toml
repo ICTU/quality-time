@@ -24,13 +24,13 @@ optional-dependencies.dev = [
     "unittest-xml-reporting==3.2.0", # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
-    "bandit==1.9.1",
+    "bandit==1.9.2",
     "fixit==2.2.1",
     "mypy==1.18.2",
     "pip-audit==2.9.0",
     "pydantic==2.12.4",      # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.11.1",
-    "ruff==0.14.5",
+    "ruff==0.14.6",
     "troml==0.4.1",
     "vale==3.13.0.0",        # Documentation grammar and style checker
     "vulture==2.14",
