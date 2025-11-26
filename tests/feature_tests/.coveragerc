@@ -20,6 +20,7 @@ exclude_lines =
     def check_
 omit =
     components/api_server/tests/quality_time_api_server_under_coverage.py
+    components/api_server/src/initialization/migrations.py
 fail_under = 100
 skip_covered = True
 

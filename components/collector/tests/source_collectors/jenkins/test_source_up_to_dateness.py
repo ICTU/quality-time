@@ -9,7 +9,6 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
     """Unit tests for the Jenkins source up-to-dateness collector."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
 
     async def test_job(self):
         """Test that the age of the last build is returned."""

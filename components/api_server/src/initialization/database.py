@@ -9,6 +9,7 @@ from utils.log import get_logger
 
 from .app_secrets import initialize_secrets
 from .datamodel import import_datamodel
+from .migrations import perform_migrations
 from .report import import_example_reports, initialize_reports_overview
 
 if TYPE_CHECKING:
@@ -26,6 +27,7 @@ def init_database(database: Database) -> None:  # pragma: no feature-test-cover
     import_datamodel(database)
     initialize_secrets(database)
     initialize_reports_overview(database)
+    perform_migrations(database)
     if os.environ.get("LOAD_EXAMPLE_REPORTS", "True").lower() == "true":
         import_example_reports(database)
 

@@ -9,7 +9,6 @@ class PerformanceTestRunnerSourceUpToDatenessTest(JMeterCSVTestCase):
     """Unit tests for the JMeter CSV source up-to-dateness collector."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
 
     async def test_no_transactions(self):
         """Test that the age is 0 if there are no transactions in the CSV."""

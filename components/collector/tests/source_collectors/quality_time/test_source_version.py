@@ -7,7 +7,6 @@ class QualityTimeSourceVersionTest(SourceCollectorTestCase):
     """Unit tests for the Quality-time source version collector."""
 
     METRIC_TYPE = "source_version"
-    METRIC_ADDITION = "min"
     SOURCE_TYPE = "quality_time"
 
     async def test_source_version(self):

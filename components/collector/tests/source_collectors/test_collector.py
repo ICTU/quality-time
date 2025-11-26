@@ -78,7 +78,7 @@ class CollectorTest(SourceCollectorTestCase):
     async def test_default_parameter_value_supersedes_empty_string(self):
         """Test that a parameter default value takes precedence over an empty string."""
         sources = {"source_uuid": {"type": "calendar", "parameters": {"date": ""}}}
-        self.metric = {"type": "source_up_to_dateness", "addition": "max", "sources": sources}
+        self.metric = {"type": "source_up_to_dateness", "sources": sources}
         response = await self.collect()
         self.assert_measurement(response, value="0")
 

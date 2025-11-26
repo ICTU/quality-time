@@ -14,7 +14,6 @@ class QualityTimeSourceUpToDatenessTest(QualityTimeTestCase):
     """Unit tests for the Quality-time source up-to-dateness collector."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
 
     async def test_source_up_to_dateness(self):
         """Test that the source up-to-dateness of all reports can be measured."""

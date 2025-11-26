@@ -39,7 +39,6 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         self.metrics = {
             "metric_uuid": {
                 "report_uuid": "report_uuid",
-                "addition": "sum",
                 "type": "dependencies",
                 "sources": {"source_uuid": {"type": "pip", "parameters": {"url": self.url}}},
             },

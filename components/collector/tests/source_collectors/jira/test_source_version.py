@@ -7,7 +7,6 @@ class JiraSourceVersionTest(JiraTestCase):
     """Unit tests for the Jira source version collector."""
 
     METRIC_TYPE = "source_version"
-    METRIC_ADDITION = "min"
 
     async def test_version(self):
         """Test that the Jira version is returned."""

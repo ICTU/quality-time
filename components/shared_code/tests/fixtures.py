@@ -30,7 +30,6 @@ def create_report(
                     metric_id: {
                         "name": "Metric",
                         "type": "violations",
-                        "addition": "sum",
                         "target": "0",
                         "accept_debt": False,
                         "tags": ["security"],

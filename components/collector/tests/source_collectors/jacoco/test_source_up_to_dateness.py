@@ -9,7 +9,6 @@ class JaCoCoSourceUpToDatenessTest(JaCoCoCommonTestsMixin, JaCoCoTestCase):
     """Unit tests for the JaCoCo source up-to-dateness collector."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
     JACOCO_XML = '<report><sessioninfo dump="1553821197442"/></report>'
 
     def setUp(self):

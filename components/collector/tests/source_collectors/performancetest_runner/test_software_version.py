@@ -7,7 +7,6 @@ class PerformanceTestRunnerSoftwareVersionTest(PerformanceTestRunnerTestCase):
     """Unit tests for the Performancetest-runner software version collector."""
 
     METRIC_TYPE = "software_version"
-    METRIC_ADDITION = "min"
 
     async def test_software_version(self):
         """Test that the version is returned."""
