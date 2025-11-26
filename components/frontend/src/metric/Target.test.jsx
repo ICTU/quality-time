@@ -66,6 +66,12 @@ it("sets the metric integer target", async () => {
     await expectNoAccessibilityViolations(container)
 })
 
+it("is valid when the metric integer target is not set", async () => {
+    const { container } = renderMetricTarget({ type: "violations", target: "" })
+    expect(screen.getByLabelText(/Metric target/)).toBeValid()
+    await expectNoAccessibilityViolations(container)
+})
+
 it("sets the metric version target", async () => {
     const { container } = renderMetricTarget({ type: "source_version", target: "10" })
     await typeInField("10", "4.2")

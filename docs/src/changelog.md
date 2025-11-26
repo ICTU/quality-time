@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Fixed
+
+- The label and help text of the technical debt target field were colored red as if the field is mandatory. Fixes [#12300](https://github.com/ICTU/quality-time/issues/12300).
+
 ### Removed
 
 - Removed database migration code. As always, if your currently installed Quality-time version is not the penultimate version, check the upgrade path in the [versioning policy](versioning.md) before upgrading. Closes [#12289](https://github.com/ICTU/quality-time/issues/12289).

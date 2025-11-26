@@ -43,7 +43,7 @@ export function TextField({
         if (required && !textValue) {
             return false
         }
-        if (type === "number") {
+        if (type === "number" && textValue) {
             return /^\d+$/.test(textValue)
         }
         return true
