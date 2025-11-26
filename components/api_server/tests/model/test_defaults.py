@@ -27,7 +27,6 @@ class DefaultAttributesTest(DataModelTestCase):
                 "name": None,
                 "type": "software_version",
                 "accept_debt": False,
-                "addition": "min",
                 "debt_target": None,
                 "direction": None,
                 "evaluate_targets": False,

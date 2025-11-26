@@ -8,7 +8,6 @@ class CoberturaSourceVersionTest(CoberturaTestCase):
 
     COBERTURA_XML = '<coverage version="2.1.3" />'
     METRIC_TYPE = "source_version"
-    METRIC_ADDITION = "min"
 
     async def test_source_version(self):
         """Test that the source version is returned."""

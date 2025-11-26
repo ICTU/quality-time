@@ -7,7 +7,6 @@ class RobotFrameworkSourceVersionTest(RobotFrameworkTestCase):
     """Unit test for the Robot Framework source version collector."""
 
     METRIC_TYPE = "source_version"
-    METRIC_ADDITION = "min"
 
     async def test_source_version4(self):
         """Test that the Robot Framework version is returned."""

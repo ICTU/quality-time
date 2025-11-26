@@ -13,7 +13,6 @@ class AxeCoreSourceUpToDatenessTest(AxeCoreTestCase):
     """Unit tests for the source up-to-dateness collector."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
     TIMESTAMP = "2020-09-01T14:07:09.445Z"
 
     def setUp(self):

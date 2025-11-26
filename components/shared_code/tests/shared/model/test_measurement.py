@@ -26,13 +26,11 @@ class MeasurementTestCase(DataModelTestCase):
     def metric(
         self,
         metric_type: str = "tests",
-        addition: str = "sum",
         sources: dict[SourceId, Source] | None = None,
         **kwargs,
     ) -> Metric:
         """Create a metric fixture."""
         metric_data = dict(
-            addition=addition,
             type=metric_type,
             sources={
                 SOURCE_ID: {"type": "azure_devops"},
@@ -412,7 +410,7 @@ class MeasurementTest(MeasurementTestCase):
 
     def test_accept_missing_sources_as_tech_debt(self):
         """Test that the fact that no sources have been configured can be accepted as technical debt."""
-        metric = Metric(self.DATA_MODEL, {"addition": "sum", "type": "tests", "accept_debt": True}, METRIC_ID)
+        metric = Metric(self.DATA_MODEL, {"type": "tests", "accept_debt": True}, METRIC_ID)
         measurement = self.measurement(metric)
         self.assertEqual("debt_target_met", measurement.status())
 
@@ -420,7 +418,7 @@ class MeasurementTest(MeasurementTestCase):
         """Test that having no sources accepted as technical debt can also expire."""
         metric = Metric(
             self.DATA_MODEL,
-            {"addition": "sum", "type": "tests", "accept_debt": True, "debt_end_date": "2020-01-01"},
+            {"type": "tests", "accept_debt": True, "debt_end_date": "2020-01-01"},
             METRIC_ID,
         )
         measurement = self.measurement(metric)
@@ -584,16 +582,25 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
 
     def test_max_two_sources(self):
         """Test that the max value of two sources is returned."""
-        metric = self.metric(addition="max")
+        metric = self.metric(metric_type="source_up_to_dateness")
         measurement = self.measurement(
             metric,
             sources=[self.source(metric, value="10"), self.source(metric, value="20")],
         )
         self.assertEqual("20", measurement["count"]["value"])
 
+    def test_max_two_sources_uses_min_when_direction_is_reversed(self):
+        """Test that the max value of two sources is returned."""
+        metric = self.metric(metric_type="source_up_to_dateness", direction=">")
+        measurement = self.measurement(
+            metric,
+            sources=[self.source(metric, value="10"), self.source(metric, value="20")],
+        )
+        self.assertEqual("10", measurement["count"]["value"])
+
     def test_ignored_entities(self):
         """Test that the number of ignored entities is subtracted."""
-        metric = self.metric(sources={SOURCE_ID: {"type": "junit"}})
+        metric = self.metric(sources={SOURCE_ID: cast("Source", {"type": "junit"})})
         source = self.source(metric, value="10")
         source["entities"] = [
             {"key": "entity1"},
@@ -627,15 +634,69 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
         measurement = self.measurement(metric, sources=[source])
         self.assertEqual("0", measurement["count"]["value"])
 
-    def test_percentage(self):
-        """Test a non-zero percentage."""
+    def test_percentages_with_sum(self):
+        """Test that the percentages of multiple sources are added."""
         metric = self.metric()
         sources = [
             self.source(metric, value="10", total="70"),
             self.source(metric, value="20", total="50"),
         ]
         measurement = self.measurement(metric, sources=sources)
-        self.assertEqual("25", measurement["percentage"]["value"])
+        self.assertEqual(str(round(100 * (10.0 + 20.0) / (70.0 + 50.0))), measurement["percentage"]["value"])
+
+    def test_percentages_with_min(self):
+        """Test that the minimum of the percentages of multiple sources is taken.
+
+        Note that there are no metrics in the data model that support the percentage scale and use the maximum to
+        add multiple sources, so there is no test_percentages_with_max().
+        """
+        metric = self.metric(
+            metric_type="performancetest_stability",
+            sources={
+                SOURCE_ID: cast("Source", {"type": "performancetest_runner"}),
+                SOURCE_ID2: cast("Source", {"type": "performancetest_runner"}),
+            },
+        )
+        sources = [
+            self.source(metric, value="10", total="70"),
+            self.source(metric, value="20", total="50"),
+        ]
+        measurement = self.measurement(metric, sources=sources)
+        self.assertEqual(str(round(100 * (10.0 / 70.0))), measurement["percentage"]["value"])
+
+    def test_percentages_with_min_use_max_when_direction_is_reversed(self):
+        """Test that the maximum of the percentages of multiple sources is taken if the direction is reversed."""
+        metric = self.metric(
+            direction="<",
+            metric_type="performancetest_stability",
+            sources={
+                SOURCE_ID: cast("Source", {"type": "performancetest_runner"}),
+                SOURCE_ID2: cast("Source", {"type": "performancetest_runner"}),
+            },
+        )
+        sources = [
+            self.source(metric, value="10", total="70"),
+            self.source(metric, value="20", total="50"),
+        ]
+        measurement = self.measurement(metric, sources=sources)
+        self.assertEqual(str(round(100 * (20.0 / 50.0))), measurement["percentage"]["value"])
+
+    def test_percentages_with_min_use_max_when_direction_is_set_but_not_reversed(self):
+        """Test that the minimum of the percentages is taken if the direction is set but not reversed."""
+        metric = self.metric(
+            direction=">",
+            metric_type="performancetest_stability",
+            sources={
+                SOURCE_ID: cast("Source", {"type": "performancetest_runner"}),
+                SOURCE_ID2: cast("Source", {"type": "performancetest_runner"}),
+            },
+        )
+        sources = [
+            self.source(metric, value="10", total="70"),
+            self.source(metric, value="20", total="50"),
+        ]
+        measurement = self.measurement(metric, sources=sources)
+        self.assertEqual(str(round(100 * (10.0 / 70.0))), measurement["percentage"]["value"])
 
     def test_percentage_is_zero(self):
         """Test that the percentage is zero when the total is zero and the direction is 'fewer is better'."""
@@ -651,22 +712,12 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
         measurement = self.measurement(metric, sources=sources)
         self.assertEqual("100", measurement["percentage"]["value"])
 
-    def test_min_of_percentages(self):
-        """Test that the value is the minimum of the percentages when the scale is percentage and addition is min."""
-        metric = self.metric(direction="<", addition="min")
-        sources = [
-            self.source(metric, value="10", total="70"),
-            self.source(metric, value="20", total="50"),
-        ]
-        measurement = self.measurement(metric, sources=sources)
-        self.assertEqual("14", measurement["percentage"]["value"])
-
-    def test_min_of_percentages_with_zero_denominator(self):
-        """Test that the value is the minimum of the percentages when the scale is percentage and addition is min."""
-        metric = self.metric(direction="<", addition="min")
+    def test_multiple_percentages_with_zero_denominator(self):
+        """Test that the value is the calculated percentage when the scale is percentage."""
+        metric = self.metric(scale="percentage", direction="<")
         sources = [
             self.source(metric, value="10", total="70"),
             self.source(metric, value="0", total="0"),
         ]
         measurement = self.measurement(metric, sources=sources)
-        self.assertEqual("0", measurement["percentage"]["value"])
+        self.assertEqual(str(round(100 * 10.0 / 70.0)), measurement["percentage"]["value"])

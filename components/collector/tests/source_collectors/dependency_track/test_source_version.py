@@ -6,7 +6,6 @@ from .base_test import DependencyTrackTestCase
 class DependencyTrackSourceVersionTest(DependencyTrackTestCase):
     """Unit tests for the Dependency-Track source version collector."""
 
-    METRIC_ADDITION = "min"
     METRIC_TYPE = "source_version"
 
     async def test_source_version(self):

@@ -7,7 +7,6 @@ class AxeCoreSourceVersionTest(AxeCoreTestCase):
     """Unit tests for the source version collector."""
 
     METRIC_TYPE = "source_version"
-    METRIC_ADDITION = "min"
     AXE_VERSION = "4.1.3"
 
     async def test_source_version(self):

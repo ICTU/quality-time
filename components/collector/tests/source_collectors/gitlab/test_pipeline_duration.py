@@ -12,7 +12,6 @@ class GitLabPipelineDurationTest(GitLabTestCase):
     """Unit tests for the CI-pipeline duration metric."""
 
     METRIC_TYPE = "pipeline_duration"
-    METRIC_ADDITION = "max"
     NOW = datetime(2022, 9, 21, 1, 30, 14, 197, tzinfo=tzutc())
     MOCK_DATETIME = Mock(now=Mock(return_value=NOW))
 

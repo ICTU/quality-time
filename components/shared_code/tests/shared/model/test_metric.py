@@ -9,9 +9,10 @@ from shared.model.metric import Metric
 from shared.utils.functions import iso_timestamp
 
 from tests.fixtures import METRIC_ID, SOURCE_ID, SOURCE_ID2
+from tests.shared.base import DataModelTestCase
 
 if TYPE_CHECKING:
-    from shared.utils.type import SourceId
+    from shared.utils.type import Direction, SourceId
 
 
 class MetricTest(unittest.TestCase):
@@ -227,3 +228,56 @@ class MetricTest(unittest.TestCase):
         metric = self.create_metric(tags=["foo", "bar"])
         self.assertTrue(metric.rename_tag("foo", "bar"))
         self.assertEqual(["bar"], metric["tags"])
+
+
+class MetricAdditionTest(DataModelTestCase):
+    """Test the addition of metrics."""
+
+    def create_metric(self, metric_type: str, **kwargs: dict[str, Direction]) -> Metric:
+        """Return a metric fixture."""
+        return Metric(self.DATA_MODEL, {"type": metric_type, **kwargs}, METRIC_ID)
+
+    def test_sum(self):
+        """Test that the default addition of the tests metric is to sum the results of multiple sources."""
+        metric = self.create_metric("tests")
+        self.assertEqual(sum, metric.addition())
+
+    def test_sum_reversed(self):
+        """Test that the addition of the tests metric is still to sum the results of multiple sources if reversed."""
+        metric = self.create_metric("tests", direction="<")
+        self.assertEqual(sum, metric.addition())
+
+    def test_sum_reversed_back(self):
+        """Test that the addition of the tests metric is still to sum the results if reversed back."""
+        metric = self.create_metric("tests", direction=">")
+        self.assertEqual(sum, metric.addition())
+
+    def test_min(self):
+        """Test that the default addition of the scalability metric is to take the minimum of multiple sources."""
+        metric = self.create_metric("scalability")
+        self.assertEqual(min, metric.addition())
+
+    def test_min_reversed(self):
+        """Test that the addition of the scalability metric is to take the maximum if the metric is reversed."""
+        metric = self.create_metric("scalability", direction="<")
+        self.assertEqual(max, metric.addition())
+
+    def test_min_reversed_back(self):
+        """Test that the addition of the scalability metric is to take the minimum if reversed back."""
+        metric = self.create_metric("scalability", direction=">")
+        self.assertEqual(min, metric.addition())
+
+    def test_max(self):
+        """Test that the default addition of the pipeline duration metric is to take the maximum of multiple sources."""
+        metric = self.create_metric("pipeline_duration")
+        self.assertEqual(max, metric.addition())
+
+    def test_max_reversed(self):
+        """Test that the addition of the pipeline duration metric is to take the minimum if the metric is reversed."""
+        metric = self.create_metric("pipeline_duration", direction=">")
+        self.assertEqual(min, metric.addition())
+
+    def test_max_reversed_back(self):
+        """Test that the addition of the pipeline duration metric is to take the maximum if reversed back."""
+        metric = self.create_metric("pipeline_duration", direction="<")
+        self.assertEqual(max, metric.addition())

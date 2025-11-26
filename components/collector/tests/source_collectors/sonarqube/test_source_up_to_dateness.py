@@ -11,7 +11,6 @@ class SonarQubeSourceUpToDatenessTest(SonarQubeTestCase):
     """Unit tests for the SonarQube source up-to-dateness collector."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
 
     async def test_source_up_to_dateness(self):
         """Test that the number of days since the last analysis is returned."""

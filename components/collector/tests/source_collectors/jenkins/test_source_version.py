@@ -7,7 +7,6 @@ class JenkinsSourceVersionTest(JenkinsTestCase):
     """Unit tests for the Jenkins source version collector."""
 
     METRIC_TYPE = "source_version"
-    METRIC_ADDITION = "min"
 
     async def test_version(self):
         """Test that the Jenkins version is returned."""

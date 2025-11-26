@@ -7,7 +7,6 @@ class PerformanceTestRunnerDurationTest(PerformanceTestRunnerTestCase):
     """Unit tests for the Performancetest-runner duration collector."""
 
     METRIC_TYPE = "performancetest_duration"
-    METRIC_ADDITION = "min"
 
     async def test_duration(self):
         """Test that the test duration is returned."""
