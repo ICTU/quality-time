@@ -52,7 +52,7 @@
         "jsdom": "^27.2.0",
         "prettier": "^3.6.2",
         "vite": "^7.2.4",
-        "vitest": "^4.0.12"
+        "vitest": "^4.0.14"
     },
     "overrides": {
         "glob": "^11.0.3"
