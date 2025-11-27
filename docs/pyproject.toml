@@ -13,7 +13,7 @@ dependencies = [
     "furo==2025.9.25",
     "gitpython==3.1.45",
     "myst-parser==4.0.1",
-    "pydantic==2.12.4",         # Needed for generating the reference docs from the data model
+    "pydantic==2.12.5",         # Needed for generating the reference docs from the data model
     "shared-code",
     "sphinx==8.2.3",
     "sphinx-copybutton==0.5.2",
@@ -28,7 +28,7 @@ optional-dependencies.tools = [
     "fixit==2.2.1",
     "mypy==1.18.2",
     "pip-audit==2.9.0",
-    "pydantic==2.12.4",      # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
+    "pydantic==2.12.5",      # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.11.1",
     "ruff==0.14.6",
     "troml==0.4.1",

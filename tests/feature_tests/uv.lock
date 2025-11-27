@@ -191,11 +191,11 @@ wheels = [
 
 [[package]]
 name = "cucumber-tag-expressions"
-version = "8.0.0"
+version = "8.1.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/bf/77/b8868653e9c7d432433d4d4d5e99d5923b309b89c8b08bc7f0cb5657ba0b/cucumber_tag_expressions-8.0.0.tar.gz", hash = "sha256:4af80282ff0349918c332428176089094019af6e2a381a2fd8f1c62a7a6bb7e8", size = 8427, upload-time = "2025-10-14T17:01:27.232Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5c/34/968703852ad9b8351968212d63d6b7d054951eba678c9792aadfa560f447/cucumber_tag_expressions-8.1.0.tar.gz", hash = "sha256:acc56dd19b7bd0b931fc7b124ebbb6737def0775be41186ace7f5e566338ce7d", size = 8429, upload-time = "2025-11-26T13:22:04.904Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/20/51/51ae3ab3b8553ec61f6558e9a0a9e8c500a9db844f9cf00a732b19c9a6ea/cucumber_tag_expressions-8.0.0-py3-none-any.whl", hash = "sha256:bfe552226f62a4462ee91c9643582f524af84ac84952643fb09057580cbb110a", size = 9726, upload-time = "2025-10-14T17:01:26.098Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/b5/e85d70fd73e598499d62aa8f358591c2014b4d6c3f78f3874f0b777f31fd/cucumber_tag_expressions-8.1.0-py3-none-any.whl", hash = "sha256:1de26f183b1e8748e881189edd4bcdf4a80d7ed1011ad7b38cf141fcdcc51094", size = 9728, upload-time = "2025-11-26T13:22:05.678Z" },
 ]
 
 [[package]]
