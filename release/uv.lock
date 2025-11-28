@@ -680,7 +680,7 @@ wheels = [
 
 [[package]]
 name = "release"
-version = "5.47.0"
+version = "5.47.1rc0"
 source = { virtual = "." }
 dependencies = [
     { name = "gitpython" },
