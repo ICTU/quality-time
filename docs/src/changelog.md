@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- When the direction of a metric that by default takes the minimum of multiple sources is reversed, take the maximum. And vice versa. Fixes [#12142](https://github.com/ICTU/quality-time/issues/12142).
+
 ## v5.47.1 - 2025-11-28
 
 ### Fixed

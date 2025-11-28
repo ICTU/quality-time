@@ -7,7 +7,6 @@ class CxSASTSourceVersionTest(CxSASTTestCase):
     """Unit tests for the source version collector."""
 
     METRIC_TYPE = "source_version"
-    METRIC_ADDITION = "min"
 
     async def test_version(self):
         """Test that the version of the source is returned."""

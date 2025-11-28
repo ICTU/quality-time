@@ -9,7 +9,6 @@ class PerformanceTestRunnerSourceUpToDatenessTest(PerformanceTestRunnerTestCase)
     """Unit tests for the Performancetest-runner source up-to-dateness collector."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
 
     async def test_source_up_to_dateness(self):
         """Test that the test age is returned."""

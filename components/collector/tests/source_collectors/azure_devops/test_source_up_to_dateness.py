@@ -9,7 +9,6 @@ class AzureDevopsSourceUpToDatenessTest(AzureDevopsTestCase):
     """Unit tests for the Azure DevOps Server source up-to-dateness collector."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
 
     def setUp(self):
         """Extend to set up test data."""

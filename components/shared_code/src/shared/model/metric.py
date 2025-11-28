@@ -91,7 +91,11 @@ class Metric(dict):  # noqa: PLW1641
 
     def addition(self) -> Callable:
         """Return the addition operator of the metric: sum, min, or max."""
-        addition = self.get("addition") or self.__data_model["metrics"][self.type()]["addition"]
+        addition = self.__data_model["metrics"][self.type()].get("addition", "sum")
+        if addition in ("min", "max") and (actual_direction := self.get("direction")):
+            default_direction = self.__data_model["metrics"][self.type()]["direction"]
+            if actual_direction != default_direction:
+                addition = {"max": "min", "min": "max"}[addition]
         # The cast works around https://github.com/python/mypy/issues/10740
         return cast(Callable, {"max": max, "min": min, "sum": sum}[addition])
 

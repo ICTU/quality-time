@@ -24,7 +24,6 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
     """Base class for source collector unit tests."""
 
     METRIC_TYPE = SOURCE_TYPE = "Subclass responsibility"
-    METRIC_ADDITION = "sum"
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -39,9 +38,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
         """Extend to set up the source and metric under test."""
         self.sources = {"source_id": {"type": self.SOURCE_TYPE, "parameters": {"url": f"https://{self.SOURCE_TYPE}"}}}
-        self.metric = Metric(
-            {}, {"type": self.METRIC_TYPE, "sources": self.sources, "addition": self.METRIC_ADDITION}, METRIC_ID
-        )
+        self.metric = Metric({}, {"type": self.METRIC_TYPE, "sources": self.sources}, METRIC_ID)
 
     async def collect(  # noqa: PLR0913
         self,

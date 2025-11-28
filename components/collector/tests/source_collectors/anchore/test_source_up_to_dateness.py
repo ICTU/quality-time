@@ -14,7 +14,6 @@ class AnchoreSourceUpToDatenessTest(AnchoreTestCase):
     """Unit tests for the source up-to-dateness collector."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
 
     def setUp(self):
         """Extend to set up test data."""

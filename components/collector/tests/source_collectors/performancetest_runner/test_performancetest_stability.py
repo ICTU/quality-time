@@ -7,7 +7,6 @@ class PerformanceTestRunnerStabilityTest(PerformanceTestRunnerTestCase):
     """Unit tests for the Performancetest-runner performance test stability collector."""
 
     METRIC_TYPE = "performancetest_stability"
-    METRIC_ADDITION = "min"
 
     async def test_stability(self):
         """Test that the percentage of the duration at which the performance test becomes unstable is returned."""

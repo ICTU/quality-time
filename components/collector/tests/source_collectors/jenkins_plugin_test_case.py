@@ -7,7 +7,6 @@ class JenkinsPluginSourceUpToDatenessMixin:
     """Unit tests for Jenkins plugin source up-to-dateness collectors to be mixed in."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
 
     async def test_source_up_to_dateness(self):
         """Test that the source up-to-dateness is returned."""

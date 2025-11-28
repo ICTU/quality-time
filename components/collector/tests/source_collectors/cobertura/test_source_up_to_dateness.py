@@ -11,7 +11,6 @@ class CoberturaSourceUpToDatenessTest(CoberturaTestCase):
     """Unit tests for the Cobertura source up-to-dateness collector."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
 
     def setUp(self):
         """Extend to compute the expected age of the Cobertura report."""

@@ -43,7 +43,6 @@ def create_report(title: str = "Title", report_uuid: str = "report1", **kwargs) 
         metric_id: {
             "name": "Metric",
             "type": metric_type,
-            "addition": "sum",
             "target": "0",
             "accept_debt": False,
             "scale": "count",

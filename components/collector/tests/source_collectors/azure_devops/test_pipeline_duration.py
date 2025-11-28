@@ -7,7 +7,6 @@ class AzureDevopsPipelineDurationTest(AzureDevopsPipelinesTestCase):
     """Unit tests for the CI-pipeline duration metric."""
 
     METRIC_TYPE = "pipeline_duration"
-    METRIC_ADDITION = "max"
 
     def create_pipeline_run(
         self,
