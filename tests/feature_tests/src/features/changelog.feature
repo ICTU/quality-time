@@ -41,6 +41,30 @@ Feature: changelog
       Jane Doe created a new subject in report 'New report'.
       """
 
+  Scenario: create a report and a composite subject
+    When the client creates a report
+    And the client waits a second
+    And the client creates a subject with type "software_source_code"
+    And the client changes the subject name to "New name"
+    Then the changelog reads
+      """
+      Jane Doe changed the name of subject 'Software source code' in report 'New report' from '' to 'New name'.
+      Jane Doe created a new subject in report 'New report'.
+      Jane Doe created a new report.
+      Jane Doe changed the title of the reports overview from 'Reports' to 'Reports overview'.
+      """
+    And the report changelog reads
+      """
+      Jane Doe changed the name of subject 'Software source code' in report 'New report' from '' to 'New name'.
+      Jane Doe created a new subject in report 'New report'.
+      Jane Doe created a new report.
+      """
+    And the subject changelog reads
+      """
+      Jane Doe changed the name of subject 'Software source code' in report 'New report' from '' to 'New name'.
+      Jane Doe created a new subject in report 'New report'.
+      """
+
   Scenario: create a report, a subject, and a metric
     When the client creates a report
     And the client waits a second

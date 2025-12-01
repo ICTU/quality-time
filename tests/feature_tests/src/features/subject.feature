@@ -9,6 +9,10 @@ Feature: subject
     When the client creates a subject
     Then the subject type is "software"
 
+  Scenario: add composite subject
+    When the client creates a subject with type "software_source_code"
+    Then the subject type is "software_source_code"
+
   Scenario: delete subject
     Given an existing subject
     When the client deletes the subject
