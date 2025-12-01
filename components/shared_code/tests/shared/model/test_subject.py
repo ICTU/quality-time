@@ -1,5 +1,7 @@
 """Test the subject model."""
 
+import copy
+
 from shared.model.metric import Metric
 from shared.model.report import Report
 from shared.model.subject import Subject
@@ -57,9 +59,18 @@ class SubjectTest(DataModelTestCase):
         subject = Subject(self.DATA_MODEL, {"type": "software"}, SUBJECT_ID, self.report)
         self.assertEqual("Software", subject.name)
 
+    def test_missing_composite_name(self):
+        """Test that a composite subject has a name."""
+        subject = Subject(self.DATA_MODEL, {"type": "software_source_code"}, SUBJECT_ID, self.report)
+        self.assertEqual("Software source code", subject.name)
+
     def test_missing_default_name(self):
-        """Test that the subject name is None if both the subject and the data model have no name for the subject."""
-        data_model = {"subjects": {"type": "software"}}
+        """Test that the subject name is None if both the subject and the data model have no name for the subject.
+
+        In the current data model all subject types have a name, but in older versions they may not have.
+        """
+        data_model = copy.deepcopy(self.DATA_MODEL)
+        data_model["subjects"]["software"]["name"] = None
         subject = Subject(data_model, {"type": "software"}, SUBJECT_ID, self.report)
         self.assertIsNone(subject.name)
 

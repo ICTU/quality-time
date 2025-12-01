@@ -53,8 +53,16 @@ class Subject(dict):  # noqa: PLW1641
         """Either a custom name or one from the subject type in the data model."""
         if name := self.get("name"):
             return str(name)
-        default_name = self.__data_model["subjects"].get(self.type, {}).get("name")
-        return str(default_name) if default_name else None
+        return self._get_subject_type_name(self.__data_model["subjects"], self.type) if self.type else None
+
+    def _get_subject_type_name(self, subject_types, subject_type_key: str) -> str | None:
+        """Return the name of the subject type."""
+        for key, subject_type in subject_types.items():
+            if key == subject_type_key and (subject_type_name := subject_type.get("name")):
+                return str(subject_type_name)
+            if subject_type_name := self._get_subject_type_name(subject_type.get("subjects", {}), subject_type_key):
+                return subject_type_name
+        return None
 
     def summarize(self, measurements: dict[MetricId, list[Measurement]]) -> dict:
         """Create a summary dict of this subject."""

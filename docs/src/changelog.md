@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Composite subjects with a default name would be shown as having the name 'None' in the changelog. Fixes [#12318](https://github.com/ICTU/quality-time/issues/12318).
+
 ## v5.47.1 - 2025-11-28
 
 ### Fixed
