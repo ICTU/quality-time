@@ -2,9 +2,9 @@
 
 import json
 import time
-import urllib
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
+from urllib import parse
 
 from asserts import assert_equal, assert_not_in
 from behave import then, when
@@ -54,7 +54,7 @@ def download_report_as_json(context: Context, report_uuid: str | None = None) ->
 @when("the client downloads the report as JSON with his own public key")
 def download_report_as_json_with_key(context: Context) -> None:
     """Download the report as JSON with public key."""
-    public_key = urllib.parse.quote_plus(context.public_key)
+    public_key = parse.quote_plus(context.public_key)
     with context.external_api():
         context.get(f"report/{context.uuid['report']}/json?public_key={public_key}")
 
