@@ -7,7 +7,6 @@ class SonarQubeSoftwareVersionTest(SonarQubeTestCase):
     """Unit tests for the SonarQube software version collector."""
 
     METRIC_TYPE = "software_version"
-    METRIC_ADDITION = "min"
 
     async def test_software_version(self):
         """Test that the software version is returned."""

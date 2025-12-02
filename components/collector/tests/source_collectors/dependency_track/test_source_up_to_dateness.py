@@ -13,7 +13,6 @@ from .base_test import DependencyTrackTestCase
 class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
     """Unit tests for the Dependency-Track source up-to-dateness collector."""
 
-    METRIC_ADDITION = "min"
     METRIC_TYPE = "source_up_to_dateness"
 
     def projects(self, version: str = "1.4", *, is_latest: bool = False) -> list[DependencyTrackProject]:

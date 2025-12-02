@@ -22,7 +22,6 @@ class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
     """Unit tests for the Performancetest-runner performance test scalability collector."""
 
     METRIC_TYPE = "scalability"
-    METRIC_ADDITION = "min"
 
     async def test_scalability(self):
         """Test that the number of virtual users at which the ramp-up of throughput breaks is returned."""

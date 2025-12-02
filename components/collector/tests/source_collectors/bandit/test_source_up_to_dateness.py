@@ -13,7 +13,6 @@ class BanditSourceUpToDatenessTest(BanditTestCase):
     """Unit tests for the source up to dateness metric."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""

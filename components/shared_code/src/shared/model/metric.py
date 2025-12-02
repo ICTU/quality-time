@@ -91,7 +91,19 @@ class Metric(dict):  # noqa: PLW1641
 
     def addition(self) -> Callable:
         """Return the addition operator of the metric: sum, min, or max."""
-        addition = self.get("addition") or self.__data_model["metrics"][self.type()]["addition"]
+        # The addition determines how we deal with multiple sources: should the values of the sources be summed or
+        # should the minimum of maximum value be reported?
+        addition = self.__data_model["metrics"][self.type()].get("addition", "sum")
+        # Check if we need to reverse the addition. This is the case for metrics if 1) the min or max of the values of
+        # multiple sources should be reported and 2) if the actual direction of the metric is reversed as compared with
+        # the default direction.
+        # For example, for the metric 'pipeline duration' smaller durations are better by default. So if the user
+        # configures multiple sources, we report the maximum value. If the user for some reason reverses the direction
+        # of the metric, meaning that larger durations are better, we now need to report the minimum value.
+        if addition in ("min", "max") and (actual_direction := self.get("direction")):
+            default_direction = self.__data_model["metrics"][self.type()]["direction"]
+            if actual_direction != default_direction:
+                addition = {"max": "min", "min": "max"}[addition]
         # The cast works around https://github.com/python/mypy/issues/10740
         return cast(Callable, {"max": max, "min": min, "sum": sum}[addition])
 

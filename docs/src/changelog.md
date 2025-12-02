@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
+- When the direction of a metric that by default takes the minimum of multiple sources is reversed, take the maximum. And vice versa. Fixes [#12142](https://github.com/ICTU/quality-time/issues/12142).
 - Composite subjects with a default name would be shown as having the name 'None' in the changelog. Fixes [#12318](https://github.com/ICTU/quality-time/issues/12318).
 
 ## v5.47.1 - 2025-11-28

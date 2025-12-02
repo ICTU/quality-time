@@ -9,7 +9,6 @@ class TrelloSourceUpToDatenessTest(TrelloTestCase):
     """Unit tests for the Trello source up-to-dateness collector."""
 
     METRIC_TYPE = "source_up_to_dateness"
-    METRIC_ADDITION = "max"
 
     async def test_age(self):
         """Test that the source up to dateness is the number of days since the most recent change."""

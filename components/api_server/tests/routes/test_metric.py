@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 
 import requests
 
-from shared_data_model.meta.metric import Unit
+from shared_data_model.meta.unit import Unit
 from shared_data_model import DATA_MODEL
 
 from model.report import Report
@@ -62,7 +62,6 @@ class PostMetricAttributeTestCase(MetricTestCase):
                                 "name": "name",
                                 "type": "security_warnings",
                                 "scale": "count",
-                                "addition": "sum",
                                 "direction": "<",
                                 "target": "0",
                                 "near_target": "10",

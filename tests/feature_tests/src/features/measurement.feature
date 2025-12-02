@@ -15,6 +15,14 @@ Feature: measurement
     And the client changes the metric target to "10"
     Then the metric status is "near_target_met"
 
+  Scenario: the metric direction is reversed
+    Given an existing source
+    When the collector measures "12"
+    And the client changes the metric target to "10"
+    Then the metric status is "target_not_met"
+    When the client changes the metric direction to ">"
+    Then the metric status is "target_met"
+
   Scenario: the metric has a percentage scale
     Given an existing metric with type "performancetest_stability"
     And an existing source with type "performancetest_runner"
@@ -22,6 +30,18 @@ Feature: measurement
     And the client waits a second
     And the client changes the metric target to "50"
     Then the metric status is "target_met"
+
+  Scenario: the direction of a metric with a percentage scale is reversed
+    Given an existing metric with type "performancetest_stability"
+    And an existing source with type "performancetest_runner"
+    When the collector measures "50"
+    And the client waits a second
+    And the client changes the metric target to "60"
+    Then the metric status is "target_not_met"
+    When the client changes the metric direction to "<"
+    Then the metric status is "target_met"
+    When the client changes the metric direction to ">"
+    Then the metric status is "target_not_met"
 
   Scenario: the metric has a percentage scale with sum as addition method
     Given an existing metric with type "complex_units"
