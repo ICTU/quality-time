@@ -39,7 +39,9 @@ class JiraIssues(JiraBase):
     async def _search_url(self, url: URL) -> URL:
         """Return the search endpoint, depending on whether Jira is the cloud deployment or not."""
         max_results = await self._determine_max_results()
-        endpoint = "search/jql" if await self.is_cloud else "search"
+        # Assume that if the API version is not v2, we're dealing with Jira Cloud. Change the endpoint accordingly,
+        # see https://developer.atlassian.com/changelog/#CHANGE-2046
+        endpoint = "search" if self._rest_api_version == "2" else "search/jql"
         jql = str(self._parameter("jql", quote=True))
         fields = self._fields()
         return URL(f"{url}/{endpoint}?jql={jql}&fields={fields}&maxResults={max_results}")

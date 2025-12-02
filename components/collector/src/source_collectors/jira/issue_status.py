@@ -58,5 +58,5 @@ class JiraIssueStatus(JiraBase):
     @staticmethod
     def __parse_issue_sprint(fields) -> IssueSprint:
         """Parse the sprint from the Jira issue fields."""
-        jira_sprint = fields.get("sprint", {})
+        jira_sprint = fields.get("sprint") or {}
         return IssueSprint(jira_sprint.get("name"), jira_sprint.get("state"), jira_sprint.get("endDate"))

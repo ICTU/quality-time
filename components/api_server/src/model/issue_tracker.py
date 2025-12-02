@@ -1,7 +1,8 @@
 """Issue tracker."""
 
+import re
 from dataclasses import asdict, dataclass, field
-from typing import cast
+from typing import Literal, cast
 
 import requests
 
@@ -21,6 +22,40 @@ class AsDictMixin:
     def as_dict(self) -> dict[str, str]:
         """Convert data class to dict."""
         return cast(dict[str, str], asdict(self))  # pragma: no feature-test-cover
+
+
+@dataclass
+class ADFLink(AsDictMixin):
+    """Atlassian Document Format link node."""
+
+    attrs: dict[Literal["href"], str]
+    type: str = "link"
+
+
+@dataclass
+class ADFText(AsDictMixin):
+    """Atlassian Document Format text node."""
+
+    text: str
+    marks: list[ADFLink] = field(default_factory=list)
+    type: str = "text"
+
+
+@dataclass
+class ADFParagraph(AsDictMixin):
+    """Atlassian Document Format paragraph node."""
+
+    content: list[ADFText]
+    type: str = "paragraph"
+
+
+@dataclass
+class ADFDocument(AsDictMixin):
+    """Atlassian Document Format document node."""
+
+    content: list[ADFParagraph]
+    type: str = "doc"
+    version: int = 1
 
 
 @dataclass
@@ -89,20 +124,17 @@ class IssueTracker:
     """Issue tracker. Only supports Jira at the moment."""
 
     url: URL
+    api_version: str
     issue_parameters: IssueParameters
     credentials: IssueTrackerCredentials = field(default_factory=IssueTrackerCredentials)
-    project_api = "%s/rest/api/2/project"
-    issue_creation_api = "%s/rest/api/2/issue"
-    issue_types_api = issue_creation_api + "/createmeta/%s/issuetypes"
-    issue_browse_url = "%s/browse/%s"
-    suggestions_api: str = "%s/rest/api/2/search?jql=summary~'%s~10' order by updated desc&fields=summary&maxResults=20"
-    epics_api: str = (
-        '%s/rest/api/2/search?jql=type=epic and ("Epic Status" != Done or "Epic Status" is empty) and '
-        "project=%s&fields=summary&maxResults=100"
-    )
 
     def __post_init__(self) -> None:
-        """Strip any trailing slash from the URL so we can add paths without worrying about double slashes."""
+        """Clean up the parameters.
+
+        - Strip any trailing slash from the URL so we can add paths without worrying about double slashes.
+        - Remove the v from the API version.
+        """
+        self.api_version = self.api_version.lstrip("v")
         self.url = URL(str(self.url).rstrip("/"))
 
     def create_issue(self, summary: str, description: str = "") -> tuple[str, str]:
@@ -113,29 +145,38 @@ class IssueTracker:
         for attribute, name in [(self.url, "URL"), (project_key, "project key"), (issue_type, "issue type")]:
             if not attribute:
                 return "", f"Issue tracker has no {name} configured."
-        api_url = self.issue_creation_api % self.url
-        json = {
-            "fields": {
-                "project": {"key": project_key},
-                "issuetype": {"name": issue_type},
-                "summary": summary,
-                "description": description,
-            },
+        fields: dict[str, str | list[str] | dict[str, str]] = {
+            "project": {"key": project_key},
+            "issuetype": {"name": issue_type},
+            "summary": summary,
+            "description": description if self.api_version == "2" else self.__adf_document(description),
         }
         if labels and self.__labels_supported():  # pragma: no feature-test-cover
-            json["fields"]["labels"] = self.__prepare_labels(labels)
+            fields["labels"] = self.__prepare_labels(labels)
         epic_link = self.issue_parameters.epic_link
         if epic_link and (epic_link_field_id := self.__epic_link_field_id()):  # pragma: no feature-test-cover
-            json["fields"][epic_link_field_id] = epic_link
+            fields[epic_link_field_id] = epic_link
         try:
-            response_json = self.__post_json(api_url, json)
+            response_json = self.__post_json(self.issue_creation_api, {"fields": fields})
         except Exception as reason:
             error = str(reason) if str(reason) else reason.__class__.__name__
-            logger.warning("Creating a new issue at %s failed: %s", api_url, error)
+            logger.warning("Creating a new issue at %s failed: %s", self.issue_creation_api, error)
             return "", error
         return response_json["key"], ""  # pragma: no feature-test-cover
 
-    def get_options(self) -> Options:  # pragma: no feature-test-cover
+    def __adf_document(self, description: str) -> dict:
+        """Return the description as Atlassian Document Format (ADF) document."""
+        text_nodes = []
+        for chunk in re.split(r"[\[\]]", description):  # URLs have the form [anchor|link] in the description
+            if "|" in chunk:
+                anchor, href = chunk.split("|", maxsplit=1)
+                node = ADFText(anchor, marks=[ADFLink({"href": href})])
+            else:
+                node = ADFText(chunk)
+            text_nodes.append(node)
+        return ADFDocument([ADFParagraph(text_nodes)]).as_dict()
+
+    def get_options(self) -> Options:
         """Return the possible values for the issue tracker attributes."""
         # See https://developer.atlassian.com/server/jira/platform/jira-rest-api-examples/#creating-an-issue-examples
         # for more information on how to use the Jira API to discover meta data needed to create issues
@@ -147,18 +188,17 @@ class IssueTracker:
 
     def get_suggestions(self, query: str) -> list[IssueSuggestion]:
         """Get a list of issue id suggestions based on the query string."""
-        api_url = self.suggestions_api % (self.url, query)
         try:
-            json = cast(JiraIssueSuggestionJSON, self.__get_json(api_url))
+            json = cast(JiraIssueSuggestionJSON, self.__get_json(self.suggestions_api(query)))
         except Exception as reason:
             message = "Retrieving issue id suggestions from %s failed: %s"
-            logger.warning(message, self.suggestions_api % (self.url, "<query redacted>"), reason)
+            logger.warning(message, self.suggestions_api("<query redacted>"), reason)
             return []
         return self._parse_suggestions(json)  # pragma: no feature-test-cover
 
     def browse_url(self, issue_key: str) -> URL:
         """Return a URL to a human readable version of the issue."""
-        return URL(self.issue_browse_url % (self.url, issue_key))  # pragma: no feature-test-cover
+        return URL(f"{self.url}/browse/{issue_key}")  # pragma: no feature-test-cover
 
     def __labels_supported(self) -> bool:  # pragma: no feature-test-cover
         """Return whether the current project and issue type support labels."""
@@ -178,11 +218,10 @@ class IssueTracker:
     def __get_project_options(self) -> list[Option]:
         """Return the issue tracker projects options, given the current credentials."""
         projects: list[dict] = []
-        api_url = self.project_api % self.url
         try:
-            projects = cast(JiraProjectsJSON, self.__get_json(api_url))
+            projects = cast(JiraProjectsJSON, self.__get_json(self.project_api))
         except Exception as reason:
-            logger.warning("Getting issue tracker project options at %s failed: %s", api_url, reason)
+            logger.warning("Getting issue tracker project options at %s failed: %s", self.project_api, reason)
         return [Option(str(project["key"]), str(project["name"])) for project in projects]
 
     def __get_issue_type_options(self, projects: list[Option]) -> list[Option]:  # pragma: no feature-test-cover
@@ -191,11 +230,11 @@ class IssueTracker:
             # Current project is not an option, maybe the credentials were changed? Anyhow, no use getting issue types
             return []
         issue_types = []
-        api_url = self.issue_types_api % (self.url, self.issue_parameters.project_key)
+        issue_types_json_key = "values" if self.api_version == "2" else "issueTypes"
         try:
-            issue_types = cast(JiraIssueTypesJSON, self.__get_json(api_url))["values"]
+            issue_types = cast(JiraIssueTypesJSON, self.__get_json(self.issue_types_api))[issue_types_json_key]
         except Exception as reason:
-            logger.warning("Getting issue tracker issue type options at %s failed: %s", api_url, reason)
+            logger.warning("Getting issue tracker issue type options at %s failed: %s", self.issue_types_api, reason)
         issue_types = [issue_type for issue_type in issue_types if not issue_type["subtask"]]
         return [Option(str(issue_type["id"]), str(issue_type["name"])) for issue_type in issue_types]
 
@@ -207,9 +246,10 @@ class IssueTracker:
             return []
         fields = []
         issue_type_id = first(issue_types, lambda issue_type: issue_type.name == current_issue_type).key
-        api_url = f"{self.issue_types_api % (self.url, self.issue_parameters.project_key)}/{issue_type_id}"
+        api_url = f"{self.issue_types_api}/{issue_type_id}"
+        fields_json_key = "values" if self.api_version == "2" else "fields"
         try:
-            fields = cast(JiraFieldsJSON, self.__get_json(api_url))["values"]
+            fields = cast(JiraFieldsJSON, self.__get_json(api_url))[fields_json_key]
         except Exception as reason:
             logger.warning("Getting issue tracker field options at %s failed: %s", api_url, reason)
         return [Option(str(field["fieldId"]), str(field["name"])) for field in fields]
@@ -219,12 +259,11 @@ class IssueTracker:
         field_names = [field.name.lower() for field in fields]
         if "epic link" not in field_names:
             return []
-        api_url = self.epics_api % (self.url, self.issue_parameters.project_key)
         epics = []
         try:
-            epics = cast(JiraEpicsJSON, self.__get_json(api_url))["issues"]
+            epics = cast(JiraEpicsJSON, self.__get_json(self.epics_api))["issues"]
         except Exception as reason:
-            logger.warning("Getting epics at %s failed: %s", api_url, reason)
+            logger.warning("Getting epics at %s failed: %s", self.epics_api, reason)
         return [
             Option(str(epic["key"]), f"{cast(dict[str, dict[str, str]], epic)['fields']['summary']} ({epic['key']})")
             for epic in epics
@@ -249,3 +288,40 @@ class IssueTracker:
         response = requests.post(api_url, auth=auth, headers=headers, json=json, timeout=10)
         response.raise_for_status()
         return cast(dict[str, str], response.json())
+
+    @property
+    def project_api(self) -> str:
+        """Return the project endpoint."""
+        return f"{self.url}/rest/api/{self.api_version}/project"
+
+    @property
+    def issue_creation_api(self) -> str:
+        """Return the issue creation endpoint."""
+        return f"{self.url}/rest/api/{self.api_version}/issue"
+
+    @property
+    def issue_types_api(self) -> str:  # pragma: no feature-test-cover
+        """Return the issue types endpoint."""
+        return f"{self.issue_creation_api}/createmeta/{self.issue_parameters.project_key}/issuetypes"
+
+    @property
+    def epics_api(self) -> str:  # pragma: no feature-test-cover
+        """Return the epics endpoint."""
+        return (
+            f'{self.search_api}?jql=type=epic and ("Epic Status" != Done or "Epic Status" is empty) and '
+            f"project={self.issue_parameters.project_key}&fields=summary&maxResults=100"
+        )
+
+    def suggestions_api(self, query: str) -> str:
+        """Return the suggestions endpoint."""
+        # Use proximity search to find at most 20 recent matching issues.
+        # See https://confluence.atlassian.com/jirasoftwareserver/search-syntax-for-text-fields-939938747.html.
+        return f"{self.search_api}?jql=summary~'{query}~10' order by updated desc&fields=summary&maxResults=20"
+
+    @property
+    def search_api(self) -> str:
+        """Return the search endpoint."""
+        # Assume that if the API version is not v2, we're dealing with Jira Cloud. Change the endpoint accordingly,
+        # see https://developer.atlassian.com/changelog/#CHANGE-2046
+        endpoint = "search" if self.api_version == "2" else "search/jql"
+        return f"{self.url}/rest/api/{self.api_version}/{endpoint}"

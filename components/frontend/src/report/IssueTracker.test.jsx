@@ -32,7 +32,10 @@ async function renderIssueTracker({ report = { report_uuid: "report_uuid", title
                         jira: {
                             name: "Jira",
                             issue_tracker: true,
-                            parameters: { private_token: { help_url: helpUrl } },
+                            parameters: {
+                                private_token: { help_url: helpUrl },
+                                api_version: { default_value: "v2", values: ["v2", "v3"] },
+                            },
                         },
                     },
                 }}
@@ -63,7 +66,7 @@ it("sets the issue tracker type", async () => {
 })
 
 function expectIssueTrackerFieldsToBeDisabled() {
-    const textFields = [/URL/, /Username/, /Password/, /Private token/, /Labels for new issues/]
+    const textFields = [/URL/, /Username/, /Password/, /Private token/, /API version/, /Labels for new issues/]
     textFields.forEach((field) => expect(screen.getByLabelText(field)).toBeDisabled())
     const selectionFields = [/Project for new issues/, /Issue type/, /Epic link/]
     selectionFields.forEach((field) => expect(screen.getByLabelText(field).nextSibling).toBeDisabled())
@@ -155,6 +158,19 @@ it("shows the issue tracker private token help url", async () => {
         helpUrl: "https://help.example.org",
     })
     expect(container.querySelector("a")).toHaveAttribute("href", "https://help.example.org")
+    await expectNoAccessibilityViolations(container)
+})
+
+it("sets the issue tracker API version", async () => {
+    const { container } = await renderIssueTracker({ report: reportWithIssueTracker })
+    fireEvent.mouseDown(screen.getByLabelText(/API version/))
+    clickText(/v3/)
+    expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
+        "report_uuid",
+        "api_version",
+        "v3",
+        reload,
+    )
     await expectNoAccessibilityViolations(container)
 })
 

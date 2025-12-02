@@ -16,6 +16,7 @@ class Report(SharedReport):
         issue_tracker_data = self.get("issue_tracker", {})
         parameters = issue_tracker_data.get("parameters", {})
         url = parameters.get("url", "")
+        api_version = parameters.get("api_version", "v2")
         issue_parameters = IssueParameters(
             parameters.get("project_key", ""),
             parameters.get("issue_type", ""),
@@ -27,7 +28,7 @@ class Report(SharedReport):
             parameters.get("password", ""),
             parameters.get("private_token", ""),
         )
-        return IssueTracker(url, issue_parameters, credentials)
+        return IssueTracker(url, api_version, issue_parameters, credentials)
 
     def deadline(self, status: str) -> str | None:
         """Return the deadline for metrics or measurement entities with the given status."""
