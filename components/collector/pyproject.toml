@@ -14,7 +14,7 @@ dependencies = [
     "beautifulsoup4==4.14.2",
     "defusedxml==0.7.1",
     "packaging==25.0",
-    "pymongo==4.15.4",
+    "pymongo==4.15.5",
     "python-dateutil==2.9.0.post0",
     "shared-code",
     "typing-extensions==4.15.0",

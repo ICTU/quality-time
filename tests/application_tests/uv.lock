@@ -182,7 +182,7 @@ wheels = [
 
 [[package]]
 name = "cyclonedx-python-lib"
-version = "11.5.0"
+version = "11.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "license-expression" },
@@ -190,9 +190,9 @@ dependencies = [
     { name = "py-serializable" },
     { name = "sortedcontainers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/56/65/1127e801f8d0c2928b73c5b0a9fba45654ea3dc8738a45cf0b92490ab380/cyclonedx_python_lib-11.5.0.tar.gz", hash = "sha256:175819663ae5a3c9930462ebcbddd6abb3ad5f237e12a503dbd0af320a9c5b96", size = 1405244, upload-time = "2025-10-31T08:33:06.481Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/89/ed/54ecfa25fc145c58bf4f98090f7b6ffe5188d0759248c57dde44427ea239/cyclonedx_python_lib-11.6.0.tar.gz", hash = "sha256:7fb85a4371fa3a203e5be577ac22b7e9a7157f8b0058b7448731474d6dea7bf0", size = 1408147, upload-time = "2025-12-02T12:28:46.446Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8c/11/fc6ddd8f1d84cd82460c2a4b558c37f3fbb996d8a6e16c5bd3bec5092e30/cyclonedx_python_lib-11.5.0-py3-none-any.whl", hash = "sha256:5cca5b444421d39a83b45fcab24ed3e90cafaca97b89fc45cb10d2516bd2d79d", size = 500330, upload-time = "2025-10-31T08:33:04.322Z" },
+    { url = "https://files.pythonhosted.org/packages/c7/1b/534ad8a5e0f9470522811a8e5a9bc5d328fb7738ba29faf357467a4ef6d0/cyclonedx_python_lib-11.6.0-py3-none-any.whl", hash = "sha256:94f4aae97db42a452134dafdddcfab9745324198201c4777ed131e64c8380759", size = 511157, upload-time = "2025-12-02T12:28:44.158Z" },
 ]
 
 [[package]]
