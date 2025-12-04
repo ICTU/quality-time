@@ -9,12 +9,12 @@ version: 2
 build:
   os: ubuntu-22.04
   tools:
-    python: "3.13"
+    python: "3.14"
   apt_packages:
     - graphviz
   jobs:
     pre_create_environment:
-      - pip install uv==0.9.9
+      - pip install uv==0.9.15
     install:
       - cd docs && VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH ci/install-dependencies.sh
 
