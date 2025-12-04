@@ -1,12 +1,12 @@
 version: 2.1
 
 orbs:
-  docker: circleci/docker@2.1.2
+  docker: circleci/docker@3.0.1
 
 jobs:
   unittest_backend:
     docker:
-      - image: cimg/python:3.14.0
+      - image: cimg/python:3.14.1
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
@@ -24,7 +24,7 @@ jobs:
           esac
           cd $component
           mkdir -p build
-          pip install uv==0.9.9
+          pip install uv==0.9.15
           ci/install-dependencies.sh
           ci/unittest.sh
           ci/quality.sh
@@ -43,7 +43,7 @@ jobs:
 
   unittest_frontend:
     docker:
-      - image: cimg/node:25.1.0
+      - image: cimg/node:25.2.1
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
@@ -62,7 +62,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          pip install uv==0.9.9
+          pip install uv==0.9.15
           cd docs
           ci/install-dependencies.sh
           ci/unittest.sh
@@ -106,7 +106,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          pip install uv==0.9.9
+          pip install uv==0.9.15
           ./tests/feature_tests/ci/test.sh
       - store_artifacts:
           path: build
