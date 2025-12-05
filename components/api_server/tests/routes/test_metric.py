@@ -607,7 +607,7 @@ class MetricIssueTest(DataModelTestCase):
                 "issuetype": {"name": "BUG"},
                 "summary": "Fix 42 violations from Source",
                 "description": "The metric [name|https://quality_time/metric42] in Quality-time reports 42 violations "
-                "from Source.\nPlease go to https://zap for more details.\n",
+                "from Source.\nPlease go to [https://zap|https://zap] for more details.\n",
             },
         }
 
@@ -652,7 +652,7 @@ class MetricIssueTest(DataModelTestCase):
         self.expected_json["fields"]["summary"] = "Fix 21% violations from Source"
         self.expected_json["fields"]["description"] = (
             "The metric [name|https://quality_time/metric42] in Quality-time reports 21% violations "
-            "from Source.\nPlease go to https://zap for more details.\n"
+            "from Source.\nPlease go to [https://zap|https://zap] for more details.\n"
         )
         self.report.metrics_dict[METRIC_ID]["scale"] = "percentage"
         response = Mock()

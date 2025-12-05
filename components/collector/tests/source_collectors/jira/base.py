@@ -1,6 +1,6 @@
 """Unit tests for the Jira metric source."""
 
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING
 from unittest.mock import patch
 
 from source_collectors.jira.issues import JiraIssues
@@ -15,7 +15,6 @@ class JiraTestCase(SourceCollectorTestCase):
     """Base class for Jira unit tests."""
 
     SOURCE_TYPE = "jira"
-    JIRA_SERVER_INFO: ClassVar[dict] = {}
 
     def setUp(self):
         """Extend to create sources and a metric of type METRIC_TYPE."""
@@ -59,7 +58,6 @@ class JiraTestCase(SourceCollectorTestCase):
             return await self.collect(
                 get_request_json_side_effect=[
                     fields_json or [{"id": "field", "name": "Field"}],
-                    self.JIRA_SERVER_INFO,
                     issues_json,
                     issues_json,
                 ],

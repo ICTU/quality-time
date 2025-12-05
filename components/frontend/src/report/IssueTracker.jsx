@@ -83,6 +83,9 @@ export function IssueTracker({ report, reload }) {
     const projectKey = report.issue_tracker?.parameters?.project_key
     const issueType = report.issue_tracker?.parameters?.issue_type
     const epicLink = report.issue_tracker?.parameters?.epic_link
+    const apiVersion = report.issue_tracker
+        ? dataModel.sources[report.issue_tracker?.type]?.parameters?.api_version
+        : {}
     // The onChange handler below would erronously save the string "None" as report.issue_tracker.type. That has been
     // fixed in v5.44.0, but we have to take into account that the database may still contain "None":
     const issueTrackerFieldDisabled = disabled || !report.issue_tracker?.type || report.issue_tracker?.type === "None"
@@ -146,7 +149,22 @@ export function IssueTracker({ report, reload }) {
                     value={report.issue_tracker?.parameters?.private_token}
                 />
             </Grid>
-            <Grid size={{ xs: 1, sm: 1, md: 1 }} />
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <TextField
+                    disabled={issueTrackerFieldDisabled}
+                    id="tracker-api-version"
+                    label="API version"
+                    onChange={(value) => setReportIssueTrackerAttribute(reportUuid, "api_version", value, reload)}
+                    select
+                    value={report.issue_tracker?.parameters?.api_version || apiVersion?.default_value}
+                >
+                    {(apiVersion?.values ?? []).map((value) => (
+                        <MenuItem key={value} value={value}>
+                            {value}
+                        </MenuItem>
+                    ))}
+                </TextField>
+            </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <TextField
                     disabled={issueTrackerFieldDisabled}

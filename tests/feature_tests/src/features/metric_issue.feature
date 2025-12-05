@@ -51,14 +51,23 @@ Feature: metric issues
     When the client opens a new issue
     Then the new issue response error is 'Issue tracker has no URL configured.'
 
-  Scenario: creating a new issue with an incompletely configured issue tracker
+  Scenario: creating a new issue in an incompletely configured Jira
     When the client changes the report tracker_type to "jira"
     And the client changes the report tracker_url to "https://jira"
     And the client opens a new issue
     Then the new issue response error is 'Issue tracker has no project key configured.'
 
-  Scenario: creating a new issue with an completely configured issue tracker
+  Scenario: creating a new issue in a fully configured Jira with API-version v2 (the default)
     When the client changes the report tracker_type to "jira"
+    And the client changes the report tracker_url to "https://jira"
+    And the client changes the report tracker_project_key to "KEY"
+    And the client changes the report tracker_issue_type to "Task"
+    And the client opens a new issue
+    Then the new issue response error is 'Failed to resolve'
+
+  Scenario: creating a new issue in a fully configured Jira with API-version v3
+    When the client changes the report tracker_type to "jira"
+    And the client changes the report tracker_api_version to "v3"
     And the client changes the report tracker_url to "https://jira"
     And the client changes the report tracker_project_key to "KEY"
     And the client changes the report tracker_issue_type to "Task"
