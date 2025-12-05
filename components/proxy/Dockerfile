@@ -1,11 +1,11 @@
-FROM nginxinc/nginx-unprivileged:1.29.2-alpine3.22-slim AS compile-image
+FROM nginxinc/nginx-unprivileged:1.29.3-alpine3.22-slim AS compile-image
 
 # hadolint ignore=DL3002
 USER root
 # Add the CAP_NET_BIND_SERVICE to provide backwards compatability, running on privileged port (80)
 RUN apk add --no-cache libcap=2.76-r0 && setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/nginx
 
-FROM nginxinc/nginx-unprivileged:1.29.2-alpine3.22-slim
+FROM nginxinc/nginx-unprivileged:1.29.3-alpine3.22-slim
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time proxy"
