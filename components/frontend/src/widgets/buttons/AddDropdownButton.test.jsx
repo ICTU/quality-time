@@ -2,10 +2,16 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
-import { asyncClickRole, asyncClickText, expectNoText } from "../../testUtils"
+import { asyncClickRole, asyncClickText, expectNoText, expectText } from "../../testUtils"
 import { AddDropdownButton } from "./AddDropdownButton"
 
-function renderAddDropdownButton({ nrItems = 2, totalItems = 10, usedItemKeys = [], sort = true } = {}) {
+function renderAddDropdownButton({
+    nrItems = 2,
+    totalItems = 10,
+    usedItemKeysInReport = [],
+    usedItemKeysInSubject = [],
+    sort = true,
+} = {}) {
     const mockCallback = vi.fn()
     const itemSubtypes = []
     let allItemSubtypes
@@ -27,7 +33,8 @@ function renderAddDropdownButton({ nrItems = 2, totalItems = 10, usedItemKeys = 
             itemType="foo"
             itemSubtypes={itemSubtypes.toReversed()} // Pass items in reversed order to test they are sorted correctly
             onClick={mockCallback}
-            usedItemSubtypeKeys={usedItemKeys}
+            usedItemSubtypeKeysInReport={usedItemKeysInReport}
+            usedItemSubtypeKeysInSubject={usedItemKeysInSubject}
             sort={sort}
         />,
     )
@@ -95,11 +102,39 @@ test("AddDropdownButton select from all items", async () => {
     expect(mockCallback).toHaveBeenCalledWith("sub 3")
 })
 
-test("AddDropdownButton hide used items", async () => {
-    renderAddDropdownButton({ nrItems: 2, totalItems: 3, usedItemKeys: ["sub 1"] })
+test("AddDropdownButton hide used items in report", async () => {
+    renderAddDropdownButton({
+        nrItems: 2,
+        totalItems: 3,
+        usedItemKeysInReport: ["sub 1"],
+    })
     await asyncClickText(/Add foo/)
-    await asyncClickRole("checkbox", undefined, 1)
-    expectNoText(/Sub 1/)
+    expectText(/Sub 1/)
+    expectText(/Sub 2/)
+    expectNoText(/Sub 3/) // Hidden because it's not supported by the subject type
+    await asyncClickRole("checkbox", "Hide foo types already used in this:")
+    await asyncClickRole("radio", "report")
+    expectNoText(/Sub 1/) // Now hidden because it's already used in the report
+    expectText(/Sub 2/)
+    expectNoText(/Sub 3/) // Still hidden because it's not supported by the subject type
+})
+
+test("AddDropdownButton hide used items in subject", async () => {
+    renderAddDropdownButton({
+        nrItems: 2,
+        totalItems: 3,
+        usedItemKeysInReport: ["sub 1", "sub 2"],
+        usedItemKeysInSubject: ["sub 2"],
+    })
+    await asyncClickText(/Add foo/)
+    expectText(/Sub 1/)
+    expectText(/Sub 2/)
+    expectNoText(/Sub 3/) // Hidden because it's not supported by the subject type
+    await asyncClickRole("checkbox", "Hide foo types already used in this:")
+    await asyncClickRole("radio", "subject")
+    expectText(/Sub 1/)
+    expectNoText(/Sub 2/) // Now hidden because it's already used in the subject
+    expectNoText(/Sub 3/) // Still hidden because it's not supported by the subject type
 })
 
 test("AddDropdownButton add all items by keyboard", async () => {
