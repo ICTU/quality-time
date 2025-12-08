@@ -10,7 +10,7 @@ COPY .env /home/frontend
 RUN npm install --ignore-scripts && \
     npm run --ignore-scripts build
 
-FROM nginxinc/nginx-unprivileged:1.29.2-alpine3.22-slim
+FROM nginxinc/nginx-unprivileged:1.29.3-alpine3.22-slim
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"
