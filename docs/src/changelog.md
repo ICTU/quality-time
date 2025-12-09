@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Fixed
+
+- When measuring issues with Jira as source, the names of sprints that issues belong to would not be correct. Fixes [#12328](https://github.com/ICTU/quality-time/issues/12328).
+
 ### Changed
 
 - Rename the 'tests' metric to 'test results' and the 'test suites' metric to 'test suite results' to better distinguish them from the 'test cases' metric. 'Tests' and 'test suites' metrics whose default name has not been overriden will automatically use the new default name. Closes [#12322](https://github.com/ICTU/quality-time/issues/12322).
