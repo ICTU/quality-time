@@ -38,10 +38,18 @@ export function allMetricTypeOptions(dataModel) {
     return metricTypeOptions
 }
 
-export function usedMetricTypes(subject) {
+export function usedMetricTypesInSubject(subject) {
     const metricTypes = new Set()
     for (const metric of Object.values(subject.metrics)) {
         metricTypes.add(metric.type)
+    }
+    return Array.from(metricTypes)
+}
+
+export function usedMetricTypesInReport(report) {
+    const metricTypes = new Set()
+    for (const subject of Object.values(report.subjects)) {
+        usedMetricTypesInSubject(subject).forEach((metricType) => metricTypes.add(metricType))
     }
     return Array.from(metricTypes)
 }

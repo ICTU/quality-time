@@ -7,6 +7,8 @@ import {
     MenuItem,
     MenuList,
     Popover,
+    Radio,
+    RadioGroup,
     TextField,
     Tooltip,
     Typography,
@@ -27,7 +29,7 @@ FilterCheckbox.propTypes = {
     setFilter: func,
 }
 
-function FilterCheckboxes({
+function Filters({
     itemType,
     allowHidingUnsupportedItems,
     showUnsupportedItems,
@@ -35,6 +37,8 @@ function FilterCheckboxes({
     allowHidingUsedItems,
     hideUsedItems,
     setHideUsedItems,
+    hideUsedItemsScope,
+    setHideUsedItemsScope,
 }) {
     if (!allowHidingUnsupportedItems && !allowHidingUsedItems) {
         return null
@@ -49,16 +53,26 @@ function FilterCheckboxes({
                 />
             )}
             {allowHidingUsedItems && (
-                <FilterCheckbox
-                    label={`Hide ${itemType} types already used`}
-                    filter={hideUsedItems}
-                    setFilter={setHideUsedItems}
-                />
+                <>
+                    <FilterCheckbox
+                        label={`Hide ${itemType} types already used in this:`}
+                        filter={hideUsedItems}
+                        setFilter={setHideUsedItems}
+                    />
+                    <RadioGroup
+                        row
+                        value={hideUsedItemsScope}
+                        onChange={(event) => setHideUsedItemsScope(event.target.value)}
+                    >
+                        <FormControlLabel name="report" value="report" control={<Radio />} label="report" />
+                        <FormControlLabel name="subject" value="subject" control={<Radio />} label="subject" />
+                    </RadioGroup>
+                </>
             )}
         </FormGroup>
     )
 }
-FilterCheckboxes.propTypes = {
+Filters.propTypes = {
     itemType: string,
     allowHidingUnsupportedItems: bool,
     showUnsupportedItems: bool,
@@ -66,9 +80,19 @@ FilterCheckboxes.propTypes = {
     allowHidingUsedItems: bool,
     hideUsedItems: bool,
     setHideUsedItems: func,
+    hideUsedItemsScope: string,
+    setHideUsedItemsScope: func,
 }
 
-export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubtypes, usedItemSubtypeKeys, sort }) {
+export function AddDropdownButton({
+    itemSubtypes,
+    itemType,
+    onClick,
+    allItemSubtypes,
+    usedItemSubtypeKeysInReport,
+    usedItemSubtypeKeysInSubject,
+    sort,
+}) {
     const [anchorEl, setAnchorEl] = useState()
     const handleMenu = (event) => setAnchorEl(event.currentTarget)
     const onClickMenuItem = (value) => {
@@ -78,9 +102,11 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
     const [query, setQuery] = useState("") // Search query to filter item subtypes
     const [showUnsupportedItems, setShowUnsupportedItems] = useState(false) // Show only supported itemSubTypes or also unsupported itemSubTypes?
     const [hideUsedItems, setHideUsedItems] = useState(false) // Hide itemSubTypes already used?
+    const [hideUsedItemsScope, setHideUsedItemsScope] = useState("report") // Hide itemSubTypes already used in report or subject?
     let items = showUnsupportedItems ? allItemSubtypes : itemSubtypes
+    let usedItemKeys = hideUsedItemsScope === "report" ? usedItemSubtypeKeysInReport : usedItemSubtypeKeysInSubject
     if (hideUsedItems) {
-        items = items.filter((item) => !usedItemSubtypeKeys.includes(item.key))
+        items = items.filter((item) => !usedItemKeys.includes(item.key))
     }
     const options = items.filter((itemSubtype) => itemSubtype.text.toLowerCase().includes(query.toLowerCase()))
     // Unless specified not to, sort the options:
@@ -105,14 +131,16 @@ export function AddDropdownButton({ itemSubtypes, itemType, onClick, allItemSubt
                     sx={{ ml: "10px", mt: "10px", pr: "20px" }}
                     type="search"
                 />
-                <FilterCheckboxes
+                <Filters
                     itemType={itemType}
                     allowHidingUnsupportedItems={allItemSubtypes?.length > 0}
                     showUnsupportedItems={showUnsupportedItems}
                     setShowUnsupportedItems={setShowUnsupportedItems}
-                    allowHidingUsedItems={usedItemSubtypeKeys?.length > 0}
+                    allowHidingUsedItems={usedItemKeys?.length > 0}
                     hideUsedItems={hideUsedItems}
                     setHideUsedItems={setHideUsedItems}
+                    hideUsedItemsScope={hideUsedItemsScope}
+                    setHideUsedItemsScope={setHideUsedItemsScope}
                 />
                 <MenuList sx={{ height: "30vh", width: "50vw" }}>
                     <MenuItem disabled divider>
@@ -138,5 +166,6 @@ AddDropdownButton.propTypes = {
     itemType: string,
     onClick: func,
     sort: bool,
-    usedItemSubtypeKeys: arrayOf(string),
+    usedItemSubtypeKeysInReport: arrayOf(string),
+    usedItemSubtypeKeysInSubject: arrayOf(string),
 }

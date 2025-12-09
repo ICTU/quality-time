@@ -23,6 +23,7 @@ it("shows the add metric button and adds a metric when clicked", async () => {
             <DataModel.Provider value={dataModel}>
                 <Table>
                     <SubjectTableFooter
+                        report={report}
                         reports={[]}
                         subjectUuid="subject_uuid"
                         subject={report.subjects.subject_uuid}
@@ -46,9 +47,10 @@ it("copies a metric when the copy button is clicked and a metric is selected", a
             <DataModel.Provider value={dataModel}>
                 <Table>
                     <SubjectTableFooter
+                        report={report}
+                        reports={[report]}
                         subjectUuid="subject_uuid"
                         subject={report.subjects.subject_uuid}
-                        reports={[report]}
                         stopFilteringAndSorting={stopFilteringAndSorting}
                     />
                 </Table>
@@ -68,9 +70,10 @@ it("moves a metric when the move button is clicked and a metric is selected", as
             <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
                 <Table>
                     <SubjectTableFooter
+                        report={report}
+                        reports={[report]}
                         subjectUuid="subject_uuid"
                         subject={report.subjects.subject_uuid}
-                        reports={[report]}
                         stopFilteringAndSorting={stopFilteringAndSorting}
                     />
                 </Table>

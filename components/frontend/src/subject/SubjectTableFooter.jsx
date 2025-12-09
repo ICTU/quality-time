@@ -5,15 +5,20 @@ import { useContext } from "react"
 import { addMetric, copyMetric, moveMetric } from "../api/metric"
 import { DataModel } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { allMetricTypeOptions, metricTypeOptions, usedMetricTypes } from "../metric/MetricType"
-import { reportsPropType, subjectPropType } from "../sharedPropTypes"
+import {
+    allMetricTypeOptions,
+    metricTypeOptions,
+    usedMetricTypesInReport,
+    usedMetricTypesInSubject,
+} from "../metric/MetricType"
+import { reportPropType, reportsPropType, subjectPropType } from "../sharedPropTypes"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
 import { CopyButton } from "../widgets/buttons/CopyButton"
 import { MoveButton } from "../widgets/buttons/MoveButton"
 import { metricOptions } from "../widgets/menu_options"
 
-function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, reports, stopFilteringAndSorting }) {
+function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, report, reports, stopFilteringAndSorting }) {
     const dataModel = useContext(DataModel)
     return (
         <TableRow>
@@ -27,7 +32,8 @@ function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, reports, st
                             stopFilteringAndSorting()
                             addMetric(subjectUuid, subtype, reload)
                         }}
-                        usedItemSubtypeKeys={usedMetricTypes(subject)}
+                        usedItemSubtypeKeysInReport={usedMetricTypesInReport(report)}
+                        usedItemSubtypeKeysInSubject={usedMetricTypesInSubject(subject)}
                     />
                     <CopyButton
                         itemType="metric"
@@ -54,6 +60,7 @@ SubjectTableFooterButtonRow.propTypes = {
     subject: subjectPropType,
     subjectUuid: string,
     reload: func,
+    report: reportPropType,
     reports: reportsPropType,
     stopFilteringAndSorting: func,
 }

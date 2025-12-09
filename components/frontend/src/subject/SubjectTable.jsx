@@ -63,6 +63,7 @@ export function SubjectTable({
                 />
                 <SubjectTableFooter
                     reload={reload}
+                    report={report}
                     reports={reports}
                     stopFilteringAndSorting={() => {
                         handleSort(null)
