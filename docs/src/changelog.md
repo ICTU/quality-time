@@ -14,6 +14,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Changed
+
+- Rename the 'tests' metric to 'test results' and the 'test suites' metric to 'test suite results' to better distinguish them from the 'test cases' metric. 'Tests' and 'test suites' metrics whose default name has not been overriden will automatically use the new default name. Closes [#12322](https://github.com/ICTU/quality-time/issues/12322).
+
 ### Added
 
 - When adding metrics to subjects, allow for hiding metric types already used in the subject or in the whole report. Closes [#12374](https://github.com/ICTU/quality-time/issues/12374).
