@@ -213,3 +213,9 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         self.set_source_parameter("metric_types_to_ignore_when_used_at_least_once", ["Size (LOC)"])
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
         self.assertNotIn("loc", [entity["metric_type"] for entity in response.sources[0].entities])
+
+    async def test_metric_types_to_ignore(self):
+        """Test that the number of non-ignored missing metrics is returned when filtered by metric type."""
+        self.set_source_parameter("metric_types_to_ignore", ["Test results"])
+        response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
+        self.assertNotIn("tests", [entity["metric_type"] for entity in response.sources[0].entities])

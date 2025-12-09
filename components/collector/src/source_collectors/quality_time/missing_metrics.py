@@ -38,7 +38,7 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
         included_entities = Entities(entity for entity in entities if self._include_entity(entity))
         return SourceMeasurement(total=str(total), entities=included_entities)
 
-    def _include_entity(self, entity: Entity) -> bool:
+    def _include_entity(self, entity: Entity) -> bool:  # noqa: PLR0911
         """Return whether to include the entity in the measurement."""
         metric_type = entity["metric_type"]
         metric_source_types = set(self.data_model["metrics"][metric_type]["sources"])
@@ -53,6 +53,9 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
 
         metric_types_to_ignore = self._parameter("metric_types_to_ignore_when_used_at_least_once")
         if metric_type in metric_types_to_ignore and metric_type in self.__used_metric_types(entity["report_uuid"]):
+            return False
+
+        if metric_type in self._parameter("metric_types_to_ignore"):
             return False
 
         subjects_to_include = self._parameter("subjects_to_include")
