@@ -12,7 +12,7 @@ from .base import JiraBase
 class JiraIssues(JiraBase):
     """Jira collector for issues."""
 
-    SPRINT_NAME_RE = re.compile(r",name=(.*),startDate=")
+    SPRINT_NAME_RE = re.compile(r",name=(.*),\w+=")
     DEFAULT_MAX_RESULTS: int = 500  # Fallback for maximum number of issues to retrieve per page from Jira
     max_results: int | None = None
 

@@ -10,6 +10,9 @@ from tests.source_collectors.source_collector_test_case import SourceCollectorTe
 if TYPE_CHECKING:
     from model import MetricMeasurement
 
+type Comment = dict[str, list[dict[str, str]]]
+type IssueStatus = dict[str, dict[str, str]]
+
 
 class JiraTestCase(SourceCollectorTestCase):
     """Base class for Jira unit tests."""
@@ -26,7 +29,11 @@ class JiraTestCase(SourceCollectorTestCase):
         self.set_source_parameter("board", "Board 2")
         self.created = "2020-08-06T16:36:48.000+0200"
 
-    def issue(self, key: str = "1", **fields: str | dict[str, dict[str, str]]) -> dict:
+    def issue(
+        self,
+        key: str = "1",
+        **fields: str | int | list[str] | list[dict[str, str | int]] | Comment | IssueStatus | None,
+    ) -> dict:
         """Create a Jira issue."""
         return {"id": key, "key": key, "fields": dict(created=self.created, summary=f"Summary {key}", **fields)}
 

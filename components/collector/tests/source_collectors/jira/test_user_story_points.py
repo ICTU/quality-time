@@ -32,7 +32,7 @@ class JiraUserStoryPointsTest(JiraTestCase):
         """Test that the number of story points and the sprints are returned, when sprint field is in text format."""
         user_stories_json = {
             "issues": [
-                self.issue(key="1", field=10, custom_field_001=["...,state=CLOSED,name=Sprint 1,startDate=..."]),
+                self.issue(key="1", field=10, custom_field_001=["...,state=CLOSED,name=Sprint 1,rapidViewId=..."]),
                 self.issue(key="2", field=32, custom_field_001=None),
             ],
         }
@@ -86,8 +86,8 @@ class JiraUserStoryPointsTest(JiraTestCase):
         """Test that the number of story points and the sprints are returned, when there are mixed sprint fields."""
         user_stories_json = {
             "issues": [
-                self.issue(key="1", field=1, custom_field_001=["...,state=CLOSED,name=Sprint 1,startDate=..."]),
-                self.issue(key="2", field=2, custom_field_001=["...,state=CLOSED,name=Sprint 1,startDate=..."]),
+                self.issue(key="1", field=1, custom_field_001=["...,state=CLOSED,name=Sprint 1,rapidViewId=..."]),
+                self.issue(key="2", field=2, custom_field_001=["...,state=CLOSED,name=Sprint 1,someOtherAttr=..."]),
                 self.issue(key="3", field=3, custom_field_001=[{"id": 1, "name": "Sprint 2", "state": "closed"}]),
                 self.issue(key="4", field=5, custom_field_001=[{"id": 1, "name": "Sprint 2", "state": "closed"}]),
                 self.issue(key="5", field=8, custom_field_001=None),
