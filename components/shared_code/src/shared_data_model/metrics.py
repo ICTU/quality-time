@@ -667,10 +667,10 @@ MP-4 above).
         tags=[Tag.TEST_QUALITY],
     ),
     "tests": Metric(
-        name="Tests",
-        description="The number of tests.",
-        rationale="Keep track of the total number of tests or the number of tests with different states, "
-        "for example failed or errored.",
+        name="Test results",
+        description="The number of executed tests.",
+        rationale="Keep track of the total number of executed tests or the number of executed tests with specific "
+        "results, for example skipped, failed or errored.",
         scales=["count", "percentage"],
         unit=Unit.TESTS,
         direction=Direction.MORE_IS_BETTER,
@@ -693,10 +693,10 @@ MP-4 above).
         tags=[Tag.TEST_QUALITY],
     ),
     "test_suites": Metric(
-        name="Test suites",
-        description="The number of test suites.",
-        rationale="Keep track of the total number of test suites or the number of test suites with different states, "
-        "for example failed or errored.",
+        name="Test suite results",
+        description="The number of executed test suites.",
+        rationale="Keep track of the total number of executed test suites or the number of executed test suites with "
+        "specific results, for example skipped, failed or errored.",
         scales=["count", "percentage"],
         unit=Unit.TEST_SUITES,
         direction=Direction.MORE_IS_BETTER,

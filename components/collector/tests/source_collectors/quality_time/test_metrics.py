@@ -37,7 +37,7 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
 
     async def test_nr_of_metrics(self):
         """Test that the number of metrics is returned."""
-        self.set_source_parameter("metric_type", ["Tests", "Violations"])
+        self.set_source_parameter("metric_type", ["Test results", "Violations"])
         self.set_source_parameter("source_type", ["SonarQube"])
         self.set_source_parameter("tags", ["security"])
         self.set_source_parameter("status", ["target not met (red)"])
@@ -60,7 +60,7 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
 
     async def test_nr_of_metrics_with_min_status_duration(self):
         """Test that metrics with a recently changed status are ignored."""
-        self.set_source_parameter("metric_type", ["Tests", "Violations"])
+        self.set_source_parameter("metric_type", ["Test results", "Violations"])
         self.set_source_parameter("source_type", ["SonarQube"])
         self.set_source_parameter("tags", ["security"])
         self.set_source_parameter("status", ["target not met (red)", "target met (green)"])
