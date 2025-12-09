@@ -25,6 +25,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Added
 
 - When adding metrics to subjects, allow for hiding metric types already used in the subject or in the whole report. Closes [#12374](https://github.com/ICTU/quality-time/issues/12374).
+- When measuring missing metrics, allow for ignoring specific metric types. Closes [#12377](https://github.com/ICTU/quality-time/issues/12377).
 - When measuring missing metrics, allow for ignoring metric types that have been used at least once. Closes [#12384](https://github.com/ICTU/quality-time/issues/12384).
 
 ## v5.47.2 - 2025-12-05

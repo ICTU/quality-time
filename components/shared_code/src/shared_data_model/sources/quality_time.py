@@ -181,6 +181,13 @@ QUALITY_TIME = Source(
             placeholder="none",
             metrics=["missing_metrics"],
         ),
+        "metric_types_to_ignore": MultipleChoiceWithoutDefaultsParameter(
+            name="Metric types to ignore",
+            values=list(ALL_METRICS.keys()),
+            api_values=ALL_METRICS,
+            placeholder="none",
+            metrics=["missing_metrics"],
+        ),
         "source_type": MultipleChoiceWithDefaultsParameter(
             name="Source types",
             help="If provided, only count metrics with one or more sources of the selected source types.",
