@@ -173,6 +173,14 @@ QUALITY_TIME = Source(
             api_values=ALL_METRICS,
             metrics=["metrics"],
         ),
+        "metric_types_to_ignore_when_used_at_least_once": MultipleChoiceWithoutDefaultsParameter(
+            name="Metric types to ignore when used at least once",
+            help="Ignore these metric types if they have been used at least once in the report.",
+            values=list(ALL_METRICS.keys()),
+            api_values=ALL_METRICS,
+            placeholder="none",
+            metrics=["missing_metrics"],
+        ),
         "source_type": MultipleChoiceWithDefaultsParameter(
             name="Source types",
             help="If provided, only count metrics with one or more sources of the selected source types.",

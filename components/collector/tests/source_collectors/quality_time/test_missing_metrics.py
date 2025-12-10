@@ -95,6 +95,7 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         return {
             "key": f"{report['report_uuid']}:{subject_uuid}:{metric_type}",
             "report": report["title"],
+            "report_uuid": report["report_uuid"],
             "report_url": f"https://quality_time/{report['report_uuid']}",
             "subject": expected_subject_name,
             "subject_url": f"https://quality_time/{report['report_uuid']}#{subject_uuid}",
@@ -194,3 +195,21 @@ class QualityTimeMissingMetricsTest(QualityTimeTestCase):
         self.set_source_parameter("subjects_to_ignore", ["s1"])
         response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
         self.assert_measurement(response, entities=[], value="0")
+
+    async def test_metric_types_to_ignore_when_used_at_least_once(self):
+        """Test that the number of non-ignored missing metrics is returned when filtered by metric type."""
+        self.add_report_fixture("Subject 2")
+        # Add a second subject so the missing metrics metric reports a metric type used in the first subject,
+        # but not the second
+        self.reports["reports"][-1]["subjects"]["s3"] = {
+            "name": "Subject 3",
+            "type": "software_source_code",
+            "metrics": {},
+        }
+        response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
+        # Check that the Size metric type is reported as missing because is is not used in both subjects
+        self.assertIn("loc", [entity["metric_type"] for entity in response.sources[0].entities])
+        # Now ignore metric types used at least once
+        self.set_source_parameter("metric_types_to_ignore_when_used_at_least_once", ["Size (LOC)"])
+        response = await self.collect(get_request_json_side_effect=[self.data_model, self.reports])
+        self.assertNotIn("loc", [entity["metric_type"] for entity in response.sources[0].entities])
