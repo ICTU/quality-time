@@ -1,12 +1,10 @@
 import { array, arrayOf, bool, element, func } from "prop-types"
 import { useEffect, useState } from "react"
-import RGL, { WidthProvider } from "react-grid-layout"
+import ReactGridLayout, { useContainerWidth } from "react-grid-layout"
 
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 
-const ReactGridLayout = WidthProvider(RGL)
-
-function cardDivs(cards, dragging, isDragging) {
+function cardDivs(cards, isDragging) {
     return cards.map((card) => (
         <div
             onClickCapture={(e) => {
@@ -30,6 +28,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
     const cols = 32
     const cardWidth = 4
     const cardHeight = 6
+    const { width, containerRef, mounted } = useContainerWidth()
     const [mousePos, setMousePos] = useState([0, 0, 0])
     const [dragging, setDragging] = useState(false)
     useEffect(() => {
@@ -84,22 +83,25 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
     return (
         <Permissions.Consumer>
             {(permissions) => (
-                <ReactGridLayout
-                    cols={cols}
-                    compactType={null}
-                    isDraggable={accessGranted(permissions, [EDIT_REPORT_PERMISSION])}
-                    layout={layout}
-                    onDragStart={onDragStart}
-                    onDragStop={onDragStop}
-                    preventCollision={true}
-                    rowHeight={24}
-                    style={{
-                        zIndex: "0", // Prevent cards from being shown above the settings panel after being clicked
-                    }}
-                    useCSSTransforms={false} // Don't fly-in the cards from the top left
-                >
-                    {cardDivs(cards, dragging, isDragging)}
-                </ReactGridLayout>
+                <div ref={containerRef}>
+                    {mounted && (
+                        <ReactGridLayout
+                            compactor={"vertical"}
+                            isDraggable={accessGranted(permissions, [EDIT_REPORT_PERMISSION])}
+                            gridConfig={{ cols: cols, rowHeight: 24 }}
+                            layout={layout}
+                            measureBeforeMount={true}
+                            onDragStart={onDragStart}
+                            onDragStop={onDragStop}
+                            preventCollision={true}
+                            useCSSTransforms={false} // Don't fly-in the cards from the top left
+                            verticalCompact={false} // Allow for placing cards whereever
+                            width={width}
+                        >
+                            {cardDivs(cards, isDragging)}
+                        </ReactGridLayout>
+                    )}
+                </div>
             )}
         </Permissions.Consumer>
     )
