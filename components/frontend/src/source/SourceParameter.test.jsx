@@ -2,11 +2,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import dayjs from "dayjs"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 import {
+    clickButton,
     clickLabeledElement,
     clickText,
     expectFetch,
@@ -49,6 +51,9 @@ function renderSourceParameter({
     parameterValue = "https://test",
     parameterValues = [],
     placeholder = "placeholder",
+    recurrenceFrequency = null,
+    recurrenceOffset = null,
+    recurrenceUnit = null,
     warning = false,
 }) {
     return render(
@@ -62,7 +67,14 @@ function renderSourceParameter({
                     placeholder={placeholder}
                     report={report}
                     requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                    source={{ type: "source_type" }}
+                    source={{
+                        type: "source_type",
+                        parameters: {
+                            recurrence_frequency: recurrenceFrequency,
+                            recurrence_offset: recurrenceOffset,
+                            recurrence_unit: recurrenceUnit,
+                        },
+                    }}
                     sourceUuid="source_uuid"
                     warning={warning}
                 />
@@ -114,6 +126,79 @@ it("renders a date parameter without date", async () => {
     const { container } = renderSourceParameter({ parameter: { name: "Date", type: "date" }, parameterValue: "" })
     expect(screen.queryAllByLabelText(/Date/, { selector: "input" }).length).toBe(1)
     expect(screen.queryAllByPlaceholderText(/YYYY/).length).toBe(0)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("sets the next date one day from previous date", async () => {
+    const { container } = renderSourceParameter({
+        parameter: { name: "Date", type: "date" },
+        parameterValue: "2025-10-10",
+        recurrenceOffset: "previous date",
+    })
+    clickButton("Set next date")
+    expectFetch("post", "source/source_uuid/parameter/key1", {
+        edit_scope: "source",
+        key1: dayjs("2025-10-10").add(1, "day"),
+    })
+    await expectNoAccessibilityViolations(container)
+})
+
+it("sets the next date two weeks from previous date", async () => {
+    const { container } = renderSourceParameter({
+        parameter: { name: "Date", type: "date" },
+        parameterValue: "2025-10-10",
+        recurrenceFrequency: 2,
+        recurrenceOffset: "previous date",
+        recurrenceUnit: "week",
+    })
+    clickButton("Set next date")
+    expectFetch("post", "source/source_uuid/parameter/key1", {
+        edit_scope: "source",
+        key1: dayjs("2025-10-10").add(2, "week"),
+    })
+    await expectNoAccessibilityViolations(container)
+})
+
+it("sets the next date three months from current date", async () => {
+    vi.useFakeTimers()
+    const { container } = renderSourceParameter({
+        parameter: { name: "Date", type: "date" },
+        parameterValue: "2025-10-10",
+        recurrenceFrequency: 3,
+        recurrenceOffset: "today",
+        recurrenceUnit: "month",
+    })
+    clickButton("Set next date")
+    expectFetch("post", "source/source_uuid/parameter/key1", {
+        edit_scope: "source",
+        key1: dayjs().add(3, "month"),
+    })
+    await expectNoAccessibilityViolations(container)
+})
+
+it("sets the next date a year from current date", async () => {
+    vi.useFakeTimers()
+    const { container } = renderSourceParameter({
+        parameter: { name: "Date", type: "date" },
+        parameterValue: "2025-10-10",
+        recurrenceUnit: "year",
+    })
+    clickButton("Set next date")
+    expectFetch("post", "source/source_uuid/parameter/key1", {
+        edit_scope: "source",
+        key1: dayjs().add(1, "year"),
+    })
+    await expectNoAccessibilityViolations(container)
+})
+
+it("cannot set the next date if the recurrence frequency has not been set", async () => {
+    const { container } = renderSourceParameter({
+        parameter: { name: "Date", type: "date" },
+        parameterValue: "2025-10-10",
+        recurrenceFrequency: 0,
+    })
+    clickButton("Set next date")
+    expectNoFetch()
     await expectNoAccessibilityViolations(container)
 })
 

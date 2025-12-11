@@ -1,16 +1,17 @@
 import EditIcon from "@mui/icons-material/Edit"
-import { FormControl, IconButton, Menu, MenuItem, Typography } from "@mui/material"
+import UpdateIcon from "@mui/icons-material/Update"
+import { Button, FormControl, IconButton, Menu, MenuItem, Stack, Typography } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
-import { bool, func, object, oneOfType, string } from "prop-types"
+import { bool, func, number, object, oneOf, oneOfType, shape, string } from "prop-types"
 import { useContext, useState } from "react"
 
 import { setSourceParameter } from "../api/source"
 import { accessGranted, Permissions } from "../context/Permissions"
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { TextField } from "../fields/TextField"
-import { permissionsPropType, reportPropType, sourcePropType, stringsPropType } from "../sharedPropTypes"
+import { datePropType, permissionsPropType, reportPropType, sourcePropType, stringsPropType } from "../sharedPropTypes"
 import { dropdownOptions } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 
@@ -104,6 +105,23 @@ sources.propTypes = {
     report: reportPropType,
 }
 
+function nextDate(calendarDateParameters, previousDate) {
+    // Generate the next date based on the previous date and/or the recurrence parameters
+    const frequency = Number.parseInt(calendarDateParameters?.["recurrence_frequency"]) || 1
+    const unit = calendarDateParameters?.["recurrence_unit"] ?? "day"
+    const offset = calendarDateParameters?.["recurrence_offset"] ?? "today"
+    const offsetDate = offset === "today" ? new Date() : previousDate
+    return dayjs(offsetDate).add(frequency, unit)
+}
+nextDate.propTypes = {
+    calendarDateParameters: shape({
+        recurrence_frequency: number,
+        recurrence_unit: oneOf(["day", "week", "month", "year"]),
+        recurrence_offset: oneOf(["today", "previous date"]),
+    }),
+    previousDate: datePropType,
+}
+
 function collectParameterValues(report, sourceType, parameterKey) {
     // Collect all values in the current report used for this parameter, for this source type
     let values = new Set()
@@ -178,16 +196,33 @@ export function SourceParameter({
     let parameterInput = null
     if (parameterType === "date") {
         parameterInput = (
-            <DatePicker
-                {...parameterProps}
-                defaultValue={value ? dayjs(value) : null}
-                slotProps={{
-                    field: { clearable: true },
-                    textField: { helperText: helperText, InputProps: { startAdornment: startAdornment } },
-                }}
-                sx={{ width: "100%" }}
-                timezone="default"
-            />
+            <Stack direction="row" spacing={2} sx={{ alignItems: "baseline" }}>
+                <DatePicker
+                    {...parameterProps}
+                    value={value ? dayjs(value) : null}
+                    slotProps={{
+                        textField: { helperText: helperText, InputProps: { startAdornment: startAdornment } },
+                    }}
+                    sx={{ width: "100%" }}
+                    timezone="default"
+                />
+                <Button
+                    disabled={!value || Number.parseInt(source.parameters?.["recurrence_frequency"]) === 0}
+                    onClick={() => {
+                        setSourceParameter(
+                            sourceUuid,
+                            parameterKey,
+                            nextDate(source.parameters, value),
+                            "source",
+                            reload,
+                        )
+                    }}
+                    startIcon={<UpdateIcon />}
+                    variant="outlined"
+                >
+                    Set next date
+                </Button>
+            </Stack>
         )
     }
     parameterProps["value"] = value
