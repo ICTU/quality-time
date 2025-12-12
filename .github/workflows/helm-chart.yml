@@ -40,6 +40,6 @@ jobs:
           kubectl apply -f helm/deploy-ci.yaml
           helm dependency build helm
           helm upgrade --install --render-subchart-notes quality-time helm
-          kubectl wait --all pods --timeout=2m --for=condition=Ready
+          kubectl wait --all pods --timeout=5m --for=condition=Ready
           kubectl wait --all deployments --timeout=30s --for=condition=Available
-        timeout-minutes: 3
+        timeout-minutes: 6
