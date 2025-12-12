@@ -17,6 +17,6 @@ USER renderer
 
 HEALTHCHECK CMD ["node", "/home/renderer/healthcheck.cjs"]
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 CMD ["node", "/home/renderer/index.js"]

@@ -15,7 +15,7 @@ FROM nginxinc/nginx-unprivileged:1.29.3-alpine3.22-slim
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"
 
-ENV FRONTEND_PORT 5000
+ENV FRONTEND_PORT=5000
 
 COPY --from=compile-image /home/frontend/dist /usr/share/nginx/html
 
