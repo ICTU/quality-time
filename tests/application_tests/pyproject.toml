@@ -1,6 +1,6 @@
 [project]
 name = "application-tests"
-version = "5.48.0-rc.2"
+version = "5.48.0"
 requires-python = "==3.14.1"
 classifiers = [
     "Programming Language :: Python",
