@@ -1,6 +1,6 @@
 [project]
 name = "docs"
-version = "5.48.0-rc.0"
+version = "5.48.0-rc.1"
 requires-python = "==3.14.1"
 classifiers = [
     "Framework :: Pydantic",

@@ -1,6 +1,6 @@
 {
     "name": "quality-time-app",
-    "version": "5.48.0-rc.0",
+    "version": "5.48.0-rc.1",
     "private": true,
     "dependencies": {
         "@emotion/react": "^11.14.0",
