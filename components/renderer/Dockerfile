@@ -1,4 +1,5 @@
-FROM node:25.2.1-alpine3.23
+FROM node:25.2.1-alpine3.22
+# We're temporarily using Alpine 3.22 to work around https://gitlab.alpinelinux.org/alpine/aports/-/issues/17775
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
