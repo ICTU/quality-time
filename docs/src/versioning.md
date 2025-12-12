@@ -21,8 +21,9 @@ The table below contains the *Quality-time* releases since the last minor of the
 
 | Version    | Date       | Mongo  | FC     | Migrations  | Downgrade       | Upgrade         | Manual changes |
 |------------|------------|--------|--------|-------------|-----------------|-----------------|----------------|
-| v5.47.2    | 2025-12-05 | v8     | v8     |             | v5.40.0-v5.47.1 | n/a             | no             |
-| v5.47.1    | 2025-11-28 | v8     | v8     | removed (2) | v5.40.0-v5.47.0 | v5.47.2         | no             |
+| v5.48.0    | 2025-12-12 | v8     | v8     |             | v5.47.2         | n/a             | no             |
+| v5.47.2    | 2025-12-05 | v8     | v8     | added (3)   | not supported   | v5.48.0         | no             |
+| v5.47.1    | 2025-11-28 | v8     | v8     | removed (2) | v5.40.0-v5.47.0 | v5.47.2-latest  | no             |
 | v5.47.0    | 2025-11-20 | v8     | v8     |             | v5.40.0-v5.46.0 | v5.47.1-latest  | no             |
 | v5.46.0    | 2025-11-13 | v8     | v8     |             | v5.40.0-v5.45.0 | v5.47.0-latest  | no             |
 | v5.45.0    | 2025-10-31 | v8     | v8     |             | v5.40.0-v5.44.2 | v5.46.0-latest  | no             |
@@ -83,6 +84,8 @@ The table below contains the *Quality-time* releases since the last minor of the
 | v5.0.1     | 2023-06-26 | v6     | v5     |             | v4.10.0-v5.0.0  | v5.1.0-v5.2.0   | no             |
 | **v5.0.0** | 2023-06-23 | **v6** | v5     |             | v4.10.0         | v5.0.1-v5.2.0   | **yes**        |
 | v4.10.0    | 2023-04-26 | v5     | v5     |             | n/a             | v5.0.0-v5.2.0   | no             |
+
+(3) [Switch min/max addition strategy when switching metric direction](https://github.com/ICTU/quality-time/issues/12142)
 
 (2) [Removed all current database migrations](https://github.com/ICTU/quality-time/issues/12289):
 
