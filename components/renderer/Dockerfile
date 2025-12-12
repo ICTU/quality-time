@@ -3,8 +3,9 @@ FROM node:25.2.1-alpine3.23
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
 
+# Work around https://gitlab.alpinelinux.org/alpine/aports/-/issues/17775:
 # hadolint ignore=DL3018
-RUN apk add --no-cache chromium
+RUN apk upgrade --scripts=no apk-tools && apk add --no-cache chromium
 
 WORKDIR /home/renderer
 COPY package*.json /home/renderer/
