@@ -10,11 +10,11 @@ FROM nginxinc/nginx-unprivileged:1.29.3-alpine3.22-slim
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time proxy"
 
-ENV PROXY_PORT 80
-ENV FRONTEND_HOST frontend
-ENV FRONTEND_PORT 5000
-ENV API_SERVER_HOST api_server
-ENV API_SERVER_PORT 5001
+ENV PROXY_PORT=80
+ENV FRONTEND_HOST=frontend
+ENV FRONTEND_PORT=5000
+ENV API_SERVER_HOST=api_server
+ENV API_SERVER_PORT=5001
 
 COPY --from=compile-image /usr/sbin/nginx /usr/sbin/nginx
 COPY *.template /etc/nginx/templates/
