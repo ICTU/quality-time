@@ -26,7 +26,7 @@ jobs:
           changes: ${{ env.VALUE_CHANGES }}
 
       - name: Start minikube
-        uses: medyagh/setup-minikube@v0.0.20
+        uses: medyagh/setup-minikube@v0.0.21
         with:
           driver: docker
           container-runtime: containerd
