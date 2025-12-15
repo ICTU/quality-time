@@ -15,7 +15,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Install uv
-        uses: astral-sh/setup-uv@v7.1.5
+        uses: astral-sh/setup-uv@v7.1.6
         with:
           version: "0.9.15"
       - name: Run feature tests
