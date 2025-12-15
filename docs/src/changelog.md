@@ -12,6 +12,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- The notifier would fail to notify about metrics without a unit, such as the version metric. Fixes [#12412](https://github.com/ICTU/quality-time/issues/12412).
+
 ## v5.48.0 - 2025-12-12
 
 ### Fixed
