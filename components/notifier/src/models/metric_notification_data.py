@@ -6,8 +6,9 @@ from shared_data_model import DATA_MODEL
 
 if TYPE_CHECKING:
     from shared.model.measurement import Measurement
-    from shared.model.metric import Metric, MetricId
+    from shared.model.metric import Metric
     from shared.model.subject import Subject
+    from shared.utils.type import MetricId
 
 NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS: Final = 1
 NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS_CHANGE: Final = 2
@@ -29,8 +30,8 @@ class MetricNotificationData:
         self.metric = metric
         self.metric_uuid = metric_uuid
         self.measurements = measurements
-        self.metric_name = metric["name"] or DATA_MODEL.metrics[metric["type"]].name
-        self.metric_unit = metric["unit"] or DATA_MODEL.metrics[metric["type"]].unit.value
+        self.metric_name = metric.get("name") or DATA_MODEL.metrics[metric["type"]].name
+        self.metric_unit = metric.get("unit") or DATA_MODEL.metrics[metric["type"]].unit.value
         self.subject_name = subject.get("name") or DATA_MODEL.all_subjects[subject["type"]].name
         self.scale = metric.scale()
         self.status = self.__status(LAST)
