@@ -68,26 +68,37 @@ def violation_entity_attributes(
     return attributes
 
 
-PROJECT_METRICS = [
-    "commented_out_code",
-    "complex_units",
-    "duplicated_lines",
-    "loc",
-    "long_units",
-    "many_parameters",
-    "remediation_effort",
-    "security_warnings",
+# Metrics using the SonarQube project_analyses endpoint:
+PROJECT_ANALYSES_METRICS = [
     "software_version",
     "source_up_to_dateness",
+]
+
+# Metrics using the SonarQube project/issues endpoint:
+PROJECT_ISSUES_METRICS = [
+    "commented_out_code",
+    "complex_units",
+    "long_units",
+    "many_parameters",
+    "security_warnings",
     "suppressed_violations",
-    "tests",
     "todo_and_fixme_comments",
-    "uncovered_branches",
-    "uncovered_lines",
     "violations",
 ]
 
-ALL_SONARQUBE_METRICS = sorted([*PROJECT_METRICS, "source_version"], key=str)
+# Metrics using the SonarQube measures/component endpoint:
+MEASURES_COMPONENT_METRICS = [
+    "duplicated_lines",
+    "loc",
+    "remediation_effort",
+    "tests",
+    "uncovered_branches",
+    "uncovered_lines",
+]
+
+ALL_SONARQUBE_METRICS = sorted(
+    [*PROJECT_ANALYSES_METRICS, *PROJECT_ISSUES_METRICS, *MEASURES_COMPONENT_METRICS, "source_version"]
+)
 
 VIOLATION_ENTITY = Entity(name="violation", attributes=violation_entity_attributes())
 
@@ -347,7 +358,7 @@ SONARQUBE = Source(
             name="Project key",
             help="The project key can be found by opening the project in SonarQube and clicking 'Project Information'.",
             mandatory=True,
-            metrics=PROJECT_METRICS,
+            metrics=sorted([*MEASURES_COMPONENT_METRICS, *PROJECT_ANALYSES_METRICS, *PROJECT_ISSUES_METRICS]),
         ),
         "branch": StringParameter(
             name="Branch (only supported by commercial SonarQube editions)",
@@ -355,12 +366,12 @@ SONARQUBE = Source(
                 "https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/branch-analysis/introduction/"
             ),
             default_value="main",
-            metrics=PROJECT_METRICS,
+            metrics=sorted([*MEASURES_COMPONENT_METRICS, *PROJECT_ANALYSES_METRICS, *PROJECT_ISSUES_METRICS]),
         ),
         "directories_to_include": MultipleChoiceWithAdditionParameter(
             name="Directories to include",
             placeholder="all directories",
-            metrics=PROJECT_METRICS,
+            metrics=PROJECT_ISSUES_METRICS,
         ),
         "languages_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Languages to ignore (regular expressions or language names)",
