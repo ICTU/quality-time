@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
+- When measuring security warnings using SonarQube as source, security violations can be filtered by directory but security hotspots can not, as SonarQube does not support filtering hotspots by directory. Note this in the parameter help. Fixes [#12340](https://github.com/ICTU/quality-time/issues/12340).
 - When using SonarQube as source, don't show the "directories to include" parameter for metrics where SonarQube does not support filtering by directory. Fixes [#12341](https://github.com/ICTU/quality-time/issues/12341).
 - The notifier would fail to notify about metrics without a unit, such as the version metric. Fixes [#12412](https://github.com/ICTU/quality-time/issues/12412).
 

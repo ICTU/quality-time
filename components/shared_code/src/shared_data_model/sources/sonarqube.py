@@ -370,6 +370,8 @@ SONARQUBE = Source(
         ),
         "directories_to_include": MultipleChoiceWithAdditionParameter(
             name="Directories to include",
+            help="Only report issues for the listed directories. Note that SonarQube does not support filtering "
+            "security hotspots by directory.",
             placeholder="all directories",
             metrics=PROJECT_ISSUES_METRICS,
         ),
