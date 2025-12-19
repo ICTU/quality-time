@@ -12,78 +12,87 @@ A new **minor** release of *Quality-time* is made when the new version has new o
 
 A new **patch** release of *Quality-time* is made when the new version has only bug fixes.
 
-```{index} MongoDB
-```
-
 ## Version overview
 
-The table below contains the *Quality-time* releases since the last minor of the previous major release. For each release it shows the release date, the MongoDB version included, the MongoDB feature compatibility (FC) version set in the database, whether migration code was added or removed, whether up- or downgrading is supported, and if so, to which versions, and whether manual changes are needed to up- or downgrade.
+The table below contains the *Quality-time* releases since the last minor of the previous major release. For each release it shows:
 
-| Version    | Date       | Mongo  | FC     | Migrations  | Downgrade       | Upgrade         | Manual changes |
-|------------|------------|--------|--------|-------------|-----------------|-----------------|----------------|
-| v5.48.0    | 2025-12-12 | v8     | v8     |             | v5.47.2         | n/a             | no             |
-| v5.47.2    | 2025-12-05 | v8     | v8     | added (3)   | not supported   | v5.48.0         | no             |
-| v5.47.1    | 2025-11-28 | v8     | v8     | removed (2) | v5.40.0-v5.47.0 | v5.47.2-latest  | no             |
-| v5.47.0    | 2025-11-20 | v8     | v8     |             | v5.40.0-v5.46.0 | v5.47.1-latest  | no             |
-| v5.46.0    | 2025-11-13 | v8     | v8     |             | v5.40.0-v5.45.0 | v5.47.0-latest  | no             |
-| v5.45.0    | 2025-10-31 | v8     | v8     |             | v5.40.0-v5.44.2 | v5.46.0-latest  | no             |
-| v5.44.2    | 2025-10-16 | v8     | v8     |             | v5.40.0-v5.44.1 | v5.45.0-latest  | no             |
-| v5.44.1    | 2025-10-10 | v8     | v8     |             | v5.40.0-v5.44.0 | v5.44.2-latest  | no             |
-| v5.44.0    | 2025-10-03 | v8     | v8     |             | v5.40.0-v5.43.0 | v5.44.1-latest  | no             |
-| v5.43.0    | 2025-09-26 | v8     | v8     |             | v5.40.0-v5.42.0 | v5.44.0-latest  | no             |
-| v5.42.0    | 2025-09-18 | v8     | v8     |             | v5.40.0-v5.41.0 | v5.43.0-latest  | no             |
-| v5.41.0    | 2025-09-05 | v8     | v8     |             | v5.40.0         | v5.42.0-latest  | no             |
-| v5.40.0    | 2025-08-29 | v8     | v8     | added (1)   | not supported   | v5.41.0-latest  | no             |
-| v5.39.0    | 2025-08-21 | v8     | v8     |             | v5.38.0-v5.38.1 | v5.40.0-v5.47.0 | no             |
-| v5.38.1    | 2025-08-14 | v8     | v8     |             | v5.38.0         | v5.39.0-v5.47.0 | no             |
-| v5.38.0    | 2025-08-13 | v8     | v8     | added       | not supported   | v5.38.1-v5.47.0 | no             |
-| v5.37.0    | 2025-08-06 | v8     | v8     |             | v5.26.0-v5.36.0 | v5.38.0-v5.47.0 | no             |
-| v5.36.0    | 2025-07-10 | v8     | v8     |             | v5.26.0-v5.35.0 | v5.37.0-v5.47.0 | no             |
-| v5.35.0    | 2025-07-04 | v8     | v8     |             | v5.26.0-v5.34.0 | v5.36.0-v5.47.0 | no             |
-| v5.34.0    | 2025-06-26 | v8     | v8     |             | v5.26.0-v5.33.0 | v5.35.0-v5.47.0 | no             |
-| v5.33.0    | 2025-06-20 | v8     | v8     |             | v5.26.0-v5.32.1 | v5.34.0-v5.47.0 | no             |
-| v5.32.1    | 2025-06-12 | v8     | v8     |             | v5.26.0-v5.32.0 | v5.33.0-v5.47.0 | no             |
-| v5.32.0    | 2025-06-05 | v8     | v8     |             | v5.26.0-v5.31.0 | v5.32.1-v5.47.0 | no             |
-| v5.31.0    | 2025-05-22 | v8     | v8     |             | v5.26.0-v5.30.0 | v5.32.0-v5.47.0 | no             |
-| v5.30.0    | 2025-05-15 | v8     | v8     |             | v5.26.0-v5.29.0 | v5.31.0-v5.47.0 | no             |
-| v5.29.0    | 2025-05-08 | v8     | v8     |             | v5.26.0-v5.28.0 | v5.30.0-v5.47.0 | no             |
-| v5.28.0    | 2025-04-17 | v8     | v8     |             | v5.26.0-v5.27.0 | v5.29.0-v5.47.0 | no             |
-| v5.27.0    | 2025-04-04 | v8     | v8     |             | v5.26.0-v5.26.2 | v5.28.0-v5.47.0 | no             |
-| v5.26.2    | 2025-03-20 | v8     | v8     |             | v5.26.0-v5.26.1 | v5.27.0-v5.47.0 | no             |
-| v5.26.1    | 2025-03-19 | v8     | v8     |             | v5.26.0         | v5.26.2-v5.47.0 | no             |
-| v5.26.0    | 2025-02-27 | v8     | v8     | added       | not supported   | v5.26.1-v5.47.0 | no             |
-| v5.25.0    | 2025-02-14 | v8     | v8     |             | v5.20.0-v5.24.0 | v5.26.0-v5.47.0 | no             |
-| v5.24.0    | 2025-02-06 | v8     | v8     |             | v5.20.0-v5.23.0 | v5.25.0-v5.47.0 | no             |
-| v5.23.0    | 2025-01-27 | v8     | v8     |             | v5.20.0-v5.22.0 | v5.24.0-v5.47.0 | no             |
-| v5.22.0    | 2025-01-16 | v8     | v8     |             | v5.20.0-v5.21.0 | v5.23.0-v5.47.0 | no             |
-| v5.21.0    | 2024-12-12 | v8     | v8     |             | v5.20.0         | v5.22.0-v5.47.0 | no             |
-| v5.20.0    | 2024-12-05 | v8     | **v8** | added       | not supported   | v5.21.0-v5.47.0 | no             |
-| v5.19.0    | 2024-11-22 | v8     | v7     |             | v5.16.1-v5.18.0 | v5.20.0-v5.47.0 | no             |
-| v5.18.0    | 2024-11-06 | v8     | v7     |             | v5.16.1-v5.17.1 | v5.19.0-v5.47.0 | no             |
-| v5.17.1    | 2024-10-25 | v8     | v7     |             | v5.16.1-v5.17.0 | v5.18.0-v5.47.0 | no             |
-| v5.17.0    | 2024-10-17 | **v8** | v7     |             | v5.16.1-v5.16.2 | v5.17.1-v5.47.0 | no             |
-| v5.16.2    | 2024-10-03 | v7     | v7     |             | v5.16.1         | v5.17.0-v5.47.0 | no             |
-| v5.16.1    | 2024-09-26 | v7     | v7     | added       | not supported   | v5.16.2-v5.47.0 | no             |
-| v5.16.0    | 2024-09-19 | v7     | v7     | added       | not supported   | v5.16.1-v5.47.0 | no             |
-| v5.15.0    | 2024-07-30 | v7     | v7     |             | v5.14.0         | v5.16.0-v5.47.0 | no             |
-| v5.14.0    | 2024-07-05 | v7     | **v7** | added       | not supported   | v5.15.0-v5.47.0 | no             |
-| v5.13.0    | 2024-05-23 | v7     | v6     | added       | not supported   | v5.14.0-v5.16.2 | no             |
-| v5.12.0    | 2024-05-17 | v7     | v6     | added       | not supported   | v5.13.0-v5.16.2 | no             |
-| v5.11.0    | 2024-04-22 | v7     | v6     |             | v5.6.0-v5.10.0  | v5.12.0-v5.16.2 | no             |
-| v5.10.0    | 2024-04-15 | v7     | v6     |             | v5.6.0-v5.9.0   | v5.11.0-v5.16.2 | no             |
-| v5.9.0     | 2024-03-22 | v7     | v6     |             | v5.6.0-v5.8.0   | v5.10.0-v5.16.2 | no             |
-| v5.8.0     | 2024-02-16 | v7     | v6     |             | v5.6.0-v5.7.0   | v5.9.0-v5.16.2  | no             |
-| v5.7.0     | 2024-01-31 | v7     | v6     |             | v5.6.0          | v5.8.0-v5.16.2  | no             |
-| v5.6.0     | 2024-01-12 | v7     | v6     | added       | not supported   | v5.7.0-v5.16.2  | no             |
-| v5.5.0     | 2023-12-15 | v7     | v6     |             | v5.1.0-v5.4.0   | v5.6.0-v5.16.2  | no             |
-| v5.4.0     | 2023-12-11 | v7     | v6     |             | v5.1.0-v5.3.1   | v5.5.0-v5.16.2  | no             |
-| v5.3.1     | 2023-11-08 | v7     | v6     |             | v5.1.0-v5.3.0   | v5.4.0-v5.16.2  | no             |
-| v5.3.0     | 2023-11-07 | **v7** | v6     |             | v5.1.0-v5.2.0   | v5.3.1-v5.16.2  | no             |
-| v5.2.0     | 2023-09-29 | v6     | v6     |             | v5.1.0          | v5.3.0-v5.16.2  | no             |
-| v5.1.0     | 2023-09-05 | v6     | **v6** |             | not supported   | v5.2.0-v5.16.2  | no             |
-| v5.0.1     | 2023-06-26 | v6     | v5     |             | v4.10.0-v5.0.0  | v5.1.0-v5.2.0   | no             |
-| **v5.0.0** | 2023-06-23 | **v6** | v5     |             | v4.10.0         | v5.0.1-v5.2.0   | **yes**        |
-| v4.10.0    | 2023-04-26 | v5     | v5     |             | n/a             | v5.0.0-v5.2.0   | no             |
+- Version: the version number of the release.
+- Date: the release date.
+- Mongo: the {index}`MongoDB` version included.
+- FC: the MongoDB feature compatibility (FC) version set in the database.
+- Migrations: whether migration code was added or removed in the release.
+- Max. downgrade: whether downgrading is supported, and if so, what the lowest version is to which downgrading is supported.
+- Max. upgrade: the highest version to which upgrading is supported.
+- Manual changes: whether manual changes are needed to up- or downgrade. Manual changes are (by definition) only needed for major releases. The manual changes are documented in the [changelog](changelog.md).
+
+The MongoDB version, the MongoDB feature compatability, and the migrations all limit the downgrade and upgrade options. See the [background information below](#background-information-on-downgrade-and-upgrade-limitations).
+
+| Version    | Date       | Mongo  | FC     | Migrations  | Max. downgrade | Max. upgrade | Manual changes |
+|------------|------------|--------|--------|-------------|----------------|--------------|----------------|
+| v5.48.1    | 2025-12-19 | v8     | v8     |             | v5.47.2        | n/a          | no             |
+| v5.48.0    | 2025-12-12 | v8     | v8     |             | v5.47.2        | latest       | no             |
+| v5.47.2    | 2025-12-05 | v8     | v8     | added (3)   | not supported  | latest       | no             |
+| v5.47.1    | 2025-11-28 | v8     | v8     | removed (2) | v5.40.0        | latest       | no             |
+| v5.47.0    | 2025-11-20 | v8     | v8     |             | v5.40.0        | latest       | no             |
+| v5.46.0    | 2025-11-13 | v8     | v8     |             | v5.40.0        | latest       | no             |
+| v5.45.0    | 2025-10-31 | v8     | v8     |             | v5.40.0        | latest       | no             |
+| v5.44.2    | 2025-10-16 | v8     | v8     |             | v5.40.0        | latest       | no             |
+| v5.44.1    | 2025-10-10 | v8     | v8     |             | v5.40.0        | latest       | no             |
+| v5.44.0    | 2025-10-03 | v8     | v8     |             | v5.40.0        | latest       | no             |
+| v5.43.0    | 2025-09-26 | v8     | v8     |             | v5.40.0        | latest       | no             |
+| v5.42.0    | 2025-09-18 | v8     | v8     |             | v5.40.0        | latest       | no             |
+| v5.41.0    | 2025-09-05 | v8     | v8     |             | v5.40.0        | latest       | no             |
+| v5.40.0    | 2025-08-29 | v8     | v8     | added (1)   | not supported  | latest       | no             |
+| v5.39.0    | 2025-08-21 | v8     | v8     |             | v5.38.0        | v5.47.0      | no             |
+| v5.38.1    | 2025-08-14 | v8     | v8     |             | v5.38.0        | v5.47.0      | no             |
+| v5.38.0    | 2025-08-13 | v8     | v8     | added       | not supported  | v5.47.0      | no             |
+| v5.37.0    | 2025-08-06 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.36.0    | 2025-07-10 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.35.0    | 2025-07-04 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.34.0    | 2025-06-26 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.33.0    | 2025-06-20 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.32.1    | 2025-06-12 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.32.0    | 2025-06-05 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.31.0    | 2025-05-22 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.30.0    | 2025-05-15 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.29.0    | 2025-05-08 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.28.0    | 2025-04-17 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.27.0    | 2025-04-04 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.26.2    | 2025-03-20 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.26.1    | 2025-03-19 | v8     | v8     |             | v5.26.0        | v5.47.0      | no             |
+| v5.26.0    | 2025-02-27 | v8     | v8     | added       | not supported  | v5.47.0      | no             |
+| v5.25.0    | 2025-02-14 | v8     | v8     |             | v5.20.0        | v5.47.0      | no             |
+| v5.24.0    | 2025-02-06 | v8     | v8     |             | v5.20.0        | v5.47.0      | no             |
+| v5.23.0    | 2025-01-27 | v8     | v8     |             | v5.20.0        | v5.47.0      | no             |
+| v5.22.0    | 2025-01-16 | v8     | v8     |             | v5.20.0        | v5.47.0      | no             |
+| v5.21.0    | 2024-12-12 | v8     | v8     |             | v5.20.0        | v5.47.0      | no             |
+| v5.20.0    | 2024-12-05 | v8     | **v8** | added       | not supported  | v5.47.0      | no             |
+| v5.19.0    | 2024-11-22 | v8     | v7     |             | v5.16.1        | v5.47.0      | no             |
+| v5.18.0    | 2024-11-06 | v8     | v7     |             | v5.16.1        | v5.47.0      | no             |
+| v5.17.1    | 2024-10-25 | v8     | v7     |             | v5.16.1        | v5.47.0      | no             |
+| v5.17.0    | 2024-10-17 | **v8** | v7     |             | v5.16.1        | v5.47.0      | no             |
+| v5.16.2    | 2024-10-03 | v7     | v7     |             | v5.16.1        | v5.47.0      | no             |
+| v5.16.1    | 2024-09-26 | v7     | v7     | added       | not supported  | v5.47.0      | no             |
+| v5.16.0    | 2024-09-19 | v7     | v7     | added       | not supported  | v5.47.0      | no             |
+| v5.15.0    | 2024-07-30 | v7     | v7     |             | v5.14.0        | v5.47.0      | no             |
+| v5.14.0    | 2024-07-05 | v7     | **v7** | added       | not supported  | v5.47.0      | no             |
+| v5.13.0    | 2024-05-23 | v7     | v6     | added       | not supported  | v5.16.2      | no             |
+| v5.12.0    | 2024-05-17 | v7     | v6     | added       | not supported  | v5.16.2      | no             |
+| v5.11.0    | 2024-04-22 | v7     | v6     |             | v5.6.0         | v5.16.2      | no             |
+| v5.10.0    | 2024-04-15 | v7     | v6     |             | v5.6.0         | v5.16.2      | no             |
+| v5.9.0     | 2024-03-22 | v7     | v6     |             | v5.6.0         | v5.16.2      | no             |
+| v5.8.0     | 2024-02-16 | v7     | v6     |             | v5.6.0         | v5.16.2      | no             |
+| v5.7.0     | 2024-01-31 | v7     | v6     |             | v5.6.0         | v5.16.2      | no             |
+| v5.6.0     | 2024-01-12 | v7     | v6     | added       | not supported  | v5.16.2      | no             |
+| v5.5.0     | 2023-12-15 | v7     | v6     |             | v5.1.0         | v5.16.2      | no             |
+| v5.4.0     | 2023-12-11 | v7     | v6     |             | v5.1.0         | v5.16.2      | no             |
+| v5.3.1     | 2023-11-08 | v7     | v6     |             | v5.1.0         | v5.16.2      | no             |
+| v5.3.0     | 2023-11-07 | **v7** | v6     |             | v5.1.0         | v5.16.2      | no             |
+| v5.2.0     | 2023-09-29 | v6     | v6     |             | v5.1.0         | v5.16.2      | no             |
+| v5.1.0     | 2023-09-05 | v6     | **v6** |             | not supported  | v5.16.2      | no             |
+| v5.0.1     | 2023-06-26 | v6     | v5     |             | v4.10.0        | v5.2.0       | no             |
+| **v5.0.0** | 2023-06-23 | **v6** | v5     |             | v4.10.0        | v5.2.0       | **yes**        |
+| v4.10.0    | 2023-04-26 | v5     | v5     |             | n/a            | v5.2.0       | no             |
 
 (3) [Switch min/max addition strategy when switching metric direction](https://github.com/ICTU/quality-time/issues/12142)
 
@@ -101,27 +110,7 @@ The table below contains the *Quality-time* releases since the last minor of the
 
 (1) [Allow for using OWASP Dependency Check JSON as source](https://github.com/ICTU/quality-time/issues/11851).
 
-## Upgrade path
-
-To check whether versions can be skipped when upgrading *Quality-time*, look up the currently deployed *Quality-time* version in the table above. The "Upgrade" column shows which newer versions of *Quality-time* can be deployed.
-
-For example, if the currently deployed version is v5.0.0, the "Upgrade" column shows that all versions from v5.0.1 up to and including v5.2.0 can be deployed.
-
-```{warning}
-When upgrading across a major version, the manual changes as documented in the [changelog](changelog.md) need to be applied.
-```
-
-## Downgrade path
-
-To check whether a version of *Quality-time* can be downgraded, look up the currently deployed *Quality-time* version in the table above. The "Downgrade" column shows which older versions of *Quality-time* can be deployed.
-
-For example, if the currently deployed version is v5.5.0, the "Downgrade" column shows that all versions from v5.1.0 up to and including v5.4.0 can be deployed.
-
-```{warning}
-When downgrading across a major version, the manual changes as documented in the [changelog](changelog.md) need to be undone.
-```
-
-## Background information on down- and upgrade limitations
+## Background information on downgrade and upgrade limitations
 
 There are two factors that limit to which versions an existing *Quality-time* instance can be upgraded or downgraded: MongoDB and migration code.
 
