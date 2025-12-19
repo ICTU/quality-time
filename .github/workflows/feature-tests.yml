@@ -17,7 +17,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7.1.6
         with:
-          version: "0.9.15"
+          version: "0.9.18"
       - name: Run feature tests
         run: ./tests/feature_tests/ci/test.sh
       - name: Upload artifacts
