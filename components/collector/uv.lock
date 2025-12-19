@@ -216,7 +216,7 @@ wheels = [
 
 [[package]]
 name = "collector"
-version = "5.48.1rc0"
+version = "5.48.1"
 source = { virtual = "." }
 dependencies = [
     { name = "aiogqlc" },
@@ -1071,7 +1071,7 @@ wheels = [
 
 [[package]]
 name = "shared-code"
-version = "5.48.1rc0"
+version = "5.48.1"
 source = { directory = "../shared_code" }
 dependencies = [
     { name = "bottle" },
