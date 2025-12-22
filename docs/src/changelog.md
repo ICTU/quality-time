@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- When measuring source up-to-dateness or source version with OWASP Dependency Check JSON reports located in GitLab, parsing the JSON would fail because GitLab returns the JSON files with mimetype application/octet-stream. Fixes [#12323](https://github.com/ICTU/quality-time/issues/12323).
+
 ## v5.48.1 - 2025-12-19
 
 ### Fixed

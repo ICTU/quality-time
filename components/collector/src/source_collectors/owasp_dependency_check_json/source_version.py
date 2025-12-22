@@ -1,13 +1,12 @@
 """OWASP Dependency-Check JSON source version collector."""
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from packaging.version import Version
 
 from base_collectors import VersionCollector
 
 from .base import OWASPDependencyCheckJSONBase
-from .json_types import OWASPDependencyCheckJSON
 
 if TYPE_CHECKING:
     from collector_utilities.type import Response
@@ -18,6 +17,5 @@ class OWASPDependencyCheckJSONSourceVersion(OWASPDependencyCheckJSONBase, Versio
 
     async def _parse_source_response_version(self, response: Response) -> Version:
         """Override to parse the OWASP Dependency-Check version from the JSON."""
-        json = cast(OWASPDependencyCheckJSON, await response.json())
-        self._check_report_schema(json)
+        json = await self._json(response)
         return Version(json.get("scanInfo", {}).get("engineVersion", ""))
