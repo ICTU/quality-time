@@ -25,7 +25,7 @@ create_reference_md.main()
 # -- Project information -----------------------------------------------------
 
 project = "Quality-time"
-copyright = "2021-2025, ICTU"  # noqa: A001
+copyright = "2021-2026, ICTU"  # noqa: A001
 author = "ICTU"
 
 # -- General configuration ---------------------------------------------------
