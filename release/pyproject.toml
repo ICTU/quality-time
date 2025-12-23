@@ -16,12 +16,12 @@ optional-dependencies.dev = [
 ]
 optional-dependencies.tools = [
     "bandit==1.9.2",
-    "bump-my-version==1.2.4",
+    "bump-my-version==1.2.5",
     "fixit==2.2.1",
-    "mypy==1.19.0",
+    "mypy==1.19.1",
     "pip-audit==2.10.0",
     "pyproject-fmt==2.11.1",
-    "ruff==0.14.7",
+    "ruff==0.14.10",
     "troml==0.4.1",
     "vulture==2.14",
 ]
