@@ -10,7 +10,7 @@ classifiers = [
 dependencies = [
     "axe-selenium-python==2.1.6",
     "requests==2.32.5",
-    "selenium==4.38.0",
+    "selenium==4.39.0",
 ]
 optional-dependencies.dev = [
     "types-requests==2.32.4.20250913",
@@ -18,10 +18,10 @@ optional-dependencies.dev = [
 optional-dependencies.tools = [
     "bandit==1.9.2",
     "fixit==2.2.1",
-    "mypy==1.19.0",
+    "mypy==1.19.1",
     "pip-audit==2.10.0",
     "pyproject-fmt==2.11.1",
-    "ruff==0.14.7",
+    "ruff==0.14.10",
     "troml==0.4.1",
     "vulture==2.14",
 ]

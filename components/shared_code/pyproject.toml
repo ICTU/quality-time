@@ -17,7 +17,7 @@ dependencies = [
     "python-dateutil==2.9.0.post0",
 ]
 optional-dependencies.dev = [
-    "coverage==7.12.0",
+    "coverage==7.13.0",
     "mongomock==4.3.0",
     "types-python-dateutil==2.9.0.20251115",
     "unittest-xml-reporting==3.2.0",         # Needed to generate JUnit XML output for Sonarcloud.io
@@ -25,11 +25,11 @@ optional-dependencies.dev = [
 optional-dependencies.tools = [
     "bandit==1.9.2",
     "fixit==2.2.1",
-    "mypy==1.19.0",
+    "mypy==1.19.1",
     "pip-audit==2.10.0",
     "pydantic==2.12.5",      # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.11.1",
-    "ruff==0.14.7",
+    "ruff==0.14.10",
     "troml==0.4.1",
     "vulture==2.14",
 ]
