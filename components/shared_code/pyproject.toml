@@ -17,7 +17,7 @@ dependencies = [
     "python-dateutil==2.9.0.post0",
 ]
 optional-dependencies.dev = [
-    "coverage==7.13.0",
+    "coverage==7.13.1",
     "mongomock==4.3.0",
     "types-python-dateutil==2.9.0.20251115",
     "unittest-xml-reporting==3.2.0",         # Needed to generate JUnit XML output for Sonarcloud.io
