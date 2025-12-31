@@ -1,6 +1,6 @@
 import { array, arrayOf, bool, element, func } from "prop-types"
 import { useEffect, useState } from "react"
-import ReactGridLayout, { useContainerWidth } from "react-grid-layout"
+import ReactGridLayout, { noCompactor, useContainerWidth } from "react-grid-layout"
 
 import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
 
@@ -86,7 +86,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
                 <div ref={containerRef}>
                     {mounted && (
                         <ReactGridLayout
-                            compactor={"vertical"}
+                            compactor={noCompactor}
                             isDraggable={accessGranted(permissions, [EDIT_REPORT_PERMISSION])}
                             gridConfig={{ cols: cols, rowHeight: 24 }}
                             layout={layout}
@@ -95,7 +95,6 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
                             onDragStop={onDragStop}
                             preventCollision={true}
                             useCSSTransforms={false} // Don't fly-in the cards from the top left
-                            verticalCompact={false} // Allow for placing cards whereever
                             width={width}
                         >
                             {cardDivs(cards, isDragging)}
