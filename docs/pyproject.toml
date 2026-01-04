@@ -11,7 +11,7 @@ classifiers = [
 ]
 dependencies = [
     "furo==2025.12.19",
-    "gitpython==3.1.45",
+    "gitpython==3.1.46",
     "myst-parser==4.0.1",
     "pydantic==2.12.5",         # Needed for generating the reference docs from the data model
     "shared-code",
