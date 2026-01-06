@@ -10,7 +10,7 @@ classifiers = [
 ]
 dependencies = [
     "aiogqlc==5.3.0",
-    "aiohttp==3.13.2",
+    "aiohttp==3.13.3",
     "beautifulsoup4==4.14.3",
     "defusedxml==0.7.1",
     "packaging==25.0",
