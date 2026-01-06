@@ -9,7 +9,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "aiohttp==3.13.2",
+    "aiohttp==3.13.3",
     "pymsteams==0.2.5",
     "python-dateutil==2.9.0.post0",
     "shared-code",
