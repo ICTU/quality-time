@@ -57,6 +57,10 @@ run_markdownlint() {
     run ./node_modules/markdownlint-cli/markdownlint.js src/**/*.md
 }
 
+run_yamllint() {
+    run_uvx yamllint $@
+}
+
 check_python_quality() {
     run_ruff
     run_fixit

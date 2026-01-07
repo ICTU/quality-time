@@ -34,6 +34,7 @@ optional-dependencies.tools = [
     "troml==0.4.1",
     "vale==3.13.0.0",        # Documentation grammar and style checker
     "vulture==2.14",
+    "yamllint==1.37.1",
 ]
 
 [tool.uv.sources]

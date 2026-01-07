@@ -1,12 +1,12 @@
 # About *Quality-time*
 
-*Quality-time* is an automated quality system for software development and maintenance. *Quality-time* collects measurement data from sources such as GitLab, SonarQube, Jira, Azure DevOps, and OWASP Dependency-Check, to provide an overview of the quality of software products, processes, and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
+*Quality-time* is a quality monitoring application for software development and maintenance. *Quality-time* collects measurement data from sources such as GitLab, SonarQube, Jira, Azure DevOps, and OWASP Dependency-Check, to provide an overview of the quality of software products, processes, and projects. It does so by comparing measurement data with metric targets and informing development teams about the metrics that need improvement actions.
 
 Technically, *Quality-time* consists of a React frontend, a Mongo database server, and a number of backend components written in Python: a worker component to collect measurement data from the sources, a worker component to send notifications, an API-server for the frontend, and an API-server for the worker components.
 
-Users can add and configure reports, metrics, and sources (such as SonarQube and Jira) in the frontend. The collector collects metrics data from the configured metric sources. It posts the measurements to the server which in turn stores them in the database. The frontend calls the server to get the reports and the measurements and presents them to the user.
+Users can add and configure reports, metrics, and sources (such as SonarQube and Jira) in the frontend. The collector retrieves data from the configured metric sources, determines the measurements, and stores them in the database. The frontend calls the server to get the reports and the measurements and presents them to the user.
 
-*Quality-time* is developed by [ICTU](https://www.ictu.nl/about-us), an independent consultancy and project organisation within the Dutch government, helping government organizations develop and implement digital services.
+*Quality-time* is developed by [ICTU](https://www.ictu.nl/en/about-us), an impartial project organization within the government. ICTU's services consist of the realization of projects and programs, giving advice, and development of custom made software solutions. Driven by quality, with a heart for the public task, not for profit.
 
 # Screenshots
 
