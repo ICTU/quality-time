@@ -16,7 +16,7 @@ dependencies = [
     "ldap3==2.9.1",
     "lxml==6.0.2",
     "lxml-html-clean==0.4.3",
-    "pymongo==4.15.5",
+    "pymongo==4.16.0",
     "python-dateutil==2.9.0.post0",
     "requests==2.32.5",
     "shared-code",
@@ -27,8 +27,8 @@ optional-dependencies.dev = [
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.20251121",
     "types-python-dateutil==2.9.0.20251115",
-    "types-requests==2.32.4.20250913",
-    "unittest-xml-reporting==3.2.0",         # Needed to generate JUnit XML output for Sonarcloud.io
+    "types-requests==2.32.4.20260107",
+    "unittest-xml-reporting==4.0.0",         # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
     "bandit==1.9.2",
