@@ -131,7 +131,7 @@ replace = "softwareVersion: {new_version}"
 
 [[tool.bumpversion.files]]
 glob = "../publiccode.yml"
-search = "releaseDate: \\d{4}-\\d{2}-\\d{2}"
+search = "releaseDate: \\d{{4}}-\\d{{2}}-\\d{{2}}"
 replace = "releaseDate: {$RELEASE_DATE}"
 regex = true
 
