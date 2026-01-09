@@ -782,7 +782,7 @@ wheels = [
 
 [[package]]
 name = "shared-code"
-version = "5.48.2rc0"
+version = "5.48.2"
 source = { virtual = "." }
 dependencies = [
     { name = "bottle" },

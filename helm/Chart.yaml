@@ -1,8 +1,8 @@
 ---
 apiVersion: v2
 name: quality-time
-version: v5.48.2-rc.0
-appVersion: "v5.48.2-rc.0"
+version: v5.48.2
+appVersion: "v5.48.2"
 description: Helm chart for Quality-time, an automated quality system for software development and maintenance
 type: application
 home: https://github.com/ICTU/Quality-time
