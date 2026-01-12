@@ -34,7 +34,6 @@ def create_report(
                         "accept_debt": False,
                         "tags": ["security"],
                         "scale": "count",
-                        "unit": "foo",
                         "webhook": "www.webhook.com",
                         "scales": ["count", "percentage"],
                         "sources": {
