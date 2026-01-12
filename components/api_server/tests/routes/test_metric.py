@@ -585,6 +585,7 @@ class MetricIssueTest(DataModelTestCase):
                                 "type": "violations",
                                 "name": "name",
                                 "unit": Unit.VIOLATIONS,
+                                "unit_singular": Unit.VIOLATION,
                                 "sources": self.sources,
                             },
                         },
@@ -625,6 +626,20 @@ class MetricIssueTest(DataModelTestCase):
     @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
     def test_add_metric_issue(self, requests_post):
         """Test that an issue can be added to the issue tracker."""
+        response = Mock()
+        response.json.return_value = {"key": "FOO-42"}
+        requests_post.return_value = response
+        self.assertEqual({"ok": True, "issue_url": self.ISSUE_URL}, add_metric_issue(METRIC_ID, self.database))
+        self.assert_issue_posted(requests_post)
+        self.assert_issue_inserted()
+
+    @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
+    def test_add_metric_issue_when_measurement_is_one(self, requests_post):
+        """Test that the singular unit is used if the measurement is one."""
+        self.measurement["count"]["value"] = "1"
+        self.expected_json["fields"]["summary"] = "Fix 1 violation from Source"
+        description = self.expected_json["fields"]["description"]
+        self.expected_json["fields"]["description"] = description.replace("42 violations", "1 violation")
         response = Mock()
         response.json.return_value = {"key": "FOO-42"}
         requests_post.return_value = response

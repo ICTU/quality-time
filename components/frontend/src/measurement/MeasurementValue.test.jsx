@@ -19,12 +19,13 @@ function renderMeasurementValue({
     status = null,
     type = "violations",
     unit = null,
+    unit_singular = null,
     url = "https://example.org",
 } = {}) {
     return render(
         <DataModel.Provider
             value={{
-                metrics: { violations: { unit: "violations" } },
+                metrics: { violations: { unit: "violations", unit_singular: "violation" } },
                 sources: { source_type: { parameters: { url: { mandatory: true, metrics: ["violations"] } } } },
             }}
         >
@@ -37,6 +38,7 @@ function renderMeasurementValue({
                     status: status,
                     type: type,
                     unit: unit,
+                    unit_singular: unit_singular,
                 }}
                 reportDate={reportDate}
             />
@@ -198,7 +200,7 @@ it("does not show an error message for past measurements that were recently meas
 it("shows ignored measurement entities", async () => {
     const { container } = renderMeasurementValue({
         status: "target_met",
-        unit: "foo",
+        unit_singular: "foo",
         latestMeasurement: {
             start: "2022-01-16T00:31:00",
             end: "2022-01-16T00:51:00",
@@ -220,7 +222,7 @@ it("shows ignored measurement entities", async () => {
 it("does not show ignored measurement entities that no longer exist", async () => {
     const { container } = renderMeasurementValue({
         status: "target_met",
-        unit: "foo",
+        unit_singular: "foo",
         latestMeasurement: {
             start: "2022-01-16T00:31:00",
             end: "2022-01-16T00:51:00",

@@ -15,7 +15,7 @@ import {
 import { Label } from "../widgets/Label"
 
 function popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel) {
-    const unit = formatMetricScaleAndUnit(metric, dataModel)
+    const unit = formatMetricScaleAndUnit(metric, dataModel, metric.debt_target)
     const metricDirection = formatMetricDirection(metric, dataModel)
     let debtEndDateText = ""
     let endDate

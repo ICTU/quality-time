@@ -9,7 +9,14 @@ import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/P
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { TextField } from "../fields/TextField"
 import { metricPropType, reportPropType, subjectPropType } from "../sharedPropTypes"
-import { formatMetricScale, getMetricDirection, getMetricScale, getMetricTags, getReportTags } from "../utils"
+import {
+    formatMetricScale,
+    getMetricDirection,
+    getMetricScale,
+    getMetricTags,
+    getMetricUnit,
+    getReportTags,
+} from "../utils"
 import { MetricType } from "./MetricType"
 import { Target } from "./Target"
 import { TargetVisualiser } from "./TargetVisualiser"
@@ -130,8 +137,7 @@ function Direction({ metric, metricUuid, reload }) {
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const scale = getMetricScale(metric, dataModel)
-    const metricType = dataModel.metrics[metric.type]
-    const metricUnitWithoutPercentage = metric.unit || metricType.unit
+    const metricUnitWithoutPercentage = getMetricUnit(metric, dataModel)
     const metricUnit = `${scale === "percentage" ? "% " : ""}${metricUnitWithoutPercentage}`
     const fewer = {
         count: `Fewer ${metricUnit}`,
@@ -166,7 +172,7 @@ Direction.propTypes = {
     reload: func,
 }
 
-function Unit({ metric, metricUuid, reload }) {
+function UnitPlural({ metric, metricUuid, reload }) {
     const dataModel = useContext(DataModel)
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
@@ -174,15 +180,37 @@ function Unit({ metric, metricUuid, reload }) {
     return (
         <TextField
             disabled={disabled}
-            label="Metric unit"
+            label="Metric unit plural"
             placeholder={metricType.unit}
-            startAdornment={formatMetricScale(metric, dataModel)}
+            startAdornment={formatMetricScale(metric, dataModel, "2")}
             onChange={(value) => setMetricAttribute(metricUuid, "unit", value, reload)}
             value={metric.unit}
         />
     )
 }
-Unit.propTypes = {
+UnitPlural.propTypes = {
+    metric: metricPropType,
+    metricUuid: string,
+    reload: func,
+}
+
+function UnitSingular({ metric, metricUuid, reload }) {
+    const dataModel = useContext(DataModel)
+    const permissions = useContext(Permissions)
+    const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
+    const metricType = dataModel.metrics[metric.type]
+    return (
+        <TextField
+            disabled={disabled}
+            label="Metric unit singular"
+            placeholder={metricType.unit_singular}
+            startAdornment={formatMetricScale(metric, dataModel, "1")}
+            onChange={(value) => setMetricAttribute(metricUuid, "unit_singular", value, reload)}
+            value={metric.unit_singular}
+        />
+    )
+}
+UnitSingular.propTypes = {
     metric: metricPropType,
     metricUuid: string,
     reload: func,
@@ -246,7 +274,14 @@ export function MetricConfigurationParameters({ metric, metricUuid, reload, repo
             <Grid size={1}>
                 <Direction {...commonParameterProps} />
             </Grid>
-            <Grid size={1}>{metricScale !== "version_number" && <Unit {...commonParameterProps} />}</Grid>
+            <Grid size={1}>
+                {metricScale !== "version_number" && (
+                    <Stack direction="row" spacing={{ xs: 1, sm: 1, md: 1 }}>
+                        <UnitSingular {...commonParameterProps} />
+                        <UnitPlural {...commonParameterProps} />
+                    </Stack>
+                )}
+            </Grid>
             <Grid size={1}>
                 <EvaluateTargets {...commonParameterProps} />
             </Grid>

@@ -20,8 +20,12 @@ class MetricTest(unittest.TestCase):
 
     DATA_MODEL: ClassVar[dict] = {
         "metrics": {
-            "fixture_metric_type": {"name": "fixture_metric_type", "unit": "issues"},
-            "fixture_metric_type_without_name": {"unit": "issues"},
+            "fixture_metric_type": {
+                "name": "fixture_metric_type",
+                "unit": "issues",
+                "unit_singular": "issue",
+            },
+            "fixture_metric_type_without_name": {"unit": "issues", "unit_singular": "issue"},
         },
     }
 
@@ -150,10 +154,19 @@ class MetricTest(unittest.TestCase):
     def test_unit(self):
         """Test that we get the metric unit from the metric."""
         self.assertEqual("oopsies", self.create_metric(unit="oopsies").unit)
+        self.assertEqual("oopsie", self.create_metric(unit_singular="oopsie").unit_singular)
 
     def test_missing_unit(self):
         """Test that we get the metric unit from the data model if the metric has no unit."""
         self.assertEqual("issues", self.create_metric().unit)
+        self.assertEqual("issue", self.create_metric().unit_singular)
+
+    def test_unit_for_value(self):
+        """Test that the correct singular or plural form of the unit is returned."""
+        for plural_value in ("-100", "-2", "-1.5", "-1.0", "-0.5", "0", "0.5", "1.0", "1.5", "2", "100", None):
+            self.assertEqual("issues", self.create_metric().unit_for_value(plural_value))
+        for singular_value in ("-1", "1"):
+            self.assertEqual("issue", self.create_metric().unit_for_value(singular_value))
 
     def test_equal(self):
         """Test that a metric is equal to itself."""

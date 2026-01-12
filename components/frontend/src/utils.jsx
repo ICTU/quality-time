@@ -97,7 +97,10 @@ export function getMetricTarget(metric) {
     return metric.target || "0"
 }
 
-export function getMetricUnit(metric, dataModel) {
+export function getMetricUnit(metric, dataModel, value) {
+    if (["1", "+1", "-1"].includes(value)) {
+        return metric.unit_singular || dataModel.metrics[metric.type].unit_singular || ""
+    }
     return metric.unit || dataModel.metrics[metric.type].unit || ""
 }
 
@@ -248,6 +251,10 @@ export function getMetricComment(metric) {
 export function getMetricScale(metric, dataModel) {
     return metric.scale || dataModel.metrics[metric.type].default_scale || "count"
 }
+getMetricScale.propTypes = {
+    metric: metricPropType,
+    dataModel: dataModelPropType,
+}
 
 export function getMetricStatus(metric) {
     return metric.status ?? "unknown"
@@ -392,12 +399,21 @@ export function formatMetricScale(metric, dataModel) {
     const scale = getMetricScale(metric, dataModel)
     return scale === "percentage" ? "%" : ""
 }
+formatMetricScale.propTypes = {
+    metric: metricPropType,
+    dataModel: dataModelPropType,
+}
 
-export function formatMetricScaleAndUnit(metric, dataModel) {
+export function formatMetricScaleAndUnit(metric, dataModel, value) {
     const scale = formatMetricScale(metric, dataModel)
-    const unit = getMetricUnit(metric, dataModel)
+    const unit = getMetricUnit(metric, dataModel, value)
     const sep = unit ? " " : ""
     return `${scale}${sep}${unit}`
+}
+formatMetricScaleAndUnit.propTypes = {
+    metric: metricPropType,
+    dataModel: dataModelPropType,
+    value: string,
 }
 
 export function days(timeInMs) {
