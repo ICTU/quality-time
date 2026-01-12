@@ -24,7 +24,8 @@ METRICS = {
         rationale="The shorter the lead time for changes, the sooner the new features can be used. "
         "Also, the shorter the lead time for changes, the fewer changes are in progress at the same time. "
         "Less context switching is needed and the risk of interfering changes is reduced.",
-        unit=Unit.DAYS,
+        unit_plural=Unit.DAYS,
+        unit_singular=Unit.DAY,
         target="10",
         near_target="7",
         sources=["azure_devops", "jira"],
@@ -42,7 +43,8 @@ of failures (numerator). Either Jenkins or GitLab CI is used as source for the n
 When configuring Azure DevOps as source for the metric it is used both for number of failures (numerator) and for
 number of deployments (denominator). Azure DevOps needs to be added as source only once.""",
         scales=["percentage"],
-        unit=Unit.FAILED_DEPLOYMENTS,
+        unit_plural=Unit.FAILED_DEPLOYMENTS,
+        unit_singular=Unit.FAILED_DEPLOYMENT,
         target="0",
         near_target="5",
         sources=["azure_devops", "jenkins", "jira", "gitlab"],
@@ -58,7 +60,8 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
             "https://rules.sonarsource.com/python/RSPEC-125",
             "https://kentcdodds.com/blog/please-dont-commit-commented-out-code",
         ],
-        unit=Unit.BLOCKS,
+        unit_plural=Unit.BLOCKS,
+        unit_singular=Unit.BLOCK,
         near_target="100",
         sources=["manual_number", "sonarqube"],
         tags=[Tag.MAINTAINABILITY],
@@ -75,7 +78,8 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
             "https://blog.sonarsource.com/cognitive-complexity-because-testability-understandability",
         ],
         scales=["count", "percentage"],
-        unit=Unit.COMPLEX_UNITS,
+        unit_plural=Unit.COMPLEX_UNITS,
+        unit_singular=Unit.COMPLEX_UNIT,
         sources=["manual_number", "sonarqube"],
         tags=[Tag.MAINTAINABILITY, Tag.TESTABILITY],
     ),
@@ -85,7 +89,8 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
         rationale="Measure compliance to report progress and keep track of improvement actions.",
         direction=Direction.MORE_IS_BETTER,
         scales=["percentage"],
-        unit=Unit.COMPLIANCE,
+        unit_plural=Unit.COMPLIANCE,
+        unit_singular=Unit.COMPLIANCE,
         sources=["manual_number"],
         target="100",
         near_target="80",
@@ -100,7 +105,8 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
         "new features. Measuring the number of outdated dependencies provides insight into the size of this "
         "backlog.",
         scales=["count", "percentage"],
-        unit=Unit.DEPENDENCIES,
+        unit_plural=Unit.DEPENDENCIES,
+        unit_singular=Unit.DEPENDENCY,
         sources=[
             "composer",
             "dependency_track",
@@ -121,7 +127,8 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
             SIG_TUVIT_EVALUATION_CRITERIA,
         ],
         scales=["count", "percentage"],
-        unit=Unit.LINES,
+        unit_plural=Unit.LINES,
+        unit_singular=Unit.LINE,
         sources=["manual_number", "sonarqube"],
         tags=[Tag.MAINTAINABILITY],
     ),
@@ -132,7 +139,8 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
         "significant number of failed CI-jobs or pipelines over a longer period of time could be a sign that "
         "the continuous integration process is not functioning properly. Also, having many failed CI-jobs or "
         "pipelines makes it hard to see that additional jobs or pipelines start failing.",
-        unit=Unit.CI_JOBS,
+        unit_plural=Unit.CI_JOBS,
+        unit_singular=Unit.CI_JOB,
         near_target="5",
         sources=["azure_devops", "jenkins", "gitlab", "manual_number"],
         tags=[Tag.CI],
@@ -152,7 +160,8 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
     [GitLab](https://docs.gitlab.com/ee/user/project/repository/branches/default.html) or
     [Azure DevOps](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops#\
     change-your-default-branch).""",
-        unit=Unit.BRANCHES,
+        unit_plural=Unit.BRANCHES,
+        unit_singular=Unit.BRANCH,
         near_target="5",
         sources=["azure_devops", "bitbucket", "gitlab", "manual_number"],
         tags=[Tag.CI],
@@ -164,7 +173,8 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
         "for example be used to count the number of open bug reports, the number of ready user stories, or the "
         "number of overdue customer service requests. For sources that support a query language, the issues to be "
         "counted can be specified using the query language of the source.",
-        unit=Unit.ISSUES,
+        unit_plural=Unit.ISSUES,
+        unit_singular=Unit.ISSUE,
         sources=["azure_devops", "jira", "manual_number", "trello"],
     ),
     "job_runs_within_time_period": Metric(
@@ -172,7 +182,8 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
         description="The number of job runs within a specified time period.",
         rationale="Frequent deployments are associated with smaller, less risky deployments "
         "and with lower lead times for new features.",
-        unit=Unit.CI_JOB_RUNS,
+        unit_plural=Unit.CI_JOB_RUNS,
+        unit_singular=Unit.CI_JOB_RUN,
         direction=Direction.MORE_IS_BETTER,
         target="30",
         near_target="25",
@@ -200,7 +211,8 @@ test code.
         rationale_urls=[
             SIG_TUVIT_EVALUATION_CRITERIA,
         ],
-        unit=Unit.LINES,
+        unit_plural=Unit.LINES,
+        unit_singular=Unit.LINE,
         scales=["count", "percentage"],
         target="30000",
         near_target="35000",
@@ -214,7 +226,8 @@ test code.
         rationale_urls=[
             SIG_TUVIT_EVALUATION_CRITERIA,
         ],
-        unit=Unit.LONG_UNITS,
+        unit_plural=Unit.LONG_UNITS,
+        unit_singular=Unit.LONG_UNIT,
         scales=["count", "percentage"],
         sources=["manual_number", "sonarqube"],
         tags=[Tag.MAINTAINABILITY],
@@ -225,7 +238,8 @@ test code.
         rationale="Preferably, all regression tests are automated. When this is not feasible, it is good to "
         "know how much time it takes to execute the manual tests, since they need to be executed before every "
         "release.",
-        unit=Unit.MINUTES,
+        unit_plural=Unit.MINUTES,
+        unit_singular=Unit.MINUTE,
         near_target="60",
         sources=["jira", "manual_number"],
         tags=[Tag.TEST_QUALITY],
@@ -235,7 +249,8 @@ test code.
         description="Measure the number of manual test cases that have not been tested on time.",
         rationale="Preferably, all regression tests are automated. When this is not feasible, it is good to "
         "know whether the manual regression tests have been executed recently.",
-        unit=Unit.MANUAL_TEST_CASES,
+        unit_plural=Unit.MANUAL_TEST_CASES,
+        unit_singular=Unit.MANUAL_TEST_CASE,
         near_target="5",
         sources=["jira", "manual_number"],
         tags=[Tag.TEST_QUALITY],
@@ -248,7 +263,8 @@ test code.
             SIG_TUVIT_EVALUATION_CRITERIA,
         ],
         scales=["count", "percentage"],
-        unit=Unit.UNITS_WITH_TOO_MANY_PARAMETERS,
+        unit_plural=Unit.UNITS_WITH_TOO_MANY_PARAMETERS,
+        unit_singular=Unit.UNIT_WITH_TOO_MANY_PARAMETERS,
         sources=["manual_number", "sonarqube"],
         tags=[Tag.MAINTAINABILITY],
     ),
@@ -263,7 +279,8 @@ minimum number of upvotes. The parameter "Merge request state" can be used to ex
 example. The parameter "Target branches to include" can be used to further limit the merge requests to only count merge
 requests that target specific branches, for example the "develop" branch.""",
         scales=["count", "percentage"],
-        unit=Unit.MERGE_REQUESTS,
+        unit_plural=Unit.MERGE_REQUESTS,
+        unit_singular=Unit.MERGE_REQUEST,
         sources=["azure_devops", "bitbucket", "github", "gitlab", "manual_number"],
         tags=[Tag.CI],
     ),
@@ -298,7 +315,8 @@ not in the set of counted metrics, for example by putting it in a different repo
 report(s).
 ```""",
         scales=["count", "percentage"],
-        unit=Unit.METRICS,
+        unit_plural=Unit.METRICS,
+        unit_singular=Unit.METRIC,
         near_target="5",
         sources=["manual_number", "quality_time"],
     ),
@@ -308,7 +326,8 @@ report(s).
         rationale="Provide an overview of metrics still to be added to the quality report. If metrics will not "
         "be added, a reason can be documented.",
         scales=["count", "percentage"],
-        unit=Unit.MISSING_METRICS,
+        unit_plural=Unit.MISSING_METRICS,
+        unit_singular=Unit.MISSING_METRIC,
         near_target="5",
         sources=["manual_number", "quality_time"],
     ),
@@ -317,7 +336,8 @@ report(s).
         description="The duration of the performancetest in minutes.",
         rationale="Performance tests, especially endurance tests, may need to run for a minimum duration to "
         "give relevant results.",
-        unit=Unit.MINUTES,
+        unit_plural=Unit.MINUTES,
+        unit_singular=Unit.MINUTE,
         addition=Addition.MIN,
         direction=Direction.MORE_IS_BETTER,
         target="30",
@@ -332,7 +352,8 @@ report(s).
         "duration of the performancetest. If throughput or error count starts to increase during the "
         "performancetest, this may indicate memory leaks or other resource problems.",
         scales=["percentage"],
-        unit=Unit.MINUTES,
+        unit_plural=Unit.MINUTES,
+        unit_singular=Unit.MINUTE,
         addition=Addition.MIN,
         direction=Direction.MORE_IS_BETTER,
         target="100",
@@ -344,7 +365,8 @@ report(s).
         name="CI-pipeline duration",
         description="The duration of a CI-pipeline.",
         rationale="CI-pipelines that take too much time may signal something wrong with the build.",
-        unit=Unit.MINUTES,
+        unit_plural=Unit.MINUTES,
+        unit_singular=Unit.MINUTE,
         addition=Addition.MAX,
         direction=Direction.FEWER_IS_BETTER,
         target="10",
@@ -360,7 +382,8 @@ report(s).
         rationale_urls=[
             "https://docs.sonarqube.org/latest/user-guide/metric-definitions/",
         ],
-        unit=Unit.MINUTES,
+        unit_plural=Unit.MINUTES,
+        unit_singular=Unit.MINUTE,
         target="60",
         near_target="600",
         sources=["manual_number", "sonarqube"],
@@ -374,7 +397,8 @@ report(s).
         "detect the point at which the system breaks, as indicated by increasing throughput or error counts. "
         "If this breakpoint is not detected, the load has not been increased enough.",
         scales=["count", "percentage"],
-        unit=Unit.VIRTUAL_USERS,
+        unit_plural=Unit.VIRTUAL_USERS,
+        unit_singular=Unit.VIRTUAL_USER,
         addition=Addition.MIN,
         direction=Direction.MORE_IS_BETTER,
         target="75",
@@ -390,7 +414,8 @@ report(s).
         rationale_urls=[
             "faq.md#what-is-the-difference-between-violations-and-warnings",
         ],
-        unit=Unit.SECURITY_WARNINGS,
+        unit_plural=Unit.SECURITY_WARNINGS,
+        unit_singular=Unit.SECURITY_WARNING,
         near_target="5",
         sources=[
             "anchore",
@@ -425,7 +450,6 @@ report(s).
         "serve as a leading indicator for productivity; a decline in satisfaction and engagement could signal "
         "upcoming burnout and reduced productivity.",
         rationale_urls=["https://queue.acm.org/detail.cfm?id=3454124"],
-        unit=Unit.NONE,
         addition=Addition.MIN,
         direction=Direction.MORE_IS_BETTER,
         target="10",
@@ -437,7 +461,8 @@ report(s).
         description="The number of transactions slower than their target response time.",
         rationale="Transactions slower than their target response time indicate performance problems that need "
         "attention.",
-        unit=Unit.TRANSACTIONS,
+        unit_plural=Unit.TRANSACTIONS,
+        unit_singular=Unit.TRANSACTION,
         near_target="5",
         sources=["gatling", "grafana_k6", "manual_number", "jmeter_csv", "jmeter_json", "performancetest_runner"],
         tags=[Tag.PERFORMANCE],
@@ -466,7 +491,8 @@ report(s).
         description="The number of days since the source was last updated.",
         rationale="If the information provided by sources is outdated, so will be the metrics in Quality-time. "
         "Hence it is important to monitor that sources are up-to-date.",
-        unit=Unit.DAYS,
+        unit_plural=Unit.DAYS,
+        unit_singular=Unit.DAY,
         addition=Addition.MAX,
         target="3",
         near_target="7",
@@ -557,7 +583,8 @@ have 2.9.3 and the version available is 3.9.1, then the metric will turn red.
         rationale="Some tools allow for suppression of violations. Having the number of suppressed violations "
         "violations visible in Quality-time allows for a double check of the suppressions.",
         scales=["count", "percentage"],
-        unit=Unit.SUPPRESSED_VIOLATIONS,
+        unit_plural=Unit.SUPPRESSED_VIOLATIONS,
+        unit_singular=Unit.SUPPRESSED_VIOLATION,
         sources=["manual_number", "sonarqube"],
         tags=[Tag.MAINTAINABILITY],
     ),
@@ -660,7 +687,8 @@ the 'worst' test result is reported. Test cases not found in the test results ar
 MP-4 above).
 """,
         scales=["count", "percentage"],
-        unit=Unit.TEST_CASES,
+        unit_plural=Unit.TEST_CASES,
+        unit_singular=Unit.TEST_CASE,
         direction=Direction.MORE_IS_BETTER,
         near_target="0",
         sources=["jenkins_test_report", "jira", "junit", "robot_framework", "testng", "visual_studio_trx"],
@@ -672,7 +700,8 @@ MP-4 above).
         rationale="Keep track of the total number of executed tests or the number of executed tests with specific "
         "results, for example skipped, failed or errored.",
         scales=["count", "percentage"],
-        unit=Unit.TESTS,
+        unit_plural=Unit.TESTS,
+        unit_singular=Unit.TEST,
         direction=Direction.MORE_IS_BETTER,
         near_target="0",
         sources=[
@@ -698,7 +727,8 @@ MP-4 above).
         rationale="Keep track of the total number of executed test suites or the number of executed test suites with "
         "specific results, for example skipped, failed or errored.",
         scales=["count", "percentage"],
-        unit=Unit.TEST_SUITES,
+        unit_plural=Unit.TEST_SUITES,
+        unit_singular=Unit.TEST_SUITE,
         direction=Direction.MORE_IS_BETTER,
         near_target="0",
         sources=[
@@ -715,7 +745,8 @@ MP-4 above).
         rationale="Keep track of the time remaining until for example a release date, the end date of a policy, "
         "or the next team building retreat.",
         direction=Direction.MORE_IS_BETTER,
-        unit=Unit.DAYS,
+        unit_plural=Unit.DAYS,
+        unit_singular=Unit.DAY,
         addition=Addition.MIN,
         target="28",
         near_target="14",
@@ -730,7 +761,8 @@ MP-4 above).
             "https://rules.sonarsource.com/python/RSPEC-1135/",
             "https://cwe.mitre.org/data/definitions/546",
         ],
-        unit=Unit.TODO_AND_FIXME_COMMENTS,
+        unit_plural=Unit.TODO_AND_FIXME_COMMENTS,
+        unit_singular=Unit.TODO_OR_FIXME_COMMENT,
         near_target="50",
         sources=["manual_number", "sonarqube"],
         tags=[Tag.MAINTAINABILITY],
@@ -741,7 +773,8 @@ MP-4 above).
         rationale="Code branches not covered by tests may contain bugs and signal incomplete tests.",
         rationale_urls=[FOWLER_TEST_COVERAGE],
         scales=["count", "percentage"],
-        unit=Unit.UNCOVERED_BRANCHES,
+        unit_plural=Unit.UNCOVERED_BRANCHES,
+        unit_singular=Unit.UNCOVERED_BRANCH,
         near_target="100",
         sources=[
             "cobertura",
@@ -760,7 +793,8 @@ MP-4 above).
         rationale="Code lines not covered by tests may contain bugs and signal incomplete tests.",
         rationale_urls=[FOWLER_TEST_COVERAGE],
         scales=["count", "percentage"],
-        unit=Unit.UNCOVERED_LINES,
+        unit_plural=Unit.UNCOVERED_LINES,
+        unit_singular=Unit.UNCOVERED_LINE,
         near_target="100",
         sources=[
             "cobertura",
@@ -777,7 +811,8 @@ MP-4 above).
         name="Unused CI-jobs",
         description="The number of continuous integration jobs that are unused.",
         rationale="Removing unused, obsolete CI-jobs helps to keep a clear overview of the relevant CI-jobs.",
-        unit=Unit.CI_JOBS,
+        unit_plural=Unit.CI_JOBS,
+        unit_singular=Unit.CI_JOB,
         near_target="5",
         sources=["azure_devops", "gitlab", "jenkins", "manual_number"],
         tags=[Tag.CI],
@@ -787,7 +822,8 @@ MP-4 above).
         description="The total number of points of a selection of user stories.",
         rationale="Keep track of the number of user story points so the team has sufficient 'ready' stories to "
         "plan the next sprint.",
-        unit=Unit.USER_STORY_POINTS,
+        unit_plural=Unit.USER_STORY_POINTS,
+        unit_singular=Unit.USER_STORY_POINT,
         direction=Direction.MORE_IS_BETTER,
         target="100",
         near_target="75",
@@ -799,7 +835,8 @@ MP-4 above).
         description="The average number of user story points delivered in recent sprints.",
         rationale="Keep track of the velocity so the team knows how many story points need at least be 'ready' "
         "to plan the next sprint",
-        unit=Unit.USER_STORY_POINTS_PER_SPRINT,
+        unit_plural=Unit.USER_STORY_POINTS_PER_SPRINT,
+        unit_singular=Unit.USER_STORY_POINT_PER_SPRINT,
         direction=Direction.MORE_IS_BETTER,
         target="20",
         near_target="15",
@@ -820,7 +857,8 @@ harder it may be for users to use the software (3).
             "https://www.w3.org/standards/webdesign/accessibility",
             "faq.md#what-is-the-difference-between-violations-and-warnings",
         ],
-        unit=Unit.VIOLATIONS,
+        unit_plural=Unit.VIOLATIONS,
+        unit_singular=Unit.VIOLATION,
         sources=["axecsv", "axe_core", "axe_html_reporter", "manual_number", "ojaudit", "sarif_json", "sonarqube"],
     ),
 }

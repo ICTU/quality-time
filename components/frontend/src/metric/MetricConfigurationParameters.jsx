@@ -9,7 +9,14 @@ import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/P
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { TextField } from "../fields/TextField"
 import { metricPropType, reportPropType, subjectPropType } from "../sharedPropTypes"
-import { formatMetricScale, getMetricDirection, getMetricScale, getMetricTags, getReportTags } from "../utils"
+import {
+    formatMetricScale,
+    getMetricDirection,
+    getMetricScale,
+    getMetricTags,
+    getMetricUnit,
+    getReportTags,
+} from "../utils"
 import { MetricType } from "./MetricType"
 import { Target } from "./Target"
 import { TargetVisualiser } from "./TargetVisualiser"
@@ -131,7 +138,7 @@ function Direction({ metric, metricUuid, reload }) {
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const scale = getMetricScale(metric, dataModel)
     const metricType = dataModel.metrics[metric.type]
-    const metricUnitWithoutPercentage = metric.unit || metricType.unit
+    const metricUnitWithoutPercentage = getMetricUnit(metric, dataModel)
     const metricUnit = `${scale === "percentage" ? "% " : ""}${metricUnitWithoutPercentage}`
     const fewer = {
         count: `Fewer ${metricUnit}`,

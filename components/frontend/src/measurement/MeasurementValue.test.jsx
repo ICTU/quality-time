@@ -18,13 +18,14 @@ function renderMeasurementValue({
     scale = "count",
     status = null,
     type = "violations",
-    unit = null,
+    unit_plural = null,
+    unit_singular = null,
     url = "https://example.org",
 } = {}) {
     return render(
         <DataModel.Provider
             value={{
-                metrics: { violations: { unit: "violations" } },
+                metrics: { violations: { unit_plural: "violations", unit_singular: "violation" } },
                 sources: { source_type: { parameters: { url: { mandatory: true, metrics: ["violations"] } } } },
             }}
         >
@@ -36,7 +37,8 @@ function renderMeasurementValue({
                     sources: { source_uuid: { type: "source_type", parameters: { url: url } } },
                     status: status,
                     type: type,
-                    unit: unit,
+                    unit_plural: unit_plural,
+                    unit_singular: unit_singular,
                 }}
                 reportDate={reportDate}
             />
@@ -124,7 +126,7 @@ it("renders a value for which a measurement was requested, but which is now up t
 it("renders a minutes value", async () => {
     const { container } = renderMeasurementValue({
         type: "duration",
-        unit: "foo units",
+        unit_plural: "foo units",
         latestMeasurement: { count: { value: "42" } },
     })
     expectText(/42/)
@@ -134,7 +136,7 @@ it("renders a minutes value", async () => {
 it("renders an unknown minutes value", async () => {
     const { container } = renderMeasurementValue({
         type: "duration",
-        unit: "foo units",
+        unit_plural: "foo units",
         latestMeasurement: { count: { value: null } },
     })
     expectText(/\?/)
@@ -145,7 +147,7 @@ it("renders a minutes percentage", async () => {
     const { container } = renderMeasurementValue({
         type: "duration",
         scale: "percentage",
-        unit: "foo units",
+        unit_plural: "foo units",
         latestMeasurement: { percentage: { value: "42" } },
     })
     expectText(/42%/)
@@ -156,7 +158,7 @@ it("renders an unknown minutes percentage", async () => {
     const { container } = renderMeasurementValue({
         type: "duration",
         scale: "percentage",
-        unit: "foo units",
+        unit_plural: "foo units",
         latestMeasurement: { percentage: { value: null } },
     })
     expectText(/\?%/)
@@ -198,7 +200,7 @@ it("does not show an error message for past measurements that were recently meas
 it("shows ignored measurement entities", async () => {
     const { container } = renderMeasurementValue({
         status: "target_met",
-        unit: "foo",
+        unit_singular: "foo",
         latestMeasurement: {
             start: "2022-01-16T00:31:00",
             end: "2022-01-16T00:51:00",
@@ -220,7 +222,7 @@ it("shows ignored measurement entities", async () => {
 it("does not show ignored measurement entities that no longer exist", async () => {
     const { container } = renderMeasurementValue({
         status: "target_met",
-        unit: "foo",
+        unit_singular: "foo",
         latestMeasurement: {
             start: "2022-01-16T00:31:00",
             end: "2022-01-16T00:51:00",
