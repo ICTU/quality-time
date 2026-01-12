@@ -21,14 +21,24 @@ def metric_section(metric: MetricNotificationData, report_url: str) -> pymsteams
     old_status = metric.old_metric_status
     old_status_text = " (unchanged)" if metric.new_metric_status == old_status else f", was {old_status}"
     section.addFact("Status:", f"{metric.new_metric_status}{old_status_text}")
-    unit = metric.metric_unit
-    unit_text = unit if (not unit or unit.startswith("%")) else f" {unit}"
-    new_value = "unknown" if metric.new_metric_value is None else f"{metric.new_metric_value}{unit_text}"
-    old_value = "unknown" if metric.old_metric_value is None else f"{metric.old_metric_value}{unit_text}"
+    if metric.new_metric_value is None:
+        new_value = "unknown"
+    else:
+        new_value = f"{metric.new_metric_value}{unit_text(metric, metric.new_metric_value)}"
+    if metric.old_metric_value is None:
+        old_value = "unknown"
+    else:
+        old_value = f"{metric.old_metric_value}{unit_text(metric, metric.old_metric_value)}"
     old_value_text = " (unchanged)" if metric.new_metric_value == metric.old_metric_value else f", was {old_value}"
     section.addFact("Value:", f"{new_value}{old_value_text}")
     section.linkButton("View metric", f"{report_url}#{metric.metric_uuid}")
     return section
+
+
+def unit_text(metric: MetricNotificationData, value: str) -> str:
+    """Return the metric unit text, using the correct plural or singular form depending on the value."""
+    unit = metric.metric.unit_for_value(value)
+    return unit if (not unit or unit.startswith("%")) else f" {unit}"
 
 
 def create_connector_card(destination: str, notification: Notification) -> pymsteams.connectorcard:
