@@ -12,7 +12,10 @@ import {
 import { MeasurementTarget } from "./MeasurementTarget"
 
 const dataModel = {
-    metrics: { violations: { direction: "<", unit: "violations" }, duration: { direction: "<", unit: "minutes" } },
+    metrics: {
+        violations: { direction: "<", unit: "violations", unit_singular: "violation" },
+        duration: { direction: "<", unit: "minutes", unit_singular: "minute" },
+    },
 }
 
 function renderMeasurementTarget(metric) {
@@ -57,12 +60,26 @@ it("does not render the technical debt popup if technical debt is not accepted",
 it("renders the technical debt popup if technical debt is accepted", async () => {
     const { container } = renderMeasurementTarget({
         type: "violations",
+        debt_target: "50",
         target: "100",
         accept_debt: true,
         debt_end_date: "2021-12-31",
     })
     await hoverText(/100/)
-    await expectTextAfterWait(/accepted as technical debt/)
+    await expectTextAfterWait(/Measurements ≦ 50 violations are accepted as technical debt/)
+    await expectNoAccessibilityViolations(container)
+})
+
+it("uses the singular unit in the technical debt popup if the technical debt target is one", async () => {
+    const { container } = renderMeasurementTarget({
+        type: "violations",
+        debt_target: "1",
+        target: "100",
+        accept_debt: true,
+        debt_end_date: "2021-12-31",
+    })
+    await hoverText(/100/)
+    await expectTextAfterWait(/Measurements ≦ 1 violation are accepted as technical debt/)
     await expectNoAccessibilityViolations(container)
 })
 

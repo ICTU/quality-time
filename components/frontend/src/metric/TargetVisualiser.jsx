@@ -107,7 +107,7 @@ RedSegment.propTypes = {
     unit: string,
 }
 
-function GreySegment({ lowTarget, highTarget, scale, show, unit }) {
+function GreySegment({ highTarget, lowTarget, scale, show, unit }) {
     return (
         <ColoredSegment
             color="grey"
@@ -117,14 +117,14 @@ function GreySegment({ lowTarget, highTarget, scale, show, unit }) {
     )
 }
 GreySegment.propTypes = {
-    lowTarget: string,
     highTarget: string,
+    lowTarget: string,
     scale: scalePropType,
     show: bool,
     unit: string,
 }
 
-function YellowSegment({ lowTarget, highTarget, scale, show, unit }) {
+function YellowSegment({ highTarget, lowTarget, scale, show, unit }) {
     if (!smallerThan(lowTarget, highTarget)) {
         return null
     }
@@ -137,8 +137,8 @@ function YellowSegment({ lowTarget, highTarget, scale, show, unit }) {
     )
 }
 YellowSegment.propTypes = {
-    lowTarget: string,
     highTarget: string,
+    lowTarget: string,
     scale: scalePropType,
     show: bool,
     unit: string,
@@ -169,53 +169,66 @@ export function TargetVisualiser({ metric }) {
     const debtTarget = metric.debt_target
     const debtTargetApplies = debtTargetActive(metric, direction)
     if (direction === "≦") {
+        const redTarget = debtTargetApplies ? maxTarget(nearTarget, debtTarget) : maxTarget(nearTarget, target)
         return (
             <ColoredSegments>
-                <GreenSegment direction={direction} scale={scale} target={target} unit={unit} />
-                <GreySegment
-                    lowTarget={target}
-                    highTarget={debtTarget}
+                <GreenSegment
+                    direction={direction}
+                    metric={metric}
                     scale={scale}
-                    unit={unit}
+                    target={target}
+                    unit={formatMetricScaleAndUnit(metric, dataModel, target)}
+                />
+                <GreySegment
+                    highTarget={debtTarget}
+                    lowTarget={target}
+                    scale={scale}
                     show={debtTargetApplies}
+                    unit={unit}
                 />
                 <YellowSegment
-                    lowTarget={debtTargetApplies ? maxTarget(debtTarget, target) : target}
                     highTarget={nearTarget}
+                    lowTarget={debtTargetApplies ? maxTarget(debtTarget, target) : target}
                     scale={scale}
                     unit={unit}
                 />
                 <RedSegment
                     direction={oppositeDirection}
-                    target={debtTargetApplies ? maxTarget(nearTarget, debtTarget) : maxTarget(nearTarget, target)}
+                    target={redTarget}
                     scale={scale}
-                    unit={unit}
+                    unit={formatMetricScaleAndUnit(metric, dataModel, redTarget)}
                 />
             </ColoredSegments>
         )
     } else {
+        const redTarget = debtTargetApplies ? minTarget(debtTarget, nearTarget) : minTarget(nearTarget, target)
         return (
             <ColoredSegments>
                 <RedSegment
                     direction={oppositeDirection}
-                    target={debtTargetApplies ? minTarget(debtTarget, nearTarget) : minTarget(nearTarget, target)}
+                    target={redTarget}
                     scale={scale}
-                    unit={unit}
+                    unit={formatMetricScaleAndUnit(metric, dataModel, redTarget)}
                 />
                 <YellowSegment
-                    lowTarget={nearTarget}
                     highTarget={debtTargetApplies ? debtTarget : target}
+                    lowTarget={nearTarget}
                     scale={scale}
                     unit={unit}
                 />
                 <GreySegment
-                    lowTarget={debtTarget}
                     highTarget={target}
+                    lowTarget={debtTarget}
                     scale={scale}
-                    unit={unit}
                     show={debtTargetApplies}
+                    unit={unit}
                 />
-                <GreenSegment direction={direction} scale={scale} target={target} unit={unit} />
+                <GreenSegment
+                    direction={direction}
+                    scale={scale}
+                    target={target}
+                    unit={formatMetricScaleAndUnit(metric, dataModel, target)}
+                />
             </ColoredSegments>
         )
     }

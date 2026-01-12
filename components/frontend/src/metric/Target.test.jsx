@@ -11,7 +11,6 @@ import { Target } from "./Target"
 const dataModel = {
     metrics: {
         violations: {
-            unit: "violations",
             direction: "<",
             name: "Violations",
             default_scale: "count",
@@ -19,14 +18,12 @@ const dataModel = {
         },
         violations_with_default_target: {
             target: "100",
-            unit: "violations",
             direction: "<",
             name: "Violations",
             default_scale: "count",
             scales: ["count", "percentage"],
         },
         source_version: {
-            unit: "",
             direction: "<",
             name: "Source version",
             default_scale: "version_number",

@@ -14,6 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
+- Add singular versions of the metric units to the data model and allow users to override both the singular and plural forms via the UI. Closes [#550](https://github.com/ICTU/quality-time/issues/550).
 - Allow for ignoring draft merge requests when using GitLab. Closes [#12327](https://github.com/ICTU/quality-time/issues/12327).
 
 ## v5.48.5 - 2026-02-27

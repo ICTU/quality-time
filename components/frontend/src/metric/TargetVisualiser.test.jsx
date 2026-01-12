@@ -8,6 +8,7 @@ const dataModel = {
     metrics: {
         violations: {
             unit: "violations",
+            unit_singular: "violation",
             direction: "<",
             name: "Violations",
             default_scale: "count",
@@ -16,6 +17,7 @@ const dataModel = {
         violations_with_default_target: {
             target: "100",
             unit: "violations",
+            unit_singular: "violation",
             direction: "<",
             name: "Violations",
             default_scale: "count",
@@ -23,6 +25,7 @@ const dataModel = {
         },
         source_version: {
             unit: "",
+            unit_singular: "",
             direction: "<",
             name: "Source version",
             default_scale: "version_number",
@@ -48,12 +51,12 @@ function expectNotVisible(...matchers) {
 }
 
 it("shows help for evaluated metric without tech debt", async () => {
-    const { container } = renderVisualiser({ type: "violations", target: "10", near_target: "15" })
+    const { container } = renderVisualiser({ type: "violations", target: "1", near_target: "15" })
     expectVisible(
         /Target met/,
-        /≦ 10 violations/,
+        /≦ 1 violation$/,
         /Near target met/,
-        /10 - 15 violations/,
+        /1 - 15 violations/,
         /Target not met/,
         /> 15 violations/,
     )
@@ -64,16 +67,16 @@ it("shows help for evaluated metric without tech debt", async () => {
 it("shows help for evaluated metric with tech debt", async () => {
     const { container } = renderVisualiser({
         type: "violations",
-        target: "10",
+        target: "1",
         debt_target: "15",
         near_target: "20",
         accept_debt: true,
     })
     expectVisible(
         /Target met/,
-        /≦ 10 violations/,
+        /≦ 1 violation$/,
         /Debt target met/,
-        /10 - 15 violations/,
+        /1 - 15 violations/,
         /Near target met/,
         /15 - 20 violations/,
         /Target not met/,

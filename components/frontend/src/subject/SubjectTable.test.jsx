@@ -21,7 +21,6 @@ import {
 import { SubjectTable } from "./SubjectTable"
 
 const metric = {
-    unit: "testUnit",
     scale: "count",
     type: "metric_type",
     name: "name_1",
@@ -29,7 +28,6 @@ const metric = {
     tags: ["Tag 1"],
 }
 const metric2 = {
-    unit: "tests",
     scale: "percentage",
     name: "name_2",
     type: "metric_type",

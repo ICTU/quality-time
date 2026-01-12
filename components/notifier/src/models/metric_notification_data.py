@@ -30,8 +30,8 @@ class MetricNotificationData:
         self.metric = metric
         self.metric_uuid = metric_uuid
         self.measurements = measurements
-        self.metric_name = metric.get("name") or DATA_MODEL.metrics[metric["type"]].name
-        self.metric_unit = metric.get("unit") or DATA_MODEL.metrics[metric["type"]].unit.value
+        metric_type = DATA_MODEL.metrics[metric["type"]]
+        self.metric_name = metric.get("name") or metric_type.name
         self.subject_name = subject.get("name") or DATA_MODEL.all_subjects[subject["type"]].name
         self.scale = metric.scale()
         self.status = self.__status(LAST)

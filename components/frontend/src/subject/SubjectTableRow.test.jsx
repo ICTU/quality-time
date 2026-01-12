@@ -48,7 +48,7 @@ function renderSubjectTableRow({
             metric_uuid: "metric_uuid",
             start: "2024-01-01T00:00",
             end: "2024-01-01T00:00",
-            count: { value: "10", status: "target_met" },
+            count: { value: "11", status: "target_met" },
             version_number: { value: "1.0", status: "target_met" },
         },
     ]
@@ -74,6 +74,7 @@ function renderSubjectTableRow({
                                 secondary_name: secondaryName,
                                 type: "metric_type",
                                 unit: "things",
+                                unit_singular: "thing",
                             }}
                             metricUuid="metric_uuid"
                             report={report}
@@ -98,8 +99,8 @@ function renderSubjectTableRow({
 it("shows the delta column", async () => {
     history.push("?nr_dates=3&date_interval=1")
     const { container } = renderSubjectTableRow()
-    expectText("+2")
-    expectLabelText("Metric type worsened from 10 to 12 things by +2 things")
+    expectText("+1")
+    expectLabelText("Metric type worsened from 11 to 12 things by +1 thing")
     expectText("-4")
     expectLabelText("Metric type improved from 12 to 8 things by -4 things")
     await expectNoAccessibilityViolations(container)
@@ -108,15 +109,16 @@ it("shows the delta column", async () => {
 it("hides the delta column", async () => {
     history.push("?nr_dates=2&hidden_columns=delta")
     const { container } = renderSubjectTableRow()
-    expectNoText("+2")
+    expectNoText("+1")
+    expectNoText("-4")
     await expectNoAccessibilityViolations(container)
 })
 
 it("takes the metric direction into account", async () => {
     history.push("?nr_dates=3&date_interval=1")
     const { container } = renderSubjectTableRow({ direction: ">" })
-    expectText("+2")
-    expectLabelText("Metric type improved from 10 to 12 things by +2 things")
+    expectText("+1")
+    expectLabelText("Metric type improved from 11 to 12 things by +1 thing")
     expectText("-4")
     expectLabelText("Metric type worsened from 12 to 8 things by -4 things")
     await expectNoAccessibilityViolations(container)
@@ -125,8 +127,8 @@ it("takes the metric direction into account", async () => {
 it("works for informative metrics", async () => {
     history.push("?nr_dates=3&date_interval=1")
     const { container } = renderSubjectTableRow({ evaluateTargets: false })
-    expectText("+2")
-    expectLabelText("Metric type changed from 10 to 12 things by +2 things")
+    expectText("+1")
+    expectLabelText("Metric type changed from 11 to 12 things by +1 thing")
     expectText("-4")
     expectLabelText("Metric type changed from 12 to 8 things by -4 things")
     await expectNoAccessibilityViolations(container)
@@ -135,8 +137,8 @@ it("works for informative metrics", async () => {
 it("takes the date order into account", async () => {
     history.push("?nr_dates=3&date_interval=1&date_order=ascending")
     const { container } = renderSubjectTableRow({ ascending: true })
-    expectText("+2")
-    expectLabelText("Metric type worsened from 10 to 12 things by +2 things")
+    expectText("+1")
+    expectLabelText("Metric type worsened from 11 to 12 things by +1 thing")
     expectText("-4")
     expectLabelText("Metric type improved from 12 to 8 things by -4 things")
     await expectNoAccessibilityViolations(container)

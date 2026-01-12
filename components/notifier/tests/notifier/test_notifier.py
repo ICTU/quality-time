@@ -74,7 +74,6 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
                     METRIC_ID: {
                         "type": "tests",
                         "name": "metric1",
-                        "unit": "units",
                         "status": "target_not_met",
                         "scale": "count",
                     },
@@ -187,7 +186,6 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
                         METRIC_ID: {
                             "type": "tests",
                             "name": "metric1",
-                            "unit": "units",
                             "status": "target_not_met",
                             "scale": "count",
                         },

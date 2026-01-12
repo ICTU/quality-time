@@ -28,7 +28,6 @@ const dataModel = {
             scales: ["count", "percentage"],
         },
         source_version: {
-            unit: "",
             direction: "<",
             name: "Source version",
             default_scale: "version_number",
@@ -122,19 +121,23 @@ it("changes the direction", async () => {
 
 it("sets the metric unit for metrics with the count scale", async () => {
     const { container } = await renderMetricParameters()
-    await typeInField(/Metric unit/, "New metric unit")
-    expectMetricAttributePost("unit", "New metric unit")
+    await typeInField(/Metric unit plural/, "New metric units")
+    expectMetricAttributePost("unit", "New metric units")
+    await typeInField(/Metric unit singular/, "New metric unit")
+    expectMetricAttributePost("unit_singular", "New metric unit")
     await expectNoAccessibilityViolations(container)
 })
 
-it("sets the metric unit field for metrics with the percentage scale", async () => {
+it("sets the metric unit for metrics with the percentage scale", async () => {
     const { container } = await renderMetricParameters("percentage")
-    await typeInField(/Metric unit/, "New metric unit")
-    expectMetricAttributePost("unit", "New metric unit")
+    await typeInField(/Metric unit plural/, "New metric units")
+    expectMetricAttributePost("unit", "New metric units")
+    await typeInField(/Metric unit singular/, "New metric unit")
+    expectMetricAttributePost("unit_singular", "New metric unit")
     await expectNoAccessibilityViolations(container)
 })
 
-it("skips the metric unit field for metrics with the version number scale", async () => {
+it("skips the metric unit fields for metrics with the version number scale", async () => {
     const { container } = render(
         <DataModel.Provider value={dataModel}>
             <MetricConfigurationParameters

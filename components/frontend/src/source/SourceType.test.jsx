@@ -16,7 +16,6 @@ const dataModel = {
     metrics: {
         violations: {
             sources: ["sonarqube", "gitlab", "source_type"],
-            unit: "violations",
             direction: "<",
             name: "Violations",
             default_scale: "count",

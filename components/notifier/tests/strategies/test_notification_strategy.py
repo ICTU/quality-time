@@ -70,7 +70,6 @@ class StrategiesTests(unittest.TestCase):
                 "scale": scale,
                 "status": status,
                 "type": "tests",
-                "unit": "units",
                 "recent_measurements": recent_measurements or [],
                 "status_start": status_start or "",
             },

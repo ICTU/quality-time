@@ -5,15 +5,7 @@ from datetime import date
 from typing import TYPE_CHECKING, cast
 
 from shared.utils.functions import md5_hash
-from shared.utils.type import (
-    Direction,
-    MetricId,
-    Scale,
-    SourceId,
-    Status,
-    SubjectId,
-    TargetType,
-)
+from shared.utils.type import Direction, MetricId, Scale, SourceId, Status, SubjectId, TargetType, Value
 
 from .source import Source
 
@@ -67,8 +59,19 @@ class Metric(dict):  # noqa: PLW1641
 
     @property
     def unit(self) -> str:
-        """Either a custom unit or one from the metric type in the data model."""
-        return cast(str, self.get("unit") or self.__data_model["metrics"].get(self.type(), {}).get("unit"))
+        """Either a custom unit or the default from the metric type in the data model."""
+        unit = cast(str, self.get("unit"))
+        return unit or self.__data_model["metrics"].get(self.type(), {}).get("unit")
+
+    @property
+    def unit_singular(self) -> str:  # pragma: no feature-test-cover
+        """Either a custom unit or the default from the metric type in the data model."""
+        unit = cast(str, self.get("unit_singular"))
+        return unit or self.__data_model["metrics"].get(self.type(), {}).get("unit_singular")
+
+    def unit_for_value(self, value: Value) -> str:
+        """Return the singular or plural unit depending on the value."""
+        return self.unit_singular if value in ("1", "-1") else self.unit
 
     def evaluate_targets(self) -> bool:
         """Return whether the metric is to evaluate its targets. If not, it is considered to be informative."""

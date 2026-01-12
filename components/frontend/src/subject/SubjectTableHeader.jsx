@@ -120,7 +120,7 @@ const unitHelp = (
             and target values.
         </p>
         <p>
-            <Expand>metric</Expand> to edit the unit name in the configuration tab.
+            <Expand>metric</Expand> to edit the unit (singular and plural) in the configuration tab.
         </p>
         <p>Click the column header to sort the metrics by unit.</p>
     </>

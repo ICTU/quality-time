@@ -44,6 +44,7 @@ class Metric(DocumentedModel):
     scales: list[str] = Field(["count"], min_length=1)
     default_scale: str = "count"
     unit: Unit = Unit.NONE
+    unit_singular: Unit = Unit.NONE
     addition: Addition = Addition.SUM
     direction: Direction = Direction.FEWER_IS_BETTER
     target: str = "0"
@@ -61,4 +62,17 @@ class Metric(DocumentedModel):
     def set_default_scale(self) -> Self:
         """If the metric supports just one scale, make that scale the default scale."""
         self.default_scale = self.scales[0] if len(self.scales) == 1 else self.default_scale
+        return self
+
+    @model_validator(mode="after")
+    def check_unit(self) -> Self:
+        """Check that if the singular unit is not none, neither is the plural unit, and vice versa.
+
+        Both units can be none when the metric has a version scale or when the measurement scale is otherwise
+        dimensionless, such as with the sentiment metric.
+        """
+        if (self.unit, self.unit_singular).count(Unit.NONE) == 1:
+            missing = "singular" if self.unit_singular == Unit.NONE else "plural"
+            msg = f"The {missing} version of the unit of {self.name} is missing"
+            raise ValueError(msg)
         return self

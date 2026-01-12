@@ -20,7 +20,8 @@ class MetricNotificationDataModelTestCase(DataModelTestCase):
         if name is not None:
             metric_data["name"] = name
         if unit is not None:
-            metric_data["unit"] = unit
+            metric_data["unit"] = unit + "s"
+            metric_data["unit_singular"] = unit
         return Metric(self.DATA_MODEL, metric_data, METRIC_ID)
 
     def measurements(self, status: str | None = "target_not_met") -> list:

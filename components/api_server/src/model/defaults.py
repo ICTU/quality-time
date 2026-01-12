@@ -20,6 +20,7 @@ def default_metric_attributes(metric_type: str):
         "name": None,
         "scale": metric.default_scale,
         "unit": None,
+        "unit_singular": None,
         "evaluate_targets": metric.evaluate_targets,
         "accept_debt": False,
         "debt_target": None,
