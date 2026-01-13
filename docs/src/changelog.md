@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Count a Jira issue linked to multiple metrics only once in the issues dashboard card. Fixes [#12483](https://github.com/ICTU/quality-time/issues/12483).
+
 ## v5.48.2 - 2026-01-09
 
 ### Fixed

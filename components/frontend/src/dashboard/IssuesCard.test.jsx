@@ -9,12 +9,17 @@ const report = {
             metrics: {
                 metric_uuid: {
                     issue_ids: ["ID-1"],
-                    issue_status: [{ status_category: "doing" }],
+                    issue_status: [{ issue_id: "ID-1", status_category: "doing" }],
                 },
                 another_metric_uuid: {
-                    issue_ids: ["ID-2", "ID-3"],
-                    issue_status: [{ connection_error: "oops" }],
+                    issue_ids: ["ID-1", "ID-2", "ID-3"],
+                    issue_status: [
+                        { issue_id: "ID-1", status_category: "doing" },
+                        { issue_id: "ID-2", connection_error: "oops" },
+                        { issue_id: "ID-4", status_category: "done" }, // Should be ignored
+                    ],
                 },
+                metric_without_issues: { issue_ids: ["ID-5"] },
             },
         },
     },
@@ -41,6 +46,6 @@ it("shows the number of issues", async () => {
     expect(screen.getByRole("row", { name: "Todo 0" })).toBeInTheDocument()
     expect(screen.getByRole("row", { name: "Doing 1" })).toBeInTheDocument()
     expect(screen.getByRole("row", { name: "Done 0" })).toBeInTheDocument()
-    expect(screen.getByRole("row", { name: "Unknown 2" })).toBeInTheDocument()
+    expect(screen.getByRole("row", { name: "Unknown 3" })).toBeInTheDocument()
     await expectNoAccessibilityViolations(container)
 })
