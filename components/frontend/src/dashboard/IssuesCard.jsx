@@ -8,18 +8,18 @@ function issueStatuses(report) {
     // The issue status is unknown when the issue was added recently and the status hasn't been collected yet
     // or when collecting the issue status from the issue tracker failed
     const statuses = { unknown: 0, todo: 0, doing: 0, done: 0 }
+    const issueIds = new Set()
     for (const subject of Object.values(report.subjects)) {
         for (const metric of Object.values(subject.metrics)) {
-            let nrIssuesWithKnownStatus = 0
-            const issueStatus = metric.issue_status ?? []
-            for (const issue of issueStatus) {
-                if (issue.status_category) {
-                    statuses[issue.status_category] += 1
-                    nrIssuesWithKnownStatus += 1
+            for (const issueId of metric.issue_ids ?? []) {
+                if (issueIds.has(issueId)) {
+                    continue // Count issues linked to multiple metrics only once
                 }
+                issueIds.add(issueId)
+                // Find the status for the issue id and count it. Count as unknown if the status can't be found.
+                const issueStatus = (metric.issue_status ?? []).find((issueStatus) => issueStatus.issue_id === issueId)
+                statuses[issueStatus?.status_category ?? "unknown"] += 1
             }
-            const nrIssues = metric.issue_ids?.length ?? 0
-            statuses["unknown"] += nrIssues - nrIssuesWithKnownStatus
         }
     }
     return statuses
