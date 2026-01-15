@@ -97,8 +97,11 @@ export function getMetricTarget(metric) {
     return metric.target || "0"
 }
 
-export function getMetricUnit(metric, dataModel) {
-    return metric.unit || dataModel.metrics[metric.type].unit || ""
+export function getMetricUnit(metric, dataModel, value) {
+    if (value === "1") {
+        return metric.unit_singular || dataModel.metrics[metric.type].unit_singular || ""
+    }
+    return metric.unit_plural || dataModel.metrics[metric.type].unit_plural || ""
 }
 
 export function isMeasurementOutdated(metric) {
@@ -393,9 +396,9 @@ export function formatMetricScale(metric, dataModel) {
     return scale === "percentage" ? "%" : ""
 }
 
-export function formatMetricScaleAndUnit(metric, dataModel) {
+export function formatMetricScaleAndUnit(metric, dataModel, value) {
     const scale = formatMetricScale(metric, dataModel)
-    const unit = getMetricUnit(metric, dataModel)
+    const unit = getMetricUnit(metric, dataModel, value)
     const sep = unit ? " " : ""
     return `${scale}${sep}${unit}`
 }

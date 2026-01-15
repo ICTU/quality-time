@@ -73,7 +73,8 @@ function renderSubjectTableRow({
                                 scale: scale,
                                 secondary_name: secondaryName,
                                 type: "metric_type",
-                                unit: "things",
+                                unit_plural: "things",
+                                unit_singular: "thing",
                             }}
                             metricUuid="metric_uuid"
                             report={report}

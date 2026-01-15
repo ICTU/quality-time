@@ -136,7 +136,7 @@ Feature: measurement
 
   Scenario: retrieving a metric's measurements
     Given an existing source
-    When the collector measures "0"
+    When the collector measures "1"
     Then the metric has one measurement
     When the collector measures "10"
     Then the metric has 2 measurements

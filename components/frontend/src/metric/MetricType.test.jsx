@@ -16,14 +16,12 @@ const dataModel = {
     },
     metrics: {
         violations: {
-            unit: "violations",
             direction: "<",
             name: "Violations",
             default_scale: "count",
             scales: ["count", "percentage"],
         },
         source_version: {
-            unit: "",
             direction: "<",
             documentation: "extra documentation",
             name: "Source version",
@@ -31,7 +29,6 @@ const dataModel = {
             scales: ["version_number"],
         },
         unsupported: {
-            unit: "foo",
             direction: "<",
             name: "Unsupported",
             default_scale: "count",

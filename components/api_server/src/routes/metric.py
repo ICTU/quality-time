@@ -214,14 +214,15 @@ def create_issue_text(metric: Metric, measured_value: Value) -> tuple[str, str]:
     metric_url = dict(bottle.request.json)["metric_url"]
     source_names = ", ".join([source.name or DATA_MODEL.sources[str(source.type)].name for source in metric.sources])
     # See https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=links
-    # for the text formatting notiation used by Jira API version 2.
+    # for the text formatting notation used by Jira API version 2.
     source_urls = [f"[{url}|{url}]" for url in [get_source_url(source) for source in metric.sources] if url]
     percentage = "%" if metric.scale() == "percentage" else ""
-    issue_summary = f"Fix {measured_value}{percentage} {metric.unit} from {source_names}"
+    unit = metric.unit_singular if measured_value == "1" else metric.unit_plural
+    issue_summary = f"Fix {measured_value}{percentage} {unit} from {source_names}"
     source_url_str = f"\nPlease go to {', '.join(source_urls)} for more details." if source_urls else ""
     issue_description = (
         f"The metric [{metric.name}|{metric_url}] in Quality-time reports "
-        f"{measured_value}{percentage} {metric.unit} from {source_names}.{source_url_str}\n"
+        f"{measured_value}{percentage} {unit} from {source_names}.{source_url_str}\n"
     )
     return issue_summary, issue_description
 

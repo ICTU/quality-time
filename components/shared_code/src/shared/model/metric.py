@@ -66,9 +66,16 @@ class Metric(dict):  # noqa: PLW1641
         return str(default_name) if default_name else None
 
     @property
-    def unit(self) -> str:
-        """Either a custom unit or one from the metric type in the data model."""
-        return cast(str, self.get("unit") or self.__data_model["metrics"].get(self.type(), {}).get("unit"))
+    def unit_plural(self) -> str:
+        """Either a custom unit or the default from the metric type in the data model."""
+        unit = cast(str, self.get("unit_plural"))
+        return unit or self.__data_model["metrics"].get(self.type(), {}).get("unit_plural")
+
+    @property
+    def unit_singular(self) -> str:
+        """Either a custom unit or the default from the metric type in the data model."""
+        unit = cast(str, self.get("unit_singular"))
+        return unit or self.__data_model["metrics"].get(self.type(), {}).get("unit_singular")
 
     def evaluate_targets(self) -> bool:
         """Return whether the metric is to evaluate its targets. If not, it is considered to be informative."""

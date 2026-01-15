@@ -8,8 +8,8 @@ import { TrendGraph } from "./TrendGraph"
 
 const dataModel = {
     metrics: {
-        stability: { name: "Stability", unit: "minutes", direction: ">", tags: [] },
-        violations: { name: "Violations", unit: "violations", direction: "<", tags: [] },
+        stability: { name: "Stability", unit_plural: "minutes", direction: ">", tags: [] },
+        violations: { name: "Violations", unit_plural: "violations", direction: "<", tags: [] },
     },
 }
 

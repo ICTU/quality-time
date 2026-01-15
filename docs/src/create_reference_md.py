@@ -143,11 +143,11 @@ def metric_target(metric: Metric) -> str:
     """Return the metric target."""
     direction = {"<": "≦", ">": "≧"}[metric.direction]
     if metric.default_scale == "percentage":
-        unit = "% of the " + metric.unit
+        unit = "% of the " + metric.unit_plural
     elif metric.default_scale == "version_number":
         unit = ""
     else:
-        unit = " " + metric.unit
+        unit = " " + metric.unit_plural
     return f"{direction} {metric.target}{unit}"
 
 
