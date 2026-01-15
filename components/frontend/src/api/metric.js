@@ -27,7 +27,7 @@ export function setMetricDebt(metricUuid, value, reload) {
 }
 
 export function addMetricIssue(metricUuid, reload, showMessage) {
-    const payload = { metric_url: `${globalThis.location}#${metricUuid}` }
+    const payload = { metric_url: `${globalThis.location.origin}${globalThis.location.pathname}#${metricUuid}` }
     return fetchServerApi("post", `metric/${metricUuid}/issue/new`, payload)
         .then((json) => {
             if (json.ok) {

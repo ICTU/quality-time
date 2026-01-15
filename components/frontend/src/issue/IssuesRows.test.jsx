@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
@@ -88,22 +88,37 @@ it("shows a parse error", async () => {
 })
 
 it("creates an issue", async () => {
-    globalThis.open = vi.fn()
     fetchServerApi.fetchServerApi.mockResolvedValue({ ok: true, error: "", issue_url: "https://tracker/foo-42" })
+    globalThis.open = vi.fn()
+    globalThis.location = {
+        origin: "https://quality-time.example.org",
+        pathname: "/report_uuid",
+        search: "?query=ignored",
+    }
     const { container } = renderIssuesRow({ report: reportWithIssueTracker })
     clickText(/Create new issue/)
     expectFetch("post", "metric/metric_uuid/issue/new", {
-        metric_url: "http://localhost:3000/#metric_uuid",
+        metric_url: "https://quality-time.example.org/report_uuid#metric_uuid",
     })
     await expectNoAccessibilityViolations(container)
 })
 
 it("tries to create an issue", async () => {
-    fetchServerApi.fetchServerApi.mockResolvedValue({ ok: false, error: "Dummy", issue_url: "" })
+    const showMessage = vi.spyOn(toast, "showMessage")
+    fetchServerApi.fetchServerApi.mockResolvedValue({ ok: false, error: "Failed to create issue", issue_url: "" })
+    globalThis.location = {
+        origin: "https://quality-time.example.org",
+        pathname: "/report_uuid",
+        search: "?query=ignored",
+    }
     const { container } = renderIssuesRow({ report: reportWithIssueTracker })
     clickText(/Create new issue/)
     expectFetch("post", "metric/metric_uuid/issue/new", {
-        metric_url: "http://localhost:3000/#metric_uuid",
+        metric_url: "https://quality-time.example.org/report_uuid#metric_uuid",
+    })
+    await waitFor(() => {
+        expect(showMessage).toHaveBeenCalledTimes(1)
+        expect(showMessage).toHaveBeenCalledWith("error", "Could not create issue", "Failed to create issue")
     })
     await expectNoAccessibilityViolations(container)
 })
