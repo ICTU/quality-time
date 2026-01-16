@@ -25,7 +25,7 @@ The table below contains the *Quality-time* releases since the last minor of the
 - Max. upgrade: the highest version to which upgrading is supported.
 - Manual changes: whether manual changes are needed to up- or downgrade. Manual changes are (by definition) only needed for major releases. The manual changes are documented in the [changelog](changelog.md).
 
-The MongoDB version, the MongoDB feature compatability, and the migrations all limit the downgrade and upgrade options. See the [background information](#background-information-on-downgrade-and-upgrade-limitations) below.
+The MongoDB version, the MongoDB feature compatibility, and the migrations all limit the downgrade and upgrade options. See the [background information](#background-information-on-downgrade-and-upgrade-limitations) below.
 
 | Version    | Date       | Mongo  | FC     | Migrations  | Max. downgrade | Max. upgrade | Manual changes |
 |------------|------------|--------|--------|-------------|----------------|--------------|----------------|

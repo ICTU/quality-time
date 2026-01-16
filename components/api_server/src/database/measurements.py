@@ -20,7 +20,7 @@ NO_ID = {"_id": False}
 NO_SOURCE_DETAILS = NO_ID | {"sources.entities": False}
 NO_MEASUREMENT_DETAILS = NO_SOURCE_DETAILS | {"issue_status": False}
 
-# Sort optins
+# Sort options
 START_ASCENDING = [("start", pymongo.ASCENDING), ("end", pymongo.DESCENDING)]
 START_DESCENDING = [("start", pymongo.DESCENDING)]
 

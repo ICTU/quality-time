@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class PerformanceTestRunnerTests(PerformanceTestRunnerBaseClass):
     """Collector for the number of (successful and/or failing) performance test transactions."""
 
-    # For each tests status, the column in the HMTL table that contains the number of tests with that status:
+    # For each tests status, the column in the HTML table that contains the number of tests with that status:
     COLUMN_INDICES: ClassVar[dict[str, int]] = {"failed": 7, "success": 1}
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:

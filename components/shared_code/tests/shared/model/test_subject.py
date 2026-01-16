@@ -102,7 +102,7 @@ class SubjectTest(DataModelTestCase):
         )
 
     def test_delete_tag(self):
-        """Test that a tag can be deleted from all metrics in the subjec."""
+        """Test that a tag can be deleted from all metrics in the subject."""
         self.assertEqual([METRIC_ID], self.subject.delete_tag("tag"))
         for metric in self.subject.metrics:
             self.assertNotIn("tag", metric["tags"])

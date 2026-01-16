@@ -61,6 +61,10 @@ run_yamllint() {
     run_uvx yamllint $@
 }
 
+run_codespell() {
+    run_uvx codespell $(python_files_and_folders)
+}
+
 check_python_quality() {
     run_ruff
     run_fixit
@@ -70,4 +74,5 @@ check_python_quality() {
     run_pip_audit
     run_bandit
     run_vulture
+    run_codespell
 }

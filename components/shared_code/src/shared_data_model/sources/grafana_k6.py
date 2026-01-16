@@ -67,7 +67,7 @@ GRAFANA_K6 = Source(
                 EntityAttribute(name="Sample count", key="count", type=EntityAttributeType.INTEGER),
                 EntityAttribute(name="Average", help=f"Average {HELP}", key="average_response_time", type=FLOAT),
                 EntityAttribute(name="Median", help=f"Median {HELP}", key="median_response_time", type=FLOAT),
-                EntityAttribute(name="Minimum", help=f"Minimim {HELP}", key="min_response_time", type=FLOAT),
+                EntityAttribute(name="Minimum", help=f"Minimum {HELP}", key="min_response_time", type=FLOAT),
                 EntityAttribute(name="Maximum", help=f"Maximum {HELP}", key="max_response_time", type=FLOAT),
             ],
         )

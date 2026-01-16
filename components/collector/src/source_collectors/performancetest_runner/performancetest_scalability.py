@@ -35,7 +35,7 @@ class PerformanceTestRunnerScalability(PerformanceTestRunnerBaseClass):
         return int(await self.__get_element_by_id("trendbreak_scalability_vusers", response))
 
     async def __max_vusers(self, response: Response) -> int:
-        """Parse the maximum numer of virtual users from the response."""
+        """Parse the maximum number of virtual users from the response."""
         return int(await self.__get_element_by_id("virtual_users", response))
 
     async def __get_element_by_id(self, element_id: str, response: Response) -> str:

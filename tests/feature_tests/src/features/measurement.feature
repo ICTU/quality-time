@@ -75,7 +75,7 @@ Feature: measurement
     And the client changes the metric target to "invalid version"
     Then the metric status is "target_met"
 
-  Scenario: the metric has no source and therefor is not measured yet and this is accepted as technical debt
+  Scenario: the metric has no source and therefore is not measured yet and this is accepted as technical debt
     When the client changes the metric accept_debt to "True"
     Then the metric status is "debt_target_met"
 

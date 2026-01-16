@@ -50,7 +50,7 @@ def disable_logging[ReturnType](func: Callable[..., ReturnType]):
 
     @functools.wraps(func)
     def wrapper_decorator(*args, **kwargs) -> ReturnType:
-        """Disable logging before calling func and reenable it afterwards."""
+        """Disable logging before calling func and re-enable it afterwards."""
         logging.disable(logging.CRITICAL)
         result = func(*args, **kwargs)
         logging.disable(logging.NOTSET)

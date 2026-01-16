@@ -225,7 +225,7 @@ QUALITY_TIME = Source(
         ),
         "tags": MultipleChoiceWithAdditionParameter(
             name="Tags",
-            help="If provided, only count metrics with one ore more of the given tags.",
+            help="If provided, only count metrics with one or more of the given tags.",
             placeholder="all tags",
             metrics=["metrics"],
         ),

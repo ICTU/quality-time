@@ -75,7 +75,7 @@ def before_all(context: Context) -> None:  # noqa: C901
     context.session_id = None
     context.report_date = None
     context.min_report_date = None
-    context.response = None  # Most recent respone
+    context.response = None  # Most recent response
     context.post_response = None  # Most recent post response
     # Create a typed local variable to prevent mypy error: Type cannot be declared in assignment to non-self attribute
     uuid: dict[str, str] = {}

@@ -15,7 +15,7 @@ class AnchoreSecurityWarningsTest(AnchoreTestCase):
     def create_entity(
         self, cve: str, package: str, fix: str = "None", severity: str = "Low", filename: str = ""
     ) -> dict[str, str]:
-        """Return an expected entitiy."""
+        """Return an expected entity."""
         return {
             "key": md5_hash(f"{filename}{cve}:{package}"),
             "filename": filename,

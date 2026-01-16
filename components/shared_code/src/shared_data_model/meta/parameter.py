@@ -110,7 +110,7 @@ class ParameterGroup(NamedModel):
 
     If the list of parameters is empty, all applicable parameters that are not part of another group will be displayed
     as part of the group without parameters. This means that parameter layouts should have at most one group without
-    explictly listed parameters.
+    explicitly listed parameters.
     """
 
     parameters: list[str] = Field(default_factory=list)

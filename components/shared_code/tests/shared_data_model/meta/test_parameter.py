@@ -25,7 +25,7 @@ class ParameterTest(MetaModelTestCase):
         self.check_parameter_validation_error(expected_message, help="Help.", help_url=help_url)
 
     def test_check_help_punctuation(self):
-        """Test that parameter help ends with puncutation."""
+        """Test that parameter help ends with punctuation."""
         expected_message = "The help of Parameter does not end with punctuation"
         self.check_parameter_validation_error(expected_message, help="Help")
 

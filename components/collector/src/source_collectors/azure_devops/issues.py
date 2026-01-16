@@ -13,8 +13,9 @@ from model import Entities, Entity, SourceResponses
 class AzureDevopsIssues(SourceCollector):
     """Collector to get issues from Azure Devops Server."""
 
-    MAX_IDS_PER_WORK_ITEMS_API_CALL: Final[int] = 200  # See
-    # https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work%20items/list?view=azure-devops-rest-5.1
+    MAX_IDS_PER_WORK_ITEMS_API_CALL: Final[int] = 200
+    # See https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/\  # codespell:ignore wit
+    # work%20items/list?view=azure-devops-rest-5.1
 
     _issue_ids_to_fetch: list[int]
 
@@ -24,7 +25,7 @@ class AzureDevopsIssues(SourceCollector):
 
     async def _api_wit_url(self, endpoint: str = "wiql") -> URL:
         """Extend to add the WIQL or WorkItems API path."""
-        return URL(f"{await SourceCollector._api_url(self)}/_apis/wit/{endpoint}?api-version=6.0")  # noqa: SLF001
+        return URL(f"{await SourceCollector._api_url(self)}/_apis/wit/{endpoint}?api-version=6.0")  # noqa: SLF001 # codespell:ignore wit
 
     def _api_list_query(self) -> dict[str, str]:
         """Combine API select and where fields to correct WIQL query."""

@@ -40,7 +40,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Changed
 
-- Rename the 'tests' metric to 'test results' and the 'test suites' metric to 'test suite results' to better distinguish them from the 'test cases' metric. 'Tests' and 'test suites' metrics whose default name has not been overriden will automatically use the new default name. Closes [#12322](https://github.com/ICTU/quality-time/issues/12322).
+- Rename the 'tests' metric to 'test results' and the 'test suites' metric to 'test suite results' to better distinguish them from the 'test cases' metric. 'Tests' and 'test suites' metrics whose default name has not been overridden will automatically use the new default name. Closes [#12322](https://github.com/ICTU/quality-time/issues/12322).
 
 ### Added
 
@@ -556,7 +556,7 @@ If your currently installed *Quality-time* version is not v5.17.0, please first 
 - Donut charts would be misaligned after resizing the window. Fixes [#9863](https://github.com/ICTU/quality-time/issues/9863).
 - The warning message shown for unsupported measurement details was incorrect for metrics with a version scale. Fixes [#9973](https://github.com/ICTU/quality-time/issues/9973).
 - The metric summary cards with pie chart wouldn't erase the center label when rerendering, causing the label to be visible multiple times. Fixes [#10098](https://github.com/ICTU/quality-time/issues/10098).
-- Developer documentation was still refering to `venv/bin/activate` where this should be `.venv/bin/activate`. Fixes [#10172](https://github.com/ICTU/quality-time/issues/10172).
+- Developer documentation was still referring to `venv/bin/activate` where this should be `.venv/bin/activate`. Fixes [#10172](https://github.com/ICTU/quality-time/issues/10172).
 
 ## v5.17.0 - 2024-10-17
 
@@ -2394,7 +2394,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Fixed
 
-- Typo in metric pie chart tooltip <!-- vale off -->("Uknown")<!-- vale on -->. Fixes [#857](https://github.com/ICTU/quality-time/issues/857).
+- Typo in metric pie chart tooltip. Fixes [#857](https://github.com/ICTU/quality-time/issues/857).
 - User documentation incorrectly said that the dashboard layout is persisted in the browser. It is kept in the database since version 1.0.0. Fixes [#860](https://github.com/ICTU/quality-time/issues/860).
 - Add report title to subject names in tag reports so it is clear from which report each subject comes. Fixes [#880](https://github.com/ICTU/quality-time/issues/880).
 - Tag reports could not be exported to PDF. Fixes [#885](https://github.com/ICTU/quality-time/issues/885).

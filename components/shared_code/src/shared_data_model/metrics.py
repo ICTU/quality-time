@@ -8,7 +8,7 @@ SIG_TUVIT_EVALUATION_CRITERIA = (
 )
 FOWLER_TEST_COVERAGE = "https://martinfowler.com/bliki/TestCoverage.html"
 VERSION_NUMBER_EXPLANATION = """Quality-time uses the packaging library (1) to parse version numbers. The packaging
-library expects version numbers to comply with PEP-440 (2). PEP is an abbrevation for Python Enhancement Proposal,
+library expects version numbers to comply with PEP-440 (2). PEP is an abbreviation for Python Enhancement Proposal,
 but this PEP is primarily a standard for version numbers. PEP-440 encompasses most of the semantic versioning scheme
 (3) so version numbers that follow semantic versioning are usually parsed correctly."""
 VERSION_NUMBER_EXPLANATION_URLS = [

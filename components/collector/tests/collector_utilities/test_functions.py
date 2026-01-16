@@ -107,7 +107,7 @@ class StripHashTest(unittest.TestCase):
 
 
 class AddQueryTest(unittest.TestCase):
-    """Unit tests for the add_query funcion."""
+    """Unit tests for the add_query function."""
 
     def setUp(self):
         """Set up test fixtures."""
