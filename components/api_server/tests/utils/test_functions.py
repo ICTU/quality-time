@@ -96,7 +96,7 @@ class TestEncryption(unittest.TestCase):
     """Unit tests for the encryption and decryption utility functions."""
 
     def test_symmetric_encryption(self):
-        """Test wether message is encrypted using and can be decrypted."""
+        """Test whether message is encrypted and can be decrypted."""
         # encryption
         test_message = b"this is a test message"
         key, encrypted_message = symmetric_encrypt(test_message)

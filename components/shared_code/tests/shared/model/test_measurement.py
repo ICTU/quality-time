@@ -165,7 +165,7 @@ class ScaleMeasurementTest(MeasurementTestCase):
 
 
 class VersionNumberScaleMeasurementTest(MeasurementTestCase):
-    """Tests for the version numner measurement class."""
+    """Tests for the version number measurement class."""
 
     def test_calculate_value(self):
         """Test calculate value."""

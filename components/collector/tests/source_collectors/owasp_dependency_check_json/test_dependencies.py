@@ -31,7 +31,7 @@ class OWASPDependencyCheckDependenciesTest(OWASPDependencyCheckJSONTestCase):
         self.assert_measurement(response, value="1", entities=expected_entities)
 
     async def test_ignore_part_of_file_path(self):
-        """Test that parts of the file path can be ignored, if the secrity warning has no sha1."""
+        """Test that parts of the file path can be ignored, if the security warning has no sha1."""
         self.set_source_parameter("variable_file_path_regexp", ["/home/[a-z]+/"])
         del self.json["dependencies"][0]["sha1"]
         response = await self.collect(get_request_json_return_value=self.json)

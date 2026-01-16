@@ -41,6 +41,7 @@ dev = [
 ]
 tools = [
     { name = "bandit" },
+    { name = "codespell" },
     { name = "fixit" },
     { name = "mypy" },
     { name = "pip-audit" },
@@ -55,6 +56,7 @@ requires-dist = [
     { name = "argon2-cffi", specifier = "==25.1.0" },
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.9.2" },
     { name = "bottle", specifier = "==0.13.4" },
+    { name = "codespell", marker = "extra == 'tools'", specifier = "==2.4.1" },
     { name = "coverage", marker = "extra == 'dev'", specifier = "==7.13.1" },
     { name = "cryptography", specifier = "==46.0.3" },
     { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.1" },
@@ -252,6 +254,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593, upload-time = "2024-12-21T18:38:44.339Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7e/d4/7ebdbd03970677812aac39c869717059dbb71a4cfc033ca6e5221787892c/click-8.1.8-py3-none-any.whl", hash = "sha256:63c132bbbed01578a06712a2d1f497bb62d9c1c0d329b7903a866228027263b2", size = 98188, upload-time = "2024-12-21T18:38:41.666Z" },
+]
+
+[[package]]
+name = "codespell"
+version = "2.4.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/15/e0/709453393c0ea77d007d907dd436b3ee262e28b30995ea1aa36c6ffbccaf/codespell-2.4.1.tar.gz", hash = "sha256:299fcdcb09d23e81e35a671bbe746d5ad7e8385972e65dbb833a2eaac33c01e5", size = 344740, upload-time = "2025-01-28T18:52:39.411Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/20/01/b394922252051e97aab231d416c86da3d8a6d781eeadcdca1082867de64e/codespell-2.4.1-py3-none-any.whl", hash = "sha256:3dadafa67df7e4a3dbf51e0d7315061b80d265f9552ebd699b3dd6834b47e425", size = 344501, upload-time = "2025-01-28T18:52:37.057Z" },
 ]
 
 [[package]]
@@ -1053,6 +1064,7 @@ dependencies = [
 requires-dist = [
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.9.2" },
     { name = "bottle", specifier = "==0.13.4" },
+    { name = "codespell", marker = "extra == 'tools'", specifier = "==2.4.1" },
     { name = "coverage", marker = "extra == 'dev'", specifier = "==7.13.1" },
     { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.1" },
     { name = "mongomock", marker = "extra == 'dev'", specifier = "==4.3.0" },
