@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - When creating an issue from Quality-time in Jira, make sure that the link back to Quality-time doesn't expand any items but only goes to the metric. Fixes [#12481](https://github.com/ICTU/quality-time/issues/12481).
 - Count a Jira issue linked to multiple metrics only once in the issues dashboard card. Fixes [#12483](https://github.com/ICTU/quality-time/issues/12483).
+- Remove restart policy from docker-compose.yml. Fixes [#12506](https://github.com/ICTU/quality-time/issues/12506).
 
 ## v5.48.2 - 2026-01-09
 
