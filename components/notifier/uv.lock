@@ -190,6 +190,15 @@ wheels = [
 ]
 
 [[package]]
+name = "codespell"
+version = "2.4.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/15/e0/709453393c0ea77d007d907dd436b3ee262e28b30995ea1aa36c6ffbccaf/codespell-2.4.1.tar.gz", hash = "sha256:299fcdcb09d23e81e35a671bbe746d5ad7e8385972e65dbb833a2eaac33c01e5", size = 344740, upload-time = "2025-01-28T18:52:39.411Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/20/01/b394922252051e97aab231d416c86da3d8a6d781eeadcdca1082867de64e/codespell-2.4.1-py3-none-any.whl", hash = "sha256:3dadafa67df7e4a3dbf51e0d7315061b80d265f9552ebd699b3dd6834b47e425", size = 344501, upload-time = "2025-01-28T18:52:37.057Z" },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -623,6 +632,7 @@ dev = [
 ]
 tools = [
     { name = "bandit" },
+    { name = "codespell" },
     { name = "fixit" },
     { name = "mypy" },
     { name = "pip-audit" },
@@ -636,6 +646,7 @@ tools = [
 requires-dist = [
     { name = "aiohttp", specifier = "==3.13.3" },
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.9.2" },
+    { name = "codespell", marker = "extra == 'tools'", specifier = "==2.4.1" },
     { name = "coverage", marker = "extra == 'dev'", specifier = "==7.13.1" },
     { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.1" },
     { name = "mongomock", marker = "extra == 'dev'", specifier = "==4.3.0" },
@@ -1066,6 +1077,7 @@ dependencies = [
 requires-dist = [
     { name = "bandit", marker = "extra == 'tools'", specifier = "==1.9.2" },
     { name = "bottle", specifier = "==0.13.4" },
+    { name = "codespell", marker = "extra == 'tools'", specifier = "==2.4.1" },
     { name = "coverage", marker = "extra == 'dev'", specifier = "==7.13.1" },
     { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.1" },
     { name = "mongomock", marker = "extra == 'dev'", specifier = "==4.3.0" },

@@ -403,7 +403,7 @@ class ReportTest(ReportTestCase):
         self.assertEqual(2, len(get_report(self.database, REPORT_ID)["reports"]))
 
     def test_get_report_missing(self):
-        """Test that a non-existant report can not be retrieved."""
+        """Test that a non-existent report can not be retrieved."""
         self.database.reports.aggregate.return_value = []
         self.assertEqual([], get_report(self.database, ReportId("report does not exist"))["reports"])
 

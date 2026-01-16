@@ -24,6 +24,7 @@ optional-dependencies.dev = [
 ]
 optional-dependencies.tools = [
     "bandit==1.9.2",
+    "codespell==2.4.1",
     "fixit==2.2.1",
     "mypy==1.19.1",
     "pip-audit==2.10.0",
