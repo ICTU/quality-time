@@ -31,7 +31,7 @@ jobs:
           version: "0.9.18"
       - name: Set up Node
         if: env.SONAR_TOKEN != null
-        uses: actions/setup-node@v6.1.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version: "25.2.1"
       - name: Collector
