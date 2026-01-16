@@ -46,6 +46,7 @@ query MRs($projectId: ID!) {{
         createdAt
         updatedAt
         mergedAt
+        draft
         {approved}
       }}
     }}
@@ -143,6 +144,7 @@ class GitLabMergeRequests(MergeRequestCollector, GitLabBase):
             merged=merge_request["mergedAt"],
             downvotes=str(merge_request["downvotes"]),
             upvotes=str(merge_request["upvotes"]),
+            draft=str(merge_request.get("draft", False)),
         )
 
     def _request_matches_approval(self, entity: Entity) -> bool:
@@ -153,3 +155,13 @@ class GitLabMergeRequests(MergeRequestCollector, GitLabBase):
     def __approval_state(cls, merge_request) -> str:
         """Return the merge request approval state."""
         return {True: "yes", False: "no", None: "?"}[merge_request.get(cls.APPROVED_FIELD)]
+
+    def _include_entity(self, entity: Entity) -> bool:
+        """Return whether the merge request should be counted."""
+        return super()._include_entity(entity) and self._request_matches_draft_status(entity)
+
+    def _request_matches_draft_status(self, entity: Entity) -> bool:
+        """Return whether the merge request draft status matches the configured draft status."""
+        ignore_drafts = self._parameter("ignore_draft_merge_requests")
+        is_draft = entity["draft"] == "True"
+        return not (ignore_drafts == "yes" and is_draft)

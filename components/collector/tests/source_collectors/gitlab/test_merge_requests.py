@@ -16,12 +16,13 @@ class GitLabMergeRequestsTest(GitLabTestCase):
     LANDING_URL = "https://gitlab/namespace/project/-/merge_requests"
 
     @staticmethod
-    def merge_request_json(
+    def merge_request_json(  # noqa: PLR0913
         number: int,
         branch: str = "default",
         state: str = "merged",
         upvotes: int = 1,
         approved: bool | None = None,
+        draft: bool = False,
     ) -> dict[str, int | str | bool | None]:
         """Create a merge request."""
         return {
@@ -36,6 +37,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
             "upvotes": upvotes,
             "downvotes": 0,
             "approved": approved,
+            "draft": draft,
         }
 
     @staticmethod
@@ -85,6 +87,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
             "merged": None,
             "upvotes": str(upvotes),
             "downvotes": "0",
+            "draft": "False",
         }
 
     async def collect_merge_requests(self, execute_mock: AsyncMock):
@@ -160,3 +163,33 @@ class GitLabMergeRequestsTest(GitLabTestCase):
             landing_url=self.LANDING_URL,
             connection_error="Merge request info for project",
         )
+
+    async def test_ignore_drafts(self):
+        """Test that merge requests can be filtered by draft state."""
+        self.set_source_parameter("ignore_draft_merge_requests", "yes")
+        merge_requests_json = self.merge_requests_json(
+            [self.merge_request_json(1, draft=True), self.merge_request_json(2)],
+        )
+        merge_request_fields_response = AsyncMock()
+        merge_requests_response = AsyncMock()
+        execute = AsyncMock(side_effect=[merge_request_fields_response, merge_requests_response])
+        merge_request_fields_response.json = AsyncMock(return_value=self.merge_request_fields_json(True))
+        merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
+        entities = [self.create_entity(2)]
+        response = await self.collect_merge_requests(execute)
+        self.assert_measurement(response, value="1", total="2", entities=entities, landing_url=self.LANDING_URL)
+
+    async def test_ignore_drafts_without_drafts(self):
+        """Test that merge requests can be filtered by draft state."""
+        self.set_source_parameter("ignore_draft_merge_requests", "yes")
+        merge_requests_json = self.merge_requests_json(
+            [self.merge_request_json(1)],
+        )
+        merge_request_fields_response = AsyncMock()
+        merge_requests_response = AsyncMock()
+        execute = AsyncMock(side_effect=[merge_request_fields_response, merge_requests_response])
+        merge_request_fields_response.json = AsyncMock(return_value=self.merge_request_fields_json(True))
+        merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
+        entities = [self.create_entity(1)]
+        response = await self.collect_merge_requests(execute)
+        self.assert_measurement(response, value="1", total="1", entities=entities, landing_url=self.LANDING_URL)
