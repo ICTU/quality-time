@@ -19,6 +19,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - Remove restart policy from docker-compose.yml. Fixes [#12506](https://github.com/ICTU/quality-time/issues/12506).
 - Fix missing service in renderer Helm chart that was causing PDF-exports to fail on Kubernetes. Fixes [#12514](https://github.com/ICTU/quality-time/issues/12514).
 
+### Added
+
+- Allow for ignoring draft merge requests when using GitLab. Closes [#12327](https://github.com/ICTU/quality-time/issues/12327).
+
 ## v5.48.2 - 2026-01-09
 
 ### Fixed

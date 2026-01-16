@@ -222,6 +222,12 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
             placeholder="all approval states",
             metrics=["merge_requests"],
         ),
+        "ignore_draft_merge_requests": SingleChoiceParameter(
+            name="Ignore draft merge requests",
+            values=["yes", "no"],
+            default_value="no",
+            metrics=["merge_requests"],
+        ),
         "pipeline_statuses_to_include": MultipleChoiceWithDefaultsParameter(
             name="Pipeline statuses to include",
             values=[
