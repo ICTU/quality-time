@@ -62,7 +62,7 @@ HARBOR = Source(
         ),
         **access_parameters(
             ALL_HARBOR_METRICS,
-            include={"private_token": False, "landing_url": False},
+            include={"private_token": False, "landing_url": False},  # nosec
             kwargs={
                 "url": {
                     "help": "URL of the Harbor instance, with port if necessary, but without path. For example "

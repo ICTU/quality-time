@@ -14,7 +14,7 @@ build:
     - graphviz
   jobs:
     pre_create_environment:
-      - pip install uv==0.9.18
+      - pip install uv==0.9.26
     install:
       - cd docs && VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH ci/install-dependencies.sh
 

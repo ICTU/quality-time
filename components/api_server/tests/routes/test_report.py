@@ -126,7 +126,7 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
             updated_report["delta"],
         )
         self.assertEqual(
-            {"type": "azure_devops", "parameters": {"username": "jadoe", "password": "secret"}},
+            {"type": "azure_devops", "parameters": {"username": "jadoe", "password": "secret"}},  # nosec
             updated_report["issue_tracker"],
         )
 
@@ -164,12 +164,12 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
             },
             updated_report["delta"],
         )
-        expected_issue_tracker = {"type": "jira", "parameters": {"username": "jodoe", "password": "secret"}}
+        expected_issue_tracker = {"type": "jira", "parameters": {"username": "jodoe", "password": "secret"}}  # nosec
         self.assertEqual(expected_issue_tracker, updated_report["issue_tracker"])
 
     def test_post_report_issue_tracker_password(self, request):
         """Test that the issue tracker password can be changed."""
-        request.json = {"password": "another secret"}
+        request.json = {"password": "another secret"}  # nosec
         self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(self.database, REPORT_ID, "password"))
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
@@ -181,13 +181,16 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
             },
             updated_report["delta"],
         )
-        expected_issue_tracker = {"parameters": {"password": "another secret", "username": "jadoe"}, "type": "jira"}
+        expected_issue_tracker = {
+            "parameters": {"password": "another secret", "username": "jadoe"},  # nosec
+            "type": "jira",
+        }
         self.assertEqual(expected_issue_tracker, updated_report["issue_tracker"])
 
     def test_post_report_issue_tracker_password_unchanged(self, request):
         """Test that nothing happens when the new issue tracker password is unchanged."""
-        self.report["issue_tracker"] = {"type": "jira", "parameters": {"password": "secret"}}
-        request.json = {"password": "secret"}
+        self.report["issue_tracker"] = {"type": "jira", "parameters": {"password": "secret"}}  # nosec
+        request.json = {"password": "secret"}  # nosec
         self.assertEqual({"ok": True}, post_report_issue_tracker_attribute(self.database, REPORT_ID, "password"))
         self.database.reports.insert_one.assert_not_called()
 

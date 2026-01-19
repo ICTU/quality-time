@@ -34,7 +34,7 @@ class TestMeasurements(unittest.TestCase):
                     "type": "sonarqube",
                     "source_uuid": source_uuid,
                     "name": "Source",
-                    "parameters": {"url": "https://url", "password": "password"},
+                    "parameters": {"url": "https://url", "password": "password"},  # nosec
                     "parse_error": None,
                     "connection_error": None,
                     "value": "10",

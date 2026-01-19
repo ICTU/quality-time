@@ -27,7 +27,7 @@ AUTHENTICATION_URL = HttpUrl("https://www.jenkins.io/doc/book/system-administrat
 
 def jenkins_access_parameters(*args, **kwargs) -> dict[str, Parameter]:
     """Create Jenkins specific access parameters."""
-    kwargs["include"] = {"private_token": False, "landing_url": False}
+    kwargs["include"] = {"private_token": False, "landing_url": False}  # nosec
     if "name" not in kwargs.setdefault("kwargs", {}).setdefault("url", {}):
         kwargs["kwargs"]["url"]["name"] = "URL to Jenkins job"
     kwargs["kwargs"]["password"] = {

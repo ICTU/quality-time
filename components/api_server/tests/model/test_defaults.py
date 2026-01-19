@@ -12,8 +12,8 @@ class DefaultAttributesTest(DataModelTestCase):
         """Test that the default source parameters can be retrieved from the data model."""
         expected_parameters = {
             "landing_url": "",
-            "password": "",
-            "private_token": "",
+            "password": "",  # nosec
+            "private_token": "",  # nosec
             "severities": ["low", "medium", "high"],
             "url": "",
             "username": "",

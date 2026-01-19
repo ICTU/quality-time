@@ -41,7 +41,7 @@ def create_report(
                             SOURCE_ID: {
                                 "type": "sonarqube",
                                 "name": "Source",
-                                "parameters": {"url": "https://url", "password": "password"},
+                                "parameters": {"url": "https://url", "password": "password"},  # nosec
                             },
                         },
                     },
@@ -55,6 +55,6 @@ def create_report(
                 "url": "https://reporturl",
             },
         },
-        "issue_tracker": {"type": "jira", "parameters": {"username": "jadoe", "password": "secret"}},
+        "issue_tracker": {"type": "jira", "parameters": {"username": "jadoe", "password": "secret"}},  # nosec
         "last": last,
     }

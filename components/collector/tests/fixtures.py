@@ -53,7 +53,7 @@ def create_report(title: str = "Title", report_uuid: str = "report1", **kwargs) 
                 SOURCE_ID: {
                     "type": source_type,
                     "name": "Pip",
-                    "parameters": {"url": "https://url", "password": "password"},
+                    "parameters": {"url": "https://url", "password": "password"},  # nosec
                 },
             },
             "measurement_requested": measurement_requested,
@@ -71,7 +71,7 @@ def create_report(title: str = "Title", report_uuid: str = "report1", **kwargs) 
                 "url": "https://reporturl",
             },
         },
-        "issue_tracker": {"type": "jira", "parameters": {"username": "jadoe", "password": "secret"}},
+        "issue_tracker": {"type": "jira", "parameters": {"username": "jadoe", "password": "secret"}},  # nosec
         "last": last,
     }
 
