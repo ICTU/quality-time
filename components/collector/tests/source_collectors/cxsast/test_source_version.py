@@ -13,7 +13,7 @@ class CxSASTSourceVersionTest(CxSASTTestCase):
         get_json = [
             [{"cxVersion": "8.6.0.1947"}],
         ]
-        post_json = {"access_token": "token"}
+        post_json = {"access_token": "token"}  # nosec
         response = await self.collect(get_request_json_side_effect=get_json, post_request_json_return_value=post_json)
         self.assert_measurement(
             response,

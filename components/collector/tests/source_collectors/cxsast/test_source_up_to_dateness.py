@@ -21,7 +21,7 @@ class CxSASTSourceUpToDatenessTest(CxSASTTestCase):
             [{"id": "scan_id"}],
             [{"dateAndTime": {"finishedOn": "2019-01-01T09:06:12+00:00"}}],
         ]
-        post_json = {"access_token": "token"}
+        post_json = {"access_token": "token"}  # nosec
         response = await self.collect(get_request_json_side_effect=get_json, post_request_json_return_value=post_json)
         expected_age = days_ago(datetime(2019, 1, 1, 9, 6, 12, tzinfo=tzutc()))
         self.assert_measurement(

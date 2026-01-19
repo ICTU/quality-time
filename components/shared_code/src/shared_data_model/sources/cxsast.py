@@ -23,7 +23,7 @@ CXSAST = Source(
         "severities": Severities(values=["info", "low", "medium", "high"]),
         **access_parameters(
             ALL_CXSAST_METRICS,
-            include={"private_token": False, "landing_url": False},
+            include={"private_token": False, "landing_url": False},  # nosec
             kwargs={
                 "url": {
                     "help": "URL of the Checkmarx instance, with port if necessary, but without path. For example "

@@ -41,7 +41,7 @@ class TestConnectionParams(unittest.TestCase):
             """Mock method for os.environ.get calls in shared.initialization.database."""
             values = {
                 "DATABASE_USERNAME": "user",
-                "DATABASE_PASSWORD": "pass",
+                "DATABASE_PASSWORD": "pass",  # nosec
                 "DATABASE_HOST": "host",
                 "DATABASE_PORT": 4242,
             }

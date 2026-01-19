@@ -57,7 +57,7 @@ class TestCases(MetricCollector):
         "inprogress": "untested",
         "notexecuted": "skipped",
         "notrunnable": "skipped",
-        "pass": "passed",
+        "pass": "passed",  # nosec
         "passedbutrunaborted": "passed",
         "pending": "untested",
         "skip": "skipped",

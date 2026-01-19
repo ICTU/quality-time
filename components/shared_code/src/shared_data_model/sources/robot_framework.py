@@ -62,7 +62,7 @@ ROBOT_FRAMEWORK_JENKINS_PLUGIN = Source(
     parameters={
         "test_result": TestResult(
             values=["fail", "pass"],
-            api_values={"fail": "overallFailed", "pass": "overallPassed"},
+            api_values={"fail": "overallFailed", "pass": "overallPassed"},  # nosec
         ),
         **jenkins_access_parameters(
             ALL_ROBOT_FRAMEWORK_JENKINS_PLUGIN_METRICS,

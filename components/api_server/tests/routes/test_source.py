@@ -280,7 +280,7 @@ class PostSourceParameterTest(SourceTestCase):
         metric["sources"][SOURCE_ID] = Source(
             SOURCE_ID,
             metric,
-            {"type": "jira", "parameters": {"private_token": "xxx"}},
+            {"type": "jira", "parameters": {"private_token": "xxx"}},  # nosec
         )
         response = post_source_parameter(SOURCE_ID, "url", self.database)
         self.assert_url_check(response)
@@ -295,14 +295,14 @@ class PostSourceParameterTest(SourceTestCase):
     def test_urls_connection_on_update_other_field(self, mock_get, request):
         """Test that the url availability is checked when a parameter that it depends on is changed."""
         mock_get.return_value = self.url_check_get_response
-        request.json = {"password": "changed"}
+        request.json = {"password": "changed"}  # nosec
         self.sources[SOURCE_ID]["parameters"]["url"] = self.url
         response = post_source_parameter(SOURCE_ID, "password", self.database)
         self.assert_url_check(response)
 
     def test_password(self, request):
         """Test that the password can be changed and is not logged."""
-        request.json = {"password": "secret"}
+        request.json = {"password": "secret"}  # nosec
         response = post_source_parameter(SOURCE_ID, "password", self.database)
         self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": []})
         updated_report = self.database.reports.insert_one.call_args[0][0]
