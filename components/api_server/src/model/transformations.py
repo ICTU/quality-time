@@ -4,17 +4,23 @@ import json
 from json.decoder import JSONDecodeError
 from typing import cast, TYPE_CHECKING
 
+from shared_data_model import DATA_MODEL
+
 from utils.functions import asymmetric_decrypt, asymmetric_encrypt, unique, uuid, DecryptionError
 
 from .iterators import sources as iter_sources
 from .queries import is_password_parameter
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Sequence
 
-    from shared.utils.type import ItemId
+    from shared.model.metric import Metric
+    from shared.model.source import Source
+    from shared.model.subject import Subject
+    from shared.utils.type import ItemId, MetricId, ReportId, SourceId, SubjectId
 
-    from utils.type import EditScope
+    from model.report import Report
+    from utils.type import EditScope, SourceContext
 
 
 CREDENTIALS_REPLACEMENT_TEXT = "this string replaces credentials"
@@ -107,11 +113,11 @@ def replace_report_uuids(*reports) -> None:
 
 
 def change_source_parameter(  # noqa: PLR0913
-    reports,
-    items,
+    reports: Sequence[Report],
+    context: SourceContext,
     parameter_key: str,
-    old_value,
-    new_value,
+    old_value: str | list[str],
+    new_value: str | list[str],
     scope: EditScope,
 ) -> tuple[list[ItemId], set[ItemId]]:
     """Change the parameter of all sources of the specified type and the same old value to the new value.
@@ -120,29 +126,37 @@ def change_source_parameter(  # noqa: PLR0913
     """
     changed_ids: list[ItemId] = []
     changed_source_uuids: set[ItemId] = set()
-    for source, uuids in _sources_to_change(reports, items, scope):
-        if source["type"] == items[0].type and (source["parameters"].get(parameter_key) or None) == (old_value or None):
-            source["parameters"][parameter_key] = new_value
-            changed_ids.extend(uuids)
-            changed_source_uuids.add(uuids[-1])
+    for source_to_change, uuids in _all_sources_to_change(reports, context, scope, parameter_key, old_value):
+        source_to_change["parameters"][parameter_key] = new_value
+        changed_ids.extend(uuids)
+        changed_source_uuids.add(uuids[-1])
     return list(unique(changed_ids)), changed_source_uuids
 
 
-def _sources_to_change(reports, items, scope: EditScope) -> Iterator:
+def _all_sources_to_change(
+    reports: Sequence[Report],
+    context: SourceContext,
+    scope: EditScope,
+    parameter_key: str,
+    old_value: str | list[str],
+) -> Iterator[tuple[Source, tuple[ReportId, SubjectId, MetricId, SourceId]]]:
     """Return the sources to change, given the scope."""
-    for report in _reports_to_change(reports, items[-1], scope):
-        for subject_uuid, subject in _subjects_to_change(report, items[2], scope):
-            for metric_uuid, metric in _metrics_to_change(subject, items[1], scope):
-                for source_uuid, source_to_change in __sources_to_change(metric, items[0], scope):
-                    yield source_to_change, [report["report_uuid"], subject_uuid, metric_uuid, source_uuid]
+    for report_uuid, report in _reports_to_change(reports, context.report, scope):
+        for subject_uuid, subject in _subjects_to_change(report, context.subject, scope):
+            for metric_uuid, metric in _metrics_to_change(subject, context.metric, scope):
+                for source_uuid, source in _sources_to_change(metric, context.source, scope, parameter_key, old_value):
+                    yield source, (report_uuid, subject_uuid, metric_uuid, source_uuid)
 
 
-def _reports_to_change(reports, report, scope: EditScope) -> Iterator:
+def _reports_to_change(
+    reports: Sequence[Report], report: Report, scope: EditScope
+) -> Iterator[tuple[ReportId, Report]]:
     """Return the reports to change, given the scope."""
-    yield from reports if scope == "reports" else [report]
+    reports_to_change = reports if scope == "reports" else [report]
+    yield from {report["report_uuid"]: report for report in reports_to_change}.items()
 
 
-def _subjects_to_change(report, subject, scope: EditScope) -> Iterator:
+def _subjects_to_change(report: Report, subject: Subject, scope: EditScope) -> Iterator[tuple[SubjectId, Subject]]:
     """Return the subjects to change, given the scope."""
     yield from (
         {subject.uuid: subject}.items()
@@ -156,17 +170,35 @@ def _subjects_to_change(report, subject, scope: EditScope) -> Iterator:
     )
 
 
-def _metrics_to_change(subject, metric, scope: EditScope) -> Iterator:
+def _metrics_to_change(subject: Subject, metric: Metric, scope: EditScope) -> Iterator[tuple[MetricId, Metric]]:
     """Return the metrics to change, given the scope."""
     yield from {metric.uuid: metric}.items() if scope in ("metric", "source") else subject.metrics_dict.items()
 
 
-def __sources_to_change(metric, source, scope: EditScope) -> Iterator:
+def _sources_to_change(
+    metric: Metric,
+    source: Source,
+    scope: EditScope,
+    parameter_key: str,
+    old_value: str | list[str],
+) -> Iterator[tuple[SourceId, Source]]:
     """Return the sources to change, given the scope."""
-    yield from {source.uuid: source}.items() if scope == "source" else metric.sources_dict.items()
+    if metric["type"] in DATA_MODEL.sources[source["type"]].parameters[parameter_key].metrics:
+        if scope == "source":
+            sources_to_change = {source.uuid: source}
+        else:
+            sources_to_change = {
+                source_uuid: source_to_change
+                for source_uuid, source_to_change in metric.sources_dict.items()
+                if source.type == source_to_change.type
+                and (source_to_change["parameters"].get(parameter_key) or None) == (old_value or None)
+            }
+    else:
+        sources_to_change = {}
+    yield from sources_to_change.items()
 
 
-def __password_parameter_keys(source, data_model: dict | None = None) -> list[str]:
+def __password_parameter_keys(source: Source, data_model: dict | None = None) -> list[str]:
     """Return the password parameter keys of the source."""
     parameters = source.get("parameters", {}).items()
     return [key for key, value in parameters if value and is_password_parameter(source["type"], key, data_model)]
