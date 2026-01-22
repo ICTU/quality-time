@@ -31,6 +31,8 @@ spec:
                 name: {{ .Release.Name }}-{{ template "api_server_name" . }}-env
                 optional: true
           env:
+            - name: RENDERER_HOST
+              value: {{ .Release.Name }}-{{ template "renderer_name" . }}
             - name: DATABASE_HOST
               value: {{ .Release.Name }}-{{ template "database_name" . }}
             - name: DATABASE_USERNAME

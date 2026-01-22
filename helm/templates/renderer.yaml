@@ -45,6 +45,26 @@ spec:
       restartPolicy: Always
 ---
 apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ template "renderer_name" . }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "renderer_name" . }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: {{ template "renderer_name" . }}
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+  sessionAffinity: None
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-{{ template "renderer_name" . }}-env
