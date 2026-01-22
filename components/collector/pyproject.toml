@@ -13,7 +13,7 @@ dependencies = [
     "aiohttp==3.13.3",
     "beautifulsoup4==4.14.3",
     "defusedxml==0.7.1",
-    "packaging==25.0",
+    "packaging==26.0",
     "pymongo==4.16.0",
     "python-dateutil==2.9.0.post0",
     "shared-code",
