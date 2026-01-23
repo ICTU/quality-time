@@ -89,26 +89,35 @@ class LDAPConfig:
 def verify_user(database: Database, username: str, password: str) -> User:
     """Authenticate the user and return whether they are authorized to login and their email address."""
     logger = get_logger()
+    logger.debug("Starting LDAP user authentication")
     ldap = LDAPConfig(username)
     try:
         ldap_server_pool = ServerPool([Server(url, get_info=ALL) for url in ldap.urls])
+        logger.debug("Created LDAP server pool for URLs: %s", ldap.urls)
         # Look up the user to authenticate, using the lookup-user credentials:
         with Connection(ldap_server_pool, user=ldap.lookup_user_dn, password=ldap.lookup_user_pw) as lookup_connection:
+            logger.debug("Created LDAP lookup connection for lookup user %s", ldap.lookup_user_dn)
             if not lookup_connection.bind():  # pragma: no feature-test-cover
+                logger.warning("Could not bind LDAP lookup connection for lookup user %s", ldap.lookup_user_dn)
                 raise exceptions.LDAPBindError  # noqa: TRY301
+            logger.debug("Successfully bound LDAP lookup connection for lookup user %s", ldap.lookup_user_dn)
             lookup_connection.search(ldap.root_dn, ldap.search_filter, attributes=["userPassword", "cn", "mail"])
+            logger.debug("Searched for LDAP user using configured LDAP search filter")
             ldap_user = lookup_connection.entries[0]
+            logger.debug("Found LDAP user with dn %s using configured LDAP search filter", ldap_user.entry_dn)
         # If the LDAP-server returned the user's password-hash, check the password against the hash, otherwise
         # attempt a bind operation using the user's distinguished name (dn) and password:
         if (password_hash := ldap_user.userPassword.value) and check_password(password_hash, password):
-            logger.info("LDAP password check succeeded")
+            logger.info("LDAP password check succeeded for LDAP user with dn %s", ldap_user.entry_dn)
         else:  # pragma: no feature-test-cover
+            logger.debug("LDAP password check failed, attempting LDAP bind with the user's dn %s", ldap_user.entry_dn)
             with Connection(ldap_server_pool, user=ldap_user.entry_dn, password=password, auto_bind=AUTO_BIND_NO_TLS):
-                logger.info("LDAP bind succeeded")
-    except Exception as reason:  # noqa: BLE001
+                logger.info("LDAP bind succeeded for user with dn %s", ldap_user.entry_dn)
+    except Exception as reason:
         user = User(username)
-        logger.warning("LDAP error: %s", reason)
+        logger.exception("Could not authenticate LDAP user: %s", reason)  # noqa: TRY401
     else:
+        logger.debug("LDAP user authenticated successfully")
         user = get_user(database, username) or User(username)
         user.email = ldap_user.mail.value or ""
         user.common_name = ldap_user.cn.value

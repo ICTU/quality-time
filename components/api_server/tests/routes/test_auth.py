@@ -56,7 +56,7 @@ class LoginTests(AuthTestCase):
     LDAP_ROOT_DN = "dc=example,dc=org"
     USER_DN = f"cn={USERNAME},{LDAP_ROOT_DN}"
     LOOKUP_USER_DN = f"cn=admin,{LDAP_ROOT_DN}"
-    LOG_ERROR_MESSAGE_TEMPLATE = "LDAP error: %s"
+    LOG_ERROR_MESSAGE_TEMPLATE = "Could not authenticate LDAP user: %s"
 
     def setUp(self):
         """Extend to add a mock LDAP."""
@@ -103,10 +103,10 @@ class LoginTests(AuthTestCase):
             {"user": self.USER_DN, "password": PASSWORD, "auto_bind": "NO_TLS"},
         )
 
-    def assert_log(self, logging_mock, exception):
+    def assert_log(self, logging_mock: Mock, exception: Exception) -> None:
         """Assert that the correct error message is logged."""
         self.assertEqual(self.LOG_ERROR_MESSAGE_TEMPLATE, logging_mock.call_args[0][0])
-        self.assertIsInstance(logging_mock.call_args[0][1], exception)
+        self.assertEqual(exception, logging_mock.call_args[0][1].__class__)
 
     @patch("routes.auth.datetime", MOCK_DATETIME)
     def test_successful_forwardauth_login(self, connection_mock, connection_enter):
@@ -172,7 +172,7 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.login_nok, login(self.database))
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
-        self.assert_log(logger.warning, exceptions.LDAPServerPoolError)
+        self.assert_log(logger.exception, exceptions.LDAPServerPoolError)
 
     @patch("logging.getLogger")
     def test_login_bind_error(self, logging_mock, connection_mock, connection_enter):
@@ -184,7 +184,7 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.login_nok, login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
-        self.assert_log(logger.warning, exceptions.LDAPBindError)
+        self.assert_log(logger.exception, exceptions.LDAPBindError)
 
     @patch("logging.getLogger")
     def test_login_search_error(self, logging_mock, connection_mock, connection_enter):
@@ -196,7 +196,7 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.login_nok, login(self.database))
         connection_mock.assert_called_once()
         self.ldap_connection.bind.assert_called_once()
-        self.assert_log(logger.warning, exceptions.LDAPResponseTimeoutError)
+        self.assert_log(logger.exception, exceptions.LDAPResponseTimeoutError)
 
     @patch("logging.getLogger")
     def test_login_password_hash_error(self, logging_mock, connection_mock, connection_enter):
@@ -207,8 +207,8 @@ class LoginTests(AuthTestCase):
         connection_enter.return_value = self.ldap_connection
         self.assertEqual(self.login_nok, login(self.database))
         self.assert_ldap_connection_search_called()
-        self.assertEqual("LDAP error: %s", logger.warning.call_args_list[0][0][0])
-        self.assert_log(logger.warning, argon2.exceptions.InvalidHashError)
+        self.assertEqual(self.LOG_ERROR_MESSAGE_TEMPLATE, logger.exception.call_args_list[0][0][0])
+        self.assert_log(logger.exception, argon2.exceptions.InvalidHashError)
 
     @patch("logging.getLogger")
     def test_login_wrong_password(self, logging_mock, connection_mock, connection_enter):
@@ -221,7 +221,7 @@ class LoginTests(AuthTestCase):
         connection_enter.return_value = self.ldap_connection
         self.assertEqual(self.login_nok, login(self.database))
         self.assert_ldap_connection_search_called()
-        self.assert_log(logger.warning, argon2.exceptions.VerifyMismatchError)
+        self.assert_log(logger.exception, argon2.exceptions.VerifyMismatchError)
 
     @patch("routes.auth.datetime", MOCK_DATETIME)
     def test_login_changed_details(self, connection_mock, connection_enter):
