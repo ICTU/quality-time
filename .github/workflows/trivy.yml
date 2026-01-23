@@ -38,7 +38,7 @@ jobs:
             docker_file: Dockerfile
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
 
       - name: Build image from Dockerfile
         working-directory: ${{ matrix.build_path }}
