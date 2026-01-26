@@ -12,7 +12,7 @@ dependencies = [
     "python-dateutil==2.9.0.post0",
 ]
 optional-dependencies.dev = [
-    "types-python-dateutil==2.9.0.20251115",
+    "types-python-dateutil==2.9.0.20260124",
 ]
 optional-dependencies.tools = [
     "bandit==1.9.3",

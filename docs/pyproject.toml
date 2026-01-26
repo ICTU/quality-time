@@ -20,7 +20,7 @@ dependencies = [
     "sphinx-design==0.6.1",
 ]
 optional-dependencies.dev = [
-    "coverage==7.13.1",
+    "coverage==7.13.2",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
