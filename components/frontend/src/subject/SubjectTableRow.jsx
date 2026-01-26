@@ -89,8 +89,9 @@ function deltaDescription(dataModel, metric, scale, delta, improved, oldValue, n
     }
     description += ` from ${formatMetricValue(scale, oldValue)} to ${formatMetricValue(scale, newValue)}`
     if (scale !== "version_number") {
-        const unit = formatMetricScaleAndUnit(metric, dataModel)
-        description += `${unit} by ${delta}${unit}`
+        const newValueUnit = formatMetricScaleAndUnit(metric, dataModel, newValue)
+        const deltaUnit = formatMetricScaleAndUnit(metric, dataModel, delta)
+        description += `${newValueUnit} by ${delta}${deltaUnit}`
     }
     return description
 }

@@ -42,6 +42,7 @@ const dataModel = {
     metrics: {
         metric_type: {
             unit: "items",
+            unit_singular: "item",
         },
         metric_type_without_unit: {},
     },
