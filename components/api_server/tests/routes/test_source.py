@@ -1,6 +1,7 @@
 """Unit tests for the source routes."""
 
 import socket
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, patch
 
 import requests
@@ -41,6 +42,9 @@ from tests.fixtures import (
 
 from tests.base import DataModelTestCase
 
+if TYPE_CHECKING:
+    from shared.utils.type import SourceId
+
 
 class SourceTestCase(DataModelTestCase):
     """Common fixtures for the source route unit tests."""
@@ -78,7 +82,7 @@ class SourceTestCase(DataModelTestCase):
         """Check that the report has the correct delta."""
         report = report or self.report
         self.assertEqual(
-            {"uuids": sorted(uuids) or [], "email": self.email, "description": description},
+            {"uuids": sorted(uuids or []), "email": self.email, "description": description},
             report["delta"],
         )
 
@@ -148,18 +152,30 @@ class PostSourceParameterTest(SourceTestCase):
         super().setUp()
         self.report["subjects"][SUBJECT_ID2] = {
             "name": "Subject 2",
-            "metrics": {METRIC_ID2: {"name": "Metric 2", "type": "security_warnings", "sources": {}}},
+            "metrics": {
+                METRIC_ID2: {"name": "Metric 2", "type": "security_warnings", "sources": {}},
+                METRIC_ID3: {
+                    "type": "issues",
+                    "sources": {SOURCE_ID3: {"type": "jira", "parameters": {"private_token": "xxx"}}},  # nosec
+                },
+            },
         }
         self.url_check_get_response = Mock(status_code=self.STATUS_CODE, reason=self.STATUS_CODE_REASON)
 
-    def assert_url_check(self, response, status_code: int | None = None, status_code_reason: str | None = None):
+    def assert_url_check(
+        self,
+        response,
+        status_code: int | None = None,
+        status_code_reason: str | None = None,
+        source_uuid: SourceId = SOURCE_ID,
+    ):
         """Check the url check result."""
         status_code = status_code or self.STATUS_CODE
         status_code_reason = status_code_reason or self.STATUS_CODE_REASON
         availability = {
             "status_code": status_code,
             "reason": status_code_reason,
-            "source_uuid": SOURCE_ID,
+            "source_uuid": source_uuid,
             "parameter_key": "url",
         }
         self.assertEqual({"ok": True, "availability": [availability], "nr_sources_mass_edited": 0}, response)
@@ -276,14 +292,8 @@ class PostSourceParameterTest(SourceTestCase):
         """Test that the source url can be changed and that the availability is checked."""
         mock_get.return_value = self.url_check_get_response
         request.json = {"url": self.url}
-        metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]
-        metric["sources"][SOURCE_ID] = Source(
-            SOURCE_ID,
-            metric,
-            {"type": "jira", "parameters": {"private_token": "xxx"}},  # nosec
-        )
-        response = post_source_parameter(SOURCE_ID, "url", self.database)
-        self.assert_url_check(response)
+        response = post_source_parameter(SOURCE_ID3, "url", self.database)
+        self.assert_url_check(response, source_uuid=SOURCE_ID3)
         mock_get.assert_called_once_with(
             self.url + "/rest/api/2/myself",
             auth=None,
@@ -406,23 +416,20 @@ class PostSourceParameterMassEditTest(SourceTestCase):
             SUBJECT_ID2,
             self.report,
         )
-        self.report2 = Report(
-            self.DATA_MODEL,
-            {
-                "_id": REPORT_ID2,
-                "title": "Report 2",
-                "report_uuid": REPORT_ID2,
-                "subjects": {
-                    SUBJECT_ID3: {
-                        "name": "Subject 3",
-                        "metrics": {
-                            METRIC_ID4: {"name": "Metric 4", "type": "security_warnings", "sources": self.sources4},
-                        },
+        report2 = {
+            "_id": REPORT_ID2,
+            "title": "Report 2",
+            "report_uuid": REPORT_ID2,
+            "subjects": {
+                SUBJECT_ID3: {
+                    "name": "Subject 3",
+                    "metrics": {
+                        METRIC_ID4: {"name": "Metric 4", "type": "security_warnings", "sources": self.sources4},
                     },
                 },
             },
-        )
-        self.database.reports.find.return_value = [self.report, self.report2]
+        }
+        self.database.reports.find.return_value = [self.report, report2]
 
     def assert_value(self, value_sources_mapping):
         """Assert that the parameters have the correct value."""
@@ -468,10 +475,10 @@ class PostSourceParameterMassEditTest(SourceTestCase):
             SOURCE_ID7,
         ]
         updated_reports = self.database.reports.insert_many.call_args[0][0]
-        ipdated_report_1 = updated_reports[0]
-        ipdated_report_2 = updated_reports[1]
-        self.assert_delta("in all reports from 'username' to 'new username'", uuids, ipdated_report_1)
-        self.assert_delta("in all reports from 'username' to 'new username'", uuids, ipdated_report_2)
+        updated_report_1 = updated_reports[0]
+        updated_report_2 = updated_reports[1]
+        self.assert_delta("in all reports from 'username' to 'new username'", uuids, updated_report_1)
+        self.assert_delta("in all reports from 'username' to 'new username'", uuids, updated_report_2)
 
     def test_mass_edit_report(self, request):
         """Test that a source parameter can be mass edited."""

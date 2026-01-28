@@ -13,7 +13,7 @@ from model.defaults import default_source_parameters
 from model.queries import is_password_parameter
 from model.transformations import change_source_parameter
 from utils.functions import check_url_availability, uuid
-from utils.type import EditScope
+from utils.type import EditScope, SourceContext
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from shared.utils.type import ItemId, MetricId, SourceId
 
     from model.report import Report
+    from shared.model.source import Source
 
 
 @bottle.post("/api/internal/source/new/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
@@ -150,40 +151,41 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
 def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: Database):
     """Set the source parameter."""
     reports = latest_reports(database)
-    items = _items(reports, source_uuid)
-    new_value = _new_parameter_value(items[0], parameter_key)
-    old_value = items[0]["parameters"].get(parameter_key) or ""
+    context = get_source_context(reports, source_uuid)
+    new_value = _new_parameter_value(context.source, parameter_key)
+    old_value = context.source["parameters"].get(parameter_key) or ""
     if old_value == new_value:
         return {"ok": True}  # Nothing to do
     edit_scope = cast(EditScope, dict(bottle.request.json).get("edit_scope", "source"))
     changed_ids, changed_source_ids = change_source_parameter(
         reports,
-        items,
+        context,
         parameter_key,
         old_value,
         new_value,
         edit_scope,
     )
-    if is_password_parameter(items[0].type, parameter_key):
+    if is_password_parameter(context.source.type, parameter_key):
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
-    source_description = _source_description(items, edit_scope, parameter_key, old_value)
+    source_description = _source_description(context, edit_scope, parameter_key, old_value)
     delta_description = (
         f"{{user}} changed the {parameter_key} of {source_description} from '{old_value}' to '{new_value}'."
     )
     reports_to_insert = [report for report in reports if report["report_uuid"] in changed_ids]
     result = insert_new_report(database, delta_description, changed_ids, *reports_to_insert)
     result["nr_sources_mass_edited"] = len(changed_source_ids) if edit_scope != "source" else 0
-    result["availability"] = _availability_checks(items[0], parameter_key)
+    result["availability"] = _availability_checks(context.source, parameter_key)
     return result
 
 
-def _items(reports: list[Report], source_uuid: SourceId) -> tuple:
-    """Return a tuple with all ancestors of the given source and the source itself."""
+def get_source_context(reports: list[Report], source_uuid: SourceId) -> SourceContext:
+    """Return a source and its context, meaning the containing metric, subject, and report."""
     report = latest_report_for_uuids(reports, source_uuid)[0]
-    return (*report.instance_and_parents_for_uuid(source_uuid=source_uuid), report)
+    source, metric, subject = report.instance_and_parents_for_uuid(source_uuid=source_uuid)
+    return SourceContext(source=source, metric=metric, subject=subject, report=report)
 
 
-def _new_parameter_value(source, parameter_key: str) -> str | list[str]:
+def _new_parameter_value(source: Source, parameter_key: str) -> str | list[str]:
     """Return the new parameter value and if necessary, remove any obsolete multiple choice values."""
     new_value = dict(bottle.request.json)[parameter_key]
     source_parameter = DATA_MODEL.sources[source.type].parameters[parameter_key]
@@ -192,24 +194,28 @@ def _new_parameter_value(source, parameter_key: str) -> str | list[str]:
     return cast(str, new_value)
 
 
-def _source_description(items, edit_scope, parameter_key, old_value) -> str:
+def _source_description(
+    context: SourceContext,
+    edit_scope: EditScope,
+    parameter_key: str,
+    old_value: str | None,
+) -> str:
     """Return the description of the source."""
-    source, metric, subject, report = items
-    source_type_name = DATA_MODEL.sources[source.type].name
+    source_type_name = DATA_MODEL.sources[context.source.type].name
     source_description = (
-        f"source '{source.name}'"
+        f"source '{context.source.name}'"
         if edit_scope == "source"
         else f"all sources of type '{source_type_name}' with {parameter_key} '{old_value}'"
     )
     if edit_scope in ["source", "metric"]:
-        source_description += f" of metric '{metric.name}'"
+        source_description += f" of metric '{context.metric.name}'"
     if edit_scope in ["subject", "metric", "source"]:
-        source_description += f" of subject '{subject.name}'"
-    source_description += " in all reports" if edit_scope == "reports" else f" in report '{report.name}'"
+        source_description += f" of subject '{context.subject.name}'"
+    source_description += " in all reports" if edit_scope == "reports" else f" in report '{context.report.name}'"
     return source_description
 
 
-def _availability_checks(source, parameter_key: str) -> list[dict[str, str | int]]:
+def _availability_checks(source: Source, parameter_key: str) -> list[dict[str, str | int]]:
     """Check the availability of the URLs."""
     parameters = DATA_MODEL.sources[source["type"]].parameters
     private_token = cast(PrivateToken, parameters.get("private_token"))

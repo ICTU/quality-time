@@ -1,9 +1,11 @@
 """Model transformation unit tests."""
 
-from model.transformations import hide_credentials, CREDENTIALS_REPLACEMENT_TEXT
+from model.report import Report
+from model.transformations import change_source_parameter, hide_credentials, CREDENTIALS_REPLACEMENT_TEXT
 
 from tests.base import DataModelTestCase
-from tests.fixtures import create_report, SUBJECT_ID, METRIC_ID, SOURCE_ID
+from tests.fixtures import create_report, METRIC_ID2, SUBJECT_ID, METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_ID2
+from utils.type import SourceContext
 
 
 class HideCredentialsTest(DataModelTestCase):
@@ -48,3 +50,69 @@ class HideCredentialsTest(DataModelTestCase):
         self.issue_tracker_parameters["private_token"] = ""  # nosec
         hide_credentials(self.DATA_MODEL, self.report)
         self.assertEqual("", self.issue_tracker_parameters["private_token"])
+
+
+class ChangeSourceParameterTest(DataModelTestCase):
+    """Unit tests for the change source parameter transformation."""
+
+    def test_change_one_url(self):
+        """Test changing the URL parameter."""
+        report = Report(self.DATA_MODEL, create_report())
+        subject = report.subjects_dict[SUBJECT_ID]
+        metric = report.metrics_dict[METRIC_ID]
+        source = metric.sources_dict[SOURCE_ID]
+        context = SourceContext(source=source, metric=metric, subject=subject, report=report)
+        changed_ids, changed_source_ids = change_source_parameter(
+            [report], context, "url", "https://url", "https://new", "source"
+        )
+        self.assertEqual([REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], changed_ids)
+        self.assertEqual({SOURCE_ID}, changed_source_ids)
+
+    def test_change_multiple_urls(self):
+        """Test changing the URL parameter for two sources."""
+        report_dict = create_report()
+        report_dict["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {
+            "name": "Metric 2",
+            "type": "violations",
+            "sources": {
+                SOURCE_ID2: {
+                    "type": "sonarqube",
+                    "parameters": {"url": "https://url"},
+                },
+            },
+        }
+        report = Report(self.DATA_MODEL, report_dict)
+        subject = report.subjects_dict[SUBJECT_ID]
+        metric = report.metrics_dict[METRIC_ID]
+        source = metric.sources_dict[SOURCE_ID]
+        context = SourceContext(source=source, metric=metric, subject=subject, report=report)
+        changed_ids, changed_source_ids = change_source_parameter(
+            [report], context, "url", "https://url", "https://2", "subject"
+        )
+        self.assertEqual([REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, METRIC_ID2, SOURCE_ID2], changed_ids)
+        self.assertEqual({SOURCE_ID, SOURCE_ID2}, changed_source_ids)
+
+    def test_change_parameter_that_depends_on_metric_type(self):
+        """Test that a parameter that depends on the metric type is not changed when the metric type is different."""
+        report_dict = create_report()
+        # Add a second metric that has a different type, but the same source type as the first metric:
+        report_dict["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = {
+            "name": "Metric 2",
+            "type": "remediation_effort",
+            "sources": {
+                SOURCE_ID2: {
+                    "type": "sonarqube",
+                    "parameters": {"url": "https://url"},
+                },
+            },
+        }
+        report = Report(self.DATA_MODEL, report_dict)
+        subject = report.subjects_dict[SUBJECT_ID]
+        metric = report.metrics_dict[METRIC_ID]
+        source = metric.sources_dict[SOURCE_ID]
+        context = SourceContext(source=source, metric=metric, subject=subject, report=report)
+        changed_ids, changed_source_ids = change_source_parameter(
+            [report], context, "tags", ["security"], [], "subject"
+        )
+        self.assertEqual([REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], changed_ids)
+        self.assertEqual({SOURCE_ID}, changed_source_ids)

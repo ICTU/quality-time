@@ -121,8 +121,9 @@ Feature: source
     Then the source parameter url equals "None"
     And the availability status code equals "[]"
 
-  Scenario: change source token parameter with token validation path, attempt 4
-    Given an existing source with type "jira" and parameter url "https://jira.doesnotexist"
+  Scenario: change source token parameter with token validation path
+    Given an existing metric with type "issues"
+    And an existing source with type "jira" and parameter url "https://jira.doesnotexist"
     When the client sets the source parameter private_token to "secret"
     Then the source parameter private_token equals "this string replaces credentials"
     And the availability status code equals "-1"

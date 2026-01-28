@@ -49,7 +49,7 @@ def create_report():
                             SOURCE_ID: {
                                 "type": "sonarqube",
                                 "name": "Source",
-                                "parameters": {"url": "https://url", "password": "password"},  # nosec
+                                "parameters": {"url": "https://url", "password": "password", "tags": ["security"]},  # nosec
                             },
                         },
                     },

@@ -22,9 +22,9 @@ class Source(dict):
         super().__init__(*args, **kwargs)
 
     @property
-    def type(self) -> str | None:
+    def type(self) -> str:
         """Return the type of the source."""
-        return str(self["type"]) if "type" in self else None
+        return str(self.get("type", "unknown"))
 
     @property
     def name(self) -> str | None:
