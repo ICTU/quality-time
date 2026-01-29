@@ -11,7 +11,7 @@ classifiers = [
 dependencies = [
     "argon2-cffi==25.1.0",
     "bottle==0.13.4",
-    "cryptography==46.0.3",
+    "cryptography==46.0.4",
     "gevent==25.9.1",
     "ldap3==2.9.1",
     "lxml==6.0.2",
