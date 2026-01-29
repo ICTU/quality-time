@@ -23,10 +23,10 @@ Per the [version policy](versioning.md), if the Docker-composition needs changes
 To deploy *Quality-time* locally, follow these steps:
 
 1. Make a directory, e.g. `quality_time` and change directory to it.
-2. Download the docker compose files from the docker folder](https://github.com/ICTU/quality-time/tree/master/docker) and place them in the folder created in the previous step.
+2. Download the docker compose files from the [docker folder](https://github.com/ICTU/quality-time/tree/master/docker) and place them in the folder created in the previous step.
 3. Set the version number: `export QUALITY_TIME_VERSION=v5.0.0`.
 4. Run `docker compose up`.
-5. Go to http://localhost to access the application.
+5. Go to [http://localhost](http://localhost) to access the application.
 6. To log in, use one of the default users available in the [test LDAP server](software.md#test-ldap-server).
 
 Internally, the application listens on port 80 by default.
@@ -44,7 +44,9 @@ For example:
 
 ## Kubernetes
 
-The helm chart for deploying on Kubernetes does not support overriding port numbers.
+The helm chart for deploying on Kubernetes is deployed to [Docker Hub](https://hub.docker.com/r/ictu/quality-time/tags). The chart version is coupled to the Quality-time version and updated on every release of Quality-time. A sample `values.yaml` can be found in the [helm folder](https://github.com/ICTU/quality-time/blob/master/helm).
+
+Note that the helm chart does not support overriding port numbers.
 Although setting port environment variables in the `values.yaml` will change the ports that the app within the pod listens to, it will *not* change the service port mapping and therefore lead to a malfunctioning service.
 Instead, only the ingress should be configured.
 
