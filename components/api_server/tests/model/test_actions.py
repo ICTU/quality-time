@@ -134,7 +134,14 @@ class MoveItemToIndexTest(unittest.TestCase):
     def setUp(self):
         """Override to set up the subject under test."""
         self.data_model = {
-            "metrics": {"security_warnings": {"name": "Security warnings", "unit": "warnings", "tags": []}},
+            "metrics": {
+                "security_warnings": {
+                    "name": "Security warnings",
+                    "unit": "warnings",
+                    "unit_singular": "warning",
+                    "tags": [],
+                }
+            },
             "subjects": {"software": {"name": "Software"}},
         }
 

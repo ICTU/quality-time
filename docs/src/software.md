@@ -203,6 +203,7 @@ class Metric(DescribedModel):
     scales: list[str] = Field(["count"], min_length=1)
     default_scale: str = "count"
     unit: Unit = Unit.NONE
+    unit_singular: Unit = Unit.NONE
     addition: Addition = Addition.SUM
     direction: Direction = Direction.FEWER_IS_BETTER
     target: str = "0"
