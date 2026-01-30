@@ -15,6 +15,4 @@ jobs:
           version: "0.9.27"
       - name: Install dependencies and check quality
         working-directory: release
-        run: |
-          ci/install-dependencies.sh
-          ci/quality.sh
+        run: uvx --from rust-just==1.46.0 just all

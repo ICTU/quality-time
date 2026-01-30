@@ -4,13 +4,13 @@ orbs:
   docker: circleci/docker@3.0.1
 
 jobs:
-  unittest_backend:
+  unittests:
     docker:
-      - image: cimg/python:3.14.2
+      - image: cimg/python:3.14.2-node
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-    parallelism: 6
+    parallelism: 9
     steps:
       - checkout
       - run: |
@@ -19,15 +19,16 @@ jobs:
             1) component=components/notifier;;
             2) component=components/api_server;;
             3) component=components/shared_code;;
-            4) component=tests/application_tests;;
-            5) component=tests/feature_tests;;
+            4) component=components/frontend;;
+            5) component=tests/application_tests;;
+            6) component=tests/feature_tests;;
+            7) component=docs;;
+            8) component=release;;
           esac
           cd $component
           mkdir -p build
           pip install uv==0.9.27
-          ci/install-dependencies.sh
-          ci/unittest.sh
-          ci/quality.sh
+          uvx --from rust-just==1.46.0 just all
       - store_artifacts:
           path: components/collector/build
       - store_artifacts:
@@ -37,40 +38,15 @@ jobs:
       - store_artifacts:
           path: components/shared_code/build
       - store_artifacts:
+          path: components/frontend/build
+      - store_artifacts:
           path: components/application_tests/build
       - store_artifacts:
           path: components/feature_tests/build
-
-  unittest_frontend:
-    docker:
-      - image: cimg/node:25.5.0
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-    resource_class: large
-    steps:
-      - checkout
-      - run: |
-          cd components/frontend
-          ci/install-dependencies.sh
-          ci/unittest.sh
-          ci/quality.sh
-
-  unittest_other:
-    machine:
-      image: default
-    steps:
-      - checkout
-      - run: |
-          pip install uv==0.9.27
-          cd docs
-          ci/install-dependencies.sh
-          ci/unittest.sh
-          ci/quality.sh
-      - run: |
-          cd release
-          ci/install-dependencies.sh
-          ci/quality.sh
+      - store_artifacts:
+          path: docs/build
+      - store_artifacts:
+          path: release/build
 
   application_tests:
     machine:
@@ -121,9 +97,5 @@ workflows:
           context: QualityTime
       - feature_tests:
           context: QualityTime
-      - unittest_backend:
-          context: QualityTime
-      - unittest_frontend:
-          context: QualityTime
-      - unittest_other:
+      - unittests:
           context: QualityTime

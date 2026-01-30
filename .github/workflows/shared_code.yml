@@ -15,7 +15,4 @@ jobs:
           version: "0.9.27"
       - name: Install dependencies, run unit tests and check quality
         working-directory: components/shared_code
-        run: |
-          ci/install-dependencies.sh
-          ci/unittest.sh
-          ci/quality.sh
+        run: uvx --from rust-just==1.46.0 just all
