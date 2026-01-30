@@ -29,7 +29,7 @@ BITBUCKET = Source(
     description="Bitbucket is a version control platform by Atlassian that supports Git, "
     "enabling developers to collaborate on code with features like pull requests, "
     "CI/CD, and seamless integration with tools like Jira and Trello.",
-    url=HttpUrl("https://bitbucket.org/product/guides/getting-started/overview#a-brief-overview-of-bitbucket/"),
+    url=HttpUrl("https://bitbucket.org/product/guides/getting-started/overview#a-brief-overview-of-bitbucket"),
     parameters={
         "url": URL(
             name="Bitbucket instance URL",

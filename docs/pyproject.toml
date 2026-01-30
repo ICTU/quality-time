@@ -12,12 +12,12 @@ classifiers = [
 dependencies = [
     "furo==2025.12.19",
     "gitpython==3.1.46",
-    "myst-parser==4.0.1",
+    "myst-parser<=4.0.1",       # Don't update, sphinx-copybutton is not compatible with sphinx 9
     "pydantic==2.12.5",         # Needed for generating the reference docs from the data model
     "shared-code",
-    "sphinx==8.2.3",
+    "sphinx<=8.2.3",            # Don't update, sphinx-copybutton is not compatible with sphinx 9
     "sphinx-copybutton==0.5.2",
-    "sphinx-design==0.6.1",
+    "sphinx-design<=0.6.1",     # Don't update, sphinx-copybutton is not compatible with sphinx 9
 ]
 optional-dependencies.dev = [
     "coverage==7.13.2",
@@ -29,7 +29,6 @@ optional-dependencies.tools = [
     "fixit==2.2.1",
     "mypy==1.19.1",
     "pip-audit==2.10.0",
-    "pydantic==2.12.5",      # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.12.1",
     "ruff==0.14.14",
     "troml==0.4.1",
@@ -58,7 +57,7 @@ lint.ignore = [
     "PD",     # https://docs.astral.sh/ruff/rules/#pandas-vet-pd - pandas isn't used
     "PT",     # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
 ]
-lint.per-file-ignores.".vulture_ignore_list.py" = [
+lint.per-file-ignores.".vulture-whitelist.py" = [
     "ALL",
 ]
 lint.per-file-ignores."__init__.py" = [

@@ -1074,7 +1074,6 @@ requires-dist = [
     { name = "packaging", specifier = "==26.0" },
     { name = "pip-audit", marker = "extra == 'tools'", specifier = "==2.10.0" },
     { name = "pydantic", specifier = "==2.12.5" },
-    { name = "pydantic", marker = "extra == 'tools'", specifier = "==2.12.5" },
     { name = "pymongo", specifier = "==4.16.0" },
     { name = "pyproject-fmt", marker = "extra == 'tools'", specifier = "==2.12.1" },
     { name = "python-dateutil", specifier = "==2.9.0.post0" },

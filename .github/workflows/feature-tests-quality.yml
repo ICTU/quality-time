@@ -12,9 +12,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7.2.1
         with:
-          version: "0.9.27"
+          version-file: tools/requirements-uv.txt
       - name: Install dependencies and check quality
         working-directory: tests/feature_tests
-        run: |
-          ci/install-dependencies.sh
-          ci/quality.sh
+        run: uvx --from=$(cat $GITHUB_WORKSPACE/tools/requirements-just.txt) just ci

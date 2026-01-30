@@ -73,7 +73,7 @@ PIPELINE_ENTITY = Entity(
     ],
 )
 
-GITLAB_BRANCH_HELP_URL = HttpUrl("https://docs.gitlab.com/ee/user/project/repository/branches/")
+GITLAB_BRANCH_HELP_URL = HttpUrl("https://docs.gitlab.com/user/project/repository/branches/")
 
 GITLAB = Source(
     name="GitLab",
@@ -95,10 +95,11 @@ CI pipeline, or the source is stored in a GitLab repository:
 job=<job-name>`
 
     The project id can be found under the
-    [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
+    [project's general settings](https://docs.gitlab.com/user/project/settings/).
 
-    If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/\
-profile/personal_access_tokens.html) with the scope `read_api` in the private token field.
+    If the repository is private, you also need to provide a \
+[personal access token](https://docs.gitlab.com/user/profile/personal_access_tokens/) with the scope `read_api` \
+in the private token field.
 
     ```{warning}
     Artifacts can only be downloaded from a
@@ -107,17 +108,18 @@ profile/personal_access_tokens.html) with the scope `read_api` in the private to
     [test jobs](https://docs.gitlab.com/ci/quick_start/tutorial/#add-test-jobs) in the pipeline.
     ```
 
-2.  When the metric source is a file stored in a GitLab repository, use [URLs of the following format](https://docs.\
-gitlab.com/ee/api/repository_files.html#get-raw-file-from-repository):
+2.  When the metric source is a file stored in a GitLab repository, use \
+[URLs of the following format](https://docs.gitlab.com/api/repository_files/#get-raw-file-from-repository):
 
     `https://<gitlab-server>/api/v4/projects/<project-id>/repository/files/<file-path-with-slashes-%2F-encoded>/raw?\
 ref=<branch>`
 
     The project id can be found under the
-    [project's general settings](https://docs.gitlab.com/ee/user/project/settings/).
+    [project's general settings](https://docs.gitlab.com/user/project/settings/).
 
-    If the repository is private, you also need to enter an [personal access token](https://docs.gitlab.com/ee/user/\
-profile/personal_access_tokens.html) with the scope `read_repository` in the private token field.
+    If the repository is private, you also need to provide a \
+[personal access token](https://docs.gitlab.com/user/profile/personal_access_tokens/) with the scope \
+`read_repository` in the private token field.
 ```""",
     },
     parameters={
@@ -131,7 +133,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         "project": StringParameter(
             name="Project (name with namespace or id)",
             mandatory=True,
-            help_url=HttpUrl("https://docs.gitlab.com/ee/user/project/"),
+            help_url=HttpUrl("https://docs.gitlab.com/user/project/"),
             metrics=[
                 "change_failure_rate",
                 "failed_jobs",
@@ -145,12 +147,12 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         "project_or_group": StringParameter(
             name="Project (name with namespace or id) or group (name or id)",
             mandatory=True,
-            help_url=HttpUrl("https://docs.gitlab.com/ee/user/project/"),
+            help_url=HttpUrl("https://docs.gitlab.com/user/project/"),
             metrics=["inactive_branches"],
         ),
         "private_token": PrivateToken(
             name="Private token (with read_api scope)",
-            help_url=HttpUrl("https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html"),
+            help_url=HttpUrl("https://docs.gitlab.com/user/profile/personal_access_tokens/"),
             metrics=ALL_GITLAB_METRICS,
         ),
         "file_path": StringParameter(
@@ -216,7 +218,7 @@ profile/personal_access_tokens.html) with the scope `read_repository` in the pri
         "merge_request_state": MergeRequestState(values=["opened", "locked", "merged", "closed"]),
         "approval_state": MultipleChoiceWithDefaultsParameter(
             name="Approval states to include (requires GitLab Premium)",
-            help_url=HttpUrl("https://docs.gitlab.com/ee/user/project/merge_requests/approvals/"),
+            help_url=HttpUrl("https://docs.gitlab.com/user/project/merge_requests/approvals/"),
             values=["approved", "not approved", "unknown"],
             api_values={"approved": "yes", "not approved": "no", "unknown": "?"},
             placeholder="all approval states",

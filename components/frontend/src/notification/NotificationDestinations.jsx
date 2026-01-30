@@ -21,7 +21,7 @@ function NotificationDestination({ destination, destinationUuid, reload, reportU
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const helpUrl =
-        "https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook"
+        "https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook"
     const teamsHyperlink = <HyperLink url={helpUrl}>Microsoft Teams webhook URL</HyperLink>
     return (
         <Stack key={destinationUuid} direction="column" spacing={2}>

@@ -44,7 +44,7 @@ For example:
 
 ## Kubernetes
 
-The helm chart for deploying on Kubernetes is deployed to [Docker Hub](https://hub.docker.com/r/ictu/quality-time/tags). The chart version is coupled to the Quality-time version and updated on every release of Quality-time. A sample `values.yaml` can be found in the [helm folder](https://github.com/ICTU/quality-time/blob/master/helm).
+The helm chart for deploying on Kubernetes is deployed to [Docker Hub](https://hub.docker.com/r/ictu/quality-time/tags). The chart version is coupled to the Quality-time version and updated on every release of Quality-time. A sample `values.yaml` can be found in the [helm folder](https://github.com/ICTU/quality-time/tree/master/helm).
 
 Note that the helm chart does not support overriding port numbers.
 Although setting port environment variables in the `values.yaml` will change the ports that the app within the pod listens to, it will *not* change the service port mapping and therefore lead to a malfunctioning service.
@@ -239,5 +239,5 @@ The `<hostname or ip>` is the hostname or IP address of the Swarm manager in cas
 As the dump is stored in a temporary container, the dump will disappear as soon as the container is removed. To keep the dump around, map a folder (`-v`) in the `mongo` container.
 
 ```{seealso}
-See [Back Up and Restore with MongoDB Tools](https://docs.mongodb.com/docs/manual/tutorial/backup-and-restore-tools/) for more information about the `mongodump` and `mongorestore` commands.
+See [Back Up and Restore a Self-Managed Deployment with MongoDB Tools](https://www.mongodb.com/docs/manual/tutorial/backup-and-restore-tools/) for more information about the `mongodump` and `mongorestore` commands.
 ```

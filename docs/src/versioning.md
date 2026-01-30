@@ -123,7 +123,7 @@ There are two factors that limit to which versions an existing *Quality-time* in
 In general, when the feature compatibility of a database is set to version `x`, the database can only be used with MongoDB versions `x` and `x+1`. This limits the down- and upgrade options of *Quality-time* as documented in the table above.
 
 ```{seealso}
-See the [MongoDB documentation](https://www.mongodb.com/docs/manual/reference/command/setFeatureCompatibilityVersion/) on the feature compatibility version.
+See the [MongoDB documentation](https://www.mongodb.com/docs/manual/reference/command/setfeaturecompatibilityversion/) on the feature compatibility version.
 ```
 
 ### Migration code

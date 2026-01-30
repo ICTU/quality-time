@@ -28,54 +28,46 @@ jobs:
         if: env.SONAR_TOKEN != null
         uses: astral-sh/setup-uv@v7.2.1
         with:
-          version: "0.9.27"
+          version-file: tools/requirements-uv.txt
       - name: Set up Node
         if: env.SONAR_TOKEN != null
         uses: actions/setup-node@v6.2.0
         with:
-          node-version: "25.2.1"
+          node-version-file: components/frontend/package.json
       - name: Collector
         if: env.SONAR_TOKEN != null
         working-directory: components/collector
         run: |
-          ci/install-dependencies.sh
-          ci/unittest.sh
+          uvx --from=$(cat $GITHUB_WORKSPACE/tools/requirements-just.txt) just test
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
-          .venv/bin/python -m xmlrunner --output-file build/unittests.xml
+          uv run --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml
       - name: Notifier
         if: env.SONAR_TOKEN != null
         working-directory: components/notifier
         run: |
-          ci/install-dependencies.sh
-          ci/unittest.sh
+          uvx --from=$(cat $GITHUB_WORKSPACE/tools/requirements-just.txt) just test
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
-          .venv/bin/python -m xmlrunner --output-file build/unittests.xml
+          uv run --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml
       - name: API-server
         if: env.SONAR_TOKEN != null
         working-directory: components/api_server
         run: |
-          ci/install-dependencies.sh
-          ci/unittest.sh
+          uvx --from=$(cat $GITHUB_WORKSPACE/tools/requirements-just.txt) just test
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
-          .venv/bin/python -m xmlrunner --output-file build/unittests.xml
+          uv run --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml
       - name: Shared Code
         if: env.SONAR_TOKEN != null
         working-directory: components/shared_code
         run: |
-          ci/install-dependencies.sh
-          ci/unittest.sh
+          uvx --from=$(cat $GITHUB_WORKSPACE/tools/requirements-just.txt) just test
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
-          .venv/bin/python -m xmlrunner --output-file build/unittests.xml
+          uv run --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml
       - name: Frontend
         if: env.SONAR_TOKEN != null
         working-directory: components/frontend
         env:
           CI: true
-          NODE_OPTIONS: "--no-webstorage" # https://github.com/vitest-dev/vitest/issues/8757
-        run: |
-          ci/install-dependencies.sh
-          ci/build.sh
-          npm test -- --coverage
+        run: uvx --from=$(cat $GITHUB_WORKSPACE/tools/requirements-just.txt) just build test cov
       - name: Create packages
         if: env.SONAR_TOKEN != null
         run: |

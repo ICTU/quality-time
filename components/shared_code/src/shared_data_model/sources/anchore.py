@@ -25,7 +25,7 @@ COMMON_ENTITY_ATTRIBUTES = [
 ANCHORE = Source(
     name="Anchore",
     description="Anchore image scan analysis report in JSON format.",
-    url=HttpUrl("https://docs.anchore.com/current/docs/using/integration/ci_cd/inline_scanning/"),
+    url=HttpUrl("https://docs.anchore.com/current/docs/vulnerability_management/reporting_remediation/"),
     parameters={
         "details_url": URL(
             name="URL to an Anchore details report in JSON format or "

@@ -14,9 +14,9 @@ build:
     - graphviz
   jobs:
     pre_create_environment:
-      - pip install uv==0.9.27
+      - pip install -r tools/requirements-uv.txt
     install:
-      - cd docs && VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH ci/install-dependencies.sh
+      - cd docs && VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv sync --active --locked --extra dev
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:

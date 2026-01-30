@@ -1,6 +1,9 @@
 import browserslistToEsbuild from "browserslist-to-esbuild"
-import { defineConfig } from "vite"
+import os from "node:os"
+import path from "node:path"
+import process from "node:process"
 import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
 
 export default defineConfig({
     base: "",
@@ -37,5 +40,6 @@ export default defineConfig({
         mockReset: true,
         setupFiles: "./src/setupTests.js",
         testTimeout: 15000,
+        execArgv: ["--localstorage-file", path.resolve(os.tmpdir(), `vitest-${process.pid}.localstorage`)], // See https://github.com/vitest-dev/vitest/issues/8757
     },
 })

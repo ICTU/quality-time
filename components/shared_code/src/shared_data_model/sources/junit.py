@@ -28,7 +28,7 @@ TEST_ENTITY = Entity(
 JUNIT = Source(
     name="JUnit XML report",
     description="Test reports in the JUnit XML format.",
-    url=HttpUrl("https://junit.org/junit5/"),
+    url=HttpUrl("https://junit.org"),
     parameters={
         "test_result": TestResult(metrics=["test_suites", "tests"], values=["errored", "failed", "passed", "skipped"]),
         "test_result_aggregation_strategy": TestResultAggregationStrategy(),

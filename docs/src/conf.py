@@ -71,15 +71,21 @@ html_static_path = ["_static"]
 # -- Options for linkcheck ---------------------------------------------------
 
 linkcheck_ignore = [
-    r"http://localhost",  # Getting started URL
+    "http://localhost",  # Getting started URL
     r"http://localhost:\d+",  # Example URLs
     "http://quality-time.example.org",  # Example URLs
     # False negative: Anchor 'recognized-languages-' not found:
     "https://github.com/AlDanial/cloc#recognized-languages-",
-    # False negative: Anchor 'api-name-axerun' not found
+    # False negative: Anchor 'api-name-axerun' not found:
     "https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#api-name-axerun",
     "https://trello.com/1/members/me/boards",  # Only works when logged in
-    # False negative: Anchor 'results-object' not found"
+    "https://trello.com/app-key",  # Only works when logged in
+    # False negative: Anchor 'results-object' not found":
     "https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#results-object",
-    "https://react.semantic-ui.com/collections/table/#states",  # False negative: Anchor 'states' not found
+    "https://www.npmjs.com/package/.*",  # False negative: 403 Client Error: Forbidden for url
+    r"https://queue.acm.org/detail.cfm\?id=3454124",  # False negative: 403 Client Error: Forbidden for url
+    "https://github.com/ICTU/quality-time/issues/.*",  # Too many to check often
+    # 404 Client Error: Not Found
+    # See https://community.sonarsource.com/t/https-rules-sonarsource-com-down/177294?u=fniessink:
+    "https://rules.sonarsource.com/.*",
 ]

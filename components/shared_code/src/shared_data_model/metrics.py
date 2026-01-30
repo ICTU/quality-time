@@ -55,7 +55,7 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
         "reader as to why the code is still there, making the source code harder to understand and maintain. "
         "Unused code should be deleted. It can be retrieved from the version control system if needed.",
         rationale_urls=[
-            "https://rules.sonarsource.com/python/RSPEC-125",
+            "https://rules.sonarsource.com/python/rspec-125/",
             "https://kentcdodds.com/blog/please-dont-commit-commented-out-code",
         ],
         unit=Unit.BLOCKS,
@@ -71,8 +71,8 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
         "maintain because it is harder to understand and analyze.",
         rationale_urls=[
             SIG_TUVIT_EVALUATION_CRITERIA,
-            "https://blog.codacy.com/an-in-depth-explanation-of-code-complexity/",
-            "https://blog.sonarsource.com/cognitive-complexity-because-testability-understandability",
+            "https://blog.codacy.com/code-complexity",
+            "https://www.sonarsource.com/blog/cognitive-complexity-because-testability-understandability/",
         ],
         scales=["count", "percentage"],
         unit=Unit.COMPLEX_UNITS,
@@ -149,7 +149,7 @@ number of deployments (denominator). Azure DevOps needs to be added as source on
 
     What exactly is the default branch is configured in GitLab or Azure DevOps. If you want to use a different branch
     as default branch, you need to configure this in the source, see the documentation for
-    [GitLab](https://docs.gitlab.com/ee/user/project/repository/branches/default.html) or
+    [GitLab](https://docs.gitlab.com/user/project/repository/branches/default/) or
     [Azure DevOps](https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops#\
     change-your-default-branch).""",
         unit=Unit.BRANCHES,
@@ -727,7 +727,7 @@ MP-4 above).
         rationale="Code should not contain traces of unfinished work. The presence of todo and fixme comments may "
         "be indicative of technical debt or hidden defects.",
         rationale_urls=[
-            "https://rules.sonarsource.com/python/RSPEC-1135/",
+            "https://rules.sonarsource.com/python/rspec-1135/",
             "https://cwe.mitre.org/data/definitions/546",
         ],
         unit=Unit.TODO_AND_FIXME_COMMENTS,
@@ -817,7 +817,7 @@ harder it may be for users to use the software (3).
         rationale_urls=[
             "https://docs.sonarqube.org/latest/user-guide/rules/",
             "https://martinfowler.com/bliki/CodeSmell.html",
-            "https://www.w3.org/standards/webdesign/accessibility",
+            "https://www.w3.org/mission/accessibility/",
             "faq.md#what-is-the-difference-between-violations-and-warnings",
         ],
         unit=Unit.VIOLATIONS,

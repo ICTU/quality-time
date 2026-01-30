@@ -33,7 +33,7 @@ cd quality-time
 To run *Quality-time* in Docker completely, open a terminal and start all containers with docker compose:
 
 ```console
-docker compose up
+just start
 ```
 
 The advantage of this scenario is that Python and Node.js don't need to be installed. However, as building the containers can be time-consuming we don't recommend this for working on the Quality-time source code.
@@ -49,7 +49,7 @@ The advantage of this scenario is that you don't need to rebuild the bespoke con
 Open a terminal and start the [standard containers](software.md#standard-components) and [test components](software.md#test-components) with docker compose:
 
 ```console
-docker compose up database ldap mongo-express testdata
+just start database ldap mongo-express testdata
 ```
 
 {index}`Mongo-express` is served at [http://localhost:8081](http://localhost:8081) and can be used to inspect and edit the database contents.
@@ -67,10 +67,7 @@ Open another terminal and run the API-server:
 
 ```console
 cd components/api_server
-uv venv
-. .venv/bin/activate  # on Windows: venv\Scripts\activate
-ci/install-dependencies.sh
-python src/quality_time_server.py
+just start
 ```
 
 The API of the API-server is served at [http://localhost:5001](http://localhost:5001), e.g. access [http://localhost:5001/api/internal/report](http://localhost:5001/api/internal/report) to get the available reports combined with their recent measurements.
@@ -81,28 +78,13 @@ To quickly see all endpoints, use the `/api/v3/docs` endpoint:
 curl http://localhost:5001/api/v3/docs | jq .
 ```
 
-```{note}
-If you're new to Python virtual environments, note that:
-- Creating a virtual environment (`uv venv`) has to be done once. Only when the Python version changes, you want to recreate the virtual environment.
-- Activating the virtual environment (`. .venv/bin/activate`) has to be done every time you open a new shell and want to use the Python installed in the virtual environment.
-- Installing the requirements (`ci/install-dependencies.sh`) has to be repeated when the dependencies, specified in the requirements files, change.
-```
-
-```{seealso}
-- See the [Python docs](https://docs.python.org/3/library/venv.html) for more information on creating virtual environments.
-- See this [Gist](https://gist.github.com/fniessink/f4142927d20fe845dc27a8ad21f340d5) on how to automatically activate and deactivate Python virtual environments when changing directories.
-```
-
 ##### Start the {index}`collector <Collector component>`
 
 Open another terminal and run the collector:
 
 ```console
 cd components/collector
-uv venv
-. .venv/bin/activate  # on Windows: venv\Scripts\activate
-ci/install-dependencies.sh
-python src/quality_time_collector.py
+just start
 ```
 
 By default, the collector attempts to write a health check time stamp to `/home/collector/health_check.txt` every few seconds. If that fails, you'll see these messages in the log:
@@ -123,8 +105,7 @@ Open another terminal and run the frontend:
 
 ```console
 cd components/frontend
-ci/install-dependencies.sh
-npm run start
+just start
 ```
 
 The frontend is served at [http://localhost:3000](http://localhost:3000).
@@ -135,29 +116,13 @@ Optionally, open yet another terminal and run the notifier:
 
 ```console
 cd components/notifier
-uv venv
-. .venv/bin/activate  # on Windows: venv\Scripts\activate
-ci/install-dependencies.sh
-python src/quality_time_notifier.py
+just start
 ```
 
 ##### Running the proxy component
 
 The `proxy` component is mapped to the `www` service in the docker compose file, which runs on port 80 by default.
 This container runs an unprivileged version of Nginx, which will not require additional capabilities when ran on a higher port by specifying `PROXY_PORT`.
-
-#### Preparing the shared component
-
-*Quality-time* has one component that only contains shared code. The shared code is used by all Python components.
-
-To create a virtual environment for the shared component and install the dependencies run the following:
-
-```console
-cd components/shared_code
-uv venv
-. .venv/bin/activate  # on Windows: venv\Scripts\activate
-ci/install-dependencies.sh
-```
 
 ### Coding style
 
@@ -382,7 +347,7 @@ To run the unit tests:
 
 ```console
 cd components/collector
-ci/unittest.sh
+just test
 ```
 
 You should get 100% line and branch coverage.
@@ -393,20 +358,20 @@ To run the quality checks:
 
 ```console
 cd components/collector
-ci/quality.sh
+just check
 ```
 
 Because the source collector classes register themselves (see [`SourceCollector.__init_subclass__()`](https://github.com/ICTU/quality-time/blob/master/components/collector/src/base_collectors/source_collector.py)), [Vulture](https://github.com/jendrikseipp/vulture) will think the new source collector subclass is unused:
 
 ```console
-ci/quality.sh
+...
 src/source_collectors/file_source_collectors/cloc.py:26: unused class 'ClocLOC' (60% confidence)
 ```
 
-Add `ClocLOC` to the `.vulture_ignore_list.py` as following, in order to suppress Vulture's warning:
+Add `ClocLOC` to the `.vulture-whitelist.py` as following, in order to suppress Vulture's warning:
 
 ```console
-uvx vulture --min-confidence 0 --make-whitelist src tests > .vulture_ignore_list.py
+uvx vulture --min-confidence 0 --make-whitelist src tests > .vulture-whitelist.py
 ```
 
 ## Testing
@@ -419,7 +384,7 @@ To run the unit tests and measure unit test coverage of the backend components (
 
 ```console
 cd components/api_server  # or components/collector, components/notifier, components/shared_code, components/frontend
-ci/unittest.sh
+just test
 ```
 
 ### Quality checks
@@ -428,7 +393,7 @@ To run Ruff, mypy, and some other security and quality checks on the backend com
 
 ```console
 cd components/api_server  # or components/collector, components/notifier, components/shared_code, components/frontend
-ci/quality.sh
+just check
 ```
 
 ### Feature tests
@@ -436,7 +401,7 @@ ci/quality.sh
 The feature tests currently test all features through the API served by the API-server. They touch all components except the frontend, the collector, and the notifier. To run the feature tests, invoke this script, it will build and start all the necessary components, run the tests, and gather coverage information:
 
 ```console
-tests/feature_tests/ci/test.sh
+tests/feature_tests/test.sh
 ```
 
 The `test.sh` shell script will start a server under coverage and then run the [feature tests](https://github.com/ICTU/quality-time/tree/master/tests/feature_tests).
@@ -444,7 +409,7 @@ The `test.sh` shell script will start a server under coverage and then run the [
 It's also possible to run a subset of the feature tests by passing the feature file as argument:
 
 ```console
-tests/feature_tests/ci/test.sh tests/feature_tests/src/features/metric.feature
+tests/feature_tests/test.sh tests/feature_tests/src/features/metric.feature
 ```
 
 ### Application tests
@@ -453,7 +418,7 @@ The application tests in theory test all components through the frontend, but un
 
 ```console
 docker compose up -d
-docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 ghcr.io/astral-sh/uv:python3.14-bookworm tests/application_tests/ci/test.sh
+docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 ghcr.io/astral-sh/uv:python3.14-bookworm tests/application_tests/test.sh
 ```
 
 ## Documentation and changelog
@@ -464,38 +429,27 @@ To generate the documentation locally:
 
 ```console
 cd docs
-uv venv
-. .venv/bin/activate  # on Windows: venv\Scripts\activate
-ci/install-dependencies.sh
-make html
+just build
 open build/html/index.html
 ```
 
-`make html` also generates the `docs/src/reference.md` reference manual, containing an overview of all subjects, metrics, and sources.
+`just build` also generates the `docs/src/reference.md` reference manual, containing an overview of all subjects, metrics, and sources.
 
-To check the correctness of the links:
+To check the correctness of the documentation (be sure that the docs folder is the current folder):
 
 ```console
-make linkcheck
+just check
 ```
 
 ## Releasing
 
 ### Preparation
 
-Make sure the release folder is the current directory, and you have the dependencies for the release script installed:
-
-```console
-cd release
-uv venv
-. .venv/bin/activate
-ci/install-dependencies.sh
-```
-
 Run the release script with `--help` to show help information, including the current release.
 
 ```console
-python release.py --help
+cd release
+uv run --script release.py --help
 ```
 
 ### Decide the release type
@@ -531,7 +485,7 @@ The release script will check a number of preconditions before actually creating
 To check the preconditions without releasing, invoke the release script with the version bump as determined:
 
 ```console
-python release.py --check-preconditions-only <bump>  # Where bump is major, minor, patch, rc, or release
+uv run --script release.py --check-preconditions-only <bump>  # Where bump is major, minor, patch, rc, or release
 ```
 
 If everything is ok, there is no output, and you can proceed creating the release.
@@ -542,7 +496,7 @@ Otherwise, the release script will list the preconditions that have not been met
 To release *Quality-time*, issue the release command (in the release folder) from an already created release candidate:
 
 ```console
-python release.py release
+uv run --script release.py release
 ```
 
 If all preconditions are met, the release script will bump the version numbers, update the change history, commit the changes, push the commit, tag the commit, and push the tag to GitHub.

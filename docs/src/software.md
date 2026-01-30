@@ -18,9 +18,9 @@ This document describes the *Quality-time* software. It is aimed at *Quality-tim
 
 There are four bespoke components:
 
-- A [frontend](#frontend), serving the user interface. The frontend is written in JavaScript using [ReactJS](https://reactjs.org) and [Material UI](https://mui.com).
-- An [API-server](#api-server) serving the API for the user interface. The API-server is written in Python using [Bottle](https://bottlepy.org) as web framework.
-- A [collector](#collector) to collect the measurements from the sources. The collector is written in Python using [`aiohttp`](https://docs.aiohttp.org) as HTTP client library.
+- A [frontend](#frontend), serving the user interface. The frontend is written in JavaScript using [ReactJS](https://react.dev/) and [Material UI](https://mui.com).
+- An [API-server](#api-server) serving the API for the user interface. The API-server is written in Python using [Bottle](https://bottlepy.org/docs/dev/) as web framework.
+- A [collector](#collector) to collect the measurements from the sources. The collector is written in Python using [`aiohttp`](https://docs.aiohttp.org/en/stable/) as HTTP client library.
 - A [notifier](#notifier) to notify users about events such as metrics turning red. The notifier is written in Python.
 
 Source code that is shared between the Python components lives in the [shared data model](#shared-data-model) and [shared code](#shared-code) components. These are not run-time components. The code of these components is shared at build time, when the Docker images are created. The data model and shared code are used by all Python components, i.e. the API-server, the collector, and the notifier.
@@ -167,7 +167,7 @@ The [shared code component](https://github.com/ICTU/quality-time/tree/master/com
 
 ### Example reports
 
-The [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared/example-reports) are imported when a server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the sections on configuration of the servers below.
+The [example reports](https://github.com/ICTU/quality-time/tree/master/components/api_server/src/example-reports) are imported when a server is started and the database doesn't contain any sample reports yet. Turn off the loading of example report by setting `LOAD_EXAMPLE_REPORTS` to `False`. See the sections on configuration of the servers below.
 
 ## Shared data model
 
@@ -345,7 +345,7 @@ An attribute/column can have a key `url` to specify which field contains the URL
 
 To specify the data type of the attribute/column, use the `type` field. If no type is specified, `string` is assumed and no special formatting is applied. Other types supported at the moment are `date`, `datetime`, `float`, `integer`, and `status`. When using `date` or `datetime`, the column should be an ISO-formatted date or date-time string and `Date.toLocaleDateString()` or `Date.toLocaleString()` is used to format the date or date-time.
 
-Values can be mapped to colors using the optional `color` field with a column-value-to-color mapping as value. Possible colors are `positive` (green), `negative` (red), `warning` (yellow) and `active` (grey). These correspond to the possible [states of table rows in Semantic UI React](https://react.semantic-ui.com/collections/table/#states).
+Values can be mapped to colors using the optional `color` field with a column-value-to-color mapping as value. Possible colors are `positive` (green), `negative` (red), `warning` (yellow) and `active` (grey).
 
 Users can mark entities as false positive to ignore them. By default, *Quality-time* subtracts one from the metric value for each ignored entity. However, this would be incorrect if an entity represents a value greater than one, for example when the metric is the amount of ready user story points and each entity is a user story. In that case *Quality-time* can use an attribute of the entity to subtract from the value. The entity field `measured_attribute` determines which attribute to use.
 
@@ -455,7 +455,7 @@ python3 -m http.server
 
 ### Adding test data
 
-Add the example file(s) to the [test data reports](https://github.com/ICTU/quality-time/tree/master/components/testdata/reports) and update one or more of the [example reports](https://github.com/ICTU/quality-time/tree/master/components/shared_code/src/shared/example-reports) in the shared code component.
+Add the example file(s) to the [test data reports](https://github.com/ICTU/quality-time/tree/master/components/testdata/reports) and update one or more of the [example reports](https://github.com/ICTU/quality-time/tree/master/components/api_server/src/example-reports) in the shared code component.
 
 ### Acknowledgements test data
 

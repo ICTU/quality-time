@@ -11,7 +11,7 @@ ALL_TRIVY_JSON_METRICS = ["security_warnings", "source_up_to_dateness"]
 TRIVY_JSON = Source(
     name="Trivy JSON",
     description="A Trivy vulnerability report in JSON format.",
-    url=HttpUrl("https://aquasecurity.github.io/trivy/latest/docs/configuration/reporting/#json"),
+    url=HttpUrl("https://trivy.dev/docs/latest/configuration/reporting/#json"),
     parameters={
         "levels": Severities(
             name="Levels",

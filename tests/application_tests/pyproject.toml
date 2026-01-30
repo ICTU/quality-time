@@ -48,7 +48,7 @@ lint.ignore = [
     "PD",     # https://docs.astral.sh/ruff/rules/#pandas-vet-pd - pandas isn't used
     "PT",     # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
 ]
-lint.per-file-ignores.".vulture_ignore_list.py" = [
+lint.per-file-ignores.".vulture-whitelist.py" = [
     "ALL",
 ]
 lint.per-file-ignores."__init__.py" = [

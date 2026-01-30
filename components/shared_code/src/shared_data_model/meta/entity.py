@@ -8,10 +8,7 @@ from .base import NamedModel, StrEnum
 
 
 class Color(StrEnum):
-    """Entity color, corresponding to the Semantic UI React states for table rows.
-
-    See https://react.semantic-ui.com/collections/table/#states-positive-negative.
-    """
+    """Entity color."""
 
     ACTIVE = "active"
     ERROR = "error"

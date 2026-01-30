@@ -23,10 +23,12 @@
         "build": "vite build",
         "preview": "vite preview",
         "cov": "vitest run --coverage",
-        "test": "vitest"
+        "test": "vitest",
+        "lint": "eslint *.mjs src; npx prettier *.mjs src --check",
+        "fix": "npx prettier *.mjs src --write"
     },
     "engines": {
-        "node": ">=25.0.0"
+        "node": "25.5.0"
     },
     "devDependencies": {
         "@emotion/babel-plugin": "^11.13.5",
