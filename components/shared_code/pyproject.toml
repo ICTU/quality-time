@@ -28,7 +28,6 @@ optional-dependencies.tools = [
     "fixit==2.2.1",
     "mypy==1.19.1",
     "pip-audit==2.10.0",
-    "pydantic==2.12.5",      # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
     "pyproject-fmt==2.12.1",
     "ruff==0.14.14",
     "troml==0.4.1",
@@ -66,7 +65,7 @@ lint.ignore = [
     "PT",     # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
     "TC006",  # https://docs.astral.sh/ruff/rules/runtime-cast-value/ - the rule claims it's often necessary to quote the first argument passed to cast(), but that's not the case in this code base
 ]
-lint.per-file-ignores.".vulture_ignore_list.py" = [
+lint.per-file-ignores.".vulture-whitelist.py" = [
     "ALL",
 ]
 lint.per-file-ignores."__init__.py" = [

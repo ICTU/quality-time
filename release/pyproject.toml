@@ -42,7 +42,7 @@ lint.ignore = [
     "ISC001", # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
     "TC006",  # https://docs.astral.sh/ruff/rules/runtime-cast-value/ - the rule claims it's often necessary to quote the first argument passed to cast(), but that's not the case in this code base
 ]
-lint.per-file-ignores.".vulture_ignore_list.py" = [
+lint.per-file-ignores.".vulture-whitelist.py" = [
     "ALL",
 ]
 

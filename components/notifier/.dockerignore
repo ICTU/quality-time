@@ -8,9 +8,8 @@
 .idea
 .pipx
 .venv
-.vulture_ignore_list.py
+.vulture-whitelist.py
 build/
-ci/
 Dockerfile
 README.md
 tests/

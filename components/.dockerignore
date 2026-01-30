@@ -7,14 +7,12 @@
 **/.pipx
 **/.venv
 **/.vscode
-**/.vulture_ignore_list.py
+**/.vulture-whitelist.py
 **/Dockerfile*
 **/README*.md
 **/__pycache__
 **/build/
-**/ci/
 **/node_modules/
-**/requirements-dev.txt
 **/tests/
 **/venv/
 database/

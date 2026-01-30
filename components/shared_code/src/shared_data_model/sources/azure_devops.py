@@ -71,7 +71,7 @@ AZURE_DEVOPS = Source(
     description="Azure DevOps Server (formerly known as Team Foundation Server) by Microsoft provides source code "
     "management, reporting, requirements management, project management, automated builds, testing and "
     "release management.",
-    url=HttpUrl("https://azure.microsoft.com/en-us/services/devops/server/"),
+    url=HttpUrl("https://azure.microsoft.com/en-us/products/devops/server/"),
     parameters={
         "url": URL(
             name="URL including organization and project",
@@ -82,7 +82,7 @@ AZURE_DEVOPS = Source(
         ),
         "private_token": PrivateToken(
             help_url=HttpUrl(
-                "https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/"
+                "https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/"
                 "use-personal-access-tokens-to-authenticate?view=azure-devops",
             ),
             metrics=ALL_AZURE_DEVOPS_METRICS,
@@ -110,7 +110,7 @@ AZURE_DEVOPS = Source(
         "branch": Branch(),
         "branches_to_ignore": BranchesToIgnore(
             help_url=HttpUrl(
-                "https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
+                "https://learn.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
             ),
         ),
         "branch_merge_status": BranchMergeStatus(),
@@ -211,7 +211,7 @@ AZURE_DEVOPS = Source(
         "upvotes": Upvotes(),
         "target_branches_to_include": TargetBranchesToInclude(
             help_url=HttpUrl(
-                "https://docs.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
+                "https://learn.microsoft.com/en-us/azure/devops/repos/git/manage-your-branches?view=azure-devops",
             ),
         ),
     },

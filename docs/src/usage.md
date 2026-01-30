@@ -41,7 +41,7 @@ You can either use your canonical LDAP name as username or your LDAP user id. Pl
 ```{index} Gravatar
 ```
 
-After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://en.gravatar.com/), it will be displayed next to your username.
+After hitting "Submit" you should be logged in. The menu bar shows your username. If you have a [Gravatar](https://gravatar.com), it will be displayed next to your username.
 
 ```{image} screenshots/menubar_logged_in.png
 :alt: Screenshot of the menubar when logged in
@@ -491,7 +491,7 @@ Multiple issues can be linked to one metric. At most one issue tracker can be co
 
 ## DORA metrics
 
-DORA metrics are a set of four key metrics for measuring the performance of software delivery, first described by the DevOps Research & Assessment (DORA) team in the 2016 State of DevOps report. See the [DORA research program](https://www.devops-research.com/research.html) for more information.
+DORA metrics are a set of four key metrics for measuring the performance of software delivery, first described by the DevOps Research & Assessment (DORA) team in the 2016 State of DevOps report. See the [DORA research program](https://dora.dev/) for more information.
 
 *Quality-time* can monitor these metrics in the following manner. Add a subject of type [Operations process](reference.md#operations-process) and add the following metrics to the subject:
 
@@ -505,6 +505,6 @@ DORA metrics are a set of four key metrics for measuring the performance of soft
 
 ## Notifications
 
-*Quality-time* can send notifications about metrics that change status to {index}`Microsoft Teams` channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
+*Quality-time* can send notifications about metrics that change status to {index}`Microsoft Teams` channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
 
 If a {index}`webhook <Webhook>` has been configured, *Quality-time* will check for changes in the status of metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel configured by the webhook.

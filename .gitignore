@@ -42,9 +42,6 @@ components/collector/.mutmut-cache
 components/collector/html/
 components/frontend/coverage/
 
-# pyenv
-.python-version
-
 # Environments
 *venv
 env/

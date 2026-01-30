@@ -185,7 +185,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Removed
 
-- Remove the Docker image (osixia/phpldapadmin:0.9.0) for managing LDAP data from the Quality-time Docker composition. The image is not maintained. Since the tool was only meant for testing but was hardly ever used, it is not replaced.
+- Remove the Docker image (osixia/phpldapadmin:0.9.0) for managing LDAP data from the Quality-time Docker-composition. The image is not maintained. Since the tool was only meant for testing but was hardly ever used, it is not replaced.
 
 ## v5.40.0 - 2025-08-29
 
@@ -229,7 +229,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
-- Fix dataformat difference between Jira cloud and server version, where sprint custom fields are returned as a dict instead of text. Fixes [#11672](https://github.com/ICTU/quality-time/issues/11672).
+- Fix data format difference between Jira cloud and server version, where sprint custom fields are returned as a dict instead of text. Fixes [#11672](https://github.com/ICTU/quality-time/issues/11672).
 
 ### Changed
 
@@ -283,8 +283,8 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
-- Add an overview of sources used in reports that allows for changing the location parameters (url, credentials) of sources. Expand a report title and navigate to the 'Sources' tab to access it. Closes [#9214](https://github.com/ICTU/quality-time/issues/9214).
-- Allow for zooming trend graphs by drawing a rectangle in the trend graph. Closes [#11423](https://github.com/ICTU/quality-time/issues/11423).
+- Add an overview of sources used in reports that allows for changing the location parameters (URL, credentials) of sources. Expand a report title and navigate to the 'Sources' tab to access it. Closes [#9214](https://github.com/ICTU/quality-time/issues/9214).
+- Allow for zooming trend graphs by drawing a rectangle in the trend graph. Closes [#11443](https://github.com/ICTU/quality-time/issues/11443).
 
 ## v5.32.1 - 2025-06-12
 
@@ -349,7 +349,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
-- Keep the footer at the bottom of the page even if the browser window is very tall. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
+- Keep the footer at the bottom of the page even if the browser window is tall. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
 - The API-server would incorrectly log about encountering unknown SonarQube parameter values when running migration code at startup. Fixes [#11119](https://github.com/ICTU/quality-time/issues/11119).
 - The renderer component would use 100% CPU while idling. Fixed by downgrading the renderer base image to Alpine 3.20 so the renderer uses a slightly older version of Chromium that does not suffer from this issue. Fixes [#11131](https://github.com/ICTU/quality-time/issues/11131).
 - When measuring test suites with JUnit XML as source, the count of test suites would be incorrect if the test suite names are not unique. Fixed by using the test suite id to disambiguate suites, if available. Fixes [#11138](https://github.com/ICTU/quality-time/issues/11138).
@@ -391,7 +391,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
-- Allow for measuring merge requests using Bitbucket as source. Closes [#10225](https://github.com/ICTU/quality-time/issues/10225).
+- Allow for measuring merge requests using Bitbucket as source. Closes [#10661](https://github.com/ICTU/quality-time/issues/10661).
 - When reading JUnit XML files, in addition to the "name" and "classname" attributes, also use the "hostname" attribute to differentiate test cases. Closes [#10878](https://github.com/ICTU/quality-time/issues/10878).
 
 ### Fixed
@@ -402,7 +402,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - Metric details were not shown in exports to PDF. Fixes [#10845](https://github.com/ICTU/quality-time/issues/10845).
 - Do not assume that Dependency-Track projects and components always have a version number. Fixes [#10848](https://github.com/ICTU/quality-time/issues/10848).
 - The software documentation was outdated (among other things, the API-server health check endpoint). Fixes [#10858](https://github.com/ICTU/quality-time/issues/10858).
-- Keep the footer at the bottom of the page even if the report is very short. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
+- Keep the footer at the bottom of the page even if the report is short. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
 - Automatically expand long comments when exporting to PDF. Fixes [#10892](https://github.com/ICTU/quality-time/issues/10892).
 - Correctly format the measurement entity status end dates in the measurement details table. Fixes [#10907](https://github.com/ICTU/quality-time/issues/10907).
 - Gatling and JMeter measurement details of type integer and float (such as sample count and mean response time) would not be collected. Fixes [#10911](https://github.com/ICTU/quality-time/issues/10911).
@@ -442,7 +442,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - The comment field of a metric's technical debt tab would be editable even though the user was not logged in or when the user was time traveling. Note that the server would not save any changes made as it also checks for correct permissions. Fixes [#10739](https://github.com/ICTU/quality-time/issues/10739).
 - When changing technical debt with the option "Yes, and also set technical debt target and end date" or "No, and also clear technical debt target and end date", the technical end date value would not be refreshed in the UI. Fixes [#10761](https://github.com/ICTU/quality-time/issues/10761).
 - The status end date of measurement entities would not be refreshed in the UI when changing the status. Fixes [#10762](https://github.com/ICTU/quality-time/issues/10762).
-- When measuring branch or line coverage with Jacoco XML as source, the coverage would be calculated incorrectly. Fixes [#10787](https://github.com/ICTU/quality-time/issues/10787).
+- When measuring branch or line coverage with JaCoCo XML as source, the coverage would be calculated incorrectly. Fixes [#10787](https://github.com/ICTU/quality-time/issues/10787).
 
 ### Changed
 
@@ -477,11 +477,11 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
-- Support Bitbucket as source for the 'inactive branches' metric. Note that the amount of branches checked is limited to 100 because pagination for the Bitbucket API has not been implemented yet. Closes [#10083](https://github.com/ICTU/quality-time/issues/10083).
 - When measuring missing metrics, make the subject type and the metric type of the missing metrics link to the reference documentation. Closes [#10528](https://github.com/ICTU/quality-time/issues/10528).
 - Allow for measuring the source up-to-dateness of Trivy JSON reports. Closes [#10608](https://github.com/ICTU/quality-time/issues/10608).
 - Allow for measuring the source up-to-dateness of Harbor JSON reports. Closes [#10609](https://github.com/ICTU/quality-time/issues/10609).
 - Support version 4.1 of the OWASP Dependency-Check DTD (OWASP Dependency-Check version 12.0.0). Closes [#10645](https://github.com/ICTU/quality-time/issues/10645).
+- Support Bitbucket as source for the 'inactive branches' metric. Note that the amount of branches checked is limited to 100 because pagination for the Bitbucket API has not been implemented yet. Closes [#10660](https://github.com/ICTU/quality-time/issues/10660).
 
 ### Changed
 
@@ -555,9 +555,9 @@ If your currently installed *Quality-time* version is not v5.17.0, please first 
 - Don't include the confusing "TypeError" in toaster messages when fetching measurements fails. Fixes [#9576](https://github.com/ICTU/quality-time/issues/9576).
 - In the reference manual, sort supported metrics alphabetically. Fixes [#9855](https://github.com/ICTU/quality-time/issues/9855).
 - Correctly sort metrics in the "Add metric" dropdown menu. Fixes [#9857](https://github.com/ICTU/quality-time/issues/9857).
-- Donut charts would be misaligned after resizing the window. Fixes [#9863](https://github.com/ICTU/quality-time/issues/9863).
+- The donut charts would be misaligned after resizing the window. Fixes [#9863](https://github.com/ICTU/quality-time/issues/9863).
 - The warning message shown for unsupported measurement details was incorrect for metrics with a version scale. Fixes [#9973](https://github.com/ICTU/quality-time/issues/9973).
-- The metric summary cards with pie chart wouldn't erase the center label when rerendering, causing the label to be visible multiple times. Fixes [#10098](https://github.com/ICTU/quality-time/issues/10098).
+- The metric summary cards with pie chart wouldn't erase the center label when re-rendering, causing the label to be visible multiple times. Fixes [#10098](https://github.com/ICTU/quality-time/issues/10098).
 - Developer documentation was still referring to `venv/bin/activate` where this should be `.venv/bin/activate`. Fixes [#10172](https://github.com/ICTU/quality-time/issues/10172).
 
 ## v5.17.0 - 2024-10-17
@@ -681,7 +681,7 @@ If your currently installed *Quality-time* version is not v5.13.0, please first 
 ### Changed
 
 - Rename the "CI-environment" subject type to "Development environment". Prepares for [#3130](https://github.com/ICTU/quality-time/issues/3130).
-- Migrate to the new SonarQube issue structure introduced in SonarQube 10.2. See the [release 10.2 upgrade notes](https://docs.sonarsource.com/sonarqube/latest/setup-and-upgrade/release-upgrade-notes/#release-10.2-upgrade-notes). Closes [#8354](https://github.com/ICTU/quality-time/issues/8354). Where possible, SonarQube parameters and parameter values are migrated automatically:
+- Migrate to the new SonarQube issue structure introduced in SonarQube 10.2. Closes [#8354](https://github.com/ICTU/quality-time/issues/8354). Where possible, SonarQube parameters and parameter values are migrated automatically:
   - The 'severities' parameter is changed into 'impact severities' and the severity values are changed ('blocker' and 'critical' become 'high', 'major' becomes 'medium', and 'minor' and 'info' become 'low'). If a report contained separate metrics for e.g. 'blocker' and 'critical' violations before the upgrade to this version of *Quality-time*, then these metrics will both measure the number of issue with 'high' impact after the upgrade. Since these metrics probably still differ in other aspects (comments, tags, linked issues, etc.) it is up to the user to resolve this manually.
   - The 'types' parameter is changed into 'impacted software qualities' and the types are changed ('code smell' becomes 'maintainability', 'vulnerability' becomes 'security', and 'bug' becomes 'reliability').
   - The 'security types' parameter values are changed ('security_hotspot' becomes 'security hotspot' and 'vulnerability' becomes 'issue with security impact').
@@ -1035,7 +1035,7 @@ See the [deployment instructions](https://quality-time.readthedocs.io/en/latest/
 
 - When using SonarQube security hotspots as source for the security warnings metric, allow for filtering hotspots by hotspot status ('to review', 'acknowledged', 'fixed', 'safe'). The default value of this parameter is to show hotspots 'to review' and 'acknowledged'. Closes [#5956](https://github.com/ICTU/quality-time/issues/5956).
 - Add axe analysis to Quality-time pipeline. Closes [#5402](https://github.com/ICTU/quality-time/issues/5402).
-- Add support for using the SARIF format as source for the 'violations' metric. This makes it possible to use [Robocop](https://robocop.readthedocs.io/en/stable/) as source for the violations metric. Closes [#6314](https://github.com/ICTU/quality-time/issues/6314).
+- Add support for using the SARIF format as source for the 'violations' metric. This makes it possible to use [Robocop](https://robocop.dev/stable/) as source for the violations metric. Closes [#6314](https://github.com/ICTU/quality-time/issues/6314).
 
 ### Changed
 
@@ -1407,7 +1407,7 @@ If the proxy does not have the default name/port `www:80`, the renderer needs to
 
 To upgrade to this version of *Quality-time* your currently installed version needs to be at least version 3.32.0. If your currently installed version is older, you need to first install v3.32.0, v3.33.0, or v3.34.0 before installing v3.35.0.
 
-Background information: *Quality-time* uses MongoDB as database component. A MongoDB instance is either backward-compatible with the previous MongoDB version or forward-compatible with a next MongoDB version. To configure this, the MongoDB [feature compatibility version](https://www.mongodb.com/docs/manual/reference/command/setFeatureCompatibilityVersion/) has to be set in the database. *Quality-time* has been using MongoDB v4.4 for a while. Up until *Quality-time* v3.32.0 the database was backward-compatible with MongoDB v4.2. Starting from *Quality-time* v3.32.0 the database has been made forward-compatible with MongoDB v5.0. This ensures that if *Quality-time* v3.35.0 is not functioning properly with MongoDB v5.0, a rollback to a previous version of *Quality-time* (but not older than v3.32.0) with MongoDB v4.4 is possible.
+Background information: *Quality-time* uses MongoDB as database component. A MongoDB instance is either backward-compatible with the previous MongoDB version or forward-compatible with a next MongoDB version. To configure this, the MongoDB [feature compatibility version](https://www.mongodb.com/docs/manual/reference/command/setfeaturecompatibilityversion/) has to be set in the database. *Quality-time* has been using MongoDB v4.4 for a while. Up until *Quality-time* v3.32.0 the database was backward-compatible with MongoDB v4.2. Starting from *Quality-time* v3.32.0 the database has been made forward-compatible with MongoDB v5.0. This ensures that if *Quality-time* v3.35.0 is not functioning properly with MongoDB v5.0, a rollback to a previous version of *Quality-time* (but not older than v3.32.0) with MongoDB v4.4 is possible.
 
 ### Fixed
 
@@ -1489,7 +1489,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Changed
 
-- Use the 'number of dates' menu (now located in the settings panel, see #3248 below) to switch between what used to called 'trend' view (multiple dates) and 'details' view (one date). If you export PDFs via the API, you may need to change the URL parameters: `trend_table_nr_dates` is now called `nr_dates` and `trend_table_interval` is now called `date_interval`. Also, `trend_table_interval` was a number of weeks, `date_interval` is a number of days. See the [documentation on PDF-exports via the API](https://quality-time.readthedocs.io/en/latest/usage.html#via-the-api). Closes [#3206](https://github.com/ICTU/quality-time/issues/3206).
+- Use the 'number of dates' menu (now located in the settings panel, see #3248 below) to switch between what used to called 'trend' view (multiple dates) and 'details' view (one date). If you export PDFs via the API, you may need to change the URL parameters: `trend_table_nr_dates` is now called `nr_dates` and `trend_table_interval` is now called `date_interval`. Also, `trend_table_interval` was a number of weeks, `date_interval` is a number of days. See the [documentation on PDF-exports via the API](https://quality-time.readthedocs.io/en/latest/api.html#export-to-pdf). Closes [#3206](https://github.com/ICTU/quality-time/issues/3206).
 - Make the subject title and header row of subject tables 'sticky', meaning that the title and header rows stay visible until the whole table scrolls off-screen. Closes [#3219](https://github.com/ICTU/quality-time/issues/3219).
 - Move the contents of the hamburger menu to a settings panel that can be brought into view via the menu bar. Closes [#3248](https://github.com/ICTU/quality-time/issues/3248).
 
@@ -1519,7 +1519,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 - Show the source, comment, issues, and tags columns in the metric trend view. Closes [#2414](https://github.com/ICTU/quality-time/issues/2414), [#3203](https://github.com/ICTU/quality-time/issues/3203), [#3037](https://github.com/ICTU/quality-time/issues/3037), and [#3202](https://github.com/ICTU/quality-time/issues/3202).
 - Allow for copying permanent links to metrics, subjects, and reports via the new 'Share' tabs. Closes [#2925](https://github.com/ICTU/quality-time/issues/2925).
 - Allow for adding comments to the reports overview, to reports, and to subjects. Expand the title of the reports overview, report, or subject to enter comments. Entered comments are shown below the title of the reports overview, report, or subject. Basic HTML (headers, bold, italic, links, etc.) is allowed. Closes [#2926](https://github.com/ICTU/quality-time/issues/2926).
-- Explain in the [documentation](https://quality-time.readthedocs.io/en/latest/usage.html#via-the-api) how to include the correct report URL in the footer when exporting reports to PDF via the API. Closes [#2954](https://github.com/ICTU/quality-time/issues/2954).
+- Explain in the [documentation](https://quality-time.readthedocs.io/en/latest/api.html#export-to-pdf) how to include the correct report URL in the footer when exporting reports to PDF via the API. Closes [#2954](https://github.com/ICTU/quality-time/issues/2954).
 - In addition to the 90th percentile, also allow for evaluating the 95th and 99th percentile transaction response time when using JMeter CSV or JSON as source for the 'slow transactions' metric. Closes [#3084](https://github.com/ICTU/quality-time/issues/3084).
 - Add support for Gatling as source for the 'slow transactions', 'tests', 'performancetest duration', 'source up-to-dateness', and 'source version' metrics. Closes [#3085](https://github.com/ICTU/quality-time/issues/3085), [#3086](https://github.com/ICTU/quality-time/issues/3086), [#3087](https://github.com/ICTU/quality-time/issues/3087), [#3088](https://github.com/ICTU/quality-time/issues/3088), and [#3089](https://github.com/ICTU/quality-time/issues/3089).
 - The dependencies in OWASP Dependency-Check reports do not always have unique keys. However, *Quality-time* needs dependencies to be uniquely identifiable to detect whether the dependencies change between measurements. If needed, *Quality-time* generates keys for dependencies itself, based on the dependencies' file paths. If for some reason the file path changes between measurements, however, the key changes as well. To remediate this, allow for ignoring parts of file paths using regular expressions, when measuring 'dependencies' or 'security warnings' with OWASP Dependency-Check as source. Closes [#3099](https://github.com/ICTU/quality-time/issues/3099).
@@ -1874,7 +1874,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Changed
 
-- Group Snyk security warnings by top-level dependency. Closes [#1616](https://github.com/ICTU/quality-time/issues/1616). Contributed by [@greckko](https://github.com/greckko).
+- Group Snyk security warnings by top-level dependency. Closes [#1616](https://github.com/ICTU/quality-time/issues/1616). Contributed by greckko@GitHub.
 
 ### Removed
 
@@ -1922,7 +1922,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Added
 
-- Added a generic JSON file format that can be used as source for the 'security warnings' metric. See the [reference manual](reference.md#json-file-with-security-warnings) for details on the exact format. Closes [#1479](https://github.com/ICTU/quality-time/issues/1479). Contributed by [@greckko](https://github.com/greckko).
+- Added a generic JSON file format that can be used as source for the 'security warnings' metric. See the [reference manual](reference.md#json-file-with-security-warnings) for details on the exact format. Closes [#1479](https://github.com/ICTU/quality-time/issues/1479). Contributed by greckko@GitHub.
 - Include the expanded/collapsed state of metrics, including which tab is active, in the URL so that the renderer uses that state when exporting the report to PDF. Closes [#1594](https://github.com/ICTU/quality-time/issues/1594).
 - In the Microsoft Teams notifications, include which metric(s) turned red. Partially implements [#1223](https://github.com/ICTU/quality-time/issues/1223).
 
@@ -2026,7 +2026,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 ### Added
 
 - Add 'velocity' metric. Currently, the only source supported for this metric is Jira. Closes [#1407](https://github.com/ICTU/quality-time/issues/1407).
-- Add [axe-selenium-python](https://github.com/mozilla-services/axe-selenium-python) JSON reports as possible source for the 'accessibility violations' metric. Closes [#1424](https://github.com/ICTU/quality-time/issues/1424).
+- Add [axe-selenium-python](https://github.com/django-commons/axe-selenium-python) JSON reports as possible source for the 'accessibility violations' metric. Closes [#1424](https://github.com/ICTU/quality-time/issues/1424).
 
 ## v3.3.0 - 2020-08-29
 
@@ -2057,7 +2057,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 - When measuring the number of test cases using Jenkins test report as source, for each failing test case show for how many builds it has been failing. Closes [#1373](https://github.com/ICTU/quality-time/issues/1373).
 - Add a new metric 'violation remediation effort' that reports the effort needed to remediate violations. Currently, the only source supporting this metric is SonarQube. Closes [#1374](https://github.com/ICTU/quality-time/issues/1374).
 - Allow for filtering Azure DevOps test runs by test run state. Closes [#1383](https://github.com/ICTU/quality-time/issues/1383).
-- Added Snyk JSON reports as source for the 'security warnings' metric. Contributed by [@greckko](https://github.com/greckko).
+- Added Snyk JSON reports as source for the 'security warnings' metric. Contributed by greckko@GitHub.
 
 ## v3.1.0 - 2020-08-07
 
@@ -2285,7 +2285,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Changed
 
-- As the previous rendering component used by *Quality-time* is no longer maintained, it is replaced with a new component: [URL to PDF Microservice](https://github.com/alvarcarto/url-to-pdf-api). *Quality-time* uses the [ICTU fork](https://github.com/ICTU/url-to-pdf-api) that packages the service as a [Docker container](https://hub.docker.com/repository/docker/ictu/url-to-pdf-api).
+- As the previous rendering component used by *Quality-time* is no longer maintained, it is replaced with a new component: [URL to PDF Microservice](https://github.com/alvarcarto/url-to-pdf-api). *Quality-time* uses the [ICTU fork](https://github.com/ICTU/url-to-pdf-api) that packages the service as a Docker container.
 
 ### Fixed
 
@@ -2410,7 +2410,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Added
 
-- If users have a [Gravatar](https://en.gravatar.com/), it will be shown next to their username after they log in.
+- If users have a [Gravatar](https://gravatar.com), it will be shown next to their username after they log in.
 - REST API added for importing a complete report. Closes [#818](https://github.com/ICTU/quality-time/issues/818).
 - Allow GitLab as source for the unused CI-jobs metric. Closes [#851](https://github.com/ICTU/quality-time/issues/851).
 
@@ -2787,7 +2787,7 @@ Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 
 ### Added
 
-- Release Docker containers from [Travis CI](https://travis-ci.org/ICTU/quality-time) to [Docker Hub](https://hub.docker.com/search?q=quality-time_&type=image).
+- Release Docker containers from Travis CI to [Docker Hub](https://hub.docker.com/search?q=quality-time_&type=image).
 
 ## v0.1.0 - 2019-06-24
 

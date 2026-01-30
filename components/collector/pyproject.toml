@@ -66,7 +66,7 @@ lint.ignore = [
     "PT",     # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
     "TC006",  # https://docs.astral.sh/ruff/rules/runtime-cast-value/ - the rule claims it's often necessary to quote the first argument passed to cast(), but that's not the case in this code base
 ]
-lint.per-file-ignores.".vulture_ignore_list.py" = [
+lint.per-file-ignores.".vulture-whitelist.py" = [
     "ALL",
 ]
 lint.per-file-ignores."__init__.py" = [
