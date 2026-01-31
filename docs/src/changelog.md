@@ -185,7 +185,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Removed
 
-- Remove the Docker image (osixia/phpldapadmin:0.9.0) for managing LDAP data from the Quality-time Docker composition. The image is not maintained. Since the tool was only meant for testing but was hardly ever used, it is not replaced.
+- Remove the Docker image (osixia/phpldapadmin:0.9.0) for managing LDAP data from the Quality-time Docker-composition. The image is not maintained. Since the tool was only meant for testing but was hardly ever used, it is not replaced.
 
 ## v5.40.0 - 2025-08-29
 
@@ -229,7 +229,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
-- Fix dataformat difference between Jira cloud and server version, where sprint custom fields are returned as a dict instead of text. Fixes [#11672](https://github.com/ICTU/quality-time/issues/11672).
+- Fix data format difference between Jira cloud and server version, where sprint custom fields are returned as a dict instead of text. Fixes [#11672](https://github.com/ICTU/quality-time/issues/11672).
 
 ### Changed
 
@@ -283,7 +283,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
-- Add an overview of sources used in reports that allows for changing the location parameters (url, credentials) of sources. Expand a report title and navigate to the 'Sources' tab to access it. Closes [#9214](https://github.com/ICTU/quality-time/issues/9214).
+- Add an overview of sources used in reports that allows for changing the location parameters (URL, credentials) of sources. Expand a report title and navigate to the 'Sources' tab to access it. Closes [#9214](https://github.com/ICTU/quality-time/issues/9214).
 - Allow for zooming trend graphs by drawing a rectangle in the trend graph. Closes [#11423](https://github.com/ICTU/quality-time/issues/11423).
 
 ## v5.32.1 - 2025-06-12
@@ -349,7 +349,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
-- Keep the footer at the bottom of the page even if the browser window is very tall. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
+- Keep the footer at the bottom of the page even if the browser window is tall. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
 - The API-server would incorrectly log about encountering unknown SonarQube parameter values when running migration code at startup. Fixes [#11119](https://github.com/ICTU/quality-time/issues/11119).
 - The renderer component would use 100% CPU while idling. Fixed by downgrading the renderer base image to Alpine 3.20 so the renderer uses a slightly older version of Chromium that does not suffer from this issue. Fixes [#11131](https://github.com/ICTU/quality-time/issues/11131).
 - When measuring test suites with JUnit XML as source, the count of test suites would be incorrect if the test suite names are not unique. Fixed by using the test suite id to disambiguate suites, if available. Fixes [#11138](https://github.com/ICTU/quality-time/issues/11138).
@@ -402,7 +402,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - Metric details were not shown in exports to PDF. Fixes [#10845](https://github.com/ICTU/quality-time/issues/10845).
 - Do not assume that Dependency-Track projects and components always have a version number. Fixes [#10848](https://github.com/ICTU/quality-time/issues/10848).
 - The software documentation was outdated (among other things, the API-server health check endpoint). Fixes [#10858](https://github.com/ICTU/quality-time/issues/10858).
-- Keep the footer at the bottom of the page even if the report is very short. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
+- Keep the footer at the bottom of the page even if the report is short. Fixes [#10877](https://github.com/ICTU/quality-time/issues/10877).
 - Automatically expand long comments when exporting to PDF. Fixes [#10892](https://github.com/ICTU/quality-time/issues/10892).
 - Correctly format the measurement entity status end dates in the measurement details table. Fixes [#10907](https://github.com/ICTU/quality-time/issues/10907).
 - Gatling and JMeter measurement details of type integer and float (such as sample count and mean response time) would not be collected. Fixes [#10911](https://github.com/ICTU/quality-time/issues/10911).
@@ -442,7 +442,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - The comment field of a metric's technical debt tab would be editable even though the user was not logged in or when the user was time traveling. Note that the server would not save any changes made as it also checks for correct permissions. Fixes [#10739](https://github.com/ICTU/quality-time/issues/10739).
 - When changing technical debt with the option "Yes, and also set technical debt target and end date" or "No, and also clear technical debt target and end date", the technical end date value would not be refreshed in the UI. Fixes [#10761](https://github.com/ICTU/quality-time/issues/10761).
 - The status end date of measurement entities would not be refreshed in the UI when changing the status. Fixes [#10762](https://github.com/ICTU/quality-time/issues/10762).
-- When measuring branch or line coverage with Jacoco XML as source, the coverage would be calculated incorrectly. Fixes [#10787](https://github.com/ICTU/quality-time/issues/10787).
+- When measuring branch or line coverage with JaCoCo XML as source, the coverage would be calculated incorrectly. Fixes [#10787](https://github.com/ICTU/quality-time/issues/10787).
 
 ### Changed
 
@@ -555,9 +555,9 @@ If your currently installed *Quality-time* version is not v5.17.0, please first 
 - Don't include the confusing "TypeError" in toaster messages when fetching measurements fails. Fixes [#9576](https://github.com/ICTU/quality-time/issues/9576).
 - In the reference manual, sort supported metrics alphabetically. Fixes [#9855](https://github.com/ICTU/quality-time/issues/9855).
 - Correctly sort metrics in the "Add metric" dropdown menu. Fixes [#9857](https://github.com/ICTU/quality-time/issues/9857).
-- Donut charts would be misaligned after resizing the window. Fixes [#9863](https://github.com/ICTU/quality-time/issues/9863).
+- The donut charts would be misaligned after resizing the window. Fixes [#9863](https://github.com/ICTU/quality-time/issues/9863).
 - The warning message shown for unsupported measurement details was incorrect for metrics with a version scale. Fixes [#9973](https://github.com/ICTU/quality-time/issues/9973).
-- The metric summary cards with pie chart wouldn't erase the center label when rerendering, causing the label to be visible multiple times. Fixes [#10098](https://github.com/ICTU/quality-time/issues/10098).
+- The metric summary cards with pie chart wouldn't erase the center label when re-rendering, causing the label to be visible multiple times. Fixes [#10098](https://github.com/ICTU/quality-time/issues/10098).
 - Developer documentation was still referring to `venv/bin/activate` where this should be `.venv/bin/activate`. Fixes [#10172](https://github.com/ICTU/quality-time/issues/10172).
 
 ## v5.17.0 - 2024-10-17
