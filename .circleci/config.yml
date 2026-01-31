@@ -43,7 +43,7 @@ jobs:
 
   unittest_frontend:
     docker:
-      - image: cimg/node:25.3.0
+      - image: cimg/node:25.5.0
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
