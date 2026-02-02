@@ -30,7 +30,7 @@ optional-dependencies.tools = [
     "mypy==1.19.1",
     "pip-audit==2.10.0",
     "pydantic==2.12.5",      # Needed because uvx needs to inject Pydantic into the mpyp venv, see ci/quality.sh
-    "pyproject-fmt==2.11.1",
+    "pyproject-fmt==2.12.1",
     "ruff==0.14.14",
     "troml==0.4.1",
     "vale==3.13.0.0",        # Documentation grammar and style checker
