@@ -1,39 +1,40 @@
 """Data model measurement entities."""
 
+from enum import StrEnum, auto
 from typing import Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from .base import NamedModel, StrEnum
+from .base import NamedModel
 
 
 class Color(StrEnum):
     """Entity color."""
 
-    ACTIVE = "active"
-    ERROR = "error"
-    NEGATIVE = "negative"
-    POSITIVE = "positive"
-    WARNING = "warning"
+    ACTIVE = auto()
+    ERROR = auto()
+    NEGATIVE = auto()
+    POSITIVE = auto()
+    WARNING = auto()
 
 
 class EntityAttributeType(StrEnum):
     """Type of the entity attribute. If not specified, the entity attribute type is string."""
 
-    BOOLEAN = "boolean"
-    DATE = "date"
-    DATETIME = "datetime"
-    FLOAT = "float"
-    INTEGER = "integer"
-    INTEGER_PERCENTAGE = "integer_percentage"
-    STATUS = "status"
+    BOOLEAN = auto()
+    DATE = auto()
+    DATETIME = auto()
+    FLOAT = auto()
+    INTEGER = auto()
+    INTEGER_PERCENTAGE = auto()
+    STATUS = auto()
 
 
 class EntityAttributeAlignment(StrEnum):
     """Alignment of the entity attribute."""
 
-    LEFT = "left"
-    RIGHT = "right"
+    LEFT = auto()
+    RIGHT = auto()
 
 
 class EntityAttribute(NamedModel):

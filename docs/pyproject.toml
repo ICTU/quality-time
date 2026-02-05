@@ -20,7 +20,7 @@ dependencies = [
     "sphinx-design<=0.6.1",     # Don't update, sphinx-copybutton is not compatible with sphinx 9
 ]
 optional-dependencies.dev = [
-    "coverage==7.13.2",
+    "coverage==7.13.3",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
 ]
 optional-dependencies.tools = [
@@ -30,11 +30,11 @@ optional-dependencies.tools = [
     "mypy==1.19.1",
     "pip-audit==2.10.0",
     "pyproject-fmt==2.12.1",
-    "ruff==0.14.14",
+    "ruff==0.15.0",
     "troml==0.4.1",
     "vale==3.13.0.0",        # Documentation grammar and style checker
     "vulture==2.14",
-    "yamllint==1.37.1",
+    "yamllint==1.38.0",
 ]
 
 [tool.uv.sources]

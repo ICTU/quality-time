@@ -1,8 +1,9 @@
 """Jira source."""
 
+from enum import StrEnum
+
 from pydantic import HttpUrl
 
-from shared_data_model.meta.base import StrEnum
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
 from shared_data_model.meta.unit import Unit

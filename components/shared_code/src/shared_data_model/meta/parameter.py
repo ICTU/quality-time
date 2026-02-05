@@ -1,24 +1,25 @@
 """Data model source parameters."""
 
+from enum import StrEnum, auto
 from typing import Self
 
 from pydantic import ConfigDict, Field, HttpUrl, model_validator
 
-from .base import NamedModel, StrEnum
+from .base import NamedModel
 
 
 class ParameterType(StrEnum):
     """Parameter type."""
 
-    DATE = "date"
-    INTEGER = "integer"
-    MULTIPLE_CHOICE_WITH_DEFAULTS = "multiple_choice_with_defaults"
-    MULTIPLE_CHOICE_WITHOUT_DEFAULTS = "multiple_choice_without_defaults"
-    MULTIPLE_CHOICE_WITH_ADDITION = "multiple_choice_with_addition"
-    PASSWORD = "password"  # nosec # noqa: S105
-    SINGLE_CHOICE = "single_choice"
-    STRING = "string"
-    URL = "url"
+    DATE = auto()
+    INTEGER = auto()
+    MULTIPLE_CHOICE_WITH_DEFAULTS = auto()
+    MULTIPLE_CHOICE_WITHOUT_DEFAULTS = auto()
+    MULTIPLE_CHOICE_WITH_ADDITION = auto()
+    PASSWORD = auto()
+    SINGLE_CHOICE = auto()
+    STRING = auto()
+    URL = auto()
 
 
 class Parameter(NamedModel):

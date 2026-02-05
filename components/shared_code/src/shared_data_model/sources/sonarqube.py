@@ -1,8 +1,9 @@
 """SonarQube source."""
 
+from enum import StrEnum
+
 from pydantic import HttpUrl
 
-from shared_data_model.meta.base import StrEnum
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Configuration, Source
 from shared_data_model.parameters import (

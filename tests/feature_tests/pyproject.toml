@@ -17,7 +17,7 @@ dependencies = [
     "requests-sse==0.5.2",
 ]
 optional-dependencies.dev = [
-    "coverage==7.13.2",
+    "coverage==7.13.3",
     "types-python-dateutil==2.9.0.20260124",
     "types-requests==2.32.4.20260107",
     "unittest-xml-reporting==4.0.0",         # Needed to generate JUnit XML output for Sonarcloud.io
@@ -29,7 +29,7 @@ optional-dependencies.tools = [
     "mypy==1.19.1",
     "pip-audit==2.10.0",
     "pyproject-fmt==2.12.1",
-    "ruff==0.14.14",
+    "ruff==0.15.0",
     "troml==0.4.1",
     "vulture==2.14",
 ]
