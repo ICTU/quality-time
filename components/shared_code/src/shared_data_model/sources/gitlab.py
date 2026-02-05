@@ -224,6 +224,12 @@ ref=<branch>`
             placeholder="all approval states",
             metrics=["merge_requests"],
         ),
+        "ignore_draft_merge_requests": SingleChoiceParameter(
+            name="Ignore draft merge requests",
+            values=["yes", "no"],
+            default_value="no",
+            metrics=["merge_requests"],
+        ),
         "pipeline_statuses_to_include": MultipleChoiceWithDefaultsParameter(
             name="Pipeline statuses to include",
             values=[
@@ -330,6 +336,7 @@ ref=<branch>`
                 EntityAttribute(name="Created", type=EntityAttributeType.DATETIME),
                 EntityAttribute(name="Updated", type=EntityAttributeType.DATETIME),
                 EntityAttribute(name="Merged", type=EntityAttributeType.DATETIME),
+                EntityAttribute(name="Draft", type=EntityAttributeType.BOOLEAN),
             ],
         ),
         "inactive_branches": Entity(
