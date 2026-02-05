@@ -52,5 +52,5 @@ class Report(SharedReport):
             return defaults.get(status)
         try:
             return int(self["desired_response_times"][status])
-        except (ValueError, TypeError):  # The desired response time can be empty, treat any non-integer as None
+        except ValueError, TypeError:  # The desired response time can be empty, treat any non-integer as None
             return None

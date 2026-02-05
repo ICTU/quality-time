@@ -140,7 +140,7 @@ def failed_preconditions_version_overview(current_version: str, root: pathlib.Pa
     columns = latest_version_line.split(" | ")
     latest_version = columns[0].strip("| v")
     release_date = columns[1].strip("| ")
-    target_version = current_version.split("-rc.")[0]
+    target_version = current_version.split("-rc.", maxsplit=1)[0]
     messages = []
     today = utc_today().isoformat()
     missing = f"The first line of the version overview table ({version_overview}) does not contain"

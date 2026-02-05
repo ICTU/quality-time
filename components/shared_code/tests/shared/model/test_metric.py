@@ -67,7 +67,7 @@ class MetricTest(unittest.TestCase):
         summary = {
             "type": "fixture_metric_type",
             "scale": "count",
-            "status": status if status else None,
+            "status": status or None,
             "status_start": None,
             "latest_measurement": latest_measurement,
             "recent_measurements": recent_measurements,

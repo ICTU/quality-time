@@ -49,7 +49,7 @@ class OWASPDependencyCheckXMLDependencies(OWASPDependencyCheckXMLBase):
         # We can only generate an entity landing url if a sha1 is present in the XML, but unfortunately not all
         # dependencies have one, so check for it:
         entity_landing_url = f"{landing_url}#l{dependency_index + 1}_{sha1}" if sha1 else ""
-        key = sha1 if sha1 else sha1_hash(stable_file_path + file_name)
+        key = sha1 or sha1_hash(stable_file_path + file_name)
         return Entity(
             key=key,
             file_path=file_path,

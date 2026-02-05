@@ -1,19 +1,20 @@
 """Data model metrics."""
 
+from enum import StrEnum, auto
 from typing import Self
 
 from pydantic import ConfigDict, Field, model_validator
 
-from .base import DocumentedModel, StrEnum
+from .base import DocumentedModel
 from .unit import Unit
 
 
 class Addition(StrEnum):
     """How measurements from sources should be combined."""
 
-    MAX = "max"
-    MIN = "min"
-    SUM = "sum"
+    MAX = auto()
+    MIN = auto()
+    SUM = auto()
 
 
 class Direction(StrEnum):
@@ -26,13 +27,13 @@ class Direction(StrEnum):
 class Tag(StrEnum):
     """Metric tags."""
 
-    CI = "ci"
-    MAINTAINABILITY = "maintainability"
-    PERFORMANCE = "performance"
+    CI = auto()
+    MAINTAINABILITY = auto()
+    PERFORMANCE = auto()
     PROCESS_EFFICIENCY = "process efficiency"
-    SECURITY = "security"
+    SECURITY = auto()
     TEST_QUALITY = "test quality"
-    TESTABILITY = "testability"
+    TESTABILITY = auto()
 
 
 class Metric(DocumentedModel):

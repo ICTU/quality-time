@@ -1,43 +1,43 @@
 """Metric and parameter units."""
 
-from .base import StrEnum
+from enum import StrEnum, auto
 
 
 class Unit(StrEnum):
     """Supported units."""
 
-    BLOCKS = "blocks"
-    BRANCHES = "branches"
+    BLOCKS = auto()
+    BRANCHES = auto()
     CI_JOBS = "CI-jobs"
     CI_JOB_RUNS = "CI-job runs"
     COMPLEX_UNITS = "complex units"
-    COMPLIANCE = "compliance"
-    DAYS = "days"
-    DEPENDENCIES = "dependencies"
-    DOWNVOTES = "downvotes"
+    COMPLIANCE = auto()
+    DAYS = auto()
+    DEPENDENCIES = auto()
+    DOWNVOTES = auto()
     FAILED_DEPLOYMENTS = "failed deployments"
-    ISSUES = "issues"
-    LINES = "lines"
+    ISSUES = auto()
+    LINES = auto()
     LONG_UNITS = "long units"
     MANUAL_TEST_CASES = "manual test cases"
     MERGE_REQUESTS = "merge requests"
-    METRICS = "metrics"
-    MINUTES = "minutes"
+    METRICS = auto()
+    MINUTES = auto()
     MISSING_METRICS = "missing metrics"
     NONE = ""
     SECURITY_WARNINGS = "security warnings"
-    SPRINTS = "sprints"
+    SPRINTS = auto()
     SUPPRESSED_VIOLATIONS = "suppressed violations"
     TEST_CASES = "test cases"
     TEST_SUITES = "test suites"
-    TESTS = "tests"
+    TESTS = auto()
     TODO_AND_FIXME_COMMENTS = "todo and fixme comments"
-    TRANSACTIONS = "transactions"
+    TRANSACTIONS = auto()
     UNCOVERED_BRANCHES = "uncovered branches"
     UNCOVERED_LINES = "uncovered lines"
     UNITS_WITH_TOO_MANY_PARAMETERS = "units with too many parameters"
-    UPVOTES = "upvotes"
+    UPVOTES = auto()
     USER_STORY_POINTS = "user story points"
     USER_STORY_POINTS_PER_SPRINT = "user story points per sprint"
-    VIOLATIONS = "violations"
+    VIOLATIONS = auto()
     VIRTUAL_USERS = "virtual users"

@@ -1,8 +1,9 @@
 """Unit tests for the base models."""
 
 import unittest
+from enum import StrEnum
 
-from shared_data_model.meta.base import DescribedModel, StrEnum
+from shared_data_model.meta.base import DescribedModel
 
 from .base import MetaModelTestCase
 

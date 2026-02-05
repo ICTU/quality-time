@@ -1,23 +1,12 @@
 """Data model base classes."""
 
 import string
-from enum import Enum
-from typing import Self, cast
+from typing import Self
 
 from pydantic import BaseModel, Field, model_validator
 
 from shared.utils.functions import slugify
 from shared.utils.version import REFERENCE_DOCUMENTATION_URL
-
-
-class StrEnum(str, Enum):
-    """Enums that use strings as values."""
-
-    __slots__ = ()
-
-    def __format__(self, _spec) -> str:
-        """Override to return the value."""
-        return cast(str, self.value)
 
 
 class NamedModel(BaseModel):

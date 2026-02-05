@@ -159,7 +159,7 @@ class IssueTracker:
         try:
             response_json = self.__post_json(self.issue_creation_api, {"fields": fields})
         except Exception as reason:
-            error = str(reason) if str(reason) else reason.__class__.__name__
+            error = str(reason) or reason.__class__.__name__
             logger.warning("Creating a new issue at %s failed: %s", self.issue_creation_api, error)
             return "", error
         return response_json["key"], ""  # pragma: no feature-test-cover
