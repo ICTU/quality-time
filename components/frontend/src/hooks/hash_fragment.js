@@ -16,6 +16,7 @@ export function useHashFragment(trigger = true) {
     useEffect(() => {
         if (!trigger) return // Only scroll if trigger is true, e.g. after loading data has finished
         const { hash } = globalThis.location
+        if (!hash) return // No hash to scroll to
         return waitForElementById(hash?.replace("#", ""), (element) => element.scrollIntoView(true))
     }, [trigger])
 }
