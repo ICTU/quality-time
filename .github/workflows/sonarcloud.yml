@@ -67,7 +67,7 @@ jobs:
         working-directory: components/frontend
         env:
           CI: true
-        run: uvx --from=$(cat $GITHUB_WORKSPACE/tools/requirements-just.txt) just build test cov
+        run: uvx --from=$(cat $GITHUB_WORKSPACE/tools/requirements-just.txt) just test cov
       - name: Create packages
         if: env.SONAR_TOKEN != null
         run: |
