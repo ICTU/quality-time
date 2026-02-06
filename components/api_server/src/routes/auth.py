@@ -54,10 +54,14 @@ def set_session_cookie(session_id: SessionId, expires_datetime: datetime) -> Non
     bottle.response.set_cookie("session_id", session_id, **options)
 
 
-def check_password(password_hash, password) -> bool:
+def check_password(password_hash: bytes, password: str) -> bool:
     """Check the OpenLDAP password hash against the given password."""
     # Note we currently only support ARGON2 hashes
-    return argon2.PasswordHasher().verify(password_hash.decode().removeprefix("{ARGON2}"), password)
+    hash_prefix = "{ARGON2}"
+    decoded_hash = password_hash.decode()
+    if decoded_hash.startswith(hash_prefix):
+        return argon2.PasswordHasher().verify(decoded_hash.removeprefix(hash_prefix), password)
+    return False
 
 
 def get_credentials() -> tuple[str, str]:

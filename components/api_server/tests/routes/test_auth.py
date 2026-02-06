@@ -198,17 +198,17 @@ class LoginTests(AuthTestCase):
         self.ldap_connection.bind.assert_called_once()
         self.assert_log(logger.exception, exceptions.LDAPResponseTimeoutError)
 
-    @patch("logging.getLogger")
-    def test_login_password_hash_error(self, logging_mock, connection_mock, connection_enter):
-        """Test login fails when LDAP password hash is not ARGON2."""
-        logger = logging_mock.return_value = Mock()
+    @patch("routes.auth.datetime", MOCK_DATETIME)
+    def test_login_no_argon2(self, connection_mock, connection_enter):
+        """Test login proceeds with LDAP bind when LDAP password hash is not ARGON2."""
         connection_mock.return_value = None
         self.ldap_entry.userPassword.value = b"{XSHA}whatever-here"
         connection_enter.return_value = self.ldap_connection
-        self.assertEqual(self.login_nok, login(self.database))
+        self.assertEqual(self.login_ok, login(self.database))
+        self.assert_cookie_has_session_id()
+        self.assert_ldap_lookup_connection_created(connection_mock)
+        self.assert_ldap_bind_connection_created(connection_mock)
         self.assert_ldap_connection_search_called()
-        self.assertEqual(self.LOG_ERROR_MESSAGE_TEMPLATE, logger.exception.call_args_list[0][0][0])
-        self.assert_log(logger.exception, argon2.exceptions.InvalidHashError)
 
     @patch("logging.getLogger")
     def test_login_wrong_password(self, logging_mock, connection_mock, connection_enter):

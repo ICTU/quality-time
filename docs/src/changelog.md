@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- When using an LDAP server with a password hash scheme other than Argon2, Quality-time would not attempt an LDAP bind to verify the user. Fixes [#12595](https://github.com/ICTU/quality-time/issues/12595).
+
 ## v5.48.3 - 2026-01-29
 
 ### Fixed

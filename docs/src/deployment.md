@@ -92,7 +92,7 @@ See [https://ldap.com/ldap-filters/](https://ldap.com/ldap-filters/) for more in
 Quality-time tries two methods to authenticate users:
 
 - If the LDAP-server returns the `userPassword` (containing a hash of the users' password), Quality-time uses that to verify the password. Note that currently only `ARGON2` hashes are supported. Please submit a feature request if you need support for another type of hash.
-- If the `userPassword` is not returned, Quality-time attempts an LDAP-bind.
+- If the `userPassword` is not returned or it is no `ARGON2` hash, Quality-time attempts an LDAP-bind operation using the user's distinguished name as returned by the LDAP-server and the password entered by the user.
 
 ```{index} Forwarded Authentication
 ```
