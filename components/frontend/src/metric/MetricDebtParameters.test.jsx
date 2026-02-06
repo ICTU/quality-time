@@ -19,14 +19,12 @@ const dataModel = {
     },
     metrics: {
         violations: {
-            unit: "violations",
             direction: "<",
             name: "Violations",
             default_scale: "count",
             scales: ["count", "percentage"],
         },
         source_version: {
-            unit: "",
             direction: "<",
             name: "Source version",
             default_scale: "version_number",
