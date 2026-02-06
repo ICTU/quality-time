@@ -13,6 +13,7 @@ afterEach(() => {
 
 it("does not scroll if trigger is false", () => {
     globalThis.addEventListener = vi.fn()
+    globalThis.location = { hash: "#d57aa11f-9bbb-4297-91e6-062e20c0a953" }
     const mockScrollIntoView = vi.fn()
     document.getElementById = () => {
         return { scrollIntoView: mockScrollIntoView }
@@ -22,8 +23,21 @@ it("does not scroll if trigger is false", () => {
     expect(mockScrollIntoView).not.toHaveBeenCalled()
 })
 
-it("does not scroll if trigger is true but no element found", () => {
+it("does not scroll if trigger is true but no hash is present", () => {
     globalThis.addEventListener = vi.fn()
+    globalThis.location = { hash: "" }
+    const mockScrollIntoView = vi.fn()
+    document.getElementById = () => {
+        return { scrollIntoView: mockScrollIntoView }
+    }
+    renderHook(() => useHashFragment(true))
+    expect(vi.getTimerCount()).toBe(0)
+    expect(mockScrollIntoView).not.toHaveBeenCalled()
+})
+
+it("does not scroll if trigger is true and hash is present, but element does not appear", () => {
+    globalThis.addEventListener = vi.fn()
+    globalThis.location = { hash: "#d57aa11f-9bbb-4297-91e6-062e20c0a954" }
     document.getElementById = () => {
         return null
     }
@@ -34,8 +48,9 @@ it("does not scroll if trigger is true but no element found", () => {
     expect(vi.getTimerCount()).toBe(0)
 })
 
-it("does scroll if trigger is true and element found", () => {
+it("does scroll if trigger is true, hash is present, and element does appear", () => {
     globalThis.addEventListener = vi.fn()
+    globalThis.location = { hash: "#d57aa11f-9bbb-4297-91e6-062e20c0a955" }
     const mockScrollIntoView = vi.fn()
     document.getElementById = () => {
         return { scrollIntoView: mockScrollIntoView }
