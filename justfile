@@ -5,7 +5,6 @@ _default:
     @just --list
 
 export COVERAGE_RCFILE := justfile_directory() + "/.coveragerc"
-
 uv_update_script := justfile_directory() + "/tools/uv_update.py"
 docker_folder_exists := path_exists(invocation_directory() + '/docker')
 src_folder_exists := path_exists(invocation_directory() + '/src')
@@ -25,7 +24,7 @@ has_yamllint := if pyproject_toml_contents =~ '"yamllint[<=]=[A-Za-z0-9_.\-]+"' 
 has_vale := if pyproject_toml_contents =~ '"vale[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
 src_folder := if src_folder_exists == "true" { "src" } else { "" }
 tests_folder := if tests_folder_exists == "true" { "tests" } else { "" }
-code := if trim(src_folder + " " + tests_folder) == "" { "*.py" } else { src_folder + " " + tests_folder}
+code := if trim(src_folder + " " + tests_folder) == "" { "*.py" } else { src_folder + " " + tests_folder }
 
 # === Update dependencies ===
 
@@ -45,18 +44,7 @@ alias update-deps := update-dependencies
 
 # Update direct and indirect dependencies.
 [parallel]
-update-dependencies: \
-    (update-py-dependencies "components/shared_code") \
-    (update-py-dependencies "components/api_server") \
-    (update-py-dependencies "components/collector") \
-    (update-py-dependencies "components/notifier") \
-    (update-js-dependencies "components/frontend") \
-    (update-js-dependencies "components/renderer") \
-    (update-py-dependencies "docs") \
-    (update-js-dependencies "docs") \
-    (update-py-dependencies "release") \
-    (update-py-dependencies "tests/application_tests") \
-    (update-py-dependencies "tests/feature_tests")
+update-dependencies: (update-py-dependencies "components/shared_code") (update-py-dependencies "components/api_server") (update-py-dependencies "components/collector") (update-py-dependencies "components/notifier") (update-js-dependencies "components/frontend") (update-js-dependencies "components/renderer") (update-py-dependencies "docs") (update-js-dependencies "docs") (update-py-dependencies "release") (update-py-dependencies "tests/application_tests") (update-py-dependencies "tests/feature_tests")
 
 # === Install  dependencies ===
 
@@ -89,10 +77,7 @@ build-docs: install-py-dependencies
 # Build the artifacts or components from the code, in the current working directory. Builds Docker components if the working directory is the project root. Pass one or more of 'api_server', 'collector', 'notifier', 'frontend', 'proxy', 'database', 'renderer', 'testdata', or 'testldap' to build specific components or none to build them all.
 [no-cd]
 build *components:
-    {{ if has_sphinx == "true" { "just build-docs" }
-    else { if js_build_script != "{}" { "just build-js" }
-    else { if docker_folder_exists == "true" { f"docker compose build {{ components }}" }
-    else { "echo 'Nothing to build in this folder'" } }} }}
+    {{ if has_sphinx == "true" { "just build-docs" } else if js_build_script != "{}" { "just build-js" } else if docker_folder_exists == "true" { f"docker compose build {{components}}" } else { "echo 'Nothing to build in this folder'" } }}
 
 # === Start components ===
 
@@ -111,10 +96,7 @@ start-js-component: install-js-dependencies
 # Start component(s). Starts a component locally if the current working directory is a component folder (components/api_server, components/collector, components/notifier, or components/frontend). Starts components in Docker if the working directory is the project root. Pass one or more of 'api_server', 'collector', 'notifier', 'frontend', 'proxy', 'database', 'renderer', 'testdata', or 'testldap' to start specific components or none to start them all.
 [no-cd]
 start *components:
-    {{ if pyproject_toml_exists == "true" { "just start-py-component" }
-    else { if js_start_script != "{}" { "just start-js-component" }
-    else { if docker_folder_exists == "true" { f"docker compose up {{ components }}" }
-    else { "echo 'Nothing to start in this folder'" } }} }}
+    {{ if pyproject_toml_exists == "true" { "just start-py-component" } else if js_start_script != "{}" { "just start-js-component" } else if docker_folder_exists == "true" { f"docker compose up {{components}}" } else { "echo 'Nothing to start in this folder'" } }}
 
 # === Run tests ===
 
@@ -139,7 +121,7 @@ js-unit-test *cov: install-js-dependencies
 [no-cd]
 test *cov:
     {{ if has_py_unit_tests == "true" { "just py-unit-test" } else { "" } }}
-    {{ if js_test_script != "{}" { f"just js-unit-test {{ cov }}" } else { "" } }}
+    {{ if js_test_script != "{}" { f"just js-unit-test {{cov}}" } else { "" } }}
     {{ if has_py_unit_tests + js_test_script == "false{}" { "echo 'Nothing to test'" } else { "" } }}
 
 # === Run checks ===
@@ -148,16 +130,16 @@ test *cov:
 [no-cd]
 [private]
 check-py: install-py-dependencies
-    uv run ruff format --check {{code}}
-    uv run ruff check {{code}}
-    uv run mypy {{code}}
-    uv run fixit lint {{code}}
+    uv run ruff format --check {{ code }}
+    uv run ruff check {{ code }}
+    uv run mypy {{ code }}
+    uv run fixit lint {{ code }}
     uv run pyproject-fmt --check pyproject.toml
     uv run troml check
     uv export --quiet --directory . --format requirements-txt --no-emit-package shared-code > /tmp/requirements.txt
     uv run pip-audit --requirement /tmp/requirements.txt --disable-pip
-    uv run bandit --configfile pyproject.toml --quiet --recursive {{code}}
-    uv run vulture --exclude .venv --min-confidence 0 {{code}} .vulture-whitelist.py
+    uv run bandit --configfile pyproject.toml --quiet --recursive {{ code }}
+    uv run vulture --exclude .venv --min-confidence 0 {{ code }} .vulture-whitelist.py
     {{ if has_vale == "true" { "uv run vale sync; uv run vale --no-wrap --glob '*.md' src" } else { "" } }}
     {{ if has_yamllint == "true" { "uv run yamllint ../publiccode.yml" } else { "" } }}
     {{ if has_sphinx == "true" { "uv run sphinx-build -M linkcheck src build" } else { "" } }}
@@ -198,13 +180,13 @@ check:
 # Fix quality issues that can be fixed automatically, in the current working directory.
 [no-cd]
 fix:
-    {{ if pyproject_toml_exists == "true" {"just fix-py"} else { "" } }}
+    {{ if pyproject_toml_exists == "true" { "just fix-py" } else { "" } }}
     {{ if js_fix_script != "{}" { "just fix-js" } else { "" } }}
 
 # === Release ===
 
 # Release Quality-time. Run `just release --help` for more information.
-[working-directory: 'release']
+[working-directory('release')]
 release *args:
     uv run --script release.py {{ args }}
 
@@ -214,3 +196,26 @@ release *args:
 [no-cd]
 [private]
 ci $CI="true": test check
+
+# === Clean ===
+
+# Clean caches, build folders, and generated files
+clean:
+    rm -f .coverage
+    rm -f */.coverage
+    rm -f */*/.coverage
+    rm -rf build
+    rm -rf */build
+    rm -rf */*/build
+    rm -rf .*_cache
+    rm -rf */.*_cache
+    rm -rf */*/.*_cache
+    rm -rf */node_modules
+    rm -rf */*/node_modules
+    rm -rf */*.egg-info
+    rm -rf */*/*.egg-info
+    rm -rf */*/*/*.egg-info
+    rm -rf */.venv
+    rm -rf */*/.venv
+    rm -rf */*/dist
+    rm -rf */*/htmlcov
