@@ -16,7 +16,7 @@ build:
     pre_create_environment:
       - pip install -r tools/requirements-uv.txt
     install:
-      - cd docs && VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv sync --active --locked --extra dev
+      - cd docs && VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv sync --active --locked --all-groups
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:

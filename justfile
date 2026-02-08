@@ -52,7 +52,7 @@ update-dependencies: (update-py-dependencies "components/shared_code") (update-p
 [no-cd]
 [private]
 install-py-dependencies:
-    uv sync --locked --all-extras --quiet
+    uv sync --no-progress --locked --all-extras --all-groups
 
 # Install JavaScript dependencies from the lock file.
 [no-cd]
@@ -150,6 +150,13 @@ check-py: install-py-dependencies
 check-js: install-js-dependencies
     npm run lint
 
+# Run the quality checks, in the current working directory.
+[no-cd]
+check:
+    {{ if pyproject_toml_exists == "true" { "just check-py" } else { "" } }}
+    {{ if js_lint_script != "{}" { "just check-js" } else { "" } }}
+    {{ if pyproject_toml_exists + js_lint_script == "false{}" { "echo 'Nothing to check'" } else { "" } }}
+
 # === Fix issues ===
 
 # Fix Python quality issues that can be fixed automatically.
@@ -159,7 +166,7 @@ fix-py: install-py-dependencies
     uv run ruff format {{ code }}
     uv run ruff check --fix {{ code }}
     uv run fixit fix {{ code }}
-    uv run pyproject-fmt pyproject.toml
+    uv run pyproject-fmt --no-print-diff pyproject.toml || true
     uv run troml suggest --fix
     # Vulture returns exit code 3 when there is dead code, ignore it when writing the whitelist:
     uv run vulture --exclude .venv --min-confidence 0 --make-whitelist {{ code }} >| .vulture-whitelist.py || true
@@ -169,13 +176,6 @@ fix-py: install-py-dependencies
 [private]
 fix-js: install-js-dependencies
     npm run fix
-
-# Run the quality checks, in the current working directory.
-[no-cd]
-check:
-    {{ if pyproject_toml_exists == "true" { "just check-py" } else { "" } }}
-    {{ if js_lint_script != "{}" { "just check-js" } else { "" } }}
-    {{ if pyproject_toml_exists + js_lint_script == "false{}" { "echo 'Nothing to check'" } else { "" } }}
 
 # Fix quality issues that can be fixed automatically, in the current working directory.
 [no-cd]

@@ -7,23 +7,21 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.14",
 ]
-dependencies = [
+
+[dependency-groups]
+dev = [
     "axe-selenium-python==2.1.6",
-    "requests==2.32.5",
-    "selenium==4.40.0",
-]
-optional-dependencies.dev = [
-    "types-requests==2.32.4.20260107",
-]
-optional-dependencies.tools = [
     "bandit==1.9.3",
     "codespell==2.4.1",
     "fixit==2.2.1",
     "mypy==1.19.1",
     "pip-audit==2.10.0",
     "pyproject-fmt==2.12.1",
+    "requests==2.32.5",
     "ruff==0.15.0",
+    "selenium==4.40.0",
     "troml==0.4.1",
+    "types-requests==2.32.4.20260107",
     "vulture==2.14",
 ]
 
