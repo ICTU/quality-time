@@ -717,45 +717,42 @@ wheels = [
 name = "release"
 version = "5.48.4rc0"
 source = { virtual = "." }
-dependencies = [
-    { name = "gitpython" },
-    { name = "python-dateutil" },
-]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
-    { name = "types-python-dateutil" },
-]
-tools = [
     { name = "bandit" },
     { name = "bump-my-version" },
     { name = "codespell" },
     { name = "fixit" },
+    { name = "gitpython" },
     { name = "mypy" },
     { name = "pip-audit" },
     { name = "pyproject-fmt" },
+    { name = "python-dateutil" },
     { name = "ruff" },
     { name = "troml" },
+    { name = "types-python-dateutil" },
     { name = "vulture" },
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "bandit", marker = "extra == 'tools'", specifier = "==1.9.3" },
-    { name = "bump-my-version", marker = "extra == 'tools'", specifier = "==1.2.6" },
-    { name = "codespell", marker = "extra == 'tools'", specifier = "==2.4.1" },
-    { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.1" },
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "bandit", specifier = "==1.9.3" },
+    { name = "bump-my-version", specifier = "==1.2.6" },
+    { name = "codespell", specifier = "==2.4.1" },
+    { name = "fixit", specifier = "==2.2.1" },
     { name = "gitpython", specifier = "==3.1.46" },
-    { name = "mypy", marker = "extra == 'tools'", specifier = "==1.19.1" },
-    { name = "pip-audit", marker = "extra == 'tools'", specifier = "==2.10.0" },
-    { name = "pyproject-fmt", marker = "extra == 'tools'", specifier = "==2.12.1" },
+    { name = "mypy", specifier = "==1.19.1" },
+    { name = "pip-audit", specifier = "==2.10.0" },
+    { name = "pyproject-fmt", specifier = "==2.12.1" },
     { name = "python-dateutil", specifier = "==2.9.0.post0" },
-    { name = "ruff", marker = "extra == 'tools'", specifier = "==0.15.0" },
-    { name = "troml", marker = "extra == 'tools'", specifier = "==0.4.1" },
-    { name = "types-python-dateutil", marker = "extra == 'dev'", specifier = "==2.9.0.20260124" },
-    { name = "vulture", marker = "extra == 'tools'", specifier = "==2.14" },
+    { name = "ruff", specifier = "==0.15.0" },
+    { name = "troml", specifier = "==0.4.1" },
+    { name = "types-python-dateutil", specifier = "==2.9.0.20260124" },
+    { name = "vulture", specifier = "==2.14" },
 ]
-provides-extras = ["dev", "tools"]
 
 [[package]]
 name = "requests"

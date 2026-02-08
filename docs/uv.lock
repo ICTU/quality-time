@@ -241,61 +241,58 @@ wheels = [
 name = "docs"
 version = "5.48.4rc0"
 source = { virtual = "." }
-dependencies = [
+
+[package.dev-dependencies]
+dev = [
+    { name = "bandit" },
+    { name = "codespell" },
+    { name = "coverage" },
+    { name = "fixit" },
     { name = "furo" },
     { name = "gitpython" },
+    { name = "mypy" },
     { name = "myst-parser" },
+    { name = "pip-audit" },
     { name = "pydantic" },
+    { name = "pyproject-fmt" },
+    { name = "ruff" },
     { name = "shared-code" },
     { name = "sphinx" },
     { name = "sphinx-copybutton" },
     { name = "sphinx-design" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "coverage" },
-    { name = "unittest-xml-reporting" },
-]
-tools = [
-    { name = "bandit" },
-    { name = "codespell" },
-    { name = "fixit" },
-    { name = "mypy" },
-    { name = "pip-audit" },
-    { name = "pyproject-fmt" },
-    { name = "ruff" },
     { name = "troml" },
+    { name = "unittest-xml-reporting" },
     { name = "vale" },
     { name = "vulture" },
     { name = "yamllint" },
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "bandit", marker = "extra == 'tools'", specifier = "==1.9.3" },
-    { name = "codespell", marker = "extra == 'tools'", specifier = "==2.4.1" },
-    { name = "coverage", marker = "extra == 'dev'", specifier = "==7.13.3" },
-    { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.1" },
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "bandit", specifier = "==1.9.3" },
+    { name = "codespell", specifier = "==2.4.1" },
+    { name = "coverage", specifier = "==7.13.3" },
+    { name = "fixit", specifier = "==2.2.1" },
     { name = "furo", specifier = "==2025.12.19" },
     { name = "gitpython", specifier = "==3.1.46" },
-    { name = "mypy", marker = "extra == 'tools'", specifier = "==1.19.1" },
+    { name = "mypy", specifier = "==1.19.1" },
     { name = "myst-parser", specifier = "<=4.0.1" },
-    { name = "pip-audit", marker = "extra == 'tools'", specifier = "==2.10.0" },
+    { name = "pip-audit", specifier = "==2.10.0" },
     { name = "pydantic", specifier = "==2.12.5" },
-    { name = "pyproject-fmt", marker = "extra == 'tools'", specifier = "==2.12.1" },
-    { name = "ruff", marker = "extra == 'tools'", specifier = "==0.15.0" },
+    { name = "pyproject-fmt", specifier = "==2.12.1" },
+    { name = "ruff", specifier = "==0.15.0" },
     { name = "shared-code", editable = "../components/shared_code" },
     { name = "sphinx", specifier = "<=8.2.3" },
     { name = "sphinx-copybutton", specifier = "==0.5.2" },
     { name = "sphinx-design", specifier = "<=0.6.1" },
-    { name = "troml", marker = "extra == 'tools'", specifier = "==0.4.1" },
-    { name = "unittest-xml-reporting", marker = "extra == 'dev'", specifier = "==4.0.0" },
-    { name = "vale", marker = "extra == 'tools'", specifier = "==3.13.0.0" },
-    { name = "vulture", marker = "extra == 'tools'", specifier = "==2.14" },
-    { name = "yamllint", marker = "extra == 'tools'", specifier = "==1.38.0" },
+    { name = "troml", specifier = "==0.4.1" },
+    { name = "unittest-xml-reporting", specifier = "==4.0.0" },
+    { name = "vale", specifier = "==3.13.0.0" },
+    { name = "vulture", specifier = "==2.14" },
+    { name = "yamllint", specifier = "==1.38.0" },
 ]
-provides-extras = ["dev", "tools"]
 
 [[package]]
 name = "docutils"
@@ -1012,26 +1009,29 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bandit", marker = "extra == 'tools'", specifier = "==1.9.3" },
     { name = "bottle", specifier = "==0.13.4" },
-    { name = "codespell", marker = "extra == 'tools'", specifier = "==2.4.1" },
-    { name = "coverage", marker = "extra == 'dev'", specifier = "==7.13.3" },
-    { name = "fixit", marker = "extra == 'tools'", specifier = "==2.2.1" },
-    { name = "mongomock", marker = "extra == 'dev'", specifier = "==4.3.0" },
-    { name = "mypy", marker = "extra == 'tools'", specifier = "==1.19.1" },
     { name = "packaging", specifier = "==26.0" },
-    { name = "pip-audit", marker = "extra == 'tools'", specifier = "==2.10.0" },
     { name = "pydantic", specifier = "==2.12.5" },
     { name = "pymongo", specifier = "==4.16.0" },
-    { name = "pyproject-fmt", marker = "extra == 'tools'", specifier = "==2.12.1" },
     { name = "python-dateutil", specifier = "==2.9.0.post0" },
-    { name = "ruff", marker = "extra == 'tools'", specifier = "==0.15.0" },
-    { name = "troml", marker = "extra == 'tools'", specifier = "==0.4.1" },
-    { name = "types-python-dateutil", marker = "extra == 'dev'", specifier = "==2.9.0.20260124" },
-    { name = "unittest-xml-reporting", marker = "extra == 'dev'", specifier = "==4.0.0" },
-    { name = "vulture", marker = "extra == 'tools'", specifier = "==2.14" },
 ]
-provides-extras = ["dev", "tools"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "bandit", specifier = "==1.9.3" },
+    { name = "codespell", specifier = "==2.4.1" },
+    { name = "coverage", specifier = "==7.13.3" },
+    { name = "fixit", specifier = "==2.2.1" },
+    { name = "mongomock", specifier = "==4.3.0" },
+    { name = "mypy", specifier = "==1.19.1" },
+    { name = "pip-audit", specifier = "==2.10.0" },
+    { name = "pyproject-fmt", specifier = "==2.12.1" },
+    { name = "ruff", specifier = "==0.15.0" },
+    { name = "troml", specifier = "==0.4.1" },
+    { name = "types-python-dateutil", specifier = "==2.9.0.20260124" },
+    { name = "unittest-xml-reporting", specifier = "==4.0.0" },
+    { name = "vulture", specifier = "==2.14" },
+]
 
 [[package]]
 name = "shellingham"
