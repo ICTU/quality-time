@@ -24,8 +24,8 @@
         "preview": "vite preview",
         "cov": "vitest run --coverage",
         "test": "vitest",
-        "lint": "eslint *.mjs src; npx prettier *.mjs src --check",
-        "fix": "npx prettier *.mjs src --write"
+        "lint": "eslint *.mjs src; npx prettier *.mjs src --check --log-level warn",
+        "fix": "npx prettier *.mjs src --write --log-level warn"
     },
     "engines": {
         "node": "25.5.0"
