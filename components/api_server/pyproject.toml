@@ -31,7 +31,7 @@ dev = [
     "mypy==1.19.1",
     "pip-audit==2.10.0",
     "pydantic==2.12.5",                      # Needed for importing the data model in the tests from the shared code component
-    "pyproject-fmt==2.12.1",
+    "pyproject-fmt==2.14.0",
     "ruff==0.15.0",
     "troml==0.4.1",
     "types-cryptography==3.3.23.2",
