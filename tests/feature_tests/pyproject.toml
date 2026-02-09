@@ -20,7 +20,7 @@ dev = [
     "mypy==1.19.1",
     "pip-audit==2.10.0",
     "pymongo==4.16.0",
-    "pyproject-fmt==2.12.1",
+    "pyproject-fmt==2.14.0",
     "python-dateutil==2.9.0.post0",
     "requests==2.32.5",
     "requests-sse==0.5.2",
