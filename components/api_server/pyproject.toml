@@ -1,7 +1,7 @@
 [project]
 name = "api-server"
 version = "5.48.4-rc.0"
-requires-python = "==3.14.2"
+requires-python = "==3.14.3"
 classifiers = [
     "Framework :: Bottle",
     "Programming Language :: Python",
@@ -31,7 +31,7 @@ dev = [
     "mypy==1.19.1",
     "pip-audit==2.10.0",
     "pydantic==2.12.5",                      # Needed for importing the data model in the tests from the shared code component
-    "pyproject-fmt==2.12.1",
+    "pyproject-fmt==2.14.2",
     "ruff==0.15.0",
     "troml==0.4.1",
     "types-cryptography==3.3.23.2",
@@ -42,8 +42,8 @@ dev = [
     "vulture==2.14",
 ]
 
-[tool.uv.sources]
-shared-code = { path = "../shared_code", package = true }
+[tool.uv]
+sources.shared-code = { path = "../shared_code", package = true }
 
 [tool.ruff]
 line-length = 120
@@ -112,7 +112,7 @@ ignore-words-list = [
 
 [tool.pyproject-fmt]
 indent = 4
-keep_full_version = true # Don't remove trailing zero's from version specifiers
+keep_full_version = true  # Don't remove trailing zero's from version specifiers
 
 [tool.mypy]
 ignore_missing_imports = false
@@ -121,12 +121,11 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
-
-[[tool.mypy.overrides]]
-module = [
-    "bottle",
-    "gevent",
-    "lxml.html",
-    "lxml_html_clean",
+overrides = [
+    { module = [
+        "bottle",
+        "gevent",
+        "lxml.html",
+        "lxml_html_clean",
+    ], ignore_missing_imports = true }
 ]
-ignore_missing_imports = true
