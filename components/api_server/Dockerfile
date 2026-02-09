@@ -8,15 +8,16 @@ ENV UV_COMPILE_BYTECODE=1 UV_NO_CACHE=1 UV_PYTHON_DOWNLOADS=0 VIRTUAL_ENV=/home/
 WORKDIR /home/server
 
 RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv \
-    --mount=type=bind,source=shared_code,target=/home/shared_code,rw \
-    --mount=type=bind,source=api_server/uv.lock,target=/home/server/uv.lock \
-    --mount=type=bind,source=api_server/pyproject.toml,target=/home/server/pyproject.toml \
+    --mount=type=bind,source=tools,target=/tools,rw \
+    --mount=type=bind,source=components/shared_code,target=/home/shared_code,rw \
+    --mount=type=bind,source=components/api_server/uv.lock,target=/home/server/uv.lock \
+    --mount=type=bind,source=components/api_server/pyproject.toml,target=/home/server/pyproject.toml \
     uv sync --active --locked --no-dev --no-install-project
 
 RUN adduser -S server
 USER server
 
-COPY api_server/src /home/server
+COPY components/api_server/src /home/server
 
 HEALTHCHECK CMD ["python", "/home/server/healthcheck.py"]
 

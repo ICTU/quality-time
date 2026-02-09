@@ -10,7 +10,7 @@ This means that a version can be prevented from being updated, by using "package
 
 import pathlib
 import re
-import subprocess
+import subprocess  # nosec
 
 
 def replace_version(match: re.Match) -> str:
@@ -21,7 +21,7 @@ def replace_version(match: re.Match) -> str:
 
 
 uv_tree = ["uv", "tree", "--frozen", "--quiet", "--depth=1", "--outdated"]
-outdated = subprocess.run(uv_tree, capture_output=True, text=True).stdout
+outdated = subprocess.run(uv_tree, capture_output=True, text=True, check=True).stdout  # noqa: S603 # nosec
 lines_with_updates = [line for line in outdated.splitlines() if " (latest: " in line]
 new_versions = {line.split()[1]: line.split()[-1].lstrip("v").rstrip(")") for line in lines_with_updates}
 package_spec = re.compile(r'"(?P<name>[A-Za-z0-9_.\-]+)==(?P<version>[A-Za-z0-9_.\-]+)"')

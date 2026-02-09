@@ -10,11 +10,12 @@ jobs:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-    parallelism: 9
+    parallelism: 10
     steps:
       - checkout
       - run: |
-          pip install -r tools/requirements-uv.txt
+          pip install --upgrade pip
+          pip install --group tools/pyproject.toml:uv
           case $CIRCLE_NODE_INDEX in
             0) component=components/collector;;
             1) component=components/notifier;;
@@ -25,10 +26,11 @@ jobs:
             6) component=tests/feature_tests;;
             7) component=docs;;
             8) component=release;;
+            9) component=tools;;
           esac
           cd $component
           mkdir -p build
-          uvx --from=$(cat $CIRCLE_WORKING_DIRECTORY/tools/requirements-just.txt) just test check
+          uv tool run --from=rust-just --project $CIRCLE_WORKING_DIRECTORY/tools/pyproject.toml just test check
       - store_artifacts:
           path: components/collector/build
       - store_artifacts:
@@ -47,6 +49,8 @@ jobs:
           path: docs/build
       - store_artifacts:
           path: release/build
+      - store_artifacts:
+          path: tools/build
 
   application_tests:
     machine:
@@ -82,7 +86,8 @@ jobs:
     steps:
       - checkout
       - run: |
-          pip install -r tools/requirements-uv.txt
+          pip install --upgrade pip
+          pip install --group tools/pyproject.toml:uv
           ./tests/feature_tests/test.sh
       - store_artifacts:
           path: build

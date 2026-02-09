@@ -17,24 +17,15 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "bandit==1.9.3",
-    "codespell==2.4.1",
-    "coverage==7.13.3",
-    "fixit==2.2.1",
     "mongomock==4.3.0",
-    "mypy==1.19.1",
-    "pip-audit==2.10.0",
     "pydantic==2.12.5",                      # Needed for importing the data model in the tests from the shared code component
-    "pyproject-fmt==2.14.2",
-    "ruff==0.15.0",
-    "troml==0.4.1",
+    "tools",
     "types-python-dateutil==2.9.0.20260124",
-    "unittest-xml-reporting==4.0.0",         # Needed to generate JUnit XML output for Sonarcloud.io
-    "vulture==2.14",
 ]
 
 [tool.uv]
 sources.shared-code = { path = "../shared_code", package = true }
+sources.tools = { path = "../../tools", package = false }
 
 [tool.ruff]
 line-length = 120

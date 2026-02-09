@@ -10,20 +10,15 @@ classifiers = [
 
 [dependency-groups]
 dev = [
-    "bandit==1.9.3",
     "bump-my-version==1.2.6",
-    "codespell==2.4.1",
-    "fixit==2.2.1",
     "gitpython==3.1.46",
-    "mypy==1.19.1",
-    "pip-audit==2.10.0",
-    "pyproject-fmt==2.14.2",
     "python-dateutil==2.9.0.post0",
-    "ruff==0.15.0",
-    "troml==0.4.1",
+    "tools",
     "types-python-dateutil==2.9.0.20260124",
-    "vulture==2.14",
 ]
+
+[tool.uv]
+sources.tools = { path = "../tools", package = false }
 
 [tool.ruff]
 line-length = 120

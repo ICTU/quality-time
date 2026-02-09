@@ -9,22 +9,22 @@ services:
     environment:
       - COLLECTOR_LOG_LEVEL=${COLLECTOR_LOG_LEVEL:-INFO}
     build:
-      context: ../components
-      dockerfile: collector/Dockerfile
+      context: ..
+      dockerfile: components/collector/Dockerfile
     depends_on:
       - testdata
   notifier:
     environment:
       - NOTIFIER_LOG_LEVEL=${NOTIFIER_LOG_LEVEL:-INFO}
     build:
-      context: ../components
-      dockerfile: notifier/Dockerfile
+      context: ..
+      dockerfile: components/notifier/Dockerfile
   api_server:
     environment:
       - API_SERVER_LOG_LEVEL=${API_SERVER_LOG_LEVEL:-INFO}
     build:
-      context: ../components
-      dockerfile: api_server/Dockerfile
+      context: ..
+      dockerfile: components/api_server/Dockerfile
     depends_on:
       - ldap
       - renderer

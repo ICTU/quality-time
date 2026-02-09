@@ -1,0 +1,21 @@
+# Ignore everything:
+*
+
+# Except:
+!components/api_server
+!components/collector
+!components/notifier
+!components/shared_code
+!components/testldap
+!tools
+
+# But in those folders, ignore:
+**/__pycache__
+**/.*_cache
+**/.coverage
+**/.venv
+**/.vulture-whitelist.py
+**/README.md
+**/Dockerfile
+**/tests
+**/build

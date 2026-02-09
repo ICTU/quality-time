@@ -109,7 +109,7 @@ in the private token field.
     ```
 
 2.  When the metric source is a file stored in a GitLab repository, use \
-[URLs of the following format](https://docs.gitlab.com/api/repository_files/#get-raw-file-from-repository):
+[URLs of the following format](https://docs.gitlab.com/api/repository_files/#retrieve-a-raw-file-from-a-repository):
 
     `https://<gitlab-server>/api/v4/projects/<project-id>/repository/files/<file-path-with-slashes-%2F-encoded>/raw?\
 ref=<branch>`
