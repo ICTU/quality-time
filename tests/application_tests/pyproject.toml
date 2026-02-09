@@ -11,19 +11,14 @@ classifiers = [
 [dependency-groups]
 dev = [
     "axe-selenium-python==2.1.6",
-    "bandit==1.9.3",
-    "codespell==2.4.1",
-    "fixit==2.2.1",
-    "mypy==1.19.1",
-    "pip-audit==2.10.0",
-    "pyproject-fmt==2.14.2",
     "requests==2.32.5",
-    "ruff==0.15.0",
     "selenium==4.40.0",
-    "troml==0.4.1",
+    "tools",
     "types-requests==2.32.4.20260107",
-    "vulture==2.14",
 ]
+
+[tool.uv]
+sources.tools = { path = "../../tools", package = false }
 
 [tool.ruff]
 line-length = 120

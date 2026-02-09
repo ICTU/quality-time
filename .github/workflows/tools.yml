@@ -1,5 +1,5 @@
 ---
-name: Release script quality
+name: Tools quality
 
 on: [push]
 
@@ -14,5 +14,5 @@ jobs:
         with:
           version-file: tools/pyproject.toml
       - name: Install dependencies and check quality
-        working-directory: release
+        working-directory: tools
         run: uv tool run --from=rust-just --project $GITHUB_WORKSPACE/tools/pyproject.toml just ci

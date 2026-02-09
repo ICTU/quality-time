@@ -12,7 +12,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7.3.0
         with:
-          version-file: tools/requirements-uv.txt
+          version-file: tools/pyproject.toml
       - name: Install dependencies, run unit tests and check quality
         working-directory: components/shared_code
-        run: uvx --from=$(cat $GITHUB_WORKSPACE/tools/requirements-just.txt) just ci
+        run: uv tool run --from=rust-just --project $GITHUB_WORKSPACE/tools/pyproject.toml just ci

@@ -17,7 +17,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7.3.0
         with:
-          version-file: tools/requirements-uv.txt
+          version-file: tools/pyproject.toml
       - name: Run feature tests
         run: ./tests/feature_tests/test.sh
       - name: Upload artifacts

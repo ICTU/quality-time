@@ -1,5 +1,5 @@
 [project]
-name = "feature-tests"
+name = "tools"
 version = "5.48.4-rc.0"
 requires-python = "==3.14.2"
 classifiers = [
@@ -7,29 +7,35 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.14",
 ]
+dependencies = [
+    "bandit==1.9.3",
+    "codespell==2.4.1",
+    "coverage==7.13.4",
+    "fixit==2.2.1",
+    "mypy==1.19.1",
+    "pip-audit==2.10.0",
+    "pyproject-fmt==2.14.2",
+    "ruff==0.15.0",
+    "troml==0.4.1",
+    "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
+    "vulture==2.14",
+]
 
 [dependency-groups]
-dev = [
-    "asserts==0.14.0",
-    "behave==1.3.3",
-    "gevent==25.9.1",
-    "pymongo==4.16.0",
-    "python-dateutil==2.9.0.post0",
-    "requests==2.32.5",
-    "requests-sse==0.5.2",
-    "tools",
-    "types-python-dateutil==2.9.0.20260124",
-    "types-requests==2.32.4.20260107",
+just = [
+    "rust-just==1.46.0",
+]
+uv = [
+    "uv==0.10.0",
 ]
 
 [tool.uv]
-sources.tools = { path = "../../tools", package = false }
+package = false
 
 [tool.ruff]
 line-length = 120
 src = [
     "src",
-    "src/steps",
 ]
 lint.select = [
     "ALL",
@@ -38,35 +44,13 @@ lint.ignore = [
     "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
     "D203",   # https://docs.astral.sh/ruff/rules/one-blank-line-before-class/ - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
     "D213",   # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/ - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
-    "FBT",    # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
     "ISC001", # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
     "TC006",  # https://docs.astral.sh/ruff/rules/runtime-cast-value/ - the rule claims it's often necessary to quote the first argument passed to cast(), but that's not the case in this code base
 ]
 lint.per-file-ignores.".vulture-whitelist.py" = [
     "ALL",
 ]
-lint.per-file-ignores."__init__.py" = [
-    "D104", # https://docs.astral.sh/ruff/rules/undocumented-public-package/ - don't require doc strings in __init__.py files
-]
 
 [tool.pyproject-fmt]
 indent = 4
 keep_full_version = true  # Don't remove trailing zero's from version specifiers
-
-[tool.mypy]
-ignore_missing_imports = false
-incremental = false
-warn_redundant_casts = true
-warn_return_any = true
-warn_unreachable = true
-warn_unused_ignores = true
-
-[[tool.mypy.overrides]]
-module = [
-    "item",
-    "behave",
-    "behave.model",
-    "behave.runner",
-    "requests_sse",
-]
-ignore_missing_imports = true

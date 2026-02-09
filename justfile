@@ -19,7 +19,6 @@ js_scripts := if package_json_exists == "true" { shell(f"npm --prefix={{invocati
 has_js_build_script := if js_scripts =~ '"build"' { "true" } else { "false" }
 has_js_start_script := if js_scripts =~ '"start"' { "true" } else { "false" }
 has_js_test_script := if js_scripts =~ '"test"' { "true" } else { "false" }
-has_js_lint_script := if js_scripts =~ '"lint"' { "true" } else { "false" }
 has_js_fix_script := if js_scripts =~ '"fix"' { "true" } else { "false" }
 has_py_unit_tests := if pyproject_toml_exists == "true" { tests_folder_exists } else { "false" }
 has_sphinx := if pyproject_toml_contents =~ '"sphinx[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
@@ -48,7 +47,7 @@ alias update-deps := update-dependencies
 
 # Update direct and indirect dependencies.
 [parallel]
-update-dependencies: (update-py-dependencies "components/shared_code") (update-py-dependencies "components/api_server") (update-py-dependencies "components/collector") (update-py-dependencies "components/notifier") (update-js-dependencies "components/frontend") (update-js-dependencies "components/renderer") (update-py-dependencies "docs") (update-js-dependencies "docs") (update-py-dependencies "release") (update-py-dependencies "tests/application_tests") (update-py-dependencies "tests/feature_tests")
+update-dependencies: (update-py-dependencies "tools") (update-py-dependencies "components/shared_code") (update-py-dependencies "components/api_server") (update-py-dependencies "components/collector") (update-py-dependencies "components/notifier") (update-js-dependencies "components/frontend") (update-js-dependencies "components/renderer") (update-py-dependencies "docs") (update-js-dependencies "docs") (update-py-dependencies "release") (update-py-dependencies "tests/application_tests") (update-py-dependencies "tests/feature_tests")
 
 # === Install  dependencies ===
 
@@ -230,18 +229,36 @@ sphinx: install-py-dependencies
 [private]
 check-py: mypy fixit ruff pyproject-fmt troml pip-audit bandit vulture vale yamllint sphinx
 
-# Run JavaScript checks.
+# Run npm lint
 [no-cd]
 [private]
-check-js: install-js-dependencies
-    npm run lint
+npm-lint: install-js-dependencies
+    npm run lint --if-present
+
+# Run npm audit
+[no-cd]
+[private]
+npm-audit: install-js-dependencies
+    npm audit
+
+# Run npm outdated
+[no-cd]
+[private]
+npm-outdated: install-js-dependencies
+    npm outdated || true  # Don't fail, we can't upgrade ESLint yet due to peer dependencies needing updates
+
+# Run JavaScript checks.
+[no-cd]
+[parallel]
+[private]
+check-js: npm-lint npm-audit npm-outdated
 
 # Run the quality checks, in the current working directory.
 [no-cd]
 check:
     {{ if pyproject_toml_exists == "true" { "just check-py" } else { "" } }}
-    {{ if has_js_lint_script == "true" { "just check-js" } else { "" } }}
-    {{ if pyproject_toml_exists + has_js_lint_script == "falsefalse" { "echo 'Nothing to check'" } else { "" } }}
+    {{ if package_json_exists == "true" { "just check-js" } else { "" } }}
+    {{ if pyproject_toml_exists + package_json_exists == "falsefalse" { "echo 'Nothing to check'" } else { "" } }}
 
 # === Fix issues ===
 

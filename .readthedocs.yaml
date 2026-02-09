@@ -14,7 +14,7 @@ build:
     - graphviz
   jobs:
     pre_create_environment:
-      - pip install -r tools/requirements-uv.txt
+      - pip install --upgrade pip && pip install --group tools/pyproject.toml:uv
     install:
       - cd docs && VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv sync --active --locked --all-groups
 

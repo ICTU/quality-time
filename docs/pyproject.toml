@@ -12,31 +12,22 @@ classifiers = [
 
 [dependency-groups]
 dev = [
-    "bandit==1.9.3",
-    "codespell==2.4.1",
-    "coverage==7.13.3",
-    "fixit==2.2.1",
     "furo==2025.12.19",
     "gitpython==3.1.46",
-    "mypy==1.19.1",
-    "myst-parser<=4.0.1",            # Don't update, sphinx-copybutton is not compatible with sphinx 9
-    "pip-audit==2.10.0",
-    "pydantic==2.12.5",              # Needed for generating the reference docs from the data model
-    "pyproject-fmt==2.14.2",
-    "ruff==0.15.0",
+    "myst-parser<=4.0.1",       # Don't update, sphinx-copybutton is not compatible with sphinx 9
+    "pydantic==2.12.5",         # Needed for generating the reference docs from the data model
     "shared-code",
-    "sphinx<=8.2.3",                 # Don't update, sphinx-copybutton is not compatible with sphinx 9
+    "sphinx<=8.2.3",            # Don't update, sphinx-copybutton is not compatible with sphinx 9
     "sphinx-copybutton==0.5.2",
-    "sphinx-design<=0.6.1",          # Don't update, sphinx-copybutton is not compatible with sphinx 9
-    "troml==0.4.1",
-    "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
-    "vale==3.13.0.0",                # Documentation grammar and style checker
-    "vulture==2.14",
+    "sphinx-design<=0.6.1",     # Don't update, sphinx-copybutton is not compatible with sphinx 9
+    "tools",
+    "vale==3.13.0.0",           # Documentation grammar and style checker
     "yamllint==1.38.0",
 ]
 
 [tool.uv]
 sources.shared-code = { path = "../components/shared_code", editable = true }
+sources.tools = { path = "../tools", package = false }
 
 [tool.ruff]
 line-length = 120

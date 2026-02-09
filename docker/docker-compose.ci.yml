@@ -8,16 +8,16 @@ services:
     build: ../components/frontend
   collector:
     build:
-      context: ../components
-      dockerfile: collector/Dockerfile
+      context: ..
+      dockerfile: components/collector/Dockerfile
   notifier:
     build:
-      context: ../components
-      dockerfile: notifier/Dockerfile
+      context: ..
+      dockerfile: components/notifier/Dockerfile
   api_server:
     build:
-      context: ../components
-      dockerfile: api_server/Dockerfile
+      context: ..
+      dockerfile: components/api_server/Dockerfile
     environment:
       - LOAD_EXAMPLE_REPORTS=False
     depends_on:

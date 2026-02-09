@@ -1,6 +1,0 @@
-**/.DS_Store
-**/.vscode
-.dockerignore
-Dockerfile
-node_modules/
-README.md
