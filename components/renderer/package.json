@@ -7,6 +7,6 @@
     "dependencies": {
         "@braintree/sanitize-url": "^7.1.2",
         "express": "^5.2.1",
-        "puppeteer-core": "^24.36.1"
+        "puppeteer-core": "^24.37.2"
     }
 }
