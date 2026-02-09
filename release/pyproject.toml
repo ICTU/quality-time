@@ -17,7 +17,7 @@ dev = [
     "gitpython==3.1.46",
     "mypy==1.19.1",
     "pip-audit==2.10.0",
-    "pyproject-fmt==2.12.1",
+    "pyproject-fmt==2.14.2",
     "python-dateutil==2.9.0.post0",
     "ruff==0.15.0",
     "troml==0.4.1",
@@ -46,27 +46,28 @@ lint.per-file-ignores.".vulture-whitelist.py" = [
 
 [tool.pyproject-fmt]
 indent = 4
-keep_full_version = true # Don't remove trailing zero's from version specifiers
+keep_full_version = true  # Don't remove trailing zero's from version specifiers
 
 [tool.bumpversion]
 current_version = "5.48.4-rc.0"
-parse = """(?x)
-    (?P<major>0|[1-9]\\d*)\\.
-    (?P<minor>0|[1-9]\\d*)\\.
-    (?P<patch>0|[1-9]\\d*)
-    (?:
-        -                                    # dash separator for pre-release section
-        (?P<pre_release_label>[a-zA-Z-]+)    # pre-release label
-        \\.
-        (?P<pre_release_number>0|[1-9]\\d*)  # pre-release version number
-    )?                                       # pre-release section is optional
-"""
+parse = """\
+    (?x)\n    (?P<major>0|[1-9]\\\\d*)\\\\.\n    (?P<minor>0|[1-9]\\\\d*)\\\\.\n    (?P<patch>0|[1-9]\\\\d*)\n    \
+    (?:\n        -                                    # dash separator for pre-release section\n        \
+    (?P<pre_release_label>[a-zA-Z-]+)    # pre-release label\n        \\\\.\n        \
+    (?P<pre_release_number>0|[1-9]\\\\d*)  # pre-release version number\n    )?                                       \
+    # pre-release section is optional\n\
+    """
 serialize = [
     "{major}.{minor}.{patch}-{pre_release_label}.{pre_release_number}",
     "{major}.{minor}.{patch}",
 ]
 commit = true
 tag = true
+parts.pre_release_label.values = [
+    "rc",
+    "final",
+]
+parts.pre_release_label.optional_value = "final"
 
 [[tool.bumpversion.files]]
 glob = "../components/*/package.json"
@@ -84,7 +85,7 @@ search = "[Unreleased]"
 replace = "v{new_version} - {$RELEASE_DATE}"
 include_bumps = [
     "pre_release_label",
-] # this is the only bump that produces a non-rc release
+]  # this is the only bump that produces a non-rc release
 
 [[tool.bumpversion.files]]
 filename = "../.env"
@@ -126,13 +127,6 @@ glob = "../publiccode.yml"
 search = "releaseDate: \\d{{4}}-\\d{{2}}-\\d{{2}}"
 replace = "releaseDate: {$RELEASE_DATE}"
 regex = true
-
-[tool.bumpversion.parts.pre_release_label]
-values = [
-    "rc",
-    "final",
-]
-optional_value = "final"
 
 [tool.bandit]
 skips = [

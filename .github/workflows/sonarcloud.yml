@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 0 # Disabling shallow clone is recommended for improving relevancy of reporting
       - name: Install uv
         if: env.SONAR_TOKEN != null
-        uses: astral-sh/setup-uv@v7.2.1
+        uses: astral-sh/setup-uv@v7.3.0
         with:
           version-file: tools/requirements-uv.txt
       - name: Set up Node

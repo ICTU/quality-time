@@ -20,7 +20,7 @@ dev = [
     "mypy==1.19.1",
     "pip-audit==2.10.0",
     "pymongo==4.16.0",
-    "pyproject-fmt==2.12.1",
+    "pyproject-fmt==2.14.2",
     "python-dateutil==2.9.0.post0",
     "requests==2.32.5",
     "requests-sse==0.5.2",
@@ -58,7 +58,7 @@ lint.per-file-ignores."__init__.py" = [
 
 [tool.pyproject-fmt]
 indent = 4
-keep_full_version = true # Don't remove trailing zero's from version specifiers
+keep_full_version = true  # Don't remove trailing zero's from version specifiers
 
 [tool.mypy]
 ignore_missing_imports = false

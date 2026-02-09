@@ -22,7 +22,7 @@ dev = [
     "myst-parser<=4.0.1",            # Don't update, sphinx-copybutton is not compatible with sphinx 9
     "pip-audit==2.10.0",
     "pydantic==2.12.5",              # Needed for generating the reference docs from the data model
-    "pyproject-fmt==2.12.1",
+    "pyproject-fmt==2.14.2",
     "ruff==0.15.0",
     "shared-code",
     "sphinx<=8.2.3",                 # Don't update, sphinx-copybutton is not compatible with sphinx 9
@@ -35,8 +35,8 @@ dev = [
     "yamllint==1.38.0",
 ]
 
-[tool.uv.sources]
-shared-code = { path = "../components/shared_code", editable = true }
+[tool.uv]
+sources.shared-code = { path = "../components/shared_code", editable = true }
 
 [tool.ruff]
 line-length = 120
@@ -94,7 +94,7 @@ ignore-words-list = [
 
 [tool.pyproject-fmt]
 indent = 4
-keep_full_version = true # Don't remove trailing zero's from version specifiers
+keep_full_version = true  # Don't remove trailing zero's from version specifiers
 
 [tool.mypy]
 plugins = "pydantic.mypy"
