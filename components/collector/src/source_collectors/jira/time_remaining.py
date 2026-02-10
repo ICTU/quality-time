@@ -5,6 +5,7 @@ from urllib.parse import urlsplit
 
 from base_collectors.source_collector import TimeRemainingCollector
 from collector_utilities.date_time import parse_datetime
+from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL, Response
 
 from .base import JiraBoardBase
@@ -27,8 +28,11 @@ class JiraTimeRemaining(JiraBoardBase, TimeRemainingCollector):
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Parse the datetime from the source."""
         sprints = await response.json()
-        # Assume there is one active sprint:
-        return parse_datetime(sprints["values"][0]["endDate"])
+        if sprint_values := sprints.get("values"):
+            # Assume there is one active sprint so it doesn't matter which sprint we pick:
+            return parse_datetime(sprint_values[0]["endDate"])
+        error_message = "No active sprint found"
+        raise CollectorError(error_message)
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Override to return the URL for the active sprint."""
