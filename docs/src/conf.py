@@ -89,4 +89,5 @@ linkcheck_ignore = [
     # See https://community.sonarsource.com/t/https-rules-sonarsource-com-down/177294?u=fniessink:
     "https://rules.sonarsource.com/.*",
     "https://www.ictu.nl/en/about-us",  # False negative: 415 Client Error: Unsupported Media Type
+    "https://junit.org/",  # False negative: WARNING: broken link: https://junit.org/ (Exceeded 30 redirects.)
 ]
