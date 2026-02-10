@@ -14,7 +14,7 @@ dependencies = [
     "fixit==2.2.1",
     "mypy==1.19.1",
     "pip-audit==2.10.0",
-    "pyproject-fmt==2.14.2",
+    "pyproject-fmt==2.15.1",
     "ruff==0.15.0",
     "troml==0.4.1",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
