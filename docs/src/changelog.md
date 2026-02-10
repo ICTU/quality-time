@@ -14,9 +14,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
-- When using an LDAP server with a password hash scheme other than Argon2, Quality-time would not attempt an LDAP bind to verify the user. Fixes [#12595](https://github.com/ICTU/quality-time/issues/12595).
-- Don't make the UI wait for a metric to scroll to if the URL has no hash with a metric identifier. Fixes [#12598](https://github.com/ICTU/quality-time/issues/12598).
 - Date pickers would lose focus while editing a date. Fixes [#12591](https://github.com/ICTU/quality-time/issues/12591).
+- When using an LDAP server with a password hash scheme other than Argon2, Quality-time would not attempt an LDAP bind to verify the user. Fixes [#12595](https://github.com/ICTU/quality-time/issues/12595).
+- Don't attempt to verify empty usernames with the LDAP server. Fixes [#12597](https://github.com/ICTU/quality-time/issues/12597).
+- Don't make the UI wait for a metric to scroll to if the URL has no hash with a metric identifier. Fixes [#12598](https://github.com/ICTU/quality-time/issues/12598).
 
 ## v5.48.3 - 2026-01-29
 

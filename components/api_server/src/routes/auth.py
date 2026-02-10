@@ -140,7 +140,7 @@ def login(database: Database) -> dict[str, bool | str]:
         user = User(username, username or "", "", username is not None)
     else:
         username, password = get_credentials()
-        user = verify_user(database, username, password)
+        user = verify_user(database, username, password) if username else User(username)
     session_expiration_datetime = (
         create_session(database, user) if user.verified else datetime.min.replace(tzinfo=tzutc())
     )

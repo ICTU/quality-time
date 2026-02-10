@@ -42,7 +42,6 @@ class AuthTestCase(DatabaseTestCase):
         self.assertDictEqual(public_key, {"public_key": "this_is_a_public_key"})
 
 
-@patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
 @patch.object(ldap3.Connection, "__exit__", lambda *_args: None)
 @patch.object(ldap3.Connection, "__enter__")
 @patch.object(ldap3.Connection, "__init__")
@@ -108,6 +107,7 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.LOG_ERROR_MESSAGE_TEMPLATE, logging_mock.call_args[0][0])
         self.assertEqual(exception, logging_mock.call_args[0][1].__class__)
 
+    @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
     @patch("routes.auth.datetime", MOCK_DATETIME)
     def test_successful_forwardauth_login(self, connection_mock, connection_enter):
         """Test successful login from forwarded authentication header."""
@@ -124,6 +124,7 @@ class LoginTests(AuthTestCase):
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
 
+    @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
     def test_forwardauth_login_no_header(self, connection_mock, connection_enter):
         """Test failed login if forwarded authentication is enabled but no header is present."""
         connection_mock.return_value = None
@@ -138,6 +139,7 @@ class LoginTests(AuthTestCase):
         connection_mock.assert_not_called()
         connection_enter.assert_not_called()
 
+    @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
     @patch("routes.auth.datetime", MOCK_DATETIME)
     def test_successful_login(self, connection_mock, connection_enter):
         """Test successful login."""
@@ -151,6 +153,7 @@ class LoginTests(AuthTestCase):
         self.assert_ldap_lookup_connection_created(connection_mock)
         self.assert_ldap_connection_search_called()
 
+    @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
     @patch("routes.auth.datetime", MOCK_DATETIME)
     def test_successful_bind_login(self, connection_mock, connection_enter):
         """Test successful login if ldap server does not reveal password digest."""
@@ -163,6 +166,7 @@ class LoginTests(AuthTestCase):
         self.assert_ldap_bind_connection_created(connection_mock)
         self.assert_ldap_connection_search_called()
 
+    @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
     @patch("logging.getLogger")
     @patch.object(ldap3.Server, "__init__", Mock(side_effect=exceptions.LDAPServerPoolError))
     def test_login_server_error(self, logging_mock, connection_mock, connection_enter):
@@ -174,6 +178,7 @@ class LoginTests(AuthTestCase):
         connection_enter.assert_not_called()
         self.assert_log(logger.exception, exceptions.LDAPServerPoolError)
 
+    @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
     @patch("logging.getLogger")
     def test_login_bind_error(self, logging_mock, connection_mock, connection_enter):
         """Test login when an error of binding dn reader occurs."""
@@ -186,6 +191,7 @@ class LoginTests(AuthTestCase):
         self.ldap_connection.bind.assert_called_once()
         self.assert_log(logger.exception, exceptions.LDAPBindError)
 
+    @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
     @patch("logging.getLogger")
     def test_login_search_error(self, logging_mock, connection_mock, connection_enter):
         """Test login when search error of the login user occurs."""
@@ -198,6 +204,7 @@ class LoginTests(AuthTestCase):
         self.ldap_connection.bind.assert_called_once()
         self.assert_log(logger.exception, exceptions.LDAPResponseTimeoutError)
 
+    @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
     @patch("routes.auth.datetime", MOCK_DATETIME)
     def test_login_no_argon2(self, connection_mock, connection_enter):
         """Test login proceeds with LDAP bind when LDAP password hash is not ARGON2."""
@@ -210,6 +217,7 @@ class LoginTests(AuthTestCase):
         self.assert_ldap_bind_connection_created(connection_mock)
         self.assert_ldap_connection_search_called()
 
+    @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
     @patch("logging.getLogger")
     def test_login_wrong_password(self, logging_mock, connection_mock, connection_enter):
         """Test login when search error of the login user occurs."""
@@ -223,6 +231,14 @@ class LoginTests(AuthTestCase):
         self.assert_ldap_connection_search_called()
         self.assert_log(logger.exception, argon2.exceptions.VerifyMismatchError)
 
+    @patch("bottle.request", Mock(json={"username": "", "password": ""}))  # nosec
+    def test_login_no_username(self, connection_mock, connection_enter):
+        """Test login when username is empty."""
+        connection_mock.return_value = None
+        connection_enter.return_value = self.ldap_connection
+        self.assertEqual(self.login_nok, login(self.database))
+
+    @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
     @patch("routes.auth.datetime", MOCK_DATETIME)
     def test_login_changed_details(self, connection_mock, connection_enter):
         """Test that user details are updated after successful login."""
