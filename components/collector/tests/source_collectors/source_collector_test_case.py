@@ -114,11 +114,17 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
     ) -> None:
         """Assert that the measurement has the expected attributes."""
         for attribute_key in ("connection_error", "parse_error"):
+            error_message = getattr(measurement.sources[source_index], attribute_key)
             if (attribute_value := attributes.get(attribute_key)) is not None:
                 attributes.update(value=None, total=None, entities=None)
-                self.assertIn(attribute_value, getattr(measurement.sources[source_index], attribute_key))
+                self.assertIn(attribute_value, error_message)
             else:
-                self.assertIsNone(getattr(measurement.sources[source_index], attribute_key))
+                # If the error message contains a traceback, make sure it's neatly printed:
+                if error_message and error_message.startswith("Traceback"):  # pragma: no cover
+                    error_message_to_check, error_message_to_print = error_message[:50] + "...", error_message
+                else:
+                    error_message_to_check, error_message_to_print = error_message, None
+                self.assertIsNone(error_message_to_check, error_message_to_print)
         for attribute_key in ("value", "total", "entities", "api_url", "landing_url"):
             if (attribute_value := attributes.get(attribute_key, "value not specified")) != "value not specified":
                 self.__assert_measurement_source_attribute(attribute_key, attribute_value, measurement, source_index)
