@@ -20,7 +20,7 @@ def replace_version(match: re.Match) -> str:
     return f'"{name}=={version}"'
 
 
-uv_tree = ["uv", "tree", "--frozen", "--quiet", "--depth=1", "--outdated"]
+uv_tree = ["uv", "tree", "--frozen", "--quiet", "--depth=1", "--all-groups", "--outdated"]
 outdated = subprocess.run(uv_tree, capture_output=True, text=True, check=True).stdout  # noqa: S603 # nosec
 lines_with_updates = [line for line in outdated.splitlines() if " (latest: " in line]
 new_versions = {line.split()[1]: line.split()[-1].lstrip("v").rstrip(")") for line in lines_with_updates}
