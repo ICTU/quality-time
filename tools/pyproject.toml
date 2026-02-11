@@ -22,6 +22,9 @@ dependencies = [
 ]
 
 [dependency-groups]
+dev = [
+    "types-requests==2.32.4.20260107",
+]
 just = [
     "rust-just==1.46.0",
 ]
