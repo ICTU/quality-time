@@ -159,7 +159,7 @@ def utc_today() -> datetime.date:
 def bump_my_version_spec() -> str:
     """Return the bump-my-version version to use."""
     pyproject_toml = read_pyproject_toml()
-    tools = pyproject_toml["project"]["optional-dependencies"]["tools"]
+    tools = pyproject_toml["project"]["dependency-groups"]["dev"]
     return next(spec for spec in tools if spec.split("==")[0] == "bump-my-version")
 
 
@@ -189,6 +189,7 @@ def main() -> None:
         "../release",
         "../tests/feature_tests",
         "../tests/application_tests",
+        "../tools",
     ]:
         run(("uv", "lock"), cwd=python_project_folder, check=True)
     run(("git", "add", "**/uv.lock"), cwd="..", check=True)
