@@ -14,10 +14,10 @@ jobs:
       matrix:
         include:
           - component: api_server
-            context: components
+            context:
             file: components/api_server/Dockerfile
           - component: collector
-            context: components
+            context:
             file: components/collector/Dockerfile
           - component: database
             context: components/database
@@ -26,7 +26,7 @@ jobs:
             context: components/frontend
             file:
           - component: notifier
-            context: components
+            context:
             file: components/notifier/Dockerfile
           - component: proxy
             context: components/proxy
