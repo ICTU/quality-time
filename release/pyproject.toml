@@ -45,13 +45,17 @@ keep_full_version = true  # Don't remove trailing zero's from version specifiers
 
 [tool.bumpversion]
 current_version = "5.48.4-rc.0"
-parse = """\
-    (?x)\n    (?P<major>0|[1-9]\\\\d*)\\\\.\n    (?P<minor>0|[1-9]\\\\d*)\\\\.\n    (?P<patch>0|[1-9]\\\\d*)\n    \
-    (?:\n        -                                    # dash separator for pre-release section\n        \
-    (?P<pre_release_label>[a-zA-Z-]+)    # pre-release label\n        \\\\.\n        \
-    (?P<pre_release_number>0|[1-9]\\\\d*)  # pre-release version number\n    )?                                       \
-    # pre-release section is optional\n\
-    """
+parse = """(?x)
+    (?P<major>0|[1-9]\\d*)\\.
+    (?P<minor>0|[1-9]\\d*)\\.
+    (?P<patch>0|[1-9]\\d*)
+    (?:
+        -                                    # dash separator for pre-release section
+        (?P<pre_release_label>[a-zA-Z-]+)    # pre-release label
+        \\.
+        (?P<pre_release_number>0|[1-9]\\d*)  # pre-release version number
+    )?                                       # pre-release section is optional
+"""
 serialize = [
     "{major}.{minor}.{patch}-{pre_release_label}.{pre_release_number}",
     "{major}.{minor}.{patch}",
