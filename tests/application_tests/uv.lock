@@ -13,7 +13,7 @@ wheels = [
 
 [[package]]
 name = "application-tests"
-version = "5.48.4"
+version = "5.48.4rc0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -904,7 +904,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.48.4"
+version = "5.48.4rc0"
 source = { virtual = "../../tools" }
 dependencies = [
     { name = "bandit" },
