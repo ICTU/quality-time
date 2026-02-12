@@ -48,13 +48,16 @@ update-js-dependencies folder:
     # Note: major updates are not done automatically by npm
     cd {{ folder }} && npm update --fund=false --ignore-scripts
 
+[parallel]
+[private]
+update-dependencies-parallel: (update-py-dependencies "components/shared_code") (update-py-dependencies "components/api_server") (update-py-dependencies "components/collector") (update-py-dependencies "components/notifier") (update-js-dependencies "components/frontend") (update-js-dependencies "components/renderer") (update-py-dependencies "docs") (update-js-dependencies "docs") (update-py-dependencies "release") (update-py-dependencies "tests/application_tests") (update-py-dependencies "tests/feature_tests") update-docker-base-images
+
 alias update-deps := update-dependencies
 
 # Update direct and indirect dependencies.
-[parallel]
-update-dependencies: (update-py-dependencies "tools") (update-py-dependencies "components/shared_code") (update-py-dependencies "components/api_server") (update-py-dependencies "components/collector") (update-py-dependencies "components/notifier") (update-js-dependencies "components/frontend") (update-js-dependencies "components/renderer") (update-py-dependencies "docs") (update-js-dependencies "docs") (update-py-dependencies "release") (update-py-dependencies "tests/application_tests") (update-py-dependencies "tests/feature_tests") update-docker-base-images
+update-dependencies: (update-py-dependencies "tools") update-dependencies-parallel
 
-# === Install  dependencies ===
+# === Install dependencies ===
 
 # Install Python dependencies from the lock file.
 [no-cd]
