@@ -31,10 +31,15 @@ random_string := uuid()
 
 # === Update dependencies ===
 
-# Update Docker base images in Dockerfiles
+# Update Docker base images in Dockerfiles.
 [private]
 update-docker-base-images:
     uv run --script tools/dockerfile_base_image_update.py
+
+# Update GitHub Actions in GitHub workflow YAML files.
+[private]
+update-github-actions:
+    uv run --script tools/github_action_update.py
 
 # Update direct and indirect Python dependencies.
 [private]
@@ -54,7 +59,7 @@ update-dependencies-parallel: (update-py-dependencies "components/shared_code") 
 
 alias update-deps := update-dependencies
 
-# Update direct and indirect dependencies.
+# Update direct and indirect dependencies. Set the GITHUB_TOKEN environment variable to prevent hitting GitHub rate limits.
 update-dependencies: (update-py-dependencies "tools") update-dependencies-parallel
 
 # === Install dependencies ===
