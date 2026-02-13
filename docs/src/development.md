@@ -507,6 +507,13 @@ The Docker images are `quality-time_database`, `quality-time_renderer`, `quality
 
 ## Maintenance
 
-Keeping dependencies up-to-date is an important aspect of software maintenance. Dependencies are kept up-to-date via the [Dependabot GitHub action](https://github.com/ICTU/quality-time/blob/master/.github/dependabot.yml).
+Keeping dependencies up-to-date is an important aspect of software maintenance. We use the [Dependabot GitHub action](https://github.com/ICTU/quality-time/blob/master/.github/dependabot.yml) to signal when dependencies have new versions. Dependabot doesn't have permission to run all checks, so Dependabot pull requests always fail. We don't merge the Dependabot pull requests, but rather follow these steps to update dependencies:
 
-For Python, we follow the [dependency management practice described by James Bennett](https://www.b-list.org/weblog/2022/may/13/boring-python-dependencies/), to a large extent.
+- Review the changes by checking the release notes and changelogs included in the pull requests opened by Dependabot. When the release notes and changelogs are missing or otherwise look out of the ordinary, review the code diffs of the dependency for possible malicious updates. When in doubt, skip the update.
+- Create a new branch: `git checkout -b update-deps`.
+- Run the just recipe to update all direct and indirect dependencies: `just update-deps`.
+- Review the changes and compare : `git diff`. If anything looks out of the ordinary, skip the update.
+- Commit the changes: `git commit -a -m "Update several dependencies"`.
+- Push the branch: `git push`
+- [Open a pull request](https://github.com/ICTU/quality-time/pulls) and merge it when all checks are green.
+- Pull the new master and remove the branch: `git checkout master; git pull -p; git branch -D update-deps`.

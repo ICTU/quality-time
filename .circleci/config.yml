@@ -10,7 +10,7 @@ jobs:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-    parallelism: 10
+    parallelism: 11
     steps:
       - checkout
       - run: |
@@ -27,6 +27,7 @@ jobs:
             7) component=docs;;
             8) component=release;;
             9) component=tools;;
+            10) component=update_dependencies;;
           esac
           cd $component
           mkdir -p build
@@ -51,6 +52,8 @@ jobs:
           path: release/build
       - store_artifacts:
           path: tools/build
+      - store_artifacts:
+          path: update_dependencies/build
 
   application_tests:
     machine:
