@@ -190,6 +190,7 @@ def main() -> None:
         "../tests/feature_tests",
         "../tests/application_tests",
         "../tools",
+        "../update_dependencies",
     ]:
         run(("uv", "lock"), cwd=python_project_folder, check=True)
     run(("git", "add", "**/uv.lock"), cwd="..", check=True)

@@ -7,7 +7,6 @@ _default:
 alias help := _default
 
 export COVERAGE_RCFILE := justfile_directory() + "/.coveragerc"
-update_pyproject_toml_script := justfile_directory() + "/tools/update_pyproject_toml.py"
 docker_folder_exists := path_exists(invocation_directory() + '/docker')
 src_folder_exists := path_exists(invocation_directory() + '/src')
 tests_folder_exists := path_exists(invocation_directory() + '/tests')
@@ -26,7 +25,7 @@ has_yamllint := if pyproject_toml_contents =~ '"yamllint[<=]=[A-Za-z0-9_.\-]+"' 
 has_vale := if pyproject_toml_contents =~ '"vale[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
 src_folder := if src_folder_exists == "true" { "src" } else { "" }
 tests_folder := if tests_folder_exists == "true" { "tests" } else { "" }
-code := if trim(src_folder + " " + tests_folder) == "" { "*.py" } else { src_folder + " " + tests_folder }
+code := if trim(src_folder + " " + tests_folder) == "" { ".?*.py" } else { src_folder + " " + tests_folder }
 random_string := uuid()
 
 # === Update dependencies ===
@@ -34,38 +33,34 @@ random_string := uuid()
 # Update Docker images in the CircleCI config.
 [private]
 update-circle-ci-config:
-    uv run --script tools/update_circle_ci_config.py
+    uv run --project update_dependencies update_dependencies/src/update_circle_ci_config.py
 
 # Update Docker base images in Dockerfiles.
 [private]
 update-docker-base-images:
-    uv run --script tools/update_dockerfile_base_image.py
+    uv run --project update_dependencies update_dependencies/src/update_dockerfile_base_image.py
 
 # Update GitHub Actions in GitHub workflow YAML files.
 [private]
 update-github-actions:
-    uv run --script tools/update_github_action.py
+    uv run --project update_dependencies update_dependencies/src/update_github_action.py
 
 # Update direct and indirect Python dependencies.
 [private]
-update-py-dependencies folder:
-    uv run --frozen --no-sync --directory "{{ folder }}" --script "{{ update_pyproject_toml_script }}"
-    uv sync --upgrade --quiet --no-progress --directory "{{ folder }}"
+update-py-dependencies:
+    uv run --project update_dependencies update_dependencies/src/update_pyproject_toml.py
 
 # Update direct and indirect JavaScript dependencies.
 [private]
-update-js-dependencies folder:
+update-js-dependencies:
     # Note: major updates are not done automatically by npm
-    cd {{ folder }} && npm update --fund=false --ignore-scripts
-
-[parallel]
-[private]
-update-dependencies-parallel: (update-py-dependencies "components/shared_code") (update-py-dependencies "components/api_server") (update-py-dependencies "components/collector") (update-py-dependencies "components/notifier") (update-js-dependencies "components/frontend") (update-js-dependencies "components/renderer") (update-py-dependencies "docs") (update-js-dependencies "docs") (update-py-dependencies "release") (update-py-dependencies "tests/application_tests") (update-py-dependencies "tests/feature_tests") update-docker-base-images update-github-actions
+    uv run --project update_dependencies update_dependencies/src/update_package_json.py
 
 alias update-deps := update-dependencies
 
 # Update direct and indirect dependencies. Set the GITHUB_TOKEN environment variable to prevent hitting GitHub rate limits.
-update-dependencies: (update-py-dependencies "tools") update-dependencies-parallel
+[parallel]
+update-dependencies: update-js-dependencies update-py-dependencies update-docker-base-images update-github-actions update-circle-ci-config
 
 # === Install dependencies ===
 

@@ -1,0 +1,18 @@
+---
+name: Tools quality
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7.3.0
+        with:
+          version-file: tools/pyproject.toml
+      - name: Install dependencies and check quality
+        working-directory: update_dependencies
+        run: uv tool run --from=rust-just --project $GITHUB_WORKSPACE/tools/pyproject.toml just ci

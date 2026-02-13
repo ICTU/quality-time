@@ -1,5 +1,5 @@
 [project]
-name = "tools"
+name = "update-dependencies"
 version = "5.48.4"
 requires-python = "==3.14.2"
 classifiers = [
@@ -8,29 +8,19 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "bandit==1.9.3",
-    "codespell==2.4.1",
-    "coverage==7.13.4",
-    "fixit==2.2.1",
-    "mypy==1.19.1",
-    "pip-audit==2.10.0",
-    "pyproject-fmt==2.16.0",
-    "ruff==0.15.1",
-    "troml==0.4.1",
-    "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
-    "vulture==2.14",
+    "packaging>=26.0",
+    "requests>=2.32.5",
+    "rich>=14.3.2",
 ]
 
 [dependency-groups]
-just = [
-    "rust-just==1.46.0",
-]
-uv = [
-    "uv==0.10.2",
+dev = [
+    "tools",
+    "types-requests==2.32.4.20260107",
 ]
 
 [tool.uv]
-package = false
+sources.tools = { path = "../tools", package = false }
 
 [tool.ruff]
 line-length = 120
