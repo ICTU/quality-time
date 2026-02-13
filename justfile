@@ -7,7 +7,7 @@ _default:
 alias help := _default
 
 export COVERAGE_RCFILE := justfile_directory() + "/.coveragerc"
-uv_update_script := justfile_directory() + "/tools/uv_update.py"
+update_pyproject_toml_script := justfile_directory() + "/tools/update_pyproject_toml.py"
 docker_folder_exists := path_exists(invocation_directory() + '/docker')
 src_folder_exists := path_exists(invocation_directory() + '/src')
 tests_folder_exists := path_exists(invocation_directory() + '/tests')
@@ -31,20 +31,25 @@ random_string := uuid()
 
 # === Update dependencies ===
 
+# Update Docker images in the CircleCI config.
+[private]
+update-circle-ci-config:
+    uv run --script tools/update_circle_ci_config.py
+
 # Update Docker base images in Dockerfiles.
 [private]
 update-docker-base-images:
-    uv run --script tools/dockerfile_base_image_update.py
+    uv run --script tools/update_dockerfile_base_image.py
 
 # Update GitHub Actions in GitHub workflow YAML files.
 [private]
 update-github-actions:
-    uv run --script tools/github_action_update.py
+    uv run --script tools/update_github_action.py
 
 # Update direct and indirect Python dependencies.
 [private]
 update-py-dependencies folder:
-    uv run --frozen --no-sync --directory "{{ folder }}" --script "{{ uv_update_script }}"
+    uv run --frozen --no-sync --directory "{{ folder }}" --script "{{ update_pyproject_toml_script }}"
     uv sync --upgrade --quiet --no-progress --directory "{{ folder }}"
 
 # Update direct and indirect JavaScript dependencies.
