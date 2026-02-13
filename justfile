@@ -55,7 +55,7 @@ update-js-dependencies folder:
 
 [parallel]
 [private]
-update-dependencies-parallel: (update-py-dependencies "components/shared_code") (update-py-dependencies "components/api_server") (update-py-dependencies "components/collector") (update-py-dependencies "components/notifier") (update-js-dependencies "components/frontend") (update-js-dependencies "components/renderer") (update-py-dependencies "docs") (update-js-dependencies "docs") (update-py-dependencies "release") (update-py-dependencies "tests/application_tests") (update-py-dependencies "tests/feature_tests") update-docker-base-images
+update-dependencies-parallel: (update-py-dependencies "components/shared_code") (update-py-dependencies "components/api_server") (update-py-dependencies "components/collector") (update-py-dependencies "components/notifier") (update-js-dependencies "components/frontend") (update-js-dependencies "components/renderer") (update-py-dependencies "docs") (update-js-dependencies "docs") (update-py-dependencies "release") (update-py-dependencies "tests/application_tests") (update-py-dependencies "tests/feature_tests") update-docker-base-images update-github-actions
 
 alias update-deps := update-dependencies
 
