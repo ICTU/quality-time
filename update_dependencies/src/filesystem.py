@@ -13,8 +13,9 @@ def glob(pattern: str, start: Path | None = None) -> Iterator[Path]:
         start = Path.cwd()
     path_parts_to_ignore = {"build", "node_modules", "__pycache__"}
     for path in start.rglob(pattern):
-        if any(part.startswith(".") for part in path.parts):
+        relative_path = path.relative_to(start)
+        if any(part.startswith(".") for part in relative_path.parts):
             continue
-        if any(part in path_parts_to_ignore for part in path.parts):
+        if any(part in path_parts_to_ignore for part in relative_path.parts):
             continue
         yield path

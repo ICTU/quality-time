@@ -37,7 +37,7 @@ def get_latest_version(organization: str, repository: str, current_version_strin
 
 def update_workflow_yml_line(line: str) -> str:
     """Update the GitHub Action version if the line contains a uses statement, otherwise return the line unchanged."""
-    if match := re.search(r"uses: (?P<action>[\w\d\./-]+)@v(?P<version>[\d\w\.\-]+)", line):
+    if match := re.search(r"uses: (?P<action>[\w\d\./-]+)@v?(?P<version>[\d\w\.\-]+)", line):
         action = match.group("action")
         version = match.group("version")
         organization, repository, *_path = action.split("/")
