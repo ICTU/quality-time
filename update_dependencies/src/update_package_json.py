@@ -30,7 +30,7 @@ def update_package_json(package_json: Path) -> None:
 
 
 def update_package_jsons() -> int:
-    """Find all package.json files, update them, and then update the package-lock.json files."""
+    """Find all package.json files, update them, and then update them, including the package-lock.json files."""
     for package_json in glob("package.json"):
         update_package_json(package_json)
     return 0
