@@ -306,8 +306,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         logger = mocked_log.return_value = Mock()
         mocked_open.side_effect = OSError("Some error")
         self.collector.record_health()
-        logger.error.assert_called_once_with(
-            "Could not write health check time stamp to %s: %s",
+        logger.exception.assert_called_once_with(
+            "Could not write health check time stamp to %s",
             pathlib.Path("/home/collector/health_check.txt"),
-            mocked_open.side_effect,
         )

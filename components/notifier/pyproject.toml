@@ -12,6 +12,7 @@ dependencies = [
     "aiohttp==3.13.3",
     "pymsteams==0.2.5",
     "python-dateutil==2.9.0.post0",
+    "rich==14.3.2",
     "shared-code",
 ]
 

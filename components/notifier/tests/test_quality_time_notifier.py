@@ -19,5 +19,7 @@ class NotifierTestCase(unittest.TestCase):
     @patch("os.getenv", Mock(side_effect=lambda key, default=None: "DEBUG" if key == "NOTIFIER_LOG_LEVEL" else default))
     def test_change_log_level(self):
         """Test that the logging level can be changed."""
+        logger = logging.getLogger()
+        logger.addHandler(logging.NullHandler())  # Prevent DEBUG logging on stdout
         start_notifications()
-        self.assertEqual("DEBUG", logging.getLevelName(logging.getLogger().getEffectiveLevel()))
+        self.assertEqual("DEBUG", logging.getLevelName(logger.getEffectiveLevel()))

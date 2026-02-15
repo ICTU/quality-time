@@ -244,6 +244,7 @@ dependencies = [
     { name = "packaging" },
     { name = "pymongo" },
     { name = "python-dateutil" },
+    { name = "rich" },
     { name = "shared-code" },
     { name = "typing-extensions" },
 ]
@@ -266,6 +267,7 @@ requires-dist = [
     { name = "packaging", specifier = "==26.0" },
     { name = "pymongo", specifier = "==4.16.0" },
     { name = "python-dateutil", specifier = "==2.9.0.post0" },
+    { name = "rich", specifier = "==14.3.2" },
     { name = "shared-code", directory = "../shared_code" },
     { name = "typing-extensions", specifier = "==4.15.0" },
 ]
