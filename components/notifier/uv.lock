@@ -636,6 +636,7 @@ dependencies = [
     { name = "aiohttp" },
     { name = "pymsteams" },
     { name = "python-dateutil" },
+    { name = "rich" },
     { name = "shared-code" },
 ]
 
@@ -652,6 +653,7 @@ requires-dist = [
     { name = "aiohttp", specifier = "==3.13.3" },
     { name = "pymsteams", specifier = "==0.2.5" },
     { name = "python-dateutil", specifier = "==2.9.0.post0" },
+    { name = "rich", specifier = "==14.3.2" },
     { name = "shared-code", directory = "../shared_code" },
 ]
 

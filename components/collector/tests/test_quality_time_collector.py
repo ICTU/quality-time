@@ -26,5 +26,9 @@ class CollectorTestCase(unittest.IsolatedAsyncioTestCase):
     @patch("base_collectors.config.LOG_LEVEL", "DEBUG")
     async def test_change_log_level(self):
         """Test that the logging level can be changed."""
+        logger = logging.getLogger()
+        for handler in logger.handlers:
+            logger.removeHandler(handler)
+        logger.addHandler(logging.NullHandler())  # Prevent DEBUG logging on stdout
         await collect()
-        self.assertEqual("DEBUG", logging.getLevelName(logging.getLogger().getEffectiveLevel()))
+        self.assertEqual("DEBUG", logging.getLevelName(logger.getEffectiveLevel()))
