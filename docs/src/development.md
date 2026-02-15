@@ -10,9 +10,13 @@ When developing *Quality-time*, there are two ways to run *Quality-time* locally
 
 If you want to get *Quality-time* up and running quickly, for example for a demo, we recommend scenario 1. For software development, we recommend scenario 2.
 
+The advantage of scenario 1 is that you only need Docker and Git. However, as building the containers can be time-consuming we don't recommend this for working on the Quality-time source code.
+
+The advantage scenario 2 is that you don't need to rebuild the bespoke container images while developing. Also, the server component and the frontend component have auto-reload, meaning that when you edit the code, they will restart and run the new code automatically. Unfortunately, the collector and notifier components don't have auto-reload, and need to stopped and started by hand to activate new code.
+
 #### Install prerequisites
 
-Prerequisites are Docker and Git for both scenario's. For scenario 2 you also need Python 3.14, [uv](https://github.com/astral-sh/uv), and a recent version of Node.js (we currently use Node.js v25).
+Prerequisites for both scenario's are Docker and Git. For scenario 2 you also need [Just](https://github.com/casey/just), [uv](https://github.com/astral-sh/uv), and a recent version of Node.js (we currently use Node.js v25).
 
 Clone this repository:
 
@@ -33,20 +37,16 @@ cd quality-time
 To run *Quality-time* in Docker completely, open a terminal and start all containers with docker compose:
 
 ```console
-just start
+docker compose up # or 'just start' if you have Just installed
 ```
-
-The advantage of this scenario is that Python and Node.js don't need to be installed. However, as building the containers can be time-consuming we don't recommend this for working on the Quality-time source code.
 
 #### Scenario 2: run bespoke component from shells and other components in Docker
 
-In this scenario, we run the [bespoke components](software.md#bespoke-components) from shells and the [standard components](software.md#standard-components) and [test components](software.md#test-components) as Docker containers.
-
-The advantage of this scenario is that you don't need to rebuild the bespoke container images while developing. Also, the server component and the frontend component have auto-reload, meaning that when you edit the code, they will restart and run the new code automatically. The collector and notifier components don't have auto-reload, and need to stopped and started by hand to activate new code.
+In this scenario, we run the [bespoke components](software.md#bespoke-components) from shells and the [standard components](software.md#standard-components) and [test components](software.md#test-components) as Docker containers. The proxy component does not need to be started as the frontend component functions as proxy. 
 
 ##### Start standard and test components in Docker
 
-Open a terminal and start the [standard containers](software.md#standard-components) and [test components](software.md#test-components) with docker compose:
+Open a terminal and start the [standard containers](software.md#standard-components) and [test components](software.md#test-components):
 
 ```console
 just start database ldap mongo-express testdata
@@ -63,7 +63,7 @@ There are two users defined in the LDAP database:
 
 ##### Start the {index}`API-server <API-server component>`
 
-Open another terminal and run the API-server:
+Open another terminal and start the API-server:
 
 ```console
 cd components/api_server
@@ -80,7 +80,7 @@ curl http://localhost:5001/api/v3/docs | jq .
 
 ##### Start the {index}`collector <Collector component>`
 
-Open another terminal and run the collector:
+Open another terminal and start the collector:
 
 ```console
 cd components/collector
@@ -90,10 +90,10 @@ just start
 By default, the collector attempts to write a health check time stamp to `/home/collector/health_check.txt` every few seconds. If that fails, you'll see these messages in the log:
 
 ```console
-ERROR:root:Could not write health check time stamp to /home/collector/health_check.txt: [Errno 2] No such file or directory: '/home/collector/health_check.txt'
+Could not write health check time stamp to /home/collector/health_check.txt: [Errno 2] No such file or directory: '/home/collector/health_check.txt'
 ```
 
-To prevent the error and the resulting log messages, you can set the `HEALTH_CHECK_FILE` environment variable to a location that can be written on your machine, for example:
+To prevent the error and the resulting log messages, set the `HEALTH_CHECK_FILE` environment variable to a location that can be written on your machine, for example:
 
 ```console
 export HEALTH_CHECK_FILE=/tmp/health_check.txt
@@ -101,7 +101,7 @@ export HEALTH_CHECK_FILE=/tmp/health_check.txt
 
 ##### Start the {index}`frontend <Frontend component>`
 
-Open another terminal and run the frontend:
+Open another terminal and start the frontend:
 
 ```console
 cd components/frontend
@@ -112,17 +112,12 @@ The frontend is served at [http://localhost:3000](http://localhost:3000).
 
 ##### Start the {index}`notifier <Notifier component>`
 
-Optionally, open yet another terminal and run the notifier:
+Optionally, open yet another terminal and start the notifier:
 
 ```console
 cd components/notifier
 just start
 ```
-
-##### Running the proxy component
-
-The `proxy` component is mapped to the `www` service in the docker compose file, which runs on port 80 by default.
-This container runs an unprivileged version of Nginx, which will not require additional capabilities when ran on a higher port by specifying `PROXY_PORT`.
 
 ### Coding style
 
@@ -145,6 +140,152 @@ Functional React components are preferred over class-based components.
 Production code and unit tests are organized together in one `src` folder hierarchy.
 
 Variable and function names are camelCase. Constants are named in all uppercase.
+
+## Testing
+
+This section assumes you have created a Python virtual environment, activated it, and installed the requirements for each Python component and that you installed the requirements for the frontend component, as described [above](#developing).
+
+### Unit tests
+
+To run the unit tests and measure unit test coverage of the backend components (this assumes you have created a Python virtual environment, activated it, and installed the requirements as described [above](#developing)):
+
+```console
+cd components/api_server  # or components/collector, components/notifier, components/shared_code, components/frontend
+just test
+```
+
+### Quality checks
+
+To run Ruff, mypy, and some other security and quality checks on the backend components, or ESLint and Prettier on the frontend component:
+
+```console
+cd components/api_server  # or components/collector, components/notifier, components/shared_code, components/frontend
+just check
+```
+
+### Feature tests
+
+The feature tests currently test all features through the API served by the API-server. They touch all components except the frontend, the collector, and the notifier. To run the feature tests, invoke this script, it will build and start all the necessary components, run the tests, and gather coverage information:
+
+```console
+tests/feature_tests/test.sh
+```
+
+The `test.sh` shell script will start a server under coverage and then run the [feature tests](https://github.com/ICTU/quality-time/tree/master/tests/feature_tests).
+
+It's also possible to run a subset of the feature tests by passing the feature file as argument:
+
+```console
+tests/feature_tests/test.sh tests/feature_tests/src/features/metric.feature
+```
+
+### Application tests
+
+The application tests in theory test all components through the frontend, but unfortunately the number of tests is too small to meet that goal. To run the application tests, start all components and then start the tests:
+
+```console
+docker compose up -d
+docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 ghcr.io/astral-sh/uv:python3.14-bookworm tests/application_tests/test.sh
+```
+
+## Documentation and changelog
+
+The documentation is written in Markdown files and published on [Read the Docs](https://quality-time.readthedocs.io/en/latest/).
+
+To generate the documentation locally:
+
+```console
+cd docs
+just build
+open build/html/index.html
+```
+
+`just build` also generates the `docs/src/reference.md` reference manual, containing an overview of all subjects, metrics, and sources.
+
+To check the correctness of the documentation (be sure that the docs folder is the current folder):
+
+```console
+just check
+```
+
+## Releasing
+
+### Preparation
+
+Run the release script with `--help` to show help information, including the current release.
+
+```console
+cd release
+uv run --script release.py --help
+```
+
+### Decide the release type
+
+*Quality-time* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html), so first you need to decide on the type of release you want to create, conform the [release policy](versioning.md#major-minor-and-patch-releases).
+
+- Create a **major** release if an operator needs to make manual changes to the Docker-composition before deploying the next release.
+- Create a **minor** release if the next release contains new or changed functionality.
+- Create a **patch** release if the next release contains only bug fixes.
+
+Before creating a release, it first needs to be tested as a **release candidate** for a major, minor, or patch release.
+Aside from testing by automatic pipeline it can for example be deployed to a test environment, or rolled out to early adopters.
+Before finalizing the release candidate, make sure to update the [version overview](versioning.md#version-overview).
+
+```{important}
+To determine whether a release is major, minor, or patch, compare the changes to the [previous most recent release](changelog.md).
+```
+
+### Determine the version bump
+
+Having decided on the release type, there are the following possibilities for the version bump argument that you will be passing to the release script:
+
+- If the current release is a release candidate,
+  - and you want to create another release candidate, use: `rc`. If the current release is e.g. v3.6.1-rc.0, this will bump the version to v3.6.1-rc.1.
+  - and the next release will not be, use: `release`. If the current release is e.g. v3.6.1-rc.0, this will bump the version to v3.6.1.
+  - and changes have been made since the previous release candidate that impact the release type, use: `major`, `minor`, or `patch`. If the current release is e.g. v3.6.1-rc.0, using `minor` will bump the version to v3.7.0-rc.0.
+- If the current release is not a release candidate:
+  - to create a release candidate, use: `major`, `minor`, or `patch`. If the current release is e.g. v3.6.1, using `minor` will bump the version to v3.7.0-rc.0.
+
+### Check the preconditions
+
+The release script will check a number of preconditions before actually creating the release.
+To check the preconditions without releasing, invoke the release script with the version bump as determined:
+
+```console
+uv run --script release.py --check-preconditions-only <bump>  # Where bump is major, minor, patch, rc, or release
+```
+
+If everything is ok, there is no output, and you can proceed creating the release.
+Otherwise, the release script will list the preconditions that have not been met and need fixing before you can create the release.
+
+### Create the release
+
+To release *Quality-time*, issue the release command (in the release folder) from an already created release candidate:
+
+```console
+uv run --script release.py release
+```
+
+If all preconditions are met, the release script will bump the version numbers, update the change history, commit the changes, push the commit, tag the commit, and push the tag to GitHub.
+The [GitHub Actions release workflow](https://github.com/ICTU/quality-time/actions/workflows/release.yml) will then build the Docker images and push them to [Docker Hub](https://hub.docker.com/search?type=image&q=ictu/quality-time).
+It will also create an {index}`Software Bill of Materials (SBOM) <Software Bill of Materials (SBOM)>` for the release, which can be found under the "Artifacts" header of the workflow run.
+
+The Docker images are `quality-time_database`, `quality-time_renderer`, `quality-time_api_server`, `quality-time_collector`, `quality-time_notifier`, `quality-time_proxy`, `quality-time_testldap`, and `quality-time_frontend`. The images are tagged with the version number. We don't use the `latest` tag.
+
+## Maintenance
+
+### Updating dependencies
+
+Keeping dependencies up-to-date is an important aspect of software maintenance. We use the [Dependabot GitHub action](https://github.com/ICTU/quality-time/blob/master/.github/dependabot.yml) to signal when dependencies have new versions. Dependabot doesn't have permission to run all checks, so Dependabot pull requests always fail. We don't merge the Dependabot pull requests, but rather follow these steps to update dependencies:
+
+- Review the changes by checking the release notes and changelogs included in the pull requests opened by Dependabot. When the release notes and changelogs are missing or otherwise look out of the ordinary, review the code diffs of the dependency for possible malicious updates. When in doubt, skip the update.
+- Create a new branch: `git checkout -b update-deps`.
+- Run the just recipe to update all direct and indirect dependencies: `just update-deps`.
+- Review the changes and compare : `git diff`. If anything looks out of the ordinary, skip the update.
+- Commit the changes: `git commit -a -m "Update several dependencies"`.
+- Push the branch: `git push`
+- [Open a pull request](https://github.com/ICTU/quality-time/pulls) and merge it when all checks are green.
+- Pull the new master and remove the branch: `git checkout master; git pull -p; git branch -D update-deps`.
 
 ### Adding metrics and sources
 
@@ -368,152 +509,8 @@ Because the source collector classes register themselves (see [`SourceCollector.
 src/source_collectors/file_source_collectors/cloc.py:26: unused class 'ClocLOC' (60% confidence)
 ```
 
-Add `ClocLOC` to the `.vulture-whitelist.py` as following, in order to suppress Vulture's warning:
+Add `ClocLOC` to the `.vulture-whitelist.py`, in order to suppress Vulture's warning:
 
 ```console
-uvx vulture --min-confidence 0 --make-whitelist src tests > .vulture-whitelist.py
+just fix
 ```
-
-## Testing
-
-This section assumes you have created a Python virtual environment, activated it, and installed the requirements for each Python component and that you installed the requirements for the frontend component, as described [above](#developing).
-
-### Unit tests
-
-To run the unit tests and measure unit test coverage of the backend components (this assumes you have created a Python virtual environment, activated it, and installed the requirements as described [above](#developing)):
-
-```console
-cd components/api_server  # or components/collector, components/notifier, components/shared_code, components/frontend
-just test
-```
-
-### Quality checks
-
-To run Ruff, mypy, and some other security and quality checks on the backend components, or ESLint and Prettier on the frontend component:
-
-```console
-cd components/api_server  # or components/collector, components/notifier, components/shared_code, components/frontend
-just check
-```
-
-### Feature tests
-
-The feature tests currently test all features through the API served by the API-server. They touch all components except the frontend, the collector, and the notifier. To run the feature tests, invoke this script, it will build and start all the necessary components, run the tests, and gather coverage information:
-
-```console
-tests/feature_tests/test.sh
-```
-
-The `test.sh` shell script will start a server under coverage and then run the [feature tests](https://github.com/ICTU/quality-time/tree/master/tests/feature_tests).
-
-It's also possible to run a subset of the feature tests by passing the feature file as argument:
-
-```console
-tests/feature_tests/test.sh tests/feature_tests/src/features/metric.feature
-```
-
-### Application tests
-
-The application tests in theory test all components through the frontend, but unfortunately the number of tests is too small to meet that goal. To run the application tests, start all components and then start the tests:
-
-```console
-docker compose up -d
-docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 ghcr.io/astral-sh/uv:python3.14-bookworm tests/application_tests/test.sh
-```
-
-## Documentation and changelog
-
-The documentation is written in Markdown files and published on [Read the Docs](https://quality-time.readthedocs.io/en/latest/).
-
-To generate the documentation locally:
-
-```console
-cd docs
-just build
-open build/html/index.html
-```
-
-`just build` also generates the `docs/src/reference.md` reference manual, containing an overview of all subjects, metrics, and sources.
-
-To check the correctness of the documentation (be sure that the docs folder is the current folder):
-
-```console
-just check
-```
-
-## Releasing
-
-### Preparation
-
-Run the release script with `--help` to show help information, including the current release.
-
-```console
-cd release
-uv run --script release.py --help
-```
-
-### Decide the release type
-
-*Quality-time* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html), so first you need to decide on the type of release you want to create, conform the [release policy](versioning.md#major-minor-and-patch-releases).
-
-- Create a **major** release if an operator needs to make manual changes to the Docker-composition before deploying the next release.
-- Create a **minor** release if the next release contains new or changed functionality.
-- Create a **patch** release if the next release contains only bug fixes.
-
-Before creating a release, it first needs to be tested as a **release candidate** for a major, minor, or patch release.
-Aside from testing by automatic pipeline it can for example be deployed to a test environment, or rolled out to early adopters.
-Before finalizing the release candidate, make sure to update the [version overview](versioning.md#version-overview).
-
-```{important}
-To determine whether a release is major, minor, or patch, compare the changes to the [previous most recent release](changelog.md).
-```
-
-### Determine the version bump
-
-Having decided on the release type, there are the following possibilities for the version bump argument that you will be passing to the release script:
-
-- If the current release is a release candidate,
-  - and you want to create another release candidate, use: `rc`. If the current release is e.g. v3.6.1-rc.0, this will bump the version to v3.6.1-rc.1.
-  - and the next release will not be, use: `release`. If the current release is e.g. v3.6.1-rc.0, this will bump the version to v3.6.1.
-  - and changes have been made since the previous release candidate that impact the release type, use: `major`, `minor`, or `patch`. If the current release is e.g. v3.6.1-rc.0, using `minor` will bump the version to v3.7.0-rc.0.
-- If the current release is not a release candidate:
-  - to create a release candidate, use: `major`, `minor`, or `patch`. If the current release is e.g. v3.6.1, using `minor` will bump the version to v3.7.0-rc.0.
-
-### Check the preconditions
-
-The release script will check a number of preconditions before actually creating the release.
-To check the preconditions without releasing, invoke the release script with the version bump as determined:
-
-```console
-uv run --script release.py --check-preconditions-only <bump>  # Where bump is major, minor, patch, rc, or release
-```
-
-If everything is ok, there is no output, and you can proceed creating the release.
-Otherwise, the release script will list the preconditions that have not been met and need fixing before you can create the release.
-
-### Create the release
-
-To release *Quality-time*, issue the release command (in the release folder) from an already created release candidate:
-
-```console
-uv run --script release.py release
-```
-
-If all preconditions are met, the release script will bump the version numbers, update the change history, commit the changes, push the commit, tag the commit, and push the tag to GitHub.
-The [GitHub Actions release workflow](https://github.com/ICTU/quality-time/actions/workflows/release.yml) will then build the Docker images and push them to [Docker Hub](https://hub.docker.com/search?type=image&q=ictu/quality-time).
-It will also create an {index}`Software Bill of Materials (SBOM) <Software Bill of Materials (SBOM)>` for the release, which can be found under the "Artifacts" header of the workflow run.
-
-The Docker images are `quality-time_database`, `quality-time_renderer`, `quality-time_api_server`, `quality-time_collector`, `quality-time_notifier`, `quality-time_proxy`, `quality-time_testldap`, and `quality-time_frontend`. The images are tagged with the version number. We don't use the `latest` tag.
-
-## Maintenance
-
-Keeping dependencies up-to-date is an important aspect of software maintenance. We use the [Dependabot GitHub action](https://github.com/ICTU/quality-time/blob/master/.github/dependabot.yml) to signal when dependencies have new versions. Dependabot doesn't have permission to run all checks, so Dependabot pull requests always fail. We don't merge the Dependabot pull requests, but rather follow these steps to update dependencies:
-
-- Review the changes by checking the release notes and changelogs included in the pull requests opened by Dependabot. When the release notes and changelogs are missing or otherwise look out of the ordinary, review the code diffs of the dependency for possible malicious updates. When in doubt, skip the update.
-- Create a new branch: `git checkout -b update-deps`.
-- Run the just recipe to update all direct and indirect dependencies: `just update-deps`.
-- Review the changes and compare : `git diff`. If anything looks out of the ordinary, skip the update.
-- Commit the changes: `git commit -a -m "Update several dependencies"`.
-- Push the branch: `git push`
-- [Open a pull request](https://github.com/ICTU/quality-time/pulls) and merge it when all checks are green.
-- Pull the new master and remove the branch: `git checkout master; git pull -p; git branch -D update-deps`.
