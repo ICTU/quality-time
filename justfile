@@ -189,8 +189,7 @@ ruff: install-py-dependencies
 [no-cd]
 [private]
 pyproject-fmt: install-py-dependencies
-    echo Skipping pyproject-fmt due to https://github.com/tox-dev/toml-fmt/issues/213
-    #uv run pyproject-fmt --check pyproject.toml
+    uv run pyproject-fmt --check pyproject.toml
 
 # Run troml
 [no-cd]
@@ -284,8 +283,7 @@ fix-py: install-py-dependencies
     uv run ruff check --fix {{ code }}
     uv run fixit fix {{ code }}
     # Pyproject-fmt returns exit code 1 when pyproject.toml needs formatting, ignore it when formatting:
-    echo Skipping pyproject-fmt due to https://github.com/tox-dev/toml-fmt/issues/213
-    #uv run pyproject-fmt --no-print-diff pyproject.toml || true
+    uv run pyproject-fmt --no-print-diff pyproject.toml || true
     uv run troml suggest --fix
     # Vulture returns exit code 3 when there is dead code, ignore it when writing the whitelist:
     uv run vulture --exclude .venv --min-confidence 0 --make-whitelist {{ code }} >| .vulture-whitelist.py || true
