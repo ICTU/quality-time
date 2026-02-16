@@ -1,32 +1,28 @@
 """Package.json updater script finds package.json files and updates dependencies to latest versions."""
 
 import json
-import subprocess  # nosec
 import sys
 from typing import TYPE_CHECKING
 
 from filesystem import glob
-from log import logger
+from log import get_logger
+from process import run
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-LOG = logger("package.json")
+LOG = get_logger("package.json")
 
 
 def update_package_json(package_json: Path) -> None:
     """Update the package.json and package-lock.json."""
     LOG.path(package_json)
-    subprocess_kwargs = {"cwd": package_json.parent, "capture_output": True, "text": True, "check": True}
     npm_outdated = ["npm", "outdated", "--silent", "--json", "--include=dev"]
-    try:
-        outdated = subprocess.run(npm_outdated, **subprocess_kwargs).stdout  # type: ignore[call-overload] # noqa: PLW1510, S603 # nosec
-    except subprocess.CalledProcessError as error:
-        outdated = error.stdout
-    for package, version in json.loads(outdated).items():
+    outdated_packages = json.loads(run(npm_outdated, cwd=package_json.parent))
+    for package, version in outdated_packages.items():
         LOG.new_version(package, version["latest"])
     npm_update = ["npm", "update", "--save", "--fund=false", "--ignore-scripts", "--silent", "--include=dev"]
-    subprocess.run(npm_update, **subprocess_kwargs)  # type: ignore[call-overload] # noqa: PLW1510, S603 # nosec
+    run(npm_update, cwd=package_json.parent)
 
 
 def update_package_jsons() -> int:
@@ -36,5 +32,5 @@ def update_package_jsons() -> int:
     return 0
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     sys.exit(update_package_jsons())
