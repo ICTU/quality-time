@@ -105,7 +105,7 @@ export function MeasurementValue({ metric, reportDate }) {
         value += "%"
     }
     value = formatMetricValue(scale, value)
-    const unit = getMetricUnit(metric, dataModel)
+    const unit = getMetricUnit(metric, dataModel, value)
     const stale = isMeasurementStale(metric, reportDate)
     const complete = isSourceConfigurationComplete(dataModel, metric)
     const outdated = isMeasurementOutdated(metric)

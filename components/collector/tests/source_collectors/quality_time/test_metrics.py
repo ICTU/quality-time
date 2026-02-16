@@ -25,6 +25,7 @@ class QualityTimeMetricsTest(QualityTimeTestCase):
                 "measurement": "20",
                 "target": "≦ 2",
                 "unit": "violations",
+                "unit_singular": "violation",
                 "status": "target_not_met",
                 "status_start_date": "2020-05-23T07:53:17+00:00",
             },

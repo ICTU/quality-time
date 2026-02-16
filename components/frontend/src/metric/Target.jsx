@@ -12,10 +12,8 @@ export function Target({ metric, metricUuid, reload, targetType }) {
     const dataModel = useContext(DataModel)
     const permissions = useContext(Permissions)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
-    const metricScale = getMetricScale(metric, dataModel)
     const metricDirection = formatMetricDirection(metric, dataModel)
     const targetValue = metric[targetType]
-    const unit = formatMetricScaleAndUnit(metric, dataModel)
     const scale = getMetricScale(metric, dataModel)
     const metricType = dataModel.metrics[metric.type]
     const defaultTarget = metricType[targetType]
@@ -25,11 +23,11 @@ export function Target({ metric, metricUuid, reload, targetType }) {
     let helperText =
         defaultTarget === metric[targetType] || defaultTarget === undefined
             ? ""
-            : `Default ${targetTypeLabel}: ${formatMetricValue(scale, defaultTarget)} ${unit}`
+            : `Default ${targetTypeLabel}: ${formatMetricValue(scale, defaultTarget)} ${formatMetricScaleAndUnit(metric, dataModel, defaultTarget)}`
     if (targetType === "debt_target") {
         helperText = "Accept technical debt if the metric value is equal to or better than the technical debt target."
     }
-    if (metricScale === "version_number") {
+    if (scale === "version_number") {
         return (
             <TextField
                 disabled={disabled}
@@ -40,11 +38,11 @@ export function Target({ metric, metricUuid, reload, targetType }) {
             />
         )
     } else {
-        const max = metricScale === "percentage" ? 100 : null
+        const max = scale === "percentage" ? 100 : null
         return (
             <TextField
                 disabled={disabled}
-                endAdornment={unit}
+                endAdornment={formatMetricScaleAndUnit(metric, dataModel, targetValue)}
                 helperText={helperText}
                 label={`Metric ${targetTypeLabel}`}
                 max={max}
