@@ -42,7 +42,7 @@ docker compose up # or 'just start' if you have Just installed
 
 #### Scenario 2: run bespoke component from shells and other components in Docker
 
-In this scenario, we run the [bespoke components](software.md#bespoke-components) from shells and the [standard components](software.md#standard-components) and [test components](software.md#test-components) as Docker containers. The proxy component does not need to be started as the frontend component functions as proxy. 
+In this scenario, we run the [bespoke components](software.md#bespoke-components) from shells and the [standard components](software.md#standard-components) and [test components](software.md#test-components) as Docker containers. The proxy component does not need to be started as the frontend component functions as proxy.
 
 ##### Start standard and test components in Docker
 
