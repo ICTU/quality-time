@@ -4,6 +4,8 @@ secrets:
   ldapCredential: "quality-time-ldap-secret"
 
 api_server:
+  extraVolumes: []
+  extraVolumeMounts: []
   image:
     repository: "ictu/quality-time_api_server"
   env:
@@ -16,6 +18,15 @@ collector:
     repository: "ictu/quality-time_collector"
 
 database:
+  securityContext:
+    capabilities:
+      add:
+        - CHOWN
+        - DAC_OVERRIDE
+        - SETGID
+        - SETUID
+      drop:
+        - ALL
   image:
     repository: "ictu/quality-time_database"
   resources:
@@ -42,5 +53,17 @@ renderer:
     TZ: "Europe/Amsterdam"
 
 www:
+  # -- When www.directlyToService is true the quality-time_proxy is not used and ingress is point directly to the backend api and frontend.
+  directlyToService: false
   image:
     repository: "ictu/quality-time_proxy"
+  ingress:
+    enabled: false
+    ingressClassName: ""
+    hostname: ""
+    pathType: "ImplementationSpecific"
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+    annotations: {}
