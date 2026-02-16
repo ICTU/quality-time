@@ -9,17 +9,17 @@ This means that a version can be prevented from being updated, by using "package
 """
 
 import re
-import subprocess  # nosec
 import sys
 from typing import TYPE_CHECKING
 
 from filesystem import glob
-from log import logger
+from log import get_logger
+from process import run
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-LOG = logger("pyproject.toml")
+LOG = get_logger("pyproject.toml")
 
 
 class Versions:
@@ -50,7 +50,7 @@ def update_pyproject_toml(pyproject_toml: Path) -> None:
         "--all-groups",
         "--outdated",
     ]
-    outdated = subprocess.run(uv_tree, capture_output=True, text=True, check=True).stdout  # noqa: S603 # nosec
+    outdated = run(uv_tree)
     lines_with_updates = [line for line in outdated.splitlines() if " (latest: " in line]
     for line in lines_with_updates:
         LOG.new_version(line.split()[1], line.split()[-1].lstrip("v").rstrip(")"))
@@ -67,8 +67,7 @@ def update_pyproject_toml(pyproject_toml: Path) -> None:
 def update_uv_lock(pyproject_toml: Path) -> None:
     """Update the uv.lock file for the pyproject.toml."""
     LOG.path(pyproject_toml.parent / "uv.lock")
-    uv_sync = ["uv", "sync", "--directory", str(pyproject_toml.parent), "--upgrade", "--quiet", "--no-progress"]
-    subprocess.run(uv_sync, capture_output=True, text=True, check=True)  # noqa: S603 # nosec
+    run(["uv", "sync", "--directory", str(pyproject_toml.parent), "--upgrade", "--quiet", "--no-progress"])
 
 
 def update_pyproject_tomls() -> int:
@@ -81,5 +80,5 @@ def update_pyproject_tomls() -> int:
     return 0
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     sys.exit(update_pyproject_tomls())

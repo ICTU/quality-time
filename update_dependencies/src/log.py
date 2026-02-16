@@ -6,7 +6,7 @@ from pathlib import Path
 from rich.logging import RichHandler
 
 
-class UpdateLogger:
+class Logger:
     """Wrap a logger and add update specific log methods."""
 
     def __init__(self, name: str) -> None:
@@ -26,7 +26,7 @@ class UpdateLogger:
         self.log.info("Updating %s", path.relative_to(Path.cwd()), stacklevel=2)
 
 
-def logger(name: str) -> UpdateLogger:
+def get_logger(name: str) -> Logger:
     """Initialize a logger."""
     logging.basicConfig(level=logging.INFO, datefmt="[%X]", format="%(message)s", handlers=[RichHandler()])
-    return UpdateLogger(name)
+    return Logger(name)

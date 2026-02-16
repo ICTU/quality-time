@@ -1,29 +1,12 @@
 """Get the latest available tags from Docker Hub."""
 
-import re
 from functools import cache
-from typing import TYPE_CHECKING
 
 import requests
 from packaging.version import InvalidVersion, Version
 
-if TYPE_CHECKING:
-    from log import UpdateLogger
 
-
-def update_image_tag(line: str, regexp: str, logger: UpdateLogger) -> str:
-    """Update the tag if the Dockerfile line contains a FROM statement, otherwise return the line unchanged."""
-    if match := re.match(regexp, line):
-        image = match.group("image")
-        tag = match.group("tag")
-        latest_tag = _get_latest_tag(image, tag)
-        if latest_tag != tag:
-            logger.new_version(image, latest_tag)
-            return line.replace(tag, latest_tag)
-    return line
-
-
-def _get_latest_tag(image: str, current_tag: str) -> str:
+def get_latest_tag(image: str, current_tag: str) -> str:
     """Find the latest compatible tag for an image. Keeps the same non-numerical parts while upgrading the version."""
     current_version, current_suffix = _split_tag(current_tag)
     if current_version is None:
