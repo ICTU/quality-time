@@ -224,10 +224,9 @@ vale: install-py-dependencies
     {{ if has_vale == "true" { "uv run vale sync; uv run vale --no-wrap --glob '*.md' src" } else { "" } }}
 
 # Run yamllint
-[no-cd]
 [private]
 yamllint: install-py-dependencies
-    {{ if has_yamllint == "true" { "uv run yamllint ../publiccode.yml" } else { "" } }}
+    {{ if has_yamllint == "true" { "uv run yamllint -c docs/.yamllint ." } else { "" } }}
 
 # Run sphinx
 [no-cd]

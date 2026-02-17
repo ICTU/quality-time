@@ -1,7 +1,7 @@
 ---
 name: SonarCloud
 
-on:
+on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - master
@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         if: env.SONAR_TOKEN != null
         with:
-          fetch-depth: 0 # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0  # Disabling shallow clone is recommended for improving relevancy of reporting
       - name: Install uv
         if: env.SONAR_TOKEN != null
         uses: astral-sh/setup-uv@v7.3.0

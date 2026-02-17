@@ -1,7 +1,7 @@
 ---
 name: Helm Chart CI
 
-on:
+on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - master
@@ -15,9 +15,10 @@ jobs:
       - uses: actions/checkout@v6.0.2
 
       - name: Set yaml value change dict with random generated secrets
+        # yamllint disable rule:line-length
         run: |
           echo "VALUE_CHANGES={\"[0].data.DATABASE_USERNAME\":\"$(echo ${RANDOM} | base64)\",\"[0].data.DATABASE_PASSWORD\":\"$(echo ${RANDOM} | base64)\",\"[1].data.LDAP_LOOKUP_USER_PASSWORD\":\"$(echo ${RANDOM} | base64)\"}" >> $GITHUB_ENV
-
+        # yamllint enable rule:line-length
       - name: Update values.yaml
         uses: fjogeleit/yaml-update-action@v0.16.1
         with:
