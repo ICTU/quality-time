@@ -63,7 +63,7 @@ spec:
               value: {{ .Values.api_server.env.LDAP_SEARCH_FILTER }}
           {{- if .Values.api_server.extraVolumeMounts }}
           volumeMounts:
-            {{- .Values.api_server.extraVolumeMounts | nindent 12 }}
+            {{- toYaml .Values.api_server.extraVolumeMounts | nindent 12 }}
           {{- end }}
 {{- with .Values.api_server.resources }}
           resources: {{- toYaml . | nindent 12 }}
@@ -74,7 +74,8 @@ spec:
                 - ALL
       restartPolicy: Always
       {{- if .Values.api_server.extraVolumes }}
-      {{- .Values.api_server.extraVolumes | nindent 8 }}
+      volumes:
+        {{- toYaml .Values.api_server.extraVolumes | nindent 8 }}
       {{- end }}
 ---
 apiVersion: v1

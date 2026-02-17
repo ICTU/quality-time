@@ -100,14 +100,6 @@ spec:
       http:
         {{- if .Values.www.directlyToService }}
         paths:
-          - path: /
-            pathType: {{ .Values.www.ingress.pathType }}
-            backend:
-              service:
-                name: {{ .Release.Name }}-{{ template "frontend_name" . }}
-                port:
-                  number: 5000
-        paths:
           - path: /api
             pathType: {{ .Values.www.ingress.pathType }}
             backend:
@@ -115,6 +107,13 @@ spec:
                 name: {{ .Release.Name }}-{{ template "api_server_name" . }}
                 port:
                   number: 5001
+          - path: /
+            pathType: {{ .Values.www.ingress.pathType }}
+            backend:
+              service:
+                name: {{ .Release.Name }}-{{ template "frontend_name" . }}
+                port:
+                  number: 5000
         {{- else }}
         paths:
           - path: /
