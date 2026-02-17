@@ -53,7 +53,7 @@ renderer:
     TZ: "Europe/Amsterdam"
 
 www:
-  # -- When www.directlyToService is true the quality-time_proxy is not used and ingress is point directly to the backend api and frontend.
+  # -- When www.directlyToService is true the quality-time_proxy is not used and ingress is pointed directly to the backend api and frontend.
   directlyToService: false
   image:
     repository: "ictu/quality-time_proxy"
