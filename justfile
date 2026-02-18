@@ -252,13 +252,15 @@ npm-lint: install-js-dependencies
 [no-cd]
 [private]
 npm-audit: install-js-dependencies
-    npm audit
+    echo "Note: currently ignoring npm audit exit code due to ajv<8.18.0, severity: moderate, ajv has ReDoS when using '\$data' option - https://github.com/advisories/GHSA-2g4f-4pwh-qvx6"
+    npm audit || true
 
 # Run npm outdated
 [no-cd]
 [private]
 npm-outdated: install-js-dependencies
-    npm outdated || true  # Don't fail, we can't upgrade ESLint yet due to peer dependencies needing updates
+    echo "Note: currently ignoring npm outdated exit code because ESLint can't be upgraded yet due to peer dependencies needing updates"
+    npm outdated || true
 
 # Run JavaScript checks.
 [no-cd]
