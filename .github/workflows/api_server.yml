@@ -1,7 +1,7 @@
 ---
 name: API-server
 
-on: [push]
+on: [push]  # yamllint disable-line rule:truthy
 
 jobs:
   build:

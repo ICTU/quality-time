@@ -31,10 +31,12 @@ lint.select = [
     "ALL",
 ]
 lint.ignore = [
+    "ANN201", # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/ - too many untyped return values atm to turn this rule on
     "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
     "D203",   # https://docs.astral.sh/ruff/rules/one-blank-line-before-class/ - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
     "D213",   # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/ - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
     "ISC001", # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
+    "PT",     # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
     "TC006",  # https://docs.astral.sh/ruff/rules/runtime-cast-value/ - the rule claims it's often necessary to quote the first argument passed to cast(), but that's not the case in this code base
 ]
 lint.per-file-ignores.".vulture-whitelist.py" = [

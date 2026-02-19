@@ -1,14 +1,18 @@
 [run]
 branch = True
 dynamic_context = test_function
-include =
-    src/*
-    tests/*
+source =
+    src
+    tests
 omit =
     */conf.py
     tests/*under_coverage.py
     */venv/*
     */.venv/*
+    src/source_collectors/jira/json_types.py
+    src/notifier_utilities/type.py
+    src/update_circle_ci_config.py
+    src/update_dockerfile_base_image.py
 
 [report]
 # Regexes for lines to exclude from consideration
