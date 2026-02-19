@@ -1,5 +1,5 @@
 ---
-{{- if not .Values.www.directlyToService }}
+{{- if .Values.www.deployProxy }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -55,7 +55,7 @@ spec:
       restartPolicy: Always
 {{- end }}
 ---
-{{- if not .Values.www.directlyToService }}
+{{- if .Values.www.deployProxy }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -98,7 +98,16 @@ spec:
     {{- if .Values.www.ingress.hostname }}
     - host: {{ .Values.www.ingress.hostname | quote }}
       http:
-        {{- if .Values.www.directlyToService }}
+        {{- if .Values.www.deployProxy }}
+        paths:
+          - path: /
+            pathType: {{ .Values.www.ingress.pathType }}
+            backend:
+              service:
+                name: {{ .Release.Name }}-{{ template "www_name" . }}
+                port:
+                  number: 8080
+        {{- else }}
         paths:
           - path: /api
             pathType: {{ .Values.www.ingress.pathType }}
@@ -114,15 +123,6 @@ spec:
                 name: {{ .Release.Name }}-{{ template "frontend_name" . }}
                 port:
                   number: 5000
-        {{- else }}
-        paths:
-          - path: /
-            pathType: {{ .Values.www.ingress.pathType }}
-            backend:
-              service:
-                name: {{ .Release.Name }}-{{ template "www_name" . }}
-                port:
-                  number: 8080
         {{- end }}
     {{- end }}
   {{- if .Values.www.ingress.tls }}
