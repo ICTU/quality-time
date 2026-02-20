@@ -16,7 +16,7 @@ dependencies = [
     "packaging==26.0",
     "pymongo==4.16.0",
     "python-dateutil==2.9.0.post0",
-    "rich==14.3.2",
+    "rich==14.3.3",
     "shared-code",
     "typing-extensions==4.15.0",
 ]
