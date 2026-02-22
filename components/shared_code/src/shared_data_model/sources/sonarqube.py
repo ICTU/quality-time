@@ -56,7 +56,7 @@ def violation_entity_attributes(
             EntityAttribute(name="Review priority", color={"high": Color.NEGATIVE, "medium": Color.WARNING}),
         )
     if include_suppressed_violation_attributes:
-        attributes.append(EntityAttribute(name="Resolution"))
+        attributes.append(EntityAttribute(name="Issue status"))
         attributes.append(EntityAttribute(name="Rationale"))
     attributes.extend(
         [
