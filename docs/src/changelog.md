@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- When measuring suppressed violations with SonarQube as source, use the issue status instead of the resolution to determine whether a violation is suppressed. Fixes [#12515](https://github.com/ICTU/quality-time/issues/12515).
+
 ## v5.48.4 - 2026-02-11
 
 ### Fixed
