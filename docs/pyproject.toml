@@ -14,14 +14,13 @@ classifiers = [
 dev = [
     "furo==2025.12.19",
     "gitpython==3.1.46",
-    "myst-parser<=4.0.1",       # Don't update, sphinx-copybutton is not compatible with sphinx 9
-    "pydantic==2.12.5",         # Needed for generating the reference docs from the data model
+    "myst-parser==5.0.0",
+    "pydantic==2.12.5",     # Needed for generating the reference docs from the data model
     "shared-code",
-    "sphinx<=8.2.3",            # Don't update, sphinx-copybutton is not compatible with sphinx 9
-    "sphinx-copybutton==0.5.2",
-    "sphinx-design<=0.6.1",     # Don't update, sphinx-copybutton is not compatible with sphinx 9
+    "sphinx==9.1.0",
+    "sphinx-design==0.7.0",
     "tools",
-    "vale==3.13.0.0",           # Documentation grammar and style checker
+    "vale==3.13.0.0",       # Documentation grammar and style checker
     "yamllint==1.38.0",
 ]
 

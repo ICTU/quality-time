@@ -33,7 +33,7 @@ author = "ICTU"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["myst_parser", "sphinx_copybutton", "sphinx_design", "sphinx.ext.graphviz"]
+extensions = ["myst_parser", "sphinx_design", "sphinx.ext.graphviz"]
 myst_enable_extensions = ["colon_fence", "deflist"]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -67,6 +67,8 @@ html_favicon = "../../components/frontend/public/favicon.ico"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+html_css_files = ["copy_button.css"]
+html_js_files = ["https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js", "copy_button.js"]
 
 # -- Options for linkcheck ---------------------------------------------------
 
