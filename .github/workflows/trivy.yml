@@ -45,7 +45,7 @@ jobs:
         run: docker build -f ${{ matrix.docker_file }} -t docker.io/ictu/quality-time_${{ matrix.component }} .
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.34.0
+        uses: aquasecurity/trivy-action@0.34.1
         with:
           image-ref: "docker.io/ictu/quality-time_${{ matrix.component }}"
           ignore-unfixed: true
