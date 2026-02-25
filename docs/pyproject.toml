@@ -33,13 +33,17 @@ line-length = 120
 src = [
     "src",
 ]
+extend-include = [ "src/*.md" ]
+preview = true  # Formatting Markdown Python code blocks is only availabe in preview mode
 lint.select = [
     "ALL",
 ]
 lint.ignore = [
     "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
+    "CPY001", # https://docs.astral.sh/ruff/rules/missing-copyright-notice/ - unstable rule
     "D203",   # https://docs.astral.sh/ruff/rules/one-blank-line-before-class/ - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
     "D213",   # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/ - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
+    "DOC201", # https://docs.astral.sh/ruff/rules/docstring-missing-returns/ - unstable rule
     "FBT",    # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
     "ISC001", # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
     "PD",     # https://docs.astral.sh/ruff/rules/#pandas-vet-pd - pandas isn't used

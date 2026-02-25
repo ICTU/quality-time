@@ -1,5 +1,6 @@
 """Script to convert the data model in a Markdown file."""
 
+import operator
 import pathlib
 import re
 from typing import TYPE_CHECKING, Literal
@@ -44,7 +45,7 @@ def data_model_metric_items() -> list[tuple[str, Metric]]:
 def data_model_metric_source_keys_and_names(metric: Metric) -> list[tuple[str, str]]:
     """Return the data model metric source keys and source names, sorted by name."""
     keys_and_names = [(source_key, DATA_MODEL.sources[source_key].name) for source_key in metric.sources]
-    return sorted(keys_and_names, key=lambda key_and_name: key_and_name[1])
+    return sorted(keys_and_names, key=operator.itemgetter(1))
 
 
 def markdown_paragraph(text: str) -> str:
@@ -244,7 +245,7 @@ def parameter_paragraph(parameters: list[Parameter], mandatory: bool) -> str:
 def parameter_description(parameter: Parameter) -> str:
     """Return the Markdown version of the parameter."""
     help_text = " " + parameter.help if parameter.help else ""
-    if parameter.type in ("single_choice", "multiple_choice_with_defaults", "multiple_choice_without_defaults"):
+    if parameter.type in {"single_choice", "multiple_choice_with_defaults", "multiple_choice_without_defaults"}:
         parameter_type = parameter.type.replace("_", " ")
         values = ", ".join(sorted([f"`{value}`" for value in parameter.values or []]))
         values_text = f" This is a {parameter_type} parameter. Possible values are: {values}."
