@@ -28,10 +28,11 @@ def get_latest_version(action: str, current_version_string: str) -> str:
     response = requests.get(url, headers=headers, timeout=10)
     response.raise_for_status()
     json = response.json()
+    latest_tag = json.get("tag_name", "").strip("v")
     try:
-        latest_version = Version(json.get("tag_name", "").strip("v"))
+        latest_version = Version(latest_tag)
     except InvalidVersion:
-        LOG.invalid_version(f"{organization}/{repository}", f"'{json.get('tag_name', '')}'")
+        LOG.invalid_version(f"{organization}/{repository}", f"'{latest_tag}'")
         latest_version = Version("0.0.0")
     return str(max(latest_version, current_version))
 

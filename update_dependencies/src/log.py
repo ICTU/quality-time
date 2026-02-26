@@ -25,6 +25,10 @@ class Logger:
         """Log working on path."""
         self.log.info("Updating %s", path.relative_to(Path.cwd()), stacklevel=2)
 
+    def expected_node_base_image(self, dockerfile: Path) -> None:
+        """Log missing Node base image."""
+        self.log.error("Expected Dockerfile %s to have a Node base image", dockerfile)
+
 
 def get_logger(name: str) -> Logger:
     """Initialize a logger."""

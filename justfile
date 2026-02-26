@@ -56,11 +56,23 @@ update-js-dependencies:
     # Note: major updates are not done automatically by npm
     uv run --project update_dependencies update_dependencies/src/update_package_json.py
 
+# Update the Node engine version in package.json files.
+[private]
+update-node-engine:
+    uv run --project update_dependencies update_dependencies/src/update_node_engine.py
+
+# Update the jsdelivr CDN package versions in the Sphinx config.
+[private]
+update-jsdelivr:
+    uv run --project update_dependencies update_dependencies/src/update_jsdelivr.py
+
 alias update-deps := update-dependencies
 
 # Update direct and indirect dependencies. Set the GITHUB_TOKEN environment variable to prevent hitting GitHub rate limits.
 [parallel]
-update-dependencies: update-js-dependencies update-py-dependencies update-docker-base-images update-github-actions update-circle-ci-config
+update-dependencies: update-docker-base-images update-py-dependencies update-github-actions update-circle-ci-config update-jsdelivr
+    just update-node-engine
+    just update-js-dependencies
 
 # === Install dependencies ===
 

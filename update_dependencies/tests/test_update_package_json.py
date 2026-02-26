@@ -34,7 +34,7 @@ class UpdatePackageJsonTest(unittest.TestCase):
         mock_package_json = self.create_package_json()
         mock_glob.return_value = [mock_package_json]
         mock_run.side_effect = [Mock(stdout="{}"), Mock(stdout="")]
-        update_package_jsons()
+        self.assertEqual(0, update_package_jsons())
         mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=2)
         mock_warning.assert_not_called()
         self.assert_npm_called(mock_run)
@@ -48,7 +48,7 @@ class UpdatePackageJsonTest(unittest.TestCase):
             subprocess.CalledProcessError(cmd="", returncode=1, output='{"package": {"latest": "1.1"}}'),
             Mock(stdout=""),
         ]
-        update_package_jsons()
+        self.assertEqual(0, update_package_jsons())
         mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=2)
         mock_warning.assert_called_with("New version available for %s: %s", "package", "1.1", stacklevel=2)
         self.assert_npm_called(mock_run)
