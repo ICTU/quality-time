@@ -54,6 +54,5 @@ def update_files(
     start: Path | None = None,
 ) -> int:
     """Update the files using the regexp to find the current version and get_new_version to find new versions."""
-    for path in glob(glob_pattern, start):
-        update_file(path, regexp, get_new_version, logger)
-    return 0
+    results = {update_file(path, regexp, get_new_version, logger) for path in glob(glob_pattern, start)}
+    return max(results, default=0)

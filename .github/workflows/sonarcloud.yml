@@ -37,37 +37,44 @@ jobs:
       - name: Collector
         if: env.SONAR_TOKEN != null
         working-directory: components/collector
+        # yamllint disable rule:line-length
         run: |
-          uv tool run --from=rust-just --project $GITHUB_WORKSPACE/tools/pyproject.toml just test
+          uv tool run --from $(uv export --project ../../tools --only-group just --quiet --no-hashes --no-header) just test
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
           uv run --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml
+        # yamllint enable rule:line-length
       - name: Notifier
         if: env.SONAR_TOKEN != null
         working-directory: components/notifier
+        # yamllint disable rule:line-length
         run: |
-          uv tool run --from=rust-just --project $GITHUB_WORKSPACE/tools/pyproject.toml just test
+          uv tool run --from $(uv export --project ../../tools --only-group just --quiet --no-hashes --no-header) just test
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
           uv run --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml
+        # yamllint enable rule:line-length
       - name: API-server
         if: env.SONAR_TOKEN != null
         working-directory: components/api_server
+        # yamllint disable rule:line-length
         run: |
-          uv tool run --from=rust-just --project $GITHUB_WORKSPACE/tools/pyproject.toml just test
+          uv tool run --from $(uv export --project ../../tools --only-group just --quiet --no-hashes --no-header) just test
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
           uv run --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml
+        # yamllint enable rule:line-length
       - name: Shared Code
         if: env.SONAR_TOKEN != null
         working-directory: components/shared_code
+        # yamllint disable rule:line-length
         run: |
-          uv tool run --from=rust-just --project $GITHUB_WORKSPACE/tools/pyproject.toml just test
+          uv tool run --from $(uv export --project ../../tools --only-group just --quiet --no-hashes --no-header) just test
           export PYTHONPATH=`python -c 'import sys;print(":".join(sys.argv[1:]))' src $PYTHONPATH`
           uv run --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml
+        # yamllint enable rule:line-length
       - name: Frontend
         if: env.SONAR_TOKEN != null
-        working-directory: components/frontend
         env:
           CI: true
-        run: uv tool run --from=rust-just --project $GITHUB_WORKSPACE/tools/pyproject.toml just test cov
+        run: uv tool run --directory components/frontend --from $(uv export --project tools --only-group just --quiet --no-hashes --no-header) just test cov # yamllint disable-line rule:line-length
       - name: Create packages
         if: env.SONAR_TOKEN != null
         run: |

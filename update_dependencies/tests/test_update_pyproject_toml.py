@@ -28,7 +28,7 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         """Test updating a pyproject.toml."""
         mock_pyproject_toml = self.create_pyproject_toml()
         mock_glob.return_value = [mock_pyproject_toml]
-        update_pyproject_tomls()
+        self.assertEqual(0, update_pyproject_tomls())
         mock_pyproject_toml.write_text.assert_called_with('"package==1.1"\n')
         mock_info.assert_called_with("Updating %s", Path("uv.lock"), stacklevel=2)
         mock_warning.assert_called_with("New version available for %s: %s", "package", "1.1", stacklevel=2)
@@ -38,7 +38,7 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         """Test that the pyproject.toml is not written if there are no changes."""
         mock_pyproject_toml = self.create_pyproject_toml()
         mock_glob.return_value = [mock_pyproject_toml]
-        update_pyproject_tomls()
+        self.assertEqual(0, update_pyproject_tomls())
         mock_pyproject_toml.write_text.assert_not_called()
         mock_info.assert_called_with("Updating %s", Path("uv.lock"), stacklevel=2)
         mock_warning.assert_not_called()

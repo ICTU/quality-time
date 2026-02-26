@@ -44,7 +44,7 @@ class UpdateFileTest(unittest.TestCase):
         """Test no changes."""
         mock_file = Mock(read_text=Mock(return_value="line1\nline2\n"))
         mock_logger = Mock()
-        update_file(mock_file, "regexp", lambda *_args: "1.1", mock_logger)
+        self.assertEqual(0, update_file(mock_file, "regexp", lambda *_args: "1.1", mock_logger))
         mock_file.write_text.assert_not_called()
         mock_logger.new_version.assert_not_called()
 
@@ -52,7 +52,7 @@ class UpdateFileTest(unittest.TestCase):
         """Test a new version."""
         mock_file = Mock(read_text=Mock(return_value="line1\nimage: python:3.14\n"))
         mock_logger = Mock()
-        update_file(mock_file, REGEXP, lambda *_args: "3.15", mock_logger)
+        self.assertEqual(0, update_file(mock_file, REGEXP, lambda *_args: "3.15", mock_logger))
         mock_file.write_text.assert_called_with("line1\nimage: python:3.15\n")
         mock_logger.new_version.assert_called_with("python", "3.15")
 
@@ -60,7 +60,7 @@ class UpdateFileTest(unittest.TestCase):
         """Test a new version that is actually older."""
         mock_file = Mock(read_text=Mock(return_value="line1\nimage: python:3.14\n"))
         mock_logger = Mock()
-        update_file(mock_file, REGEXP, lambda *_args: "3.13", mock_logger)
+        self.assertEqual(0, update_file(mock_file, REGEXP, lambda *_args: "3.13", mock_logger))
         mock_file.write_text.assert_not_called()
         mock_logger.new_version.assert_not_called()
 
@@ -81,7 +81,7 @@ class UpdateFilesTest(unittest.TestCase):
         mock_file = self.mock_file("line1\nline2\n")
         mock_glob.return_value = [mock_file]
         mock_logger = Mock()
-        update_files("Dockerfile", REGEXP, lambda *_args: "1.1", mock_logger)
+        self.assertEqual(0, update_files("Dockerfile", REGEXP, lambda *_args: "1.1", mock_logger))
         mock_file.write_text.assert_not_called()
         mock_logger.new_version.assert_not_called()
 
@@ -90,6 +90,6 @@ class UpdateFilesTest(unittest.TestCase):
         mock_file = self.mock_file("line1\nimage: python:3.14\n")
         mock_glob.return_value = [mock_file]
         mock_logger = Mock()
-        update_files("config.yml", REGEXP, lambda *_args: "3.15", mock_logger)
+        self.assertEqual(0, update_files("config.yml", REGEXP, lambda *_args: "3.15", mock_logger))
         mock_file.write_text.assert_called_with("line1\nimage: python:3.15\n")
         mock_logger.new_version.assert_called_with("python", "3.15")
