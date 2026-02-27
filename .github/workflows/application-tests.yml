@@ -30,7 +30,7 @@ jobs:
         run: |
           docker compose logs > build/containers.log
       - name: Upload artifacts
-        uses: actions/upload-artifact@v6.0.0
+        uses: actions/upload-artifact@v7.0.0
         if: always()
         with:
           name: build-artifacts
