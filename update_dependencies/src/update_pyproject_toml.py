@@ -1,11 +1,8 @@
 """Work-around for the missing `uv update` command, see https://github.com/astral-sh/uv/issues/6794.
 
-Limitations:
-- This script only updates pyproject.toml, not uv.lock.
-- This script only considers matching versions ("==") for upgrading.
-- Version specs with other version clauses ("<=", "~=", etc.) are ignored.
-
-This means that a version can be prevented from being updated, by using "package<=max version" as version spec.
+Note: This script only considers matching versions ("==") for upgrading. Version specs with other version clauses
+("<=", "~=", etc.) are ignored. This means that a version can be prevented from being updated, by using
+"package<=max version" as version spec.
 """
 
 import re
