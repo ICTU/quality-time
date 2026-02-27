@@ -74,7 +74,7 @@ jobs:
         if: env.SONAR_TOKEN != null
         env:
           CI: true
-        run: uv tool run --directory components/frontend --from $(uv export --project tools --only-group just --quiet --no-hashes --no-header) just test cov # yamllint disable-line rule:line-length
+        run: uv tool run --directory components/frontend --from $(uv export --project tools --only-group just --quiet --no-hashes --no-header) just test cov  # yamllint disable-line rule:line-length
       - name: Create packages
         if: env.SONAR_TOKEN != null
         run: |

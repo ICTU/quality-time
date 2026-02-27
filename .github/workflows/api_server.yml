@@ -14,4 +14,4 @@ jobs:
         with:
           version-file: tools/pyproject.toml
       - name: Install dependencies, run unit tests and check quality
-        run: uv tool run --directory components/api_server --from $(uv export --project tools --only-group just --quiet --no-hashes --no-header) just ci # yamllint disable-line rule:line-length
+        run: uv tool run --directory components/api_server --from $(uv export --project tools --only-group just --quiet --no-hashes --no-header) just ci  # yamllint disable-line rule:line-length
