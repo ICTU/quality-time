@@ -10,7 +10,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
-## [Unreleased]
+## v5.48.5 - 2026-02-27
 
 ### Fixed
 
