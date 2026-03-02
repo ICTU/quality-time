@@ -12,6 +12,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix retrieving all suppressed issues from SonarQube instead of only accepted, false positive, and sandboxed issues. Fixes [#12707](https://github.com/ICTU/quality-time/issues/12707).
+
 ### Added
 
 - Add singular versions of the metric units to the data model and allow users to override both the singular and plural forms via the UI. Closes [#550](https://github.com/ICTU/quality-time/issues/550).
