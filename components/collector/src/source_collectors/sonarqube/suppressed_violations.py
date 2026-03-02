@@ -38,7 +38,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         branch = self._parameter("branch")
         all_issues_api_url = URL(f"{url}/api/issues/search?projects={component}&branch={branch}")
         resolved_issues_api_url = URL(
-            f"{all_issues_api_url}&issuesStatuses=ACCEPTED,FALSE_POSITIVE,IN_SANDBOX&additionalFields=comments"
+            f"{all_issues_api_url}&issueStatuses=ACCEPTED,FALSE_POSITIVE,IN_SANDBOX&additionalFields=comments"
             f"{self._query_parameter('clean_code_attribute_categories', uppercase=True)}"
             f"{self._query_parameter('impacted_software_qualities', uppercase=True)}"
             f"{self._query_parameter('impact_severities', uppercase=True)}&ps={self.PAGE_SIZE}",

@@ -65,7 +65,7 @@ GitLabChangeFailureRate  # unused class (src/source_collectors/gitlab/change_fai
 GitLabFailedJobs  # unused class (src/source_collectors/gitlab/failed_jobs.py:13)
 commit  # unused variable (src/source_collectors/gitlab/inactive_branches.py:24)
 GitLabInactiveBranches  # unused class (src/source_collectors/gitlab/inactive_branches.py:30)
-GitLabMergeRequests  # unused class (src/source_collectors/gitlab/merge_requests.py:68)
+GitLabMergeRequests  # unused class (src/source_collectors/gitlab/merge_requests.py:69)
 GitLabPipelineDuration  # unused class (src/source_collectors/gitlab/pipeline_duration.py:14)
 GitLabSourceUpToDateness  # unused class (src/source_collectors/gitlab/source_up_to_dateness.py:107)
 __new__  # unused function (src/source_collectors/gitlab/source_up_to_dateness.py:110)

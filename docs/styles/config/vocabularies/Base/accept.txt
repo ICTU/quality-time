@@ -57,6 +57,7 @@ npm
 parameterizable
 [Pp]erformancetest
 project_or_group
+sandboxed
 security_hotspot
 severities
 sparkline
