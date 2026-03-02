@@ -20,6 +20,12 @@ import { WarningMessage } from "../widgets/WarningMessage"
 import { ReportDashboard } from "./ReportDashboard"
 import { ReportTitle } from "./ReportTitle"
 
+function navigateToSubject(event, subjectUuid) {
+    event.preventDefault()
+    document.getElementById(subjectUuid).scrollIntoView() // No need for .?: if the subject card exists, the subject exists as well
+    globalThis.scrollBy(0, 163) // Correct for menubar and subject title margin
+}
+
 export function Report({
     changedFields,
     dates,
@@ -33,15 +39,6 @@ export function Report({
     reports,
     settings,
 }) {
-    function navigateToSubject(event, subjectUuid) {
-        event.preventDefault()
-        const element = document.getElementById(subjectUuid)
-        if (element) {
-            element.scrollIntoView()
-            globalThis.scrollBy(0, 163) // Correct for menubar and subject title margin
-        }
-    }
-
     if (!report) {
         return (
             <WarningMessage title="Report not found">

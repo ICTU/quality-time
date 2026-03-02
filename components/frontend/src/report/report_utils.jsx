@@ -56,7 +56,7 @@ export function summarizeMetricsOnDate(dataModel, date, measurements, metrics, t
     // Summarize the number of metrics per color on the given date, and filtered by tag, if specified
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
     for (const [metricUuid, metric] of Object.entries(metrics)) {
-        if (!tag || getMetricTags(metric).indexOf(tag) >= 0) {
+        if (!tag || getMetricTags(metric).includes(tag)) {
             const status = metricStatusOnDate(metricUuid, metric, measurements, date, dataModel)
             summary[STATUS_COLORS[status]] += 1
         }

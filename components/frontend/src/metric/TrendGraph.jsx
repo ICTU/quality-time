@@ -23,7 +23,7 @@ import { STATUS_COLORS, STATUS_NAME } from "./status"
 function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
     const scale = getMetricScale(metric, dataModel)
     const value = measurement[scale]?.[field] ?? null
-    return value !== null ? Number(value) : null
+    return value === null ? null : Number(value)
 }
 
 export function TrendGraph({ metric, measurements, loading }) {

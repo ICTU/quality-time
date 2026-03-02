@@ -5,7 +5,6 @@ import {
     element,
     func,
     instanceOf,
-    node,
     number,
     object,
     objectOf,
@@ -15,7 +14,7 @@ import {
     string,
 } from "prop-types"
 
-export const childrenPropType = node
+export { node as childrenPropType } from "prop-types"
 
 export const datePropType = instanceOf(Date)
 

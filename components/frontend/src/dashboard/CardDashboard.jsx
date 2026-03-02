@@ -40,10 +40,10 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
     if (cards.length === 0) {
         return null
     }
-    const cardKeys = cards.map((card) => card.key)
-    const layout = (initialLayout ?? []).filter((layoutItem) => cardKeys.includes(layoutItem.i))
-    const layoutItemIds = layout.map((layoutItem) => layoutItem.i)
-    const newCards = cards.filter((card) => !layoutItemIds.includes(card.key))
+    const cardKeys = new Set(cards.map((card) => card.key))
+    const layout = (initialLayout ?? []).filter((layoutItem) => cardKeys.has(layoutItem.i))
+    const layoutItemIds = new Set(layout.map((layoutItem) => layoutItem.i))
+    const newCards = cards.filter((card) => !layoutItemIds.has(card.key))
     const maxY = layout.length === 0 ? 0 : Math.max(...layout.map((card) => card.y)) + cardHeight
     newCards.forEach((card, index) =>
         layout.push({

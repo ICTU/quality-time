@@ -18,7 +18,7 @@ ENV HEALTH_CHECK_FILE=/home/collector/health_check.txt
 RUN adduser -S collector && adduser collector root
 USER collector
 
-RUN touch ${HEALTH_CHECK_FILE} && chmod g+w ${HEALTH_CHECK_FILE} && chgrp root ${HEALTH_CHECK_FILE}
+RUN touch "${HEALTH_CHECK_FILE}" && chmod g+w "${HEALTH_CHECK_FILE}" && chgrp root "${HEALTH_CHECK_FILE}"
 # Use the Shell form of CMD instead of the Exec form so the environment variable is substituted
 # hadolint ignore=DL3025
 HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta, UTC; import sys; sys.exit(dt.now(tz=UTC) - dt.fromisoformat(open('${HEALTH_CHECK_FILE}', encoding='utf-8').read().strip()) > timedelta(seconds=600))"
