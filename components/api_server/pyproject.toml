@@ -15,7 +15,7 @@ dependencies = [
     "gevent==25.9.1",
     "ldap3==2.9.1",
     "lxml==6.0.2",
-    "lxml-html-clean==0.4.3",
+    "lxml-html-clean==0.4.4",
     "pymongo==4.16.0",
     "python-dateutil==2.9.0.post0",
     "requests==2.32.5",
@@ -29,7 +29,7 @@ dev = [
     "tools",
     "types-cryptography==3.3.23.2",
     "types-ldap3==2.9.13.20251121",
-    "types-python-dateutil==2.9.0.20260124",
+    "types-python-dateutil==2.9.0.20260302",
     "types-requests==2.32.4.20260107",
 ]
 
@@ -57,7 +57,6 @@ lint.ignore = [
     "FBT",    # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
     "I001",   # https://docs.astral.sh/ruff/rules/unsorted-imports/ - (probably) because ruff is run with uvx it can't differentiate between dependencies and modules
     "ISC001", # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
-    "PD",     # https://docs.astral.sh/ruff/rules/#pandas-vet-pd - pandas isn't used
     "PT",     # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
     "TC006",  # https://docs.astral.sh/ruff/rules/runtime-cast-value/ - the rule claims it's often necessary to quote the first argument passed to cast(), but that's not the case in this code base
 ]
@@ -113,11 +112,8 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
-overrides = [
-    { module = [
-        "bottle",
-        "gevent",
-        "lxml.html",
-        "lxml_html_clean",
-    ], ignore_missing_imports = true }
-]
+overrides = [ { module = [
+    "bottle",
+    "gevent",
+    "lxml.html",
+], ignore_missing_imports = true } ]

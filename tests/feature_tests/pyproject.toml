@@ -18,7 +18,7 @@ dev = [
     "requests==2.32.5",
     "requests-sse==0.5.2",
     "tools",
-    "types-python-dateutil==2.9.0.20260124",
+    "types-python-dateutil==2.9.0.20260302",
     "types-requests==2.32.4.20260107",
 ]
 
@@ -60,13 +60,11 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
-
-[[tool.mypy.overrides]]
-module = [
-    "item",
-    "behave",
-    "behave.model",
-    "behave.runner",
-    "requests_sse",
+overrides = [
+    { module = [
+        "item",
+        "behave",
+        "behave.model",
+        "behave.runner",
+    ], ignore_missing_imports = true }
 ]
-ignore_missing_imports = true
