@@ -25,21 +25,23 @@ export function subjectTypes(subjectTypesMapping, level = 0) {
             />
         )
     Object.entries(subjectTypesMapping).forEach(([key, subjectType]) => {
-        options.push({
-            key: key,
-            text: subjectType.name,
-            value: key,
-            content: (
-                <Stack direction="row">
-                    {bullet}
-                    <Stack direction="column" sx={{ whiteSpace: "normal" }}>
-                        {subjectType.name}
-                        <Typography variant="body2">{subjectType.description}</Typography>
+        options.push(
+            {
+                key: key,
+                text: subjectType.name,
+                value: key,
+                content: (
+                    <Stack direction="row">
+                        {bullet}
+                        <Stack direction="column" sx={{ whiteSpace: "normal" }}>
+                            {subjectType.name}
+                            <Typography variant="body2">{subjectType.description}</Typography>
+                        </Stack>
                     </Stack>
-                </Stack>
-            ),
-        })
-        options.push(...subjectTypes(subjectType?.subjects ?? [], level + 1))
+                ),
+            },
+            ...subjectTypes(subjectType?.subjects ?? [], level + 1),
+        )
     })
     return options
 }

@@ -14,10 +14,8 @@ import {
 } from "../utils"
 import { STATUS_SHORT_NAME, statusPropType } from "./status"
 
-function smallerThan(target1, target2) {
-    const t1 = target1 ?? `${Number.POSITIVE_INFINITY}`
-    const t2 = target2 ?? "0"
-    return t1.localeCompare(t2, undefined, { numeric: true }) < 0
+function smallerThan(target1 = `${Number.POSITIVE_INFINITY}`, target2 = "0") {
+    return target1.localeCompare(target2, undefined, { numeric: true }) < 0
 }
 
 function maxTarget(...targets) {

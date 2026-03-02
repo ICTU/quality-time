@@ -163,7 +163,7 @@ export function MetricDetails({
     }
     const subject = report.subjects[subjectUuid]
     const metric = subject.metrics[metricUuid]
-    const lastMeasurement = measurements[measurements.length - 1]
+    const lastMeasurement = measurements.at(-1)
     let anyError = lastMeasurement?.sources.some((source) => source.connection_error || source.parse_error)
     let anyWarning = Object.values(metric.sources).some((source) => dataModel.sources[source.type].deprecated)
     anyError =

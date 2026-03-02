@@ -61,9 +61,9 @@ function ignoredEntitiesCount(measurement) {
     const count = Object.fromEntries(IGNORABLE_SOURCE_ENTITY_STATUSES.map((status) => [status, 0]))
     for (const source of measurement?.sources ?? []) {
         // Ignore entity user data that refers to entities that no longer exist by checking the entity keys
-        const validKeys = (source.entities ?? []).map((entity) => entity.key)
+        const validKeys = new Set((source.entities ?? []).map((entity) => entity.key))
         for (const [entityKey, entity] of Object.entries(source.entity_user_data ?? {})) {
-            if (validKeys.includes(entityKey) && Object.keys(count).includes(entity.status)) {
+            if (validKeys.has(entityKey) && Object.keys(count).includes(entity.status)) {
                 count[entity.status]++
             }
         }
