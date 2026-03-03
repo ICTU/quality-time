@@ -83,11 +83,11 @@ lint.isort.section-order = [
     "tests",
     "local-folder",
 ]
-lint.isort.sections."second-party" = [
+lint.isort.sections.second-party = [
     "shared",
     "shared_data_model",
 ]
-lint.isort.sections."tests" = [
+lint.isort.sections.tests = [
     "tests",
 ]
 
