@@ -20,6 +20,7 @@ export function LoginButton({ setUser }) {
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
     const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     function closeDialog() {
         setOpen(false)
@@ -27,6 +28,7 @@ export function LoginButton({ setUser }) {
     }
 
     function submit() {
+        setLoading(true)
         login(username, password)
             .then(function (json) {
                 if (json.ok) {
@@ -34,9 +36,11 @@ export function LoginButton({ setUser }) {
                 } else {
                     setError("credentials")
                 }
+                setLoading(false)
                 return null
             })
             .catch(function (_error) {
+                setLoading(false)
                 setError("connection")
             })
     }
@@ -86,7 +90,7 @@ export function LoginButton({ setUser }) {
                     <Button name="cancel" onClick={() => closeDialog()} color="secondary">
                         Cancel
                     </Button>
-                    <Button name="submit" onClick={() => submit()}>
+                    <Button name="submit" loading={loading} onClick={() => submit()}>
                         Submit
                     </Button>
                 </DialogActions>
