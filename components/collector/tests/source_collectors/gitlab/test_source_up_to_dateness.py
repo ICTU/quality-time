@@ -113,7 +113,7 @@ class GitLabSourceUpToDatenessTest(GitLabTestCase):
         self.set_source_parameter("file_path", "")
         with self.patched_client_session_head():
             response = await self.collect(get_request_json_return_value=[])
-        self.assert_measurement(response, value=None, parse_error="No pipelines found within the lookback period")
+        self.assert_measurement(response, value=None, parse_error="No pipelines found within the look-back period")
 
     async def test_file_landing_url_on_failure(self):
         """Test that the landing url is the API url when GitLab cannot be reached."""
