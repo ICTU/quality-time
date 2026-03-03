@@ -16,6 +16,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - Improve the documentation for the change failure rate metric. Fixes [#10526](https://github.com/ICTU/quality-time/issues/10526).
 
+### Added
+
+- Login submit button shows loading indicator while verifying credentials. Closes [#12670](https://github.com/ICTU/quality-time/issues/12670).
+
 ## v5.49.0 - 2026-03-03
 
 ### Fixed
