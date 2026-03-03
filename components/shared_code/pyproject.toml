@@ -75,7 +75,7 @@ lint.isort.section-order = [
     "tests",
     "local-folder",
 ]
-lint.isort.sections."tests" = [
+lint.isort.sections.tests = [
     "tests",
 ]
 
