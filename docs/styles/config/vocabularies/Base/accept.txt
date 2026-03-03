@@ -48,7 +48,6 @@ favicon
 fixme
 hostnames?
 hotspots?
-lookback
 mimetype
 misconfigured
 mypy

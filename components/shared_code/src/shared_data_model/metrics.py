@@ -35,13 +35,30 @@ METRICS = {
         name="Change failure rate",
         description="The percentage of deployments causing a failure in production.",
         rationale="The change failure rate is an indicator of the DevOps effectiveness of a team.",
-        documentation="""Because this metric is a "rate", it needs a numerator (the number of failed deployments
-in the look back period) and a denominator (the number of deployments in the look back period). The metric can be
-configured with a combination of Jira, and either Jenkins or GitLab CI as source. Jira is used as source for the number
-of failures (numerator). Either Jenkins or GitLab CI is used as source for the number of deployments (denominator).
+        documentation="""Because this metric is a "rate", it needs a source for the numerator (the number of failed
+deployments in the look back period) and a source for the denominator (the number of deployments in the look back
+period). The metric can be configured with a combination of Jira and either Jenkins or GitLab CI as source, or with
+Azure DevOps as only source.
 
-When configuring Azure DevOps as source for the metric it is used both for number of failures (numerator) and for
-number of deployments (denominator). Azure DevOps needs to be added as source only once.""",
+When using Azure DevOps as source for the metric, it is used as source for both the number of failures (numerator) as
+well as for the number of deployments (denominator). So Azure DevOps needs to be added as source only once.
+
+To configure Azure DevOps, provide a WIQL query that returns failed deployments. What issue type is used in
+Azure DevOps to represent failed deployments does not matter; Quality-time simply counts the number of issues
+returned by the query. Use the other parameters to select deployment pipelines. Also set the look-back period to
+the period that is to be reported on for both issues and pipelines.
+
+When configuring Jira in combination with either Jenkins or GitLab CI, Jira is automatically used as source for the
+number of failures (numerator). Jenkins or GitLab CI is automatically used as source for the number of deployments
+(denominator).
+
+To configure Jira, provide a JQL query that returns failed deployments. What issue type is used in Jira to
+represent failed deployments does not matter; Quality-time simply counts the number of issues returned by the
+query. Also set the look-back period to the period that is to be reported on.
+
+To configure GitLab CI or Jenkins, set the look-back period to the period that is to be reported on and use the
+other parameters to select deployment jobs. Make sure the look-back period is the same as set for Jira.
+""",
         scales=["percentage"],
         unit=Unit.FAILED_DEPLOYMENTS,
         unit_singular=Unit.FAILED_DEPLOYMENT,

@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Improve the documentation for the change failure rate metric. Fixes [#10526](https://github.com/ICTU/quality-time/issues/10526).
+
 ## v5.49.0 - 2026-03-03
 
 ### Fixed
@@ -830,7 +836,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Fixed
 
 - When showing many toaster messages, collapse similar messages to prevent a long list of messages. Fixes [#7625](https://github.com/ICTU/quality-time/issues/7625).
-- When measuring source up-to-dateness with GitLab as pipelines, if there are no pipelines in the lookback period, don't show the number of days since 1-1-1970 as value, but show an error. Fixes [#7947](https://github.com/ICTU/quality-time/issues/7947).
+- When measuring source up-to-dateness with GitLab as pipelines, if there are no pipelines in the look-back period, don't show the number of days since 1-1-1970 as value, but show an error. Fixes [#7947](https://github.com/ICTU/quality-time/issues/7947).
 - Don't change the layout of the dashboard after filtering metrics by tags. Fixes [#8039](https://github.com/ICTU/quality-time/issues/8039).
 - When manually exporting a report to PDF, the report header would not be collapsed before generating the PDF. Prevent the need for collapsing the header by moving the PDF button to the menu bar. Fixes [#8054](https://github.com/ICTU/quality-time/issues/8054).
 
@@ -1013,7 +1019,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Fixed
 
 - When measuring velocity using Jira as source, the number of sprints to base velocity on can be changed via a parameter. Add help text to the parameter to explain how velocity is calculated. Fixes [#6349](https://github.com/ICTU/quality-time/issues/6349).
-- When measuring average issue lead time, users can configure how far back *Quality-time* should look for selecting issues. Add a tool tip to this lookback parameter explaining which issues are selected: "Issues are selected if they are completed and have been updated within the number of days configured". Fixes [#6350](https://github.com/ICTU/quality-time/issues/6350).
+- When measuring average issue lead time, users can configure how far back *Quality-time* should look for selecting issues. Add a tool tip to this look-back parameter explaining which issues are selected: "Issues are selected if they are completed and have been updated within the number of days configured". Fixes [#6350](https://github.com/ICTU/quality-time/issues/6350).
 - Jira issue statuses were not collected. Fixes [#6435](https://github.com/ICTU/quality-time/issues/6435).
 - Jira issues created from *Quality-time* would have an incorrect unit in the issue title and description. Fixes [#6437](https://github.com/ICTU/quality-time/issues/6437).
 
