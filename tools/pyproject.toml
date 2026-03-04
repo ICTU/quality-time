@@ -18,7 +18,7 @@ dependencies = [
     "ruff==0.15.4",
     "troml==0.4.1",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
-    "vulture==2.14",
+    "vulture==2.15",
 ]
 
 [dependency-groups]
