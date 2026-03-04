@@ -43,7 +43,7 @@ def update_node_engine(package_json: Path) -> int:
 
 def update_node_engines() -> int:
     """Find all package.json files and update the Node engine."""
-    results = {update_node_engine(pkg_json) for pkg_json in glob("package_json") if has_node_engine(pkg_json)}
+    results = {update_node_engine(pkg_json) for pkg_json in glob("package.json") if has_node_engine(pkg_json)}
     return max(results, default=0)
 
 
