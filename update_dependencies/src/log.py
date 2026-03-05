@@ -2,8 +2,12 @@
 
 import logging
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from rich.logging import RichHandler
+
+if TYPE_CHECKING:
+    from version import DependencyVersion
 
 
 class Logger:
@@ -13,9 +17,11 @@ class Logger:
         """Initialize the logger."""
         self.log = logging.getLogger(name)
 
-    def new_version(self, dependency: str, new_version: str) -> None:
+    def new_version(self, dependency: str, version: DependencyVersion) -> None:
         """Log the availability of a new version."""
-        self.log.warning("New version available for %s: %s", dependency, new_version, stacklevel=2)
+        self.log.warning(
+            "New version available for %s: %s\n%s", dependency, version.version, version.changes, stacklevel=2
+        )
 
     def invalid_version(self, dependency: str, invalid_version: str) -> None:
         """Log an invalid version."""

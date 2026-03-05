@@ -5,12 +5,16 @@ from functools import cache
 import requests
 from packaging.version import InvalidVersion, Version
 
+from version import DependencyVersion
 
-def get_latest_tag(image: str, current_tag: str) -> str:
+
+def get_latest_tag(image: str, current_tag: str) -> DependencyVersion:
     """Find the latest compatible tag for an image. Keeps the same non-numerical parts while upgrading the version."""
     current_version, current_suffix = _split_tag(current_tag)
     if current_version is None:
-        return current_tag  # Can't determine a newer tag if the tag doesn't contain a valid version
+        return DependencyVersion(
+            version=current_tag
+        )  # Can't determine a newer tag if the tag doesn't contain a valid version
     latest_version = current_version
     for tag in _get_available_tags(image):
         version, suffix = _split_tag(tag)
@@ -21,7 +25,7 @@ def get_latest_tag(image: str, current_tag: str) -> str:
         if suffix != current_suffix:
             continue  # Ignore tags with a different suffix because we don't want to change e.g. fat to slim
         latest_version = max(latest_version, version)
-    return _assemble_tag(latest_version, current_suffix)
+    return DependencyVersion(version=_assemble_tag(latest_version, current_suffix))
 
 
 @cache

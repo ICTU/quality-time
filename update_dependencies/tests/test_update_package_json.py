@@ -50,5 +50,7 @@ class UpdatePackageJsonTest(unittest.TestCase):
         ]
         self.assertEqual(0, update_package_jsons())
         mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=2)
-        mock_warning.assert_called_with("New version available for %s: %s", "package", "1.1", stacklevel=2)
+        mock_warning.assert_called_with(
+            "New version available for %s: %s\n%s", "package", "1.1", "No changelog available!", stacklevel=2
+        )
         self.assert_npm_called(mock_run)
