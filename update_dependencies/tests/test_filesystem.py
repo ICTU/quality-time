@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 from filesystem import glob, update_file, update_files
+from version import DependencyVersion
 
 
 @patch("pathlib.Path.cwd", Mock(return_value=Path("/")))
@@ -44,7 +45,9 @@ class UpdateFileTest(unittest.TestCase):
         """Test no changes."""
         mock_file = Mock(read_text=Mock(return_value="line1\nline2\n"))
         mock_logger = Mock()
-        self.assertEqual(0, update_file(mock_file, "regexp", lambda *_args: "1.1", mock_logger))
+        self.assertEqual(
+            0, update_file(mock_file, "regexp", lambda *_args: DependencyVersion(version="1.1"), mock_logger)
+        )
         mock_file.write_text.assert_not_called()
         mock_logger.new_version.assert_not_called()
 
@@ -52,15 +55,19 @@ class UpdateFileTest(unittest.TestCase):
         """Test a new version."""
         mock_file = Mock(read_text=Mock(return_value="line1\nimage: python:3.14\n"))
         mock_logger = Mock()
-        self.assertEqual(0, update_file(mock_file, REGEXP, lambda *_args: "3.15", mock_logger))
+        self.assertEqual(
+            0, update_file(mock_file, REGEXP, lambda *_args: DependencyVersion(version="3.15"), mock_logger)
+        )
         mock_file.write_text.assert_called_with("line1\nimage: python:3.15\n")
-        mock_logger.new_version.assert_called_with("python", "3.15")
+        mock_logger.new_version.assert_called_with("python", DependencyVersion(version="3.15"))
 
     def test_old_version(self):
         """Test a new version that is actually older."""
         mock_file = Mock(read_text=Mock(return_value="line1\nimage: python:3.14\n"))
         mock_logger = Mock()
-        self.assertEqual(0, update_file(mock_file, REGEXP, lambda *_args: "3.13", mock_logger))
+        self.assertEqual(
+            0, update_file(mock_file, REGEXP, lambda *_args: DependencyVersion(version="3.13"), mock_logger)
+        )
         mock_file.write_text.assert_not_called()
         mock_logger.new_version.assert_not_called()
 
@@ -81,7 +88,9 @@ class UpdateFilesTest(unittest.TestCase):
         mock_file = self.mock_file("line1\nline2\n")
         mock_glob.return_value = [mock_file]
         mock_logger = Mock()
-        self.assertEqual(0, update_files("Dockerfile", REGEXP, lambda *_args: "1.1", mock_logger))
+        self.assertEqual(
+            0, update_files("Dockerfile", REGEXP, lambda *_args: DependencyVersion(version="1.1"), mock_logger)
+        )
         mock_file.write_text.assert_not_called()
         mock_logger.new_version.assert_not_called()
 
@@ -90,6 +99,8 @@ class UpdateFilesTest(unittest.TestCase):
         mock_file = self.mock_file("line1\nimage: python:3.14\n")
         mock_glob.return_value = [mock_file]
         mock_logger = Mock()
-        self.assertEqual(0, update_files("config.yml", REGEXP, lambda *_args: "3.15", mock_logger))
+        self.assertEqual(
+            0, update_files("config.yml", REGEXP, lambda *_args: DependencyVersion(version="3.15"), mock_logger)
+        )
         mock_file.write_text.assert_called_with("line1\nimage: python:3.15\n")
-        mock_logger.new_version.assert_called_with("python", "3.15")
+        mock_logger.new_version.assert_called_with("python", DependencyVersion(version="3.15"))

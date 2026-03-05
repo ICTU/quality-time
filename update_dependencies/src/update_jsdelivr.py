@@ -8,12 +8,13 @@ from packaging.version import InvalidVersion, Version
 
 from filesystem import update_file
 from log import get_logger
+from version import DependencyVersion
 
 LOG = get_logger("jsdelivr")
 JSDELIVR_URL_RE = r"https://cdn.jsdelivr.net/npm/(?P<dependency>[\w-]+)@(?P<version>[\d\.]+)"
 
 
-def get_latest_version(dependency: str, current_version_string: str) -> str:
+def get_latest_version(dependency: str, current_version_string: str) -> DependencyVersion:
     """Fetch the latest version for the dependency."""
     url = f"https://data.jsdelivr.com/v1/packages/npm/{dependency}"
     current_version = Version(current_version_string)
@@ -27,7 +28,7 @@ def get_latest_version(dependency: str, current_version_string: str) -> str:
     except InvalidVersion:
         LOG.invalid_version(f"{dependency}", f"'{latest_tag}'")
         latest_version = Version("0.0.0")
-    return str(max(latest_version, current_version))
+    return DependencyVersion(version=str(max(latest_version, current_version)))
 
 
 if __name__ == "__main__":  # pragma: no cover

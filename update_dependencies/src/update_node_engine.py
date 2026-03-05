@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 
 from filesystem import glob, update_file
 from log import get_logger
+from version import DependencyVersion
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -36,7 +37,7 @@ def update_node_engine(package_json: Path) -> int:
     """Update the Node engine version based on the Docker base image."""
     dockerfile = package_json.parent / "Dockerfile"
     if dockerfile.exists() and (version := node_base_image_version(dockerfile)):
-        return update_file(package_json, NODE_ENGINE_RE, lambda *_args: version, LOG)
+        return update_file(package_json, NODE_ENGINE_RE, lambda *_args: DependencyVersion(version=version), LOG)
     LOG.expected_node_base_image(dockerfile)
     return 1  # No Dockerfile or it has no Node base image, so can't update Node engine
 
