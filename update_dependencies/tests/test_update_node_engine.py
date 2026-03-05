@@ -41,7 +41,9 @@ class UpdateNodeEnginesTest(unittest.TestCase):
         mock_glob.return_value = [mock_package_json]
         self.assertEqual(0, update_node_engines())
         mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=2)
-        mock_warning.assert_called_with("New version available for %s: %s", "node", "19", stacklevel=2)
+        mock_warning.assert_called_once_with(
+            "New version available for %s: %s\n%s", "node", "19", "No changelog available!", stacklevel=2
+        )
         mock_error.assert_not_called()
         mock_package_json.write_text.assert_called_once_with('{"engines": {"node": "19" }}\n')
 
