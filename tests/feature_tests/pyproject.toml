@@ -18,7 +18,7 @@ dev = [
     "requests==2.32.5",
     "requests-sse==0.5.2",
     "tools",
-    "types-python-dateutil==2.9.0.20260302",
+    "types-python-dateutil==2.9.0.20260305",
     "types-requests==2.32.4.20260107",
 ]
 
