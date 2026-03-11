@@ -77,16 +77,17 @@ jobs:
         run: uv tool run --directory components/frontend --from $(uv export --project tools --only-group just --quiet --no-hashes --no-header) just test cov  # yamllint disable-line rule:line-length
       - name: Create packages
         if: env.SONAR_TOKEN != null
+        # yamllint disable rule:line-length
         run: |
           touch components/__init__.py
-          touch components/api_server/__init__.py
-          touch components/api_server/src/__init__.py
-          touch components/collector/__init__.py
-          touch components/collector/src/__init__.py
-          touch components/notifier/__init__.py
-          touch components/notifier/src/__init__.py
-          touch components/shared_code/__init__.py
-          touch components/shared_code/src/__init__.py
+          for dir in api_server collector notifier shared_code; do
+            touch components/$dir/__init__.py
+            touch components/$dir/src/__init__.py
+            sed -i "s#name=\"\([^\"]*\)\" filename=\"\([^\"]*\)\"#name=\"$GITHUB_WORKSPACE/components/$dir/\2\" filename=\"$GITHUB_WORKSPACE/components/$dir/\2\"#g" components/$dir/build/unittest-coverage.xml
+            sed -i "s#file=\"#file=\"$GITHUB_WORKSPACE/components/$dir/#g" components/$dir/build/unittests.xml
+            sed -i "s#classname=\"#classname=\"components.$dir.#g" components/$dir/build/unittests.xml
+          done
+        # yamllint enable rule:line-length
       - name: Sonarcloud scan
         if: env.SONAR_TOKEN != null
         uses: sonarsource/sonarqube-scan-action@v7.0.0

@@ -2,8 +2,7 @@
 branch = True
 dynamic_context = test_function
 source =
-    src
-    tests
+    .
 omit =
     */conf.py
     tests/*under_coverage.py
