@@ -22,6 +22,23 @@ export default defineConfig({
             ignored: ["**/node_modules/**", "**/build/**", "**/dist/**"], // Ignore large directories
         },
     },
+    build: {
+        rolldownOptions: {
+            output: {
+                codeSplitting: {
+                    groups: [
+                        {
+                            name: "large-libs",
+                            test: /node_modules/,
+                            minSize: 100000, // 100KB
+                            maxSize: 500000, // 500KB
+                            priority: 10,
+                        },
+                    ],
+                },
+            },
+        },
+    },
     test: {
         globals: true,
         coverage: {
