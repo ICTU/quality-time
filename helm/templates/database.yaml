@@ -57,14 +57,7 @@ spec:
           resources: {{- toYaml . | nindent 12 }}
 {{- end }}
           securityContext:
-            capabilities:
-              add:
-                - CHOWN
-                - DAC_OVERRIDE
-                - SETGID
-                - SETUID
-              drop:
-                - ALL
+            {{- toYaml .Values.database.securityContext | nindent 12 }}
           volumeMounts:
             - mountPath: /data/db
               name: {{ .Release.Name }}-{{ template "database_name" . }}
