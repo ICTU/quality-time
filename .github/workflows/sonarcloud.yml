@@ -77,6 +77,7 @@ jobs:
         run: uv tool run --directory components/frontend --from $(uv export --project tools --only-group just --quiet --no-hashes --no-header) just test cov  # yamllint disable-line rule:line-length
       - name: Create packages
         if: env.SONAR_TOKEN != null
+        # yamllint disable rule:line-length
         run: |
           touch components/__init__.py
           touch components/api_server/__init__.py
@@ -87,6 +88,20 @@ jobs:
           touch components/notifier/src/__init__.py
           touch components/shared_code/__init__.py
           touch components/shared_code/src/__init__.py
+          sed -i 's/filename="/filename="\/home\/runner\/work\/quality-time\/quality-time\/components\/api_server\//g' components/api_server/build/unittest-coverage.xml
+          cat components/api_server/build/unittest-coverage.xml
+          sed -i 's/file="/file="\/home\/runner\/work\/quality-time\/quality-time\/components\/api_server\//g' components/api_server/build/unittests.xml
+          sed -i 's/classname="/classname="components.api_server./g' components/api_server/build/unittests.xml
+          sed -i 's/filename="/filename="\/home\/runner\/work\/quality-time\/quality-time\/components\/collector\//g' components/collector/build/unittest-coverage.xml
+          sed -i 's/file="/file="\/home\/runner\/work\/quality-time\/quality-time\/components\/collector\//g' components/collector/build/unittests.xml
+          sed -i 's/classname="/classname="components.collector./g' components/collector/build/unittests.xml
+          sed -i 's/filename="/filename="\/home\/runner\/work\/quality-time\/quality-time\/components\/notifier\//g' components/notifier/build/unittest-coverage.xml
+          sed -i 's/file="/file="\/home\/runner\/work\/quality-time\/quality-time\/components\/notifier\//g' components/notifier/build/unittests.xml
+          sed -i 's/classname="/classname="components.notifier./g' components/notifier/build/unittests.xml
+          sed -i 's/filename="/filename="\/home\/runner\/work\/quality-time\/quality-time\/components\/shared_code\//g' components/shared_code/build/unittest-coverage.xml
+          sed -i 's/file="/file="\/home\/runner\/work\/quality-time\/quality-time\/components\/shared_code\//g' components/shared_code/build/unittests.xml
+          sed -i 's/classname="/classname="components.shared_code./g' components/shared_code/build/unittests.xml
+        # yamllint enable rule:line-length
       - name: Sonarcloud scan
         if: env.SONAR_TOKEN != null
         uses: sonarsource/sonarqube-scan-action@v7.0.0
