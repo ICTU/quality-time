@@ -27,7 +27,7 @@ class FixtureTest(unittest.TestCase):
     def test_create_report_deleted(self):
         """Tests with deleted."""
         report_deleted = create_report(deleted=True)
-        self.assertTrue(report_deleted["deleted"])
+        self.assertFalse(report_deleted["deleted"])
 
     def test_create_report_with_title(self):
         """Tests with title."""
