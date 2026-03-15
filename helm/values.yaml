@@ -4,8 +4,16 @@ secrets:
   ldapCredential: "quality-time-ldap-secret"
 
 api_server:
+  securityContext: {}
   extraVolumes: []
+#    - name: cert-config-map
+#      configMap:
+#        name: cert-config-map
   extraVolumeMounts: []
+#    - name: cert-config-map
+#      subPath: ca-certificates.crt
+#      mountPath: "/etc/ssl/certs/ca-certificates.crt"
+#      readOnly: true
   image:
     repository: "ictu/quality-time_api_server"
   env:
@@ -14,6 +22,10 @@ api_server:
     LDAP_SEARCH_FILTER: "(|(uid=$$username)(cn=$$username))"
 
 collector:
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
   image:
     repository: "ictu/quality-time_collector"
 
@@ -38,14 +50,26 @@ database:
       memory: "1Gi"
 
 frontend:
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
   image:
     repository: "ictu/quality-time_frontend"
 
 notifier:
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
   image:
     repository: "ictu/quality-time_notifier"
 
 renderer:
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
   image:
     repository: "ictu/quality-time_renderer"
   env:
@@ -53,6 +77,15 @@ renderer:
     TZ: "Europe/Amsterdam"
 
 www:
+  securityContext:
+    capabilities:
+      add:
+        - CHOWN
+        - SETGID
+        - SETUID
+        - NET_BIND_SERVICE
+      drop:
+        - ALL
   # -- When www.deployProxy is false the quality-time_proxy is not used and ingress is pointed directly to the backend api and frontend.
   deployProxy: true
   image:
@@ -62,8 +95,4 @@ www:
     ingressClassName: ""
     hostname: ""
     pathType: "ImplementationSpecific"
-    tls: []
-    #  - secretName: chart-example-tls
-    #    hosts:
-    #      - chart-example.local
     annotations: {}
