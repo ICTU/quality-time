@@ -49,9 +49,7 @@ spec:
           resources: {{- toYaml . | nindent 12 }}
 {{- end }}
           securityContext:
-            capabilities:
-              drop:
-                - ALL
+            {{- toYaml .Values.notifier.securityContext | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: v1
