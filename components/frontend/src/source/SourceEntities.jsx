@@ -30,7 +30,7 @@ import {
     sourcePropType,
     stringsPropType,
 } from "../sharedPropTypes"
-import { capitalize } from "../utils"
+import { capitalize, getMetricUnit } from "../utils"
 import { IgnoreIcon, ShowIcon } from "../widgets/icons"
 import { LoadingPlaceHolder } from "../widgets/Placeholder"
 import { SortableTableHeaderCell } from "../widgets/TableHeaderCell"
@@ -212,7 +212,7 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
     const metricEntities = dataModel.sources[sourceType]?.entities?.[metric.type]
 
     if (!metricEntities) {
-        const unit = dataModel.metrics[metric.type].unit || "entities"
+        const unit = getMetricUnit(metric, dataModel) || "entities"
         const sourceTypeName = dataModel.sources[sourceType].name
         return (
             <InfoMessage title="Measurement details not supported">
@@ -233,7 +233,7 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
             </InfoMessage>
         )
     }
-    const lastMeasurement = measurements[measurements.length - 1]
+    const lastMeasurement = measurements.at(-1)
     const source = lastMeasurement.sources.find((source) => source.source_uuid === sourceUuid)
     if (!Array.isArray(source?.entities) || source.entities.length === 0) {
         return (

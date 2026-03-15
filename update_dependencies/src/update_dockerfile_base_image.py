@@ -10,5 +10,10 @@ LOG = get_logger("dockerfile")
 IMAGE_RE = r"FROM (?P<dependency>[\w\d\./-]+):(?P<version>[\d\w\.\-]+)"
 
 
+def update_dockerfiles() -> int:
+    """Update the base image of Dockerfiles."""
+    return update_files("Dockerfile", IMAGE_RE, get_latest_tag, LOG)
+
+
 if __name__ == "__main__":  # pragma: no cover
-    sys.exit(update_files("Dockerfile", IMAGE_RE, get_latest_tag, LOG))
+    sys.exit(update_dockerfiles())

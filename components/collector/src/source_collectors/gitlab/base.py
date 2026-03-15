@@ -70,12 +70,12 @@ class GitLabJobsBase(GitLabProjectBase):
         return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/-/jobs")
 
     async def _next_urls(self, responses: SourceResponses) -> list[URL]:
-        """Return the next (pagination) links from the responses as long as we're within lookback days."""
+        """Return the next (pagination) links from the responses as long as we're within look-back days."""
         # Note: the GitLab documentation (https://docs.gitlab.com/ee/api/jobs.html#list-project-jobs) says:
         # "Jobs are sorted in descending order of their IDs." The API has no query parameters to sort jobs by date
         # created or by date run, so we're going to assume that descending order of IDs is roughly equal to descending
         # order of date created and date run. As soon as all jobs on a page have a build date that is outside the
-        # lookback period we stop the pagination.
+        # look-back period we stop the pagination.
         lookback_dt = self._lookback_datetime()
         for response in responses:
             for job in await response.json():
@@ -134,7 +134,7 @@ class GitLabJobsBase(GitLabProjectBase):
         return parse_datetime(job.get("finished_at") or job["created_at"])
 
     def _lookback_datetime(self) -> datetime:
-        """Return the lookback cut-off date."""
+        """Return the look-back cut-off date."""
         return now() - timedelta(days=int(cast(str, self._parameter("lookback_days"))))
 
 

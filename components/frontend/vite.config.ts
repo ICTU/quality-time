@@ -1,4 +1,3 @@
-import browserslistToEsbuild from "browserslist-to-esbuild"
 import os from "node:os"
 import path from "node:path"
 import process from "node:process"
@@ -10,9 +9,6 @@ export default defineConfig({
     plugins: [
         react({
             jsxImportSource: "@emotion/react",
-            babel: {
-                plugins: ["@emotion/babel-plugin"],
-            },
         }),
     ],
     resolve: {
@@ -25,9 +21,6 @@ export default defineConfig({
         watch: {
             ignored: ["**/node_modules/**", "**/build/**", "**/dist/**"], // Ignore large directories
         },
-    },
-    build: {
-        target: browserslistToEsbuild([">0.2%", "not dead", "not op_mini all"]),
     },
     test: {
         globals: true,

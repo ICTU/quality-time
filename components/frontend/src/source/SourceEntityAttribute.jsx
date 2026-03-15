@@ -7,7 +7,10 @@ import { HyperLink } from "../widgets/HyperLink"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 
 function formatBoolean(value) {
-    return value === "true" ? "✅" : ""
+    return value.toLowerCase() === "true" ? "✅" : ""
+}
+formatBoolean.propTypes = {
+    value: string.isRequired,
 }
 
 function DateAttribute({ cellContents, type }) {

@@ -16,11 +16,11 @@ jobs:
       matrix:
         include:
           - component: api_server
-            build_path: components
-            docker_file: api_server/Dockerfile
+            build_path: .
+            docker_file: components/api_server/Dockerfile
           - component: collector
-            build_path: components
-            docker_file: collector/Dockerfile
+            build_path: .
+            docker_file: components/collector/Dockerfile
           - component: database
             build_path: components/database
             docker_file: Dockerfile
@@ -28,8 +28,8 @@ jobs:
             build_path: components/frontend
             docker_file: Dockerfile
           - component: notifier
-            build_path: components
-            docker_file: notifier/Dockerfile
+            build_path: .
+            docker_file: components/notifier/Dockerfile
           - component: proxy
             build_path: components/proxy
             docker_file: Dockerfile
@@ -45,7 +45,7 @@ jobs:
         run: docker build -f ${{ matrix.docker_file }} -t docker.io/ictu/quality-time_${{ matrix.component }} .
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.34.0
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: "docker.io/ictu/quality-time_${{ matrix.component }}"
           ignore-unfixed: true
@@ -59,7 +59,7 @@ jobs:
           sarif_file: "trivy-${{ matrix.component }}.sarif"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v6.0.0
+        uses: actions/upload-artifact@v7.0.0
         with:
           name: "trivy-${{ matrix.component }}.sarif"
           path: "*.sarif"

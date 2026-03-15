@@ -20,6 +20,7 @@ slapd slapd/dump_database select when needed
 EOL
 
     DEBIAN_FRONTEND=noninteractive dpkg-reconfigure slapd
+    return 0
 }
 
 
@@ -35,12 +36,14 @@ make_snakeoil_certificate() {
                 -out ${LDAP_SSL_CERT}
 
     chmod 600 ${LDAP_SSL_KEY}
+    return 0
 }
 
 
 configure_features() {
     echo "Configure custom attributes/extension/conf (MSAD extension, TLS, logging...)"
     ldapmodify -Y EXTERNAL -H ldapi:/// -f ${BOOTSTRAP_DIR}/config.ldif -Q
+    return 0
 }
 
 load_initial_data() {
@@ -49,6 +52,7 @@ load_initial_data() {
       -D ${LDAP_BINDDN} \
       -w ${LDAP_SECRET} \
       -f ${BOOTSTRAP_DIR}/data.ldif
+    return 0
 }
 
 
@@ -78,6 +82,6 @@ configure_features
 load_initial_data
 
 # Stop slapd
-kill -INT `cat /run/slapd/slapd.pid`
+kill -INT $(cat /run/slapd/slapd.pid)
 
 exit 0

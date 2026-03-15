@@ -5,8 +5,7 @@ import re
 import urllib
 from decimal import ROUND_HALF_UP, Decimal
 from itertools import islice
-from typing import TYPE_CHECKING, cast
-from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
+from typing import TYPE_CHECKING
 
 from defusedxml import ElementTree
 
@@ -15,11 +14,12 @@ from .type import URL, Namespaces, Response
 
 if TYPE_CHECKING:
     from collections.abc import Collection, Iterable
+    from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
 
 
 async def parse_source_response_xml(response: Response, allowed_root_tags: Collection[str] | None = None) -> Element:
     """Parse the XML from the source response."""
-    tree = cast(Element, ElementTree.fromstring(await response.text(), forbid_dtd=False))
+    tree = ElementTree.fromstring(await response.text(), forbid_dtd=False)
     if allowed_root_tags and tree.tag not in allowed_root_tags:
         raise XMLRootElementError(allowed_root_tags, tree.tag)
     return tree

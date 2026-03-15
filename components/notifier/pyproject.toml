@@ -1,6 +1,6 @@
 [project]
 name = "notifier"
-version = "5.48.4"
+version = "5.49.0"
 requires-python = "==3.14.3"
 classifiers = [
     "Framework :: aiohttp",
@@ -12,7 +12,7 @@ dependencies = [
     "aiohttp==3.13.3",
     "pymsteams==0.2.5",
     "python-dateutil==2.9.0.post0",
-    "rich==14.3.2",
+    "rich==14.3.3",
     "shared-code",
 ]
 
@@ -21,7 +21,7 @@ dev = [
     "mongomock==4.3.0",
     "pydantic==2.12.5",                      # Needed for importing the data model in the tests from the shared code component
     "tools",
-    "types-python-dateutil==2.9.0.20260124",
+    "types-python-dateutil==2.9.0.20260305",
 ]
 
 [tool.uv]
@@ -66,11 +66,11 @@ lint.isort.section-order = [
     "tests",
     "local-folder",
 ]
-lint.isort.sections."second-party" = [
+lint.isort.sections.second-party = [
     "shared",
     "shared_data_model",
 ]
-lint.isort.sections."tests" = [
+lint.isort.sections.tests = [
     "tests",
 ]
 

@@ -382,9 +382,7 @@ CLOC = Source(
     description="cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source "
     "code in many programming languages.",
     url="https://github.com/AlDanial/cloc",
-    parameters=dict(
-        **access_parameters(["loc"], source_type="cloc report", source_type_format="JSON")
-    ),
+    parameters=dict(**access_parameters(["loc"], source_type="cloc report", source_type_format="JSON")),
 )
 ```
 
@@ -473,9 +471,11 @@ class ClocLOCTest(SourceCollectorTestCase):
     async def test_loc(self):
         """Test that the number of lines is returned."""
         cloc_json = {
-            "header": {}, "SUM": {},  # header and SUM are not used
+            "header": {},
+            "SUM": {},  # header and SUM are not used
             "Python": {"nFiles": 1, "blank": 5, "comment": 10, "code": 60},
-            "JavaScript": {"nFiles": 1, "blank": 2, "comment": 0, "code": 30}}
+            "JavaScript": {"nFiles": 1, "blank": 2, "comment": 0, "code": 30},
+        }
         response = await self.collect(get_request_json_return_value=cloc_json)
         self.assert_measurement(response, value="90", total="100")
 ```

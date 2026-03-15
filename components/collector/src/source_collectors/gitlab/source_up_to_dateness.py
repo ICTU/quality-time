@@ -96,7 +96,7 @@ class GitLabPipelineUpToDateness(TimePassedCollector, GitLabPipelineBase):
         pipelines = await self._pipelines(SourceResponses(responses=[response]))
         if datetimes := [pipeline.datetime for pipeline in pipelines]:
             return self.minimum(datetimes)
-        error_message = "No pipelines found within the lookback period"
+        error_message = "No pipelines found within the look-back period"
         raise CollectorError(error_message)
 
     def minimum(self, date_times: Sequence[datetime]) -> datetime:

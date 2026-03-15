@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 def run(command: list[str], cwd: Path | None = None) -> str:
-    """Run the process."""
+    """Run the process and return stdout."""
     try:
         return subprocess.run(command, capture_output=True, text=True, check=True, cwd=cwd).stdout  # noqa: S603 # nosec
     except subprocess.CalledProcessError as error:

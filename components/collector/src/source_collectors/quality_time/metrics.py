@@ -77,6 +77,7 @@ class QualityTimeMetrics(QualityTimeCollector):
         status_start = self.__metric_status_start(metric.get("status_start", ""))
         entity["status_start_date"] = status_start.isoformat() if status_start else ""
         entity["unit"] = metric.get("unit") or DATA_MODEL.metrics[metric["type"]].unit.value
+        entity["unit_singular"] = metric.get("unit_singular") or DATA_MODEL.metrics[metric["type"]].unit_singular.value
         entity["measurement"] = value
         direction = str(metric.get("direction") or DATA_MODEL.metrics[metric["type"]].direction.value)
         direction = {"<": "≦", ">": "≧"}.get(direction, direction)

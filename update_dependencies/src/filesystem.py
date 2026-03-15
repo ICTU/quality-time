@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
 
     from log import Logger
+    from version import DependencyVersion
 
 
 def glob(glob_pattern: str, start: Path | None = None) -> Iterator[Path]:
@@ -24,19 +25,23 @@ def glob(glob_pattern: str, start: Path | None = None) -> Iterator[Path]:
         yield path
 
 
-def _update_line(line: str, regexp: str, get_new_version: Callable[[str, str], str], logger: Logger) -> str:
+def _update_line(
+    line: str, regexp: str, get_new_version: Callable[[str, str], DependencyVersion], logger: Logger
+) -> str:
     """Update the line with the new version if any or return the line unchanged."""
     if match := re.search(regexp, line):
         dependency = match.group("dependency")
         version = match.group("version")
         latest_version = get_new_version(dependency, version)
-        if latest_version > version:
+        if latest_version.version > version:
             logger.new_version(dependency, latest_version)
-            return line.replace(version, latest_version)
+            return line.replace(version, latest_version.version)
     return line
 
 
-def update_file(path: Path, regexp: str, get_new_version: Callable[[str, str], str], logger: Logger) -> int:
+def update_file(
+    path: Path, regexp: str, get_new_version: Callable[[str, str], DependencyVersion], logger: Logger
+) -> int:
     """Update the lines in the file and write back the file if the new lines are different from the old lines."""
     logger.path(path)
     old_lines = path.read_text().splitlines()
@@ -49,11 +54,10 @@ def update_file(path: Path, regexp: str, get_new_version: Callable[[str, str], s
 def update_files(
     glob_pattern: str,
     regexp: str,
-    get_new_version: Callable[[str, str], str],
+    get_new_version: Callable[[str, str], DependencyVersion],
     logger: Logger,
     start: Path | None = None,
 ) -> int:
     """Update the files using the regexp to find the current version and get_new_version to find new versions."""
-    for path in glob(glob_pattern, start):
-        update_file(path, regexp, get_new_version, logger)
-    return 0
+    results = {update_file(path, regexp, get_new_version, logger) for path in glob(glob_pattern, start)}
+    return max(results, default=0)

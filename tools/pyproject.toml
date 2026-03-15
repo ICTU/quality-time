@@ -1,6 +1,6 @@
 [project]
 name = "tools"
-version = "5.48.4"
+version = "5.49.0"
 requires-python = "==3.14.2"
 classifiers = [
     "Programming Language :: Python",
@@ -8,17 +8,17 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "bandit==1.9.3",
-    "codespell==2.4.1",
+    "bandit==1.9.4",
+    "codespell==2.4.2",
     "coverage==7.13.4",
     "fixit==2.2.1",
     "mypy==1.19.1",
     "pip-audit==2.10.0",
-    "pyproject-fmt==2.16.1",
-    "ruff==0.15.1",
+    "pyproject-fmt==2.18.1",
+    "ruff==0.15.6",
     "troml==0.4.1",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
-    "vulture==2.14",
+    "vulture==2.15",
 ]
 
 [dependency-groups]
@@ -26,7 +26,7 @@ just = [
     "rust-just==1.46.0",
 ]
 uv = [
-    "uv==0.10.4",
+    "uv==0.10.9",
 ]
 
 [tool.uv]

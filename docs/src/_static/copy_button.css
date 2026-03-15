@@ -1,0 +1,46 @@
+/* Copy button, thanks to https://chrisholdgraf.com/blog/2018/sphinx-copy-buttons/ */
+
+button.copy-button {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+button.copy-button img {
+    width: 24px;
+    height: 24px;
+}
+
+div.highlight:hover .copy-button,
+div.highlight .copy-button:focus {
+    opacity: 0.3;
+}
+div.highlight .copy-button:hover {
+    opacity: 1;
+}
+div.highlight {
+    position: relative;
+}
+
+.copy-button-popup {
+    position: absolute;
+    right: 48px;
+    top: 4px;
+    background-color: #186329;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none;
+}

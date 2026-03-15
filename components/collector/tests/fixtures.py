@@ -46,7 +46,6 @@ def create_report(title: str = "Title", report_uuid: str = "report1", **kwargs) 
             "target": "0",
             "accept_debt": False,
             "scale": "count",
-            "unit": "foo",
             "webhook": "www.webhook.com",
             "scales": ["count", "percentage"],
             "sources": {

@@ -53,7 +53,7 @@ HARBOR = Source(
         "robot_account_prefix": StringParameter(
             name="Robot account prefix",
             help_url=HttpUrl(
-                "https://goharbor.io/docs/2.3.0/administration/robot-accounts/#configure-robot-account-prefix"
+                "https://goharbor.io/docs/2.14.0/administration/robot-accounts/#configure-robot-account-prefix"
             ),
             default_value="robot",
             mandatory=True,

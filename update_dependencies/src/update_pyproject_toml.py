@@ -1,11 +1,8 @@
 """Work-around for the missing `uv update` command, see https://github.com/astral-sh/uv/issues/6794.
 
-Limitations:
-- This script only updates pyproject.toml, not uv.lock.
-- This script only considers matching versions ("==") for upgrading.
-- Version specs with other version clauses ("<=", "~=", etc.) are ignored.
-
-This means that a version can be prevented from being updated, by using "package<=max version" as version spec.
+Note: This script only considers matching versions ("==") for upgrading. Version specs with other version clauses
+("<=", "~=", etc.) are ignored. This means that a version can be prevented from being updated, by using
+"package<=max version" as version spec.
 """
 
 import re
@@ -15,6 +12,8 @@ from typing import TYPE_CHECKING
 from filesystem import glob
 from log import get_logger
 from process import run
+from pypi import get_changes
+from version import DependencyVersion
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -53,7 +52,10 @@ def update_pyproject_toml(pyproject_toml: Path) -> None:
     outdated = run(uv_tree)
     lines_with_updates = [line for line in outdated.splitlines() if " (latest: " in line]
     for line in lines_with_updates:
-        LOG.new_version(line.split()[1], line.split()[-1].lstrip("v").rstrip(")"))
+        package = line.split()[1]
+        version = line.split()[-1].lstrip("v").rstrip(")")
+        dependency_version = DependencyVersion(version=version, changes=get_changes(package, version))
+        LOG.new_version(package, dependency_version)
     latest_versions = Versions(
         {line.split()[1]: line.split()[-1].lstrip("v").rstrip(")") for line in lines_with_updates}
     )

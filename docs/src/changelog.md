@@ -10,6 +10,33 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Improve the documentation for the change failure rate metric. Fixes [#10526](https://github.com/ICTU/quality-time/issues/10526).
+
+### Added
+
+- Login submit button shows loading indicator while verifying credentials. Closes [#12670](https://github.com/ICTU/quality-time/issues/12670).
+
+## v5.49.0 - 2026-03-03
+
+### Fixed
+
+- Fix retrieving all suppressed issues from SonarQube instead of only accepted, false positive, and sandboxed issues. Fixes [#12707](https://github.com/ICTU/quality-time/issues/12707).
+
+### Added
+
+- Add singular versions of the metric units to the data model and allow users to override both the singular and plural forms via the UI. Closes [#550](https://github.com/ICTU/quality-time/issues/550).
+- Allow for ignoring draft merge requests when using GitLab. Closes [#12327](https://github.com/ICTU/quality-time/issues/12327).
+
+## v5.48.5 - 2026-02-27
+
+### Fixed
+
+- When measuring suppressed violations with SonarQube as source, use the issue status instead of the resolution to determine whether a violation is suppressed. Fixes [#12515](https://github.com/ICTU/quality-time/issues/12515).
+
 ## v5.48.4 - 2026-02-11
 
 ### Fixed
@@ -813,7 +840,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Fixed
 
 - When showing many toaster messages, collapse similar messages to prevent a long list of messages. Fixes [#7625](https://github.com/ICTU/quality-time/issues/7625).
-- When measuring source up-to-dateness with GitLab as pipelines, if there are no pipelines in the lookback period, don't show the number of days since 1-1-1970 as value, but show an error. Fixes [#7947](https://github.com/ICTU/quality-time/issues/7947).
+- When measuring source up-to-dateness with GitLab as pipelines, if there are no pipelines in the look-back period, don't show the number of days since 1-1-1970 as value, but show an error. Fixes [#7947](https://github.com/ICTU/quality-time/issues/7947).
 - Don't change the layout of the dashboard after filtering metrics by tags. Fixes [#8039](https://github.com/ICTU/quality-time/issues/8039).
 - When manually exporting a report to PDF, the report header would not be collapsed before generating the PDF. Prevent the need for collapsing the header by moving the PDF button to the menu bar. Fixes [#8054](https://github.com/ICTU/quality-time/issues/8054).
 
@@ -996,7 +1023,7 @@ If your currently installed *Quality-time* version is v4.10.0 or older, please r
 ### Fixed
 
 - When measuring velocity using Jira as source, the number of sprints to base velocity on can be changed via a parameter. Add help text to the parameter to explain how velocity is calculated. Fixes [#6349](https://github.com/ICTU/quality-time/issues/6349).
-- When measuring average issue lead time, users can configure how far back *Quality-time* should look for selecting issues. Add a tool tip to this lookback parameter explaining which issues are selected: "Issues are selected if they are completed and have been updated within the number of days configured". Fixes [#6350](https://github.com/ICTU/quality-time/issues/6350).
+- When measuring average issue lead time, users can configure how far back *Quality-time* should look for selecting issues. Add a tool tip to this look-back parameter explaining which issues are selected: "Issues are selected if they are completed and have been updated within the number of days configured". Fixes [#6350](https://github.com/ICTU/quality-time/issues/6350).
 - Jira issue statuses were not collected. Fixes [#6435](https://github.com/ICTU/quality-time/issues/6435).
 - Jira issues created from *Quality-time* would have an incorrect unit in the issue title and description. Fixes [#6437](https://github.com/ICTU/quality-time/issues/6437).
 
@@ -2436,8 +2463,7 @@ Background information: *Quality-time* uses MongoDB as database component. A Mon
 
 ### Added
 
-- Added a button (expand a report title to access it) to download a PDF version of a report. The PDF report can also be downloaded via the API: `http://www.quality-time.example.org/api/v1/report/<report_uuid>/pdf`.
-Closes [#828](https://github.com/ICTU/quality-time/issues/828).
+- Added a button (expand a report title to access it) to download a PDF version of a report. The PDF report can also be downloaded via the API: `http://www.quality-time.example.org/api/v1/report/<report_uuid>/pdf`. Closes [#828](https://github.com/ICTU/quality-time/issues/828).
 - Metric summary cards now have tooltips showing the number of metrics per status (target met, target not met, etc.). Closes [#838](https://github.com/ICTU/quality-time/issues/838).
 
 ### Changed

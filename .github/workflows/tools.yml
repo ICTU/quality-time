@@ -10,9 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6.0.2
       - name: Install uv
-        uses: astral-sh/setup-uv@v7.3.0
+        uses: astral-sh/setup-uv@v7.5.0
         with:
           version-file: tools/pyproject.toml
       - name: Install dependencies and check quality
-        working-directory: tools
-        run: uv tool run --from=rust-just --project $GITHUB_WORKSPACE/tools/pyproject.toml just ci
+        run: uv tool run --directory tools --from $(uv export --project tools --only-group just --quiet --no-hashes --no-header) just ci  # yamllint disable-line rule:line-length

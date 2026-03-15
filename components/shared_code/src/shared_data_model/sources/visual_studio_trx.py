@@ -38,8 +38,8 @@ VISUAL_STUDIO_TRX = Source(
     name="Visual Studio TRX",
     description="Test reports in the Visual Studio TRX format.",
     url=HttpUrl(
-        "https://learn.microsoft.com/en-us/dotnet/core/testing/microsoft-testing-platform-extensions-test-reports#"
-        "visual-studio-test-reports"
+        "https://learn.microsoft.com/en-us/dotnet/core/testing/microsoft-testing-platform-test-reports#"
+        "visual-studio-test-reports-trx"
     ),
     parameters={
         "test_result": TestResult(

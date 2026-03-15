@@ -27,7 +27,7 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         security_type: str | None = None,
         impacts: str | None = None,
         clean_code_attribute_category: str | None = None,
-        resolution: str | None = None,
+        issue_status: str | None = None,
         rationale: str | None = None,
         review_priority: str | None = None,
         creation_date: str | None = None,
@@ -56,8 +56,8 @@ class SonarQubeTestCase(SourceCollectorTestCase):
             entity["impacts"] = impacts
         if clean_code_attribute_category is not None:
             entity["clean_code_attribute_category"] = clean_code_attribute_category
-        if resolution is not None:
-            entity["resolution"] = resolution
+        if issue_status is not None:
+            entity["issue_status"] = issue_status
         if rationale is not None:
             entity["rationale"] = rationale
         if review_priority is not None:

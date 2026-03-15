@@ -1,5 +1,7 @@
 """Unit tests for the SonarQube suppressed violations collector."""
 
+from unittest.mock import call
+
 from .base import SonarQubeTestCase
 
 
@@ -32,17 +34,35 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
                     "message": "message2",
                     "component": "component2",
                     "impacts": [{"severity": "MEDIUM", "softwareQuality": "SECURITY"}],
+                    "issueStatus": "ACCEPTED",
                     "cleanCodeAttributeCategory": "INTENTIONAL",
-                    "resolution": "WONTFIX",
                     "creationDate": "2019-08-15:50:52+0200",
                     "updateDate": "2019-09-30T20:50:52+0200",
                 },
             ],
         }
         total_violations_json = {"total": "4"}
-        response = await self.collect(
+        response, get_mock, _post_mock = await self.collect(
             get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json],
+            return_mocks=True,
         )
+        call1 = call("https://sonarqube/api/components/show?component=id", allow_redirects=True, headers={}, auth=None)
+        call2 = call(
+            "https://sonarqube/api/issues/search?projects=id&branch=main&resolved=false&ps=500&rules=c:NoSonar,cpp:NoSonar,csharpsquid:S1309,java:NoSonar,java:S1309,java:S1310,java:S1315,javascript:S1291,objc:NoSonar,php:NoSonar,plsql:NoSonarCheck,python:NoSonar,python:S1309,tsql:NoSonar,typescript:S1291",
+            allow_redirects=True,
+            headers={},
+            auth=None,
+        )
+        call3 = call(
+            "https://sonarqube/api/issues/search?projects=id&branch=main&issueStatuses=ACCEPTED,FALSE_POSITIVE,IN_SANDBOX&additionalFields=comments&ps=500",
+            allow_redirects=True,
+            headers={},
+            auth=None,
+        )
+        call4 = call(
+            "https://sonarqube/api/issues/search?projects=id&branch=main", allow_redirects=True, headers={}, auth=None
+        )
+        get_mock.assert_has_calls([call1, call2, call3, call4])
         expected_entities = [
             self.entity(
                 key="violation1",
@@ -50,7 +70,7 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
                 message="message1",
                 impacts="low impact on maintainability",
                 clean_code_attribute_category="intentional",
-                resolution="",
+                issue_status="open",
                 creation_date="2020-07-30T22:48:52+0200",
                 update_date="2020-09-30T21:48:52+0200",
                 tags="",
@@ -61,7 +81,7 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
                 message="message2",
                 impacts="medium impact on security",
                 clean_code_attribute_category="intentional",
-                resolution="won't fix",
+                issue_status="accepted",
                 creation_date="2019-08-15:50:52+0200",
                 update_date="2019-09-30T20:50:52+0200",
                 tags="",
@@ -86,7 +106,7 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
                     "component": "component1",
                     "impacts": [{"severity": "MEDIUM", "softwareQuality": "security"}],
                     "cleanCodeAttributeCategory": "INTENTIONAL",
-                    "resolution": "WONTFIX",
+                    "issueStatus": "OPEN",
                     "comments": [
                         {
                             "login": "test-user",
@@ -116,7 +136,7 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
                 message="message3",
                 impacts="medium impact on security",
                 clean_code_attribute_category="intentional",
-                resolution="won't fix",
+                issue_status="open",
                 rationale="test-user: *TEST*\nSonarQube: Automatically reopened because the vulnerability flow changed",
                 creation_date="2019-08-15:52:52+0200",
                 update_date="2019-09-30T20:52:52+0200",

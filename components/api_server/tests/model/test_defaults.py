@@ -36,6 +36,7 @@ class DefaultAttributesTest(DataModelTestCase):
                 "sources": {},
                 "tags": ["ci"],
                 "unit": None,
+                "unit_singular": None,
             },
             default_metric_attributes("software_version"),
         )

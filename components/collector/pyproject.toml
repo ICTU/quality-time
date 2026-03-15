@@ -1,6 +1,6 @@
 [project]
 name = "collector"
-version = "5.48.4"
+version = "5.49.0"
 requires-python = "==3.14.3"
 classifiers = [
     "Framework :: aiohttp",
@@ -16,7 +16,7 @@ dependencies = [
     "packaging==26.0",
     "pymongo==4.16.0",
     "python-dateutil==2.9.0.post0",
-    "rich==14.3.2",
+    "rich==14.3.3",
     "shared-code",
     "typing-extensions==4.15.0",
 ]
@@ -27,7 +27,8 @@ dev = [
     "pydantic==2.12.5",                      # Needed for importing the data model in the tests from the shared code component
     "tools",
     "types-beautifulsoup4==4.12.0.20250516",
-    "types-python-dateutil==2.9.0.20260124",
+    "types-defusedxml==0.7.0.20250822",
+    "types-python-dateutil==2.9.0.20260305",
 ]
 
 [tool.uv]
@@ -54,7 +55,6 @@ lint.ignore = [
     "D213",   # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/ - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
     "FBT",    # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt - not sure of the value of preventing "boolean traps"
     "ISC001", # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
-    "PD",     # https://docs.astral.sh/ruff/rules/#pandas-vet-pd - pandas isn't used
     "PT",     # https://docs.astral.sh/ruff/rules/#flake8-pytest-style-pt - pytest isn't used
     "TC006",  # https://docs.astral.sh/ruff/rules/runtime-cast-value/ - the rule claims it's often necessary to quote the first argument passed to cast(), but that's not the case in this code base
 ]
@@ -83,11 +83,11 @@ lint.isort.section-order = [
     "tests",
     "local-folder",
 ]
-lint.isort.sections."second-party" = [
+lint.isort.sections.second-party = [
     "shared",
     "shared_data_model",
 ]
-lint.isort.sections."tests" = [
+lint.isort.sections.tests = [
     "tests",
 ]
 
@@ -107,6 +107,3 @@ warn_redundant_casts = true
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
-overrides = [ { module = [
-    "defusedxml",
-], ignore_missing_imports = true } ]

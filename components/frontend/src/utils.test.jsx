@@ -12,6 +12,7 @@ import {
     getMetricResponseOverrun,
     getMetricTags,
     getMetricTarget,
+    getMetricUnit,
     getReportTags,
     getSourceName,
     getSubjectName,
@@ -648,5 +649,35 @@ describe("createDragGhost", () => {
 
         createDragGhost(null, event)
         expect(setDragImage).not.toHaveBeenCalled()
+    })
+})
+
+describe("getMetricUnit", () => {
+    it("gets the singular unit from the metric", () => {
+        expect(getMetricUnit({ unit_singular: "violation" }, {}, "1")).toEqual("violation")
+    })
+
+    it("gets the singular unit from the data model", () => {
+        expect(
+            getMetricUnit({ type: "violations" }, { metrics: { violations: { unit_singular: "violation" } } }, "1"),
+        ).toEqual("violation")
+    })
+
+    it("defaults to empty string if the singular unit cannot be found", () => {
+        expect(getMetricUnit({ type: "violations" }, { metrics: { violations: {} } }, "1")).toEqual("")
+    })
+
+    it("gets the plural unit from the metric", () => {
+        expect(getMetricUnit({ unit: "violations" }, {}, "2")).toEqual("violations")
+    })
+
+    it("gets the plural unit from the data model", () => {
+        expect(getMetricUnit({ type: "violations" }, { metrics: { violations: { unit: "violations" } } }, "2")).toEqual(
+            "violations",
+        )
+    })
+
+    it("defaults to empty string if the plural unit cannot be found", () => {
+        expect(getMetricUnit({ type: "violations" }, { metrics: { violations: {} } }, "2")).toEqual("")
     })
 })

@@ -1,4 +1,4 @@
-FROM node:25.6.1-alpine3.22 AS compile-image
+FROM node:25.8.1-alpine3.22 AS compile-image
 
 WORKDIR /home/frontend
 COPY public /home/frontend/public
@@ -21,6 +21,6 @@ COPY --from=compile-image /home/frontend/dist /usr/share/nginx/html
 
 # Use the Shell form of CMD instead of the Exec form so the environment variable is substituted
 # hadolint ignore=DL3025
-HEALTHCHECK CMD wget --spider http://0.0.0.0:${FRONTEND_PORT:-5000}/favicon.ico || exit 1
+HEALTHCHECK CMD wget --spider http://0.0.0.0:"${FRONTEND_PORT:-5000}"/favicon.ico || exit 1
 
 COPY *.template /etc/nginx/templates/
