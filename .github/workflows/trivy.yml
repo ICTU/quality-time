@@ -16,11 +16,11 @@ jobs:
       matrix:
         include:
           - component: api_server
-            build_path: components
-            docker_file: api_server/Dockerfile
+            build_path: .
+            docker_file: components/api_server/Dockerfile
           - component: collector
-            build_path: components
-            docker_file: collector/Dockerfile
+            build_path: .
+            docker_file: components/collector/Dockerfile
           - component: database
             build_path: components/database
             docker_file: Dockerfile
@@ -28,8 +28,8 @@ jobs:
             build_path: components/frontend
             docker_file: Dockerfile
           - component: notifier
-            build_path: components
-            docker_file: notifier/Dockerfile
+            build_path: .
+            docker_file: components/notifier/Dockerfile
           - component: proxy
             build_path: components/proxy
             docker_file: Dockerfile
