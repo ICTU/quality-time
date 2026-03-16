@@ -32,7 +32,7 @@ jobs:
           esac
           cd $component
           mkdir -p build
-          uv tool run --from=rust-just --project $CIRCLE_WORKING_DIRECTORY/tools/pyproject.toml just test check
+          uv tool run --from=rust-just --project $CIRCLE_WORKING_DIRECTORY/tools just test check
       - store_artifacts:
           path: components/collector/build
       - store_artifacts:
