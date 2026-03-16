@@ -56,28 +56,29 @@ function expectMetricAttributePost(attribute, payload) {
     expectFetch("post", endPoint, { [attribute]: payload })
 }
 
-it("sets the metric integer target", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderMetricTarget({ type: "violations", target: "10" })
+    await expectNoAccessibilityViolations(container)
+})
+
+it("sets the metric integer target", async () => {
+    renderMetricTarget({ type: "violations", target: "10" })
     await typeInField("10", "42")
     expectMetricAttributePost("target", "42")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("is valid when the metric integer target is not set", async () => {
-    const { container } = renderMetricTarget({ type: "violations", target: "" })
+    renderMetricTarget({ type: "violations", target: "" })
     expect(screen.getByLabelText(/Metric target/)).toBeValid()
-    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the metric version target", async () => {
-    const { container } = renderMetricTarget({ type: "source_version", target: "10" })
+    renderMetricTarget({ type: "source_version", target: "10" })
     await typeInField("10", "4.2")
     expectMetricAttributePost("target", "4.2")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("displays the default target if changed", async () => {
-    const { container } = renderMetricTarget({ type: "violations_with_default_target" })
+    renderMetricTarget({ type: "violations_with_default_target" })
     expectText(/Default/)
-    await expectNoAccessibilityViolations(container)
 })

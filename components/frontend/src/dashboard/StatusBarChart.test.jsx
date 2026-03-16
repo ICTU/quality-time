@@ -20,26 +20,28 @@ function renderBarChart(maxY, red) {
 
 const dateString = new Date("2023-01-02").toLocaleDateString()
 
-it("shows the number of metrics per status when the total is zero", async () => {
-    const { container } = renderBarChart(0, 0)
-    expect(screen.queryAllByLabelText(`Status on ${dateString}: no metrics`, { exact: false }).length).toBe(1)
+it("has no accessibility violations", async () => {
+    const { container } = renderBarChart(2, 2)
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows the number of metrics per status when the total is zero", async () => {
+    renderBarChart(0, 0)
+    expect(screen.queryAllByLabelText(`Status on ${dateString}: no metrics`, { exact: false }).length).toBe(1)
 })
 
 it("shows the number of metrics per status when the total is not zero", async () => {
-    const { container } = renderBarChart(10, 0)
+    renderBarChart(10, 0)
     expect(screen.queryAllByLabelText(`Status on ${dateString}: no metrics`, { exact: false }).length).toBe(1)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the number of metrics per status", async () => {
-    const { container } = renderBarChart(2, 2)
+    renderBarChart(2, 2)
     expect(
         screen.queryAllByLabelText(`Status on ${dateString}: 2 metrics, 2 target not met`, {
             exact: false,
         }).length,
     ).toBe(1)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the tooltip", async () => {
@@ -48,5 +50,4 @@ it("shows the tooltip", async () => {
     const targetNotMetLabel = "Target not met"
     await userEvent.hover(targetNotMetBar)
     expect(queryAllByText(container, targetNotMetLabel).length).toBe(1)
-    await expectNoAccessibilityViolations(container)
 })

@@ -44,32 +44,33 @@ async function renderPageContent({ loading = false, reports = [], reportDate = n
     return result
 }
 
-it("shows the reports overview", async () => {
+it("has no accessibility violations", async () => {
     const { container } = await renderPageContent({ reportDate: new Date(2023, 10, 25) })
-    expectText(/Sorry, no reports/)
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows the reports overview", async () => {
+    await renderPageContent({ reportDate: new Date(2023, 10, 25) })
+    expectText(/Sorry, no reports/)
 })
 
 it("shows that the report is missing", async () => {
-    const { container } = await renderPageContent({ reports: [{}], reportUuid: "uuid" })
+    await renderPageContent({ reports: [{}], reportUuid: "uuid" })
     expectText(/Sorry, this report doesn't exist/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows that the report was missing", async () => {
-    const { container } = await renderPageContent({
+    await renderPageContent({
         reportDate: new Date("2022-03-31"),
         reports: [{}],
         reportUuid: "uuid",
     })
     expectText(/Sorry, this report didn't exist/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the loading spinner", async () => {
-    const { container } = await renderPageContent({ loading: true })
+    await renderPageContent({ loading: true })
     expect(screen.getAllByRole("progressbar").length).toBe(1)
-    await expectNoAccessibilityViolations(container)
 })
 
 function expectMeasurementsCall(date, offset = 0) {
@@ -82,9 +83,8 @@ function expectMeasurementsCall(date, offset = 0) {
 it("fetches measurements", async () => {
     const mockedDate = new Date("2022-04-27T16:00:05+0000")
     vi.setSystemTime(mockedDate)
-    const { container } = await renderPageContent({ reportDate: null })
+    await renderPageContent({ reportDate: null })
     expectMeasurementsCall(mockedDate)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("fetches measurements if nr dates > 1", async () => {

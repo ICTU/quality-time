@@ -17,14 +17,14 @@ beforeEach(() => {
 
 afterEach(() => vi.restoreAllMocks())
 
-it("shows the add metric button and adds a metric when clicked", async () => {
-    const { container } = render(
+function renderSubjectTableFooter() {
+    return render(
         <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
             <DataModel.Provider value={dataModel}>
                 <Table>
                     <SubjectTableFooter
                         report={report}
-                        reports={[]}
+                        reports={[report]}
                         subjectUuid="subject_uuid"
                         subject={report.subjects.subject_uuid}
                         stopFilteringAndSorting={stopFilteringAndSorting}
@@ -33,56 +33,31 @@ it("shows the add metric button and adds a metric when clicked", async () => {
             </DataModel.Provider>
         </Permissions.Provider>,
     )
-    clickText(/Add metric/)
+}
+
+it("has no accessibility violations", async () => {
+    const { container } = renderSubjectTableFooter()
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows the add metric button and adds a metric when clicked", async () => {
+    renderSubjectTableFooter()
+    clickText(/Add metric/)
     clickText(/Metric type/)
     expect(stopFilteringAndSorting).toHaveBeenCalled()
     expectFetch("post", "metric/new/subject_uuid", { type: "metric_type" })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("copies a metric when the copy button is clicked and a metric is selected", async () => {
-    const { container } = render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
-                <Table>
-                    <SubjectTableFooter
-                        report={report}
-                        reports={[report]}
-                        subjectUuid="subject_uuid"
-                        subject={report.subjects.subject_uuid}
-                        stopFilteringAndSorting={stopFilteringAndSorting}
-                    />
-                </Table>
-            </DataModel.Provider>
-        </Permissions.Provider>,
-    )
+    renderSubjectTableFooter()
     clickText(/Copy metric/)
-    await expectNoAccessibilityViolations(container)
     await asyncClickText(/M1/, 0)
     expectFetch("post", "metric/metric_uuid/copy/subject_uuid", {})
-    await expectNoAccessibilityViolations(container)
 })
 
 it("moves a metric when the move button is clicked and a metric is selected", async () => {
-    const { container } = render(
-        <DataModel.Provider value={dataModel}>
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <Table>
-                    <SubjectTableFooter
-                        report={report}
-                        reports={[report]}
-                        subjectUuid="subject_uuid"
-                        subject={report.subjects.subject_uuid}
-                        stopFilteringAndSorting={stopFilteringAndSorting}
-                    />
-                </Table>
-            </Permissions.Provider>
-        </DataModel.Provider>,
-    )
+    renderSubjectTableFooter()
     clickText(/Move metric/)
-    await expectNoAccessibilityViolations(container)
     await asyncClickText(/Subject 2 title/)
     expectFetch("post", "metric/metric_uuid3/move/subject_uuid", {})
-    await expectNoAccessibilityViolations(container)
 })

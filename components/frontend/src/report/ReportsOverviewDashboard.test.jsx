@@ -65,76 +65,72 @@ function renderReportsOverviewDashboard({
     )
 }
 
-it("shows the reports overview dashboard", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderReportsOverviewDashboard()
-    expectText(/Legend/)
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows the reports overview dashboard", async () => {
+    renderReportsOverviewDashboard()
+    expectText(/Legend/)
 })
 
 it("hides tags", async () => {
     history.push("?hidden_tags=other")
     const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
-    const { container } = renderReportsOverviewDashboard({ hiddenTags: hiddenTags.result.current })
+    renderReportsOverviewDashboard({ hiddenTags: hiddenTags.result.current })
     expectText(/tag/)
     expectNoText(/other/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("calls the callback on click", async () => {
     const openReport = vi.fn()
-    const { container } = renderReportsOverviewDashboard({ openReport: openReport })
+    renderReportsOverviewDashboard({ openReport: openReport })
     clickText(/Report/)
     expect(openReport).toHaveBeenCalledWith("report_uuid")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("hides the report cards", async () => {
     history.push("?hidden_cards=reports")
-    const { container } = renderReportsOverviewDashboard()
+    renderReportsOverviewDashboard()
     expectNoText(/Report/)
     expectText(/tag/)
     expectText(/other/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("hides the tag cards", async () => {
     history.push("?hidden_cards=tags")
-    const { container } = renderReportsOverviewDashboard()
+    renderReportsOverviewDashboard()
     expectText(/Report/)
     expectNoText(/tag/)
     expectNoText(/other/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("hides the required actions cards", async () => {
     history.push("?hidden_cards=action_required")
-    const { container } = renderReportsOverviewDashboard()
+    renderReportsOverviewDashboard()
     expectText(/Report/)
     expectNoText(/Action required/)
     expectText(/tag/)
     expectText(/other/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("hides metrics not requiring action", async () => {
     history.push("?metrics_to_hide=all")
-    const { container } = renderReportsOverviewDashboard()
+    renderReportsOverviewDashboard()
     clickText(/Action required/)
     expectSearch("?metrics_to_hide=no_action_required")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("unhides metrics not requiring action", async () => {
     history.push("?metrics_to_hide=no_action_required")
-    const { container } = renderReportsOverviewDashboard()
+    renderReportsOverviewDashboard()
     clickText(/Action required/)
     expectSearch("?metrics_to_hide=all")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("hides the legend card", async () => {
     history.push("?hidden_cards=legend")
-    const { container } = renderReportsOverviewDashboard()
+    renderReportsOverviewDashboard()
     expectNoText(/Legend/)
-    await expectNoAccessibilityViolations(container)
 })

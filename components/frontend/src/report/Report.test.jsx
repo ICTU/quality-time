@@ -81,22 +81,29 @@ async function renderReport({
     return result
 }
 
-it("shows the report", async () => {
+it("has no accessibility violations", async () => {
     const { container } = await renderReport({ reportToRender: report })
-    expectText(/Subject title/, 2) // Once as dashboard card and once as subject header
     await expectNoAccessibilityViolations(container)
+})
+
+it("has no accessibility violations when report is missing", async () => {
+    const { container } = await renderReport({})
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows the report", async () => {
+    await renderReport({ reportToRender: report })
+    expectText(/Subject title/, 2) // Once as dashboard card and once as subject header
 })
 
 it("shows an error message if there is no report", async () => {
-    const { container } = await renderReport()
+    await renderReport()
     expectText(/Sorry, this report doesn't exist/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows an error message if there was no report", async () => {
-    const { container } = await renderReport({ reportDate: new Date("2020-01-01") })
+    await renderReport({ reportDate: new Date("2020-01-01") })
     expectText(/Sorry, this report didn't exist/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("hides columns on load", async () => {

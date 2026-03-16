@@ -1,8 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../../api/fetch_server_api"
-import { asyncClickButton, clickButton, expectText, expectTextAfterWait } from "../../testUtils"
+import { asyncClickButton, clickButton, expectNoAccessibilityViolations, expectTextAfterWait } from "../../testUtils"
 import { LoginButton } from "./LoginButton"
 
 function renderLoginButton() {
@@ -10,6 +10,11 @@ function renderLoginButton() {
     render(<LoginButton setUser={setUser} />)
     return setUser
 }
+
+it("has no accessibility violations", async () => {
+    const { container } = render(<LoginButton />)
+    await expectNoAccessibilityViolations(container)
+})
 
 it("logs in the user", async () => {
     vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({

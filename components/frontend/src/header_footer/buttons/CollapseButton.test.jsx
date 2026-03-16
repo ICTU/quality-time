@@ -3,15 +3,23 @@ import history from "history/browser"
 
 import { createTestableSettings } from "../../__fixtures__/fixtures"
 import { useExpandedItemsSearchQuery } from "../../app_ui_settings"
-import { clickButton } from "../../testUtils"
+import { clickButton, expectNoAccessibilityViolations } from "../../testUtils"
 import { CollapseButton } from "./CollapseButton"
 
 beforeEach(() => history.push(""))
 
 function renderCollapseButton({ expandedItems = null } = {}) {
     const settings = createTestableSettings()
-    render(<CollapseButton expandedItems={expandedItems ?? settings.expandedItems} />)
+    return render(<CollapseButton expandedItems={expandedItems ?? settings.expandedItems} />)
 }
+
+it("has no accessibility violations", async () => {
+    history.push("?expanded=tab:0")
+    const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
+    expect(expandedItems.result.current.value).toStrictEqual(["tab:0"])
+    const { container } = renderCollapseButton({ expandedItems: expandedItems.result.current })
+    await expectNoAccessibilityViolations(container)
+})
 
 it("resets the expanded items", () => {
     history.push("?expanded=tab:0")

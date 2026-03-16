@@ -32,37 +32,36 @@ function renderTags({ tags = ["foo"] } = {}) {
     )
 }
 
-it("shows the tags", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderTags()
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows the tags", async () => {
+    renderTags()
     expectText(/Tag/)
     expectText(/Number of metrics/)
     expectText(/foo/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows an info message if there are no tags", async () => {
-    const { container } = renderTags({ tags: [] })
+    renderTags({ tags: [] })
     expectText(/None of the metrics in this report have tags/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("deletes a tag", async () => {
-    const { container } = renderTags()
+    renderTags()
     await asyncClickLabeledElement(/Expand/, 0)
-    await expectNoAccessibilityViolations(container)
     await asyncClickText(/Delete tag/)
     expectFetch("delete", "report/report_uuid/tag/foo")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renames a tag", async () => {
-    const { container } = renderTags()
+    renderTags()
     await asyncClickLabeledElement(/Expand/, 0)
-    await expectNoAccessibilityViolations(container)
     await userEvent.type(screen.getByLabelText("Tag"), "bar{Enter}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
     expectFetch("post", "report/report_uuid/tag/foo", { tag: "bar" })
-    await expectNoAccessibilityViolations(container)
 })

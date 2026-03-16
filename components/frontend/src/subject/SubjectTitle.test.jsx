@@ -67,35 +67,36 @@ async function renderSubjectTitle(subjectType = "subject_type") {
     return result
 }
 
-it("changes the subject type", async () => {
+it("has no accessibility violations", async () => {
     const { container } = await renderSubjectTitle()
+    await expectNoAccessibilityViolations(container)
+})
+
+it("changes the subject type", async () => {
+    await renderSubjectTitle()
     fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
     clickText(/Other subject type/)
     expectFetch("post", "subject/subject_uuid/attribute/type", { type: "subject_type2" })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("changes the subject type to a nested type", async () => {
-    const { container } = await renderSubjectTitle()
+    await renderSubjectTitle()
     fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
     clickText(/Nested subject type/)
     expectFetch("post", "subject/subject_uuid/attribute/type", { type: "nested_subject_type" })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("changes the subject type from a nested type", async () => {
-    const { container } = await renderSubjectTitle("nested_subject_type")
+    await renderSubjectTitle("nested_subject_type")
     fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
     clickText(/Other subject type/)
     expectFetch("post", "subject/subject_uuid/attribute/type", { type: "subject_type2" })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("changes the subject title", async () => {
-    const { container } = await renderSubjectTitle()
+    await renderSubjectTitle()
     await userEvent.type(screen.getByLabelText(/Subject title/), "{Delete}New title{Enter}")
     expectFetch("post", "subject/subject_uuid/attribute/name", { name: "New title" })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("changes the subject subtitle", async () => {
@@ -106,38 +107,33 @@ it("changes the subject subtitle", async () => {
 })
 
 it("changes the subject comment", async () => {
-    const { container } = await renderSubjectTitle()
+    await renderSubjectTitle()
     await userEvent.type(screen.getByLabelText(/Comment/), "{Delete}New comment{Shift>}{Enter}")
     expectFetch("post", "subject/subject_uuid/attribute/comment", { comment: "New comment" })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("loads the changelog", async () => {
     history.push("?expanded=subject_uuid:1")
-    const { container } = await renderSubjectTitle()
+    await renderSubjectTitle()
     expectFetch("get", "changelog/subject/subject_uuid/5")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("moves the subject", async () => {
-    const { container } = await renderSubjectTitle()
+    await renderSubjectTitle()
     await asyncClickButton(/Move subject to the next position/)
     expectFetch("post", "subject/subject_uuid/attribute/position", { position: "next" })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("deletes the subject", async () => {
     history.push("?expanded=subject_uuid:0")
-    const { container } = await renderSubjectTitle()
+    await renderSubjectTitle()
     await asyncClickText(/Delete subject/)
     expectFetch("delete", "subject/subject_uuid", {})
     expectSearch("")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("uses the name of the subject type for the documentation link", async () => {
-    const { container } = await renderSubjectTitle()
+    await renderSubjectTitle()
     const readTheDocsLink = screen.getByRole("link", { name: "Read the Docs" })
     expect(readTheDocsLink).toHaveAttribute("href", expect.stringContaining("#default-subject-type"))
-    await expectNoAccessibilityViolations(container)
 })

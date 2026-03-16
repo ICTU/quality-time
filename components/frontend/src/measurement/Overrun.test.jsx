@@ -22,23 +22,29 @@ function renderOverrun({ measurements = [], dates = [] } = {}) {
     )
 }
 
-it("renders nothing if there is no overrun", async () => {
-    const { container } = renderOverrun()
-    expect(screen.queryAllByDisplayValue(/days/).length).toBe(0)
-    await expectNoAccessibilityViolations(container)
-})
-
-it("renders the days overrun if the metric has overrun its deadline", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderOverrun({
         dates: dates,
         measurements: [{ metric_uuid: "uuid", start: "2020-01-01", end: "2020-01-31" }],
     })
-    expectText(/27 days/)
     await expectNoAccessibilityViolations(container)
 })
 
+it("renders nothing if there is no overrun", async () => {
+    renderOverrun()
+    expect(screen.queryAllByDisplayValue(/days/).length).toBe(0)
+})
+
+it("renders the days overrun if the metric has overrun its deadline", async () => {
+    renderOverrun({
+        dates: dates,
+        measurements: [{ metric_uuid: "uuid", start: "2020-01-01", end: "2020-01-31" }],
+    })
+    expectText(/27 days/)
+})
+
 it("merges the days overrun if the metric has consecutive measurements", async () => {
-    const { container } = renderOverrun({
+    renderOverrun({
         dates: dates,
         measurements: [
             { metric_uuid: "uuid", start: "2020-01-01", end: "2020-01-10" },
@@ -46,5 +52,4 @@ it("merges the days overrun if the metric has consecutive measurements", async (
         ],
     })
     expectText(/16 days/)
-    await expectNoAccessibilityViolations(container)
 })

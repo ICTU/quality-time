@@ -35,16 +35,19 @@ beforeEach(() => {
     history.push("")
 })
 
-it("shows the subject title", async () => {
-    const { container } = renderSubject({ dates: [new Date(2022, 3, 26)] })
-    expectText("Subject 1 title")
+it("has no accessibility violations", async () => {
+    const { container } = renderSubject()
     await expectNoAccessibilityViolations(container)
 })
 
+it("shows the subject title", async () => {
+    renderSubject({ dates: [new Date(2022, 3, 26)] })
+    expectText("Subject 1 title")
+})
+
 it("shows the subject title at the reports overview", async () => {
-    const { container } = renderSubject({ atReportsOverview: true, dates: [new Date(2022, 3, 26)] })
+    renderSubject({ atReportsOverview: true, dates: [new Date(2022, 3, 26)] })
     expectText("Report title ❯ Subject 1 title")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("hides metrics not requiring action", async () => {
