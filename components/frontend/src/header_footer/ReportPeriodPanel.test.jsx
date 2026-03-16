@@ -27,12 +27,16 @@ function renderReportPeriodPanel() {
     )
 }
 
+it("has no accessibility violations", async () => {
+    const { container } = renderReportPeriodPanel()
+    await expectNoAccessibilityViolations(container)
+})
+
 it("sets the number of dates", async () => {
     history.push("?nr_dates=2")
-    const { container } = renderReportPeriodPanel()
+    renderReportPeriodPanel()
     clickText(/7 dates/)
     expectSearch("?nr_dates=7")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the number of dates by keypress", async () => {

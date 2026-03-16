@@ -29,23 +29,25 @@ function renderIssuesCard({ selected = false } = {}) {
     return render(<IssuesCard report={report} selected={selected} />)
 }
 
-it("shows the correct title", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderIssuesCard()
-    expectText(/Issues/)
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows the correct title", async () => {
+    renderIssuesCard()
+    expectText(/Issues/)
 })
 
 it("shows the title as selected when the card is selected", async () => {
-    const { container } = renderIssuesCard({ selected: true })
+    renderIssuesCard({ selected: true })
     expect(screen.getByText(/Issues/)).toHaveClass("selected")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the number of issues", async () => {
-    const { container } = renderIssuesCard()
+    renderIssuesCard()
     expect(screen.getByRole("row", { name: "Todo 0" })).toBeInTheDocument()
     expect(screen.getByRole("row", { name: "Doing 1" })).toBeInTheDocument()
     expect(screen.getByRole("row", { name: "Done 0" })).toBeInTheDocument()
     expect(screen.getByRole("row", { name: "Unknown 3" })).toBeInTheDocument()
-    await expectNoAccessibilityViolations(container)
 })

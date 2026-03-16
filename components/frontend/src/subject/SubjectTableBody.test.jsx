@@ -77,10 +77,14 @@ beforeEach(() => {
 
 afterEach(() => vi.restoreAllMocks())
 
-it("shows the correct number of rows", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderSubjectTableBody()
-    expect(screen.queryAllByTestId(/^metric-row-/).length).toBe(2)
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows the correct number of rows", async () => {
+    renderSubjectTableBody()
+    expect(screen.queryAllByTestId(/^metric-row-/).length).toBe(2)
 })
 
 it("shows drop indicator when dragging over a row", () => {

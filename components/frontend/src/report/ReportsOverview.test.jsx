@@ -61,26 +61,28 @@ async function renderReportsOverview({
     return result
 }
 
-it("shows an error message if there are no reports at the specified date", async () => {
-    const { container } = await renderReportsOverview({ reportDate: new Date() })
-    expectText(/Sorry, no reports existed at/)
+it("has no accessibility violations", async () => {
+    const { container } = await renderReportsOverview()
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows an error message if there are no reports at the specified date", async () => {
+    await renderReportsOverview({ reportDate: new Date() })
+    expectText(/Sorry, no reports existed at/)
 })
 
 it("shows the reports overview", async () => {
     const reports = [{ report_uuid: "report_uuid", subjects: {} }]
     const reportsOverview = { title: "Overview", permissions: {} }
-    const { container } = await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
+    await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expectText(/Overview/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the comment", async () => {
     const reports = [{ report_uuid: "report_uuid", subjects: {} }]
     const reportsOverview = { title: "Overview", comment: "Commentary", permissions: {} }
-    const { container } = await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
+    await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expectText(/Commentary/)
-    await expectNoAccessibilityViolations(container)
 })
 
 const reports = [

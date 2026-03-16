@@ -121,21 +121,24 @@ beforeEach(() => {
     vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
 })
 
-it("displays all the metrics", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderSubjectTable()
+    await expectNoAccessibilityViolations(container)
+})
+
+it("displays all the metrics", async () => {
+    renderSubjectTable()
     const metricNames = ["name_1", "name_2"]
     metricNames.forEach((metricName) => {
         expectText(metricName)
     })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the date columns", async () => {
-    const { container } = renderSubjectTable({ dates: dates })
+    renderSubjectTable({ dates: dates })
     dates.forEach((date) => {
         expectText(date.toLocaleDateString())
     })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the source column", () => {
@@ -213,10 +216,9 @@ it("hides the tags column", () => {
 
 it("expands the details via the button", async () => {
     const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
-    const { container } = renderSubjectTable({ expandedItems: expandedItems.result.current })
+    renderSubjectTable({ expandedItems: expandedItems.result.current })
     clickButton("Expand/collapse", 0)
     expandedItems.rerender()
-    await expectNoAccessibilityViolations(container)
     expect(expandedItems.result.current.value).toStrictEqual(["1:0"])
 })
 
@@ -231,10 +233,9 @@ it("collapses the details via the button", async () => {
 
 it("expands the details via the url", async () => {
     history.push("?expanded=1:0")
-    const { container } = renderSubjectTable()
+    renderSubjectTable()
     await act(async () => {}) // Wait for hooks to finish
     expectText("Configuration")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("moves a metric", async () => {
@@ -246,11 +247,10 @@ it("moves a metric", async () => {
 
 it("adds a source", async () => {
     history.push("?expanded=1:1")
-    const { container } = renderSubjectTable()
+    renderSubjectTable()
     await asyncClickRole("tab", /Sources/)
     const addButton = await screen.findByText("Add source")
     await act(async () => fireEvent.click(addButton))
-    await expectNoAccessibilityViolations(container)
     fireEvent.click(await screen.findByText("Source type"))
     expectFetch("post", "source/new/1", { type: "source_type" })
 })

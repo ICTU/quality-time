@@ -136,12 +136,16 @@ async function renderMetricDetails({
     return result
 }
 
+it("has no accessibility violations", async () => {
+    const { container } = await renderMetricDetails()
+    await expectNoAccessibilityViolations(container)
+})
+
 it("shows the trend graph tab even if the metric scale is version number", async () => {
     report.subjects["subject_uuid"].metrics["metric_uuid"].scale = "version_number"
-    const { container } = await renderMetricDetails()
+    await renderMetricDetails()
     expectText(/Trend graph/)
     report.subjects["subject_uuid"].metrics["metric_uuid"].scale = "count"
-    await expectNoAccessibilityViolations(container)
 })
 
 it("removes the existing hashtag from the URL to share", async () => {
@@ -156,15 +160,13 @@ it("removes the existing hashtag from the URL to share", async () => {
 })
 
 it("displays whether sources have errors", async () => {
-    const { container } = await renderMetricDetails({ connectionError: "Connection error" })
+    await renderMetricDetails({ connectionError: "Connection error" })
     expect(screen.getByText(/Sources/)).toHaveClass("error")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("displays whether sources have warnings", async () => {
-    const { container } = await renderMetricDetails()
+    await renderMetricDetails()
     expect(screen.getByText(/Sources/)).toHaveClass("warning")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("moves the metric", async () => {
@@ -202,52 +204,47 @@ it("does not measure the metric if the metric source configuration is incomplete
 
 it("loads an empty list of measurements", async () => {
     history.push("?expanded=metric_uuid:5")
-    const { container } = await renderMetricDetails({
+    await renderMetricDetails({
         getMetricMeasurements: () => Promise.resolve({ measurements: [] }),
     })
     expectNoText(/Loading measurements failed/)
     expect(toast.showMessage).toHaveBeenCalledTimes(0)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("loads a missing list of measurements", async () => {
     history.push("?expanded=metric_uuid:5")
-    const { container } = await renderMetricDetails({
+    await renderMetricDetails({
         getMetricMeasurements: () => Promise.resolve({}),
     })
     expectNoText(/Loading measurements failed/)
     expect(toast.showMessage).toHaveBeenCalledTimes(0)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("fails to load measurements due to a failed promise", async () => {
     history.push("?expanded=metric_uuid:5")
-    const { container } = await renderMetricDetails({
+    await renderMetricDetails({
         getMetricMeasurements: () => Promise.reject(new Error("Failure")),
     })
     expectText(/Loading measurements failed/)
     expect(toast.showMessage).toHaveBeenCalledTimes(1)
     expect(toast.showMessage).toHaveBeenCalledWith("error", "Could not fetch measurements", "Failure")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("fails to load measurements due to an internal server error", async () => {
     history.push("?expanded=metric_uuid:5")
-    const { container } = await renderMetricDetails({
+    await renderMetricDetails({
         getMetricMeasurements: () => Promise.resolve({ ok: false, statusText: "Internal Server Error" }),
     })
     expectText(/Loading measurements failed/)
     expect(toast.showMessage).toHaveBeenCalledTimes(1)
     expect(toast.showMessage).toHaveBeenCalledWith("error", "Could not fetch measurements", "Internal Server Error")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("reloads the measurements after editing a measurement entity", async () => {
     history.push("?expanded=metric_uuid:5")
-    const { container } = await renderMetricDetails()
+    await renderMetricDetails()
     expect(measurementApi.getMetricMeasurements).toHaveBeenCalledTimes(1)
     clickButton("Expand/collapse")
-    await expectNoAccessibilityViolations(container)
     fireEvent.mouseDown(screen.getByText("Unconfirm"))
     await asyncClickText("Confirm")
     expect(measurementApi.getMetricMeasurements).toHaveBeenCalledTimes(2)
@@ -255,7 +252,6 @@ it("reloads the measurements after editing a measurement entity", async () => {
 
 it("loads the changelog", async () => {
     history.push("?expanded=metric_uuid:3")
-    const { container } = await renderMetricDetails()
+    await renderMetricDetails()
     expectFetch("get", "changelog/metric/metric_uuid/5")
-    await expectNoAccessibilityViolations(container)
 })

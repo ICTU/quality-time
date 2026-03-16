@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../../api/fetch_server_api"
-import { clickButton, clickMenuItem } from "../../testUtils"
+import { clickButton, clickMenuItem, expectNoAccessibilityViolations } from "../../testUtils"
 import { UserButton } from "./UserButton"
 
 beforeAll(() => {
@@ -15,6 +15,11 @@ function renderUserButton() {
     render(<UserButton user="jadoe" email="jadoe@example.org" setUser={setUser} />)
     return setUser
 }
+
+it("has no accessibility violations", async () => {
+    const { container } = render(<UserButton user="jadoe" email="jadoe@example.org" />)
+    await expectNoAccessibilityViolations(container)
+})
 
 it("logs out the user when clicking the log out menu item", () => {
     const setUser = renderUserButton()

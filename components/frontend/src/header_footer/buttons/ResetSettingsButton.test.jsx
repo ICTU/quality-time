@@ -3,7 +3,7 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../../__fixtures__/fixtures"
-import { clickText, expectSearch } from "../../testUtils"
+import { clickText, expectNoAccessibilityViolations, expectSearch } from "../../testUtils"
 import { ResetSettingsButton } from "./ResetSettingsButton"
 
 beforeEach(() => {
@@ -16,7 +16,7 @@ function renderResetSettingsButton({
     reportDate = null,
     settings = null,
 } = {}) {
-    render(
+    return render(
         <ResetSettingsButton
             atReportsOverview={atReportsOverview}
             handleDateChange={handleDateChange}
@@ -25,6 +25,11 @@ function renderResetSettingsButton({
         />,
     )
 }
+
+it("has no accessibility violations", async () => {
+    const { container } = renderResetSettingsButton({ settings: createTestableSettings() })
+    await expectNoAccessibilityViolations(container)
+})
 
 it("resets the settings", async () => {
     history.push(

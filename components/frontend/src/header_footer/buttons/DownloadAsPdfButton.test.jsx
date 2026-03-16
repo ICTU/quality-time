@@ -3,7 +3,7 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../../api/fetch_server_api"
-import { asyncClickText, expectFetch, expectLabelText } from "../../testUtils"
+import { asyncClickText, expectFetch, expectLabelText, expectNoAccessibilityViolations } from "../../testUtils"
 import * as toast from "../../widgets/toast"
 import { DownloadAsPdfButton } from "./DownloadAsPdfButton"
 
@@ -11,6 +11,11 @@ beforeEach(() => {
     history.push("")
     vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() => Promise.resolve({ ok: true }))
     vi.spyOn(toast, "showMessage")
+})
+
+it("has no accessibility violations", async () => {
+    const { container } = render(<DownloadAsPdfButton />)
+    await expectNoAccessibilityViolations(container)
 })
 
 test("DownloadAsPdfButton has the correct label for reports overview", () => {

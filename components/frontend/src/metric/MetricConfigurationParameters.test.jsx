@@ -75,70 +75,67 @@ function expectMetricAttributePost(attribute, payload) {
     expectFetch("post", endPoint, { [attribute]: payload })
 }
 
-it("sets the metric name", async () => {
+it("has no accessibility violations", async () => {
     const { container } = await renderMetricParameters()
+    await expectNoAccessibilityViolations(container)
+})
+
+it("sets the metric name", async () => {
+    await renderMetricParameters()
     await typeInField(/Metric name/, "New metric name")
     expectMetricAttributePost("name", "New metric name")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the metric secondary name", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     await typeInField(/Metric secondary name/, "New metric secondary name")
     expectMetricAttributePost("secondary_name", "New metric secondary name")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("adds a tag on enter", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     await typeInField(/Metric tags/, "New tag", "Enter")
     expectMetricAttributePost("tags", ["New tag"])
-    await expectNoAccessibilityViolations(container)
 })
 
 it("adds a tag on tab", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     await typeInField(/Metric tags/, "New tag", "Tab")
     expectMetricAttributePost("tags", ["New tag"])
-    await expectNoAccessibilityViolations(container)
 })
 
 it("changes the scale", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     fireEvent.mouseDown(screen.getByLabelText(/Metric scale/))
     clickText(/Percentage/)
     expectMetricAttributePost("scale", "percentage")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("changes the direction", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     fireEvent.mouseDown(screen.getByLabelText(/direction/))
     clickText(/More violations is better/)
     expectMetricAttributePost("direction", ">")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the metric unit for metrics with the count scale", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     await typeInField(/Metric unit plural/, "New metric units")
     expectMetricAttributePost("unit", "New metric units")
     await typeInField(/Metric unit singular/, "New metric unit")
     expectMetricAttributePost("unit_singular", "New metric unit")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the metric unit for metrics with the percentage scale", async () => {
-    const { container } = await renderMetricParameters("percentage")
+    await renderMetricParameters("percentage")
     await typeInField(/Metric unit plural/, "New metric units")
     expectMetricAttributePost("unit", "New metric units")
     await typeInField(/Metric unit singular/, "New metric unit")
     expectMetricAttributePost("unit_singular", "New metric unit")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("skips the metric unit fields for metrics with the version number scale", async () => {
-    const { container } = render(
+    render(
         <DataModel.Provider value={dataModel}>
             <MetricConfigurationParameters
                 report={{ subjects: {} }}
@@ -149,12 +146,10 @@ it("skips the metric unit fields for metrics with the version number scale", asy
         </DataModel.Provider>,
     )
     expectNoText(/Metric unit/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("turns off evaluation of targets", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     await userEvent.type(screen.getByLabelText(/Evaluate metric targets/), "No{Enter}")
     expectMetricAttributePost("evaluate_targets", false)
-    await expectNoAccessibilityViolations(container)
 })

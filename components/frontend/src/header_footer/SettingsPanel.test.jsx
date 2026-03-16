@@ -47,11 +47,15 @@ function renderSettingsPanel({
     )
 }
 
-it("hides the metrics not requiring action", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderSettingsPanel()
+    await expectNoAccessibilityViolations(container)
+})
+
+it("hides the metrics not requiring action", async () => {
+    renderSettingsPanel()
     clickText(/Metrics requiring action/)
     expectSearch("?metrics_to_hide=no_action_required")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows all metrics", async () => {

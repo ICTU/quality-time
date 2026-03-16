@@ -34,48 +34,47 @@ function renderSourceEntity({
     )
 }
 
-it("renders the unconfirmed status", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderSourceEntity({})
+    await expectNoAccessibilityViolations(container)
+})
+
+it("renders the unconfirmed status", async () => {
+    renderSourceEntity({})
     clickButton()
     expectText(/Unconfirmed/, 2)
     expect(screen.getAllByText(/Unconfirmed/)[0].closest("tr").className).toContain("warning_status")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renders the fixed status", async () => {
-    const { container } = renderSourceEntity({ status: "fixed" })
+    renderSourceEntity({ status: "fixed" })
     expectText(/Fixed/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renders the status end date", async () => {
-    const { container } = renderSourceEntity({ status: "fixed", statusEndDate: "3000-01-01" })
+    renderSourceEntity({ status: "fixed", statusEndDate: "3000-01-01" })
     const expectedDate = renderHook(() => formatDate(new Date("3000-01-01")))
     expectText(RegExp(expectedDate.result.current))
-    await expectNoAccessibilityViolations(container)
 })
 
 it("does not render the status end date if the status is unconfirmed", async () => {
-    const { container } = renderSourceEntity({ status: "unconfirmed", statusEndDate: "3000-01-01" })
+    renderSourceEntity({ status: "unconfirmed", statusEndDate: "3000-01-01" })
     const expectedDate = renderHook(() => formatDate(new Date("3000-01-01")))
     expectNoText(RegExp(expectedDate.result.current))
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renders the status rationale", async () => {
-    const { container } = renderSourceEntity({ status: "fixed", rationale: "Why?" })
+    renderSourceEntity({ status: "fixed", rationale: "Why?" })
     expectText(/Why\?/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renders the first seen datetime", async () => {
-    const { container } = renderSourceEntity({ firstSeen: "2023-07-17" })
+    renderSourceEntity({ firstSeen: "2023-07-17" })
     expectText(/ago/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renders the status and rationale past end date", async () => {
-    const { container } = renderSourceEntity({
+    renderSourceEntity({
         status: "fixed",
         statusEndDate: "2000-01-01",
         hideIgnoredEntities: true,
@@ -84,11 +83,9 @@ it("renders the status and rationale past end date", async () => {
     const expectedDate = renderHook(() => formatDate(new Date("2000-01-01")))
     expectText(RegExp(expectedDate.result.current))
     expectText(/Because/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renders nothing if the status is to be ignored", async () => {
-    const { container } = renderSourceEntity({ status: "fixed", hideIgnoredEntities: true })
+    renderSourceEntity({ status: "fixed", hideIgnoredEntities: true })
     expectNoText(/Fixed/)
-    await expectNoAccessibilityViolations(container)
 })

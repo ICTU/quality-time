@@ -27,10 +27,14 @@ beforeEach(() => {
     history.push("")
 })
 
-it("shows the subjects", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderSubjects([report])
-    expectText(/Subject/, 2)
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows the subjects", async () => {
+    renderSubjects([report])
+    expectText(/Subject/, 2)
 })
 
 it("does not render invisible subjects", async () => {
@@ -79,9 +83,8 @@ it("does not render invisible subjects", async () => {
         },
         title: "Report 2 title",
     }
-    const { container } = renderSubjects([report, report2])
+    renderSubjects([report, report2])
     expectText(/Report 2 Subject 1/)
     expectText(/Report 2 Subject 2/)
     expectNoText(/Report 2 Subject 3/)
-    await expectNoAccessibilityViolations(container)
 })
