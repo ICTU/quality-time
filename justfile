@@ -286,8 +286,8 @@ check-js: npm-lint npm-audit npm-outdated
 # Run the quality checks, in the current working directory.
 [no-cd]
 check:
-    {{ if pyproject_toml_exists == "true" { "just check-py" } else { "" } }}
     {{ if package_json_exists == "true" { "just check-js" } else { "" } }}
+    {{ if pyproject_toml_exists == "true" { "just check-py" } else { "" } }}
     {{ if pyproject_toml_exists + package_json_exists == "falsefalse" { "echo 'Nothing to check'" } else { "" } }}
 
 # === Fix issues ===
