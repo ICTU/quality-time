@@ -22,9 +22,7 @@ def update_package_json(package_json: Path) -> int:
     npm_outdated = ["npm", "outdated", "--silent", "--json", "--include=dev"]
     outdated_packages = json.loads(run(npm_outdated, cwd=package_json.parent))
     for package, version in outdated_packages.items():
-        LOG.new_version(
-            package, DependencyVersion(version=version["latest"], changes=get_changes(package, version["latest"]))
-        )
+        LOG.new_version(package, DependencyVersion(version["latest"], get_changes(package, version["latest"])))
     npm_update = ["npm", "update", "--save", "--fund=false", "--ignore-scripts", "--silent", "--include=dev"]
     run(npm_update, cwd=package_json.parent)
     return 0

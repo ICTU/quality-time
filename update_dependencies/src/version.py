@@ -3,14 +3,14 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class DependencyVersion:
     """A version of a dependency."""
 
     version: str
-    changes: str = ""
+    _changes: str = ""
 
-    def __post_init__(self) -> None:
-        """Fix an empty change log."""
-        if not self.changes:
-            self.changes = "No changelog available!"
+    @property
+    def changes(self) -> str:
+        """Return the changelog."""
+        return self._changes or "No changelog available!"
