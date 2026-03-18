@@ -8,7 +8,7 @@ from changelog import get_version_changes_from_changelog
 from github import get_latest_release_json, github_organization_and_repository, github_to_raw
 
 CHANGELOG_URL_KEYS = {"changes", "changelog", "release notes"}
-REPOSITORY_URL_KEYS = {"repository"}
+REPOSITORY_URL_KEYS = {"repository", "homepage"}
 
 
 @cache
