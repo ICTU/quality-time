@@ -28,7 +28,6 @@ jobs:
         if: env.SONAR_TOKEN != null
         uses: astral-sh/setup-uv@v7.6.0
         with:
-          enable-cache: true
           version-file: tools/pyproject.toml
       - name: Set up Node
         if: env.SONAR_TOKEN != null
