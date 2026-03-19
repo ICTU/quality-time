@@ -28,7 +28,7 @@ dev = [
     "pydantic==2.12.5",                      # Needed for importing the data model in the tests from the shared code component
     "tools",
     "types-cryptography==3.3.23.2",
-    "types-ldap3==2.9.13.20251121",
+    "types-ldap3==2.9.13.20260319",
     "types-python-dateutil==2.9.0.20260305",
     "types-requests==2.32.4.20260107",
 ]
