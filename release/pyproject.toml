@@ -43,6 +43,12 @@ lint.per-file-ignores.".vulture-whitelist.py" = [
 indent = 4
 keep_full_version = true  # Don't remove trailing zero's from version specifiers
 
+[tool.bandit]
+skips = [
+    "B404", # Consider possible security implications associated with the subprocess module.
+    "B603", # subprocess call - check for execution of untrusted input.
+]
+
 [tool.bumpversion]
 current_version = "5.49.0"
 parse = """(?x)
@@ -126,9 +132,3 @@ glob = "../publiccode.yml"
 search = "releaseDate: \\d{{4}}-\\d{{2}}-\\d{{2}}"
 replace = "releaseDate: {$RELEASE_DATE}"
 regex = true
-
-[tool.bandit]
-skips = [
-    "B404", # Consider possible security implications associated with the subprocess module.
-    "B603", # subprocess call - check for execution of untrusted input.
-]
