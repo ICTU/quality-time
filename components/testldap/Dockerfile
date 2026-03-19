@@ -1,4 +1,4 @@
-FROM debian:trixie-20260202-slim
+FROM debian:13.4-slim
 
 # Install slapd and requirements
 RUN \
