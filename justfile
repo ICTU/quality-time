@@ -217,6 +217,12 @@ pip-audit: install-py-dependencies
     uv run pip-audit --requirement /tmp/requirements-{{ random_string }}.txt --disable-pip --progress-spinner off
     rm -f /tmp/requirements-{{ random_string }}.txt
 
+# Run uv audit
+[no-cd]
+[private]
+uv-audit: install-py-dependencies
+    uv --preview-features audit audit --locked --all-extras --all-groups
+
 # Run bandit
 [no-cd]
 [private]
@@ -251,7 +257,7 @@ sphinx: install-py-dependencies
 [no-cd]
 [parallel]
 [private]
-check-py: mypy fixit ruff pyproject-fmt troml pip-audit bandit vulture vale yamllint sphinx
+check-py: mypy fixit ruff pyproject-fmt troml pip-audit uv-audit bandit vulture vale yamllint sphinx
 
 # Run npm lint
 [no-cd]
