@@ -296,7 +296,7 @@ dev = [
     { name = "shared-code", editable = "../components/shared_code" },
     { name = "sphinx", specifier = "==9.1.0" },
     { name = "sphinx-design", specifier = "==0.7.0" },
-    { name = "tools", virtual = "../tools" },
+    { name = "tools", virtual = "../tools/third_party" },
     { name = "vale", specifier = "==3.13.0.0" },
     { name = "yamllint", specifier = "==1.38.0" },
 ]
@@ -1018,7 +1018,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "mongomock", specifier = "==4.3.0" },
-    { name = "tools", virtual = "../tools" },
+    { name = "tools", virtual = "../tools/third_party" },
     { name = "types-python-dateutil", specifier = "==2.9.0.20260305" },
 ]
 
@@ -1248,7 +1248,7 @@ wheels = [
 [[package]]
 name = "tools"
 version = "5.49.0"
-source = { virtual = "../tools" }
+source = { virtual = "../tools/third_party" }
 dependencies = [
     { name = "bandit" },
     { name = "codespell" },

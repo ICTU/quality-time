@@ -299,7 +299,7 @@ dev = [
     { name = "python-dateutil", specifier = "==2.9.0.post0" },
     { name = "requests", specifier = "==2.32.5" },
     { name = "requests-sse", specifier = "==0.5.3" },
-    { name = "tools", virtual = "../../tools" },
+    { name = "tools", virtual = "../../tools/third_party" },
     { name = "types-python-dateutil", specifier = "==2.9.0.20260305" },
     { name = "types-requests", specifier = "==2.32.4.20260107" },
 ]
@@ -988,7 +988,7 @@ wheels = [
 [[package]]
 name = "tools"
 version = "5.49.0"
-source = { virtual = "../../tools" }
+source = { virtual = "../../tools/third_party" }
 dependencies = [
     { name = "bandit" },
     { name = "codespell" },

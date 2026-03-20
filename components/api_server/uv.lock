@@ -68,7 +68,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "pydantic", specifier = "==2.12.5" },
-    { name = "tools", virtual = "../../tools" },
+    { name = "tools", virtual = "../../tools/third_party" },
     { name = "types-cryptography", specifier = "==3.3.23.2" },
     { name = "types-ldap3", specifier = "==2.9.13.20260319" },
     { name = "types-python-dateutil", specifier = "==2.9.0.20260305" },
@@ -1075,7 +1075,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "mongomock", specifier = "==4.3.0" },
-    { name = "tools", virtual = "../../tools" },
+    { name = "tools", virtual = "../../tools/third_party" },
     { name = "types-python-dateutil", specifier = "==2.9.0.20260305" },
 ]
 
@@ -1172,7 +1172,7 @@ wheels = [
 [[package]]
 name = "tools"
 version = "5.49.0"
-source = { virtual = "../../tools" }
+source = { virtual = "../../tools/third_party" }
 dependencies = [
     { name = "bandit" },
     { name = "codespell" },

@@ -32,7 +32,7 @@ dev = [
     { name = "axe-selenium-python", specifier = "==2.1.6" },
     { name = "requests", specifier = "==2.32.5" },
     { name = "selenium", specifier = "==4.41.0" },
-    { name = "tools", virtual = "../../tools" },
+    { name = "tools", virtual = "../../tools/third_party" },
     { name = "types-requests", specifier = "==2.32.4.20260107" },
 ]
 
@@ -901,7 +901,7 @@ wheels = [
 [[package]]
 name = "tools"
 version = "5.49.0"
-source = { virtual = "../../tools" }
+source = { virtual = "../../tools/third_party" }
 dependencies = [
     { name = "bandit" },
     { name = "codespell" },

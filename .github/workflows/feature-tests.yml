@@ -18,7 +18,7 @@ jobs:
         uses: astral-sh/setup-uv@v7.6.0
         with:
           enable-cache: true
-          version-file: tools/pyproject.toml
+          version-file: tools/third_party/pyproject.toml
       - name: Run feature tests
         run: ./tests/feature_tests/test.sh
       - name: Upload artifacts

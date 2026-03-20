@@ -215,7 +215,7 @@ just check
 Run the release script with `--help` to show help information, including the current release.
 
 ```console
-cd release
+cd tools/release
 uv run --script release.py --help
 ```
 

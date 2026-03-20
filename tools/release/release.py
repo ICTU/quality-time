@@ -186,11 +186,11 @@ def main() -> None:
         "../components/notifier",
         "../components/shared_code",
         "../docs",
-        "../release",
         "../tests/feature_tests",
         "../tests/application_tests",
-        "../tools",
-        "../update_dependencies",
+        "../tools/release",
+        "../tools/third_party",
+        "../tools/update_dependencies",
     ]:
         run(("uv", "lock"), cwd=python_project_folder, check=True)
     run(("git", "add", "**/uv.lock"), cwd="..", check=True)
