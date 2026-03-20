@@ -20,7 +20,7 @@ dev = [
 ]
 
 [tool.uv]
-sources.tools = { path = "../tools", package = false }
+sources.tools = { path = "../third_party", package = false }
 
 [tool.ruff]
 line-length = 120

@@ -8,7 +8,7 @@ ENV UV_COMPILE_BYTECODE=1 UV_NO_CACHE=1 UV_PYTHON_DOWNLOADS=0 VIRTUAL_ENV=/home/
 WORKDIR /home/notifier
 
 RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv \
-    --mount=type=bind,source=tools,target=/tools,rw \
+    --mount=type=bind,source=tools/third_party,target=/tools/third_party,rw \
     --mount=type=bind,source=components/shared_code,target=/home/shared_code,rw \
     --mount=type=bind,source=components/notifier/uv.lock,target=/home/notifier/uv.lock \
     --mount=type=bind,source=components/notifier/pyproject.toml,target=/home/notifier/pyproject.toml \

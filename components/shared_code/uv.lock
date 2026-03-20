@@ -841,7 +841,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "mongomock", specifier = "==4.3.0" },
-    { name = "tools", virtual = "../../tools" },
+    { name = "tools", virtual = "../../tools/third_party" },
     { name = "types-python-dateutil", specifier = "==2.9.0.20260305" },
 ]
 
@@ -938,7 +938,7 @@ wheels = [
 [[package]]
 name = "tools"
 version = "5.49.0"
-source = { virtual = "../../tools" }
+source = { virtual = "../../tools/third_party" }
 dependencies = [
     { name = "bandit" },
     { name = "codespell" },

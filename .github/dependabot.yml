@@ -8,7 +8,7 @@ updates:
     open-pull-requests-limit: 10
 
   - package-ecosystem: uv
-    directory: "/tools"
+    directory: "/tools/third_party"
     allow:
       - dependency-type: "direct"
     schedule:
@@ -16,7 +16,7 @@ updates:
     open-pull-requests-limit: 10
 
   - package-ecosystem: uv
-    directory: "/update_dependencies"
+    directory: "/tools/update_dependencies"
     allow:
       - dependency-type: "direct"
     schedule:
@@ -149,7 +149,7 @@ updates:
     open-pull-requests-limit: 10
 
   - package-ecosystem: uv
-    directory: "/release"
+    directory: "/tools/release"
     allow:
       - dependency-type: "direct"
     schedule:

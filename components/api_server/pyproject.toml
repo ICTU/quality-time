@@ -35,7 +35,7 @@ dev = [
 
 [tool.uv]
 sources.shared-code = { path = "../shared_code", package = true }
-sources.tools = { path = "../../tools", package = false }
+sources.tools = { path = "../../tools/third_party", package = false }
 
 [tool.ruff]
 line-length = 120

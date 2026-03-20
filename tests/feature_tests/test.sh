@@ -10,7 +10,7 @@ export COVERAGE_RCFILE="$(pwd)"/tests/feature_tests/.coveragerc
 export PROXY_PORT=8080
 docker compose build --progress quiet database api_server renderer frontend www
 docker compose up --detach database ldap
-just_spec=$(uv export --project tools --only-group just --quiet --no-hashes --no-header)
+just_spec=$(uv export --project tools/third_party --only-group just --quiet --no-hashes --no-header)
 cd components/api_server || exit
 uvx --from=rust-just --with-requirements <(echo $just_spec) just install-py-dependencies
 .venv/bin/coverage erase

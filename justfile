@@ -33,38 +33,38 @@ random_string := uuid()
 # Update Docker images in the CircleCI config.
 [private]
 update-circle-ci-config:
-    uv run --project update_dependencies update_dependencies/src/update_circle_ci_config.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_circle_ci_config.py
 
 # Update Docker base images in Dockerfiles.
 [private]
 update-docker-base-images:
-    uv run --project update_dependencies update_dependencies/src/update_dockerfile_base_image.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_dockerfile_base_image.py
 
 # Update GitHub Actions in GitHub workflow YAML files.
 [private]
 update-github-actions:
-    uv run --project update_dependencies update_dependencies/src/update_github_action.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_github_action.py
 
 # Update direct and indirect Python dependencies.
 [private]
 update-py-dependencies:
-    uv run --project update_dependencies update_dependencies/src/update_pyproject_toml.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_pyproject_toml.py
 
 # Update direct and indirect JavaScript dependencies.
 [private]
 update-js-dependencies:
     # Note: major updates are not done automatically by npm
-    uv run --project update_dependencies update_dependencies/src/update_package_json.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_package_json.py
 
 # Update the Node engine version in package.json files.
 [private]
 update-node-engine:
-    uv run --project update_dependencies update_dependencies/src/update_node_engine.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_node_engine.py
 
 # Update the jsdelivr CDN package versions in the Sphinx config.
 [private]
 update-jsdelivr:
-    uv run --project update_dependencies update_dependencies/src/update_jsdelivr.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_jsdelivr.py
 
 alias update-deps := update-dependencies
 
@@ -326,12 +326,12 @@ fix:
 # === Release ===
 
 # Release Quality-time. Run `just release-help` for more information.
-[working-directory('release')]
+[working-directory('tools/release')]
 release *args:
     uv run --script release.py {{ args }}
 
 [private]
-[working-directory('release')]
+[working-directory('tools/release')]
 release-help:
     uv run --script release.py --help
 
