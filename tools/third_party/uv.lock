@@ -705,11 +705,11 @@ wheels = [
 
 [[package]]
 name = "toml-fmt-common"
-version = "1.3.1"
+version = "1.3.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a5/32/4689172cc19f55b8390dca4a0384d8e177f623621156f0c9b3963c720eab/toml_fmt_common-1.3.1.tar.gz", hash = "sha256:da19c5a485e9f3f1f154a54e05c7b4aadd6147478286d7547e91ba54e4f755fc", size = 7433, upload-time = "2026-03-02T04:23:20.113Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b0/f3/1a54191399599a229d04868083c30234c62e569cfaaf367f6c792ac53e2d/toml_fmt_common-1.3.2.tar.gz", hash = "sha256:d0da45f0244e8d410787fa8ddf5a5594016abb2a7b97f400ce20ec8b0a6a4804", size = 7583, upload-time = "2026-03-20T17:32:11.335Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/b5/c58d6ac40438898a4a19d958e67bf5f55a22afbc3cddb1cb23eda1d18a55/toml_fmt_common-1.3.1-py3-none-any.whl", hash = "sha256:5468567afe9702679682ab3fa973c79279a9f1420767e5c54481cd211df752fc", size = 5472, upload-time = "2026-03-02T04:23:18.925Z" },
+    { url = "https://files.pythonhosted.org/packages/55/27/403387a0b8ad8e5d57bec82ed0e5528432859ea8e1475916c8c8ac45197c/toml_fmt_common-1.3.2-py3-none-any.whl", hash = "sha256:f3329fbdd962f629d1777071a7f37813f6cf17b10a33830a5393996fc2064bef", size = 5557, upload-time = "2026-03-20T17:32:10.263Z" },
 ]
 
 [[package]]
