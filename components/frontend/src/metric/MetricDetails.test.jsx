@@ -56,33 +56,35 @@ const report = {
     },
 }
 
-const dataModel = {
-    sources: {
-        sonarqube: {
-            name: "The source",
-            deprecated: true,
-            parameters: {},
-            parameter_layout: {
-                all: {
-                    name: "All parameters",
-                    parameters: [],
+function createDataModel({ deprecateSonarQube = false, mandatoryURL = false } = {}) {
+    return {
+        sources: {
+            sonarqube: {
+                name: "The source",
+                deprecated: deprecateSonarQube,
+                parameters: { url: { mandatory: mandatoryURL, metrics: ["violations"] } },
+                parameter_layout: {
+                    all: {
+                        name: "All parameters",
+                        parameters: [],
+                    },
                 },
+                entities: { violations: { name: "Attribute", attributes: [] } },
             },
-            entities: { violations: { name: "Attribute", attributes: [] } },
         },
-    },
-    metrics: {
-        violations: {
-            direction: "<",
-            tags: [],
-            sources: ["sonarqube"],
-            scales: ["count", "percentage", "version_number"],
+        metrics: {
+            violations: {
+                direction: "<",
+                tags: [],
+                sources: ["sonarqube"],
+                scales: ["count", "percentage", "version_number"],
+            },
         },
-    },
-    subjects: { subject_type: { metrics: ["violations"] } },
+        subjects: { subject_type: { metrics: ["violations"] } },
+    }
 }
 
-function getMetricMeasurementsSuccessfully(connectionError) {
+function getMetricMeasurementsSuccessfully(connectionError, infoMessage) {
     return Promise.resolve({
         measurements: [
             {
@@ -97,6 +99,7 @@ function getMetricMeasurementsSuccessfully(connectionError) {
                         source_uuid: "source_uuid",
                         entities: [{ key: "1" }],
                         connection_error: connectionError,
+                        info_message: infoMessage,
                     },
                 ],
             },
@@ -105,12 +108,16 @@ function getMetricMeasurementsSuccessfully(connectionError) {
 }
 
 async function renderMetricDetails({
+    dataModel = null,
     stopFilteringAndSorting = null,
     connectionError = null,
     getMetricMeasurements = null,
+    infoMessage = null,
 } = {}) {
     vi.spyOn(measurementApi, "getMetricMeasurements").mockImplementation(() => {
-        return getMetricMeasurements ? getMetricMeasurements() : getMetricMeasurementsSuccessfully(connectionError)
+        return getMetricMeasurements
+            ? getMetricMeasurements()
+            : getMetricMeasurementsSuccessfully(connectionError, infoMessage)
     })
     let result
     const settings = createTestableSettings()
@@ -118,7 +125,7 @@ async function renderMetricDetails({
         result = render(
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Permissions.Provider value={[EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION]}>
-                    <DataModel.Provider value={dataModel}>
+                    <DataModel.Provider value={dataModel || createDataModel()}>
                         <MetricDetails
                             metricUuid="metric_uuid"
                             reload={vi.fn()}
@@ -159,14 +166,26 @@ it("removes the existing hashtag from the URL to share", async () => {
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith("http://localhost:3000/#metric_uuid")
 })
 
+it("displays no warnings or errors or message by default", async () => {
+    await renderMetricDetails()
+    expect(screen.getByText(/Sources/)).not.toHaveClass("warning")
+    expect(screen.getByText(/Sources/)).not.toHaveClass("error")
+    expect(screen.getByText(/Sources/)).not.toHaveClass("informative")
+})
+
 it("displays whether sources have errors", async () => {
     await renderMetricDetails({ connectionError: "Connection error" })
     expect(screen.getByText(/Sources/)).toHaveClass("error")
 })
 
 it("displays whether sources have warnings", async () => {
-    await renderMetricDetails()
+    await renderMetricDetails({ dataModel: createDataModel({ deprecateSonarQube: true }) })
     expect(screen.getByText(/Sources/)).toHaveClass("warning")
+})
+
+it("displays whether sources have info messages", async () => {
+    await renderMetricDetails({ infoMessage: "Some info" })
+    expect(screen.getByText(/Sources/)).toHaveClass("informative")
 })
 
 it("moves the metric", async () => {
@@ -196,8 +215,7 @@ it("measures the metric", async () => {
 })
 
 it("does not measure the metric if the metric source configuration is incomplete", async () => {
-    dataModel.sources["sonarqube"].parameters = { url: { mandatory: true, metrics: ["violations"] } }
-    await renderMetricDetails()
+    await renderMetricDetails({ dataModel: createDataModel({ mandatoryURL: true }) })
     clickText(/Measure metric/)
     expectNoFetch()
 })

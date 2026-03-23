@@ -86,6 +86,11 @@ it("shows a config error message", async () => {
     expectText(/Configuration error/)
 })
 
+it("shows an info message", async () => {
+    renderSource(metric, { measurementSource: { info_message: "Some info" } })
+    expectText(/Note/)
+})
+
 it("loads the changelog", async () => {
     history.push("?expanded=source_uuid:1")
     renderSource(metric)

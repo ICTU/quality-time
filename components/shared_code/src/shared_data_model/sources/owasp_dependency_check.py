@@ -12,6 +12,7 @@ DESCRIPTION = (
 )
 SUPPORTED_VERSIONS = "≥9.0, ≤9.2"
 URL = HttpUrl("https://owasp.org/www-project-dependency-check/")
+REPOSITORY_URL = HttpUrl("https://github.com/dependency-check/DependencyCheck")
 
 ALL_OWASP_DEPENDENCY_CHECK_METRICS = [
     "dependencies",
@@ -53,6 +54,7 @@ OWASP_DEPENDENCY_CHECK_XML = Source(
     description=DESCRIPTION,
     supported_versions_description=SUPPORTED_VERSIONS,
     url=URL,
+    repository_url=REPOSITORY_URL,
     parameters={
         "severities": SEVERITIES_PARAMETER,
         "variable_file_path_regexp": VARIABLE_FILE_PATH_REGEXP_PARAMETER,
@@ -71,6 +73,7 @@ OWASP_DEPENDENCY_CHECK_JSON = Source(
     description=DESCRIPTION,
     supported_versions_description=SUPPORTED_VERSIONS,
     url=URL,
+    repository_url=REPOSITORY_URL,
     parameters={
         "severities": SEVERITIES_PARAMETER,
         "variable_file_path_regexp": VARIABLE_FILE_PATH_REGEXP_PARAMETER,

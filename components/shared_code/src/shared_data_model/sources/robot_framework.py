@@ -17,6 +17,7 @@ ROBOT_FRAMEWORK = Source(
     description="Robot Framework is a generic open source automation framework for acceptance testing, acceptance "
     "test driven development, and robotic process automation.",
     url=HttpUrl("https://robotframework.org"),
+    repository_url=HttpUrl("https://github.com/robotframework/robotframework"),
     parameters={
         "test_result": TestResult(metrics=["test_suites", "tests"], values=["fail", "pass", "skip"]),
         "test_result_aggregation_strategy": TestResultAggregationStrategy(),

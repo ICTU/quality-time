@@ -550,7 +550,8 @@ report(s).
     ),
     "source_version": Metric(
         name="Source version",
-        description="The version number of the source.",
+        description="The version number of the source. Also shows when update is possible for sources that use "
+        "GitHub releases.",
         rationale="Monitor that the version of a source is at least a specific version or get notified when the "
         "version becomes higher than a specific version.",
         documentation="""If you decide with your development team that you are only interested in the major and

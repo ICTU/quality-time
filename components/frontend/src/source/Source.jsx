@@ -23,7 +23,7 @@ import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { ReorderButtonGroup } from "../widgets/buttons/ReorderButtonGroup"
 import { HyperLink } from "../widgets/HyperLink"
 import { Tabs } from "../widgets/Tabs"
-import { WarningMessage } from "../widgets/WarningMessage"
+import { InfoMessage, WarningMessage } from "../widgets/WarningMessage"
 import { SourceParameters } from "./SourceParameters"
 import { SourceType } from "./SourceType"
 
@@ -62,6 +62,7 @@ function Parameters({
     changedFields,
     configError,
     connectionError,
+    infoMessage,
     metric,
     parseError,
     reload,
@@ -75,6 +76,30 @@ function Parameters({
     const sourceType = dataModel.sources[source.type]
     return (
         <Grid container alignItems="flex-start" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 2, md: 2 }}>
+            {connectionError && (
+                <Grid size={{ xs: 1, sm: 2, md: 2 }}>
+                    <WarningMessage pre title="Connection error">
+                        {connectionError}
+                    </WarningMessage>
+                </Grid>
+            )}
+            {parseError && (
+                <Grid size={{ xs: 1, sm: 2, md: 2 }}>
+                    <WarningMessage pre title="Parse error">
+                        {parseError}
+                    </WarningMessage>
+                </Grid>
+            )}
+            {configError && (
+                <Grid size={{ xs: 1, sm: 2, md: 2 }}>
+                    <WarningMessage title="Configuration error">{configError}</WarningMessage>
+                </Grid>
+            )}
+            {infoMessage && (
+                <Grid size={{ xs: 1, sm: 2, md: 2 }}>
+                    <InfoMessage title="Note">{infoMessage}</InfoMessage>
+                </Grid>
+            )}
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <SourceType
                     metricType={metric.type}
@@ -103,25 +128,6 @@ function Parameters({
                     sourceUuid={sourceUuid}
                 />
             </Grid>
-            {connectionError && (
-                <Grid size={{ xs: 1, sm: 2, md: 2 }}>
-                    <WarningMessage pre title="Connection error">
-                        {connectionError}
-                    </WarningMessage>
-                </Grid>
-            )}
-            {parseError && (
-                <Grid size={{ xs: 1, sm: 2, md: 2 }}>
-                    <WarningMessage pre title="Parse error">
-                        {parseError}
-                    </WarningMessage>
-                </Grid>
-            )}
-            {configError && (
-                <Grid size={{ xs: 1, sm: 2, md: 2 }}>
-                    <WarningMessage title="Configuration error">{configError}</WarningMessage>
-                </Grid>
-            )}
         </Grid>
     )
 }
@@ -129,6 +135,7 @@ Parameters.propTypes = {
     changedFields: stringsPropType,
     configError: oneOfType([object, string]),
     connectionError: string,
+    infoMessage: string,
     metric: metricPropType,
     parseError: string,
     reload: func,
@@ -152,6 +159,7 @@ export function Source({
     const source = metric.sources[sourceUuid]
     const sourceName = getSourceName(source, dataModel)
     const metricName = getMetricName(metric, dataModel)
+    const infoMessage = measurementSource?.info_message || ""
     const connectionError = measurementSource?.connection_error || ""
     const parseError = measurementSource?.parse_error || ""
     const configErrorMessage = (
@@ -193,12 +201,13 @@ export function Source({
             <Tabs
                 settings={settings}
                 tabs={[
-                    { error: anyError, label: "Configuration", icon: <SettingsIcon /> },
+                    { info: Boolean(infoMessage), error: anyError, label: "Configuration", icon: <SettingsIcon /> },
                     { label: "Changelog", icon: <HistoryIcon /> },
                 ]}
                 uuid={sourceUuid}
             >
                 <Parameters
+                    infoMessage={infoMessage}
                     metric={metric}
                     source={source}
                     sourceUuid={sourceUuid}

@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
 
-from collector_utilities.type import URL, ErrorMessage, JSONList, Value
+from collector_utilities.type import URL, ErrorMessage, InfoMessage, JSONList, Value
 
 from .entity import Entities
 
@@ -26,6 +26,7 @@ class SourceMeasurement:
     entities: Entities | None = None
     connection_error: ErrorMessage | None = None
     parse_error: ErrorMessage | None = None
+    info_message: InfoMessage | None = None
     api_url: URL | None = None
     landing_url: URL | None = None
     source_uuid: str | None = None
@@ -60,6 +61,7 @@ class SourceMeasurement:
             "value": self.value,
             "total": self.total,
             "entities": self.entities_to_store()[: self.MAX_ENTITIES],
+            "info_message": self.info_message,
             "connection_error": self.connection_error,
             "parse_error": self.parse_error,
             "api_url": self.api_url,

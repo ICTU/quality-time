@@ -22,6 +22,7 @@ class Source(DescribedModel):
     """The source model extends the base model with source parameters and measurement entities."""
 
     url: HttpUrl | None = None
+    repository_url: HttpUrl | None = None  # Source repository of the source, for example https://github.com/org/repo
     documentation: dict[str, str] | None = None  # Documentation in Markdown format
     configuration: dict[str, Configuration] = {}
     parameters: dict[str, SerializeAsAny[Parameter]]

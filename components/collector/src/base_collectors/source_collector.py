@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, ClassVar, TypedDict, cast
 
 import aiohttp
+from packaging.version import InvalidVersion, Version
 
 from shared.utils.type import Direction
 from shared_data_model import DATA_MODEL
@@ -24,8 +25,6 @@ from model import Entities, Entity, IssueStatus, SourceMeasurement, SourceParame
 if TYPE_CHECKING:
     from collections.abc import Sequence
     from datetime import datetime
-
-    from packaging.version import Version
 
 
 class SourceCollector:
@@ -378,10 +377,45 @@ class TimeRemainingCollector(TimeCollector):
 class VersionCollector(SourceCollector):
     """Base class for version collectors."""
 
+    def __init__(self, session: aiohttp.ClientSession, metric, source) -> None:
+        super().__init__(session, metric, source)
+        self.latest_version = Version("0.0")
+
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Extend to also get the latest available version."""
+        self.latest_version = await self._get_latest_version()
+        return await super()._get_source_responses(*urls)
+
+    async def _get_latest_version(self) -> Version:
+        """Get the latest available source version."""
+        repository_url = DATA_MODEL.sources[self.source_type].repository_url
+        if not repository_url:
+            return Version("0.0")
+        logger = get_logger()
+        class_name = self.__class__.__name__
+        logger.info("Checking latest %s at %s", class_name, repository_url)
+        organization, repository = str(repository_url).rstrip("/").split("/")[-2:]
+        url = f"https://api.github.com/repos/{organization}/{repository}/releases/latest"
+        response = await self._session.get(url, allow_redirects=True)
+        json = await response.json(content_type=None)
+        latest_version = json.get("tag_name", "").lstrip("v")
+        logger.info("Latest %s according to %s is %s", class_name, repository_url, latest_version)
+        try:
+            return Version(latest_version)
+        except InvalidVersion:
+            logger.warning(
+                "Latest %s according to %s is %s, which is an invalid version",
+                class_name,
+                repository_url,
+                latest_version,
+            )
+        return Version("0.0")
+
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to get the version from the parse version method that subclasses should implement."""
-        versions = await self._parse_source_response_versions(responses)
-        return SourceMeasurement(value=str(min(versions)))
+        version = min(await self._parse_source_response_versions(responses))
+        message = f"Latest available version is {self.latest_version}" if self.latest_version > version else None
+        return SourceMeasurement(value=str(version), info_message=message)
 
     async def _parse_source_response_versions(self, responses: SourceResponses) -> Sequence[Version]:
         """Parse the source versions from the responses and return the versions."""
