@@ -1,8 +1,11 @@
 """GitHub unit tests."""
 
 import unittest
+from unittest.mock import Mock, patch
 
-from github import github_organization_and_repository, github_to_raw
+import requests
+
+from github import get_latest_release_json, github_organization_and_repository, github_to_raw
 
 
 class GitHubURLtoRawTest(unittest.TestCase):
@@ -40,3 +43,20 @@ class GitHubOrganizationAndRepositoryTest(unittest.TestCase):
     def test_github_url_without_repo(self):
         """Test that a GitHub URLs returns an empty organization and repository if the repository is missing."""
         self.assertEqual(("", ""), github_organization_and_repository("https://github.com/ICTU"))
+
+
+class GitHubReleaseJSONTest(unittest.TestCase):
+    """Unit tests for getting the latest release JSON for a GitHub repo."""
+
+    # Note get_latest_release_json uses caching, so the organization and/or reponeed to be difficult for each test
+
+    @patch("requests.get", Mock(return_value=Mock(json=Mock(return_value={"tag_name": "1.0"}))))
+    def test_get_latest_release_json(self):
+        """Test getting the latest release JSON."""
+        self.assertEqual({"tag_name": "1.0"}, get_latest_release_json("organization", "repository"))
+
+    @patch("requests.get")
+    def test_get_latest_release_json_when_repo_has_no_releases(self, mock_get: Mock):
+        """Test getting the latest release JSON when the repository has no releases."""
+        mock_get.return_value = Mock(raise_for_status=Mock(side_effect=requests.exceptions.HTTPError))
+        self.assertEqual({}, get_latest_release_json("organization", "repository without releases"))

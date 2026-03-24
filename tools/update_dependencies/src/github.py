@@ -33,5 +33,8 @@ def get_latest_release_json(organization: str, repository: str) -> dict:
     url = f"https://api.github.com/repos/{organization}/{repository}/releases/latest"
     headers = {"Authorization": f"Bearer {github_token}"} if (github_token := os.environ.get("GITHUB_TOKEN")) else {}
     response = requests.get(url, headers=headers, timeout=10)
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError:
+        return {}
     return response.json()
