@@ -1020,7 +1020,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 just = [{ name = "rust-just", specifier = "==1.48.0" }]
-uv = [{ name = "uv", specifier = "==0.11.0" }]
+uv = [{ name = "uv", specifier = "==0.11.1" }]
 
 [[package]]
 name = "trailrunner"

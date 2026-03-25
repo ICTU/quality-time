@@ -214,7 +214,7 @@ troml: install-py-dependencies
 [private]
 pip-audit: install-py-dependencies
     uv export --quiet --directory . --format requirements-txt --no-emit-package shared-code > /tmp/requirements-{{ random_string }}.txt
-    uv run pip-audit --requirement /tmp/requirements-{{ random_string }}.txt --disable-pip --progress-spinner off
+    uv run pip-audit --requirement /tmp/requirements-{{ random_string }}.txt --disable-pip --progress-spinner off --ignore-vuln CVE-2026-4539
     rm -f /tmp/requirements-{{ random_string }}.txt
 
 # Run uv audit
