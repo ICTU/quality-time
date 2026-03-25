@@ -29,7 +29,8 @@ The MongoDB version, the MongoDB feature compatibility, and the migrations all l
 
 | Version    | Date       | Mongo  | FC     | Migrations  | Max. downgrade | Max. upgrade | Manual changes |
 |------------|------------|--------|--------|-------------|----------------|--------------|----------------|
-| v5.49.0    | 2026-03-03 | v8     | v8     |             | v5.47.2        | n/a          | no             |
+| v5.50.0    | ?          | v8     | v8     | added (4)   | not supported  | n/a          | no             |
+| v5.49.0    | 2026-03-03 | v8     | v8     |             | v5.47.2        | latest       | no             |
 | v5.48.5    | 2026-02-27 | v8     | v8     |             | v5.47.2        | latest       | no             |
 | v5.48.4    | 2026-02-11 | v8     | v8     |             | v5.47.2        | latest       | no             |
 | v5.48.3    | 2026-01-29 | v8     | v8     |             | v5.47.2        | latest       | no             |
@@ -98,6 +99,8 @@ The MongoDB version, the MongoDB feature compatibility, and the migrations all l
 | v5.0.1     | 2023-06-26 | v6     | v5     |             | v4.10.0        | v5.2.0       | no             |
 | **v5.0.0** | 2023-06-23 | **v6** | v5     |             | v4.10.0        | v5.2.0       | **yes**        |
 | v4.10.0    | 2023-04-26 | v5     | v5     |             | n/a            | v5.2.0       | no             |
+
+(4) [Remove support for Checkmarx](https://github.com/ICTU/quality-time/issues/12798)
 
 (3) [Switch min/max addition strategy when switching metric direction](https://github.com/ICTU/quality-time/issues/12142)
 

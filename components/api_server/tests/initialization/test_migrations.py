@@ -3,7 +3,7 @@
 from initialization.migrations import perform_migrations
 
 from tests.base import DataModelTestCase
-from tests.fixtures import REPORT_ID, SUBJECT_ID, METRIC_ID
+from tests.fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID
 
 
 class MigrationTestCase(DataModelTestCase):
@@ -61,3 +61,29 @@ class RemoveAdditionTest(MigrationTestCase):
         self.database.reports.find.return_value = [self.existing_report(addition="min")]
         perform_migrations(self.database)
         self.check_inserted_report(self.inserted_report())
+
+
+class RemoveCheckmarxTest(MigrationTestCase):
+    """Init tests for the migration to remove Checkmarx sources from metrics."""
+
+    def existing_report(self, **kwargs):
+        """Extend to add Checkmarx source."""
+        report = super().existing_report(**kwargs)
+        metrics = report["subjects"][SUBJECT_ID]["metrics"]
+        metrics[METRIC_ID2] = {"type": "security_warnings", "sources": {SOURCE_ID: {"type": "cxsast"}}}
+        metrics[METRIC_ID3] = {"type": "security_warnings", "sources": {SOURCE_ID2: {"type": "sonarqube"}}}
+        return report
+
+    def test_report_without_checkmarx(self):
+        """Test that the migration succeeds with reports without Checkmarx sources."""
+        self.database.reports.find.return_value = [super().existing_report()]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_report_with_checkmarx(self):
+        """Test that the migration succeeds with reports without Checkmarx sources."""
+        self.database.reports.find.return_value = [self.existing_report()]
+        perform_migrations(self.database)
+        inserted_report = self.inserted_report()
+        del inserted_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2]["sources"][SOURCE_ID]
+        self.check_inserted_report(inserted_report)
