@@ -27,6 +27,7 @@ src_folder := if src_folder_exists == "true" { "src" } else { "" }
 tests_folder := if tests_folder_exists == "true" { "tests" } else { "" }
 code := if trim(src_folder + " " + tests_folder) == "" { ".?*.py" } else { src_folder + " " + tests_folder }
 random_string := uuid()
+term_width := shell("uv run python -c 'import shutil; print(shutil.get_terminal_size().columns)'")
 
 # === Update dependencies ===
 
@@ -136,7 +137,7 @@ start-js-component: install-js-dependencies
 # Start one or more component(s). Run `just start-help` for more information.
 [no-cd]
 start *components:
-    {{ if pyproject_toml_exists == "true" { "just start-py-component" } else if has_js_start_script == "true" { "just start-js-component" } else if docker_folder_exists == "true" { f"docker compose up {{components}}" } else { "echo 'Nothing to start in this folder'" } }}
+    {{ if pyproject_toml_exists == "true" { "just start-py-component" } else if has_js_start_script == "true" { "just start-js-component" } else if docker_folder_exists == "true" { f"COLUMNS=$(uv run python -c 'w = {{term_width}}; import subprocess; s = subprocess.run([\"docker\", \"compose\", \"config\", \"--services\"], capture_output=True, text=True).stdout; print(w - max(len(line.strip()) for line in s.splitlines()) - 6)') docker compose up {{components}}" } else { "echo 'Nothing to start in this folder'" } }}
 
 [private]
 start-help:
