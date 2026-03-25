@@ -38,9 +38,6 @@ from .cobertura_jenkins_plugin.source_up_to_dateness import CoberturaJenkinsPlug
 from .cobertura_jenkins_plugin.uncovered_branches import CoberturaJenkinsPluginUncoveredBranches
 from .cobertura_jenkins_plugin.uncovered_lines import CoberturaJenkinsPluginUncoveredLines
 from .composer.dependencies import ComposerDependencies
-from .cxsast.security_warnings import CxSASTSecurityWarnings
-from .cxsast.source_up_to_dateness import CxSASTSourceUpToDateness
-from .cxsast.source_version import CxSASTSourceVersion
 from .dependency_track.dependencies import DependencyTrackDependencies
 from .dependency_track.security_warnings import DependencyTrackSecurityWarnings
 from .dependency_track.source_up_to_dateness import DependencyTrackSourceUpToDateness

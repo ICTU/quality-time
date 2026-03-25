@@ -12,6 +12,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Removed
+
+- Remove support for Checkmarx SAST as source for metrics. Closes [#12798](https://github.com/ICTU/quality-time/issues/12798).
+
 ### Fixed
 
 - Improve the documentation for the change failure rate metric. Fixes [#10526](https://github.com/ICTU/quality-time/issues/10526).

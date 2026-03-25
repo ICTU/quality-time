@@ -75,7 +75,6 @@ ALL_SOURCES = {
     "Bitbucket": "bitbucket",
     "Calendar date": "calendar",
     "Cargo Audit": "cargo_audit",
-    "Checkmarx CxSAST": "cxsast",
     "cloc": "cloc",
     "Cobertura": "cobertura",
     "Cobertura Jenkins plugin": "cobertura_jenkins_plugin",
