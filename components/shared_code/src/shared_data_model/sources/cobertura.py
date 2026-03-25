@@ -27,6 +27,8 @@ COBERTURA_JENKINS_PLUGIN = Source(
     name="Cobertura Jenkins plugin",
     description="Jenkins plugin for Cobertura, a free Java tool that calculates the percentage of code accessed "
     "by tests.",
+    deprecated=True,
+    deprecation_url=HttpUrl("https://github.com/ICTU/quality-time/issues/12816"),
     documentation={
         "source_up_to_dateness": JENKINS_TOKEN_DOCS,
         "uncovered_branches": JENKINS_TOKEN_DOCS,
