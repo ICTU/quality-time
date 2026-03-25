@@ -20,6 +20,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - Improve the documentation for the change failure rate metric. Fixes [#10526](https://github.com/ICTU/quality-time/issues/10526).
 
+### Changed
+
+- Support for the Cobertura Jenkins plugin as source for metrics is deprecated and marked for removal in the future, because the plugin itself is end-of-life. Closes [#12816](https://github.com/ICTU/quality-time/issues/12816).
+
 ### Added
 
 - Login submit button shows loading indicator while verifying credentials. Closes [#12670](https://github.com/ICTU/quality-time/issues/12670).
