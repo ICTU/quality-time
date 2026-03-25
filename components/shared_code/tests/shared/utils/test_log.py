@@ -1,9 +1,12 @@
 """Unit tests for the logging utilities."""
 
+import logging
 import unittest
 from typing import TYPE_CHECKING
 
-from shared.utils.log import get_logger
+from rich.logging import RichHandler
+
+from shared.utils.log import get_logger, init_logging
 
 if TYPE_CHECKING:
     from logging import Logger
@@ -24,3 +27,8 @@ class LogTest(unittest.TestCase):
             return get_logger("component", call_stack_depth=1)
 
         self.assertEqual("quality_time.component.tests.shared.utils.test_log", get_logger_indirectly().name)
+
+    def test_init_log(self):
+        """Test log initialization."""
+        init_logging("INFO")
+        self.assertEqual(RichHandler, logging.getLogger().handlers[0].__class__)

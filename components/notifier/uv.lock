@@ -652,7 +652,6 @@ dependencies = [
     { name = "aiohttp" },
     { name = "pymsteams" },
     { name = "python-dateutil" },
-    { name = "rich" },
     { name = "shared-code" },
 ]
 
@@ -669,7 +668,6 @@ requires-dist = [
     { name = "aiohttp", specifier = "==3.13.3" },
     { name = "pymsteams", specifier = "==0.2.5" },
     { name = "python-dateutil", specifier = "==2.9.0.post0" },
-    { name = "rich", specifier = "==14.3.3" },
     { name = "shared-code", directory = "../shared_code" },
 ]
 
@@ -1075,6 +1073,7 @@ dependencies = [
     { name = "pydantic" },
     { name = "pymongo" },
     { name = "python-dateutil" },
+    { name = "rich" },
 ]
 
 [package.metadata]
@@ -1084,6 +1083,7 @@ requires-dist = [
     { name = "pydantic", specifier = "==2.12.5" },
     { name = "pymongo", specifier = "==4.16.0" },
     { name = "python-dateutil", specifier = "==2.9.0.post0" },
+    { name = "rich", specifier = "==14.3.3" },
 ]
 
 [package.metadata.requires-dev]

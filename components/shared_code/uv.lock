@@ -820,6 +820,7 @@ dependencies = [
     { name = "pydantic" },
     { name = "pymongo" },
     { name = "python-dateutil" },
+    { name = "rich" },
 ]
 
 [package.dev-dependencies]
@@ -836,6 +837,7 @@ requires-dist = [
     { name = "pydantic", specifier = "==2.12.5" },
     { name = "pymongo", specifier = "==4.16.0" },
     { name = "python-dateutil", specifier = "==2.9.0.post0" },
+    { name = "rich", specifier = "==14.3.3" },
 ]
 
 [package.metadata.requires-dev]
