@@ -181,16 +181,16 @@ def main() -> None:
         cmd.append(bump)
     run(cmd, check=True)  # noqa: S603
     for python_project_folder in [
-        "../components/api_server",
-        "../components/collector",
-        "../components/notifier",
-        "../components/shared_code",
-        "../docs",
-        "../tests/feature_tests",
-        "../tests/application_tests",
-        "../tools/release",
-        "../tools/third_party",
-        "../tools/update_dependencies",
+        "../../components/api_server",
+        "../../components/collector",
+        "../../components/notifier",
+        "../../components/shared_code",
+        "../../docs",
+        "../../tests/feature_tests",
+        "../../tests/application_tests",
+        "../../tools/release",
+        "../../tools/third_party",
+        "../../tools/update_dependencies",
     ]:
         run(("uv", "lock"), cwd=python_project_folder, check=True)
     run(("git", "add", "**/uv.lock"), cwd="..", check=True)
