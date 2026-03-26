@@ -245,8 +245,9 @@ def get_report_issue_tracker_options(database: Database, report: Report):  # noq
 
 
 @bottle.delete("/api/internal/report/<report_uuid>/tag/<tag>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.delete("/api/internal/report/<report_uuid>/tag/", permissions_required=[EDIT_REPORT_PERMISSION])
 @with_report(pass_report_uuid=False)
-def delete_tag(database: Database, report: Report, tag: str):
+def delete_tag(database: Database, report: Report, tag: str = ""):
     """Delete a tag from all metrics in a report."""
     if changed_uuids := report.delete_tag(tag):
         delta_description = f"{{user}} deleted tag '{tag}' from all metrics in report '{report.name}'."
@@ -255,8 +256,9 @@ def delete_tag(database: Database, report: Report, tag: str):
 
 
 @bottle.post("/api/internal/report/<report_uuid>/tag/<tag>", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/internal/report/<report_uuid>/tag/", permissions_required=[EDIT_REPORT_PERMISSION])
 @with_report(pass_report_uuid=False)
-def rename_tag(database: Database, report: Report, tag: str):
+def rename_tag(database: Database, report: Report, tag: str = ""):
     """Rename a tag for all metrics in a report."""
     new_value = dict(bottle.request.json)["tag"]
     if changed_uuids := report.rename_tag(tag, new_value):

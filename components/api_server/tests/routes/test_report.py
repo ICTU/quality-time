@@ -712,3 +712,26 @@ class ReportTagsTest(ReportTestCase):
             rename_tag(self.database, REPORT_ID, "non-existing tag"),
         )
         self.database.reports.insert_one.assert_not_called()
+
+
+class ReportEmptyTagsTest(ReportTestCase):
+    """Unit tests for deleting and renaming empty tags."""
+
+    def setUp(self):
+        """Extend to add an empty tag to the test fixture."""
+        super().setUp()
+        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["tags"].append("")
+
+    def test_delete_empty_tag(self):
+        """Test that an empty tag can be deleted."""
+        self.assertEqual({"ok": True}, delete_tag(self.database, REPORT_ID))
+        inserted = self.database.reports.insert_one.call_args_list[0][0][0]
+        self.assertEqual(["security"], inserted["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["tags"])
+
+    @patch("bottle.request")
+    def test_rename_empty_tag(self, request):
+        """Test that an empty tag can be renamed."""
+        request.json = {"tag": "safety"}
+        self.assertEqual({"ok": True}, rename_tag(self.database, REPORT_ID))
+        inserted = self.database.reports.insert_one.call_args_list[0][0][0]
+        self.assertEqual(["security", "safety"], inserted["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["tags"])
