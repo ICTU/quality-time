@@ -75,17 +75,17 @@ parts.pre_release_label.values = [
 parts.pre_release_label.optional_value = "final"
 
 [[tool.bumpversion.files]]
-glob = "../components/*/package.json"
+glob = "../../components/*/package.json"
 search = '"version": "{current_version}",'
 replace = '"version": "{new_version}",'
 
 [[tool.bumpversion.files]]
-filename = "../sonar-project.properties"
+filename = "../../sonar-project.properties"
 search = "sonar.projectVersion={current_version}"
 replace = "sonar.projectVersion={new_version}"
 
 [[tool.bumpversion.files]]
-filename = "../docs/src/changelog.md"
+filename = "../../docs/src/changelog.md"
 search = "[Unreleased]"
 replace = "v{new_version} - {$RELEASE_DATE}"
 include_bumps = [
@@ -93,42 +93,42 @@ include_bumps = [
 ]  # this is the only bump that produces a non-rc release
 
 [[tool.bumpversion.files]]
-filename = "../.env"
+filename = "../../.env"
 search = "v{current_version}"
 replace = "v{new_version}"
 
 [[tool.bumpversion.files]]
-filename = "../.circleci/config.yml"
+filename = "../../.circleci/config.yml"
 search = "v{current_version}"
 replace = "v{new_version}"
 
 [[tool.bumpversion.files]]
-filename = "../.github/workflows/application-tests.yml"
+filename = "../../.github/workflows/application-tests.yml"
 search = "v{current_version}"
 replace = "v{new_version}"
 
 [[tool.bumpversion.files]]
-filename = "../components/shared_code/src/shared/utils/version.py"
+filename = "../../components/shared_code/src/shared/utils/version.py"
 search = 'QUALITY_TIME_VERSION = "{current_version}"'
 replace = 'QUALITY_TIME_VERSION = "{new_version}"'
 
 [[tool.bumpversion.files]]
-filename = "../helm/Chart.yaml"
+filename = "../../helm/Chart.yaml"
 search = "{current_version}"
 replace = "{new_version}"
 
 [[tool.bumpversion.files]]
-glob = "../**/pyproject.toml"
+glob = "../../**/pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
 [[tool.bumpversion.files]]
-glob = "../publiccode.yml"
+glob = "../../publiccode.yml"
 search = "softwareVersion: {current_version}"
 replace = "softwareVersion: {new_version}"
 
 [[tool.bumpversion.files]]
-glob = "../publiccode.yml"
+glob = "../../publiccode.yml"
 search = "releaseDate: \\d{{4}}-\\d{{2}}-\\d{{2}}"
 replace = "releaseDate: {$RELEASE_DATE}"
 regex = true
