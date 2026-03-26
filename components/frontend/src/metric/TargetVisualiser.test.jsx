@@ -55,7 +55,7 @@ it("has no accessibility violations", async () => {
     await expectNoAccessibilityViolations(container)
 })
 
-it("shows help for evaluated metric without tech debt", async () => {
+it("visualises a metric without tech debt", () => {
     renderVisualiser({ type: "violations", target: "1", near_target: "15" })
     expectVisible(
         /Target met/,
@@ -68,7 +68,7 @@ it("shows help for evaluated metric without tech debt", async () => {
     expectNotVisible(/Debt target met/)
 })
 
-it("shows help for evaluated metric with tech debt", async () => {
+it("visualises a metric with tech debt", () => {
     renderVisualiser({
         type: "violations",
         target: "1",
@@ -88,7 +88,7 @@ it("shows help for evaluated metric with tech debt", async () => {
     )
 })
 
-it("shows help for evaluated metric with tech debt if debt target is missing", async () => {
+it("visualises a metric with tech debt if debt target is missing", () => {
     renderVisualiser({ type: "violations", target: "10", near_target: "20", accept_debt: true })
     expectVisible(
         /Target met/,
@@ -101,7 +101,59 @@ it("shows help for evaluated metric with tech debt if debt target is missing", a
     expectNotVisible(/Debt target met/)
 })
 
-it("shows help for evaluated metric with tech debt with end date", async () => {
+it("visualises a metric with tech debt if debt target is null", () => {
+    renderVisualiser({ type: "violations", target: "10", near_target: "20", accept_debt: true, debt_target: null })
+    expectVisible(
+        /Target met/,
+        /≦ 10 violations/,
+        /Near target met/,
+        /10 - 20 violations/,
+        /Target not met/,
+        /> 20 violations/,
+    )
+    expectNotVisible(/Debt target met/)
+})
+
+it("svisualises a  metric with tech debt and null near target", () => {
+    renderVisualiser({
+        type: "violations",
+        target: "1",
+        near_target: null,
+        debt_target: "15",
+        accept_debt: true,
+    })
+    expectVisible(
+        /Target met/,
+        /≦ 1 violation$/,
+        /Debt target met/,
+        /1 - 15 violations/,
+        /Target not met/,
+        /> 15 violations/,
+    )
+    expectNotVisible(/Near target met/)
+})
+
+it("visualises a more-is-better metric with tech debt and null near target", () => {
+    renderVisualiser({
+        type: "violations",
+        target: "15",
+        near_target: null,
+        debt_target: "10",
+        accept_debt: true,
+        direction: ">",
+    })
+    expectVisible(
+        /Target not met/,
+        /< 0 violations/,
+        /Debt target met/,
+        /10 - 15 violations/,
+        /Target met/,
+        /≧ 15 violations/,
+    )
+    expectNotVisible(/Near target met/)
+})
+
+it("visualises a metric with tech debt with end date", () => {
     renderVisualiser({
         type: "violations",
         target: "10",
@@ -122,7 +174,7 @@ it("shows help for evaluated metric with tech debt with end date", async () => {
     )
 })
 
-it("shows help for evaluated metric with tech debt with end date in the past", async () => {
+it("visualises a metric with tech debt with end date in the past", () => {
     renderVisualiser({
         type: "violations",
         target: "10",
@@ -142,7 +194,7 @@ it("shows help for evaluated metric with tech debt with end date in the past", a
     expectNotVisible(/Debt target met/)
 })
 
-it("shows help for evaluated metric with tech debt completely overlapping near target", async () => {
+it("visualises a metric with tech debt completely overlapping near target", () => {
     renderVisualiser({
         type: "violations",
         target: "10",
@@ -161,13 +213,25 @@ it("shows help for evaluated metric with tech debt completely overlapping near t
     expectNotVisible(/Near target met/)
 })
 
-it("shows help for evaluated metric without tech debt and target completely overlapping near target", async () => {
+it("visualises a metric without tech debt and target completely overlapping near target", () => {
     renderVisualiser({ type: "violations", target: "10", near_target: "10" })
     expectVisible(/Target met/, /≦ 10 violations/, /Target not met/, /> 10 violations/)
     expectNotVisible(/Debt target met/, /Near target met/)
 })
 
-it("shows help for evaluated more-is-better metric without tech debt", async () => {
+it("visualises a more-is-better metric without tech debt and null near target", () => {
+    renderVisualiser({ type: "violations", target: "15", near_target: null, direction: ">" })
+    expectVisible(/Target not met/, /< 0 violations/, /Target met/, /≧ 15 violations/)
+    expectNotVisible(/Debt target met/, /Near target met/)
+})
+
+it("visualises a metric without tech debt and null target", () => {
+    renderVisualiser({ type: "violations", target: null, near_target: "20" })
+    expectVisible(/Target met/, /≦ 0 violations/, /Target not met/, /> 20 violations/)
+    expectNotVisible(/Debt target met/)
+})
+
+it("visualises a more-is-better metric without tech debt", () => {
     renderVisualiser({ type: "violations", target: "15", near_target: "10", direction: ">" })
     expectVisible(
         /Target not met/,
@@ -180,7 +244,7 @@ it("shows help for evaluated more-is-better metric without tech debt", async () 
     expectNotVisible(/Debt target met/)
 })
 
-it("shows help for evaluated more-is-better metric with tech debt", async () => {
+it("visualises a more-is-better metric with tech debt", () => {
     renderVisualiser({
         type: "violations",
         target: "15",
@@ -201,7 +265,7 @@ it("shows help for evaluated more-is-better metric with tech debt", async () => 
     )
 })
 
-it("shows help for evaluated more-is-better metric with tech debt and missing debt target", async () => {
+it("visualises a more-is-better metric with tech debt and missing debt target", () => {
     renderVisualiser({
         type: "violations",
         target: "15",
@@ -220,7 +284,27 @@ it("shows help for evaluated more-is-better metric with tech debt and missing de
     expectNotVisible(/Debt target met/)
 })
 
-it("shows help for evaluated more-is-better metric with tech debt completely overlapping near target", async () => {
+it("visualises a more-is-better metric with tech debt and null debt target", () => {
+    renderVisualiser({
+        type: "violations",
+        target: "15",
+        near_target: "5",
+        accept_debt: true,
+        debt_target: null,
+        direction: ">",
+    })
+    expectVisible(
+        /Target not met/,
+        /< 5 violations/,
+        /Near target met/,
+        /5 - 15 violations/,
+        /Target met/,
+        /≧ 15 violations/,
+    )
+    expectNotVisible(/Debt target met/)
+})
+
+it("visualises a more-is-better metric with tech debt completely overlapping near target", () => {
     renderVisualiser({
         type: "violations",
         target: "15",
@@ -240,19 +324,19 @@ it("shows help for evaluated more-is-better metric with tech debt completely ove
     expectNotVisible(/Near target met/)
 })
 
-it("shows help for evaluated more-is-better metric without tech debt and target completely overlapping near target", async () => {
+it("visualises a more-is-better metric without tech debt and target completely overlapping near target", () => {
     renderVisualiser({ type: "violations", target: "15", near_target: "15", direction: ">" })
     expectVisible(/Target not met/, /< 15 violations/, /Target met/, /≧ 15 violations/)
     expectNotVisible(/Near target met/, /Debt target met/)
 })
 
-it("shows help for evaluated metric without tech debt and zero target completely overlapping near target", async () => {
+it("visualises a more-is-better metric without tech debt and zero target completely overlapping near target", () => {
     renderVisualiser({ type: "violations", target: "0", near_target: "0", direction: ">" })
     expectVisible(/Target met/, /≧ 0 violations/)
     expectNotVisible(/Debt target met/, /Near target met/, /Target not met/)
 })
 
-it("shows help for informative metric", async () => {
+it("visualises an informative metric", () => {
     renderVisualiser({ type: "violations", evaluate_targets: false })
     expectVisible(/Informative/, /violations are not evaluated/)
     expectNotVisible(/Target met/, /Debt target met/, /Near target met/, /Target not met/)
