@@ -83,7 +83,7 @@ def check_preconditions(bump: str, current_version: str) -> None:
     release_folder = get_release_folder()
     if pathlib.Path.cwd() != release_folder:
         messages.append(f"The current folder is not the release folder. Please change directory to {release_folder}.")
-    root = release_folder.parent
+    root = release_folder.parent.parent
     messages.extend(failed_preconditions_repo(root))
     messages.extend(failed_preconditions_changelog(bump, root))
     if bump == "release":  # don't update the version overview for release candidates
