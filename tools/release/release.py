@@ -31,7 +31,7 @@ def read_pyproject_toml() -> dict[str, Any]:
 def get_version() -> str:
     """Return the current version."""
     release_folder = get_release_folder()
-    repo = git.Repo(release_folder.parent)
+    repo = git.Repo(release_folder.parent.parent)
     pyproject_toml = read_pyproject_toml()
     version_re = pyproject_toml["tool"]["bumpversion"]["parse"]
     version_tags = [tag for tag in repo.tags if tag.tag and re.match(version_re, tag.tag.tag.strip("v"), re.MULTILINE)]
