@@ -42,6 +42,7 @@ DEPENDENCY_TRACK = Source(
     name="Dependency-Track",
     description=DEPENDENCY_TRACK_DESCRIPTION,
     url=DEPENDENCY_TRACK_URL,
+    repository_url=HttpUrl("https://github.com/DependencyTrack/dependency-track"),
     parameters={
         "url": URL(
             name="URL of the Dependency-Track API",

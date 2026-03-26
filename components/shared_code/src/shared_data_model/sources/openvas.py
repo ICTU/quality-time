@@ -13,6 +13,7 @@ OPENVAS = Source(
     description="OpenVAS (Open Vulnerability Assessment System) is a software framework of several services and tools "
     "offering vulnerability scanning and vulnerability management.",
     url=HttpUrl("https://www.openvas.org"),
+    repository_url=HttpUrl("https://github.com/greenbone/openvas-scanner"),
     parameters={
         "severities": Severities(values=["log", "low", "medium", "high"]),
         **access_parameters(ALL_OPENVAS_METRICS, source_type="an OpenVAS report", source_type_format="XML"),

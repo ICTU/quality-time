@@ -85,6 +85,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             "total": None if connection_error else str(kwargs.get("total", "1")),
             "entities": [] if connection_error else entities,
             "connection_error": connection_error,
+            "info_message": None,
             "parse_error": None,
             "source_uuid": SOURCE_ID,
         }
@@ -95,7 +96,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         source_parameter_hash: str = "0f6df164677525409f6269ec97e4118d",
         metric_uuid: str = "metric_uuid",
         **expected_source_kwargs,
-    ) -> dict[str, bool | list | str]:
+    ) -> dict[str, bool | list | str | None]:
         """Create an expected inserted measurement."""
         return {
             "has_error": "connection_error" in expected_source_kwargs,

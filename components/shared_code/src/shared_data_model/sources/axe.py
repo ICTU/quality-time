@@ -92,6 +92,7 @@ AXE_CORE = Source(
     name="Axe-core",
     description="Axe is an accessibility testing engine for websites and other HTML-based user interfaces.",
     url=HttpUrl("https://github.com/dequelabs/axe-core"),
+    repository_url=HttpUrl("https://github.com/dequelabs/axe-core"),
     documentation={
         "violations": AXE_CORE_DOCUMENTATION,
         "source_up_to_dateness": AXE_CORE_DOCUMENTATION

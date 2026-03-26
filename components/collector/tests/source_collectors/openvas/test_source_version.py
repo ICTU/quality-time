@@ -14,5 +14,12 @@ class OpenVASSourceVersionTest(OpenVASTestCase):
 
     async def test_source_version(self):
         """Test that the OpenVAS version is returned."""
-        response = await self.collect(get_request_text=self.OPENVAS_XML)
+        response = await self.collect(get_request_text=self.OPENVAS_XML, get_request_json_return_value={})
         self.assert_measurement(response, value="7.0")
+
+    async def test_newer_version(self):
+        """Test that the OpenVAS version is returned, and a message if a newer version is available."""
+        response = await self.collect(
+            get_request_text=self.OPENVAS_XML, get_request_json_return_value={"tag_name": "7.1"}
+        )
+        self.assert_measurement(response, value="7.0", info_message="Latest available version is 7.1")

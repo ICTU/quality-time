@@ -95,6 +95,7 @@ the "Username" field and the private token in the "**Password**" field.
         "source_version": JENKINS_TOKEN_DOCS,
     },
     url=HttpUrl("https://www.jenkins.io/"),
+    repository_url=HttpUrl("https://github.com/jenkinsci/jenkins"),
     parameters={
         "branches": Branches(help="Branches only apply to multibranch pipelines."),
         "inactive_days": Days(

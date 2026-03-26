@@ -169,6 +169,7 @@ export function MetricDetails({
     anyError =
         anyError ||
         Object.values(metric.sources).some((source) => !dataModel.metrics[metric.type].sources.includes(source.type))
+    const anyInfo = lastMeasurement?.sources.some((source) => source.info_message)
     const metricUrl = `${globalThis.location.href.split("#")[0]}#${metricUuid}`
     const panes = [
         <MetricConfigurationParameters
@@ -196,7 +197,13 @@ export function MetricDetails({
     ]
     const tabs = [
         { label: "Configuration", icon: <SettingsIcon /> },
-        { error: Boolean(anyError), label: "Sources", icon: <StorageIcon />, warning: Boolean(anyWarning) },
+        {
+            info: Boolean(anyInfo),
+            error: Boolean(anyError),
+            label: "Sources",
+            icon: <StorageIcon />,
+            warning: Boolean(anyWarning),
+        },
         { label: "Technical debt", icon: <MoneyIcon /> },
         { label: "Changelog", icon: <HistoryIcon /> },
         { label: "Trend graph", icon: <ShowChartIcon /> },

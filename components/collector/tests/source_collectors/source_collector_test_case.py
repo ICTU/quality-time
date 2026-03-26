@@ -125,7 +125,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
                 else:
                     error_message_to_check, error_message_to_print = error_message, None
                 self.assertIsNone(error_message_to_check, error_message_to_print)
-        for attribute_key in ("value", "total", "entities", "api_url", "landing_url"):
+        for attribute_key in ("value", "total", "entities", "api_url", "landing_url", "info_message"):
             if (attribute_value := attributes.get(attribute_key, "value not specified")) != "value not specified":
                 self.__assert_measurement_source_attribute(attribute_key, attribute_value, measurement, source_index)
 

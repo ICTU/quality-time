@@ -26,6 +26,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
+- When measuring the source version, show an info message if the newest available source version is newer than the used version. Closes [#2923](https://github.com/ICTU/quality-time/issues/2923).
 - Login submit button shows loading indicator while verifying credentials. Closes [#12670](https://github.com/ICTU/quality-time/issues/12670).
 
 ## v5.49.0 - 2026-03-03

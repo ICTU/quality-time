@@ -29,4 +29,5 @@ class OWASPDependencyCheckJSONTestCase(SourceCollectorTestCase):
                     ],
                 }
             ],
+            "tag_name": "6.5.3",
         }

@@ -13,6 +13,7 @@ CLOC = Source(
     description="cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source "
     "code in many programming languages.",
     url=HttpUrl("https://github.com/AlDanial/cloc"),
+    repository_url=HttpUrl("https://github.com/AlDanial/cloc"),
     parameters={
         "languages_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Languages to ignore (regular expressions or language names)",

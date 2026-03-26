@@ -122,6 +122,7 @@ QUALITY_TIME = Source(
     name="Quality-time",
     description="Quality report software for software development and maintenance.",
     url=HttpUrl("https://github.com/ICTU/quality-time"),
+    repository_url=HttpUrl("https://github.com/ICTU/quality-time"),
     parameters={
         "url": URL(
             name="Quality-time URL",

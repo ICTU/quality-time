@@ -19,8 +19,15 @@ export function Tabs({ children, settings, tabs, uuid }) {
             >
                 {tabs.map((tab, index) => {
                     let tabLabel = tab.label
-                    if (tab.error || tab.warning) {
-                        const color = tab.error ? "error" : "warning"
+                    if (tab.error || tab.warning || tab.info) {
+                        let color
+                        if (tab.error) {
+                            color = "error"
+                        } else if (tab.warning) {
+                            color = "warning"
+                        } else {
+                            color = "informative"
+                        }
                         tabLabel = <Label color={color}>{tab.label}</Label>
                     }
                     return (
