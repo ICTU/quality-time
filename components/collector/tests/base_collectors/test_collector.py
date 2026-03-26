@@ -50,13 +50,17 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         self.database["reports"].insert_one(create_report())
 
     @staticmethod
-    def _patched_get(mock_async_get_request: AsyncMock, side_effect=None) -> _patch[AsyncMock]:
+    def _patched_get(mock_async_get_request: AsyncMock | None, side_effect=None) -> _patch[AsyncMock]:
         """Return a patched version of aiohttp.ClientSession.get()."""
         mock = AsyncMock(side_effect=side_effect) if side_effect else AsyncMock(return_value=mock_async_get_request)
         return patch("aiohttp.ClientSession.get", mock)
 
-    async def _fetch_measurements(self, mock_async_get_request, number=1, side_effect=None) -> None:
+    async def _fetch_measurements(
+        self, mock_async_get_request: AsyncMock | None, number: int = 1, side_effect=None
+    ) -> None:
         """Fetch the measurements with patched get method."""
+        if mock_async_get_request is not None:
+            mock_async_get_request.read = AsyncMock(return_value=b"")
         with self._patched_get(mock_async_get_request, side_effect):
             async with aiohttp.ClientSession() as session:
                 for _ in range(number):

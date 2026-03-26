@@ -68,6 +68,7 @@ class TestCasesTest(unittest.IsolatedAsyncioTestCase):
         self.session = AsyncMock()
         self.session.timeout.total = config.MEASUREMENT_TIMEOUT
         self.response = self.session.get.return_value = AsyncMock()
+        self.response.read = AsyncMock(return_value=b"")
         self.test_cases_json = {"total": 2, "issues": [self.jira_issue(), self.jira_issue("key-2")]}
         self.response.json = AsyncMock(side_effect=[[], self.test_cases_json, self.test_cases_json])
         self.jira_url = "https://jira"
