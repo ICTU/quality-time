@@ -268,7 +268,7 @@ wheels = [
 
 [[package]]
 name = "docs"
-version = "5.50.0rc0"
+version = "5.50.0rc1"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -996,7 +996,7 @@ wheels = [
 
 [[package]]
 name = "shared-code"
-version = "5.50.0rc0"
+version = "5.50.0rc1"
 source = { editable = "../components/shared_code" }
 dependencies = [
     { name = "bottle" },
@@ -1249,7 +1249,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.50.0rc0"
+version = "5.50.0rc1"
 source = { virtual = "../tools/third_party" }
 dependencies = [
     { name = "bandit" },
