@@ -193,7 +193,7 @@ def main() -> None:
         "../../tools/update_dependencies",
     ]:
         run(("uv", "lock"), cwd=python_project_folder, check=True)
-    run(("git", "add", "**/uv.lock"), cwd="..", check=True)
+    run(("git", "add", "**/uv.lock"), cwd="../..", check=True)
     run(("git", "commit", "--amend", "--no-edit"), check=True)
     # Move the git tag that was just created by bump-my-version:
     version = f"v{get_version()}"
