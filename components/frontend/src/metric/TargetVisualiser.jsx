@@ -15,16 +15,16 @@ import {
 import { STATUS_SHORT_NAME, statusPropType } from "./status"
 
 function smallerThan(target1 = `${Number.POSITIVE_INFINITY}`, target2 = "0") {
-    return target1.localeCompare(target2, undefined, { numeric: true }) < 0
+    return (target1 ?? `${Number.POSITIVE_INFINITY}`).localeCompare(target2 ?? "0", undefined, { numeric: true }) < 0
 }
 
 function maxTarget(...targets) {
-    targets.sort((target1, target2) => target1.localeCompare(target2, undefined, { numeric: true }))
+    targets.sort((target1, target2) => (target1 ?? "0").localeCompare(target2 ?? "0", undefined, { numeric: true }))
     return targets.at(-1)
 }
 
 function minTarget(...targets) {
-    targets.sort((target1, target2) => target1.localeCompare(target2, undefined, { numeric: true }))
+    targets.sort((target1, target2) => (target1 ?? "0").localeCompare(target2 ?? "0", undefined, { numeric: true }))
     return targets.at(0)
 }
 

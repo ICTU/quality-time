@@ -19,6 +19,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Fixed
 
 - Improve the documentation for the change failure rate metric. Fixes [#10526](https://github.com/ICTU/quality-time/issues/10526).
+- The UI would crash when expanding a metric with accepted technical debt but no measurement value. Fixes [#12824](https://github.com/ICTU/quality-time/issues/12824).
 
 ### Changed
 
