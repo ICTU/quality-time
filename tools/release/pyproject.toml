@@ -1,6 +1,6 @@
 [project]
 name = "release"
-version = "5.50.0-rc.3"
+version = "5.50.0"
 requires-python = "==3.14.2"
 classifiers = [
     "Programming Language :: Python",
@@ -50,7 +50,7 @@ skips = [
 ]
 
 [tool.bumpversion]
-current_version = "5.50.0-rc.3"
+current_version = "5.50.0"
 parse = """(?x)
     (?P<major>0|[1-9]\\d*)\\.
     (?P<minor>0|[1-9]\\d*)\\.

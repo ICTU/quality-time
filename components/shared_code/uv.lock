@@ -812,7 +812,7 @@ wheels = [
 
 [[package]]
 name = "shared-code"
-version = "5.50.0rc3"
+version = "5.50.0"
 source = { virtual = "." }
 dependencies = [
     { name = "bottle" },
@@ -939,7 +939,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.50.0rc3"
+version = "5.50.0"
 source = { virtual = "../../tools/third_party" }
 dependencies = [
     { name = "bandit" },
