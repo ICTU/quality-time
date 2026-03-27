@@ -23,13 +23,13 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - Document how to use the public key of the destination Quality-time instance when exporting a quality report. Fixes [#12801](https://github.com/ICTU/quality-time/issues/12801).
 - The UI would crash when expanding a metric with accepted technical debt but no measurement value. Fixes [#12824](https://github.com/ICTU/quality-time/issues/12824).
 
-### Changed
+### Deprecated
 
 - Support for the Cobertura Jenkins plugin as source for metrics is deprecated and marked for removal in the future, because the plugin itself is end-of-life. Closes [#12816](https://github.com/ICTU/quality-time/issues/12816).
 
 ### Added
 
-- When measuring the source version, show an info message if the newest available source version is newer than the used version. Closes [#2923](https://github.com/ICTU/quality-time/issues/2923).
+- When measuring the source version, show an info message if the newest available source version is newer than the used version. This only works for sources using GitHub releases. Closes [#2923](https://github.com/ICTU/quality-time/issues/2923).
 - Login submit button shows loading indicator while verifying credentials. Closes [#12670](https://github.com/ICTU/quality-time/issues/12670).
 
 ## v5.49.0 - 2026-03-03
@@ -532,7 +532,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - Support version 4.1 of the OWASP Dependency-Check DTD (OWASP Dependency-Check version 12.0.0). Closes [#10645](https://github.com/ICTU/quality-time/issues/10645).
 - Support Bitbucket as source for the 'inactive branches' metric. Note that the amount of branches checked is limited to 100 because pagination for the Bitbucket API has not been implemented yet. Closes [#10660](https://github.com/ICTU/quality-time/issues/10660).
 
-### Changed
+### Deprecated
 
 - Support for Trello as source for metrics is deprecated and marked for removal in the future. Closes [#10613](https://github.com/ICTU/quality-time/issues/10613).
 
