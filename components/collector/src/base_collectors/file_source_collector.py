@@ -49,7 +49,7 @@ class FileSourceCollector(SourceCollector, ABC):
         responses = await super()._get_source_responses(*urls)
         unzipped_responses = []
         for url, response in zip(urls, responses, strict=True):
-            if self.__is_zipped(url, response):
+            if await self.is_zipped(url, response):
                 unzipped_responses.extend(await self.__unzip(response))
             else:
                 unzipped_responses.append(response)
@@ -76,12 +76,13 @@ class FileSourceCollector(SourceCollector, ABC):
         return cast(Responses, responses)
 
     @staticmethod
-    def __is_zipped(url: URL, response: Response) -> bool:
+    async def is_zipped(url: URL, response: Response) -> bool:
         """Return whether the responses are zipped."""
         return (
             urlparse(str(url)).path.endswith(".zip")
             or response.content_type == "application/zip"
             or ".zip" in str(response.content_disposition)
+            or zipfile.is_zipfile(io.BytesIO(await response.read()))
         )
 
 
