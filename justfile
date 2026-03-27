@@ -271,12 +271,7 @@ npm-lint: install-js-dependencies
 [no-cd]
 [private]
 npm-audit: install-js-dependencies
-    echo "Note: currently ignoring npm audit exit code due to:"
-    echo "- ajv<8.18.0, severity: moderate, ajv has ReDoS when using '\$data' option - https://github.com/advisories/GHSA-2g4f-4pwh-qvx6"
-    echo "- minimatch ReDoS via repeated wildcards with non-matching literal in pattern - https://github.com/advisories/GHSA-3ppc-4f35-3m26"
-    echo "- minimatch ReDoS: matchOne() combinatorial backtracking via multiple non-adjacent GLOBSTAR segments - https://github.com/advisories/GHSA-7r86-cg39-jmmj"
-    echo "- minimatch ReDoS: nested *() extglobs generate catastrophically backtracking regular expressions - https://github.com/advisories/GHSA-23c5-xmqv-rm74"
-    npm audit || true
+    npm audit
 
 # Run npm outdated
 [no-cd]
