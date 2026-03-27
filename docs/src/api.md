@@ -150,7 +150,7 @@ Replace the username and password with the username and password you use to logi
 The exporting endpoint is available via `https://quality-time.source.org/api/v3/report/<report-uuid>/json?public_key=<public-key>`.
 The exporting endpoint returns JSON content only.
 
-For example, using curl, and assuming you have logged in as shown above:
+For example, using curl, and assuming **you have logged in as shown above**:
 
 ```console
 curl --cookie cookie.txt --output report.json https://quality-time.source.org/api/v3/report/97b2f341-45ce-4f2b-9a71-3675f2f54cf7/json
@@ -191,6 +191,12 @@ This prints the public key, looking something like:
 
 ```console
 -----BEGIN+PUBLIC+KEY----- ... encoded public key ... -----END+PUBLIC+KEY-----%0A
+```
+
+Copy the public key and pass it to the export endpoint, for example:
+
+```console
+curl --cookie cookie.txt --output report.json https://quality-time.source.org/api/v3/report/97b2f341-45ce-4f2b-9a71-3675f2f54cf7/json?public_key=----BEGIN+PUBLIC+KEY----- ... encoded public key ... -----END+PUBLIC+KEY-----%0A
 ```
 
 ### Importing reports
