@@ -19,12 +19,20 @@ import { showConnectionMessage, showMessage } from "./widgets/toast"
 class App extends Component {
     constructor(props) {
         super(props)
+        const pathname = history.location.pathname
+        const reportUuid = decodeURI(pathname.slice(1, pathname.length))
+        const reportDateISOString = registeredURLSearchParams().get("report_date") || ""
+        let reportDate = null
+        if (isValidISODate(reportDateISOString)) {
+            reportDate = new Date(reportDateISOString)
+            reportDate.setHours(23, 59, 59)
+        }
         this.state = {
             dataModel: {},
             lastUpdate: new Date(),
             reports: [],
-            reportDate: null,
-            reportUuid: "",
+            reportDate: reportDate,
+            reportUuid: reportUuid,
             reportsOverview: {},
             nrMeasurements: 0,
             nrMeasurementsStreamConnected: true, // Assume initial connection will be successful
@@ -44,18 +52,10 @@ class App extends Component {
     }
 
     componentDidMount() {
-        const pathname = history.location.pathname
-        const reportUuid = decodeURI(pathname.slice(1, pathname.length))
-        const reportDateISOString = registeredURLSearchParams().get("report_date") || ""
-        let reportDate = null
-        if (isValidISODate(reportDateISOString)) {
-            reportDate = new Date(reportDateISOString)
-            reportDate.setHours(23, 59, 59)
-        }
         this.loginForwardAuth()
         this.initUserSession()
         this.connectToNrMeasurementsEventSource()
-        this.setState({ reportUuid: reportUuid, reportDate: reportDate, loading: true }, () => this.reload())
+        this.reload()
     }
 
     componentWillUnmount() {

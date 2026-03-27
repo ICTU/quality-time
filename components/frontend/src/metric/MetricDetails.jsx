@@ -10,7 +10,7 @@ import { useContext, useEffect, useState } from "react"
 import { getMetricMeasurements } from "../api/measurement"
 import { deleteMetric, setMetricAttribute } from "../api/metric"
 import { ChangeLog } from "../changelog/ChangeLog"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import {
     datePropType,
@@ -37,7 +37,7 @@ import { MetricDebtParameters } from "./MetricDebtParameters"
 import { TrendGraph } from "./TrendGraph"
 
 function RequestMeasurementButton({ metric, metricUuid, reload }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const configurationComplete = isSourceConfigurationComplete(dataModel, metric)
     const measurementRequested = isMeasurementRequested(metric)
     return (
@@ -151,7 +151,7 @@ export function MetricDetails({
     stopFilteringAndSorting,
     subjectUuid,
 }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const [measurements, setMeasurements] = useState([])
     const [measurementsStatus, setMeasurementsStatus] = useState("loading")
     useEffect(() => {

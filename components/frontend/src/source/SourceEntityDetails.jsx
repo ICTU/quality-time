@@ -6,7 +6,7 @@ import { func, node, oneOf, string } from "prop-types"
 import { useContext } from "react"
 
 import { setSourceEntityAttribute } from "../api/source"
-import { accessGranted, EDIT_ENTITY_PERMISSION, Permissions } from "../context/Permissions"
+import { accessGranted, EDIT_ENTITY_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import { entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
 import { capitalize, getDesiredResponseTime } from "../utils"
@@ -78,7 +78,7 @@ export function SourceEntityDetails({
     statusEndDate,
     sourceUuid,
 }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_ENTITY_PERMISSION])
     return (
         <Grid container spacing={{ xs: 1, sm: 2, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{ margin: "10px" }}>

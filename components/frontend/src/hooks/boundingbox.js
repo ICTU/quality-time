@@ -5,22 +5,21 @@ export const useBoundingBox = () => {
     const [boundingBox, setBoundingBox] = useState({})
     // As we don't know how long animations after a resize or full screen event take,
     // we schedule several timeouts to recalculate the bounding box:
-    const timeoutDelays = [250, 500, 750, 1000]
-    const timeoutIds = []
+    const timeoutDelays = [0, 250, 500, 750, 1000]
+    const timeoutIdsRef = useRef([])
 
     const getBoundingBox = () => ref.current?.getBoundingClientRect() ?? {}
 
     const clearTimeouts = () => {
-        while (timeoutIds.length > 0) {
-            clearTimeout(timeoutIds.pop())
+        while (timeoutIdsRef.current.length > 0) {
+            clearTimeout(timeoutIdsRef.current.pop())
         }
     }
 
     const set = () => {
-        setBoundingBox(getBoundingBox())
         clearTimeouts()
         for (const delay of timeoutDelays) {
-            timeoutIds.push(setTimeout(() => setBoundingBox(getBoundingBox()), delay))
+            timeoutIdsRef.current.push(setTimeout(() => setBoundingBox(getBoundingBox()), delay))
         }
     }
 

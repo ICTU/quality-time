@@ -2,8 +2,8 @@ import { Chip, MenuItem, Stack, Typography } from "@mui/material"
 import { func, string } from "prop-types"
 import { useContext } from "react"
 
-import { DataModel } from "../context/DataModel"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import { dataModelPropType, sourceTypePropType } from "../sharedPropTypes"
 import { referenceDocumentationURL } from "../utils"
@@ -22,7 +22,7 @@ sourceTypeDescription.propTypes = {
 }
 
 export function SourceTypeRichDescription({ sourceTypeKey }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const sourceType = dataModel.sources[sourceTypeKey]
     return (
         <Stack direction="row" sx={{ maxWidth: "40vw" }}>
@@ -68,8 +68,8 @@ sourceTypeOptions.propTypes = {
 }
 
 export function SourceType({ metricType, setSourceAttribute, sourceType }) {
-    const dataModel = useContext(DataModel)
-    const permissions = useContext(Permissions)
+    const dataModel = useContext(DataModelContext)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const options = sourceTypeOptions(dataModel, metricType)
     const sourceTypes = options.map((option) => option.key)

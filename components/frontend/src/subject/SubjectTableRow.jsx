@@ -1,9 +1,9 @@
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator"
 import { Chip, Stack, TableCell, Tooltip, Typography } from "@mui/material"
 import { bool, func, number, object, string } from "prop-types"
-import React, { useContext, useRef } from "react"
+import { useContext, useRef } from "react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { IssueStatus } from "../issue/IssueStatus"
 import { MeasurementSources } from "../measurement/MeasurementSources"
@@ -120,7 +120,7 @@ deltaLabel.propTypes = {
 }
 
 function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousValue }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     let label = null
     if (index > 0 && previousValue !== "?" && metricValue !== "?" && previousValue !== metricValue) {
         // Note that the delta cell only gets content if the previous and current values are both available and unequal
@@ -163,7 +163,7 @@ metricValueAndStatusOnDate.propTypes = {
 }
 
 function MeasurementCells({ dates, metric, metricUuid, measurements, settings }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const showDeltaColumns = settings.hiddenColumns.excludes("delta")
     const dateOrderAscending = settings.dateOrder.value === "ascending"
     const scale = getMetricScale(metric, dataModel)
@@ -213,7 +213,7 @@ MeasurementCells.propTypes = {
 }
 
 function MetricName({ metric }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const name = getMetricName(metric, dataModel)
     if (metric.secondary_name) {
         return (
@@ -229,7 +229,7 @@ MetricName.propTypes = {
     metric: metricPropType,
 }
 
-const DragHandleButton = React.forwardRef(function DragHandleButton({ label, ...props }, ref) {
+const DragHandleButton = function DragHandleButton({ ref, label, ...props }) {
     return (
         <button
             ref={ref}
@@ -246,9 +246,10 @@ const DragHandleButton = React.forwardRef(function DragHandleButton({ label, ...
             <DragIndicatorIcon fontSize="small" />
         </button>
     )
-})
+}
 DragHandleButton.propTypes = {
     label: string,
+    ref: object,
 }
 
 export function SubjectTableRow({
@@ -272,7 +273,7 @@ export function SubjectTableRow({
     onDragEnter,
     onDrop,
 }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const scale = getMetricScale(metric, dataModel)
     const unit = getMetricUnit(metric, dataModel)
     const nrDates = dates.length
@@ -318,10 +319,8 @@ export function SubjectTableRow({
             expanded={settings.expandedItems.includes(metricUuid)}
             id={metricUuid}
             onExpand={() => settings.expandedItems.toggle(metricUuid)}
+            firstCellContent={<MetricName metric={metric} />}
         >
-            <TableCell>
-                <MetricName metric={metric} />
-            </TableCell>
             {nrDates > 1 && (
                 <MeasurementCells
                     dates={dates}

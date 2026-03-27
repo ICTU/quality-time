@@ -4,8 +4,8 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
     expectLabelText,
     expectNoAccessibilityViolations,
@@ -56,8 +56,8 @@ function renderSubjectTableRow({
         dates.reverse()
     }
     return render(
-        <Permissions.Provider value={[permissions]}>
-            <DataModel.Provider value={dataModel}>
+        <PermissionsContext value={[permissions]}>
+            <DataModelContext value={dataModel}>
                 <Table>
                     <TableBody>
                         <SubjectTableRow
@@ -91,8 +91,8 @@ function renderSubjectTableRow({
                         />
                     </TableBody>
                 </Table>
-            </DataModel.Provider>
-        </Permissions.Provider>,
+            </DataModelContext>
+        </PermissionsContext>,
     )
 }
 
@@ -167,8 +167,8 @@ it("shows no drag handle when rows are sorted", () => {
     // Simulate a sorted state by passing a non-empty sortColumn
     const settings = createTestableSettings()
     render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <DataModelContext value={dataModel}>
                 <Table>
                     <TableBody>
                         <SubjectTableRow
@@ -188,8 +188,8 @@ it("shows no drag handle when rows are sorted", () => {
                         />
                     </TableBody>
                 </Table>
-            </DataModel.Provider>
-        </Permissions.Provider>,
+            </DataModelContext>
+        </PermissionsContext>,
     )
     expectNoLabelText("Drag to reorder")
 })

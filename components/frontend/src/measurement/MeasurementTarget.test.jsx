@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import {
     expectNoAccessibilityViolations,
     expectNoText,
@@ -20,9 +20,9 @@ const dataModel = {
 
 function renderMeasurementTarget(metric) {
     return render(
-        <DataModel.Provider value={dataModel}>
+        <DataModelContext value={dataModel}>
             <MeasurementTarget metric={metric} />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
 }
 

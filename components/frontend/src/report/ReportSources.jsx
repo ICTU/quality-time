@@ -5,7 +5,7 @@ import { Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 import { func, string } from "prop-types"
 import { useContext } from "react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { reportPropType, settingsPropType, sourcePropType } from "../sharedPropTypes"
 import { SourceParameter } from "../source/SourceParameter"
@@ -20,7 +20,7 @@ import { InfoMessage } from "../widgets/WarningMessage"
 import { metricsUsingSource, reportSources, unusedMetricTypesSupportedBySource } from "./report_utils"
 
 function SourceParameters({ reload, report, source, sourceUuid }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const sourceType = dataModel.sources[source.type]
     const allParameters = sourceType.parameters
     const defaultLocationParameterKeys = ["url", "landing_url", "username", "password", "private_token"]
@@ -59,7 +59,7 @@ SourceParameters.propTypes = {
 }
 
 function Metrics({ report, source }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const metrics = metricsUsingSource(dataModel, report, source)
     return (
         <TableContainer>
@@ -102,7 +102,7 @@ Metrics.propTypes = {
 }
 
 function UnusedMetricTypes({ report, source }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const unusedMetricTypes = unusedMetricTypesSupportedBySource(dataModel, report, source)
     if (unusedMetricTypes.size === 0) {
         return (
@@ -176,7 +176,7 @@ SourceDetails.propTypes = {
 }
 
 export function ReportSources({ reload, report, settings }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const sources = reportSources(dataModel, report)
     if (sources.length === 0) {
         return <InfoMessage title="No sources">No sources have been configured yet.</InfoMessage>
@@ -211,8 +211,8 @@ export function ReportSources({ reload, report, settings }) {
                             expanded={settings.expandedItems.includes(source.uuid)}
                             key={source.uuid}
                             onExpand={() => settings.expandedItems.toggle(source.uuid)}
+                            firstCellContent={getSourceName(source, dataModel)}
                         >
-                            <TableCell>{getSourceName(source, dataModel)}</TableCell>
                             <TableCell>{dataModel.sources[source.type].name}</TableCell>
                             <TableCell>{source.parameters?.url ?? ""}</TableCell>
                             <TableCell align="right">{source.nrMetrics}</TableCell>

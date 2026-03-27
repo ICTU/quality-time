@@ -3,8 +3,8 @@ import { MenuItem, Stack, Typography } from "@mui/material"
 import { func, number, objectOf, string } from "prop-types"
 import { useContext } from "react"
 
-import { DataModel } from "../context/DataModel"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import { subjectPropType } from "../sharedPropTypes"
 import { getSubjectType, referenceDocumentationURL } from "../utils"
@@ -51,8 +51,8 @@ subjectTypes.propTypes = {
 }
 
 export function SubjectType({ subjectType, setValue }) {
-    const dataModel = useContext(DataModel)
-    const permissions = useContext(Permissions)
+    const dataModel = useContext(DataModelContext)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const subjectTypeName = getSubjectType(subjectType, dataModel.subjects).name
     return (

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectNoText, expectText, expectTextAfterWait } from "../testUtils"
 import { TrendGraph } from "./TrendGraph"
 
@@ -15,9 +15,9 @@ const dataModel = {
 
 function renderTrendgraph({ measurements = [], scale = "count", loading = "loaded" } = {}) {
     return render(
-        <DataModel.Provider value={dataModel}>
+        <DataModelContext value={dataModel}>
             <TrendGraph metric={{ type: "violations", scale: scale }} measurements={measurements} loading={loading} />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
 }
 

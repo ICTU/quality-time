@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { clickText, expectFetch, expectNoAccessibilityViolations, expectNoText } from "../testUtils"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
 
@@ -44,8 +44,8 @@ async function renderMetricParameters(scale = "count") {
     let result
     await act(async () => {
         result = render(
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <DataModel.Provider value={dataModel}>
+            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+                <DataModelContext value={dataModel}>
                     <MetricConfigurationParameters
                         subject={{ type: "subject_type" }}
                         metric={{
@@ -56,8 +56,8 @@ async function renderMetricParameters(scale = "count") {
                         reload={vi.fn()}
                         report={{ subjects: {} }}
                     />
-                </DataModel.Provider>
-            </Permissions.Provider>,
+                </DataModelContext>
+            </PermissionsContext>,
         )
     })
     return result
@@ -136,14 +136,14 @@ it("sets the metric unit for metrics with the percentage scale", async () => {
 
 it("skips the metric unit fields for metrics with the version number scale", async () => {
     render(
-        <DataModel.Provider value={dataModel}>
+        <DataModelContext value={dataModel}>
             <MetricConfigurationParameters
                 report={{ subjects: {} }}
                 subject={{ type: "subject_type" }}
                 metric={{ type: "source_version" }}
                 metricUuid="metric_uuid"
             />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
     expectNoText(/Metric unit/)
 })

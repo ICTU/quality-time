@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { SourceParameters } from "./SourceParameters"
 
@@ -13,7 +13,7 @@ function renderSourceParameters({
     sourceParameterValue = null,
 }) {
     return render(
-        <DataModel.Provider
+        <DataModelContext
             value={{
                 metrics: { violations: {} },
                 sources: {
@@ -58,7 +58,7 @@ function renderSourceParameters({
                 }}
                 changedParamKeys={changedParamKeys}
             />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
 }
 

@@ -7,7 +7,7 @@ export const EDIT_REPORT_PERMISSION = "edit_reports"
 export const EDIT_ENTITY_PERMISSION = "edit_entities"
 export const PERMISSIONS = [EDIT_REPORT_PERMISSION, EDIT_ENTITY_PERMISSION]
 
-export const Permissions = React.createContext(null)
+export const PermissionsContext = React.createContext(null)
 
 export function accessGranted(permissions, requiredPermissions) {
     if (typeof requiredPermissions !== typeof []) {
@@ -28,9 +28,9 @@ accessGranted.propTypes = {
 
 export function ReadOnlyOrEditable({ requiredPermissions, readOnlyComponent, editableComponent }) {
     return (
-        <Permissions.Consumer>
+        <PermissionsContext.Consumer>
             {(permissions) => (accessGranted(permissions, requiredPermissions) ? editableComponent : readOnlyComponent)}
-        </Permissions.Consumer>
+        </PermissionsContext.Consumer>
     )
 }
 ReadOnlyOrEditable.propTypes = {

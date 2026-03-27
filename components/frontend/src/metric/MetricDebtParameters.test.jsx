@@ -6,8 +6,8 @@ import dayjs from "dayjs"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { expectFetch, expectNoAccessibilityViolations, expectNoFetch, expectText } from "../testUtils"
 import { MetricDebtParameters } from "./MetricDebtParameters"
 
@@ -36,8 +36,8 @@ const dataModel = {
 function renderMetricDebtParameters({ acceptDebt = false, debtEndDate = null } = {}) {
     return render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <DataModel.Provider value={dataModel}>
+            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+                <DataModelContext value={dataModel}>
                     <MetricDebtParameters
                         metric={{
                             accept_debt: acceptDebt,
@@ -52,8 +52,8 @@ function renderMetricDebtParameters({ acceptDebt = false, debtEndDate = null } =
                         reload={vi.fn()}
                         report={{ subjects: {} }}
                     />
-                </DataModel.Provider>
-            </Permissions.Provider>
+                </DataModelContext>
+            </PermissionsContext>
             ,
         </LocalizationProvider>,
     )

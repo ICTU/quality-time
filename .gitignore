@@ -70,3 +70,6 @@ node_modules/
 
 # Vale
 docs/styles/proselint
+
+# Claude
+.claude

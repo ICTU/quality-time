@@ -6,8 +6,8 @@ import { useContext } from "react"
 
 import { deleteSource, setSourceAttribute } from "../api/source"
 import { ChangeLog } from "../changelog/ChangeLog"
-import { DataModel } from "../context/DataModel"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions, ReadOnlyOrEditable } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext, ReadOnlyOrEditable } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import {
     measurementSourcePropType,
@@ -70,8 +70,8 @@ function Parameters({
     source,
     sourceUuid,
 }) {
-    const dataModel = useContext(DataModel)
-    const permissions = useContext(Permissions)
+    const dataModel = useContext(DataModelContext)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const sourceType = dataModel.sources[source.type]
     return (
@@ -155,7 +155,7 @@ export function Source({
     settings,
     sourceUuid,
 }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const source = metric.sources[sourceUuid]
     const sourceName = getSourceName(source, dataModel)
     const metricName = getMetricName(metric, dataModel)

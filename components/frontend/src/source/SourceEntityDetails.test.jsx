@@ -6,7 +6,7 @@ import dayjs from "dayjs"
 import { vi } from "vitest"
 
 import * as sourceApi from "../api/source"
-import { EDIT_ENTITY_PERMISSION, Permissions } from "../context/Permissions"
+import { EDIT_ENTITY_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { clickText, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { SourceEntityDetails } from "./SourceEntityDetails"
 
@@ -15,7 +15,7 @@ const reload = vi.fn
 function renderSourceEntityDetails({ report = null, statusEndDate = null } = {}) {
     return render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Permissions.Provider value={[EDIT_ENTITY_PERMISSION]}>
+            <PermissionsContext value={[EDIT_ENTITY_PERMISSION]}>
                 <SourceEntityDetails
                     metricUuid="metric_uuid"
                     sourceUuid="source_uuid"
@@ -26,7 +26,7 @@ function renderSourceEntityDetails({ report = null, statusEndDate = null } = {})
                     report={report}
                     statusEndDate={statusEndDate}
                 />
-            </Permissions.Provider>
+            </PermissionsContext>
         </LocalizationProvider>,
     )
 }

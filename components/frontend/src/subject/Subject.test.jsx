@@ -3,7 +3,7 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { Subject } from "./Subject"
 
@@ -15,7 +15,7 @@ function renderSubject({
 } = {}) {
     const settings = createTestableSettings()
     return render(
-        <DataModel.Provider value={dataModel}>
+        <DataModelContext value={dataModel}>
             <Subject
                 atReportsOverview={atReportsOverview}
                 dates={dates}
@@ -27,7 +27,7 @@ function renderSubject({
                 subjectUuid="subject_uuid"
                 tags={[]}
             />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
 }
 

@@ -5,8 +5,8 @@ import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { expectFetch, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { ReportSources } from "./ReportSources"
 
@@ -16,11 +16,11 @@ function renderReportSources(report, expandedItems, theDataModel) {
         settings.expandedItems.value = expandedItems
     }
     return render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={theDataModel ?? dataModel}>
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <DataModelContext value={theDataModel ?? dataModel}>
                 <ReportSources reload={vi.fn()} report={report} settings={settings} />
-            </DataModel.Provider>
-        </Permissions.Provider>,
+            </DataModelContext>
+        </PermissionsContext>,
     )
 }
 

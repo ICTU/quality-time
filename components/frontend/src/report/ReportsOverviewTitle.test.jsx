@@ -5,7 +5,7 @@ import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { expectFetch, expectNoAccessibilityViolations } from "../testUtils"
 import { ReportsOverviewTitle } from "./ReportsOverviewTitle"
 
@@ -18,9 +18,9 @@ afterEach(() => vi.restoreAllMocks())
 
 function renderReportsOverviewTitle() {
     return render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
             <ReportsOverviewTitle reportsOverview={{}} settings={createTestableSettings()} />
-        </Permissions.Provider>,
+        </PermissionsContext>,
     )
 }
 

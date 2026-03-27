@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { clickText, expectFetch, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import * as toast from "../widgets/toast"
 import { IssuesRows } from "./IssuesRows"
@@ -24,7 +24,7 @@ function renderIssuesRow({
     issueStatus = [],
 } = {}) {
     return render(
-        <Permissions.Provider value={permissions}>
+        <PermissionsContext value={permissions}>
             <IssuesRows
                 metric={{
                     type: "violations",
@@ -37,7 +37,7 @@ function renderIssuesRow({
                 }}
                 report={report}
             />
-        </Permissions.Provider>,
+        </PermissionsContext>,
     )
 }
 

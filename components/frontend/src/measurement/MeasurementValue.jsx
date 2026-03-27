@@ -4,7 +4,7 @@ import { Alert, Tooltip, Typography } from "@mui/material"
 import { bool, string } from "prop-types"
 import { useContext } from "react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { datePropType, measurementPropType, metricPropType } from "../sharedPropTypes"
 import { IGNORABLE_SOURCE_ENTITY_STATUSES, SOURCE_ENTITY_STATUS_NAME } from "../source/source_entity_status"
 import {
@@ -97,7 +97,7 @@ ignoredEntitiesMessage.propTypes = {
 }
 
 export function MeasurementValue({ metric, reportDate }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const metricValue = getMetricValue(metric, dataModel)
     let value = metricValue || "?"
     const scale = getMetricScale(metric, dataModel)

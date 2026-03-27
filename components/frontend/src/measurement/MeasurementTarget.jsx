@@ -1,7 +1,7 @@
 import { Tooltip } from "@mui/material"
 import { useContext } from "react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { metricPropType } from "../sharedPropTypes"
 import {
     formatMetricDirection,
@@ -40,7 +40,7 @@ function popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel) {
 }
 
 export function MeasurementTarget({ metric }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     if (metric?.evaluate_targets === false) {
         return null
     }

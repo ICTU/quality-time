@@ -3,8 +3,8 @@ import { func, string } from "prop-types"
 import { useContext } from "react"
 
 import { setMetricAttribute } from "../api/metric"
-import { DataModel } from "../context/DataModel"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import { getSubjectTypeMetrics, referenceDocumentationURL } from "../utils"
 import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
@@ -55,8 +55,8 @@ export function usedMetricTypesInReport(report) {
 }
 
 export function MetricType({ subjectType, metricType, metricUuid, reload }) {
-    const dataModel = useContext(DataModel)
-    const permissions = useContext(Permissions)
+    const dataModel = useContext(DataModelContext)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const options = metricTypeOptions(dataModel, subjectType)
     const metricTypes = options.map((option) => option.key)

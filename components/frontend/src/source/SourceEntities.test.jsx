@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import {
     clickText,
     expectLabelText,
@@ -116,7 +116,7 @@ function renderSourceEntities({
     metric = metricFixture,
 } = {}) {
     return render(
-        <DataModel.Provider value={dataModel}>
+        <DataModelContext value={dataModel}>
             <SourceEntities
                 loading={loading}
                 measurements={measurements}
@@ -126,7 +126,7 @@ function renderSourceEntities({
                 settings={createTestableSettings()}
                 sourceUuid="source_uuid"
             />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
 }
 

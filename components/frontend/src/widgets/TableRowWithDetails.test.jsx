@@ -10,7 +10,12 @@ function renderTableRowWithDetails(expanded, onExpand) {
     render(
         <Table>
             <TableBody>
-                <TableRowWithDetails expanded={expanded} onExpand={onExpand} details={"Details"}>
+                <TableRowWithDetails
+                    expanded={expanded}
+                    onExpand={onExpand}
+                    details={"Details"}
+                    firstCellContent="First"
+                >
                     <TableCell></TableCell>
                 </TableRowWithDetails>
             </TableBody>

@@ -3,13 +3,13 @@ import { func } from "prop-types"
 import { useContext } from "react"
 
 import { setReportAttribute } from "../api/report"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { CommentField } from "../fields/CommentField"
 import { TextField } from "../fields/TextField"
 import { reportPropType } from "../sharedPropTypes"
 
 export function ReportConfiguration({ reload, report }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <Grid container alignItems="flex-end" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 2, md: 2 }}>

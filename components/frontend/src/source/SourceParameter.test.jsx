@@ -6,7 +6,7 @@ import dayjs from "dayjs"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
     clickButton,
     clickLabeledElement,
@@ -58,7 +58,7 @@ function renderSourceParameter({
 }) {
     return render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
                 <SourceParameter
                     parameter={parameter}
                     parameterKey={parameterKey}
@@ -78,7 +78,7 @@ function renderSourceParameter({
                     sourceUuid="source_uuid"
                     warning={warning}
                 />
-            </Permissions.Provider>
+            </PermissionsContext>
         </LocalizationProvider>,
     )
 }

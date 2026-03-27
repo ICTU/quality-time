@@ -7,8 +7,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { bool, func, number, object, string } from "prop-types"
 
 import { useSettings } from "./app_ui_settings"
-import { DataModel } from "./context/DataModel"
-import { Permissions } from "./context/Permissions"
+import { DataModelContext } from "./context/DataModel"
+import { PermissionsContext } from "./context/Permissions"
 import { Footer } from "./header_footer/Footer"
 import { Menubar } from "./header_footer/Menubar"
 import { SettingsPanel } from "./header_footer/SettingsPanel"
@@ -85,8 +85,8 @@ export function AppUI({
                 setUIMode={setMode}
                 uiMode={mode}
             />
-            <Permissions.Provider value={userPermissions}>
-                <DataModel.Provider value={dataModel}>
+            <PermissionsContext value={userPermissions}>
+                <DataModelContext value={dataModel}>
                     <PageContent
                         changedFields={changedFields}
                         currentReport={currentReport}
@@ -103,8 +103,8 @@ export function AppUI({
                         reportsOverview={reportsOverview}
                         settings={settings}
                     />
-                </DataModel.Provider>
-            </Permissions.Provider>
+                </DataModelContext>
+            </PermissionsContext>
             <Footer lastUpdate={lastUpdate} report={currentReport} />
         </LocalizationProvider>
     )

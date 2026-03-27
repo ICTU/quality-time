@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { TargetVisualiser } from "./TargetVisualiser"
 
@@ -36,9 +36,9 @@ const dataModel = {
 
 function renderVisualiser(metric) {
     return render(
-        <DataModel.Provider value={dataModel}>
+        <DataModelContext value={dataModel}>
             <TargetVisualiser metric={metric} />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
 }
 
