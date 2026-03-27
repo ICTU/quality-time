@@ -759,7 +759,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.50.0rc1"
+version = "5.50.0rc2"
 source = { virtual = "." }
 dependencies = [
     { name = "bandit" },
