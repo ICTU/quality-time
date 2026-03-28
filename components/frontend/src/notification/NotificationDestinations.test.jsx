@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { clickText, expectFetch, expectNoAccessibilityViolations } from "../testUtils"
 import { NotificationDestinations } from "./NotificationDestinations"
 
@@ -16,7 +16,7 @@ const notificationDestinations = {
 
 function renderNotificationDestinations(destinations) {
     return render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
             <NotificationDestinations
                 destinations={destinations}
                 reportUuid={"report_uuid"}
@@ -24,7 +24,7 @@ function renderNotificationDestinations(destinations) {
                     /* No need to reload during tests */
                 }}
             />
-        </Permissions.Provider>,
+        </PermissionsContext>,
     )
 }
 

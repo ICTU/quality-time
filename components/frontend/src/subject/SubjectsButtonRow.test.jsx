@@ -3,8 +3,8 @@ import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { asyncClickText, expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import * as subject from "../widgets/menu_options"
 import { SubjectsButtonRow } from "./SubjectsButtonRow"
@@ -21,11 +21,11 @@ afterEach(() => vi.clearAllMocks())
 
 function renderSubjectsButtonRow(permissions = []) {
     return render(
-        <Permissions.Provider value={permissions}>
-            <DataModel.Provider value={dataModel}>
+        <PermissionsContext value={permissions}>
+            <DataModelContext value={dataModel}>
                 <SubjectsButtonRow report={report} reports={[report]} settings={createTestableSettings()} />
-            </DataModel.Provider>
-        </Permissions.Provider>,
+            </DataModelContext>
+        </PermissionsContext>,
     )
 }
 

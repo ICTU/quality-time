@@ -8,7 +8,7 @@ import { bool, func, number, object, oneOf, oneOfType, shape, string } from "pro
 import { useContext, useState } from "react"
 
 import { setSourceParameter } from "../api/source"
-import { accessGranted, Permissions } from "../context/Permissions"
+import { accessGranted, PermissionsContext } from "../context/Permissions"
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { TextField } from "../fields/TextField"
 import { datePropType, permissionsPropType, reportPropType, sourcePropType, stringsPropType } from "../sharedPropTypes"
@@ -159,7 +159,7 @@ export function SourceParameter({
     warning,
 }) {
     const [editScope, setEditScope] = useState(fixedEditScope ?? "source")
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, requiredPermissions)
     const parameterType = parameter?.type
     const value = parameterValue || parameter?.default_value

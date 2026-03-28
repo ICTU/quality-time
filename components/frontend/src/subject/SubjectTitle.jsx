@@ -7,7 +7,7 @@ import { useContext } from "react"
 
 import { deleteSubject, setSubjectAttribute } from "../api/subject"
 import { ChangeLog } from "../changelog/ChangeLog"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { zIndexSubjectTitle } from "../defaults"
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
@@ -68,7 +68,7 @@ export function SubjectTitle({
     reload,
     settings,
 }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const subjectType = getSubjectType(subject.type, dataModel.subjects)
     const subjectName = subject.name || subjectType.name
     const subjectTitle = (atReportsOverview ? report.title + " ❯ " : "") + subjectName

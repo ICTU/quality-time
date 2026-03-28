@@ -4,8 +4,8 @@ import { func } from "prop-types"
 import { useContext, useEffect, useState } from "react"
 
 import { getReportIssueTrackerOptions, setReportIssueTrackerAttribute } from "../api/report"
-import { DataModel } from "../context/DataModel"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { TextField } from "../fields/TextField"
 import { reportPropType } from "../sharedPropTypes"
@@ -22,7 +22,7 @@ const NONE_OPTION = {
 }
 
 export function IssueTracker({ report, reload }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const [projectOptions, setProjectOptions] = useState([]) // Possible projects for new issues
     const [projectValid, setProjectValid] = useState(true) // Is the current project a possible project?
     const [issueTypeOptions, setIssueTypeOptions] = useState([]) // Possible issue types for new issues in the current project
@@ -30,7 +30,7 @@ export function IssueTracker({ report, reload }) {
     const [labelFieldSupported, setLabelFieldSupported] = useState(false) // Does the current issue type support labels?
     const [issueEpicOptions, setIssueEpicOptions] = useState([]) // Possible epic links for new issues in the current project
     const [issueEpicFieldSupported, setIssueEpicFieldSupported] = useState(false) // Does the current project and issue type support epic links?
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const reportUuid = report.report_uuid
     useEffect(() => {

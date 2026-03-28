@@ -4,8 +4,8 @@ import { vi } from "vitest"
 
 import { dataModel, report } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { asyncClickText, clickText, expectFetch, expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTableFooter } from "./SubjectTableFooter"
 
@@ -19,8 +19,8 @@ afterEach(() => vi.restoreAllMocks())
 
 function renderSubjectTableFooter() {
     return render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <DataModelContext value={dataModel}>
                 <Table>
                     <SubjectTableFooter
                         report={report}
@@ -30,8 +30,8 @@ function renderSubjectTableFooter() {
                         stopFilteringAndSorting={stopFilteringAndSorting}
                     />
                 </Table>
-            </DataModel.Provider>
-        </Permissions.Provider>,
+            </DataModelContext>
+        </PermissionsContext>,
     )
 }
 

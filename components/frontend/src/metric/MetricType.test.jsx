@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { MetricType } from "./MetricType"
 
@@ -42,16 +42,16 @@ const dataModel = {
 
 function renderMetricType(metricType) {
     return render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <DataModelContext value={dataModel}>
                 <MetricType
                     subjectType="subject_type"
                     metricType={metricType}
                     metricUuid="metric_uuid"
                     reload={vi.fn()}
                 />
-            </DataModel.Provider>
-        </Permissions.Provider>,
+            </DataModelContext>
+        </PermissionsContext>,
     )
 }
 

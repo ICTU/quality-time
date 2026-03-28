@@ -5,6 +5,7 @@ export function CommentSegment({ comment }) {
     if (comment) {
         return (
             <Box sx={{ margin: "12px" }}>
+                {/* eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml -- HTML content from backend */}
                 <Typography color="text.primary" dangerouslySetInnerHTML={{ __html: comment }} />
             </Box>
         )

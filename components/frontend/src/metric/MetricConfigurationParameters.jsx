@@ -4,8 +4,8 @@ import { func, string } from "prop-types"
 import { useContext } from "react"
 
 import { setMetricAttribute } from "../api/metric"
-import { DataModel } from "../context/DataModel"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { TextField } from "../fields/TextField"
 import { metricPropType, reportPropType, subjectPropType } from "../sharedPropTypes"
@@ -42,8 +42,8 @@ function metricScaleOptions(metricScales, dataModel) {
 }
 
 function MetricName({ metric, metricUuid, reload }) {
-    const dataModel = useContext(DataModel)
-    const permissions = useContext(Permissions)
+    const dataModel = useContext(DataModelContext)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const metricType = dataModel.metrics[metric.type]
     return (
@@ -63,7 +63,7 @@ MetricName.propTypes = {
 }
 
 function MetricSecondaryName({ metric, metricUuid, reload }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <TextField
@@ -81,7 +81,7 @@ MetricSecondaryName.propTypes = {
 }
 
 function Tags({ metric, metricUuid, reload, report }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const tags = getReportTags(report)
     return (
@@ -103,8 +103,8 @@ Tags.propTypes = {
 }
 
 function Scale({ metric, metricUuid, reload }) {
-    const dataModel = useContext(DataModel)
-    const permissions = useContext(Permissions)
+    const dataModel = useContext(DataModelContext)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const scale = getMetricScale(metric, dataModel)
     const metricType = dataModel.metrics[metric.type]
@@ -133,8 +133,8 @@ Scale.propTypes = {
 }
 
 function Direction({ metric, metricUuid, reload }) {
-    const dataModel = useContext(DataModel)
-    const permissions = useContext(Permissions)
+    const dataModel = useContext(DataModelContext)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const scale = getMetricScale(metric, dataModel)
     const metricUnitWithoutPercentage = getMetricUnit(metric, dataModel)
@@ -173,8 +173,8 @@ Direction.propTypes = {
 }
 
 function UnitPlural({ metric, metricUuid, reload }) {
-    const dataModel = useContext(DataModel)
-    const permissions = useContext(Permissions)
+    const dataModel = useContext(DataModelContext)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const metricType = dataModel.metrics[metric.type]
     return (
@@ -195,8 +195,8 @@ UnitPlural.propTypes = {
 }
 
 function UnitSingular({ metric, metricUuid, reload }) {
-    const dataModel = useContext(DataModel)
-    const permissions = useContext(Permissions)
+    const dataModel = useContext(DataModelContext)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const metricType = dataModel.metrics[metric.type]
     return (
@@ -217,7 +217,7 @@ UnitSingular.propTypes = {
 }
 
 function EvaluateTargets({ metric, metricUuid, reload }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const help =
         "Turning off evaluation of the metric targets makes this an informative metric. Informative metrics do not turn red, green, or yellow, and can't have accepted technical debt."
@@ -246,7 +246,7 @@ EvaluateTargets.propTypes = {
 }
 
 export function MetricConfigurationParameters({ metric, metricUuid, reload, report, subject }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const metricScale = getMetricScale(metric, dataModel)
     const commonParameterProps = { metric: metric, metricUuid: metricUuid, reload: reload }
     return (

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectNoText, expectText, expectTextAfterWait, hoverText } from "../testUtils"
 import { SourceStatus } from "./SourceStatus"
 
@@ -15,9 +15,9 @@ function metric(source_type = "source_type") {
 
 function renderSourceStatus(metric, measurementSource) {
     return render(
-        <DataModel.Provider value={dataModel}>
+        <DataModelContext value={dataModel}>
             <SourceStatus metric={metric} measurementSource={measurementSource} />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
 }
 

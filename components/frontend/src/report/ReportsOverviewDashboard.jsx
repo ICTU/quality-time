@@ -2,7 +2,7 @@ import { array, func } from "prop-types"
 import { useContext } from "react"
 
 import { setReportsAttribute } from "../api/report"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { CardDashboard } from "../dashboard/CardDashboard"
 import { LegendCard } from "../dashboard/LegendCard"
 import { MetricsRequiringActionCard } from "../dashboard/MetricsRequiringActionCard"
@@ -22,7 +22,7 @@ export function ReportsOverviewDashboard({
     reload,
     settings,
 }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     let nrMetrics = 0
     const reportSummary = {}
     reports.forEach((report) => {

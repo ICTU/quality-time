@@ -5,8 +5,8 @@ import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
     asyncClickLabeledElement,
     asyncClickText,
@@ -23,8 +23,8 @@ beforeEach(() => {
 
 function renderReportTitle({ tags = ["foo"], issueTrackerType = null } = {}) {
     return render(
-        <DataModel.Provider value={{ sources: { jira: { name: "Jira", issue_tracker: true } } }}>
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+        <DataModelContext value={{ sources: { jira: { name: "Jira", issue_tracker: true } } }}>
+            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
                 <ReportTitle
                     report={{
                         issue_tracker: { type: issueTrackerType },
@@ -35,8 +35,8 @@ function renderReportTitle({ tags = ["foo"], issueTrackerType = null } = {}) {
                     reload={vi.fn()}
                     settings={createTestableSettings()}
                 />
-            </Permissions.Provider>
-        </DataModel.Provider>,
+            </PermissionsContext>
+        </DataModelContext>,
     )
 }
 

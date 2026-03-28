@@ -2,7 +2,7 @@ import { Divider, Paper } from "@mui/material"
 import { bool, func, string } from "prop-types"
 import { useContext } from "react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import {
     datesPropType,
     measurementsPropType,
@@ -146,7 +146,7 @@ export function Subject({
 }) {
     const subject = report.subjects[subjectUuid]
     const metrics = visibleMetrics(subject.metrics, settings.metricsToHide.value, settings.hiddenTags.value)
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     if (subjectIsEmptyDueToFilters(atReportsOverview, metrics, subject.metrics, settings)) {
         return null
     }

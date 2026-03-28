@@ -2,7 +2,7 @@ import { func } from "prop-types"
 import { useContext } from "react"
 
 import { setReportAttribute } from "../api/report"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { CardDashboard } from "../dashboard/CardDashboard"
 import { IssuesCard } from "../dashboard/IssuesCard"
 import { LegendCard } from "../dashboard/LegendCard"
@@ -14,7 +14,7 @@ import { Tag } from "../widgets/Tag"
 import { summarizeMetricsOnDate, summarizeReportOnDate } from "./report_utils"
 
 export function ReportDashboard({ dates, measurements, onClick, onClickTag, reload, report, settings }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const nrMetrics = Math.max(nrMetricsInReport(report), 1)
     const subjectCards = []
     if (settings.hiddenCards.excludes("subjects")) {

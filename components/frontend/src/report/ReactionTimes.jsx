@@ -4,7 +4,7 @@ import { func, oneOfType } from "prop-types"
 import { useContext } from "react"
 
 import { setReportAttribute } from "../api/report"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import { STATUS_DESCRIPTION, STATUS_NAME, statusPropType } from "../metric/status"
 import { entityStatusPropType, reportPropType } from "../sharedPropTypes"
@@ -12,7 +12,7 @@ import { SOURCE_ENTITY_STATUS_DESCRIPTION, SOURCE_ENTITY_STATUS_NAME } from "../
 import { getDesiredResponseTime } from "../utils"
 
 function DesiredResponseTimeInput({ reload, report, status }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const desiredResponseTimes = report.desired_response_times ?? {}
     const inputId = `desired-response-time-${status}`

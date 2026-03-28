@@ -13,7 +13,7 @@ import {
     VictoryTooltip,
 } from "victory"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { loadingPropType, measurementsPropType, metricPropType } from "../sharedPropTypes"
 import { capitalize, formatMetricScaleAndUnit, getMetricName, getMetricScale, scaledNumber } from "../utils"
 import { LoadingPlaceHolder } from "../widgets/Placeholder"
@@ -27,7 +27,7 @@ function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
 }
 
 export function TrendGraph({ metric, measurements, loading }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const [visibleDomain, setVisibleDomain] = useState({})
     // Force Victory to recalculate internal coordinate transforms when the domain changes to prevent mouse
     // coordinate misalignments:

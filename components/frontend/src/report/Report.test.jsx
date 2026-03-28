@@ -6,8 +6,8 @@ import { vi } from "vitest"
 import { createTestableSettings, dataModel } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
 import { clickText, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { theme } from "../theme"
@@ -61,8 +61,8 @@ async function renderReport({
     await act(async () => {
         result = render(
             <ThemeProvider theme={theme}>
-                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                    <DataModel.Provider value={dataModel}>
+                <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+                    <DataModelContext value={dataModel}>
                         <Report
                             dates={dates}
                             handleSort={handleSort}
@@ -73,8 +73,8 @@ async function renderReport({
                             reportDate={reportDate}
                             settings={settings}
                         />
-                    </DataModel.Provider>
-                </Permissions.Provider>
+                    </DataModelContext>
+                </PermissionsContext>
             </ThemeProvider>,
         )
     })

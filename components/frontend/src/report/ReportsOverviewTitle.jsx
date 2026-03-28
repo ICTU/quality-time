@@ -7,7 +7,12 @@ import { useContext } from "react"
 
 import { setReportsAttribute } from "../api/report"
 import { ChangeLog } from "../changelog/ChangeLog"
-import { accessGranted, EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import {
+    accessGranted,
+    EDIT_ENTITY_PERMISSION,
+    EDIT_REPORT_PERMISSION,
+    PermissionsContext,
+} from "../context/Permissions"
 import { CommentField } from "../fields/CommentField"
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { TextField } from "../fields/TextField"
@@ -17,7 +22,7 @@ import { Tabs } from "../widgets/Tabs"
 import { setDocumentTitle } from "./document_title"
 
 function ReportsOverviewConfiguration({ reportsOverview, reload }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <Grid container alignItems="flex-end" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 2, md: 2 }}>
@@ -61,7 +66,7 @@ function setPermissions(permissions, permission, value, reload) {
 }
 
 function PermissionsConfiguration({ permissions, reload }) {
-    const currentPermissions = useContext(Permissions)
+    const currentPermissions = useContext(PermissionsContext)
     const disabled = !accessGranted(currentPermissions, [EDIT_REPORT_PERMISSION])
     return (
         <Grid container alignItems="flex-end" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 1, md: 2 }}>

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import {
     expectNoAccessibilityViolations,
     expectNoText,
@@ -23,7 +23,7 @@ function renderMeasurementValue({
     url = "https://example.org",
 } = {}) {
     return render(
-        <DataModel.Provider
+        <DataModelContext
             value={{
                 metrics: { violations: { unit: "violations", unit_singular: "violation" } },
                 sources: { source_type: { parameters: { url: { mandatory: true, metrics: ["violations"] } } } },
@@ -42,7 +42,7 @@ function renderMeasurementValue({
                 }}
                 reportDate={reportDate}
             />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
 }
 

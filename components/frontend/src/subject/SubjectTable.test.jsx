@@ -7,8 +7,8 @@ import { vi } from "vitest"
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { useExpandedItemsSearchQuery } from "../app_ui_settings"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
     asyncClickButton,
     asyncClickRole,
@@ -56,8 +56,8 @@ function renderSubjectTable({ dates = [], expandedItems = null, settings = null 
         settings.expandedItems = expandedItems
     }
     return render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <DataModelContext value={dataModel}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <SubjectTable
                         dates={dates}
@@ -111,8 +111,8 @@ function renderSubjectTable({ dates = [], expandedItems = null, settings = null 
                         subjectUuid="subject_uuid"
                     />
                 </LocalizationProvider>
-            </DataModel.Provider>
-        </Permissions.Provider>,
+            </DataModelContext>
+        </PermissionsContext>,
     )
 }
 

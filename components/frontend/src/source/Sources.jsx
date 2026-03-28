@@ -3,7 +3,7 @@ import { func, number, string } from "prop-types"
 import { useContext } from "react"
 
 import { addSource, copySource, moveSource } from "../api/source"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import {
     measurementPropType,
@@ -26,7 +26,7 @@ import { Source } from "./Source"
 import { sourceTypeOptions } from "./SourceType"
 
 function ButtonSegment({ metric, metricUuid, reload, reports }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     return (
         <ReadOnlyOrEditable
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
@@ -107,7 +107,7 @@ export function reloadAfterMassEditSource(json, reload) {
 }
 
 export function Sources({ reports, report, metric, metricUuid, measurement, changedFields, reload, settings }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const measurementSources = measurement?.sources ?? []
     const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
         Object.keys(dataModel.sources).includes(metric.sources[sourceUuid].type),

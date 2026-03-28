@@ -2,7 +2,7 @@ import { func } from "prop-types"
 import { useContext } from "react"
 
 import { addSubject, copySubject, moveSubject } from "../api/subject"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { reportPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
 import { ButtonRow } from "../widgets/ButtonRow"
@@ -13,7 +13,7 @@ import { subjectOptions } from "../widgets/menu_options"
 import { subjectTypes } from "./SubjectType"
 
 export function SubjectsButtonRow({ reload, report, reports, settings }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     function stopFiltering() {
         settings.metricsToHide.reset()
         settings.hiddenTags.reset()

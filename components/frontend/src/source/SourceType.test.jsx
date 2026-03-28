@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { SourceType } from "./SourceType"
 
@@ -46,15 +46,15 @@ async function renderSourceType(metricType, sourceType, mockSetSourceAttribute) 
     let result
     await act(async () => {
         result = render(
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <DataModel.Provider value={dataModel}>
+            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+                <DataModelContext value={dataModel}>
                     <SourceType
                         metricType={metricType}
                         sourceType={sourceType}
                         setSourceAttribute={mockSetSourceAttribute}
                     />
-                </DataModel.Provider>
-            </Permissions.Provider>,
+                </DataModelContext>
+            </PermissionsContext>,
         )
     })
     return result

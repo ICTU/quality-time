@@ -5,7 +5,7 @@ import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
 import { clickText, expectNoAccessibilityViolations, expectNoText, expectSearch, expectText } from "../testUtils"
 import { theme } from "../theme"
@@ -51,7 +51,7 @@ function renderReportsOverviewDashboard({
     }
     return render(
         <ThemeProvider theme={theme}>
-            <DataModel.Provider value={dataModel}>
+            <DataModelContext value={dataModel}>
                 <div id="dashboard">
                     <ReportsOverviewDashboard
                         dates={dates}
@@ -60,7 +60,7 @@ function renderReportsOverviewDashboard({
                         settings={settings}
                     />
                 </div>
-            </DataModel.Provider>
+            </DataModelContext>
         </ThemeProvider>,
     )
 }

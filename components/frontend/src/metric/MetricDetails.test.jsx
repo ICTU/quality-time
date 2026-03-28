@@ -7,8 +7,8 @@ import { vi } from "vitest"
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import * as measurementApi from "../api/measurement"
-import { DataModel } from "../context/DataModel"
-import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
     asyncClickButton,
     asyncClickText,
@@ -124,8 +124,8 @@ async function renderMetricDetails({
     await act(async () => {
         result = render(
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Permissions.Provider value={[EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION]}>
-                    <DataModel.Provider value={dataModel || createDataModel()}>
+                <PermissionsContext value={[EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION]}>
+                    <DataModelContext value={dataModel || createDataModel()}>
                         <MetricDetails
                             metricUuid="metric_uuid"
                             reload={vi.fn()}
@@ -135,8 +135,8 @@ async function renderMetricDetails({
                             stopFilteringAndSorting={stopFilteringAndSorting}
                             subjectUuid="subject_uuid"
                         />
-                    </DataModel.Provider>
-                </Permissions.Provider>
+                    </DataModelContext>
+                </PermissionsContext>
             </LocalizationProvider>,
         )
     })

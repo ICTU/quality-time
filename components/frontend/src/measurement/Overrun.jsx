@@ -12,7 +12,7 @@ import {
 import { string } from "prop-types"
 import { useContext } from "react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { datesPropType, measurementsPropType, metricPropType, reportPropType } from "../sharedPropTypes"
 import { getMetricResponseOverrun, pluralize } from "../utils"
 import { StatusIcon } from "./StatusIcon"
@@ -22,7 +22,7 @@ function formatDays(days) {
 }
 
 export function Overrun({ metricUuid, metric, report, measurements, dates }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const { totalOverrun, overruns } = getMetricResponseOverrun(metricUuid, metric, report, measurements, dataModel)
     if (totalOverrun === 0) {
         return null

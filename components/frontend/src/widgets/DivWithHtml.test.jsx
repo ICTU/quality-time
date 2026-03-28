@@ -8,7 +8,9 @@ it("is not resizable when not overflown", () => {
             <p>Some text</p>
         </DivWithHtml>,
     )
-    expect(container.firstChild).toHaveStyle("word-break: break-word; overflow: auto; min-height: 15px; height: 0px;")
+    expect(container.firstChild).toHaveStyle(
+        "word-break: break-word; overflow: visible; min-height: 15px; max-height: 60px;",
+    )
 })
 
 it("is resizable when overflown", () => {

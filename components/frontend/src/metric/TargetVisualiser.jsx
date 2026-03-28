@@ -2,7 +2,7 @@ import { Box, Stack } from "@mui/material"
 import { bool, oneOf, string } from "prop-types"
 import { useContext } from "react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { StatusIcon } from "../measurement/StatusIcon"
 import { childrenPropType, metricPropType, scalePropType } from "../sharedPropTypes"
 import {
@@ -150,7 +150,7 @@ ColoredSegments.propTypes = {
 }
 
 export function TargetVisualiser({ metric }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const unit = formatMetricScaleAndUnit(metric, dataModel)
     if (metric.evaluate_targets === false) {
         return (

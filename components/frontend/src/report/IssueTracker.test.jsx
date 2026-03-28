@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as reportApi from "../api/report"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { clickText, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { IssueTracker } from "./IssueTracker"
 
@@ -26,7 +26,7 @@ async function renderIssueTracker({ report = { report_uuid: "report_uuid", title
     let result
     await act(async () => {
         result = render(
-            <DataModel.Provider
+            <DataModelContext
                 value={{
                     sources: {
                         jira: {
@@ -40,10 +40,10 @@ async function renderIssueTracker({ report = { report_uuid: "report_uuid", title
                     },
                 }}
             >
-                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+                <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
                     <IssueTracker report={report} reload={reload} />
-                </Permissions.Provider>
-            </DataModel.Provider>,
+                </PermissionsContext>
+            </DataModelContext>,
         )
     })
     return result

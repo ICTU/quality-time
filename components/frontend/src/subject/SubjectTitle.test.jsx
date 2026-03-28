@@ -5,8 +5,8 @@ import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
     asyncClickButton,
     asyncClickText,
@@ -52,16 +52,16 @@ async function renderSubjectTitle(subjectType = "subject_type") {
     let result
     await act(async () => {
         result = render(
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <DataModel.Provider value={dataModel}>
+            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+                <DataModelContext value={dataModel}>
                     <SubjectTitle
                         report={report}
                         settings={settings}
                         subject={{ type: subjectType }}
                         subjectUuid="subject_uuid"
                     />
-                </DataModel.Provider>
-            </Permissions.Provider>,
+                </DataModelContext>
+            </PermissionsContext>,
         )
     })
     return result

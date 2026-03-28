@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { MeasurementSources } from "./MeasurementSources"
 
@@ -8,7 +8,7 @@ const dataModel = { metrics: { metric_type: { sources: ["source_type"] } } }
 
 function renderMeasurementSources(sources, latestMeasurement) {
     return render(
-        <DataModel.Provider value={dataModel}>
+        <DataModelContext value={dataModel}>
             <MeasurementSources
                 metric={{
                     type: "metric_type",
@@ -16,7 +16,7 @@ function renderMeasurementSources(sources, latestMeasurement) {
                     latest_measurement: latestMeasurement,
                 }}
             />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
 }
 

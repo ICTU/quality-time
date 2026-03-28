@@ -1,7 +1,7 @@
 import { Tooltip, Typography } from "@mui/material"
 import { useContext } from "react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { measurementSourcePropType, metricPropType } from "../sharedPropTypes"
 import { getMetricName, getSourceName } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
@@ -15,7 +15,7 @@ hasMessage.propTypes = {
 }
 
 export function SourceStatus({ metric, measurementSource }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     // Source may be deleted from report but still referenced in the latest measurement, be prepared:
     if (!Object.keys(metric.sources).includes(measurementSource.source_uuid)) {
         return null
