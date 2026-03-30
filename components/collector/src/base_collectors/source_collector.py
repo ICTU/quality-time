@@ -396,7 +396,8 @@ class VersionCollector(SourceCollector):
         logger.info("Checking latest %s at %s", class_name, repository_url)
         organization, repository = str(repository_url).rstrip("/").split("/")[-2:]
         url = f"https://api.github.com/repos/{organization}/{repository}/releases/latest"
-        response = await self._session.get(url, allow_redirects=True)
+        headers = {"Authorization": f"Bearer {token}"} if (token := self._parameter("github_pat")) else {}
+        response = await self._session.get(url, allow_redirects=True, headers=headers)
         json = await response.json(content_type=None)
         latest_version = json.get("tag_name", "").lstrip("v")
         logger.info("Latest %s according to %s is %s", class_name, repository_url, latest_version)

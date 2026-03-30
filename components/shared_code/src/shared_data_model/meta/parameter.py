@@ -131,6 +131,7 @@ DEFAULT_PARAMETER_LAYOUT = {
             "password",
             "private_token",
             "robot_account_prefix",
+            "github_pat",
         ],
     ),
     "filter": ParameterGroup(name="Source filters"),

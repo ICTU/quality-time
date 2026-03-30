@@ -5,6 +5,7 @@ from pydantic import HttpUrl
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
+    GitHubPersonalAccessToken,
     MultipleChoiceWithAdditionParameter,
     MultipleChoiceWithDefaultsParameter,
     SingleChoiceParameter,
@@ -43,6 +44,7 @@ OWASP_ZAP = Source(
             "warnings are the same only one is reported.",
             metrics=["security_warnings"],
         ),
+        "github_pat": GitHubPersonalAccessToken(metrics=["source_version"]),
         **access_parameters(ALL_OWASP_ZAP_METRICS, source_type="an OWASP ZAP report", source_type_format="XML"),
     },
     entities={

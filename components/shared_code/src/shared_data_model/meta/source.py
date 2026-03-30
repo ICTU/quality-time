@@ -48,6 +48,12 @@ class Source(DescribedModel):
                         f"{parameter_to_validate_on}"
                     )
                     raise ValueError(msg)
+        if self.repository_url and "github_pat" not in self.parameters:
+            msg = f"Source {self.name} has a repository URL but no GitHub personal access token parameter."
+            raise ValueError(msg)
+        if "github_pat" in self.parameters and not self.repository_url:
+            msg = f"Source {self.name} has a GitHub personal access token parameter but no repository URL."
+            raise ValueError(msg)
         return self
 
     @model_validator(mode="after")
