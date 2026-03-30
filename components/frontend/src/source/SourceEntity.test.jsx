@@ -3,6 +3,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { render, renderHook, screen } from "@testing-library/react"
 
+import { useLanguageURLSearchQuery } from "../app_ui_settings"
 import { formatDate } from "../datetime"
 import { clickButton, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { SourceEntity } from "./SourceEntity"
@@ -53,13 +54,15 @@ it("renders the fixed status", async () => {
 
 it("renders the status end date", async () => {
     renderSourceEntity({ status: "fixed", statusEndDate: "3000-01-01" })
-    const expectedDate = renderHook(() => formatDate(new Date("3000-01-01")))
+    const language = renderHook(() => useLanguageURLSearchQuery().value)
+    const expectedDate = renderHook(() => formatDate(new Date("3000-01-01"), language.result.current))
     expectText(RegExp(expectedDate.result.current))
 })
 
 it("does not render the status end date if the status is unconfirmed", async () => {
     renderSourceEntity({ status: "unconfirmed", statusEndDate: "3000-01-01" })
-    const expectedDate = renderHook(() => formatDate(new Date("3000-01-01")))
+    const language = renderHook(() => useLanguageURLSearchQuery().value)
+    const expectedDate = renderHook(() => formatDate(new Date("3000-01-01"), language.result.current))
     expectNoText(RegExp(expectedDate.result.current))
 })
 
@@ -80,7 +83,8 @@ it("renders the status and rationale past end date", async () => {
         hideIgnoredEntities: true,
         rationale: "Because",
     })
-    const expectedDate = renderHook(() => formatDate(new Date("2000-01-01")))
+    const language = renderHook(() => useLanguageURLSearchQuery().value)
+    const expectedDate = renderHook(() => formatDate(new Date("2000-01-01"), language.result.current))
     expectText(RegExp(expectedDate.result.current))
     expectText(/Because/)
 })

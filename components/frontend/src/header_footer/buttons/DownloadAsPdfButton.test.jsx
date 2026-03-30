@@ -44,8 +44,7 @@ function expectButtonIsNotLoading() {
 
 function mockGetReportPdfWithTimeout() {
     fetchServerApi.fetchServerApi.mockImplementation(() => {
-        // See https://github.com/eslint-community/eslint-plugin-promise/issues/111#issuecomment-663824152
-        return new Promise((resolve) => setTimeout(resolve, 100)) // eslint-disable-line promise/avoid-new
+        return new Promise((resolve) => setTimeout(resolve, 100))
     })
 }
 

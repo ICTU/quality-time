@@ -1,6 +1,7 @@
 import { render, renderHook, screen } from "@testing-library/react"
 import { vi } from "vitest"
 
+import { useLanguageURLSearchQuery } from "../app_ui_settings"
 import { formatDate } from "../datetime"
 import { expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { mockGetAnimations } from "./MockAnimations"
@@ -32,7 +33,11 @@ const report = {
     },
 }
 
-function renderPageHeader({ lastUpdate = new Date(), report = null, reportDate = null } = {}) {
+function renderPageHeader({
+    lastUpdate = new Date(),
+    report = null,
+    reportDate = new Date(2026, 1, 1, 10, 0, 0),
+} = {}) {
     return render(<PageHeader lastUpdate={lastUpdate} report={report} reportDate={reportDate} />)
 }
 
@@ -70,6 +75,7 @@ it("displays version link", async () => {
 
 it("displays today as report date if no report date is provided", async () => {
     renderPageHeader({ lastUpdate: mockLastUpdate, report: report })
-    const expectedDate = renderHook(() => formatDate(new Date()))
+    const language = renderHook(() => useLanguageURLSearchQuery().value)
+    const expectedDate = renderHook(() => formatDate(new Date(2026, 1, 1, 10, 0, 0), language.result.current))
     expectText(`Report date: ${expectedDate.result.current}`)
 })

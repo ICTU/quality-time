@@ -277,8 +277,7 @@ npm-audit: install-js-dependencies
 [no-cd]
 [private]
 npm-outdated: install-js-dependencies
-    echo "Note: currently ignoring npm outdated exit code because ESLint can't be upgraded yet due to peer dependencies needing updates"
-    npm outdated || true
+    npm outdated
 
 # Run JavaScript checks.
 [no-cd]

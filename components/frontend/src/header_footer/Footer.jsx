@@ -22,6 +22,7 @@ import {
 import { grey } from "@mui/material/colors"
 import Grid from "@mui/material/Grid"
 import { element, object, oneOfType, string } from "prop-types"
+import { useState } from "react"
 
 import { alignmentPropType, childrenPropType, datePropType, reportPropType } from "../sharedPropTypes"
 import { DOCUMENTATION_URL, REPOSITORY_URL } from "../utils"
@@ -105,7 +106,8 @@ function SupportColumn() {
 }
 
 function AboutReportColumn({ lastUpdate, report }) {
-    lastUpdate = lastUpdate ?? new Date()
+    const [now] = useState(() => new Date())
+    lastUpdate = lastUpdate ?? now
     // When exporting to PDF, globalThis.location.href may not be the correct URL. This is fixed by having the user's
     // browser pass the correct URL as search parameter and use that instead:
     const reportURL = new URLSearchParams(globalThis.location.search).get("report_url") ?? globalThis.location.href
@@ -124,6 +126,7 @@ AboutReportColumn.propTypes = {
 }
 
 function QuoteColumn() {
+    const [randomNumber] = useState(() => Math.random())
     const quotes = [
         ["If it hurts, do it more frequently,", "and bring the pain forward.", "Jez Humble"],
         ["Quality without results is pointless.", "Results without quality is boring.", "Johan Cruyff"],
@@ -131,7 +134,7 @@ function QuoteColumn() {
         ["Quality means doing it right", "even when no one is looking.", "Henry Ford"],
         ["Quality... you know what it is,", "yet you don't know what it is.", "Robert M. Pirsig"],
     ]
-    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
+    const randomQuote = quotes[Math.floor(randomNumber * quotes.length)]
     return (
         <FooterColumn>
             <FooterItem>
