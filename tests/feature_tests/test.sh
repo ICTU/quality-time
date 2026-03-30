@@ -6,6 +6,7 @@
 # so we can discover dead code in the tests.
 
 mkdir -p build
+export COLUMNS=${COLUMNS:-120}  # Prevent Docker Compose warning about unset COLUMNS variable
 export COVERAGE_RCFILE="$(pwd)"/tests/feature_tests/.coveragerc
 export PROXY_PORT=8080
 docker compose build --progress quiet database api_server renderer frontend www
