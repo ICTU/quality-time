@@ -9,7 +9,6 @@ services:
   collector:
     environment:
       - COLLECTOR_LOG_LEVEL=${COLLECTOR_LOG_LEVEL:-INFO}
-      - COLUMNS=${COLUMNS}  # Tell the Rich logging handler the terminal width
     build:
       context: ..
       dockerfile: components/collector/Dockerfile
@@ -18,14 +17,12 @@ services:
   notifier:
     environment:
       - NOTIFIER_LOG_LEVEL=${NOTIFIER_LOG_LEVEL:-INFO}
-      - COLUMNS=${COLUMNS}  # Tell the Rich logging handler the terminal width
     build:
       context: ..
       dockerfile: components/notifier/Dockerfile
   api_server:
     environment:
       - API_SERVER_LOG_LEVEL=${API_SERVER_LOG_LEVEL:-INFO}
-      - COLUMNS=${COLUMNS}  # Tell the Rich logging handler the terminal width
     build:
       context: ..
       dockerfile: components/api_server/Dockerfile
