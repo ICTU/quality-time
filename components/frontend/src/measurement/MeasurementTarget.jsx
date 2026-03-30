@@ -1,5 +1,5 @@
 import { Tooltip } from "@mui/material"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import { metricPropType } from "../sharedPropTypes"
@@ -41,6 +41,10 @@ function popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel) {
 
 export function MeasurementTarget({ metric }) {
     const dataModel = useContext(DataModelContext)
+    const [today] = useState(() => new Date())
+    const [endDate] = useState(() =>
+        metric.debt_end_date && isValidISODate(metric.debt_end_date) ? new Date(metric.debt_end_date) : new Date(),
+    )
     if (metric?.evaluate_targets === false) {
         return null
     }
@@ -56,8 +60,6 @@ export function MeasurementTarget({ metric }) {
             : false
     let debtEndDateInThePast = false
     if (metric.debt_end_date && isValidISODate(metric.debt_end_date)) {
-        const endDate = new Date(metric.debt_end_date)
-        const today = new Date()
         debtEndDateInThePast = endDate.toISOString().split("T")[0] < today.toISOString().split("T")[0]
     }
     const label = allIssuesDone || debtEndDateInThePast ? <Label color="debt_target_met">{target}</Label> : target

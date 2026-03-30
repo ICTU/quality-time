@@ -66,7 +66,7 @@ export function IssueTracker({ report, reload }) {
         return () => {
             didCancel = true
         }
-    }, [report])
+    }, [report, reportUuid])
     let trackerSources = Object.entries(dataModel.sources)
         .filter(([_sourceName, sourceType]) => {
             return sourceType.issue_tracker === true
