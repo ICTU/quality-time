@@ -118,6 +118,15 @@ class PrivateToken(Password):
     validation_path: str = ""  # URL path to use for the validation of tokens
 
 
+class GitHubPersonalAccessToken(PrivateToken):
+    """GitHub Personal Access token for increasing rate limits when checking for new source versions."""
+
+    name: str = "GitHub personal access token"
+    help: str | None = (
+        "Token to use when checking for the availability of new source versions (prevents hitting GitHub rate limits)."
+    )
+
+
 class APIVersion(SingleChoiceParameter):
     """API version to use."""
 

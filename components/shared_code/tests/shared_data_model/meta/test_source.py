@@ -43,3 +43,27 @@ class SourceTest(MetaModelTestCase):
             "Source Source is deprecated but has no deprecation URL",
             **extra_model_kwargs,
         )
+
+    def test_missing_github_pat_parameter(self):
+        """Test that a source with a repository URL also has a GitHub PAT."""
+        extra_model_kwargs = {
+            "repository_url": "https://github.com/ICTU/quality-time",
+            "parameters": {"url": {"name": "UR:", "type": "url", "metrics": ["metric"]}},
+        }
+        self.check_source_validation_error(
+            "Source Source has a repository URL but no GitHub personal access token parameter.",
+            **extra_model_kwargs,
+        )
+
+    def test_missing_repository_url(self):
+        """Test that a source with a GitHub PAT also has a repository URL."""
+        extra_model_kwargs = {
+            "parameters": {
+                "url": {"name": "UR:", "type": "url", "metrics": ["metric"]},
+                "github_pat": {"name": "GitHub PAT", "type": "password", "metrics": ["metric"]},
+            },
+        }
+        self.check_source_validation_error(
+            "Source Source has a GitHub personal access token parameter but no repository URL.",
+            **extra_model_kwargs,
+        )

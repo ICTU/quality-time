@@ -4,7 +4,12 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import TestResult, TestResultAggregationStrategy, access_parameters
+from shared_data_model.parameters import (
+    GitHubPersonalAccessToken,
+    TestResult,
+    TestResultAggregationStrategy,
+    access_parameters,
+)
 
 from .jenkins import JENKINS_TOKEN_DOCS, jenkins_access_parameters
 
@@ -21,6 +26,7 @@ ROBOT_FRAMEWORK = Source(
     parameters={
         "test_result": TestResult(metrics=["test_suites", "tests"], values=["fail", "pass", "skip"]),
         "test_result_aggregation_strategy": TestResultAggregationStrategy(),
+        "github_pat": GitHubPersonalAccessToken(metrics=["source_version"]),
         **access_parameters(
             ALL_ROBOT_FRAMEWORK_METRICS,
             source_type="Robot Framework report",

@@ -13,6 +13,7 @@ from shared_data_model.meta.source import Source
 from shared_data_model.meta.unit import Unit
 from shared_data_model.parameters import (
     URL,
+    GitHubPersonalAccessToken,
     IntegerParameter,
     MultipleChoiceWithAdditionParameter,
     MultipleChoiceWithDefaultsParameter,
@@ -229,6 +230,7 @@ QUALITY_TIME = Source(
             placeholder="all tags",
             metrics=["metrics"],
         ),
+        "github_pat": GitHubPersonalAccessToken(metrics=["source_version"]),
     },
     entities={
         "metrics": Entity(

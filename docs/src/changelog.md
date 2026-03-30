@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Allow for configuring a GitHub personal access token to prevent being rate limited by GitHub when checking for new source versions. Fixes [#12853](https://github.com/ICTU/quality-time/issues/12853).
+
 ## v5.50.0 - 2026-03-27
 
 ### Removed
