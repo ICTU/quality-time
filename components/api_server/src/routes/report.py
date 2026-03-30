@@ -101,11 +101,11 @@ def post_report_import(database: Database):
     try:
         decrypt_credentials(private_key, report)
     except DecryptionError:
-        bottle.response.status = HTTPStatus.BAD_REQUEST
+        bottle.response.status = HTTPStatus.UNPROCESSABLE_CONTENT
         return {
             "ok": False,
-            "error": "Decryption of source credentials failed. \
-                Did you use the public key of this Quality-time instance to encrypt this report?",
+            "error": "Decryption of source credentials failed. "
+            "Did you use the public key of this Quality-time instance to encrypt the report?",
         }
 
     replace_report_uuids(report)

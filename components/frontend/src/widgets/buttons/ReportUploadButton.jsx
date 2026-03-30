@@ -37,7 +37,16 @@ export function ReportUploadButton({ reload }) {
                         if (event.target.files.length > 0) {
                             event.target.files[0]
                                 .text()
-                                .then((text) => importReport(JSON.parse(text), reload))
+                                .then(async (text) => {
+                                    const response = await importReport(JSON.parse(text))
+                                    if (response.ok === false) {
+                                        const json = await response.json()
+                                        showMessage("error", "Import failed", json["error"])
+                                    } else {
+                                        reload()
+                                    }
+                                    return response
+                                })
                                 .catch(({ message }) => showMessage("error", "Import failed", message))
                         }
                     }}
