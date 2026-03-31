@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - Allow for configuring a regular expression to extract a valid version number from non-standard version strings reported by sources, for the software version metric. Fixes [#12484](https://github.com/ICTU/quality-time/issues/12484).
 - Suppress Trivy security warnings based on vulnerability ID, package name, and installed version instead of including the target, which can change between scans due to e.g. commit hashes. Fixes [#12746](https://github.com/ICTU/quality-time/issues/12746).
+- Remove unused subject description field from reports. Fixes [#12799](https://github.com/ICTU/quality-time/issues/12799).
 - If importing a report fails, show a toast message with the error. Fixes [#12800](https://github.com/ICTU/quality-time/issues/12800).
 - Update help URL for finding the id of a GitLab project. Fixes [#12813](https://github.com/ICTU/quality-time/issues/12813).
 - Allow for configuring a GitHub personal access token to prevent being rate limited by GitHub when checking for new source versions. Fixes [#12853](https://github.com/ICTU/quality-time/issues/12853).

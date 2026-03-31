@@ -38,5 +38,4 @@ def default_report_attributes() -> dict[str, str | dict]:
 
 def default_subject_attributes(subject_type: str) -> dict[str, Any]:
     """Return the default attributes with their default values for the specified subject type."""
-    subject = DATA_MODEL.all_subjects[subject_type]
-    return {"type": subject_type, "name": None, "description": subject.description, "metrics": {}}
+    return {"type": subject_type, "name": None, "metrics": {}}

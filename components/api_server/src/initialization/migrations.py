@@ -15,7 +15,15 @@ def perform_migrations(database: Database) -> None:
     for report in database.reports.find(filter={"last": True, "deleted": {"$exists": False}}):
         report_uuid = report["report_uuid"]
         logger.info("Checking report %s for necessary updates", report_uuid)
-        changes = [change for change in (remove_metric_addition(report), remove_checkmarx(report)) if change]
+        changes = [
+            change
+            for change in (
+                remove_metric_addition(report),
+                remove_checkmarx(report),
+                remove_subject_description(report),
+            )
+            if change
+        ]
         if any(changes):
             logger.info("Updating report %s to %s", report_uuid, " and ".join(change for change in changes if change))
             replace_document(database.reports, report)
@@ -42,6 +50,17 @@ def remove_checkmarx(report) -> str:
             change_description = "remove the Checkmarx source from metrics"
             for source_id in source_ids_to_remove:
                 del metric["sources"][source_id]
+    return change_description
+
+
+def remove_subject_description(report) -> str:
+    """Remove the description field from all subjects."""
+    # Added after Quality-time v5.50.0, see https://github.com/ICTU/quality-time/issues/12799
+    change_description = ""
+    for subject in report.get("subjects", {}).values():
+        if "description" in subject:
+            change_description = "remove the description field from subjects"
+            del subject["description"]
     return change_description
 
 
