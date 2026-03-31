@@ -72,6 +72,7 @@ html_js_files = ["https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.m
 
 # -- Options for linkcheck ---------------------------------------------------
 
+linkcheck_retries = 3
 linkcheck_ignore = [
     "http://localhost",  # Getting started URL
     r"http://localhost:\d+",  # Example URLs
