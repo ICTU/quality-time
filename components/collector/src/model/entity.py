@@ -15,8 +15,10 @@ QUOTED_SLASH = re.compile("%2f", re.IGNORECASE)
 class Entity(dict):
     """Class to hold information about an individual measurement entity, e.g. one violation, or one security warning."""
 
-    def __init__(self, key: str, **attributes) -> None:
+    def __init__(self, key: str, old_key: str = "", **attributes) -> None:
         kwargs = {"key": self.safe_entity_key(key), "first_seen": iso_timestamp()}
+        if old_key:
+            kwargs["old_key"] = self.safe_entity_key(old_key)
         kwargs.update(**attributes)
         super().__init__(**kwargs)
 
