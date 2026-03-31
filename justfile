@@ -222,8 +222,7 @@ pip-audit: install-py-dependencies
 [no-cd]
 [private]
 uv-audit: install-py-dependencies
-    echo "Currently uv audit exit code as there is no fix for GHSA-5239-wwwm-4pmq yet"
-    uv --preview-features audit audit --locked || true
+    uv --preview-features audit audit --locked
 
 # Run bandit
 [no-cd]
