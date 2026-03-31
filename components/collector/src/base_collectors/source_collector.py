@@ -1,6 +1,7 @@
 """Source collector base classes."""
 
 import asyncio
+import re
 import traceback
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, ClassVar, TypedDict, cast
@@ -423,7 +424,25 @@ class VersionCollector(SourceCollector):
         return await asyncio.gather(*[self._parse_source_response_version(response) for response in responses])
 
     async def _parse_source_response_version(self, response: Response) -> Version:
-        """Parse the version from the source response."""
+        """Parse the version from the source response, applying the version number pattern if configured."""
+        version_string = await self._parse_source_response_version_string(response)
+        try:
+            return Version(version_string)
+        except InvalidVersion:
+            if (
+                self.__has_version_number_pattern()
+                and (pattern := str(self._parameter("version_number_pattern")))
+                and (match := re.search(pattern, version_string))
+            ):
+                return Version(match.group())
+            raise
+
+    def __has_version_number_pattern(self) -> bool:
+        """Return whether the source has a version number pattern parameter."""
+        return "version_number_pattern" in DATA_MODEL.sources[self.source_type].parameters
+
+    async def _parse_source_response_version_string(self, response: Response) -> str:
+        """Parse the version string from the source response."""
         raise NotImplementedError  # pragma: no cover
 
 
