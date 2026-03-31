@@ -6,7 +6,6 @@
         "8cd7fc6e-5a65-4958-83c3-8afcc461b628": {
             "type": "software",
             "name": "Quality-time",
-            "description": "A custom software application or component.",
             "metrics": {
                 "f51c0391-0a51-43f1-9bd1-69046d1acc06": {
                     "type": "tests",

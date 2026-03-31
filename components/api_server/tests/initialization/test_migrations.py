@@ -87,3 +87,27 @@ class RemoveCheckmarxTest(MigrationTestCase):
         inserted_report = self.inserted_report()
         del inserted_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2]["sources"][SOURCE_ID]
         self.check_inserted_report(inserted_report)
+
+
+class RemoveSubjectDescriptionTest(MigrationTestCase):
+    """Unit tests for the migration to remove description fields from subjects."""
+
+    def existing_report(self, **kwargs):
+        """Extend to add description to subject."""
+        report = super().existing_report(**kwargs)
+        report["subjects"][SUBJECT_ID]["description"] = "A custom software application or component."
+        return report
+
+    def test_report_without_subject_description(self):
+        """Test that the migration succeeds with reports without subject descriptions."""
+        self.database.reports.find.return_value = [super().existing_report()]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_report_with_subject_description(self):
+        """Test that the migration succeeds with reports that have subject descriptions."""
+        self.database.reports.find.return_value = [self.existing_report()]
+        perform_migrations(self.database)
+        inserted_report = self.inserted_report()
+        del inserted_report["subjects"][SUBJECT_ID]["description"]
+        self.check_inserted_report(inserted_report)

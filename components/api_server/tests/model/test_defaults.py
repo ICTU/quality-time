@@ -46,7 +46,6 @@ class DefaultAttributesTest(DataModelTestCase):
         self.assertEqual(
             {
                 "name": None,
-                "description": "A custom software application or component.",
                 "type": "software",
                 "metrics": {},
             },
