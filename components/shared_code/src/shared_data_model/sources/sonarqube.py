@@ -15,6 +15,7 @@ from shared_data_model.parameters import (
     SingleChoiceParameter,
     StringParameter,
     TestResult,
+    VersionNumberPattern,
 )
 
 
@@ -369,6 +370,7 @@ SONARQUBE = Source(
             default_value="main",
             metrics=sorted([*MEASURES_COMPONENT_METRICS, *PROJECT_ANALYSES_METRICS, *PROJECT_ISSUES_METRICS]),
         ),
+        "version_number_pattern": VersionNumberPattern(),
         "directories_to_include": MultipleChoiceWithAdditionParameter(
             name="Directories to include",
             help="Only report issues for the listed directories. Note that SonarQube does not support filtering "

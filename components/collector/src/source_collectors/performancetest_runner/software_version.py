@@ -3,7 +3,6 @@
 from typing import TYPE_CHECKING, cast
 
 from bs4 import Tag
-from packaging.version import Version
 
 from base_collectors import VersionCollector
 
@@ -16,11 +15,7 @@ if TYPE_CHECKING:
 class PerformanceTestRunnerSoftwareVersion(PerformanceTestRunnerBaseClass, VersionCollector):
     """Collector for the software version analysed in the performance report."""
 
-    async def _parse_source_response_version(self, response: Response) -> Version:
-        """Parse the version from the source response."""
-        return Version(await self.__application_version(response))
-
-    async def __application_version(self, response: Response) -> str:
-        """Return the application version."""
+    async def _parse_source_response_version_string(self, response: Response) -> str:
+        """Parse the version string from the source response."""
         field = (await self._soup(response)).find(id="application_version")
         return cast(Tag, field).string or "" if field else ""
