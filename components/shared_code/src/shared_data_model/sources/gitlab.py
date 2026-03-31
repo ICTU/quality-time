@@ -94,8 +94,8 @@ CI pipeline, or the source is stored in a GitLab repository:
     `https://<gitlab-server>/api/v4/projects/<project-id>/jobs/artifacts/<branch>/raw/<path>/<to>/<file-name>?\
 job=<job-name>`
 
-    The project id can be found under the
-    [project's general settings](https://docs.gitlab.com/user/project/settings/).
+    The project id can be found on the
+    [project's overview page](https://docs.gitlab.com/user/project/working_with_projects/#find-the-project-id).
 
     If the repository is private, you also need to provide a \
 [personal access token](https://docs.gitlab.com/user/profile/personal_access_tokens/) with the scope `read_api` \
@@ -114,8 +114,8 @@ in the private token field.
     `https://<gitlab-server>/api/v4/projects/<project-id>/repository/files/<file-path-with-slashes-%2F-encoded>/raw?\
 ref=<branch>`
 
-    The project id can be found under the
-    [project's general settings](https://docs.gitlab.com/user/project/settings/).
+    The project id can be found on the
+    [project's overview page](https://docs.gitlab.com/user/project/working_with_projects/#find-the-project-id).
 
     If the repository is private, you also need to provide a \
 [personal access token](https://docs.gitlab.com/user/profile/personal_access_tokens/) with the scope \
@@ -133,7 +133,7 @@ ref=<branch>`
         "project": StringParameter(
             name="Project (name with namespace or id)",
             mandatory=True,
-            help_url=HttpUrl("https://docs.gitlab.com/user/project/"),
+            help_url=HttpUrl("https://docs.gitlab.com/user/project/working_with_projects/#find-the-project-id"),
             metrics=[
                 "change_failure_rate",
                 "failed_jobs",
@@ -147,7 +147,7 @@ ref=<branch>`
         "project_or_group": StringParameter(
             name="Project (name with namespace or id) or group (name or id)",
             mandatory=True,
-            help_url=HttpUrl("https://docs.gitlab.com/user/project/"),
+            help_url=HttpUrl("https://docs.gitlab.com/user/project/working_with_projects/#find-the-project-id"),
             metrics=["inactive_branches"],
         ),
         "private_token": PrivateToken(
