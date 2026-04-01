@@ -138,6 +138,19 @@ Feature: report
     And the client downloads the report as JSON
     Then the client receives the JSON
 
+  Scenario: export report as JSON via the internal API
+    When the client creates a report
+    And the client changes the report tracker_type to "jira"
+    And the client changes the report tracker_url to "https://jira"
+    And the client changes the report tracker_password to "secret"
+    And the client creates a subject
+    And the client creates a metric
+    And the client creates a source
+    And the client sets the source parameter url to "https://public"
+    And the client sets the source parameter password to "secret"
+    And the client downloads the report as JSON via the internal API
+    Then the client receives the JSON
+
   Scenario: export nonexisting report as JSON
     When the client downloads the report non_existing_report_uuid as json
     Then the client receives no JSON

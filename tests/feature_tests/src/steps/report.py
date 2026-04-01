@@ -51,6 +51,14 @@ def download_report_as_json(context: Context, report_uuid: str | None = None) ->
     context.exported_report = report
 
 
+@when("the client downloads the report as JSON via the internal API")
+def download_report_as_json_via_internal_api(context: Context) -> None:
+    """Download the report as JSON via the internal API."""
+    report_uuid = context.uuid["report"]
+    report = context.get(f"report/{report_uuid}/json")
+    context.exported_report = report
+
+
 @when("the client downloads the report as JSON with his own public key")
 def download_report_as_json_with_key(context: Context) -> None:
     """Download the report as JSON with public key."""

@@ -144,6 +144,7 @@ def export_report_as_pdf(report_uuid: ReportId):
     return export_as_pdf(report_uuid)
 
 
+@bottle.get("/api/internal/report/<report_uuid>/json", authentication_required=True)
 @bottle.get("/api/v3/report/<report_uuid>/json", authentication_required=True)
 @with_report(pass_report_uuid=False)
 def export_report_as_json(database: Database, report: Report):

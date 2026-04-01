@@ -14,6 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
+- Allow for exporting a report as JSON via the UI, using the "Export report" button in the report header. Note that measurements are not included. Closes [#11907](https://github.com/ICTU/quality-time/issues/11907).
 - When measuring violations with Axe-core, Axe HTML reporter or Axe CSV as source, allow for specifying regular expressions to remove variable parts of URLs. Closes [#12881](https://github.com/ICTU/quality-time/issues/12881).
 
 ## v5.50.1 - 2026-04-01

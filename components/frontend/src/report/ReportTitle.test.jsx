@@ -40,6 +40,13 @@ function renderReportTitle({ tags = ["foo"], issueTrackerType = null } = {}) {
     )
 }
 
+it("shows the export report button", async () => {
+    history.push("?expanded=report_uuid:0")
+    const { container } = renderReportTitle()
+    expect(screen.getByText(/Export report/)).toBeInTheDocument()
+    await expectNoAccessibilityViolations(container)
+})
+
 it("deletes the report", async () => {
     history.push("?expanded=report_uuid:0")
     const { container } = renderReportTitle()
