@@ -12,9 +12,9 @@ dependencies = [
     "codespell==2.4.2",
     "coverage==7.13.5",
     "fixit==2.2.1",
-    "mypy==1.19.1",
+    "mypy==1.20.0",
     "pip-audit==2.10.0",
-    "pyproject-fmt==2.20.0",
+    "pyproject-fmt==2.21.0",
     "ruff==0.15.8",
     "troml==0.4.1",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
