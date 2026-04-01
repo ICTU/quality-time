@@ -1,11 +1,12 @@
 """Axe-core accessibility violations collectors."""
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from shared.utils.functions import md5_hash
 
 from base_collectors import JSONFileSourceCollector, SourceCollector
-from collector_utilities.functions import match_string_or_regular_expression
+from collector_utilities.functions import match_string_or_regular_expression, stabilize
+from collector_utilities.type import URL
 from model import Entities, Entity
 
 if TYPE_CHECKING:
@@ -54,6 +55,11 @@ class AxeViolationsCollector(SourceCollector):
             element_exclude_filter and match_string_or_regular_expression(entity["element"], element_exclude_filter)
         )
 
+    def _stable_url(self, url: URL) -> URL:
+        """Return the url without the variable parts."""
+        reg_exps = cast(list[str], self._parameter("variable_url_regexp"))
+        return URL(stabilize(url, reg_exps, "variable-part-removed"))
+
 
 class AxeCoreViolations(JSONFileSourceCollector, AxeViolationsCollector):
     """Collector class to get accessibility violations from Axe-core JSON output."""
@@ -64,7 +70,7 @@ class AxeCoreViolations(JSONFileSourceCollector, AxeViolationsCollector):
         entity_attributes = []
         for test_result in self.__parse_test_results(json):
             violations = {result_type: test_result.get(result_type, []) for result_type in result_types}
-            url = test_result.get("url", "")
+            url = self._stable_url(URL(test_result.get("url", "")))
             entity_attributes.extend(self.__parse_violations(violations, url))
         return Entities(Entity(key=self.__create_key(attributes), **attributes) for attributes in entity_attributes)
 

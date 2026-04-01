@@ -127,6 +127,12 @@ class AxeHTMLViolationsTest(SourceCollectorTestCase):
         response = await self.collect(get_request_text=self.html)
         self.assert_measurement(response, value="68")
 
+    async def test_variable_url_regexp(self):
+        """Test that parts of URLs can be ignored."""
+        self.set_source_parameter("variable_url_regexp", ["example\\.com"])
+        response = await self.collect(get_request_text=self.html)
+        self.assert_measurement(response, value="6")
+
     async def test_incomplete_rules(self):
         """Test that incomplete rules can be counted as well."""
         self.set_source_parameter("result_types", ["incomplete"])

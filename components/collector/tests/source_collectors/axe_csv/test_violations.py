@@ -104,6 +104,22 @@ class AxeCSVViolationsTest(SourceCollectorTestCase):
         response = await self.collect(get_request_text=self.csv + "\n\n")
         self.assert_measurement(response, value="2", entities=self.expected_entities)
 
+    async def test_variable_url_regexp(self):
+        """Test that parts of URLs can be ignored."""
+        self.set_source_parameter("variable_url_regexp", ["url1"])
+        expected_entity = {
+            "url": "variable-part-removed",
+            "violation_type": "aria-input-field-name",
+            "impact": "serious",
+            "element": None,
+            "page": "variable-part-removed",
+            "description": None,
+            "help": "help1",
+        }
+        expected_entity["key"] = self.entity_key(expected_entity)
+        response = await self.collect(get_request_text=self.csv)
+        self.assert_measurement(response, value="2", entities=[expected_entity, self.expected_entities[1]])
+
     async def test_embedded_newlines(self):
         """Test that embedded newlines are ignored."""
         violation_with_newline = 'url3,aria-hidden-focus,moderate,help3,html3,"messages3\nsecond line",dom3\n'

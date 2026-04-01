@@ -186,6 +186,16 @@ class AxeCoreViolationsTest(AxeCoreTestCase):
         response = await self.collect(get_request_json_return_value=self.json)
         self.assert_measurement(response, value="3", entities=self.expected_entities)
 
+    async def test_variable_url_regexp(self):
+        """Test that parts of URLs can be ignored."""
+        self.set_source_parameter("variable_url_regexp", ["https://tested_url"])
+        for entity in self.expected_entities:
+            entity["page"] = "variable-part-removed"
+            entity["url"] = "variable-part-removed"
+        self.set_expected_entity_keys()
+        response = await self.collect(get_request_json_return_value=self.json)
+        self.assert_measurement(response, value="2", entities=self.expected_entities)
+
     async def test_result_type_without_nodes(self):
         """Test that result types without nodes can be counted as well."""
         self.set_source_parameter("result_types", ["violations", "inapplicable"])

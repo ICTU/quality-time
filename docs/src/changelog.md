@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- When measuring violations with Axe-core, Axe HTML reporter or Axe CSV as source, allow for specifying regular expressions to remove variable parts of URLs. Closes [#12881](https://github.com/ICTU/quality-time/issues/12881).
+
 ## v5.50.1 - 2026-04-01
 
 ### Fixed
