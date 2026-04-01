@@ -22,7 +22,7 @@ wheels = [
 
 [[package]]
 name = "api-server"
-version = "5.50.0"
+version = "5.50.1rc0"
 source = { virtual = "." }
 dependencies = [
     { name = "argon2-cffi" },
@@ -1057,7 +1057,7 @@ wheels = [
 
 [[package]]
 name = "shared-code"
-version = "5.50.0"
+version = "5.50.1rc0"
 source = { directory = "../shared_code" }
 dependencies = [
     { name = "bottle" },
@@ -1177,7 +1177,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.50.0"
+version = "5.50.1rc0"
 source = { virtual = "../../tools/third_party" }
 dependencies = [
     { name = "bandit" },
