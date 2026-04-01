@@ -1,6 +1,6 @@
 [project]
 name = "application-tests"
-version = "5.49.0"
+version = "5.50.1"
 requires-python = "==3.14.2"
 classifiers = [
     "Programming Language :: Python",
@@ -11,14 +11,14 @@ classifiers = [
 [dependency-groups]
 dev = [
     "axe-selenium-python==2.1.6",
-    "requests==2.32.5",
+    "requests==2.33.1",
     "selenium==4.41.0",
     "tools",
-    "types-requests==2.32.4.20260107",
+    "types-requests==2.33.0.20260327",
 ]
 
 [tool.uv]
-sources.tools = { path = "../../tools", package = false }
+sources.tools = { path = "../../tools/third_party", package = false }
 
 [tool.ruff]
 line-length = 120

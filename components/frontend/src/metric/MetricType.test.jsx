@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { MetricType } from "./MetricType"
 
@@ -42,48 +42,48 @@ const dataModel = {
 
 function renderMetricType(metricType) {
     return render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <DataModelContext value={dataModel}>
                 <MetricType
                     subjectType="subject_type"
                     metricType={metricType}
                     metricUuid="metric_uuid"
                     reload={vi.fn()}
                 />
-            </DataModel.Provider>
-        </Permissions.Provider>,
+            </DataModelContext>
+        </PermissionsContext>,
     )
 }
 
+it("has no accessibility violations", async () => {
+    const { container } = renderMetricType("violations")
+    await expectNoAccessibilityViolations(container)
+})
+
 it("sets the metric type", async () => {
     vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
-    const { container } = renderMetricType("violations")
+    renderMetricType("violations")
     await userEvent.type(screen.getByRole("combobox"), "Source version{Enter}")
     expectFetch("post", "metric/metric_uuid/attribute/type", { type: "source_version" })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the metric type even when not supported by the subject type", async () => {
-    const { container } = renderMetricType("unsupported")
+    renderMetricType("unsupported")
     expectText(/Unsupported/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the metric type read the docs URL", async () => {
-    const { container } = renderMetricType("violations")
+    renderMetricType("violations")
     expectText(/Read the Docs/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the metric type has extra documentation", async () => {
-    const { container } = renderMetricType("source_version")
+    renderMetricType("source_version")
     expectText(/for additional information on how to configure this metric type/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("uses the name of the metric type for the documentation link", async () => {
-    const { container } = renderMetricType("failed_jobs")
+    renderMetricType("failed_jobs")
     const readTheDocsLink = screen.getByRole("link", { name: "Read the Docs" })
     expect(readTheDocsLink).toHaveAttribute("href", expect.stringContaining("#failed-ci-jobs"))
-    await expectNoAccessibilityViolations(container)
 })

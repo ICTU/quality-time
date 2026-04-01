@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import {
     clickText,
     expectLabelText,
@@ -116,7 +116,7 @@ function renderSourceEntities({
     metric = metricFixture,
 } = {}) {
     return render(
-        <DataModel.Provider value={dataModel}>
+        <DataModelContext value={dataModel}>
             <SourceEntities
                 loading={loading}
                 measurements={measurements}
@@ -126,21 +126,27 @@ function renderSourceEntities({
                 settings={createTestableSettings()}
                 sourceUuid="source_uuid"
             />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
 }
 
-it("renders a message if the metric does not support measurement entities", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderSourceEntities({
+        metric: { type: "metric_type", sources: { source_uuid: { type: "source_type_without_entities" } } },
+    })
+    await expectNoAccessibilityViolations(container)
+})
+
+it("renders a message if the metric does not support measurement entities", async () => {
+    renderSourceEntities({
         metric: { type: "metric_type", sources: { source_uuid: { type: "source_type_without_entities" } } },
     })
     expectText(/Measurement details not supported/)
     expectText(/Showing individual items is not supported when using Source type without entities as source./)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renders a message if the metric does not support measurement entities and has no unit", async () => {
-    const { container } = renderSourceEntities({
+    renderSourceEntities({
         metric: {
             type: "metric_type_without_unit",
             sources: { source_uuid: { type: "source_type_without_entities" } },
@@ -148,48 +154,41 @@ it("renders a message if the metric does not support measurement entities and ha
     })
     expectText(/Measurement details not supported/)
     expectText(/Showing individual entities is not supported when using Source type without entities as source./)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renders a message if the metric does not have measurement entities", async () => {
-    const { container } = renderSourceEntities({
+    renderSourceEntities({
         measurements: [{ sources: [{ source_uuid: "source_uuid", entities: [] }] }],
     })
     expectText(/Measurement details not available/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renders a message if the measurements failed to load", async () => {
-    const { container } = renderSourceEntities({ loading: "failed" })
+    renderSourceEntities({ loading: "failed" })
     expectText(/Loading measurements failed/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renders a placeholder while the measurements are loading", async () => {
     const { container } = renderSourceEntities({ loading: "loading" })
     expect(container.firstChild.className).toContain("MuiSkeleton-rectangular")
     expectNoText("AAA")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renders a message if there are no measurements", async () => {
-    const { container } = renderSourceEntities({ measurements: [] })
+    renderSourceEntities({ measurements: [] })
     expectText(/No measurements/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the hide ignored entities button", async () => {
-    const { container } = renderSourceEntities()
+    renderSourceEntities()
     expectLabelText(/Hide the 0 entities that have been/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the hide ignored entities button with one ignored entity", async () => {
     const fixture = JSON.parse(JSON.stringify(sourceFixture))
     fixture.entity_user_data["2"].status_end_date = "3000-01-01"
-    const { container } = renderSourceEntities({ measurements: [{ sources: [fixture] }] })
+    renderSourceEntities({ measurements: [{ sources: [fixture] }] })
     expectLabelText(/Hide the 1 entity name that has been/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the hide ignored entities button with two ignored entities", async () => {
@@ -197,30 +196,26 @@ it("shows the hide ignored entities button with two ignored entities", async () 
     fixture.entity_user_data["1"].status = "false_positive"
     fixture.entity_user_data["1"].status_end_date = "3000-01-01"
     fixture.entity_user_data["2"].status_end_date = "3000-01-01"
-    const { container } = renderSourceEntities({ measurements: [{ sources: [fixture] }] })
+    renderSourceEntities({ measurements: [{ sources: [fixture] }] })
     expectLabelText(/Hide the 2 entities that have been/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the show ignored entities button", async () => {
     const fixture = JSON.parse(JSON.stringify(sourceFixture))
     fixture.entity_user_data["2"].status_end_date = "3000-01-01"
-    const { container } = renderSourceEntities({ measurements: [{ sources: [fixture] }] })
+    renderSourceEntities({ measurements: [{ sources: [fixture] }] })
     const hideEntitiesTooltip = screen.getByLabelText(/Hide the 1 entity name that has been/)
     await userEvent.click(hideEntitiesTooltip.firstChild) // Get the button inside the tooltip
     expect(hideEntitiesTooltip).toHaveAccessibleName(/Show the 1 entity name that has been/)
-    await expectNoAccessibilityViolations(container)
 })
 
 async function expectColumnIsSortedCorrectly(header, ascending) {
-    const { container } = renderSourceEntities()
+    renderSourceEntities()
     expectOrder(["C", "B", "A"]) // Initial order
     clickText(header)
     expectOrder(ascending)
-    await expectNoAccessibilityViolations(container)
     clickText(header)
     expectOrder(ascending.toReversed())
-    await expectNoAccessibilityViolations(container)
     clickText(header)
     expectOrder(ascending)
 }

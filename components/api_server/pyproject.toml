@@ -1,6 +1,6 @@
 [project]
 name = "api-server"
-version = "5.49.0"
+version = "5.50.1"
 requires-python = "==3.14.3"
 classifiers = [
     "Framework :: Bottle",
@@ -11,15 +11,14 @@ classifiers = [
 dependencies = [
     "argon2-cffi==25.1.0",
     "bottle==0.13.4",
-    "cryptography==46.0.5",
+    "cryptography==46.0.6",
     "gevent==25.9.1",
     "ldap3==2.9.1",
     "lxml==6.0.2",
     "lxml-html-clean==0.4.4",
     "pymongo==4.16.0",
     "python-dateutil==2.9.0.post0",
-    "requests==2.32.5",
-    "rich==14.3.3",
+    "requests==2.33.1",
     "shared-code",
 ]
 
@@ -27,15 +26,14 @@ dependencies = [
 dev = [
     "pydantic==2.12.5",                      # Needed for importing the data model in the tests from the shared code component
     "tools",
-    "types-cryptography==3.3.23.2",
-    "types-ldap3==2.9.13.20251121",
-    "types-python-dateutil==2.9.0.20260305",
-    "types-requests==2.32.4.20260107",
+    "types-ldap3==2.9.13.20260319",
+    "types-python-dateutil==2.9.0.20260323",
+    "types-requests==2.33.0.20260327",
 ]
 
 [tool.uv]
 sources.shared-code = { path = "../shared_code", package = true }
-sources.tools = { path = "../../tools", package = false }
+sources.tools = { path = "../../tools/third_party", package = false }
 
 [tool.ruff]
 line-length = 120

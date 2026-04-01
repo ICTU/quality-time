@@ -36,6 +36,7 @@ services:
       - COLLECTOR_MEASUREMENT_TIMEOUT=${COLLECTOR_MEASUREMENT_TIMEOUT:-120}
       - COLLECTOR_SLEEP_DURATION=${COLLECTOR_SLEEP_DURATION:-20}
       - COLLECTOR_LOG_LEVEL=${COLLECTOR_LOG_LEVEL:-WARNING}
+      - COLUMNS=${COLUMNS}  # Tell the Rich logging handler the terminal width
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
     depends_on:
@@ -48,6 +49,7 @@ services:
       - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
       - NOTIFIER_SLEEP_DURATION=${NOTIFIER_SLEEP_DURATION:-60}
       - NOTIFIER_LOG_LEVEL=${NOTIFIER_LOG_LEVEL:-WARNING}
+      - COLUMNS=${COLUMNS}  # Tell the Rich logging handler the terminal width
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
     depends_on:
@@ -71,6 +73,7 @@ services:
       - RENDERER_HOST=${RENDERER_HOST:-renderer}
       - RENDERER_PORT=${RENDERER_PORT:-9000}
       - USER_SESSION_DURATION=${USER_SESSION_DURATION:-120}
+      - COLUMNS=${COLUMNS}  # Tell the Rich logging handler the terminal width
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
     depends_on:

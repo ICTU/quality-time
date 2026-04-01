@@ -3,7 +3,7 @@ import { func, string } from "prop-types"
 import { useContext, useState } from "react"
 
 import { deleteTag, renameTag } from "../api/report"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import { reportPropType } from "../sharedPropTypes"
 import { getMetricTags, getReportTags } from "../utils"
@@ -25,7 +25,7 @@ function nrMetricsWithTag(report, tag) {
 }
 
 function TagEditor({ reload, report, tag }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <Grid container spacing={{ xs: 1, sm: 2, md: 2 }} sx={{ alignItems: "center", margin: "10px" }}>
@@ -58,10 +58,8 @@ function TagRow({ reload, report, tag }) {
             details={<TagEditor reload={reload} report={report} tag={tag} />}
             expanded={expanded}
             onExpand={setExpanded}
+            firstCellContent={<Tag tag={tag} />}
         >
-            <TableCell>
-                <Tag tag={tag} />
-            </TableCell>
             <TableCell align="right">{nrMetricsWithTag(report, tag)}</TableCell>
         </TableRowWithDetails>
     )

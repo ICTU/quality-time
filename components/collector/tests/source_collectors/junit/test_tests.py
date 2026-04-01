@@ -13,7 +13,6 @@ class JUnitTestsTest(JUnitCollectorTestCase):
         return {
             "suite_names": suite_names,
             "key": f"cn:{host_name}:{name}",
-            "old_key": f"cn:{name}",
             "name": name,
             "class_name": "cn",
             "host_name": host_name,

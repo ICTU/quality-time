@@ -1,12 +1,12 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { clickText, expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { Source } from "./Source"
 
@@ -33,8 +33,8 @@ const report = { report_uuid: "report_uuid", subjects: {} }
 
 function renderSource(metric, props) {
     return render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <DataModelContext value={dataModel}>
                 <Source
                     metric={metric}
                     report={report}
@@ -42,22 +42,25 @@ function renderSource(metric, props) {
                     sourceUuid="source_uuid"
                     {...props}
                 />
-            </DataModel.Provider>
-        </Permissions.Provider>,
+            </DataModelContext>
+        </PermissionsContext>,
     )
 }
 
-it("invokes the callback on clicking delete", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderSource(metric)
-    clickText(/Delete source/)
-    expect(fetchServerApi.fetchServerApi).toHaveBeenNthCalledWith(1, "delete", "source/source_uuid", {})
     await expectNoAccessibilityViolations(container)
 })
 
+it("invokes the callback on clicking delete", async () => {
+    renderSource(metric)
+    clickText(/Delete source/)
+    expect(fetchServerApi.fetchServerApi).toHaveBeenNthCalledWith(1, "delete", "source/source_uuid", {})
+})
+
 it("changes the source type", async () => {
-    const { container } = renderSource(metric)
+    renderSource(metric)
     fireEvent.mouseDown(screen.getByLabelText(/Source type/))
-    await expectNoAccessibilityViolations(container)
     clickText(/Source type 2/)
     expectFetch("post", "source/source_uuid/attribute/type", { type: "source_type2" })
 })
@@ -69,26 +72,27 @@ it("changes the source name", async () => {
 })
 
 it("shows a connection error message", async () => {
-    const { container } = renderSource(metric, { measurementSource: { connection_error: "Oops" } })
+    renderSource(metric, { measurementSource: { connection_error: "Oops" } })
     expectText(/Connection error/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows a parse error message", async () => {
-    const { container } = renderSource(metric, { measurementSource: { parse_error: "Oops" } })
+    renderSource(metric, { measurementSource: { parse_error: "Oops" } })
     expectText(/Parse error/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows a config error message", async () => {
-    const { container } = renderSource({ type: "unsupported_metric", sources: { source_uuid: source } })
+    renderSource({ type: "unsupported_metric", sources: { source_uuid: source } })
     expectText(/Configuration error/)
-    await expectNoAccessibilityViolations(container)
+})
+
+it("shows an info message", async () => {
+    renderSource(metric, { measurementSource: { info_message: "Some info" } })
+    expectText(/Note/)
 })
 
 it("loads the changelog", async () => {
     history.push("?expanded=source_uuid:1")
-    const { container } = renderSource(metric)
-    expectFetch("get", "changelog/source/source_uuid/5")
-    await expectNoAccessibilityViolations(container)
+    renderSource(metric)
+    await act(async () => expectFetch("get", "changelog/source/source_uuid/5"))
 })

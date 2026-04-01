@@ -13,6 +13,7 @@ from shared_data_model.meta.source import Source
 from shared_data_model.meta.unit import Unit
 from shared_data_model.parameters import (
     URL,
+    GitHubPersonalAccessToken,
     IntegerParameter,
     MultipleChoiceWithAdditionParameter,
     MultipleChoiceWithDefaultsParameter,
@@ -75,7 +76,6 @@ ALL_SOURCES = {
     "Bitbucket": "bitbucket",
     "Calendar date": "calendar",
     "Cargo Audit": "cargo_audit",
-    "Checkmarx CxSAST": "cxsast",
     "cloc": "cloc",
     "Cobertura": "cobertura",
     "Cobertura Jenkins plugin": "cobertura_jenkins_plugin",
@@ -123,6 +123,7 @@ QUALITY_TIME = Source(
     name="Quality-time",
     description="Quality report software for software development and maintenance.",
     url=HttpUrl("https://github.com/ICTU/quality-time"),
+    repository_url=HttpUrl("https://github.com/ICTU/quality-time"),
     parameters={
         "url": URL(
             name="Quality-time URL",
@@ -229,6 +230,7 @@ QUALITY_TIME = Source(
             placeholder="all tags",
             metrics=["metrics"],
         ),
+        "github_pat": GitHubPersonalAccessToken(metrics=["source_version"]),
     },
     entities={
         "metrics": Entity(

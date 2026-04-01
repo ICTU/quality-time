@@ -16,12 +16,14 @@ class Logger:
     def __init__(self, name: str) -> None:
         """Initialize the logger."""
         self.log = logging.getLogger(name)
+        self.logged_changes: set[tuple[str, DependencyVersion]] = set()
 
     def new_version(self, dependency: str, version: DependencyVersion) -> None:
         """Log the availability of a new version."""
-        self.log.warning(
-            "New version available for %s: %s\n%s", dependency, version.version, version.changes, stacklevel=2
-        )
+        suppression_message = "Suppressing changelog already shown, see above"
+        changes = suppression_message if (dependency, version) in self.logged_changes else version.changes
+        self.logged_changes.add((dependency, version))
+        self.log.warning("New version available for %s: %s\n%s", dependency, version.version, changes, stacklevel=2)
 
     def invalid_version(self, dependency: str, invalid_version: str) -> None:
         """Log an invalid version."""

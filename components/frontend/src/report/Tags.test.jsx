@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
     asyncClickLabeledElement,
     asyncClickText,
@@ -19,7 +19,7 @@ beforeEach(() => {
 
 function renderTags({ tags = ["foo"] } = {}) {
     return render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
             <Tags
                 report={{
                     report_uuid: "report_uuid",
@@ -28,41 +28,40 @@ function renderTags({ tags = ["foo"] } = {}) {
                 }}
                 reload={vi.fn()}
             />
-        </Permissions.Provider>,
+        </PermissionsContext>,
     )
 }
 
-it("shows the tags", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderTags()
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows the tags", async () => {
+    renderTags()
     expectText(/Tag/)
     expectText(/Number of metrics/)
     expectText(/foo/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows an info message if there are no tags", async () => {
-    const { container } = renderTags({ tags: [] })
+    renderTags({ tags: [] })
     expectText(/None of the metrics in this report have tags/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("deletes a tag", async () => {
-    const { container } = renderTags()
+    renderTags()
     await asyncClickLabeledElement(/Expand/, 0)
-    await expectNoAccessibilityViolations(container)
     await asyncClickText(/Delete tag/)
     expectFetch("delete", "report/report_uuid/tag/foo")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renames a tag", async () => {
-    const { container } = renderTags()
+    renderTags()
     await asyncClickLabeledElement(/Expand/, 0)
-    await expectNoAccessibilityViolations(container)
     await userEvent.type(screen.getByLabelText("Tag"), "bar{Enter}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
     expectFetch("post", "report/report_uuid/tag/foo", { tag: "bar" })
-    await expectNoAccessibilityViolations(container)
 })

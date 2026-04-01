@@ -4,8 +4,8 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
     expectLabelText,
     expectNoAccessibilityViolations,
@@ -56,8 +56,8 @@ function renderSubjectTableRow({
         dates.reverse()
     }
     return render(
-        <Permissions.Provider value={[permissions]}>
-            <DataModel.Provider value={dataModel}>
+        <PermissionsContext value={[permissions]}>
+            <DataModelContext value={dataModel}>
                 <Table>
                     <TableBody>
                         <SubjectTableRow
@@ -91,67 +91,66 @@ function renderSubjectTableRow({
                         />
                     </TableBody>
                 </Table>
-            </DataModel.Provider>
-        </Permissions.Provider>,
+            </DataModelContext>
+        </PermissionsContext>,
     )
 }
 
+it("has no accessibility violations", async () => {
+    const { container } = renderSubjectTableRow()
+    await expectNoAccessibilityViolations(container)
+})
+
 it("shows the delta column", async () => {
     history.push("?nr_dates=3&date_interval=1")
-    const { container } = renderSubjectTableRow()
+    renderSubjectTableRow()
     expectText("+1")
     expectLabelText("Metric type worsened from 11 to 12 things by +1 thing")
     expectText("-4")
     expectLabelText("Metric type improved from 12 to 8 things by -4 things")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("hides the delta column", async () => {
     history.push("?nr_dates=2&hidden_columns=delta")
-    const { container } = renderSubjectTableRow()
+    renderSubjectTableRow()
     expectNoText("+1")
     expectNoText("-4")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("takes the metric direction into account", async () => {
     history.push("?nr_dates=3&date_interval=1")
-    const { container } = renderSubjectTableRow({ direction: ">" })
+    renderSubjectTableRow({ direction: ">" })
     expectText("+1")
     expectLabelText("Metric type improved from 11 to 12 things by +1 thing")
     expectText("-4")
     expectLabelText("Metric type worsened from 12 to 8 things by -4 things")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("works for informative metrics", async () => {
     history.push("?nr_dates=3&date_interval=1")
-    const { container } = renderSubjectTableRow({ evaluateTargets: false })
+    renderSubjectTableRow({ evaluateTargets: false })
     expectText("+1")
     expectLabelText("Metric type changed from 11 to 12 things by +1 thing")
     expectText("-4")
     expectLabelText("Metric type changed from 12 to 8 things by -4 things")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("takes the date order into account", async () => {
     history.push("?nr_dates=3&date_interval=1&date_order=ascending")
-    const { container } = renderSubjectTableRow({ ascending: true })
+    renderSubjectTableRow({ ascending: true })
     expectText("+1")
     expectLabelText("Metric type worsened from 11 to 12 things by +1 thing")
     expectText("-4")
     expectLabelText("Metric type improved from 12 to 8 things by -4 things")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the delta column for the version scale", async () => {
     history.push("?nr_dates=3&date_interval=1")
-    const { container } = renderSubjectTableRow({ scale: "version_number" })
+    renderSubjectTableRow({ scale: "version_number" })
     expectText("+")
     expectLabelText("Metric type worsened from 1.0 to 1.2")
     expectText("-")
     expectLabelText("Metric type improved from 1.2 to 0.8")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the drag handle when row is not expanded and user is authenticated", () => {
@@ -168,8 +167,8 @@ it("shows no drag handle when rows are sorted", () => {
     // Simulate a sorted state by passing a non-empty sortColumn
     const settings = createTestableSettings()
     render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <DataModelContext value={dataModel}>
                 <Table>
                     <TableBody>
                         <SubjectTableRow
@@ -189,26 +188,23 @@ it("shows no drag handle when rows are sorted", () => {
                         />
                     </TableBody>
                 </Table>
-            </DataModel.Provider>
-        </Permissions.Provider>,
+            </DataModelContext>
+        </PermissionsContext>,
     )
     expectNoLabelText("Drag to reorder")
 })
 
 it("shows the metric type as name if the metric has no name", async () => {
-    const { container } = renderSubjectTableRow()
+    renderSubjectTableRow()
     expectText("Metric type")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the metric name", async () => {
-    const { container } = renderSubjectTableRow({ name: "Metric name" })
+    renderSubjectTableRow({ name: "Metric name" })
     expectText("Metric name")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the metric secondary name", async () => {
-    const { container } = renderSubjectTableRow({ secondaryName: "Secondary name" })
+    renderSubjectTableRow({ secondaryName: "Secondary name" })
     expectText("Secondary name")
-    await expectNoAccessibilityViolations(container)
 })

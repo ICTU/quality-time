@@ -98,6 +98,19 @@ class MultipleChoiceWithAdditionParameter(MultipleChoiceWithDefaultsParameter):
     placeholder: str = "none"
 
 
+class VersionNumberPattern(StringParameter):
+    """Regular expression to extract a valid version number from a non-standard version string."""
+
+    name: str = "Version number pattern (regular expression)"
+    help: str = (
+        "If the version number reported by the source is not a valid semantic version, "
+        "use this regular expression to extract a valid version number from the reported version. "
+        "Quality-time uses the first match. For example, use '\\d+(\\.\\d+)*' to extract a version "
+        "number consisting of digits separated by dots."
+    )
+    metrics: list[str] = ["software_version"]
+
+
 class Username(StringParameter):
     """User to be used for authentication."""
 
@@ -116,6 +129,15 @@ class PrivateToken(Password):
 
     name: str = "Private token"
     validation_path: str = ""  # URL path to use for the validation of tokens
+
+
+class GitHubPersonalAccessToken(PrivateToken):
+    """GitHub Personal Access token for increasing rate limits when checking for new source versions."""
+
+    name: str = "GitHub personal access token"
+    help: str | None = (
+        "Token to use when checking for the availability of new source versions (prevents hitting GitHub rate limits)."
+    )
 
 
 class APIVersion(SingleChoiceParameter):

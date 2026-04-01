@@ -27,44 +27,45 @@ src_folder := if src_folder_exists == "true" { "src" } else { "" }
 tests_folder := if tests_folder_exists == "true" { "tests" } else { "" }
 code := if trim(src_folder + " " + tests_folder) == "" { ".?*.py" } else { src_folder + " " + tests_folder }
 random_string := uuid()
+term_width := shell("uv run python -c 'import shutil; print(shutil.get_terminal_size().columns)'")
 
 # === Update dependencies ===
 
 # Update Docker images in the CircleCI config.
 [private]
 update-circle-ci-config:
-    uv run --project update_dependencies update_dependencies/src/update_circle_ci_config.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_circle_ci_config.py
 
 # Update Docker base images in Dockerfiles.
 [private]
 update-docker-base-images:
-    uv run --project update_dependencies update_dependencies/src/update_dockerfile_base_image.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_dockerfile_base_image.py
 
 # Update GitHub Actions in GitHub workflow YAML files.
 [private]
 update-github-actions:
-    uv run --project update_dependencies update_dependencies/src/update_github_action.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_github_action.py
 
 # Update direct and indirect Python dependencies.
 [private]
 update-py-dependencies:
-    uv run --project update_dependencies update_dependencies/src/update_pyproject_toml.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_pyproject_toml.py
 
 # Update direct and indirect JavaScript dependencies.
 [private]
 update-js-dependencies:
     # Note: major updates are not done automatically by npm
-    uv run --project update_dependencies update_dependencies/src/update_package_json.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_package_json.py
 
 # Update the Node engine version in package.json files.
 [private]
 update-node-engine:
-    uv run --project update_dependencies update_dependencies/src/update_node_engine.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_node_engine.py
 
 # Update the jsdelivr CDN package versions in the Sphinx config.
 [private]
 update-jsdelivr:
-    uv run --project update_dependencies update_dependencies/src/update_jsdelivr.py
+    uv run --project tools/update_dependencies tools/update_dependencies/src/update_jsdelivr.py
 
 alias update-deps := update-dependencies
 
@@ -136,7 +137,7 @@ start-js-component: install-js-dependencies
 # Start one or more component(s). Run `just start-help` for more information.
 [no-cd]
 start *components:
-    {{ if pyproject_toml_exists == "true" { "just start-py-component" } else if has_js_start_script == "true" { "just start-js-component" } else if docker_folder_exists == "true" { f"docker compose up {{components}}" } else { "echo 'Nothing to start in this folder'" } }}
+    {{ if pyproject_toml_exists == "true" { "just start-py-component" } else if has_js_start_script == "true" { "just start-js-component" } else if docker_folder_exists == "true" { f"COLUMNS=$(uv run python -c 'w = {{term_width}}; import subprocess; s = subprocess.run([\"docker\", \"compose\", \"config\", \"--services\"], capture_output=True, text=True).stdout; print(w - max(len(line.strip()) for line in s.splitlines()) - 6)') docker compose up {{components}}" } else { "echo 'Nothing to start in this folder'" } }}
 
 [private]
 start-help:
@@ -214,8 +215,14 @@ troml: install-py-dependencies
 [private]
 pip-audit: install-py-dependencies
     uv export --quiet --directory . --format requirements-txt --no-emit-package shared-code > /tmp/requirements-{{ random_string }}.txt
-    uv run pip-audit --requirement /tmp/requirements-{{ random_string }}.txt --disable-pip --progress-spinner off
+    uv run pip-audit --requirement /tmp/requirements-{{ random_string }}.txt --disable-pip --progress-spinner off --ignore-vuln CVE-2026-4539
     rm -f /tmp/requirements-{{ random_string }}.txt
+
+# Run uv audit
+[no-cd]
+[private]
+uv-audit: install-py-dependencies
+    uv --preview-features audit audit --locked
 
 # Run bandit
 [no-cd]
@@ -251,7 +258,7 @@ sphinx: install-py-dependencies
 [no-cd]
 [parallel]
 [private]
-check-py: mypy fixit ruff pyproject-fmt troml pip-audit bandit vulture vale yamllint sphinx
+check-py: mypy fixit ruff pyproject-fmt troml pip-audit uv-audit bandit vulture vale yamllint sphinx
 
 # Run npm lint
 [no-cd]
@@ -263,19 +270,13 @@ npm-lint: install-js-dependencies
 [no-cd]
 [private]
 npm-audit: install-js-dependencies
-    echo "Note: currently ignoring npm audit exit code due to:"
-    echo "- ajv<8.18.0, severity: moderate, ajv has ReDoS when using '\$data' option - https://github.com/advisories/GHSA-2g4f-4pwh-qvx6"
-    echo "- minimatch ReDoS via repeated wildcards with non-matching literal in pattern - https://github.com/advisories/GHSA-3ppc-4f35-3m26"
-    echo "- minimatch ReDoS: matchOne() combinatorial backtracking via multiple non-adjacent GLOBSTAR segments - https://github.com/advisories/GHSA-7r86-cg39-jmmj"
-    echo "- minimatch ReDoS: nested *() extglobs generate catastrophically backtracking regular expressions - https://github.com/advisories/GHSA-23c5-xmqv-rm74"
-    npm audit || true
+    npm audit
 
 # Run npm outdated
 [no-cd]
 [private]
 npm-outdated: install-js-dependencies
-    echo "Note: currently ignoring npm outdated exit code because ESLint can't be upgraded yet due to peer dependencies needing updates"
-    npm outdated || true
+    npm outdated
 
 # Run JavaScript checks.
 [no-cd]
@@ -286,8 +287,8 @@ check-js: npm-lint npm-audit npm-outdated
 # Run the quality checks, in the current working directory.
 [no-cd]
 check:
-    {{ if pyproject_toml_exists == "true" { "just check-py" } else { "" } }}
     {{ if package_json_exists == "true" { "just check-js" } else { "" } }}
+    {{ if pyproject_toml_exists == "true" { "just check-py" } else { "" } }}
     {{ if pyproject_toml_exists + package_json_exists == "falsefalse" { "echo 'Nothing to check'" } else { "" } }}
 
 # === Fix issues ===
@@ -320,12 +321,12 @@ fix:
 # === Release ===
 
 # Release Quality-time. Run `just release-help` for more information.
-[working-directory('release')]
+[working-directory('tools/release')]
 release *args:
     uv run --script release.py {{ args }}
 
 [private]
-[working-directory('release')]
+[working-directory('tools/release')]
 release-help:
     uv run --script release.py --help
 

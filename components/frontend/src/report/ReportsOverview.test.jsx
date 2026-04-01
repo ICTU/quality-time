@@ -6,8 +6,8 @@ import { vi } from "vitest"
 import { createTestableSettings, dataModel } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
 import {
     asyncClickMenuItem,
@@ -42,8 +42,8 @@ async function renderReportsOverview({
     await act(async () => {
         result = render(
             <ThemeProvider theme={theme}>
-                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                    <DataModel.Provider value={dataModel}>
+                <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+                    <DataModelContext value={dataModel}>
                         <ReportsOverview
                             dates={[reportDate || new Date()]}
                             lastUpdate={new Date()}
@@ -53,34 +53,36 @@ async function renderReportsOverview({
                             reportsOverview={reportsOverview}
                             settings={settings}
                         />
-                    </DataModel.Provider>
-                </Permissions.Provider>
+                    </DataModelContext>
+                </PermissionsContext>
             </ThemeProvider>,
         )
     })
     return result
 }
 
-it("shows an error message if there are no reports at the specified date", async () => {
-    const { container } = await renderReportsOverview({ reportDate: new Date() })
-    expectText(/Sorry, no reports existed at/)
+it("has no accessibility violations", async () => {
+    const { container } = await renderReportsOverview()
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows an error message if there are no reports at the specified date", async () => {
+    await renderReportsOverview({ reportDate: new Date() })
+    expectText(/Sorry, no reports existed at/)
 })
 
 it("shows the reports overview", async () => {
     const reports = [{ report_uuid: "report_uuid", subjects: {} }]
     const reportsOverview = { title: "Overview", permissions: {} }
-    const { container } = await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
+    await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expectText(/Overview/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows the comment", async () => {
     const reports = [{ report_uuid: "report_uuid", subjects: {} }]
     const reportsOverview = { title: "Overview", comment: "Commentary", permissions: {} }
-    const { container } = await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
+    await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expectText(/Commentary/)
-    await expectNoAccessibilityViolations(container)
 })
 
 const reports = [

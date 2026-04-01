@@ -7,7 +7,7 @@ import { func, string } from "prop-types"
 import { useContext } from "react"
 
 import { setMetricAttribute, setMetricDebt } from "../api/metric"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { CommentField } from "../fields/CommentField"
 import { TextField } from "../fields/TextField"
 import { IssuesRows } from "../issue/IssuesRows"
@@ -18,7 +18,7 @@ import { Target } from "./Target"
 dayjs.extend(relativeTime)
 
 function AcceptTechnicalDebt({ metric, metricUuid, reload }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <TextField
@@ -63,7 +63,7 @@ AcceptTechnicalDebt.propTypes = {
 }
 
 function TechnicalDebtEndDate({ metric, metricUuid, reload }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const debtEndDateTime = metric.debt_end_date ? dayjs(metric.debt_end_date) : null
     const helperText = metric.debt_end_date
@@ -88,7 +88,7 @@ TechnicalDebtEndDate.propTypes = {
 }
 
 export function MetricDebtParameters({ metric, metricUuid, reload, report }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <Grid alignItems="flex-start" container spacing={{ xs: 1, sm: 2, md: 3 }} columns={{ xs: 1, sm: 3, md: 6 }}>

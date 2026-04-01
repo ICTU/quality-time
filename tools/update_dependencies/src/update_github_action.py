@@ -31,7 +31,7 @@ def get_latest_version(action: str, current_version_string: str) -> DependencyVe
         LOG.invalid_version(f"{organization}/{repository}", f"'{latest_tag}'")
         latest_version = Version("0.0.0")
     changes = json.get("body", "")
-    return DependencyVersion(version=str(max(latest_version, current_version)), changes=changes)
+    return DependencyVersion(str(max(latest_version, current_version)), changes)
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -3,7 +3,7 @@ import { func, string } from "prop-types"
 import { useContext } from "react"
 
 import { addMetric, copyMetric, moveMetric } from "../api/metric"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import {
     allMetricTypeOptions,
@@ -19,7 +19,7 @@ import { MoveButton } from "../widgets/buttons/MoveButton"
 import { metricOptions } from "../widgets/menu_options"
 
 function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, report, reports, stopFilteringAndSorting }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     return (
         <TableRow>
             <TableCell colSpan="99">

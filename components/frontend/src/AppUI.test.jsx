@@ -48,10 +48,14 @@ async function renderAppUI({ reports = [], reportDate = null, reportUuid = "" } 
     return result
 }
 
-it("shows an error message when there are no reports", async () => {
-    const { container } = await renderAppUI({ reportDate: new Date() })
-    expectText(/Sorry, no reports/)
+it("has no accessibility violations", async () => {
+    const { container } = await renderAppUI({ reports: [report], reportUuid: "report_uuid" })
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows an error message when there are no reports", async () => {
+    await renderAppUI({ reportDate: new Date() })
+    expectText(/Sorry, no reports/)
 })
 
 it("handles sorting", async () => {

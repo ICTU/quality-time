@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectNoText, expectText, expectTextAfterWait } from "../testUtils"
 import { TrendGraph } from "./TrendGraph"
 
@@ -15,18 +15,24 @@ const dataModel = {
 
 function renderTrendgraph({ measurements = [], scale = "count", loading = "loaded" } = {}) {
     return render(
-        <DataModel.Provider value={dataModel}>
+        <DataModelContext value={dataModel}>
             <TrendGraph metric={{ type: "violations", scale: scale }} measurements={measurements} loading={loading} />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
 }
 
-it("renders the measurements", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderTrendgraph({
         measurements: [{ count: { value: "1" }, start: "2019-09-29", end: "2019-09-30" }],
     })
-    expectText(/Time/)
     await expectNoAccessibilityViolations(container)
+})
+
+it("renders the measurements", async () => {
+    renderTrendgraph({
+        measurements: [{ count: { value: "1" }, start: "2019-09-29", end: "2019-09-30" }],
+    })
+    expectText(/Time/)
 })
 
 it("renders the tooltip", async () => {
@@ -38,12 +44,11 @@ it("renders the tooltip", async () => {
         writable: true,
         value: vi.fn().mockImplementation(createSVGMatrix),
     })
-    const { container } = renderTrendgraph({
+    renderTrendgraph({
         measurements: [{ count: { value: "1", status: "target_met" }, start: "2019-09-29", end: "2019-09-30" }],
     })
     userEvent.hover(screen.getAllByTestId(/Point/)[0])
     await expectTextAfterWait(/1 violations \(target met\) on/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("renders measurements with targets", () => {

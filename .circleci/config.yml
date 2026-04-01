@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run: |
           pip install --upgrade pip
-          pip install --group tools/pyproject.toml:uv
+          pip install --group tools/third_party/pyproject.toml:uv
           case $CIRCLE_NODE_INDEX in
             0) component=components/collector;;
             1) component=components/notifier;;
@@ -26,13 +26,13 @@ jobs:
             5) component=tests/application_tests;;
             6) component=tests/feature_tests;;
             7) component=docs;;
-            8) component=release;;
-            9) component=tools;;
-            10) component=update_dependencies;;
+            8) component=tools/release;;
+            9) component=tools/third_party;;
+            10) component=tools/update_dependencies;;
           esac
           cd $component
           mkdir -p build
-          uv tool run --from=rust-just --project $CIRCLE_WORKING_DIRECTORY/tools/pyproject.toml just test check
+          uv tool run --from=rust-just --project $CIRCLE_WORKING_DIRECTORY/tools/third_party just test check
       - store_artifacts:
           path: components/collector/build
       - store_artifacts:
@@ -50,11 +50,11 @@ jobs:
       - store_artifacts:
           path: docs/build
       - store_artifacts:
-          path: release/build
+          path: tools/release/build
       - store_artifacts:
-          path: tools/build
+          path: tools/third_party/build
       - store_artifacts:
-          path: update_dependencies/build
+          path: tools/update_dependencies/build
 
   application_tests:
     machine:
@@ -66,7 +66,7 @@ jobs:
           mkdir -p build
           export ENV=ci
           export PROXY_PORT=8080
-          export QUALITY_TIME_VERSION=v5.49.0
+          export QUALITY_TIME_VERSION=v5.50.1
           export COMPOSE_PATH_SEPARATOR=':'
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker compose build && docker compose up -d
@@ -94,7 +94,7 @@ jobs:
       - checkout
       - run: |
           pip install --upgrade pip
-          pip install --group tools/pyproject.toml:uv
+          pip install --group tools/third_party/pyproject.toml:uv
           ./tests/feature_tests/test.sh
       - store_artifacts:
           path: build

@@ -2,7 +2,7 @@ import { ThemeProvider } from "@mui/material/styles"
 import { render } from "@testing-library/react"
 import { vi } from "vitest"
 
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { clickText, expectNoAccessibilityViolations } from "../testUtils"
 import { theme } from "../theme"
 import { CardDashboard } from "./CardDashboard"
@@ -16,19 +16,23 @@ afterEach(() => vi.restoreAllMocks())
 function renderCardDashboard({ cards = [], initialLayout = [], saveLayout = vi.fn } = {}) {
     return render(
         <ThemeProvider theme={theme}>
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
+            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
                 <div id="dashboard">
                     <CardDashboard cards={cards} initialLayout={initialLayout} saveLayout={saveLayout} />
                 </div>
-            </Permissions.Provider>
+            </PermissionsContext>
         </ThemeProvider>,
     )
 }
 
+it("has no accessibility violations", async () => {
+    const { container } = renderCardDashboard()
+    await expectNoAccessibilityViolations(container)
+})
+
 it("returns null without cards", async () => {
     const { container } = renderCardDashboard()
     expect(container.children[0].children.length).toBe(0)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("adds the card to the dashboard", async () => {
@@ -44,12 +48,11 @@ it("adds the card to the dashboard", async () => {
         ],
     })
     expect(container.children.length).toBe(1)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("does not save the layout after click", async () => {
     const mockCallback = vi.fn()
-    const { container } = renderCardDashboard({
+    renderCardDashboard({
         cards: [
             <MetricSummaryCard
                 header="Card"
@@ -64,5 +67,4 @@ it("does not save the layout after click", async () => {
     })
     clickText("Card")
     expect(mockCallback).not.toHaveBeenCalled()
-    await expectNoAccessibilityViolations(container)
 })

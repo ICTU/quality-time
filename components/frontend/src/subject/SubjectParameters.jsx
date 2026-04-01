@@ -3,14 +3,14 @@ import { func, string } from "prop-types"
 import { useContext } from "react"
 
 import { setSubjectAttribute } from "../api/subject"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { CommentField } from "../fields/CommentField"
 import { TextField } from "../fields/TextField"
 import { subjectPropType } from "../sharedPropTypes"
 import { SubjectType } from "./SubjectType"
 
 export function SubjectParameters({ subject, subjectUuid, subjectName, reload }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <Grid container spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 1, md: 3 }}>

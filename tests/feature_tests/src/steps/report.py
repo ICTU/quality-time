@@ -154,7 +154,7 @@ def change_title_of_non_existing_report(context: Context) -> None:
 @then("the import failed")
 def import_failed(context: Context) -> None:
     """Check the JSON."""
-    assert_equal(400, context.response.status_code)
+    assert_equal(422, context.response.status_code)
     assert_equal("application/json", context.response.headers["Content-Type"])
 
 
@@ -203,14 +203,16 @@ def set_technical_debt_desired_response_time(context: Context, status: str, time
 
 
 @when('the client removes the tag "{tag}" from the report')
-def remove_tag(context: Context, tag: str) -> None:
+@when('the client removes the tag "" from the report')
+def remove_tag(context: Context, tag: str = "") -> None:
     """Remove the tag from all metrics in the report."""
     report_uuid = context.uuid["report"]
     context.delete(f"report/{report_uuid}/tag/{tag}")
 
 
 @when('the client renames the tag "{tag}" to "{new_tag}"')
-def rename_tag(context: Context, tag: str, new_tag: str) -> None:
+@when('the client renames the tag "" to "{new_tag}"')
+def rename_tag(context: Context, tag: str = "", new_tag: str = "") -> None:
     """Rename a tag for all metric in the report."""
     report_uuid = context.uuid["report"]
     context.post(f"report/{report_uuid}/tag/{tag}", {"tag": new_tag})

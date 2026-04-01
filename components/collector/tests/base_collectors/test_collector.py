@@ -50,13 +50,17 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         self.database["reports"].insert_one(create_report())
 
     @staticmethod
-    def _patched_get(mock_async_get_request: AsyncMock, side_effect=None) -> _patch[AsyncMock]:
+    def _patched_get(mock_async_get_request: AsyncMock | None, side_effect=None) -> _patch[AsyncMock]:
         """Return a patched version of aiohttp.ClientSession.get()."""
         mock = AsyncMock(side_effect=side_effect) if side_effect else AsyncMock(return_value=mock_async_get_request)
         return patch("aiohttp.ClientSession.get", mock)
 
-    async def _fetch_measurements(self, mock_async_get_request, number=1, side_effect=None) -> None:
+    async def _fetch_measurements(
+        self, mock_async_get_request: AsyncMock | None, number: int = 1, side_effect=None
+    ) -> None:
         """Fetch the measurements with patched get method."""
+        if mock_async_get_request is not None:
+            mock_async_get_request.read = AsyncMock(return_value=b"")
         with self._patched_get(mock_async_get_request, side_effect):
             async with aiohttp.ClientSession() as session:
                 for _ in range(number):
@@ -85,6 +89,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             "total": None if connection_error else str(kwargs.get("total", "1")),
             "entities": [] if connection_error else entities,
             "connection_error": connection_error,
+            "info_message": None,
             "parse_error": None,
             "source_uuid": SOURCE_ID,
         }
@@ -95,7 +100,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         source_parameter_hash: str = "0f6df164677525409f6269ec97e4118d",
         metric_uuid: str = "metric_uuid",
         **expected_source_kwargs,
-    ) -> dict[str, bool | list | str]:
+    ) -> dict[str, bool | list | str | None]:
         """Create an expected inserted measurement."""
         return {
             "has_error": "connection_error" in expected_source_kwargs,

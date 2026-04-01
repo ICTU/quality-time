@@ -72,6 +72,7 @@ html_js_files = ["https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.m
 
 # -- Options for linkcheck ---------------------------------------------------
 
+linkcheck_retries = 3
 linkcheck_ignore = [
     "http://localhost",  # Getting started URL
     r"http://localhost:\d+",  # Example URLs
@@ -92,4 +93,5 @@ linkcheck_ignore = [
     "https://rules.sonarsource.com/.*",
     "https://www.ictu.nl/en/about-us",  # False negative: 415 Client Error: Unsupported Media Type
     "https://junit.org/",  # False negative: WARNING: broken link: https://junit.org/ (Exceeded 30 redirects.)
+    "https://github.com/osixia/docker-openldap/issues/555",  # False negative: 404 Client Error: Not Found for url
 ]

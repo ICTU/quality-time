@@ -15,7 +15,7 @@ import {
 import { bool, func, number, object, string } from "prop-types"
 import { useContext, useState } from "react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { zIndexInnerTableHeader } from "../defaults"
 import {
     entityAttributePropType,
@@ -202,7 +202,7 @@ sortedEntities.propTypes = {
 }
 
 export function SourceEntities({ loading, measurements, metric, metricUuid, reload, report, settings, sourceUuid }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const [hideIgnoredEntities, setHideIgnoredEntities] = useState(false)
     const [sortColumn, setSortColumn] = useState(null)
     const [columnType, setColumnType] = useState("text")

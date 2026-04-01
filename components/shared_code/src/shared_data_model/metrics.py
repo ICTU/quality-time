@@ -266,6 +266,11 @@ test code.
         description="Measure the number of manual test cases that have not been tested on time.",
         rationale="Preferably, all regression tests are automated. When this is not feasible, it is good to "
         "know whether the manual regression tests have been executed recently.",
+        documentation="""After adding Jira as source to the "Manual test execution" metric, provide a JQL query that
+returns the manual test cases. Make sure that whenever a manual test is executed, the tester adds a comment to the
+manual test case in Jira. Quality-time uses the timestamp of the latest comment to determine when the manual test was
+last executed. As long as there are no comments, Quality-time uses the timestamp of the latest update to the test case
+itself.""",
         unit=Unit.MANUAL_TEST_CASES,
         unit_singular=Unit.MANUAL_TEST_CASE,
         near_target="5",
@@ -439,7 +444,6 @@ report(s).
             "anchore_jenkins_plugin",
             "bandit",
             "cargo_audit",
-            "cxsast",
             "dependency_track",
             "generic_json",
             "harbor",
@@ -522,7 +526,6 @@ report(s).
             "calendar",
             "cobertura",
             "cobertura_jenkins_plugin",
-            "cxsast",
             "dependency_track",
             "gatling",
             "gitlab",
@@ -552,7 +555,8 @@ report(s).
     ),
     "source_version": Metric(
         name="Source version",
-        description="The version number of the source.",
+        description="The version number of the source. Also shows when update is possible for sources that use "
+        "GitHub releases.",
         rationale="Monitor that the version of a source is at least a specific version or get notified when the "
         "version becomes higher than a specific version.",
         documentation="""If you decide with your development team that you are only interested in the major and
@@ -578,7 +582,6 @@ have 2.9.3 and the version available is 3.9.1, then the metric will turn red.
             "axe_core",
             "cloc",
             "cobertura",
-            "cxsast",
             "dependency_track",
             "gatling",
             "gitlab",

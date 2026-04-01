@@ -10,6 +10,7 @@ from shared_data_model.parameters import (
     Branches,
     Days,
     FailureType,
+    GitHubPersonalAccessToken,
     MultipleChoiceWithAdditionParameter,
     ResultType,
     StringParameter,
@@ -95,6 +96,7 @@ the "Username" field and the private token in the "**Password**" field.
         "source_version": JENKINS_TOKEN_DOCS,
     },
     url=HttpUrl("https://www.jenkins.io/"),
+    repository_url=HttpUrl("https://github.com/jenkinsci/jenkins"),
     parameters={
         "branches": Branches(help="Branches only apply to multibranch pipelines."),
         "inactive_days": Days(
@@ -159,6 +161,7 @@ the "Username" field and the private token in the "**Password**" field.
                 },
             },
         ),
+        "github_pat": GitHubPersonalAccessToken(metrics=["source_version"]),
     },
     entities={
         "change_failure_rate": Entity(

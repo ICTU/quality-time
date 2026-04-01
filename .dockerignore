@@ -7,7 +7,7 @@
 !components/notifier
 !components/shared_code
 !components/testldap
-!tools
+!tools/third_party
 
 # But in those folders, ignore:
 **/__pycache__

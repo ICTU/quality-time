@@ -9,6 +9,7 @@ from shared_data_model.parameters import (
     TestResult,
     TransactionsToIgnore,
     TransactionsToInclude,
+    VersionNumberPattern,
     access_parameters,
 )
 
@@ -27,6 +28,7 @@ PERFORMANCETEST_RUNNER = Source(
     description="An open source tool to run performancetests and create performancetest reports.",
     url=HttpUrl("https://github.com/ICTU/performancetest-runner"),
     parameters={
+        "version_number_pattern": VersionNumberPattern(),
         "test_result": TestResult(values=["failed", "success"]),
         "thresholds": MultipleChoiceWithDefaultsParameter(
             name="Thresholds",

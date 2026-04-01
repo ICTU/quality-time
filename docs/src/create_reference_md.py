@@ -191,7 +191,10 @@ def source_section(source: Source, source_key: str, level: int) -> str:
         supported_metrics_markdown += f"- [{metric.name}]({metric_source_slug(metric.name, source_name)})\n"
     markdown += admonition(supported_metrics_markdown, "Supported metrics")
     if source.url:
-        markdown += admonition(markdown_link(source.url), admonition="seealso")
+        urls = [f"- Homepage: {markdown_link(source.url)}"]
+        if source.repository_url and source.url != source.repository_url:
+            urls.append(f"- Repository: {markdown_link(source.repository_url)}")
+        markdown += admonition("\n".join(urls), admonition="seealso")
     return markdown
 
 

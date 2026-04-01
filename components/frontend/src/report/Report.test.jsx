@@ -6,8 +6,8 @@ import { vi } from "vitest"
 import { createTestableSettings, dataModel } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
 import { clickText, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { theme } from "../theme"
@@ -61,8 +61,8 @@ async function renderReport({
     await act(async () => {
         result = render(
             <ThemeProvider theme={theme}>
-                <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                    <DataModel.Provider value={dataModel}>
+                <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+                    <DataModelContext value={dataModel}>
                         <Report
                             dates={dates}
                             handleSort={handleSort}
@@ -73,30 +73,37 @@ async function renderReport({
                             reportDate={reportDate}
                             settings={settings}
                         />
-                    </DataModel.Provider>
-                </Permissions.Provider>
+                    </DataModelContext>
+                </PermissionsContext>
             </ThemeProvider>,
         )
     })
     return result
 }
 
-it("shows the report", async () => {
+it("has no accessibility violations", async () => {
     const { container } = await renderReport({ reportToRender: report })
-    expectText(/Subject title/, 2) // Once as dashboard card and once as subject header
     await expectNoAccessibilityViolations(container)
+})
+
+it("has no accessibility violations when report is missing", async () => {
+    const { container } = await renderReport({})
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows the report", async () => {
+    await renderReport({ reportToRender: report })
+    expectText(/Subject title/, 2) // Once as dashboard card and once as subject header
 })
 
 it("shows an error message if there is no report", async () => {
-    const { container } = await renderReport()
+    await renderReport()
     expectText(/Sorry, this report doesn't exist/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows an error message if there was no report", async () => {
-    const { container } = await renderReport({ reportDate: new Date("2020-01-01") })
+    await renderReport({ reportDate: new Date("2020-01-01") })
     expectText(/Sorry, this report didn't exist/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("hides columns on load", async () => {

@@ -4,7 +4,11 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import MultipleChoiceWithAdditionParameter, access_parameters
+from shared_data_model.parameters import (
+    GitHubPersonalAccessToken,
+    MultipleChoiceWithAdditionParameter,
+    access_parameters,
+)
 
 ALL_CLOC_METRICS = ["loc", "source_version"]
 
@@ -13,6 +17,7 @@ CLOC = Source(
     description="cloc is an open-source tool for counting blank lines, comment lines, and physical lines of source "
     "code in many programming languages.",
     url=HttpUrl("https://github.com/AlDanial/cloc"),
+    repository_url=HttpUrl("https://github.com/AlDanial/cloc"),
     parameters={
         "languages_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Languages to ignore (regular expressions or language names)",
@@ -25,6 +30,7 @@ CLOC = Source(
             placeholder="all",
             metrics=["loc"],
         ),
+        "github_pat": GitHubPersonalAccessToken(metrics=["source_version"]),
         **access_parameters(ALL_CLOC_METRICS, source_type="cloc report", source_type_format="JSON"),
     },
     entities={

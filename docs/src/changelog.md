@@ -8,16 +8,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is not the penultimate version, please first check the upgrade path in the [versioning policy](versioning.md) before upgrading.
 
-<!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the release/release.py script with the new release version and release date. -->
+<!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/release.py script with the new release version and release date. -->
 
-## [Unreleased]
+## v5.50.1 - 2026-04-01
+
+### Fixed
+
+- When measuring manual test execution with Jira as source, use the last update date of a manual test case as proxy for the last test date as long as the manual test case has no comments. Fixes [#12417](https://github.com/ICTU/quality-time/issues/12417).
+- Allow for configuring a regular expression to extract a valid version number from non-standard version strings reported by sources, for the software version metric. Fixes [#12484](https://github.com/ICTU/quality-time/issues/12484).
+- Suppress Trivy security warnings based on vulnerability ID, package name, and installed version instead of including the target, which can change between scans due to e.g. commit hashes. Fixes [#12746](https://github.com/ICTU/quality-time/issues/12746).
+- Remove unused subject description field from reports. Fixes [#12799](https://github.com/ICTU/quality-time/issues/12799).
+- If importing a report fails, show a toast message with the error. Fixes [#12800](https://github.com/ICTU/quality-time/issues/12800).
+- Update help URL for finding the id of a GitLab project. Fixes [#12813](https://github.com/ICTU/quality-time/issues/12813).
+- Allow for configuring a GitHub personal access token to prevent being rate limited by GitHub when checking for new source versions. Fixes [#12853](https://github.com/ICTU/quality-time/issues/12853).
+- When measuring user story points, issues, or average issue lead time with Jira as source, correctly parse the sprint name from the Jira sprint text field. Fixes [#12884](https://github.com/ICTU/quality-time/issues/12884).
+
+## v5.50.0 - 2026-03-27
+
+### Removed
+
+- Remove support for Checkmarx SAST as source for metrics. Closes [#12798](https://github.com/ICTU/quality-time/issues/12798).
 
 ### Fixed
 
 - Improve the documentation for the change failure rate metric. Fixes [#10526](https://github.com/ICTU/quality-time/issues/10526).
+- GitLab v18 does not mark zip files as zipped in the response headers, which Quality-time uses to detect zip files. Add a magic number check to detect zip files. Fixes [#12735](https://github.com/ICTU/quality-time/issues/12735).
+- Document how to use the public key of the destination Quality-time instance when exporting a quality report. Fixes [#12801](https://github.com/ICTU/quality-time/issues/12801).
+- The UI would crash when expanding a metric with accepted technical debt but no measurement value. Fixes [#12824](https://github.com/ICTU/quality-time/issues/12824).
+
+### Deprecated
+
+- Support for the Cobertura Jenkins plugin as source for metrics is deprecated and marked for removal in the future, because the plugin itself is end-of-life. Closes [#12816](https://github.com/ICTU/quality-time/issues/12816).
 
 ### Added
 
+- When measuring the source version, show an info message if the newest available source version is newer than the used version. This only works for sources using GitHub releases. Closes [#2923](https://github.com/ICTU/quality-time/issues/2923).
 - Login submit button shows loading indicator while verifying credentials. Closes [#12670](https://github.com/ICTU/quality-time/issues/12670).
 
 ## v5.49.0 - 2026-03-03
@@ -520,7 +545,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - Support version 4.1 of the OWASP Dependency-Check DTD (OWASP Dependency-Check version 12.0.0). Closes [#10645](https://github.com/ICTU/quality-time/issues/10645).
 - Support Bitbucket as source for the 'inactive branches' metric. Note that the amount of branches checked is limited to 100 because pagination for the Bitbucket API has not been implemented yet. Closes [#10660](https://github.com/ICTU/quality-time/issues/10660).
 
-### Changed
+### Deprecated
 
 - Support for Trello as source for metrics is deprecated and marked for removal in the future. Closes [#10613](https://github.com/ICTU/quality-time/issues/10613).
 

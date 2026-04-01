@@ -1,6 +1,6 @@
 [project]
 name = "docs"
-version = "5.49.0"
+version = "5.50.1"
 requires-python = "==3.14.2"
 classifiers = [
     "Framework :: Pydantic",
@@ -26,7 +26,7 @@ dev = [
 
 [tool.uv]
 sources.shared-code = { path = "../components/shared_code", editable = true }
-sources.tools = { path = "../tools", package = false }
+sources.tools = { path = "../tools/third_party", package = false }
 
 [tool.ruff]
 line-length = 120

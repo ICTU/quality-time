@@ -10,7 +10,7 @@ import { useContext, useEffect, useState } from "react"
 import { getMetricMeasurements } from "../api/measurement"
 import { deleteMetric, setMetricAttribute } from "../api/metric"
 import { ChangeLog } from "../changelog/ChangeLog"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import {
     datePropType,
@@ -37,7 +37,7 @@ import { MetricDebtParameters } from "./MetricDebtParameters"
 import { TrendGraph } from "./TrendGraph"
 
 function RequestMeasurementButton({ metric, metricUuid, reload }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const configurationComplete = isSourceConfigurationComplete(dataModel, metric)
     const measurementRequested = isMeasurementRequested(metric)
     return (
@@ -151,7 +151,7 @@ export function MetricDetails({
     stopFilteringAndSorting,
     subjectUuid,
 }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const [measurements, setMeasurements] = useState([])
     const [measurementsStatus, setMeasurementsStatus] = useState("loading")
     useEffect(() => {
@@ -169,6 +169,7 @@ export function MetricDetails({
     anyError =
         anyError ||
         Object.values(metric.sources).some((source) => !dataModel.metrics[metric.type].sources.includes(source.type))
+    const anyInfo = lastMeasurement?.sources.some((source) => source.info_message)
     const metricUrl = `${globalThis.location.href.split("#")[0]}#${metricUuid}`
     const panes = [
         <MetricConfigurationParameters
@@ -196,7 +197,13 @@ export function MetricDetails({
     ]
     const tabs = [
         { label: "Configuration", icon: <SettingsIcon /> },
-        { error: Boolean(anyError), label: "Sources", icon: <StorageIcon />, warning: Boolean(anyWarning) },
+        {
+            info: Boolean(anyInfo),
+            error: Boolean(anyError),
+            label: "Sources",
+            icon: <StorageIcon />,
+            warning: Boolean(anyWarning),
+        },
         { label: "Technical debt", icon: <MoneyIcon /> },
         { label: "Changelog", icon: <HistoryIcon /> },
         { label: "Trend graph", icon: <ShowChartIcon /> },

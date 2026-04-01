@@ -2,15 +2,15 @@ import { func, string } from "prop-types"
 import { useContext } from "react"
 
 import { setMetricAttribute } from "../api/metric"
-import { DataModel } from "../context/DataModel"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import { metricPropType, targetType } from "../sharedPropTypes"
 import { formatMetricDirection, formatMetricScaleAndUnit, formatMetricValue, getMetricScale } from "../utils"
 
 export function Target({ metric, metricUuid, reload, targetType }) {
-    const dataModel = useContext(DataModel)
-    const permissions = useContext(Permissions)
+    const dataModel = useContext(DataModelContext)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const metricDirection = formatMetricDirection(metric, dataModel)
     const targetValue = metric[targetType]

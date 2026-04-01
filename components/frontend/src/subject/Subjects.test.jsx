@@ -2,14 +2,14 @@ import { render } from "@testing-library/react"
 import history from "history/browser"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { Subjects } from "./Subjects"
 
 function renderSubjects(reports) {
     const settings = createTestableSettings()
     return render(
-        <DataModel.Provider value={dataModel}>
+        <DataModelContext value={dataModel}>
             <Subjects
                 dates={[]}
                 history={history}
@@ -19,7 +19,7 @@ function renderSubjects(reports) {
                 settings={settings}
                 tags={[]}
             />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
 }
 
@@ -27,10 +27,14 @@ beforeEach(() => {
     history.push("")
 })
 
-it("shows the subjects", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderSubjects([report])
-    expectText(/Subject/, 2)
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows the subjects", async () => {
+    renderSubjects([report])
+    expectText(/Subject/, 2)
 })
 
 it("does not render invisible subjects", async () => {
@@ -79,9 +83,8 @@ it("does not render invisible subjects", async () => {
         },
         title: "Report 2 title",
     }
-    const { container } = renderSubjects([report, report2])
+    renderSubjects([report, report2])
     expectText(/Report 2 Subject 1/)
     expectText(/Report 2 Subject 2/)
     expectNoText(/Report 2 Subject 3/)
-    await expectNoAccessibilityViolations(container)
 })

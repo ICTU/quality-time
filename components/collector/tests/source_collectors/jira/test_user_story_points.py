@@ -32,7 +32,15 @@ class JiraUserStoryPointsTest(JiraTestCase):
         """Test that the number of story points and the sprints are returned, when sprint field is in text format."""
         user_stories_json = {
             "issues": [
-                self.issue(key="1", field=10, custom_field_001=["...,state=CLOSED,name=Sprint 1,rapidViewId=..."]),
+                self.issue(
+                    key="1",
+                    field=10,
+                    custom_field_001=[
+                        "com.atlassian.greenhopper.service.sprint.Sprint@2d1e5c"
+                        "[id=1,rapidViewId=186,state=CLOSED,name=Sprint 1,"
+                        "startDate=2026-03-01T11:27:00.000+01:00,sequence=5335,goal=]"
+                    ],
+                ),
                 self.issue(key="2", field=32, custom_field_001=None),
             ],
         }
@@ -86,8 +94,24 @@ class JiraUserStoryPointsTest(JiraTestCase):
         """Test that the number of story points and the sprints are returned, when there are mixed sprint fields."""
         user_stories_json = {
             "issues": [
-                self.issue(key="1", field=1, custom_field_001=["...,state=CLOSED,name=Sprint 1,rapidViewId=..."]),
-                self.issue(key="2", field=2, custom_field_001=["...,state=CLOSED,name=Sprint 1,someOtherAttr=..."]),
+                self.issue(
+                    key="1",
+                    field=1,
+                    custom_field_001=[
+                        "com.atlassian.greenhopper.service.sprint.Sprint@2d1e5c"
+                        "[id=1,rapidViewId=186,state=CLOSED,name=Sprint 1,"
+                        "startDate=2026-03-01T11:27:00.000+01:00,sequence=5335,goal=]"
+                    ],
+                ),
+                self.issue(
+                    key="2",
+                    field=2,
+                    custom_field_001=[
+                        "com.atlassian.greenhopper.service.sprint.Sprint@3e2f6d"
+                        "[id=2,rapidViewId=186,state=CLOSED,name=Sprint 1,"
+                        "startDate=2026-03-08T11:27:00.000+01:00,sequence=5336,goal=]"
+                    ],
+                ),
                 self.issue(key="3", field=3, custom_field_001=[{"id": 1, "name": "Sprint 2", "state": "closed"}]),
                 self.issue(key="4", field=5, custom_field_001=[{"id": 1, "name": "Sprint 2", "state": "closed"}]),
                 self.issue(key="5", field=8, custom_field_001=None),

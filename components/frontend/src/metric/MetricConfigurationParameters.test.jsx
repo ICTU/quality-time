@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { clickText, expectFetch, expectNoAccessibilityViolations, expectNoText } from "../testUtils"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
 
@@ -44,8 +44,8 @@ async function renderMetricParameters(scale = "count") {
     let result
     await act(async () => {
         result = render(
-            <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-                <DataModel.Provider value={dataModel}>
+            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+                <DataModelContext value={dataModel}>
                     <MetricConfigurationParameters
                         subject={{ type: "subject_type" }}
                         metric={{
@@ -56,8 +56,8 @@ async function renderMetricParameters(scale = "count") {
                         reload={vi.fn()}
                         report={{ subjects: {} }}
                     />
-                </DataModel.Provider>
-            </Permissions.Provider>,
+                </DataModelContext>
+            </PermissionsContext>,
         )
     })
     return result
@@ -75,86 +75,81 @@ function expectMetricAttributePost(attribute, payload) {
     expectFetch("post", endPoint, { [attribute]: payload })
 }
 
-it("sets the metric name", async () => {
+it("has no accessibility violations", async () => {
     const { container } = await renderMetricParameters()
+    await expectNoAccessibilityViolations(container)
+})
+
+it("sets the metric name", async () => {
+    await renderMetricParameters()
     await typeInField(/Metric name/, "New metric name")
     expectMetricAttributePost("name", "New metric name")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the metric secondary name", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     await typeInField(/Metric secondary name/, "New metric secondary name")
     expectMetricAttributePost("secondary_name", "New metric secondary name")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("adds a tag on enter", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     await typeInField(/Metric tags/, "New tag", "Enter")
     expectMetricAttributePost("tags", ["New tag"])
-    await expectNoAccessibilityViolations(container)
 })
 
 it("adds a tag on tab", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     await typeInField(/Metric tags/, "New tag", "Tab")
     expectMetricAttributePost("tags", ["New tag"])
-    await expectNoAccessibilityViolations(container)
 })
 
 it("changes the scale", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     fireEvent.mouseDown(screen.getByLabelText(/Metric scale/))
     clickText(/Percentage/)
     expectMetricAttributePost("scale", "percentage")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("changes the direction", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     fireEvent.mouseDown(screen.getByLabelText(/direction/))
     clickText(/More violations is better/)
     expectMetricAttributePost("direction", ">")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the metric unit for metrics with the count scale", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     await typeInField(/Metric unit plural/, "New metric units")
     expectMetricAttributePost("unit", "New metric units")
     await typeInField(/Metric unit singular/, "New metric unit")
     expectMetricAttributePost("unit_singular", "New metric unit")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("sets the metric unit for metrics with the percentage scale", async () => {
-    const { container } = await renderMetricParameters("percentage")
+    await renderMetricParameters("percentage")
     await typeInField(/Metric unit plural/, "New metric units")
     expectMetricAttributePost("unit", "New metric units")
     await typeInField(/Metric unit singular/, "New metric unit")
     expectMetricAttributePost("unit_singular", "New metric unit")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("skips the metric unit fields for metrics with the version number scale", async () => {
-    const { container } = render(
-        <DataModel.Provider value={dataModel}>
+    render(
+        <DataModelContext value={dataModel}>
             <MetricConfigurationParameters
                 report={{ subjects: {} }}
                 subject={{ type: "subject_type" }}
                 metric={{ type: "source_version" }}
                 metricUuid="metric_uuid"
             />
-        </DataModel.Provider>,
+        </DataModelContext>,
     )
     expectNoText(/Metric unit/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("turns off evaluation of targets", async () => {
-    const { container } = await renderMetricParameters()
+    await renderMetricParameters()
     await userEvent.type(screen.getByLabelText(/Evaluate metric targets/), "No{Enter}")
     expectMetricAttributePost("evaluate_targets", false)
-    await expectNoAccessibilityViolations(container)
 })

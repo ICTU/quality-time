@@ -8,7 +8,7 @@ import {
     deleteNotificationDestination,
     setNotificationDestinationAttributes,
 } from "../api/notification"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions, ReadOnlyOrEditable } from "../context/Permissions"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext, ReadOnlyOrEditable } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import { destinationPropType } from "../sharedPropTypes"
 import { ButtonRow } from "../widgets/ButtonRow"
@@ -18,7 +18,7 @@ import { HyperLink } from "../widgets/HyperLink"
 import { InfoMessage } from "../widgets/WarningMessage"
 
 function NotificationDestination({ destination, destinationUuid, reload, reportUuid }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const helpUrl =
         "https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook"

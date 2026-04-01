@@ -46,7 +46,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         get_request_json_return_value: dict | list | None = None,
         get_request_json_side_effect=None,
         get_request_side_effect=None,
-        get_request_content="",
+        get_request_content: bytes = b"",
         get_request_text: str = "",
         get_request_headers=None,
         get_request_links: dict[str, dict[str, str]] | None = None,
@@ -76,7 +76,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
     def __get_response(  # noqa: PLR0913
         json_return_value: dict | list | None,
         json_side_effect,
-        content,
+        content: bytes,
         text: str,
         headers,
         links: dict[str, dict[str, str]] | None,
@@ -125,7 +125,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
                 else:
                     error_message_to_check, error_message_to_print = error_message, None
                 self.assertIsNone(error_message_to_check, error_message_to_print)
-        for attribute_key in ("value", "total", "entities", "api_url", "landing_url"):
+        for attribute_key in ("value", "total", "entities", "api_url", "landing_url", "info_message"):
             if (attribute_value := attributes.get(attribute_key, "value not specified")) != "value not specified":
                 self.__assert_measurement_source_attribute(attribute_key, attribute_value, measurement, source_index)
 

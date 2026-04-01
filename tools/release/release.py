@@ -31,7 +31,7 @@ def read_pyproject_toml() -> dict[str, Any]:
 def get_version() -> str:
     """Return the current version."""
     release_folder = get_release_folder()
-    repo = git.Repo(release_folder.parent)
+    repo = git.Repo(release_folder.parent.parent)
     pyproject_toml = read_pyproject_toml()
     version_re = pyproject_toml["tool"]["bumpversion"]["parse"]
     version_tags = [tag for tag in repo.tags if tag.tag and re.match(version_re, tag.tag.tag.strip("v"), re.MULTILINE)]
@@ -83,7 +83,7 @@ def check_preconditions(bump: str, current_version: str) -> None:
     release_folder = get_release_folder()
     if pathlib.Path.cwd() != release_folder:
         messages.append(f"The current folder is not the release folder. Please change directory to {release_folder}.")
-    root = release_folder.parent
+    root = release_folder.parent.parent
     messages.extend(failed_preconditions_repo(root))
     messages.extend(failed_preconditions_changelog(bump, root))
     if bump == "release":  # don't update the version overview for release candidates
@@ -181,19 +181,19 @@ def main() -> None:
         cmd.append(bump)
     run(cmd, check=True)  # noqa: S603
     for python_project_folder in [
-        "../components/api_server",
-        "../components/collector",
-        "../components/notifier",
-        "../components/shared_code",
-        "../docs",
-        "../release",
-        "../tests/feature_tests",
-        "../tests/application_tests",
-        "../tools",
-        "../update_dependencies",
+        "../../components/api_server",
+        "../../components/collector",
+        "../../components/notifier",
+        "../../components/shared_code",
+        "../../docs",
+        "../../tests/feature_tests",
+        "../../tests/application_tests",
+        "../../tools/release",
+        "../../tools/third_party",
+        "../../tools/update_dependencies",
     ]:
         run(("uv", "lock"), cwd=python_project_folder, check=True)
-    run(("git", "add", "**/uv.lock"), cwd="..", check=True)
+    run(("git", "add", "**/uv.lock"), cwd="../..", check=True)
     run(("git", "commit", "--amend", "--no-edit"), check=True)
     # Move the git tag that was just created by bump-my-version:
     version = f"v{get_version()}"

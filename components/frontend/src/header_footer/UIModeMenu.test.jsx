@@ -7,22 +7,25 @@ import { UIModeMenu } from "./UIModeMenu"
 
 const openUIModeMenu = () => clickLabeledElement(/Dark\/light mode/)
 
+it("has no accessibility violations", async () => {
+    const { container } = render(<UIModeMenu />)
+    await expectNoAccessibilityViolations(container)
+})
+
 it("sets dark mode", async () => {
     const setUIMode = vi.fn()
-    const { container } = render(<UIModeMenu setUIMode={setUIMode} />)
+    render(<UIModeMenu setUIMode={setUIMode} />)
     openUIModeMenu()
     clickText("Dark mode")
     expect(setUIMode).toHaveBeenCalledWith("dark")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("sets light mode", async () => {
     const setUIMode = vi.fn()
-    const { container } = render(<UIModeMenu setUIMode={setUIMode} uiMode="dark" />)
+    render(<UIModeMenu setUIMode={setUIMode} uiMode="dark" />)
     openUIModeMenu()
     clickText("Light mode")
     expect(setUIMode).toHaveBeenCalledWith("light")
-    await expectNoAccessibilityViolations(container)
 })
 
 it("sets follows os mode", () => {

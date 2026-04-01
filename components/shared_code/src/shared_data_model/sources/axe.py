@@ -5,6 +5,7 @@ from pydantic import HttpUrl
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
+    GitHubPersonalAccessToken,
     MultipleChoiceWithAdditionParameter,
     MultipleChoiceWithDefaultsParameter,
     access_parameters,
@@ -92,6 +93,7 @@ AXE_CORE = Source(
     name="Axe-core",
     description="Axe is an accessibility testing engine for websites and other HTML-based user interfaces.",
     url=HttpUrl("https://github.com/dequelabs/axe-core"),
+    repository_url=HttpUrl("https://github.com/dequelabs/axe-core"),
     documentation={
         "violations": AXE_CORE_DOCUMENTATION,
         "source_up_to_dateness": AXE_CORE_DOCUMENTATION
@@ -122,6 +124,7 @@ When combining results objects, make sure the `testEngine` field is retained in 
         "element_exclude_filter": ELEMENT_EXCLUDE_FILTER,
         "impact": IMPACT,
         "result_types": RESULT_TYPES,
+        "github_pat": GitHubPersonalAccessToken(metrics=["source_version"]),
         **access_parameters(ALL_AXE_CORE_METRICS, source_type="an Axe-core report", source_type_format="JSON"),
     },
     entities=ENTITIES,

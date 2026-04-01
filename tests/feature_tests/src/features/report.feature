@@ -106,6 +106,20 @@ Feature: report
     When the client renames the tag "security" to "safety"
     Then the metric tags is "maintainability"
 
+  Scenario: remove an empty tag from all metrics in a report
+    Given an existing report with title "Scenario: remove empty tag"
+    And an existing subject
+    And an existing metric with tags ", maintainability"
+    When the client removes the tag "" from the report
+    Then the metric tags is "maintainability"
+
+  Scenario: rename an empty tag for all metrics in a report
+    Given an existing report with title "Scenario: rename empty tag"
+    And an existing subject
+    And an existing metric with tags ", maintainability"
+    When the client renames the tag "" to "safety"
+    Then the metric tags is "maintainability, safety"
+
   Scenario: export report as PDF
     When the client creates a report
     And the client downloads the report as PDF

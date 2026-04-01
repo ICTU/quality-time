@@ -1,29 +1,31 @@
 import { useTheme } from "@mui/material"
+import { useState } from "react"
 import { VictoryGroup, VictoryLine, VictoryTheme } from "victory"
 
 import { datePropType, measurementsPropType, scalePropType } from "../sharedPropTypes"
 import { pluralize } from "../utils"
 
 export function TrendSparkline({ measurements, reportDate, scale }) {
+    const [now] = useState(() => (reportDate ? new Date(reportDate) : new Date()))
+    const [weekAgo] = useState(() => {
+        let date = reportDate ? new Date(reportDate) : new Date()
+        date.setDate(date.getDate() - 7)
+        return date
+    })
+    const [points] = useState(() => {
+        const points = []
+        for (let measurement of measurements ?? []) {
+            const value = measurement[scale]?.value ?? null
+            const y = value === null ? null : Number(value)
+            points.push({ y, x: new Date(measurement.start) }, { y, x: new Date(measurement.end) })
+        }
+        return points
+    })
     const stroke = useTheme().palette.text.secondary
     if (scale === "version_number") {
         return null
     }
-    let points = []
-    let yValues = new Set()
-    for (let measurement of measurements ?? []) {
-        const value = measurement[scale]?.value ?? null
-        const y = value === null ? null : Number(value)
-        if (y !== null) {
-            yValues.add(y)
-        }
-        const x1 = new Date(measurement.start)
-        const x2 = new Date(measurement.end)
-        points.push({ y: y, x: x1 }, { y: y, x: x2 })
-    }
-    const now = reportDate ? new Date(reportDate) : new Date()
-    let weekAgo = reportDate ? new Date(reportDate) : new Date()
-    weekAgo.setDate(weekAgo.getDate() - 7)
+    const yValues = new Set(points.map((point) => point.y).filter((y) => y !== null))
     const ariaLabel = `sparkline graph showing ${yValues.size} different measurement ${pluralize("value", yValues.size)} in the week before ${reportDate ? now.toLocaleDateString() : "today"}`
     // The width property below is not used according to https://formidable.com/open-source/victory/docs/common-props#width,
     // but setting it prevents these messages in the console: "Warning: `Infinity` is an invalid value for the `width` css style property.""

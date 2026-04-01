@@ -6,7 +6,6 @@
         "ee220264-9e66-49a4-981e-4dfe37a86a2c": {
             "type": "software",
             "name": "Demo application",
-            "description": "A custom software application or component.",
             "metrics": {
                 "3ddbacd8-882c-4c0c-8f63-7f9fb00ade27": {
                     "type": "loc",

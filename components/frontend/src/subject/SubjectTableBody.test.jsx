@@ -3,8 +3,8 @@ import { vi } from "vitest"
 
 import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
-import { DataModel } from "../context/DataModel"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { DataModelContext } from "../context/DataModel"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
 import { SubjectTableBody } from "./SubjectTableBody"
 
@@ -22,8 +22,8 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
         settings.expandedItems = expandedItems
     }
     return render(
-        <Permissions.Provider value={[EDIT_REPORT_PERMISSION]}>
-            <DataModel.Provider value={dataModel}>
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <DataModelContext value={dataModel}>
                 <table>
                     <SubjectTableBody
                         columnsToHide={[]}
@@ -44,8 +44,8 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
                         tags={[]}
                     />
                 </table>
-            </DataModel.Provider>
-        </Permissions.Provider>,
+            </DataModelContext>
+        </PermissionsContext>,
     )
 }
 
@@ -77,10 +77,14 @@ beforeEach(() => {
 
 afterEach(() => vi.restoreAllMocks())
 
-it("shows the correct number of rows", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderSubjectTableBody()
-    expect(screen.queryAllByTestId(/^metric-row-/).length).toBe(2)
     await expectNoAccessibilityViolations(container)
+})
+
+it("shows the correct number of rows", async () => {
+    renderSubjectTableBody()
+    expect(screen.queryAllByTestId(/^metric-row-/).length).toBe(2)
 })
 
 it("shows drop indicator when dragging over a row", () => {

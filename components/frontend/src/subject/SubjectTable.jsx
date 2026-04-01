@@ -4,7 +4,7 @@ import { Table, TableContainer } from "@mui/material"
 import { array, func, object, string } from "prop-types"
 import { useContext } from "react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import {
     datesPropType,
     measurementsPropType,
@@ -33,7 +33,7 @@ export function SubjectTable({
     subject,
     subjectUuid,
 }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
     const reversedMeasurements = measurements.slice().sort((m1, m2) => (m1.start < m2.start ? 1 : -1))
     const columnsToHide = determineColumnsToHide(dataModel, measurements, metricEntries, dates.length, report, settings)

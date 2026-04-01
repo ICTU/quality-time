@@ -4,8 +4,8 @@ export function addReport(reload) {
     return fetchServerApi("post", "report/new", {}).then(reload)
 }
 
-export function importReport(report, reload) {
-    return fetchServerApi("post", "report/import", report).then(reload)
+export function importReport(report) {
+    return fetchServerApi("post", "report/import", report)
 }
 
 export function copyReport(reportUuid, reload) {

@@ -30,15 +30,19 @@ class JiraManualTestExecutionTest(JiraTestCase):
                 self.issue(key="2", comment={"comments": []}),
                 self.issue(key="3", comment={"comments": [{"updated": str(self.now)}]}),
                 self.issue(key="4", comment={"comments": [{"updated": self.ten_days_ago}]}, desired_test_frequency="5"),
+                self.issue(key="5", comment={"comments": []}, updated=self.ten_days_ago),
             ],
         }
         fields_json = [{"name": "Desired test frequency", "id": "desired_test_frequency"}]
         response = await self.get_response(test_cases_json, fields_json)
         self.assert_measurement(
             response,
-            value="2",
+            value="3",
             entities=[
                 self.entity(key="1", last_test_date=str(parse_datetime(long_ago).date()), desired_test_frequency="21"),
+                self.entity(
+                    key="2", last_test_date=str(parse_datetime(self.created).date()), desired_test_frequency="21"
+                ),
                 self.entity(
                     key="4",
                     last_test_date=str(parse_datetime(self.ten_days_ago).date()),

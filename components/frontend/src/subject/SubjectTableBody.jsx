@@ -2,6 +2,16 @@ import { TableBody } from "@mui/material"
 import { array, func, string } from "prop-types"
 import React, { useEffect, useRef, useState } from "react"
 
+function useSyncedEntries(metricEntries) {
+    const [entries, setEntries] = useState(metricEntries)
+    const prevEntriesRef = useRef(metricEntries)
+    if (prevEntriesRef.current !== metricEntries) {
+        prevEntriesRef.current = metricEntries
+        setEntries(metricEntries)
+    }
+    return [entries, setEntries]
+}
+
 import { setMetricAttribute } from "../api/metric"
 import {
     datesPropType,
@@ -30,32 +40,27 @@ export function SubjectTableBody({
     settings,
     subjectUuid,
 }) {
-    const [entries, setEntries] = useState(metricEntries)
+    const [entries, setEntries] = useSyncedEntries(metricEntries)
     const [dragOverIndex, setDragOverIndex] = useState(null)
 
-    const dragItem = useRef(null)
-    const dragOverItem = useRef(null)
-
-    useEffect(() => {
-        // Keep local entries in sync when external entries change
-        setEntries(metricEntries)
-    }, [metricEntries])
+    const dragItemRef = useRef(null)
+    const dragOverItemRef = useRef(null)
 
     const handleDragStart = (index, rowRef, event) => {
-        dragItem.current = index
+        dragItemRef.current = index
         event.dataTransfer.effectAllowed = "move"
         createDragGhost(rowRef, event)
     }
 
     const handleDragEnter = (index) => {
         setDragOverIndex(index)
-        dragOverItem.current = index
+        dragOverItemRef.current = index
     }
 
     const handleDrop = (e) => {
         e.preventDefault()
-        const dragFrom = dragItem.current
-        const dropTarget = dragOverItem.current
+        const dragFrom = dragItemRef.current
+        const dropTarget = dragOverItemRef.current
 
         if (dragFrom == null || dropTarget == null || dragFrom === dropTarget) return
 
@@ -66,8 +71,8 @@ export function SubjectTableBody({
         // Optimistically update local UI
         setEntries(updatedEntries)
 
-        dragItem.current = null
-        dragOverItem.current = null
+        dragItemRef.current = null
+        dragOverItemRef.current = null
         setDragOverIndex(null)
 
         const [movedUUID] = movedEntry
@@ -80,8 +85,8 @@ export function SubjectTableBody({
 
     useEffect(() => {
         const handleDragEnd = () => {
-            dragItem.current = null
-            dragOverItem.current = null
+            dragItemRef.current = null
+            dragOverItemRef.current = null
             setDragOverIndex(null)
         }
 

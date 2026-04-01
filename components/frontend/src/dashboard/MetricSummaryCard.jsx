@@ -45,8 +45,9 @@ function ariaChartLabel(summary) {
 
 export function MetricSummaryCard({ header, onClick, selected, summary, maxY }) {
     const [boundingBox, ref] = useBoundingBox()
+    const theme = useTheme()
     const animate = { duration: 0, onLoad: { duration: 0 } }
-    const colors = STATUSES.map((status) => useTheme().palette[status].main)
+    const colors = STATUSES.map((status) => theme.palette[status].main)
     const bbWidth = boundingBox.width ?? 0
     const bbHeight = boundingBox.height ?? 0
     const tooltip = (

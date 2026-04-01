@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid"
 import { func, string } from "prop-types"
 import { useContext } from "react"
 
-import { DataModel } from "../context/DataModel"
+import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { metricPropType, reportPropType, sourcePropType, stringsPropType } from "../sharedPropTypes"
 import { formatMetricScaleAndUnit } from "../utils"
@@ -33,7 +33,7 @@ function applicableParameters(allParameters, remainingParameters, parameterGroup
 }
 
 export function SourceParameters({ changedParamKeys, metric, reload, report, source, sourceUuid }) {
-    const dataModel = useContext(DataModel)
+    const dataModel = useContext(DataModelContext)
     const metricUnit = formatMetricScaleAndUnit(metric, dataModel)
     const allParameters = dataModel.sources[source.type].parameters
     const parameterLayout = dataModel.sources[source.type].parameter_layout ?? DEFAULT_LAYOUT

@@ -2,8 +2,6 @@
 
 from typing import TYPE_CHECKING
 
-from shared.utils.date_time import now
-
 from collector_utilities.date_time import days_ago, parse_datetime
 
 from .issues import JiraIssues
@@ -37,7 +35,11 @@ class JiraManualTestExecution(JiraIssues):
     def __last_test_datetime(issue: dict) -> datetime:
         """Return the datetime of the last test."""
         comment_dates = [comment["updated"] for comment in issue["fields"]["comment"]["comments"]]
-        return parse_datetime(max(comment_dates)) if comment_dates else now()
+        if comment_dates:
+            last_test_datetime = max(comment_dates)
+        else:
+            last_test_datetime = issue["fields"].get("updated") or issue["fields"]["created"]
+        return parse_datetime(last_test_datetime)
 
     def __desired_test_execution_frequency(self, issue: dict) -> int:
         """Return the desired test frequency for this issue."""

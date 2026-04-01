@@ -40,6 +40,10 @@ To run *Quality-time* in Docker completely, open a terminal and start all contai
 docker compose up # or 'just start' if you have Just installed
 ```
 
+```{note}
+When running the containers with `docker compose up`, the logging of the Python containers defaults to a width of 80 columns and doesn't take the available width into account. To fix this, run the containers with `just start`. The Just recipe calculates the available width and passes it to the Python containers. 
+```
+
 #### Scenario 2: run bespoke component from shells and other components in Docker
 
 In this scenario, we run the [bespoke components](software.md#bespoke-components) from shells and the [standard components](software.md#standard-components) and [test components](software.md#test-components) as Docker containers. The proxy component does not need to be started as the frontend component functions as proxy.
@@ -215,7 +219,7 @@ just check
 Run the release script with `--help` to show help information, including the current release.
 
 ```console
-cd release
+cd tools/release
 uv run --script release.py --help
 ```
 

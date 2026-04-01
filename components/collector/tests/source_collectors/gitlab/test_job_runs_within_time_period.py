@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 
-from dateutil.tz import tzutc
+from dateutil.tz import tzlocal
 
 from .base import GitLabJobsTestCase
 
@@ -27,7 +27,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabJobsTestCase):
 
     async def test_job_lookback_days(self):
         """Test that the job lookback_days are verified."""
-        just_now = datetime.now(tz=tzutc())
+        just_now = datetime.now(tz=tzlocal())
         last_week = just_now - timedelta(weeks=1)
 
         self.gitlab_jobs_json.extend(
@@ -70,7 +70,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabJobsTestCase):
 
     async def test_jobs_not_deduplicated(self):
         """Test that the job runs are not deduplicated."""
-        just_now = datetime.now(tz=tzutc())
+        just_now = datetime.now(tz=tzlocal())
         yesterday = just_now - timedelta(days=1)
 
         self.gitlab_jobs_json.extend(
@@ -123,7 +123,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabJobsTestCase):
 
     async def test_job_lookback_days_on_edge(self):
         """Test the lookback_days around edge of date cut off."""
-        just_now = datetime.now(tz=tzutc())
+        just_now = datetime.now(tz=tzlocal())
         just_before_cutoff = just_now - timedelta(days=int(self.LOOKBACK_DAYS), minutes=-10)
         just_after_cutoff = just_now - timedelta(days=int(self.LOOKBACK_DAYS), minutes=10)
 

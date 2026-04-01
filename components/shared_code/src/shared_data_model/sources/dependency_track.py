@@ -6,6 +6,7 @@ from shared_data_model.meta.entity import Color, Entity, EntityAttribute, Entity
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     URL,
+    GitHubPersonalAccessToken,
     LandingURL,
     MultipleChoiceWithAdditionParameter,
     MultipleChoiceWithDefaultsParameter,
@@ -42,6 +43,7 @@ DEPENDENCY_TRACK = Source(
     name="Dependency-Track",
     description=DEPENDENCY_TRACK_DESCRIPTION,
     url=DEPENDENCY_TRACK_URL,
+    repository_url=HttpUrl("https://github.com/DependencyTrack/dependency-track"),
     parameters={
         "url": URL(
             name="URL of the Dependency-Track API",
@@ -105,6 +107,7 @@ DEPENDENCY_TRACK = Source(
             help="Only include project versions that are marked as latest.",
             metrics=["dependencies", "security_warnings", "source_up_to_dateness"],
         ),
+        "github_pat": GitHubPersonalAccessToken(metrics=["source_version"]),
     },
     entities={
         "dependencies": Entity(

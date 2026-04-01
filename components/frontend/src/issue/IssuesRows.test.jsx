@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
-import { EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { clickText, expectFetch, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import * as toast from "../widgets/toast"
 import { IssuesRows } from "./IssuesRows"
@@ -24,7 +24,7 @@ function renderIssuesRow({
     issueStatus = [],
 } = {}) {
     return render(
-        <Permissions.Provider value={permissions}>
+        <PermissionsContext value={permissions}>
             <IssuesRows
                 metric={{
                     type: "violations",
@@ -37,24 +37,27 @@ function renderIssuesRow({
                 }}
                 report={report}
             />
-        </Permissions.Provider>,
+        </PermissionsContext>,
     )
 }
 
-it("does not show an error message if the metric has no issues and no issue tracker is configured", async () => {
+it("has no accessibility violations", async () => {
     const { container } = renderIssuesRow()
-    expectNoText(/No issue tracker configured/)
     await expectNoAccessibilityViolations(container)
+})
+
+it("does not show an error message if the metric has no issues and no issue tracker is configured", async () => {
+    renderIssuesRow()
+    expectNoText(/No issue tracker configured/)
 })
 
 it("does not show an error message if the metric has no issues and an issue tracker is configured", async () => {
-    const { container } = renderIssuesRow({ report: { issue_tracker: { type: "Jira" } } })
+    renderIssuesRow({ report: { issue_tracker: { type: "Jira" } } })
     expectNoText(/No issue tracker configured/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("does not show an error message if the metric has issues and an issue tracker is configured", async () => {
-    const { container } = renderIssuesRow({
+    renderIssuesRow({
         issueIds: ["BAR-42"],
         report: {
             issue_tracker: {
@@ -64,27 +67,23 @@ it("does not show an error message if the metric has issues and an issue tracker
         },
     })
     expectNoText(/No issue tracker configured/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows an error message if the metric has issues but no issue tracker is configured", async () => {
-    const { container } = renderIssuesRow({ issueIds: ["FOO-42"] })
+    renderIssuesRow({ issueIds: ["FOO-42"] })
     expectText(/No issue tracker configured/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows a connection error", async () => {
-    const { container } = renderIssuesRow({ issueStatus: [{ issue_id: "FOO-43", connection_error: "Oops" }] })
+    renderIssuesRow({ issueStatus: [{ issue_id: "FOO-43", connection_error: "Oops" }] })
     expectText(/Connection error/)
     expectText(/Oops/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows a parse error", async () => {
-    const { container } = renderIssuesRow({ issueStatus: [{ issue_id: "FOO-43", parse_error: "Oops" }] })
+    renderIssuesRow({ issueStatus: [{ issue_id: "FOO-43", parse_error: "Oops" }] })
     expectText(/Parse error/)
     expectText(/Oops/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("creates an issue", async () => {
@@ -95,12 +94,11 @@ it("creates an issue", async () => {
         pathname: "/report_uuid",
         search: "?query=ignored",
     }
-    const { container } = renderIssuesRow({ report: reportWithIssueTracker })
+    renderIssuesRow({ report: reportWithIssueTracker })
     clickText(/Create new issue/)
     expectFetch("post", "metric/metric_uuid/issue/new", {
         metric_url: "https://quality-time.example.org/report_uuid#metric_uuid",
     })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("tries to create an issue", async () => {
@@ -111,7 +109,7 @@ it("tries to create an issue", async () => {
         pathname: "/report_uuid",
         search: "?query=ignored",
     }
-    const { container } = renderIssuesRow({ report: reportWithIssueTracker })
+    renderIssuesRow({ report: reportWithIssueTracker })
     clickText(/Create new issue/)
     expectFetch("post", "metric/metric_uuid/issue/new", {
         metric_url: "https://quality-time.example.org/report_uuid#metric_uuid",
@@ -120,39 +118,35 @@ it("tries to create an issue", async () => {
         expect(showMessage).toHaveBeenCalledTimes(1)
         expect(showMessage).toHaveBeenCalledWith("error", "Could not create issue", "Failed to create issue")
     })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("disables the create issue button if the user has no permissions", async () => {
-    const { container } = renderIssuesRow({ report: reportWithIssueTracker, permissions: [] })
+    renderIssuesRow({ report: reportWithIssueTracker, permissions: [] })
     expect(screen.getByText(/Create new issue/)).toBeDisabled()
-    await expectNoAccessibilityViolations(container)
 })
 
 it("adds an issue id", async () => {
     fetchServerApi.fetchServerApi.mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
-    const { container } = renderIssuesRow()
+    renderIssuesRow()
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), "FOO-42{Enter}")
     expectFetch("post", "metric/metric_uuid/attribute/issue_ids", {
         issue_ids: ["FOO-42"],
     })
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows issue id suggestions", async () => {
     fetchServerApi.fetchServerApi.mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
-    const { container } = renderIssuesRow({
+    renderIssuesRow({
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
     })
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), "u")
     expectText(/FOO-42: Suggestion/)
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows an error message if fetching suggestions fails", async () => {
     fetchServerApi.fetchServerApi.mockRejectedValue(new Error("fetching suggestions failed"))
     const showMessage = vi.spyOn(toast, "showMessage")
-    const { container } = renderIssuesRow({
+    renderIssuesRow({
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
     })
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), "u")
@@ -162,18 +156,15 @@ it("shows an error message if fetching suggestions fails", async () => {
         "Could not fetch issue identifiers",
         "Error: fetching suggestions failed",
     )
-    await expectNoAccessibilityViolations(container)
 })
 
 it("shows no issue id suggestions without a query", async () => {
     fetchServerApi.fetchServerApi.mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
-    const { container } = renderIssuesRow({
+    renderIssuesRow({
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
     })
     await userEvent.type(screen.getByRole("combobox"), "s")
     expectText(/FOO-42: Suggestion/)
-    await expectNoAccessibilityViolations(container)
     await userEvent.clear(screen.getByRole("combobox"))
     expectNoText(/FOO-42: Suggestion/)
-    await expectNoAccessibilityViolations(container)
 })

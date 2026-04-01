@@ -83,10 +83,9 @@ export function SourceEntity({
             key={entity.key}
             onExpand={setExpanded}
             style={{ maxHeight: "100px", overflow: "auto" }}
+            firstCellContent={SOURCE_ENTITY_STATUS_NAME[status]}
+            firstCellProps={{ colSpan: 2, sx: { paddingLeft: "6px", ...style } }}
         >
-            <TableCell colSpan={2} sx={{ paddingLeft: "6px", ...style }}>
-                {SOURCE_ENTITY_STATUS_NAME[status]}
-            </TableCell>
             {!columnsToHide.includes("status_end_date") && (
                 <TableCell sx={style}>
                     {status === "unconfirmed" ? "" : <TimeAgoWithDate dateFirst noTime date={statusEndDate} />}

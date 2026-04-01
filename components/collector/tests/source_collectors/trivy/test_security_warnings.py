@@ -12,7 +12,8 @@ class TrivyJSONSecurityWarningsTest(TrivyJSONTestCase):
         """Return the expected entities."""
         return [
             {
-                "key": "CVE-2018-16840@curl@trivy-ci-test (alpine 3_7_1)",
+                "key": "CVE-2018-16840@curl@7_61_0-r0",
+                "old_key": "CVE-2018-16840@curl@trivy-ci-test (alpine 3_7_1)",
                 "vulnerability_id": "CVE-2018-16840",
                 "title": 'curl: Use-after-free when closing "easy" handle in Curl_close()',
                 "description": "A heap use-after-free flaw was found in curl versions from 7.59.0 through ...",
@@ -23,7 +24,8 @@ class TrivyJSONSecurityWarningsTest(TrivyJSONTestCase):
                 "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-16840",
             },
             {
-                "key": "CVE-2019-3822@curl@trivy-ci-test (alpine 3_7_1)",
+                "key": "CVE-2019-3822@curl@7_61_1-r0",
+                "old_key": "CVE-2019-3822@curl@trivy-ci-test (alpine 3_7_1)",
                 "vulnerability_id": "CVE-2019-3822",
                 "title": "curl: NTLMv2 type-3 header stack buffer overflow",
                 "description": "libcurl versions from 7.36.0 to before 7.64.0 are vulnerable to ...",
@@ -34,7 +36,8 @@ class TrivyJSONSecurityWarningsTest(TrivyJSONTestCase):
                 "url": "https://curl.haxx.se/docs/CVE-2019-3822.html",
             },
             {
-                "key": "CVE-2024-5432@python@trivy-ci-test (alpine 3_7_1)",
+                "key": "CVE-2024-5432@python@3_13_1",
+                "old_key": "CVE-2024-5432@python@trivy-ci-test (alpine 3_7_1)",
                 "vulnerability_id": "CVE-2024-5432",
                 "title": "Vulnerability without fixed version",
                 "description": "This vulnerability has no fixed version field.",
@@ -45,7 +48,8 @@ class TrivyJSONSecurityWarningsTest(TrivyJSONTestCase):
                 "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-5432",
             },
             {
-                "key": "CVE-2025-6298@This vulnerability has no optional fields@trivy-ci-test (alpine 3_7_1)",
+                "key": "CVE-2025-6298@This vulnerability has no optional fields@3_4_1",
+                "old_key": "CVE-2025-6298@This vulnerability has no optional fields@trivy-ci-test (alpine 3_7_1)",
                 "vulnerability_id": "CVE-2025-6298",
                 "title": "CVE-2025-6298",
                 "description": "",

@@ -4,7 +4,7 @@ import { useContext, useState } from "react"
 
 import { addMetricIssue, setMetricAttribute } from "../api/metric"
 import { getReportIssueTrackerSuggestions } from "../api/report"
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { metricPropType, reportPropType } from "../sharedPropTypes"
 import { getMetricIssueIds } from "../utils"
@@ -14,7 +14,7 @@ import { showMessage } from "../widgets/toast"
 import { WarningMessage } from "../widgets/WarningMessage"
 
 function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, metricUuid, target, reload }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <ActionButton
@@ -43,7 +43,7 @@ CreateIssueButton.propTypes = {
 }
 
 function IssueIdentifiers({ entityKey, issueTrackerInstruction, metric, metricUuid, reportUuid, target, reload }) {
-    const permissions = useContext(Permissions)
+    const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const issueStatusHelp = `Identifiers of issues in the configured issue tracker that track the progress of fixing this ${target}.
                 When the issues have all been resolved, or the technical debt end date has passed, whichever happens

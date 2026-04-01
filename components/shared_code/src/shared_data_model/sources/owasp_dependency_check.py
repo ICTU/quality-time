@@ -4,7 +4,12 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
-from shared_data_model.parameters import MultipleChoiceWithAdditionParameter, Severities, access_parameters
+from shared_data_model.parameters import (
+    GitHubPersonalAccessToken,
+    MultipleChoiceWithAdditionParameter,
+    Severities,
+    access_parameters,
+)
 
 DESCRIPTION = (
     "OWASP Dependency-Check is a utility that identifies project dependencies and checks if there are any "
@@ -12,6 +17,7 @@ DESCRIPTION = (
 )
 SUPPORTED_VERSIONS = "≥9.0, ≤9.2"
 URL = HttpUrl("https://owasp.org/www-project-dependency-check/")
+REPOSITORY_URL = HttpUrl("https://github.com/dependency-check/DependencyCheck")
 
 ALL_OWASP_DEPENDENCY_CHECK_METRICS = [
     "dependencies",
@@ -53,9 +59,11 @@ OWASP_DEPENDENCY_CHECK_XML = Source(
     description=DESCRIPTION,
     supported_versions_description=SUPPORTED_VERSIONS,
     url=URL,
+    repository_url=REPOSITORY_URL,
     parameters={
         "severities": SEVERITIES_PARAMETER,
         "variable_file_path_regexp": VARIABLE_FILE_PATH_REGEXP_PARAMETER,
+        "github_pat": GitHubPersonalAccessToken(metrics=["source_version"]),
         **access_parameters(
             ALL_OWASP_DEPENDENCY_CHECK_METRICS,
             source_type="an OWASP Dependency-Check report",
@@ -71,9 +79,11 @@ OWASP_DEPENDENCY_CHECK_JSON = Source(
     description=DESCRIPTION,
     supported_versions_description=SUPPORTED_VERSIONS,
     url=URL,
+    repository_url=REPOSITORY_URL,
     parameters={
         "severities": SEVERITIES_PARAMETER,
         "variable_file_path_regexp": VARIABLE_FILE_PATH_REGEXP_PARAMETER,
+        "github_pat": GitHubPersonalAccessToken(metrics=["source_version"]),
         **access_parameters(
             ALL_OWASP_DEPENDENCY_CHECK_METRICS,
             source_type="an OWASP Dependency-Check report",

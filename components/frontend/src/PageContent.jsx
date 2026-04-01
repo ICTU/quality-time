@@ -1,7 +1,7 @@
 import { Box, Container } from "@mui/material"
 import CircularProgress from "@mui/material/CircularProgress"
 import { bool, func, number, string } from "prop-types"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ToastContainer } from "react-toastify"
 
 import { getMeasurements } from "./api/measurement"
@@ -51,26 +51,19 @@ export function PageContent({
     settings,
 }) {
     useHashFragment(!loading)
-    const dates = getColumnDates(
-        reportDate,
-        settings.dateInterval.value,
-        settings.dateOrder.value,
-        settings.nrDates.value,
-    )
     const [measurements, setMeasurements] = useState([])
+    const dates = useMemo(
+        () => getColumnDates(reportDate, settings.dateInterval.value, settings.dateOrder.value, settings.nrDates.value),
+        [reportDate, settings.dateInterval.value, settings.dateOrder.value, settings.nrDates.value],
+    )
     useEffect(() => {
+        const minDate = new Date([...dates].sort((d1, d2) => d1.getTime() - d2.getTime())[0])
+        minDate.setHours(minDate.getHours() - 1)
         const maxDate = reportDate ? new Date(reportDate) : new Date()
-        const minDate = dates
-            .slice()
-            .sort((d1, d2) => {
-                return d1.getTime() - d2.getTime()
-            })
-            .at(0)
-        minDate.setHours(minDate.getHours() - 1) // Get at least one hour of measurements
         getMeasurements(minDate, maxDate)
             .then((json) => setMeasurements(json.measurements ?? []))
             .catch((error) => showMessage("error", "Could not fetch measurements", `${error.message}`))
-    }, [reportDate, nrMeasurements, settings.dateInterval.value, settings.nrDates.value])
+    }, [dates, reportDate, nrMeasurements])
     let content
     if (loading) {
         content = (

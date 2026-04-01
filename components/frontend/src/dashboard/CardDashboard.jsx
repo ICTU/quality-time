@@ -2,7 +2,7 @@ import { array, arrayOf, bool, element, func } from "prop-types"
 import { useEffect, useState } from "react"
 import ReactGridLayout, { noCompactor, useContainerWidth } from "react-grid-layout"
 
-import { accessGranted, EDIT_REPORT_PERMISSION, Permissions } from "../context/Permissions"
+import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 
 function cardDivs(cards, isDragging) {
     return cards.map((card) => (
@@ -81,7 +81,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
     }
 
     return (
-        <Permissions.Consumer>
+        <PermissionsContext.Consumer>
             {(permissions) => (
                 <div ref={containerRef}>
                     {mounted && (
@@ -102,7 +102,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
                     )}
                 </div>
             )}
-        </Permissions.Consumer>
+        </PermissionsContext.Consumer>
     )
 }
 CardDashboard.propTypes = {

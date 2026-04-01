@@ -48,11 +48,9 @@ class JUnitTests(XMLFileSourceCollector):
         host_name = case_node.get("hostname", "")
         name = case_node.get("name", "unknown")
         key = f"{class_name}:{host_name}:{name}"
-        old_key = f"{class_name}:{name}"  # Key was changed after v5.25.0, enable migration of user entity data
         suite_names = cls.parent_names(case_node, parent_map)
         return Entity(
             key=key,
-            old_key=old_key,
             name=name,
             class_name=class_name,
             host_name=host_name,

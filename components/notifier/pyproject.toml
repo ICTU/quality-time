@@ -1,6 +1,6 @@
 [project]
 name = "notifier"
-version = "5.49.0"
+version = "5.50.1"
 requires-python = "==3.14.3"
 classifiers = [
     "Framework :: aiohttp",
@@ -9,10 +9,9 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "aiohttp==3.13.3",
+    "aiohttp==3.13.5",
     "pymsteams==0.2.5",
     "python-dateutil==2.9.0.post0",
-    "rich==14.3.3",
     "shared-code",
 ]
 
@@ -21,12 +20,12 @@ dev = [
     "mongomock==4.3.0",
     "pydantic==2.12.5",                      # Needed for importing the data model in the tests from the shared code component
     "tools",
-    "types-python-dateutil==2.9.0.20260305",
+    "types-python-dateutil==2.9.0.20260323",
 ]
 
 [tool.uv]
 sources.shared-code = { path = "../shared_code", package = true }
-sources.tools = { path = "../../tools", package = false }
+sources.tools = { path = "../../tools/third_party", package = false }
 
 [tool.ruff]
 line-length = 120
