@@ -20,7 +20,7 @@ export const useBoundingBox = () => {
         const set = () => {
             clearTimeouts()
             for (const delay of timeoutDelays) {
-                // eslint-disable-next-line @eslint-react/web-api/no-leaked-timeout -- Timeouts are cleaned by clearTimeouts
+                // eslint-disable-next-line @eslint-react/web-api-no-leaked-timeout -- Timeouts are cleaned by clearTimeouts
                 timeoutIdsRef.current.push(setTimeout(() => setBoundingBox(getBoundingBox()), delay))
             }
         }
