@@ -14,6 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
+- When measuring manual test execution with Jira as source, use the last update date of a manual test case as proxy for the last test date as long as the manual test case has no comments. Fixes [#12417](https://github.com/ICTU/quality-time/issues/12417).
 - Allow for configuring a regular expression to extract a valid version number from non-standard version strings reported by sources, for the software version metric. Fixes [#12484](https://github.com/ICTU/quality-time/issues/12484).
 - Suppress Trivy security warnings based on vulnerability ID, package name, and installed version instead of including the target, which can change between scans due to e.g. commit hashes. Fixes [#12746](https://github.com/ICTU/quality-time/issues/12746).
 - Remove unused subject description field from reports. Fixes [#12799](https://github.com/ICTU/quality-time/issues/12799).

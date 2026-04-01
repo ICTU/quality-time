@@ -266,6 +266,11 @@ test code.
         description="Measure the number of manual test cases that have not been tested on time.",
         rationale="Preferably, all regression tests are automated. When this is not feasible, it is good to "
         "know whether the manual regression tests have been executed recently.",
+        documentation="""After adding Jira as source to the "Manual test execution" metric, provide a JQL query that
+returns the manual test cases. Make sure that whenever a manual test is executed, the tester adds a comment to the
+manual test case in Jira. Quality-time uses the timestamp of the latest comment to determine when the manual test was
+last executed. As long as there are no comments, Quality-time uses the timestamp of the latest update to the test case
+itself.""",
         unit=Unit.MANUAL_TEST_CASES,
         unit_singular=Unit.MANUAL_TEST_CASE,
         near_target="5",
