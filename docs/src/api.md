@@ -132,7 +132,7 @@ The parameters for exporting a report, listed above, can also be used when expor
 
 *Quality-time* provides functionality for importing and exporting reports in JSON format.
 This functionality can be used for backing up reports or for transferring reports from one *Quality-time* instance to another one.
-Currently, this functionality is only available via the API, with one endpoint for importing and one for exporting the JSON reports.
+This functionality is available both via the user interface and via the API. Use the "Export report" button in the report header and the "Import report" button on the reports overview page to export and import reports via the user interface. The API provides one endpoint for importing and one for exporting the JSON reports.
 
 A *Quality-time* report in JSON format contains the latest configuration of the report, with all its subjects, metrics and sources.
 It does not contain any actual measurements. The credentials of configured sources are encrypted on export to protect sensitive data.

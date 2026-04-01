@@ -14,6 +14,7 @@ import { NotificationDestinations } from "../notification/NotificationDestinatio
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
+import { ExportReportButton } from "../widgets/buttons/ExportReportButton"
 import { PermLinkButton } from "../widgets/buttons/PermLinkButton"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { Tabs } from "../widgets/Tabs"
@@ -40,6 +41,7 @@ function ReportTitleButtonRow({ reportUuid, openReportsOverview, settings, url }
             editableComponent={
                 <ButtonRow rightButton={deleteButton} paddingBottom={2} paddingLeft={0} paddingRight={0} paddingTop={2}>
                     <PermLinkButton itemType="report" url={url} />
+                    <ExportReportButton reportUuid={reportUuid} />
                 </ButtonRow>
             }
         />

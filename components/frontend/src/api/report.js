@@ -42,6 +42,10 @@ export function setReportsAttribute(attribute, value, reload) {
     }).then(reload)
 }
 
+export function exportReport(reportUuid) {
+    return fetchServerApi("get", `report/${reportUuid}/json`)
+}
+
 export function getReportPdf(reportUuid, queryString) {
     const endpoint = (reportUuid ? `report/${reportUuid}` : "reports_overview") + `/pdf${queryString}`
     return fetchServerApi("get", endpoint, {}, "application/pdf")

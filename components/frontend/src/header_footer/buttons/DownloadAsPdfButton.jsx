@@ -4,6 +4,7 @@ import { useState } from "react"
 
 import { getReportPdf } from "../../api/report"
 import { registeredURLSearchParams } from "../../hooks/url_search_query"
+import { localTimestamp, triggerDownload } from "../../widgets/download"
 import { showMessage } from "../../widgets/toast"
 import { AppBarButton } from "./AppBarbutton"
 
@@ -18,13 +19,7 @@ function downloadPdf(reportUuid, queryString, callback) {
                     "HTTP code " + response.status + ": " + response.statusText,
                 )
             } else {
-                let url = globalThis.URL.createObjectURL(response)
-                let a = document.createElement("a")
-                a.href = url
-                const now = new Date()
-                const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-                a.download = `Quality-time-${reportId}-${localNow.toISOString().split(".")[0]}.pdf`
-                a.click()
+                triggerDownload(response, `Quality-time-${reportId}-${localTimestamp()}.pdf`)
             }
             return null
         })
