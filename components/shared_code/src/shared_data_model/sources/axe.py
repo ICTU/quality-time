@@ -8,6 +8,7 @@ from shared_data_model.parameters import (
     GitHubPersonalAccessToken,
     MultipleChoiceWithAdditionParameter,
     MultipleChoiceWithDefaultsParameter,
+    VariableURLRegExp,
     access_parameters,
 )
 
@@ -124,6 +125,7 @@ When combining results objects, make sure the `testEngine` field is retained in 
         "element_exclude_filter": ELEMENT_EXCLUDE_FILTER,
         "impact": IMPACT,
         "result_types": RESULT_TYPES,
+        "variable_url_regexp": VariableURLRegExp(metrics=["violations"]),
         "github_pat": GitHubPersonalAccessToken(metrics=["source_version"]),
         **access_parameters(ALL_AXE_CORE_METRICS, source_type="an Axe-core report", source_type_format="JSON"),
     },
@@ -141,6 +143,7 @@ AXE_HTML_REPORTER = Source(
         "element_exclude_filter": ELEMENT_EXCLUDE_FILTER,
         "impact": IMPACT,
         "result_types": RESULT_TYPES,
+        "variable_url_regexp": VariableURLRegExp(metrics=["violations"]),
         **access_parameters(["violations"], source_type="an Axe report", source_type_format="HTML"),
     },
     entities=ENTITIES,
@@ -154,6 +157,7 @@ AXE_CSV = Source(
         "element_include_filter": ELEMENT_INCLUDE_FILTER,
         "element_exclude_filter": ELEMENT_EXCLUDE_FILTER,
         "impact": IMPACT,
+        "variable_url_regexp": VariableURLRegExp(metrics=["violations"]),
         **access_parameters(["violations"], source_type="an Axe report", source_type_format="CSV"),
     },
     entities={

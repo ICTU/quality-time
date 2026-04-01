@@ -7,6 +7,7 @@ from bs4 import Tag
 from shared.utils.functions import md5_hash
 
 from base_collectors import HTMLFileSourceCollector
+from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 from source_collectors.axe_core.violations import AxeViolationsCollector
 
@@ -26,7 +27,7 @@ class AxeHTMLReporterViolations(HTMLFileSourceCollector, AxeViolationsCollector)
 
     def __parse_html_soup(self, soup: Tag) -> Iterator[dict[str, str]]:
         """Parse the entity attributes from the HTML."""
-        page_url = cast(str, cast(Tag, soup.select_one("div.summary > a"))["href"])
+        page_url = self._stable_url(URL(cast(str, cast(Tag, soup.select_one("div.summary > a"))["href"])))
         for result_type in self._parameter("result_types"):
             if result_type == "violations":
                 yield from self.__parse_violations_from_html_soup(soup, page_url)

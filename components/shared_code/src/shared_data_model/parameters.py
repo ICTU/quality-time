@@ -339,6 +339,17 @@ class TransactionSpecificTargetResponseTimes(MultipleChoiceWithAdditionParameter
     metrics: list[str] = ["slow_transactions"]
 
 
+class VariableURLRegExp(MultipleChoiceWithAdditionParameter):
+    """Parameter for specifying parts of URLs to ignore."""
+
+    name: str = "Parts of URLs to ignore (regular expressions)"
+    help: str | None = (
+        "Parts of URLs to ignore can be specified by regular expression. The parts of URLs that match one "
+        "or more of the regular expressions are removed. If, after applying the regular expressions, multiple "
+        "violations are the same only one is reported."
+    )
+
+
 def access_parameters(
     metrics: list[str],
     include: dict[str, bool] | None = None,

@@ -6,9 +6,9 @@ from shared_data_model.meta.entity import Color, Entity, EntityAttribute
 from shared_data_model.meta.source import Source
 from shared_data_model.parameters import (
     GitHubPersonalAccessToken,
-    MultipleChoiceWithAdditionParameter,
     MultipleChoiceWithDefaultsParameter,
     SingleChoiceParameter,
+    VariableURLRegExp,
     access_parameters,
 )
 
@@ -37,8 +37,7 @@ OWASP_ZAP = Source(
             api_values={"informational": "0", "low": "1", "medium": "2", "high": "3"},
             metrics=["security_warnings"],
         ),
-        "variable_url_regexp": MultipleChoiceWithAdditionParameter(
-            name="Parts of URLs to ignore (regular expressions)",
+        "variable_url_regexp": VariableURLRegExp(
             help="Parts of URLs to ignore can be specified by regular expression. The parts of URLs that match one "
             "or more of the regular expressions are removed. If, after applying the regular expressions, multiple "
             "warnings are the same only one is reported.",

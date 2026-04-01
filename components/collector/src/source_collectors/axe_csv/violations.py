@@ -7,40 +7,34 @@ from io import StringIO
 from shared.utils.functions import md5_hash
 
 from base_collectors import CSVFileSourceCollector
-from collector_utilities.functions import match_string_or_regular_expression
+from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
+from source_collectors.axe_core.violations import AxeViolationsCollector
 
 
-class AxeCSVViolations(CSVFileSourceCollector):
+class AxeCSVViolations(CSVFileSourceCollector, AxeViolationsCollector):
     """Collector class to get accessibility violations."""
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the violation."""
-        impact = entity["impact"]
-        if impact and impact not in self._parameter("impact"):
-            return False
-        element_include_filter = self._parameter("element_include_filter")
-        if element_include_filter and not match_string_or_regular_expression(entity["element"], element_include_filter):
-            return False
-        element_exclude_filter = self._parameter("element_exclude_filter")
-        return not bool(
-            element_exclude_filter and match_string_or_regular_expression(entity["element"], element_exclude_filter)
-        )
+        return self._include_entity_based_on_impact(entity) and self._include_entity_based_on_element_filter(entity)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the CSV and create the entities."""
-        entity_attributes = [
-            {
-                "url": str(row["URL"]),
-                "violation_type": row["Violation Type"],
-                "impact": row["Impact"],
-                "element": row["DOM Element"],
-                "page": re.sub(r"https?://[^/]+", "", row["URL"]),
-                "description": row["Messages"],
-                "help": row["Help"],
-            }
-            for row in await self.__parse_csv(responses)
-        ]
+        entity_attributes = []
+        for row in await self.__parse_csv(responses):
+            url = self._stable_url(URL(row["URL"]))
+            entity_attributes.append(
+                {
+                    "url": str(url),
+                    "violation_type": row["Violation Type"],
+                    "impact": row["Impact"],
+                    "element": row["DOM Element"],
+                    "page": re.sub(r"https?://[^/]+", "", str(url)),
+                    "description": row["Messages"],
+                    "help": row["Help"],
+                }
+            )
         return Entities(
             Entity(key=md5_hash(",".join(str(value) for value in attributes.values())), **attributes)
             for attributes in entity_attributes
