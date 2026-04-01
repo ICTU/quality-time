@@ -24,7 +24,7 @@ export function DivWithHtml({ children }) {
                 ...(overflown ? { height: maxHeight } : { maxHeight: maxHeight }),
                 resize: overflown ? "vertical" : "",
             }}
-            // eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml -- HTML content from backend
+            // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml -- HTML content from backend
             dangerouslySetInnerHTML={{ __html: children }}
         />
     )
