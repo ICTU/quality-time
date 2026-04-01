@@ -21,6 +21,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - If importing a report fails, show a toast message with the error. Fixes [#12800](https://github.com/ICTU/quality-time/issues/12800).
 - Update help URL for finding the id of a GitLab project. Fixes [#12813](https://github.com/ICTU/quality-time/issues/12813).
 - Allow for configuring a GitHub personal access token to prevent being rate limited by GitHub when checking for new source versions. Fixes [#12853](https://github.com/ICTU/quality-time/issues/12853).
+- When measuring user story points, issues, or average issue lead time with Jira as source, correctly parse the sprint name from the Jira sprint text field. Fixes [#12884](https://github.com/ICTU/quality-time/issues/12884).
 
 ## v5.50.0 - 2026-03-27
 
