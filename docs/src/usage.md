@@ -146,6 +146,10 @@ To add a new subject, be sure you are logged in and are on a report page. Click 
 
 Alternatively, you can also copy an existing subject or move an existing subject to the report. Clicking the "Copy subject" or "Move subject" button shows a drop down menu with all of the subjects to choose from. Copying or moving a subject also copies or moves the metrics and sources of the subject.
 
+```{note}
+When *copying* a subject, the metrics and sources are copied but measurement history and changelog are *not* included. When *moving* a subject, the metrics, sources, measurement history, and changelog are all preserved.
+```
+
 #### Editing subjects
 
 To change the subject type and name expand the subject header if it's not already expanded. The subject type can be changed by means of the "Subject type" dropdown.
@@ -206,6 +210,10 @@ See the [reference manual](reference.md) for the list of supported metric types.
 *Quality-time* adds the selected metric to the report that you can next configure. It is immediately displayed in the metric table (and in the report dashboard) as white and with a question mark because *Quality-time* has no data on this metric yet.
 
 Alternatively, you can also copy an existing metric or move an existing metric to the subject. Clicking the "Copy metric" or "Move metric" button shows a drop down menu with all of the metrics to choose from. Copying or moving a metric also copies or moves the sources of the metric.
+
+```{note}
+When *copying* a metric, the sources are copied but measurement history and changelog are *not* included. When *moving* a metric, the sources, measurement history, and changelog are all preserved.
+```
 
 #### Editing metrics
 
@@ -325,6 +333,10 @@ See the [reference manual](reference.md) for the list of supported source types.
 ```
 
 Alternatively, you can also copy an existing source or move an existing source to the metric. Clicking the "Copy source" or "Move source" button shows a drop down menu with all of the sources to choose from.
+
+```{note}
+When *copying* a source, the changelog is *not* included. When *moving* a source, the changelog is preserved.
+```
 
 If you add multiple sources for one metric the measurement values of each source are combined to get one measurement value for the metric. Usually this means adding up the values, but for some metrics this doesn't make sense and the minimum or maximum value of the sources is used as the metric value.
 
