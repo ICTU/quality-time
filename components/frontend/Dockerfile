@@ -1,4 +1,4 @@
-FROM node:25.8.2-alpine3.22 AS compile-image
+FROM node:25.8.2-alpine3.23 AS compile-image
 
 WORKDIR /home/frontend
 COPY public /home/frontend/public
@@ -10,7 +10,7 @@ COPY .env /home/frontend
 RUN npm install --ignore-scripts && \
     npm run --ignore-scripts build
 
-FROM nginxinc/nginx-unprivileged:1.29.3-alpine3.22-slim
+FROM nginxinc/nginx-unprivileged:1.29.5-alpine3.23-slim
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"

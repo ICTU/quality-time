@@ -26,9 +26,9 @@ dependencies = [
 dev = [
     "pydantic==2.12.5",                      # Needed for importing the data model in the tests from the shared code component
     "tools",
-    "types-ldap3==2.9.13.20260319",
-    "types-python-dateutil==2.9.0.20260323",
-    "types-requests==2.33.0.20260327",
+    "types-ldap3==2.9.13.20260402",
+    "types-python-dateutil==2.9.0.20260402",
+    "types-requests==2.33.0.20260402",
 ]
 
 [tool.uv]

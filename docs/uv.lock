@@ -1029,7 +1029,7 @@ requires-dist = [
 dev = [
     { name = "mongomock", specifier = "==4.3.0" },
     { name = "tools", virtual = "../tools/third_party" },
-    { name = "types-python-dateutil", specifier = "==2.9.0.20260323" },
+    { name = "types-python-dateutil", specifier = "==2.9.0.20260402" },
 ]
 
 [[package]]
@@ -1290,7 +1290,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 just = [{ name = "rust-just", specifier = "==1.48.1" }]
-uv = [{ name = "uv", specifier = "==0.11.2" }]
+uv = [{ name = "uv", specifier = "==0.11.3" }]
 
 [[package]]
 name = "trailrunner"
