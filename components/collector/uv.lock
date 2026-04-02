@@ -293,8 +293,8 @@ dev = [
     { name = "pydantic", specifier = "==2.12.5" },
     { name = "tools", virtual = "../../tools/third_party" },
     { name = "types-beautifulsoup4", specifier = "==4.12.0.20250516" },
-    { name = "types-defusedxml", specifier = "==0.7.0.20250822" },
-    { name = "types-python-dateutil", specifier = "==2.9.0.20260323" },
+    { name = "types-defusedxml", specifier = "==0.7.0.20260402" },
+    { name = "types-python-dateutil", specifier = "==2.9.0.20260402" },
 ]
 
 [[package]]
@@ -1125,7 +1125,7 @@ requires-dist = [
 dev = [
     { name = "mongomock", specifier = "==4.3.0" },
     { name = "tools", virtual = "../../tools/third_party" },
-    { name = "types-python-dateutil", specifier = "==2.9.0.20260323" },
+    { name = "types-python-dateutil", specifier = "==2.9.0.20260402" },
 ]
 
 [[package]]
@@ -1262,7 +1262,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 just = [{ name = "rust-just", specifier = "==1.48.1" }]
-uv = [{ name = "uv", specifier = "==0.11.2" }]
+uv = [{ name = "uv", specifier = "==0.11.3" }]
 
 [[package]]
 name = "trailrunner"
@@ -1329,32 +1329,32 @@ wheels = [
 
 [[package]]
 name = "types-defusedxml"
-version = "0.7.0.20250822"
+version = "0.7.0.20260402"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/7d/4a/5b997ae87bf301d1796f72637baa4e0e10d7db17704a8a71878a9f77f0c0/types_defusedxml-0.7.0.20250822.tar.gz", hash = "sha256:ba6c395105f800c973bba8a25e41b215483e55ec79c8ca82b6fe90ba0bc3f8b2", size = 10590, upload-time = "2025-08-22T03:02:59.547Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d3/3c/8e1243dda2fef73be93081d896503352fb92e2351b0b17ac172bbdb70ebf/types_defusedxml-0.7.0.20260402.tar.gz", hash = "sha256:4cc91b225e77c7fcf88b3fb7d821a37fb4e14530727c790b6b8a19f2968d6074", size = 10604, upload-time = "2026-04-02T04:19:00.265Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/73/8a36998cee9d7c9702ed64a31f0866c7f192ecffc22771d44dbcc7878f18/types_defusedxml-0.7.0.20250822-py3-none-any.whl", hash = "sha256:5ee219f8a9a79c184773599ad216123aedc62a969533ec36737ec98601f20dcf", size = 13430, upload-time = "2025-08-22T03:02:58.466Z" },
+    { url = "https://files.pythonhosted.org/packages/ad/4e/68f85712dfbcc929c54d57e9b0e7503c198fa65896cae2f6337840ab1cc5/types_defusedxml-0.7.0.20260402-py3-none-any.whl", hash = "sha256:200f3cb340c3c576adeb28cf365399e9bb059b34662b86ad4617692284c98bdb", size = 13434, upload-time = "2026-04-02T04:18:59.263Z" },
 ]
 
 [[package]]
 name = "types-html5lib"
-version = "1.1.11.20251117"
+version = "1.1.11.20260402"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "types-webencodings" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c8/f3/d9a1bbba7b42b5558a3f9fe017d967f5338cf8108d35991d9b15fdea3e0d/types_html5lib-1.1.11.20251117.tar.gz", hash = "sha256:1a6a3ac5394aa12bf547fae5d5eff91dceec46b6d07c4367d9b39a37f42f201a", size = 18100, upload-time = "2025-11-17T03:08:00.78Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/13/95/74eabb3bd0bb2f2b3a8ba56a55e87ee4b76f2b39e2a690eca399deffc837/types_html5lib-1.1.11.20260402.tar.gz", hash = "sha256:a167a30b9619a6eea82ec8b8948044859e033966a4721db34187d647c3a6c1f3", size = 18268, upload-time = "2026-04-02T04:21:56.528Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f0/ab/f5606db367c1f57f7400d3cb3bead6665ee2509621439af1b29c35ef6f9e/types_html5lib-1.1.11.20251117-py3-none-any.whl", hash = "sha256:2a3fc935de788a4d2659f4535002a421e05bea5e172b649d33232e99d4272d08", size = 24302, upload-time = "2025-11-17T03:07:59.996Z" },
+    { url = "https://files.pythonhosted.org/packages/79/a9/fac9d4313b1851620610f46d086ba288482c0d5384ebf6feafb5bc4bdd15/types_html5lib-1.1.11.20260402-py3-none-any.whl", hash = "sha256:245d02cf53ef62d7342268c53dbc2af2d200849feec03f77f5909655cb54ab0d", size = 24314, upload-time = "2026-04-02T04:21:55.659Z" },
 ]
 
 [[package]]
 name = "types-python-dateutil"
-version = "2.9.0.20260323"
+version = "2.9.0.20260402"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e9/02/f72df9ef5ffc4f959b83cb80c8aa03eb8718a43e563ecd99ccffe265fa89/types_python_dateutil-2.9.0.20260323.tar.gz", hash = "sha256:a107aef5841db41ace381dbbbd7e4945220fc940f7a72172a0be5a92d9ab7164", size = 16897, upload-time = "2026-03-23T04:15:14.829Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a7/30/c5d9efbff5422b20c9551dc5af237d1ab0c3d33729a9b3239a876ca47dd4/types_python_dateutil-2.9.0.20260402.tar.gz", hash = "sha256:a980142b9966713acb382c467e35c5cc4208a2f91b10b8d785a0ae6765df6c0b", size = 16941, upload-time = "2026-04-02T04:18:35.834Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/92/c1/b661838b97453e699a215451f2e22cee750eaaf4ea4619b34bdaf01221a4/types_python_dateutil-2.9.0.20260323-py3-none-any.whl", hash = "sha256:a23a50a07f6eb87e729d4cb0c2eb511c81761eeb3f505db2c1413be94aae8335", size = 18433, upload-time = "2026-03-23T04:15:13.683Z" },
+    { url = "https://files.pythonhosted.org/packages/e6/d7/fe753bf8329c8c3c1addcba1d2bf716c33898216757abb24f8b80f82d040/types_python_dateutil-2.9.0.20260402-py3-none-any.whl", hash = "sha256:7827e6a9c93587cc18e766944254d1351a2396262e4abe1510cbbd7601c5e01f", size = 18436, upload-time = "2026-04-02T04:18:34.806Z" },
 ]
 
 [[package]]
