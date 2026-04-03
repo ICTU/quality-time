@@ -291,6 +291,12 @@ ref=<branch>`
             default_value="slowest",
             metrics=["pipeline_duration"],
         ),
+        "exclude_idle_time_from_pipeline_duration": SingleChoiceParameter(
+            name="Exclude idle time from pipeline duration",
+            values=["yes", "no"],
+            default_value="no",
+            metrics=["pipeline_duration"],
+        ),
         "upvotes": Upvotes(),
         "target_branches_to_include": TargetBranchesToInclude(help_url=GITLAB_BRANCH_HELP_URL),
     },

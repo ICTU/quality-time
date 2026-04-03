@@ -39,18 +39,9 @@ class Pipeline(GitLabJSON):
     source: str
     created_at: str
     web_url: str
+    duration: int = 0
     updated_at: str = ""
     schedule_description: str = ""  # Pipeline schedule description for scheduled pipelines
-
-    @property
-    def start(self) -> datetime:
-        """Return the pipeline start time."""
-        return parse_datetime(self.created_at)
-
-    @property
-    def end(self) -> datetime:
-        """Return the pipeline end time."""
-        return parse_datetime(self.updated_at) if self.updated_at else datetime.now(tz=tzutc())
 
     @property
     def datetime(self) -> datetime:
@@ -58,9 +49,20 @@ class Pipeline(GitLabJSON):
         return parse_datetime(self.updated_at or self.created_at)
 
     @property
-    def duration(self) -> timedelta:
+    def bruto_duration(self) -> timedelta:
+        """Return the bruto duration of the pipeline, meaning the duration including idle time."""
+        start = parse_datetime(self.created_at)
+        end = parse_datetime(self.updated_at) if self.updated_at else datetime.now(tz=tzutc())
+        return end - start
+
+    @property
+    def netto_duration(self) -> timedelta:
+        """Return the netto duration of the pipeline, meaning the duration excluding idle time."""
+        return timedelta(minutes=self.duration)
+
+    def pipeline_duration(self, exclude_idle_time: bool) -> timedelta:
         """Return the duration of the pipeline."""
-        return self.end - self.start
+        return self.netto_duration if exclude_idle_time else self.bruto_duration
 
 
 @dataclass
