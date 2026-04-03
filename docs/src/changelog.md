@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 If your currently installed *Quality-time* version is not the penultimate version, please first check the upgrade path in the [versioning policy](versioning.md) before upgrading.
 
-<!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/release.py script with the new release version and release date. -->
+<!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release3#/release.py script with the new release version and release date. -->
 
 ## [Unreleased]
 
@@ -16,6 +16,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - Document what data is preserved when copying or moving subjects, metrics, and sources. Closes [#6337](https://github.com/ICTU/quality-time/issues/6337).
 - Allow for exporting a report as JSON via the UI, using the "Export report" button in the report header. Note that measurements are not included. Closes [#11907](https://github.com/ICTU/quality-time/issues/11907).
+- Add a parameter to exclude idle time from GitLab pipeline duration. Closes [#12127](https://github.com/ICTU/quality-time/issues/12127).
 - When measuring violations with Axe-core, Axe HTML reporter or Axe CSV as source, allow for specifying regular expressions to remove variable parts of URLs. Closes [#12881](https://github.com/ICTU/quality-time/issues/12881).
 
 ## v5.50.1 - 2026-04-01
