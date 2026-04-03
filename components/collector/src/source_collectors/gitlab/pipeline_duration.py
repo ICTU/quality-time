@@ -2,17 +2,27 @@
 
 from typing import TYPE_CHECKING
 
+from collector_utilities.date_time import minutes
 from collector_utilities.exceptions import CollectorError
 
 from .base import GitLabPipelineBase
 
 if TYPE_CHECKING:
     from collector_utilities.type import Value
-    from model import Entities, SourceResponses
+    from model import Entities, Entity, SourceResponses
+
+    from .json_types import Pipeline
 
 
 class GitLabPipelineDuration(GitLabPipelineBase):
     """GitLab CI-pipeline duration collector."""
+
+    def _create_entity(self, pipeline: Pipeline) -> Entity:
+        """Extend to also add the duration to the entity created from a GitLab pipeline."""
+        entity = super()._create_entity(pipeline)
+        exclude_idle_time = self._parameter("exclude_idle_time_from_pipeline_duration") == "yes"
+        entity["duration"] = str(minutes(pipeline.pipeline_duration(exclude_idle_time)))
+        return entity
 
     async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Parse the value from the responses."""

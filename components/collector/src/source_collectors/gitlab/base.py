@@ -7,7 +7,7 @@ from typing import cast
 from shared.utils.date_time import now
 
 from base_collectors import SourceCollector
-from collector_utilities.date_time import minutes, parse_datetime
+from collector_utilities.date_time import parse_datetime
 from collector_utilities.functions import add_query, match_string_or_regular_expression
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
@@ -160,21 +160,19 @@ class GitLabPipelineBase(GitLabProjectBase):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Parse the entities from the responses."""
-        return Entities(
-            [
-                Entity(
-                    key=str(pipeline.id),
-                    name=pipeline.name,
-                    ref=pipeline.ref,
-                    status=pipeline.status,
-                    trigger=pipeline.source,
-                    schedule=pipeline.schedule_description,
-                    created=pipeline.created_at,
-                    updated=pipeline.updated_at,
-                    duration=str(minutes(pipeline.duration)),
-                )
-                for pipeline in await self._pipelines(responses)
-            ],
+        return Entities([self._create_entity(pipeline) for pipeline in await self._pipelines(responses)])
+
+    def _create_entity(self, pipeline: Pipeline) -> Entity:
+        """Create an entity from a GitLab pipeline."""
+        return Entity(
+            key=str(pipeline.id),
+            name=pipeline.name,
+            ref=pipeline.ref,
+            status=pipeline.status,
+            trigger=pipeline.source,
+            schedule=pipeline.schedule_description,
+            created=pipeline.created_at,
+            updated=pipeline.updated_at,
         )
 
     def _include_entity(self, entity: Entity) -> bool:
