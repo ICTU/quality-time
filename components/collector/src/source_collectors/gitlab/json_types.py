@@ -39,6 +39,7 @@ class Pipeline(GitLabJSON):
     source: str
     created_at: str
     web_url: str
+    duration: int = 0
     updated_at: str = ""
     schedule_description: str = ""  # Pipeline schedule description for scheduled pipelines
 
@@ -57,9 +58,10 @@ class Pipeline(GitLabJSON):
         """Return the datetime of the pipeline."""
         return parse_datetime(self.updated_at or self.created_at)
 
-    @property
-    def duration(self) -> timedelta:
+    def pipeline_duration(self, exclude_idle_time: bool) -> timedelta:
         """Return the duration of the pipeline."""
+        if exclude_idle_time:
+            return timedelta(minutes=self.duration)
         return self.end - self.start
 
 

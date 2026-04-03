@@ -40,6 +40,7 @@ class GitLabPipelineDurationTest(GitLabTestCase):
             "status": "success",
             "source": "push",
             "web_url": self.landing_url,
+            "duration": 7,
         }
 
     async def collect(self):
@@ -99,3 +100,9 @@ class GitLabPipelineDurationTest(GitLabTestCase):
         self.set_source_parameter("pipeline_schedules_to_include", ["pipeline description"])
         response = await self.collect()
         self.assert_measurement(response, value="10", landing_url=self.landing_url)
+
+    async def test_exclude_idle_time(self):
+        """Test that idle time can be excluded from pipeline duration."""
+        self.set_source_parameter("pipeline_idle_time_exclude", "yes")
+        response = await self.collect()
+        self.assert_measurement(response, value="7", landing_url=self.landing_url)
