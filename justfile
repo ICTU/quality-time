@@ -81,7 +81,7 @@ update-dependencies: update-docker-base-images update-py-dependencies update-git
 [no-cd]
 [private]
 install-py-dependencies:
-    uv sync --no-progress --locked --all-extras --all-groups
+    uv sync --no-progress --quiet --locked --all-extras --all-groups --reinstall-package shared-code
 
 # Install JavaScript dependencies from the lock file.
 [no-cd]
@@ -89,13 +89,13 @@ install-py-dependencies:
 install-js-dependencies:
     npm install --ignore-scripts --silent
 
+# === Build artifacts ===
+
 # Build the JavaScript artifact(s) from the code.
 [no-cd]
 [private]
 build-js: install-js-dependencies
     npm run --ignore-scripts build
-
-# === Build artifacts ===
 
 # Build the documentation from the code.
 [no-cd]
