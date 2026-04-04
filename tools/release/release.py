@@ -192,16 +192,16 @@ def main() -> None:
         "../../tools/third_party",
         "../../tools/update_dependencies",
     ]:
-        run(("uv", "lock"), cwd=python_project_folder, check=True)
-    run(("git", "add", "**/uv.lock"), cwd="../..", check=True)
-    run(("git", "commit", "--amend", "--no-edit"), check=True)
+        run(("uv", "lock"), cwd=python_project_folder, check=True)  # noqa: S607
+    run(("git", "add", "**/uv.lock"), cwd="../..", check=True)  # noqa: S607
+    run(("git", "commit", "--amend", "--no-edit"), check=True)  # noqa: S607
     # Move the git tag that was just created by bump-my-version:
     version = f"v{get_version()}"
     git_log_cmd = ("git", "log", "-n1", "--pretty=format:%s", version)
     message = run(git_log_cmd, capture_output=True, text=True, check=True).stdout.strip()  # noqa: S603
-    run(("git", "tag", "--annotate", "--force", version, "--message", message), check=True)  # noqa: S603
+    run(("git", "tag", "--annotate", "--force", version, "--message", message), check=True)  # noqa: S603, S607
     if not no_git_push:
-        run(("git", "push", "--follow-tags"), check=True)
+        run(("git", "push", "--follow-tags"), check=True)  # noqa: S607
 
 
 if __name__ == "__main__":
