@@ -1,3 +1,4 @@
+set guards := true
 set positional-arguments := true
 set quiet := true
 
@@ -7,6 +8,7 @@ _default:
 alias help := _default
 
 export COVERAGE_RCFILE := justfile_directory() + "/.coveragerc"
+components := `ls components`
 docker_folder_exists := path_exists(invocation_directory() + '/docker')
 src_folder_exists := path_exists(invocation_directory() + '/src')
 tests_folder_exists := path_exists(invocation_directory() + '/tests')
@@ -25,47 +27,48 @@ has_yamllint := if pyproject_toml_contents =~ '"yamllint[<=]=[A-Za-z0-9_.\-]+"' 
 has_vale := if pyproject_toml_contents =~ '"vale[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
 src_folder := if src_folder_exists == "true" { "src" } else { "" }
 tests_folder := if tests_folder_exists == "true" { "tests" } else { "" }
-code := if trim(src_folder + " " + tests_folder) == "" { ".?*.py" } else { src_folder + " " + tests_folder }
+code := if trim(src_folder + " " + tests_folder) == "" { "*.py" } else { src_folder + " " + tests_folder }
 random_string := uuid()
-term_width := shell("uv run python -c 'import shutil; print(shutil.get_terminal_size().columns)'")
+uv_run := "uv run --quiet"
+update_dep := uv_run + " --project tools/update_dependencies tools/update_dependencies/src/update_"
 
 # === Update dependencies ===
 
 # Update Docker images in the CircleCI config.
 [private]
 update-circle-ci-config:
-    uv run --project tools/update_dependencies tools/update_dependencies/src/update_circle_ci_config.py
+    {{ update_dep }}circle_ci_config.py
 
 # Update Docker base images in Dockerfiles.
 [private]
 update-docker-base-images:
-    uv run --project tools/update_dependencies tools/update_dependencies/src/update_dockerfile_base_image.py
+    {{ update_dep }}dockerfile_base_image.py
 
 # Update GitHub Actions in GitHub workflow YAML files.
 [private]
 update-github-actions:
-    uv run --project tools/update_dependencies tools/update_dependencies/src/update_github_action.py
+    {{ update_dep }}github_action.py
 
 # Update direct and indirect Python dependencies.
 [private]
 update-py-dependencies:
-    uv run --project tools/update_dependencies tools/update_dependencies/src/update_pyproject_toml.py
+    {{ update_dep }}pyproject_toml.py
 
 # Update direct and indirect JavaScript dependencies.
 [private]
 update-js-dependencies:
     # Note: major updates are not done automatically by npm
-    uv run --project tools/update_dependencies tools/update_dependencies/src/update_package_json.py
+    {{ update_dep }}package_json.py
 
 # Update the Node engine version in package.json files.
 [private]
 update-node-engine:
-    uv run --project tools/update_dependencies tools/update_dependencies/src/update_node_engine.py
+    {{ update_dep }}node_engine.py
 
 # Update the jsdelivr CDN package versions in the Sphinx config.
 [private]
 update-jsdelivr:
-    uv run --project tools/update_dependencies tools/update_dependencies/src/update_jsdelivr.py
+    {{ update_dep }}jsdelivr.py
 
 alias update-deps := update-dependencies
 
@@ -81,34 +84,44 @@ update-dependencies: update-docker-base-images update-py-dependencies update-git
 [no-cd]
 [private]
 install-py-dependencies:
+    ?[ {{ pyproject_toml_exists }} = true ]
     uv sync --no-progress --quiet --locked --all-extras --all-groups --reinstall-package shared-code
 
 # Install JavaScript dependencies from the lock file.
 [no-cd]
 [private]
 install-js-dependencies:
+    ?[ {{ package_json_exists }} = true ]
     npm install --ignore-scripts --silent
 
 # === Build artifacts ===
+
+# Build the docker containers.
+[no-cd]
+[private]
+build-docker *components:
+    ?[ {{ docker_folder_exists }} = true ]
+    docker compose build {{ components }}
 
 # Build the JavaScript artifact(s) from the code.
 [no-cd]
 [private]
 build-js: install-js-dependencies
-    npm run --ignore-scripts build
+    ?[ {{ has_js_build_script }} = true ]
+    npm run --ignore-scripts --silent build
 
 # Build the documentation from the code.
 [no-cd]
 [private]
 build-docs: install-py-dependencies
-    uv run sphinx-build src build
+    ?[ {{ has_sphinx }} = true ]
+    {{ uv_run }} sphinx-build src build
 
 # Build artifacts or components from the code. Run `just build-help` for more information.
 [no-cd]
-build *components:
-    {{ if has_sphinx == "true" { "just build-docs" } else if has_js_build_script == "true" { "just build-js" } else if docker_folder_exists == "true" { f"docker compose build {{components}}" } else { "echo 'Nothing to build in this folder'" } }}
-
-components := `ls components`
+build *components: build-docs build-js (build-docker components)
+    ?[ {{ has_sphinx }} = false ] && [ {{ has_js_build_script }} = false ] && [ {{ docker_folder_exists }} = false ]
+    echo "Nothing to build in this folder"
 
 [private]
 build-help:
@@ -122,22 +135,32 @@ build-help:
 
 # === Start components ===
 
+# Start the Docker containers.
+[no-cd]
+[private]
+start-docker-component *components:
+    ?[ {{ docker_folder_exists }} = true ]
+    COLUMNS=$({{ uv_run }} python -c 'import shutil, subprocess; w = shutil.get_terminal_size().columns; s = subprocess.run(["docker", "compose", "config", "--services"], capture_output=True, text=True).stdout; print(w - max(len(line.strip()) for line in s.splitlines()) - 6)') docker compose up {{ components }}
+
 # Start the Python component.
 [no-cd]
 [private]
 start-py-component: install-py-dependencies
-    uv run python src/quality_time*.py
+    ?[ {{ pyproject_toml_exists }} = true ]
+    {{ uv_run }} python src/quality_time*.py
 
 # Start the JavaScript component.
 [no-cd]
 [private]
 start-js-component: install-js-dependencies
-    npm run start
+    ?[ {{ has_js_start_script }} = true ]
+    npm run --silent start
 
 # Start one or more component(s). Run `just start-help` for more information.
 [no-cd]
-start *components:
-    {{ if pyproject_toml_exists == "true" { "just start-py-component" } else if has_js_start_script == "true" { "just start-js-component" } else if docker_folder_exists == "true" { f"COLUMNS=$(uv run python -c 'w = {{term_width}}; import subprocess; s = subprocess.run([\"docker\", \"compose\", \"config\", \"--services\"], capture_output=True, text=True).stdout; print(w - max(len(line.strip()) for line in s.splitlines()) - 6)') docker compose up {{components}}" } else { "echo 'Nothing to start in this folder'" } }}
+start *components: start-py-component start-js-component (start-docker-component components)
+    ?[ {{ pyproject_toml_exists }} = false ] && [ {{ has_js_start_script }} = false ] && [ {{ docker_folder_exists }} = false ]
+    echo "Nothing to start in this folder"
 
 [private]
 start-help:
@@ -158,101 +181,115 @@ start-help:
 [no-quiet]
 [private]
 py-unit-test $PYTHONDEVMODE="1" $PYTHONPATH="src:$PYTHONPATH": install-py-dependencies
-    uv run coverage run -m unittest --quiet
-    uv run coverage report --fail-under=0
-    uv run coverage html --fail-under=0
-    uv run coverage xml  # Fail if coverage is too low, but only after the text and HTML reports have been generated
+    ?[ {{ has_py_unit_tests }} = true ]
+    {{ uv_run }} coverage run -m unittest --quiet
+    {{ uv_run }} coverage report --fail-under=0
+    {{ uv_run }} coverage html --quiet --fail-under=0
+    {{ uv_run }} coverage xml --quiet  # Fail if coverage is too low, but only after the text and HTML reports have been generated
 
 # Run the JavaScript unit tests. Pass 'cov' to also measure the test coverage.
 [no-cd]
 [no-quiet]
 [private]
 js-unit-test *cov: install-js-dependencies
-    npm run test {{ if cov == "cov" { "-- --coverage" } else { "" } }}
+    ?[ {{ has_js_test_script }} = true ]
+    npm run --silent test {{ if cov == "cov" { "-- --coverage" } else { "" } }}
 
 # Run the unit tests, in the current working directory. Pass 'cov' to also measure the JavaScript test coverage (Python test coverage is always measured).
 [no-cd]
-test *cov:
-    {{ if has_py_unit_tests == "true" { "just py-unit-test" } else { "" } }}
-    {{ if has_js_test_script == "true" { f"just js-unit-test {{cov}}" } else { "" } }}
-    {{ if has_py_unit_tests + has_js_test_script == "falsefalse" { "echo 'Nothing to test'" } else { "" } }}
+test *cov: py-unit-test (js-unit-test cov)
+    ?[ {{ has_py_unit_tests }} = false ] && [ {{ has_js_test_script }} = false ]
+    echo "Nothing to test in this folder"
 
 # === Run checks ===
 
-# Run mypy
+# Run mypy.
 [no-cd]
 [private]
 mypy: install-py-dependencies
-    uv run mypy {{ code }}
+    ?[ {{ pyproject_toml_exists }} = true ]
+    {{ uv_run }} mypy {{ code }}
 
-# Run fixit
+# Run fixit.
 [no-cd]
 [private]
 fixit: install-py-dependencies
-    uv run fixit lint {{ code }}
+    ?[ {{ pyproject_toml_exists }} = true ]
+    {{ uv_run }} fixit --quiet lint {{ code }}
 
-# Run ruff
+# Run ruff.
 [no-cd]
 [private]
 ruff: install-py-dependencies
-    uv run ruff format --check {{ code }}
-    uv run ruff check {{ code }}
+    ?[ {{ pyproject_toml_exists }} = true ]
+    {{ uv_run }} ruff format --quiet --check {{ code }}
+    {{ uv_run }} ruff check --quiet {{ code }}
 
-# Run pyproject-fmt
+# Run pyproject-fmt.
 [no-cd]
 [private]
 pyproject-fmt: install-py-dependencies
-    uv run pyproject-fmt --check pyproject.toml
+    ?[ {{ pyproject_toml_exists }} = true ]
+    {{ uv_run }} pyproject-fmt --check pyproject.toml
 
-# Run troml
+# Run troml.
 [no-cd]
 [private]
 troml: install-py-dependencies
-    uv run troml check
+    ?[ {{ pyproject_toml_exists }} = true ]
+    {{ uv_run }} troml check
 
-# Run pip-audit
+# Run pip-audit.
 [no-cd]
 [private]
 pip-audit: install-py-dependencies
-    uv export --quiet --directory . --format requirements-txt --no-emit-package shared-code > /tmp/requirements-{{ random_string }}.txt
-    uv run pip-audit --requirement /tmp/requirements-{{ random_string }}.txt --disable-pip --progress-spinner off --ignore-vuln CVE-2026-4539
-    rm -f /tmp/requirements-{{ random_string }}.txt
+    ?[ {{ pyproject_toml_exists }} = true ]
+    trap 'rm -f /tmp/requirements-{{ random_string }}.txt' EXIT; \
+    uv export --quiet --directory . --format requirements-txt --no-emit-package shared-code > /tmp/requirements-{{ random_string }}.txt && \
+    {{ uv_run }} pip-audit --requirement /tmp/requirements-{{ random_string }}.txt --disable-pip --progress-spinner off
 
-# Run uv audit
+# Run uv audit.
 [no-cd]
 [private]
 uv-audit: install-py-dependencies
-    uv --preview-features audit audit --locked
+    ?[ {{ pyproject_toml_exists }} = true ]
+    uv --preview-features audit audit --locked --quiet
 
-# Run bandit
+# Run bandit.
 [no-cd]
 [private]
 bandit: install-py-dependencies
-    uv run bandit --configfile pyproject.toml --quiet --recursive {{ code }}
+    ?[ {{ pyproject_toml_exists }} = true ]
+    {{ uv_run }} bandit --configfile pyproject.toml --quiet --recursive {{ code }}
 
-# Run vulture
+# Run vulture.
 [no-cd]
 [private]
 vulture: install-py-dependencies
-    uv run vulture --exclude .venv --min-confidence 0 {{ code }} .vulture-whitelist.py
+    ?[ {{ pyproject_toml_exists }} = true ]
+    {{ uv_run }} vulture --exclude .venv --min-confidence 0 {{ code }} .vulture-whitelist.py
 
-# Run vale
+# Run vale.
 [no-cd]
 [private]
 vale: install-py-dependencies
-    {{ if has_vale == "true" { "uv run vale sync; uv run vale --no-wrap --glob '*.md' src" } else { "" } }}
+    ?[ {{ has_vale }} = true ]
+    {{ uv_run }} vale sync
+    {{ uv_run }} vale --no-wrap --glob '*.md' src
 
-# Run yamllint
+# Run yamllint from the project root.
 [private]
 yamllint: install-py-dependencies
-    {{ if has_yamllint == "true" { "uv run yamllint -c docs/.yamllint ." } else { "" } }}
+    ?[ {{ has_yamllint }} = true ]
+    {{ uv_run }} yamllint -c docs/.yamllint .
 
-# Run sphinx
+# Run sphinx.
 [no-cd]
 [private]
 sphinx: install-py-dependencies
+    ?[ {{ has_sphinx }} = true ]
     echo Running sphinx linkcheck may take a while, be patient...
-    {{ if has_sphinx == "true" { "uv run sphinx-build -M linkcheck src build --quiet --jobs auto" } else { "" } }}
+    {{ uv_run }} sphinx-build -M linkcheck src build --quiet --jobs auto
 
 # Run Python checks.
 [no-cd]
@@ -260,22 +297,25 @@ sphinx: install-py-dependencies
 [private]
 check-py: mypy fixit ruff pyproject-fmt troml pip-audit uv-audit bandit vulture vale yamllint sphinx
 
-# Run npm lint
+# Run npm lint.
 [no-cd]
 [private]
 npm-lint: install-js-dependencies
-    npm run lint --if-present
+    ?[ {{ package_json_exists }} = true ]
+    npm run --silent lint --if-present
 
-# Run npm audit
+# Run npm audit.
 [no-cd]
 [private]
 npm-audit: install-js-dependencies
+    ?[ {{ package_json_exists }} = true ]
     npm audit
 
-# Run npm outdated
+# Run npm outdated.
 [no-cd]
 [private]
 npm-outdated: install-js-dependencies
+    ?[ {{ package_json_exists }} = true ]
     npm outdated
 
 # Run JavaScript checks.
@@ -286,10 +326,9 @@ check-js: npm-lint npm-audit npm-outdated
 
 # Run the quality checks, in the current working directory.
 [no-cd]
-check:
-    {{ if package_json_exists == "true" { "just check-js" } else { "" } }}
-    {{ if pyproject_toml_exists == "true" { "just check-py" } else { "" } }}
-    {{ if pyproject_toml_exists + package_json_exists == "falsefalse" { "echo 'Nothing to check'" } else { "" } }}
+check: check-js check-py
+    ?[ {{ pyproject_toml_exists }} = false ] && [ {{ package_json_exists }} = false ]
+    echo "Nothing to check in this folder"
 
 # === Fix issues ===
 
@@ -297,38 +336,40 @@ check:
 [no-cd]
 [private]
 fix-py: install-py-dependencies
-    uv run ruff format {{ code }}
-    uv run ruff check --fix {{ code }}
-    uv run fixit fix {{ code }}
+    ?[ {{ pyproject_toml_exists }} = true ]
+    {{ uv_run }} ruff format --quiet {{ code }}
+    {{ uv_run }} ruff check --quiet --fix {{ code }}
+    {{ uv_run }} fixit fix {{ code }}
     # Pyproject-fmt returns exit code 1 when pyproject.toml needs formatting, ignore it when formatting:
-    uv run pyproject-fmt --no-print-diff pyproject.toml || true
-    uv run troml suggest --fix
+    {{ uv_run }} pyproject-fmt --no-print-diff pyproject.toml || true
+    {{ uv_run }} troml suggest --fix
     # Vulture returns exit code 3 when there is dead code, ignore it when writing the whitelist:
-    uv run vulture --exclude .venv --min-confidence 0 --make-whitelist {{ code }} >| .vulture-whitelist.py || true
+    {{ uv_run }} vulture --exclude .venv --min-confidence 0 --make-whitelist {{ code }} > .vulture-whitelist.py || true
 
 # Fix JavaScript quality issues that can be fixed automatically.
 [no-cd]
 [private]
 fix-js: install-js-dependencies
-    npm run fix
+    ?[ {{ has_js_fix_script }} = true ]
+    npm run --silent fix
 
 # Fix quality issues that can be fixed automatically, in the current working directory.
 [no-cd]
-fix:
-    {{ if pyproject_toml_exists == "true" { "just fix-py" } else { "" } }}
-    {{ if has_js_fix_script == "true" { "just fix-js" } else { "" } }}
+fix: fix-py fix-js
+    ?[ {{ pyproject_toml_exists }} = false ] && [ {{ has_js_fix_script }} = false ]
+    echo "Nothing to fix in this folder"
 
 # === Release ===
 
 # Release Quality-time. Run `just release-help` for more information.
 [working-directory('tools/release')]
 release *args:
-    uv run --script release.py {{ args }}
+    {{ uv_run }} --script release.py {{ args }}
 
 [private]
 [working-directory('tools/release')]
 release-help:
-    uv run --script release.py --help
+    {{ uv_run }} --script release.py --help
 
 # === CI/CD ===
 
@@ -339,7 +380,7 @@ ci $CI="true": test check
 
 # === Clean ===
 
-# Clean caches, build folders, and generated files
+# Clean caches, build folders, and generated files.
 clean:
     rm -f .coverage */.coverage */*/.coverage
     rm -rf build */build */*/build
