@@ -18,6 +18,7 @@ ENV API_SERVER_PORT=5001
 
 COPY --from=compile-image /usr/sbin/nginx /usr/sbin/nginx
 COPY *.template /etc/nginx/templates/
+COPY security_headers.conf /etc/nginx/snippets/security_headers.conf
 
 # Use the Shell form of CMD instead of the Exec form so the environment variable is substituted
 # hadolint ignore=DL3025

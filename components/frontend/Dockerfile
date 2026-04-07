@@ -24,3 +24,4 @@ COPY --from=compile-image /home/frontend/dist /usr/share/nginx/html
 HEALTHCHECK CMD wget --spider http://0.0.0.0:"${FRONTEND_PORT:-5000}"/favicon.ico || exit 1
 
 COPY *.template /etc/nginx/templates/
+COPY security_headers.conf /etc/nginx/snippets/security_headers.conf
