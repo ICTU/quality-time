@@ -8,10 +8,7 @@ server {
 
     location / {
         try_files       $uri /index.html =404;
-        add_header      Strict-Transport-Security "max-age=31536000;";
-        add_header      X-XSS-Protection "1; mode=block";
-        add_header      X-Content-Type-Options "nosniff";
-        add_header      X-Frame-Options "DENY";
+        include         /etc/nginx/snippets/security_headers.conf;
         add_header      Cache-Control "no-store";
     }
 }
