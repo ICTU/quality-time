@@ -75,6 +75,9 @@ jobs:
         run: tools/release/latest_release_changelog.py docs/src/changelog.md > ${{ github.workspace }}-CHANGELOG.txt
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2.6.1
+        env:
+          # https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
           prerelease: ${{ contains(github.ref_name, 'rc') }}
           body_path: ${{ github.workspace }}-CHANGELOG.txt
