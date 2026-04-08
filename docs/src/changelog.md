@@ -12,6 +12,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Fixed
+
+- Don't attempt to send notifications to notification destinations without a webhook. Fixes [#12906](https://github.com/ICTU/quality-time/issues/12906).
+
 ### Added
 
 - Document what data is preserved when copying or moving subjects, metrics, and sources. Closes [#6337](https://github.com/ICTU/quality-time/issues/6337).

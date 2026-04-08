@@ -38,6 +38,7 @@ class NotificationFinder:
                     [
                         Notification(report, destination.get("report_url", "").strip("/"), notable_metrics, destination)
                         for destination in destinations
+                        if destination["webhook"]
                     ],
                 )
         return notifications
