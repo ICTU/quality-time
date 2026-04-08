@@ -49,7 +49,11 @@ class StrategiesTests(unittest.TestCase):
                 "title": "Title",
                 "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: self.red_metric}, "type": "software"}},
                 "notification_destinations": {
-                    "destination_uuid": {"name": "destination", "report_url": "https://report"}
+                    "destination_uuid": {
+                        "name": "destination",
+                        "report_url": "https://report",
+                        "webhook": "https://xxxxx.webhook.office.com/xxxxxxxxx",
+                    }
                 },
             },
         ]
@@ -175,10 +179,13 @@ class StrategiesTests(unittest.TestCase):
         report2 = {
             "title": "Title",
             "report_uuid": REPORT_ID2,
-            "webhook": "webhook",
             "subjects": {SUBJECT_ID: subject2},
             "notification_destinations": {
-                NOTIFICATION_DESTINATION_ID: {"report_url": "https://report2", "name": "destination2"},
+                NOTIFICATION_DESTINATION_ID: {
+                    "report_url": "https://report2",
+                    "name": "destination2",
+                    "webhook": "https://xxxxx.webhook.office.com/xxxxxxxxx",
+                },
             },
         }
         self.reports.append(Report({}, report2))
@@ -203,6 +210,13 @@ class StrategiesTests(unittest.TestCase):
     def test_no_notification_destinations_configured(self):
         """Test that no notification is to be sent if there are no configurations in notification destinations."""
         self.reports[0]["notification_destinations"] = {}
+        self.assertEqual([], self.get_notifications())
+
+    def test_notification_destination_without_webhook(self):
+        """Test that no notification is to be sent if there are no notification destinations with a webhook."""
+        self.reports[0]["notification_destinations"] = {
+            "destination_uuid": {"name": "destination", "report_url": "https://report"}
+        }
         self.assertEqual([], self.get_notifications())
 
     def test_no_notification_destinations_in_json(self):
