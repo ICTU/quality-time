@@ -311,12 +311,12 @@ npm-audit: install-js-dependencies
     ?[ {{ package_json_exists }} = true ]
     npm audit
 
-# Run npm outdated.
+# Run npm outdated. Ignore outdated packages that can't be updated (current == wanted).
 [no-cd]
 [private]
 npm-outdated: install-js-dependencies
     ?[ {{ package_json_exists }} = true ]
-    npm outdated
+    npm outdated --json | uv run python -c "import json, sys; updates = [f'{k}: {v['current']} -> {v['wanted']}' for k, v in json.loads(sys.stdin.read()).items() if v['wanted'] != v['current']]; print('\n'.join(updates), end='\n' if updates else ''); sys.exit(1 if updates else 0)"
 
 # Run JavaScript checks.
 [no-cd]
