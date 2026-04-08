@@ -178,7 +178,6 @@ start-help:
 
 # Run the Python unit tests.
 [no-cd]
-[no-quiet]
 [private]
 py-unit-test $PYTHONDEVMODE="1" $PYTHONPATH="src:$PYTHONPATH": install-py-dependencies
     ?[ {{ has_py_unit_tests }} = true ]
@@ -189,7 +188,6 @@ py-unit-test $PYTHONDEVMODE="1" $PYTHONPATH="src:$PYTHONPATH": install-py-depend
 
 # Run the JavaScript unit tests. Pass 'cov' to also measure the test coverage.
 [no-cd]
-[no-quiet]
 [private]
 js-unit-test *cov: install-js-dependencies
     ?[ {{ has_js_test_script }} = true ]
