@@ -21,12 +21,12 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
     def pypi_metadata(
         changelog_url: str = "https://changelog",
         repository: str = "https://github.com/repo/package_with_github_releases",
-    ) -> dict[str, dict[str, dict[str, str]]]:
+    ) -> dict[str, dict[str, str | dict[str, str]]]:
         """Create PyPI metadata fixture."""
         project_urls = {"Homepage": "https://home", "repository": repository}
         if changelog_url:
             project_urls["Changelog"] = changelog_url
-        return {"info": {"project_urls": project_urls}}
+        return {"info": {"description": "Package description", "project_urls": project_urls}}
 
     def create_pyproject_toml(self) -> Mock:
         """Create a mock pyproject.toml file."""
@@ -43,7 +43,7 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         mock_pyproject_toml.parent = Path("/")
         return mock_pyproject_toml
 
-    @patch("requests.get", Mock(return_value=Mock(json=Mock(return_value={"info": {}}))))
+    @patch("requests.get", Mock(return_value=Mock(json=Mock(return_value={"info": {"description": "Package"}}))))
     @patch("subprocess.run", Mock(return_value=Mock(stdout="| package (latest: v1.1)\n")))
     def test_update(self, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
         """Test updating a pyproject.toml."""

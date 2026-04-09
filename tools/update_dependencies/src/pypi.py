@@ -1,7 +1,7 @@
 """Python Package Index."""
 
-from functools import cache
 import re
+from functools import cache
 
 import requests
 
@@ -33,7 +33,7 @@ def get_changes(package: str, version: str) -> str:
     description = info["description"]
     if version in description:
         return get_version_changes_from_changelog(description, version)
-    if match := re.search(r'https://github\.com/([\w.-]+)/([\w.-]+)', description):
+    if match := re.search(r"https://github\.com/([\w.-]+)/([\w.-]+)", description):
         organization, repository = match.group(1), match.group(2)
         if body := get_latest_release_json(organization, repository).get("body"):
             return body
