@@ -31,7 +31,15 @@ code := if trim(src_folder + " " + tests_folder) == "" { ".?*.py" } else { src_f
 random_string := uuid()
 uv_run := "uv run --quiet"
 update_dep := uv_run + " --project tools/update_dependencies tools/update_dependencies/src/update_"
+coverage := uv_run + " coverage"
+fixit := uv_run + " fixit --quiet"
 pyproject_fmt := uv_run + " pyproject-fmt --no-generate-python-version-classifiers"
+ruff := uv_run + " ruff --quiet"
+troml := uv_run + " troml"
+vulture := uv_run + " vulture --exclude .venv --min-confidence 0"
+vulture_whitelist := ".vulture-whitelist.py"
+sphinx_build := uv_run + " sphinx-build"
+npm_run := "npm run --silent"
 
 # === Update dependencies ===
 
@@ -109,14 +117,14 @@ build-docker *components:
 [private]
 build-js: install-js-dependencies
     ?[ {{ has_js_build_script }} = true ]
-    npm run --ignore-scripts --silent build
+    {{ npm_run }} --ignore-scripts build
 
 # Build the documentation from the code.
 [no-cd]
 [private]
 build-docs: install-py-dependencies
     ?[ {{ has_sphinx }} = true ]
-    {{ uv_run }} sphinx-build src build
+    {{ sphinx_build }} src build
 
 # Build artifacts or components from the code. Run `just build-help` for more information.
 [no-cd]
@@ -155,7 +163,7 @@ start-py-component: install-py-dependencies
 [private]
 start-js-component: install-js-dependencies
     ?[ {{ has_js_start_script }} = true ]
-    npm run --silent start
+    {{ npm_run }} start
 
 # Start one or more component(s). Run `just start-help` for more information.
 [no-cd]
@@ -182,17 +190,17 @@ start-help:
 [private]
 py-unit-test $PYTHONDEVMODE="1" $PYTHONPATH="src:$PYTHONPATH": install-py-dependencies
     ?[ {{ has_py_unit_tests }} = true ]
-    {{ uv_run }} coverage run -m unittest --quiet
-    {{ uv_run }} coverage report --fail-under=0
-    {{ uv_run }} coverage html --quiet --fail-under=0
-    {{ uv_run }} coverage xml --quiet  # Fail if coverage is too low, but only after the text and HTML reports have been generated
+    {{ coverage }} run -m unittest --quiet
+    {{ coverage }} report --fail-under=0
+    {{ coverage }} html --quiet --fail-under=0
+    {{ coverage }} xml --quiet  # Fail if coverage is too low, but only after the text and HTML reports have been generated
 
 # Run the JavaScript unit tests. Pass 'cov' to also measure the test coverage.
 [no-cd]
 [private]
 js-unit-test *cov: install-js-dependencies
     ?[ {{ has_js_test_script }} = true ]
-    npm run --silent test {{ if cov == "cov" { "-- --coverage" } else { "" } }}
+    {{ npm_run }} test {{ if cov == "cov" { "-- --coverage" } else { "" } }}
 
 # Run the unit tests, in the current working directory. Pass 'cov' to also measure the JavaScript test coverage (Python test coverage is always measured).
 [no-cd]
@@ -214,15 +222,15 @@ mypy: install-py-dependencies
 [private]
 fixit: install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
-    {{ uv_run }} fixit --quiet lint {{ code }}
+    {{ fixit }} lint {{ code }}
 
 # Run ruff.
 [no-cd]
 [private]
 ruff: install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
-    {{ uv_run }} ruff format --quiet --check {{ code }}
-    {{ uv_run }} ruff check --quiet {{ code }}
+    {{ ruff }} format --check {{ code }}
+    {{ ruff }} check {{ code }}
 
 # Run pyproject-fmt.
 [no-cd]
@@ -236,7 +244,7 @@ pyproject-fmt: install-py-dependencies
 [private]
 troml: install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
-    {{ uv_run }} troml check
+    {{ troml }} check
 
 # Run pip-audit.
 [no-cd]
@@ -266,7 +274,7 @@ bandit: install-py-dependencies
 [private]
 vulture: install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
-    {{ uv_run }} vulture --exclude .venv --min-confidence 0 {{ code }} .vulture-whitelist.py
+    {{ vulture }} {{ code }} {{ vulture_whitelist }}
 
 # Run vale.
 [no-cd]
@@ -288,7 +296,7 @@ yamllint: install-py-dependencies
 sphinx: install-py-dependencies
     ?[ {{ has_sphinx }} = true ]
     echo Running sphinx linkcheck may take a while, be patient...
-    {{ uv_run }} sphinx-build -M linkcheck src build --quiet --jobs auto
+    {{ sphinx_build }} -M linkcheck src build --quiet --jobs auto
 
 # Run Python checks.
 [no-cd]
@@ -301,7 +309,7 @@ check-py: mypy fixit ruff pyproject-fmt troml pip-audit uv-audit bandit vulture 
 [private]
 npm-lint: install-js-dependencies
     ?[ {{ package_json_exists }} = true ]
-    npm run --silent lint --if-present
+    {{ npm_run }} lint --if-present
 
 # Run npm audit.
 [no-cd]
@@ -336,21 +344,21 @@ check: check-js check-py
 [private]
 fix-py: install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
-    {{ uv_run }} ruff format --quiet {{ code }}
-    {{ uv_run }} ruff check --quiet --fix {{ code }}
-    {{ uv_run }} fixit fix {{ code }}
+    {{ ruff }} format {{ code }}
+    {{ ruff }} check --fix {{ code }}
+    {{ fixit }} fix {{ code }}
     # Pyproject-fmt returns exit code 1 when pyproject.toml needs formatting, ignore it when formatting:
     {{ pyproject_fmt }} --no-print-diff pyproject.toml || true
-    {{ uv_run }} troml suggest --fix
+    {{ troml }} suggest --fix
     # Vulture returns exit code 3 when there is dead code, ignore it when writing the whitelist:
-    {{ uv_run }} vulture --exclude .venv --min-confidence 0 --make-whitelist {{ code }} > .vulture-whitelist.py || true
+    {{ vulture }} --make-whitelist {{ code }} > {{ vulture_whitelist }} || true
 
 # Fix JavaScript quality issues that can be fixed automatically.
 [no-cd]
 [private]
 fix-js: install-js-dependencies
     ?[ {{ has_js_fix_script }} = true ]
-    npm run --silent fix
+    {{ npm_run }} fix
 
 # Fix quality issues that can be fixed automatically, in the current working directory.
 [no-cd]
