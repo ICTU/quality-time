@@ -27,10 +27,11 @@ has_yamllint := if pyproject_toml_contents =~ '"yamllint[<=]=[A-Za-z0-9_.\-]+"' 
 has_vale := if pyproject_toml_contents =~ '"vale[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
 src_folder := if src_folder_exists == "true" { "src" } else { "" }
 tests_folder := if tests_folder_exists == "true" { "tests" } else { "" }
-code := if trim(src_folder + " " + tests_folder) == "" { "*.py" } else { src_folder + " " + tests_folder }
+code := if trim(src_folder + " " + tests_folder) == "" { ".?*.py" } else { src_folder + " " + tests_folder }
 random_string := uuid()
 uv_run := "uv run --quiet"
 update_dep := uv_run + " --project tools/update_dependencies tools/update_dependencies/src/update_"
+pyproject_fmt := uv_run + " pyproject-fmt --no-generate-python-version-classifiers"
 
 # === Update dependencies ===
 
@@ -228,7 +229,7 @@ ruff: install-py-dependencies
 [private]
 pyproject-fmt: install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
-    {{ uv_run }} pyproject-fmt --check pyproject.toml
+    {{ pyproject_fmt }} --check pyproject.toml
 
 # Run troml.
 [no-cd]
@@ -339,7 +340,7 @@ fix-py: install-py-dependencies
     {{ uv_run }} ruff check --quiet --fix {{ code }}
     {{ uv_run }} fixit fix {{ code }}
     # Pyproject-fmt returns exit code 1 when pyproject.toml needs formatting, ignore it when formatting:
-    {{ uv_run }} pyproject-fmt --no-print-diff pyproject.toml || true
+    {{ pyproject_fmt }} --no-print-diff pyproject.toml || true
     {{ uv_run }} troml suggest --fix
     # Vulture returns exit code 3 when there is dead code, ignore it when writing the whitelist:
     {{ uv_run }} vulture --exclude .venv --min-confidence 0 --make-whitelist {{ code }} > .vulture-whitelist.py || true
