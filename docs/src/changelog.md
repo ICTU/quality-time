@@ -14,6 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
+- Work around a GitLab GraphQL bug that made merge requests metrics fail with a connection error on GitLab 18.9 and later. Fixes [#12696](https://github.com/ICTU/quality-time/issues/12696) and [#12725](https://github.com/ICTU/quality-time/issues/12725).
 - Don't attempt to send notifications to notification destinations without a webhook. Fixes [#12906](https://github.com/ICTU/quality-time/issues/12906).
 
 ### Added

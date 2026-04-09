@@ -4,28 +4,16 @@ import aiohttp
 from aiogqlc import GraphQLClient
 
 from base_collectors import MergeRequestCollector
-from collector_utilities.exceptions import NotFoundError
+from collector_utilities.exceptions import CollectorError, NotFoundError
 from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceResponses
 
 from .base import GitLabBase
 
-# GraphQL query to find out which fields merge requests have in a GitLab instance. GitLab instances on the free plan
-# don't have the approved field, GitLab instances on the premium plan and up do.
-MERGE_REQUEST_FIELDS_QUERY = """
-{
-  __type(name: "MergeRequest") {
-    fields {
-      name
-    }
-  }
-}
-"""
-
 # GraphQL query to retrieve the merge requests for a specific project. The project id is passed as a variable. This
 # string needs to be formatted with or without the approved field name, depending on whether the GitLab instance has
-# the approved field (queried with the query above), and with the pagination arguments, depending on whether the
-# query is used for the first page or for consecutive pages.
+# the approved field, and with the pagination arguments, depending on whether the query is used for the first page or
+# for consecutive pages.
 MERGE_REQUEST_QUERY = """
 query MRs($projectId: ID!) {{
   project(fullPath: $projectId) {{
@@ -66,6 +54,10 @@ class GitLabMergeRequestInfoError(NotFoundError):
         super().__init__("Merge request info for project", project, extra=tip)
 
 
+class _ApprovedFieldUnknownError(Exception):
+    """Raised when GitLab reports the MergeRequest.approved field as unknown."""
+
+
 class GitLabMergeRequests(MergeRequestCollector, GitLabBase):
     """Collector class to measure the number of merge requests."""
 
@@ -84,8 +76,9 @@ class GitLabMergeRequests(MergeRequestCollector, GitLabBase):
         """
         api_url = await self._api_url()
         timeout = aiohttp.ClientTimeout(total=self._session.timeout.total)
-        # We need to create a new session because the GraphQLClient expects the session to provide the headers:
-        async with aiohttp.ClientSession(raise_for_status=True, timeout=timeout, headers=self._headers()) as session:
+        # We need to create a new session because the GraphQLClient expects the session to provide the headers.
+        # raise_for_status is False so we can inspect GraphQL error bodies (e.g. HTTP 400 on unknown field).
+        async with aiohttp.ClientSession(raise_for_status=False, timeout=timeout, headers=self._headers()) as session:
             client = GraphQLClient(f"{api_url}/api/graphql", session=session)
             approved_field = await self._approved_field(client)
             responses, has_next_page, cursor = SourceResponses(), True, ""
@@ -94,13 +87,19 @@ class GitLabMergeRequests(MergeRequestCollector, GitLabBase):
                 responses.append(response)
         return responses
 
-    @classmethod
-    async def _approved_field(cls, client: GraphQLClient) -> str:
-        """Determine whether the GitLab instance has the approved field for merge requests."""
-        response = await client.execute(MERGE_REQUEST_FIELDS_QUERY)
-        json = await response.json()
-        fields = [field["name"] for field in json["data"]["__type"]["fields"]]
-        return cls.APPROVED_FIELD if cls.APPROVED_FIELD in fields else ""
+    async def _approved_field(self, client: GraphQLClient) -> str:
+        """Determine whether the GitLab instance has the approved field for merge requests.
+
+        This is done by running a dry-run first-page merge-requests query that includes the approved field. If
+        GitLab accepts it, the field is supported; if GitLab rejects it as unknown, it isn't. The first page is
+        then fetched again by the pagination loop, for a total call count that matches the previous introspection
+        approach.
+        """
+        try:
+            await self._get_merge_request_response(client, self.APPROVED_FIELD)
+        except _ApprovedFieldUnknownError:
+            return ""
+        return self.APPROVED_FIELD
 
     async def _get_merge_request_response(
         self,
@@ -113,6 +112,13 @@ class GitLabMergeRequests(MergeRequestCollector, GitLabBase):
         merge_request_query = MERGE_REQUEST_QUERY.format(pagination=pagination, approved=approved_field)
         response = await client.execute(merge_request_query, variables={"projectId": self._parameter("project")})
         json = await response.json()
+        if errors := json.get("errors"):
+            message = errors[0].get("message") or "unknown GitLab error"
+            if self.APPROVED_FIELD in message and ("doesn't exist" in message or "Field '" in message):
+                raise _ApprovedFieldUnknownError(message)
+            response.raise_for_status()  # Surface HTTP errors (e.g. 400) if any.
+            raise CollectorError(message)  # Otherwise surface the GraphQL error message.
+        response.raise_for_status()
         if project := json["data"]["project"]:
             page_info = project["mergeRequests"]["pageInfo"]
             return response, page_info["hasNextPage"], page_info.get("endCursor", "")
