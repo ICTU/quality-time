@@ -21,7 +21,7 @@ class GetChangesTest(unittest.TestCase):
 
     def test_no_url_found(self, mock_get: Mock):
         """Test that the changes are empty if no changelog URL is returned by PyPI."""
-        self.create_mock_response(mock_get, {"info": {}})
+        self.create_mock_response(mock_get, {"info": {"description": "Package-foo description"}})
         self.assertEqual("", get_changes("package-foo", "1.0"))
 
     def test_changelog_url_found(self, mock_get: Mock):
@@ -43,3 +43,28 @@ class GetChangesTest(unittest.TestCase):
                 mock_get, {"info": {"project_urls": {"docs": docs, key: repo}}}, {"body": changelog}
             )
             self.assertEqual(changelog, get_changes(f"package-foo-{key}", "1.1"))
+
+    def test_changelog_in_description(self, mock_get: Mock):
+        """Test that the changelog from the description is returned."""
+        changelog = "1.1\n- Fixed ...\n- Added ..."
+        self.create_mock_response(mock_get, {"info": {"description": f"Package description\n{changelog}\n"}})
+        self.assertEqual(changelog, get_changes("package-foo", "1.1"))
+
+    def test_github_url_in_description_that_has_a_changelog(self, mock_get: Mock):
+        """Test that the GitHub URL in the description is used to get the changelog."""
+        github_url = "https://github.com/org/bar"
+        changelog = "1.1\n- Fixed ...\n- Added ..."
+        self.create_mock_response(
+            mock_get,
+            {"info": {"description": f"Package description\n{github_url}\n"}},
+            {"tag_name": "1.1", "body": changelog},
+        )
+        self.assertEqual(changelog, get_changes("package-bar", "1.1"))
+
+    def test_github_url_in_description_that_has_no_changelog(self, mock_get: Mock):
+        """Test that the GitHub URL in the description is used to get the changelog."""
+        github_url = "https://github.com/org/baz"
+        self.create_mock_response(
+            mock_get, {"info": {"description": f"Package description\n{github_url}\n"}}, {"tag_name": "1.1"}
+        )
+        self.assertEqual("", get_changes("package-baz", "1.1"))
