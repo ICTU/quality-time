@@ -1,6 +1,7 @@
 """Python Package Index."""
 
 from functools import cache
+import re
 
 import requests
 
@@ -17,7 +18,8 @@ def get_changes(package: str, version: str) -> str:
     response = requests.get(f"https://pypi.org/pypi/{package}/{version}/json", timeout=10)
     response.raise_for_status()
     json = response.json()
-    urls = json["info"].get("project_urls", {})
+    info = json["info"]
+    urls = info.get("project_urls", {})
     for url_key, url in urls.items():
         if url_key.lower() in CHANGELOG_URL_KEYS:
             changelog_response = requests.get(github_to_raw(url), timeout=10)
@@ -26,7 +28,13 @@ def get_changes(package: str, version: str) -> str:
     for url_key, url in urls.items():
         if url_key.lower() in REPOSITORY_URL_KEYS:
             organization, repository = github_organization_and_repository(url)
-            if organization and repository:
-                json = get_latest_release_json(organization, repository)
-                return json.get("body", "")
+            if organization and repository and (body := get_latest_release_json(organization, repository).get("body")):
+                return body
+    description = info["description"]
+    if version in description:
+        return get_version_changes_from_changelog(description, version)
+    if match := re.search(r'https://github\.com/([\w.-]+)/([\w.-]+)', description):
+        organization, repository = match.group(1), match.group(2)
+        if body := get_latest_release_json(organization, repository).get("body"):
+            return body
     return ""
