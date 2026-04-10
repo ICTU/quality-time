@@ -42,7 +42,12 @@ DesiredResponseTimeInput.propTypes = {
 
 export function ReactionTimes(props) {
     return (
-        <Grid container alignItems="flex-start" spacing={{ xs: 1, sm: 2, md: 2 }} columns={{ xs: 1, sm: 2, md: 4 }}>
+        <Grid
+            container
+            spacing={{ xs: 1, sm: 2, md: 2 }}
+            columns={{ xs: 1, sm: 2, md: 4 }}
+            sx={{ alignItems: "flex-start" }}
+        >
             <Grid size={{ xs: 1, sm: 2, md: 4 }}>
                 <Typography>Desired metric response times</Typography>
             </Grid>

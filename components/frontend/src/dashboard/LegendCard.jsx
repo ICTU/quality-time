@@ -10,8 +10,7 @@ export function LegendCard() {
             <StatusIcon status={status} />
             <ListItemText
                 primary={STATUS_SHORT_NAME[status]}
-                slotProps={{ primary: { typography: { fontSize: "1.1em" } } }}
-                sx={{ marginLeft: "10px" }}
+                sx={{ marginLeft: "10px", marginTop: "2px", marginBottom: "2px" }}
             />
         </ListItem>
     ))

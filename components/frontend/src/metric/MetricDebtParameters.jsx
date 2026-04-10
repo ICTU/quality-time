@@ -91,7 +91,12 @@ export function MetricDebtParameters({ metric, metricUuid, reload, report }) {
     const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
-        <Grid alignItems="flex-start" container spacing={{ xs: 1, sm: 2, md: 3 }} columns={{ xs: 1, sm: 3, md: 6 }}>
+        <Grid
+            container
+            spacing={{ xs: 1, sm: 2, md: 3 }}
+            columns={{ xs: 1, sm: 3, md: 6 }}
+            sx={{ alignItems: "flex-start" }}
+        >
             <Grid size={{ xs: 1, sm: 1, md: 2 }}>
                 <AcceptTechnicalDebt metric={metric} metricUuid={metricUuid} reload={reload} />
             </Grid>

@@ -25,7 +25,12 @@ function ReportsOverviewConfiguration({ reportsOverview, reload }) {
     const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
-        <Grid container alignItems="flex-end" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 2, md: 2 }}>
+        <Grid
+            container
+            spacing={{ xs: 1, sm: 1, md: 2 }}
+            columns={{ xs: 1, sm: 2, md: 2 }}
+            sx={{ alignItems: "flex-end" }}
+        >
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <TextField
                     disabled={disabled}
@@ -69,7 +74,12 @@ function PermissionsConfiguration({ permissions, reload }) {
     const currentPermissions = useContext(PermissionsContext)
     const disabled = !accessGranted(currentPermissions, [EDIT_REPORT_PERMISSION])
     return (
-        <Grid container alignItems="flex-end" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 1, md: 2 }}>
+        <Grid
+            container
+            spacing={{ xs: 1, sm: 1, md: 2 }}
+            columns={{ xs: 1, sm: 1, md: 2 }}
+            sx={{ alignItems: "flex-end" }}
+        >
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <MultipleChoiceField
                     disabled={disabled}

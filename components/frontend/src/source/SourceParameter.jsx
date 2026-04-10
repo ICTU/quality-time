@@ -201,7 +201,7 @@ export function SourceParameter({
                     {...parameterProps}
                     value={value ? dayjs(value) : null}
                     slotProps={{
-                        textField: { helperText: helperText, InputProps: { startAdornment: startAdornment } },
+                        textField: { helperText: helperText, slotProps: { input: { startAdornment: startAdornment } } },
                     }}
                     sx={{ width: "100%" }}
                     timezone="default"

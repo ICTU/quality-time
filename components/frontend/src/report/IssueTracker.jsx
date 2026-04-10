@@ -90,7 +90,12 @@ export function IssueTracker({ report, reload }) {
     // fixed in v5.44.0, but we have to take into account that the database may still contain "None":
     const issueTrackerFieldDisabled = disabled || !report.issue_tracker?.type || report.issue_tracker?.type === "None"
     return (
-        <Grid alignItems="flex-start" container spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 2, md: 2 }}>
+        <Grid
+            container
+            spacing={{ xs: 1, sm: 1, md: 2 }}
+            columns={{ xs: 1, sm: 2, md: 2 }}
+            sx={{ alignItems: "flex-start" }}
+        >
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <TextField
                     disabled={disabled}
