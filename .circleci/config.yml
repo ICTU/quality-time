@@ -11,6 +11,7 @@ jobs:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
+    resource_class: large
     parallelism: 11
     steps:
       - checkout

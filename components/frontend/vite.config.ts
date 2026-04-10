@@ -29,6 +29,13 @@ export default defineConfig({
             reporter: ["text", "lcov", "html"],
             skipFull: true,
         },
+        deps: {
+            optimizer: {
+                web: {
+                    enabled: true,
+                },
+            },
+        },
         environment: "jsdom",
         mockReset: true,
         setupFiles: "./src/setupTests.js",
