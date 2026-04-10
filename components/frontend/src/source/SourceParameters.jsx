@@ -72,7 +72,12 @@ export function SourceParameters({ changedParamKeys, metric, reload, report, sou
         )
     })
     return (
-        <Grid container alignItems="flex-start" columns={{ xs: 1, sm: 1, md: 2 }} spacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid
+            container
+            columns={{ xs: 1, sm: 1, md: 2 }}
+            spacing={{ xs: 1, sm: 2, md: 3 }}
+            sx={{ alignItems: "flex-start" }}
+        >
             {groups}
         </Grid>
     )

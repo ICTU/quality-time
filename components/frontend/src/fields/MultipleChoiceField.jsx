@@ -28,27 +28,26 @@ export function MultipleChoiceField({
             options={options}
             onChange={(_event, value) => onChange(value.map((value) => value?.id ?? value))}
             onInputChange={onInputChange}
-            renderInput={(params) => {
-                return (
-                    <TextField
-                        {...params}
-                        helperText={helperText}
-                        label={label}
-                        placeholder={value.length === 0 ? placeholder : ""}
-                        slotProps={{
-                            input: {
-                                ...params.InputProps,
-                                startAdornment: (
-                                    <>
-                                        {startAdornment}
-                                        {params.InputProps.startAdornment}
-                                    </>
-                                ),
-                            },
-                        }}
-                    />
-                )
-            }}
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    helperText={helperText}
+                    label={label}
+                    placeholder={value.length === 0 ? placeholder : ""}
+                    slotProps={{
+                        ...params.slotProps,
+                        input: {
+                            ...params.slotProps.input,
+                            startAdornment: (
+                                <>
+                                    {startAdornment}
+                                    {params.slotProps.input.startAdornment}
+                                </>
+                            ),
+                        },
+                    }}
+                />
+            )}
         />
     )
 }

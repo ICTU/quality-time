@@ -160,7 +160,7 @@ export function Footer({ lastUpdate, report }) {
                         {report ? <AboutReportColumn lastUpdate={lastUpdate} report={report} /> : <QuoteColumn />}
                     </Grid>
                     <Grid size={1}>
-                        <Box display="flex" justifyContent="flex-end">
+                        <Box display="flex" sx={{ justifyContent: "flex-end" }}>
                             <SupportColumn />
                         </Box>
                     </Grid>

@@ -75,7 +75,12 @@ function Parameters({
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const sourceType = dataModel.sources[source.type]
     return (
-        <Grid container alignItems="flex-start" spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 2, md: 2 }}>
+        <Grid
+            container
+            spacing={{ xs: 1, sm: 1, md: 2 }}
+            columns={{ xs: 1, sm: 2, md: 2 }}
+            sx={{ alignItems: "flex-start" }}
+        >
             {connectionError && (
                 <Grid size={{ xs: 1, sm: 2, md: 2 }}>
                     <WarningMessage pre title="Connection error">

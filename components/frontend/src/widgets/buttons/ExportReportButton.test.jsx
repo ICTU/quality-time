@@ -12,7 +12,7 @@ beforeEach(() => {
         Promise.resolve({ report_uuid: "uuid", title: "Report" }),
     )
     vi.spyOn(toast, "showMessage")
-    globalThis.URL.createObjectURL = vi.fn(() => "blob:http://localhost/fake")
+    globalThis.URL.createObjectURL = vi.fn(() => "#dummy")
 })
 
 afterEach(() => vi.restoreAllMocks())

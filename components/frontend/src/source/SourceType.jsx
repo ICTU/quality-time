@@ -30,7 +30,7 @@ export function SourceTypeRichDescription({ sourceTypeKey }) {
                 <Logo logo={sourceTypeKey} alt={sourceType.name} />
             </span>
             <Stack direction="column">
-                <Stack direction="row" alignItems="center">
+                <Stack direction="row" sx={{ alignItems: "center" }}>
                     {sourceType.name}
                     {sourceType.deprecated && <Chip color="warning" label="Deprecated" sx={{ marginLeft: "8px" }} />}
                 </Stack>
