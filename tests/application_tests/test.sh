@@ -1,5 +1,5 @@
 #!/bin/bash
 
 cd tests/application_tests
-uv sync --locked --all-groups
+uv sync --no-progress --quiet --locked --all-groups
 .venv/bin/python -m unittest discover --start-directory .
