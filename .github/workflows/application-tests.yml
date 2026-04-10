@@ -19,11 +19,12 @@ jobs:
           QUALITY_TIME_VERSION: v5.51.0
           ENV: ci
           PROXY_PORT: 8080
+          COLUMNS: 120
         run: |
           mkdir -p build
-          docker compose --file docker/docker-compose.yml --file docker/docker-compose.ci.yml \
+          docker compose --progress quiet --file docker/docker-compose.yml --file docker/docker-compose.ci.yml \
             --project-name quality-time up --build --detach --wait
-          docker run -t -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 \
+          docker run --quiet -t -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 \
             ghcr.io/astral-sh/uv:python3.14-bookworm tests/application_tests/test.sh
       - name: Save container logs
         if: always()

@@ -68,10 +68,11 @@ jobs:
           export PROXY_PORT=8080
           export QUALITY_TIME_VERSION=v5.51.0
           export COMPOSE_PATH_SEPARATOR=':'
+          export COLUMNS=${COLUMNS:-120}
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
-          docker compose build && docker compose up -d
+          docker compose --progress quiet build && docker compose up -d
           docker ps
-          docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 \
+          docker run --quiet -it -w `pwd` -v `pwd`:`pwd` --network=container:quality-time-www-1 \
             ghcr.io/astral-sh/uv:python3.14-bookworm tests/application_tests/test.sh
           docker ps
           docker compose logs > build/containers.log
