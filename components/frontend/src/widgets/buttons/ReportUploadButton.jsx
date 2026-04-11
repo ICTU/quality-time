@@ -43,6 +43,9 @@ export function ReportUploadButton({ reload }) {
                                         const json = await response.json()
                                         showMessage("error", "Import failed", json["error"])
                                     } else {
+                                        if (response["warning"]) {
+                                            showMessage("warning", "Import warning", response["warning"])
+                                        }
                                         reload()
                                     }
                                     return response

@@ -648,7 +648,12 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
         parameters["password"] = ("not_properly_encrypted==", "test_message")  # nosec
         request.json = mocked_report
         response = post_report_import(self.database)
-        self.assertIn("error", response)
+        inserted_report = self.database.reports.insert_one.call_args_list[0][0][0]
+        inserted_subject = first(inserted_report["subjects"].values())
+        inserted_metric = first(inserted_subject["metrics"].values())
+        inserted_source = first(inserted_metric["sources"].values())
+        self.assertNotIn("password", inserted_source["parameters"])
+        self.assertIn("warning", response)
 
     @patch("bottle.request")
     def test_post_report_import_without_private_key(self, request):
