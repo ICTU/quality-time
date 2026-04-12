@@ -14,7 +14,7 @@ dependencies = [
     "cryptography==46.0.7",
     "gevent==26.4.0",
     "ldap3==2.9.1",
-    "lxml==6.0.3",
+    "lxml==6.0.4",
     "lxml-html-clean==0.4.4",
     "pymongo==4.16.0",
     "python-dateutil==2.9.0.post0",
