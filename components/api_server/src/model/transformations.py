@@ -63,27 +63,42 @@ def encrypt_issue_tracker_credentials(public_key: str, *reports: dict):
                 report["issue_tracker"]["parameters"][secret_attribute] = asymmetric_encrypt(public_key, password)
 
 
-def decrypt_credentials(private_key: str, *reports: dict):
-    """Decrypt all credentials in the reports."""
-    decrypt_source_credentials(private_key, *reports)
-    decrypt_issue_tracker_credentials(private_key, *reports)
+def decrypt_credentials(private_key: str, *reports: dict) -> bool:
+    """Decrypt all credentials in the reports. Returns whether all decryptions were successful."""
+    source_decryption_successful = decrypt_source_credentials(private_key, *reports)
+    issue_tracker_decryption_successful = decrypt_issue_tracker_credentials(private_key, *reports)
+    return source_decryption_successful and issue_tracker_decryption_successful
 
 
-def decrypt_source_credentials(private_key: str, *reports: dict):
-    """Decrypt all source credentials in the reports."""
+def decrypt_source_credentials(private_key: str, *reports: dict) -> bool:
+    """Decrypt all source credentials in the reports. Returns whether all decryptions were successful."""
+    decryption_successful = True
     for source in iter_sources(*reports):
+        parameters = source["parameters"]
         for parameter_key in __password_parameter_keys(source):
-            credential = decrypt_credential(private_key, source["parameters"][parameter_key])
-            source["parameters"][parameter_key] = credential
+            decryption_successful &= decrypt_parameter(private_key, parameters, parameter_key)
+    return decryption_successful
 
 
-def decrypt_issue_tracker_credentials(private_key: str, *reports: dict):
-    """Decrypt all issue tracker credentials in the reports."""
+def decrypt_issue_tracker_credentials(private_key: str, *reports: dict) -> bool:
+    """Decrypt all issue tracker credentials in the reports. Returns whether all decryptions were successful."""
+    decryption_successful = True
     for report in reports:
         for secret_attribute in ("password", "private_token"):
             if secret_attribute in report.get("issue_tracker", {}).get("parameters", {}):
-                credential = decrypt_credential(private_key, report["issue_tracker"]["parameters"][secret_attribute])
-                report["issue_tracker"]["parameters"][secret_attribute] = credential
+                parameters = report["issue_tracker"]["parameters"]
+                decryption_successful &= decrypt_parameter(private_key, parameters, secret_attribute)
+    return decryption_successful
+
+
+def decrypt_parameter(private_key: str, parameters: dict[str, str | tuple[str, str]], parameter_key: str) -> bool:
+    """Decrypt a parameter. Returns whether the decryption was successful."""
+    try:
+        parameters[parameter_key] = decrypt_credential(private_key, parameters[parameter_key])
+    except DecryptionError:
+        del parameters[parameter_key]
+        return False
+    return True
 
 
 def decrypt_credential(private_key: str, credential: str | tuple[str, str]) -> str | tuple[str, str]:

@@ -21,7 +21,7 @@ from model.transformations import (
     hide_credentials,
     replace_report_uuids,
 )
-from utils.functions import DecryptionError, check_url_availability, report_date_time, sanitize_html, uuid
+from utils.functions import check_url_availability, report_date_time, sanitize_html, uuid
 
 from .pdf import export_as_pdf
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
@@ -97,20 +97,15 @@ def post_report_import(database: Database):
         bottle.response.status = HTTPStatus.INTERNAL_SERVER_ERROR
         return {"ok": False, "error": "Cannot find the private key of this Quality-time instance."}
 
-    private_key = secret["private_key"]
-    try:
-        decrypt_credentials(private_key, report)
-    except DecryptionError:
-        bottle.response.status = HTTPStatus.UNPROCESSABLE_CONTENT
-        return {
-            "ok": False,
-            "error": "Decryption of source credentials failed. "
-            "Did you use the public key of this Quality-time instance to encrypt the report?",
-        }
-
+    decryption_successful = decrypt_credentials(secret["private_key"], report)
     replace_report_uuids(report)
     result = insert_new_report(database, "{user} imported a new report", [report["report_uuid"]], report)
     result["new_report_uuid"] = report["report_uuid"]
+    if not decryption_successful:
+        result["warning"] = (
+            "Credentials could not be decrypted, most likely because they were not encrypted with the public key of "
+            "this Quality-time instance. The report was imported, but without credentials."
+        )
     return result
 
 

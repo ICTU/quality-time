@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- When importing a report with credentials that are encrypted for another Quality-time instance, import the report without credentials and warn the user via a toast message that the credentials have been ignored. Closes [#12904](https://github.com/ICTU/quality-time/issues/12904).
+
 ## v5.51.0 - 2026-04-10
 
 ### Fixed

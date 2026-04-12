@@ -162,8 +162,8 @@ def change_title_of_non_existing_report(context: Context) -> None:
 @then("the import failed")
 def import_failed(context: Context) -> None:
     """Check the JSON."""
-    assert_equal(422, context.response.status_code)
-    assert_equal("application/json", context.response.headers["Content-Type"])
+    assert_equal(500, context.response.status_code)
+    assert_equal("text/html; charset=UTF-8", context.response.headers["Content-Type"])
 
 
 @then('the report has "{expected_number}" measurements')

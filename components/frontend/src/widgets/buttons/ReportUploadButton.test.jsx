@@ -8,7 +8,7 @@ import * as toast from "../toast"
 import { ReportUploadButton } from "./ReportUploadButton"
 
 beforeEach(() => {
-    vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() => Promise.resolve({}))
+    vi.spyOn(fetchServerApi, "fetchServerApi")
     vi.spyOn(toast, "showMessage")
 })
 
@@ -34,11 +34,25 @@ it("has the correct label", () => {
 })
 
 it("imports a report", async () => {
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() =>
+        Promise.resolve({ ok: true, json: () => Promise.resolve({}) }),
+    )
     const [reload, input] = renderReportUploadButton()
     await userEvent.upload(input, createMockFile("{}"))
     expect(reload).toHaveBeenCalled()
     expectFetch("post", "report/import", {})
     expect(toast.showMessage).not.toHaveBeenCalled()
+})
+
+it("imports a report with warning", async () => {
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() =>
+        Promise.resolve({ ok: true, warning: "Credentials not decrypted" }),
+    )
+    const [reload, input] = renderReportUploadButton()
+    await userEvent.upload(input, createMockFile("{}"))
+    expect(reload).toHaveBeenCalled()
+    expectFetch("post", "report/import", {})
+    expect(toast.showMessage).toHaveBeenCalledWith("warning", "Import warning", "Credentials not decrypted")
 })
 
 it("cancels importing a report", async () => {
