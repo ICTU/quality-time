@@ -23,6 +23,7 @@ from .jira import JIRA
 from .jmeter import JMETER_CSV, JMETER_JSON
 from .junit import JUNIT
 from .manual_number import MANUAL_NUMBER
+from .manual_version import MANUAL_VERSION
 from .ncover import NCOVER
 from .npm import NPM
 from .ojaudit import OJAUDIT
@@ -74,6 +75,7 @@ SOURCES = {
     "jmeter_json": JMETER_JSON,
     "junit": JUNIT,
     "manual_number": MANUAL_NUMBER,
+    "manual_version": MANUAL_VERSION,
     "ncover": NCOVER,
     "npm": NPM,
     "ojaudit": OJAUDIT,

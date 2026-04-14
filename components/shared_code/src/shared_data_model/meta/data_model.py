@@ -52,9 +52,16 @@ class DataModel(SubjectContainer):
     def check_source_urls(self) -> None:
         """Check that all sources, except the ones specified below, have a URL."""
         for source_type, source in self.sources.items():
-            if source_type not in ("calendar", "generic_json", "manual_number") and not source.url:
+            if self.needs_url(source_type) and not source.url:
                 msg = f"Source {source_type} has no URL"
                 raise ValueError(msg)
+            if not self.needs_url(source_type) and source.url:
+                msg = f"Source {source_type} has a URL"
+                raise ValueError(msg)
+
+    def needs_url(self, source_type: str) -> bool:
+        """Return whether a URL is not needed for the source type."""
+        return source_type not in ("calendar", "generic_json") and not source_type.startswith("manual_")
 
     def check_logos(self) -> None:
         """Check that a logo exists for each source and vice versa."""

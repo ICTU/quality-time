@@ -97,6 +97,7 @@ ALL_SOURCES = {
     "JSON file with security warnings": "generic_json",
     "JUnit XML report": "junit",
     "Manual number": "manual_number",
+    "Manual version": "manual_version",
     "NCover": "ncover",
     "npm": "npm",
     "OJAudit": "ojaudit",

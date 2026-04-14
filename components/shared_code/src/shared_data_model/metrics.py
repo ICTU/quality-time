@@ -1,21 +1,13 @@
 """Data model metrics."""
 
 from .meta.metric import Addition, Direction, Metric, Tag, Unit
+from .scales import VERSION_NUMBER_EXPLANATION, VERSION_NUMBER_EXPLANATION_URLS
 
 SIG_TUVIT_EVALUATION_CRITERIA = (
     "https://www.softwareimprovementgroup.com/wp-content/uploads/SIG-TUViT-Evaluation-Criteria-Trusted-Product-"
     "Maintainability-Guidance-for-producers.pdf"
 )
 FOWLER_TEST_COVERAGE = "https://martinfowler.com/bliki/TestCoverage.html"
-VERSION_NUMBER_EXPLANATION = """Quality-time uses the packaging library (1) to parse version numbers. The packaging
-library expects version numbers to comply with PEP-440 (2). PEP is an abbreviation for Python Enhancement Proposal,
-but this PEP is primarily a standard for version numbers. PEP-440 encompasses most of the semantic versioning scheme
-(3) so version numbers that follow semantic versioning are usually parsed correctly."""
-VERSION_NUMBER_EXPLANATION_URLS = [
-    "https://pypi.org/project/packaging/",
-    "https://peps.python.org/pep-0440/",
-    "https://semver.org",
-]
 
 METRICS = {
     "average_issue_lead_time": Metric(
@@ -502,6 +494,7 @@ report(s).
         near_target="0.9",
         evaluate_targets=False,
         sources=[
+            "manual_version",
             "performancetest_runner",
             "sonarqube",
         ],
@@ -587,6 +580,7 @@ have 2.9.3 and the version available is 3.9.1, then the metric will turn red.
             "gitlab",
             "jenkins",
             "jira",
+            "manual_version",
             "openvas",
             "owasp_dependency_check_json",
             "owasp_dependency_check_xml",
