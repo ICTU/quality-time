@@ -54,7 +54,7 @@ def update_pyproject_toml(pyproject_toml: Path) -> None:
     for line in lines_with_updates:
         package = line.split()[1]
         version = line.split()[-1].lstrip("v").rstrip(")")
-        dependency_version = DependencyVersion(version, get_changes(package, version))
+        dependency_version = DependencyVersion(version, get_changes(package, version, LOG))
         LOG.new_version(package, dependency_version)
     latest_versions = Versions(
         {line.split()[1]: line.split()[-1].lstrip("v").rstrip(")") for line in lines_with_updates}

@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING
 from rich.logging import RichHandler
 
 if TYPE_CHECKING:
+    from requests import Response
+
     from version import DependencyVersion
 
 
@@ -36,6 +38,10 @@ class Logger:
     def expected_node_base_image(self, dockerfile: Path) -> None:
         """Log missing Node base image."""
         self.log.error("Expected Dockerfile %s to have a Node base image", dockerfile)
+
+    def response(self, response: Response) -> None:
+        """Log a response's status code."""
+        self.log.warning("Could not fetch %s: %s", response.url, response.status_code)
 
 
 def get_logger(name: str) -> Logger:

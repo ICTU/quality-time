@@ -1,19 +1,25 @@
 """Python Package Index."""
 
+import http
 import re
 from functools import cache
+from typing import TYPE_CHECKING
 
 import requests
 
 from changelog import get_version_changes_from_changelog
 from github import get_latest_release_json, github_organization_and_repository, github_to_raw
 
+if TYPE_CHECKING:
+    from log import Logger
+
+
 CHANGELOG_URL_KEYS = {"changes", "changelog", "release notes"}
 REPOSITORY_URL_KEYS = {"repository", "source", "homepage"}
 
 
 @cache
-def get_changes(package: str, version: str) -> str:
+def get_changes(package: str, version: str, logger: Logger) -> str:
     """Return the changelog for the package and version."""
     response = requests.get(f"https://pypi.org/pypi/{package}/{version}/json", timeout=10)
     response.raise_for_status()
@@ -23,6 +29,9 @@ def get_changes(package: str, version: str) -> str:
     for url_key, url in urls.items():
         if url_key.lower() in CHANGELOG_URL_KEYS:
             changelog_response = requests.get(github_to_raw(url), timeout=10)
+            if changelog_response.status_code == http.HTTPStatus.NOT_FOUND:
+                logger.response(changelog_response)
+                continue
             changelog_response.raise_for_status()
             return get_version_changes_from_changelog(changelog_response.text, version)
     for url_key, url in urls.items():
