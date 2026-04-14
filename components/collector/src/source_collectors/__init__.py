@@ -101,6 +101,7 @@ from .junit.test_cases import JUnitTestCases
 from .junit.test_suites import JUnitTestSuites
 from .junit.tests import JUnitTests
 from .manual_number.all_metrics import ManualNumber
+from .manual_version.all_metrics import ManualVersion
 from .ncover.source_up_to_dateness import NCoverSourceUpToDateness
 from .ncover.uncovered_branches import NCoverUncoveredBranches
 from .ncover.uncovered_lines import NCoverUncoveredLines

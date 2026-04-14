@@ -2,6 +2,16 @@
 
 from .meta.scale import Scale
 
+VERSION_NUMBER_EXPLANATION = """Quality-time uses the packaging library (1) to parse version numbers. The packaging
+library expects version numbers to comply with PEP-440 (2). PEP is an abbreviation for Python Enhancement Proposal,
+but this PEP is primarily a standard for version numbers. PEP-440 encompasses most of the semantic versioning scheme
+(3) so version numbers that follow semantic versioning are usually parsed correctly."""
+VERSION_NUMBER_EXPLANATION_URLS = [
+    "https://pypi.org/project/packaging/",
+    "https://peps.python.org/pep-0440/",
+    "https://semver.org",
+]
+
 SCALES = {
     "count": Scale(
         name="Count",

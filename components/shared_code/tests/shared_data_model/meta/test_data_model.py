@@ -81,8 +81,12 @@ class DataModelTest(MetaModelTestCase):
         self.check_data_model_validation_error("Unused scales {'count'}", scales={"count": self.scale()})
 
     def test_source_urls(self):
-        """Test that sources have a URL."""
+        """Test that sources have a URL, except for manual sources."""
         self.check_data_model_validation_error("Source source has no URL", sources={"source": self.source(url=None)})
+        self.check_data_model_validation_error(
+            "Source manual_version has a URL",
+            sources={"manual_version": self.source(type="manual_version", url="https://example.org")},
+        )
 
     def test_missing_logo(self):
         """Test that a validation error occurs when a logo is missing."""
