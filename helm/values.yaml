@@ -4,7 +4,10 @@ secrets:
   ldapCredential: "quality-time-ldap-secret"
 
 api_server:
-  securityContext: {}
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
   extraVolumes: []
 #    - name: cert-config-map
 #      configMap:
