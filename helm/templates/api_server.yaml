@@ -61,19 +61,15 @@ spec:
                   optional: true
             - name: LDAP_SEARCH_FILTER  # override to make sure that double dollar signs are processed like in docker
               value: {{ .Values.api_server.env.LDAP_SEARCH_FILTER }}
-          {{- if .Values.api_server.extraVolumeMounts }}
           securityContext:
             {{- toYaml .Values.api_server.securityContext | nindent 12 }}
+          {{- if .Values.api_server.extraVolumeMounts }}
           volumeMounts:
             {{- toYaml .Values.api_server.extraVolumeMounts | nindent 12 }}
           {{- end }}
 {{- with .Values.api_server.resources }}
           resources: {{- toYaml . | nindent 12 }}
 {{- end }}
-          securityContext:
-            capabilities:
-              drop:
-                - ALL
       restartPolicy: Always
       {{- if .Values.api_server.extraVolumes }}
       volumes:
