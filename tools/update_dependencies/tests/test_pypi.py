@@ -35,6 +35,7 @@ class GetChangesTest(unittest.TestCase):
         response.json.side_effect = list(json)
         response.text = text
         response.status_code = status_code
+        response.headers = {"Content-Type": "text/text"}
         mock_get.return_value = response
 
     def test_no_url_found(self, mock_get: Mock):
