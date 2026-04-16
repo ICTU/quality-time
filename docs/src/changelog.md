@@ -19,6 +19,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Added
 
 - Add a 'manual version' source type for metrics that measure versions. Closes [#12423](https://github.com/ICTU/quality-time/issues/12423).
+- When measuring outdated dependencies with npm as source, allow for filtering major, minor, or patch updates. Closes [#12441](https://github.com/ICTU/quality-time/issues/12441).
 - When importing a report with credentials that are encrypted for another Quality-time instance, import the report without credentials and warn the user via a toast message that the credentials have been ignored. Closes [#12904](https://github.com/ICTU/quality-time/issues/12904).
 
 ## v5.51.0 - 2026-04-10
