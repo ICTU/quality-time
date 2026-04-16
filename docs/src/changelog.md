@@ -12,6 +12,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Fixed
+
+- Deactivate the "set next date" button of calendar sources if the user is not logged in. Fixes [#12955](https://github.com/ICTU/quality-time/issues/12955).
+
 ### Added
 
 - Add a 'manual version' source type for metrics that measure versions. Closes [#12423](https://github.com/ICTU/quality-time/issues/12423).

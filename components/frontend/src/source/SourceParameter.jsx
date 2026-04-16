@@ -207,7 +207,7 @@ export function SourceParameter({
                     timezone="default"
                 />
                 <Button
-                    disabled={!value || Number.parseInt(source.parameters?.["recurrence_frequency"]) === 0}
+                    disabled={disabled || !value || Number.parseInt(source.parameters?.["recurrence_frequency"]) === 0}
                     onClick={() => {
                         setSourceParameter(
                             sourceUuid,

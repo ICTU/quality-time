@@ -50,6 +50,7 @@ function renderSourceParameter({
     parameterKey = "key1",
     parameterValue = "https://test",
     parameterValues = [],
+    permissions = [EDIT_REPORT_PERMISSION],
     placeholder = "placeholder",
     recurrenceFrequency = null,
     recurrenceOffset = null,
@@ -58,7 +59,7 @@ function renderSourceParameter({
 }) {
     return render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <PermissionsContext value={permissions}>
                 <SourceParameter
                     parameter={parameter}
                     parameterKey={parameterKey}
@@ -191,6 +192,17 @@ it("cannot set the next date if the recurrence frequency has not been set", asyn
         parameter: { name: "Date", type: "date" },
         parameterValue: "2025-10-10",
         recurrenceFrequency: 0,
+    })
+    clickButton("Set next date")
+    expectNoFetch()
+})
+
+it("cannot set the next date if the user is not logged in", async () => {
+    renderSourceParameter({
+        parameter: { name: "Date", type: "date" },
+        parameterValue: "2025-10-10",
+        permissions: [],
+        recurrenceFrequency: "year",
     })
     clickButton("Set next date")
     expectNoFetch()
