@@ -12,13 +12,12 @@ import {
     TableRow,
     Tooltip,
 } from "@mui/material"
-import { func, number, object, string } from "prop-types"
+import { bool, func, number, object, string } from "prop-types"
 import { useContext, useState } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import { zIndexInnerTableHeader } from "../defaults"
 import {
-    boolURLSearchQueryPropType,
     entityAttributePropType,
     entityAttributesPropType,
     entityAttributeTypePropType,
@@ -83,6 +82,7 @@ function sourceEntitiesHeaders(
     hideIgnoredEntities,
     metricEntities,
     nrIgnoredEntities,
+    toggleHideIgnoredEntities,
     sortProps,
 ) {
     function handleSort(column, columnType) {
@@ -93,7 +93,7 @@ function sourceEntitiesHeaders(
             sortProps.setSortColumn(column)
         }
     }
-    const action = hideIgnoredEntities.value ? "Show" : "Hide"
+    const action = hideIgnoredEntities ? "Show" : "Hide"
     const entityNameSingular = metricEntities.name
     const entityNamePlural = metricEntities.name_plural
     const entityNameOrNames = nrIgnoredEntities === 1 ? entityNameSingular : entityNamePlural
@@ -104,9 +104,9 @@ function sourceEntitiesHeaders(
             <TableCell sx={{ paddingRight: "6px" }}>
                 <Tooltip title={tooltip}>
                     <span /* https://mui.com/material-ui/react-tooltip/#disabled-elements */>
-                        <IconButton disabled={nrIgnoredEntities === 0} onClick={hideIgnoredEntities.toggle}>
+                        <IconButton disabled={nrIgnoredEntities === 0} onClick={toggleHideIgnoredEntities}>
                             <Badge badgeContent={nrIgnoredEntities} color={"entity_status_count_badge"} showZero>
-                                {hideIgnoredEntities.value ? <ShowIcon /> : <IgnoreIcon />}
+                                {hideIgnoredEntities ? <ShowIcon /> : <IgnoreIcon />}
                             </Badge>
                         </IconButton>
                     </span>
@@ -153,9 +153,10 @@ function sourceEntitiesHeaders(
 sourceEntitiesHeaders.propTypes = {
     columnsToHide: stringsPropType,
     entityAttributes: entityAttributesPropType,
-    hideIgnoredEntities: boolURLSearchQueryPropType,
+    hideIgnoredEntities: bool,
     metricEntities: object,
     nrIgnoredEntities: number,
+    toggleHideIgnoredEntities: func,
     sortProps: object,
 }
 
@@ -247,13 +248,14 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
     }
     const entities = sortedEntities(columnType, sortColumn, sortDirection, source)
     const columnsToHide = determineColumnsToHide(settings, source, entities)
+    const hideIgnoredEntities = settings.hideIgnoredEntities.includes(metricUuid)
     const rows = entities.map((entity) => (
         <SourceEntity
             columnsToHide={columnsToHide}
             entity={entity}
             entityAttributes={entityAttributes}
             entityName={metricEntities.name}
-            hideIgnoredEntities={settings.hideIgnoredEntities.value}
+            hideIgnoredEntities={hideIgnoredEntities}
             key={entity.key}
             metricUuid={metricUuid}
             reload={reload}
@@ -270,9 +272,10 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
     const headers = sourceEntitiesHeaders(
         columnsToHide,
         entityAttributes,
-        settings.hideIgnoredEntities,
+        hideIgnoredEntities,
         metricEntities,
         nrIgnoredEntities,
+        () => settings.hideIgnoredEntities.toggle(metricUuid),
         sortProps,
     )
     return (

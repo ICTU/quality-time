@@ -207,20 +207,20 @@ it("shows the hide ignored entities button with two ignored entities", async () 
 })
 
 it("shows the show ignored entities button", async () => {
-    history.push("?hide_ignored_entities=true")
+    history.push("?hide_ignored_entities=metric_uuid")
     const fixture = JSON.parse(JSON.stringify(sourceFixture))
     fixture.entity_user_data["2"].status_end_date = "3000-01-01"
     renderSourceEntities({ measurements: [{ sources: [fixture] }] })
     expectLabelText(/Show the 1 entity name that has been/)
 })
 
-it("hides ignored entities by storing the setting in the URL", async () => {
+it("hides ignored entities for the metric by storing the metric uuid in the URL", async () => {
     const fixture = JSON.parse(JSON.stringify(sourceFixture))
     fixture.entity_user_data["2"].status_end_date = "3000-01-01"
     renderSourceEntities({ measurements: [{ sources: [fixture] }] })
     const hideEntitiesTooltip = screen.getByLabelText(/Hide the 1 entity name that has been/)
     await userEvent.click(hideEntitiesTooltip.firstChild) // Get the button inside the tooltip
-    expectSearch("?hide_ignored_entities=true")
+    expectSearch("?hide_ignored_entities=metric_uuid")
 })
 
 async function expectColumnIsSortedCorrectly(header, ascending) {
