@@ -1,7 +1,11 @@
 ---
 name: Hadolint
 
-on: [push]  # yamllint disable-line rule:truthy
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches: [master]
+  pull_request:
 
 jobs:
   build:

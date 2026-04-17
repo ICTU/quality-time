@@ -1,12 +1,11 @@
 ---
 name: SonarCloud
 
-on:  # yamllint disable-line rule:truthy
+# yamllint disable-line rule:truthy
+on:
   push:
-    branches:
-      - master
+    branches: [master]
   pull_request:
-    types: [opened, synchronize, reopened]
 
 jobs:
   sonarcloud:
@@ -23,7 +22,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
         if: env.SONAR_TOKEN != null
         with:
-          fetch-depth: 0  # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0 # Disabling shallow clone is recommended for improving relevancy of reporting
       - name: Install uv
         if: env.SONAR_TOKEN != null
         uses: astral-sh/setup-uv@v8.1.0
@@ -75,7 +74,9 @@ jobs:
         if: env.SONAR_TOKEN != null
         env:
           CI: true
-        run: uv tool run --directory components/frontend --from $(uv export --project tools/third_party --only-group just --quiet --no-hashes --no-header) just test cov  # yamllint disable-line rule:line-length
+        run: uv tool run --directory components/frontend --from $(uv export --project
+          tools/third_party --only-group just --quiet --no-hashes --no-header)
+          just test cov # yamllint disable-line rule:line-length
       - name: Create packages
         if: env.SONAR_TOKEN != null
         # yamllint disable rule:line-length
