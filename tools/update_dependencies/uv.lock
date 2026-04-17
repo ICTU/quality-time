@@ -745,7 +745,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.52.0rc0"
+version = "5.52.0"
 source = { virtual = "../third_party" }
 dependencies = [
     { name = "bandit" },
@@ -866,7 +866,7 @@ wheels = [
 
 [[package]]
 name = "update-dependencies"
-version = "5.52.0rc0"
+version = "5.52.0"
 source = { virtual = "." }
 dependencies = [
     { name = "packaging" },
