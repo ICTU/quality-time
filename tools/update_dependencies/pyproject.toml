@@ -1,6 +1,6 @@
 [project]
 name = "update-dependencies"
-version = "5.51.0"
+version = "5.52.0-rc.0"
 requires-python = ">=3.14"
 classifiers = [
     "Programming Language :: Python",

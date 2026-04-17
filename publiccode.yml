@@ -4,8 +4,8 @@ name: Quality-time
 url: https://github.com/ICTU/quality-time.git
 landingURL: https://github.com/ICTU/quality-time
 logo: docs/src/_static/Quality-time.png
-softwareVersion: 5.51.0
-releaseDate: 2026-04-10
+softwareVersion: 5.52.0-rc.0
+releaseDate: 2026-04-17
 platforms:
   - web
 categories:
