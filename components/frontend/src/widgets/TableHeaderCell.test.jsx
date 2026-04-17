@@ -1,13 +1,13 @@
 import { Table, TableHead, TableRow } from "@mui/material"
 import { render } from "@testing-library/react"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
+import { useSettings } from "../app_ui_settings"
 import { expectText, expectTextAfterWait, hoverText } from "../testUtils"
 import { SortableTableHeaderCell, UnsortableTableHeaderCell } from "./TableHeaderCell"
 
-function renderSortableTableHeaderCell(help) {
-    const settings = createTestableSettings()
-    render(
+function SortableTableHeaderCellWrapper({ help }) {
+    const settings = useSettings()
+    return (
         <Table>
             <TableHead>
                 <TableRow>
@@ -19,8 +19,12 @@ function renderSortableTableHeaderCell(help) {
                     />
                 </TableRow>
             </TableHead>
-        </Table>,
+        </Table>
     )
+}
+
+function renderSortableTableHeaderCell(help) {
+    render(<SortableTableHeaderCellWrapper help={help} />)
 }
 
 it("shows the label of the sortable header", () => {

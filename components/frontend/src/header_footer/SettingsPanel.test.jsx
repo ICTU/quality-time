@@ -1,9 +1,9 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
+import { useSettings } from "../app_ui_settings"
 import { asyncClickText, clickText, expectNoAccessibilityViolations, expectSearch } from "../testUtils"
 import { SettingsPanel } from "./SettingsPanel"
 
@@ -11,40 +11,15 @@ beforeEach(() => {
     history.push("")
 })
 
-function renderSettingsPanel({
-    atReportsOverview = true,
-    handleDateChange = vi.fn(),
-    handleSort = vi.fn(),
-    reportDate = null,
-    tags = [],
-} = {}) {
-    const settings = createTestableSettings()
-    return render(
-        <SettingsPanel
-            atReportsOverview={atReportsOverview}
-            handleDateChange={handleDateChange}
-            handleSort={handleSort}
-            settings={{
-                hiddenCards: settings.hiddenCards,
-                hiddenColumns: settings.hiddenColumns,
-                hiddenTags: settings.hiddenTags,
-                hideEmptyColumns: settings.hideEmptyColumns,
-                metricsToHide: settings.metricsToHide,
-                nrDates: settings.nrDates,
-                showIssueCreationDate: settings.showIssueCreationDate,
-                showIssueSummary: settings.showIssueSummary,
-                showIssueUpdateDate: settings.showIssueUpdateDate,
-                showIssueDueDate: settings.showIssueDueDate,
-                showIssueRelease: settings.showIssueRelease,
-                showIssueSprint: settings.showIssueSprint,
-                sortColumn: settings.sortColumn,
-                sortDirection: settings.sortDirection,
-                expandedItems: settings.expandedItems,
-            }}
-            reportDate={reportDate}
-            tags={tags}
-        />,
+function SettingsPanelWrapper({ atReportsOverview, handleSort, tags }) {
+    const settings = useSettings()
+    return (
+        <SettingsPanel atReportsOverview={atReportsOverview} handleSort={handleSort} settings={settings} tags={tags} />
     )
+}
+
+function renderSettingsPanel({ atReportsOverview = true, handleSort = vi.fn(), tags = [] } = {}) {
+    return render(<SettingsPanelWrapper atReportsOverview={atReportsOverview} handleSort={handleSort} tags={tags} />)
 }
 
 it("has no accessibility violations", async () => {
@@ -80,7 +55,7 @@ it("hides a tag", async () => {
 
 it("hides a tag by keypress", async () => {
     renderSettingsPanel({ tags: ["security"] })
-    await userEvent.type(screen.getAllByText(/security/)[0], " ")
+    fireEvent.keyUp(screen.getAllByText(/security/)[0], { key: " ", code: "Space" })
     expectSearch("?hidden_tags=security")
 })
 
@@ -99,7 +74,7 @@ it("hides a column", async () => {
 
 it("hides a column by keypress", async () => {
     renderSettingsPanel()
-    await userEvent.type(screen.getAllByText(/Comment/)[0], " ")
+    fireEvent.keyUp(screen.getAllByText(/Comment/)[0], { key: " ", code: "Space" })
     expectSearch("?hidden_columns=comment")
 })
 
@@ -155,7 +130,7 @@ it("shows issue summaries", async () => {
 
 it("shows issue summaries by keypress", async () => {
     renderSettingsPanel()
-    await userEvent.type(screen.getAllByText(/Summary/)[0], " ")
+    fireEvent.keyUp(screen.getAllByText(/Summary/)[0], { key: " ", code: "Space" })
     expectSearch("?show_issue_summary=true")
 })
 

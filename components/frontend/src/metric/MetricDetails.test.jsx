@@ -4,9 +4,9 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import * as measurementApi from "../api/measurement"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
@@ -107,6 +107,27 @@ function getMetricMeasurementsSuccessfully(connectionError, infoMessage) {
     })
 }
 
+function MetricDetailsWrapper({ dataModel, stopFilteringAndSorting }) {
+    const settings = useSettings()
+    return (
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <PermissionsContext value={[EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION]}>
+                <DataModelContext value={dataModel || createDataModel()}>
+                    <MetricDetails
+                        metricUuid="metric_uuid"
+                        reload={vi.fn()}
+                        report={report}
+                        reports={[report]}
+                        settings={settings}
+                        stopFilteringAndSorting={stopFilteringAndSorting}
+                        subjectUuid="subject_uuid"
+                    />
+                </DataModelContext>
+            </PermissionsContext>
+        </LocalizationProvider>
+    )
+}
+
 async function renderMetricDetails({
     dataModel = null,
     stopFilteringAndSorting = null,
@@ -120,24 +141,9 @@ async function renderMetricDetails({
             : getMetricMeasurementsSuccessfully(connectionError, infoMessage)
     })
     let result
-    const settings = createTestableSettings()
     await act(async () => {
         result = render(
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <PermissionsContext value={[EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION]}>
-                    <DataModelContext value={dataModel || createDataModel()}>
-                        <MetricDetails
-                            metricUuid="metric_uuid"
-                            reload={vi.fn()}
-                            report={report}
-                            reports={[report]}
-                            settings={settings}
-                            stopFilteringAndSorting={stopFilteringAndSorting}
-                            subjectUuid="subject_uuid"
-                        />
-                    </DataModelContext>
-                </PermissionsContext>
-            </LocalizationProvider>,
+            <MetricDetailsWrapper dataModel={dataModel} stopFilteringAndSorting={stopFilteringAndSorting} />,
         )
     })
     return result

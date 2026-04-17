@@ -1,16 +1,14 @@
 import { render, renderHook } from "@testing-library/react"
 import history from "history/browser"
 
-import { createTestableSettings } from "../../__fixtures__/fixtures"
 import { useExpandedItemsSearchQuery } from "../../app_ui_settings"
 import { clickButton, expectNoAccessibilityViolations } from "../../testUtils"
 import { CollapseButton } from "./CollapseButton"
 
 beforeEach(() => history.push(""))
 
-function renderCollapseButton({ expandedItems = null } = {}) {
-    const settings = createTestableSettings()
-    return render(<CollapseButton expandedItems={expandedItems ?? settings.expandedItems} />)
+function renderCollapseButton({ expandedItems }) {
+    return render(<CollapseButton expandedItems={expandedItems} />)
 }
 
 it("has no accessibility violations", async () => {

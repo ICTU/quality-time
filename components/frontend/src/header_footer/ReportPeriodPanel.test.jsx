@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
+import { useSettings } from "../app_ui_settings"
 import { asyncClickText, clickText, expectNoAccessibilityViolations, expectSearch } from "../testUtils"
 import { ReportPeriodPanel } from "./ReportPeriodPanel"
 
@@ -12,19 +12,17 @@ beforeEach(() => {
     history.push("")
 })
 
-function renderReportPeriodPanel() {
-    const settings = createTestableSettings()
-    return render(
+function ReportPeriodPanelWrapper() {
+    const settings = useSettings()
+    return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <ReportPeriodPanel
-                settings={{
-                    dateInterval: settings.dateInterval,
-                    dateOrder: settings.dateOrder,
-                    nrDates: settings.nrDates,
-                }}
-            />
-        </LocalizationProvider>,
+            <ReportPeriodPanel settings={settings} />
+        </LocalizationProvider>
     )
+}
+
+function renderReportPeriodPanel() {
+    return render(<ReportPeriodPanelWrapper />)
 }
 
 it("has no accessibility violations", async () => {

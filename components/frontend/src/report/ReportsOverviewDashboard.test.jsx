@@ -1,10 +1,9 @@
 import { ThemeProvider } from "@mui/material/styles"
-import { render, renderHook } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
-import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
 import { clickText, expectNoAccessibilityViolations, expectNoText, expectSearch, expectText } from "../testUtils"
@@ -39,17 +38,9 @@ const report = {
     title: "Report",
 }
 
-function renderReportsOverviewDashboard({
-    dates = [new Date()],
-    hiddenTags = null,
-    openReport = null,
-    reports = [report],
-} = {}) {
-    let settings = createTestableSettings()
-    if (hiddenTags) {
-        settings.hiddenTags = hiddenTags
-    }
-    return render(
+function ReportsOverviewDashboardWrapper({ dates, openReport, reports }) {
+    const settings = useSettings()
+    return (
         <ThemeProvider theme={theme}>
             <DataModelContext value={dataModel}>
                 <div id="dashboard">
@@ -61,8 +52,12 @@ function renderReportsOverviewDashboard({
                     />
                 </div>
             </DataModelContext>
-        </ThemeProvider>,
+        </ThemeProvider>
     )
+}
+
+function renderReportsOverviewDashboard({ openReport = null, reports = [report] } = {}) {
+    return render(<ReportsOverviewDashboardWrapper dates={[new Date()]} openReport={openReport} reports={reports} />)
 }
 
 it("has no accessibility violations", async () => {
@@ -77,8 +72,7 @@ it("shows the reports overview dashboard", async () => {
 
 it("hides tags", async () => {
     history.push("?hidden_tags=other")
-    const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
-    renderReportsOverviewDashboard({ hiddenTags: hiddenTags.result.current })
+    renderReportsOverviewDashboard()
     expectText(/tag/)
     expectNoText(/other/)
 })

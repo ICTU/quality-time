@@ -2,17 +2,21 @@ import { Table } from "@mui/material"
 import { render } from "@testing-library/react"
 import history from "history/browser"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
+import { useSettings } from "../app_ui_settings"
 import { expectNoAccessibilityViolations, expectNoText, expectText, expectTextAfterWait, hoverText } from "../testUtils"
 import { SubjectTableHeader } from "./SubjectTableHeader"
 
-function renderSubjectTableHeader(columnDates, columnsToHide) {
-    const settings = createTestableSettings()
-    return render(
+function SubjectTableHeaderWrapper({ columnDates, columnsToHide }) {
+    const settings = useSettings()
+    return (
         <Table>
-            <SubjectTableHeader columnDates={columnDates} columnsToHide={columnsToHide ?? []} settings={settings} />
-        </Table>,
+            <SubjectTableHeader columnDates={columnDates} columnsToHide={columnsToHide} settings={settings} />
+        </Table>
     )
+}
+
+function renderSubjectTableHeader(columnDates, columnsToHide) {
+    return render(<SubjectTableHeaderWrapper columnDates={columnDates} columnsToHide={columnsToHide ?? []} />)
 }
 
 beforeEach(() => {

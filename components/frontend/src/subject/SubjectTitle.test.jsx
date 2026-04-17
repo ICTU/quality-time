@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
@@ -47,22 +47,26 @@ const report = {
     },
 }
 
+function SubjectTitleWrapper({ subjectType }) {
+    const settings = useSettings()
+    return (
+        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <DataModelContext value={dataModel}>
+                <SubjectTitle
+                    report={report}
+                    settings={settings}
+                    subject={{ type: subjectType }}
+                    subjectUuid="subject_uuid"
+                />
+            </DataModelContext>
+        </PermissionsContext>
+    )
+}
+
 async function renderSubjectTitle(subjectType = "subject_type") {
-    const settings = createTestableSettings()
     let result
     await act(async () => {
-        result = render(
-            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
-                <DataModelContext value={dataModel}>
-                    <SubjectTitle
-                        report={report}
-                        settings={settings}
-                        subject={{ type: subjectType }}
-                        subjectUuid="subject_uuid"
-                    />
-                </DataModelContext>
-            </PermissionsContext>,
-        )
+        result = render(<SubjectTitleWrapper subjectType={subjectType} />)
     })
     return result
 }

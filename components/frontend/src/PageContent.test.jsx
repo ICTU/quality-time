@@ -3,8 +3,8 @@ import history from "history/browser"
 import * as reactToastify from "react-toastify"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "./__fixtures__/fixtures"
 import * as fetchServerApi from "./api/fetch_server_api"
+import { useSettings } from "./app_ui_settings"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 import { PageContent } from "./PageContent"
 import { expectFetch, expectNoAccessibilityViolations, expectText } from "./testUtils"
@@ -23,22 +23,35 @@ afterEach(() => {
     vi.useRealTimers()
 })
 
+function PageContentWrapper({ lastUpdate, loading, reports, reportDate, reportUuid }) {
+    const settings = useSettings(reportUuid)
+    return (
+        <div id="dashboard">
+            <PageContent
+                lastUpdate={lastUpdate}
+                loading={loading}
+                reports={reports}
+                reportsOverview={{}}
+                reportDate={reportDate}
+                reportUuid={reportUuid}
+                settings={settings}
+            />
+        </div>
+    )
+}
+
 async function renderPageContent({ loading = false, reports = [], reportDate = null, reportUuid = "" } = {}) {
-    const settings = createTestableSettings()
+    const lastUpdate = new Date()
     let result
     await act(async () => {
         result = render(
-            <div id="dashboard">
-                <PageContent
-                    lastUpdate={new Date()}
-                    loading={loading}
-                    reports={reports}
-                    reportsOverview={{}}
-                    reportDate={reportDate}
-                    reportUuid={reportUuid}
-                    settings={settings}
-                />
-            </div>,
+            <PageContentWrapper
+                lastUpdate={lastUpdate}
+                loading={loading}
+                reports={reports}
+                reportDate={reportDate}
+                reportUuid={reportUuid}
+            />,
         )
     })
     return result

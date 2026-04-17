@@ -1,9 +1,9 @@
 import { Table, TableBody } from "@mui/material"
-import { render } from "@testing-library/react"
+import { act, render } from "@testing-library/react"
 import history from "history/browser"
-import { vi } from "vitest"
 
-import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
+import { dataModel, report } from "../__fixtures__/fixtures"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
@@ -17,19 +17,13 @@ import { SubjectTableRow } from "./SubjectTableRow"
 
 beforeEach(() => history.push(""))
 
-function renderSubjectTableRow({
-    comment = "",
-    direction = "<",
-    ascending = false,
-    scale = "count",
-    evaluateTargets = undefined,
-    expanded = false,
-    permissions = "",
-    name = "",
-    secondaryName = "",
-} = {}) {
+function SubjectTableRowWrapper({ ascending, comment, direction, evaluateTargets, name, scale, secondaryName }) {
+    const settings = useSettings()
     const dates = [new Date("2024-01-03"), new Date("2024-01-02"), new Date("2024-01-01")]
-    const reverseMeasurements = [
+    if (ascending) {
+        dates.reverse()
+    }
+    const reversedMeasurements = [
         {
             metric_uuid: "metric_uuid",
             start: "2024-01-03T00:00",
@@ -52,45 +46,58 @@ function renderSubjectTableRow({
             version_number: { value: "1.0", status: "target_met" },
         },
     ]
-    if (ascending) {
-        dates.reverse()
-    }
+    return (
+        <Table>
+            <TableBody>
+                <SubjectTableRow
+                    columnsToHide={[]}
+                    dates={dates}
+                    measurements={[]}
+                    metric={{
+                        comment: comment,
+                        direction: direction,
+                        evaluate_targets: evaluateTargets,
+                        name: name,
+                        recent_measurements: [],
+                        scale: scale,
+                        secondary_name: secondaryName,
+                        type: "metric_type",
+                        unit: "things",
+                        unit_singular: "thing",
+                    }}
+                    metricUuid="metric_uuid"
+                    report={report}
+                    reversedMeasurements={reversedMeasurements}
+                    settings={settings}
+                    subjectUuid="subject_uuid"
+                />
+            </TableBody>
+        </Table>
+    )
+}
+
+function renderSubjectTableRow({
+    comment = "",
+    direction = "<",
+    ascending = false,
+    scale = "count",
+    evaluateTargets = undefined,
+    permissions = "",
+    name = "",
+    secondaryName = "",
+} = {}) {
     return render(
         <PermissionsContext value={[permissions]}>
             <DataModelContext value={dataModel}>
-                <Table>
-                    <TableBody>
-                        <SubjectTableRow
-                            columnsToHide={[]}
-                            dates={dates}
-                            measurements={[]}
-                            metric={{
-                                comment: comment,
-                                direction: direction,
-                                evaluate_targets: evaluateTargets,
-                                name: name,
-                                recent_measurements: [],
-                                scale: scale,
-                                secondary_name: secondaryName,
-                                type: "metric_type",
-                                unit: "things",
-                                unit_singular: "thing",
-                            }}
-                            metricUuid="metric_uuid"
-                            report={report}
-                            reversedMeasurements={reverseMeasurements}
-                            settings={createTestableSettings({
-                                expandedItems: {
-                                    value: expanded ? ["metric_uuid:0"] : [],
-                                    toggle: vi.fn(),
-                                },
-                                hiddenTags: { reset: vi.fn() },
-                                metricsToHide: { reset: vi.fn() },
-                            })}
-                            subjectUuid="subject_uuid"
-                        />
-                    </TableBody>
-                </Table>
+                <SubjectTableRowWrapper
+                    ascending={ascending}
+                    comment={comment}
+                    direction={direction}
+                    evaluateTargets={evaluateTargets}
+                    name={name}
+                    scale={scale}
+                    secondaryName={secondaryName}
+                />
             </DataModelContext>
         </PermissionsContext>,
     )
@@ -158,39 +165,17 @@ it("shows the drag handle when row is not expanded and user is authenticated", (
     expectLabelText("Drag to reorder")
 })
 
-it("shows no drag handle when row is expanded", () => {
-    renderSubjectTableRow({ expanded: true })
+it("shows no drag handle when row is expanded", async () => {
+    history.push("?expanded=metric_uuid:0")
+    await act(async () => {
+        renderSubjectTableRow()
+    })
     expectNoLabelText("Drag to reorder")
 })
 
 it("shows no drag handle when rows are sorted", () => {
-    // Simulate a sorted state by passing a non-empty sortColumn
-    const settings = createTestableSettings()
-    render(
-        <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
-            <DataModelContext value={dataModel}>
-                <Table>
-                    <TableBody>
-                        <SubjectTableRow
-                            columnsToHide={[]}
-                            dates={[new Date("2024-01-03")]}
-                            measurements={[]}
-                            metric={report.subjects.subject_uuid.metrics.metric_uuid}
-                            metricUuid="metric_uuid"
-                            report={report}
-                            reversedMeasurements={[]}
-                            settings={{
-                                ...settings,
-                                // Ensure the settings object has a .sortColumn property with a .value
-                                sortColumn: { value: "metric" },
-                            }}
-                            subjectUuid="subject_uuid"
-                        />
-                    </TableBody>
-                </Table>
-            </DataModelContext>
-        </PermissionsContext>,
-    )
+    history.push("?sort_column=metric")
+    renderSubjectTableRow({ permissions: EDIT_REPORT_PERMISSION })
     expectNoLabelText("Drag to reorder")
 })
 

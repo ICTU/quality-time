@@ -2,19 +2,15 @@ import { render, screen } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
+import { dataModel, report } from "../__fixtures__/fixtures"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { Subject } from "./Subject"
 
-function renderSubject({
-    atReportsOverview = false,
-    dates = [new Date()],
-    reportDate = null,
-    reportToRender = null,
-} = {}) {
-    const settings = createTestableSettings()
-    return render(
+function SubjectWrapper({ atReportsOverview, dates, reportDate, reportToRender }) {
+    const settings = useSettings()
+    return (
         <DataModelContext value={dataModel}>
             <Subject
                 atReportsOverview={atReportsOverview}
@@ -27,7 +23,23 @@ function renderSubject({
                 subjectUuid="subject_uuid"
                 tags={[]}
             />
-        </DataModelContext>,
+        </DataModelContext>
+    )
+}
+
+function renderSubject({
+    atReportsOverview = false,
+    dates = [new Date()],
+    reportDate = null,
+    reportToRender = null,
+} = {}) {
+    return render(
+        <SubjectWrapper
+            atReportsOverview={atReportsOverview}
+            dates={dates}
+            reportDate={reportDate}
+            reportToRender={reportToRender}
+        />,
     )
 }
 

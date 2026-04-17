@@ -5,8 +5,8 @@ import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
+import { useSettings } from "../app_ui_settings"
 import {
     asyncClickText,
     clickButton,
@@ -23,15 +23,9 @@ beforeEach(() => history.push(""))
 
 const CREDENTIALS = { username: "user@example.org", password: "secret" }
 
-function renderMenubar({
-    openReportsOverview = null,
-    panel = null,
-    reportUuid = "report_uuid",
-    setUser = null,
-    user = null,
-} = {}) {
-    const settings = createTestableSettings()
-    return render(
+function MenubarWrapper({ openReportsOverview, panel, reportUuid, setUser, user }) {
+    const settings = useSettings(reportUuid)
+    return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Menubar
                 onDate={vi.fn()}
@@ -42,7 +36,25 @@ function renderMenubar({
                 setUser={setUser}
                 user={user}
             />
-        </LocalizationProvider>,
+        </LocalizationProvider>
+    )
+}
+
+function renderMenubar({
+    openReportsOverview = null,
+    panel = null,
+    reportUuid = "report_uuid",
+    setUser = null,
+    user = null,
+} = {}) {
+    return render(
+        <MenubarWrapper
+            openReportsOverview={openReportsOverview}
+            panel={panel}
+            reportUuid={reportUuid}
+            setUser={setUser}
+            user={user}
+        />,
     )
 }
 

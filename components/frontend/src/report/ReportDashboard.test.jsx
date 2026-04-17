@@ -1,10 +1,9 @@
 import { ThemeProvider } from "@mui/material/styles"
-import { render, renderHook } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
-import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
 import { clickText, expectNoAccessibilityViolations, expectNoText, expectSearch, expectText } from "../testUtils"
@@ -40,20 +39,21 @@ const dataModel = {
     },
 }
 
-function renderDashboard({ hiddenTags = null, dates = [new Date()], onClick = vi.fn(), reportToRender = null } = {}) {
-    let settings = createTestableSettings()
-    if (hiddenTags) {
-        settings.hiddenTags = hiddenTags
-    }
-    return render(
+function DashboardWrapper({ dates, onClick, reportToRender }) {
+    const settings = useSettings()
+    return (
         <ThemeProvider theme={theme}>
             <DataModelContext value={dataModel}>
                 <div id="dashboard">
                     <ReportDashboard dates={dates} onClick={onClick} report={reportToRender} settings={settings} />
                 </div>
             </DataModelContext>
-        </ThemeProvider>,
+        </ThemeProvider>
     )
+}
+
+function renderDashboard({ dates = [new Date()], onClick = vi.fn(), reportToRender = null } = {}) {
+    return render(<DashboardWrapper dates={dates} onClick={onClick} reportToRender={reportToRender} />)
 }
 
 it("has no accessibility violations", async () => {
@@ -71,8 +71,7 @@ it("shows the dashboard", async () => {
 
 it("hides tags", async () => {
     history.push("?hidden_tags=other")
-    const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
-    renderDashboard({ reportToRender: report, hiddenTags: hiddenTags.result.current })
+    renderDashboard({ reportToRender: report })
     expectText(/Subject title/)
     expectText(/tag/)
     expectNoText(/other/)
@@ -80,8 +79,7 @@ it("hides tags", async () => {
 
 it("hides a subject if all its tags are hidden", async () => {
     history.push("?hidden_tags=other,tag")
-    const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
-    renderDashboard({ reportToRender: report, hiddenTags: hiddenTags.result.current })
+    renderDashboard({ reportToRender: report })
     expectNoText(/Subject title/)
     expectNoText(/tag/)
     expectNoText(/other/)

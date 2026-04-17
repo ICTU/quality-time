@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
@@ -21,8 +21,9 @@ beforeEach(() => {
     vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
 })
 
-function renderReportTitle({ tags = ["foo"], issueTrackerType = null } = {}) {
-    return render(
+function ReportTitleWrapper({ issueTrackerType, tags }) {
+    const settings = useSettings()
+    return (
         <DataModelContext value={{ sources: { jira: { name: "Jira", issue_tracker: true } } }}>
             <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
                 <ReportTitle
@@ -33,11 +34,15 @@ function renderReportTitle({ tags = ["foo"], issueTrackerType = null } = {}) {
                         subjects: { subject_uuid: { metrics: { metric_uuid: { tags: tags } } } },
                     }}
                     reload={vi.fn()}
-                    settings={createTestableSettings()}
+                    settings={settings}
                 />
             </PermissionsContext>
-        </DataModelContext>,
+        </DataModelContext>
     )
+}
+
+function renderReportTitle({ tags = ["foo"], issueTrackerType = null } = {}) {
+    return render(<ReportTitleWrapper issueTrackerType={issueTrackerType} tags={tags} />)
 }
 
 it("shows the export report button", async () => {

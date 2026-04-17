@@ -1,15 +1,15 @@
 import { ThemeProvider } from "@mui/material/styles"
-import { act, render, renderHook } from "@testing-library/react"
+import { act, render } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings, dataModel } from "../__fixtures__/fixtures"
+import { dataModel } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
-import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
-import { clickText, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
+import { clickText, expectNoAccessibilityViolations, expectNoText, expectSearch, expectText } from "../testUtils"
 import { theme } from "../theme"
 import { Report } from "./Report"
 
@@ -46,36 +46,45 @@ const report = {
     },
 }
 
+function ReportWrapper({ lastUpdate, reportToRender, dates, handleSort, reportDate }) {
+    const settings = useSettings()
+    return (
+        <ThemeProvider theme={theme}>
+            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+                <DataModelContext value={dataModel}>
+                    <Report
+                        dates={dates}
+                        handleSort={handleSort}
+                        lastUpdate={lastUpdate}
+                        measurements={[]}
+                        reports={[reportToRender]}
+                        report={reportToRender}
+                        reportDate={reportDate}
+                        settings={settings}
+                    />
+                </DataModelContext>
+            </PermissionsContext>
+        </ThemeProvider>
+    )
+}
+
 async function renderReport({
     reportToRender = null,
     dates = [new Date()],
     handleSort = vi.fn(),
-    hiddenTags = null,
     reportDate = null,
 } = {}) {
-    const settings = createTestableSettings()
-    if (hiddenTags) {
-        settings.hiddenTags = hiddenTags
-    }
+    const lastUpdate = new Date()
     let result
     await act(async () => {
         result = render(
-            <ThemeProvider theme={theme}>
-                <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
-                    <DataModelContext value={dataModel}>
-                        <Report
-                            dates={dates}
-                            handleSort={handleSort}
-                            lastUpdate={new Date()}
-                            measurements={[]}
-                            reports={[reportToRender]}
-                            report={reportToRender}
-                            reportDate={reportDate}
-                            settings={settings}
-                        />
-                    </DataModelContext>
-                </PermissionsContext>
-            </ThemeProvider>,
+            <ReportWrapper
+                lastUpdate={lastUpdate}
+                reportToRender={reportToRender}
+                dates={dates}
+                handleSort={handleSort}
+                reportDate={reportDate}
+            />,
         )
     })
     return result
@@ -153,21 +162,17 @@ it("sorts another column", async () => {
 })
 
 it("hides tags", async () => {
-    const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
-    await renderReport({ reportToRender: report, hiddenTags: hiddenTags.result.current })
+    await renderReport({ reportToRender: report })
     clickText(/tag/, 0)
-    hiddenTags.rerender()
-    expect(hiddenTags.result.current.value).toStrictEqual(["other"])
+    expectSearch("?hidden_tags=other")
 })
 
 it("shows hidden tags", async () => {
     history.push("?hidden_tags=other")
-    const hiddenTags = renderHook(() => useHiddenTagsURLSearchQuery())
-    await renderReport({ reportToRender: report, hiddenTags: hiddenTags.result.current })
+    await renderReport({ reportToRender: report })
     expectNoText("other")
     clickText(/tag/, 0)
-    hiddenTags.rerender()
-    expect(hiddenTags.result.current.value).toStrictEqual([])
+    expectSearch("")
 })
 
 it("hides subjects if empty", async () => {

@@ -2,7 +2,7 @@ import { render } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
+import { useSettings } from "../app_ui_settings"
 import {
     clickText,
     expectNoAccessibilityViolations,
@@ -13,6 +13,11 @@ import {
     hoverText,
 } from "../testUtils"
 import { IssueStatus } from "./IssueStatus"
+
+function IssueStatusWrapper({ issueTrackerMissing, metric }) {
+    const settings = useSettings()
+    return <IssueStatus metric={metric} issueTrackerMissing={issueTrackerMissing} settings={settings} />
+}
 
 function renderIssueStatus({
     connectionError = false,
@@ -31,7 +36,6 @@ function renderIssueStatus({
     sprintEndDate = "3000-01-01",
     updated = false,
 } = {}) {
-    const settings = createTestableSettings()
     let creationDate = new Date()
     creationDate.setDate(creationDate.getDate() - 4)
     let updateDate = new Date()
@@ -62,7 +66,7 @@ function renderIssueStatus({
         issue_ids: ["123"],
         issue_status: [issueStatus],
     }
-    return render(<IssueStatus metric={metric} issueTrackerMissing={issueTrackerMissing} settings={settings} />)
+    return render(<IssueStatusWrapper metric={metric} issueTrackerMissing={issueTrackerMissing} />)
 }
 
 beforeEach(() => {

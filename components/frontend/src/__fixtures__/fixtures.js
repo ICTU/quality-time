@@ -1,31 +1,3 @@
-import { renderHook } from "@testing-library/react"
-
-import {
-    allSettingsAreDefault,
-    resetSettings,
-    useDateIntervalURLSearchQuery,
-    useDateOrderURLSearchQuery,
-    useEntitySortColumnURLSearchQuery,
-    useEntitySortDirectionURLSearchQuery,
-    useExpandedItemsSearchQuery,
-    useHiddenCardsURLSearchQuery,
-    useHiddenColumnsURLSearchQuery,
-    useHiddenTagsURLSearchQuery,
-    useHideEmptyColumnsURLSearchQuery,
-    useHideIgnoredEntitiesURLSearchQuery,
-    useLanguageURLSearchQuery,
-    useMetricsToHideURLSearchQuery,
-    useNrDatesURLSearchQuery,
-    useShowIssueCreationDateURLSearchQuery,
-    useShowIssueDueDateURLSearchQuery,
-    useShowIssueReleaseURLSearchQuery,
-    useShowIssueSprintURLSearchQuery,
-    useShowIssueSummaryURLSearchQuery,
-    useShowIssueUpdateDateURLSearchQuery,
-    useSortColumnURLSearchQuery,
-    useSortDirectionURLSearchQuery,
-} from "../app_ui_settings"
-
 export const dataModel = {
     subjects: {
         subject_type: { name: "Subject type", metrics: ["metric_type"] },
@@ -115,40 +87,4 @@ export const report = {
         },
     },
     title: "Report title",
-}
-
-function testableQuery(query) {
-    return renderHook(() => query()).result.current
-}
-
-export function createTestableSettings() {
-    return {
-        dateInterval: testableQuery(useDateIntervalURLSearchQuery),
-        dateOrder: testableQuery(useDateOrderURLSearchQuery),
-        entitySortColumn: testableQuery(useEntitySortColumnURLSearchQuery),
-        entitySortDirection: testableQuery(useEntitySortDirectionURLSearchQuery),
-        expandedItems: testableQuery(useExpandedItemsSearchQuery),
-        hiddenCards: testableQuery(useHiddenCardsURLSearchQuery),
-        hiddenColumns: testableQuery(useHiddenColumnsURLSearchQuery),
-        hiddenTags: testableQuery(useHiddenTagsURLSearchQuery),
-        hideEmptyColumns: testableQuery(useHideEmptyColumnsURLSearchQuery),
-        hideIgnoredEntities: testableQuery(useHideIgnoredEntitiesURLSearchQuery),
-        language: testableQuery(useLanguageURLSearchQuery),
-        metricsToHide: testableQuery(useMetricsToHideURLSearchQuery),
-        nrDates: testableQuery(useNrDatesURLSearchQuery),
-        showIssueCreationDate: testableQuery(useShowIssueCreationDateURLSearchQuery),
-        showIssueSummary: testableQuery(useShowIssueSummaryURLSearchQuery),
-        showIssueUpdateDate: testableQuery(useShowIssueUpdateDateURLSearchQuery),
-        showIssueDueDate: testableQuery(useShowIssueDueDateURLSearchQuery),
-        showIssueRelease: testableQuery(useShowIssueReleaseURLSearchQuery),
-        showIssueSprint: testableQuery(useShowIssueSprintURLSearchQuery),
-        sortColumn: testableQuery(useSortColumnURLSearchQuery),
-        sortDirection: testableQuery(useSortDirectionURLSearchQuery),
-        reset: function () {
-            resetSettings(this)
-        },
-        allDefault: function () {
-            return allSettingsAreDefault(this)
-        },
-    }
 }
