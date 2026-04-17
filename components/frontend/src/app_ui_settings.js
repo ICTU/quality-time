@@ -34,7 +34,8 @@ export function useHideEmptyColumnsURLSearchQuery(reportUuid) {
 }
 
 export function useHideIgnoredEntitiesURLSearchQuery(reportUuid) {
-    return useBooleanURLSearchQuery(urlSearchQueryKey("hide_ignored_entities", reportUuid))
+    // Stores the set of metric UUIDs for which entities marked as fixed, false positive, or won't fix are hidden.
+    return useArrayURLSearchQuery(urlSearchQueryKey("hide_ignored_entities", reportUuid))
 }
 
 export function useHiddenTagsURLSearchQuery(reportUuid) {
