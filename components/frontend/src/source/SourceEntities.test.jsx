@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import {
     clickText,
@@ -116,6 +116,21 @@ function expectOrder(expected) {
     }
 }
 
+function SourceEntitiesWrapper({ loading, measurements, metric }) {
+    const settings = useSettings("")
+    return (
+        <SourceEntities
+            loading={loading}
+            measurements={measurements}
+            metric={metric}
+            metricUuid="metric_uuid"
+            report={{ issue_tracker: null }}
+            settings={settings}
+            sourceUuid="source_uuid"
+        />
+    )
+}
+
 function renderSourceEntities({
     loading = "loaded",
     measurements = [{ sources: [sourceFixture] }],
@@ -123,15 +138,7 @@ function renderSourceEntities({
 } = {}) {
     return render(
         <DataModelContext value={dataModel}>
-            <SourceEntities
-                loading={loading}
-                measurements={measurements}
-                metric={metric}
-                metricUuid="metric_uuid"
-                report={{ issue_tracker: null }}
-                settings={createTestableSettings()}
-                sourceUuid="source_uuid"
-            />
+            <SourceEntitiesWrapper loading={loading} measurements={measurements} metric={metric} />
         </DataModelContext>,
     )
 }
@@ -221,6 +228,20 @@ it("hides ignored entities for the metric by storing the metric uuid in the URL"
     const hideEntitiesTooltip = screen.getByLabelText(/Hide the 1 entity name that has been/)
     await userEvent.click(hideEntitiesTooltip.firstChild) // Get the button inside the tooltip
     expectSearch("?hide_ignored_entities=metric_uuid")
+})
+
+it("stores the entity sort column and direction in the URL", async () => {
+    renderSourceEntities()
+    clickText(/text/)
+    expectSearch("?entity_sort_column=metric_uuid%3Atext")
+    clickText(/text/)
+    expectSearch("?entity_sort_column=metric_uuid%3Atext&entity_sort_direction=metric_uuid%3Adescending")
+})
+
+it("restores the entity sort order from the URL", async () => {
+    history.push("?entity_sort_column=metric_uuid:text&entity_sort_direction=metric_uuid:descending")
+    renderSourceEntities()
+    expectOrder(["C", "B", "A"])
 })
 
 async function expectColumnIsSortedCorrectly(header, ascending) {

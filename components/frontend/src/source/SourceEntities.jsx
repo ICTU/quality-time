@@ -13,7 +13,7 @@ import {
     Tooltip,
 } from "@mui/material"
 import { bool, func, number, object, string } from "prop-types"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import { zIndexInnerTableHeader } from "../defaults"
@@ -41,18 +41,10 @@ import { entityStatus, entityStatusEndDate, entityStatusRationale } from "./sour
 import { entityCanBeIgnored, SourceEntity } from "./SourceEntity"
 
 function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
-    function handleSort(column) {
-        sortProps.setColumnType(entityAttribute.type || "text")
-        if (column === sortProps.sortColumn) {
-            sortProps.setSortDirection(sortProps.sortDirection === "ascending" ? "descending" : "ascending")
-        } else {
-            sortProps.setSortColumn(column)
-        }
-    }
     return (
         <SortableTableHeaderCell
             column={entityAttribute.key}
-            handleSort={handleSort}
+            handleSort={sortProps.handleSort}
             textAlign={alignment(entityAttribute.type, entityAttribute.alignment)}
             {...sortProps}
         >
@@ -69,9 +61,7 @@ function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
 }
 EntityAttributeHeaderCell.propTypes = {
     entityAttribute: entityAttributePropType,
-    setColumnType: func,
-    setSortColumn: func,
-    setSortDirection: func,
+    handleSort: func,
     sortColumn: string,
     sortDirection: sortDirectionPropType,
 }
@@ -85,14 +75,6 @@ function sourceEntitiesHeaders(
     toggleHideIgnoredEntities,
     sortProps,
 ) {
-    function handleSort(column, columnType) {
-        sortProps.setColumnType(columnType)
-        if (column === sortProps.sortColumn) {
-            sortProps.setSortDirection(sortProps.sortDirection === "ascending" ? "descending" : "ascending")
-        } else {
-            sortProps.setSortColumn(column)
-        }
-    }
     const action = hideIgnoredEntities ? "Show" : "Hide"
     const entityNameSingular = metricEntities.name
     const entityNamePlural = metricEntities.name_plural
@@ -112,36 +94,20 @@ function sourceEntitiesHeaders(
                     </span>
                 </Tooltip>
             </TableCell>
-            <SortableTableHeaderCell
-                column="entity_status"
-                handleSort={(column) => handleSort(column, "text")}
-                {...sortProps}
-            >
+            <SortableTableHeaderCell column="entity_status" {...sortProps}>
                 {`${capitalize(entityNameSingular)} status`}
             </SortableTableHeaderCell>
             {!columnsToHide.includes("status_end_date") && (
-                <SortableTableHeaderCell
-                    column="status_end_date"
-                    handleSort={(column) => handleSort(column, "date")}
-                    {...sortProps}
-                >
+                <SortableTableHeaderCell column="status_end_date" {...sortProps}>
                     Status end date
                 </SortableTableHeaderCell>
             )}
             {!columnsToHide.includes("rationale") && (
-                <SortableTableHeaderCell
-                    column="rationale"
-                    handleSort={(column) => handleSort(column, "text")}
-                    {...sortProps}
-                >
+                <SortableTableHeaderCell column="rationale" {...sortProps}>
                     Status rationale
                 </SortableTableHeaderCell>
             )}
-            <SortableTableHeaderCell
-                column="first_seen"
-                handleSort={(column) => handleSort(column, "datetime")}
-                {...sortProps}
-            >
+            <SortableTableHeaderCell column="first_seen" {...sortProps}>
                 {capitalize(entityNameSingular)} first seen
             </SortableTableHeaderCell>
             {entityAttributes.map((entityAttribute) => (
@@ -198,11 +164,21 @@ sortedEntities.propTypes = {
     source: sourcePropType,
 }
 
+const builtInEntityColumnTypes = {
+    entity_status: "text",
+    status_end_date: "date",
+    rationale: "text",
+    first_seen: "datetime",
+}
+
+function entityColumnType(column, entityAttributes) {
+    return builtInEntityColumnTypes[column] ?? entityAttributes.find((a) => a.key === column)?.type ?? "text"
+}
+
 export function SourceEntities({ loading, measurements, metric, metricUuid, reload, report, settings, sourceUuid }) {
     const dataModel = useContext(DataModelContext)
-    const [sortColumn, setSortColumn] = useState(null)
-    const [columnType, setColumnType] = useState("text")
-    const [sortDirection, setSortDirection] = useState("ascending")
+    const sortColumn = settings.entitySortColumn.getItem(metricUuid) || null
+    const sortDirection = settings.entitySortDirection.getItem(metricUuid)
 
     const sourceType = metric.sources[sourceUuid].type
     const metricEntities = dataModel.sources[sourceType]?.entities?.[metric.type]
@@ -239,13 +215,20 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
         )
     }
     const entityAttributes = metricEntities.attributes.filter((attribute) => attribute?.visible ?? true)
+    function handleSort(column) {
+        if (column === sortColumn) {
+            const newDirection = sortDirection === "ascending" ? "descending" : "ascending"
+            settings.entitySortDirection.setItem(metricUuid, newDirection)
+        } else {
+            settings.entitySortColumn.setItem(metricUuid, column)
+        }
+    }
     const sortProps = {
-        setColumnType: setColumnType,
-        setSortColumn: setSortColumn,
-        setSortDirection: setSortDirection,
+        handleSort: handleSort,
         sortColumn: sortColumn,
         sortDirection: sortDirection,
     }
+    const columnType = sortColumn ? entityColumnType(sortColumn, entityAttributes) : "text"
     const entities = sortedEntities(columnType, sortColumn, sortDirection, source)
     const columnsToHide = determineColumnsToHide(settings, source, entities)
     const hideIgnoredEntities = settings.hideIgnoredEntities.includes(metricUuid)

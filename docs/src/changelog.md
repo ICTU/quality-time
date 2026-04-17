@@ -16,6 +16,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - When hiding measurement entities marked as fixed, false positive, or won't fix, preserve that setting when exporting the report as PDF. Fixes [#12976](https://github.com/ICTU/quality-time/issues/12976).
 
+### Added
+
+- Keep track of the measurement entity sort column and direction per metric in the URL, so that the sort order is preserved when collapsing and re-expanding a metric and when exporting the report as PDF. Closes [#6644](https://github.com/ICTU/quality-time/issues/6644).
+
 ## v5.52.0 - 2026-04-17
 
 ### Fixed

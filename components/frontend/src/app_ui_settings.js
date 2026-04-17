@@ -3,6 +3,7 @@ import {
     useBooleanURLSearchQuery,
     useIntegerMappingURLSearchQuery,
     useIntegerURLSearchQuery,
+    useStringMappingURLSearchQuery,
     useStringURLSearchQuery,
 } from "./hooks/url_search_query"
 import { adapterLocale } from "./locale"
@@ -62,6 +63,16 @@ export function useSortDirectionURLSearchQuery(reportUuid, defaultValue = "ascen
     return useStringURLSearchQuery(urlSearchQueryKey("sort_direction", reportUuid), defaultValue)
 }
 
+export function useEntitySortColumnURLSearchQuery(reportUuid) {
+    // Stores entity sort column per metric UUID, as ?key=metric_uuid:column,metric_uuid:column
+    return useStringMappingURLSearchQuery(urlSearchQueryKey("entity_sort_column", reportUuid))
+}
+
+export function useEntitySortDirectionURLSearchQuery(reportUuid) {
+    // Stores entity sort direction per metric UUID, as ?key=metric_uuid:direction,metric_uuid:direction
+    return useStringMappingURLSearchQuery(urlSearchQueryKey("entity_sort_direction", reportUuid), "ascending")
+}
+
 export function useExpandedItemsSearchQuery(reportUuid) {
     // Use useIntegerMappingURLSearchQuery to handle expanded items and tabs. Key is the item, value is the tab index.
     return useIntegerMappingURLSearchQuery(urlSearchQueryKey("expanded", reportUuid))
@@ -95,6 +106,8 @@ export function useSettings(reportUuid) {
     return {
         dateInterval: useDateIntervalURLSearchQuery(reportUuid),
         dateOrder: useDateOrderURLSearchQuery(reportUuid),
+        entitySortColumn: useEntitySortColumnURLSearchQuery(reportUuid),
+        entitySortDirection: useEntitySortDirectionURLSearchQuery(reportUuid),
         expandedItems: useExpandedItemsSearchQuery(reportUuid),
         hiddenCards: useHiddenCardsURLSearchQuery(reportUuid),
         hiddenColumns: useHiddenColumnsURLSearchQuery(reportUuid),
@@ -124,6 +137,8 @@ export function useSettings(reportUuid) {
 export function resetSettings(settings) {
     settings.dateInterval.reset()
     settings.dateOrder.reset()
+    settings.entitySortColumn.reset()
+    settings.entitySortDirection.reset()
     settings.expandedItems.reset()
     settings.hiddenCards.reset()
     settings.hiddenColumns.reset()
@@ -147,6 +162,8 @@ export function allSettingsAreDefault(settings) {
     return (
         settings.dateInterval.isDefault() &&
         settings.dateOrder.isDefault() &&
+        settings.entitySortColumn.isDefault() &&
+        settings.entitySortDirection.isDefault() &&
         settings.expandedItems.isDefault() &&
         settings.hiddenCards.isDefault() &&
         settings.hiddenColumns.isDefault() &&
