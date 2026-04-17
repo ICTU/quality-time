@@ -52,6 +52,14 @@ export const stringsURLSearchQueryPropType = shape({
     value: stringsPropType,
 })
 
+export const mappingURLSearchQueryPropType = shape({
+    isDefault: func,
+    reset: func,
+    getItem: func,
+    setItem: func,
+    value: stringsPropType,
+})
+
 export const labelPropType = oneOfType([object, string])
 
 export const popupContentPropType = oneOfType([element, string])
@@ -85,6 +93,8 @@ export const metricsToHideURLSearchQueryPropType = shape({
 export const settingsPropType = shape({
     dateInterval: integerURLSearchQueryPropType,
     dateOrder: sortDirectionURLSearchQueryPropType,
+    entitySortColumn: mappingURLSearchQueryPropType,
+    entitySortDirection: mappingURLSearchQueryPropType,
     expandedItems: stringsURLSearchQueryPropType,
     hiddenColumns: stringsURLSearchQueryPropType,
     hideIgnoredEntities: stringsURLSearchQueryPropType,

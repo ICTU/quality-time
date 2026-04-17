@@ -5,6 +5,8 @@ import {
     resetSettings,
     useDateIntervalURLSearchQuery,
     useDateOrderURLSearchQuery,
+    useEntitySortColumnURLSearchQuery,
+    useEntitySortDirectionURLSearchQuery,
     useExpandedItemsSearchQuery,
     useHiddenCardsURLSearchQuery,
     useHiddenColumnsURLSearchQuery,
@@ -123,6 +125,8 @@ export function createTestableSettings() {
     return {
         dateInterval: testableQuery(useDateIntervalURLSearchQuery),
         dateOrder: testableQuery(useDateOrderURLSearchQuery),
+        entitySortColumn: testableQuery(useEntitySortColumnURLSearchQuery),
+        entitySortDirection: testableQuery(useEntitySortDirectionURLSearchQuery),
         expandedItems: testableQuery(useExpandedItemsSearchQuery),
         hiddenCards: testableQuery(useHiddenCardsURLSearchQuery),
         hiddenColumns: testableQuery(useHiddenColumnsURLSearchQuery),

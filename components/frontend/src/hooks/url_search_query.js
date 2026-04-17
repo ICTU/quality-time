@@ -74,8 +74,8 @@ export function useArrayURLSearchQuery(key) {
     return hook
 }
 
-export function useIntegerMappingURLSearchQuery(key) {
-    // URL search queries of the form ?key=item_key:item_value,item_key:item_value, where item_value is an integer
+function useMappingURLSearchQuery(key, parseValue, missingItemValue) {
+    // URL search queries of the form ?key=item_key:item_value,item_key:item_value
     let hook = useArrayURLSearchQuery(key)
     hook._findItem = (itemKey) => {
         return hook.value.find((eachItem) => eachItem.split(":")[0] === itemKey)
@@ -88,7 +88,7 @@ export function useIntegerMappingURLSearchQuery(key) {
     }
     hook.getItem = (itemKey) => {
         const item = hook._findItem(itemKey)
-        return item ? Number.parseInt(item.split(":")[1], 10) : 0
+        return item ? parseValue(item.split(":")[1]) : missingItemValue
     }
     hook._allItemsExcept = (itemKey) => {
         return hook.value.filter((eachItem) => eachItem.split(":")[0] !== itemKey)
@@ -100,6 +100,11 @@ export function useIntegerMappingURLSearchQuery(key) {
         const newValue = [...hook._allItemsExcept(itemKey), `${itemKey}:${itemValue}`]
         setURLSearchQuery(key, newValue, hook.defaultValue, hook.set)
     }
+    return hook
+}
+
+export function useIntegerMappingURLSearchQuery(key) {
+    let hook = useMappingURLSearchQuery(key, (value) => Number.parseInt(value, 10), 0)
     hook.toggle = (itemKey) => {
         if (hook.includes(itemKey)) {
             hook.deleteItem(itemKey)
@@ -108,6 +113,10 @@ export function useIntegerMappingURLSearchQuery(key) {
         }
     }
     return hook
+}
+
+export function useStringMappingURLSearchQuery(key, missingItemValue = "") {
+    return useMappingURLSearchQuery(key, (value) => value, missingItemValue)
 }
 
 export function useBooleanURLSearchQuery(key) {
