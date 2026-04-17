@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- When hiding measurement entities marked as fixed, false positive, or won't fix, preserve that setting when exporting the report as PDF. Fixes [#12976](https://github.com/ICTU/quality-time/issues/12976).
+
 ## v5.52.0 - 2026-04-17
 
 ### Fixed

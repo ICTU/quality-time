@@ -113,7 +113,9 @@ export function useIntegerMappingURLSearchQuery(key) {
 export function useBooleanURLSearchQuery(key) {
     const parsedValue = parseURLSearchQuery().get(key) === "true"
     const [value, setValue] = useState(parsedValue)
-    return createHook(key, value, false, setValue)
+    let hook = createHook(key, value, false, setValue)
+    hook.toggle = () => hook.set(!value)
+    return hook
 }
 
 export function useIntegerURLSearchQuery(key, defaultValue) {
