@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import history from "history/browser"
 
 import { createTestableSettings } from "../__fixtures__/fixtures"
 import { DataModelContext } from "../context/DataModel"
@@ -8,10 +9,15 @@ import {
     expectLabelText,
     expectNoAccessibilityViolations,
     expectNoText,
+    expectSearch,
     expectText,
     expectTextAfterWait,
 } from "../testUtils"
 import { SourceEntities } from "./SourceEntities"
+
+beforeEach(() => {
+    history.push("")
+})
 
 const dataModel = {
     sources: {
@@ -201,12 +207,20 @@ it("shows the hide ignored entities button with two ignored entities", async () 
 })
 
 it("shows the show ignored entities button", async () => {
+    history.push("?hide_ignored_entities=true")
+    const fixture = JSON.parse(JSON.stringify(sourceFixture))
+    fixture.entity_user_data["2"].status_end_date = "3000-01-01"
+    renderSourceEntities({ measurements: [{ sources: [fixture] }] })
+    expectLabelText(/Show the 1 entity name that has been/)
+})
+
+it("hides ignored entities by storing the setting in the URL", async () => {
     const fixture = JSON.parse(JSON.stringify(sourceFixture))
     fixture.entity_user_data["2"].status_end_date = "3000-01-01"
     renderSourceEntities({ measurements: [{ sources: [fixture] }] })
     const hideEntitiesTooltip = screen.getByLabelText(/Hide the 1 entity name that has been/)
     await userEvent.click(hideEntitiesTooltip.firstChild) // Get the button inside the tooltip
-    expect(hideEntitiesTooltip).toHaveAccessibleName(/Show the 1 entity name that has been/)
+    expectSearch("?hide_ignored_entities=true")
 })
 
 async function expectColumnIsSortedCorrectly(header, ascending) {

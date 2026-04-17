@@ -87,6 +87,7 @@ export const settingsPropType = shape({
     dateOrder: sortDirectionURLSearchQueryPropType,
     expandedItems: stringsURLSearchQueryPropType,
     hiddenColumns: stringsURLSearchQueryPropType,
+    hideIgnoredEntities: boolURLSearchQueryPropType,
     hiddenTags: stringsURLSearchQueryPropType,
     metricsToHide: metricsToHideURLSearchQueryPropType,
     nrDates: integerURLSearchQueryPropType,
