@@ -1,12 +1,11 @@
 ---
 name: Helm Chart CI
 
-on:  # yamllint disable-line rule:truthy
+# yamllint disable-line rule:truthy
+on:
   push:
-    branches:
-      - master
+    branches: [master]
   pull_request:
-    types: [opened, synchronize, reopened]
 
 jobs:
   build:
