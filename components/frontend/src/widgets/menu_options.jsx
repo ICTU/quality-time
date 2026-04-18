@@ -22,7 +22,7 @@ export function metricOptions(reports, dataModel, currentSubjectType, currentSub
                 options.push({
                     content: <ItemBreadcrumb report={report.title} subject={subjectName} metric={metricName} />,
                     key: metricUuid,
-                    text: report.title + subjectName + metricName,
+                    text: report.title + " " + subjectName + " " + metricName,
                     value: metricUuid,
                 })
             }
@@ -68,7 +68,7 @@ export function sourceOptions(reports, dataModel, currentMetricType, currentMetr
                             />
                         ),
                         key: sourceUuid,
-                        text: report.title + subjectName + metricName + sourceName,
+                        text: report.title + " " + subjectName + " " + metricName + " " + sourceName,
                         value: sourceUuid,
                     })
                 })
@@ -89,7 +89,7 @@ export function subjectOptions(reports, dataModel, currentReportUuid) {
             options.push({
                 content: <ItemBreadcrumb report={report.title} subject={subjectName} />,
                 key: subjectUuid,
-                text: report.title + subjectName,
+                text: report.title + " " + subjectName,
                 value: subjectUuid,
             })
         })

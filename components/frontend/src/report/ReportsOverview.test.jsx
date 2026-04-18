@@ -78,14 +78,14 @@ it("shows an error message if there are no reports at the specified date", async
 })
 
 it("shows the reports overview", async () => {
-    const reports = [{ report_uuid: "report_uuid", subjects: {} }]
+    const reports = [{ title: "Report title", report_uuid: "report_uuid", subjects: {} }]
     const reportsOverview = { title: "Overview", permissions: {} }
     await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expectText(/Overview/)
 })
 
 it("shows the comment", async () => {
-    const reports = [{ report_uuid: "report_uuid", subjects: {} }]
+    const reports = [{ title: "Report title", report_uuid: "report_uuid", subjects: {} }]
     const reportsOverview = { title: "Overview", comment: "Commentary", permissions: {} }
     await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expectText(/Commentary/)
@@ -93,6 +93,7 @@ it("shows the comment", async () => {
 
 const reports = [
     {
+        title: "Report title",
         report_uuid: "report_uuid",
         subjects: {
             subject_uuid: {

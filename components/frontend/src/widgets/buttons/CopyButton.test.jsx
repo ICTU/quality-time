@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
@@ -57,5 +57,16 @@ Array("report", "subject", "metric", "source").forEach((itemType) => {
         clickText(/Item/)
         await asyncClickText(new RegExp(`Copy ${itemType}`))
         expect(getOptionsCalled).toBe(4)
+    })
+
+    test("CopyButton can be used to filter items", async () => {
+        const mockCallback = vi.fn()
+        renderCopyButton(itemType, mockCallback)
+        await asyncClickText(new RegExp(`Copy ${itemType}`))
+        fireEvent.change(screen.getByLabelText(/Filter/), { target: { value: "No such thing" } })
+        expectNoText("Item")
+        fireEvent.change(screen.getByLabelText(/Filter/), { target: { value: "It" } })
+        expectText("Item")
+        expect(mockCallback).not.toHaveBeenCalled()
     })
 })

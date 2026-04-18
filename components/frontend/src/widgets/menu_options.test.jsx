@@ -26,7 +26,7 @@ it("contains the subjects, except for the excluded report", () => {
     ).toStrictEqual([
         {
             key: "subject1",
-            text: "AS",
+            text: "A S",
             value: "subject1",
             content: <ItemBreadcrumb report="A" subject="S" />,
         },
@@ -64,7 +64,7 @@ it("contains the metrics, except for the excluded subject", () => {
     ).toStrictEqual([
         {
             key: "metric1",
-            text: "AS1M1",
+            text: "A S1 M1",
             value: "metric1",
             content: <ItemBreadcrumb report="A" subject="S1" metric="M1" />,
         },
@@ -109,7 +109,7 @@ it("contains the sources, except for the excluded metric", () => {
     ).toStrictEqual([
         {
             key: "source1",
-            text: "AS1M2S1",
+            text: "A S1 M2 S1",
             value: "source1",
             content: <ItemBreadcrumb report="A" subject="S1" metric="M2" source="S1" />,
         },
