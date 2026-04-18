@@ -1,11 +1,11 @@
 import { ThemeProvider } from "@mui/material/styles"
-import { act, render, renderHook } from "@testing-library/react"
+import { act, render } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings, dataModel } from "../__fixtures__/fixtures"
+import { dataModel } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
-import { useHiddenTagsURLSearchQuery } from "../app_ui_settings"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
@@ -15,6 +15,7 @@ import {
     expectFetch,
     expectNoAccessibilityViolations,
     expectNoText,
+    expectSearch,
     expectText,
 } from "../testUtils"
 import { theme } from "../theme"
@@ -28,34 +29,39 @@ beforeEach(() => {
 
 afterEach(() => vi.restoreAllMocks())
 
-async function renderReportsOverview({
-    hiddenTags = null,
-    reportDate = null,
-    reports = [],
-    reportsOverview = {},
-} = {}) {
-    let settings = createTestableSettings()
-    if (hiddenTags) {
-        settings.hiddenTags = hiddenTags
-    }
+function ReportsOverviewWrapper({ dates, lastUpdate, reportDate, reports, reportsOverview }) {
+    const settings = useSettings()
+    return (
+        <ThemeProvider theme={theme}>
+            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+                <DataModelContext value={dataModel}>
+                    <ReportsOverview
+                        dates={dates}
+                        lastUpdate={lastUpdate}
+                        measurements={[{ status: "target_met" }]}
+                        reportDate={reportDate}
+                        reports={reports}
+                        reportsOverview={reportsOverview}
+                        settings={settings}
+                    />
+                </DataModelContext>
+            </PermissionsContext>
+        </ThemeProvider>
+    )
+}
+
+async function renderReportsOverview({ reportDate = null, reports = [], reportsOverview = {} } = {}) {
+    const now = new Date()
     let result
     await act(async () => {
         result = render(
-            <ThemeProvider theme={theme}>
-                <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
-                    <DataModelContext value={dataModel}>
-                        <ReportsOverview
-                            dates={[reportDate || new Date()]}
-                            lastUpdate={new Date()}
-                            measurements={[{ status: "target_met" }]}
-                            reportDate={reportDate}
-                            reports={reports}
-                            reportsOverview={reportsOverview}
-                            settings={settings}
-                        />
-                    </DataModelContext>
-                </PermissionsContext>
-            </ThemeProvider>,
+            <ReportsOverviewWrapper
+                dates={[reportDate || now]}
+                lastUpdate={now}
+                reportDate={reportDate}
+                reports={reports}
+                reportsOverview={reportsOverview}
+            />,
         )
     })
     return result
@@ -111,30 +117,20 @@ const reports = [
 const reportsOverview = { title: "Overview", permissions: {} }
 
 it("hides the report tag cards", async () => {
-    const { result } = renderHook(() => useHiddenTagsURLSearchQuery())
-    await renderReportsOverview({
-        reports: reports,
-        reportsOverview: reportsOverview,
-        hiddenTags: result.current,
-    })
+    await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expectText(/Foo/, 2)
     expectText(/Bar/, 2)
     clickText(/Foo/, 0)
-    expect(result.current.value).toStrictEqual(["Bar"])
+    expectSearch("?hidden_tags=Bar")
 })
 
 it("shows the report tag cards", async () => {
     history.push("?hidden_tags=Bar")
-    const { result } = renderHook(() => useHiddenTagsURLSearchQuery())
-    await renderReportsOverview({
-        reports: reports,
-        reportsOverview: reportsOverview,
-        hiddenTags: result.current,
-    })
+    await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expectText(/Foo/, 2)
     expectNoText(/Bar/)
     clickText(/Foo/, 0)
-    expect(result.current.value).toStrictEqual([])
+    expectSearch("")
 })
 
 it("adds a report", async () => {

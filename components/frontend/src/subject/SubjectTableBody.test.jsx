@@ -1,8 +1,9 @@
 import { createEvent, fireEvent, render, screen } from "@testing-library/react"
 import { vi } from "vitest"
 
-import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
+import { dataModel, report } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { expectNoAccessibilityViolations } from "../testUtils"
@@ -16,12 +17,9 @@ vi.mock("../utils", async () => {
     }
 })
 
-function renderSubjectTableBody({ dates = [], expandedItems = null, settings = null } = {}) {
-    settings = settings ?? createTestableSettings()
-    if (expandedItems) {
-        settings.expandedItems = expandedItems
-    }
-    return render(
+function SubjectTableBodyWrapper({ dates, reportDate }) {
+    const settings = useSettings()
+    return (
         <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
             <DataModelContext value={dataModel}>
                 <table>
@@ -36,7 +34,7 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
                         })}
                         reload={vi.fn()}
                         report={report}
-                        reportDate={new Date("2020-01-15T00:00:00+00:00")}
+                        reportDate={reportDate}
                         reports={[]}
                         reversedMeasurements={[]}
                         settings={settings}
@@ -45,8 +43,12 @@ function renderSubjectTableBody({ dates = [], expandedItems = null, settings = n
                     />
                 </table>
             </DataModelContext>
-        </PermissionsContext>,
+        </PermissionsContext>
     )
+}
+
+function renderSubjectTableBody({ dates = [] } = {}) {
+    return render(<SubjectTableBodyWrapper dates={dates} reportDate={new Date("2020-01-15T00:00:00+00:00")} />)
 }
 
 function simulateDragAndDrop() {

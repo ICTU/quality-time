@@ -3,28 +3,33 @@ import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
+import { dataModel, report } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { expectFetch, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { ReportSources } from "./ReportSources"
 
-function renderReportSources(report, expandedItems, theDataModel) {
-    const settings = createTestableSettings()
-    if (expandedItems) {
-        settings.expandedItems.value = expandedItems
-    }
-    return render(
+function ReportSourcesWrapper({ report, theDataModel }) {
+    const settings = useSettings()
+    return (
         <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
             <DataModelContext value={theDataModel ?? dataModel}>
                 <ReportSources reload={vi.fn()} report={report} settings={settings} />
             </DataModelContext>
-        </PermissionsContext>,
+        </PermissionsContext>
     )
 }
 
-beforeEach(() => vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true }))
+function renderReportSources(report, theDataModel) {
+    return render(<ReportSourcesWrapper report={report} theDataModel={theDataModel} />)
+}
+
+beforeEach(() => {
+    history.push("")
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
+})
 
 it("has no accessibility violations", async () => {
     const { container } = renderReportSources({})
@@ -47,23 +52,21 @@ it("shows the sources", async () => {
 })
 
 it("shows a message for sources without url", async () => {
-    renderReportSources(
-        {
-            subjects: {
-                subject_uuid: {
-                    metrics: {
-                        metric_uuid: {
-                            type: "metric_type",
-                            sources: {
-                                source_uuid: { type: "source_type_without_location_parameters", parameters: {} },
-                            },
+    history.push("?expanded=source_uuid:0")
+    renderReportSources({
+        subjects: {
+            subject_uuid: {
+                metrics: {
+                    metric_uuid: {
+                        type: "metric_type",
+                        sources: {
+                            source_uuid: { type: "source_type_without_location_parameters", parameters: {} },
                         },
                     },
                 },
             },
         },
-        ["source_uuid:0"],
-    )
+    })
     expectText(/This source has no location parameters/)
 })
 
@@ -160,27 +163,26 @@ it("considers a source without name the same as a source that has a name equal t
 })
 
 it("changes the value of a parameter of a source without parameter layout", async () => {
-    renderReportSources(
-        {
-            subjects: {
-                subject_uuid: {
-                    metrics: {
-                        metric_uuid: {
-                            sources: {
-                                source_uuid: { type: "source_type", parameters: { url: "https://source.org" } },
-                            },
+    history.push("?expanded=source_uuid:0")
+    renderReportSources({
+        subjects: {
+            subject_uuid: {
+                metrics: {
+                    metric_uuid: {
+                        sources: {
+                            source_uuid: { type: "source_type", parameters: { url: "https://source.org" } },
                         },
                     },
                 },
             },
         },
-        ["source_uuid:0"],
-    )
+    })
     await userEvent.type(screen.getAllByLabelText(/URL/)[0], "/new{Enter}")
     expectFetch("post", "source/source_uuid/parameter/url", { url: "https://source.org/new", edit_scope: "report" })
 })
 
 it("changes the value of a parameter of a source with parameter layout", async () => {
+    history.push("?expanded=source_uuid:0")
     const theDataModel = { ...dataModel }
     theDataModel.sources["source_type"].parameters = {
         api_version: { name: "API version", type: "string" },
@@ -202,7 +204,6 @@ it("changes the value of a parameter of a source with parameter layout", async (
                 },
             },
         },
-        ["source_uuid:0"],
         theDataModel,
     )
     await userEvent.type(screen.getByLabelText(/API version/), "{Backspace}3{Enter}")

@@ -1,14 +1,15 @@
 import { render } from "@testing-library/react"
 import history from "history/browser"
 
-import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
+import { dataModel, report } from "../__fixtures__/fixtures"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { Subjects } from "./Subjects"
 
-function renderSubjects(reports) {
-    const settings = createTestableSettings()
-    return render(
+function SubjectsWrapper({ reports }) {
+    const settings = useSettings()
+    return (
         <DataModelContext value={dataModel}>
             <Subjects
                 dates={[]}
@@ -19,8 +20,12 @@ function renderSubjects(reports) {
                 settings={settings}
                 tags={[]}
             />
-        </DataModelContext>,
+        </DataModelContext>
     )
+}
+
+function renderSubjects(reports) {
+    return render(<SubjectsWrapper reports={reports} />)
 }
 
 beforeEach(() => {

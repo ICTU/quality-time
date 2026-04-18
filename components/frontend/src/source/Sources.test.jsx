@@ -2,8 +2,8 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
@@ -80,8 +80,9 @@ const report = {
     },
 }
 
-function renderSources(props) {
-    return render(
+function SourcesWrapper({ props }) {
+    const settings = useSettings()
+    return (
         <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
             <DataModelContext value={dataModel}>
                 <Sources
@@ -93,12 +94,16 @@ function renderSources(props) {
                         sources: [{ source_uuid: "source_uuid", connection_error: "Oops" }],
                     }}
                     reload={vi.fn()}
-                    settings={createTestableSettings()}
+                    settings={settings}
                     {...props}
                 />
             </DataModelContext>
-        </PermissionsContext>,
+        </PermissionsContext>
     )
+}
+
+function renderSources(props) {
+    return render(<SourcesWrapper props={props} />)
 }
 
 beforeEach(() => {

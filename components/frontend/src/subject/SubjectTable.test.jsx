@@ -1,12 +1,11 @@
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { act, fireEvent, render, renderHook, screen } from "@testing-library/react"
+import { act, fireEvent, render, screen } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
-import { useExpandedItemsSearchQuery } from "../app_ui_settings"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
@@ -16,6 +15,7 @@ import {
     expectFetch,
     expectNoAccessibilityViolations,
     expectNoText,
+    expectSearch,
     expectText,
 } from "../testUtils"
 import { SubjectTable } from "./SubjectTable"
@@ -50,19 +50,16 @@ const dates = [
     new Date("2020-01-13T00:00:00+00:00"),
 ]
 
-function renderSubjectTable({ dates = [], expandedItems = null, settings = null } = {}) {
-    settings = settings ?? createTestableSettings()
-    if (expandedItems) {
-        settings.expandedItems = expandedItems
-    }
-    return render(
+function SubjectTableWrapper({ dates, reportDate }) {
+    const settings = useSettings()
+    return (
         <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
             <DataModelContext value={dataModel}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <SubjectTable
                         dates={dates}
                         handleSort={vi.fn()}
-                        reportDate={new Date("2020-01-15T00:00:00+00:00")}
+                        reportDate={reportDate}
                         report={{
                             report_uuid: "report_uuid",
                             subjects: {
@@ -112,8 +109,12 @@ function renderSubjectTable({ dates = [], expandedItems = null, settings = null 
                     />
                 </LocalizationProvider>
             </DataModelContext>
-        </PermissionsContext>,
+        </PermissionsContext>
     )
+}
+
+function renderSubjectTable({ dates = [] } = {}) {
+    return render(<SubjectTableWrapper dates={dates} reportDate={new Date("2020-01-15T00:00:00+00:00")} />)
 }
 
 beforeEach(() => {
@@ -215,20 +216,18 @@ it("hides the tags column", () => {
 })
 
 it("expands the details via the button", async () => {
-    const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
-    renderSubjectTable({ expandedItems: expandedItems.result.current })
-    clickButton("Expand/collapse", 0)
-    expandedItems.rerender()
-    expect(expandedItems.result.current.value).toStrictEqual(["1:0"])
+    renderSubjectTable()
+    await act(async () => {
+        clickButton("Expand/collapse", 0)
+    })
+    expectSearch("?expanded=1%3A0")
 })
 
 it("collapses the details via the button", async () => {
     history.push("?expanded=1:0")
-    const expandedItems = renderHook(() => useExpandedItemsSearchQuery())
-    renderSubjectTable({ expandedItems: expandedItems.result.current })
+    renderSubjectTable()
     await asyncClickButton("Expand/collapse", 0)
-    expandedItems.rerender()
-    expect(expandedItems.result.current.value).toStrictEqual([])
+    expectSearch("")
 })
 
 it("expands the details via the url", async () => {

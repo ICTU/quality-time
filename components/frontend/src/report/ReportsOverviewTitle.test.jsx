@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
+import { useSettings } from "../app_ui_settings"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { expectFetch, expectNoAccessibilityViolations } from "../testUtils"
 import { ReportsOverviewTitle } from "./ReportsOverviewTitle"
@@ -16,12 +16,17 @@ beforeEach(() => {
 
 afterEach(() => vi.restoreAllMocks())
 
-function renderReportsOverviewTitle() {
-    return render(
+function ReportsOverviewTitleWrapper() {
+    const settings = useSettings()
+    return (
         <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
-            <ReportsOverviewTitle reportsOverview={{}} settings={createTestableSettings()} />
-        </PermissionsContext>,
+            <ReportsOverviewTitle reportsOverview={{}} settings={settings} />
+        </PermissionsContext>
     )
+}
+
+function renderReportsOverviewTitle() {
+    return render(<ReportsOverviewTitleWrapper />)
 }
 
 it("has no accessibility violations", async () => {

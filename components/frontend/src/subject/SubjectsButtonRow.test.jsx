@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react"
 import { vi } from "vitest"
 
-import { createTestableSettings, dataModel, report } from "../__fixtures__/fixtures"
+import { dataModel, report } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { asyncClickText, expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
@@ -19,14 +20,19 @@ beforeEach(() => {
 
 afterEach(() => vi.clearAllMocks())
 
-function renderSubjectsButtonRow(permissions = []) {
-    return render(
+function SubjectsButtonRowWrapper({ permissions }) {
+    const settings = useSettings()
+    return (
         <PermissionsContext value={permissions}>
             <DataModelContext value={dataModel}>
-                <SubjectsButtonRow report={report} reports={[report]} settings={createTestableSettings()} />
+                <SubjectsButtonRow report={report} reports={[report]} settings={settings} />
             </DataModelContext>
-        </PermissionsContext>,
+        </PermissionsContext>
     )
+}
+
+function renderSubjectsButtonRow(permissions = []) {
+    return render(<SubjectsButtonRowWrapper permissions={permissions} />)
 }
 
 it("has no accessibility violations", async () => {

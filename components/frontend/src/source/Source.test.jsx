@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { vi } from "vitest"
 
-import { createTestableSettings } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
+import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { clickText, expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
@@ -31,20 +31,19 @@ const source = { type: "source_type1" }
 const metric = { type: "metric_type", sources: { source_uuid: source } }
 const report = { report_uuid: "report_uuid", subjects: {} }
 
-function renderSource(metric, props) {
-    return render(
+function SourceWrapper({ metric, props }) {
+    const settings = useSettings()
+    return (
         <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
             <DataModelContext value={dataModel}>
-                <Source
-                    metric={metric}
-                    report={report}
-                    settings={createTestableSettings()}
-                    sourceUuid="source_uuid"
-                    {...props}
-                />
+                <Source metric={metric} report={report} settings={settings} sourceUuid="source_uuid" {...props} />
             </DataModelContext>
-        </PermissionsContext>,
+        </PermissionsContext>
     )
+}
+
+function renderSource(metric, props) {
+    return render(<SourceWrapper metric={metric} props={props} />)
 }
 
 it("has no accessibility violations", async () => {
