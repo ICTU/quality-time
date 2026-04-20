@@ -29,7 +29,7 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "axe-selenium-python", specifier = "==2.1.6" },
+    { name = "axe-selenium-python", specifier = "==3.0.0" },
     { name = "requests", specifier = "==2.33.1" },
     { name = "selenium", specifier = "==4.43.0" },
     { name = "tools", virtual = "../../tools/third_party" },
@@ -47,15 +47,15 @@ wheels = [
 
 [[package]]
 name = "axe-selenium-python"
-version = "2.1.6"
+version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pytest" },
     { name = "selenium" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b3/74/ab04d81d3e87b2a585f58ad353a2de6065719fdd979e6469335ba4843306/axe-selenium-python-2.1.6.tar.gz", hash = "sha256:9203ff59c79edcfbcbd676ae55ca35f257e9afb663adbcbc210e3b0d802255ae", size = 88561, upload-time = "2018-11-12T20:34:50.614Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e6/6b/5e4b8d7725a83d88ec6bc4ab4c1d01d4fefbb3986017e947c02fb5fc3628/axe_selenium_python-3.0.0.tar.gz", hash = "sha256:8f082c821ce0c6c44a326a2df5bc5926c789d9b9600fbc052fb482ef20975513", size = 222646, upload-time = "2026-04-19T12:28:42.835Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1e/d7/55a73c357e6177815eea46e4c32291ba4ee7a57414f5b4d6937c53f13225/axe_selenium_python-2.1.6-py2.py3-none-any.whl", hash = "sha256:21d10014c0bc3c999c1bfab54b9ef6a5d67f200ffca3db3629e0b315b3f1f136", size = 86872, upload-time = "2018-11-12T20:34:48.972Z" },
+    { url = "https://files.pythonhosted.org/packages/e5/97/ed2a5857ae31168a517d49a1c33dca2dfc41f5fd4c9beecd37871021f071/axe_selenium_python-3.0.0-py3-none-any.whl", hash = "sha256:847e3925861133a523609ff27d0fef387e7588a26f23a27c208a30682b8e9240", size = 160622, upload-time = "2026-04-19T12:28:41.163Z" },
 ]
 
 [[package]]
