@@ -1,17 +1,17 @@
 import { MenuItem, Stack } from "@mui/material"
 import Grid from "@mui/material/Grid"
 import { func } from "prop-types"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 
 import { getReportIssueTrackerOptions, setReportIssueTrackerAttribute } from "../api/report"
 import { DataModelContext } from "../context/DataModel"
 import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
+import { SnackbarContext } from "../context/Snackbar"
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { TextField } from "../fields/TextField"
 import { reportPropType } from "../sharedPropTypes"
 import { sourceTypeOption } from "../source/SourceType"
 import { HyperLink } from "../widgets/HyperLink"
-import { showMessage } from "../widgets/toast"
 import { WarningMessage } from "../widgets/WarningMessage"
 
 const NONE_OPTION = {
@@ -23,6 +23,7 @@ const NONE_OPTION = {
 
 export function IssueTracker({ report, reload }) {
     const dataModel = useContext(DataModelContext)
+    const showMessageRef = useRef(useContext(SnackbarContext))
     const [projectOptions, setProjectOptions] = useState([]) // Possible projects for new issues
     const [projectValid, setProjectValid] = useState(true) // Is the current project a possible project?
     const [issueTypeOptions, setIssueTypeOptions] = useState([]) // Possible issue types for new issues in the current project
@@ -62,7 +63,13 @@ export function IssueTracker({ report, reload }) {
                 }
                 return null
             })
-            .catch((error) => showMessage("error", "Could not fetch issue tracker options", `${error}`))
+            .catch((error) =>
+                showMessageRef.current({
+                    severity: "error",
+                    title: "Could not fetch issue tracker options",
+                    description: `${error}`,
+                }),
+            )
         return () => {
             didCancel = true
         }

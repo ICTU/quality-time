@@ -5,13 +5,14 @@ import ShowChartIcon from "@mui/icons-material/ShowChart"
 import StorageIcon from "@mui/icons-material/Storage"
 import { Stack } from "@mui/material"
 import { bool, func, string } from "prop-types"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 
 import { getMetricMeasurements } from "../api/measurement"
 import { deleteMetric, setMetricAttribute } from "../api/metric"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
+import { SnackbarContext } from "../context/Snackbar"
 import {
     datePropType,
     metricPropType,
@@ -31,7 +32,6 @@ import { PermLinkButton } from "../widgets/buttons/PermLinkButton"
 import { ReorderButtonGroup } from "../widgets/buttons/ReorderButtonGroup"
 import { RefreshIcon } from "../widgets/icons"
 import { Tabs } from "../widgets/Tabs"
-import { showMessage } from "../widgets/toast"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
 import { MetricDebtParameters } from "./MetricDebtParameters"
 import { TrendGraph } from "./TrendGraph"
@@ -114,11 +114,15 @@ MetricDetailsButtonRow.propTypes = {
     url: string,
 }
 
-function fetchMeasurements(reportDate, metricUuid, setMeasurements, setMeasurementsStatus) {
+function fetchMeasurements(reportDate, metricUuid, setMeasurements, setMeasurementsStatus, showMessage) {
     getMetricMeasurements(metricUuid, reportDate)
         .then(function (json) {
             if (json.ok === false) {
-                showMessage("error", "Could not fetch measurements", `${json.statusText}`)
+                showMessage({
+                    severity: "error",
+                    title: "Could not fetch measurements",
+                    description: `${json.statusText}`,
+                })
                 setMeasurementsStatus("failed")
             } else {
                 setMeasurements(json.measurements ?? [])
@@ -127,7 +131,7 @@ function fetchMeasurements(reportDate, metricUuid, setMeasurements, setMeasureme
             return null
         })
         .catch((error) => {
-            showMessage("error", "Could not fetch measurements", `${error.message}`)
+            showMessage({ severity: "error", title: "Could not fetch measurements", description: `${error.message}` })
             setMeasurementsStatus("failed")
         })
 }
@@ -136,6 +140,7 @@ fetchMeasurements.propTypes = {
     reportDate: datePropType,
     setMeasurements: func,
     setMeasurementsStatus: func,
+    showMessage: func,
 }
 
 export function MetricDetails({
@@ -152,14 +157,15 @@ export function MetricDetails({
     subjectUuid,
 }) {
     const dataModel = useContext(DataModelContext)
+    const showMessageRef = useRef(useContext(SnackbarContext))
     const [measurements, setMeasurements] = useState([])
     const [measurementsStatus, setMeasurementsStatus] = useState("loading")
     useEffect(() => {
-        fetchMeasurements(reportDate, metricUuid, setMeasurements, setMeasurementsStatus)
+        fetchMeasurements(reportDate, metricUuid, setMeasurements, setMeasurementsStatus, showMessageRef.current)
     }, [metricUuid, reportDate])
     function measurementsReload() {
         reload()
-        fetchMeasurements(reportDate, metricUuid, setMeasurements, setMeasurementsStatus)
+        fetchMeasurements(reportDate, metricUuid, setMeasurements, setMeasurementsStatus, showMessageRef.current)
     }
     const subject = report.subjects[subjectUuid]
     const metric = subject.metrics[metricUuid]

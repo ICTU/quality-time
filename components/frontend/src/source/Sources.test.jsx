@@ -15,7 +15,7 @@ import {
     expectNoAccessibilityViolations,
     expectText,
 } from "../testUtils"
-import * as toast from "../widgets/toast"
+import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
 import { Sources } from "./Sources"
 
 const dataModel = {
@@ -85,18 +85,20 @@ function SourcesWrapper({ props }) {
     return (
         <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
             <DataModelContext value={dataModel}>
-                <Sources
-                    report={report}
-                    reports={[report]}
-                    metric={report.subjects.subject_uuid.metrics.metric_uuid}
-                    metricUuid="metric_uuid"
-                    measurement={{
-                        sources: [{ source_uuid: "source_uuid", connection_error: "Oops" }],
-                    }}
-                    reload={vi.fn()}
-                    settings={settings}
-                    {...props}
-                />
+                <SnackbarAlerts messages={[]} showMessage={props?.showMessage ?? vi.fn()}>
+                    <Sources
+                        report={report}
+                        reports={[report]}
+                        metric={report.subjects.subject_uuid.metrics.metric_uuid}
+                        metricUuid="metric_uuid"
+                        measurement={{
+                            sources: [{ source_uuid: "source_uuid", connection_error: "Oops" }],
+                        }}
+                        reload={vi.fn()}
+                        settings={settings}
+                        {...props}
+                    />
+                </SnackbarAlerts>
             </DataModelContext>
         </PermissionsContext>
     )
@@ -108,7 +110,6 @@ function renderSources(props) {
 
 beforeEach(() => {
     vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true, nr_sources_mass_edited: 0 })
-    vi.spyOn(toast, "showMessage")
 })
 
 it("has no accessibility violations", async () => {
@@ -166,7 +167,8 @@ it("moves a source", async () => {
 })
 
 it("updates a parameter of a source", async () => {
-    renderSources()
+    const showMessage = vi.fn()
+    renderSources({ showMessage: showMessage })
     await userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), "https://other{Enter}", {
         initialSelectionStart: 0,
         initialSelectionEnd: 15,
@@ -176,12 +178,13 @@ it("updates a parameter of a source", async () => {
     })
     expect(screen.getAllByDisplayValue("https://other").length).toBe(1)
     expectFetch("post", "source/source_uuid/parameter/url", { edit_scope: "source", url: "https://other" })
-    expect(toast.showMessage).toHaveBeenCalledTimes(0)
+    expect(showMessage).toHaveBeenCalledTimes(0)
 })
 
 it("mass updates a parameter of a source", async () => {
+    const showMessage = vi.fn()
     fetchServerApi.fetchServerApi.mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 })
-    renderSources()
+    renderSources({ showMessage: showMessage })
     clickLabeledElement(/Edit scope/)
     clickText(/Apply change to subject/)
     expectText(/Apply change to subject/)
@@ -194,7 +197,7 @@ it("mass updates a parameter of a source", async () => {
     })
     expect(screen.getAllByDisplayValue("https://other").length).toBe(1)
     expectFetch("post", "source/source_uuid/parameter/url", { edit_scope: "subject", url: "https://other" })
-    expect(toast.showMessage).toHaveBeenCalledTimes(1)
+    expect(showMessage).toHaveBeenCalledTimes(1)
 })
 
 it("repositions a source", async () => {

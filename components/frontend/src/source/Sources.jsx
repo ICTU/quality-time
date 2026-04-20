@@ -1,10 +1,11 @@
 import { Box } from "@mui/material"
 import { func, number, string } from "prop-types"
-import { useContext } from "react"
+import { useContext, useRef } from "react"
 
 import { addSource, copySource, moveSource } from "../api/source"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
+import { SnackbarContext } from "../context/Snackbar"
 import {
     measurementPropType,
     measurementSourcePropType,
@@ -20,7 +21,6 @@ import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
 import { CopyButton } from "../widgets/buttons/CopyButton"
 import { MoveButton } from "../widgets/buttons/MoveButton"
 import { sourceOptions } from "../widgets/menu_options"
-import { showMessage } from "../widgets/toast"
 import { InfoMessage } from "../widgets/WarningMessage"
 import { Source } from "./Source"
 import { sourceTypeOptions } from "./SourceType"
@@ -98,16 +98,21 @@ SourceSegment.propTypes = {
     sourceUuid: string,
 }
 
-export function reloadAfterMassEditSource(json, reload) {
+export function reloadAfterMassEditSource(json, reload, showMessage) {
     const nrSources = json.nr_sources_mass_edited
     if (nrSources > 0) {
-        showMessage("info", `Changed ${nrSources} ${pluralize("source", nrSources)}`)
+        showMessage({
+            severity: "info",
+            title: "Mass edit",
+            description: `Changed ${nrSources} ${pluralize("source", nrSources)}`,
+        })
     }
     reload(json)
 }
 
 export function Sources({ reports, report, metric, metricUuid, measurement, changedFields, reload, settings }) {
     const dataModel = useContext(DataModelContext)
+    const showMessageRef = useRef(useContext(SnackbarContext))
     const measurementSources = measurement?.sources ?? []
     const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
         Object.keys(dataModel.sources).includes(metric.sources[sourceUuid].type),
@@ -124,7 +129,7 @@ export function Sources({ reports, report, metric, metricUuid, measurement, chan
                 lastIndex={lastIndex}
                 measurementSource={measurementSources.find((source) => source.source_uuid === sourceUuid)}
                 changedFields={changedFields}
-                reload={(json) => reloadAfterMassEditSource(json, reload)}
+                reload={(json) => reloadAfterMassEditSource(json, reload, showMessageRef.current)}
                 settings={settings}
             />
         )

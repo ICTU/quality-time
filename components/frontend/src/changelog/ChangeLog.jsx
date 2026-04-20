@@ -1,12 +1,12 @@
 import UpdateIcon from "@mui/icons-material/Update"
 import { Button, List, ListItem, ListItemAvatar, ListItemText, Stack, Typography } from "@mui/material"
 import { string } from "prop-types"
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 
 import { getChangelog } from "../api/changelog"
+import { SnackbarContext } from "../context/Snackbar"
 import { Avatar } from "../widgets/Avatar"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
-import { showMessage } from "../widgets/toast"
 
 function Event({ description, email, timestamp }) {
     return (
@@ -25,6 +25,7 @@ Event.propTypes = {
 }
 
 function ChangeLogWithoutMemo({ reportUuid, subjectUuid, metricUuid, sourceUuid, timestamp }) {
+    const showMessageRef = useRef(useContext(SnackbarContext))
     const [changes, setChanges] = useState([])
     const [nrChanges, setNrChanges] = useState(5)
     useEffect(() => {
@@ -49,7 +50,13 @@ function ChangeLogWithoutMemo({ reportUuid, subjectUuid, metricUuid, sourceUuid,
                 }
                 return null
             })
-            .catch((error) => showMessage("error", "Could not fetch changes", `${error}`))
+            .catch((error) =>
+                showMessageRef.current({
+                    severity: "error",
+                    title: "Could not fetch changes",
+                    description: `${error}`,
+                }),
+            )
         return () => {
             didCancel = true
         }

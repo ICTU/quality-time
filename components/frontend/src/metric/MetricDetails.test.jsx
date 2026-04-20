@@ -21,13 +21,12 @@ import {
     expectSearch,
     expectText,
 } from "../testUtils"
-import * as toast from "../widgets/toast"
+import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
 import { MetricDetails } from "./MetricDetails"
 
 beforeEach(() => {
     history.push("")
     vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() => Promise.resolve({ changelog: [] }))
-    vi.spyOn(toast, "showMessage")
 })
 
 afterEach(() => vi.restoreAllMocks())
@@ -107,21 +106,23 @@ function getMetricMeasurementsSuccessfully(connectionError, infoMessage) {
     })
 }
 
-function MetricDetailsWrapper({ dataModel, stopFilteringAndSorting }) {
+function MetricDetailsWrapper({ dataModel, showSnackbarMessage, stopFilteringAndSorting }) {
     const settings = useSettings()
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <PermissionsContext value={[EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION]}>
                 <DataModelContext value={dataModel || createDataModel()}>
-                    <MetricDetails
-                        metricUuid="metric_uuid"
-                        reload={vi.fn()}
-                        report={report}
-                        reports={[report]}
-                        settings={settings}
-                        stopFilteringAndSorting={stopFilteringAndSorting}
-                        subjectUuid="subject_uuid"
-                    />
+                    <SnackbarAlerts messages={[]} showMessage={showSnackbarMessage}>
+                        <MetricDetails
+                            metricUuid="metric_uuid"
+                            reload={vi.fn()}
+                            report={report}
+                            reports={[report]}
+                            settings={settings}
+                            stopFilteringAndSorting={stopFilteringAndSorting}
+                            subjectUuid="subject_uuid"
+                        />
+                    </SnackbarAlerts>
                 </DataModelContext>
             </PermissionsContext>
         </LocalizationProvider>
@@ -134,6 +135,7 @@ async function renderMetricDetails({
     connectionError = null,
     getMetricMeasurements = null,
     infoMessage = null,
+    showSnackbarMessage = vi.fn(),
 } = {}) {
     vi.spyOn(measurementApi, "getMetricMeasurements").mockImplementation(() => {
         return getMetricMeasurements
@@ -143,7 +145,11 @@ async function renderMetricDetails({
     let result
     await act(async () => {
         result = render(
-            <MetricDetailsWrapper dataModel={dataModel} stopFilteringAndSorting={stopFilteringAndSorting} />,
+            <MetricDetailsWrapper
+                dataModel={dataModel}
+                showSnackbarMessage={showSnackbarMessage}
+                stopFilteringAndSorting={stopFilteringAndSorting}
+            />,
         )
     })
     return result
@@ -228,40 +234,56 @@ it("does not measure the metric if the metric source configuration is incomplete
 
 it("loads an empty list of measurements", async () => {
     history.push("?expanded=metric_uuid:5")
+    const showSnackbarMessage = vi.fn()
     await renderMetricDetails({
         getMetricMeasurements: () => Promise.resolve({ measurements: [] }),
+        showSnackbarMessage: showSnackbarMessage,
     })
     expectNoText(/Loading measurements failed/)
-    expect(toast.showMessage).toHaveBeenCalledTimes(0)
+    expect(showSnackbarMessage).toHaveBeenCalledTimes(0)
 })
 
 it("loads a missing list of measurements", async () => {
     history.push("?expanded=metric_uuid:5")
+    const showSnackbarMessage = vi.fn()
     await renderMetricDetails({
         getMetricMeasurements: () => Promise.resolve({}),
+        showSnackbarMessage: showSnackbarMessage,
     })
     expectNoText(/Loading measurements failed/)
-    expect(toast.showMessage).toHaveBeenCalledTimes(0)
+    expect(showSnackbarMessage).toHaveBeenCalledTimes(0)
 })
 
 it("fails to load measurements due to a failed promise", async () => {
     history.push("?expanded=metric_uuid:5")
+    const showSnackbarMessage = vi.fn()
     await renderMetricDetails({
         getMetricMeasurements: () => Promise.reject(new Error("Failure")),
+        showSnackbarMessage: showSnackbarMessage,
     })
     expectText(/Loading measurements failed/)
-    expect(toast.showMessage).toHaveBeenCalledTimes(1)
-    expect(toast.showMessage).toHaveBeenCalledWith("error", "Could not fetch measurements", "Failure")
+    expect(showSnackbarMessage).toHaveBeenCalledTimes(1)
+    expect(showSnackbarMessage).toHaveBeenCalledWith({
+        severity: "error",
+        title: "Could not fetch measurements",
+        description: "Failure",
+    })
 })
 
 it("fails to load measurements due to an internal server error", async () => {
     history.push("?expanded=metric_uuid:5")
+    const showSnackbarMessage = vi.fn()
     await renderMetricDetails({
         getMetricMeasurements: () => Promise.resolve({ ok: false, statusText: "Internal Server Error" }),
+        showSnackbarMessage: showSnackbarMessage,
     })
     expectText(/Loading measurements failed/)
-    expect(toast.showMessage).toHaveBeenCalledTimes(1)
-    expect(toast.showMessage).toHaveBeenCalledWith("error", "Could not fetch measurements", "Internal Server Error")
+    expect(showSnackbarMessage).toHaveBeenCalledTimes(1)
+    expect(showSnackbarMessage).toHaveBeenCalledWith({
+        severity: "error",
+        title: "Could not fetch measurements",
+        description: "Internal Server Error",
+    })
 })
 
 it("reloads the measurements after editing a measurement entity", async () => {

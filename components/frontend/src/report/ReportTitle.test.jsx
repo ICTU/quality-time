@@ -15,6 +15,7 @@ import {
     expectSearch,
     expectText,
 } from "../testUtils"
+import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
 import { ReportTitle } from "./ReportTitle"
 
 beforeEach(() => {
@@ -26,16 +27,18 @@ function ReportTitleWrapper({ issueTrackerType, tags }) {
     return (
         <DataModelContext value={{ sources: { jira: { name: "Jira", issue_tracker: true } } }}>
             <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
-                <ReportTitle
-                    report={{
-                        issue_tracker: { type: issueTrackerType },
-                        report_uuid: "report_uuid",
-                        title: "Report",
-                        subjects: { subject_uuid: { metrics: { metric_uuid: { tags: tags } } } },
-                    }}
-                    reload={vi.fn()}
-                    settings={settings}
-                />
+                <SnackbarAlerts messages={[]} showMessage={vi.fn()}>
+                    <ReportTitle
+                        report={{
+                            issue_tracker: { type: issueTrackerType },
+                            report_uuid: "report_uuid",
+                            title: "Report",
+                            subjects: { subject_uuid: { metrics: { metric_uuid: { tags: tags } } } },
+                        }}
+                        reload={vi.fn()}
+                        settings={settings}
+                    />
+                </SnackbarAlerts>
             </PermissionsContext>
         </DataModelContext>
     )

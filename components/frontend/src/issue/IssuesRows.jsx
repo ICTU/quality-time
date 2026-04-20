@@ -1,20 +1,21 @@
 import Grid from "@mui/material/Grid"
 import { bool, func, node, string } from "prop-types"
-import { useContext, useState } from "react"
+import { useContext, useRef, useState } from "react"
 
 import { addMetricIssue, setMetricAttribute } from "../api/metric"
 import { getReportIssueTrackerSuggestions } from "../api/report"
 import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
+import { SnackbarContext } from "../context/Snackbar"
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { metricPropType, reportPropType } from "../sharedPropTypes"
 import { getMetricIssueIds } from "../utils"
 import { ActionButton } from "../widgets/buttons/ActionButton"
 import { AddItemIcon } from "../widgets/icons"
-import { showMessage } from "../widgets/toast"
 import { WarningMessage } from "../widgets/WarningMessage"
 
 function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, metricUuid, target, reload }) {
     const permissions = useContext(PermissionsContext)
+    const showMessageRef = useRef(useContext(SnackbarContext))
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
         <ActionButton
@@ -23,7 +24,9 @@ function CreateIssueButton({ issueTrackerConfigured, issueTrackerInstruction, me
             icon={<AddItemIcon />}
             itemType="issue"
             onClick={() =>
-                addMetricIssue(metricUuid, reload, (error) => showMessage("error", "Could not create issue", error))
+                addMetricIssue(metricUuid, reload, (error) =>
+                    showMessageRef.current({ severity: "error", title: "Could not create issue", description: error }),
+                )
             }
             popup={
                 <>
@@ -44,6 +47,7 @@ CreateIssueButton.propTypes = {
 
 function IssueIdentifiers({ entityKey, issueTrackerInstruction, metric, metricUuid, reportUuid, target, reload }) {
     const permissions = useContext(PermissionsContext)
+    const showMessageRef = useRef(useContext(SnackbarContext))
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const issueStatusHelp = `Identifiers of issues in the configured issue tracker that track the progress of fixing this ${target}.
                 When the issues have all been resolved, or the technical debt end date has passed, whichever happens
@@ -70,7 +74,13 @@ function IssueIdentifiers({ entityKey, issueTrackerInstruction, metric, metricUu
                             setSuggestions(suggestionOptions)
                             return null
                         })
-                        .catch((error) => showMessage("error", "Could not fetch issue identifiers", `${error}`))
+                        .catch((error) =>
+                            showMessageRef.current({
+                                severity: "error",
+                                title: "Could not fetch issue identifiers",
+                                description: `${error}`,
+                            }),
+                        )
                 } else {
                     setSuggestions([])
                 }

@@ -6,6 +6,7 @@ import * as reportApi from "../api/report"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { clickText, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
+import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
 import { IssueTracker } from "./IssueTracker"
 
 beforeEach(() => {
@@ -41,7 +42,9 @@ async function renderIssueTracker({ report = { report_uuid: "report_uuid", title
                 }}
             >
                 <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
-                    <IssueTracker report={report} reload={reload} />
+                    <SnackbarAlerts messages={[]}>
+                        <IssueTracker report={report} reload={reload} />
+                    </SnackbarAlerts>
                 </PermissionsContext>
             </DataModelContext>,
         )

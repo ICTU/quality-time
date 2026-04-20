@@ -33,9 +33,10 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
     const [dragging, setDragging] = useState(false)
     useEffect(() => {
         const dashboard = document.getElementById("dashboard")
+        /* v8 ignore next -- @preserve */
         Promise.all(dashboard.getAnimations().map((animation) => animation.finished))
             .then(() => dashboard.classList.add("animated")) // The animated class is used by the renderer to wait for animations to finish
-            .catch((error) => console.log(error)) // No toast message: chances this goes wrong are small and a toaster could end up in the PDF
+            .catch((error) => console.log(error)) // No toast message: chances this goes wrong are small and the message could end up in the PDF
     }, [])
     if (cards.length === 0) {
         return null

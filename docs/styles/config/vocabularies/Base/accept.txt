@@ -59,6 +59,7 @@ project_or_group
 sandboxed
 security_hotspot
 severities
+snackbar
 sparkline
 subcommand
 subfolders

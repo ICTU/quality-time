@@ -5,7 +5,7 @@ import { vi } from "vitest"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { clickText, expectFetch, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
-import * as toast from "../widgets/toast"
+import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
 import { IssuesRows } from "./IssuesRows"
 
 beforeAll(() => vi.spyOn(fetchServerApi, "fetchServerApi"))
@@ -22,22 +22,25 @@ function renderIssuesRow({
     report = { subjects: {} },
     permissions = [EDIT_REPORT_PERMISSION],
     issueStatus = [],
+    showMessage = vi.fn(),
 } = {}) {
     return render(
-        <PermissionsContext value={permissions}>
-            <IssuesRows
-                metric={{
-                    type: "violations",
-                    issue_ids: issueIds,
-                    issue_status: issueStatus,
-                }}
-                metricUuid="metric_uuid"
-                reload={() => {
-                    /* Can't use vi.fn here; it leads to "Error: cannot spy on a non-function value" */
-                }}
-                report={report}
-            />
-        </PermissionsContext>,
+        <SnackbarAlerts messages={[]} showMessage={showMessage}>
+            <PermissionsContext value={permissions}>
+                <IssuesRows
+                    metric={{
+                        type: "violations",
+                        issue_ids: issueIds,
+                        issue_status: issueStatus,
+                    }}
+                    metricUuid="metric_uuid"
+                    reload={() => {
+                        /* Can't use vi.fn here; it leads to "Error: cannot spy on a non-function value" */
+                    }}
+                    report={report}
+                />
+            </PermissionsContext>
+        </SnackbarAlerts>,
     )
 }
 
@@ -102,21 +105,25 @@ it("creates an issue", async () => {
 })
 
 it("tries to create an issue", async () => {
-    const showMessage = vi.spyOn(toast, "showMessage")
+    const showMessage = vi.fn()
     fetchServerApi.fetchServerApi.mockResolvedValue({ ok: false, error: "Failed to create issue", issue_url: "" })
     globalThis.location = {
         origin: "https://quality-time.example.org",
         pathname: "/report_uuid",
         search: "?query=ignored",
     }
-    renderIssuesRow({ report: reportWithIssueTracker })
+    renderIssuesRow({ report: reportWithIssueTracker, showMessage: showMessage })
     clickText(/Create new issue/)
     expectFetch("post", "metric/metric_uuid/issue/new", {
         metric_url: "https://quality-time.example.org/report_uuid#metric_uuid",
     })
     await waitFor(() => {
         expect(showMessage).toHaveBeenCalledTimes(1)
-        expect(showMessage).toHaveBeenCalledWith("error", "Could not create issue", "Failed to create issue")
+        expect(showMessage).toHaveBeenCalledWith({
+            severity: "error",
+            title: "Could not create issue",
+            description: "Failed to create issue",
+        })
     })
 })
 
@@ -144,18 +151,19 @@ it("shows issue id suggestions", async () => {
 })
 
 it("shows an error message if fetching suggestions fails", async () => {
+    const showMessage = vi.fn()
     fetchServerApi.fetchServerApi.mockRejectedValue(new Error("fetching suggestions failed"))
-    const showMessage = vi.spyOn(toast, "showMessage")
     renderIssuesRow({
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
+        showMessage: showMessage,
     })
     await userEvent.type(screen.getByLabelText(/Issue identifiers/), "u")
     expect(showMessage).toHaveBeenCalledTimes(1)
-    expect(showMessage).toHaveBeenCalledWith(
-        "error",
-        "Could not fetch issue identifiers",
-        "Error: fetching suggestions failed",
-    )
+    expect(showMessage).toHaveBeenCalledWith({
+        severity: "error",
+        title: "Could not fetch issue identifiers",
+        description: "Error: fetching suggestions failed",
+    })
 })
 
 it("shows no issue id suggestions without a query", async () => {
