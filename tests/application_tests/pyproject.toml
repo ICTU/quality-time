@@ -11,7 +11,7 @@ classifiers = [
 
 [dependency-groups]
 dev = [
-    "axe-selenium-python==2.1.6",
+    "axe-selenium-python==3.0.0",
     "requests==2.33.1",
     "selenium==4.43.0",
     "tools",
