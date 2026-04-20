@@ -364,9 +364,7 @@ SONARQUBE = Source(
         ),
         "branch": StringParameter(
             name="Branch (only supported by commercial SonarQube editions)",
-            help_url=HttpUrl(
-                "https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/branch-analysis/introduction/"
-            ),
+            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/discovering/code-analysis/branch-analysis"),
             default_value="main",
             metrics=sorted([*MEASURES_COMPONENT_METRICS, *PROJECT_ANALYSES_METRICS, *PROJECT_ISSUES_METRICS]),
         ),

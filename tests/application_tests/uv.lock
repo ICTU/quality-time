@@ -29,7 +29,7 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "axe-selenium-python", specifier = "==2.1.6" },
+    { name = "axe-selenium-python", specifier = "==3.0.0" },
     { name = "requests", specifier = "==2.33.1" },
     { name = "selenium", specifier = "==4.43.0" },
     { name = "tools", virtual = "../../tools/third_party" },
@@ -47,15 +47,15 @@ wheels = [
 
 [[package]]
 name = "axe-selenium-python"
-version = "2.1.6"
+version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pytest" },
     { name = "selenium" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b3/74/ab04d81d3e87b2a585f58ad353a2de6065719fdd979e6469335ba4843306/axe-selenium-python-2.1.6.tar.gz", hash = "sha256:9203ff59c79edcfbcbd676ae55ca35f257e9afb663adbcbc210e3b0d802255ae", size = 88561, upload-time = "2018-11-12T20:34:50.614Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e6/6b/5e4b8d7725a83d88ec6bc4ab4c1d01d4fefbb3986017e947c02fb5fc3628/axe_selenium_python-3.0.0.tar.gz", hash = "sha256:8f082c821ce0c6c44a326a2df5bc5926c789d9b9600fbc052fb482ef20975513", size = 222646, upload-time = "2026-04-19T12:28:42.835Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1e/d7/55a73c357e6177815eea46e4c32291ba4ee7a57414f5b4d6937c53f13225/axe_selenium_python-2.1.6-py2.py3-none-any.whl", hash = "sha256:21d10014c0bc3c999c1bfab54b9ef6a5d67f200ffca3db3629e0b315b3f1f136", size = 86872, upload-time = "2018-11-12T20:34:48.972Z" },
+    { url = "https://files.pythonhosted.org/packages/e5/97/ed2a5857ae31168a517d49a1c33dca2dfc41f5fd4c9beecd37871021f071/axe_selenium_python-3.0.0-py3-none-any.whl", hash = "sha256:847e3925861133a523609ff27d0fef387e7588a26f23a27c208a30682b8e9240", size = 160622, upload-time = "2026-04-19T12:28:41.163Z" },
 ]
 
 [[package]]
@@ -262,11 +262,11 @@ wheels = [
 
 [[package]]
 name = "filelock"
-version = "3.28.0"
+version = "3.29.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d6/17/6e8890271880903e3538660a21d63a6c1fea969ac71d0d6b608b78727fa9/filelock-3.28.0.tar.gz", hash = "sha256:4ed1010aae813c4ee8d9c660e4792475ee60c4a0ba76073ceaf862bd317e3ca6", size = 56474, upload-time = "2026-04-14T22:54:33.625Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b5/fe/997687a931ab51049acce6fa1f23e8f01216374ea81374ddee763c493db5/filelock-3.29.0.tar.gz", hash = "sha256:69974355e960702e789734cb4871f884ea6fe50bd8404051a3530bc07809cf90", size = 57571, upload-time = "2026-04-19T15:39:10.068Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3b/21/2f728888c45033d34a417bfcd248ea2564c9e08ab1bfd301377cf05d5586/filelock-3.28.0-py3-none-any.whl", hash = "sha256:de9af6712788e7171df1b28b15eba2446c69721433fa427a9bee07b17820a9db", size = 39189, upload-time = "2026-04-14T22:54:32.037Z" },
+    { url = "https://files.pythonhosted.org/packages/81/47/dd9a212ef6e343a6857485ffe25bba537304f1913bdbed446a23f7f592e1/filelock-3.29.0-py3-none-any.whl", hash = "sha256:96f5f6344709aa1572bbf631c640e4ebeeb519e08da902c39a001882f30ac258", size = 39812, upload-time = "2026-04-19T15:39:08.752Z" },
 ]
 
 [[package]]
@@ -940,7 +940,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-just = [{ name = "rust-just", specifier = "==1.49.0" }]
+just = [{ name = "rust-just", specifier = "==1.50.0" }]
 uv = [{ name = "uv", specifier = "==0.11.7" }]
 
 [[package]]
