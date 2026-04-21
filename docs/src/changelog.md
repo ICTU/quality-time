@@ -21,6 +21,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - Keep track of the measurement entity sort column and direction per metric in the URL, so that the sort order is preserved when collapsing and re-expanding a metric and when exporting the report as PDF. Closes [#6644](https://github.com/ICTU/quality-time/issues/6644).
 - When copying or moving subjects, metrics, or sources, allow for filtering the dropdown lists. Closes [#10689](https://github.com/ICTU/quality-time/issues/10689).
+- Add a link to the [Quality-time wiki](https://github.com/ICTU/quality-time/wiki) under "User documentation". Closes [#11945](https://github.com/ICTU/quality-time/issues/11945).
 
 ### Changed
 
