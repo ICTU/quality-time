@@ -1,6 +1,5 @@
 import { act, render, screen } from "@testing-library/react"
 import history from "history/browser"
-import * as reactToastify from "react-toastify"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "./api/fetch_server_api"
@@ -8,8 +7,7 @@ import { useSettings } from "./app_ui_settings"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 import { PageContent } from "./PageContent"
 import { expectFetch, expectNoAccessibilityViolations, expectText } from "./testUtils"
-
-vi.mock("react-toastify")
+import { SnackbarAlerts } from "./widgets/SnackbarAlerts"
 
 beforeEach(async () => {
     vi.useFakeTimers("modern")
@@ -23,24 +21,32 @@ afterEach(() => {
     vi.useRealTimers()
 })
 
-function PageContentWrapper({ lastUpdate, loading, reports, reportDate, reportUuid }) {
+function PageContentWrapper({ lastUpdate, loading, reports, reportDate, reportUuid, showMessage }) {
     const settings = useSettings(reportUuid)
     return (
         <div id="dashboard">
-            <PageContent
-                lastUpdate={lastUpdate}
-                loading={loading}
-                reports={reports}
-                reportsOverview={{}}
-                reportDate={reportDate}
-                reportUuid={reportUuid}
-                settings={settings}
-            />
+            <SnackbarAlerts messages={[]} showMessage={showMessage}>
+                <PageContent
+                    lastUpdate={lastUpdate}
+                    loading={loading}
+                    reports={reports}
+                    reportsOverview={{}}
+                    reportDate={reportDate}
+                    reportUuid={reportUuid}
+                    settings={settings}
+                />
+            </SnackbarAlerts>
         </div>
     )
 }
 
-async function renderPageContent({ loading = false, reports = [], reportDate = null, reportUuid = "" } = {}) {
+async function renderPageContent({
+    loading = false,
+    reports = [],
+    reportDate = null,
+    reportUuid = "",
+    showMessage = vi.fn(),
+} = {}) {
     const lastUpdate = new Date()
     let result
     await act(async () => {
@@ -51,6 +57,7 @@ async function renderPageContent({ loading = false, reports = [], reportDate = n
                 reports={reports}
                 reportDate={reportDate}
                 reportUuid={reportUuid}
+                showMessage={showMessage}
             />,
         )
     })
@@ -126,13 +133,12 @@ it("fetches measurements if nr dates > 1 and time traveling", async () => {
 })
 
 it("fails to load measurements", async () => {
+    const showMessage = vi.fn()
     fetchServerApi.fetchServerApi.mockImplementation(() => Promise.reject(new Error("Error description")))
-    const toast = vi.spyOn(reactToastify, "toast")
-    await renderPageContent()
-    expect(toast.mock.calls[0][0]).toStrictEqual(
-        <div>
-            <b>Could not fetch measurements</b>
-            <p>Error description</p>
-        </div>,
-    )
+    await renderPageContent({ showMessage: showMessage })
+    expect(showMessage).toHaveBeenCalledWith({
+        severity: "error",
+        title: "Could not fetch measurements",
+        description: "Error description",
+    })
 })

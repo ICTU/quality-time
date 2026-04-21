@@ -1,9 +1,9 @@
-import { act, render, waitFor } from "@testing-library/react"
+import { act, render } from "@testing-library/react"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
 import { asyncClickText, expectNoAccessibilityViolations } from "../testUtils"
-import * as toast from "../widgets/toast"
+import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
 import { ChangeLog } from "./ChangeLog"
 
 beforeEach(() => {
@@ -12,10 +12,14 @@ beforeEach(() => {
     )
 })
 
-async function renderChangeLog({ props }) {
+async function renderChangeLog(props) {
     let result
     await act(async () => {
-        result = render(<ChangeLog {...props} />)
+        result = render(
+            <SnackbarAlerts messages={[]} showMessage={props?.showMessage ?? vi.fn()}>
+                <ChangeLog {...props} />
+            </SnackbarAlerts>,
+        )
     })
     return result
 }
@@ -67,12 +71,10 @@ it("loads more changes", async () => {
 })
 
 it("shows error when loading more changes fails", async () => {
-    await renderChangeLog({ sourceUuid: "uuid" })
+    const showMessage = vi.fn()
+    await renderChangeLog({ sourceUuid: "uuid", showMessage: showMessage })
     fetchServerApi.fetchServerApi.mockImplementation(() => Promise.reject(new Error("Couldn't retrieve changelog")))
-    const showMessage = vi.spyOn(toast, "showMessage")
     await asyncClickText(/Load more changes/)
-    await waitFor(async () => {
-        expect(showMessage).toHaveBeenCalledTimes(1)
-    })
+    expect(showMessage).toHaveBeenCalledTimes(1)
     expectNrEventsToBe(1)
 })

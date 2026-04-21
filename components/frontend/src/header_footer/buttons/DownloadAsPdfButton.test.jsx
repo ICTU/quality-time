@@ -4,27 +4,34 @@ import { vi } from "vitest"
 
 import * as fetchServerApi from "../../api/fetch_server_api"
 import { asyncClickText, expectFetch, expectLabelText, expectNoAccessibilityViolations } from "../../testUtils"
-import * as toast from "../../widgets/toast"
+import { SnackbarAlerts } from "../../widgets/SnackbarAlerts"
 import { DownloadAsPdfButton } from "./DownloadAsPdfButton"
 
 beforeEach(() => {
     history.push("")
     vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() => Promise.resolve({ ok: true }))
-    vi.spyOn(toast, "showMessage")
 })
 
+function renderDownloadAsPdfButton(props) {
+    return render(
+        <SnackbarAlerts messages={[]} showMessage={props?.showMessage ?? vi.fn()}>
+            <DownloadAsPdfButton {...props} />
+        </SnackbarAlerts>,
+    )
+}
+
 it("has no accessibility violations", async () => {
-    const { container } = render(<DownloadAsPdfButton />)
+    const { container } = renderDownloadAsPdfButton()
     await expectNoAccessibilityViolations(container)
 })
 
 test("DownloadAsPdfButton has the correct label for reports overview", () => {
-    render(<DownloadAsPdfButton />)
+    renderDownloadAsPdfButton()
     expectLabelText(/Generate a PDF version/, 2) // 2 due to 10840-menubar-color-contrast-for-disabled-items
 })
 
 test("DownloadAsPdfButton has the correct label for a report", () => {
-    render(<DownloadAsPdfButton reportUuid={"report_uuid"} />)
+    renderDownloadAsPdfButton({ reportUuid: "report_uuid" })
     expectLabelText(/Generate a PDF version/, 2) // 2 due to 10840-menubar-color-contrast-for-disabled-items
 })
 
@@ -49,8 +56,9 @@ function mockGetReportPdfWithTimeout() {
 }
 
 test("DownloadAsPdfButton indicates loading on click", async () => {
+    const showMessage = vi.fn()
     mockGetReportPdfWithTimeout()
-    render(<DownloadAsPdfButton reportUuid="report_uuid" />)
+    renderDownloadAsPdfButton({ reportUuid: "report_uuid", showMessage: showMessage })
     await clickDownload()
     expectButtonIsLoading()
     expectFetch(
@@ -60,13 +68,14 @@ test("DownloadAsPdfButton indicates loading on click", async () => {
         "application/pdf",
     )
     await waitFor(() => {
-        expect(toast.showMessage).toHaveBeenCalledTimes(1)
+        expect(showMessage).toHaveBeenCalledTimes(1)
     })
 })
 
 test("DownloadAsPdfButton ignores a second click", async () => {
+    const showMessage = vi.fn()
     mockGetReportPdfWithTimeout()
-    render(<DownloadAsPdfButton reportUuid="report_uuid" />)
+    renderDownloadAsPdfButton({ reportUuid: "report_uuid", showMessage: showMessage })
     await clickDownload(2)
     expectButtonIsLoading()
     expectFetch(
@@ -76,13 +85,13 @@ test("DownloadAsPdfButton ignores a second click", async () => {
         "application/pdf",
     )
     await waitFor(() => {
-        expect(toast.showMessage).toHaveBeenCalledTimes(1)
+        expect(showMessage).toHaveBeenCalledTimes(1)
     })
 })
 
 test("DownloadAsPdfButton ignores unregistered query parameters", async () => {
     history.push("?unregister_key=value&nr_dates=4")
-    render(<DownloadAsPdfButton reportUuid="report_uuid" />)
+    renderDownloadAsPdfButton({ reportUuid: "report_uuid" })
     await clickDownload()
     expectFetch(
         "get",
@@ -94,7 +103,7 @@ test("DownloadAsPdfButton ignores unregistered query parameters", async () => {
 
 test("DownloadAsPdfButton passes the language set in the user's browser", async () => {
     vi.spyOn(navigator, "language", "get").mockImplementation(() => "nl-NL")
-    render(<DownloadAsPdfButton reportUuid="report_uuid" />)
+    renderDownloadAsPdfButton({ reportUuid: "report_uuid" })
     await clickDownload()
     expectFetch(
         "get",
@@ -105,30 +114,41 @@ test("DownloadAsPdfButton passes the language set in the user's browser", async 
 })
 
 test("DownloadAsPdfButton stops loading after returning pdf", async () => {
+    const showMessage = vi.fn()
     HTMLAnchorElement.prototype.click = vi.fn() // Prevent "Not implemented: navigation (except hash changes)"
     globalThis.URL.createObjectURL = vi.fn()
-    render(<DownloadAsPdfButton />)
+    renderDownloadAsPdfButton({ showMessage: showMessage })
     await clickDownload()
     expectButtonIsNotLoading()
-    expect(toast.showMessage).toHaveBeenCalledTimes(0)
+    expect(showMessage).toHaveBeenCalledTimes(0)
 })
 
 test("DownloadAsPdfButton stops loading after receiving error", async () => {
+    const showMessage = vi.fn()
     fetchServerApi.fetchServerApi.mockImplementation(() =>
         Promise.resolve({ ok: false, status: "403", statusText: "access denied" }),
     )
-    render(<DownloadAsPdfButton />)
+    renderDownloadAsPdfButton({ showMessage: showMessage })
     await clickDownload()
     expectButtonIsNotLoading()
-    expect(toast.showMessage).toHaveBeenCalledTimes(1)
-    expect(toast.showMessage).toHaveBeenCalledWith("error", "PDF rendering failed", "HTTP code 403: access denied")
+    expect(showMessage).toHaveBeenCalledTimes(1)
+    expect(showMessage).toHaveBeenCalledWith({
+        severity: "error",
+        title: "PDF rendering failed",
+        description: "HTTP code 403: access denied",
+    })
 })
 
 test("DownloadAsPdfButton catches errors", async () => {
+    const showMessage = vi.fn()
     fetchServerApi.fetchServerApi.mockImplementation(() => Promise.reject(new Error("Oops")))
-    render(<DownloadAsPdfButton />)
+    renderDownloadAsPdfButton({ showMessage: showMessage })
     await clickDownload()
     expectButtonIsNotLoading()
-    expect(toast.showMessage).toHaveBeenCalledTimes(1)
-    expect(toast.showMessage).toHaveBeenCalledWith("error", "Could not fetch PDF report", "Error: Oops")
+    expect(showMessage).toHaveBeenCalledTimes(1)
+    expect(showMessage).toHaveBeenCalledWith({
+        severity: "error",
+        title: "Could not fetch PDF report",
+        description: "Error: Oops",
+    })
 })

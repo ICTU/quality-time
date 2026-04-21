@@ -13,6 +13,7 @@ import {
     expectNoText,
     expectText,
 } from "../testUtils"
+import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
 import { SubjectTableRow } from "./SubjectTableRow"
 
 beforeEach(() => history.push(""))
@@ -89,15 +90,17 @@ function renderSubjectTableRow({
     return render(
         <PermissionsContext value={[permissions]}>
             <DataModelContext value={dataModel}>
-                <SubjectTableRowWrapper
-                    ascending={ascending}
-                    comment={comment}
-                    direction={direction}
-                    evaluateTargets={evaluateTargets}
-                    name={name}
-                    scale={scale}
-                    secondaryName={secondaryName}
-                />
+                <SnackbarAlerts messages={[]} showMessage={() => {}}>
+                    <SubjectTableRowWrapper
+                        ascending={ascending}
+                        comment={comment}
+                        direction={direction}
+                        evaluateTargets={evaluateTargets}
+                        name={name}
+                        scale={scale}
+                        secondaryName={secondaryName}
+                    />
+                </SnackbarAlerts>
             </DataModelContext>
         </PermissionsContext>,
     )

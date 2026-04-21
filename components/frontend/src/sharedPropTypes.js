@@ -244,3 +244,11 @@ export const reportsOverviewPropType = shape({
 })
 
 export const uiModePropType = oneOf(["dark", "light", "system"])
+
+export const snackbarMessagePropType = shape({
+    severity: oneOf(["error", "info", "success", "warning"]),
+    title: string,
+    description: string,
+})
+
+export const snackbarMessagesPropType = arrayOf(snackbarMessagePropType)

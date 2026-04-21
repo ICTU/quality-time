@@ -4,12 +4,11 @@ import { vi } from "vitest"
 
 import * as fetchServerApi from "../../api/fetch_server_api"
 import { expectFetch, expectNoFetch, expectText } from "../../testUtils"
-import * as toast from "../toast"
+import { SnackbarAlerts } from "../SnackbarAlerts"
 import { ReportUploadButton } from "./ReportUploadButton"
 
 beforeEach(() => {
     vi.spyOn(fetchServerApi, "fetchServerApi")
-    vi.spyOn(toast, "showMessage")
 })
 
 afterEach(() => vi.restoreAllMocks())
@@ -22,9 +21,13 @@ function createMockFile(contents) {
     return mockFile
 }
 
-function renderReportUploadButton() {
+function renderReportUploadButton({ showMessage = vi.fn() } = {}) {
     const reload = vi.fn()
-    render(<ReportUploadButton reload={reload} />)
+    render(
+        <SnackbarAlerts messages={[]} showMessage={showMessage}>
+            <ReportUploadButton reload={reload} />
+        </SnackbarAlerts>,
+    )
     return [reload, screen.getByTestId("report-import-input")]
 }
 
@@ -34,54 +37,67 @@ it("has the correct label", () => {
 })
 
 it("imports a report", async () => {
+    const showMessage = vi.fn()
     vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() =>
         Promise.resolve({ ok: true, json: () => Promise.resolve({}) }),
     )
-    const [reload, input] = renderReportUploadButton()
+    const [reload, input] = renderReportUploadButton({ showMessage: showMessage })
     await userEvent.upload(input, createMockFile("{}"))
     expect(reload).toHaveBeenCalled()
     expectFetch("post", "report/import", {})
-    expect(toast.showMessage).not.toHaveBeenCalled()
+    expect(showMessage).not.toHaveBeenCalled()
 })
 
 it("imports a report with warning", async () => {
+    const showMessage = vi.fn()
     vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() =>
         Promise.resolve({ ok: true, warning: "Credentials not decrypted" }),
     )
-    const [reload, input] = renderReportUploadButton()
+    const [reload, input] = renderReportUploadButton({ showMessage: showMessage })
     await userEvent.upload(input, createMockFile("{}"))
     expect(reload).toHaveBeenCalled()
     expectFetch("post", "report/import", {})
-    expect(toast.showMessage).toHaveBeenCalledWith("warning", "Import warning", "Credentials not decrypted")
+    expect(showMessage).toHaveBeenCalledWith({
+        severity: "warning",
+        title: "Import warning",
+        description: "Credentials not decrypted",
+    })
 })
 
 it("cancels importing a report", async () => {
-    const [reload, input] = renderReportUploadButton()
+    const showMessage = vi.fn()
+    const [reload, input] = renderReportUploadButton({ showMessage: showMessage })
     fireEvent.change(input, { target: { files: [] } })
     expect(reload).not.toHaveBeenCalled()
     expectNoFetch()
-    expect(toast.showMessage).not.toHaveBeenCalled()
+    expect(showMessage).not.toHaveBeenCalled()
 })
 
 it("shows message when failing to parse a report", async () => {
-    const [reload, input] = renderReportUploadButton()
+    const showMessage = vi.fn()
+    const [reload, input] = renderReportUploadButton({ showMessage: showMessage })
     await userEvent.upload(input, createMockFile("{]}"))
     expect(reload).not.toHaveBeenCalled()
     expectNoFetch()
-    expect(toast.showMessage).toHaveBeenCalledWith(
-        "error",
-        "Import failed",
-        "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
-    )
+    expect(showMessage).toHaveBeenCalledWith({
+        severity: "error",
+        title: "Import failed",
+        description: "Expected property name or '}' in JSON at position 1 (line 1 column 2)",
+    })
 })
 
 it("shows message when failing to import a report", async () => {
+    const showMessage = vi.fn()
     vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() =>
         Promise.resolve({ ok: false, json: () => Promise.resolve({ error: "Server error message" }) }),
     )
-    const [reload, input] = renderReportUploadButton()
+    const [reload, input] = renderReportUploadButton({ showMessage: showMessage })
     await userEvent.upload(input, createMockFile("{}"))
     expect(reload).not.toHaveBeenCalled()
     expectFetch("post", "report/import", {})
-    expect(toast.showMessage).toHaveBeenCalledWith("error", "Import failed", "Server error message")
+    expect(showMessage).toHaveBeenCalledWith({
+        severity: "error",
+        title: "Import failed",
+        description: "Server error message",
+    })
 })

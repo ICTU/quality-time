@@ -16,7 +16,6 @@ import {
     expectNoText,
     expectText,
 } from "./testUtils"
-import * as toast from "./widgets/toast"
 
 function setUserInLocalStorage(hoursLeftInSession, email) {
     // sessionHoursLeft is the time in hours left in the current session. Can be negative for expired sessions.
@@ -77,6 +76,7 @@ it("resets the user when the session is expired on mount", async () => {
     setUserInLocalStorage(-1)
     render(<App />)
     expectNoText(/admin/)
+    expectText("Your session expired")
 })
 
 it("resets the user when the user clicks logout", async () => {
@@ -125,7 +125,6 @@ it("handles a date reset", async () => {
 
 it("handles the nr of measurements event source", async () => {
     const eventListeners = {}
-    const showMessage = vi.spyOn(toast, "showMessage")
     global.EventSource = function () {
         return {
             addEventListener: function (event, listener) {
@@ -137,20 +136,20 @@ it("handles the nr of measurements event source", async () => {
 
     render(<App />)
     await act(async () => eventListeners["init"]({ data: 42 }))
-    expect(showMessage).toHaveBeenCalledWith(
-        "info",
-        "Not logged in",
-        "You are not logged in. Editing is not possible until you are.",
-    )
+    expectText("Not logged in")
     await act(async () => eventListeners["delta"]({ data: 42 }))
     await act(async () => eventListeners["delta"]({ data: 43 }))
     await act(async () => eventListeners["error"]())
-    expect(showMessage).toHaveBeenCalledWith(
-        "error",
-        "Server unreachable",
-        "Trying to reconnect to server...",
-        "reconnecting",
-    )
+    expectText("Server unreachable")
     await act(async () => eventListeners["init"]({ data: 43 }))
-    expect(showMessage).toHaveBeenCalledWith("success", "Connected to server", "Successfully reconnected to server.")
+    expectText("Connected to server")
+})
+
+it("shows and hides a notification message", async () => {
+    vi.useFakeTimers()
+    render(<App />)
+    await select15thOfPreviousMonth()
+    expectText("Historic information is read-only")
+    act(() => vi.advanceTimersByTime(50000))
+    expectNoText("Historic information is read-only")
 })

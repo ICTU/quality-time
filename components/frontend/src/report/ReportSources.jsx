@@ -3,10 +3,11 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted"
 import SettingsIcon from "@mui/icons-material/Settings"
 import { Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
 import { func, string } from "prop-types"
-import { useContext } from "react"
+import { useContext, useRef } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
+import { SnackbarContext } from "../context/Snackbar"
 import { reportPropType, settingsPropType, sourcePropType } from "../sharedPropTypes"
 import { SourceParameter } from "../source/SourceParameter"
 import { reloadAfterMassEditSource } from "../source/Sources"
@@ -21,6 +22,7 @@ import { metricsUsingSource, reportSources, unusedMetricTypesSupportedBySource }
 
 function SourceParameters({ reload, report, source, sourceUuid }) {
     const dataModel = useContext(DataModelContext)
+    const showMessageRef = useRef(useContext(SnackbarContext))
     const sourceType = dataModel.sources[source.type]
     const allParameters = sourceType.parameters
     const defaultLocationParameterKeys = ["url", "landing_url", "username", "password", "private_token"]
@@ -39,7 +41,7 @@ function SourceParameters({ reload, report, source, sourceUuid }) {
                 parameter={allParameters[key]}
                 parameterKey={key}
                 parameterValue={source?.parameters?.[key]}
-                reload={(json) => reloadAfterMassEditSource(json, reload)}
+                reload={(json) => reloadAfterMassEditSource(json, reload, showMessageRef.current)}
                 requiredPermissions={[EDIT_REPORT_PERMISSION]}
             />
         ))

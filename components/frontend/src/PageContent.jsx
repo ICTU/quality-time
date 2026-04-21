@@ -1,10 +1,10 @@
 import { Box, Container } from "@mui/material"
 import CircularProgress from "@mui/material/CircularProgress"
 import { bool, func, number, string } from "prop-types"
-import { useEffect, useMemo, useState } from "react"
-import { ToastContainer } from "react-toastify"
+import { useContext, useEffect, useMemo, useRef, useState } from "react"
 
 import { getMeasurements } from "./api/measurement"
+import { SnackbarContext } from "./context/Snackbar"
 import { useHashFragment } from "./hooks/hash_fragment"
 import { Report } from "./report/Report"
 import { ReportsOverview } from "./report/ReportsOverview"
@@ -17,7 +17,6 @@ import {
     settingsPropType,
     stringsPropType,
 } from "./sharedPropTypes"
-import { showMessage } from "./widgets/toast"
 
 function getColumnDates(reportDate, dateInterval, dateOrder, nrDates = 1) {
     const baseDate = reportDate ? new Date(reportDate) : new Date()
@@ -51,6 +50,7 @@ export function PageContent({
     settings,
 }) {
     useHashFragment(!loading)
+    const showMessageRef = useRef(useContext(SnackbarContext))
     const [measurements, setMeasurements] = useState([])
     const dates = useMemo(
         () => getColumnDates(reportDate, settings.dateInterval.value, settings.dateOrder.value, settings.nrDates.value),
@@ -62,7 +62,13 @@ export function PageContent({
         const maxDate = reportDate ? new Date(reportDate) : new Date()
         getMeasurements(minDate, maxDate)
             .then((json) => setMeasurements(json.measurements ?? []))
-            .catch((error) => showMessage("error", "Could not fetch measurements", `${error.message}`))
+            .catch((error) =>
+                showMessageRef.current({
+                    severity: "error",
+                    title: "Could not fetch measurements",
+                    description: `${error.message}`,
+                }),
+            )
     }, [dates, reportDate, nrMeasurements])
     let content
     if (loading) {
@@ -128,7 +134,6 @@ export function PageContent({
                 marginRight: "0px",
             }}
         >
-            <ToastContainer theme="colored" />
             {content}
         </Container>
     )

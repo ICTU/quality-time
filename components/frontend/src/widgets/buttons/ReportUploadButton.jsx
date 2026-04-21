@@ -2,9 +2,10 @@ import UploadFileIcon from "@mui/icons-material/UploadFile"
 import { Button, Tooltip } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { func } from "prop-types"
+import { useContext, useRef } from "react"
 
 import { importReport } from "../../api/report"
-import { showMessage } from "../toast"
+import { SnackbarContext } from "../../context/Snackbar"
 
 const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -19,6 +20,7 @@ const VisuallyHiddenInput = styled("input")({
 })
 
 export function ReportUploadButton({ reload }) {
+    const showMessageRef = useRef(useContext(SnackbarContext))
     return (
         <Tooltip title="Import a new report here">
             <Button
@@ -41,16 +43,30 @@ export function ReportUploadButton({ reload }) {
                                     const response = await importReport(JSON.parse(text))
                                     if (response.ok === false) {
                                         const json = await response.json()
-                                        showMessage("error", "Import failed", json["error"])
+                                        showMessageRef.current({
+                                            severity: "error",
+                                            title: "Import failed",
+                                            description: json["error"],
+                                        })
                                     } else {
                                         if (response["warning"]) {
-                                            showMessage("warning", "Import warning", response["warning"])
+                                            showMessageRef.current({
+                                                severity: "warning",
+                                                title: "Import warning",
+                                                description: response["warning"],
+                                            })
                                         }
                                         reload()
                                     }
                                     return response
                                 })
-                                .catch(({ message }) => showMessage("error", "Import failed", message))
+                                .catch(({ message }) =>
+                                    showMessageRef.current({
+                                        severity: "error",
+                                        title: "Import failed",
+                                        description: message,
+                                    }),
+                                )
                         }
                     }}
                 />
