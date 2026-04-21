@@ -30,6 +30,7 @@ intro.md
 usage.md
 faq.md
 reference.md
+Tips & how-tos <https://github.com/ICTU/quality-time/wiki>
 ```
 ````
 ````{grid-item-card}
