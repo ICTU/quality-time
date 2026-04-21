@@ -522,6 +522,7 @@ report(s).
             "dependency_track",
             "gatling",
             "gitlab",
+            "grafana_k6",
             "harbor_json",
             "jacoco",
             "jacoco_jenkins_plugin",
