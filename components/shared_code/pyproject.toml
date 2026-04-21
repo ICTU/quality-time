@@ -14,7 +14,7 @@ dependencies = [
     "bottle==0.13.4",
     "packaging==26.1",
     "pydantic==2.13.2",
-    "pymongo==4.16.0",
+    "pymongo==4.17.0",
     "python-dateutil==2.9.0.post0",
     "rich==15.0.0",
 ]
