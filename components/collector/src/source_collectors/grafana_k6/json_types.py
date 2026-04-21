@@ -44,11 +44,18 @@ class State(TypedDict):
     testRunDurationMs: float
 
 
+class Metadata(TypedDict):
+    """Class representing the metadata object in a summary.json file."""
+
+    generatedAt: str
+
+
 class SummaryJSON(TypedDict):
     """Class representing a Grafana k6 summary.json file.
 
     See https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/#summary-data-reference.
     """
 
+    metadata: NotRequired[Metadata]
     metrics: dict[str, Metric]
     state: State

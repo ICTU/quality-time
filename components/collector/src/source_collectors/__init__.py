@@ -60,6 +60,7 @@ from .gitlab.source_version import GitLabSourceVersion
 from .gitlab.unused_jobs import GitLabUnusedJobs
 from .grafana_k6.performancetest_duration import GrafanaK6PerformanceTestDuration
 from .grafana_k6.slow_transactions import GrafanaK6SlowTransactions
+from .grafana_k6.source_up_to_dateness import GrafanaK6SourceUpToDateness
 from .harbor.security_warnings import HarborSecurityWarnings
 from .harbor_json.security_warnings import HarborJSONSecurityWarnings
 from .harbor_json.source_up_to_dateness import HarborJSONSourceUpToDateness

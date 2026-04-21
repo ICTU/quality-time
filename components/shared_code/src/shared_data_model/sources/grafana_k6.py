@@ -19,7 +19,7 @@ from shared_data_model.parameters import (
 
 FLOAT = EntityAttributeType.FLOAT
 HELP = "response time (milliseconds)"
-ALL_GRAFANA_K6_METRICS = ["performancetest_duration", "slow_transactions"]
+ALL_GRAFANA_K6_METRICS = ["performancetest_duration", "slow_transactions", "source_up_to_dateness"]
 
 DEFAULT_THRESHOLD_TO_EVALUATE = "none (use thresholds in summary.json)"
 RESPONSE_TIME_TO_EVALUATE = ResponseTimeToEvaluate(
