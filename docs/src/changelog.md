@@ -15,6 +15,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Fixed
 
 - When hiding measurement entities marked as fixed, false positive, or won't fix, preserve that setting when exporting the report as PDF. Fixes [#12976](https://github.com/ICTU/quality-time/issues/12976).
+- Fix alignment of the right footer column. Fixes [#12997](https://github.com/ICTU/quality-time/issues/12997).
 
 ### Added
 

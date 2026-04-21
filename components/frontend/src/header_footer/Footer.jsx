@@ -8,7 +8,6 @@ import PersonIcon from "@mui/icons-material/Person"
 import ScienceIcon from "@mui/icons-material/Science"
 import {
     AppBar,
-    Box,
     Container,
     Divider,
     List,
@@ -153,16 +152,14 @@ export function Footer({ lastUpdate, report }) {
         <AppBar component="footer" position="relative" sx={{ displayPrint: "none", flex: 0 }}>
             <Container maxWidth="md" sx={{ padding: "60px" }}>
                 <Grid container spacing={2} columns={{ xs: 1, sm: 3 }}>
-                    <Grid size={1}>
+                    <Grid container size={1}>
                         <AboutAppColumn />
                     </Grid>
                     <Grid size={1}>
                         {report ? <AboutReportColumn lastUpdate={lastUpdate} report={report} /> : <QuoteColumn />}
                     </Grid>
-                    <Grid size={1}>
-                        <Box display="flex" sx={{ justifyContent: "flex-end" }}>
-                            <SupportColumn />
-                        </Box>
+                    <Grid container size={1} sx={{ justifyContent: "flex-end" }}>
+                        <SupportColumn />
                     </Grid>
                 </Grid>
                 <Divider aria-hidden="true">
