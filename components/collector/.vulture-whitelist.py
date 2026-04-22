@@ -79,6 +79,7 @@ GrafanaK6PerformanceTestDuration  # unused class (src/source_collectors/grafana_
 GrafanaK6SlowTransactions  # unused class (src/source_collectors/grafana_k6/slow_transactions.py:44)
 GrafanaK6SourceUpToDateness  # unused class (src/source_collectors/grafana_k6/source_up_to_dateness.py:17)
 GrafanaK6SourceVersion  # unused class (src/source_collectors/grafana_k6/source_version.py:16)
+GrafanaK6Tests  # unused class (src/source_collectors/grafana_k6/tests.py:12)
 fixable  # unused variable (src/source_collectors/harbor/security_warnings.py:68)
 scan_status  # unused variable (src/source_collectors/harbor/security_warnings.py:76)
 addition_links  # unused variable (src/source_collectors/harbor/security_warnings.py:90)

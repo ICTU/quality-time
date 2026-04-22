@@ -11,6 +11,7 @@ from shared_data_model.parameters import (
     PERCENTILE_99,
     ResponseTimeToEvaluate,
     TargetResponseTime,
+    TestResult,
     TransactionSpecificTargetResponseTimes,
     TransactionsToIgnore,
     TransactionsToInclude,
@@ -19,7 +20,13 @@ from shared_data_model.parameters import (
 
 FLOAT = EntityAttributeType.FLOAT
 HELP = "response time (milliseconds)"
-ALL_GRAFANA_K6_METRICS = ["performancetest_duration", "slow_transactions", "source_up_to_dateness", "source_version"]
+ALL_GRAFANA_K6_METRICS = [
+    "performancetest_duration",
+    "slow_transactions",
+    "source_up_to_dateness",
+    "source_version",
+    "tests",
+]
 
 DEFAULT_THRESHOLD_TO_EVALUATE = "none (use thresholds in summary.json)"
 RESPONSE_TIME_TO_EVALUATE = ResponseTimeToEvaluate(
@@ -49,10 +56,20 @@ GRAFANA_K6 = Source(
         "K6 is an open-source load testing tool developed by Grafana Labs. It is designed to help developers test "
         "the performance and reliability of their systems."
     ),
+    documentation={
+        "slow_transactions": """When using Grafana k6 as source, only Grafana k6 metrics whose `contains` field equals
+`"time"` are considered. Other metrics are ignored. To count the test results of Grafana k6 metrics (passed, failed,
+or both) based on their thresholds, use the [test results](#test-results) metric.""",
+        "tests": """When using Grafana k6 as source, only Grafana k6 metrics that have at least one threshold are
+counted as test. Other metrics are ignored. A test passes if all thresholds are `ok`; it fails if one or more
+thresholds are not `ok`. To count the number of Grafana k6 metrics slower than their target response time, use the
+[slow transactions](#slow-transactions) metric.""",
+    },
     url=HttpUrl("https://k6.io"),
     parameters={
         "response_time_to_evaluate": RESPONSE_TIME_TO_EVALUATE,
         "target_response_time": TargetResponseTime(),
+        "test_result": TestResult(values=["failed", "passed"]),
         "transaction_specific_target_response_times": TransactionSpecificTargetResponseTimes(),
         "transactions_to_ignore": TransactionsToIgnore(metrics=["slow_transactions"]),
         "transactions_to_include": TransactionsToInclude(metrics=["slow_transactions"]),

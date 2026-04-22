@@ -723,6 +723,7 @@ MP-4 above).
         sources=[
             "azure_devops",
             "gatling",
+            "grafana_k6",
             "jenkins_test_report",
             "jmeter_csv",
             "jmeter_json",
