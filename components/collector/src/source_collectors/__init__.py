@@ -62,6 +62,7 @@ from .grafana_k6.performancetest_duration import GrafanaK6PerformanceTestDuratio
 from .grafana_k6.slow_transactions import GrafanaK6SlowTransactions
 from .grafana_k6.source_up_to_dateness import GrafanaK6SourceUpToDateness
 from .grafana_k6.source_version import GrafanaK6SourceVersion
+from .grafana_k6.tests import GrafanaK6Tests
 from .harbor.security_warnings import HarborSecurityWarnings
 from .harbor_json.security_warnings import HarborJSONSecurityWarnings
 from .harbor_json.source_up_to_dateness import HarborJSONSourceUpToDateness

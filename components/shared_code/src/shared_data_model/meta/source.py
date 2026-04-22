@@ -23,7 +23,7 @@ class Source(DescribedModel):
 
     url: HttpUrl | None = None
     repository_url: HttpUrl | None = None  # Source repository of the source, for example https://github.com/org/repo
-    documentation: dict[str, str] | None = None  # Documentation in Markdown format
+    documentation: dict[str, str] | None = None  # Key is the metric type, value is the documentation in Markdown format
     configuration: dict[str, Configuration] = {}
     parameters: dict[str, SerializeAsAny[Parameter]]
     parameter_layout: dict[str, ParameterGroup] = DEFAULT_PARAMETER_LAYOUT

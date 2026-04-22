@@ -21,8 +21,9 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - Keep track of the measurement entity sort column and direction per metric in the URL, so that the sort order is preserved when collapsing and re-expanding a metric and when exporting the report as PDF. Closes [#6644](https://github.com/ICTU/quality-time/issues/6644).
 - When copying or moving subjects, metrics, or sources, allow for filtering the dropdown lists. Closes [#10689](https://github.com/ICTU/quality-time/issues/10689).
-- Allow for using Grafana k6 summary.json reports as source for the source version metric. Closes [#11173](https://github.com/ICTU/quality-time/issues/11173).
-- Allow for using Grafana k6 summary.json reports as source for the source up-to-dateness metric. Closes [#11174](https://github.com/ICTU/quality-time/issues/11174).
+- Add Grafana k6 summary.json reports as source for the 'tests' metric. Closes [#11173](https://github.com/ICTU/quality-time/issues/11173).
+- Allow for using Grafana k6 summary.json reports as source for the 'source up-to-dateness' metric. Closes [#11174](https://github.com/ICTU/quality-time/issues/11174).
+- Allow for using Grafana k6 summary.json reports as source for the 'source version' metric. Closes [#11373](https://github.com/ICTU/quality-time/issues/11373).
 - Add a link to the [Quality-time wiki](https://github.com/ICTU/quality-time/wiki) under "User documentation". Closes [#11945](https://github.com/ICTU/quality-time/issues/11945).
 
 ### Changed
