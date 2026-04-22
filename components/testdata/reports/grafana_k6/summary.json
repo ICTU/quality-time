@@ -1,6 +1,7 @@
 {
     "metadata": {
-        "generatedAt": "2026-04-21T10:00:00.000Z"
+        "generatedAt": "2026-04-21T10:00:00.000Z",
+        "k6Version": "1.1.0"
     },
     "root_group": {
         "name": "",

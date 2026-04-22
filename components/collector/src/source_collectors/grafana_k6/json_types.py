@@ -48,6 +48,7 @@ class Metadata(TypedDict):
     """Class representing the metadata object in a summary.json file."""
 
     generatedAt: str
+    k6Version: str
 
 
 class SummaryJSON(TypedDict):
@@ -56,6 +57,6 @@ class SummaryJSON(TypedDict):
     See https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/#summary-data-reference.
     """
 
-    metadata: NotRequired[Metadata]
+    metadata: Metadata
     metrics: dict[str, Metric]
     state: State
