@@ -21,6 +21,7 @@ class MeasurementsTestCase(DataModelTestCase):
         self.metric = Metric(self.DATA_MODEL, {"type": "violations"}, METRIC_ID)
 
 
+@patch("shared.utils.functions.iso_timestamp", Mock(return_value="2026-04-22T09:47:28+00:00"))
 class LatestMeasurementsTest(MeasurementsTestCase):
     """Unit test for retrieving the latest measurement from the database."""
 
@@ -37,7 +38,6 @@ class LatestMeasurementsTest(MeasurementsTestCase):
         """Test no successful measurements found."""
         self.assertIsNone(latest_measurement(self.database, self.metric, skip_measurements_with_error=True))
 
-    @patch("shared.model.measurement.iso_timestamp", new=Mock(return_value="2019-01-01"))
     def test_latest_successful_measurement(self):
         """Test that a successful measurement is found."""
         self.database.measurements.find_one.return_value = {}
