@@ -579,6 +579,7 @@ have 2.9.3 and the version available is 3.9.1, then the metric will turn red.
             "dependency_track",
             "gatling",
             "gitlab",
+            "grafana_k6",
             "jenkins",
             "jira",
             "manual_version",
