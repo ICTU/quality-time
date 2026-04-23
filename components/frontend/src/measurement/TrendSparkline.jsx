@@ -1,11 +1,12 @@
-import { useTheme } from "@mui/material"
+import { ButtonBase, useTheme } from "@mui/material"
+import { func } from "prop-types"
 import { useState } from "react"
 import { VictoryGroup, VictoryLine, VictoryTheme } from "victory"
 
 import { datePropType, measurementsPropType, scalePropType } from "../sharedPropTypes"
 import { pluralize } from "../utils"
 
-export function TrendSparkline({ measurements, reportDate, scale }) {
+export function TrendSparkline({ measurements, onClick, reportDate, scale }) {
     const [now] = useState(() => (reportDate ? new Date(reportDate) : new Date()))
     const [weekAgo] = useState(() => {
         let date = reportDate ? new Date(reportDate) : new Date()
@@ -29,7 +30,7 @@ export function TrendSparkline({ measurements, reportDate, scale }) {
     const ariaLabel = `sparkline graph showing ${yValues.size} different measurement ${pluralize("value", yValues.size)} in the week before ${reportDate ? now.toLocaleDateString() : "today"}`
     // The width property below is not used according to https://formidable.com/open-source/victory/docs/common-props#width,
     // but setting it prevents these messages in the console: "Warning: `Infinity` is an invalid value for the `width` css style property.""
-    return (
+    const sparkline = (
         <VictoryGroup
             aria-label={ariaLabel}
             theme={VictoryTheme.material}
@@ -51,9 +52,31 @@ export function TrendSparkline({ measurements, reportDate, scale }) {
             />
         </VictoryGroup>
     )
+    if (!onClick) {
+        return sparkline
+    }
+    return (
+        <ButtonBase
+            aria-label="Show trend graph for this metric"
+            focusRipple
+            onClick={onClick}
+            sx={{
+                display: "block",
+                height: "100%",
+                padding: 2,
+                width: "100%",
+                "&:hover, &.Mui-focusVisible": {
+                    backgroundColor: "action.hover",
+                },
+            }}
+        >
+            {sparkline}
+        </ButtonBase>
+    )
 }
 TrendSparkline.propTypes = {
     measurements: measurementsPropType,
+    onClick: func,
     reportDate: datePropType,
     scale: scalePropType,
 }

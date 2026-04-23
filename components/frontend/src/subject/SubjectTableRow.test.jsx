@@ -7,10 +7,12 @@ import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
+    asyncClickButton,
     expectLabelText,
     expectNoAccessibilityViolations,
     expectNoLabelText,
     expectNoText,
+    expectSearch,
     expectText,
 } from "../testUtils"
 import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
@@ -195,4 +197,24 @@ it("shows the metric name", async () => {
 it("shows the metric secondary name", async () => {
     renderSubjectTableRow({ secondaryName: "Secondary name" })
     expectText("Secondary name")
+})
+
+it("expands the metric on the trend graph tab when the sparkline is clicked", async () => {
+    renderSubjectTableRow()
+    await asyncClickButton(/show trend graph/i)
+    expectSearch("?expanded=metric_uuid%3A4")
+})
+
+it("switches to the trend graph tab when the sparkline is clicked on an expanded row with a different tab", async () => {
+    history.push("?expanded=metric_uuid:0")
+    renderSubjectTableRow()
+    await asyncClickButton(/show trend graph/i)
+    expectSearch("?expanded=metric_uuid%3A4")
+})
+
+it("collapses the metric when the sparkline is clicked on an expanded row with the trend graph tab active", async () => {
+    history.push("?expanded=metric_uuid:4")
+    renderSubjectTableRow()
+    await asyncClickButton(/show trend graph/i)
+    expectSearch("")
 })
