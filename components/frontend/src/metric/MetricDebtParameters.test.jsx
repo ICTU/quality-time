@@ -8,7 +8,14 @@ import { vi } from "vitest"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { expectFetch, expectNoAccessibilityViolations, expectNoFetch, expectText } from "../testUtils"
+import {
+    clickButton,
+    clickLabeledElement,
+    expectFetch,
+    expectNoAccessibilityViolations,
+    expectNoFetch,
+    expectText,
+} from "../testUtils"
 import { MetricDebtParameters } from "./MetricDebtParameters"
 
 const dataModel = {
@@ -102,6 +109,15 @@ it("sets the technical debt end date", async () => {
     renderMetricDebtParameters()
     await userEvent.type(screen.getAllByLabelText(/Technical debt end date/)[0], "12312022{Enter}")
     expectFetch("post", "metric/metric_uuid/attribute/debt_end_date", { debt_end_date: dayjs("2022-12-31") })
+})
+
+it("sets the technical debt end date to today", async () => {
+    renderMetricDebtParameters()
+    clickLabeledElement(/Choose date/)
+    clickButton("Today")
+    expectFetch("post", "metric/metric_uuid/attribute/debt_end_date", {
+        debt_end_date: dayjs().startOf("day"),
+    })
 })
 
 it("shows days ago for the technical debt end date", async () => {

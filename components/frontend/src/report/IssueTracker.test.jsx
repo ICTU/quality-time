@@ -68,7 +68,7 @@ it("sets the issue tracker type", async () => {
     fireEvent.mouseDown(screen.getByLabelText(/Issue tracker type/))
     clickText("Jira")
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith("report_uuid", "type", "jira", reload)
-    fireEvent.click(screen.getByText("None"))
+    clickText("None")
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith("report_uuid", "type", "", reload)
 })
 
