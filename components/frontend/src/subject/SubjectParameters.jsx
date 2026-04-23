@@ -28,7 +28,7 @@ export function SubjectParameters({ subject, subjectUuid, subjectName, reload })
                     label="Subject title"
                     placeholder={subjectName}
                     onChange={(value) => setSubjectAttribute(subjectUuid, "name", value, reload)}
-                    value={subject.name}
+                    value={subject.name || subjectName}
                 />
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
