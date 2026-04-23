@@ -99,7 +99,10 @@ it("changes the subject type from a nested type", async () => {
 
 it("changes the subject title", async () => {
     await renderSubjectTitle()
-    await userEvent.type(screen.getByLabelText(/Subject title/), "{Delete}New title{Enter}")
+    await userEvent.type(screen.getByLabelText(/Subject title/), "New title{Enter}", {
+        initialSelectionStart: 0,
+        initialSelectionEnd: 100,
+    })
     expectFetch("post", "subject/subject_uuid/attribute/name", { name: "New title" })
 })
 

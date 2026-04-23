@@ -66,7 +66,10 @@ it("changes the source type", async () => {
 
 it("changes the source name", async () => {
     renderSource(metric)
-    await userEvent.type(screen.getByLabelText(/Source name/), "New source name{Enter}")
+    await userEvent.type(screen.getByLabelText(/Source name/), "New source name{Enter}", {
+        initialSelectionStart: 0,
+        initialSelectionEnd: 100,
+    })
     expectFetch("post", "source/source_uuid/attribute/name", { name: "New source name" })
 })
 

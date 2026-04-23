@@ -52,7 +52,7 @@ function MetricName({ metric, metricUuid, reload }) {
             label="Metric name"
             placeholder={metricType.name}
             onChange={(value) => setMetricAttribute(metricUuid, "name", value, reload)}
-            value={metric.name}
+            value={metric.name || metricType.name}
         />
     )
 }
@@ -184,7 +184,7 @@ function UnitPlural({ metric, metricUuid, reload }) {
             placeholder={metricType.unit}
             startAdornment={formatMetricScale(metric, dataModel, "2")}
             onChange={(value) => setMetricAttribute(metricUuid, "unit", value, reload)}
-            value={metric.unit}
+            value={metric.unit || metricType.unit}
         />
     )
 }
@@ -206,7 +206,7 @@ function UnitSingular({ metric, metricUuid, reload }) {
             placeholder={metricType.unit_singular}
             startAdornment={formatMetricScale(metric, dataModel, "1")}
             onChange={(value) => setMetricAttribute(metricUuid, "unit_singular", value, reload)}
-            value={metric.unit_singular}
+            value={metric.unit_singular || metricType.unit_singular}
         />
     )
 }
