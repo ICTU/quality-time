@@ -50,9 +50,14 @@ export function MeasurementTarget({ metric }) {
     }
     const metricDirection = formatMetricDirection(metric, dataModel)
     const scale = getMetricScale(metric, dataModel)
-    const target = `${metricDirection} ${formatMetricValue(scale, getMetricTarget(metric))}${formatMetricScale(metric, dataModel)}`
+    const valueAndScale = `${formatMetricValue(scale, getMetricTarget(metric))}${formatMetricScale(metric, dataModel)}`
+    const target = (
+        <>
+            {metricDirection}&nbsp;{valueAndScale}
+        </>
+    )
     if (!metric.accept_debt) {
-        return <>{target}</>
+        return target
     }
     const allIssuesDone =
         metric.issue_status?.length > 0
