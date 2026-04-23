@@ -20,6 +20,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Added
 
 - Make default values of subject names, metric names and units, and source names editable. Closes [#3420](https://github.com/ICTU/quality-time/issues/3420).
+- Don't insert line breaks between comparison operators (<= or >=) and target values to save space. Closes [#4613](https://github.com/ICTU/quality-time/issues/4613).
 - Keep track of the measurement entity sort column and direction per metric in the URL, so that the sort order is preserved when collapsing and re-expanding a metric and when exporting the report as PDF. Closes [#6644](https://github.com/ICTU/quality-time/issues/6644).
 - When copying or moving subjects, metrics, or sources, allow for filtering the dropdown lists. Closes [#10689](https://github.com/ICTU/quality-time/issues/10689).
 - Add Grafana k6 summary.json reports as source for the 'tests' metric. Closes [#11173](https://github.com/ICTU/quality-time/issues/11173).
