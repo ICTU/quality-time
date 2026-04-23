@@ -75,7 +75,11 @@ function TechnicalDebtEndDate({ metric, metricUuid, reload }) {
             disabled={disabled}
             label="Technical debt end date"
             onChange={(value) => setMetricAttribute(metricUuid, "debt_end_date", value, reload)}
-            slotProps={{ field: { clearable: true }, textField: { helperText: helperText } }}
+            slotProps={{
+                actionBar: { actions: ["today"] },
+                field: { clearable: true },
+                textField: { helperText: helperText },
+            }}
             sx={{ width: "100%" }}
             timezone="default"
         />

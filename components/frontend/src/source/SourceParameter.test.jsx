@@ -129,6 +129,16 @@ it("renders a date parameter without date", async () => {
     expect(screen.queryAllByPlaceholderText(/YYYY/).length).toBe(0)
 })
 
+it("sets the date to today", async () => {
+    renderSourceParameter({ parameter: { name: "Date", type: "date" }, parameterValue: "2021-10-10" })
+    clickLabeledElement(/Choose date/)
+    clickButton("Today")
+    expectFetch("post", "source/source_uuid/parameter/key1", {
+        edit_scope: "source",
+        key1: dayjs().startOf("day"),
+    })
+})
+
 it("sets the next date one day from previous date", async () => {
     renderSourceParameter({
         parameter: { name: "Date", type: "date" },

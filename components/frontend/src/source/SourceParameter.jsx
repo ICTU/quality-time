@@ -201,6 +201,7 @@ export function SourceParameter({
                     {...parameterProps}
                     value={value ? dayjs(value) : null}
                     slotProps={{
+                        actionBar: { actions: ["today"] },
                         textField: { helperText: helperText, slotProps: { input: { startAdornment: startAdornment } } },
                     }}
                     sx={{ width: "100%" }}
