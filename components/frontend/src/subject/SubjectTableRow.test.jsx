@@ -1,4 +1,6 @@
 import { Table, TableBody } from "@mui/material"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { act, render } from "@testing-library/react"
 import history from "history/browser"
 
@@ -90,21 +92,23 @@ function renderSubjectTableRow({
     secondaryName = "",
 } = {}) {
     return render(
-        <PermissionsContext value={[permissions]}>
-            <DataModelContext value={dataModel}>
-                <SnackbarAlerts messages={[]} showMessage={() => {}}>
-                    <SubjectTableRowWrapper
-                        ascending={ascending}
-                        comment={comment}
-                        direction={direction}
-                        evaluateTargets={evaluateTargets}
-                        name={name}
-                        scale={scale}
-                        secondaryName={secondaryName}
-                    />
-                </SnackbarAlerts>
-            </DataModelContext>
-        </PermissionsContext>,
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <PermissionsContext value={[permissions]}>
+                <DataModelContext value={dataModel}>
+                    <SnackbarAlerts messages={[]} showMessage={() => {}}>
+                        <SubjectTableRowWrapper
+                            ascending={ascending}
+                            comment={comment}
+                            direction={direction}
+                            evaluateTargets={evaluateTargets}
+                            name={name}
+                            scale={scale}
+                            secondaryName={secondaryName}
+                        />
+                    </SnackbarAlerts>
+                </DataModelContext>
+            </PermissionsContext>
+        </LocalizationProvider>,
     )
 }
 
@@ -216,6 +220,26 @@ it("collapses the metric when the metric name is clicked on an expanded row with
     history.push("?expanded=metric_uuid:0")
     renderSubjectTableRow()
     await asyncClickButton(/show configuration tab for this metric/i)
+    expectSearch("")
+})
+
+it("expands the metric on the technical debt tab when the status is clicked", async () => {
+    renderSubjectTableRow()
+    await asyncClickButton(/show technical debt tab for this metric/i)
+    expectSearch("?expanded=metric_uuid%3A2")
+})
+
+it("switches to the technical debt tab when the status is clicked on an expanded row with a different tab", async () => {
+    history.push("?expanded=metric_uuid:0")
+    renderSubjectTableRow()
+    await asyncClickButton(/show technical debt tab for this metric/i)
+    expectSearch("?expanded=metric_uuid%3A2")
+})
+
+it("collapses the metric when the status is clicked on an expanded row with the technical debt tab active", async () => {
+    history.push("?expanded=metric_uuid:2")
+    renderSubjectTableRow()
+    await asyncClickButton(/show technical debt tab for this metric/i)
     expectSearch("")
 })
 
