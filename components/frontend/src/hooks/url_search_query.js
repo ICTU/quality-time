@@ -100,6 +100,14 @@ function useMappingURLSearchQuery(key, parseValue, missingItemValue) {
         const newValue = [...hook._allItemsExcept(itemKey), `${itemKey}:${itemValue}`]
         setURLSearchQuery(key, newValue, hook.defaultValue, hook.set)
     }
+    hook.setOrDeleteItem = (itemKey, itemValue) => {
+        // Assign the value to the key, unless the key already has the value, then delete the key/value pair
+        if (hook.includes(itemKey) && hook.getItem(itemKey) === itemValue) {
+            hook.deleteItem(itemKey)
+        } else {
+            hook.setItem(itemKey, itemValue)
+        }
+    }
     return hook
 }
 

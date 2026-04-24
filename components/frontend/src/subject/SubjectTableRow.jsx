@@ -13,7 +13,7 @@ import { Overrun } from "../measurement/Overrun"
 import { StatusIcon } from "../measurement/StatusIcon"
 import { TimeLeft } from "../measurement/TimeLeft"
 import { TrendSparkline } from "../measurement/TrendSparkline"
-import { MetricDetails, TREND_GRAPH_TAB_INDEX } from "../metric/MetricDetails"
+import { METRIC_NAME_TAB_INDEX, MetricDetails, TREND_GRAPH_TAB_INDEX } from "../metric/MetricDetails"
 import { measurementOnDate } from "../report/report_utils"
 import {
     dataModelPropType,
@@ -39,6 +39,7 @@ import {
     getMetricTags,
     getMetricUnit,
 } from "../utils"
+import { ButtonBase } from "../widgets/buttons/ButtonBase"
 import { DivWithHtml } from "../widgets/DivWithHtml"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { Tag } from "../widgets/Tag"
@@ -212,21 +213,28 @@ MeasurementCells.propTypes = {
     settings: settingsPropType,
 }
 
-function MetricName({ metric }) {
+function MetricName({ metric, onClick }) {
     const dataModel = useContext(DataModelContext)
     const name = getMetricName(metric, dataModel)
     if (metric.secondary_name) {
         return (
-            <Stack>
-                {name}
-                <Typography sx={{ fontSize: "90%" }}>{metric.secondary_name}</Typography>
-            </Stack>
+            <ButtonBase ariaLabel="Show configuration tab for this metric" onClick={onClick}>
+                <Stack>
+                    {name}
+                    <Typography sx={{ fontSize: "90%" }}>{metric.secondary_name}</Typography>
+                </Stack>
+            </ButtonBase>
         )
     }
-    return name
+    return (
+        <ButtonBase ariaLabel="Show configuration tab for this metric" onClick={onClick}>
+            {name}
+        </ButtonBase>
+    )
 }
 MetricName.propTypes = {
     metric: metricPropType,
+    onClick: func,
 }
 
 const DragHandleButton = function DragHandleButton({ ref, label, ...props }) {
@@ -319,7 +327,13 @@ export function SubjectTableRow({
             expanded={settings.expandedItems.includes(metricUuid)}
             id={metricUuid}
             onExpand={() => settings.expandedItems.toggle(metricUuid)}
-            firstCellContent={<MetricName metric={metric} />}
+            firstCellContent={
+                <MetricName
+                    metric={metric}
+                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_NAME_TAB_INDEX)}
+                />
+            }
+            firstCellProps={{ sx: { padding: "8px" } }}
         >
             {nrDates > 1 && (
                 <MeasurementCells
@@ -334,16 +348,7 @@ export function SubjectTableRow({
                 <TableCell sx={{ padding: 0, width: "150px" }}>
                     <TrendSparkline
                         measurements={metric.recent_measurements}
-                        onClick={() => {
-                            if (
-                                settings.expandedItems.includes(metricUuid) &&
-                                settings.expandedItems.getItem(metricUuid) === TREND_GRAPH_TAB_INDEX
-                            ) {
-                                settings.expandedItems.deleteItem(metricUuid)
-                            } else {
-                                settings.expandedItems.setItem(metricUuid, TREND_GRAPH_TAB_INDEX)
-                            }
-                        }}
+                        onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, TREND_GRAPH_TAB_INDEX)}
                         reportDate={reportDate}
                         scale={scale}
                     />

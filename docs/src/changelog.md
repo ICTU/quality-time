@@ -15,6 +15,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Added
 
 - Make the spark line graph clickable to expand the metric on the trend graph tab, and collapse the metric when clicked again while the trend graph tab is active. Closes [#13024](https://github.com/ICTU/quality-time/issues/13024).
+- Make the metric name clickable to expand the metric on the metric configuration tab, and collapse the metric when clicked again while the configuration tab is active. Closes [#13027](https://github.com/ICTU/quality-time/issues/13027).
 
 ## v5.53.0 - 2026-04-24
 

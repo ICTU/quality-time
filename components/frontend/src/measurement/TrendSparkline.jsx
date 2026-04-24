@@ -1,10 +1,11 @@
-import { ButtonBase, useTheme } from "@mui/material"
+import { useTheme } from "@mui/material"
 import { func } from "prop-types"
 import { useState } from "react"
 import { VictoryGroup, VictoryLine, VictoryTheme } from "victory"
 
 import { datePropType, measurementsPropType, scalePropType } from "../sharedPropTypes"
 import { pluralize } from "../utils"
+import { ButtonBase } from "../widgets/buttons/ButtonBase"
 
 export function TrendSparkline({ measurements, onClick, reportDate, scale }) {
     const [now] = useState(() => (reportDate ? new Date(reportDate) : new Date()))
@@ -56,20 +57,7 @@ export function TrendSparkline({ measurements, onClick, reportDate, scale }) {
         return sparkline
     }
     return (
-        <ButtonBase
-            aria-label="Show trend graph for this metric"
-            focusRipple
-            onClick={onClick}
-            sx={{
-                display: "block",
-                height: "100%",
-                padding: 2,
-                width: "100%",
-                "&:hover, &.Mui-focusVisible": {
-                    backgroundColor: "action.hover",
-                },
-            }}
-        >
+        <ButtonBase ariaLabel="Show trend graph for this metric" onClick={onClick}>
             {sparkline}
         </ButtonBase>
     )

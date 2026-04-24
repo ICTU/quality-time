@@ -199,6 +199,26 @@ it("shows the metric secondary name", async () => {
     expectText("Secondary name")
 })
 
+it("expands the metric on the configuration tab when the metric name is clicked", async () => {
+    renderSubjectTableRow({ name: "Metric name" })
+    await asyncClickButton(/show configuration tab for this metric/i)
+    expectSearch("?expanded=metric_uuid%3A0")
+})
+
+it("switches to the configuration tab when the metric name is clicked on an expanded row with a different tab", async () => {
+    history.push("?expanded=metric_uuid:1")
+    renderSubjectTableRow()
+    await asyncClickButton(/show configuration tab for this metric/i)
+    expectSearch("?expanded=metric_uuid%3A0")
+})
+
+it("collapses the metric when the metric name is clicked on an expanded row with the configuation tab active", async () => {
+    history.push("?expanded=metric_uuid:0")
+    renderSubjectTableRow()
+    await asyncClickButton(/show configuration tab for this metric/i)
+    expectSearch("")
+})
+
 it("expands the metric on the trend graph tab when the sparkline is clicked", async () => {
     renderSubjectTableRow()
     await asyncClickButton(/show trend graph/i)
