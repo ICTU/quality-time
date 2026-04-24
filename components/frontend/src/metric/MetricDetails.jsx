@@ -37,6 +37,7 @@ import { MetricDebtParameters } from "./MetricDebtParameters"
 import { TrendGraph } from "./TrendGraph"
 
 export const METRIC_NAME_TAB_INDEX = 0
+export const METRIC_DEBT_TAB_INDEX = 2
 export const TREND_GRAPH_TAB_INDEX = 4
 
 function RequestMeasurementButton({ metric, metricUuid, reload }) {

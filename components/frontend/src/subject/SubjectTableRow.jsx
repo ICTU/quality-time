@@ -13,7 +13,12 @@ import { Overrun } from "../measurement/Overrun"
 import { StatusIcon } from "../measurement/StatusIcon"
 import { TimeLeft } from "../measurement/TimeLeft"
 import { TrendSparkline } from "../measurement/TrendSparkline"
-import { METRIC_NAME_TAB_INDEX, MetricDetails, TREND_GRAPH_TAB_INDEX } from "../metric/MetricDetails"
+import {
+    METRIC_DEBT_TAB_INDEX,
+    METRIC_NAME_TAB_INDEX,
+    MetricDetails,
+    TREND_GRAPH_TAB_INDEX,
+} from "../metric/MetricDetails"
 import { measurementOnDate } from "../report/report_utils"
 import {
     dataModelPropType,
@@ -345,7 +350,7 @@ export function SubjectTableRow({
                 />
             )}
             {!columnsToHide.includes("trend") && (
-                <TableCell sx={{ padding: 0, width: "150px" }}>
+                <TableCell sx={{ padding: "0px", width: "150px" }}>
                     <TrendSparkline
                         measurements={metric.recent_measurements}
                         onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, TREND_GRAPH_TAB_INDEX)}
@@ -355,10 +360,15 @@ export function SubjectTableRow({
                 </TableCell>
             )}
             {!columnsToHide.includes("status") && (
-                <TableCell>
-                    <Typography sx={{ paddingLeft: "6px", fontSize: "24px" }}>
-                        <StatusIcon status={metric.status} statusStart={metric.status_start} />
-                    </Typography>
+                <TableCell sx={{ padding: "8px" }}>
+                    <ButtonBase
+                        ariaLabel="Show technical debt tab for this metric"
+                        onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_DEBT_TAB_INDEX)}
+                    >
+                        <Typography sx={{ paddingLeft: "6px", fontSize: "24px" }}>
+                            <StatusIcon status={metric.status} statusStart={metric.status_start} />
+                        </Typography>
+                    </ButtonBase>
                 </TableCell>
             )}
             {!columnsToHide.includes("measurement") && (
