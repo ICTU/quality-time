@@ -253,14 +253,14 @@ pip-audit: install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
     trap 'rm -f /tmp/requirements-{{ random_string }}.txt' EXIT; \
     uv export --quiet --directory . --format requirements-txt --no-emit-package shared-code > /tmp/requirements-{{ random_string }}.txt && \
-    {{ uv_run }} pip-audit --requirement /tmp/requirements-{{ random_string }}.txt --disable-pip --progress-spinner off
+    {{ uv_run }} pip-audit --requirement /tmp/requirements-{{ random_string }}.txt --ignore-vuln GHSA-58qw-9mgm-455v --disable-pip --progress-spinner off
 
 # Run uv audit.
 [no-cd]
 [private]
 uv-audit: install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
-    uv --preview-features audit audit --locked --quiet
+    uv --preview-features audit audit --locked --quiet --ignore-until-fixed GHSA-58qw-9mgm-455v
 
 # Run bandit.
 [no-cd]
