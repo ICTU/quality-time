@@ -36,6 +36,8 @@ import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
 import { MetricDebtParameters } from "./MetricDebtParameters"
 import { TrendGraph } from "./TrendGraph"
 
+export const TREND_GRAPH_TAB_INDEX = 4
+
 function RequestMeasurementButton({ metric, metricUuid, reload }) {
     const dataModel = useContext(DataModelContext)
     const configurationComplete = isSourceConfigurationComplete(dataModel, metric)
