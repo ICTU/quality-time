@@ -841,7 +841,7 @@ wheels = [
 
 [[package]]
 name = "release"
-version = "5.53.0rc0"
+version = "5.53.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -1032,7 +1032,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.53.0rc0"
+version = "5.53.0"
 source = { virtual = "../third_party" }
 dependencies = [
     { name = "bandit" },
