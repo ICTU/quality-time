@@ -211,21 +211,21 @@ it("shows the metric secondary name", async () => {
 
 it("expands the metric on the configuration tab when the metric name is clicked", async () => {
     renderSubjectTableRow({ name: "Metric name" })
-    await asyncClickButton(/show configuration tab for this metric/i)
+    await asyncClickButton(/show configuration tab for this metric/i, 0)
     expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
 it("switches to the configuration tab when the metric name is clicked on an expanded row with a different tab", async () => {
     history.push("?expanded=metric_uuid:1")
     renderSubjectTableRow()
-    await asyncClickButton(/show configuration tab for this metric/i)
+    await asyncClickButton(/show configuration tab for this metric/i, 0)
     expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
 it("collapses the metric when the metric name is clicked on an expanded row with the configuation tab active", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickButton(/show configuration tab for this metric/i)
+    await asyncClickButton(/show configuration tab for this metric/i, 0)
     expectSearch("")
 })
 
@@ -286,5 +286,25 @@ it("collapses the metric when the measurement value is clicked on an expanded ro
     history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
     renderSubjectTableRow()
     await asyncClickButton(/show source tab/i)
+    expectSearch("")
+})
+
+it("expands the metric on the configuration tab when the target value is clicked", async () => {
+    renderSubjectTableRow()
+    await asyncClickButton(/show configuration tab for this metric/i, 1)
+    expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
+})
+
+it("switches to the configuration tab when the measurement target is clicked on an expanded row with a different tab", async () => {
+    history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
+    renderSubjectTableRow()
+    await asyncClickButton(/show configuration tab for this metric/i, 1)
+    expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
+})
+
+it("collapses the metric when the measurement target is clicked on an expanded row with the configuration tab active", async () => {
+    history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
+    renderSubjectTableRow()
+    await asyncClickButton(/show configuration tab for this metric/i, 1)
     expectSearch("")
 })

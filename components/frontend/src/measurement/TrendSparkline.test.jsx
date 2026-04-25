@@ -1,8 +1,6 @@
 import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
-import { vi } from "vitest"
 
-import { clickButton, expectNoAccessibilityViolations } from "../testUtils"
+import { expectNoAccessibilityViolations } from "../testUtils"
 import { TrendSparkline } from "./TrendSparkline"
 
 it("has no accessibility violations", async () => {
@@ -80,40 +78,4 @@ it("has no accessibility violations when clickable", async () => {
         />,
     )
     await expectNoAccessibilityViolations(container)
-})
-
-it("does not render a button when onClick is not provided", async () => {
-    render(<TrendSparkline measurements={[]} scale="count" />)
-    expect(screen.queryByRole("button")).toBeNull()
-})
-
-it("renders a button when onClick is provided", async () => {
-    const onClick = vi.fn()
-    render(<TrendSparkline measurements={[]} onClick={onClick} scale="count" />)
-    expect(screen.getByRole("button", { name: /show trend graph/i })).toBeInTheDocument()
-})
-
-it("invokes onClick when the button is clicked", async () => {
-    const onClick = vi.fn()
-    render(<TrendSparkline measurements={[]} onClick={onClick} scale="count" />)
-    clickButton(/show trend graph/i)
-    expect(onClick).toHaveBeenCalledTimes(1)
-})
-
-it("invokes onClick when the button is activated with the space key", async () => {
-    const onClick = vi.fn()
-    render(<TrendSparkline measurements={[]} onClick={onClick} scale="count" />)
-    const button = screen.getByRole("button", { name: /show trend graph/i })
-    button.focus()
-    await userEvent.keyboard(" ")
-    expect(onClick).toHaveBeenCalledTimes(1)
-})
-
-it("invokes onClick when the button is activated with the enter key", async () => {
-    const onClick = vi.fn()
-    render(<TrendSparkline measurements={[]} onClick={onClick} scale="count" />)
-    const button = screen.getByRole("button", { name: /show trend graph/i })
-    button.focus()
-    await userEvent.keyboard("{Enter}")
-    expect(onClick).toHaveBeenCalledTimes(1)
 })

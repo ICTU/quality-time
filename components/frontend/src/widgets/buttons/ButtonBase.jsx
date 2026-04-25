@@ -13,8 +13,7 @@ export function ButtonBase({ ariaLabel, children, onClick }) {
                 display: "block",
                 textAlign: "inherit",
                 fontSize: "inherit",
-                height: "100%",
-                padding: 2,
+                padding: "8px",
                 width: "100%",
                 "&:hover, &.Mui-focusVisible": {
                     backgroundColor: "action.hover",
