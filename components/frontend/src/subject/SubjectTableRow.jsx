@@ -352,12 +352,16 @@ export function SubjectTableRow({
             )}
             {!columnsToHide.includes("trend") && (
                 <TableCell sx={{ padding: "0px", width: "150px" }}>
-                    <TrendSparkline
-                        measurements={metric.recent_measurements}
+                    <ButtonBase
+                        ariaLabel="Show trend graph for this metric"
                         onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, TREND_GRAPH_TAB_INDEX)}
-                        reportDate={reportDate}
-                        scale={scale}
-                    />
+                    >
+                        <TrendSparkline
+                            measurements={metric.recent_measurements}
+                            reportDate={reportDate}
+                            scale={scale}
+                        />
+                    </ButtonBase>
                 </TableCell>
             )}
             {!columnsToHide.includes("status") && (
@@ -384,7 +388,14 @@ export function SubjectTableRow({
             )}
             {!columnsToHide.includes("target") && (
                 <TableCell align="right">
-                    <MeasurementTarget metric={metric} />
+                    <ButtonBase
+                        ariaLabel="Show configuration tab for this metric"
+                        onClick={() =>
+                            settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX)
+                        }
+                    >
+                        <MeasurementTarget metric={metric} />
+                    </ButtonBase>
                 </TableCell>
             )}
             {!columnsToHide.includes("unit") && <TableCell>{unit}</TableCell>}

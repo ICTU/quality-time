@@ -18,6 +18,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - Clicking the metric name expands the metric on the metric configuration tab, and collapses the metric when clicked again while the configuration tab is active. Closes [#13027](https://github.com/ICTU/quality-time/issues/13027).
 - Clicking the metric status expands the metric on the technical debt tab, and collapses the metric when clicked again while the technical debt tab is active. Closes [#13029](https://github.com/ICTU/quality-time/issues/13029).
 - Clicking the measurement value expands the metric on the first source tab, and collapses the metric when clicked again while the first source tab is active. Closes [#13032](https://github.com/ICTU/quality-time/issues/13032).
+- Clicking the target value expands the metric on the metric configuration tab, and collapses the metric when clicked again while the configuration tab is active. Closes [#13034](https://github.com/ICTU/quality-time/issues/13034).
 
 ## v5.53.0 - 2026-04-24
 
