@@ -398,7 +398,18 @@ export function SubjectTableRow({
                     </ButtonBase>
                 </TableCell>
             )}
-            {!columnsToHide.includes("unit") && <TableCell>{unit}</TableCell>}
+            {!columnsToHide.includes("unit") && (
+                <TableCell>
+                    <ButtonBase
+                        ariaLabel="Show configuration tab for this metric"
+                        onClick={() =>
+                            settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX)
+                        }
+                    >
+                        {unit}
+                    </ButtonBase>
+                </TableCell>
+            )}
             {!columnsToHide.includes("source") && (
                 <TableCell>
                     <MeasurementSources metric={metric} />
