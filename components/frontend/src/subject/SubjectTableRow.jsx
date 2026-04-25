@@ -14,9 +14,10 @@ import { StatusIcon } from "../measurement/StatusIcon"
 import { TimeLeft } from "../measurement/TimeLeft"
 import { TrendSparkline } from "../measurement/TrendSparkline"
 import {
+    METRIC_CONFIGURATION_TAB_INDEX,
     METRIC_DEBT_TAB_INDEX,
-    METRIC_NAME_TAB_INDEX,
     MetricDetails,
+    SOURCE_TAB_INDEX,
     TREND_GRAPH_TAB_INDEX,
 } from "../metric/MetricDetails"
 import { measurementOnDate } from "../report/report_utils"
@@ -335,7 +336,7 @@ export function SubjectTableRow({
             firstCellContent={
                 <MetricName
                     metric={metric}
-                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_NAME_TAB_INDEX)}
+                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX)}
                 />
             }
             firstCellProps={{ sx: { padding: "8px" } }}
@@ -373,7 +374,12 @@ export function SubjectTableRow({
             )}
             {!columnsToHide.includes("measurement") && (
                 <TableCell align="right">
-                    <MeasurementValue metric={metric} reportDate={reportDate} />
+                    <ButtonBase
+                        ariaLabel="Show source tab for this metric"
+                        onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, SOURCE_TAB_INDEX)}
+                    >
+                        <MeasurementValue metric={metric} reportDate={reportDate} />
+                    </ButtonBase>
                 </TableCell>
             )}
             {!columnsToHide.includes("target") && (
