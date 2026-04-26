@@ -410,7 +410,10 @@ export function SubjectTableRow({
                 </TableCell>
             )}
             {!columnsToHide.includes("comment") && (
-                <TableCell>
+                <TableCell
+                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_DEBT_TAB_INDEX)}
+                    sx={clickableStyle}
+                >
                     <DivWithHtml>{metric.comment}</DivWithHtml>
                 </TableCell>
             )}
