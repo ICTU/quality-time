@@ -12,6 +12,7 @@ import {
     METRIC_CONFIGURATION_TAB_INDEX,
     METRIC_DEBT_TAB_INDEX,
     SOURCE_TAB_INDEX,
+    SOURCES_TAB_INDEX,
     TREND_GRAPH_TAB_INDEX,
 } from "../metric/MetricDetails"
 import {
@@ -80,10 +81,12 @@ function SubjectTableRowWrapper({
                         direction: direction,
                         evaluate_targets: evaluateTargets,
                         issue_ids: issueIds,
+                        latest_measurement: { sources: [{ source_uuid: "source_uuid" }] },
                         name: name,
                         recent_measurements: [],
                         scale: scale,
                         secondary_name: secondaryName,
+                        sources: { source_uuid: { type: "source_type", parameters: {} } },
                         status_start: "2024-01-03T00:00",
                         type: "metric_type",
                         unit: "things",
@@ -408,5 +411,25 @@ it("collapses the metric when the issues are clicked on an expanded row with the
     history.push(`?expanded=metric_uuid:${METRIC_DEBT_TAB_INDEX}`)
     renderSubjectTableRow({ issueIds: ["ABC-1"] })
     await asyncClickText(/ABC-1/)
+    expectSearch("")
+})
+
+it("expands the metric on the sources tab when the source is clicked", async () => {
+    renderSubjectTableRow()
+    await asyncClickText(/Source type name/)
+    expectSearch(`?expanded=metric_uuid%3A${SOURCES_TAB_INDEX}`)
+})
+
+it("switches to the sources tab when the source is clicked on an expanded row with a different tab", async () => {
+    history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
+    renderSubjectTableRow()
+    await asyncClickText(/Source type name/)
+    expectSearch(`?expanded=metric_uuid%3A${SOURCES_TAB_INDEX}`)
+})
+
+it("collapses the metric when the source is clicked on an expanded row with the sources tab active", async () => {
+    history.push(`?expanded=metric_uuid:${SOURCES_TAB_INDEX}`)
+    renderSubjectTableRow()
+    await asyncClickText(/Source type name/, 0)
     expectSearch("")
 })
