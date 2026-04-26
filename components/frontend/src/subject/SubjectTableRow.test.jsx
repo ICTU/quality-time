@@ -358,3 +358,23 @@ it("collapses the metric when the time left is clicked on an expanded row with t
     await asyncClickText(/days/)
     expectSearch("")
 })
+
+it("expands the metric on the technical debt tab when the comment is clicked", async () => {
+    renderSubjectTableRow({ comment: "Metric comment" })
+    await asyncClickText("Metric comment")
+    expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
+})
+
+it("switches to the technical debt tab when the comment is clicked on an expanded row with a different tab", async () => {
+    history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
+    renderSubjectTableRow({ comment: "Metric comment" })
+    await asyncClickText("Metric comment")
+    expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
+})
+
+it("collapses the metric when the comment is clicked on an expanded row with the technical debt tab active", async () => {
+    history.push(`?expanded=metric_uuid:${METRIC_DEBT_TAB_INDEX}`)
+    renderSubjectTableRow({ comment: "Metric comment" })
+    await asyncClickText("Metric comment")
+    expectSearch("")
+})
