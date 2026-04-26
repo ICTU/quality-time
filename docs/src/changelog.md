@@ -24,6 +24,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - Clicking the metric comment expands the metric on the technical debt tab, and collapses the metric when clicked again while the technical debt tab is active. Closes [#13040](https://github.com/ICTU/quality-time/issues/13040).
 - Clicking the issues expands the metric on the technical debt tab, and collapses the metric when clicked again while the technical debt tab is active. Closes [#13042](https://github.com/ICTU/quality-time/issues/13042).
 - Clicking the source column expands the metric on the sources tab, and collapses the metric when clicked again while the sources tab is active. Closes [#13044](https://github.com/ICTU/quality-time/issues/13044).
+- Clicking the tags expands the metric on the metric configuration tab, and collapses the metric when clicked again while the configuration tab is active. Closes [#13046](https://github.com/ICTU/quality-time/issues/13046).
 
 ## v5.53.0 - 2026-04-24
 

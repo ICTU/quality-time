@@ -40,6 +40,7 @@ function SubjectTableRowWrapper({
     name,
     scale,
     secondaryName,
+    tags,
 }) {
     const settings = useSettings()
     const dates = [new Date("2024-01-03"), new Date("2024-01-02"), new Date("2024-01-01")]
@@ -88,6 +89,7 @@ function SubjectTableRowWrapper({
                         secondary_name: secondaryName,
                         sources: { source_uuid: { type: "source_type", parameters: {} } },
                         status_start: "2024-01-03T00:00",
+                        tags: tags,
                         type: "metric_type",
                         unit: "things",
                         unit_singular: "thing",
@@ -113,6 +115,7 @@ function renderSubjectTableRow({
     permissions = "",
     name = "",
     secondaryName = "",
+    tags = undefined,
 } = {}) {
     return render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -128,6 +131,7 @@ function renderSubjectTableRow({
                             name={name}
                             scale={scale}
                             secondaryName={secondaryName}
+                            tags={tags}
                         />
                     </SnackbarAlerts>
                 </DataModelContext>
@@ -431,5 +435,25 @@ it("collapses the metric when the source is clicked on an expanded row with the 
     history.push(`?expanded=metric_uuid:${SOURCES_TAB_INDEX}`)
     renderSubjectTableRow()
     await asyncClickText(/Source type name/, 0)
+    expectSearch("")
+})
+
+it("expands the metric on the configuration tab when a tag is clicked", async () => {
+    renderSubjectTableRow({ tags: ["tag1"] })
+    await asyncClickText(/tag1/)
+    expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
+})
+
+it("switches to the configuration tab when a tag is clicked on an expanded row with a different tab", async () => {
+    history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
+    renderSubjectTableRow({ tags: ["tag1"] })
+    await asyncClickText(/tag1/)
+    expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
+})
+
+it("collapses the metric when a tag is clicked on an expanded row with the configuration tab active", async () => {
+    history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
+    renderSubjectTableRow({ tags: ["tag1"] })
+    await asyncClickText(/tag1/)
     expectSearch("")
 })
