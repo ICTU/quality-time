@@ -141,7 +141,12 @@ prefixName.propType = {
 function IssueCard({ issueStatus, settings, error }) {
     // The issue status can be unknown when the issue was added recently and the status hasn't been collected yet
     const color = error ? "error" : (issueStatus.status_category ?? "unknown")
-    const onClick = issueStatus.landing_url ? () => globalThis.open(issueStatus.landing_url) : null
+    const onClick = issueStatus.landing_url
+        ? (event) => {
+              event.stopPropagation()
+              globalThis.open(issueStatus.landing_url)
+          }
+        : null
     return (
         <Card onClick={onClick} elevation={1} sx={{ display: "inline-flex", margin: "1px" }}>
             <CardActionArea disableRipple={!issueStatus.landing_url}>

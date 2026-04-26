@@ -30,7 +30,16 @@ import { SubjectTableRow } from "./SubjectTableRow"
 
 beforeEach(() => history.push(""))
 
-function SubjectTableRowWrapper({ ascending, comment, direction, evaluateTargets, name, scale, secondaryName }) {
+function SubjectTableRowWrapper({
+    ascending,
+    comment,
+    direction,
+    evaluateTargets,
+    issueIds,
+    name,
+    scale,
+    secondaryName,
+}) {
     const settings = useSettings()
     const dates = [new Date("2024-01-03"), new Date("2024-01-02"), new Date("2024-01-01")]
     if (ascending) {
@@ -70,6 +79,7 @@ function SubjectTableRowWrapper({ ascending, comment, direction, evaluateTargets
                         comment: comment,
                         direction: direction,
                         evaluate_targets: evaluateTargets,
+                        issue_ids: issueIds,
                         name: name,
                         recent_measurements: [],
                         scale: scale,
@@ -96,6 +106,7 @@ function renderSubjectTableRow({
     ascending = false,
     scale = "count",
     evaluateTargets = undefined,
+    issueIds = undefined,
     permissions = "",
     name = "",
     secondaryName = "",
@@ -110,6 +121,7 @@ function renderSubjectTableRow({
                             comment={comment}
                             direction={direction}
                             evaluateTargets={evaluateTargets}
+                            issueIds={issueIds}
                             name={name}
                             scale={scale}
                             secondaryName={secondaryName}
@@ -376,5 +388,25 @@ it("collapses the metric when the comment is clicked on an expanded row with the
     history.push(`?expanded=metric_uuid:${METRIC_DEBT_TAB_INDEX}`)
     renderSubjectTableRow({ comment: "Metric comment" })
     await asyncClickText("Metric comment")
+    expectSearch("")
+})
+
+it("expands the metric on the technical debt tab when the issues are clicked", async () => {
+    renderSubjectTableRow({ issueIds: ["ABC-1"] })
+    await asyncClickText(/ABC-1/)
+    expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
+})
+
+it("switches to the technical debt tab when the issues are clicked on an expanded row with a different tab", async () => {
+    history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
+    renderSubjectTableRow({ issueIds: ["ABC-1"] })
+    await asyncClickText(/ABC-1/)
+    expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
+})
+
+it("collapses the metric when the issues are clicked on an expanded row with the technical debt tab active", async () => {
+    history.push(`?expanded=metric_uuid:${METRIC_DEBT_TAB_INDEX}`)
+    renderSubjectTableRow({ issueIds: ["ABC-1"] })
+    await asyncClickText(/ABC-1/)
     expectSearch("")
 })

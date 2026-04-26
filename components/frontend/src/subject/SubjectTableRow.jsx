@@ -418,7 +418,10 @@ export function SubjectTableRow({
                 </TableCell>
             )}
             {!columnsToHide.includes("issues") && (
-                <TableCell>
+                <TableCell
+                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_DEBT_TAB_INDEX)}
+                    sx={clickableStyle}
+                >
                     <IssueStatus metric={metric} issueTrackerMissing={!report.issue_tracker} settings={settings} />
                 </TableCell>
             )}
