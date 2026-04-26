@@ -15,7 +15,9 @@ import {
     TREND_GRAPH_TAB_INDEX,
 } from "../metric/MetricDetails"
 import {
-    asyncClickButton,
+    asyncClickByTestId,
+    asyncClickRole,
+    asyncClickText,
     expectLabelText,
     expectNoAccessibilityViolations,
     expectNoLabelText,
@@ -72,6 +74,7 @@ function SubjectTableRowWrapper({ ascending, comment, direction, evaluateTargets
                         recent_measurements: [],
                         scale: scale,
                         secondary_name: secondaryName,
+                        status_start: "2024-01-03T00:00",
                         type: "metric_type",
                         unit: "things",
                         unit_singular: "thing",
@@ -211,120 +214,147 @@ it("shows the metric secondary name", async () => {
 
 it("expands the metric on the configuration tab when the metric name is clicked", async () => {
     renderSubjectTableRow({ name: "Metric name" })
-    await asyncClickButton(/show configuration tab for this metric/i, 0)
+    await asyncClickText(/Metric name/, 0)
     expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
 it("switches to the configuration tab when the metric name is clicked on an expanded row with a different tab", async () => {
     history.push("?expanded=metric_uuid:1")
-    renderSubjectTableRow()
-    await asyncClickButton(/show configuration tab for this metric/i, 0)
+    renderSubjectTableRow({ name: "Metric name" })
+    await asyncClickText(/Metric name/, 0)
     expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
 it("collapses the metric when the metric name is clicked on an expanded row with the configuation tab active", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
+    renderSubjectTableRow({ name: "Metric name" })
+    await asyncClickText(/Metric name/, 0)
+    expectSearch("")
+})
+
+it("collapses the metric when the expand button is clicked on an expanded row with a different tab", async () => {
+    history.push(`?expanded=metric_uuid:${TREND_GRAPH_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickButton(/show configuration tab for this metric/i, 0)
+    await asyncClickRole("button", /expand\/collapse/i)
     expectSearch("")
 })
 
 it("expands the metric on the technical debt tab when the status is clicked", async () => {
     renderSubjectTableRow()
-    await asyncClickButton(/show technical debt tab for this metric/i)
+    await asyncClickByTestId("QuestionMarkIcon")
     expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
 })
 
 it("switches to the technical debt tab when the status is clicked on an expanded row with a different tab", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickButton(/show technical debt tab for this metric/i)
+    await asyncClickByTestId("QuestionMarkIcon")
     expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
 })
 
 it("collapses the metric when the status is clicked on an expanded row with the technical debt tab active", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_DEBT_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickButton(/show technical debt tab for this metric/i)
+    await asyncClickByTestId("QuestionMarkIcon")
     expectSearch("")
 })
 
 it("expands the metric on the trend graph tab when the sparkline is clicked", async () => {
     renderSubjectTableRow()
-    await asyncClickButton(/show trend graph/i)
+    await asyncClickRole("cell", /sparkline graph showing 0 different measurement values in the week before today/)
     expectSearch(`?expanded=metric_uuid%3A${TREND_GRAPH_TAB_INDEX}`)
 })
 
 it("switches to the trend graph tab when the sparkline is clicked on an expanded row with a different tab", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickButton(/show trend graph/i)
+    await asyncClickRole("cell", /sparkline graph showing 0 different measurement values in the week before today/)
     expectSearch(`?expanded=metric_uuid%3A${TREND_GRAPH_TAB_INDEX}`)
 })
 
 it("collapses the metric when the sparkline is clicked on an expanded row with the trend graph tab active", async () => {
     history.push(`?expanded=metric_uuid:${TREND_GRAPH_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickButton(/show trend graph/i)
+    await asyncClickRole("cell", /sparkline graph showing 0 different measurement values in the week before today/)
     expectSearch("")
 })
 
 it("expands the metric on the first source tab when the measurement value is clicked", async () => {
     renderSubjectTableRow()
-    await asyncClickButton(/show source tab/i)
+    await asyncClickRole("cell", "?")
     expectSearch(`?expanded=metric_uuid%3A${SOURCE_TAB_INDEX}`)
 })
 
 it("switches to the source tab when the measurement value is clicked on an expanded row with a different tab", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickButton(/show source tab/i)
+    await asyncClickRole("cell", "?")
     expectSearch(`?expanded=metric_uuid%3A${SOURCE_TAB_INDEX}`)
 })
 
 it("collapses the metric when the measurement value is clicked on an expanded row with the source tab active", async () => {
     history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickButton(/show source tab/i)
+    await asyncClickRole("cell", "?")
     expectSearch("")
 })
 
 it("expands the metric on the configuration tab when the target value is clicked", async () => {
     renderSubjectTableRow()
-    await asyncClickButton(/show configuration tab for this metric/i, 1)
+    await asyncClickRole("cell", "≦ 0")
     expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
 it("switches to the configuration tab when the measurement target is clicked on an expanded row with a different tab", async () => {
     history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickButton(/show configuration tab for this metric/i, 1)
+    await asyncClickRole("cell", "≦ 0")
     expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
 it("collapses the metric when the measurement target is clicked on an expanded row with the configuration tab active", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickButton(/show configuration tab for this metric/i, 1)
+    await asyncClickRole("cell", "≦ 0")
     expectSearch("")
 })
 
 it("expands the metric on the configuration tab when the unit is clicked", async () => {
     renderSubjectTableRow()
-    await asyncClickButton(/show configuration tab for this metric/i, 2)
+    await asyncClickText(/things/)
     expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
 it("switches to the configuration tab when the unit is clicked on an expanded row with a different tab", async () => {
     history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickButton(/show configuration tab for this metric/i, 2)
+    await asyncClickText(/things/)
     expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
 it("collapses the metric when the unit is clicked on an expanded row with the configuration tab active", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickButton(/show configuration tab for this metric/i, 2)
+    await asyncClickText(/things/)
+    expectSearch("")
+})
+
+it("expands the metric on the technical debt tab when the time left is clicked", async () => {
+    renderSubjectTableRow()
+    await asyncClickText(/days/)
+    expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
+})
+
+it("switches to the technical debt tab when the time left is clicked on an expanded row with a different tab", async () => {
+    history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
+    renderSubjectTableRow()
+    await asyncClickText(/days/)
+    expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
+})
+
+it("collapses the metric when the time left is clicked on an expanded row with the technical debt tab active", async () => {
+    history.push(`?expanded=metric_uuid:${METRIC_DEBT_TAB_INDEX}`)
+    renderSubjectTableRow()
+    await asyncClickText(/days/)
     expectSearch("")
 })

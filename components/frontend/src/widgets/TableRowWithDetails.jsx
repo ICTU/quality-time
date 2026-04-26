@@ -22,8 +22,15 @@ export function TableRowWithDetails(props) {
                 }}
             >
                 <TableCell {...firstCellProps}>
-                    <Stack direction="row" sx={{ alignItems: "center" }}>
-                        <ExpandButton expand={expanded} onClick={() => onExpand(!expanded)} /> {firstCellContent}
+                    <Stack direction="row" sx={{ alignItems: "center", paddingLeft: "8px", height: "100%" }}>
+                        <ExpandButton
+                            expand={expanded}
+                            onClick={(event) => {
+                                event.stopPropagation()
+                                onExpand(!expanded)
+                            }}
+                        />
+                        {firstCellContent}
                     </Stack>
                 </TableCell>
                 {children}

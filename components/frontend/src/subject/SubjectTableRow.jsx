@@ -45,7 +45,6 @@ import {
     getMetricTags,
     getMetricUnit,
 } from "../utils"
-import { ButtonBase } from "../widgets/buttons/ButtonBase"
 import { DivWithHtml } from "../widgets/DivWithHtml"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { Tag } from "../widgets/Tag"
@@ -219,28 +218,21 @@ MeasurementCells.propTypes = {
     settings: settingsPropType,
 }
 
-function MetricName({ metric, onClick }) {
+function MetricName({ metric }) {
     const dataModel = useContext(DataModelContext)
     const name = getMetricName(metric, dataModel)
     if (metric.secondary_name) {
         return (
-            <ButtonBase ariaLabel="Show configuration tab for this metric" onClick={onClick}>
-                <Stack>
-                    {name}
-                    <Typography sx={{ fontSize: "90%" }}>{metric.secondary_name}</Typography>
-                </Stack>
-            </ButtonBase>
+            <Stack>
+                {name}
+                <Typography sx={{ fontSize: "90%" }}>{metric.secondary_name}</Typography>
+            </Stack>
         )
     }
-    return (
-        <ButtonBase ariaLabel="Show configuration tab for this metric" onClick={onClick}>
-            {name}
-        </ButtonBase>
-    )
+    return name
 }
 MetricName.propTypes = {
     metric: metricPropType,
-    onClick: func,
 }
 
 const DragHandleButton = function DragHandleButton({ ref, label, ...props }) {
@@ -297,6 +289,7 @@ export function SubjectTableRow({
 
     const anyRowExpanded = settings.expandedItems.value.length > 0
     const rowsAreSorted = settings.sortColumn.value !== ""
+    const clickableStyle = { "&:hover, &.Mui-focusVisible": { backgroundColor: "action.hover" } }
 
     return (
         <TableRowWithDetails
@@ -333,13 +326,11 @@ export function SubjectTableRow({
             expanded={settings.expandedItems.includes(metricUuid)}
             id={metricUuid}
             onExpand={() => settings.expandedItems.toggle(metricUuid)}
-            firstCellContent={
-                <MetricName
-                    metric={metric}
-                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX)}
-                />
-            }
-            firstCellProps={{ sx: { padding: "8px" } }}
+            firstCellContent={<MetricName metric={metric} />}
+            firstCellProps={{
+                sx: clickableStyle,
+                onClick: () => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX),
+            }}
         >
             {nrDates > 1 && (
                 <MeasurementCells
@@ -351,63 +342,47 @@ export function SubjectTableRow({
                 />
             )}
             {!columnsToHide.includes("trend") && (
-                <TableCell sx={{ padding: "0px", width: "150px" }}>
-                    <ButtonBase
-                        ariaLabel="Show trend graph for this metric"
-                        onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, TREND_GRAPH_TAB_INDEX)}
-                    >
-                        <TrendSparkline
-                            measurements={metric.recent_measurements}
-                            reportDate={reportDate}
-                            scale={scale}
-                        />
-                    </ButtonBase>
+                <TableCell
+                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, TREND_GRAPH_TAB_INDEX)}
+                    sx={{ width: "150px", ...clickableStyle }}
+                >
+                    <TrendSparkline measurements={metric.recent_measurements} reportDate={reportDate} scale={scale} />
                 </TableCell>
             )}
             {!columnsToHide.includes("status") && (
-                <TableCell sx={{ padding: "8px" }}>
-                    <ButtonBase
-                        ariaLabel="Show technical debt tab for this metric"
-                        onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_DEBT_TAB_INDEX)}
-                    >
-                        <Typography sx={{ paddingLeft: "6px", fontSize: "24px" }}>
-                            <StatusIcon status={metric.status} statusStart={metric.status_start} />
-                        </Typography>
-                    </ButtonBase>
+                <TableCell
+                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_DEBT_TAB_INDEX)}
+                    sx={clickableStyle}
+                >
+                    <Typography sx={{ paddingLeft: "6px", fontSize: "24px" }}>
+                        <StatusIcon status={metric.status} statusStart={metric.status_start} />
+                    </Typography>
                 </TableCell>
             )}
             {!columnsToHide.includes("measurement") && (
-                <TableCell align="right">
-                    <ButtonBase
-                        ariaLabel="Show source tab for this metric"
-                        onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, SOURCE_TAB_INDEX)}
-                    >
-                        <MeasurementValue metric={metric} reportDate={reportDate} />
-                    </ButtonBase>
+                <TableCell
+                    align="right"
+                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, SOURCE_TAB_INDEX)}
+                    sx={clickableStyle}
+                >
+                    <MeasurementValue metric={metric} reportDate={reportDate} />
                 </TableCell>
             )}
             {!columnsToHide.includes("target") && (
-                <TableCell align="right">
-                    <ButtonBase
-                        ariaLabel="Show configuration tab for this metric"
-                        onClick={() =>
-                            settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX)
-                        }
-                    >
-                        <MeasurementTarget metric={metric} />
-                    </ButtonBase>
+                <TableCell
+                    align="right"
+                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX)}
+                    sx={clickableStyle}
+                >
+                    <MeasurementTarget metric={metric} />
                 </TableCell>
             )}
             {!columnsToHide.includes("unit") && (
-                <TableCell>
-                    <ButtonBase
-                        ariaLabel="Show configuration tab for this metric"
-                        onClick={() =>
-                            settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX)
-                        }
-                    >
-                        {unit}
-                    </ButtonBase>
+                <TableCell
+                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX)}
+                    sx={clickableStyle}
+                >
+                    {unit}
                 </TableCell>
             )}
             {!columnsToHide.includes("source") && (
@@ -416,7 +391,10 @@ export function SubjectTableRow({
                 </TableCell>
             )}
             {!columnsToHide.includes("time_left") && (
-                <TableCell>
+                <TableCell
+                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_DEBT_TAB_INDEX)}
+                    sx={clickableStyle}
+                >
                     <TimeLeft metric={metric} report={report} />
                 </TableCell>
             )}
@@ -448,10 +426,12 @@ export function SubjectTableRow({
                     ))}
                 </TableCell>
             )}
-            {!anyRowExpanded && !rowsAreSorted && (
-                <ReadOnlyOrEditable
-                    requiredPermissions={[EDIT_REPORT_PERMISSION]}
-                    editableComponent={
+            <ReadOnlyOrEditable
+                requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                editableComponent={
+                    anyRowExpanded || rowsAreSorted ? (
+                        <TableCell />
+                    ) : (
                         <TableCell>
                             <DragHandleButton
                                 ref={dragHandleRef}
@@ -460,10 +440,10 @@ export function SubjectTableRow({
                                 onDragStart={(e) => onDragStart(index, rowRef, e)}
                             />
                         </TableCell>
-                    }
-                />
-            )}
-            {(anyRowExpanded || rowsAreSorted) && <TableCell />}
+                    )
+                }
+                readOnlyComponent={null}
+            />
         </TableRowWithDetails>
     )
 }

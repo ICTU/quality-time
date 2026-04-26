@@ -127,6 +127,20 @@ export async function asyncClickLabeledElement(text, index) {
     })
 }
 
+export function clickByTestId(testId) {
+    // Click the element with the test-id. Returns the element.
+    const element = screen.getByTestId(testId)
+    fireEvent.click(element)
+    return element
+}
+
+export async function asyncClickByTestId(testId) {
+    // Asynchronously click the element with the test-id. Returns the element.
+    await act(async () => {
+        return clickByTestId(testId)
+    })
+}
+
 export async function hoverText(text) {
     await userEvent.hover(screen.queryByText(text))
 }
