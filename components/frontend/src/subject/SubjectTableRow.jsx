@@ -430,7 +430,10 @@ export function SubjectTableRow({
                 </TableCell>
             )}
             {!columnsToHide.includes("tags") && (
-                <TableCell>
+                <TableCell
+                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX)}
+                    sx={clickableStyle}
+                >
                     {getMetricTags(metric).map((tag) => (
                         <Tag key={tag} tag={tag} />
                     ))}
