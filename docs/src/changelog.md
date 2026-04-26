@@ -14,17 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
-- Clicking the spark line graph expands the metric on the trend graph tab, and collapses the metric when clicked again while the trend graph tab is active. Closes [#13024](https://github.com/ICTU/quality-time/issues/13024).
-- Clicking the metric name expands the metric on the metric configuration tab, and collapses the metric when clicked again while the configuration tab is active. Closes [#13027](https://github.com/ICTU/quality-time/issues/13027).
-- Clicking the metric status expands the metric on the technical debt tab, and collapses the metric when clicked again while the technical debt tab is active. Closes [#13029](https://github.com/ICTU/quality-time/issues/13029).
-- Clicking the measurement value expands the metric on the first source tab, and collapses the metric when clicked again while the first source tab is active. Closes [#13032](https://github.com/ICTU/quality-time/issues/13032).
-- Clicking the target value expands the metric on the metric configuration tab, and collapses the metric when clicked again while the configuration tab is active. Closes [#13034](https://github.com/ICTU/quality-time/issues/13034).
-- Clicking the unit expands the metric on the metric configuration tab, and collapses the metric when clicked again while the configuration tab is active. Closes [#13036](https://github.com/ICTU/quality-time/issues/13036).
-- Clicking the time left expands the metric on the technical debt tab, and collapses the metric when clicked again while the technical debt tab is active. Closes [#13038](https://github.com/ICTU/quality-time/issues/13038).
-- Clicking the metric comment expands the metric on the technical debt tab, and collapses the metric when clicked again while the technical debt tab is active. Closes [#13040](https://github.com/ICTU/quality-time/issues/13040).
-- Clicking the issues expands the metric on the technical debt tab, and collapses the metric when clicked again while the technical debt tab is active. Closes [#13042](https://github.com/ICTU/quality-time/issues/13042).
-- Clicking the source column expands the metric on the sources tab, and collapses the metric when clicked again while the sources tab is active. Closes [#13044](https://github.com/ICTU/quality-time/issues/13044).
-- Clicking the tags expands the metric on the metric configuration tab, and collapses the metric when clicked again while the configuration tab is active. Closes [#13046](https://github.com/ICTU/quality-time/issues/13046).
+- Clicking columns in the metric table expands the metric details, if not yet expanded, and activates the tab most closely corresponding to the column clicked. If the metric is expanded and the corresponding tab is already active, clicking the column collapses the metric. Closes [#4172](https://github.com/ICTU/quality-time/issues/4172).
 
 ## v5.53.0 - 2026-04-24
 
