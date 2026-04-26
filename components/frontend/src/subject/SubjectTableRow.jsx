@@ -18,6 +18,7 @@ import {
     METRIC_DEBT_TAB_INDEX,
     MetricDetails,
     SOURCE_TAB_INDEX,
+    SOURCES_TAB_INDEX,
     TREND_GRAPH_TAB_INDEX,
 } from "../metric/MetricDetails"
 import { measurementOnDate } from "../report/report_utils"
@@ -386,7 +387,10 @@ export function SubjectTableRow({
                 </TableCell>
             )}
             {!columnsToHide.includes("source") && (
-                <TableCell>
+                <TableCell
+                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, SOURCES_TAB_INDEX)}
+                    sx={clickableStyle}
+                >
                     <MeasurementSources metric={metric} />
                 </TableCell>
             )}
