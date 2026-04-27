@@ -260,7 +260,7 @@ pip-audit: install-py-dependencies
 [private]
 uv-audit: install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
-    uv --preview-features audit audit --locked --quiet --ignore-until-fixed GHSA-58qw-9mgm-455v
+    uv audit --locked --quiet --ignore-until-fixed GHSA-58qw-9mgm-455v
 
 # Run bandit.
 [no-cd]
