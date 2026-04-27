@@ -185,12 +185,13 @@ start-help:
 
 # === Run tests ===
 
-# Run the Python unit tests.
+# Run the Python unit tests. Pass 'nocov' to skip reporting test coverage.
 [no-cd]
 [private]
-py-unit-test $PYTHONDEVMODE="1" $PYTHONPATH="src:$PYTHONPATH": install-py-dependencies
+py-unit-test cov="cov" $PYTHONDEVMODE="1" $PYTHONPATH="src:$PYTHONPATH": install-py-dependencies
     ?[ {{ has_py_unit_tests }} = true ]
-    {{ coverage }} run -m unittest --quiet
+    {{ if cov == "nocov" { uv_run + " python" } else { coverage + " run" } }} -m unittest --quiet
+    ?[ "{{ cov }}" != "nocov" ]
     {{ coverage }} report --fail-under=0
     {{ coverage }} html --quiet --fail-under=0
     {{ coverage }} xml --quiet  # Fail if coverage is too low, but only after the text and HTML reports have been generated
@@ -198,13 +199,13 @@ py-unit-test $PYTHONDEVMODE="1" $PYTHONPATH="src:$PYTHONPATH": install-py-depend
 # Run the JavaScript unit tests. Pass 'cov' to also measure the test coverage.
 [no-cd]
 [private]
-js-unit-test *cov: install-js-dependencies
+js-unit-test cov="nocov": install-js-dependencies
     ?[ {{ has_js_test_script }} = true ]
     {{ npm_run }} test {{ if cov == "cov" { "-- --coverage" } else { "" } }}
 
-# Run the unit tests, in the current working directory. Pass 'cov' to also measure the JavaScript test coverage (Python test coverage is always measured).
+# Run the unit tests, in the current working directory. Measures coverage of Python unit tests by default. Pass 'cov' to also measure the coverage of JavaScript unit tests. Pass 'nocov' to skip measuring coverage of Python unit tests.
 [no-cd]
-test *cov: py-unit-test (js-unit-test cov)
+test *cov: (py-unit-test cov) (js-unit-test cov)
     ?[ {{ has_py_unit_tests }} = false ] && [ {{ has_js_test_script }} = false ]
     echo "Nothing to test in this folder"
 
