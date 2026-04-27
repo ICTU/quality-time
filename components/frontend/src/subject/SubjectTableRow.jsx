@@ -288,9 +288,12 @@ export function SubjectTableRow({
     const rowRef = useRef(null)
     const dragHandleRef = useRef(null)
 
+    const isExpanded = settings.expandedItems.includes(metricUuid)
     const anyRowExpanded = settings.expandedItems.value.length > 0
     const rowsAreSorted = settings.sortColumn.value !== ""
-    const clickableStyle = { "&:hover, &.Mui-focusVisible": { backgroundColor: "action.hover" } }
+    const columnSx = isExpanded ? null : { "&:hover, &.Mui-focusVisible": { backgroundColor: "action.hover" } }
+    const onColumnClick = (tabIndex) =>
+        isExpanded ? undefined : () => settings.expandedItems.setItem(metricUuid, tabIndex)
 
     return (
         <TableRowWithDetails
@@ -324,13 +327,13 @@ export function SubjectTableRow({
                     subjectUuid={subjectUuid}
                 />
             }
-            expanded={settings.expandedItems.includes(metricUuid)}
+            expanded={isExpanded}
             id={metricUuid}
             onExpand={() => settings.expandedItems.toggle(metricUuid)}
             firstCellContent={<MetricName metric={metric} />}
             firstCellProps={{
-                sx: clickableStyle,
-                onClick: () => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX),
+                sx: columnSx,
+                onClick: onColumnClick(METRIC_CONFIGURATION_TAB_INDEX),
             }}
         >
             {nrDates > 1 && (
@@ -343,62 +346,39 @@ export function SubjectTableRow({
                 />
             )}
             {!columnsToHide.includes("trend") && (
-                <TableCell
-                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, TREND_GRAPH_TAB_INDEX)}
-                    sx={{ width: "150px", ...clickableStyle }}
-                >
+                <TableCell onClick={onColumnClick(TREND_GRAPH_TAB_INDEX)} sx={{ width: "150px", ...columnSx }}>
                     <TrendSparkline measurements={metric.recent_measurements} reportDate={reportDate} scale={scale} />
                 </TableCell>
             )}
             {!columnsToHide.includes("status") && (
-                <TableCell
-                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_DEBT_TAB_INDEX)}
-                    sx={clickableStyle}
-                >
+                <TableCell onClick={onColumnClick(METRIC_CONFIGURATION_TAB_INDEX)} sx={columnSx}>
                     <Typography sx={{ paddingLeft: "6px", fontSize: "24px" }}>
                         <StatusIcon status={metric.status} statusStart={metric.status_start} />
                     </Typography>
                 </TableCell>
             )}
             {!columnsToHide.includes("measurement") && (
-                <TableCell
-                    align="right"
-                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, SOURCE_TAB_INDEX)}
-                    sx={clickableStyle}
-                >
+                <TableCell align="right" onClick={onColumnClick(SOURCE_TAB_INDEX)} sx={columnSx}>
                     <MeasurementValue metric={metric} reportDate={reportDate} />
                 </TableCell>
             )}
             {!columnsToHide.includes("target") && (
-                <TableCell
-                    align="right"
-                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX)}
-                    sx={clickableStyle}
-                >
+                <TableCell align="right" onClick={onColumnClick(METRIC_CONFIGURATION_TAB_INDEX)} sx={columnSx}>
                     <MeasurementTarget metric={metric} />
                 </TableCell>
             )}
             {!columnsToHide.includes("unit") && (
-                <TableCell
-                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX)}
-                    sx={clickableStyle}
-                >
+                <TableCell onClick={onColumnClick(METRIC_CONFIGURATION_TAB_INDEX)} sx={columnSx}>
                     {unit}
                 </TableCell>
             )}
             {!columnsToHide.includes("source") && (
-                <TableCell
-                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, SOURCES_TAB_INDEX)}
-                    sx={clickableStyle}
-                >
+                <TableCell onClick={onColumnClick(SOURCES_TAB_INDEX)} sx={columnSx}>
                     <MeasurementSources metric={metric} />
                 </TableCell>
             )}
             {!columnsToHide.includes("time_left") && (
-                <TableCell
-                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_DEBT_TAB_INDEX)}
-                    sx={clickableStyle}
-                >
+                <TableCell onClick={onColumnClick(METRIC_DEBT_TAB_INDEX)} sx={columnSx}>
                     <TimeLeft metric={metric} report={report} />
                 </TableCell>
             )}
@@ -414,26 +394,17 @@ export function SubjectTableRow({
                 </TableCell>
             )}
             {!columnsToHide.includes("comment") && (
-                <TableCell
-                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_DEBT_TAB_INDEX)}
-                    sx={clickableStyle}
-                >
+                <TableCell onClick={onColumnClick(METRIC_DEBT_TAB_INDEX)} sx={columnSx}>
                     <DivWithHtml>{metric.comment}</DivWithHtml>
                 </TableCell>
             )}
             {!columnsToHide.includes("issues") && (
-                <TableCell
-                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_DEBT_TAB_INDEX)}
-                    sx={clickableStyle}
-                >
+                <TableCell onClick={onColumnClick(METRIC_DEBT_TAB_INDEX)} sx={columnSx}>
                     <IssueStatus metric={metric} issueTrackerMissing={!report.issue_tracker} settings={settings} />
                 </TableCell>
             )}
             {!columnsToHide.includes("tags") && (
-                <TableCell
-                    onClick={() => settings.expandedItems.setOrDeleteItem(metricUuid, METRIC_CONFIGURATION_TAB_INDEX)}
-                    sx={clickableStyle}
-                >
+                <TableCell onClick={onColumnClick(METRIC_CONFIGURATION_TAB_INDEX)} sx={columnSx}>
                     {getMetricTags(metric).map((tag) => (
                         <Tag key={tag} tag={tag} />
                     ))}
