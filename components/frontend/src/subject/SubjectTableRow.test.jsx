@@ -237,18 +237,11 @@ it("expands the metric on the configuration tab when the metric name is clicked"
     expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
-it("switches to the configuration tab when the metric name is clicked on an expanded row with a different tab", async () => {
-    history.push("?expanded=metric_uuid:1")
+it("does not change the search when the metric name is clicked on an expanded row", async () => {
+    history.push(`?expanded=metric_uuid:${SOURCES_TAB_INDEX}`)
     renderSubjectTableRow({ name: "Metric name" })
     await asyncClickText(/Metric name/, 0)
-    expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
-})
-
-it("collapses the metric when the metric name is clicked on an expanded row with the configuation tab active", async () => {
-    history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
-    renderSubjectTableRow({ name: "Metric name" })
-    await asyncClickText(/Metric name/, 0)
-    expectSearch("")
+    expectSearch(`?expanded=metric_uuid:${SOURCES_TAB_INDEX}`)
 })
 
 it("collapses the metric when the expand button is clicked on an expanded row with a different tab", async () => {
@@ -258,24 +251,17 @@ it("collapses the metric when the expand button is clicked on an expanded row wi
     expectSearch("")
 })
 
-it("expands the metric on the technical debt tab when the status is clicked", async () => {
+it("expands the metric on the configuration tab when the status is clicked", async () => {
     renderSubjectTableRow()
     await asyncClickByTestId("QuestionMarkIcon")
-    expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
+    expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
-it("switches to the technical debt tab when the status is clicked on an expanded row with a different tab", async () => {
-    history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
+it("does not change the search when the status is clicked on an expanded row", async () => {
+    history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
     renderSubjectTableRow()
     await asyncClickByTestId("QuestionMarkIcon")
-    expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
-})
-
-it("collapses the metric when the status is clicked on an expanded row with the technical debt tab active", async () => {
-    history.push(`?expanded=metric_uuid:${METRIC_DEBT_TAB_INDEX}`)
-    renderSubjectTableRow()
-    await asyncClickByTestId("QuestionMarkIcon")
-    expectSearch("")
+    expectSearch(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
 })
 
 it("expands the metric on the trend graph tab when the sparkline is clicked", async () => {
@@ -284,18 +270,11 @@ it("expands the metric on the trend graph tab when the sparkline is clicked", as
     expectSearch(`?expanded=metric_uuid%3A${TREND_GRAPH_TAB_INDEX}`)
 })
 
-it("switches to the trend graph tab when the sparkline is clicked on an expanded row with a different tab", async () => {
+it("does not change the search when the sparkline is clicked on an expanded row", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
     renderSubjectTableRow()
     await asyncClickRole("cell", /sparkline graph showing 0 different measurement values in the week before today/)
-    expectSearch(`?expanded=metric_uuid%3A${TREND_GRAPH_TAB_INDEX}`)
-})
-
-it("collapses the metric when the sparkline is clicked on an expanded row with the trend graph tab active", async () => {
-    history.push(`?expanded=metric_uuid:${TREND_GRAPH_TAB_INDEX}`)
-    renderSubjectTableRow()
-    await asyncClickRole("cell", /sparkline graph showing 0 different measurement values in the week before today/)
-    expectSearch("")
+    expectSearch(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
 it("expands the metric on the first source tab when the measurement value is clicked", async () => {
@@ -304,18 +283,11 @@ it("expands the metric on the first source tab when the measurement value is cli
     expectSearch(`?expanded=metric_uuid%3A${SOURCE_TAB_INDEX}`)
 })
 
-it("switches to the source tab when the measurement value is clicked on an expanded row with a different tab", async () => {
+it("does not change the search when the measurement value is clicked on an expanded row", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
     renderSubjectTableRow()
     await asyncClickRole("cell", "?")
-    expectSearch(`?expanded=metric_uuid%3A${SOURCE_TAB_INDEX}`)
-})
-
-it("collapses the metric when the measurement value is clicked on an expanded row with the source tab active", async () => {
-    history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
-    renderSubjectTableRow()
-    await asyncClickRole("cell", "?")
-    expectSearch("")
+    expectSearch(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
 it("expands the metric on the configuration tab when the target value is clicked", async () => {
@@ -324,18 +296,11 @@ it("expands the metric on the configuration tab when the target value is clicked
     expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
-it("switches to the configuration tab when the measurement target is clicked on an expanded row with a different tab", async () => {
+it("does not change the search when the measurement target is clicked on an expanded row", async () => {
     history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
     renderSubjectTableRow()
     await asyncClickRole("cell", "≦ 0")
-    expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
-})
-
-it("collapses the metric when the measurement target is clicked on an expanded row with the configuration tab active", async () => {
-    history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
-    renderSubjectTableRow()
-    await asyncClickRole("cell", "≦ 0")
-    expectSearch("")
+    expectSearch(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
 })
 
 it("expands the metric on the configuration tab when the unit is clicked", async () => {
@@ -344,18 +309,11 @@ it("expands the metric on the configuration tab when the unit is clicked", async
     expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
-it("switches to the configuration tab when the unit is clicked on an expanded row with a different tab", async () => {
+it("does not change the search when the unit is clicked on an expanded row", async () => {
     history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
     renderSubjectTableRow()
     await asyncClickText(/things/)
-    expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
-})
-
-it("collapses the metric when the unit is clicked on an expanded row with the configuration tab active", async () => {
-    history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
-    renderSubjectTableRow()
-    await asyncClickText(/things/)
-    expectSearch("")
+    expectSearch(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
 })
 
 it("expands the metric on the technical debt tab when the time left is clicked", async () => {
@@ -364,18 +322,11 @@ it("expands the metric on the technical debt tab when the time left is clicked",
     expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
 })
 
-it("switches to the technical debt tab when the time left is clicked on an expanded row with a different tab", async () => {
+it("does not change the search when the time left is clicked on an expanded row", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
     renderSubjectTableRow()
     await asyncClickText(/days/)
-    expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
-})
-
-it("collapses the metric when the time left is clicked on an expanded row with the technical debt tab active", async () => {
-    history.push(`?expanded=metric_uuid:${METRIC_DEBT_TAB_INDEX}`)
-    renderSubjectTableRow()
-    await asyncClickText(/days/)
-    expectSearch("")
+    expectSearch(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
 it("expands the metric on the technical debt tab when the comment is clicked", async () => {
@@ -384,18 +335,11 @@ it("expands the metric on the technical debt tab when the comment is clicked", a
     expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
 })
 
-it("switches to the technical debt tab when the comment is clicked on an expanded row with a different tab", async () => {
+it("does not change the search when the comment is clicked on an expanded row", async () => {
     history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
     renderSubjectTableRow({ comment: "Metric comment" })
     await asyncClickText("Metric comment")
-    expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
-})
-
-it("collapses the metric when the comment is clicked on an expanded row with the technical debt tab active", async () => {
-    history.push(`?expanded=metric_uuid:${METRIC_DEBT_TAB_INDEX}`)
-    renderSubjectTableRow({ comment: "Metric comment" })
-    await asyncClickText("Metric comment")
-    expectSearch("")
+    expectSearch(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
 })
 
 it("expands the metric on the technical debt tab when the issues are clicked", async () => {
@@ -404,18 +348,11 @@ it("expands the metric on the technical debt tab when the issues are clicked", a
     expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
 })
 
-it("switches to the technical debt tab when the issues are clicked on an expanded row with a different tab", async () => {
+it("does not change the search when the issues are clicked on an expanded row", async () => {
     history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
     renderSubjectTableRow({ issueIds: ["ABC-1"] })
     await asyncClickText(/ABC-1/)
-    expectSearch(`?expanded=metric_uuid%3A${METRIC_DEBT_TAB_INDEX}`)
-})
-
-it("collapses the metric when the issues are clicked on an expanded row with the technical debt tab active", async () => {
-    history.push(`?expanded=metric_uuid:${METRIC_DEBT_TAB_INDEX}`)
-    renderSubjectTableRow({ issueIds: ["ABC-1"] })
-    await asyncClickText(/ABC-1/)
-    expectSearch("")
+    expectSearch(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
 })
 
 it("expands the metric on the sources tab when the source is clicked", async () => {
@@ -424,18 +361,11 @@ it("expands the metric on the sources tab when the source is clicked", async () 
     expectSearch(`?expanded=metric_uuid%3A${SOURCES_TAB_INDEX}`)
 })
 
-it("switches to the sources tab when the source is clicked on an expanded row with a different tab", async () => {
+it("does not change the search when the source is clicked on an expanded row", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
     renderSubjectTableRow()
     await asyncClickText(/Source type name/)
-    expectSearch(`?expanded=metric_uuid%3A${SOURCES_TAB_INDEX}`)
-})
-
-it("collapses the metric when the source is clicked on an expanded row with the sources tab active", async () => {
-    history.push(`?expanded=metric_uuid:${SOURCES_TAB_INDEX}`)
-    renderSubjectTableRow()
-    await asyncClickText(/Source type name/, 0)
-    expectSearch("")
+    expectSearch(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
 it("expands the metric on the configuration tab when a tag is clicked", async () => {
@@ -444,16 +374,9 @@ it("expands the metric on the configuration tab when a tag is clicked", async ()
     expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
-it("switches to the configuration tab when a tag is clicked on an expanded row with a different tab", async () => {
+it("does not change the search when a tag is clicked on an expanded row", async () => {
     history.push(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
     renderSubjectTableRow({ tags: ["tag1"] })
     await asyncClickText(/tag1/)
-    expectSearch(`?expanded=metric_uuid%3A${METRIC_CONFIGURATION_TAB_INDEX}`)
-})
-
-it("collapses the metric when a tag is clicked on an expanded row with the configuration tab active", async () => {
-    history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
-    renderSubjectTableRow({ tags: ["tag1"] })
-    await asyncClickText(/tag1/)
-    expectSearch("")
+    expectSearch(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
 })

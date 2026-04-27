@@ -14,7 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
-- Clicking columns in the metric table expands the metric details, if not yet expanded, and activates the tab most closely corresponding to the column clicked. If the metric is expanded and the corresponding tab is already active, clicking the column collapses the metric. Closes [#4172](https://github.com/ICTU/quality-time/issues/4172).
+- Clicking columns in the metric table expands the metric details, if not yet expanded, and activates the tab most closely corresponding to the column clicked. Once the metric is expanded, clicking columns has no effect. Closes [#4172](https://github.com/ICTU/quality-time/issues/4172).
 
 ## v5.53.0 - 2026-04-24
 
