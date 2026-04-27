@@ -33,7 +33,7 @@ jobs:
           esac
           cd $component
           mkdir -p build
-          uv tool run --from=rust-just --project $CIRCLE_WORKING_DIRECTORY/tools/third_party just test check
+          uv tool run --from=rust-just --project $CIRCLE_WORKING_DIRECTORY/tools/third_party just ci
       - store_artifacts:
           path: components/collector/build
       - store_artifacts:

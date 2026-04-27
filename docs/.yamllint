@@ -7,4 +7,4 @@ rules:
   comments:
     min-spaces-from-content: 1
 
-ignore-from-file: [.gitignore, docs/.yamlignore]
+ignore-from-file: [../.gitignore, .yamlignore]
