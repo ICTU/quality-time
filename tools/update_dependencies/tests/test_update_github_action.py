@@ -14,7 +14,7 @@ class UpdateGitHubActionTest(unittest.TestCase):
     @patch("requests.get")
     def test_unchanged(self, mock_get: Mock):
         """Test an unchanged version."""
-        mock_get.return_value = Mock(json=Mock(return_value={"tag_name": "1.0", "body": "changelog"}))
+        mock_get.return_value = Mock(json=Mock(side_effect=[{"tag_name": "1.0", "body": "changelog"}, {"sha": "sha"}]))
         latest_version = get_latest_version("docker/docker", "1.0")
         self.assertEqual("1.0", latest_version.version)
         self.assertEqual("changelog", latest_version.changes)
@@ -22,7 +22,7 @@ class UpdateGitHubActionTest(unittest.TestCase):
     @patch("requests.get")
     def test_newer(self, mock_get: Mock):
         """Test an newer version."""
-        mock_get.return_value = Mock(json=Mock(return_value={"tag_name": "1.1", "body": "changelog"}))
+        mock_get.return_value = Mock(json=Mock(side_effect=[{"tag_name": "1.1", "body": "changelog"}, {"sha": "sha"}]))
         latest_version = get_latest_version("docker/hub", "1.0")
         self.assertEqual("1.1", latest_version.version)
         self.assertEqual("changelog", latest_version.changes)
@@ -30,7 +30,7 @@ class UpdateGitHubActionTest(unittest.TestCase):
     @patch("requests.get")
     def test_older(self, mock_get: Mock):
         """Test an older version."""
-        mock_get.return_value = Mock(json=Mock(return_value={"tag_name": "0.9"}))
+        mock_get.return_value = Mock(json=Mock(side_effect=[{"tag_name": "0.9"}, {"sha": "sha"}]))
         self.assertEqual("1.0", get_latest_version("github/action", "1.0").version)
 
     @patch("logging.Logger.error")

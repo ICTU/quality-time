@@ -25,6 +25,7 @@ has_py_unit_tests := if pyproject_toml_exists == "true" { tests_folder_exists } 
 has_sphinx := if pyproject_toml_contents =~ '"sphinx[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
 has_yamllint := if pyproject_toml_contents =~ '"yamllint[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
 has_vale := if pyproject_toml_contents =~ '"vale[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
+has_zizmor := if pyproject_toml_contents =~ '"zizmor[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
 src_folder := if src_folder_exists == "true" { "src" } else { "" }
 tests_folder := if tests_folder_exists == "true" { "tests" } else { "" }
 code := if trim(src_folder + " " + tests_folder) == "" { ".?*.py" } else { src_folder + " " + tests_folder }
@@ -40,6 +41,7 @@ vulture := uv_run + " vulture --exclude .venv --min-confidence 0"
 vulture_whitelist := ".vulture-whitelist.py"
 sphinx_build := uv_run + " sphinx-build"
 npm_run := "npm run --silent"
+zizmor := uv_run + " zizmor --no-progress --quiet " + justfile_directory() + "/.github/workflows"
 
 # === Update dependencies ===
 
@@ -305,11 +307,18 @@ sphinx: install-py-dependencies
     echo Running sphinx linkcheck may take a while, be patient...
     {{ sphinx_build }} -M linkcheck src build --quiet --jobs auto
 
+# Run zizmor.
+[no-cd]
+[private]
+zizmor: install-py-dependencies
+    ?[ {{ has_zizmor }} = true ]
+    {{ zizmor }}
+
 # Run Python checks.
 [no-cd]
 [parallel]
 [private]
-check-py: mypy fixit ruff pyproject-fmt troml pip-audit uv-audit bandit vulture vale yamllint sphinx
+check-py: mypy fixit ruff pyproject-fmt troml pip-audit uv-audit bandit vulture vale yamllint sphinx zizmor
 
 # Run npm lint.
 [no-cd]
@@ -359,6 +368,8 @@ fix-py: install-py-dependencies
     {{ troml }} suggest --fix
     # Vulture returns exit code 3 when there is dead code, ignore it when writing the whitelist:
     {{ vulture }} --make-whitelist {{ code }} > {{ vulture_whitelist }} || true
+    ?[ {{ has_zizmor }} = true ]
+    {{ zizmor }} --fix=all
 
 # Fix JavaScript quality issues that can be fixed automatically.
 [no-cd]

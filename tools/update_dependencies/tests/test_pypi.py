@@ -67,7 +67,10 @@ class GetChangesTest(unittest.TestCase):
         docs = "https://docs"
         for key in REPOSITORY_URL_KEYS:
             self.create_mock_response(
-                mock_get, {"info": {"project_urls": {"docs": docs, key: repo}}}, {"body": changelog}
+                mock_get,
+                {"info": {"project_urls": {"docs": docs, key: repo}}},
+                {"body": changelog, "tag_name": "1.1"},
+                {"sha": "sha"},
             )
             self.assertEqual(changelog, get_changes(f"package-4-{key}", "1.1", LOG))
 
@@ -85,6 +88,7 @@ class GetChangesTest(unittest.TestCase):
             mock_get,
             {"info": {"description": f"Package description\n{github_url}\n"}},
             {"tag_name": "1.1", "body": changelog},
+            {"sha": "sha"},
         )
         self.assertEqual(changelog, get_changes("package-6", "1.1", LOG))
 
@@ -92,6 +96,9 @@ class GetChangesTest(unittest.TestCase):
         """Test that the GitHub URL in the description is used to get the changelog."""
         github_url = "https://github.com/org/baz"
         self.create_mock_response(
-            mock_get, {"info": {"description": f"Package description\n{github_url}\n"}}, {"tag_name": "1.1"}
+            mock_get,
+            {"info": {"description": f"Package description\n{github_url}\n"}},
+            {"tag_name": "1.1"},
+            {"sha": "sha"},
         )
         self.assertEqual("", get_changes("package-7", "1.1", LOG))

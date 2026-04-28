@@ -44,7 +44,8 @@ class UpdatePackageJsonTest(unittest.TestCase):
         Mock(
             side_effect=[
                 Mock(json=Mock(return_value={"repository": {"url": "https://github.com/package/1.1"}})),
-                Mock(json=Mock(return_value={"body": "Changelog"})),
+                Mock(json=Mock(return_value={"body": "Changelog", "tag_name": "v1.1"})),
+                Mock(json=Mock(return_value={"sha": "sha"})),
             ]
         ),
     )

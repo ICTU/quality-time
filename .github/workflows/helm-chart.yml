@@ -10,8 +10,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Set yaml value change dict with random generated secrets
         # yamllint disable rule:line-length
@@ -19,14 +22,14 @@ jobs:
           echo "VALUE_CHANGES={\"[0].data.DATABASE_USERNAME\":\"$(echo ${RANDOM} | base64)\",\"[0].data.DATABASE_PASSWORD\":\"$(echo ${RANDOM} | base64)\",\"[1].data.LDAP_LOOKUP_USER_PASSWORD\":\"$(echo ${RANDOM} | base64)\"}" >> $GITHUB_ENV
         # yamllint enable rule:line-length
       - name: Update values.yaml
-        uses: fjogeleit/yaml-update-action@v0.16.1
+        uses: fjogeleit/yaml-update-action@04ff6ec06568fd21197db746472e36cc425de850 # v0.16.1
         with:
           valueFile: "helm/deploy-ci.yaml"
           commitChange: false
           changes: ${{ env.VALUE_CHANGES }}
 
       - name: Start minikube
-        uses: medyagh/setup-minikube@v0.0.21
+        uses: medyagh/setup-minikube@e9e035a86bbc3caea26a450bd4dbf9d0c453682e # v0.0.21
         with:
           driver: docker
           container-runtime: containerd
