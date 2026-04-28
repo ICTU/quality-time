@@ -185,27 +185,32 @@ start-help:
 
 # === Run tests ===
 
-# Run the Python unit tests. Pass 'nocov' to skip reporting test coverage.
+# Run the Python unit tests. Pass '--coverage=no' to skip reporting test coverage.
+[arg("cov", long="coverage", short="c", pattern="default|yes|no", help="Measure unit test coverage?")]
+[env("PYTHONDEVMODE", "1")]
+[env("PYTHONPATH", "src")]
 [no-cd]
 [private]
-py-unit-test cov="cov" $PYTHONDEVMODE="1" $PYTHONPATH="src:$PYTHONPATH": install-py-dependencies
+py-unit-test cov="yes" *tests: install-py-dependencies
     ?[ {{ has_py_unit_tests }} = true ]
-    {{ if cov == "nocov" { uv_run + " python" } else { coverage + " run" } }} -m unittest --quiet
-    ?[ "{{ cov }}" != "nocov" ]
+    {{ if cov == "no" { uv_run + " python" } else { coverage + " run" } }} -m unittest --quiet {{ tests }}
+    ?[ "{{ cov }}" != "no" ]
     {{ coverage }} report --fail-under=0
     {{ coverage }} html --quiet --fail-under=0
     {{ coverage }} xml --quiet  # Fail if coverage is too low, but only after the text and HTML reports have been generated
 
-# Run the JavaScript unit tests. Pass 'cov' to also measure the test coverage.
+# Run the JavaScript unit tests. Pass '--coverage=yes' to measure test coverage.
+[arg("cov", long="coverage", short="c", pattern="default|yes|no", help="Measure unit test coverage?")]
 [no-cd]
 [private]
-js-unit-test cov="nocov": install-js-dependencies
+js-unit-test cov="no" *tests: install-js-dependencies
     ?[ {{ has_js_test_script }} = true ]
-    {{ npm_run }} test {{ if cov == "cov" { "-- --coverage" } else { "" } }}
+    {{ npm_run }} test -- {{ if cov == "yes" { "--coverage" } else { tests } }}
 
 # Run the unit tests, in the current working directory. Measures coverage of Python unit tests by default. Pass 'cov' to also measure the coverage of JavaScript unit tests. Pass 'nocov' to skip measuring coverage of Python unit tests.
+[arg("cov", long="coverage", short="c", pattern="default|yes|no", help="Measure unit test coverage? Default means yes for Python and no for Javascript")]
 [no-cd]
-test *cov: (py-unit-test cov) (js-unit-test cov)
+test cov="default" *tests: (py-unit-test cov tests) (js-unit-test cov tests)
     ?[ {{ has_py_unit_tests }} = false ] && [ {{ has_js_test_script }} = false ]
     echo "Nothing to test in this folder"
 
@@ -285,11 +290,12 @@ vale: install-py-dependencies
     {{ uv_run }} vale sync
     {{ uv_run }} vale --no-wrap --glob '*.md' src
 
-# Run yamllint from the project root.
+# Run yamllint.
+[no-cd]
 [private]
 yamllint: install-py-dependencies
     ?[ {{ has_yamllint }} = true ]
-    {{ uv_run }} yamllint -c docs/.yamllint .
+    {{ uv_run }} yamllint -c .yamllint {{ justfile_directory() }}
 
 # Run sphinx.
 [no-cd]
@@ -383,6 +389,7 @@ release-help:
 
 # Run all tests and checks in CI.
 [no-cd]
+[parallel]
 [private]
 ci $CI="true": test check
 
