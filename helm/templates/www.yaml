@@ -40,11 +40,10 @@ spec:
               value: "8080"
           ports:
             - containerPort: 8080
-{{- with .Values.www.resources }}
+          {{- with .Values.www.resources }}
           resources: {{- toYaml . | nindent 12 }}
-{{- end }}
-          securityContext:
-            {{- toYaml .Values.www.securityContext | nindent 12 }}
+          {{- end }}
+          securityContext: {{- toYaml .Values.www.securityContext | nindent 12 }}
       restartPolicy: Always
 {{- end }}
 ---
@@ -81,15 +80,15 @@ metadata:
     app.kubernetes.io/component: {{ template "www_name" . }}
   annotations:
     {{- range $key, $value := .Values.www.ingress.annotations }}
-    {{ $key }}: {{ $value | quote }}
+    {{ $key }}: "{{ $value }}"
     {{- end }}
 spec:
   {{- if .Values.www.ingress.ingressClassName }}
-  ingressClassName: {{ .Values.www.ingress.ingressClassName | quote }}
+  ingressClassName: {{ .Values.www.ingress.ingressClassName }}
   {{- end }}
   {{- if .Values.www.ingress.hostname }}
   rules:
-    - host: {{ .Values.www.ingress.hostname | quote }}
+    - host: {{ .Values.www.ingress.hostname }}
       http:
         {{- if .Values.www.deployProxy }}
         paths:
@@ -119,11 +118,11 @@ spec:
         {{- end }}
   {{- end }}
   {{- if .Values.www.ingress.tls }}
-  tls:
-    {{ toYaml .Values.www.ingress.tls | indent 4 }}
+  tls: {{ toYaml .Values.www.ingress.tls | nindent 4 }}
   {{- end }}
 {{- end }}
 ---
+{{- if .Values.www.env }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -133,6 +132,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: {{ template "www_name" . }}
 data:
-{{- range $key, $val := .Values.www.env }}
-  {{ $key }}: "{{ $val }}"
+  {{- range $key, $value := .Values.www.env }}
+  {{ $key }}: "{{ $value }}"
+  {{- end }}
 {{- end }}

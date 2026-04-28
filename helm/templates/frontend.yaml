@@ -30,11 +30,10 @@ spec:
             - configMapRef:
                 name: {{ .Release.Name }}-{{ template "frontend_name" . }}-env
                 optional: true
-{{- with .Values.frontend.resources }}
+          {{- with .Values.frontend.resources }}
           resources: {{- toYaml . | nindent 12 }}
-{{- end }}
-          securityContext:
-            {{- toYaml .Values.notifier.securityContext | nindent 12 }}
+          {{- end }}
+          securityContext: {{- toYaml .Values.frontend.securityContext | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -57,6 +56,7 @@ spec:
       targetPort: 5000
   sessionAffinity: None
 ---
+{{- if .Values.frontend.env }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -66,6 +66,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: {{ template "frontend_name" . }}
 data:
-{{- range $key, $val := .Values.frontend.env }}
-  {{ $key }}: "{{ $val }}"
+  {{- range $key, $value := .Values.frontend.env }}
+  {{ $key }}: "{{ $value }}"
+  {{- end }}
 {{- end }}

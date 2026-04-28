@@ -45,13 +45,13 @@ spec:
                   name: {{ .Values.secrets.dbCredential }}
                   key: DATABASE_PASSWORD
                   optional: true
-{{- with .Values.collector.resources }}
+          {{- with .Values.collector.resources }}
           resources: {{- toYaml . | nindent 12 }}
-{{- end }}
-          securityContext:
-            {{- toYaml .Values.collector.securityContext | nindent 12 }}
+          {{- end }}
+          securityContext: {{- toYaml .Values.collector.securityContext | nindent 12 }}
       restartPolicy: Always
 ---
+{{- if .Values.collector.env }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -61,6 +61,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: {{ template "collector_name" . }}
 data:
-{{- range $key, $val := .Values.collector.env }}
-  {{ $key }}: "{{ $val }}"
+  {{- range $key, $value := .Values.collector.env }}
+  {{ $key }}: "{{ $value }}"
+  {{- end }}
 {{- end }}
