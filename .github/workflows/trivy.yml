@@ -1,6 +1,7 @@
 ---
 name: Trivy
-on:  # yamllint disable-line rule:truthy
+on:
+  # yamllint disable-line rule:truthy
   push:
     branches:
       - master
@@ -45,7 +46,7 @@ jobs:
         run: docker build -f ${{ matrix.docker_file }} -t docker.io/ictu/quality-time_${{ matrix.component }} .
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: "docker.io/ictu/quality-time_${{ matrix.component }}"
           ignore-unfixed: true
