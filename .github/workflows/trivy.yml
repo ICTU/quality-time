@@ -1,7 +1,8 @@
 ---
 name: Trivy
+
+# yamllint disable-line rule:truthy
 on:
-  # yamllint disable-line rule:truthy
   push:
     branches:
       - master
@@ -39,14 +40,16 @@ jobs:
             docker_file: Dockerfile
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Build image from Dockerfile
         working-directory: ${{ matrix.build_path }}
         run: docker build -f ${{ matrix.docker_file }} -t docker.io/ictu/quality-time_${{ matrix.component }} .
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: "docker.io/ictu/quality-time_${{ matrix.component }}"
           ignore-unfixed: true
@@ -55,12 +58,12 @@ jobs:
 
       - name: Upload Trivy scan results to GitHub Security tab
         if: ${{ github.ref == 'refs/heads/master' }}
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2
         with:
           sarif_file: "trivy-${{ matrix.component }}.sarif"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: "trivy-${{ matrix.component }}.sarif"
           path: "*.sarif"

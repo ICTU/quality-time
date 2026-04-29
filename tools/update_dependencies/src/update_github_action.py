@@ -15,7 +15,7 @@ from log import get_logger
 from version import DependencyVersion
 
 LOG = get_logger("github action")
-ACTION_RE = r"uses: (?P<dependency>[\w\d\./-]+)@v?(?P<version>[\d\w\.\-]+)"
+ACTION_RE = r"uses: (?P<dependency>[\w\d\./-]+)@(?P<commit_sha>[a-f0-9]{40}) # v?(?P<version>[\d\w\.\-]+)"
 
 
 @cache
@@ -31,7 +31,7 @@ def get_latest_version(action: str, current_version_string: str) -> DependencyVe
         LOG.invalid_version(f"{owner}/{repository}", f"'{latest_tag}'")
         latest_version = Version("0.0.0")
     changes = json.get("body", "")
-    return DependencyVersion(str(max(latest_version, current_version)), changes)
+    return DependencyVersion(str(max(latest_version, current_version)), changes, json.get("commit_sha", ""))
 
 
 if __name__ == "__main__":  # pragma: no cover

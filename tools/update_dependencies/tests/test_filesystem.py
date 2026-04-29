@@ -61,6 +61,18 @@ class UpdateFileTest(unittest.TestCase):
         mock_file.write_text.assert_called_with("line1\nimage: python:3.15\n")
         mock_logger.new_version.assert_called_with("python", DependencyVersion(version="3.15"))
 
+    def test_new_version_with_sha(self):
+        """Test a new version with a sha."""
+        old_sha = "a" * 40
+        regexp = r"uses: (?P<dependency>[\w\d\./-]+)@(?P<commit_sha>[a-f0-9]{40}) # v?(?P<version>[\d\w\.\-]+)"
+        mock_file = Mock(read_text=Mock(return_value=f"line1\nuses: action/action@{old_sha} # v3.14\n"))
+        mock_logger = Mock()
+        new_sha = "b" * 40
+        new_version = DependencyVersion(version="3.15", commit_sha=new_sha)
+        self.assertEqual(0, update_file(mock_file, regexp, lambda *_args: new_version, mock_logger))
+        mock_file.write_text.assert_called_with(f"line1\nuses: action/action@{new_sha} # v3.15\n")
+        mock_logger.new_version.assert_called_with("action/action", new_version)
+
     def test_old_version(self):
         """Test a new version that is actually older."""
         mock_file = Mock(read_text=Mock(return_value="line1\nimage: python:3.14\n"))

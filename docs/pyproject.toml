@@ -14,7 +14,7 @@ classifiers = [
 [dependency-groups]
 dev = [
     "furo==2025.12.19",
-    "gitpython==3.1.48",
+    "gitpython==3.1.49",
     "myst-parser==5.0.0",
     "pydantic==2.13.3",     # Needed for generating the reference docs from the data model
     "shared-code",
@@ -23,6 +23,7 @@ dev = [
     "tools",
     "vale==3.13.0.0",       # Documentation grammar and style checker
     "yamllint==1.38.0",
+    "zizmor==1.24.1",       # Static analysis tool for GitHub Actions
 ]
 
 [tool.uv]

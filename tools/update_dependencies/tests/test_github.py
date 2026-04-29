@@ -48,13 +48,22 @@ class GitHubReleaseJSONTest(unittest.TestCase):
 
     # Note get_latest_release_json uses caching, so the owner and/or repository need to be different for each test
 
-    @patch("requests.get", Mock(return_value=Mock(json=Mock(return_value={"tag_name": "1.0"}))))
+    @patch("requests.get", Mock(return_value=Mock(json=Mock(side_effect=[{"tag_name": "1.0"}, {"sha": "sha"}]))))
     def test_get_latest_release_json(self):
         """Test getting the latest release JSON."""
-        self.assertEqual({"tag_name": "1.0"}, get_latest_release_json("owner", "repository"))
+        self.assertEqual({"tag_name": "1.0", "commit_sha": "sha"}, get_latest_release_json("owner", "repository"))
 
     @patch("requests.get")
     def test_get_latest_release_json_when_repo_has_no_releases(self, mock_get: Mock):
         """Test getting the latest release JSON when the repository has no releases."""
         mock_get.return_value = Mock(raise_for_status=Mock(side_effect=requests.exceptions.HTTPError))
         self.assertEqual({}, get_latest_release_json("owner", "repository without releases"))
+
+    @patch("requests.get")
+    def test_http_error_on_commits_endpoint(self, mock_get: Mock):
+        """Test getting the latest release JSON when an HTTP error occurs on the commits endpoint."""
+        mock_get.side_effect = [
+            Mock(json=Mock(return_value={"tag_name": "1.0"})),
+            Mock(raise_for_status=Mock(side_effect=requests.exceptions.HTTPError)),
+        ]
+        self.assertEqual({}, get_latest_release_json("owner", "repository 2"))

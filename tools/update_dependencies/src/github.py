@@ -29,12 +29,22 @@ def github_owner_and_repository(url: str) -> tuple[str, str]:
 
 @cache
 def get_latest_release_json(owner: str, repository: str) -> dict:
-    """Get the latest release JSON from the GitHub releases API."""
-    url = f"https://api.github.com/repos/{owner}/{repository}/releases/latest"
+    """Get the latest release JSON from the GitHub releases API. Also add the sha of the commit."""
     headers = {"Authorization": f"Bearer {github_token}"} if (github_token := os.environ.get("GITHUB_TOKEN")) else {}
-    response = requests.get(url, headers=headers, timeout=10)
+    releases_url = f"https://api.github.com/repos/{owner}/{repository}/releases/latest"
+    releases_response = requests.get(releases_url, headers=headers, timeout=10)
     try:
-        response.raise_for_status()
+        releases_response.raise_for_status()
     except requests.exceptions.HTTPError:
         return {}
-    return response.json()
+    json = releases_response.json()
+    if "tag_name" not in json:
+        return {}
+    commits_url = f"https://api.github.com/repos/{owner}/{repository}/commits/{json['tag_name']}"
+    commits_response = requests.get(commits_url, headers=headers, timeout=10)
+    try:
+        commits_response.raise_for_status()
+    except requests.exceptions.HTTPError:
+        return {}
+    json["commit_sha"] = commits_response.json()["sha"]
+    return json

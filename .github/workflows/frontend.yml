@@ -10,19 +10,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions: {}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Setup Node.js
-        uses: actions/setup-node@v6.4.0
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: components/frontend/package.json
       - name: Install uv
-        uses: astral-sh/setup-uv@v8.1.0
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           enable-cache: true
           version-file: tools/third_party/pyproject.toml
       - name: Install dependencies, run unit tests and check quality
-        run: uv tool run --directory components/frontend --from $(uv export --project
-          tools/third_party --only-group just --quiet --no-hashes --no-header)
-          just ci
+        run: uv tool run --directory components/frontend --from $(uv export --project tools/third_party --only-group just --quiet --no-hashes --no-header) just ci # yamllint disable rule:line-length

@@ -98,7 +98,8 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         Mock(
             side_effect=[
                 Mock(json=Mock(return_value=pypi_metadata(changelog_url=""))),
-                Mock(json=Mock(return_value={"body": changelog})),
+                Mock(json=Mock(return_value={"body": changelog, "tag_name": "v1.1"})),
+                Mock(json=Mock(return_value={"sha": "sha"})),
             ]
         ),
     )

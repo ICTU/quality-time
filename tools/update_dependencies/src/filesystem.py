@@ -35,6 +35,8 @@ def _update_line(
         latest_version = get_new_version(dependency, version)
         if latest_version.version > version:
             logger.new_version(dependency, latest_version)
+            if "commit_sha" in match.groupdict():
+                line = line.replace(match.group("commit_sha"), latest_version.commit_sha)
             return line.replace(version, latest_version.version)
     return line
 
