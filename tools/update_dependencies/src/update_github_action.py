@@ -21,14 +21,14 @@ ACTION_RE = r"uses: (?P<dependency>[\w\d\./-]+)@v?(?P<version>[\d\w\.\-]+)"
 @cache
 def get_latest_version(action: str, current_version_string: str) -> DependencyVersion:
     """Fetch the latest version for the action."""
-    organization, repository, *_path = action.split("/")
+    owner, repository, *_path = action.split("/")
     current_version = Version(current_version_string)
-    json = get_latest_release_json(organization, repository)
+    json = get_latest_release_json(owner, repository)
     latest_tag = json.get("tag_name", "").strip("v")
     try:
         latest_version = Version(latest_tag)
     except InvalidVersion:
-        LOG.invalid_version(f"{organization}/{repository}", f"'{latest_tag}'")
+        LOG.invalid_version(f"{owner}/{repository}", f"'{latest_tag}'")
         latest_version = Version("0.0.0")
     changes = json.get("body", "")
     return DependencyVersion(str(max(latest_version, current_version)), changes)
