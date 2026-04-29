@@ -8,7 +8,7 @@ RUN apk add --no-cache chromium
 
 WORKDIR /home/renderer
 COPY package*.json /home/renderer/
-RUN npm install --ignore-scripts
+RUN npm ci --ignore-scripts
 
 COPY src/*js /home/renderer/
 

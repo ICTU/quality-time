@@ -103,7 +103,7 @@ install-py-dependencies:
 [private]
 install-js-dependencies:
     ?[ {{ package_json_exists }} = true ]
-    npm install --ignore-scripts --silent
+    npm ci --ignore-scripts --silent
 
 # === Build artifacts ===
 

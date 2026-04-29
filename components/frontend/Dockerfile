@@ -7,7 +7,7 @@ COPY index.html /home/frontend
 COPY *.ts /home/frontend
 COPY src /home/frontend/src
 COPY .env /home/frontend
-RUN npm install --ignore-scripts && \
+RUN npm ci --ignore-scripts && \
     npm run --ignore-scripts build
 
 FROM nginxinc/nginx-unprivileged:1.30-alpine3.23-slim
