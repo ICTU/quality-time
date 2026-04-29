@@ -17,8 +17,8 @@ def github_to_raw(url: str) -> str:
     return url
 
 
-def github_organization_and_repository(url: str) -> tuple[str, str]:
-    """Parse the GitHub organization and repository from a URL."""
+def github_owner_and_repository(url: str) -> tuple[str, str]:
+    """Parse the GitHub owner and repository from a URL."""
     parsed = urlparse(url)
     if parsed.scheme == "https" and parsed.netloc == "github.com":
         path_parts = parsed.path.lstrip("/").split("/")
@@ -28,9 +28,9 @@ def github_organization_and_repository(url: str) -> tuple[str, str]:
 
 
 @cache
-def get_latest_release_json(organization: str, repository: str) -> dict:
+def get_latest_release_json(owner: str, repository: str) -> dict:
     """Get the latest release JSON from the GitHub releases API."""
-    url = f"https://api.github.com/repos/{organization}/{repository}/releases/latest"
+    url = f"https://api.github.com/repos/{owner}/{repository}/releases/latest"
     headers = {"Authorization": f"Bearer {github_token}"} if (github_token := os.environ.get("GITHUB_TOKEN")) else {}
     response = requests.get(url, headers=headers, timeout=10)
     try:

@@ -16,6 +16,6 @@ def get_changes(package: str, version: str) -> str:
     repository_url = json["repository"]["url"]
     repository_url = repository_url.split("#")[0]
     repository_url = repository_url.removesuffix(".git")
-    organization, repository = repository_url.split("/")[3:5]
-    json = get_latest_release_json(organization, repository)
+    owner, repository = repository_url.split("/")[3:5]
+    json = get_latest_release_json(owner, repository)
     return json.get("body", "")
