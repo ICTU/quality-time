@@ -53,11 +53,10 @@ spec:
                   name: {{ .Values.secrets.dbCredential }}
                   key: DATABASE_PASSWORD
                   optional: true
-{{- with .Values.database.resources }}
+          {{- with .Values.database.resources }}
           resources: {{- toYaml . | nindent 12 }}
-{{- end }}
-          securityContext:
-            {{- toYaml .Values.database.securityContext | nindent 12 }}
+          {{- end }}
+          securityContext: {{- toYaml .Values.database.securityContext | nindent 12 }}
           volumeMounts:
             - mountPath: /data/db
               name: {{ .Release.Name }}-{{ template "database_name" . }}
@@ -82,10 +81,10 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.database.storageSize | default "1Gi" | quote }}
-{{- if .Values.database.storageClassName }}
-  storageClassName: {{ .Values.database.storageClassName | quote }}
-{{- end }}
+      storage: {{ .Values.database.storageSize }}
+  {{- if .Values.database.storageClassName }}
+  storageClassName: {{ .Values.database.storageClassName }}
+  {{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -107,6 +106,7 @@ spec:
       targetPort: 27017
   sessionAffinity: None
 ---
+{{- if .Values.database.env }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -116,6 +116,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: {{ template "database_name" . }}
 data:
-{{- range $key, $val := .Values.database.env }}
-  {{ $key }}: "{{ $val }}"
+  {{- range $key, $value := .Values.database.env }}
+  {{ $key }}: "{{ $value }}"
+  {{- end }}
 {{- end }}

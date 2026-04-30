@@ -4,7 +4,9 @@ Follow these instruction to deploy the Helm chart on a local Kubernetes setup, f
 
 ## Configure
 
-Before deploying the helm chart you need to fill in the `DATABASE_USERNAME`, `DATABASE_PASSWORD` and `LDAP_LOOKUP_USER_PASSWORD` fields in [deploy-ci.yml](deploy-ci.yml). The values need to be base64-encoded. The default database username and password are both 'root', so set the database fields to 'cm9vdA=='. The default LDAP lookup user password is 'admin', so set the `LDAP_LOOKUP_USER_PASSWORD` to 'YWRtaW4K'.
+Before deploying the helm chart you need to fill in the `DATABASE_USERNAME`, `DATABASE_PASSWORD` and `LDAP_LOOKUP_USER_PASSWORD` fields in [deploy-ci.yml](deploy-ci.yml).
+The values need to be base64-encoded. The default database username and password are both 'root', so set the database fields to 'cm9vdA=='.
+The default LDAP lookup user password is 'admin', so set the `LDAP_LOOKUP_USER_PASSWORD` to 'YWRtaW4K'.
 
 ## Deploy Helm chart
 

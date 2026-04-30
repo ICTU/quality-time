@@ -45,13 +45,13 @@ spec:
                   name: {{ .Values.secrets.dbCredential }}
                   key: DATABASE_PASSWORD
                   optional: true
-{{- with .Values.notifier.resources }}
+          {{- with .Values.notifier.resources }}
           resources: {{- toYaml . | nindent 12 }}
-{{- end }}
-          securityContext:
-            {{- toYaml .Values.notifier.securityContext | nindent 12 }}
+          {{- end }}
+          securityContext: {{- toYaml .Values.notifier.securityContext | nindent 12 }}
       restartPolicy: Always
 ---
+{{- if .Values.notifier.env }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -61,6 +61,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: {{ template "notifier_name" . }}
 data:
-{{- range $key, $val := .Values.notifier.env }}
-  {{ $key }}: "{{ $val }}"
+  {{- range $key, $value := .Values.notifier.env }}
+  {{ $key }}: "{{ $value }}"
+  {{- end }}
 {{- end }}

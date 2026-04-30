@@ -35,11 +35,10 @@ spec:
               value: {{ .Release.Name }}-{{ template "www_name" . }}
             - name: PROXY_PORT
               value: "8080"
-{{- with .Values.renderer.resources }}
+          {{- with .Values.renderer.resources }}
           resources: {{- toYaml . | nindent 12 }}
-{{- end }}
-          securityContext:
-            {{- toYaml .Values.renderer.securityContext | nindent 12 }}
+          {{- end }}
+          securityContext: {{- toYaml .Values.renderer.securityContext | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -62,6 +61,7 @@ spec:
       targetPort: 9000
   sessionAffinity: None
 ---
+{{- if .Values.renderer.env }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -71,6 +71,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: {{ template "renderer_name" . }}
 data:
-{{- range $key, $val := .Values.renderer.env }}
-  {{ $key }}: "{{ $val }}"
+  {{- range $key, $value := .Values.renderer.env }}
+  {{ $key }}: "{{ $value }}"
+  {{- end }}
 {{- end }}

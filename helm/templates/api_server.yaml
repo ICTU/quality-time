@@ -61,19 +61,16 @@ spec:
                   optional: true
             - name: LDAP_SEARCH_FILTER  # override to make sure that double dollar signs are processed like in docker
               value: {{ .Values.api_server.env.LDAP_SEARCH_FILTER }}
-          securityContext:
-            {{- toYaml .Values.api_server.securityContext | nindent 12 }}
-          {{- if .Values.api_server.extraVolumeMounts }}
-          volumeMounts:
-            {{- toYaml .Values.api_server.extraVolumeMounts | nindent 12 }}
+          securityContext: {{- toYaml .Values.api_server.securityContext | nindent 12 }}
+          {{- with .Values.api_server.extraVolumeMounts }}
+          volumeMounts: {{- toYaml . | nindent 12 }}
           {{- end }}
-{{- with .Values.api_server.resources }}
+          {{- with .Values.api_server.resources }}
           resources: {{- toYaml . | nindent 12 }}
-{{- end }}
+          {{- end }}
       restartPolicy: Always
-      {{- if .Values.api_server.extraVolumes }}
-      volumes:
-        {{- toYaml .Values.api_server.extraVolumes | nindent 8 }}
+      {{- with .Values.api_server.extraVolumes }}
+      volumes: {{- toYaml . | nindent 8 }}
       {{- end }}
 ---
 apiVersion: v1
@@ -96,6 +93,7 @@ spec:
       targetPort: 5001
   sessionAffinity: None
 ---
+{{- if .Values.api_server.env }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -105,6 +103,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: {{ template "api_server_name" . }}
 data:
-{{- range $key, $val := .Values.api_server.env }}
-  {{ $key }}: "{{ $val }}"
+  {{- range $key, $value := .Values.api_server.env }}
+  {{ $key }}: "{{ $value }}"
+  {{- end }}
 {{- end }}

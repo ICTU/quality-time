@@ -33,6 +33,7 @@ collector:
     repository: "ictu/quality-time_collector"
 
 database:
+  storageSize: "1Gi"
   securityContext:
     capabilities:
       add:
