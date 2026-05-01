@@ -165,7 +165,8 @@ The {index}`public key <public key>` argument is optional.
 If no public key is provided, the public key of the exporting *Quality-time* instance is used for encrypting the source credentials.
 If the report needs to be imported in a different *Quality-time* instance, the public key of that instance should be provided.
 It can be obtained at `https://quality-time.destination.org/api/v3/public_key`.
-The exported JSON report can only be imported into the *Quality-time* whose public key has been used for the encryption of credentials during the export.
+The exported JSON report *including its credentials* can only be imported into the *Quality-time* whose public key has been used for the encryption of credentials during the export.
+If the report is imported into another *Quality-time* instance, the credentials will not be imported.
 
 The public key endpoint returns a JSON like this:
 
@@ -205,7 +206,7 @@ The importing endpoint is available via `https://quality-time.destination.org/ap
 The import endpoint accepts JSON content only.
 See the [example reports](https://github.com/ICTU/quality-time/tree/master/components/api_server/src/example-reports) for the format.
 
-For example, using curl, assuming you have logged in as shown above, and that the report filename is `report.json`:
+For example, using curl, assuming **you have logged in as shown above** and that the report filename is `report.json`:
 
 ```console
 curl --cookie cookie.txt --request POST --header "Content-Type: application/json" --data @report.json https://quality-time.destination.org/api/v3/report/import
@@ -220,7 +221,7 @@ On success, you'll see a reply like this:
 On import, all UUIDs contained in the report (UUIDs of the report, subjects, metrics and sources) will be replaced to prevent conflicts if the report already exists.
 
 If the report contains encrypted credentials, the importing *Quality-time* instance will decrypt the credentials using its public key.
-Note that if the credentials were encrypted using the public key of a different *Quality-time* instance, an error will occur, and the import will fail.
+Note that if the credentials were encrypted using the public key of a different *Quality-time* instance, the report will be imported, but without the credentials.
 
 To allow for seeding a *Quality-time* instance with default reports, imported reports may contain unencrypted credentials.
 These unencrypted credentials will be imported unchanged.

@@ -487,9 +487,11 @@ See the [API-documentation](api.md#export-to-pdf) for exporting reports via the 
 
 *Quality-time* provides functionality for importing and exporting reports in JSON format. This functionality can be used to import template reports, to back up reports, or for transferring reports from one *Quality-time* instance to another one.
 
-To export a report, use the "Export report" button in the report header. The exported JSON file contains the report configuration but does not include measurements. Source credentials in the exported report are encrypted using the public key of the exporting *Quality-time* instance. This means that an exported report with credentials can only be re-imported into the same instance. To transfer a report with credentials to a different *Quality-time* instance, use the [API](api.md#export-and-import-reports-as-json) to encrypt the credentials with the public key of the destination instance.
+To export a report, use the "Export report" button in the report header. The exported JSON file contains the report configuration but does not include measurements. Source credentials in the exported report are encrypted using the public key of the exporting *Quality-time* instance. This means that an exported report *including its credentials* can only be re-imported into the same instance. To transfer a report including its credentials to a different *Quality-time* instance, use the [API](api.md#export-and-import-reports-as-json) to encrypt the credentials with the public key of the destination instance. It is possible to import a report in a Quality-time instance whose public key was not used to encrypt the credentials, but in that case the credentials will not be imported.
 
-To import a report, use the "Import report" button on the reports overview page to select a report in JSON format and import it. Both buttons are only available to logged-in users.
+To import a report, use the "Import report" button on the reports overview page to select a report in JSON format and import it.
+
+The export and the import buttons are only available to logged-in users.
 
 Both the import and the export functionality are also available via the [API](api.md#export-and-import-reports-as-json).
 
