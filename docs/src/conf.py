@@ -87,11 +87,13 @@ linkcheck_ignore = [
     "https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#results-object",
     "https://www.npmjs.com/package/.*",  # False negative: 403 Client Error: Forbidden for url
     r"https://queue.acm.org/detail.cfm\?id=3454124",  # False negative: 403 Client Error: Forbidden for url
-    "https://github.com/ICTU/quality-time/issues/.*",  # Too many to check often
+    "https://github.com/ICTU/quality-time/issues/.*",  # Too many URLs to check often
     # 404 Client Error: Not Found
     # See https://community.sonarsource.com/t/https-rules-sonarsource-com-down/177294?u=fniessink:
     "https://rules.sonarsource.com/.*",
     "https://www.ictu.nl/en/about-us",  # False negative: 415 Client Error: Unsupported Media Type
     "https://junit.org/",  # False negative: WARNING: broken link: https://junit.org/ (Exceeded 30 redirects.)
     "https://github.com/osixia/docker-openldap/issues/555",  # False negative: 404 Client Error: Not Found for url
+    # False negative: 403 Client Error: Forbidden for url (weirdly enough this one seems to happen on CircleCI only):
+    r"https://www\.oasis-open\.org/committees/tc_home\.php\?wg_abbrev=sarif",
 ]
