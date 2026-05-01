@@ -21,6 +21,7 @@ OJAudit
 OpenShift
 PDFs
 Pydantic
+Pyupio
 Robocop
 Snyk
 Termeczky
