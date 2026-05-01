@@ -11,11 +11,15 @@ on:
   schedule:
     - cron: "31 2 * * 0"
 
+env:
+  CODEQL_ACTION_FILE_COVERAGE_ON_PRS: false
+
 jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      security-events: read
     strategy:
       fail-fast: false
       matrix:
@@ -35,13 +39,14 @@ jobs:
         uses: github/codeql-action/init@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2
         with:
           languages: ${{ matrix.language }}
-          # If you wish to specify custom queries, you can do so here or in a config file.
-          # By default, queries listed here will override any specified in a config file.
-          # Prefix the list here with "+" to use these queries and those in the config file.
-          # queries: ./path/to/local/query, your-org/your-repo/queries@main
+          tools: linked
+            # If you wish to specify custom queries, you can do so here or in a config file.
+            # By default, queries listed here will override any specified in a config file.
+            # Prefix the list here with "+" to use these queries and those in the config file.
+            # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
-          # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-          # If this step fails, then you should remove it and run the build manually (see below)
+            # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
+            # If this step fails, then you should remove it and run the build manually (see below)
       - name: Autobuild
         uses: github/codeql-action/autobuild@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2
 
