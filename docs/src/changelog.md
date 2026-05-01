@@ -12,6 +12,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Fixed
+
+- The documentation on importing reports was claiming that a report with credentials can only be re-imported into the same *Quality-time* instance. This is no longer true since v5.52.0. Fixes [#13080](https://github.com/ICTU/quality-time/issues/13080).
+
 ### Deprecated
 
 - Support for Pyupio Safety as source for metrics is deprecated and marked for removal in the future, because *Quality-time* only supports v1 of the Safety JSON output and upgrading to v3 is blocked. Closes [#13077](https://github.com/ICTU/quality-time/issues/13077).
