@@ -9,14 +9,14 @@ api_server:
       drop:
         - ALL
   extraVolumes: []
-#    - name: cert-config-map
-#      configMap:
-#        name: cert-config-map
+  #    - name: cert-config-map
+  #      configMap:
+  #        name: cert-config-map
   extraVolumeMounts: []
-#    - name: cert-config-map
-#      subPath: ca-certificates.crt
-#      mountPath: "/etc/ssl/certs/ca-certificates.crt"
-#      readOnly: true
+  #    - name: cert-config-map
+  #      subPath: ca-certificates.crt
+  #      mountPath: "/etc/ssl/certs/ca-certificates.crt"
+  #      readOnly: true
   image:
     repository: "ictu/quality-time_api_server"
   env:
@@ -90,7 +90,7 @@ www:
         - NET_BIND_SERVICE
       drop:
         - ALL
-  # -- When www.deployProxy is false the quality-time_proxy is not used and ingress is pointed directly to the backend api and frontend.
+  # -- When www.deployProxy is false the quality-time_proxy is not used and ingress is pointed directly to the backend api and frontend. Note that this breaks PDF-exports. See https://github.com/ICTU/quality-time/issues/13065.
   deployProxy: true
   image:
     repository: "ictu/quality-time_proxy"
