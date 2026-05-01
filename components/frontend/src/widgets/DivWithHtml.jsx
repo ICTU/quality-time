@@ -11,7 +11,7 @@ export function DivWithHtml({ children }) {
     // Keep track of whether the div is overflown, so the resize handle can be hidden when not needed
     const [overflown, setOverflown] = useState(false)
     useLayoutEffect(() => {
-        setOverflown(ref.current.clientHeight < ref.current.scrollHeight) // eslint-disable-line @eslint-react/set-state-in-effect -- DOM measurement must happen after layout
+        setOverflown(ref.current.clientHeight < ref.current.scrollHeight)
     }, [children])
     return (
         <div

@@ -26,6 +26,8 @@ function measurementAttributeAsNumber(metric, measurement, field, dataModel) {
     return value === null ? null : Number(value)
 }
 
+const ZoomContainer = createContainer("selection", "zoom")
+
 export function TrendGraph({ metric, measurements, loading }) {
     const dataModel = useContext(DataModelContext)
     const [visibleDomain, setVisibleDomain] = useState({})
@@ -79,7 +81,6 @@ export function TrendGraph({ metric, measurements, loading }) {
         tickLabels: { fontSize: 8, fill: secondaryColor, fontFamily: fontFamily },
     }
     const toolTipStyle = { fill: bgcolor, fontSize: 7, fontFamily: fontFamily }
-    const ZoomContainer = createContainer("selection", "zoom")
     return (
         <>
             <VictoryChart
