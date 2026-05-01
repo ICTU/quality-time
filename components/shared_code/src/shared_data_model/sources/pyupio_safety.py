@@ -10,6 +10,8 @@ PYUPIO_SAFETY = Source(
     name="Pyupio Safety",
     description="Safety checks Python dependencies for known security vulnerabilities.",
     url=HttpUrl("https://github.com/pyupio/safety"),
+    deprecated=True,
+    deprecation_url=HttpUrl("https://github.com/ICTU/quality-time/issues/13077"),
     parameters=access_parameters(["security_warnings"], source_type="Safety report", source_type_format="JSON"),
     entities={
         "security_warnings": Entity(
