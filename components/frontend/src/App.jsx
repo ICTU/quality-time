@@ -80,7 +80,7 @@ class App extends Component {
 
     reload(json) {
         if (json) {
-            showURLAvailabilityMessages(json.availability, this.showwMessage)
+            showURLAvailabilityMessages(json.availability, (message) => this.showMessage(message))
             this.fieldsWithUrlAvailabilityErrors = json.availability
                 ? json.availability.filter((urlKey) => urlKey.status_code !== 200)
                 : null
