@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, LinearProgress, Snackbar, Stack } from "@mui/material"
 import { func, number } from "prop-types"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { SnackbarContext } from "../context/Snackbar"
 import { registeredURLSearchParams } from "../hooks/url_search_query"
@@ -28,28 +28,29 @@ SnackbarAlerts.propTypes = {
     showMessage: func,
 }
 
+const AUTO_HIDE_DURATION_MS = 20_000
+const PROGRESS_BAR_STEP_MS = 250
+
 function SnackbarAlert({ index, message, hideMessage }) {
     const [progress, setProgress] = useState(0)
-    const [hover, setHover] = useState(false)
-    const autoHideDuration = 20000
-    const step = 250
+    const hoverRef = useRef(false)
 
     useEffect(() => {
         const timer = setInterval(() => {
-            if (!hover) {
-                setProgress((oldProgress) => oldProgress + step)
+            if (!hoverRef.current) {
+                setProgress((oldProgress) => oldProgress + PROGRESS_BAR_STEP_MS)
             }
-        }, step)
+        }, PROGRESS_BAR_STEP_MS)
         return () => clearInterval(timer)
-    }, [hover])
+    }, [])
 
     useEffect(() => {
-        if (progress > autoHideDuration) {
+        if (progress > AUTO_HIDE_DURATION_MS) {
             hideMessage(message)
         }
     }, [progress, hideMessage, message])
 
-    if (progress > autoHideDuration || registeredURLSearchParams().get("hide_toasts") === "true") {
+    if (progress > AUTO_HIDE_DURATION_MS || registeredURLSearchParams().get("hide_toasts") === "true") {
         return null
     }
     return (
@@ -57,9 +58,12 @@ function SnackbarAlert({ index, message, hideMessage }) {
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             message={message}
             open={true}
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-            resumeHideDuration={autoHideDuration - progress}
+            onMouseEnter={() => {
+                hoverRef.current = true
+            }}
+            onMouseLeave={() => {
+                hoverRef.current = false
+            }}
             sx={{ bottom: { sm: 20 + 100 * index } }}
             slotProps={{
                 clickAwayListener: {
@@ -81,7 +85,7 @@ function SnackbarAlert({ index, message, hideMessage }) {
                     <LinearProgress
                         aria-label="Seconds left until hiding notification"
                         color={message.severity}
-                        value={Math.min(100, (100 * progress) / autoHideDuration)}
+                        value={Math.min(100, (100 * progress) / AUTO_HIDE_DURATION_MS)}
                         variant="determinate"
                     />
                 </Stack>
@@ -90,7 +94,7 @@ function SnackbarAlert({ index, message, hideMessage }) {
     )
 }
 SnackbarAlert.propTypes = {
-    hideMessage: func,
-    index: number,
-    message: snackbarMessagePropType,
+    hideMessage: func.isRequired,
+    index: number.isRequired,
+    message: snackbarMessagePropType.isRequired,
 }

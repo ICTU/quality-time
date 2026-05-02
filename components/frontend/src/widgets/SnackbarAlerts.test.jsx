@@ -59,18 +59,18 @@ it("hides messages immediately if messages should not be shown at all", () => {
 
 it("does not hide a message when hovering it", async () => {
     const hideMessage = vi.fn()
+    vi.useFakeTimers()
     renderSnackbarAlerts({ hideMessage: hideMessage })
     fireEvent.mouseEnter(screen.getByRole("alert"))
-    vi.useFakeTimers()
     await act(async () => await vi.advanceTimersByTimeAsync(50000))
     expect(hideMessage).not.toHaveBeenCalled()
 })
 
 it("does hide message after hovering it", async () => {
     const hideMessage = vi.fn()
+    vi.useFakeTimers()
     renderSnackbarAlerts({ hideMessage: hideMessage })
     fireEvent.mouseEnter(screen.getByRole("alert"))
-    vi.useFakeTimers()
     await act(async () => await vi.advanceTimersByTimeAsync(10000))
     fireEvent.mouseLeave(screen.getByRole("alert"))
     await act(async () => await vi.advanceTimersByTimeAsync(50000))
