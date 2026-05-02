@@ -260,9 +260,9 @@ DragHandleButton.propTypes = {
 }
 
 export function SubjectTableRow({
-    changedFields,
     columnsToHide,
     dates,
+    fieldsWithUrlAvailabilityErrors,
     handleSort,
     index,
     lastIndex,
@@ -310,7 +310,7 @@ export function SubjectTableRow({
             color={nrDates === 1 ? metric.status || "unknown" : ""}
             details={
                 <MetricDetails
-                    changedFields={changedFields}
+                    fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
                     isFirstMetric={index === 0}
                     isLastMetric={index === lastIndex}
                     metricUuid={metricUuid}
@@ -432,9 +432,9 @@ export function SubjectTableRow({
     )
 }
 SubjectTableRow.propTypes = {
-    changedFields: stringsPropType,
     columnsToHide: stringsPropType,
     dates: datesPropType,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     handleSort: func,
     index: number,
     lastIndex: number,

@@ -20,8 +20,8 @@ import { SubjectTableFooter } from "./SubjectTableFooter"
 import { SubjectTableHeader } from "./SubjectTableHeader"
 
 export function SubjectTable({
-    changedFields,
     dates,
+    fieldsWithUrlAvailabilityErrors,
     handleSort,
     measurements,
     metricEntries,
@@ -47,9 +47,9 @@ export function SubjectTable({
                     settings={settings}
                 />
                 <SubjectTableBody
-                    changedFields={changedFields}
-                    dates={dates}
                     columnsToHide={columnsToHide}
+                    dates={dates}
+                    fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
                     handleSort={handleSort}
                     measurements={measurements}
                     metricEntries={metricEntries}
@@ -78,8 +78,8 @@ export function SubjectTable({
     )
 }
 SubjectTable.propTypes = {
-    changedFields: stringsPropType,
     dates: datesPropType,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     handleSort: func,
     measurements: measurementsPropType,
     metricEntries: array,

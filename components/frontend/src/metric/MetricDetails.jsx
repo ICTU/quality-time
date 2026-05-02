@@ -150,7 +150,7 @@ fetchMeasurements.propTypes = {
 }
 
 export function MetricDetails({
-    changedFields,
+    fieldsWithUrlAvailabilityErrors,
     isFirstMetric,
     isLastMetric,
     metricUuid,
@@ -193,7 +193,7 @@ export function MetricDetails({
             subject={subject}
         />,
         <Sources
-            changedFields={changedFields}
+            fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
             key="2"
             measurement={metric.latest_measurement}
             metric={metric}
@@ -259,7 +259,7 @@ export function MetricDetails({
     )
 }
 MetricDetails.propTypes = {
-    changedFields: stringsPropType,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     isFirstMetric: bool,
     isLastMetric: bool,
     metricUuid: string,

@@ -23,9 +23,9 @@ import {
 import { getReportsTags, getReportTags, getUserPermissions } from "./utils"
 
 export function AppUI({
-    changedFields,
     dataModel,
     email,
+    fieldsWithUrlAvailabilityErrors,
     handleDateChange,
     lastUpdate,
     loading,
@@ -87,8 +87,8 @@ export function AppUI({
             <PermissionsContext value={userPermissions}>
                 <DataModelContext value={dataModel}>
                     <PageContent
-                        changedFields={changedFields}
                         currentReport={currentReport}
+                        fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
                         handleSort={handleSort}
                         lastUpdate={lastUpdate}
                         loading={loading}
@@ -109,9 +109,9 @@ export function AppUI({
     )
 }
 AppUI.propTypes = {
-    changedFields: stringsPropType,
     dataModel: object,
     email: string,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     handleDateChange: func,
     lastUpdate: datePropType,
     loading: bool,

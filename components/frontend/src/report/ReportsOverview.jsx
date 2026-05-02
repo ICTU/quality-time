@@ -52,8 +52,8 @@ ReportsOverviewButtonRow.propTypes = {
 }
 
 export function ReportsOverview({
-    changedFields,
     dates,
+    fieldsWithUrlAvailabilityErrors,
     handleSort,
     lastUpdate,
     measurements,
@@ -92,7 +92,7 @@ export function ReportsOverview({
             />
             <Subjects
                 atReportsOverview={true}
-                changedFields={changedFields}
+                fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
                 dates={dates}
                 handleSort={handleSort}
                 measurements={measurements}
@@ -107,8 +107,8 @@ export function ReportsOverview({
     )
 }
 ReportsOverview.propTypes = {
-    changedFields: stringsPropType,
     dates: datesPropType,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     handleSort: func,
     lastUpdate: datePropType,
     measurements: measurementsPropType,
