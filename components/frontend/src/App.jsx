@@ -8,26 +8,21 @@ import { Component } from "react"
 
 import { login } from "./api/auth"
 import { getDataModel } from "./api/datamodel"
-import { nrMeasurementsApi } from "./api/measurement"
+import { createNrMeasurementsEventSource } from "./api/measurement"
 import { getReport, getReportsOverview } from "./api/report"
 import { AppUI } from "./AppUI"
-import { registeredURLSearchParams } from "./hooks/url_search_query"
+import { registeredURLSearchParams, toSearchString } from "./hooks/url_search_query"
 import { showURLAvailabilityMessages } from "./messages"
+import { clearStoredSession, loadStoredSession, storeSession } from "./session_storage"
 import { theme } from "./theme"
-import { isValidISODate, toISODateStringInCurrentTZ } from "./utils"
+import { endOfDayFromISODateString, reportUuidFromPath, toISODateStringInCurrentTZ } from "./utils"
 import { SnackbarAlerts } from "./widgets/SnackbarAlerts"
 
 class App extends Component {
     constructor(props) {
         super(props)
-        const pathname = history.location.pathname
-        const reportUuid = decodeURI(pathname.slice(1, pathname.length))
-        const reportDateISOString = registeredURLSearchParams().get("report_date") || ""
-        let reportDate = null
-        if (isValidISODate(reportDateISOString)) {
-            reportDate = new Date(reportDateISOString)
-            reportDate.setHours(23, 59, 59)
-        }
+        const reportUuid = reportUuidFromPath(history.location.pathname)
+        const reportDate = endOfDayFromISODateString(registeredURLSearchParams().get("report_date") || "")
         this.state = {
             dataModel: {},
             lastUpdate: new Date(),
@@ -47,8 +42,7 @@ class App extends Component {
 
     onHistory({ location, action }) {
         if (action === Action.Pop) {
-            const pathname = location.pathname
-            const reportUuid = pathname.slice(1, pathname.length)
+            const reportUuid = reportUuidFromPath(location.pathname)
             this.setState({ reportUuid: reportUuid, loading: true }, () => this.reload())
         }
     }
@@ -153,8 +147,7 @@ class App extends Component {
             parsed.delete("report_date")
             date = null
         }
-        const search = parsed.toString().replaceAll("%2C", ",") // No need to encode commas
-        history.replace({ search: search.length > 0 ? "?" + search : "" })
+        history.replace({ search: toSearchString(parsed) })
         this.setState({ reportDate: date, loading: true }, () => this.reload())
     }
 
@@ -171,40 +164,38 @@ class App extends Component {
     }
 
     historyPush(target) {
-        const search = registeredURLSearchParams().toString().replaceAll("%2C", ",") // No need to encode commas
-        history.push(target + (search.length > 0 ? "?" + search : ""))
+        history.push(target + toSearchString(registeredURLSearchParams()))
     }
 
     connectToNrMeasurementsEventSource() {
-        this.source = new EventSource(nrMeasurementsApi)
-        this.source.addEventListener("init", (message) => {
-            const newNrMeasurements = Number(message.data)
-            if (this.state.nrMeasurementsStreamConnected) {
-                this.setState({ nrMeasurements: newNrMeasurements })
-            } else {
+        this.source = createNrMeasurementsEventSource({
+            onInit: (newNrMeasurements) => {
+                if (this.state.nrMeasurementsStreamConnected) {
+                    this.setState({ nrMeasurements: newNrMeasurements })
+                } else {
+                    this.showMessage({
+                        severity: "success",
+                        title: "Connected to server",
+                        description: "Successfully reconnected to server",
+                    })
+                    this.setState({ nrMeasurements: newNrMeasurements, nrMeasurementsStreamConnected: true }, () =>
+                        this.reload(),
+                    )
+                }
+            },
+            onDelta: (newNrMeasurements) => {
+                if (newNrMeasurements !== this.state.nrMeasurements) {
+                    this.setState({ nrMeasurements: newNrMeasurements }, () => this.reload())
+                }
+            },
+            onError: () => {
                 this.showMessage({
-                    severity: "success",
-                    title: "Connected to server",
-                    description: "Successfully reconnected to server",
+                    severity: "error",
+                    title: "Server unreachable",
+                    description: "Trying to reconnect to server...",
                 })
-                this.setState({ nrMeasurements: newNrMeasurements, nrMeasurementsStreamConnected: true }, () =>
-                    this.reload(),
-                )
-            }
-        })
-        this.source.addEventListener("delta", (message) => {
-            const newNrMeasurements = Number(message.data)
-            if (newNrMeasurements !== this.state.nrMeasurements) {
-                this.setState({ nrMeasurements: newNrMeasurements }, () => this.reload())
-            }
-        })
-        this.source.addEventListener("error", () => {
-            this.showMessage({
-                severity: "error",
-                title: "Server unreachable",
-                description: "Trying to reconnect to server...",
-            })
-            this.setState({ nrMeasurementsStreamConnected: false })
+                this.setState({ nrMeasurementsStreamConnected: false })
+            },
         })
     }
 
@@ -228,28 +219,17 @@ class App extends Component {
     }
 
     initUserSession() {
-        // Check if there is a session expiration datetime in the local storage. If so, restore the session as long as
-        // it has not expired. Otherwise, nothing needs to be done.
-        const sessionExpirationDateTimeISOString = localStorage.getItem("session_expiration_datetime")
-        if (sessionExpirationDateTimeISOString) {
-            const sessionExpirationDateTime = new Date(sessionExpirationDateTimeISOString)
-            if (sessionExpirationDateTime < new Date()) {
-                // The session expired while the user was away. Reset it and notify the user of the expired session.
-                this.onUserSessionExpiration()
-            } else {
-                // Session is still active, restore it from local storage.
-                this.setUserSession(
-                    localStorage.getItem("user"),
-                    localStorage.getItem("email"),
-                    sessionExpirationDateTime,
-                )
-            }
-        } else {
+        const stored = loadStoredSession()
+        if (!stored) {
             this.showMessage({
                 severity: "info",
                 title: "Not logged in",
                 description: "Editing is not possible until you are logged in",
             })
+        } else if (stored.sessionExpirationDateTime < new Date()) {
+            this.onUserSessionExpiration()
+        } else {
+            this.setUserSession(stored.user, stored.email, stored.sessionExpirationDateTime)
         }
     }
 
@@ -257,18 +237,14 @@ class App extends Component {
         if (username) {
             const emailAddress = email?.includes("@") ? email : null
             this.setState({ user: username, email: emailAddress })
-            localStorage.setItem("user", username)
-            localStorage.setItem("email", emailAddress)
-            localStorage.setItem("session_expiration_datetime", sessionExpirationDateTime.toISOString())
+            storeSession(username, emailAddress, sessionExpirationDateTime)
             this.sessionExpirationTimeoutId = setTimeout(
                 () => this.onUserSessionExpiration(),
                 sessionExpirationDateTime - Date.now(),
             )
         } else {
             this.setState({ user: null, email: null })
-            localStorage.removeItem("user")
-            localStorage.removeItem("email")
-            localStorage.removeItem("session_expiration_datetime")
+            clearStoredSession()
             clearTimeout(this.sessionExpirationTimeoutId)
         }
     }

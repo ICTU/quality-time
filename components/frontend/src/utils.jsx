@@ -420,12 +420,25 @@ export function days(timeInMs) {
     return Math.round(timeInMs / MILLISECONDS_PER_DAY)
 }
 
+export function reportUuidFromPath(pathname) {
+    return decodeURI(pathname.slice(1))
+}
+
 export function isValidISODate(string) {
     if (/^\d{4}-\d{2}-\d{2}$/.test(string)) {
         const millisecondsSinceEpoch = Date.parse(string)
         return !Number.isNaN(millisecondsSinceEpoch)
     }
     return false
+}
+
+export function endOfDayFromISODateString(isoString) {
+    if (!isValidISODate(isoString)) {
+        return null
+    }
+    const date = new Date(isoString)
+    date.setHours(23, 59, 59)
+    return date
 }
 
 export function toISODateStringInCurrentTZ(date) {

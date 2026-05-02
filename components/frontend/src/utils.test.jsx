@@ -8,6 +8,7 @@ import {
     copyAllComputedStyles,
     createDragGhost,
     DOCUMENTATION_URL,
+    endOfDayFromISODateString,
     getMetricResponseDeadline,
     getMetricResponseOverrun,
     getMetricTags,
@@ -26,6 +27,7 @@ import {
     nrMetricsInReport,
     nrMetricsInReports,
     referenceDocumentationURL,
+    reportUuidFromPath,
     scaledNumber,
     sortWithLocaleCompare,
     sum,
@@ -43,6 +45,40 @@ const dataModel = {
 const metric = {
     type: "metric_type",
 }
+
+it("returns the report uuid from a pathname", () => {
+    expect(reportUuidFromPath("/abc-123")).toBe("abc-123")
+})
+
+it("returns an empty string for the root path", () => {
+    expect(reportUuidFromPath("/")).toBe("")
+})
+
+it("decodes percent-encoded characters in the pathname", () => {
+    expect(reportUuidFromPath("/foo%20bar")).toBe("foo bar")
+})
+
+it("parses a valid ISO date as end-of-day in the current timezone", () => {
+    const date = endOfDayFromISODateString("2020-03-13")
+    expect(date.getFullYear()).toBe(2020)
+    expect(date.getMonth()).toBe(2)
+    expect(date.getDate()).toBe(13)
+    expect(date.getHours()).toBe(23)
+    expect(date.getMinutes()).toBe(59)
+    expect(date.getSeconds()).toBe(59)
+})
+
+it("returns null for an empty report date string", () => {
+    expect(endOfDayFromISODateString("")).toBeNull()
+})
+
+it("returns null for a malformed report date string", () => {
+    expect(endOfDayFromISODateString("not-a-date")).toBeNull()
+})
+
+it("returns null for a syntactically valid but impossible report date", () => {
+    expect(endOfDayFromISODateString("2020-13-99")).toBeNull()
+})
 
 it("capitalizes strings", () => {
     expect(capitalize("")).toBe("")
