@@ -15,6 +15,11 @@ export function registeredURLSearchParams() {
     return parsed
 }
 
+export function toSearchString(params) {
+    const search = params.toString().replaceAll("%2C", ",") // No need to encode commas
+    return search.length > 0 ? "?" + search : ""
+}
+
 function equals(value1, value2) {
     return JSON.stringify(value1) === JSON.stringify(value2)
 }
@@ -30,8 +35,7 @@ function setURLSearchQuery(key, newValue, defaultValue, setValue) {
     } else {
         parsed.set(key, newValue)
     }
-    const search = parsed.toString().replaceAll("%2C", ",") // No need to encode commas
-    history.replace({ search: search.length > 0 ? "?" + search : "" })
+    history.replace({ search: toSearchString(parsed) })
     setValue(newValue)
 }
 

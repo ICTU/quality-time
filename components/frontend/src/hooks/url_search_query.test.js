@@ -3,6 +3,7 @@ import history from "history/browser"
 
 import {
     registeredURLSearchParams,
+    toSearchString,
     useArrayURLSearchQuery,
     useBooleanURLSearchQuery,
     useIntegerMappingURLSearchQuery,
@@ -248,4 +249,16 @@ it("returns whether the mapping includes or excludes a key", () => {
     expect(result.current.excludes("key")).toBeFalsy()
     expect(result.current.includes("other key")).toBeFalsy()
     expect(result.current.excludes("other key")).toBeTruthy()
+})
+
+it("returns an empty search string for empty params", () => {
+    expect(toSearchString(new URLSearchParams())).toBe("")
+})
+
+it("returns a search string with leading question mark for non-empty params", () => {
+    expect(toSearchString(new URLSearchParams({ a: "1" }))).toBe("?a=1")
+})
+
+it("does not encode commas in search param values", () => {
+    expect(toSearchString(new URLSearchParams({ tags: "x,y,z" }))).toBe("?tags=x,y,z")
 })
