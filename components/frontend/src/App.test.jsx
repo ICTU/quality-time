@@ -129,9 +129,8 @@ it("reloads on a browser pop but not on a push", async () => {
     history.push("/some-uuid")
     const callsAfterPush = fetchServerApi.fetchServerApi.mock.calls.length
     history.back()
-    await act(async () => await new Promise((resolve) => setTimeout(resolve, 10)))
+    await vi.waitFor(() => expect(fetchServerApi.fetchServerApi.mock.calls.length).toBeGreaterThan(callsAfterPush))
     expect(callsAfterPush).toBe(callsAfterMount)
-    expect(fetchServerApi.fetchServerApi.mock.calls.length).toBeGreaterThan(callsAfterPush)
 })
 
 it("handles the nr of measurements event source", async () => {

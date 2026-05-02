@@ -12,6 +12,7 @@ import { nrMeasurementsApi } from "./api/measurement"
 import { getReport, getReportsOverview } from "./api/report"
 import { AppUI } from "./AppUI"
 import { registeredURLSearchParams } from "./hooks/url_search_query"
+import { showURLAvailabilityMessages } from "./messages"
 import { theme } from "./theme"
 import { isValidISODate, toISODateStringInCurrentTZ } from "./utils"
 import { SnackbarAlerts } from "./widgets/SnackbarAlerts"
@@ -79,22 +80,7 @@ class App extends Component {
 
     reload(json) {
         if (json) {
-            json.availability?.forEach(({ status_code: statusCode, reason }) => {
-                if (statusCode === 200) {
-                    this.showMessage({
-                        severity: "success",
-                        title: "URL connection OK",
-                        description: "URL was accessed without errors",
-                    })
-                } else {
-                    const statusCodeText = statusCode >= 0 ? "[HTTP status code " + statusCode + "] " : ""
-                    this.showMessage({
-                        severity: "warning",
-                        title: "URL connection error",
-                        description: statusCodeText + reason,
-                    })
-                }
-            })
+            showURLAvailabilityMessages(json.availability, this.showwMessage)
             this.fieldsWithUrlAvailabilityErrors = json.availability
                 ? json.availability.filter((urlKey) => urlKey.status_code !== 200)
                 : null
