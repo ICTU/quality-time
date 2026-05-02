@@ -26,9 +26,9 @@ import { createDragGhost } from "../utils"
 import { SubjectTableRow } from "./SubjectTableRow"
 
 export function SubjectTableBody({
-    changedFields,
     columnsToHide,
     dates,
+    fieldsWithUrlAvailabilityErrors,
     handleSort,
     measurements,
     metricEntries,
@@ -119,9 +119,9 @@ export function SubjectTableBody({
                         </tr>
                     )}
                     <SubjectTableRow
-                        changedFields={changedFields}
-                        dates={dates}
                         columnsToHide={columnsToHide}
+                        dates={dates}
+                        fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
                         handleSort={handleSort}
                         index={index}
                         key={metricUuid}
@@ -146,9 +146,9 @@ export function SubjectTableBody({
     )
 }
 SubjectTableBody.propTypes = {
-    changedFields: stringsPropType,
     columnsToHide: stringsPropType,
     dates: datesPropType,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     handleSort: func,
     measurements: measurementsPropType,
     metricEntries: array,

@@ -27,9 +27,11 @@ import { InfoMessage, WarningMessage } from "../widgets/WarningMessage"
 import { SourceParameters } from "./SourceParameters"
 import { SourceType } from "./SourceType"
 
-function selectSourcesParameterKeys(changedFields, sourceUuid) {
-    return changedFields
-        ? changedFields.filter((field) => field.source_uuid === sourceUuid).map((field) => field.parameter_key)
+function selectSourcesParameterKeys(fieldsWithUrlAvailabilityErrors, sourceUuid) {
+    return fieldsWithUrlAvailabilityErrors
+        ? fieldsWithUrlAvailabilityErrors
+              .filter((field) => field.source_uuid === sourceUuid)
+              .map((field) => field.parameter_key)
         : []
 }
 
@@ -59,9 +61,9 @@ SourceButtonRow.propTypes = {
 }
 
 function Parameters({
-    changedFields,
     configError,
     connectionError,
+    fieldsWithUrlAvailabilityErrors,
     infoMessage,
     metric,
     parseError,
@@ -125,7 +127,7 @@ function Parameters({
             </Grid>
             <Grid size={{ xs: 1, sm: 2, md: 2 }}>
                 <SourceParameters
-                    changedParamKeys={selectSourcesParameterKeys(changedFields, sourceUuid)}
+                    changedParamKeys={selectSourcesParameterKeys(fieldsWithUrlAvailabilityErrors, sourceUuid)}
                     metric={metric}
                     reload={reload}
                     report={report}
@@ -137,9 +139,9 @@ function Parameters({
     )
 }
 Parameters.propTypes = {
-    changedFields: stringsPropType,
     configError: oneOfType([object, string]),
     connectionError: string,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     infoMessage: string,
     metric: metricPropType,
     parseError: string,
@@ -150,7 +152,7 @@ Parameters.propTypes = {
 }
 
 export function Source({
-    changedFields,
+    fieldsWithUrlAvailabilityErrors,
     firstSource,
     lastSource,
     measurementSource,
@@ -212,6 +214,7 @@ export function Source({
                 uuid={sourceUuid}
             >
                 <Parameters
+                    fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
                     infoMessage={infoMessage}
                     metric={metric}
                     source={source}
@@ -220,7 +223,6 @@ export function Source({
                     parseError={parseError}
                     configError={configError}
                     report={report}
-                    changedFields={changedFields}
                     reload={reload}
                 />
                 <ChangeLog sourceUuid={sourceUuid} timestamp={report.timestamp} />
@@ -235,7 +237,7 @@ export function Source({
     )
 }
 Source.propTypes = {
-    changedFields: stringsPropType,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     firstSource: bool,
     lastSource: bool,
     measurementSource: measurementSourcePropType,

@@ -95,7 +95,7 @@ class App extends Component {
                     })
                 }
             })
-            this.changedFields = json.availability
+            this.fieldsWithUrlAvailabilityErrors = json.availability
                 ? json.availability.filter((urlKey) => urlKey.status_code !== 200)
                 : null
             this.checkSession(json)
@@ -306,16 +306,16 @@ class App extends Component {
                     showMessage={(message) => this.showMessage(message)}
                 >
                     <AppUI
-                        changedFields={this.changedFields}
                         dataModel={this.state.dataModel}
                         email={this.state.email}
-                        openReportsOverview={() => this.openReportsOverview()}
+                        fieldsWithUrlAvailabilityErrors={this.fieldsWithUrlAvailabilityErrors}
                         handleDateChange={(date) => this.handleDateChange(date)}
                         key={this.state.reportUuid} // Make sure the AppUI is refreshed whenever the current report changes
                         lastUpdate={this.state.lastUpdate}
                         loading={this.state.loading}
                         nrMeasurements={this.state.nrMeasurements}
                         openReport={(reportUuid) => this.openReport(reportUuid)}
+                        openReportsOverview={() => this.openReportsOverview()}
                         reload={(json) => this.reload(json)}
                         reportDate={this.state.reportDate}
                         reportUuid={this.state.reportUuid}

@@ -13,7 +13,7 @@ import { Subject } from "./Subject"
 
 export function Subjects({
     atReportsOverview,
-    changedFields,
+    fieldsWithUrlAvailabilityErrors,
     dates,
     handleSort,
     measurements,
@@ -36,7 +36,7 @@ export function Subjects({
             subjects.push(
                 <Subject
                     atReportsOverview={atReportsOverview}
-                    changedFields={changedFields}
+                    fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
                     dates={dates}
                     firstSubject={index === 0}
                     handleSort={handleSort}
@@ -57,7 +57,7 @@ export function Subjects({
 }
 Subjects.propTypes = {
     atReportsOverview: bool,
-    changedFields: stringsPropType,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     dates: datesPropType,
     handleSort: func,
     measurements: measurementsPropType,

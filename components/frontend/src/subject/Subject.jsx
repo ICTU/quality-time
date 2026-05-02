@@ -131,8 +131,8 @@ subjectIsEmptyDueToFilters.propTypes = {
 
 export function Subject({
     atReportsOverview,
-    changedFields,
     dates,
+    fieldsWithUrlAvailabilityErrors,
     firstSubject,
     handleSort,
     lastSubject,
@@ -177,8 +177,8 @@ export function Subject({
             <CommentSegment comment={subject.comment} />
             <Divider sx={{ padding: "0px" }} />
             <SubjectTable
-                changedFields={changedFields}
                 dates={dates}
+                fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
                 handleSort={handleSort}
                 measurements={measurements}
                 metricEntries={metricEntries}
@@ -195,8 +195,8 @@ export function Subject({
 }
 Subject.propTypes = {
     atReportsOverview: bool,
-    changedFields: stringsPropType,
     dates: datesPropType,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     firstSubject: bool,
     handleSort: func,
     lastSubject: bool,

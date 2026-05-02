@@ -27,8 +27,8 @@ function navigateToSubject(event, subjectUuid) {
 }
 
 export function Report({
-    changedFields,
     dates,
+    fieldsWithUrlAvailabilityErrors,
     handleSort,
     lastUpdate,
     measurements,
@@ -78,7 +78,7 @@ export function Report({
             </Paper>
             <Subjects
                 atReportsOverview={false}
-                changedFields={changedFields}
+                fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
                 dates={dates}
                 handleSort={handleSort}
                 measurements={measurements}
@@ -93,8 +93,8 @@ export function Report({
     )
 }
 Report.propTypes = {
-    changedFields: stringsPropType,
     dates: datesPropType,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     handleSort: func,
     lastUpdate: datePropType,
     measurements: measurementsPropType,

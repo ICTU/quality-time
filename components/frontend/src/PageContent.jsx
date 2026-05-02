@@ -34,8 +34,8 @@ function getColumnDates(reportDate, dateInterval, dateOrder, nrDates = 1) {
 }
 
 export function PageContent({
-    changedFields,
     currentReport,
+    fieldsWithUrlAvailabilityErrors,
     handleSort,
     lastUpdate,
     loading,
@@ -87,7 +87,7 @@ export function PageContent({
         )
     } else {
         const commonProps = {
-            changedFields: changedFields,
+            fieldsWithUrlAvailabilityErrors: fieldsWithUrlAvailabilityErrors,
             dates: dates,
             handleSort: handleSort,
             measurements: measurements,
@@ -139,8 +139,8 @@ export function PageContent({
     )
 }
 PageContent.propTypes = {
-    changedFields: stringsPropType,
     currentReport: reportPropType,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     handleSort: func,
     lastUpdate: datePropType,
     loading: bool,

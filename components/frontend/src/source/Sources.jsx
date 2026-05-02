@@ -60,7 +60,7 @@ ButtonSegment.propTypes = {
 }
 
 function SourceSegment({
-    changedFields,
+    fieldsWithUrlAvailabilityErrors,
     index,
     lastIndex,
     measurementSource,
@@ -73,6 +73,7 @@ function SourceSegment({
     return (
         <Box id={sourceUuid} sx={{ border: 1, borderColor: "divider", padding: "8px" }}>
             <Source
+                fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
                 firstSource={index === 0}
                 lastSource={index === lastIndex}
                 metric={metric}
@@ -81,13 +82,12 @@ function SourceSegment({
                 report={report}
                 settings={settings}
                 sourceUuid={sourceUuid}
-                changedFields={changedFields}
             />
         </Box>
     )
 }
 SourceSegment.propTypes = {
-    changedFields: stringsPropType,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     index: number,
     lastIndex: number,
     measurementSource: measurementSourcePropType,
@@ -110,7 +110,16 @@ export function reloadAfterMassEditSource(json, reload, showMessage) {
     reload(json)
 }
 
-export function Sources({ reports, report, metric, metricUuid, measurement, changedFields, reload, settings }) {
+export function Sources({
+    fieldsWithUrlAvailabilityErrors,
+    reports,
+    report,
+    metric,
+    metricUuid,
+    measurement,
+    reload,
+    settings,
+}) {
     const dataModel = useContext(DataModelContext)
     const showMessageRef = useRef(useContext(SnackbarContext))
     const measurementSources = measurement?.sources ?? []
@@ -128,7 +137,7 @@ export function Sources({ reports, report, metric, metricUuid, measurement, chan
                 index={index}
                 lastIndex={lastIndex}
                 measurementSource={measurementSources.find((source) => source.source_uuid === sourceUuid)}
-                changedFields={changedFields}
+                fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
                 reload={(json) => reloadAfterMassEditSource(json, reload, showMessageRef.current)}
                 settings={settings}
             />
@@ -146,7 +155,7 @@ export function Sources({ reports, report, metric, metricUuid, measurement, chan
     )
 }
 Sources.propTypes = {
-    changedFields: stringsPropType,
+    fieldsWithUrlAvailabilityErrors: stringsPropType,
     reports: reportsPropType,
     report: reportPropType,
     metric: metricPropType,
