@@ -123,6 +123,17 @@ it("handles a date reset", async () => {
     expect(reportDateButton().textContent).toMatch(/today/)
 })
 
+it("reloads on a browser pop but not on a push", async () => {
+    render(<App />)
+    const callsAfterMount = fetchServerApi.fetchServerApi.mock.calls.length
+    history.push("/some-uuid")
+    const callsAfterPush = fetchServerApi.fetchServerApi.mock.calls.length
+    history.back()
+    await act(async () => await new Promise((resolve) => setTimeout(resolve, 10)))
+    expect(callsAfterPush).toBe(callsAfterMount)
+    expect(fetchServerApi.fetchServerApi.mock.calls.length).toBeGreaterThan(callsAfterPush)
+})
+
 it("handles the nr of measurements event source", async () => {
     const eventListeners = {}
     global.EventSource = function () {
