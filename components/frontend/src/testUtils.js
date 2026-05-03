@@ -50,6 +50,14 @@ export function expectNoLabelText(text) {
     expect(screen.queryAllByLabelText(text).length).toBe(0)
 }
 
+export function expectAltText(text, count = 1) {
+    expect(screen.getAllByAltText(text).length).toBe(count)
+}
+
+export function expectNoAltText(text) {
+    expect(screen.queryAllByAltText(text).length).toBe(0)
+}
+
 export function clickText(text, index) {
     // Click the element containing the text. Returns the element.
     // If index is provided, assume multiple elements match and click the element with the given index
