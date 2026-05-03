@@ -4,7 +4,9 @@ import history from "history/browser"
 import { vi } from "vitest"
 
 import * as auth from "./api/auth"
+import * as datamodel from "./api/datamodel"
 import * as fetchServerApi from "./api/fetch_server_api"
+import * as report from "./api/report"
 import App from "./App"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 import {
@@ -15,6 +17,7 @@ import {
     expectLabelText,
     expectNoAccessibilityViolations,
     expectNoAltText,
+    expectNoLabelText,
     expectNoText,
     expectText,
     expectTextAfterWait,
@@ -176,6 +179,30 @@ it("reloads on a browser pop but not on a push", async () => {
     history.back() // pops back to /first-uuid, which differs from the mount-time reportUuid ""
     await vi.waitFor(() => expect(fetchServerApi.fetchServerApi.mock.calls.length).toBeGreaterThan(callsAfterPush))
     expect(callsAfterPush).toBe(callsAfterMount)
+})
+
+it("loads data and clears the loading spinner on a successful fetch", async () => {
+    vi.spyOn(datamodel, "getDataModel").mockResolvedValue({ ok: true })
+    vi.spyOn(report, "getReportsOverview").mockResolvedValue({})
+    vi.spyOn(report, "getReport").mockResolvedValue({ ok: true, reports: [] })
+    render(<App />)
+    await vi.waitFor(() => expectNoLabelText(/Loading/))
+})
+
+it("shows a server unreachable toast when a fetched response is not ok", async () => {
+    vi.spyOn(datamodel, "getDataModel").mockResolvedValue({ ok: false })
+    vi.spyOn(report, "getReportsOverview").mockResolvedValue({})
+    vi.spyOn(report, "getReport").mockResolvedValue({ ok: true, reports: [] })
+    render(<App />)
+    await expectTextAfterWait("Server unreachable")
+})
+
+it("shows a server unreachable toast when a fetch rejects", async () => {
+    vi.spyOn(datamodel, "getDataModel").mockRejectedValue(new Error("network down"))
+    vi.spyOn(report, "getReportsOverview").mockResolvedValue({})
+    vi.spyOn(report, "getReport").mockResolvedValue({ ok: true, reports: [] })
+    render(<App />)
+    await expectTextAfterWait("Server unreachable")
 })
 
 it("handles the nr of measurements event source", async () => {

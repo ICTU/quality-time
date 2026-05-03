@@ -4,7 +4,7 @@ import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 import { Action } from "history"
 import history from "history/browser"
-import { Component } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import { login } from "./api/auth"
 import { getDataModel } from "./api/datamodel"
@@ -18,108 +18,151 @@ import { theme } from "./theme"
 import { endOfDayFromISODateString, reportUuidFromPath, toISODateStringInCurrentTZ } from "./utils"
 import { SnackbarAlerts } from "./widgets/SnackbarAlerts"
 
-class App extends Component {
-    constructor(props) {
-        super(props)
-        const reportUuid = reportUuidFromPath(history.location.pathname)
-        const reportDate = endOfDayFromISODateString(registeredURLSearchParams().get("report_date") || "")
-        this.state = {
-            dataModel: {},
-            lastUpdate: new Date(),
-            reports: [],
-            reportDate: reportDate,
-            reportUuid: reportUuid,
-            reportsOverview: {},
-            nrMeasurements: 0,
-            nrMeasurementsStreamConnected: true, // Assume initial connection will be successful
-            loading: true,
-            user: null,
-            email: null,
-            snackBarMessages: [],
+function historyPush(target) {
+    history.push(target + toSearchString(registeredURLSearchParams()))
+}
+
+export default function App() {
+    const [dataModel, setDataModel] = useState({})
+    const [lastUpdate, setLastUpdate] = useState(() => new Date())
+    const [reports, setReports] = useState([])
+    const [reportDate, setReportDate] = useState(() =>
+        endOfDayFromISODateString(registeredURLSearchParams().get("report_date") || ""),
+    )
+    const [reportUuid, setReportUuid] = useState(() => reportUuidFromPath(history.location.pathname))
+    const [reportsOverview, setReportsOverview] = useState({})
+    const [nrMeasurements, setNrMeasurements] = useState(0)
+    const [loading, setLoading] = useState(true)
+    const [user, setUser] = useState(null)
+    const [email, setEmail] = useState(null)
+    const [snackBarMessages, setSnackBarMessages] = useState([])
+
+    // Refs synced from state, for stable reads inside long-lived callbacks (mount-effect handlers, async fetches)
+    const reportUuidRef = useRef(reportUuid)
+    const reportDateRef = useRef(reportDate)
+    const nrMeasurementsRef = useRef(nrMeasurements)
+    useEffect(() => {
+        reportUuidRef.current = reportUuid
+        reportDateRef.current = reportDate
+        nrMeasurementsRef.current = nrMeasurements
+    })
+
+    // Refs not backed by state (opaque handles + non-rendered flags)
+    const sourceRef = useRef(null)
+    const sessionExpirationTimeoutRef = useRef(null)
+    const fieldsWithUrlAvailabilityErrorsRef = useRef(null)
+    const nrMeasurementsStreamConnectedRef = useRef(true) // Assume initial connection will be successful
+
+    function showMessage(message) {
+        setSnackBarMessages((messages) =>
+            messages.map((m) => JSON.stringify(m)).includes(JSON.stringify(message))
+                ? messages
+                : [...messages, message],
+        )
+    }
+
+    function hideMessage(message) {
+        setSnackBarMessages((messages) => messages.filter((m) => JSON.stringify(m) !== JSON.stringify(message)))
+    }
+
+    function setUserSession(username, emailArg, sessionExpirationDateTime) {
+        if (username) {
+            const emailAddress = emailArg?.includes("@") ? emailArg : null
+            setUser(username)
+            setEmail(emailAddress)
+            storeSession(username, emailAddress, sessionExpirationDateTime)
+            sessionExpirationTimeoutRef.current = setTimeout(
+                () => onUserSessionExpiration(),
+                sessionExpirationDateTime - Date.now(),
+            )
+        } else {
+            setUser(null)
+            setEmail(null)
+            clearStoredSession()
+            clearTimeout(sessionExpirationTimeoutRef.current)
         }
     }
 
-    componentDidMount() {
-        this.unlistenHistory = history.listen(({ location, action }) => {
-            if (action !== Action.Pop) return
-            this.setState({ reportUuid: reportUuidFromPath(location.pathname), loading: true })
+    function onUserSessionExpiration() {
+        setUserSession()
+        showMessage({
+            severity: "warning",
+            title: "Your session expired",
+            description: "Please log in to renew your session",
         })
-        this.loginForwardAuth()
-        this.initUserSession()
-        this.connectToNrMeasurementsEventSource()
-        this.fetchReports()
     }
 
-    componentDidUpdate(_prevProps, prevState) {
-        if (prevState.reportUuid !== this.state.reportUuid || prevState.reportDate !== this.state.reportDate) {
-            this.fetchReports()
-        }
-    }
-
-    componentWillUnmount() {
-        this.unlistenHistory()
-        this.source.close()
-    }
-
-    showMessage(message) {
-        if (!this.state.snackBarMessages.map((m) => JSON.stringify(m)).includes(JSON.stringify(message))) {
-            this.setState((state) => ({
-                snackBarMessages: [...state.snackBarMessages, message],
-            }))
-        }
-    }
-
-    hideMessage(message) {
-        this.setState((state) => ({
-            snackBarMessages: state.snackBarMessages.filter((m) => JSON.stringify(m) !== JSON.stringify(message)),
-        }))
-    }
-
-    processResponseJSON(json) {
-        showURLAvailabilityMessages(json.availability, (message) => this.showMessage(message))
-        this.fieldsWithUrlAvailabilityErrors = json.availability
-            ? json.availability.filter((urlKey) => urlKey.status_code !== 200)
-            : null
-        this.checkSession(json)
-        this.fetchReports()
-    }
-
-    fetchReports() {
-        const reportUuid = this.state.reportUuid
-        const reportDate = this.state.reportDate
+    function loginForwardAuth() {
         const showErrorMessage = (error) =>
-            this.showMessage({
+            showMessage({
+                severity: "error",
+                title: "Login with forward authentication failed",
+                description: `${error}`,
+            })
+        login("", "")
+            .then((json) => {
+                if (json.ok) {
+                    setUserSession(json.email, json.email, new Date(json.session_expiration_datetime))
+                    return true
+                }
+                return false
+            })
+            .catch(showErrorMessage)
+        return false
+    }
+
+    function initUserSession() {
+        const stored = loadStoredSession()
+        if (!stored) {
+            showMessage({
+                severity: "info",
+                title: "Not logged in",
+                description: "Editing is not possible until you are logged in",
+            })
+        } else if (stored.sessionExpirationDateTime < new Date()) {
+            onUserSessionExpiration()
+        } else {
+            setUserSession(stored.user, stored.email, stored.sessionExpirationDateTime)
+        }
+    }
+
+    const fetchReports = useCallback(() => {
+        const startReportUuid = reportUuidRef.current
+        const startReportDate = reportDateRef.current
+        const showErrorMessage = (error) =>
+            showMessage({
                 severity: "error",
                 title: "Server unreachable",
-                description: error ?? "Couldn't load data from the server",
+                description: error ? `${error}` : "Couldn't load data from the server",
             })
-        Promise.all([getDataModel(reportDate), getReportsOverview(reportDate), getReport(reportUuid, reportDate)])
-            .then(([dataModel, reportsOverview, reports]) => {
-                if (this.state.reportUuid !== reportUuid) {
+        Promise.all([
+            getDataModel(startReportDate),
+            getReportsOverview(startReportDate),
+            getReport(startReportUuid, startReportDate),
+        ])
+            .then(([newDataModel, newReportsOverview, newReports]) => {
+                if (reportUuidRef.current !== startReportUuid) {
                     return // User navigated to a different report or to the overview page, cancel update
                 }
-                if (dataModel.ok === false || reports.ok === false) {
+                if (newDataModel.ok === false || newReports.ok === false) {
                     showErrorMessage()
                 } else {
-                    const now = new Date()
-                    this.setState({
-                        dataModel: dataModel,
-                        lastUpdate: now,
-                        loading: false,
-                        reports: reports.reports || [],
-                        reportsOverview: reportsOverview,
-                    })
+                    setDataModel(newDataModel)
+                    setLastUpdate(new Date())
+                    setLoading(false)
+                    setReports(newReports.reports || [])
+                    setReportsOverview(newReportsOverview)
                 }
                 return null
             })
             .catch((error) => showErrorMessage(error))
-    }
+    }, [])
 
-    checkSession(json) {
+    function checkSession(json) {
         if (json.ok === false && json.status === 401) {
-            this.setUserSession()
-            if (this.loginForwardAuth() === false) {
-                this.showMessage({
+            setUserSession()
+            if (loginForwardAuth() === false) {
+                showMessage({
                     severity: "warning",
                     title: "Your session expired",
                     description: "Please log in to renew your session",
@@ -128,16 +171,25 @@ class App extends Component {
         }
     }
 
-    handleDateChange(date) {
+    function processResponseJSON(json) {
+        showURLAvailabilityMessages(json.availability, showMessage)
+        fieldsWithUrlAvailabilityErrorsRef.current = json.availability
+            ? json.availability.filter((urlKey) => urlKey.status_code !== 200)
+            : null
+        checkSession(json)
+        fetchReports()
+    }
+
+    function handleDateChange(date) {
         let parsed = registeredURLSearchParams()
         if (date && toISODateStringInCurrentTZ(date) < toISODateStringInCurrentTZ(new Date())) {
             // We're time traveling, set the report_date query parameter
             parsed.set("report_date", toISODateStringInCurrentTZ(date))
             const now = new Date()
             date.setHours(now.getHours(), now.getMinutes())
-            if (!this.state.reportDate) {
+            if (!reportDate) {
                 // We're time traveling from the present, warn the user
-                this.showMessage({
+                showMessage({
                     severity: "info",
                     title: "Historic information is read-only",
                     description: "Editing is not possible while you are viewing historic information",
@@ -149,150 +201,100 @@ class App extends Component {
             date = null
         }
         history.replace({ search: toSearchString(parsed) })
-        this.setState({ reportDate: date, loading: true })
+        setReportDate(date)
+        setLoading(true)
     }
 
-    openReportsOverview() {
+    function openReportsOverview() {
         if (history.location.pathname !== "/") {
-            this.historyPush("/")
-            this.setState({ reportUuid: "", loading: true })
+            historyPush("/")
+            setReportUuid("")
+            setLoading(true)
         }
     }
 
-    openReport(reportUuid) {
-        this.historyPush(encodeURI(reportUuid))
-        this.setState({ reportUuid: reportUuid, loading: true })
+    function openReport(uuid) {
+        historyPush(encodeURI(uuid))
+        setReportUuid(uuid)
+        setLoading(true)
     }
 
-    historyPush(target) {
-        history.push(target + toSearchString(registeredURLSearchParams()))
-    }
-
-    connectToNrMeasurementsEventSource() {
-        this.source = createNrMeasurementsEventSource({
+    // Mount-only effect: history listener, forward auth, session restore, EventSource subscription.
+    // The initial fetchReports happens via the reactive effect below (which fires on first render).
+    useEffect(() => {
+        const unlistenHistory = history.listen(({ location, action }) => {
+            if (action !== Action.Pop) return
+            setReportUuid(reportUuidFromPath(location.pathname))
+            setLoading(true)
+        })
+        loginForwardAuth()
+        initUserSession()
+        sourceRef.current = createNrMeasurementsEventSource({
             onInit: (newNrMeasurements) => {
-                if (this.state.nrMeasurementsStreamConnected) {
-                    this.setState({ nrMeasurements: newNrMeasurements })
+                if (nrMeasurementsStreamConnectedRef.current) {
+                    setNrMeasurements(newNrMeasurements)
                 } else {
-                    this.showMessage({
+                    showMessage({
                         severity: "success",
                         title: "Connected to server",
                         description: "Successfully reconnected to server",
                     })
-                    this.setState({ nrMeasurements: newNrMeasurements, nrMeasurementsStreamConnected: true }, () =>
-                        this.fetchReports(),
-                    )
+                    setNrMeasurements(newNrMeasurements)
+                    nrMeasurementsStreamConnectedRef.current = true
+                    fetchReports()
                 }
             },
             onDelta: (newNrMeasurements) => {
-                if (newNrMeasurements !== this.state.nrMeasurements) {
-                    this.setState({ nrMeasurements: newNrMeasurements }, () => this.fetchReports())
+                if (newNrMeasurements !== nrMeasurementsRef.current) {
+                    setNrMeasurements(newNrMeasurements)
+                    fetchReports()
                 }
             },
             onError: () => {
-                this.showMessage({
+                showMessage({
                     severity: "error",
                     title: "Server unreachable",
                     description: "Trying to reconnect to server...",
                 })
-                this.setState({ nrMeasurementsStreamConnected: false })
+                nrMeasurementsStreamConnectedRef.current = false
             },
         })
-    }
-
-    loginForwardAuth() {
-        const showErrorMessage = (error) =>
-            this.showMessage({
-                severity: "error",
-                title: "Login with forward authentication failed",
-                description: `${error}`,
-            })
-        login("", "")
-            .then((json) => {
-                if (json.ok) {
-                    this.setUserSession(json.email, json.email, new Date(json.session_expiration_datetime))
-                    return true
-                }
-                return false
-            })
-            .catch(showErrorMessage)
-        return false
-    }
-
-    initUserSession() {
-        const stored = loadStoredSession()
-        if (!stored) {
-            this.showMessage({
-                severity: "info",
-                title: "Not logged in",
-                description: "Editing is not possible until you are logged in",
-            })
-        } else if (stored.sessionExpirationDateTime < new Date()) {
-            this.onUserSessionExpiration()
-        } else {
-            this.setUserSession(stored.user, stored.email, stored.sessionExpirationDateTime)
+        return () => {
+            unlistenHistory()
+            sourceRef.current.close()
         }
-    }
+        // eslint-disable-next-line @eslint-react/exhaustive-deps
+    }, [])
 
-    setUserSession(username, email, sessionExpirationDateTime) {
-        if (username) {
-            const emailAddress = email?.includes("@") ? email : null
-            this.setState({ user: username, email: emailAddress })
-            storeSession(username, emailAddress, sessionExpirationDateTime)
-            this.sessionExpirationTimeoutId = setTimeout(
-                () => this.onUserSessionExpiration(),
-                sessionExpirationDateTime - Date.now(),
-            )
-        } else {
-            this.setState({ user: null, email: null })
-            clearStoredSession()
-            clearTimeout(this.sessionExpirationTimeoutId)
-        }
-    }
+    // Reactive effect: refetch when reportUuid or reportDate changes (and once on initial render).
+    useEffect(() => {
+        fetchReports()
+    }, [reportUuid, reportDate, fetchReports])
 
-    onUserSessionExpiration() {
-        this.setUserSession()
-        this.showMessage({
-            severity: "warning",
-            title: "Your session expired",
-            description: "Please log in to renew your session",
-        })
-    }
-
-    render() {
-        return (
-            <ThemeProvider theme={theme}>
-                <CssBaseline enableColorScheme />
-                <SnackbarAlerts
-                    messages={this.state.snackBarMessages}
-                    hideMessage={(message) => this.hideMessage(message)}
-                    showMessage={(message) => this.showMessage(message)}
-                >
-                    <AppUI
-                        dataModel={this.state.dataModel}
-                        email={this.state.email}
-                        fieldsWithUrlAvailabilityErrors={this.fieldsWithUrlAvailabilityErrors}
-                        handleDateChange={(date) => this.handleDateChange(date)}
-                        key={this.state.reportUuid} // Make sure the AppUI is refreshed whenever the current report changes
-                        lastUpdate={this.state.lastUpdate}
-                        loading={this.state.loading}
-                        nrMeasurements={this.state.nrMeasurements}
-                        openReport={(reportUuid) => this.openReport(reportUuid)}
-                        openReportsOverview={() => this.openReportsOverview()}
-                        reload={(json) => this.processResponseJSON(json)}
-                        reportDate={this.state.reportDate}
-                        reportUuid={this.state.reportUuid}
-                        reports={this.state.reports}
-                        reportsOverview={this.state.reportsOverview}
-                        setUser={(username, email, sessionExpirationDateTime) =>
-                            this.setUserSession(username, email, sessionExpirationDateTime)
-                        }
-                        user={this.state.user}
-                    />
-                </SnackbarAlerts>
-            </ThemeProvider>
-        )
-    }
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline enableColorScheme />
+            <SnackbarAlerts messages={snackBarMessages} hideMessage={hideMessage} showMessage={showMessage}>
+                <AppUI
+                    dataModel={dataModel}
+                    email={email}
+                    fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrorsRef.current}
+                    handleDateChange={handleDateChange}
+                    key={reportUuid} // Make sure the AppUI is refreshed whenever the current report changes
+                    lastUpdate={lastUpdate}
+                    loading={loading}
+                    nrMeasurements={nrMeasurements}
+                    openReport={openReport}
+                    openReportsOverview={openReportsOverview}
+                    reload={processResponseJSON}
+                    reportDate={reportDate}
+                    reportUuid={reportUuid}
+                    reports={reports}
+                    reportsOverview={reportsOverview}
+                    setUser={setUserSession}
+                    user={user}
+                />
+            </SnackbarAlerts>
+        </ThemeProvider>
+    )
 }
-
-export default App
