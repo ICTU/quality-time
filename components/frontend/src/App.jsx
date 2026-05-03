@@ -37,24 +37,27 @@ class App extends Component {
             email: null,
             snackBarMessages: [],
         }
-        history.listen(({ location, action }) => this.onHistory({ location, action }))
-    }
-
-    onHistory({ location, action }) {
-        if (action === Action.Pop) {
-            const reportUuid = reportUuidFromPath(location.pathname)
-            this.setState({ reportUuid: reportUuid, loading: true }, () => this.reload())
-        }
     }
 
     componentDidMount() {
+        this.unlistenHistory = history.listen(({ location, action }) => {
+            if (action !== Action.Pop) return
+            this.setState({ reportUuid: reportUuidFromPath(location.pathname), loading: true })
+        })
         this.loginForwardAuth()
         this.initUserSession()
         this.connectToNrMeasurementsEventSource()
-        this.reload()
+        this.fetchReports()
+    }
+
+    componentDidUpdate(_prevProps, prevState) {
+        if (prevState.reportUuid !== this.state.reportUuid || prevState.reportDate !== this.state.reportDate) {
+            this.fetchReports()
+        }
     }
 
     componentWillUnmount() {
+        this.unlistenHistory()
         this.source.close()
     }
 
@@ -72,18 +75,16 @@ class App extends Component {
         }))
     }
 
-    reload(json) {
-        if (json) {
-            showURLAvailabilityMessages(json.availability, (message) => this.showMessage(message))
-            this.fieldsWithUrlAvailabilityErrors = json.availability
-                ? json.availability.filter((urlKey) => urlKey.status_code !== 200)
-                : null
-            this.checkSession(json)
-        }
-        this.loadAndSetState()
+    processResponseJSON(json) {
+        showURLAvailabilityMessages(json.availability, (message) => this.showMessage(message))
+        this.fieldsWithUrlAvailabilityErrors = json.availability
+            ? json.availability.filter((urlKey) => urlKey.status_code !== 200)
+            : null
+        this.checkSession(json)
+        this.fetchReports()
     }
 
-    loadAndSetState() {
+    fetchReports() {
         const reportUuid = this.state.reportUuid
         const reportDate = this.state.reportDate
         const showErrorMessage = (error) =>
@@ -148,19 +149,19 @@ class App extends Component {
             date = null
         }
         history.replace({ search: toSearchString(parsed) })
-        this.setState({ reportDate: date, loading: true }, () => this.reload())
+        this.setState({ reportDate: date, loading: true })
     }
 
     openReportsOverview() {
         if (history.location.pathname !== "/") {
             this.historyPush("/")
-            this.setState({ reportUuid: "", loading: true }, () => this.reload())
+            this.setState({ reportUuid: "", loading: true })
         }
     }
 
     openReport(reportUuid) {
         this.historyPush(encodeURI(reportUuid))
-        this.setState({ reportUuid: reportUuid, loading: true }, () => this.reload())
+        this.setState({ reportUuid: reportUuid, loading: true })
     }
 
     historyPush(target) {
@@ -179,13 +180,13 @@ class App extends Component {
                         description: "Successfully reconnected to server",
                     })
                     this.setState({ nrMeasurements: newNrMeasurements, nrMeasurementsStreamConnected: true }, () =>
-                        this.reload(),
+                        this.fetchReports(),
                     )
                 }
             },
             onDelta: (newNrMeasurements) => {
                 if (newNrMeasurements !== this.state.nrMeasurements) {
-                    this.setState({ nrMeasurements: newNrMeasurements }, () => this.reload())
+                    this.setState({ nrMeasurements: newNrMeasurements }, () => this.fetchReports())
                 }
             },
             onError: () => {
@@ -278,7 +279,7 @@ class App extends Component {
                         nrMeasurements={this.state.nrMeasurements}
                         openReport={(reportUuid) => this.openReport(reportUuid)}
                         openReportsOverview={() => this.openReportsOverview()}
-                        reload={(json) => this.reload(json)}
+                        reload={(json) => this.processResponseJSON(json)}
                         reportDate={this.state.reportDate}
                         reportUuid={this.state.reportUuid}
                         reports={this.state.reports}

@@ -3,6 +3,7 @@ import dayjs from "dayjs"
 import history from "history/browser"
 import { vi } from "vitest"
 
+import * as auth from "./api/auth"
 import * as fetchServerApi from "./api/fetch_server_api"
 import App from "./App"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
@@ -10,11 +11,13 @@ import {
     clickButton,
     clickRole,
     clickText,
+    expectAltText,
     expectLabelText,
     expectNoAccessibilityViolations,
-    expectNoLabelText,
+    expectNoAltText,
     expectNoText,
     expectText,
+    expectTextAfterWait,
 } from "./testUtils"
 
 function setUserInLocalStorage(hoursLeftInSession, email) {
@@ -62,14 +65,14 @@ it("sets the user from local storage", async () => {
     setUserInLocalStorage(1)
     render(<App />)
     expectText(/admin/)
-    expect(screen.getAllByAltText(/Avatar for admin/).length).toBe(1)
+    expectAltText(/Avatar for admin/)
 })
 
 it("does not set invalid email addresses", async () => {
     setUserInLocalStorage(1, "admin at example.org")
     render(<App />)
     expectText(/admin/)
-    expectNoLabelText(/Avatar for admin/)
+    expectNoAltText(/Avatar for admin/)
 })
 
 it("resets the user when the session is expired on mount", async () => {
@@ -79,12 +82,44 @@ it("resets the user when the session is expired on mount", async () => {
     expectText("Your session expired")
 })
 
+it("shows the expiry toast when the session expires while the app is running", async () => {
+    vi.useFakeTimers()
+    setUserInLocalStorage(1)
+    render(<App />)
+    expectText(/admin/)
+    act(() => vi.advanceTimersByTime(60 * 60 * 1000 + 1))
+    expectText("Your session expired")
+    expectNoText(/admin/)
+    vi.useRealTimers()
+})
+
 it("resets the user when the user clicks logout", async () => {
     setUserInLocalStorage(1)
     render(<App />)
     clickText(/admin/)
     clickText(/Logout/)
     expectNoText(/admin/)
+})
+
+it("logs in via forward authentication when the server returns ok", async () => {
+    vi.spyOn(auth, "login").mockReturnValue(
+        Promise.resolve({
+            ok: true,
+            email: "fwd@example.org",
+            session_expiration_datetime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+        }),
+    )
+    render(<App />)
+    await expectTextAfterWait(/fwd@example.org/)
+    expectAltText(/Avatar for fwd@example.org/)
+    localStorage.clear()
+})
+
+it("shows an error toast when forward authentication rejects", async () => {
+    vi.spyOn(auth, "login").mockReturnValue(Promise.reject(new Error("network down")))
+    render(<App />)
+    await expectTextAfterWait("Login with forward authentication failed")
+    expectText(/network down/)
 })
 
 async function select15thOfPreviousMonth() {
@@ -123,12 +158,22 @@ it("handles a date reset", async () => {
     expect(reportDateButton().textContent).toMatch(/today/)
 })
 
+it("navigates back to the reports overview when the home button is clicked", async () => {
+    history.push("/some-uuid")
+    render(<App />)
+    const callsAfterMount = fetchServerApi.fetchServerApi.mock.calls.length
+    clickRole("button", /Go to reports overview/)
+    await vi.waitFor(() => expect(history.location.pathname).toBe("/"))
+    expect(fetchServerApi.fetchServerApi.mock.calls.length).toBeGreaterThan(callsAfterMount)
+})
+
 it("reloads on a browser pop but not on a push", async () => {
     render(<App />)
     const callsAfterMount = fetchServerApi.fetchServerApi.mock.calls.length
-    history.push("/some-uuid")
+    history.push("/first-uuid")
+    history.push("/second-uuid")
     const callsAfterPush = fetchServerApi.fetchServerApi.mock.calls.length
-    history.back()
+    history.back() // pops back to /first-uuid, which differs from the mount-time reportUuid ""
     await vi.waitFor(() => expect(fetchServerApi.fetchServerApi.mock.calls.length).toBeGreaterThan(callsAfterPush))
     expect(callsAfterPush).toBe(callsAfterMount)
 })
