@@ -103,6 +103,7 @@ install-py-dependencies:
 [private]
 install-js-dependencies:
     ?[ {{ package_json_exists }} = true ]
+    ?[ ! -e node_modules/.package-lock.json ] || [ package-lock.json -nt node_modules/.package-lock.json ]
     npm ci --ignore-scripts --silent
 
 # === Build artifacts ===
@@ -201,13 +202,17 @@ py-unit-test cov="yes" *tests: install-py-dependencies
     {{ coverage }} html --quiet --fail-under=0
     {{ coverage }} xml --quiet  # Fail if coverage is too low, but only after the text and HTML reports have been generated
 
-# Run the JavaScript unit tests. Pass '--coverage=yes' to measure test coverage.
+# Run the JavaScript unit tests. Pass '--coverage=yes' to measure test coverage. Without explicit tests or coverage, only the tests for uncommitted changes are run if there are any.
 [arg("cov", long="coverage", short="c", pattern="default|yes|no", help="Measure unit test coverage?")]
 [no-cd]
 [private]
 js-unit-test cov="no" *tests: install-js-dependencies
     ?[ {{ has_js_test_script }} = true ]
-    {{ npm_run }} test -- {{ if cov == "yes" { "--coverage" } else { tests } }}
+    if [ "{{ cov }}" = "yes" ]; then args="--coverage"; \
+    elif [ -n "{{ tests }}" ]; then args="{{ tests }}"; \
+    elif ! git diff --quiet HEAD -- {{ invocation_directory() }}/src; then args="--changed"; \
+    else args=""; fi; \
+    {{ npm_run }} test -- $args
 
 # Run the unit tests, in the current working directory. Measures coverage of Python unit tests by default. Pass 'cov' to also measure the coverage of JavaScript unit tests. Pass 'nocov' to skip measuring coverage of Python unit tests.
 [arg("cov", long="coverage", short="c", pattern="default|yes|no", help="Measure unit test coverage? Default means yes for Python and no for Javascript")]
