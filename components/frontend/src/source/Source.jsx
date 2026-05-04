@@ -122,7 +122,7 @@ function Parameters({
                     label="Source name"
                     placeholder={sourceType.name}
                     onChange={(value) => setSourceAttribute(sourceUuid, "name", value, reload)}
-                    value={source.name || sourceType.name}
+                    value={getSourceName(source, dataModel)}
                 />
             </Grid>
             <Grid size={{ xs: 1, sm: 2, md: 2 }}>
