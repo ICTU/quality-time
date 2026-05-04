@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import dayjs from "dayjs"
 import history from "history/browser"
 import { vi } from "vitest"
@@ -166,7 +166,7 @@ it("navigates back to the reports overview when the home button is clicked", asy
     render(<App />)
     const callsAfterMount = fetchServerApi.fetchServerApi.mock.calls.length
     clickRole("button", /Go to reports overview/)
-    await vi.waitFor(() => expect(history.location.pathname).toBe("/"))
+    await waitFor(() => expect(history.location.pathname).toBe("/"))
     expect(fetchServerApi.fetchServerApi.mock.calls.length).toBeGreaterThan(callsAfterMount)
 })
 
@@ -177,7 +177,7 @@ it("reloads on a browser pop but not on a push", async () => {
     history.push("/second-uuid")
     const callsAfterPush = fetchServerApi.fetchServerApi.mock.calls.length
     history.back() // pops back to /first-uuid, which differs from the mount-time reportUuid ""
-    await vi.waitFor(() => expect(fetchServerApi.fetchServerApi.mock.calls.length).toBeGreaterThan(callsAfterPush))
+    await waitFor(() => expect(fetchServerApi.fetchServerApi.mock.calls.length).toBeGreaterThan(callsAfterPush))
     expect(callsAfterPush).toBe(callsAfterMount)
 })
 
@@ -186,7 +186,7 @@ it("loads data and clears the loading spinner on a successful fetch", async () =
     vi.spyOn(report, "getReportsOverview").mockResolvedValue({})
     vi.spyOn(report, "getReport").mockResolvedValue({ ok: true, reports: [] })
     render(<App />)
-    await vi.waitFor(() => expectNoLabelText(/Loading/))
+    await waitFor(() => expectNoLabelText(/Loading/))
 })
 
 it("shows a server unreachable toast when a fetched response is not ok", async () => {
