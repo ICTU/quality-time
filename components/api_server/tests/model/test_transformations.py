@@ -51,6 +51,18 @@ class HideCredentialsTest(DataModelTestCase):
         hide_credentials(self.DATA_MODEL, self.report)
         self.assertEqual("", self.issue_tracker_parameters["private_token"])
 
+    def test_hide_credentials_when_report_has_no_issue_tracker(self):
+        """Test that hiding credentials works on a report that has no issue tracker."""
+        del self.report["issue_tracker"]
+        hide_credentials(self.DATA_MODEL, self.report)
+        self.assertEqual(CREDENTIALS_REPLACEMENT_TEXT, self.source_parameters["password"])
+
+    def test_hide_credentials_when_issue_tracker_has_no_parameters(self):
+        """Test that hiding credentials works on a report whose issue tracker has no parameters yet."""
+        self.report["issue_tracker"] = {"type": "jira"}
+        hide_credentials(self.DATA_MODEL, self.report)
+        self.assertEqual(CREDENTIALS_REPLACEMENT_TEXT, self.source_parameters["password"])
+
 
 class ChangeSourceParameterTest(DataModelTestCase):
     """Unit tests for the change source parameter transformation."""
