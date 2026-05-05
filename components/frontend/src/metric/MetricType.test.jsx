@@ -46,7 +46,7 @@ function renderMetricType(metricType) {
             <DataModelContext value={dataModel}>
                 <MetricType
                     subjectType="subject_type"
-                    metricType={metricType}
+                    metric={{ type: metricType }}
                     metricUuid="metric_uuid"
                     reload={vi.fn()}
                 />

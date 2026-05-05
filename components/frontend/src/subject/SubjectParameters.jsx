@@ -3,13 +3,16 @@ import { func, string } from "prop-types"
 import { useContext } from "react"
 
 import { setSubjectAttribute } from "../api/subject"
+import { DataModelContext } from "../context/DataModel"
 import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { CommentField } from "../fields/CommentField"
 import { TextField } from "../fields/TextField"
 import { subjectPropType } from "../sharedPropTypes"
+import { getSubjectName, getSubjectTypeName } from "../utils"
 import { SubjectType } from "./SubjectType"
 
-export function SubjectParameters({ subject, subjectUuid, subjectName, reload }) {
+export function SubjectParameters({ subject, subjectUuid, reload }) {
+    const dataModel = useContext(DataModelContext)
     const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     return (
@@ -26,9 +29,9 @@ export function SubjectParameters({ subject, subjectUuid, subjectName, reload })
                     disabled={disabled}
                     id={`${subjectUuid}-title`}
                     label="Subject title"
-                    placeholder={subjectName}
+                    placeholder={getSubjectTypeName(subject, dataModel)}
                     onChange={(value) => setSubjectAttribute(subjectUuid, "name", value, reload)}
-                    value={subject.name || subjectName}
+                    value={getSubjectName(subject, dataModel)}
                 />
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
@@ -54,6 +57,5 @@ export function SubjectParameters({ subject, subjectUuid, subjectName, reload })
 SubjectParameters.propTypes = {
     subject: subjectPropType,
     subjectUuid: string,
-    subjectName: string,
     reload: func,
 }

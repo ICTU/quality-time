@@ -13,7 +13,7 @@ import { SourceParameter } from "../source/SourceParameter"
 import { reloadAfterMassEditSource } from "../source/Sources"
 import { SourceTypeRichDescription } from "../source/SourceType"
 import { theme } from "../theme"
-import { getSourceName, referenceDocumentationURL } from "../utils"
+import { getSourceName, getSourceTypeName, referenceDocumentationURL } from "../utils"
 import { UnsortableTableHeaderCell } from "../widgets/TableHeaderCell"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { Tabs } from "../widgets/Tabs"
@@ -215,7 +215,7 @@ export function ReportSources({ reload, report, settings }) {
                             onExpand={() => settings.expandedItems.toggle(source.uuid)}
                             firstCellContent={getSourceName(source, dataModel)}
                         >
-                            <TableCell>{dataModel.sources[source.type].name}</TableCell>
+                            <TableCell>{getSourceTypeName(source, dataModel)}</TableCell>
                             <TableCell>{source.parameters?.url ?? ""}</TableCell>
                             <TableCell align="right">{source.nrMetrics}</TableCell>
                             <TableCell align="right">
