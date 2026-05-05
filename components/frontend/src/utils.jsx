@@ -32,8 +32,16 @@ export function formatMetricDirection(metric, dataModel) {
     return { "<": "≦", ">": "≧" }[getMetricDirection(metric, dataModel)]
 }
 
+export function getMetricTypeName(metric, dataModel) {
+    return dataModel.metrics[metric.type].name
+}
+
 export function getMetricName(metric, dataModel) {
-    return metric.name || dataModel.metrics[metric.type].name
+    return metric.name || getMetricTypeName(metric, dataModel)
+}
+
+export function getSourceTypeName(source, dataModel) {
+    return dataModel.sources[source.type].name
 }
 
 export function getSourceName(source, dataModel) {
@@ -89,8 +97,12 @@ getSubjectType.propTypes = {
     subjects: objectOf(subjectTypePropType),
 }
 
+export function getSubjectTypeName(subject, dataModel) {
+    return getSubjectType(subject.type, dataModel.subjects).name
+}
+
 export function getSubjectName(subject, dataModel) {
-    return subject.name || getSubjectType(subject.type, dataModel.subjects).name
+    return subject.name || getSubjectTypeName(subject, dataModel)
 }
 
 export function getMetricTarget(metric) {

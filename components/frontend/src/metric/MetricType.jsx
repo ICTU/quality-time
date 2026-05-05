@@ -6,7 +6,8 @@ import { setMetricAttribute } from "../api/metric"
 import { DataModelContext } from "../context/DataModel"
 import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
-import { getSubjectTypeMetrics, referenceDocumentationURL } from "../utils"
+import { metricPropType } from "../sharedPropTypes"
+import { getMetricTypeName, getSubjectTypeMetrics, referenceDocumentationURL } from "../utils"
 import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
 
 export function metricTypeOption(key, metricType) {
@@ -54,11 +55,12 @@ export function usedMetricTypesInReport(report) {
     return Array.from(metricTypes)
 }
 
-export function MetricType({ subjectType, metricType, metricUuid, reload }) {
+export function MetricType({ metric, metricUuid, reload, subjectType }) {
     const dataModel = useContext(DataModelContext)
     const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const options = metricTypeOptions(dataModel, subjectType)
+    const metricType = metric.type
     const metricTypes = options.map((option) => option.key)
     if (!metricTypes.includes(metricType)) {
         options.push(metricTypeOption(metricType, dataModel.metrics[metricType]))
@@ -70,7 +72,7 @@ export function MetricType({ subjectType, metricType, metricUuid, reload }) {
             disabled={disabled}
             helperText={
                 <>
-                    <ReadTheDocsLink url={referenceDocumentationURL(dataModel.metrics[metricType].name)} />
+                    <ReadTheDocsLink url={referenceDocumentationURL(getMetricTypeName(metric, dataModel))} />
                     {howToConfigure}
                 </>
             }
@@ -88,8 +90,8 @@ export function MetricType({ subjectType, metricType, metricUuid, reload }) {
     )
 }
 MetricType.propTypes = {
-    subjectType: string,
-    metricType: string,
+    metric: metricPropType,
     metricUuid: string,
     reload: func,
+    subjectType: string,
 }

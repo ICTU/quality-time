@@ -11,7 +11,7 @@ import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { zIndexSubjectTitle } from "../defaults"
 import { reportPropType, settingsPropType } from "../sharedPropTypes"
-import { getSubjectType } from "../utils"
+import { getSubjectName } from "../utils"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { PermLinkButton } from "../widgets/buttons/PermLinkButton"
@@ -69,9 +69,7 @@ export function SubjectTitle({
     settings,
 }) {
     const dataModel = useContext(DataModelContext)
-    const subjectType = getSubjectType(subject.type, dataModel.subjects)
-    const subjectName = subject.name || subjectType.name
-    const subjectTitle = (atReportsOverview ? report.title + " ❯ " : "") + subjectName
+    const subjectTitle = (atReportsOverview ? report.title + " ❯ " : "") + getSubjectName(subject, dataModel)
     const subjectUrl = `${globalThis.location}#${subjectUuid}`
     return (
         <div className="sticky" style={{ zIndex: zIndexSubjectTitle }}>
@@ -90,12 +88,7 @@ export function SubjectTitle({
                     ]}
                     uuid={subjectUuid}
                 >
-                    <SubjectParameters
-                        subject={subject}
-                        subjectUuid={subjectUuid}
-                        subjectName={subjectName}
-                        reload={reload}
-                    />
+                    <SubjectParameters subject={subject} subjectUuid={subjectUuid} reload={reload} />
                     <ChangeLog subjectUuid={subjectUuid} timestamp={report.timestamp} />
                 </Tabs>
                 <SubjectTitleButtonRow

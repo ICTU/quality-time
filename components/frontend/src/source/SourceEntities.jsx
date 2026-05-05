@@ -30,7 +30,7 @@ import {
     sourcePropType,
     stringsPropType,
 } from "../sharedPropTypes"
-import { capitalize, getMetricUnit } from "../utils"
+import { capitalize, getMetricUnit, getSourceTypeName } from "../utils"
 import { IgnoreIcon, ShowIcon } from "../widgets/icons"
 import { LoadingPlaceHolder } from "../widgets/Placeholder"
 import { SortableTableHeaderCell } from "../widgets/TableHeaderCell"
@@ -180,15 +180,14 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
     const sortColumn = settings.entitySortColumn.getItem(metricUuid) || null
     const sortDirection = settings.entitySortDirection.getItem(metricUuid)
 
-    const sourceType = metric.sources[sourceUuid].type
-    const metricEntities = dataModel.sources[sourceType]?.entities?.[metric.type]
+    const source = metric.sources[sourceUuid]
+    const metricEntities = dataModel.sources[source.type]?.entities?.[metric.type]
 
     if (!metricEntities) {
         const unit = getMetricUnit(metric, dataModel) || "entities"
-        const sourceTypeName = dataModel.sources[sourceType].name
         return (
             <InfoMessage title="Measurement details not supported">
-                {`Showing individual ${unit} is not supported when using ${sourceTypeName} as source.`}
+                {`Showing individual ${unit} is not supported when using ${getSourceTypeName(source, dataModel)} as source.`}
             </InfoMessage>
         )
     }
@@ -206,8 +205,8 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
         )
     }
     const lastMeasurement = measurements.at(-1)
-    const source = lastMeasurement.sources.find((source) => source.source_uuid === sourceUuid)
-    if (!Array.isArray(source?.entities) || source.entities.length === 0) {
+    const lastMeasurementSource = lastMeasurement.sources.find((source) => source.source_uuid === sourceUuid)
+    if (!Array.isArray(lastMeasurementSource?.entities) || lastMeasurementSource.entities.length === 0) {
         return (
             <InfoMessage title="Measurement details not available">
                 There are currently no measurement details available.
@@ -229,8 +228,8 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
         sortDirection: sortDirection,
     }
     const columnType = sortColumn ? entityColumnType(sortColumn, entityAttributes) : "text"
-    const entities = sortedEntities(columnType, sortColumn, sortDirection, source)
-    const columnsToHide = determineColumnsToHide(settings, source, entities)
+    const entities = sortedEntities(columnType, sortColumn, sortDirection, lastMeasurementSource)
+    const columnsToHide = determineColumnsToHide(settings, lastMeasurementSource, entities)
     const hideIgnoredEntities = settings.hideIgnoredEntities.includes(metricUuid)
     const rows = entities.map((entity) => (
         <SourceEntity
@@ -243,14 +242,17 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
             metricUuid={metricUuid}
             reload={reload}
             report={report}
-            status={entityStatus(source, entity)}
-            statusEndDate={entityStatusEndDate(source, entity)}
-            rationale={entityStatusRationale(source, entity)}
-            sourceUuid={source.source_uuid}
+            status={entityStatus(lastMeasurementSource, entity)}
+            statusEndDate={entityStatusEndDate(lastMeasurementSource, entity)}
+            rationale={entityStatusRationale(lastMeasurementSource, entity)}
+            sourceUuid={sourceUuid}
         />
     ))
     const nrIgnoredEntities = entities.filter((entity) =>
-        entityCanBeIgnored(entityStatus(source, entity), entityStatusEndDate(source, entity)),
+        entityCanBeIgnored(
+            entityStatus(lastMeasurementSource, entity),
+            entityStatusEndDate(lastMeasurementSource, entity),
+        ),
     ).length
     const headers = sourceEntitiesHeaders(
         columnsToHide,

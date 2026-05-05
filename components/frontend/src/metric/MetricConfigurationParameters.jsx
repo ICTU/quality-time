@@ -12,6 +12,7 @@ import { metricPropType, reportPropType, subjectPropType } from "../sharedPropTy
 import {
     formatMetricScale,
     getMetricDirection,
+    getMetricName,
     getMetricScale,
     getMetricTags,
     getMetricUnit,
@@ -52,7 +53,7 @@ function MetricName({ metric, metricUuid, reload }) {
             label="Metric name"
             placeholder={metricType.name}
             onChange={(value) => setMetricAttribute(metricUuid, "name", value, reload)}
-            value={metric.name || metricType.name}
+            value={getMetricName(metric, dataModel)}
         />
     )
 }
@@ -252,12 +253,7 @@ export function MetricConfigurationParameters({ metric, metricUuid, reload, repo
     return (
         <Grid container spacing={{ xs: 1, sm: 2, md: 3 }} columns={{ xs: 1, sm: 3, md: 3 }}>
             <Grid size={1}>
-                <MetricType
-                    subjectType={subject.type}
-                    metricType={metric.type}
-                    metricUuid={metricUuid}
-                    reload={reload}
-                />
+                <MetricType metric={metric} metricUuid={metricUuid} reload={reload} subjectType={subject.type} />
             </Grid>
             <Grid size={1}>
                 <Stack spacing={{ xs: 1, sm: 1, md: 1 }}>

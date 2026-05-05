@@ -17,7 +17,7 @@ import {
     sourcePropType,
     stringsPropType,
 } from "../sharedPropTypes"
-import { getMetricName, getSourceName, referenceDocumentationURL } from "../utils"
+import { getMetricName, getMetricTypeName, getSourceName, getSourceTypeName, referenceDocumentationURL } from "../utils"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { ReorderButtonGroup } from "../widgets/buttons/ReorderButtonGroup"
@@ -122,7 +122,7 @@ function Parameters({
                     label="Source name"
                     placeholder={sourceType.name}
                     onChange={(value) => setSourceAttribute(sourceUuid, "name", value, reload)}
-                    value={source.name || sourceType.name}
+                    value={getSourceName(source, dataModel)}
                 />
             </Grid>
             <Grid size={{ xs: 1, sm: 2, md: 2 }}>
@@ -179,14 +179,14 @@ export function Source({
             <ul>
                 <li>
                     Change the type of the metric (back) to a type that is supported by{" "}
-                    <HyperLink url={referenceDocumentationURL(dataModel.metrics[metric.type].name)}>
+                    <HyperLink url={referenceDocumentationURL(getMetricTypeName(metric, dataModel))}>
                         {sourceName}
                     </HyperLink>
                     .
                 </li>
                 <li>
                     Change the type of this source to a type that supports{" "}
-                    <HyperLink url={referenceDocumentationURL(dataModel.sources[source.type].name)}>
+                    <HyperLink url={referenceDocumentationURL(getSourceTypeName(source, dataModel))}>
                         {metricName}
                     </HyperLink>
                     .
