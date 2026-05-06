@@ -2,6 +2,8 @@
 
 from typing import TYPE_CHECKING
 
+from shared.model.iterators import metrics
+
 from base_collectors import TimePassedCollector
 from collector_utilities.date_time import MIN_DATETIME, parse_datetime
 from collector_utilities.type import URL, Response
@@ -21,10 +23,10 @@ class QualityTimeSourceUpToDateness(QualityTimeCollector, TimePassedCollector):
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to parse the oldest datetime from the recent measurements."""
-        measurement_dates = []
-        for report in await self._get_reports(response):
-            for subject in report.get("subjects", {}).values():
-                for metric in subject.get("metrics", {}).values():
-                    if recent_measurements := metric.get("recent_measurements", []):
-                        measurement_dates.append(parse_datetime(recent_measurements[-1]["end"]))  # noqa: PERF401
+        reports = await self._get_reports(response)
+        measurement_dates = [
+            parse_datetime(metric["recent_measurements"][-1]["end"])
+            for metric in metrics(*reports)
+            if metric.get("recent_measurements", [])
+        ]
         return min(measurement_dates, default=MIN_DATETIME)

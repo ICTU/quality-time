@@ -2,6 +2,8 @@
 
 from typing import TYPE_CHECKING
 
+from shared.model.iterators import metrics, subjects
+
 from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
 from model import SourceMeasurement, SourceResponses
@@ -80,8 +82,7 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
 
     def __report_nr_of_possible_metric_types(self, data_model: dict, report: dict) -> int:
         """Return the number of possible metric types in the report."""
-        subjects = report.get("subjects", {}).values()
-        return sum(len(self.supported_metric_types(data_model, subject)) for subject in subjects)
+        return sum(len(self.supported_metric_types(data_model, subject)) for subject in subjects(report))
 
     def __missing_metric_type_entities(self, data_model: dict, reports: list[dict], landing_url: URL) -> Entities:
         """Return the reports' missing metric types as entities."""
@@ -92,12 +93,8 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
 
     def __used_metric_types(self, report_uuid: ReportId) -> set[str]:
         """Return the metric types used in the report with the given report UUID."""
-        metric_types = set()
         report = next(report for report in self.reports if report["report_uuid"] == report_uuid)
-        for subject in report.get("subjects", {}).values():
-            for metric in subject.get("metrics", {}).values():
-                metric_types.add(metric["type"])
-        return metric_types
+        return {metric["type"] for metric in metrics(report)}
 
     def __report_missing_metric_type_entities(self, data_model: dict, report: dict, landing_url: URL) -> Entities:
         """Return the report's missing metric types as entities."""

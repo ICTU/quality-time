@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING
 
-from model.iterators import metrics, subjects
+from shared.model.iterators import metrics, subjects
+
 from utils.log import get_logger
 
 if TYPE_CHECKING:
