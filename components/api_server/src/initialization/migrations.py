@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from model.iterators import metrics, subjects
 from utils.log import get_logger
 
 if TYPE_CHECKING:
@@ -57,17 +58,11 @@ def remove_subject_description(report) -> str:
     """Remove the description field from all subjects."""
     # Added after Quality-time v5.50.0, see https://github.com/ICTU/quality-time/issues/12799
     change_description = ""
-    for subject in report.get("subjects", {}).values():
+    for subject in subjects(report):
         if "description" in subject:
             change_description = "remove the description field from subjects"
             del subject["description"]
     return change_description
-
-
-def metrics(report):
-    """Return the metrics in the report."""
-    for subject in report.get("subjects", {}).values():
-        yield from subject.get("metrics", {}).values()
 
 
 def replace_document(collection: Collection, document) -> None:
