@@ -4,8 +4,9 @@ from typing import Literal, TypedDict, TYPE_CHECKING
 
 import bottle
 
+from shared.model.iterators import metrics, sources, subjects
+
 from database.reports import latest_reports
-from model.iterators import metrics, sources, subjects
 from utils.log import get_logger
 
 if TYPE_CHECKING:
