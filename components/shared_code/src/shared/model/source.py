@@ -13,6 +13,10 @@ if TYPE_CHECKING:
     from .metric import Metric
 
 
+PASSWORD_PARAMETERS = {"password", "private_token"}
+CREDENTIAL_PARAMETERS = {*PASSWORD_PARAMETERS, "username"}
+
+
 class Source(dict):
     """Class representing a measurement source."""
 

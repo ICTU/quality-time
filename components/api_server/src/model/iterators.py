@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING
 
 from shared.model.iterators import issue_trackers, sources
+from shared.model.source import PASSWORD_PARAMETERS
 
 from .queries import is_password_parameter
 
@@ -19,7 +20,7 @@ def credential_holders(*reports, data_model: dict | None = None) -> Iterator[tup
     for issue_tracker in issue_trackers(*reports):
         parameters = issue_tracker.get("parameters") or {}
         if parameters:
-            yield parameters, [key for key in ("password", "private_token") if parameters.get(key)]
+            yield parameters, [key for key in PASSWORD_PARAMETERS if parameters.get(key)]
 
 
 def _password_parameter_keys(source: Source, data_model: dict | None = None) -> list[str]:
