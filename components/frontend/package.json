@@ -5,15 +5,15 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.1",
-        "@mui/icons-material": "^9.0.0",
-        "@mui/material": "^9.0.0",
+        "@mui/icons-material": "^9.0.1",
+        "@mui/material": "^9.0.1",
         "@mui/x-date-pickers": "^9.0.4",
         "crypto-js": "^4.2.0",
         "dayjs": "^1.11.20",
         "history": "^5.3.0",
         "prop-types": "^15.8.1",
-        "react": "^19.2.5",
-        "react-dom": "^19.2.5",
+        "react": "^19.2.6",
+        "react-dom": "^19.2.6",
         "react-grid-layout": "^2.2.3",
         "victory": "^37.3.6"
     },
@@ -27,10 +27,10 @@
         "fix": "npx prettier *.mjs src --write --log-level warn"
     },
     "engines": {
-        "node": "25.9.0"
+        "node": "26.0.0"
     },
     "devDependencies": {
-        "@eslint-react/eslint-plugin": "^5.7.3",
+        "@eslint-react/eslint-plugin": "^5.7.4",
         "@eslint/js": "^10.0.1",
         "@testing-library/dom": "^10.4.1",
         "@testing-library/jest-dom": "^6.9.1",
@@ -48,7 +48,7 @@
         "jest-axe": "^10.0.0",
         "jsdom": "^29.1.1",
         "prettier": "^3.8.3",
-        "vite": "^8.0.10",
+        "vite": "^8.0.11",
         "vitest": "^4.0.18"
     },
     "overrides": {
