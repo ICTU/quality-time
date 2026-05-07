@@ -4,6 +4,8 @@ from typing import Literal, Self
 
 from pydantic import HttpUrl, model_validator
 
+from shared.model.source import CREDENTIAL_PARAMETERS
+
 from .meta.parameter import Parameter, ParameterType
 from .meta.unit import Unit
 
@@ -41,7 +43,7 @@ class URL(Parameter):
 
     name: str = "URL"
     mandatory: bool = True
-    validate_on: list[str] = ["username", "password", "private_token"]
+    validate_on: list[str] | None = list(CREDENTIAL_PARAMETERS)
     type: ParameterType = ParameterType.URL
 
 

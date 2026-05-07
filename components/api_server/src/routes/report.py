@@ -6,6 +6,7 @@ from typing import cast, TYPE_CHECKING
 
 import bottle
 
+from shared.model.source import CREDENTIAL_PARAMETERS, PASSWORD_PARAMETERS
 from shared_data_model import DATA_MODEL
 from shared_data_model.parameters import PrivateToken
 
@@ -205,7 +206,7 @@ def post_report_issue_tracker_attribute(
         report.setdefault("issue_tracker", {})["type"] = new_value
     else:
         report.setdefault("issue_tracker", {}).setdefault("parameters", {})[tracker_attribute] = new_value
-    if tracker_attribute in ("password", "private_token"):
+    if tracker_attribute in PASSWORD_PARAMETERS:
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
     delta_description = (
         f"{{user}} changed the {tracker_attribute} of the issue tracker of report '{report.name}' "
@@ -214,7 +215,7 @@ def post_report_issue_tracker_attribute(
     result = insert_new_report(database, delta_description, [report_uuid], report)
     issue_tracker = report.get("issue_tracker", {})
     parameters = issue_tracker.get("parameters", {})
-    url_parameters = ("type", "url", "username", "password", "private_token")
+    url_parameters = {*CREDENTIAL_PARAMETERS, "type", "url"}
     if issue_tracker.get("type") and (url := parameters.get("url")) and tracker_attribute in url_parameters:
         private_token = cast(PrivateToken, DATA_MODEL.sources[issue_tracker["type"]].parameters.get("private_token"))
         token_validation_path = private_token.validation_path if private_token else ""
