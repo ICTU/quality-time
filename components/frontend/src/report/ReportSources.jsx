@@ -10,15 +10,26 @@ import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { SnackbarContext } from "../context/Snackbar"
 import { reportPropType, settingsPropType, sourcePropType } from "../sharedPropTypes"
 import { SourceParameter } from "../source/SourceParameter"
-import { reloadAfterMassEditSource } from "../source/Sources"
 import { SourceTypeRichDescription } from "../source/SourceType"
 import { theme } from "../theme"
-import { getSourceName, getSourceTypeName, referenceDocumentationURL } from "../utils"
+import { getSourceName, getSourceTypeName, pluralize, referenceDocumentationURL } from "../utils"
 import { UnsortableTableHeaderCell } from "../widgets/TableHeaderCell"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { Tabs } from "../widgets/Tabs"
 import { InfoMessage } from "../widgets/WarningMessage"
 import { metricsUsingSource, reportSources, unusedMetricTypesSupportedBySource } from "./report_utils"
+
+function reloadAfterMassEditSource(json, reload, showMessage) {
+    const nrSources = json.nr_sources_mass_edited
+    if (nrSources > 0) {
+        showMessage({
+            severity: "info",
+            title: "Mass edit",
+            description: `Changed ${nrSources} ${pluralize("source", nrSources)}`,
+        })
+    }
+    reload(json)
+}
 
 function SourceParameters({ reload, report, source, sourceUuid }) {
     const dataModel = useContext(DataModelContext)
@@ -33,7 +44,7 @@ function SourceParameters({ reload, report, source, sourceUuid }) {
     } else {
         parameters = locationParameterKeys.map((key) => (
             <SourceParameter
-                fixedEditScope="report"
+                editScope="report"
                 key={key}
                 report={report}
                 source={source}

@@ -16,21 +16,24 @@ import {
     expectSearch,
     expectText,
 } from "../testUtils"
+import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
 import { ReportSources } from "./ReportSources"
 
-function ReportSourcesWrapper({ report, theDataModel }) {
+function ReportSourcesWrapper({ report, showMessage, theDataModel }) {
     const settings = useSettings()
     return (
         <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
             <DataModelContext value={theDataModel ?? dataModel}>
-                <ReportSources reload={vi.fn()} report={report} settings={settings} />
+                <SnackbarAlerts messages={[]} showMessage={showMessage ?? vi.fn()}>
+                    <ReportSources reload={vi.fn()} report={report} settings={settings} />
+                </SnackbarAlerts>
             </DataModelContext>
         </PermissionsContext>
     )
 }
 
-function renderReportSources(report, theDataModel) {
-    return render(<ReportSourcesWrapper report={report} theDataModel={theDataModel} />)
+function renderReportSources(report, showMessage, theDataModel) {
+    return render(<ReportSourcesWrapper report={report} showMessage={showMessage} theDataModel={theDataModel} />)
 }
 
 beforeEach(() => {
@@ -170,26 +173,63 @@ it("considers a source without name the same as a source that has a name equal t
 })
 
 it("changes the value of a parameter of a source without parameter layout", async () => {
+    const showMessage = vi.fn()
     history.push("?expanded=source_uuid:0")
-    renderReportSources({
-        subjects: {
-            subject_uuid: {
-                metrics: {
-                    metric_uuid: {
-                        sources: {
-                            source_uuid: { type: "source_type", parameters: { url: "https://source.org" } },
+    renderReportSources(
+        {
+            subjects: {
+                subject_uuid: {
+                    metrics: {
+                        metric_uuid: {
+                            sources: {
+                                source_uuid: { type: "source_type", parameters: { url: "https://source.org" } },
+                            },
                         },
                     },
                 },
             },
         },
-    })
+        showMessage,
+    )
     await userEvent.type(screen.getAllByLabelText(/URL/)[0], "/new{Enter}")
     expectFetch("post", "source/source_uuid/parameter/url", { url: "https://source.org/new", edit_scope: "report" })
+    expect(showMessage).not.toHaveBeenCalled()
+})
+
+it("mass changes the value of a parameter", async () => {
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 })
+    const showMessage = vi.fn()
+    history.push("?expanded=source_uuid:0")
+    renderReportSources(
+        {
+            subjects: {
+                subject_uuid: {
+                    metrics: {
+                        metric_uuid: {
+                            sources: {
+                                source_uuid: { type: "source_type", parameters: { url: "https://source.org" } },
+                                source_uuid2: { type: "source_type", parameters: { url: "https://source.org" } },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        showMessage,
+        dataModel,
+    )
+    await userEvent.type(screen.getAllByLabelText(/URL/)[0], "/new{Enter}")
+    expectFetch("post", "source/source_uuid/parameter/url", { url: "https://source.org/new", edit_scope: "report" })
+    expect(showMessage).toHaveBeenCalledWith({
+        description: "Changed 2 sources",
+        severity: "info",
+        title: "Mass edit",
+    })
 })
 
 it("changes the value of a parameter of a source with parameter layout", async () => {
     history.push("?expanded=source_uuid:0")
+    const showMessage = vi.fn()
     const theDataModel = { ...dataModel }
     theDataModel.sources["source_type"].parameters = {
         api_version: { name: "API version", type: "string" },
@@ -211,10 +251,12 @@ it("changes the value of a parameter of a source with parameter layout", async (
                 },
             },
         },
+        showMessage,
         theDataModel,
     )
     await userEvent.type(screen.getByLabelText(/API version/), "{Backspace}3{Enter}")
     expectFetch("post", "source/source_uuid/parameter/api_version", { api_version: "3", edit_scope: "report" })
+    expect(showMessage).not.toHaveBeenCalled()
 })
 
 function expectOrder(expected) {

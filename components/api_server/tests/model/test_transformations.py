@@ -75,7 +75,7 @@ class ChangeSourceParameterTest(DataModelTestCase):
         source = metric.sources_dict[SOURCE_ID]
         context = SourceContext(source=source, metric=metric, subject=subject, report=report)
         changed_ids, changed_source_ids = change_source_parameter(
-            [report], context, "url", "https://url", "https://new", "source"
+            context, "url", "https://url", "https://new", "source"
         )
         self.assertEqual([REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], changed_ids)
         self.assertEqual({SOURCE_ID}, changed_source_ids)
@@ -98,9 +98,7 @@ class ChangeSourceParameterTest(DataModelTestCase):
         metric = report.metrics_dict[METRIC_ID]
         source = metric.sources_dict[SOURCE_ID]
         context = SourceContext(source=source, metric=metric, subject=subject, report=report)
-        changed_ids, changed_source_ids = change_source_parameter(
-            [report], context, "url", "https://url", "https://2", "subject"
-        )
+        changed_ids, changed_source_ids = change_source_parameter(context, "url", "https://url", "https://2", "report")
         self.assertEqual([REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, METRIC_ID2, SOURCE_ID2], changed_ids)
         self.assertEqual({SOURCE_ID, SOURCE_ID2}, changed_source_ids)
 
@@ -123,8 +121,6 @@ class ChangeSourceParameterTest(DataModelTestCase):
         metric = report.metrics_dict[METRIC_ID]
         source = metric.sources_dict[SOURCE_ID]
         context = SourceContext(source=source, metric=metric, subject=subject, report=report)
-        changed_ids, changed_source_ids = change_source_parameter(
-            [report], context, "tags", ["security"], [], "subject"
-        )
+        changed_ids, changed_source_ids = change_source_parameter(context, "tags", ["security"], [], "report")
         self.assertEqual([REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], changed_ids)
         self.assertEqual({SOURCE_ID}, changed_source_ids)

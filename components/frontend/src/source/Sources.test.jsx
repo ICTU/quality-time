@@ -9,8 +9,6 @@ import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissio
 import {
     asyncClickButton,
     asyncClickText,
-    clickLabeledElement,
-    clickText,
     expectFetch,
     expectNoAccessibilityViolations,
     expectText,
@@ -179,25 +177,6 @@ it("updates a parameter of a source", async () => {
     expect(screen.getAllByDisplayValue("https://other").length).toBe(1)
     expectFetch("post", "source/source_uuid/parameter/url", { edit_scope: "source", url: "https://other" })
     expect(showMessage).toHaveBeenCalledTimes(0)
-})
-
-it("mass updates a parameter of a source", async () => {
-    const showMessage = vi.fn()
-    fetchServerApi.fetchServerApi.mockResolvedValue({ ok: true, nr_sources_mass_edited: 2 })
-    renderSources({ showMessage: showMessage })
-    clickLabeledElement(/Edit scope/)
-    clickText(/Apply change to subject/)
-    expectText(/Apply change to subject/)
-    await userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), "https://other{Enter}", {
-        initialSelectionStart: 0,
-        initialSelectionEnd: 15,
-    })
-    await act(async () => {
-        fireEvent.click(screen.getByDisplayValue("Source 1"))
-    })
-    expect(screen.getAllByDisplayValue("https://other").length).toBe(1)
-    expectFetch("post", "source/source_uuid/parameter/url", { edit_scope: "subject", url: "https://other" })
-    expect(showMessage).toHaveBeenCalledTimes(1)
 })
 
 it("repositions a source", async () => {

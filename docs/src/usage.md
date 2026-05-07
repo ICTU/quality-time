@@ -358,7 +358,7 @@ The parameters that sources need differ per source type. Most sources need a URL
 :class: only-dark
 ```
 
-Source parameter (URLs, usernames, passwords, etc.) changes can be applied to different scopes: to just the source being edited or to multiple sources that have the same type and value as the one being edited. When applying the change to multiple sources, the user can change all sources that have the same type and value of a metric, of a subject, of a report, or of all reports. Click the pencil icon to change the edit scope before making the change.
+To change location parameters (URLs, usernames, passwords, etc.) of a source that is used multiple times in a report, expand the report title, and activate the "Sources" tab. Changes made to a source there are applied across the report.
 
 #### Deleting sources
 
