@@ -1,4 +1,4 @@
-FROM node:26.0.0-alpine3.23 AS compile-image
+FROM node:26.1.0-alpine3.23 AS compile-image
 
 WORKDIR /home/frontend
 COPY public /home/frontend/public
