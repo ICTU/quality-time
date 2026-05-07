@@ -14,18 +14,18 @@ import { SettingsPanel } from "./header_footer/SettingsPanel"
 import { adapterLocale } from "./locale"
 import { PageContent } from "./PageContent"
 import {
+    availabilityMessagePropType,
     datePropType,
     optionalDatePropType,
     reportsOverviewPropType,
     reportsPropType,
-    stringsPropType,
 } from "./sharedPropTypes"
 import { getReportsTags, getReportTags, getUserPermissions } from "./utils"
 
 export function AppUI({
     dataModel,
     email,
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     handleDateChange,
     lastUpdate,
     loading,
@@ -88,7 +88,7 @@ export function AppUI({
                 <DataModelContext value={dataModel}>
                     <PageContent
                         currentReport={currentReport}
-                        fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
+                        fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                         handleSort={handleSort}
                         lastUpdate={lastUpdate}
                         loading={loading}
@@ -111,7 +111,7 @@ export function AppUI({
 AppUI.propTypes = {
     dataModel: object,
     email: string,
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     handleDateChange: func,
     lastUpdate: datePropType,
     loading: bool,

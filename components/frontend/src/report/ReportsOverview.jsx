@@ -5,6 +5,7 @@ import { addReport, copyReport } from "../api/report"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { PageHeader } from "../dashboard/PageHeader"
 import {
+    availabilityMessagePropType,
     datePropType,
     datesPropType,
     measurementsPropType,
@@ -12,7 +13,6 @@ import {
     reportsOverviewPropType,
     reportsPropType,
     settingsPropType,
-    stringsPropType,
 } from "../sharedPropTypes"
 import { Subjects } from "../subject/Subjects"
 import { getReportsTags } from "../utils"
@@ -53,7 +53,7 @@ ReportsOverviewButtonRow.propTypes = {
 
 export function ReportsOverview({
     dates,
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     handleSort,
     lastUpdate,
     measurements,
@@ -92,7 +92,7 @@ export function ReportsOverview({
             />
             <Subjects
                 atReportsOverview={true}
-                fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
+                fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                 dates={dates}
                 handleSort={handleSort}
                 measurements={measurements}
@@ -108,7 +108,7 @@ export function ReportsOverview({
 }
 ReportsOverview.propTypes = {
     dates: datesPropType,
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     handleSort: func,
     lastUpdate: datePropType,
     measurements: measurementsPropType,

@@ -5,7 +5,7 @@ import { useContext } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
-import { metricPropType, reportPropType, sourcePropType, stringsPropType } from "../sharedPropTypes"
+import { availabilityMessagePropType, metricPropType, reportPropType, sourcePropType } from "../sharedPropTypes"
 import { formatMetricScaleAndUnit } from "../utils"
 import { SourceParameter } from "./SourceParameter"
 
@@ -32,7 +32,7 @@ function applicableParameters(allParameters, remainingParameters, parameterGroup
     return parameterKeys.filter((parameterKey) => allParameters[parameterKey]?.metrics?.includes(metric.type))
 }
 
-export function SourceParameters({ changedParamKeys, metric, reload, report, source, sourceUuid }) {
+export function SourceParameters({ fieldWithUrlAvailabilityError, metric, reload, report, source, sourceUuid }) {
     const dataModel = useContext(DataModelContext)
     const metricUnit = formatMetricScaleAndUnit(metric, dataModel)
     const allParameters = dataModel.sources[source.type].parameters
@@ -55,7 +55,10 @@ export function SourceParameters({ changedParamKeys, metric, reload, report, sou
                     parameterValue={source.parameters?.[parameterKey]}
                     requiredPermissions={[EDIT_REPORT_PERMISSION]}
                     unit={metricUnit}
-                    warning={changedParamKeys?.indexOf(parameterKey) !== -1}
+                    warning={
+                        fieldWithUrlAvailabilityError?.source_uuid === sourceUuid &&
+                        fieldWithUrlAvailabilityError?.parameter_key === parameterKey
+                    }
                     reload={reload}
                 />
             </div>
@@ -83,7 +86,7 @@ export function SourceParameters({ changedParamKeys, metric, reload, report, sou
     )
 }
 SourceParameters.propTypes = {
-    changedParamKeys: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     metric: metricPropType,
     reload: func,
     report: reportPropType,

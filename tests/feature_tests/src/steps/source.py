@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from asserts import assert_equal, assert_in, assert_not_equal, assert_true
+from asserts import assert_equal, assert_in, assert_not_equal
 from behave import then, when
 
 from item import get_item
@@ -44,11 +44,9 @@ def check_source_parameter_availability_status_code(context: Context, status_cod
     """Check the availability status code."""
     post_response = context.post_response.json()
     if status_code == "None":
-        assert_true("availability" not in post_response)
-    elif status_code == "[]":
-        assert_equal(len(post_response["availability"]), 0)
+        assert_equal({}, post_response.get("availability", {}))
     else:
-        assert_equal(status_code, str(post_response["availability"][0]["status_code"]))
+        assert_equal(status_code, str(post_response["availability"]["status_code"]))
 
 
 @then('the availability status reason equals "{message1}"')
@@ -62,7 +60,7 @@ def check_source_parameter_availability_reason(
 ) -> None:
     """Check the availability message."""
     post_response = context.post_response.json()
-    reason = str(post_response["availability"][0]["reason"])
+    reason = str(post_response["availability"]["reason"])
     messages = [message for message in (message1, message2, message3) if message]
     assert_in(reason, messages)
 

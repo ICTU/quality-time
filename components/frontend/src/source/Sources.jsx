@@ -7,13 +7,13 @@ import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { SnackbarContext } from "../context/Snackbar"
 import {
+    availabilityMessagePropType,
     measurementPropType,
     measurementSourcePropType,
     metricPropType,
     reportPropType,
     reportsPropType,
     settingsPropType,
-    stringsPropType,
 } from "../sharedPropTypes"
 import { pluralize } from "../utils"
 import { ButtonRow } from "../widgets/ButtonRow"
@@ -60,7 +60,7 @@ ButtonSegment.propTypes = {
 }
 
 function SourceSegment({
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     index,
     lastIndex,
     measurementSource,
@@ -73,7 +73,7 @@ function SourceSegment({
     return (
         <Box id={sourceUuid} sx={{ border: 1, borderColor: "divider", padding: "8px" }}>
             <Source
-                fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
+                fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                 firstSource={index === 0}
                 lastSource={index === lastIndex}
                 metric={metric}
@@ -87,7 +87,7 @@ function SourceSegment({
     )
 }
 SourceSegment.propTypes = {
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     index: number,
     lastIndex: number,
     measurementSource: measurementSourcePropType,
@@ -111,7 +111,7 @@ export function reloadAfterMassEditSource(json, reload, showMessage) {
 }
 
 export function Sources({
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     reports,
     report,
     metric,
@@ -137,7 +137,7 @@ export function Sources({
                 index={index}
                 lastIndex={lastIndex}
                 measurementSource={measurementSources.find((source) => source.source_uuid === sourceUuid)}
-                fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
+                fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                 reload={(json) => reloadAfterMassEditSource(json, reload, showMessageRef.current)}
                 settings={settings}
             />
@@ -155,7 +155,7 @@ export function Sources({
     )
 }
 Sources.propTypes = {
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     reports: reportsPropType,
     report: reportPropType,
     metric: metricPropType,

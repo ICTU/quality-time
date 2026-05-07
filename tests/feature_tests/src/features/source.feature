@@ -119,7 +119,7 @@ Feature: source
     Given an existing source with type "axecsv" and parameter url "https://axe.csv"
     When the client sets the source parameter url to "None"
     Then the source parameter url equals "None"
-    And the availability status code equals "[]"
+    And the availability status code equals "None"
 
   Scenario: change source token parameter with token validation path
     Given an existing metric with type "issues"

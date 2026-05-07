@@ -253,9 +253,9 @@ export const snackbarMessagePropType = shape({
 
 export const snackbarMessagesPropType = arrayOf(snackbarMessagePropType)
 
-const availabilityMessagePropType = shape({
+export const availabilityMessagePropType = shape({
     status_code: number,
     reason: string,
+    parameter_key: string,
+    source_uuid: string,
 })
-
-export const availabilityMessagesPropType = arrayOf(availabilityMessagePropType)

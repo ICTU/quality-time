@@ -218,7 +218,7 @@ def post_report_issue_tracker_attribute(
     if issue_tracker.get("type") and (url := parameters.get("url")) and tracker_attribute in url_parameters:
         private_token = cast(PrivateToken, DATA_MODEL.sources[issue_tracker["type"]].parameters.get("private_token"))
         token_validation_path = private_token.validation_path if private_token else ""
-        result["availability"] = [check_url_availability(url, parameters, token_validation_path)]
+        result["availability"] = check_url_availability(url, parameters, token_validation_path)
     return result
 
 
