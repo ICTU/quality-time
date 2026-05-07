@@ -14,12 +14,12 @@ import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { SnackbarContext } from "../context/Snackbar"
 import {
+    availabilityMessagePropType,
     datePropType,
     metricPropType,
     reportPropType,
     reportsPropType,
     settingsPropType,
-    stringsPropType,
 } from "../sharedPropTypes"
 import { Logo } from "../source/Logo"
 import { SourceEntities } from "../source/SourceEntities"
@@ -150,7 +150,7 @@ fetchMeasurements.propTypes = {
 }
 
 export function MetricDetails({
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     isFirstMetric,
     isLastMetric,
     metricUuid,
@@ -193,7 +193,7 @@ export function MetricDetails({
             subject={subject}
         />,
         <Sources
-            fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
+            fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
             key="2"
             measurement={metric.latest_measurement}
             metric={metric}
@@ -259,7 +259,7 @@ export function MetricDetails({
     )
 }
 MetricDetails.propTypes = {
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     isFirstMetric: bool,
     isLastMetric: bool,
     metricUuid: string,

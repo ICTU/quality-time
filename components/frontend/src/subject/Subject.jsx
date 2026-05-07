@@ -4,6 +4,7 @@ import { useContext } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import {
+    availabilityMessagePropType,
     datesPropType,
     measurementsPropType,
     metricsPropType,
@@ -11,7 +12,6 @@ import {
     reportPropType,
     reportsPropType,
     settingsPropType,
-    stringsPropType,
 } from "../sharedPropTypes"
 import {
     getMetricComment,
@@ -132,7 +132,7 @@ subjectIsEmptyDueToFilters.propTypes = {
 export function Subject({
     atReportsOverview,
     dates,
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     firstSubject,
     handleSort,
     lastSubject,
@@ -178,7 +178,7 @@ export function Subject({
             <Divider sx={{ padding: "0px" }} />
             <SubjectTable
                 dates={dates}
-                fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
+                fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                 handleSort={handleSort}
                 measurements={measurements}
                 metricEntries={metricEntries}
@@ -196,7 +196,7 @@ export function Subject({
 Subject.propTypes = {
     atReportsOverview: bool,
     dates: datesPropType,
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     firstSubject: bool,
     handleSort: func,
     lastSubject: bool,

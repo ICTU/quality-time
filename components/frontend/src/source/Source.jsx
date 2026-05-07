@@ -10,12 +10,12 @@ import { DataModelContext } from "../context/DataModel"
 import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext, ReadOnlyOrEditable } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import {
+    availabilityMessagePropType,
     measurementSourcePropType,
     metricPropType,
     reportPropType,
     settingsPropType,
     sourcePropType,
-    stringsPropType,
 } from "../sharedPropTypes"
 import { getMetricName, getMetricTypeName, getSourceName, getSourceTypeName, referenceDocumentationURL } from "../utils"
 import { ButtonRow } from "../widgets/ButtonRow"
@@ -26,14 +26,6 @@ import { Tabs } from "../widgets/Tabs"
 import { InfoMessage, WarningMessage } from "../widgets/WarningMessage"
 import { SourceParameters } from "./SourceParameters"
 import { SourceType } from "./SourceType"
-
-function selectSourcesParameterKeys(fieldsWithUrlAvailabilityErrors, sourceUuid) {
-    return fieldsWithUrlAvailabilityErrors
-        ? fieldsWithUrlAvailabilityErrors
-              .filter((field) => field.source_uuid === sourceUuid)
-              .map((field) => field.parameter_key)
-        : []
-}
 
 function SourceButtonRow({ firstSource, lastSource, reload, sourceUuid }) {
     const deleteButton = <DeleteButton itemType="source" onClick={() => deleteSource(sourceUuid, reload)} />
@@ -63,7 +55,7 @@ SourceButtonRow.propTypes = {
 function Parameters({
     configError,
     connectionError,
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     infoMessage,
     metric,
     parseError,
@@ -127,7 +119,7 @@ function Parameters({
             </Grid>
             <Grid size={{ xs: 1, sm: 2, md: 2 }}>
                 <SourceParameters
-                    changedParamKeys={selectSourcesParameterKeys(fieldsWithUrlAvailabilityErrors, sourceUuid)}
+                    fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                     metric={metric}
                     reload={reload}
                     report={report}
@@ -141,7 +133,7 @@ function Parameters({
 Parameters.propTypes = {
     configError: oneOfType([object, string]),
     connectionError: string,
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     infoMessage: string,
     metric: metricPropType,
     parseError: string,
@@ -152,7 +144,7 @@ Parameters.propTypes = {
 }
 
 export function Source({
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     firstSource,
     lastSource,
     measurementSource,
@@ -214,7 +206,7 @@ export function Source({
                 uuid={sourceUuid}
             >
                 <Parameters
-                    fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
+                    fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                     infoMessage={infoMessage}
                     metric={metric}
                     source={source}
@@ -237,7 +229,7 @@ export function Source({
     )
 }
 Source.propTypes = {
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     firstSource: bool,
     lastSource: bool,
     measurementSource: measurementSourcePropType,

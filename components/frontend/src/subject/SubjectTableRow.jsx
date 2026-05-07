@@ -23,6 +23,7 @@ import {
 } from "../metric/MetricDetails"
 import { measurementOnDate } from "../report/report_utils"
 import {
+    availabilityMessagePropType,
     dataModelPropType,
     datePropType,
     datesPropType,
@@ -262,7 +263,7 @@ DragHandleButton.propTypes = {
 export function SubjectTableRow({
     columnsToHide,
     dates,
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     handleSort,
     index,
     lastIndex,
@@ -310,7 +311,7 @@ export function SubjectTableRow({
             color={nrDates === 1 ? metric.status || "unknown" : ""}
             details={
                 <MetricDetails
-                    fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
+                    fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                     isFirstMetric={index === 0}
                     isLastMetric={index === lastIndex}
                     metricUuid={metricUuid}
@@ -434,7 +435,7 @@ export function SubjectTableRow({
 SubjectTableRow.propTypes = {
     columnsToHide: stringsPropType,
     dates: datesPropType,
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     handleSort: func,
     index: number,
     lastIndex: number,

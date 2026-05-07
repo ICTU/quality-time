@@ -178,7 +178,7 @@ class PostSourceParameterTest(SourceTestCase):
             "source_uuid": source_uuid,
             "parameter_key": "url",
         }
-        self.assertEqual({"ok": True, "availability": [availability], "nr_sources_mass_edited": 0}, response)
+        self.assertEqual({"ok": True, "availability": availability, "nr_sources_mass_edited": 0}, response)
 
     def assert_delta(self, description: str, uuids=None, report=None) -> None:
         """Extend to set up fixed parameters."""
@@ -260,7 +260,7 @@ class PostSourceParameterTest(SourceTestCase):
         mock_get.return_value = self.url_check_get_response
         request.json = {"landing_url": "unimportant"}
         response = post_source_parameter(SOURCE_ID, "landing_url", self.database)
-        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": []})
+        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": {}})
         mock_get.assert_not_called()
 
     @patch.object(requests, "get")
@@ -269,7 +269,7 @@ class PostSourceParameterTest(SourceTestCase):
         self.sources[SOURCE_ID]["parameters"]["url"] = self.url
         request.json = {"url": ""}
         response = post_source_parameter(SOURCE_ID, "url", self.database)
-        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": []})
+        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": {}})
         mock_get.assert_not_called()
 
     @patch.object(requests, "get")
@@ -314,7 +314,7 @@ class PostSourceParameterTest(SourceTestCase):
         """Test that the password can be changed and is not logged."""
         request.json = {"password": "secret"}  # nosec
         response = post_source_parameter(SOURCE_ID, "password", self.database)
-        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": []})
+        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": {}})
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             """password of source 'Source' of metric 'Metric' of subject """
@@ -336,7 +336,7 @@ class PostSourceParameterTest(SourceTestCase):
         self.assertEqual(["high", "blocker"], parameters["risks"])
         request.json = {"risks": ["medium", "high", "critical"]}
         response = post_source_parameter(SOURCE_ID, "risks", self.database)
-        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": []})
+        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": {}})
         self.assertEqual(["medium", "high"], parameters["risks"])
 
     def test_regexp_with_curly_braces(self, request):
@@ -347,7 +347,7 @@ class PostSourceParameterTest(SourceTestCase):
         parameters = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
         request.json = {"variable_url_regexp": [r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"]}
         response = post_source_parameter(SOURCE_ID, "variable_url_regexp", self.database)
-        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": []})
+        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": {}})
         self.assertEqual([r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"], parameters["variable_url_regexp"])
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
@@ -449,7 +449,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         """Test that a source parameter can be mass edited."""
         request.json = {"username": self.NEW_VALUE, "edit_scope": "reports"}
         response = post_source_parameter(SOURCE_ID, "username", self.database)
-        self.assertEqual({"ok": True, "nr_sources_mass_edited": 5, "availability": []}, response)
+        self.assertEqual({"ok": True, "nr_sources_mass_edited": 5, "availability": {}}, response)
         self.assert_value(
             {
                 self.NEW_VALUE: [
@@ -484,7 +484,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         """Test that a source parameter can be mass edited."""
         request.json = {"username": self.NEW_VALUE, "edit_scope": "report"}
         response = post_source_parameter(SOURCE_ID, "username", self.database)
-        self.assertEqual({"ok": True, "nr_sources_mass_edited": 4, "availability": []}, response)
+        self.assertEqual({"ok": True, "nr_sources_mass_edited": 4, "availability": {}}, response)
         self.assert_value(
             {
                 self.NEW_VALUE: [
@@ -505,7 +505,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         """Test that a source parameter can be mass edited."""
         request.json = {"username": self.NEW_VALUE, "edit_scope": "subject"}
         response = post_source_parameter(SOURCE_ID, "username", self.database)
-        self.assertEqual({"ok": True, "nr_sources_mass_edited": 3, "availability": []}, response)
+        self.assertEqual({"ok": True, "nr_sources_mass_edited": 3, "availability": {}}, response)
         self.assert_value(
             {
                 self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2], self.sources2[SOURCE_ID5]],
@@ -525,7 +525,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         """Test that a source parameter can be mass edited."""
         request.json = {"username": self.NEW_VALUE, "edit_scope": "metric"}
         response = post_source_parameter(SOURCE_ID, "username", self.database)
-        self.assertEqual({"ok": True, "nr_sources_mass_edited": 2, "availability": []}, response)
+        self.assertEqual({"ok": True, "nr_sources_mass_edited": 2, "availability": {}}, response)
         self.assert_value(
             {
                 self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2]],

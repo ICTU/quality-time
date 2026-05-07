@@ -3,6 +3,7 @@ import { func } from "prop-types"
 
 import { PageHeader } from "../dashboard/PageHeader"
 import {
+    availabilityMessagePropType,
     datePropType,
     datesPropType,
     measurementsPropType,
@@ -10,7 +11,6 @@ import {
     reportPropType,
     reportsPropType,
     settingsPropType,
-    stringsPropType,
 } from "../sharedPropTypes"
 import { Subjects } from "../subject/Subjects"
 import { SubjectsButtonRow } from "../subject/SubjectsButtonRow"
@@ -28,7 +28,7 @@ function navigateToSubject(event, subjectUuid) {
 
 export function Report({
     dates,
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     handleSort,
     lastUpdate,
     measurements,
@@ -78,7 +78,7 @@ export function Report({
             </Paper>
             <Subjects
                 atReportsOverview={false}
-                fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
+                fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                 dates={dates}
                 handleSort={handleSort}
                 measurements={measurements}
@@ -94,7 +94,7 @@ export function Report({
 }
 Report.propTypes = {
     dates: datesPropType,
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     handleSort: func,
     lastUpdate: datePropType,
     measurements: measurementsPropType,

@@ -6,13 +6,13 @@ import { useContext } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import {
+    availabilityMessagePropType,
     datesPropType,
     measurementsPropType,
     optionalDatePropType,
     reportPropType,
     reportsPropType,
     settingsPropType,
-    stringsPropType,
 } from "../sharedPropTypes"
 import { determineColumnsToHide } from "./subject_column"
 import { SubjectTableBody } from "./SubjectTableBody"
@@ -21,7 +21,7 @@ import { SubjectTableHeader } from "./SubjectTableHeader"
 
 export function SubjectTable({
     dates,
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     handleSort,
     measurements,
     metricEntries,
@@ -49,7 +49,7 @@ export function SubjectTable({
                 <SubjectTableBody
                     columnsToHide={columnsToHide}
                     dates={dates}
-                    fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
+                    fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                     handleSort={handleSort}
                     measurements={measurements}
                     metricEntries={metricEntries}
@@ -79,7 +79,7 @@ export function SubjectTable({
 }
 SubjectTable.propTypes = {
     dates: datesPropType,
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     handleSort: func,
     measurements: measurementsPropType,
     metricEntries: array,

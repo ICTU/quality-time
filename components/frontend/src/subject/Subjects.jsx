@@ -2,18 +2,18 @@ import { bool, func } from "prop-types"
 
 import { useDelayedRender } from "../hooks/delayed_render"
 import {
+    availabilityMessagePropType,
     datesPropType,
     measurementsPropType,
     optionalDatePropType,
     reportsPropType,
     settingsPropType,
-    stringsPropType,
 } from "../sharedPropTypes"
 import { Subject } from "./Subject"
 
 export function Subjects({
     atReportsOverview,
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     dates,
     handleSort,
     measurements,
@@ -36,7 +36,7 @@ export function Subjects({
             subjects.push(
                 <Subject
                     atReportsOverview={atReportsOverview}
-                    fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
+                    fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                     dates={dates}
                     firstSubject={index === 0}
                     handleSort={handleSort}
@@ -57,7 +57,7 @@ export function Subjects({
 }
 Subjects.propTypes = {
     atReportsOverview: bool,
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     dates: datesPropType,
     handleSort: func,
     measurements: measurementsPropType,

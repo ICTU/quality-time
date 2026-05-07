@@ -5,7 +5,7 @@ import { expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { SourceParameters } from "./SourceParameters"
 
 function renderSourceParameters({
-    changedParamKeys = [],
+    fieldWithUrlAvailabilityError = {},
     defaultValue = "Default value",
     mandatory = false,
     placeholder = "",
@@ -50,13 +50,14 @@ function renderSourceParameters({
             }}
         >
             <SourceParameters
+                fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                 report={{ subjects: {} }}
                 metric={{ type: "violations" }}
                 source={{
                     type: "source_type",
                     parameters: { parameter_key: sourceParameterValue },
                 }}
-                changedParamKeys={changedParamKeys}
+                sourceUuid="source_uuid"
             />
         </DataModelContext>,
     )
@@ -98,12 +99,18 @@ it("renders a warning if a mandatory parameter has no value", async () => {
 })
 
 it("does not render a warning if the url was reachable", async () => {
-    renderSourceParameters({ type: "url", changedParamKeys: ["other_parameter_key"] })
+    renderSourceParameters({
+        type: "url",
+        fieldWithUrlAvailabilityError: { parameter_key: "other_parameter_key", source_uuid: "source_uuid" },
+    })
     expect(screen.getByDisplayValue(/Default value/)).toBeValid()
 })
 
 it("renders a warning if the url was not reachable", async () => {
-    renderSourceParameters({ type: "url", changedParamKeys: ["parameter_key"] })
+    renderSourceParameters({
+        type: "url",
+        fieldWithUrlAvailabilityError: { parameter_key: "parameter_key", source_uuid: "source_uuid" },
+    })
     expect(screen.getByDisplayValue(/Default value/)).toBeInvalid()
 })
 

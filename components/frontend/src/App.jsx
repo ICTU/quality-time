@@ -12,7 +12,7 @@ import { createNrMeasurementsEventSource } from "./api/measurement"
 import { getReport, getReportsOverview } from "./api/report"
 import { AppUI } from "./AppUI"
 import { registeredURLSearchParams, toSearchString } from "./hooks/url_search_query"
-import { showURLAvailabilityMessages } from "./messages"
+import { showURLAvailabilityMessage } from "./messages"
 import { clearStoredSession, loadStoredSession, storeSession } from "./session_storage"
 import { theme } from "./theme"
 import { endOfDayFromISODateString, reportUuidFromPath, toISODateStringInCurrentTZ } from "./utils"
@@ -50,7 +50,7 @@ export default function App() {
     // Refs not backed by state (opaque handles + non-rendered flags)
     const sourceRef = useRef(null)
     const sessionExpirationTimeoutRef = useRef(null)
-    const fieldsWithUrlAvailabilityErrorsRef = useRef(null)
+    const fieldWithUrlAvailabilityErrorRef = useRef(null)
     const nrMeasurementsStreamConnectedRef = useRef(true) // Assume initial connection will be successful
 
     function showMessage(message) {
@@ -172,10 +172,10 @@ export default function App() {
     }
 
     function processResponseJSON(json) {
-        showURLAvailabilityMessages(json.availability, showMessage)
-        fieldsWithUrlAvailabilityErrorsRef.current = json.availability
-            ? json.availability.filter((urlKey) => urlKey.status_code !== 200)
-            : null
+        const { availability } = json
+        showURLAvailabilityMessage(availability, showMessage)
+        fieldWithUrlAvailabilityErrorRef.current =
+            availability?.status_code !== undefined && availability.status_code !== 200 ? availability : null
         checkSession(json)
         fetchReports()
     }
@@ -278,7 +278,7 @@ export default function App() {
                 <AppUI
                     dataModel={dataModel}
                     email={email}
-                    fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrorsRef.current}
+                    fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityErrorRef.current}
                     handleDateChange={handleDateChange}
                     key={reportUuid} // Make sure the AppUI is refreshed whenever the current report changes
                     lastUpdate={lastUpdate}

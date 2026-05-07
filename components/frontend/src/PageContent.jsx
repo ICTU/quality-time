@@ -9,13 +9,13 @@ import { useHashFragment } from "./hooks/hash_fragment"
 import { Report } from "./report/Report"
 import { ReportsOverview } from "./report/ReportsOverview"
 import {
+    availabilityMessagePropType,
     datePropType,
     optionalDatePropType,
     reportPropType,
     reportsOverviewPropType,
     reportsPropType,
     settingsPropType,
-    stringsPropType,
 } from "./sharedPropTypes"
 
 function getColumnDates(reportDate, dateInterval, dateOrder, nrDates = 1) {
@@ -35,7 +35,7 @@ function getColumnDates(reportDate, dateInterval, dateOrder, nrDates = 1) {
 
 export function PageContent({
     currentReport,
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     handleSort,
     lastUpdate,
     loading,
@@ -87,7 +87,7 @@ export function PageContent({
         )
     } else {
         const commonProps = {
-            fieldsWithUrlAvailabilityErrors: fieldsWithUrlAvailabilityErrors,
+            fieldWithUrlAvailabilityError: fieldWithUrlAvailabilityError,
             dates: dates,
             handleSort: handleSort,
             measurements: measurements,
@@ -140,7 +140,7 @@ export function PageContent({
 }
 PageContent.propTypes = {
     currentReport: reportPropType,
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     handleSort: func,
     lastUpdate: datePropType,
     loading: bool,

@@ -14,6 +14,7 @@ function useSyncedEntries(metricEntries) {
 
 import { setMetricAttribute } from "../api/metric"
 import {
+    availabilityMessagePropType,
     datesPropType,
     measurementsPropType,
     optionalDatePropType,
@@ -28,7 +29,7 @@ import { SubjectTableRow } from "./SubjectTableRow"
 export function SubjectTableBody({
     columnsToHide,
     dates,
-    fieldsWithUrlAvailabilityErrors,
+    fieldWithUrlAvailabilityError,
     handleSort,
     measurements,
     metricEntries,
@@ -121,7 +122,7 @@ export function SubjectTableBody({
                     <SubjectTableRow
                         columnsToHide={columnsToHide}
                         dates={dates}
-                        fieldsWithUrlAvailabilityErrors={fieldsWithUrlAvailabilityErrors}
+                        fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                         handleSort={handleSort}
                         index={index}
                         key={metricUuid}
@@ -148,7 +149,7 @@ export function SubjectTableBody({
 SubjectTableBody.propTypes = {
     columnsToHide: stringsPropType,
     dates: datesPropType,
-    fieldsWithUrlAvailabilityErrors: stringsPropType,
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     handleSort: func,
     measurements: measurementsPropType,
     metricEntries: array,

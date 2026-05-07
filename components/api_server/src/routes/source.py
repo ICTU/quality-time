@@ -174,7 +174,7 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     reports_to_insert = [report for report in reports if report["report_uuid"] in changed_ids]
     result = insert_new_report(database, delta_description, changed_ids, *reports_to_insert)
     result["nr_sources_mass_edited"] = len(changed_source_ids) if edit_scope != "source" else 0
-    result["availability"] = _availability_checks(
+    result["availability"] = _availability_check(
         context.source["type"], context.source["parameters"], context.source.uuid, parameter_key
     )
     return result
@@ -217,28 +217,27 @@ def _source_description(
     return source_description
 
 
-def _availability_checks(
+def _availability_check(
     source_type: str,
     parameters: dict,
     identifier: SourceId | str,
     parameter_key: str,
-) -> list[dict[str, str | int]]:
-    """Check the availability of the URLs."""
+) -> dict[str, str | int]:
+    """Check the availability of the URL affected by a change to parameter_key, if any."""
     data_model_parameters = DATA_MODEL.sources[source_type].parameters
+    url_parameter_key = next(
+        (
+            key
+            for key, value in data_model_parameters.items()
+            if (value.type == "url" and parameter_key == key) or parameter_key in (value.validate_on or [])
+        ),
+        None,
+    )
+    if not url_parameter_key or not (url := parameters.get(url_parameter_key)):
+        return {}
     private_token = cast(PrivateToken, data_model_parameters.get("private_token"))
     token_validation_path = private_token.validation_path if private_token else ""
-    url_parameter_keys = [
-        key
-        for key, value in data_model_parameters.items()
-        if (value.type == "url" and parameter_key == key) or parameter_key in (value.validate_on or [])
-    ]
-    availability_checks = []
-    for url_parameter_key in url_parameter_keys:
-        url = parameters.get(url_parameter_key, "")
-        if not url:
-            continue
-        availability = check_url_availability(url, parameters, token_validation_path)
-        availability["parameter_key"] = url_parameter_key
-        availability["source_uuid"] = identifier
-        availability_checks.append(availability)
-    return availability_checks
+    availability = check_url_availability(url, parameters, token_validation_path)
+    availability["parameter_key"] = url_parameter_key
+    availability["source_uuid"] = identifier
+    return availability

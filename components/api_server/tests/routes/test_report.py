@@ -136,7 +136,7 @@ class ReportIssueTrackerPostAttributeTest(ReportTestCase):
         request.json = {"url": self.ISSUE_TRACKER_URL}
         result = post_report_issue_tracker_attribute(self.database, REPORT_ID, "url")
         self.assertTrue(result["ok"])
-        self.assertEqual(-1, result["availability"][0]["status_code"])
+        self.assertEqual(-1, result["availability"]["status_code"])
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assertEqual(
             {
