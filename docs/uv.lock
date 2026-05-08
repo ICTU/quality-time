@@ -1087,7 +1087,7 @@ requires-dist = [
 dev = [
     { name = "mongomock", specifier = "==4.3.0" },
     { name = "tools", virtual = "../tools/third_party" },
-    { name = "types-python-dateutil", specifier = "==2.9.0.20260408" },
+    { name = "types-python-dateutil", specifier = "==2.9.0.20260508" },
 ]
 
 [[package]]
