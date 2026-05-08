@@ -29,7 +29,7 @@ beforeEach(() => {
 
 afterEach(() => vi.restoreAllMocks())
 
-function ReportsOverviewWrapper({ dates, lastUpdate, reportDate, reports, reportsOverview }) {
+function ReportsOverviewWrapper({ dates, lastUpdate, measurements, reportDate, reports, reportsOverview }) {
     const settings = useSettings()
     return (
         <ThemeProvider theme={theme}>
@@ -38,7 +38,7 @@ function ReportsOverviewWrapper({ dates, lastUpdate, reportDate, reports, report
                     <ReportsOverview
                         dates={dates}
                         lastUpdate={lastUpdate}
-                        measurements={[{ status: "target_met" }]}
+                        measurements={measurements}
                         reportDate={reportDate}
                         reports={reports}
                         reportsOverview={reportsOverview}
@@ -50,7 +50,12 @@ function ReportsOverviewWrapper({ dates, lastUpdate, reportDate, reports, report
     )
 }
 
-async function renderReportsOverview({ reportDate = null, reports = [], reportsOverview = {} } = {}) {
+async function renderReportsOverview({
+    reportDate = null,
+    reports = [],
+    reportsOverview = {},
+    measurements = [{ status: "target_met" }],
+} = {}) {
     const now = new Date()
     let result
     await act(async () => {
@@ -58,6 +63,7 @@ async function renderReportsOverview({ reportDate = null, reports = [], reportsO
             <ReportsOverviewWrapper
                 dates={[reportDate || now]}
                 lastUpdate={now}
+                measurements={measurements}
                 reportDate={reportDate}
                 reports={reports}
                 reportsOverview={reportsOverview}
@@ -89,6 +95,22 @@ it("shows the comment", async () => {
     const reportsOverview = { title: "Overview", comment: "Commentary", permissions: {} }
     await renderReportsOverview({ reports: reports, reportsOverview: reportsOverview })
     expectText(/Commentary/)
+})
+
+it("renders with multiple measurements", async () => {
+    const reports = [{ title: "Report title", report_uuid: "report_uuid", subjects: {} }]
+    const reportsOverview = { title: "Overview", permissions: {} }
+    await renderReportsOverview({
+        reports: reports,
+        reportsOverview: reportsOverview,
+        // Out-of-order so the reverse-start sort exercises both branches of the comparator
+        measurements: [
+            { metric_uuid: "metric_uuid", start: "2024-01-02T00:00:00Z", end: "2024-01-02T01:00:00Z" },
+            { metric_uuid: "metric_uuid", start: "2024-01-01T00:00:00Z", end: "2024-01-01T01:00:00Z" },
+            { metric_uuid: "metric_uuid", start: "2024-01-03T00:00:00Z", end: "2024-01-03T01:00:00Z" },
+        ],
+    })
+    expectText(/Overview/)
 })
 
 const reports = [

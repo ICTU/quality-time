@@ -122,6 +122,14 @@ it("sorts a column by keypress", async () => {
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 
+it("can sort by the overrun column when multiple date columns are shown", async () => {
+    history.push("?nr_dates=2")
+    const handleSort = vi.fn()
+    renderSettingsPanel({ handleSort: handleSort })
+    clickText(/Overrun/, 1)
+    expect(handleSort).toHaveBeenCalledWith("overrun")
+})
+
 it("shows issue summaries", async () => {
     renderSettingsPanel()
     await asyncClickText(/Summary/, 0)

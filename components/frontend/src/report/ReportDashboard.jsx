@@ -93,6 +93,7 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
             cards={subjectCards.concat(tagCards.concat(extraCards))}
             initialLayout={report.layout}
             saveLayout={function (newLayout) {
+                /* v8 ignore next -- @preserve: only fires after a real drag, which jsdom + react-grid-layout can't simulate cleanly */
                 setReportAttribute(report.report_uuid, "layout", newLayout, reload)
             }}
         />

@@ -2,8 +2,10 @@ import { act, render, screen } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
+import { dataModel } from "./__fixtures__/fixtures"
 import * as fetchServerApi from "./api/fetch_server_api"
 import { useSettings } from "./app_ui_settings"
+import { DataModelContext } from "./context/DataModel"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 import { PageContent } from "./PageContent"
 import { expectFetch, expectNoAccessibilityViolations, expectText } from "./testUtils"
@@ -21,26 +23,30 @@ afterEach(() => {
     vi.useRealTimers()
 })
 
-function PageContentWrapper({ lastUpdate, loading, reports, reportDate, reportUuid, showMessage }) {
+function PageContentWrapper({ currentReport, lastUpdate, loading, reports, reportDate, reportUuid, showMessage }) {
     const settings = useSettings(reportUuid)
     return (
         <div id="dashboard">
-            <SnackbarAlerts messages={[]} showMessage={showMessage}>
-                <PageContent
-                    lastUpdate={lastUpdate}
-                    loading={loading}
-                    reports={reports}
-                    reportsOverview={{}}
-                    reportDate={reportDate}
-                    reportUuid={reportUuid}
-                    settings={settings}
-                />
-            </SnackbarAlerts>
+            <DataModelContext value={dataModel}>
+                <SnackbarAlerts messages={[]} showMessage={showMessage}>
+                    <PageContent
+                        currentReport={currentReport}
+                        lastUpdate={lastUpdate}
+                        loading={loading}
+                        reports={reports}
+                        reportsOverview={{}}
+                        reportDate={reportDate}
+                        reportUuid={reportUuid}
+                        settings={settings}
+                    />
+                </SnackbarAlerts>
+            </DataModelContext>
         </div>
     )
 }
 
 async function renderPageContent({
+    currentReport = null,
     loading = false,
     reports = [],
     reportDate = null,
@@ -52,6 +58,7 @@ async function renderPageContent({
     await act(async () => {
         result = render(
             <PageContentWrapper
+                currentReport={currentReport}
                 lastUpdate={lastUpdate}
                 loading={loading}
                 reports={reports}
@@ -141,4 +148,20 @@ it("fails to load measurements", async () => {
         title: "Could not fetch measurements",
         description: "Error description",
     })
+})
+
+it("uses ascending date order when configured", async () => {
+    const mockedDate = new Date("2022-04-27T16:00:05+0000")
+    vi.setSystemTime(mockedDate)
+    history.push("?date_interval=1&nr_dates=2&date_order=ascending")
+    await renderPageContent()
+    expectMeasurementsCall(mockedDate, 1)
+})
+
+it("treats a measurement response without a measurements field as empty", async () => {
+    fetchServerApi.fetchServerApi.mockImplementation(() => Promise.resolve({ ok: true }))
+    const report = { report_uuid: "uuid", title: "Report title", subjects: {} }
+    await renderPageContent({ currentReport: report, reports: [report], reportUuid: "uuid" })
+    // Without the `?? []` fallback, Report.jsx's `measurements.slice()` would throw
+    expectText(/Report title/, 2)
 })

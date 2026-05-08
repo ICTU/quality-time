@@ -26,8 +26,15 @@ export default defineConfig({
         globals: true,
         coverage: {
             include: ["src"],
-            reporter: ["text", "lcov", "html"],
+            exclude: ["src/index.jsx"],
+            reporter: [["text", { maxCols: 200 }], "lcov", "html"],
             skipFull: true,
+            thresholds: {
+                statements: 100,
+                branches: 100,
+                functions: 100,
+                lines: 100,
+            },
         },
         deps: {
             optimizer: {

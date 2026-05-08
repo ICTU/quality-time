@@ -27,21 +27,21 @@ beforeEach(() => {
     }
 })
 
-it("gets the resized bounding box", () => {
+it("gets the resized bounding box", async () => {
     act(() => registeredCallback())
-    waitFor(() => {
+    await waitFor(() => {
         expect(boundingBox).toStrictEqual({ width: 100, height: 100 })
     })
 })
 
-it("gets the default bounding box after the current ref is unmounted", () => {
+it("gets the default bounding box after the current ref is unmounted", async () => {
     act(() => registeredCallback())
-    waitFor(() => {
+    await waitFor(() => {
         expect(boundingBox).toStrictEqual({ width: 100, height: 100 })
     })
     ref.current.getBoundingClientRect = () => null
     act(() => registeredCallback())
-    waitFor(() => {
+    await waitFor(() => {
         expect(boundingBox).toStrictEqual({})
     })
 })

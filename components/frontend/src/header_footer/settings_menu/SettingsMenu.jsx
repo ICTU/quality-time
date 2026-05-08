@@ -36,12 +36,14 @@ export function SettingsMenuItem({ active, children, disabled, disabledHelp, hel
     // A menu item that can can show help when disabled so users can see why the menu item is disabled
     const props = {
         disabled: disabled,
+        /* v8 ignore start -- @preserve: cannot be reached from RTL, see https://github.com/testing-library/react-testing-library/issues/1152 */
         onBeforeInput: (event) => {
             event.preventDefault()
             if (!disabled) {
                 onClick(onClickData)
             }
-        }, // Uncovered, see https://github.com/testing-library/react-testing-library/issues/1152
+        },
+        /* v8 ignore stop */
         onClick: (event) => {
             event.preventDefault()
             onClick(onClickData)

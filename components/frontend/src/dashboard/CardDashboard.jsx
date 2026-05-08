@@ -8,9 +8,11 @@ function cardDivs(cards, isDragging) {
     return cards.map((card) => (
         <div
             onClickCapture={(e) => {
+                /* v8 ignore start -- @preserve: only fires mid-drag, which jsdom + react-grid-layout can't simulate */
                 if (isDragging(e)) {
                     e.stopPropagation()
                 }
+                /* v8 ignore stop */
             }}
             key={card.key}
         >
@@ -57,6 +59,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
         }),
     )
 
+    /* v8 ignore start -- @preserve: drag handlers only fire from a real react-grid-layout drag, which jsdom can't simulate */
     function onDragStart(_currentLayout, _oldItem, _newItem, _placeholder, event) {
         setDragging(true)
         const now = new Date()
@@ -69,8 +72,10 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
         }
         setTimeout(() => setDragging(false), 200) // User was dragging, prevent click event propagation
     }
+    /* v8 ignore stop */
 
     function isDragging(event) {
+        /* v8 ignore start -- @preserve: only reachable after onDragStart flips dragging=true, which can't be fired from jsdom */
         if (dragging) {
             const now = new Date()
             const distanceX = Math.abs(event.clientX - mousePos[0])
@@ -78,6 +83,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
             const timedelta = now.getTime() - mousePos[2]
             return distanceX > 10 || distanceY > 10 || timedelta > 250
         }
+        /* v8 ignore stop */
         return false
     }
 

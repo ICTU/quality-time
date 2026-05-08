@@ -99,7 +99,7 @@ export default function App() {
                 title: "Login with forward authentication failed",
                 description: `${error}`,
             })
-        login("", "")
+        return login("", "")
             .then((json) => {
                 if (json.ok) {
                     setUserSession(json.email, json.email, new Date(json.session_expiration_datetime))
@@ -107,8 +107,10 @@ export default function App() {
                 }
                 return false
             })
-            .catch(showErrorMessage)
-        return false
+            .catch((error) => {
+                showErrorMessage(error)
+                return false
+            })
     }
 
     function initUserSession() {
@@ -158,10 +160,10 @@ export default function App() {
             .catch((error) => showErrorMessage(error))
     }, [])
 
-    function checkSession(json) {
+    async function checkSession(json) {
         if (json.ok === false && json.status === 401) {
             setUserSession()
-            if (loginForwardAuth() === false) {
+            if ((await loginForwardAuth()) === false) {
                 showMessage({
                     severity: "warning",
                     title: "Your session expired",
@@ -206,6 +208,7 @@ export default function App() {
     }
 
     function openReportsOverview() {
+        /* v8 ignore next -- @preserve: defensive against stack pollution; today's only callers (disabled HomeButton, deleteReport) only fire when pathname !== "/" */
         if (history.location.pathname !== "/") {
             historyPush("/")
             setReportUuid("")

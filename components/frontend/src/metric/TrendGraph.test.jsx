@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
@@ -13,12 +13,16 @@ const dataModel = {
     },
 }
 
-function renderTrendgraph({ measurements = [], scale = "count", loading = "loaded" } = {}) {
-    return render(
+function createTrendGraph({ measurements = [], scale = "count", loading = "loaded" } = {}) {
+    return (
         <DataModelContext value={dataModel}>
             <TrendGraph metric={{ type: "violations", scale: scale }} measurements={measurements} loading={loading} />
-        </DataModelContext>,
+        </DataModelContext>
     )
+}
+
+function renderTrendgraph(props) {
+    return render(createTrendGraph(props))
 }
 
 it("has no accessibility violations", async () => {
@@ -99,4 +103,17 @@ it("renders a message if the metric has no measurements", () => {
     renderTrendgraph()
     expectNoText(/Time/)
     expectText(/trend graph can not be displayed/)
+})
+
+it("stops wheel events from propagating past the chart", () => {
+    const parentWheel = vi.fn()
+    const { container } = render(
+        <div onWheel={parentWheel}>
+            {createTrendGraph({
+                measurements: [{ count: { value: "1" }, start: "2019-09-29", end: "2019-09-30" }],
+            })}
+        </div>,
+    )
+    fireEvent.wheel(container.querySelector("svg"))
+    expect(parentWheel).not.toHaveBeenCalled()
 })

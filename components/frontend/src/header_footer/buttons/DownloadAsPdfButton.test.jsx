@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react"
+import { act, render, screen } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
@@ -56,6 +56,7 @@ function mockGetReportPdfWithTimeout() {
 }
 
 test("DownloadAsPdfButton indicates loading on click", async () => {
+    vi.useFakeTimers()
     const showMessage = vi.fn()
     mockGetReportPdfWithTimeout()
     renderDownloadAsPdfButton({ reportUuid: "report_uuid", showMessage: showMessage })
@@ -67,12 +68,15 @@ test("DownloadAsPdfButton indicates loading on click", async () => {
         {},
         "application/pdf",
     )
-    await waitFor(() => {
-        expect(showMessage).toHaveBeenCalledTimes(1)
+    await act(async () => {
+        await vi.runAllTimersAsync()
     })
+    expect(showMessage).toHaveBeenCalledTimes(1)
+    vi.useRealTimers()
 })
 
 test("DownloadAsPdfButton ignores a second click", async () => {
+    vi.useFakeTimers()
     const showMessage = vi.fn()
     mockGetReportPdfWithTimeout()
     renderDownloadAsPdfButton({ reportUuid: "report_uuid", showMessage: showMessage })
@@ -84,9 +88,11 @@ test("DownloadAsPdfButton ignores a second click", async () => {
         {},
         "application/pdf",
     )
-    await waitFor(() => {
-        expect(showMessage).toHaveBeenCalledTimes(1)
+    await act(async () => {
+        await vi.runAllTimersAsync()
     })
+    expect(showMessage).toHaveBeenCalledTimes(1)
+    vi.useRealTimers()
 })
 
 test("DownloadAsPdfButton ignores unregistered query parameters", async () => {

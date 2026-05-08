@@ -46,7 +46,7 @@ const report = {
     },
 }
 
-function ReportWrapper({ lastUpdate, reportToRender, dates, handleSort, reportDate }) {
+function ReportWrapper({ lastUpdate, reportToRender, dates, handleSort, reportDate, measurements }) {
     const settings = useSettings()
     return (
         <ThemeProvider theme={theme}>
@@ -56,7 +56,7 @@ function ReportWrapper({ lastUpdate, reportToRender, dates, handleSort, reportDa
                         dates={dates}
                         handleSort={handleSort}
                         lastUpdate={lastUpdate}
-                        measurements={[]}
+                        measurements={measurements}
                         reports={[reportToRender]}
                         report={reportToRender}
                         reportDate={reportDate}
@@ -73,6 +73,7 @@ async function renderReport({
     dates = [new Date()],
     handleSort = vi.fn(),
     reportDate = null,
+    measurements = [],
 } = {}) {
     const lastUpdate = new Date()
     let result
@@ -84,6 +85,7 @@ async function renderReport({
                 dates={dates}
                 handleSort={handleSort}
                 reportDate={reportDate}
+                measurements={measurements}
             />,
         )
     })
@@ -103,6 +105,34 @@ it("has no accessibility violations when report is missing", async () => {
 it("shows the report", async () => {
     await renderReport({ reportToRender: report })
     expectText(/Subject title/, 2) // Once as dashboard card and once as subject header
+})
+
+it("renders with multiple measurements", async () => {
+    await renderReport({
+        reportToRender: report,
+        measurements: [
+            // Out-of-order so the reverse-start sort exercises both branches of the comparator
+            {
+                metric_uuid: "metric_uuid",
+                start: "2024-01-02T00:00:00Z",
+                end: "2024-01-02T01:00:00Z",
+                count: { value: "2" },
+            },
+            {
+                metric_uuid: "metric_uuid",
+                start: "2024-01-01T00:00:00Z",
+                end: "2024-01-01T01:00:00Z",
+                count: { value: "1" },
+            },
+            {
+                metric_uuid: "metric_uuid",
+                start: "2024-01-03T00:00:00Z",
+                end: "2024-01-03T01:00:00Z",
+                count: { value: "3" },
+            },
+        ],
+    })
+    expectText(/Subject title/, 2)
 })
 
 it("shows an error message if there is no report", async () => {
