@@ -97,6 +97,7 @@ export function ReportsOverviewDashboard({
             cards={reportCards.concat(tagCards).concat(extraCards)}
             initialLayout={layout}
             saveLayout={function (newLayout) {
+                /* v8 ignore next -- @preserve: only fires after a real drag, which jsdom + react-grid-layout can't simulate cleanly */
                 setReportsAttribute("layout", newLayout, reload)
             }}
         />

@@ -93,6 +93,10 @@ export function TrendGraph({ metric, measurements, loading }) {
                         events={{
                             onWheelCapture: (event) => event.stopPropagation(), // Needed to make normal scroll work
                         }}
+                        // Firing the selection drag in jsdom makes Victory's selection container render a preview
+                        // rectangle whose component path resolves to undefined, so this handler can't be reached
+                        // from a unit test:
+                        /* v8 ignore next -- @preserve */
                         onSelection={(_points, bounds) => setVisibleDomain(bounds)}
                         responsive={true}
                         selectionDimension="x"

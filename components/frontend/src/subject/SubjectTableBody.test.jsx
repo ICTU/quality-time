@@ -196,3 +196,21 @@ it("resets drag state on dragend", () => {
     // Drop indicator should be gone
     expect(screen.queryByTestId("drop-indicator-1")).not.toBeInTheDocument()
 })
+
+it("prevents default on dragOver so the row is a valid drop target", () => {
+    renderSubjectTableBody()
+    const row = screen.getByTestId("metric-row-0")
+    const dragOverEvent = createEvent.dragOver(row)
+    dragOverEvent.preventDefault = vi.fn()
+    fireEvent(row, dragOverEvent)
+    expect(dragOverEvent.preventDefault).toHaveBeenCalled()
+})
+
+it("starts a drag from the drag handle button", () => {
+    renderSubjectTableBody()
+    const handle = screen.getAllByLabelText("Drag to reorder")[0]
+    const dragStartEvent = createEvent.dragStart(handle)
+    dragStartEvent.dataTransfer = { effectAllowed: "", setDragImage: vi.fn() }
+    fireEvent(handle, dragStartEvent)
+    expect(dragStartEvent.dataTransfer.effectAllowed).toBe("move")
+})

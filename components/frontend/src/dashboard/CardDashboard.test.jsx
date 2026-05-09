@@ -13,6 +13,16 @@ beforeEach(() => mockGetAnimations())
 
 afterEach(() => vi.restoreAllMocks())
 
+function metricSummaryCard(key = "card") {
+    return (
+        <MetricSummaryCard
+            header="Card"
+            key={key}
+            summary={{ date: { blue: 0, red: 1, green: 2, yellow: 1, white: 0, grey: 0 } }}
+        />
+    )
+}
+
 function renderCardDashboard({ cards = [], initialLayout = [], saveLayout = vi.fn } = {}) {
     return render(
         <ThemeProvider theme={theme}>
@@ -36,35 +46,27 @@ it("returns null without cards", async () => {
 })
 
 it("adds the card to the dashboard", async () => {
-    const { container } = renderCardDashboard({
-        cards: [
-            <MetricSummaryCard
-                header="Card"
-                key="card"
-                summary={{
-                    date: { blue: 0, red: 1, green: 2, yellow: 1, white: 0, grey: 0 },
-                }}
-            />,
-        ],
-    })
+    const { container } = renderCardDashboard({ cards: [metricSummaryCard()] })
     expect(container.children.length).toBe(1)
 })
 
 it("does not save the layout after click", async () => {
-    const mockCallback = vi.fn()
-    renderCardDashboard({
-        cards: [
-            <MetricSummaryCard
-                header="Card"
-                key="card"
-                summary={{
-                    date: { blue: 0, red: 1, green: 2, yellow: 1, white: 0, grey: 0 },
-                }}
-            />,
-        ],
-        initialLayout: [{ h: 6, w: 4, x: 0, y: 0 }],
-        saveLayout: mockCallback,
-    })
+    const saveLayout = vi.fn()
+    renderCardDashboard({ cards: [metricSummaryCard()], saveLayout: saveLayout })
     clickText("Card")
-    expect(mockCallback).not.toHaveBeenCalled()
+    expect(saveLayout).not.toHaveBeenCalled()
+})
+
+it("reuses initial layout entries for matching cards", async () => {
+    const saveLayout = vi.fn()
+    const { container } = renderCardDashboard({
+        cards: [metricSummaryCard()],
+        initialLayout: [{ i: "card", h: 6, w: 4, x: 8, y: 12 }],
+        saveLayout: saveLayout,
+    })
+    // y=12 with rowHeight 24 + default margin 10 → pixel y = 12*24 + 12*10 + 10 = 418px.
+    // If the initial entry were ignored, the card would be placed fresh at y=0.
+    const gridItem = container.querySelector(".react-grid-item")
+    expect(gridItem.style.transform).toContain("418px")
+    expect(saveLayout).not.toHaveBeenCalled()
 })

@@ -17,14 +17,14 @@ beforeEach(() => {
     vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
 })
 
-function renderTags({ tags = ["foo"] } = {}) {
+function renderTags({ metrics = { metric_uuid: { tags: ["foo"] } } } = {}) {
     return render(
         <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
             <Tags
                 report={{
                     report_uuid: "report_uuid",
                     title: "Report",
-                    subjects: { subject_uuid: { metrics: { metric_uuid: { tags: tags } } } },
+                    subjects: { subject_uuid: { metrics: metrics } },
                 }}
                 reload={vi.fn()}
             />
@@ -45,7 +45,7 @@ it("shows the tags", async () => {
 })
 
 it("shows an info message if there are no tags", async () => {
-    renderTags({ tags: [] })
+    renderTags({ metrics: { metric_uuid: { tags: [] } } })
     expectText(/None of the metrics in this report have tags/)
 })
 
@@ -64,4 +64,11 @@ it("renames a tag", async () => {
         initialSelectionEnd: 3,
     })
     expectFetch("post", "report/report_uuid/tag/foo", { tag: "bar" })
+})
+
+it("shows the correct count per tag when metrics have different tags", async () => {
+    renderTags({ metrics: { m1: { tags: ["foo"] }, m2: { tags: ["bar"] } } })
+    expectText(/foo/)
+    expectText(/bar/)
+    expect(screen.getAllByRole("cell", { name: "1" })).toHaveLength(2)
 })

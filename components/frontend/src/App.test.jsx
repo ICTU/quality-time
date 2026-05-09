@@ -10,6 +10,7 @@ import * as report from "./api/report"
 import App from "./App"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 import {
+    asyncClickText,
     clickButton,
     clickRole,
     clickText,
@@ -48,7 +49,16 @@ beforeEach(async () => {
     })
 })
 
-afterEach(() => vi.restoreAllMocks())
+afterEach(() => {
+    vi.restoreAllMocks()
+    localStorage.clear()
+})
+
+function mockSuccessfulFetches({ reports = [] } = {}) {
+    vi.spyOn(datamodel, "getDataModel").mockResolvedValue({ ok: true, subjects: {}, metrics: {}, sources: {} })
+    vi.spyOn(report, "getReportsOverview").mockResolvedValue({})
+    vi.spyOn(report, "getReport").mockResolvedValue({ ok: true, reports })
+}
 
 function reportDateButton() {
     return screen.getByLabelText(/Change report date/, { selector: "button" })
@@ -115,7 +125,6 @@ it("logs in via forward authentication when the server returns ok", async () => 
     render(<App />)
     await expectTextAfterWait(/fwd@example.org/)
     expectAltText(/Avatar for fwd@example.org/)
-    localStorage.clear()
 })
 
 it("shows an error toast when forward authentication rejects", async () => {
@@ -123,6 +132,12 @@ it("shows an error toast when forward authentication rejects", async () => {
     render(<App />)
     await expectTextAfterWait("Login with forward authentication failed")
     expectText(/network down/)
+})
+
+it("does not log in via forward authentication when the server returns not ok", async () => {
+    vi.spyOn(auth, "login").mockResolvedValue({ ok: false })
+    render(<App />)
+    expectText("Not logged in")
 })
 
 async function select15thOfPreviousMonth() {
@@ -161,6 +176,14 @@ it("handles a date reset", async () => {
     expect(reportDateButton().textContent).toMatch(/today/)
 })
 
+it("navigates to a report when its card is clicked", async () => {
+    mockSuccessfulFetches({ reports: [{ report_uuid: "report_uuid", title: "Report title", subjects: {} }] })
+    render(<App />)
+    await expectTextAfterWait(/Report title/)
+    await asyncClickText(/Report title/)
+    await waitFor(() => expect(history.location.pathname).toBe("/report_uuid"))
+})
+
 it("navigates back to the reports overview when the home button is clicked", async () => {
     history.push("/some-uuid")
     render(<App />)
@@ -168,6 +191,65 @@ it("navigates back to the reports overview when the home button is clicked", asy
     clickRole("button", /Go to reports overview/)
     await waitFor(() => expect(history.location.pathname).toBe("/"))
     expect(fetchServerApi.fetchServerApi.mock.calls.length).toBeGreaterThan(callsAfterMount)
+})
+
+it("handles a non-200 availability in a reload response", async () => {
+    setUserInLocalStorage(1)
+    mockSuccessfulFetches()
+    render(<App />)
+    await expectTextAfterWait(/Add report/)
+    fetchServerApi.fetchServerApi.mockResolvedValueOnce({
+        ok: true,
+        availability: { status_code: 503, reason: "Service Unavailable" },
+    })
+    await asyncClickText(/Add report/)
+    await expectTextAfterWait(/URL connection error/)
+})
+
+it("does not warn about an expired session when forward auth recovers it", async () => {
+    setUserInLocalStorage(1)
+    mockSuccessfulFetches()
+    vi.spyOn(auth, "login").mockResolvedValue({
+        ok: true,
+        email: "fwd@example.org",
+        session_expiration_datetime: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    })
+    render(<App />)
+    await expectTextAfterWait(/Add report/)
+    fetchServerApi.fetchServerApi.mockResolvedValueOnce({ ok: false, status: 401 })
+    await asyncClickText(/Add report/)
+    await waitFor(() => expect(screen.queryAllByText(/fwd@example.org/).length).toBeGreaterThan(0))
+    expectNoText(/Your session expired/)
+})
+
+it("warns about an expired session when a reload returns 401", async () => {
+    setUserInLocalStorage(1)
+    mockSuccessfulFetches()
+    vi.spyOn(auth, "login").mockResolvedValue({ ok: false })
+    render(<App />)
+    await expectTextAfterWait(/Add report/)
+    fetchServerApi.fetchServerApi.mockResolvedValueOnce({ ok: false, status: 401 })
+    await asyncClickText(/Add report/)
+    await expectTextAfterWait(/Your session expired/)
+})
+
+it("ignores stale report fetches when the user navigates mid-fetch", async () => {
+    let resolveStale
+    mockSuccessfulFetches({ reports: [{ report_uuid: "first", title: "Fresh report", subjects: {} }] })
+    vi.spyOn(report, "getReport").mockImplementationOnce(() => new Promise((resolve) => (resolveStale = resolve)))
+    render(<App />)
+    history.push("/first")
+    history.push("/second")
+    history.back()
+    await waitFor(() => expect(screen.queryAllByText(/Fresh report/).length).toBeGreaterThan(0))
+    await act(async () =>
+        resolveStale({
+            ok: true,
+            reports: [{ report_uuid: "stale", title: "Stale report", subjects: {} }],
+        }),
+    )
+    expectNoText(/Stale report/)
+    expectNoText(/Sorry, this report/)
 })
 
 it("reloads on a browser pop but not on a push", async () => {
@@ -181,26 +263,29 @@ it("reloads on a browser pop but not on a push", async () => {
     expect(callsAfterPush).toBe(callsAfterMount)
 })
 
+it("handles a report response without a reports field", async () => {
+    mockSuccessfulFetches()
+    vi.spyOn(report, "getReport").mockResolvedValue({ ok: true })
+    render(<App />)
+    await waitFor(() => expectNoLabelText(/Loading/))
+})
+
 it("loads data and clears the loading spinner on a successful fetch", async () => {
-    vi.spyOn(datamodel, "getDataModel").mockResolvedValue({ ok: true })
-    vi.spyOn(report, "getReportsOverview").mockResolvedValue({})
-    vi.spyOn(report, "getReport").mockResolvedValue({ ok: true, reports: [] })
+    mockSuccessfulFetches()
     render(<App />)
     await waitFor(() => expectNoLabelText(/Loading/))
 })
 
 it("shows a server unreachable toast when a fetched response is not ok", async () => {
+    mockSuccessfulFetches()
     vi.spyOn(datamodel, "getDataModel").mockResolvedValue({ ok: false })
-    vi.spyOn(report, "getReportsOverview").mockResolvedValue({})
-    vi.spyOn(report, "getReport").mockResolvedValue({ ok: true, reports: [] })
     render(<App />)
     await expectTextAfterWait("Server unreachable")
 })
 
 it("shows a server unreachable toast when a fetch rejects", async () => {
+    mockSuccessfulFetches()
     vi.spyOn(datamodel, "getDataModel").mockRejectedValue(new Error("network down"))
-    vi.spyOn(report, "getReportsOverview").mockResolvedValue({})
-    vi.spyOn(report, "getReport").mockResolvedValue({ ok: true, reports: [] })
     render(<App />)
     await expectTextAfterWait("Server unreachable")
 })
@@ -225,6 +310,16 @@ it("handles the nr of measurements event source", async () => {
     expectText("Server unreachable")
     await act(async () => eventListeners["init"]({ data: 43 }))
     expectText("Connected to server")
+})
+
+it("does not duplicate a notification message", async () => {
+    render(<App />)
+    await select15thOfPreviousMonth()
+    expectText("Historic information is read-only")
+    fireEvent.click(reportDateButton())
+    clickButton("Today")
+    await select15thOfPreviousMonth()
+    expectText("Historic information is read-only", 1)
 })
 
 it("shows and hides a notification message", async () => {

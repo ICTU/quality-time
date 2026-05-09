@@ -23,31 +23,35 @@ beforeEach(() => {
 
 const reload = vi.fn()
 
-async function renderIssueTracker({ report = { report_uuid: "report_uuid", title: "Report" }, helpUrl = "" } = {}) {
-    let result
-    await act(async () => {
-        result = render(
-            <DataModelContext
-                value={{
-                    sources: {
-                        jira: {
-                            name: "Jira",
-                            issue_tracker: true,
-                            parameters: {
-                                private_token: { help_url: helpUrl },
-                                api_version: { default_value: "v2", values: ["v2", "v3"] },
-                            },
+function createIssueTracker({ report = { report_uuid: "report_uuid", title: "Report" }, helpUrl = "" } = {}) {
+    return (
+        <DataModelContext
+            value={{
+                sources: {
+                    jira: {
+                        name: "Jira",
+                        issue_tracker: true,
+                        parameters: {
+                            private_token: { help_url: helpUrl },
+                            api_version: { default_value: "v2", values: ["v2", "v3"] },
                         },
                     },
-                }}
-            >
-                <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
-                    <SnackbarAlerts messages={[]}>
-                        <IssueTracker report={report} reload={reload} />
-                    </SnackbarAlerts>
-                </PermissionsContext>
-            </DataModelContext>,
-        )
+                },
+            }}
+        >
+            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+                <SnackbarAlerts messages={[]}>
+                    <IssueTracker report={report} reload={reload} />
+                </SnackbarAlerts>
+            </PermissionsContext>
+        </DataModelContext>
+    )
+}
+
+async function renderIssueTracker(props) {
+    let result
+    await act(async () => {
+        result = render(createIssueTracker(props))
     })
     return result
 }
@@ -268,4 +272,43 @@ it("does show the issue labels warning with issue type that does not support lab
         },
     })
     expectText(/Labels not supported/)
+})
+
+it("ignores stale fetch responses when props change", async () => {
+    let resolveStale
+    reportApi.getReportIssueTrackerOptions
+        .mockImplementationOnce(() => new Promise((resolve) => (resolveStale = resolve)))
+        .mockImplementation(() =>
+            Promise.resolve({
+                projects: [
+                    { key: "FRESH-A", name: "Fresh project A" },
+                    { key: "FRESH-B", name: "Fresh project B" },
+                ],
+                issue_types: [],
+                fields: [],
+                epic_links: [],
+            }),
+        )
+    const { rerender } = await renderIssueTracker({
+        report: { report_uuid: "uuid1", title: "Report", issue_tracker: { type: "jira" } },
+    })
+    await act(async () =>
+        rerender(
+            createIssueTracker({
+                report: { report_uuid: "uuid2", title: "Report", issue_tracker: { type: "jira" } },
+            }),
+        ),
+    )
+    await act(async () =>
+        resolveStale({
+            projects: [{ key: "STALE", name: "Stale project" }],
+            issue_types: [],
+            fields: [],
+            epic_links: [],
+        }),
+    )
+    fireEvent.mouseDown(screen.getByLabelText(/Project for new issues/))
+    expectText(/Fresh project A/)
+    expectText(/Fresh project B/)
+    expectNoText(/Stale project/)
 })

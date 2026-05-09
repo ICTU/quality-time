@@ -20,9 +20,8 @@ import {
 
 function getColumnDates(reportDate, dateInterval, dateOrder, nrDates = 1) {
     const baseDate = reportDate ? new Date(reportDate) : new Date()
-    const intervalLength = dateInterval ?? 1 // dateInterval is in days
     const columnDates = []
-    for (let offset = 0; offset < nrDates * intervalLength; offset += intervalLength) {
+    for (let offset = 0; offset < nrDates * dateInterval; offset += dateInterval) {
         let date = new Date(baseDate)
         date.setDate(date.getDate() - offset)
         columnDates.push(date)

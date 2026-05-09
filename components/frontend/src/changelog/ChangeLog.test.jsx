@@ -12,14 +12,18 @@ beforeEach(() => {
     )
 })
 
+function createChangeLog(props) {
+    return (
+        <SnackbarAlerts messages={[]} showMessage={props?.showMessage ?? vi.fn()}>
+            <ChangeLog {...props} />
+        </SnackbarAlerts>
+    )
+}
+
 async function renderChangeLog(props) {
     let result
     await act(async () => {
-        result = render(
-            <SnackbarAlerts messages={[]} showMessage={props?.showMessage ?? vi.fn()}>
-                <ChangeLog {...props} />
-            </SnackbarAlerts>,
-        )
+        result = render(createChangeLog(props))
     })
     return result
 }
@@ -77,4 +81,21 @@ it("shows error when loading more changes fails", async () => {
     await asyncClickText(/Load more changes/)
     expect(showMessage).toHaveBeenCalledTimes(1)
     expectNrEventsToBe(1)
+})
+
+it("ignores stale fetch responses when props change", async () => {
+    let resolveStale
+    fetchServerApi.fetchServerApi
+        .mockImplementationOnce(() => new Promise((resolve) => (resolveStale = resolve)))
+        .mockImplementation(() =>
+            Promise.resolve({ changelog: [{ timestamp: "2020-02-02" }, { timestamp: "2020-02-03" }] }),
+        )
+    const showMessage = vi.fn()
+    const { rerender } = await renderChangeLog({ reportUuid: "uuid1", showMessage })
+    await act(async () => rerender(createChangeLog({ reportUuid: "uuid2", showMessage })))
+    await act(async () => resolveStale({ changelog: [{ timestamp: "2020-01-01" }] }))
+    // The fresh fetch returns 2 events; the stale fetch later resolves with 1 event.
+    // Asserting 2 proves the stale response was dropped (didCancel === true).
+    // if the cancel guard were missing, the late stale resolution would overwrite state to 1.
+    expectNrEventsToBe(2)
 })

@@ -8,7 +8,14 @@ import * as fetchServerApi from "../api/fetch_server_api"
 import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { expectFetch, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
+import {
+    asyncClickLabeledElement,
+    expectFetch,
+    expectNoAccessibilityViolations,
+    expectNoText,
+    expectSearch,
+    expectText,
+} from "../testUtils"
 import { ReportSources } from "./ReportSources"
 
 function ReportSourcesWrapper({ report, theDataModel }) {
@@ -328,6 +335,12 @@ it("shows the unused metric types", async () => {
     expect(readTheDocsLink).toHaveAttribute("href", expect.stringContaining("#metric-type-2"))
     expectText("Metric type description")
     expectText("Metric type rationale")
+})
+
+it("toggles a source's expanded state when its row is expanded", async () => {
+    renderReportSources(report)
+    await asyncClickLabeledElement(/Expand/, 0)
+    expectSearch("?expanded=source_uuid%3A0")
 })
 
 it("shows a message if there are no unused metric types", async () => {

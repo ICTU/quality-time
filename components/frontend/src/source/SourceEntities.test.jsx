@@ -39,6 +39,7 @@ const dataModel = {
                         { key: "date", type: "date", name: "date only" },
                         { key: "datetime", type: "datetime", name: "datetime" },
                         { key: "minutes", type: "minutes", name: "minutes" },
+                        { key: "bool", type: "boolean", name: "bool column" },
                     ],
                 },
             },
@@ -77,6 +78,7 @@ const sourceFixture = {
             date: "01-01-2000",
             datetime: "2000-01-01T10:00:00Z",
             minutes: "1",
+            bool: "false",
         },
         {
             key: "2",
@@ -89,6 +91,7 @@ const sourceFixture = {
             date: "01-01-2002",
             datetime: "2002-01-01T10:00:00Z",
             minutes: "2",
+            bool: "true",
         },
         {
             key: "3",
@@ -101,6 +104,7 @@ const sourceFixture = {
             date: "01-01-2001",
             datetime: "2001-01-01T10:00:00Z",
             minutes: "3",
+            bool: "false",
         },
     ],
     entity_user_data: {
@@ -297,6 +301,10 @@ it("sorts the entities by datetime", async () => {
 
 it("sorts the entities by minutes", async () => {
     await expectColumnIsSortedCorrectly(/minutes/, ["C", "B", "A"])
+})
+
+it("sorts the entities by boolean", async () => {
+    await expectColumnIsSortedCorrectly(/bool column/, ["C", "A", "B"])
 })
 
 it("shows help", async () => {
