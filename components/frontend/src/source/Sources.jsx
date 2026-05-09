@@ -1,11 +1,10 @@
 import { Box } from "@mui/material"
 import { func, number, string } from "prop-types"
-import { useContext, useRef } from "react"
+import { useContext } from "react"
 
 import { addSource, copySource, moveSource } from "../api/source"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
-import { SnackbarContext } from "../context/Snackbar"
 import {
     availabilityMessagePropType,
     measurementPropType,
@@ -15,7 +14,6 @@ import {
     reportsPropType,
     settingsPropType,
 } from "../sharedPropTypes"
-import { pluralize } from "../utils"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
 import { CopyButton } from "../widgets/buttons/CopyButton"
@@ -98,18 +96,6 @@ SourceSegment.propTypes = {
     sourceUuid: string,
 }
 
-export function reloadAfterMassEditSource(json, reload, showMessage) {
-    const nrSources = json.nr_sources_mass_edited
-    if (nrSources > 0) {
-        showMessage({
-            severity: "info",
-            title: "Mass edit",
-            description: `Changed ${nrSources} ${pluralize("source", nrSources)}`,
-        })
-    }
-    reload(json)
-}
-
 export function Sources({
     fieldWithUrlAvailabilityError,
     reports,
@@ -121,7 +107,6 @@ export function Sources({
     settings,
 }) {
     const dataModel = useContext(DataModelContext)
-    const showMessageRef = useRef(useContext(SnackbarContext))
     const measurementSources = measurement?.sources ?? []
     const sourceUuids = Object.keys(metric.sources).filter((sourceUuid) =>
         Object.keys(dataModel.sources).includes(metric.sources[sourceUuid].type),
@@ -138,7 +123,7 @@ export function Sources({
                 lastIndex={lastIndex}
                 measurementSource={measurementSources.find((source) => source.source_uuid === sourceUuid)}
                 fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
-                reload={(json) => reloadAfterMassEditSource(json, reload, showMessageRef.current)}
+                reload={reload}
                 settings={settings}
             />
         )

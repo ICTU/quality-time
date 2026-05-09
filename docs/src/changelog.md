@@ -12,6 +12,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Removed
+
+- Remove the feature to mass edit source parameters of sources with the same type in a metric, in a subject, or in all reports. This prepares for the introduction of source locations as objects separate from sources. Source location parameters (URLs and credentials) can still be changed for sources with the same type in a report via the "Sources" tab in the report title. Closes [#13153](https://github.com/ICTU/quality-time/issues/13153).
+
 ### Fixed
 
 - The documentation on importing reports was claiming that a report with credentials can only be re-imported into the same *Quality-time* instance. This is no longer true since v5.52.0. Fixes [#13080](https://github.com/ICTU/quality-time/issues/13080).

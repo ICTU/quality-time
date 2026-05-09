@@ -59,23 +59,6 @@ const theme2 = createTheme(theme1, {
         warning_status: theme1.palette.augmentColor({ color: { main: orange[300] }, name: "warning_status" }),
         active_status: theme1.palette.augmentColor({ color: { main: grey[500] }, name: "active_status" }),
         unknown_status: theme1.palette.augmentColor({ color: { main: grey[300] }, name: "unknown_status" }),
-        edit_scope_source: theme1.palette.augmentColor({ color: { main: grey[300] }, name: "edit_scope_source" }),
-        edit_scope_metric: theme1.palette.augmentColor({
-            color: { main: theme1.palette.primary.main },
-            name: "edit_scope_metric",
-        }),
-        edit_scope_subject: theme1.palette.augmentColor({
-            color: { main: orange[300] },
-            name: "edit_scope_subject",
-        }),
-        edit_scope_report: theme1.palette.augmentColor({
-            color: { main: theme1.palette.warning.main },
-            name: "edit_scope_report",
-        }),
-        edit_scope_reports: theme1.palette.augmentColor({
-            color: { main: theme1.palette.error.main },
-            name: "edit_scope_reports",
-        }),
         entity_status_count_badge: theme1.palette.augmentColor({
             color: { main: grey[300] },
             name: "entity_status_count_badge",

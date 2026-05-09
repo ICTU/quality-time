@@ -158,7 +158,6 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
         return {"ok": True}  # Nothing to do
     edit_scope = cast(EditScope, dict(bottle.request.json).get("edit_scope", "source"))
     changed_ids, changed_source_ids = change_source_parameter(
-        reports,
         context,
         parameter_key,
         old_value,

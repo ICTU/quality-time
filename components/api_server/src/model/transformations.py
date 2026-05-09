@@ -11,7 +11,7 @@ from utils.functions import asymmetric_decrypt, asymmetric_encrypt, unique, uuid
 from .iterators import credential_holders
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Sequence
+    from collections.abc import Iterator
 
     from shared.model.metric import Metric
     from shared.model.source import Source
@@ -87,8 +87,7 @@ def replace_report_uuids(*reports) -> None:
                     metric["sources"][uuid()] = metric["sources"].pop(source_uuid)
 
 
-def change_source_parameter(  # noqa: PLR0913
-    reports: Sequence[Report],
+def change_source_parameter(
     context: SourceContext,
     parameter_key: str,
     old_value: str | list[str],
@@ -101,7 +100,7 @@ def change_source_parameter(  # noqa: PLR0913
     """
     changed_ids: list[ItemId] = []
     changed_source_uuids: set[ItemId] = set()
-    for source_to_change, uuids in _all_sources_to_change(reports, context, scope, parameter_key, old_value):
+    for source_to_change, uuids in _all_sources_to_change(context, scope, parameter_key, old_value):
         source_to_change["parameters"][parameter_key] = new_value
         changed_ids.extend(uuids)
         changed_source_uuids.add(uuids[-1])
@@ -109,45 +108,26 @@ def change_source_parameter(  # noqa: PLR0913
 
 
 def _all_sources_to_change(
-    reports: Sequence[Report],
     context: SourceContext,
     scope: EditScope,
     parameter_key: str,
     old_value: str | list[str],
 ) -> Iterator[tuple[Source, tuple[ReportId, SubjectId, MetricId, SourceId]]]:
     """Return the sources to change, given the scope."""
-    for report_uuid, report in _reports_to_change(reports, context.report, scope):
-        for subject_uuid, subject in _subjects_to_change(report, context.subject, scope):
-            for metric_uuid, metric in _metrics_to_change(subject, context.metric, scope):
-                for source_uuid, source in _sources_to_change(metric, context.source, scope, parameter_key, old_value):
-                    yield source, (report_uuid, subject_uuid, metric_uuid, source_uuid)
-
-
-def _reports_to_change(
-    reports: Sequence[Report], report: Report, scope: EditScope
-) -> Iterator[tuple[ReportId, Report]]:
-    """Return the reports to change, given the scope."""
-    reports_to_change = reports if scope == "reports" else [report]
-    yield from {report["report_uuid"]: report for report in reports_to_change}.items()
+    for subject_uuid, subject in _subjects_to_change(context.report, context.subject, scope):
+        for metric_uuid, metric in _metrics_to_change(subject, context.metric, scope):
+            for source_uuid, source in _sources_to_change(metric, context.source, scope, parameter_key, old_value):
+                yield source, (context.report["report_uuid"], subject_uuid, metric_uuid, source_uuid)
 
 
 def _subjects_to_change(report: Report, subject: Subject, scope: EditScope) -> Iterator[tuple[SubjectId, Subject]]:
     """Return the subjects to change, given the scope."""
-    yield from (
-        {subject.uuid: subject}.items()
-        if scope
-        in (
-            "subject",
-            "metric",
-            "source",
-        )
-        else report.subjects_dict.items()
-    )
+    yield from {subject.uuid: subject}.items() if scope == "source" else report.subjects_dict.items()
 
 
 def _metrics_to_change(subject: Subject, metric: Metric, scope: EditScope) -> Iterator[tuple[MetricId, Metric]]:
     """Return the metrics to change, given the scope."""
-    yield from {metric.uuid: metric}.items() if scope in ("metric", "source") else subject.metrics_dict.items()
+    yield from {metric.uuid: metric}.items() if scope == "source" else subject.metrics_dict.items()
 
 
 def _sources_to_change(
@@ -169,5 +149,5 @@ def _sources_to_change(
                 and (source_to_change["parameters"].get(parameter_key) or None) == (old_value or None)
             }
     else:
-        sources_to_change = {}
+        sources_to_change = {}  # pragma: no feature-test-cover
     yield from sources_to_change.items()

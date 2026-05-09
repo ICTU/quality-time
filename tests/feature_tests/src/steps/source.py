@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from asserts import assert_equal, assert_in, assert_not_equal
+from asserts import assert_equal, assert_in
 from behave import then, when
 
 from item import get_item
@@ -65,31 +65,14 @@ def check_source_parameter_availability_reason(
     assert_in(reason, messages)
 
 
-@then('''the parameter {parameter} of the {container}'s sources equals "{value}"''')
-def check_sources_parameter(context: Context, parameter: str, container: str, value: str) -> None:
-    """Check that all sources within the container have a parameter with the specified value."""
-    if container == "metric":
-        metrics = [get_item(context, "metric")]
-    elif container == "subject":
-        subject = get_item(context, "subject")
-        metrics = subject["metrics"].values()
-    else:
-        report = get_item(context, "report")
-        subjects = report["subjects"].values()
-        metrics = [metric for subject in subjects for metric in subject["metrics"].values()]
-    for metric in metrics:
-        for source in metric["sources"].values():
-            assert_equal(value, source["parameters"][parameter])
-
-
-@then('the parameter {parameter} of all sources does not equal "{value}"')
-def check_all_sources_parameter(context: Context, parameter: str, value: str) -> None:
-    """Check that all sources have a parameter with the specified value."""
-    for report in context.get("report/")["reports"]:
-        for subject in report["subjects"].values():
-            for metric in subject["metrics"].values():
-                for source in metric["sources"].values():
-                    assert_not_equal(value, source["parameters"].get(parameter))
+@then('''the parameter {parameter} of the report's sources equals "{value}"''')
+def check_sources_parameter(context: Context, parameter: str, value: str) -> None:
+    """Check that all sources within the report have a parameter with the specified value."""
+    report = get_item(context, "report")
+    for subject in report["subjects"].values():
+        for metric in subject["metrics"].values():
+            for source in metric["sources"].values():
+                assert_equal(value, source["parameters"][parameter])
 
 
 @then('"{path}" is returned as source logo')

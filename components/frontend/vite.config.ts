@@ -26,7 +26,7 @@ export default defineConfig({
         globals: true,
         coverage: {
             include: ["src"],
-            exclude: ["src/index.jsx"],
+            exclude: ["src/index.jsx", "src/**/.DS_Store"],
             reporter: [["text", { maxCols: 200 }], "lcov", "html"],
             skipFull: true,
             thresholds: {

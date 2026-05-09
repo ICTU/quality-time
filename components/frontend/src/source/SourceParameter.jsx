@@ -1,11 +1,10 @@
-import EditIcon from "@mui/icons-material/Edit"
 import UpdateIcon from "@mui/icons-material/Update"
-import { Button, FormControl, IconButton, Menu, MenuItem, Stack, Typography } from "@mui/material"
+import { Button, MenuItem, Stack } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { bool, func, number, object, oneOf, oneOfType, shape, string } from "prop-types"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 
 import { setSourceParameter } from "../api/source"
 import { accessGranted, PermissionsContext } from "../context/Permissions"
@@ -16,80 +15,6 @@ import { dropdownOptions } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 
 dayjs.extend(relativeTime)
-
-function EditScopeSelect({ editScope, setEditScope }) {
-    const scopeOptions = [
-        {
-            value: "source",
-            text: "Apply change to source",
-            color: "edit_scope_source",
-        },
-        {
-            value: "metric",
-            text: "Apply change to metric",
-            color: "edit_scope_metric",
-        },
-        {
-            value: "subject",
-            text: "Apply change to subject",
-            color: "edit_scope_subject",
-        },
-        {
-            value: "report",
-            text: "Apply change to report",
-            color: "edit_scope_report",
-        },
-        {
-            value: "reports",
-            text: "Apply change to all reports",
-            color: "edit_scope_reports",
-        },
-    ]
-    const [anchorEl, setAnchorEl] = useState(null)
-    const open = Boolean(anchorEl)
-    return (
-        <FormControl>
-            <IconButton
-                aria-controls={open ? "edit-scope-menu" : null}
-                aria-expanded={open}
-                aria-haspopup="true"
-                aria-label="Edit scope"
-                color={scopeOptions.find((option) => option.value === editScope).color}
-                id="edit-scope-button"
-                onClick={(event) => setAnchorEl(event.currentTarget)}
-            >
-                <EditIcon />
-            </IconButton>
-            <Menu
-                id="edit-scope-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={() => setAnchorEl(null)}
-                slotProps={{
-                    list: { "aria-labelledby": "edit-scope-button" },
-                }}
-            >
-                {scopeOptions.map((option) => (
-                    <MenuItem
-                        key={option.value}
-                        onClick={() => {
-                            setEditScope(option.value)
-                            setAnchorEl(null)
-                        }}
-                        selected={editScope === option.value}
-                        value={option.value}
-                    >
-                        <Typography color={option.color}>{option.text}</Typography>
-                    </MenuItem>
-                ))}
-            </Menu>
-        </FormControl>
-    )
-}
-EditScopeSelect.propTypes = {
-    editScope: string,
-    setEditScope: func,
-}
 
 function sources(report) {
     // Return all sources in the report
@@ -146,7 +71,7 @@ collectParameterValues.propTypes = {
 }
 
 export function SourceParameter({
-    fixedEditScope,
+    editScope,
     parameter,
     parameterKey,
     parameterValue,
@@ -158,7 +83,6 @@ export function SourceParameter({
     unit,
     warning,
 }) {
-    const [editScope, setEditScope] = useState(fixedEditScope ?? "source")
     const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, requiredPermissions)
     const parameterType = parameter?.type
@@ -184,15 +108,11 @@ export function SourceParameter({
         helperText: helperText,
         label: label,
         onChange: (value) => {
-            setSourceParameter(sourceUuid, parameterKey, value, editScope, reload)
-            if (!fixedEditScope) {
-                setEditScope("source") // Reset the edit scope of the parameter to source only
-            }
+            setSourceParameter(sourceUuid, parameterKey, value, editScope ?? "source", reload)
         },
         placeholder: parameter?.placeholder || "",
         required: parameter?.mandatory,
     }
-    const startAdornment = fixedEditScope ? null : <EditScopeSelect editScope={editScope} setEditScope={setEditScope} />
     let parameterInput = null
     if (parameterType === "date") {
         parameterInput = (
@@ -200,10 +120,7 @@ export function SourceParameter({
                 <DatePicker
                     {...parameterProps}
                     value={value ? dayjs(value) : null}
-                    slotProps={{
-                        actionBar: { actions: ["today"] },
-                        textField: { helperText: helperText, slotProps: { input: { startAdornment: startAdornment } } },
-                    }}
+                    slotProps={{ actionBar: { actions: ["today"] }, textField: { helperText: helperText } }}
                     sx={{ width: "100%" }}
                     timezone="default"
                 />
@@ -227,7 +144,6 @@ export function SourceParameter({
         )
     }
     parameterProps["value"] = value
-    parameterProps["startAdornment"] = startAdornment
     if (parameterType === "password") {
         parameterInput = <TextField {...parameterProps} type="password" />
     }
@@ -269,7 +185,7 @@ export function SourceParameter({
     return parameterInput
 }
 SourceParameter.propTypes = {
-    fixedEditScope: string,
+    editScope: string,
     parameter: object,
     parameterKey: string,
     parameterValue: oneOfType([string, stringsPropType]),

@@ -24,7 +24,6 @@ from tests.fixtures import (
     METRIC_ID,
     METRIC_ID2,
     METRIC_ID3,
-    METRIC_ID4,
     REPORT_ID,
     REPORT_ID2,
     SOURCE_ID,
@@ -33,10 +32,8 @@ from tests.fixtures import (
     SOURCE_ID4,
     SOURCE_ID5,
     SOURCE_ID6,
-    SOURCE_ID7,
     SUBJECT_ID,
     SUBJECT_ID2,
-    SUBJECT_ID3,
     create_report,
 )
 
@@ -392,13 +389,6 @@ class PostSourceParameterMassEditTest(SourceTestCase):
                 {"name": "Source 6", "type": "owasp_zap", "parameters": {"username": self.OLD_VALUE}},
             ),
         }
-        self.sources4 = {
-            SOURCE_ID7: Source(
-                SOURCE_ID7,
-                None,
-                {"name": "Source 7", "type": "owasp_zap", "parameters": {"username": self.OLD_VALUE}},
-            ),
-        }
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID3] = self.source_3
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID4] = self.source_4
         self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = Metric(
@@ -416,20 +406,7 @@ class PostSourceParameterMassEditTest(SourceTestCase):
             SUBJECT_ID2,
             self.report,
         )
-        report2 = {
-            "_id": REPORT_ID2,
-            "title": "Report 2",
-            "report_uuid": REPORT_ID2,
-            "subjects": {
-                SUBJECT_ID3: {
-                    "name": "Subject 3",
-                    "metrics": {
-                        METRIC_ID4: {"name": "Metric 4", "type": "security_warnings", "sources": self.sources4},
-                    },
-                },
-            },
-        }
-        self.database.reports.find.return_value = [self.report, report2]
+        self.database.reports.find.return_value = [self.report]
 
     def assert_value(self, value_sources_mapping):
         """Assert that the parameters have the correct value."""
@@ -444,41 +421,6 @@ class PostSourceParameterMassEditTest(SourceTestCase):
             f"Jenny changed the username of all sources of type 'OWASP ZAP' with username 'username' {description}."
         )
         super().assert_delta(description, uuids, report)
-
-    def test_mass_edit_reports(self, request):
-        """Test that a source parameter can be mass edited."""
-        request.json = {"username": self.NEW_VALUE, "edit_scope": "reports"}
-        response = post_source_parameter(SOURCE_ID, "username", self.database)
-        self.assertEqual({"ok": True, "nr_sources_mass_edited": 5, "availability": {}}, response)
-        self.assert_value(
-            {
-                self.NEW_VALUE: [
-                    self.sources[SOURCE_ID],
-                    self.sources[SOURCE_ID2],
-                    self.sources2[SOURCE_ID5],
-                    self.sources3[SOURCE_ID6],
-                    self.sources4[SOURCE_ID7],
-                ],
-                self.OLD_VALUE: [self.source_4],
-                self.UNCHANGED_VALUE: [self.source_3],
-            },
-        )
-        uuids = [
-            REPORT_ID2,
-            SUBJECT_ID2,
-            SUBJECT_ID3,
-            METRIC_ID2,
-            METRIC_ID3,
-            METRIC_ID4,
-            SOURCE_ID5,
-            SOURCE_ID6,
-            SOURCE_ID7,
-        ]
-        updated_reports = self.database.reports.insert_many.call_args[0][0]
-        updated_report_1 = updated_reports[0]
-        updated_report_2 = updated_reports[1]
-        self.assert_delta("in all reports from 'username' to 'new username'", uuids, updated_report_1)
-        self.assert_delta("in all reports from 'username' to 'new username'", uuids, updated_report_2)
 
     def test_mass_edit_report(self, request):
         """Test that a source parameter can be mass edited."""
@@ -500,44 +442,6 @@ class PostSourceParameterMassEditTest(SourceTestCase):
         extra_uuids = [METRIC_ID2, SOURCE_ID5, SUBJECT_ID2, METRIC_ID3, SOURCE_ID6]
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta("in report 'Report' from 'username' to 'new username'", extra_uuids, updated_report)
-
-    def test_mass_edit_subject(self, request):
-        """Test that a source parameter can be mass edited."""
-        request.json = {"username": self.NEW_VALUE, "edit_scope": "subject"}
-        response = post_source_parameter(SOURCE_ID, "username", self.database)
-        self.assertEqual({"ok": True, "nr_sources_mass_edited": 3, "availability": {}}, response)
-        self.assert_value(
-            {
-                self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2], self.sources2[SOURCE_ID5]],
-                self.OLD_VALUE: [self.source_4, self.sources3[SOURCE_ID6]],
-                self.UNCHANGED_VALUE: [self.source_3],
-            },
-        )
-        extra_uuids = [METRIC_ID2, SOURCE_ID5]
-        updated_report = self.database.reports.insert_one.call_args[0][0]
-        self.assert_delta(
-            "of subject 'Subject' in report 'Report' from 'username' to 'new username'",
-            extra_uuids,
-            updated_report,
-        )
-
-    def test_mass_edit_metric(self, request):
-        """Test that a source parameter can be mass edited."""
-        request.json = {"username": self.NEW_VALUE, "edit_scope": "metric"}
-        response = post_source_parameter(SOURCE_ID, "username", self.database)
-        self.assertEqual({"ok": True, "nr_sources_mass_edited": 2, "availability": {}}, response)
-        self.assert_value(
-            {
-                self.NEW_VALUE: [self.sources[SOURCE_ID], self.sources[SOURCE_ID2]],
-                self.OLD_VALUE: [self.source_4, self.sources2[SOURCE_ID5], self.sources3[SOURCE_ID6]],
-                self.UNCHANGED_VALUE: [self.source_3],
-            },
-        )
-        updated_report = self.database.reports.insert_one.call_args[0][0]
-        self.assert_delta(
-            "of metric 'Metric' of subject 'Subject' in report 'Report' from 'username' to 'new username'",
-            report=updated_report,
-        )
 
 
 class SourceTest(SourceTestCase):

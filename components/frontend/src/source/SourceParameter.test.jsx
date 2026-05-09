@@ -10,7 +10,6 @@ import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissio
 import {
     clickButton,
     clickLabeledElement,
-    clickText,
     expectFetch,
     expectNoAccessibilityViolations,
     expectNoFetch,
@@ -46,6 +45,7 @@ const report = {
 }
 
 function renderSourceParameter({
+    editScope = "source",
     parameter = { name: "URL", type: "url" },
     parameterKey = "key1",
     parameterValue = "https://test",
@@ -61,6 +61,7 @@ function renderSourceParameter({
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <PermissionsContext value={permissions}>
                 <SourceParameter
+                    editScope={editScope}
                     parameter={parameter}
                     parameterKey={parameterKey}
                     parameterValue={parameterValue}
@@ -318,23 +319,14 @@ it("renders a help text", async () => {
     vi.useRealTimers() // Prevent test timeout
 })
 
-it("changes the value", async () => {
+it("eidts the value", async () => {
     renderSourceParameter({})
     await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
     expectFetch("post", "source/source_uuid/parameter/key1", { key1: "https://test/new", edit_scope: "source" })
 })
 
-it("changes the value via mass edit", async () => {
-    renderSourceParameter({})
-    clickLabeledElement(/Edit scope/)
-    clickText(/Apply change to subject/)
+it("mass edits the value", async () => {
+    renderSourceParameter({ editScope: "report" })
     await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
-    expectFetch("post", "source/source_uuid/parameter/key1", { key1: "https://test/new", edit_scope: "subject" })
-})
-
-it("closes the mass edit menu", async () => {
-    renderSourceParameter({})
-    clickLabeledElement(/Edit scope/)
-    await userEvent.keyboard("{Escape}")
-    expectNoFetch()
+    expectFetch("post", "source/source_uuid/parameter/key1", { key1: "https://test/new", edit_scope: "report" })
 })
