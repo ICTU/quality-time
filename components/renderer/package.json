@@ -8,5 +8,31 @@
         "@braintree/sanitize-url": "^7.1.2",
         "express": "^5.2.1",
         "puppeteer-core": "^24.43.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@vitest/coverage-v8": "^4.1.2",
+        "eslint": "^10.3.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.5",
+        "eslint-plugin-simple-import-sort": "^13.0.0",
+        "globals": "^17.6.0",
+        "prettier": "^3.8.3",
+        "vitest": "^4.0.18",
+        "supertest": "^7.2.2"
+    },
+    "scripts": {
+        "start": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "cov": "vitest run --coverage",
+        "test": "vitest",
+        "lint": "eslint *.mjs src; npx prettier *.mjs src --check --log-level warn",
+        "fix": "npx prettier *.mjs src --write --log-level warn"
+    },
+    "prettier": {
+        "printWidth": 120,
+        "semi": false,
+        "tabWidth": 4
     }
 }
