@@ -28,6 +28,7 @@ export default defineConfig({
             include: ["src"],
             exclude: ["src/index.jsx", "src/**/.DS_Store"],
             reporter: [["text", { maxCols: 200 }], "lcov", "html"],
+            reportsDirectory: "build",
             skipFull: true,
             thresholds: {
                 statements: 100,

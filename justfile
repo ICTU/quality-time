@@ -127,7 +127,7 @@ build-js: install-js-dependencies
 [private]
 build-docs: install-py-dependencies
     ?[ {{ has_sphinx }} = true ]
-    {{ sphinx_build }} src build
+    {{ sphinx_build }} -W --keep-going src build
 
 # Build artifacts or components from the code. Run `just build-help` for more information.
 [no-cd]
@@ -221,6 +221,16 @@ test cov="default" *tests: (py-unit-test cov tests) (js-unit-test cov tests)
     ?[ {{ has_py_unit_tests }} = false ] && [ {{ has_js_test_script }} = false ]
     echo "Nothing to test in this folder"
 
+# Generate a JUnit XML test report at build/unittests.xml. Re-runs Python tests via xmlrunner; used by CI to feed test results to SonarCloud.
+[env("PYTHONDEVMODE", "1")]
+[env("PYTHONPATH", "src")]
+[no-cd]
+[private]
+junit-xml: install-py-dependencies
+    ?[ {{ has_py_unit_tests }} = true ]
+    mkdir -p build
+    {{ uv_run }} --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml
+
 # === Run checks ===
 
 # Run mypy.
@@ -304,10 +314,9 @@ yamllint: install-py-dependencies
     ?[ {{ has_yamllint }} = true ]
     {{ uv_run }} yamllint -c .yamllint {{ justfile_directory() }}
 
-# Run sphinx.
+# Run sphinx linkcheck. Excluded from `just check` because external link availability makes it flaky and slow; runs on a schedule in CI.
 [no-cd]
-[private]
-sphinx: install-py-dependencies
+linkcheck: install-py-dependencies
     ?[ {{ has_sphinx }} = true ]
     echo Running sphinx linkcheck may take a while, be patient...
     {{ sphinx_build }} -M linkcheck src build --quiet --jobs auto
@@ -323,7 +332,7 @@ zizmor: install-py-dependencies
 [no-cd]
 [parallel]
 [private]
-check-py: mypy fixit ruff pyproject-fmt troml pip-audit uv-audit bandit vulture vale yamllint sphinx zizmor
+check-py: mypy fixit ruff pyproject-fmt troml pip-audit uv-audit bandit vulture vale yamllint zizmor
 
 # Run npm lint.
 [no-cd]
@@ -403,11 +412,11 @@ release-help:
 
 # === CI/CD ===
 
-# Run all tests and checks in CI.
+# Run all tests and checks in CI. Meant for running tests and checks in GitHub Actions and CircleCI.
 [no-cd]
 [parallel]
 [private]
-ci $CI="true": test check
+ci $CI="true": (test "yes") check junit-xml
 
 # === Clean ===
 
