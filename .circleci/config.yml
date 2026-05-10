@@ -12,7 +12,7 @@ jobs:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
     resource_class: large
-    parallelism: 11
+    parallelism: 12
     steps:
       - checkout
       - run: |
@@ -24,12 +24,13 @@ jobs:
             2) component=components/api_server;;
             3) component=components/shared_code;;
             4) component=components/frontend;;
-            5) component=tests/application_tests;;
-            6) component=tests/feature_tests;;
-            7) component=docs;;
-            8) component=tools/release;;
-            9) component=tools/third_party;;
-            10) component=tools/update_dependencies;;
+            5) component=components/renderer;;
+            6) component=tests/application_tests;;
+            7) component=tests/feature_tests;;
+            8) component=docs;;
+            9) component=tools/release;;
+            10) component=tools/third_party;;
+            11) component=tools/update_dependencies;;
           esac
           cd $component
           mkdir -p build
@@ -44,6 +45,8 @@ jobs:
           path: components/shared_code/build
       - store_artifacts:
           path: components/frontend/build
+      - store_artifacts:
+          path: components/renderer/build
       - store_artifacts:
           path: components/application_tests/build
       - store_artifacts:
