@@ -49,7 +49,7 @@ class JenkinsPipelineDuration(SourceCollector):
         """Return the selected build, if any."""
         builds = [self._latest_build(job) for response in responses for job in self._jobs(await response.json())]
         builds = [build for build in builds if build is not None]
-        return sorted(builds, key=lambda build: cast(Build, build)["duration"])[-1] if builds else None
+        return max(builds, key=lambda build: cast(Build, build)["duration"], default=None)
 
     def _jobs(self, json: JSON) -> list[Job]:
         """Return the jobs in the Jenkins response."""

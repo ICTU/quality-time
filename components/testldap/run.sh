@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 # Get variable or set defaults
@@ -16,7 +16,7 @@ declare -rx LDAP_BINDDN="cn=admin,${LDAP_BASEDN}"
 declare -rx LDAP_SSL_KEY="/etc/ldap/ssl/ldap.key"
 declare -rx LDAP_SSL_CERT="/etc/ldap/ssl/ldap.crt"
 
-if ! [ -f /etc/ldap/slapd-bootstraped ]; then
+if [[ ! -f /etc/ldap/slapd-bootstraped ]]; then
     echo "Configuring slapd mock instance"
     /bin/bash /slapd-init.sh
     touch /etc/ldap/slapd-bootstraped

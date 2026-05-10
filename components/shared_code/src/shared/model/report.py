@@ -111,29 +111,18 @@ class Report(dict):  # noqa: PLW1641
             summary["summary"][color] += 1
         return summary
 
-    def instance_and_parents_for_uuid(
-        self,
-        metric_uuid: MetricId | None = None,
-        source_uuid: SourceId | None = None,
-    ) -> tuple:
-        """Find an instance and its parents.
+    def metric_and_subject(self, metric_uuid: MetricId) -> tuple[Metric, Subject]:
+        """Return the metric and its subject."""
+        metric = self.metrics_dict[metric_uuid]
+        subject = self.subjects_dict[metric.subject_uuid]
+        return metric, subject
 
-        For example, if a metric_uuid is provided, this function will return the metric, its subject and its report in
-        that order: (Metric, Subject)
-
-        Only one of the uuid arguments should be filled. If more are filled, all but the first one will be ignored.
-        """
-        if metric_uuid:
-            metric = self.metrics_dict[metric_uuid]
-            subject = self.subjects_dict[metric.subject_uuid]
-            return metric, subject
-        if source_uuid:  # pragma: no feature-test-cover
-            source = self.sources_dict[source_uuid]
-            metric = source.metric
-            subject = self.subjects_dict[metric.subject_uuid]
-            return source, metric, subject
-        msg = "metric_uuid and source_uuid cannot both be None"  # pragma: no feature-test-cover
-        raise RuntimeError(msg)  # pragma: no feature-test-cover
+    def source_metric_and_subject(self, source_uuid: SourceId) -> tuple[Source, Metric, Subject]:
+        """Return the source, its metric, and the metric's subject."""
+        source = self.sources_dict[source_uuid]
+        metric = source.metric
+        subject = self.subjects_dict[metric.subject_uuid]
+        return source, metric, subject
 
     def delete_tag(self, tag: str) -> list[ItemId]:
         """Delete a tag from the report and return the uuids of the affected subjects and metrics."""
