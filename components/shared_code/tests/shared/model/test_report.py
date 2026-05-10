@@ -101,24 +101,14 @@ class ReportTest(DataModelTestCase):
         """Test finding a metric in a report."""
         metric = Metric(self.DATA_MODEL, self.metric_data, METRIC_ID)
         subject = Subject(self.DATA_MODEL, self.subject_data, SUBJECT_ID, self.report)
-        self.assertEqual(
-            (metric, subject),
-            self.report.instance_and_parents_for_uuid(metric_uuid=METRIC_ID),
-        )
+        self.assertEqual((metric, subject), self.report.metric_and_subject(METRIC_ID))
 
     def test_find_source(self):
         """Test finding a source in a report."""
         metric = Metric(self.DATA_MODEL, self.metric_data, METRIC_ID)
         source = Source(SOURCE_ID, metric, self.source_data)
         subject = Subject(self.DATA_MODEL, self.subject_data, SUBJECT_ID, self.report)
-        self.assertEqual(
-            (source, metric, subject),
-            self.report.instance_and_parents_for_uuid(source_uuid=SOURCE_ID),
-        )
-
-    def test_find_without_source_and_metric_uuid(self):
-        """Test that passing neither a source or a metric uuid throws an exception."""
-        self.assertRaises(RuntimeError, self.report.instance_and_parents_for_uuid)
+        self.assertEqual((source, metric, subject), self.report.source_metric_and_subject(SOURCE_ID))
 
     def test_delete_tag(self):
         """Test that a tag can be deleted from all metrics in the report."""

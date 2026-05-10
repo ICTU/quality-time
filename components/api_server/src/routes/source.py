@@ -6,6 +6,8 @@ import bottle
 
 from shared_data_model import DATA_MODEL
 from shared_data_model.parameters import PrivateToken
+from shared.model.source import Source
+from shared.utils.type import SourceId
 
 from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from model.actions import copy_source, move_item
@@ -20,10 +22,9 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 if TYPE_CHECKING:
     from pymongo.database import Database
 
-    from shared.utils.type import ItemId, MetricId, SourceId
+    from shared.utils.type import ItemId, MetricId
 
     from model.report import Report
-    from shared.model.source import Source
 
 
 @bottle.post("/api/internal/source/new/<metric_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
@@ -31,10 +32,11 @@ def post_source_new(metric_uuid: MetricId, database: Database):
     """Add a new source."""
     all_reports = latest_reports(database)
     report = latest_report_for_uuids(all_reports, metric_uuid)[0]
-    metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    metric, subject = report.metric_and_subject(metric_uuid)
     source_type = dict(bottle.request.json)["type"]
-    parameters = default_source_parameters(metric.type(), source_type)
-    metric.sources_dict[(source_uuid := uuid())] = {"type": source_type, "parameters": parameters}
+    parameters = default_source_parameters(cast(str, metric.type()), source_type)
+    source_uuid = cast(SourceId, uuid())
+    metric.sources_dict[source_uuid] = cast(Source, {"type": source_type, "parameters": parameters})
     delta_description = (
         f"{{user}} added a new source to metric '{metric.name}' of subject '{subject.name}' in report '{report.name}'."
     )
@@ -49,8 +51,8 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
     """Add a copy of the source to the metric."""
     all_reports = latest_reports(database)
     reports = latest_report_for_uuids(all_reports, source_uuid, metric_uuid)
-    source, source_metric, source_subject = reports[0].instance_and_parents_for_uuid(source_uuid=source_uuid)
-    target_metric, target_subject = reports[1].instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    source, source_metric, source_subject = reports[0].source_metric_and_subject(source_uuid)
+    target_metric, target_subject = reports[1].metric_and_subject(metric_uuid)
 
     target_metric["sources"][(source_copy_uuid := uuid())] = copy_source(source_uuid, source)
     delta_description = (
@@ -72,8 +74,8 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
     """Move the source to another metric."""
     all_reports = latest_reports(database)
     reports = latest_report_for_uuids(all_reports, source_uuid, target_metric_uuid)
-    source, source_metric, source_subject = reports[0].instance_and_parents_for_uuid(source_uuid=source_uuid)
-    target_metric, target_subject = reports[1].instance_and_parents_for_uuid(metric_uuid=target_metric_uuid)
+    source, source_metric, source_subject = reports[0].source_metric_and_subject(source_uuid)
+    target_metric, target_subject = reports[1].metric_and_subject(target_metric_uuid)
 
     delta_description = (
         f"{{user}} moved the source '{source.name}' from metric '{source_metric.name}' of subject "
@@ -107,7 +109,7 @@ def delete_source(source_uuid: SourceId, database: Database):
     """Delete a source."""
     reports = latest_reports(database)
     report = latest_report_for_uuids(reports, source_uuid)[0]
-    source, metric, subject = report.instance_and_parents_for_uuid(source_uuid=source_uuid)
+    source, metric, subject = report.source_metric_and_subject(source_uuid)
     delta_description = (
         f"{{user}} deleted the source '{source.name}' from metric "
         f"'{metric.name}' of subject '{subject.name}' in report '{report.name}'."
@@ -124,7 +126,7 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
     """Set a source attribute."""
     reports = latest_reports(database)
     report = latest_report_for_uuids(reports, source_uuid)[0]
-    source, metric, subject = report.instance_and_parents_for_uuid(source_uuid=source_uuid)
+    source, metric, subject = report.source_metric_and_subject(source_uuid)
     old_source_name = source.name  # in case the name is the attribute that is changed
     value = dict(bottle.request.json)[source_attribute]
     old_value: Any
@@ -182,7 +184,7 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
 def get_source_context(reports: list[Report], source_uuid: SourceId) -> SourceContext:
     """Return a source and its context, meaning the containing metric, subject, and report."""
     report = latest_report_for_uuids(reports, source_uuid)[0]
-    source, metric, subject = report.instance_and_parents_for_uuid(source_uuid=source_uuid)
+    source, metric, subject = report.source_metric_and_subject(source_uuid)
     return SourceContext(source=source, metric=metric, subject=subject, report=report)
 
 

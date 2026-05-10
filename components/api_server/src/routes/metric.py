@@ -43,7 +43,7 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
     source_and_target_reports = latest_report_for_uuids(all_reports, metric_uuid, subject_uuid)
     source_report = source_and_target_reports[0]
     target_report = source_and_target_reports[1]
-    source_metric, source_subject = source_report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    source_metric, source_subject = source_report.metric_and_subject(metric_uuid)
     target_subject = target_report.subjects_dict[subject_uuid]
     metric_copy_uuid = cast(MetricId, uuid())
     target_subject.metrics_dict[metric_copy_uuid] = copy_metric(metric_uuid, source_metric)
@@ -66,7 +66,7 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
     source_and_target_reports = latest_report_for_uuids(all_reports, metric_uuid, target_subject_uuid)
     source_report = source_and_target_reports[0]
     target_report = source_and_target_reports[1]
-    metric, source_subject = source_report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    metric, source_subject = source_report.metric_and_subject(metric_uuid)
     target_subject = target_report.subjects_dict[target_subject_uuid]
     delta_description = (
         f"{{user}} moved the metric '{metric.name}' from subject '{source_subject.name}' in report "
@@ -90,7 +90,7 @@ def delete_metric(metric_uuid: MetricId, database: Database):
     """Delete a metric."""
     all_reports = latest_reports(database)
     report = latest_report_for_uuids(all_reports, metric_uuid)[0]
-    metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    metric, subject = report.metric_and_subject(metric_uuid)
     description = f"{{user}} deleted metric '{metric.name}' from subject '{subject.name}' in report '{report.name}'."
     uuids = [report.uuid, subject.uuid, metric_uuid]
     del subject.metrics_dict[metric_uuid]
@@ -118,7 +118,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
     new_value = dict(bottle.request.json)[metric_attribute]
     reports = latest_reports(database)
     report = latest_report_for_uuids(reports, metric_uuid)[0]
-    metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    metric, subject = report.metric_and_subject(metric_uuid)
     old_metric_name = metric.name  # in case the name is the attribute that will be changed
     if metric_attribute == "comment" and new_value:
         new_value = sanitize_html(new_value)
@@ -133,7 +133,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
         return {"ok": True}  # Nothing to do
     if metric_attribute == "type":
         # Update the metric attributes, but keep the sources and the user supplied tags
-        default_tags_old_type = DATA_MODEL.metrics[metric.type()].tags or []
+        default_tags_old_type = DATA_MODEL.metrics[cast(str, metric.type())].tags or []
         user_supplied_tags = [tag for tag in metric["tags"] if tag not in default_tags_old_type]
         metric.update(default_metric_attributes(new_value), sources=metric["sources"])
         metric["tags"].extend(user_supplied_tags)
@@ -154,7 +154,7 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
     """Turn the technical debt on or off, including technical debt target and end date."""
     new_accept_debt = dict(bottle.request.json)["accept_debt"]
     report = latest_report_for_uuids(latest_reports(database), metric_uuid)[0]
-    metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    metric, subject = report.metric_and_subject(metric_uuid)
     if new_accept_debt:
         # Get the latest measurement to get the current metric value:
         latest = latest_measurement(database, Metric(DATA_MODEL.model_dump(), metric, metric_uuid))
@@ -190,7 +190,7 @@ def post_metric_debt(metric_uuid: MetricId, database: Database):
 def add_metric_issue(metric_uuid: MetricId, database: Database):
     """Add a new issue to the metric using the configured issue tracker."""
     report = latest_report_for_uuids(latest_reports(database), metric_uuid)[0]
-    metric, subject = report.instance_and_parents_for_uuid(metric_uuid=metric_uuid)
+    metric, subject = report.metric_and_subject(metric_uuid)
     last_measurement = latest_measurement(database, metric, skip_measurements_with_error=True)
     measured_value = last_measurement.value() if last_measurement else "missing"
     issue_tracker = report.issue_tracker()
