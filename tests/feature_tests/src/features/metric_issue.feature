@@ -13,9 +13,7 @@ Feature: metric issues
     When the client changes the report tracker_type to "jira"
     And the client changes the report tracker_url to "https://jira"
     And the client changes the report tracker_url to "https://jira"
-    And the client waits a second
     And the collector measures issue '123' status 'Completed'
-    And the client waits a second
     Then the issue status name is 'Completed'
     And the issue status connection_error is 'None'
     And the issue status parse_error is 'None'
@@ -75,17 +73,12 @@ Feature: metric issues
     Then the new issue response error is 'Failed to resolve'
 
   Scenario: completing all issues ignores the accepted technical debt, adding a new issue unignores it
-    When the client waits a second
-    And the client changes the metric accept_debt to "True"
-    And the client waits a second
+    When the client changes the metric accept_debt to "True"
     And the client changes the metric debt_target to "100"
-    And the client waits a second
     Then the metric status is "debt_target_met"
     When the collector measures '42' with issue '123' status 'Completed'
-    And the client waits a second
     Then the metric status is "target_met"
     When the client changes the metric issue_ids to "123,124"
-    And the client waits a second
     Then the metric status is "debt_target_met"
 
   Scenario: change issue tracker type of non-existing report

@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 
 
 def iso_timestamp() -> str:
-    """Return the ISO-format version of the current UTC date and time without microseconds."""
-    return datetime.now(tz=tzutc()).replace(microsecond=0).isoformat()
+    """Return the ISO-format version of the current UTC date and time."""
+    return datetime.now(tz=tzutc()).isoformat()
 
 
 def percentage(numerator: int, denominator: int, direction: Direction) -> int:

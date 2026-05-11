@@ -3,11 +3,8 @@ Feature: changelog
 
   Background:
     Given a logged-in client
-    When the client waits a second
-    And the client changes the reports_overview title to "Reports"
-    And the client waits a second
+    When the client changes the reports_overview title to "Reports"
     And the client changes the reports_overview title to "Reports overview"
-    And the client waits a second
 
   Scenario: create a report
     When the client creates a report
@@ -23,7 +20,6 @@ Feature: changelog
 
   Scenario: create a report and a subject
     When the client creates a report
-    And the client waits a second
     And the client creates a subject
     Then the changelog reads
       """
@@ -43,7 +39,6 @@ Feature: changelog
 
   Scenario: create a report and a composite subject
     When the client creates a report
-    And the client waits a second
     And the client creates a subject with type "software_source_code"
     And the client changes the subject name to "New name"
     Then the changelog reads
@@ -67,9 +62,7 @@ Feature: changelog
 
   Scenario: create a report, a subject, and a metric
     When the client creates a report
-    And the client waits a second
     And the client creates a subject
-    And the client waits a second
     And the client creates a metric
     Then the changelog reads
       """
@@ -96,11 +89,8 @@ Feature: changelog
 
   Scenario: create a report, a subject, a metric, and a source
     When the client creates a report
-    And the client waits a second
     And the client creates a subject
-    And the client waits a second
     And the client creates a metric
-    And the client waits a second
     And the client creates a source
     Then the changelog reads
       """

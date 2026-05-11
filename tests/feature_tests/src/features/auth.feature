@@ -18,7 +18,6 @@ Feature: authentication
   Scenario: change editors
     When jadoe logs in
     And the client changes the reports_overview permissions to "{"edit_reports": ["jadoe", "other_user"], "edit_entities": []}"
-    And the client waits a second
     Then the reports_overview permissions is "{"edit_reports": ["jadoe", "other_user"], "edit_entities": []}"
     When the client logs out
     And jodoe logs in
@@ -28,7 +27,6 @@ Feature: authentication
   Scenario: change editors without including self
     When jadoe logs in
     And the client changes the reports_overview permissions to "{"edit_reports": ["jodoe"], "edit_entities": []}"
-    And the client waits a second
     Then the reports_overview permissions is "{"edit_reports": ["jodoe", "jadoe"], "edit_entities": []}"
     When the client changes the reports_overview permissions to "None"
     Then the reports_overview permissions is "None"

@@ -3,6 +3,7 @@
 import re
 import uuid as _uuid
 from base64 import b64decode, b64encode
+from datetime import datetime
 from typing import cast, TYPE_CHECKING
 
 import bottle
@@ -177,6 +178,12 @@ def report_date_time(attribute_name: str = "report_date") -> str:
     """Return the report date requested as query parameter if it's in the past, else return an empty string."""
     if report_date_string := dict(bottle.request.query).get(attribute_name):
         iso_report_date_string = str(report_date_string).replace("Z", "+00:00")
+        # Pad to end of second when the input has no sub-second precision so that $lte comparisons
+        # against microsecond-precision stored timestamps include records within that second.
+        if not re.search(r":\d{2}\.\d", iso_report_date_string):
+            iso_report_date_string = (
+                datetime.fromisoformat(iso_report_date_string).replace(microsecond=999999).isoformat()
+            )
         if iso_report_date_string < iso_timestamp():
             return iso_report_date_string
     return ""

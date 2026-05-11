@@ -21,7 +21,7 @@ class MeasurementsTestCase(DataModelTestCase):
         self.metric = Metric(self.DATA_MODEL, {"type": "violations"}, METRIC_ID)
 
 
-@patch("shared.utils.functions.iso_timestamp", Mock(return_value="2026-04-22T09:47:28+00:00"))
+@patch("shared.model.measurement.iso_timestamp", Mock(return_value="2026-04-22T09:47:28+00:00"))
 class LatestMeasurementsTest(MeasurementsTestCase):
     """Unit test for retrieving the latest measurement from the database."""
 

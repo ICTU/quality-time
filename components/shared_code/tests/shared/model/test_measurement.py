@@ -522,7 +522,7 @@ class SummarizeMeasurementTest(MeasurementTestCase):
 
     def test_summarize_with_non_default_start_date(self):
         """Test the measurement summary when the measurement has a specific start date."""
-        timestamp = (datetime.now(tz=tzutc()) - timedelta(days=1)).replace(microsecond=0).isoformat()
+        timestamp = (datetime.now(tz=tzutc()) - timedelta(days=1)).isoformat()
         measurement = self.measurement(self.metric(), start=timestamp, end=timestamp)
         self.assertEqual(
             {"count": {"value": None, "status": None}, "start": timestamp, "end": timestamp},

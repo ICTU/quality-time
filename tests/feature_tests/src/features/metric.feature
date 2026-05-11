@@ -14,7 +14,6 @@ Feature: metric
     When the client creates a metric with type "software_version"
     And the client creates a source with type "sonarqube"
     And the collector measures "1.1" with status "informative"
-    And the client waits a second
     Then the metric status is "informative"
 
   Scenario: delete metric
@@ -61,7 +60,6 @@ Feature: metric
     Given an existing metric
     And an existing source
     When the collector measures "100"
-    And the client waits a second
     And the client changes the metric type to "security_warnings"
     Then the metric contains 1 source
     And the metric status is "None"
@@ -70,7 +68,6 @@ Feature: metric
     Given an existing metric
     And an existing source
     When the collector measures "100"
-    And the client waits a second
     And the client changes the metric type to "security_warnings"
     Then the metric contains 1 source
     And the metric status is "None"
@@ -85,12 +82,10 @@ Feature: metric
     When the client does not accept the technical debt
     Then the metric status is "None"
     When the collector measures "100"
-    And the client waits a second
     And the client accepts the technical debt
     Then the metric status is "debt_target_met"
     And the metric debt_target is "100"
-    When the client waits a second
-    And the client does not accept the technical debt
+    When the client does not accept the technical debt
     Then the metric status is "target_not_met"
     And the metric debt_target is "None"
     When the client changes the metric debt_target to "100"

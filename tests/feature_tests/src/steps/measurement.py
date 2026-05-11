@@ -27,8 +27,7 @@ def create_measurement(  # noqa: PLR0913
         for row in context.table:
             entity = {heading: row[heading] for heading in context.table.headings}
             entities.append(entity)
-    measurement_datetime = datetime.now(tz=tzutc())
-    measurement_timestamp = measurement_datetime.replace(microsecond=0).isoformat()
+    measurement_timestamp = datetime.now(tz=tzutc()).isoformat()
     if issue_id:
         status_category = "done" if issue_status_name == "Completed" else "todo"
         issues = [{"issue_id": issue_id, "name": issue_status_name, "status_category": status_category}]

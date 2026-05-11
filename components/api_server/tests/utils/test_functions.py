@@ -74,7 +74,7 @@ class ReportDateTimeTest(unittest.TestCase):
     def setUp(self):
         """Override to setup the 'current' time."""
         self.now = datetime(2019, 3, 3, 10, 4, 5, 567, tzinfo=tzutc())
-        self.expected_time_stamp = "2019-03-03T10:04:05+00:00"
+        self.expected_time_stamp = "2019-03-03T10:04:05.999999+00:00"
 
     def test_report_date_time(self, request):
         """Test that the report datetime can be parsed from the HTTP request."""
@@ -90,6 +90,11 @@ class ReportDateTimeTest(unittest.TestCase):
         """Test that the report datetime is empty if it's a future date."""
         request.query = {"report_date": "3000-01-01T00:00:00Z"}
         self.assertEqual("", report_date_time())
+
+    def test_microsecond_report_date_time(self, request):
+        """Test that a sub-second report datetime is returned as-is."""
+        request.query = {"report_date": "2019-03-03T10:04:05.123456Z"}
+        self.assertEqual("2019-03-03T10:04:05.123456+00:00", report_date_time())
 
 
 class TestEncryption(unittest.TestCase):

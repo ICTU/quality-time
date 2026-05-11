@@ -8,6 +8,7 @@ import mongomock
 from dateutil.tz import tzutc
 
 from shared.database.reports import get_reports
+from shared.utils.functions import iso_timestamp
 
 from database.measurements import get_recent_measurements
 
@@ -57,9 +58,9 @@ class MeasurementsTest(unittest.TestCase):
         for report in reports:
             metrics.extend(report.metrics)
 
-        now = datetime.now(tz=tzutc()).replace(microsecond=0).isoformat()
-        just_now = (datetime.now(tz=tzutc()).replace(microsecond=0) - timedelta(hours=1)).isoformat()
-        older = (datetime.now(tz=tzutc()).replace(microsecond=0) - timedelta(days=1)).isoformat()
+        now = iso_timestamp()
+        just_now = (datetime.now(tz=tzutc()) - timedelta(hours=1)).isoformat()
+        older = (datetime.now(tz=tzutc()) - timedelta(days=1)).isoformat()
 
         measurements = [
             {
