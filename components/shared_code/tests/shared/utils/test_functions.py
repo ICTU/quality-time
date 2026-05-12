@@ -14,7 +14,7 @@ class IsoTimestampTest(unittest.TestCase):
 
     def test_iso_timestamp(self):
         """Test that the iso timestamp has the correct format."""
-        expected_time_stamp = "2020-03-03T10:04:05+00:00"
+        expected_time_stamp = "2020-03-03T10:04:05.000567+00:00"
         with patch("shared.utils.functions.datetime") as date_time:
             date_time.now.return_value = datetime(2020, 3, 3, 10, 4, 5, 567, tzinfo=tzutc())
             self.assertEqual(expected_time_stamp, iso_timestamp())

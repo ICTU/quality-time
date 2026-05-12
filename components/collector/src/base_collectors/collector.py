@@ -11,6 +11,7 @@ from dateutil.tz import tzutc
 
 from shared.database.reports import get_reports
 from shared.model.report import get_metrics_from_reports
+from shared.utils.functions import iso_timestamp
 
 from collector_utilities.log import get_logger
 from collector_utilities.type import JSONDict
@@ -41,7 +42,7 @@ class Collector:
         filename = pathlib.Path(config.HEALTH_CHECK_FILE)
         try:
             with filename.open("w", encoding="utf-8") as health_check:
-                health_check.write(datetime.now(tz=tzutc()).isoformat())
+                health_check.write(iso_timestamp())
         except OSError:
             logger.exception("Could not write health check time stamp to %s", filename)
 

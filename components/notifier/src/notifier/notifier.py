@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, NoReturn
 
 from dateutil.tz import tzutc
 
+from shared.utils.functions import iso_timestamp
+
 from database.reports import get_reports_and_measurements
 from destinations.ms_teams import send_notification
 from notifier_utilities.log import get_logger
@@ -47,7 +49,7 @@ def record_health() -> None:
     filepath = pathlib.Path(getenv("HEALTH_CHECK_FILE", "/home/notifier/health_check.txt"))
     try:
         with filepath.open("w", encoding="utf-8") as health_check:
-            health_check.write(datetime.now(tz=tzutc()).isoformat())
+            health_check.write(iso_timestamp())
     except OSError:
         logger.exception("Could not write health check time stamp to %s", filepath)
 

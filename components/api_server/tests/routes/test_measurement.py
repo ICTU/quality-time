@@ -30,7 +30,11 @@ class GetMetricMeasurementsTest(DatabaseTestCase):
     @patch("bottle.request")
     def test_get_old_but_not_new_measurements(self, request):
         """Test that the measurements for the requested metric and report date are returned."""
-        database_entries = [{"start": "0"}, {"start": "1"}, {"start": "2"}]
+        database_entries = [
+            {"start": "2026-05-11T03:04:05.123456+00:00"},
+            {"start": "2026-05-11T03:04:06.123456+00:00"},
+            {"start": "2026-05-11T03:04:07.123456+00:00"},
+        ]
 
         def find_side_effect(query, projection, sort=None) -> list[dict[str, str]]:  # noqa: ARG001
             """Side effect for mocking the database measurements."""
@@ -50,10 +54,15 @@ class GetMetricMeasurementsTest(DatabaseTestCase):
         self.database.measurements.find_one.side_effect = find_one_side_effect
         self.database.measurements.find.side_effect = find_side_effect
 
-        request.query = {"report_date": "2"}
+        request.query = {"report_date": "2026-05-11T03:04:07.123456+00:00"}
 
         self.assertEqual(
-            {"measurements": [{"start": "0"}, {"start": "1"}]},
+            {
+                "measurements": [
+                    {"start": "2026-05-11T03:04:05.123456+00:00"},
+                    {"start": "2026-05-11T03:04:06.123456+00:00"},
+                ]
+            },
             get_metric_measurements(METRIC_ID, self.database),
         )
 

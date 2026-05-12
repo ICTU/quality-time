@@ -2,6 +2,7 @@
 
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
+from urllib.parse import quote
 
 import pymongo
 import requests
@@ -42,7 +43,7 @@ def before_all(context: Context) -> None:  # noqa: C901
         for attribute in ("report_date", "min_report_date"):
             if value := getattr(context, attribute):
                 sep = "&" if "?" in url else "?"
-                url += f"{sep}{attribute}={value}"
+                url += f"{sep}{attribute}={quote(value, safe='')}"
         context.response = response = requests.get(url, headers=headers, cookies=cookies(), timeout=timeout)
         return response.json() if response.headers.get("Content-Type") == JSON_CONTENT_TYPE else response
 

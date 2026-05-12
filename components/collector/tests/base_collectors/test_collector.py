@@ -4,12 +4,12 @@ import asyncio
 import logging
 import pathlib
 import unittest
-from datetime import datetime
 from unittest.mock import AsyncMock, Mock, _patch, call, mock_open, patch
 
 import aiohttp
 import mongomock
-from dateutil.tz import tzutc
+
+from shared.utils.functions import iso_timestamp
 
 import quality_time_collector
 from base_collectors import Collector, config
@@ -296,13 +296,13 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         )
 
     @patch("pathlib.Path.open", new_callable=mock_open)
-    @patch("base_collectors.collector.datetime")
-    def test_writing_health_check(self, mocked_datetime: Mock, mocked_open: Mock):
+    @patch("base_collectors.collector.iso_timestamp")
+    def test_writing_health_check(self, mocked_iso_timestamp: Mock, mocked_open: Mock):
         """Test that the current time is written to the health check file."""
-        mocked_datetime.now.return_value = now = datetime.now(tz=tzutc())
+        mocked_iso_timestamp.return_value = now = iso_timestamp()
         self.collector.record_health()
         mocked_open.assert_called_once_with("w", encoding="utf-8")
-        mocked_open().write.assert_called_once_with(now.isoformat())
+        mocked_open().write.assert_called_once_with(now)
 
     @patch("pathlib.Path.open")
     @patch("logging.getLogger")

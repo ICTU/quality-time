@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from dateutil.tz import tzutc
 
 from shared.model.source import Source
+from shared.utils.functions import iso_timestamp
 
 from tests.fixtures import SOURCE_ID
 
@@ -15,7 +16,7 @@ class SourceTest(unittest.TestCase):
 
     def test_copy_entity_user_data(self):
         """Test copy entity user data."""
-        now = datetime.now(tz=tzutc()).isoformat()
+        now = iso_timestamp()
         long_ago = (datetime.now(tz=tzutc()) - timedelta(days=30)).isoformat()
         old_eud = {
             "key_1": {"orphaned_since": now},

@@ -93,6 +93,8 @@ class MetricTest(unittest.TestCase):
         measurement_timestamp = iso_timestamp()
         measurement = Measurement(
             metric,
+            start=measurement_timestamp,
+            end=measurement_timestamp,
             count={"value": 1, "start": measurement_timestamp},
             status="target_met",
         )
@@ -105,6 +107,8 @@ class MetricTest(unittest.TestCase):
         measurement_timestamp = iso_timestamp()
         measurement = Measurement(
             metric,
+            start=measurement_timestamp,
+            end=measurement_timestamp,
             count={"value": 1, "start": measurement_timestamp},
             status="target_met",
             source_parameter_hash="old hash",
@@ -118,6 +122,8 @@ class MetricTest(unittest.TestCase):
         measurement_timestamp = iso_timestamp()
         measurement = Measurement(
             metric,
+            start=measurement_timestamp,
+            end=measurement_timestamp,
             count={"value": 1, "start": measurement_timestamp},
             status="target_met",
             source_parameter_hash=metric.source_parameter_hash(),

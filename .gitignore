@@ -40,7 +40,6 @@ coverage.xml
 .pytest_cache/
 components/collector/.mutmut-cache
 components/collector/html/
-components/frontend/coverage/
 
 # Environments
 *venv

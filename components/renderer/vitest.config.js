@@ -6,6 +6,7 @@ export default defineConfig({
             include: ["src/**/*.cjs", "src/index.js"],
             exclude: ["src/**/.DS_Store"],
             reporter: [["text", { maxCols: 200 }], "lcov", "html"],
+            reportsDirectory: "build",
             skipFull: true,
             thresholds: {
                 statements: 100,

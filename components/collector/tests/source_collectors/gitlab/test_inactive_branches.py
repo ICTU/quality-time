@@ -1,12 +1,12 @@
 """Unit tests for the GitLab inactive branches collector."""
 
-from datetime import datetime
 from http import HTTPStatus
 
 import aiohttp
 import multidict
 import yarl
-from dateutil.tz import tzutc
+
+from shared.utils.functions import iso_timestamp
 
 from .base import FakeResponse, GitLabTestCase
 
@@ -60,7 +60,7 @@ class GitLabInactiveBranchesTest(GitLabTestCase):
         self, name: str, *, default: bool = False, merged: bool = False, active: bool = False
     ) -> dict[str, str | bool | dict[str, str]]:
         """Create a GitLab branch."""
-        commit_date = datetime.now(tz=tzutc()).isoformat() if active else "2019-04-02T11:33:04.000+02:00"
+        commit_date = iso_timestamp() if active else "2019-04-02T11:33:04.000+02:00"
         return {
             "name": name,
             "default": default,

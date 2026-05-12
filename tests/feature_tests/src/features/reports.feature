@@ -13,13 +13,11 @@ Feature: reports
     Then the reports_overview comment is "Text"
 
   Scenario: add comment with html
-    When the client waits a second
-    And the client changes the reports_overview comment to "<b><i>Emphasized text</i></b>"
+    When the client changes the reports_overview comment to "<b><i>Emphasized text</i></b>"
     Then the reports_overview comment is "<b><i>Emphasized text</i></b>"
 
   Scenario: add comment with dangerous html
-    When the client waits a second
-    And the client changes the reports_overview comment to "Cleaned<script>alert('Danger')</script>"
+    When the client changes the reports_overview comment to "Cleaned<script>alert('Danger')</script>"
     Then the reports_overview comment is "Cleaned"
 
   Scenario: export reports overview as PDF
