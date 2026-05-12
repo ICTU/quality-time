@@ -403,12 +403,12 @@ fix: fix-py fix-js
 # Release Quality-time. Run `just release-help` for more information.
 [working-directory('tools/release')]
 release *args:
-    {{ uv_run }} --script release.py {{ args }}
+    {{ uv_run }} --script src/release.py {{ args }}
 
 [private]
 [working-directory('tools/release')]
 release-help:
-    {{ uv_run }} --script release.py --help
+    {{ uv_run }} --script src/release.py --help
 
 # === CI/CD ===
 

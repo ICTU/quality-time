@@ -41,7 +41,7 @@ docker compose up # or 'just start' if you have Just installed
 ```
 
 ```{note}
-When running the containers with `docker compose up`, the logging of the Python containers defaults to a width of 80 columns and doesn't take the available width into account. To fix this, run the containers with `just start`. The Just recipe calculates the available width and passes it to the Python containers. 
+When running the containers with `docker compose up`, the logging of the Python containers defaults to a width of 80 columns and doesn't take the available width into account. To fix this, run the containers with `just start`. The Just recipe calculates the available width and passes it to the Python containers.
 ```
 
 #### Scenario 2: run bespoke component from shells and other components in Docker
@@ -220,7 +220,7 @@ Run the release script with `--help` to show help information, including the cur
 
 ```console
 cd tools/release
-uv run --script release.py --help
+uv run --script src/release.py --help
 ```
 
 ### Decide the release type
@@ -256,7 +256,7 @@ The release script will check a number of preconditions before actually creating
 To check the preconditions without releasing, invoke the release script with the version bump as determined:
 
 ```console
-uv run --script release.py --check-preconditions-only <bump>  # Where bump is major, minor, patch, rc, or release
+uv run --script src/release.py --check-preconditions-only <bump>  # Where bump is major, minor, patch, rc, or release
 ```
 
 If everything is ok, there is no output, and you can proceed creating the release.
@@ -267,7 +267,7 @@ Otherwise, the release script will list the preconditions that have not been met
 To release *Quality-time*, issue the release command (in the release folder) from an already created release candidate:
 
 ```console
-uv run --script release.py release
+uv run --script src/release.py release
 ```
 
 If all preconditions are met, the release script will bump the version numbers, update the change history, commit the changes, push the commit, tag the commit, and push the tag to GitHub.

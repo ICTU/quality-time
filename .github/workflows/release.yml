@@ -80,7 +80,7 @@ jobs:
           helm package .
           helm push quality-time-*.tgz oci://registry-1.docker.io/ictu
       - name: Generate changes for this release
-        run: tools/release/latest_release_changelog.py docs/src/changelog.md > ${{ github.workspace }}-CHANGELOG.txt
+        run: tools/release/src/latest_release_changelog.py docs/src/changelog.md > ${{ github.workspace }}-CHANGELOG.txt
       - name: Create GitHub release # zizmor: ignore[superfluous-actions]
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
         with:

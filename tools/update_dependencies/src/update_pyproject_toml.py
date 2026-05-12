@@ -24,14 +24,14 @@ LOG = get_logger("pyproject.toml")
 class Versions:
     """Mapping of package names to versions."""
 
-    def __init__(self, versions: dict[str, str]) -> None:
+    def __init__(self, package_versions: dict[str, str]) -> None:
         """Keep track of the versions, a mapping of package names to latest versions."""
-        self.versions = versions
+        self.package_versions = package_versions
 
     def get_package_spec(self, match: re.Match) -> str:
         """Return a package spec for the package name with the latest version if available or the old version if not."""
         name = match.group("name")
-        version = self.versions.get(name.lower(), match.group("version"))
+        version = self.package_versions.get(name.lower(), match.group("version"))
         return f'"{name}=={version}"'
 
 

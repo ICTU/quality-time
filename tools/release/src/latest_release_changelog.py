@@ -24,5 +24,5 @@ def latest_release(file_path: Path) -> str:
     return "".join(line.removeprefix("#") for line in extracted_lines)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     sys.stdout.write(latest_release(Path(sys.argv[1])))
