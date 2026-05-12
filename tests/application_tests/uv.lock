@@ -494,14 +494,11 @@ wheels = [
 
 [[package]]
 name = "moreorless"
-version = "0.5.0"
+version = "0.6.0"
 source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/8d/85/2e4999ac4a21ab3c5f31e2a48e0989a80be3afc512a7983e3253615983d4/moreorless-0.5.0.tar.gz", hash = "sha256:560a04f85006fccd74feaa4b6213a446392ff7b5ec0194a5464b6c30f182fa33", size = 14093, upload-time = "2025-05-04T22:29:59.006Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/66/cd/388ad4893c29cc8d54bc35ef6d699f747c7602132361f289dd28ae614448/moreorless-0.6.0.tar.gz", hash = "sha256:175e8afa824006c4356353d97b1cc9699a6ef68a851e0859257cde8d00e88a64", size = 15607, upload-time = "2026-05-12T06:15:40.303Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fa/2e/9ea80ca55b73530b7639c6f146a58f636ddfe5a852ad467a44fe3e80d809/moreorless-0.5.0-py3-none-any.whl", hash = "sha256:66228870cd2f14bad5c3c3780aa71e29d3b2d9b5a01c03bfbf105efd4f668ecf", size = 14380, upload-time = "2025-05-04T22:29:57.417Z" },
+    { url = "https://files.pythonhosted.org/packages/03/41/503e35f695f45e2f07c623d9540377761beebf5a3ecb2322769b98f284d2/moreorless-0.6.0-py3-none-any.whl", hash = "sha256:b00997fee924ab86f2e135ba08e4d70d3295a7226d3d083a5c69ec4e2a9e9e83", size = 10801, upload-time = "2026-05-12T06:15:38.805Z" },
 ]
 
 [[package]]
