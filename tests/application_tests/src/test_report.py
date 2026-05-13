@@ -23,7 +23,7 @@ class ElementHasNoCCSClass:
     def __call__(self, driver):
         """Return the element if it no longer has a CSS class, otherwise False."""
         element = driver.find_element(*self.locator)
-        return element if len(element.get_attribute("class")) == 0 else False
+        return element if len(element.get_attribute("class") or []) == 0 else False
 
 
 class NrElements:
