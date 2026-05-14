@@ -17,7 +17,7 @@ dev = [
     "gevent==26.4.0",
     "pymongo==4.17.0",
     "python-dateutil==2.9.0.post0",
-    "requests==2.34.0",
+    "requests==2.34.1",
     "requests-sse==0.5.3",
     "tools",
     "types-python-dateutil==2.9.0.20260508",

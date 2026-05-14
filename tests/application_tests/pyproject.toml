@@ -13,7 +13,7 @@ classifiers = [
 [dependency-groups]
 dev = [
     "axe-selenium-python==3.0.0",
-    "requests==2.34.0",
+    "requests==2.34.1",
     "selenium==4.44.0",
     "tools",
     "types-requests==2.33.0.20260513",
