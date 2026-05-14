@@ -1,4 +1,4 @@
-FROM mongo:8.3.1
+FROM mongo:8.3.2
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time database"
