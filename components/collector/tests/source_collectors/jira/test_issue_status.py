@@ -29,7 +29,7 @@ class JiraIssuesTest(JiraTestCase):
 
     def assert_issue_status(  # noqa: PLR0913
         self,
-        response,
+        measurement,
         summary: str | None = None,
         connection_error: str | None = None,
         parse_error: str | None = None,
@@ -38,7 +38,7 @@ class JiraIssuesTest(JiraTestCase):
         sprint: bool = False,
     ) -> None:
         """Assert that the issue has the expected attributes."""
-        issue_status = response.as_dict()["issue_status"][0]
+        issue_status = measurement.as_dict()["issue_status"][0]
         self.assertEqual("FOO-42", issue_status["issue_id"])
         if summary:
             self.assertEqual(summary, issue_status["summary"])
@@ -84,8 +84,8 @@ class JiraIssuesTest(JiraTestCase):
         issue_status_json = {
             "fields": {"status": {"name": self.ISSUE_NAME, "statusCategory": {"key": "new"}}, "created": self.CREATED},
         }
-        response = await self.collect(get_request_json_return_value=issue_status_json)
-        self.assert_issue_status(response)
+        measurement = await self.collect_measurement(get_request_json_return_value=issue_status_json)
+        self.assert_issue_status(measurement)
 
     async def test_issue_status_doing(self):
         """Test that the issue status is returned."""
@@ -95,16 +95,16 @@ class JiraIssuesTest(JiraTestCase):
                 "created": self.CREATED,
             },
         }
-        response = await self.collect(get_request_json_return_value=issue_status_json)
-        self.assert_issue_status(response, status_category="doing")
+        measurement = await self.collect_measurement(get_request_json_return_value=issue_status_json)
+        self.assert_issue_status(measurement, status_category="doing")
 
     async def test_issue_status_done(self):
         """Test that the issue status is returned."""
         issue_status_json = {
             "fields": {"status": {"name": self.ISSUE_NAME, "statusCategory": {"key": "done"}}, "created": self.CREATED},
         }
-        response = await self.collect(get_request_json_return_value=issue_status_json)
-        self.assert_issue_status(response, status_category="done")
+        measurement = await self.collect_measurement(get_request_json_return_value=issue_status_json)
+        self.assert_issue_status(measurement, status_category="done")
 
     async def test_issue_summary(self):
         """Test that the issue summary is returned."""
@@ -115,8 +115,8 @@ class JiraIssuesTest(JiraTestCase):
                 "created": self.CREATED,
             },
         }
-        response = await self.collect(get_request_json_return_value=issue_status_json)
-        self.assert_issue_status(response, summary="Issue summary")
+        measurement = await self.collect_measurement(get_request_json_return_value=issue_status_json)
+        self.assert_issue_status(measurement, summary="Issue summary")
 
     async def test_issue_release(self):
         """Test that the issue release is returned."""
@@ -129,8 +129,8 @@ class JiraIssuesTest(JiraTestCase):
                 ],
             },
         }
-        response = await self.collect(get_request_json_return_value=issue_status_json)
-        self.assert_issue_status(response, status_category="done", release=True)
+        measurement = await self.collect_measurement(get_request_json_return_value=issue_status_json)
+        self.assert_issue_status(measurement, status_category="done", release=True)
 
     async def test_issue_sprint(self):
         """Test that the issue sprint is returned."""
@@ -141,16 +141,16 @@ class JiraIssuesTest(JiraTestCase):
                 "sprint": {"name": self.SPRINT_NAME, "state": self.SPRINT_STATE, "endDate": self.SPRINT_ENDDATE},
             },
         }
-        response = await self.collect(get_request_json_return_value=issue_status_json)
-        self.assert_issue_status(response, status_category="done", sprint=True)
+        measurement = await self.collect_measurement(get_request_json_return_value=issue_status_json)
+        self.assert_issue_status(measurement, status_category="done", sprint=True)
 
     async def test_connection_error(self):
         """Test that the issue status is returned, even when there is a connection error."""
-        response = await self.collect(get_request_side_effect=BrokenPipeError)
-        self.assert_issue_status(response, connection_error="BrokenPipeError")
+        measurement = await self.collect_measurement(get_request_side_effect=BrokenPipeError)
+        self.assert_issue_status(measurement, connection_error="BrokenPipeError")
 
     async def test_parse_error(self):
         """Test that the issue status is returned, even when there is a parse error."""
         issue_status_json = {"fields": {"status": None}}
-        response = await self.collect(get_request_json_return_value=issue_status_json)
-        self.assert_issue_status(response, parse_error="TypeError")
+        measurement = await self.collect_measurement(get_request_json_return_value=issue_status_json)
+        self.assert_issue_status(measurement, parse_error="TypeError")

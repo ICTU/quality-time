@@ -85,8 +85,9 @@ class OpenReportTest(unittest.TestCase):
         report = self.dashboard_cards()[-1]  # The last card is a report
         report_title = report.find_element(By.CLASS_NAME, self.DASHBOARD_CARD_HEADER_CONTENT_CLASS_NAME)
         report.click()
-        report_header = self.driver.find_element(By.CLASS_NAME, self.REPORT_HEADER_CLASS_NAME)
-        self.assertTrue(expect.text_to_be_present_in_element(report_header, report_title))
+        self.assertTrue(
+            expect.text_to_be_present_in_element((By.CLASS_NAME, self.REPORT_HEADER_CLASS_NAME), report_title)
+        )
 
     def test_login_and_logout(self):
         """Test that a user can login and logout."""

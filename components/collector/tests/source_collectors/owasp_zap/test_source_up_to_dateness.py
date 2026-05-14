@@ -13,6 +13,6 @@ class OWASPZAPTest(OWASPZAPTestCase):
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         xml = """<?xml version="1.0"?><OWASPZAPReport generated="Thu, 28 Mar 2019 13:20:20"></OWASPZAPReport>"""
-        response = await self.collect(get_request_text=xml)
+        measurement = await self.collect_measurement(get_request_text=xml)
         expected_age = days_ago(datetime_from_parts(2019, 3, 28, 13, 20, 20))
-        self.assert_measurement(response, value=str(expected_age))
+        self.assert_measurement(measurement, value=str(expected_age))

@@ -2,14 +2,12 @@
 
 from datetime import datetime, timedelta
 from typing import cast
-from unittest.mock import patch
 
 from dateutil.tz import tzutc
 from packaging.version import Version
 
 from shared.model.measurement import (
     Measurement,
-    ScaleMeasurement,
     VersionNumberScaleMeasurement,
 )
 from shared.model.metric import Metric
@@ -50,122 +48,82 @@ class MeasurementTestCase(DataModelTestCase):
         return measurement
 
 
-class ScaleMeasurementTest(MeasurementTestCase):
-    """Testing the ScaleMeasurement class."""
+class CountScaleMeasurementTest(MeasurementTestCase):
+    """Tests for the measurement count scale."""
 
-    def test_status(self):
-        """The status should return a string apparently."""
-        measurement = self.measurement(self.metric())
-        s_m = ScaleMeasurement(
-            previous_scale_measurement=None,
-            measurement=measurement,
-            status="target_met",
-        )
-        status = s_m.status()
-        self.assertIs(type(status), str)
-        self.assertEqual(status, "target_met")
-
-    def test_status_start(self):
-        """The status_start should get returned."""
-        measurement = self.measurement(self.metric())
-        s_m = ScaleMeasurement(
-            previous_scale_measurement=None,
-            measurement=measurement,
-            status_start="yesterday",
-        )
-        status_start = s_m.status_start()
-        self.assertEqual(status_start, "yesterday")
-
-    def test_status_start_empty(self):
-        """The status_start should return the start of the measurement."""
-        measurement = Measurement(self.metric(), start="now")
-        s_m = ScaleMeasurement(previous_scale_measurement=None, measurement=measurement)
-        s_m.update_value_and_status()
-        self.assertIs(s_m.status_start(), "now")
-
-    def test_previous_status_start_empty(self):
-        """The status_start should return the start of the measurement."""
-        previous_s_m = ScaleMeasurement(
-            previous_scale_measurement=None,
-            measurement=Measurement(self.metric(), start="yesterday"),
-            status_start=None,
-            status=None,
-        )
-        s_m = ScaleMeasurement(
-            previous_scale_measurement=previous_s_m,
-            measurement=Measurement(self.metric(), start="now"),
-        )
-        s_m.update_value_and_status()
-        self.assertIsNone(s_m.status_start())
-
-    def test_status_start_unchanged(self):
-        """The status_start should be the status start of the previous measurement if the status is unchanged."""
-        previous_s_m = ScaleMeasurement(
-            previous_scale_measurement=None,
-            measurement=Measurement(self.metric(), start="yesterday"),
-            status_start="yesterday",
-            status=None,
-        )
-        s_m = ScaleMeasurement(
-            previous_scale_measurement=previous_s_m,
-            measurement=Measurement(self.metric(), start="today"),
-            status=None,
-        )
-        s_m.update_value_and_status()
-        self.assertEqual(s_m.status_start(), "yesterday")
-
-    def test_set_status_start_changed(self):
-        """Test status_start."""
-        previous_s_m = ScaleMeasurement(
-            previous_scale_measurement=None,
-            measurement=Measurement(self.metric(), start="yesterday"),
-            status_start="yesterday",
-            status="target_met",
-        )
-        measurement = Measurement(self.metric(), start="today")
-        s_m = ScaleMeasurement(previous_scale_measurement=previous_s_m, measurement=measurement)
-        s_m.update_value_and_status()
-        self.assertEqual(s_m.status_start(), measurement["start"])
-
-    @patch.object(
-        ScaleMeasurement,
-        "_better_or_equal",
-        lambda _self, value, target: value <= target,
-    )
-    def test_calculate_status_debt_target(self):
-        """Test calculate status."""
-        measurement = Measurement(self.metric(accept_debt=True))
-        s_m = ScaleMeasurement(
-            previous_scale_measurement=None,
-            measurement=measurement,
-            target=1,
-            near_target=2,
-            debt_target=3,
-        )
-        status = s_m._ScaleMeasurement__calculate_status(3)  # noqa: SLF001
-        self.assertEqual(status, "debt_target_met")
-
-    @patch.object(
-        ScaleMeasurement,
-        "_better_or_equal",
-        lambda _self, value, target: value <= target,
-    )
-    def test_calculate_status_near_target(self):
-        """Test calculate status."""
+    def test_default_value(self):
+        """Test the default value."""
         measurement = Measurement(self.metric())
-        s_m = ScaleMeasurement(
-            previous_scale_measurement=None,
-            measurement=measurement,
-            target=1,
-            debt_target=2,
-            near_target=3,
+        count_scale = measurement.scale_measurement("count")
+        count_scale.update_value_and_status()
+        self.assertEqual("0", count_scale._calculate_value())  # noqa: SLF001
+
+    def test_default_status(self):
+        """Test the default status."""
+        measurement = Measurement(self.metric())
+        count_scale = measurement.scale_measurement("count")
+        count_scale.update_value_and_status()
+        self.assertIsNone(count_scale.status())
+
+    def test_default_status_start(self):
+        """Test the default status start."""
+        measurement = Measurement(self.metric())
+        count_scale = measurement.scale_measurement("count")
+        self.assertIsNone(count_scale.status_start())
+
+    def test_updated_status_start(self):
+        """Test the default status start."""
+        measurement = Measurement(self.metric())
+        count_scale = measurement.scale_measurement("count")
+        count_scale.update_value_and_status()
+        self.assertIsNotNone(count_scale.status_start())
+
+    def test_accepted_debt_without_value(self):
+        """Test the accepted debt status without value."""
+        measurement = Measurement(self.metric(accept_debt=True))
+        count_scale = measurement.scale_measurement("count")
+        count_scale.update_value_and_status()
+        self.assertIsNone(count_scale["value"])
+        self.assertEqual("debt_target_met", count_scale.status())
+
+    def test_near_target_met(self):
+        """Test the near target met status."""
+        metric = self.metric(
+            target="10",
+            near_target="5",
+            sources={SOURCE_ID: cast("Source", {"type": "azure_devops"})},
         )
-        status = s_m._ScaleMeasurement__calculate_status(3)  # noqa: SLF001
-        self.assertEqual(status, "near_target_met")
+        measurement = Measurement(
+            metric,
+            sources=[{"source_uuid": SOURCE_ID, "value": "7", "parse_error": "", "connection_error": ""}],
+        )
+        count_scale = measurement["count"]
+        count_scale.update_targets()
+        count_scale.update_value_and_status()
+        self.assertEqual("near_target_met", count_scale.status())
+
+    def test_accepted_debt_with_value(self):
+        """Test the accepted debt status with value."""
+        metric = self.metric(
+            accept_debt=True,
+            direction="<",
+            debt_target="5",
+            sources={SOURCE_ID: cast("Source", {"type": "azure_devops"})},
+        )
+        measurement = Measurement(
+            metric,
+            sources=[{"source_uuid": SOURCE_ID, "value": "3", "parse_error": "", "connection_error": ""}],
+        )
+        count_scale = measurement["count"]
+        count_scale.update_targets()
+        count_scale.update_value_and_status()
+        self.assertEqual("3", count_scale["value"])
+        self.assertEqual("3", measurement.value())
+        self.assertEqual("debt_target_met", count_scale.status())
 
 
 class VersionNumberScaleMeasurementTest(MeasurementTestCase):
-    """Tests for the version number measurement class."""
+    """Tests for the version number scale."""
 
     def test_calculate_value(self):
         """Test calculate value."""
@@ -175,7 +133,7 @@ class VersionNumberScaleMeasurementTest(MeasurementTestCase):
         self.assertEqual(value, "0")
 
     def test_better_or_equal(self):
-        """Test calculate value."""
+        """Test value comparison."""
         measurement = Measurement(self.metric())
         vn_s_m = VersionNumberScaleMeasurement(previous_scale_measurement=None, measurement=measurement, direction="<")
         better_or_equal = vn_s_m._better_or_equal("0", "1")  # noqa: SLF001

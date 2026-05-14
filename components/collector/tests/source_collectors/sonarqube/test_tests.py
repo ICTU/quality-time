@@ -16,8 +16,8 @@ class SonarQubeTestsTest(SonarQubeTestCase):
     async def test_nr_of_tests(self):
         """Test that the number of tests is returned."""
         json = {"component": {"measures": [{"metric": "tests", "value": "123"}]}}
-        response = await self.collect(get_request_json_return_value=json)
-        self.assert_measurement(response, value="123", total="123")
+        measurement = await self.collect_measurement(get_request_json_return_value=json)
+        self.assert_measurement(measurement, value="123", total="123")
 
     async def test_nr_of_skipped_tests(self):
         """Test that the number of skipped tests is returned."""
@@ -25,17 +25,17 @@ class SonarQubeTestsTest(SonarQubeTestCase):
             "component": {"measures": [{"metric": "tests", "value": "123"}, {"metric": "skipped_tests", "value": "4"}]},
         }
         self.set_source_parameter("test_result", ["skipped"])
-        response = await self.collect(get_request_json_return_value=json)
-        self.assert_measurement(response, value="4", total="123")
+        measurement = await self.collect_measurement(get_request_json_return_value=json)
+        self.assert_measurement(measurement, value="4", total="123")
 
     async def test_nr_of_tests_without_tests(self):
         """Test that the collector throws an exception if there are no tests."""
         json = {"component": {"measures": []}}
-        response = await self.collect(get_request_json_return_value=json)
-        self.assert_measurement(response, parse_error="KeyError")
+        measurement = await self.collect_measurement(get_request_json_return_value=json)
+        self.assert_measurement(measurement, parse_error="KeyError")
 
     async def test_nr_of_tests_with_faulty_component(self):
         """Test that the measurement fails if the component does not exist."""
         json = {"errors": [{"msg": "No such component"}]}
-        response = await self.collect(get_request_json_return_value=json)
-        self.assert_measurement(response, connection_error="No such component")
+        measurement = await self.collect_measurement(get_request_json_return_value=json)
+        self.assert_measurement(measurement, connection_error="No such component")

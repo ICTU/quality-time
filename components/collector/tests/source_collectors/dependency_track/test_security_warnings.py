@@ -58,102 +58,104 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
 
     async def test_no_projects(self):
         """Test that an error is thrown if there are no projects."""
-        response = await self.collect(get_request_json_return_value=[])
-        self.assert_no_projects_found(response)
+        measurement = await self.collect_measurement(get_request_json_return_value=[])
+        self.assert_no_projects_found(measurement)
 
     async def test_one_project_without_vulnerabilities(self):
         """Test one project without vulnerabilities."""
-        response = await self.collect(get_request_json_side_effect=[self.projects(), []])
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), []])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_one_project_with_vulnerabilities(self):
         """Test one project with vulnerabilities."""
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_measurement(response, value="1", entities=self.entities())
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(measurement, value="1", entities=self.entities())
 
     async def test_filter_by_severity(self):
         """Test that vulnerabilities can be filtered."""
         self.set_source_parameter("severities", ["High", "Critical"])
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_filter_by_project_name(self):
         """Test filtering projects by name."""
         self.set_source_parameter("project_names", ["project name"])
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_measurement(response, value="1", entities=self.entities())
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(measurement, value="1", entities=self.entities())
 
     async def test_filter_by_project_name_without_match(self):
         """Test filtering projects by name."""
         self.set_source_parameter("project_names", ["other project"])
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_no_projects_found(response)
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_no_projects_found(measurement)
 
     async def test_filter_by_project_regular_expression(self):
         """Test filtering projects by regular expression."""
         self.set_source_parameter("project_names", ["project .*"])
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_measurement(response, value="1", entities=self.entities())
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(measurement, value="1", entities=self.entities())
 
     async def test_filter_by_project_version(self):
         """Test filtering projects by version."""
         self.set_source_parameter("project_versions", ["1.2", "1.3", "1.4"])
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_measurement(response, value="1", entities=self.entities())
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(measurement, value="1", entities=self.entities())
 
     async def test_filter_by_project_version_without_match(self):
         """Test filtering projects by version."""
         self.set_source_parameter("project_versions", ["1.2", "1.3"])
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_no_projects_found(response)
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_no_projects_found(measurement)
 
     async def test_filter_by_project_name_and_version(self):
         """Test filtering projects by name and version."""
         self.set_source_parameter("project_names", ["project .*"])
         self.set_source_parameter("project_versions", ["1.3", "1.4"])
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_measurement(response, value="1", entities=self.entities())
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(measurement, value="1", entities=self.entities())
 
     async def test_filter_by_latest_project(self):
         """Test that projects can be filtered by being the latest project version."""
         self.set_source_parameter("only_include_latest_project_versions", "yes")
-        response = await self.collect(get_request_json_side_effect=[self.projects(is_latest=True), self.findings()])
-        self.assert_measurement(response, value="1", entities=self.entities())
+        measurement = await self.collect_measurement(
+            get_request_json_side_effect=[self.projects(is_latest=True), self.findings()]
+        )
+        self.assert_measurement(measurement, value="1", entities=self.entities())
 
     async def test_filter_by_latest_project_without_match(self):
         """Test that projects can be filtered by being the latest project version."""
         self.set_source_parameter("only_include_latest_project_versions", "yes")
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_no_projects_found(response)
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_no_projects_found(measurement)
 
     async def test_include_by_component_name(self):
         """Test filtering by component name."""
         self.set_source_parameter("components_to_include", ["other component"])
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_include_by_component_name_regular_expression(self):
         """Test filtering by component name regular expression."""
         self.set_source_parameter("components_to_include", ["component.*"])
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_measurement(response, value="1", entities=self.entities())
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(measurement, value="1", entities=self.entities())
 
     async def test_exclude_by_component_name(self):
         """Test filtering by component name."""
         self.set_source_parameter("components_to_ignore", ["component name"])
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_exclude_by_component_name_regular_expression(self):
         """Test filtering by component name regular expression."""
         self.set_source_parameter("components_to_ignore", ["other.*"])
-        response = await self.collect(get_request_json_side_effect=[self.projects(), self.findings()])
-        self.assert_measurement(response, value="1", entities=self.entities())
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), self.findings()])
+        self.assert_measurement(measurement, value="1", entities=self.entities())
 
     async def test_api_key(self):
         """Test that the API key is passed as header."""
         self.set_source_parameter("private_token", "API key")
-        _, get, _ = await self.collect(get_request_json_return_value=[], return_mocks=True)
+        _, get, _ = await self.collect_measurement_and_mocks(get_request_json_return_value=[])
         get.assert_called_once_with(
             f"https://dependency_track/api/v1/project?pageSize={DependencyTrackBase.PAGE_SIZE}&pageNumber=1",
             allow_redirects=True,

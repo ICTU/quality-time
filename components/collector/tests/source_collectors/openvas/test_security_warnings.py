@@ -23,7 +23,7 @@ class OpenVASSecurityWarningsTest(OpenVASTestCase):
 
     async def test_warnings(self):
         """Test that the number of warnings is returned."""
-        response = await self.collect(get_request_text=self.OPENVAS_XML)
+        measurement = await self.collect_measurement(get_request_text=self.OPENVAS_XML)
         expected_entities = [
             {
                 "key": "1_2_3_4:80-tcp:4_2",
@@ -34,10 +34,10 @@ class OpenVASSecurityWarningsTest(OpenVASTestCase):
                 "port": "80/tcp",
             },
         ]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)
 
     async def test_filter_severities(self):
         """Test that warnings are filtered by severity."""
         self.set_source_parameter("severities", ["high", "medium"])
-        response = await self.collect(get_request_text=self.OPENVAS_XML)
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_text=self.OPENVAS_XML)
+        self.assert_measurement(measurement, value="0", entities=[])

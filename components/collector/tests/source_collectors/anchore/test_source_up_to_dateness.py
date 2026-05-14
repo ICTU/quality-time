@@ -22,8 +22,8 @@ class AnchoreSourceUpToDatenessTest(AnchoreTestCase):
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
-        response = await self.collect(get_request_json_return_value=self.details_json)
-        self.assert_measurement(response, value=str(self.expected_age))
+        measurement = await self.collect_measurement(get_request_json_return_value=self.details_json)
+        self.assert_measurement(measurement, value=str(self.expected_age))
 
     async def test_zipped_report(self):
         """Test that a zip with reports can be read."""
@@ -32,5 +32,5 @@ class AnchoreSourceUpToDatenessTest(AnchoreTestCase):
             ("vulnerabilities.json", json.dumps(self.vulnerabilities_json)),
             ("details.json", json.dumps(self.details_json)),
         )
-        response = await self.collect(get_request_content=zipfile)
-        self.assert_measurement(response, value=str(self.expected_age))
+        measurement = await self.collect_measurement(get_request_content=zipfile)
+        self.assert_measurement(measurement, value=str(self.expected_age))

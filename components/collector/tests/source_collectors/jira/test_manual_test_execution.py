@@ -34,9 +34,9 @@ class JiraManualTestExecutionTest(JiraTestCase):
             ],
         }
         fields_json = [{"name": "Desired test frequency", "id": "desired_test_frequency"}]
-        response = await self.get_response(test_cases_json, fields_json)
+        measurement = await self.get_response(test_cases_json, fields_json)
         self.assert_measurement(
-            response,
+            measurement,
             value="3",
             entities=[
                 self.entity(key="1", last_test_date=str(parse_datetime(long_ago).date()), desired_test_frequency="21"),
@@ -58,9 +58,9 @@ class JiraManualTestExecutionTest(JiraTestCase):
             "issues": [self.issue(comment={"comments": [{"updated": self.ten_days_ago}]}, custom_field_001="5")],
         }
         fields_json = [{"name": "Required test frequency", "id": "custom_field_001"}]
-        response = await self.get_response(test_cases_json, fields_json)
+        measurement = await self.get_response(test_cases_json, fields_json)
         self.assert_measurement(
-            response,
+            measurement,
             value="1",
             entities=[
                 self.entity(
@@ -76,9 +76,9 @@ class JiraManualTestExecutionTest(JiraTestCase):
         self.set_source_parameter("manual_test_execution_frequency_default", "5")
         test_cases_json = {"issues": [self.issue(comment={"comments": [{"updated": self.ten_days_ago}]})]}
         fields_json = [{"name": "Desired test frequency", "id": "desired_test_frequency"}]
-        response = await self.get_response(test_cases_json, fields_json)
+        measurement = await self.get_response(test_cases_json, fields_json)
         self.assert_measurement(
-            response,
+            measurement,
             value="1",
             entities=[
                 self.entity(

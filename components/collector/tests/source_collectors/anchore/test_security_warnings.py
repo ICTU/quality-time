@@ -29,16 +29,16 @@ class AnchoreSecurityWarningsTest(AnchoreTestCase):
     async def test_warnings(self):
         """Test the number of security warnings."""
         self.set_source_parameter("severities", ["Low"])
-        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.vulnerabilities_json)
         expected_entities = [self.create_entity("CVE-000", "package")]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)
 
     async def test_filter_by_fix_availability(self):
         """Test the security warnings can be filtered by fix availability."""
         self.set_source_parameter("fix_availability", ["fix available"])
-        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.vulnerabilities_json)
         expected_entities = [self.create_entity("CVE-000", package="package2", fix="v1.2.3", severity="Unknown")]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)
 
     async def test_zipped_report(self):
         """Test that a zip with reports can be read."""
@@ -49,6 +49,6 @@ class AnchoreSecurityWarningsTest(AnchoreTestCase):
             (filename, json.dumps(self.vulnerabilities_json)),
             ("details.json", json.dumps(self.details_json)),
         )
-        response = await self.collect(get_request_content=zipfile)
+        measurement = await self.collect_measurement(get_request_content=zipfile)
         expected_entities = [self.create_entity("CVE-000", "package", filename=filename)]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)

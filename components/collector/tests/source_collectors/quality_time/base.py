@@ -8,11 +8,11 @@ class QualityTimeTestCase(SourceCollectorTestCase):
 
     SOURCE_TYPE = "quality_time"
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Extend to set up fixtures for Quality-time metrics unit tests."""
         super().setUp()
         self.url = "https://quality_time"
-        self.reports = {
+        self.reports: dict = {
             "reports": [
                 {
                     "title": "Report 1",

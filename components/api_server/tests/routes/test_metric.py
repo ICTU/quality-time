@@ -1,5 +1,6 @@
 """Unit tests for the metric routes."""
 
+from typing import TYPE_CHECKING, cast
 from unittest.mock import Mock, patch
 
 import requests
@@ -8,7 +9,6 @@ from shared_data_model.meta.unit import Unit
 from shared_data_model import DATA_MODEL
 
 from model.report import Report
-
 from routes import (
     add_metric_issue,
     delete_metric,
@@ -18,6 +18,7 @@ from routes import (
     post_metric_new,
     post_move_metric,
 )
+
 from tests.base import DataModelTestCase, disable_logging
 from tests.fixtures import (
     JOHN,
@@ -31,6 +32,9 @@ from tests.fixtures import (
     SUBJECT_ID2,
     create_report,
 )
+
+if TYPE_CHECKING:
+    from shared.utils.type import ItemId
 
 
 class MetricTestCase(DataModelTestCase):
@@ -475,7 +479,9 @@ class MetricTest(MetricTestCase):
         self.database.measurements.find.return_value = []
         self.database.sessions.find_one.return_value = JOHN
 
-    def assert_delta(self, description: str, uuids: list[str] | None = None, email: str = JOHN["email"], report=None):
+    def assert_delta(
+        self, description: str, uuids: list[ItemId] | None = None, email: str = JOHN["email"], report=None
+    ):
         """Assert that the report delta contains the correct data."""
         uuids = sorted(uuids or [REPORT_ID, SUBJECT_ID, METRIC_ID])
         report = report or self.report
@@ -516,7 +522,7 @@ class MetricTest(MetricTestCase):
         self.assertEqual({"ok": True}, post_move_metric(METRIC_ID, SUBJECT_ID2, self.database))
         updated_report = self.updated_report()
         self.assertEqual({}, updated_report["subjects"][SUBJECT_ID]["metrics"])
-        self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))
+        self.assertEqual(metric, cast(dict, target_subject["metrics"])[METRIC_ID])
         self.assert_delta(
             "John Doe moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in "
             "report 'Report'.",
@@ -524,7 +530,7 @@ class MetricTest(MetricTestCase):
             report=updated_report,
         )
 
-    def test_move_metric_across_reports(self):
+    def test_move_metric_across_reports(self) -> None:
         """Test that a metric can be moved to a different subject in a different report."""
         metric = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]
         target_subject = {"name": "Target", "metrics": {}}
@@ -538,12 +544,12 @@ class MetricTest(MetricTestCase):
         self.assertEqual({"ok": True}, post_move_metric(METRIC_ID, SUBJECT_ID2, self.database))
         updated_reports = self.database.reports.insert_many.call_args[0][0]
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"])
-        self.assertEqual((METRIC_ID, metric), next(iter(target_subject["metrics"].items())))
+        self.assertEqual(metric, cast(dict, target_subject["metrics"])[METRIC_ID])
         expected_description = (
             "John Doe moved the metric 'Metric' from subject 'Subject' in report 'Report' to subject 'Target' in "
             "report 'Target'."
         )
-        expected_uuids = [REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, METRIC_ID]
+        expected_uuids: list[ItemId] = [REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, METRIC_ID]
 
         for report in updated_reports:
             self.assert_delta(expected_description, uuids=expected_uuids, report=report)
@@ -566,10 +572,10 @@ class MetricIssueTest(DataModelTestCase):
     METRIC_URL = "https://quality_time/metric42"
     ISSUE_URL = "https://tracker/browse/FOO-42"
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Extend to set up the report fixture."""
         super().setUp()
-        self.sources = {
+        self.sources: dict = {
             SOURCE_ID: {"name": "Source", "type": "owasp_zap", "parameters": {"url": "https://zap"}},
         }
         self.report = Report(
@@ -602,7 +608,7 @@ class MetricIssueTest(DataModelTestCase):
             "sources": [{"source_uuid": SOURCE_ID, "parse_error": None, "connection_error": None, "value": "42"}],
         }
         self.database.measurements.find_one.return_value = self.measurement
-        self.expected_json = {
+        self.expected_json: dict[str, dict[str, str | dict[str, str] | list[str]]] = {
             "fields": {
                 "project": {"key": "KEY"},
                 "issuetype": {"name": "BUG"},
@@ -636,9 +642,10 @@ class MetricIssueTest(DataModelTestCase):
     @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
     def test_add_metric_issue_when_measurement_is_one(self, requests_post):
         """Test that the singular unit is used if the measurement is one."""
-        self.measurement["count"]["value"] = "1"
+        count_scale = cast(dict[str, str], self.measurement["count"])
+        count_scale["value"] = "1"
         self.expected_json["fields"]["summary"] = "Fix 1 violation from Source"
-        description = self.expected_json["fields"]["description"]
+        description = cast(str, self.expected_json["fields"]["description"])
         self.expected_json["fields"]["description"] = description.replace("42 violations", "1 violation")
         response = Mock()
         response.json.return_value = {"key": "FOO-42"}
@@ -651,7 +658,7 @@ class MetricIssueTest(DataModelTestCase):
     def test_add_metric_issue_with_landing_url(self, requests_post):
         """Test that the metric landing URL is used if available."""
         self.sources[SOURCE_ID]["parameters"]["landing_url"] = "https://zap/landing"
-        description = self.expected_json["fields"]["description"]
+        description = cast(str, self.expected_json["fields"]["description"])
         self.expected_json["fields"]["description"] = description.replace("https://zap", "https://zap/landing")
         response = Mock()
         response.json.return_value = {"key": "FOO-42"}

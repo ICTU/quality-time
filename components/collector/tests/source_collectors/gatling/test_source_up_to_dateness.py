@@ -16,12 +16,12 @@ class GatlingSourceUpToDatenessTest(GatlingTestCase):
 
     async def test_no_transactions(self):
         """Test that the age is 0 if there is no date in the HTML."""
-        response = await self.collect(get_request_text="<span/>")
-        self.assert_measurement(response, value="0")
+        measurement = await self.collect_measurement(get_request_text="<span/>")
+        self.assert_measurement(measurement, value="0")
 
     async def test_source_up_to_dateness(self):
         """Test that the test age is returned."""
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_text="""
             <span class="simulation-information-item">
                 <span class="simulation-information-label">Date: </span>
@@ -29,4 +29,4 @@ class GatlingSourceUpToDatenessTest(GatlingTestCase):
             </span>"""
         )
         expected_age = days_ago(datetime(2025, 9, 10, 11, 39, 26, tzinfo=tzutc()))
-        self.assert_measurement(response, value=str(expected_age))
+        self.assert_measurement(measurement, value=str(expected_age))

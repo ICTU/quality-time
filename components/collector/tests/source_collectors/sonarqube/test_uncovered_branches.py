@@ -18,9 +18,9 @@ class SonarQubeUncoveredBranchesTest(SonarQubeTestCase):
                 ],
             },
         }
-        response = await self.collect(get_request_json_return_value=json)
+        measurement = await self.collect_measurement(get_request_json_return_value=json)
         self.assert_measurement(
-            response,
+            measurement,
             value="10",
             total="200",
             landing_url=self.metric_landing_url.format("uncovered_conditions"),
@@ -29,9 +29,9 @@ class SonarQubeUncoveredBranchesTest(SonarQubeTestCase):
     async def test_missing_uncovered_branches(self):
         """Test that the number of (uncovered) branches are assumed to be 0 when missing."""
         json = {"component": {"measures": []}}
-        response = await self.collect(get_request_json_return_value=json)
+        measurement = await self.collect_measurement(get_request_json_return_value=json)
         self.assert_measurement(
-            response,
+            measurement,
             value="0",
             total="100",
             landing_url=self.metric_landing_url.format("uncovered_conditions"),

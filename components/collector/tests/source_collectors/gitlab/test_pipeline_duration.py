@@ -1,11 +1,15 @@
 """Unit tests for the GitLab CI-pipeline duration collector."""
 
 from datetime import datetime
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, patch
 
 from dateutil.tz import tzutc
 
 from .base import FakeResponse, GitLabTestCase
+
+if TYPE_CHECKING:
+    from model.measurement import MetricMeasurement
 
 
 class GitLabPipelineDurationTest(GitLabTestCase):
@@ -43,9 +47,9 @@ class GitLabPipelineDurationTest(GitLabTestCase):
             "duration": 7,
         }
 
-    async def collect(self):
+    async def collect_measurement(self) -> MetricMeasurement:
         """Override to pass the GitLab pipeline JSON responses."""
-        return await super().collect(
+        return await super().collect_measurement(
             get_request_side_effect=[
                 FakeResponse(self.pipeline_schedules_json),  # To fetch all pipeline schedules
                 FakeResponse(self.scheduled_pipelines_json),  # To fetch all pipelines for the pipeline schedule
@@ -59,8 +63,8 @@ class GitLabPipelineDurationTest(GitLabTestCase):
             pipeline_id="2", created_at="2025-09-01T00:00:00", updated_at="2025-09-01T00:20:00"
         )
         self.pipeline_json.append(slowest)
-        response = await self.collect()
-        self.assert_measurement(response, value="20", landing_url=self.landing_url)
+        measurement = await self.collect_measurement()
+        self.assert_measurement(measurement, value="20", landing_url=self.landing_url)
 
     async def test_report_latest_pipeline(self):
         """Test that the duration of the latest pipeline is reported."""
@@ -69,8 +73,8 @@ class GitLabPipelineDurationTest(GitLabTestCase):
             pipeline_id="2", created_at="2025-09-01T00:00:00", updated_at="2025-09-01T00:05:00"
         )
         self.pipeline_json.append(latest)
-        response = await self.collect()
-        self.assert_measurement(response, value="5", landing_url=self.landing_url)
+        measurement = await self.collect_measurement()
+        self.assert_measurement(measurement, value="5", landing_url=self.landing_url)
 
     async def test_report_average_duration(self):
         """Test that the average duration is reported."""
@@ -79,30 +83,30 @@ class GitLabPipelineDurationTest(GitLabTestCase):
             pipeline_id="2", created_at="2025-09-01T00:00:00", updated_at="2025-09-01T00:20:00"
         )
         self.pipeline_json.append(second)
-        response = await self.collect()
-        self.assert_measurement(response, value="15", landing_url=self.landing_url)
+        measurement = await self.collect_measurement()
+        self.assert_measurement(measurement, value="15", landing_url=self.landing_url)
 
     @patch("source_collectors.gitlab.json_types.datetime", MOCK_DATETIME)
     async def test_duration_without_updated(self):
         """Test that start and now are used when the pipeline has no updated datetime."""
         del self.pipeline_json[0]["updated_at"]
-        response = await self.collect()
-        self.assert_measurement(response, value="25", landing_url=self.landing_url)
+        measurement = await self.collect_measurement()
+        self.assert_measurement(measurement, value="25", landing_url=self.landing_url)
 
     async def test_duration_when_no_match(self):
         """Test that an error is returned when no pipelines match."""
         self.set_source_parameter("branches", ["missing"])
-        response = await self.collect()
-        self.assert_measurement(response, parse_error="No pipelines found with given filter(s)")
+        measurement = await self.collect_measurement()
+        self.assert_measurement(measurement, parse_error="No pipelines found with given filter(s)")
 
     async def test_filter_by_pipeline_description(self):
         """Test that pipelines can be filtered by pipeline description."""
         self.set_source_parameter("pipeline_schedules_to_include", ["pipeline description"])
-        response = await self.collect()
-        self.assert_measurement(response, value="10", landing_url=self.landing_url)
+        measurement = await self.collect_measurement()
+        self.assert_measurement(measurement, value="10", landing_url=self.landing_url)
 
     async def test_exclude_idle_time(self):
         """Test that idle time can be excluded from pipeline duration."""
         self.set_source_parameter("exclude_idle_time_from_pipeline_duration", "yes")
-        response = await self.collect()
-        self.assert_measurement(response, value="7", landing_url=self.landing_url)
+        measurement = await self.collect_measurement()
+        self.assert_measurement(measurement, value="7", landing_url=self.landing_url)

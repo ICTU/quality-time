@@ -26,8 +26,8 @@ class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
     async def test_scalability(self):
         """Test that the number of virtual users at which the ramp-up of throughput breaks is returned."""
         html = PERFORMANCETEST_RUNNER_HTML % (354, 562)
-        response = await self.collect(get_request_text=html)
-        self.assert_measurement(response, value="354", total="562")
+        measurement = await self.collect_measurement(get_request_text=html)
+        self.assert_measurement(measurement, value="354", total="562")
 
     async def test_scalability_without_breaking_point(self):
         """Test the scalability without breaking point.
@@ -36,5 +36,5 @@ class PerformanceTestRunnerScalabilityTest(PerformanceTestRunnerTestCase):
         does not report an error (despite there being no breaking point).
         """
         html = PERFORMANCETEST_RUNNER_HTML % (0, 0)
-        response = await self.collect(get_request_text=html)
-        self.assert_measurement(response, value="0", total="0")
+        measurement = await self.collect_measurement(get_request_text=html)
+        self.assert_measurement(measurement, value="0", total="0")

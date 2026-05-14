@@ -15,7 +15,7 @@ class DependencyTrackProject(TypedDict):
 
     # Last BOM import is a Unix timestamp, despite the Dependency-Tracker Swagger docs saying it's a datetime string
     # See https://github.com/DependencyTrack/dependency-track/issues/840
-    lastBomImport: int
+    lastBomImport: NotRequired[int]
     name: str
     uuid: str
     isLatest: NotRequired[bool]

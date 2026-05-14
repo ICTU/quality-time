@@ -102,7 +102,7 @@ class LoginTests(AuthTestCase):
             {"user": self.USER_DN, "password": PASSWORD, "auto_bind": "NO_TLS"},
         )
 
-    def assert_log(self, logging_mock: Mock, exception: Exception) -> None:
+    def assert_log(self, logging_mock: Mock, exception: type[Exception]) -> None:
         """Assert that the correct error message is logged."""
         self.assertEqual(self.LOG_ERROR_MESSAGE_TEMPLATE, logging_mock.call_args[0][0])
         self.assertEqual(exception, logging_mock.call_args[0][1].__class__)

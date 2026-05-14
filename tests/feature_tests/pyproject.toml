@@ -56,17 +56,21 @@ indent = 4
 keep_full_version = true  # Don't remove trailing zero's from version specifiers
 
 [tool.mypy]
+mypy_path = [ "src/steps" ]
 ignore_missing_imports = false
 incremental = false
 warn_redundant_casts = true
 warn_return_any = true
 warn_unreachable = true
 warn_unused_ignores = true
+overrides = [ { module = [
+    "behave",
+    "behave.model",
+    "behave.runner",
+], ignore_missing_imports = true } ]
+
+[tool.ty]
 overrides = [
-    { module = [
-        "item",
-        "behave",
-        "behave.model",
-        "behave.runner",
-    ], ignore_missing_imports = true }
+    { include = [ "src/steps/**/*.py" ], rules.call-non-callable = "ignore" },  # ty thinks given/when/then step decorators are not callable
 ]
+environment.extra-paths = [ "src/steps" ]

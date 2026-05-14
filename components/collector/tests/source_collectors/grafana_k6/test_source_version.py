@@ -11,16 +11,18 @@ class GrafanaK6SourceVersionTest(SourceCollectorTestCase):
 
     async def test_missing_metadata_gives_parse_error(self):
         """Test that a parse error is returned if the JSON has no metadata."""
-        response = await self.collect(get_request_json_return_value={})
-        self.assert_measurement(response, parse_error="Could not find an object")
+        measurement = await self.collect_measurement(get_request_json_return_value={})
+        self.assert_measurement(measurement, parse_error="Could not find an object")
 
     async def test_missing_generated_at_gives_parse_error(self):
         """Test that a parse error is returned if the JSON has no k6Version in the metadata."""
-        response = await self.collect(get_request_json_return_value={"metadata": {}})
-        self.assert_measurement(response, parse_error="Could not find an object")
+        measurement = await self.collect_measurement(get_request_json_return_value={"metadata": {}})
+        self.assert_measurement(measurement, parse_error="Could not find an object")
 
     async def test_source_version(self):
         """Test the source version."""
         k6_version = "1.1.0"
-        response = await self.collect(get_request_json_return_value={"metadata": {"k6Version": k6_version}})
-        self.assert_measurement(response, value=k6_version)
+        measurement = await self.collect_measurement(
+            get_request_json_return_value={"metadata": {"k6Version": k6_version}}
+        )
+        self.assert_measurement(measurement, value=k6_version)

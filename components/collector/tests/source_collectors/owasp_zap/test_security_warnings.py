@@ -52,7 +52,7 @@ appropriately</solution>
 
     async def test_alert_instances(self):
         """Test that the number of alert instances is returned."""
-        response = await self.collect(get_request_text=self.OWASP_ZAP_XML)
+        measurement = await self.collect_measurement(get_request_text=self.OWASP_ZAP_XML)
         url1 = "http://www.hackazon.com/products_pictures/Ray_Ban.jpg"
         url2 = "http://www.hackazon.com/products_pictures/How_to_Marry_a_Millionaire.jpg"
         expected_entities = [
@@ -73,12 +73,12 @@ appropriately</solution>
                 "risk": self.WARNING_RISK,
             },
         ]
-        self.assert_measurement(response, value="2", entities=expected_entities)
+        self.assert_measurement(measurement, value="2", entities=expected_entities)
 
     async def test_alert_types(self):
         """Test that the number of alert types is returned."""
         self.set_source_parameter("alerts", "alert types")
-        response = await self.collect(get_request_text=self.OWASP_ZAP_XML)
+        measurement = await self.collect_measurement(get_request_text=self.OWASP_ZAP_XML)
         expected_entities = [
             {
                 "key": md5_hash("X-Content-Type-Options Header Missing:10021:16:15"),
@@ -87,12 +87,12 @@ appropriately</solution>
                 "risk": self.WARNING_RISK,
             },
         ]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)
 
     async def test_variable_url_regexp(self):
         """Test that parts of URLs can be ignored."""
         self.set_source_parameter("variable_url_regexp", ["[A-Za-z_]+.jpg"])
-        response = await self.collect(get_request_text=self.OWASP_ZAP_XML)
+        measurement = await self.collect_measurement(get_request_text=self.OWASP_ZAP_XML)
         stable_url = "http://www.hackazon.com/products_pictures/variable-part-removed"
         expected_entities = [
             {
@@ -104,4 +104,4 @@ appropriately</solution>
                 "risk": self.WARNING_RISK,
             },
         ]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)

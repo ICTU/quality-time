@@ -59,10 +59,10 @@ class JiraTestCase(SourceCollectorTestCase):
             **kwargs,
         )
 
-    async def get_response(self, issues_json, fields_json=None) -> MetricMeasurement | None | tuple:
+    async def get_response(self, issues_json, fields_json=None) -> MetricMeasurement:
         """Get the collector's response."""
         with patch.object(JiraIssues, "max_results", 50):
-            return await self.collect(
+            return await self.collect_measurement(
                 get_request_json_side_effect=[
                     fields_json or [{"id": "field", "name": "Field"}],
                     issues_json,

@@ -4,20 +4,18 @@ import io
 import logging
 import unittest
 import zipfile
-from typing import TYPE_CHECKING
+from typing import cast
 from unittest.mock import DEFAULT as STOP_SENTINEL
-from unittest.mock import AsyncMock, PropertyMock, patch
+from unittest.mock import AsyncMock, Mock, PropertyMock, patch
 
 import aiohttp
 
 from shared.model.metric import Metric
 
 from base_collectors import MetricCollector
+from model import MetricMeasurement
 
 from tests.fixtures import METRIC_ID
-
-if TYPE_CHECKING:
-    from model import MetricMeasurement
 
 
 class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
@@ -37,7 +35,9 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
 
     def setUp(self) -> None:
         """Extend to set up the source and metric under test."""
-        self.sources = {"source_id": {"type": self.SOURCE_TYPE, "parameters": {"url": f"https://{self.SOURCE_TYPE}"}}}
+        self.sources: dict = {
+            "source_id": {"type": self.SOURCE_TYPE, "parameters": {"url": f"https://{self.SOURCE_TYPE}"}}
+        }
         self.metric = Metric({}, {"type": self.METRIC_TYPE, "sources": self.sources}, METRIC_ID)
 
     async def collect(  # noqa: PLR0913
@@ -54,7 +54,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         post_request_json_return_value: dict | None = None,
         post_request_json_side_effect=None,
         return_mocks: bool = False,
-    ) -> MetricMeasurement | None | tuple:
+    ) -> MetricMeasurement | None | tuple[MetricMeasurement | None, Mock, Mock]:
         """Collect the metric."""
         get_response = self.__get_response(
             get_request_json_return_value,
@@ -71,6 +71,14 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
             async with aiohttp.ClientSession() as session:
                 result = await MetricCollector(session, self.metric).collect()
                 return (result, get, post) if return_mocks else result
+
+    async def collect_measurement(self, *args, **kwargs) -> MetricMeasurement:
+        """Collect a measurement."""
+        return cast(MetricMeasurement, await self.collect(*args, **kwargs))
+
+    async def collect_measurement_and_mocks(self, *args, **kwargs) -> tuple[MetricMeasurement, Mock, Mock]:
+        """Collect a measurement and return the mocks as well."""
+        return cast(tuple[MetricMeasurement, Mock, Mock], await self.collect(*args, **kwargs, return_mocks=True))
 
     @staticmethod
     def __get_response(  # noqa: PLR0913
@@ -157,4 +165,4 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
 
     def set_source_parameter(self, key: str, value: str | list[str]) -> None:
         """Set a source parameter."""
-        self.sources["source_id"]["parameters"][key] = value  # type: ignore[index]
+        self.sources["source_id"]["parameters"][key] = value

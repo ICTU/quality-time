@@ -49,7 +49,7 @@ def delete_session(database: Database) -> None:
 def set_session_cookie(session_id: SessionId, expires_datetime: datetime) -> None:
     """Set the session cookie on the response. To clear the cookie, pass an expiration datetime of datetime.min."""
     # Monkey patch support for SameSite, see https://github.com/bottlepy/bottle/issues/982#issuecomment-315064376
-    Morsel._reserved["same-site"] = "SameSite"  # type: ignore[attr-defined] # noqa: SLF001
+    Morsel._reserved["same-site"] = "SameSite"  # type: ignore[attr-defined] # noqa: SLF001 # ty: ignore[unresolved-attribute]
     options = {"expires": expires_datetime, "path": "/", "httponly": True, "same_site": "strict"}
     bottle.response.set_cookie("session_id", session_id, **options)
 
@@ -66,7 +66,7 @@ def check_password(password_hash: bytes, password: str) -> bool:
 
 def get_credentials() -> tuple[str, str]:
     """Return the credentials from the request."""
-    credentials = dict(bottle.request.json)
+    credentials = cast(dict, bottle.request.json)
     unsafe_characters = re.compile(r"[^\w\- ]+", re.UNICODE)
     username = re.sub(unsafe_characters, "", credentials.get("username", "no username given"))
     password = credentials.get("password", "no password given")

@@ -4,9 +4,13 @@ from unittest.mock import Mock, patch
 
 import aiohttp
 
+from shared.model.metric import Metric
+
 from base_collectors import SourceCollector
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
+
+from tests.test_fixtures import METRIC_ID
 
 from .source_collector_test_case import SourceCollectorTestCase
 
@@ -21,21 +25,21 @@ class CollectorTest(SourceCollectorTestCase):
 
     async def test_source_response_measurement(self):
         """Test that the measurement for the source is returned."""
-        response = await self.collect(get_request_text=self.JUNIT_XML)
-        self.assert_measurement(response, value="2", api_url=self.JUNIT_URL, landing_url=self.JUNIT_URL)
+        measurement = await self.collect_measurement(get_request_text=self.JUNIT_XML)
+        self.assert_measurement(measurement, value="2", api_url=self.JUNIT_URL, landing_url=self.JUNIT_URL)
 
     async def test_source_response_landing_url_different(self):
         """Test that the landing url for the source is returned."""
         self.set_source_parameter("landing_url", landing_url := "https://landing")
-        response = await self.collect(get_request_text=self.JUNIT_XML)
-        self.assert_measurement(response, api_url=self.JUNIT_URL, landing_url=landing_url)
+        measurement = await self.collect_measurement(get_request_text=self.JUNIT_XML)
+        self.assert_measurement(measurement, api_url=self.JUNIT_URL, landing_url=landing_url)
 
     async def test_multiple_sources(self):
         """Test that the measurement for the source is returned."""
         junit_url2 = "https://junit2"
         self.metric["sources"]["junit2"] = {"type": "junit", "parameters": {"url": junit_url2}}
-        response = await self.collect(get_request_text=self.JUNIT_XML)
-        self.assert_measurement(response, value="2", api_url=junit_url2, landing_url=junit_url2, source_index=1)
+        measurement = await self.collect_measurement(get_request_text=self.JUNIT_XML)
+        self.assert_measurement(measurement, value="2", api_url=junit_url2, landing_url=junit_url2, source_index=1)
 
     async def test_multiple_source_types(self):
         """Test that the measurement for the source is returned."""
@@ -45,16 +49,18 @@ class CollectorTest(SourceCollectorTestCase):
             "parameters": {"url": sonarqube_url, "component": "id"},
         }
         json = {"component": {"measures": [{"metric": "tests", "value": "88"}]}}
-        response = await self.collect(get_request_json_return_value=json, get_request_text=self.JUNIT_XML)
-        self.assert_measurement(response, value="2", url=self.JUNIT_XML, source_index=0)
-        self.assert_measurement(response, value="88", url=sonarqube_url, source_index=1)
+        measurement = await self.collect_measurement(
+            get_request_json_return_value=json, get_request_text=self.JUNIT_XML
+        )
+        self.assert_measurement(measurement, value="2", url=self.JUNIT_XML, source_index=0)
+        self.assert_measurement(measurement, value="88", url=sonarqube_url, source_index=1)
 
     async def test_parse_error(self):
         """Test that an error retrieving the data is handled."""
         mock_response = Mock()
         mock_response.text = "1"
-        response = await self.collect(get_request_text="1")
-        self.assert_measurement(response, parse_error="Traceback")
+        measurement = await self.collect_measurement(get_request_text="1")
+        self.assert_measurement(measurement, parse_error="Traceback")
 
     async def test_landing_url_error(self):
         """Test that an error retrieving the data is handled."""
@@ -72,15 +78,15 @@ class CollectorTest(SourceCollectorTestCase):
 
         with patch("aiohttp.ClientSession.get", side_effect=Exception):
             async with aiohttp.ClientSession() as session:
-                response = await FailingLandingUrl(session, self.metric, self.sources["source_id"]).collect()
-        self.assertEqual("https://api_url", response.landing_url)
+                measurement = await FailingLandingUrl(session, self.metric, self.sources["source_id"]).collect()
+        self.assertEqual("https://api_url", measurement.landing_url)
 
-    async def test_default_parameter_value_supersedes_empty_string(self):
+    async def test_default_parameter_value_supersedes_empty_string(self) -> None:
         """Test that a parameter default value takes precedence over an empty string."""
         sources = {"source_uuid": {"type": "calendar", "parameters": {"date": ""}}}
-        self.metric = {"type": "source_up_to_dateness", "sources": sources}
-        response = await self.collect()
-        self.assert_measurement(response, value="0")
+        self.metric = Metric({}, {"type": "source_up_to_dateness", "sources": sources}, METRIC_ID)
+        measurement = await self.collect_measurement()
+        self.assert_measurement(measurement, value="0")
 
     async def test_including_entities(self):
         """Test that only entities marked for inclusion are included."""
@@ -99,4 +105,4 @@ class CollectorTest(SourceCollectorTestCase):
         async with aiohttp.ClientSession() as session:
             collector = ThreeParsedEntities(session, self.metric, {})
             measurement = await collector._parse_source_responses(SourceResponses())  # noqa: SLF001
-        self.assertEqual(["0", "2"], [entity["key"] for entity in measurement.entities])
+        self.assertEqual(["0", "2"], [entity["key"] for entity in measurement.entities or []])

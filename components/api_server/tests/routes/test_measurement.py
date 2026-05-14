@@ -85,6 +85,7 @@ class GetMeasurementsTest(DataModelTestCase):
             "sources": [{"source_uuid": SOURCE_ID, "parse_error": None, "connection_error": None, "value": "42"}],
         }
         self.database.measurements.find.return_value = [self.measurement]
+        self.database.measurements.find_one.return_value = self.measurement
 
     def test_get_measurements(self):
         """Test that measurements are returned."""
@@ -94,11 +95,11 @@ class GetMeasurementsTest(DataModelTestCase):
 class SetEntityAttributeTest(DataModelTestCase):
     """Unit tests for the set entity attribute route."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test mocks."""
         super().setUp()
         self.database.sessions.find_one.return_value = JOHN
-        self.measurement = self.database.measurements.find_one.return_value = {
+        self.measurement: dict = {
             "_id": "id",
             "metric_uuid": METRIC_ID,
             "status": "red",
@@ -113,7 +114,7 @@ class SetEntityAttributeTest(DataModelTestCase):
                 },
             ],
         }
-        self.database.measurements.find.return_value = [self.measurement]
+        self.database.measurements.find_one.return_value = self.measurement
 
         def insert_one(new_measurement) -> None:
             """Fake setting an id on the inserted measurement."""

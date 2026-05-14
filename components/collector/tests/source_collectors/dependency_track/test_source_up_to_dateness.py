@@ -72,8 +72,8 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
 
     async def test_source_up_to_dateness(self):
         """Test that the source up-to-dateness can be measured."""
-        response = await self.collect(get_request_json_return_value=self.projects())
-        self.assert_measurement(response, value="7", landing_url=self.landing_url, entities=self.entities())
+        measurement = await self.collect_measurement(get_request_json_return_value=self.projects())
+        self.assert_measurement(measurement, value="7", landing_url=self.landing_url, entities=self.entities())
 
     async def test_source_up_to_dateness_missing_bom_analysis(self):
         """Test that the source up-to-dateness can be measured even if the BOM has no last analysis datetime."""
@@ -101,8 +101,8 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 "up_to_date": "nearly",
             }
         )
-        response = await self.collect(get_request_json_return_value=projects)
-        self.assert_measurement(response, value="7", landing_url=self.landing_url, entities=entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=projects)
+        self.assert_measurement(measurement, value="7", landing_url=self.landing_url, entities=entities)
 
     async def test_source_up_to_dateness_missing_bom_import(self):
         """Test that the source up-to-dateness can be measured even if the BOM has no import datetime."""
@@ -127,68 +127,68 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
                 "up_to_date": "unknown",
             }
         )
-        response = await self.collect(get_request_json_return_value=projects)
-        self.assert_measurement(response, value="7", landing_url=self.landing_url, entities=entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=projects)
+        self.assert_measurement(measurement, value="7", landing_url=self.landing_url, entities=entities)
 
     async def test_filter_by_project_name(self):
         """Test that projects can be filtered by name."""
         self.set_source_parameter("project_names", ["other project"])
-        response = await self.collect(get_request_json_return_value=self.projects())
-        self.assert_measurement(response, parse_error="No projects found")
+        measurement = await self.collect_measurement(get_request_json_return_value=self.projects())
+        self.assert_measurement(measurement, parse_error="No projects found")
 
     async def test_filter_by_regular_expression(self):
         """Test that projects can be filtered by regular expression."""
         self.set_source_parameter("project_names", ["Project .*"])
-        response = await self.collect(get_request_json_return_value=self.projects())
-        self.assert_measurement(response, value="7", landing_url=self.landing_url, entities=self.entities())
+        measurement = await self.collect_measurement(get_request_json_return_value=self.projects())
+        self.assert_measurement(measurement, value="7", landing_url=self.landing_url, entities=self.entities())
 
     async def test_filter_by_project_version(self):
         """Test filtering projects by version."""
         self.set_source_parameter("project_versions", ["1.2", "1.3"])
-        response = await self.collect(get_request_json_return_value=self.projects())
-        self.assert_measurement(response, value="7", landing_url=self.landing_url, entities=self.entities()[1:])
+        measurement = await self.collect_measurement(get_request_json_return_value=self.projects())
+        self.assert_measurement(measurement, value="7", landing_url=self.landing_url, entities=self.entities()[1:])
 
     async def test_filter_by_project_name_and_version(self):
         """Test filtering projects by name and version."""
         self.set_source_parameter("project_names", ["Project .*"])
         self.set_source_parameter("project_versions", ["1.3", "1.4"])
-        response = await self.collect(get_request_json_return_value=self.projects())
-        self.assert_measurement(response, parse_error="No projects found")
+        measurement = await self.collect_measurement(get_request_json_return_value=self.projects())
+        self.assert_measurement(measurement, parse_error="No projects found")
 
     async def test_filter_by_event_type_last_bom_import(self):
         """Test that projects can be filtered by event type."""
         self.set_source_parameter("project_event_types", ["last BOM import"])
-        response = await self.collect(get_request_json_return_value=self.projects())
-        self.assert_measurement(response, value="7", landing_url=self.landing_url, entities=self.entities())
+        measurement = await self.collect_measurement(get_request_json_return_value=self.projects())
+        self.assert_measurement(measurement, value="7", landing_url=self.landing_url, entities=self.entities())
 
     async def test_filter_by_event_type_last_bom_analysis(self):
         """Test that projects can be filtered by event type."""
         self.set_source_parameter("project_event_types", ["last BOM analysis"])
-        response = await self.collect(get_request_json_return_value=self.projects())
+        measurement = await self.collect_measurement(get_request_json_return_value=self.projects())
         entities = self.entities()
         entities[0]["up_to_date"] = "nearly"
         entities[1]["up_to_date"] = "yes"
-        self.assert_measurement(response, value="4", landing_url=self.landing_url, entities=entities)
+        self.assert_measurement(measurement, value="4", landing_url=self.landing_url, entities=entities)
 
     async def test_filter_by_latest_project(self):
         """Test that projects can be filtered by being the latest project version."""
         self.set_source_parameter("only_include_latest_project_versions", "yes")
-        response = await self.collect(get_request_json_return_value=self.projects())
-        self.assert_measurement(response, value="1", landing_url=self.landing_url, entities=self.entities()[:1])
+        measurement = await self.collect_measurement(get_request_json_return_value=self.projects())
+        self.assert_measurement(measurement, value="1", landing_url=self.landing_url, entities=self.entities()[:1])
 
     async def test_source_up_to_dateness_with_pagination(self):
         """Test that the source up-to-dateness can be measured when pagination is needed."""
         default_size = DependencyTrackBase.PAGE_SIZE
         DependencyTrackBase.PAGE_SIZE = 1
-        response = await self.collect(get_request_json_return_value=self.projects())
-        self.assert_measurement(response, value="7", landing_url=self.landing_url, entities=self.entities())
+        measurement = await self.collect_measurement(get_request_json_return_value=self.projects())
+        self.assert_measurement(measurement, value="7", landing_url=self.landing_url, entities=self.entities())
         DependencyTrackBase.PAGE_SIZE = default_size
 
     async def test_source_up_to_dateness_with_reversed_direction(self):
         """Test that the source up-to-dateness can be measured if the metric direction has been reversed."""
         self.metric["direction"] = ">"
-        response = await self.collect(get_request_json_return_value=self.projects())
+        measurement = await self.collect_measurement(get_request_json_return_value=self.projects())
         entities = self.entities()
         entities[0]["up_to_date"] = "no"
         entities[1]["up_to_date"] = "yes"
-        self.assert_measurement(response, value="1", landing_url=self.landing_url, entities=entities)
+        self.assert_measurement(measurement, value="1", landing_url=self.landing_url, entities=entities)

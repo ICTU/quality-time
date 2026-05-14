@@ -121,14 +121,13 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         """Test that all security warnings are returned."""
         self.set_source_parameter("security_types", ["issue with security impact", "security hotspot"])
         show_component_json = {}
-        response, get, post = await self.collect(
+        measurement, get, post = await self.collect_measurement_and_mocks(
             get_request_json_side_effect=[show_component_json, self.issues_json, self.hotspots_json],
-            return_mocks=True,
         )
         get.assert_called_with(self.HOTSPOTS_API, allow_redirects=True, headers={}, auth=None)
         post.assert_not_called()
         self.assert_measurement(
-            response,
+            measurement,
             value="3",
             total="100",
             entities=self.issue_entities + self.hotspot_entities[:1],
@@ -138,11 +137,13 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     async def test_security_warnings_hotspots_only(self):
         """Test that only the security hotspots are returned."""
         self.set_source_parameter("security_types", ["security hotspot"])
-        response, get, post = await self.collect(get_request_json_return_value=self.hotspots_json, return_mocks=True)
+        measurement, get, post = await self.collect_measurement_and_mocks(
+            get_request_json_return_value=self.hotspots_json
+        )
         get.assert_called_with(self.HOTSPOTS_API, allow_redirects=True, headers={}, auth=None)
         post.assert_not_called()
         self.assert_measurement(
-            response,
+            measurement,
             value="1",
             total="100",
             entities=self.hotspot_entities[:1],
@@ -151,11 +152,13 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
 
     async def test_security_warnings_vulnerabilities_only(self):
         """Test that by default only issues with security impact are returned."""
-        response, get, post = await self.collect(get_request_json_return_value=self.issues_json, return_mocks=True)
+        measurement, get, post = await self.collect_measurement_and_mocks(
+            get_request_json_return_value=self.issues_json
+        )
         get.assert_called_with(self.ISSUES_API, allow_redirects=True, headers={}, auth=None)
         post.assert_not_called()
         self.assert_measurement(
-            response,
+            measurement,
             value="2",
             total="100",
             entities=self.issue_entities,
@@ -166,11 +169,13 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         """Test that the security hotspots can be filtered by status."""
         self.set_source_parameter("security_types", ["security hotspot"])
         self.set_source_parameter("hotspot_statuses", ["to review", "fixed"])
-        response, get, post = await self.collect(get_request_json_return_value=self.hotspots_json, return_mocks=True)
+        measurement, get, post = await self.collect_measurement_and_mocks(
+            get_request_json_return_value=self.hotspots_json
+        )
         get.assert_called_with(self.HOTSPOTS_API, allow_redirects=True, headers={}, auth=None)
         post.assert_not_called()
         self.assert_measurement(
-            response,
+            measurement,
             value="2",
             total="100",
             entities=self.hotspot_entities,
@@ -180,11 +185,13 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
     async def test_filter_security_warning_issues_by_tag(self):
         """Test that the security warning issues can be filtered by tag."""
         self.set_source_parameter("tags", ["cwe"])
-        response, get, post = await self.collect(get_request_json_return_value=self.issues_json, return_mocks=True)
+        measurement, get, post = await self.collect_measurement_and_mocks(
+            get_request_json_return_value=self.issues_json
+        )
         get.assert_called_with(self.ISSUES_API + "&tags=cwe", allow_redirects=True, headers={}, auth=None)
         post.assert_not_called()
         self.assert_measurement(
-            response,
+            measurement,
             value="2",
             total="100",
             entities=self.issue_entities,

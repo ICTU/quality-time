@@ -5,14 +5,20 @@ from datetime import datetime, timedelta
 
 from dateutil.tz import tzutc
 
+from shared.model.metric import Metric
 from shared.model.source import Source
 from shared.utils.functions import iso_timestamp
 
-from tests.fixtures import SOURCE_ID
+from tests.fixtures import METRIC_ID, SOURCE_ID
 
 
 class SourceTest(unittest.TestCase):
     """Test the source model."""
+
+    def setUp(self):
+        """Set up metric fixture."""
+        super().setUp()
+        self.metric = Metric({}, {}, METRIC_ID)
 
     def test_copy_entity_user_data(self):
         """Test copy entity user data."""
@@ -25,11 +31,11 @@ class SourceTest(unittest.TestCase):
             "key_4": {},
         }
 
-        old_source = Source(SOURCE_ID, metric=None, entity_user_data=old_eud)
+        old_source = Source(SOURCE_ID, metric=self.metric, entity_user_data=old_eud)
 
         new_entities = [{"key": "key_3"}, {"key": "key_4"}]
 
-        new_source = Source(SOURCE_ID, metric=None, entities=new_entities)
+        new_source = Source(SOURCE_ID, metric=self.metric, entities=new_entities)
 
         new_source.copy_entity_user_data(old_source)
 
@@ -42,20 +48,20 @@ class SourceTest(unittest.TestCase):
 
     def test_name(self):
         """Test that we get the expected name."""
-        source = Source(SOURCE_ID, metric=None, name="test")
+        source = Source(SOURCE_ID, metric=self.metric, name="test")
         self.assertEqual(source.name, "test")
 
     def test_type(self):
         """Test that we get the expected type."""
-        source = Source(SOURCE_ID, metric=None, type="test")
+        source = Source(SOURCE_ID, metric=self.metric, type="test")
         self.assertEqual(source.type, "test")
 
     def test_copy_first_seen_timestamps(self):
         """Test that the first seen timestamps can be copied."""
         entities1 = [{"key": "key_1"}, {"key": "key_2", "first_seen": "2023-07-17"}]
-        source1 = Source(SOURCE_ID, metric=None, entities=entities1)
+        source1 = Source(SOURCE_ID, metric=self.metric, entities=entities1)
         entities2 = [{"key": "key_1", "first_seen": "2023-07-18"}, {"key": "key_2", "first_seen": "2023-07-19"}]
-        source2 = Source(SOURCE_ID, metric=None, entities=entities2)
+        source2 = Source(SOURCE_ID, metric=self.metric, entities=entities2)
         source2.copy_entity_first_seen_timestamps(source1)
         self.assertEqual("2023-07-18", source2["entities"][0]["first_seen"])
         self.assertEqual("2023-07-17", source2["entities"][1]["first_seen"])

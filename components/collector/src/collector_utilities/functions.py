@@ -2,7 +2,7 @@
 
 import hashlib
 import re
-import urllib
+import urllib.parse
 from decimal import ROUND_HALF_UP, Decimal
 from itertools import islice
 from typing import TYPE_CHECKING

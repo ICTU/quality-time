@@ -13,5 +13,5 @@ class PerformanceTestRunnerStabilityTest(PerformanceTestRunnerTestCase):
         html = """<html><table class="config">
             <tr><td class="name">Trendbreak 'stability' (%)</td><td id="trendbreak_stability">90</td></tr>
             </table></html>"""
-        response = await self.collect(get_request_text=html)
-        self.assert_measurement(response, value="90")
+        measurement = await self.collect_measurement(get_request_text=html)
+        self.assert_measurement(measurement, value="90")

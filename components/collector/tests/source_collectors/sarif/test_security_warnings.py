@@ -93,8 +93,8 @@ class SARIFJSONSecurityWarningsTest(SourceCollectorTestCase):
                 "url": rule["helpUri"],
             },
         ]
-        response = await self.collect(get_request_json_return_value=self.VULNERABILITIES_JSON)
-        self.assert_measurement(response, value="2", entities=expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.VULNERABILITIES_JSON)
+        self.assert_measurement(measurement, value="2", entities=expected_entities)
 
     async def test_warning_levels(self):
         """Test the number of security warnings when specifying a level."""
@@ -113,5 +113,5 @@ class SARIFJSONSecurityWarningsTest(SourceCollectorTestCase):
                 "url": rule["helpUri"],
             },
         ]
-        response = await self.collect(get_request_json_return_value=self.VULNERABILITIES_JSON)
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.VULNERABILITIES_JSON)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)

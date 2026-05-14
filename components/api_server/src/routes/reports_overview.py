@@ -1,7 +1,7 @@
 """Reports routes."""
 
 import bottle
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from database import sessions
 from database.reports import insert_new_reports_overview, latest_reports_overview
@@ -32,7 +32,7 @@ def export_reports_overview_as_pdf():
 )
 def post_reports_overview_attribute(reports_attribute: str, database: Database):
     """Set a reports overview attribute."""
-    new_value = dict(bottle.request.json)[reports_attribute]
+    new_value = cast(dict, bottle.request.json)[reports_attribute]
     if reports_attribute == "comment" and new_value:
         new_value = sanitize_html(new_value)
     overview = latest_reports_overview(database)
@@ -42,10 +42,12 @@ def post_reports_overview_attribute(reports_attribute: str, database: Database):
 
     user = sessions.find_user(database)
 
-    if reports_attribute == "permissions" and EDIT_REPORT_PERMISSION in new_value:
-        report_editors = new_value[EDIT_REPORT_PERMISSION]
-        if len(report_editors) > 0 and user.username not in report_editors and user.email not in report_editors:
-            new_value[EDIT_REPORT_PERMISSION].append(user.username)
+    if reports_attribute == "permissions":
+        new_value = cast(dict, new_value)
+        if EDIT_REPORT_PERMISSION in new_value:
+            report_editors = new_value[EDIT_REPORT_PERMISSION]
+            if len(report_editors) > 0 and user.username not in report_editors and user.email not in report_editors:
+                new_value[EDIT_REPORT_PERMISSION].append(user.username)
 
     overview[reports_attribute] = new_value
     value_change_description = "" if reports_attribute == "layout" else f" from '{old_value}' to '{new_value}'"

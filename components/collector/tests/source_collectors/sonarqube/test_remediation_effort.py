@@ -25,9 +25,9 @@ class SonarQubeRemediationEffortTest(SonarQubeTestCase):
                 ],
             },
         }
-        response = await self.collect(get_request_json_return_value=json)
+        measurement = await self.collect_measurement(get_request_json_return_value=json)
         self.assert_measurement(
-            response,
+            measurement,
             value="20",
             total="100",
             entities=[
@@ -51,9 +51,9 @@ class SonarQubeRemediationEffortTest(SonarQubeTestCase):
         """Test that the remediation effort is returned and that the landing url points to the metric."""
         self.set_source_parameter("effort_types", [self.all_code_smells])
         json = {"component": {"measures": [{"metric": "sqale_index", "value": "20"}]}}
-        response = await self.collect(get_request_json_return_value=json)
+        measurement = await self.collect_measurement(get_request_json_return_value=json)
         self.assert_measurement(
-            response,
+            measurement,
             value="20",
             total="100",
             entities=[

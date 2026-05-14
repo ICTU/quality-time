@@ -28,12 +28,12 @@ class VisualStudioTRXTestReportTest(VisualStudioTRXCollectorTestCase):
 
     async def test_tests(self):
         """Test that the number of tests is returned."""
-        response = await self.collect(get_request_text=self.VISUAL_STUDIO_TRX_XML)
-        self.assert_measurement(response, value="2", total="2", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_text=self.VISUAL_STUDIO_TRX_XML)
+        self.assert_measurement(measurement, value="2", total="2", entities=self.expected_entities)
 
     async def test_failed_tests(self):
         """Test that the failed tests are returned."""
         self.set_source_parameter("test_result", ["Failed"])
-        response = await self.collect(get_request_text=self.VISUAL_STUDIO_TRX_XML)
+        measurement = await self.collect_measurement(get_request_text=self.VISUAL_STUDIO_TRX_XML)
         entities_for_failed_tests = [entity for entity in self.expected_entities if entity["test_result"] == "Failed"]
-        self.assert_measurement(response, value="1", total="2", entities=entities_for_failed_tests)
+        self.assert_measurement(measurement, value="1", total="2", entities=entities_for_failed_tests)

@@ -1,5 +1,7 @@
 """Test the sessions."""
 
+from typing import cast
+
 from database import users
 from utils.type import User
 
@@ -31,6 +33,8 @@ class UsersTest(DatabaseTestCase):
     def test_get(self):
         """Test get user."""
         user = users.get_user(self.database, "username")
+        self.assertIsNotNone(user)
+        user = cast(User, user)
         self.assertDictEqual(user.to_dict(), {"username": "username", "email": "", "common_name": "", "settings": {}})
         self.database.users.find_one.assert_called_once_with({"username": "username"}, {"_id": False})
 

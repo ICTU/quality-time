@@ -15,7 +15,7 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
         jenkins_json = {
             "jobs": [{"name": "job", "url": self.job_url, "buildable": True, "color": "red", "builds": self.builds}],
         }
-        response = await self.collect(get_request_json_return_value=jenkins_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=jenkins_json)
         expected_dt = datetime_from_timestamp(self.builds[0]["timestamp"])
         expected_entities = [
             {
@@ -27,12 +27,12 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
                 "url": self.job_url,
             },
         ]
-        self.assert_measurement(response, value=str(days_ago(expected_dt)), entities=expected_entities)
+        self.assert_measurement(measurement, value=str(days_ago(expected_dt)), entities=expected_entities)
 
     async def test_job_without_builds(self):
         """Test that the age is None when the job has no builds."""
         jenkins_json = {"jobs": [{"name": "job", "url": self.job_url, "buildable": True, "color": "red", "builds": []}]}
-        response = await self.collect(get_request_json_return_value=jenkins_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=jenkins_json)
         expected_entities = [
             {
                 "build_date": "",
@@ -43,7 +43,7 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
                 "url": self.job_url,
             },
         ]
-        self.assert_measurement(response, value=None, entities=expected_entities)
+        self.assert_measurement(measurement, value=None, entities=expected_entities)
 
     async def test_ignore_failed_builds(self):
         """Test that failed builds can be ignored."""
@@ -52,7 +52,7 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
         jenkins_json = {
             "jobs": [{"name": "job", "url": self.job_url, "buildable": True, "color": "red", "builds": self.builds}],
         }
-        response = await self.collect(get_request_json_return_value=jenkins_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=jenkins_json)
         expected_dt = datetime_from_timestamp(success_dt)
         expected_entities = [
             {
@@ -64,4 +64,4 @@ class JenkinsSourceUpToDatenessTest(JenkinsTestCase):
                 "url": self.job_url,
             },
         ]
-        self.assert_measurement(response, value=str(days_ago(expected_dt)), entities=expected_entities)
+        self.assert_measurement(measurement, value=str(days_ago(expected_dt)), entities=expected_entities)

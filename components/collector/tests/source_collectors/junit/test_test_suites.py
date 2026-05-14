@@ -44,20 +44,20 @@ class JUnitTestSuitesTest(JUnitCollectorTestCase):
 
     async def test_test_suites(self):
         """Test that the number of test suites is returned."""
-        response = await self.collect(get_request_text=self.JUNIT_XML)
-        self.assert_measurement(response, value="5", total="5", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_text=self.JUNIT_XML)
+        self.assert_measurement(measurement, value="5", total="5", entities=self.expected_entities)
 
     async def test_failed_suites(self):
         """Test that the failed suites are returned."""
         self.set_source_parameter("test_result", ["failed"])
-        response = await self.collect(get_request_text=self.JUNIT_XML)
+        measurement = await self.collect_measurement(get_request_text=self.JUNIT_XML)
         expected_entities = [entity for entity in self.expected_entities if entity["suite_result"] == "failed"]
-        self.assert_measurement(response, value="1", total="5", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", total="5", entities=expected_entities)
 
     async def test_empty_test_suites(self):
         """Test that a JUnit XML file with an empty testsuites node works."""
-        response = await self.collect(get_request_text=self.JUNIT_XML_EMPTY_TEST_SUITES)
-        self.assert_measurement(response, value="0", total="0")
+        measurement = await self.collect_measurement(get_request_text=self.JUNIT_XML_EMPTY_TEST_SUITES)
+        self.assert_measurement(measurement, value="0", total="0")
 
     async def test_one_top_level_test_suite(self):
         """Test that a JUnit XML file with one top level test suite works."""
@@ -66,9 +66,9 @@ class JUnitTestSuitesTest(JUnitCollectorTestCase):
             <testcase name="tc1" classname="cn"><error/></testcase>
         </testsuite>
         """
-        response = await self.collect(get_request_text=xml)
+        measurement = await self.collect_measurement(get_request_text=xml)
         expected_entities = [self.create_entity("ts1", "errored", errored=1)]
-        self.assert_measurement(response, value="1", total="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", total="1", entities=expected_entities)
 
     async def test_one_top_level_nested_test_suite(self):
         """Test that a JUnit XML file with one top level nested test suite works."""
@@ -79,9 +79,9 @@ class JUnitTestSuitesTest(JUnitCollectorTestCase):
             </testsuite>
         </testsuite>
         """
-        response = await self.collect(get_request_text=xml)
+        measurement = await self.collect_measurement(get_request_text=xml)
         expected_entities = [self.create_entity("ts1-1", "errored", errored=1)]
-        self.assert_measurement(response, value="1", total="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", total="1", entities=expected_entities)
 
     async def test_use_id_for_key_if_available(self):
         """Test that the test suite id is used as entity key."""
@@ -90,6 +90,6 @@ class JUnitTestSuitesTest(JUnitCollectorTestCase):
             <testcase name="tc1" classname="cn"><error/></testcase>
         </testsuite>
         """
-        response = await self.collect(get_request_text=xml)
+        measurement = await self.collect_measurement(get_request_text=xml)
         expected_entities = [self.create_entity("ts1", "errored", errored=1, key="id1")]
-        self.assert_measurement(response, value="1", total="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", total="1", entities=expected_entities)

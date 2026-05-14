@@ -13,7 +13,7 @@ class SonarQubeManyParametersTest(SonarQubeTestCase):
         self.set_source_parameter("rules", ["rule1"])
         many_parameters_json = {"total": "2", "issues": []}
         functions_json = {"component": {"measures": [{"metric": "functions", "value": "4"}]}}
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_side_effect=[
                 {},
                 many_parameters_json,
@@ -24,7 +24,7 @@ class SonarQubeManyParametersTest(SonarQubeTestCase):
             ],
         )
         self.assert_measurement(
-            response,
+            measurement,
             value="2",
             total="4",
             landing_url=f"{self.issues_landing_url}&rules={self.sonar_rules('many_parameter')}",

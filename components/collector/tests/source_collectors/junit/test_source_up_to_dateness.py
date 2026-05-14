@@ -12,9 +12,9 @@ class JUnitSourceUpToDatenessTest(JUnitCollectorTestCase):
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
-        response = await self.collect(get_request_text=self.JUNIT_XML)
+        measurement = await self.collect_measurement(get_request_text=self.JUNIT_XML)
         expected_age = days_ago(datetime_from_parts(2009, 12, 19, 17, 58, 59))
-        self.assert_measurement(response, value=str(expected_age))
+        self.assert_measurement(measurement, value=str(expected_age))
 
     async def test_source_up_to_dateness_on_testsuites_tree(self):
         """Test that the source age in days is returned."""
@@ -25,9 +25,9 @@ class JUnitSourceUpToDatenessTest(JUnitCollectorTestCase):
             </testsuite>
         </testsuites>
         """
-        response = await self.collect(get_request_text=xml)
+        measurement = await self.collect_measurement(get_request_text=xml)
         expected_age = days_ago(datetime_from_parts(2009, 12, 19, 17, 58, 59))
-        self.assert_measurement(response, value=str(expected_age))
+        self.assert_measurement(measurement, value=str(expected_age))
 
     async def test_source_up_to_dateness_on_testsuite_without_timestamp(self):
         """Test that the source age in days is returned."""
@@ -38,10 +38,10 @@ class JUnitSourceUpToDatenessTest(JUnitCollectorTestCase):
             </testsuite>
         </testsuites>
         """
-        response = await self.collect(get_request_text=xml)
-        self.assert_measurement(response, value="0")
+        measurement = await self.collect_measurement(get_request_text=xml)
+        self.assert_measurement(measurement, value="0")
 
     async def test_empty_test_suites(self):
         """Test that a JUnit XML file with an empty testsuites node works."""
-        response = await self.collect(get_request_text=self.JUNIT_XML_EMPTY_TEST_SUITES)
-        self.assert_measurement(response, value="0")
+        measurement = await self.collect_measurement(get_request_text=self.JUNIT_XML_EMPTY_TEST_SUITES)
+        self.assert_measurement(measurement, value="0")

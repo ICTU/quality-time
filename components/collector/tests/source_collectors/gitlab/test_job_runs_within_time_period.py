@@ -21,9 +21,9 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabJobsTestCase):
         """Test that the jobs can be filtered by result type."""
         self.set_source_parameter("lookback_days", "100000")
         self.set_source_parameter("result_type", ["skipped"])
-        response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.gitlab_jobs_json)
         entities = [entity for entity in self.expected_entities if entity["build_result"] == "skipped"]
-        self.assert_measurement(response, value=str(len(entities)), entities=entities, landing_url=self.LANDING_URL)
+        self.assert_measurement(measurement, value=str(len(entities)), entities=entities, landing_url=self.LANDING_URL)
 
     async def test_job_lookback_days(self):
         """Test that the job lookback_days are verified."""
@@ -53,7 +53,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabJobsTestCase):
             ],
         )
 
-        response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.gitlab_jobs_json)
         expected_entities = [
             {
                 "branch": "main",
@@ -66,7 +66,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabJobsTestCase):
                 "url": self._job3_url,
             },
         ]
-        self.assert_measurement(response, value="1", entities=expected_entities, landing_url=self.LANDING_URL)
+        self.assert_measurement(measurement, value="1", entities=expected_entities, landing_url=self.LANDING_URL)
 
     async def test_jobs_not_deduplicated(self):
         """Test that the job runs are not deduplicated."""
@@ -96,7 +96,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabJobsTestCase):
             ],
         )
 
-        response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.gitlab_jobs_json)
         expected_entities = [
             {
                 "build_date": str(just_now.date()),
@@ -119,7 +119,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabJobsTestCase):
                 "url": self._job4_url,
             },
         ]
-        self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.LANDING_URL)
+        self.assert_measurement(measurement, value="2", entities=expected_entities, landing_url=self.LANDING_URL)
 
     async def test_job_lookback_days_on_edge(self):
         """Test the lookback_days around edge of date cut off."""
@@ -159,7 +159,7 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabJobsTestCase):
             ],
         )
 
-        response = await self.collect(get_request_json_return_value=self.gitlab_jobs_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.gitlab_jobs_json)
         expected_entities = [
             {
                 "branch": "main",
@@ -182,4 +182,4 @@ class GitLabJobRunsWithinTimePeriodTest(GitLabJobsTestCase):
                 "url": self._job4_url,
             },
         ]
-        self.assert_measurement(response, value="2", entities=expected_entities, landing_url=self.LANDING_URL)
+        self.assert_measurement(measurement, value="2", entities=expected_entities, landing_url=self.LANDING_URL)

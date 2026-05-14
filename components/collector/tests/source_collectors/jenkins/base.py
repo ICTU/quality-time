@@ -8,11 +8,11 @@ class JenkinsTestCase(SourceCollectorTestCase):
 
     SOURCE_TYPE = "jenkins"
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Extend to set up a Jenkins with a build."""
         super().setUp()
         self.set_source_parameter("failure_type", ["Failure"])
-        self.builds = [
+        self.builds: list[dict] = [
             {"result": "FAILURE", "timestamp": 1552686540953},
             {"result": "SUCCESS", "timestamp": 1552686531953},
             {"timestamp": 1552686531953},

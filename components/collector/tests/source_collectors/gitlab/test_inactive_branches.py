@@ -82,20 +82,20 @@ class GitLabInactiveBranchesTest(GitLabTestCase):
     async def test_project_inactive_branches(self):
         """Test that the number of inactive branches of a project can be measured."""
         responses = [self.group_does_not_exist(), FakeResponse(self.branches), self.group_does_not_exist()]
-        measurement = await self.collect(get_request_side_effect=responses)
+        measurement = await self.collect_measurement(get_request_side_effect=responses)
         self.assert_measurement(measurement, value="2", entities=self.entities, landing_url=self.project_landing_url)
 
     async def test_group_inactive_branches(self):
         """Test that the number of inactive branches of a group of projects can be measured."""
         responses = [self.group_exists(), self.group_projects(), FakeResponse(self.branches), self.group_exists()]
-        measurement = await self.collect(get_request_side_effect=responses)
+        measurement = await self.collect_measurement(get_request_side_effect=responses)
         self.assert_measurement(measurement, value="2", entities=self.entities, landing_url=self.group_landing_url)
 
     async def test_project_unmerged_inactive_branches(self):
         """Test that the number of unmerged inactive branches of a project can be measured."""
         self.set_source_parameter("branch_merge_status", ["unmerged"])
         responses = [self.group_does_not_exist(), FakeResponse(self.branches), self.group_does_not_exist()]
-        measurement = await self.collect(get_request_side_effect=responses)
+        measurement = await self.collect_measurement(get_request_side_effect=responses)
         self.assert_measurement(
             measurement, value="1", entities=[self.unmerged_branch_entity], landing_url=self.project_landing_url
         )
@@ -104,7 +104,7 @@ class GitLabInactiveBranchesTest(GitLabTestCase):
         """Test that the number of unmerged inactive branches of a group of projects can be measured."""
         self.set_source_parameter("branch_merge_status", ["unmerged"])
         responses = [self.group_exists(), self.group_projects(), FakeResponse(self.branches), self.group_exists()]
-        measurement = await self.collect(get_request_side_effect=responses)
+        measurement = await self.collect_measurement(get_request_side_effect=responses)
         self.assert_measurement(
             measurement, value="1", entities=[self.unmerged_branch_entity], landing_url=self.group_landing_url
         )
@@ -113,7 +113,7 @@ class GitLabInactiveBranchesTest(GitLabTestCase):
         """Test that the number of merged inactive branches of a project can be measured."""
         self.set_source_parameter("branch_merge_status", ["merged"])
         responses = [self.group_does_not_exist(), FakeResponse(self.branches), self.group_does_not_exist()]
-        measurement = await self.collect(get_request_side_effect=responses)
+        measurement = await self.collect_measurement(get_request_side_effect=responses)
         self.assert_measurement(
             measurement, value="1", entities=[self.merged_branch_entity], landing_url=self.project_landing_url
         )
@@ -122,7 +122,7 @@ class GitLabInactiveBranchesTest(GitLabTestCase):
         """Test that the number of merged inactive branches of a group of projects can be measured."""
         self.set_source_parameter("branch_merge_status", ["merged"])
         responses = [self.group_exists(), self.group_projects(), FakeResponse(self.branches), self.group_exists()]
-        measurement = await self.collect(get_request_side_effect=responses)
+        measurement = await self.collect_measurement(get_request_side_effect=responses)
         self.assert_measurement(
             measurement, value="1", entities=[self.merged_branch_entity], landing_url=self.group_landing_url
         )
@@ -132,7 +132,7 @@ class GitLabInactiveBranchesTest(GitLabTestCase):
         page1 = FakeResponse(self.branches[:3], links={"next": {"url": "https://gitlab/next_page"}})
         page2 = FakeResponse(self.branches[3:])
         responses = [self.group_does_not_exist(), page1, page2, self.group_does_not_exist()]
-        measurement = await self.collect(get_request_side_effect=responses)
+        measurement = await self.collect_measurement(get_request_side_effect=responses)
         self.assert_measurement(measurement, value="2", entities=self.entities, landing_url=self.project_landing_url)
 
     async def test_group_pagination(self):
@@ -140,10 +140,12 @@ class GitLabInactiveBranchesTest(GitLabTestCase):
         page1 = FakeResponse(self.branches[:3], links={"next": {"url": "https://gitlab/next_page"}})
         page2 = FakeResponse(self.branches[3:])
         responses = [self.group_exists(), self.group_projects(), page1, page2, self.group_exists()]
-        measurement = await self.collect(get_request_side_effect=responses)
+        measurement = await self.collect_measurement(get_request_side_effect=responses)
         self.assert_measurement(measurement, value="2", entities=self.entities, landing_url=self.group_landing_url)
 
     async def test_groups_endpoint_failure(self):
         """Test that a groups endpoint failure results in a failed measurement."""
-        measurement = await self.collect(get_request_side_effect=[self.response_error(HTTPStatus.FORBIDDEN)])
+        measurement = await self.collect_measurement(
+            get_request_side_effect=[self.response_error(HTTPStatus.FORBIDDEN)]
+        )
         self.assert_measurement(measurement, connection_error="403", landing_url="https://gitlab")

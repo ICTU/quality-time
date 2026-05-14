@@ -35,15 +35,15 @@ class JUnitTestsTest(JUnitCollectorTestCase):
 
     async def test_tests(self):
         """Test that the number of tests is returned."""
-        response = await self.collect(get_request_text=self.JUNIT_XML)
-        self.assert_measurement(response, value="8", total="8", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_text=self.JUNIT_XML)
+        self.assert_measurement(measurement, value="8", total="8", entities=self.expected_entities)
 
     async def test_failed_tests(self):
         """Test that the failed tests are returned."""
         self.set_source_parameter("test_result", ["failed"])
-        response = await self.collect(get_request_text=self.JUNIT_XML)
+        measurement = await self.collect_measurement(get_request_text=self.JUNIT_XML)
         self.assert_measurement(
-            response,
+            measurement,
             value="2",
             total="8",
             entities=[entity for entity in self.expected_entities if entity["test_result"] == "failed"],
@@ -52,13 +52,15 @@ class JUnitTestsTest(JUnitCollectorTestCase):
     async def test_zipped_junit_report(self):
         """Test that the number of tests is returned from a zip with JUnit reports."""
         self.set_source_parameter("url", "junit.zip")
-        response = await self.collect(get_request_content=self.zipped_report(("junit.xml", self.JUNIT_XML)))
-        self.assert_measurement(response, value="8", total="8", entities=self.expected_entities)
+        measurement = await self.collect_measurement(
+            get_request_content=self.zipped_report(("junit.xml", self.JUNIT_XML))
+        )
+        self.assert_measurement(measurement, value="8", total="8", entities=self.expected_entities)
 
     async def test_empty_test_suites(self):
         """Test that a JUnit XML file with an empty testsuites node works."""
-        response = await self.collect(get_request_text=self.JUNIT_XML_EMPTY_TEST_SUITES)
-        self.assert_measurement(response, value="0", total="0")
+        measurement = await self.collect_measurement(get_request_text=self.JUNIT_XML_EMPTY_TEST_SUITES)
+        self.assert_measurement(measurement, value="0", total="0")
 
     async def test_repeated_test_case_names(self):
         """Test that repeated test case names are distinguished."""
@@ -69,8 +71,8 @@ class JUnitTestsTest(JUnitCollectorTestCase):
             <testcase name="tc1" classname="cn2"/>
             <testcase name="tc2" classname="cn2"/>
         </testsuite></testsuites>"""
-        response = await self.collect(get_request_text=junit_xml_repeated_test_case_name)
-        self.assert_measurement(response, value="4", total="4")
+        measurement = await self.collect_measurement(get_request_text=junit_xml_repeated_test_case_name)
+        self.assert_measurement(measurement, value="4", total="4")
 
     async def test_repeated_test_case_names_and_class_name(self):
         """Test that repeated test case and class names are distinguished."""
@@ -81,8 +83,8 @@ class JUnitTestsTest(JUnitCollectorTestCase):
             <testcase name="tc1" classname="cn2" hostname="host1"/>
             <testcase name="tc1" classname="cn2" hostname="host2"/>
         </testsuite></testsuites>"""
-        response = await self.collect(get_request_text=junit_xml_repeated_test_case_name_and_class_name)
-        self.assert_measurement(response, value="4", total="4")
+        measurement = await self.collect_measurement(get_request_text=junit_xml_repeated_test_case_name_and_class_name)
+        self.assert_measurement(measurement, value="4", total="4")
 
     async def test_one_top_level_nested_test_suite(self):
         """Test that a JUnit XML file with one top level nested test suite works."""
@@ -93,9 +95,9 @@ class JUnitTestsTest(JUnitCollectorTestCase):
             </testsuite>
         </testsuite>
         """
-        response = await self.collect(get_request_text=xml)
+        measurement = await self.collect_measurement(get_request_text=xml)
         self.assert_measurement(
-            response,
+            measurement,
             value="1",
             total="1",
             entities=[self.junit_entity(name="tc1", test_result="errored", host_name="", suite_names="ts1/ts1-1")],

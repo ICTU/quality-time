@@ -47,26 +47,26 @@ class ClocLOCTest(SourceCollectorTestCase):
 
     async def test_loc(self):
         """Test that the number of lines is returned and that the languages are returned as entities."""
-        response = await self.collect(get_request_json_return_value=self.cloc_json)
-        self.assert_measurement(response, value="90", total="90", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.cloc_json)
+        self.assert_measurement(measurement, value="90", total="90", entities=self.expected_entities)
 
     async def test_loc_ignore_languages(self):
         """Test that languages can be ignored."""
         self.set_source_parameter("languages_to_ignore", ["Java.*"])
-        response = await self.collect(get_request_json_return_value=self.cloc_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.cloc_json)
         expected_entities = self.expected_entities[:1]
         expected_entities[0]["code_percentage"] = "100"
-        self.assert_measurement(response, value="60", total="60", entities=expected_entities)
+        self.assert_measurement(measurement, value="60", total="60", entities=expected_entities)
 
     async def test_loc_by_file(self):
         """Test that the number of lines is returned and that the languages are returned as entities."""
-        response = await self.collect(get_request_json_return_value=self.cloc_by_file_json)
-        self.assert_measurement(response, value="90", total="90", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.cloc_by_file_json)
+        self.assert_measurement(measurement, value="90", total="90", entities=self.expected_entities)
 
     async def test_loc_by_file_include_files(self):
         """Test that the number of lines is returned and that the languages are returned as entities."""
         self.set_source_parameter("files_to_include", ["test.*"])
-        response = await self.collect(get_request_json_return_value=self.cloc_by_file_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.cloc_by_file_json)
         expected_entities = self.expected_entities[:1]
         expected_entities[0]["code_percentage"] = "100"
-        self.assert_measurement(response, value="60", total="90", entities=expected_entities)
+        self.assert_measurement(measurement, value="60", total="90", entities=expected_entities)

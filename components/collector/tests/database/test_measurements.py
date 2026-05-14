@@ -1,6 +1,7 @@
 """Test measurement collection."""
 
 import unittest
+from typing import cast
 
 import mongomock
 
@@ -141,7 +142,7 @@ class TestMeasurements(unittest.TestCase):
         )
         create_measurement(self.database, self.measurement_data(metric_uuid=METRIC_ID2, source_uuid=SOURCE_ID2))
         inserted_measurement = self.database.measurements.find_one(filter={"metric_uuid": METRIC_ID2})
-        self.assertEqual(entity_user_data, inserted_measurement["sources"][0]["entity_user_data"])
+        self.assertEqual(entity_user_data, cast(dict, inserted_measurement)["sources"][0]["entity_user_data"])
 
     def test_create_measurement_for_copied_metric_without_measurement(self):
         """Test that the entity user data are not copied from the original measurement if it has no measurements."""
@@ -154,7 +155,7 @@ class TestMeasurements(unittest.TestCase):
         self.database["reports"].insert_one(report)
         create_measurement(self.database, self.measurement_data(metric_uuid=METRIC_ID2, source_uuid=SOURCE_ID2))
         inserted_measurement = self.database.measurements.find_one(filter={"metric_uuid": METRIC_ID2})
-        self.assertNotIn("entity_user_data", inserted_measurement["sources"][0])
+        self.assertNotIn("entity_user_data", cast(dict, inserted_measurement)["sources"][0])
 
     def test_create_measurement_for_copied_metric_without_origin(self):
         """Test that the entity user data are not copied if the original metric was deleted."""
@@ -168,4 +169,4 @@ class TestMeasurements(unittest.TestCase):
         self.database["reports"].insert_one(report)
         create_measurement(self.database, self.measurement_data(metric_uuid=METRIC_ID2, source_uuid=SOURCE_ID2))
         inserted_measurement = self.database.measurements.find_one(filter={"metric_uuid": METRIC_ID2})
-        self.assertNotIn("entity_user_data", inserted_measurement["sources"][0])
+        self.assertNotIn("entity_user_data", cast(dict, inserted_measurement)["sources"][0])

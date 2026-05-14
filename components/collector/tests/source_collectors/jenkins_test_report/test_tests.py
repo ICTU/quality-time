@@ -35,9 +35,9 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
                 },
             ],
         }
-        response = await self.collect(get_request_json_return_value=jenkins_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=jenkins_json)
         self.assert_measurement(
-            response,
+            measurement,
             value="2",
             total="2",
             entities=[
@@ -66,9 +66,9 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
                 },
             ],
         }
-        response = await self.collect(get_request_json_return_value=jenkins_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=jenkins_json)
         self.assert_measurement(
-            response,
+            measurement,
             value="2",
             total="2",
             entities=[
@@ -93,11 +93,11 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
             ],
         }
         self.set_source_parameter("test_result", ["passed"])
-        response = await self.collect(get_request_json_return_value=jenkins_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=jenkins_json)
         expected_entities = [
             self.jenkins_entity(class_name="c2", name="tc2", test_result="passed", age="0", suite_name="test suite"),
         ]
-        self.assert_measurement(response, value="1", total="2", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", total="2", entities=expected_entities)
 
     async def test_nr_of_failed_tests(self):
         """Test that the number of failed tests is returned."""
@@ -115,9 +115,9 @@ class JenkinsTestReportTestsTest(JenkinsTestReportTestCase):
             ],
         }
         self.set_source_parameter("test_result", ["failed"])
-        response = await self.collect(get_request_json_return_value=jenkins_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=jenkins_json)
         expected_entities = [
             self.jenkins_entity(class_name="c1", name="tc1", test_result="failed", age="1"),
             self.jenkins_entity(class_name="c2", name="tc2", test_result="failed", age="2"),
         ]
-        self.assert_measurement(response, value="2", total="3", entities=expected_entities)
+        self.assert_measurement(measurement, value="2", total="3", entities=expected_entities)

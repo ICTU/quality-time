@@ -90,7 +90,7 @@ def get_report_metric_status_summary(database: Database, report: Report, report_
 @bottle.post("/api/v3/report/import", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
-    report = dict(bottle.request.json)
+    report = cast(dict, bottle.request.json)
     report["delta"] = {"uuids": [report["report_uuid"]]}
 
     secret = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"private_key": True, "_id": False})
@@ -145,8 +145,9 @@ def export_report_as_pdf(report_uuid: ReportId):
 @with_report(pass_report_uuid=False)
 def export_report_as_json(database: Database, report: Report):
     """Return the quality-time report, including encrypted credentials for api access to the sources."""
-    if "public_key" in bottle.request.query:
-        public_key = bottle.request.query["public_key"]
+    query = cast(dict, bottle.request.query)
+    if "public_key" in query:
+        public_key = query["public_key"]
     else:  # default to own public key
         document = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})
         if not document:  # pragma: no feature-test-cover
@@ -173,7 +174,7 @@ def delete_report(database: Database, report: Report, report_uuid: ReportId):
 @with_report
 def post_report_attribute(database: Database, report: Report, report_uuid: ReportId, report_attribute: str):
     """Set a report attribute."""
-    new_value = dict(bottle.request.json)[report_attribute]
+    new_value = cast(dict, bottle.request.json)[report_attribute]
     if report_attribute == "comment" and new_value:
         new_value = sanitize_html(new_value)
     old_value = report.get(report_attribute) or ""
@@ -195,7 +196,7 @@ def post_report_issue_tracker_attribute(
     tracker_attribute: str,
 ):
     """Set the issue tracker attribute."""
-    new_value = dict(bottle.request.json)[tracker_attribute]
+    new_value = cast(dict, bottle.request.json)[tracker_attribute]
     if tracker_attribute == "type":
         old_value = report.get("issue_tracker", {}).get("type") or ""
     else:
@@ -257,7 +258,7 @@ def delete_tag(database: Database, report: Report, tag: str = ""):
 @with_report(pass_report_uuid=False)
 def rename_tag(database: Database, report: Report, tag: str = ""):
     """Rename a tag for all metrics in a report."""
-    new_value = dict(bottle.request.json)["tag"]
+    new_value = cast(dict, bottle.request.json)["tag"]
     if changed_uuids := report.rename_tag(tag, new_value):
         delta_description = f"{{user}} renamed tag '{tag}' to '{new_value}' for all metrics in report '{report.name}'."
         return insert_new_report(database, delta_description, changed_uuids, report)

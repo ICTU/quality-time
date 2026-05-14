@@ -1,6 +1,6 @@
 """Source parameters."""
 
-import urllib
+import urllib.parse
 from typing import cast
 
 from shared_data_model import DATA_MODEL

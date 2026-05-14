@@ -36,23 +36,29 @@ class AnchoreJenkinsPluginSecurityWarningsTest(SourceCollectorTestCase):
 
     async def test_warnings(self):
         """Test the number of security warnings."""
-        response = await self.collect(get_request_json_side_effect=[self.job_json, self.vulnerabilities_json])
+        measurement = await self.collect_measurement(
+            get_request_json_side_effect=[self.job_json, self.vulnerabilities_json]
+        )
         expected_entities = [
             self.create_entity("CVE-000", "package"),
             self.create_entity("CVE-001", "package2", severity="Unknown", fix="v1.2.3"),
         ]
-        self.assert_measurement(response, value="2", entities=expected_entities)
+        self.assert_measurement(measurement, value="2", entities=expected_entities)
 
     async def test_filter_warnings_by_severity(self):
         """Test that the security warnings can be filtered by severity."""
         self.set_source_parameter("severities", ["Low"])
-        response = await self.collect(get_request_json_side_effect=[self.job_json, self.vulnerabilities_json])
+        measurement = await self.collect_measurement(
+            get_request_json_side_effect=[self.job_json, self.vulnerabilities_json]
+        )
         expected_entities = [self.create_entity("CVE-000", "package")]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)
 
     async def test_filter_warnings_by_fix_availability(self):
         """Test that the security warnings can be filtered by fix availability."""
         self.set_source_parameter("fix_availability", ["no fix available"])
-        response = await self.collect(get_request_json_side_effect=[self.job_json, self.vulnerabilities_json])
+        measurement = await self.collect_measurement(
+            get_request_json_side_effect=[self.job_json, self.vulnerabilities_json]
+        )
         expected_entities = [self.create_entity("CVE-000", "package")]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)

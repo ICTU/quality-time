@@ -12,6 +12,6 @@ class VisualStudioTRXSourceUpToDatenessTest(VisualStudioTRXCollectorTestCase):
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
-        response = await self.collect(get_request_text=self.VISUAL_STUDIO_TRX_XML)
+        measurement = await self.collect_measurement(get_request_text=self.VISUAL_STUDIO_TRX_XML)
         expected_age = days_ago(parse_datetime("2024-09-12T11:33:30.3272909+02:00"))
-        self.assert_measurement(response, value=str(expected_age))
+        self.assert_measurement(measurement, value=str(expected_age))

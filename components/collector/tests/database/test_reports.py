@@ -1,6 +1,7 @@
 """Tests for the reports collection."""
 
 import unittest
+from typing import cast
 
 import mongomock
 
@@ -38,7 +39,7 @@ class TestLatestMetric(unittest.TestCase):
 
     def test_no_latest_metric(self):
         """Test that None is returned for missing metrics."""
-        self.assertIsNone(latest_metric(self.database, REPORT_ID, MetricId("non-existing")))
+        self.assertIsNone(latest_metric(self.database, REPORT_ID, cast(MetricId, "non-existing")))
 
     def test_no_latest_report(self):
         """Test that None is returned for missing metrics."""

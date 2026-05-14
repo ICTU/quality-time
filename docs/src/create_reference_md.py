@@ -11,7 +11,10 @@ from shared_data_model import DATA_MODEL
 if TYPE_CHECKING:
     from pydantic import HttpUrl
 
-    from shared_data_model.meta import Metric, NamedModel, Parameter, Source, Subject
+    from shared_data_model.meta.metric import Metric
+    from shared_data_model.meta.parameter import Parameter
+    from shared_data_model.meta.source import Source
+    from shared_data_model.meta.subject import Subject
 
 
 # See https://pradyunsg.me/furo/reference/admonitions/
@@ -31,15 +34,9 @@ AdmonitionType = Literal[
 ]
 
 
-def get_model_name(model: NamedModel) -> str:
-    """Return the name of the model."""
-    # This function could easily be a lambda, but then we can't add type information
-    return model.name
-
-
 def data_model_metric_items() -> list[tuple[str, Metric]]:
     """Return the data model metrics sorted by metric name."""
-    return sorted(DATA_MODEL.metrics.items(), key=lambda item: get_model_name(item[1]))
+    return sorted(DATA_MODEL.metrics.items(), key=lambda item: operator.attrgetter("name")(item[1]))
 
 
 def data_model_metric_source_keys_and_names(metric: Metric) -> list[tuple[str, str]]:
@@ -77,7 +74,7 @@ def markdown_header(header: str, level: int = 1, index: bool = False) -> str:
 def subject_sections(level: int) -> str:
     """Return the subjects as Markdown sections."""
     markdown = ""
-    for subject in sorted(DATA_MODEL.subjects.values(), key=get_model_name):
+    for subject in sorted(DATA_MODEL.subjects.values(), key=operator.attrgetter("name")):
         markdown += subject_section(subject, level)
     return markdown
 
@@ -88,11 +85,11 @@ def subject_section(subject: Subject, level: int) -> str:
     markdown += markdown_paragraph(subject.description)
     supporting_metrics_markdown = ""
     subject_metrics = [DATA_MODEL.metrics[metric] for metric in subject.all_metrics]
-    for metric in sorted(subject_metrics, key=get_model_name):
+    for metric in sorted(subject_metrics, key=operator.attrgetter("name")):
         supporting_metrics_markdown += f"- [{metric.name}]({slugify(metric.name)})\n"
     markdown += admonition(supporting_metrics_markdown, "Supporting metrics")
     child_subjects = [DATA_MODEL.all_subjects[child_subject] for child_subject in subject.subjects]
-    for child_subject in sorted(child_subjects, key=get_model_name):
+    for child_subject in sorted(child_subjects, key=operator.attrgetter("name")):
         markdown += subject_section(child_subject, level + 1)
     return markdown
 
@@ -125,7 +122,7 @@ def metric_section(metric_key: str, metric: Metric, level: int) -> str:
     markdown += definition_list("Default tags", *[tag.value for tag in metric.tags])
     supported_subjects_markdown = ""
     subjects = [subject for subject in DATA_MODEL.all_subjects.values() if metric_key in subject.all_metrics]
-    for subject in sorted(subjects, key=get_model_name):
+    for subject in sorted(subjects, key=operator.attrgetter("name")):
         supported_subjects_markdown += f"- [{subject.name}]({slugify(subject.name)})\n"
     markdown += admonition(supported_subjects_markdown, "Supported subjects")
     supporting_sources_markdown = ""
@@ -162,7 +159,7 @@ def metric_scales(metric: Metric) -> list[str]:
 def source_sections(level: int) -> str:
     """Return the sources as Markdown sections."""
     markdown = ""
-    for source_key, source in sorted(DATA_MODEL.sources.items(), key=lambda item: get_model_name(item[1])):
+    for source_key, source in sorted(DATA_MODEL.sources.items(), key=lambda item: operator.attrgetter("name")(item[1])):
         markdown += source_section(source, source_key, level)
     return markdown
 
@@ -186,7 +183,7 @@ def source_section(source: Source, source_key: str, level: int) -> str:
         markdown += admonition(deprecation_message, "Deprecated", "caution")
     supported_metrics_markdown = ""
     metrics = [metric for metric in DATA_MODEL.metrics.values() if source_key in metric.sources]
-    for metric in sorted(metrics, key=get_model_name):
+    for metric in sorted(metrics, key=operator.attrgetter("name")):
         source_name = DATA_MODEL.sources[source_key].name
         supported_metrics_markdown += f"- [{metric.name}]({metric_source_slug(metric.name, source_name)})\n"
     markdown += admonition(supported_metrics_markdown, "Supported metrics")
@@ -239,7 +236,7 @@ def parameter_paragraph(parameters: list[Parameter], mandatory: bool) -> str:
     parameters = [parameter for parameter in parameters if parameter.mandatory == mandatory]
     if parameters:
         markdown += markdown_header(f"{'Mandatory' if mandatory else 'Optional'} parameters", 4)
-        sorted_parameters = sorted(parameters, key=get_model_name)
+        sorted_parameters = sorted(parameters, key=operator.attrgetter("name"))
         for parameter in sorted_parameters:
             markdown += parameter_description(parameter)
     return markdown
@@ -276,7 +273,7 @@ def metric_source_configuration_section(metric_key: str, source_key: str) -> str
     if not relevant_configurations:
         return ""
     markdown = markdown_paragraph("Configurations:")
-    for configuration in sorted(relevant_configurations, key=get_model_name):
+    for configuration in sorted(relevant_configurations, key=operator.attrgetter("name")):
         markdown += f"- {configuration.name}:\n"
         for value in sorted(configuration.value, key=lambda value: str(value).lower()):
             markdown += f"  - {value}\n"

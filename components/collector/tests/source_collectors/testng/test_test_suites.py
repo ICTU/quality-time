@@ -84,13 +84,13 @@ class TestNGTestSuitesTest(TestNGCollectorTestCase):
 
     async def test_suites(self):
         """Test that the number of suites is returned."""
-        response = await self.collect(get_request_text=self.TESTNG_XML)
-        self.assert_measurement(response, value="5", total="5", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_text=self.TESTNG_XML)
+        self.assert_measurement(measurement, value="5", total="5", entities=self.expected_entities)
 
     async def test_failed_suites(self):
         """Test that the failed suites are returned."""
         self.set_source_parameter("test_result", ["failed"])
-        response = await self.collect(get_request_text=self.TESTNG_XML)
+        measurement = await self.collect_measurement(get_request_text=self.TESTNG_XML)
         self.assert_measurement(
-            response, value="2", total="5", entities=[self.expected_entities[0], self.expected_entities[2]]
+            measurement, value="2", total="5", entities=[self.expected_entities[0], self.expected_entities[2]]
         )

@@ -23,7 +23,7 @@ class TrivyJSONSecurityWarnings(SecurityWarningsSourceCollector, JSONFileSourceC
         """Override to parse the vulnerabilities from the Trivy JSON."""
         entities = Entities()
         trivy_json = cast(TrivyJSON, json)
-        results = trivy_json["Results"] if isinstance(trivy_json, dict) else trivy_json
+        results = trivy_json if isinstance(trivy_json, list) else trivy_json["Results"]
         for result in results:
             target = result["Target"]
             for vulnerability in result.get("Vulnerabilities") or []:

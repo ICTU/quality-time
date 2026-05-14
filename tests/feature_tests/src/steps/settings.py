@@ -1,7 +1,7 @@
 """Steps for settings."""
 
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from asserts import assert_equal, assert_true
 from behave import then, when
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 @when("the client posts new settings")
 def post_settings(context: Context) -> None:
     """Post new settings."""
-    context.put("settings", json=json.loads(context.text))
+    context.put("settings", json=json.loads(cast(str, context.text)))
 
 
 @then("the settings have been updated")
@@ -32,4 +32,4 @@ def get_settings(context: Context) -> None:
 def check_get_settings(context: Context) -> None:
     """Check that the settings are returned."""
     settings = context.response.json()["settings"]
-    assert_equal(settings, json.loads(context.text))
+    assert_equal(settings, json.loads(cast(str, context.text)))

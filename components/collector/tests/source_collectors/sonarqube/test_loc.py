@@ -18,9 +18,9 @@ class SonarQubeLOCTest(SonarQubeTestCase):
                 ],
             },
         }
-        response = await self.collect(get_request_json_return_value=json)
+        measurement = await self.collect_measurement(get_request_json_return_value=json)
         self.assert_measurement(
-            response,
+            measurement,
             value="1234",
             total="100",
             entities=[
@@ -41,9 +41,9 @@ class SonarQubeLOCTest(SonarQubeTestCase):
                 ],
             },
         }
-        response = await self.collect(get_request_json_return_value=json)
+        measurement = await self.collect_measurement(get_request_json_return_value=json)
         self.assert_measurement(
-            response,
+            measurement,
             value="1234",
             total="100",
             entities=[],
@@ -61,9 +61,9 @@ class SonarQubeLOCTest(SonarQubeTestCase):
                 ],
             },
         }
-        response = await self.collect(get_request_json_return_value=json)
+        measurement = await self.collect_measurement(get_request_json_return_value=json)
         self.assert_measurement(
-            response,
+            measurement,
             value="1000",
             total="100",
             entities=[{"key": "py", "language": "Python", "ncloc": "1000", "ncloc_percentage": "100"}],
