@@ -15,27 +15,24 @@ from typing import Any, cast
 import git
 from dateutil.tz import tzutc
 
-
-def get_release_folder() -> pathlib.Path:
-    """Return the release folder."""
-    return pathlib.Path(__file__).resolve().parent
+REPO_ROOT = next(p for p in pathlib.Path(__file__).resolve().parents if (p / ".git").is_dir())
+RELEASE_FOLDER = REPO_ROOT / "tools" / "release"
+DOCS_FOLDER = REPO_ROOT / "docs" / "src"
 
 
 def read_pyproject_toml() -> dict[str, Any]:
     """Return the pyproject.toml file contents."""
-    release_folder = get_release_folder()
-    with pathlib.Path(release_folder / "pyproject.toml").open(mode="rb") as pyproject_toml_file:
+    with pathlib.Path(RELEASE_FOLDER / "pyproject.toml").open(mode="rb") as pyproject_toml_file:
         return tomllib.load(pyproject_toml_file)
 
 
 def get_version() -> str:
     """Return the current version."""
-    release_folder = get_release_folder()
-    repo = git.Repo(release_folder.parent.parent)
+    repo = git.Repo(REPO_ROOT)
     pyproject_toml = read_pyproject_toml()
     version_re = pyproject_toml["tool"]["bumpversion"]["parse"]
     version_tags = [tag for tag in repo.tags if tag.tag and re.match(version_re, tag.tag.tag.strip("v"), re.MULTILINE)]
-    latest_tag = sorted(version_tags, key=lambda tag: tag.commit.committed_datetime)[-1]
+    latest_tag = max(version_tags, key=lambda tag: tag.commit.committed_datetime)
     # We cast latest_tag.tag to TagObject because we know it cannot be None, given how version_tags is constructed
     return cast(git.TagObject, latest_tag.tag).tag.strip("v")
 
@@ -80,23 +77,21 @@ def parse_arguments() -> tuple[str, str, bool, bool]:
 def check_preconditions(bump: str, current_version: str) -> None:
     """Check preconditions for version bump."""
     messages = []
-    release_folder = get_release_folder()
-    if pathlib.Path.cwd() != release_folder:
-        messages.append(f"The current folder is not the release folder. Please change directory to {release_folder}.")
-    root = release_folder.parent.parent
-    messages.extend(failed_preconditions_repo(root))
-    messages.extend(failed_preconditions_changelog(bump, root))
+    if pathlib.Path.cwd() != RELEASE_FOLDER:
+        messages.append(f"The current folder is not the release folder. Please change directory to {RELEASE_FOLDER}.")
+    messages.extend(failed_preconditions_repo())
+    messages.extend(failed_preconditions_changelog(bump))
     if bump == "release":  # don't update the version overview for release candidates
-        messages.extend(failed_preconditions_version_overview(current_version, root))
+        messages.extend(failed_preconditions_version_overview(current_version))
     if messages:
         formatted_messages = "\n".join([f"- {message}" for message in messages])
         sys.exit(f"Please fix these issues before releasing Quality-time:\n{formatted_messages}\n")
 
 
-def failed_preconditions_repo(root: pathlib.Path) -> list[str]:
+def failed_preconditions_repo() -> list[str]:
     """Check that the repo is in pristine condition."""
     messages = []
-    repo = git.Repo(root)
+    repo = git.Repo(REPO_ROOT)
     origin = git.Remote(repo, "origin")
     origin.fetch()
     if repo.active_branch.name != "master":
@@ -113,10 +108,10 @@ def failed_preconditions_repo(root: pathlib.Path) -> list[str]:
     return messages
 
 
-def failed_preconditions_changelog(bump: str, root: pathlib.Path) -> list[str]:
+def failed_preconditions_changelog(bump: str) -> list[str]:
     """Check that the changelog is properly prepared."""
     messages = []
-    changelog = root / "docs" / "src" / "changelog.md"
+    changelog = DOCS_FOLDER / "changelog.md"
     with changelog.open() as changelog_file:
         changelog_text = changelog_file.read()
     if "[Unreleased]" not in changelog_text:
@@ -129,12 +124,12 @@ def failed_preconditions_changelog(bump: str, root: pathlib.Path) -> list[str]:
     return messages
 
 
-def failed_preconditions_version_overview(current_version: str, root: pathlib.Path) -> list[str]:
+def failed_preconditions_version_overview(current_version: str) -> list[str]:
     """Check that the version overview contains the new version.
 
     Note: this check is only run when the version bump is 'release'.
     """
-    version_overview = root / "docs" / "src" / "versioning.md"
+    version_overview = DOCS_FOLDER / "versioning.md"
     with version_overview.open() as version_overview_file:
         latest_version_line = next(line for line in version_overview_file if re.match(r"\| \*?\*?v\d+", line))
     columns = latest_version_line.split(" | ")
@@ -181,19 +176,19 @@ def main() -> None:
         cmd.append(bump)
     run(cmd, check=True)  # noqa: S603
     for python_project_folder in [
-        "../../components/api_server",
-        "../../components/collector",
-        "../../components/notifier",
-        "../../components/shared_code",
-        "../../docs",
-        "../../tests/feature_tests",
-        "../../tests/application_tests",
-        "../../tools/release",
-        "../../tools/third_party",
-        "../../tools/update_dependencies",
+        "components/api_server",
+        "components/collector",
+        "components/notifier",
+        "components/shared_code",
+        "docs",
+        "tests/feature_tests",
+        "tests/application_tests",
+        "tools/release",
+        "tools/third_party",
+        "tools/update_dependencies",
     ]:
-        run(("uv", "lock"), cwd=python_project_folder, check=True)  # noqa: S607
-    run(("git", "add", "**/uv.lock"), cwd="../..", check=True)  # noqa: S607
+        run(("uv", "lock"), cwd=str(REPO_ROOT / python_project_folder), check=True)  # noqa: S607
+    run(("git", "add", "**/uv.lock"), cwd=str(REPO_ROOT), check=True)  # noqa: S607
     run(("git", "commit", "--amend", "--no-edit"), check=True)  # noqa: S607
     # Move the git tag that was just created by bump-my-version:
     version = f"v{get_version()}"
@@ -204,5 +199,5 @@ def main() -> None:
         run(("git", "push", "--follow-tags"), check=True)  # noqa: S607
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()
