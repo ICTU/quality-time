@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Self
 from pydantic import Field, HttpUrl, SerializeAsAny, model_validator
 
 from .base import DescribedModel, NamedModel
-from .parameter import DEFAULT_PARAMETER_LAYOUT, Parameter, ParameterGroup
+from .parameter import DEFAULT_PARAMETER_LAYOUT, Parameter, ParameterGroup, ParameterType
 
 if TYPE_CHECKING:
     from .entity import Entity
@@ -27,6 +27,7 @@ class Source(DescribedModel):
     configuration: dict[str, Configuration] = {}
     parameters: dict[str, SerializeAsAny[Parameter]]
     parameter_layout: dict[str, ParameterGroup] = DEFAULT_PARAMETER_LAYOUT
+    identifying_parameters: list[str] = Field(default_factory=list)  # Show these in the frontend alongside the source
     entities: dict[str, Entity] = {}
     issue_tracker: bool | None = False
     supported_versions_description: str | None = None  # The source versions that Quality-time supports, e.g. "≥10.2"
@@ -54,6 +55,18 @@ class Source(DescribedModel):
         if "github_pat" in self.parameters and not self.repository_url:
             msg = f"Source {self.name} has a GitHub personal access token parameter but no repository URL."
             raise ValueError(msg)
+        return self
+
+    @model_validator(mode="after")
+    def check_identifying_parameters(self) -> Self:
+        """Check that identifying parameters exist and are not passwords."""
+        for key in self.identifying_parameters:
+            if key not in self.parameters:
+                msg = f"Source {self.name} has identifying parameter {key} but no parameter {key}"
+                raise ValueError(msg)
+            if self.parameters[key].type == ParameterType.PASSWORD:
+                msg = f"Source {self.name} has identifying parameter {key} but parameter {key} is a password"
+                raise ValueError(msg)
         return self
 
     @model_validator(mode="after")

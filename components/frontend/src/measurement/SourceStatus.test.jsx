@@ -4,18 +4,33 @@ import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectNoText, expectText, expectTextAfterWait, hoverText } from "../testUtils"
 import { SourceStatus } from "./SourceStatus"
 
-const dataModel = { metrics: { metric_type: { sources: ["source_type"] } } }
+const dataModel = {
+    metrics: { metric_type: { sources: ["source_type"] } },
+    sources: { source_type: { parameters: {} } },
+}
 
-function metric(source_type = "source_type") {
+function dataModelWithIdentifying(parameterType = "date") {
     return {
-        type: "metric_type",
-        sources: { source_uuid: { type: source_type, name: "Source name" } },
+        metrics: { metric_type: { sources: ["source_type"] } },
+        sources: {
+            source_type: {
+                identifying_parameters: ["date"],
+                parameters: { date: { type: parameterType } },
+            },
+        },
     }
 }
 
-function renderSourceStatus(metric, measurementSource) {
+function metric(source_type = "source_type", parameters = undefined) {
+    return {
+        type: "metric_type",
+        sources: { source_uuid: { type: source_type, name: "Source name", parameters: parameters } },
+    }
+}
+
+function renderSourceStatus(metric, measurementSource, customDataModel = dataModel) {
     return render(
-        <DataModelContext value={dataModel}>
+        <DataModelContext value={customDataModel}>
             <SourceStatus metric={metric} measurementSource={measurementSource} />
         </DataModelContext>,
     )
@@ -67,4 +82,30 @@ it("renders the source label and the popup if there is an info message", async (
 it("renders nothing if the source has been deleted", async () => {
     renderSourceStatus(metric(), { source_uuid: "other_source_uuid" })
     expectNoText(/Source name/)
+})
+
+it("renders the identifying parameter value below the source name", async () => {
+    renderSourceStatus(
+        metric("source_type", { date: "2026-06-01" }),
+        { source_uuid: "source_uuid" },
+        dataModelWithIdentifying(),
+    )
+    expectText(/Source name/)
+    expectText(/Jun 1, 2026/)
+})
+
+it("does not render the identifying line when the parameter value is empty", async () => {
+    renderSourceStatus(metric("source_type", { date: "" }), { source_uuid: "source_uuid" }, dataModelWithIdentifying())
+    expectText(/Source name/)
+    expectNoText(/Jun/)
+})
+
+it("renders the identifying parameter value next to the connection error label", async () => {
+    renderSourceStatus(
+        metric("source_type", { date: "2026-06-01" }),
+        { source_uuid: "source_uuid", connection_error: "error" },
+        dataModelWithIdentifying(),
+    )
+    expectText(/Source name/)
+    expectText(/Jun 1, 2026/)
 })

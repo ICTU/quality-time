@@ -1,4 +1,8 @@
+import dayjs from "dayjs"
+import localizedFormat from "dayjs/plugin/localizedFormat"
 import { arrayOf, number, objectOf, oneOf, string } from "prop-types"
+
+dayjs.extend(localizedFormat)
 
 import { PERMISSIONS } from "./context/Permissions"
 import { defaultDesiredResponseTimes } from "./defaults"
@@ -46,6 +50,30 @@ export function getSourceTypeName(source, dataModel) {
 
 export function getSourceName(source, dataModel) {
     return source.name || dataModel.sources[source.type].name
+}
+
+export function formatParameterValue(parameter, value) {
+    if (value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0)) {
+        return null
+    }
+    if (parameter?.type === "date") {
+        const parsed = dayjs(value)
+        return parsed.isValid() ? parsed.format("ll") : String(value)
+    }
+    if (Array.isArray(value)) {
+        return value.join(", ")
+    }
+    if (parameter?.unit) {
+        return `${value} ${parameter.unit}`
+    }
+    return String(value)
+}
+
+export function identifyingParameterValues(source, dataModelSource) {
+    const keys = dataModelSource?.identifying_parameters ?? []
+    return keys
+        .map((key) => formatParameterValue(dataModelSource.parameters?.[key], source.parameters?.[key]))
+        .filter((value) => value !== null)
 }
 
 function allMetrics(subject) {

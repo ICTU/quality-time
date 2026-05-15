@@ -44,4 +44,5 @@ CALENDAR = Source(
     parameter_layout={
         "date": ParameterGroup(name="Manual source data"),
     },
+    identifying_parameters=["date"],
 )
