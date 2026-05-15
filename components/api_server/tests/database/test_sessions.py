@@ -44,7 +44,7 @@ class SessionsTest(DatabaseTestCase):
 
     def test_get(self):
         """Test get session."""
-        session = sessions.get(self.database, "session_id")
+        session = sessions.get(self.database, SessionId("session_id"))
         self.assertDictEqual(session, {"_id": "session_id"})
         self.database.sessions.find_one.assert_called_once_with({"session_id": "session_id"})
 

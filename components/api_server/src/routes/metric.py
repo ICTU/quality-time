@@ -6,13 +6,14 @@ import bottle
 
 from shared.database.measurements import insert_new_measurement, latest_measurement
 from shared.model.metric import Metric
-from shared.utils.type import MetricId, SubjectId, Value
+from shared.utils.type import ItemId, MetricId, SubjectId, Value
 from shared_data_model import DATA_MODEL
 
 from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from model.actions import copy_metric, move_item, move_metric_to_index
 from model.defaults import default_metric_attributes
 from utils.functions import sanitize_html, uuid
+from utils.type import Position
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
@@ -26,11 +27,11 @@ def post_metric_new(subject_uuid: SubjectId, database: Database):
     all_reports = latest_reports(database)
     report = latest_report_for_uuids(all_reports, subject_uuid)[0]
     subject = report.subjects_dict[subject_uuid]
-    metric_type = str(dict(bottle.request.json)["type"])
+    metric_type = cast(dict, bottle.request.json)["type"]
     metric_uuid = cast(MetricId, uuid())
     subject.metrics_dict[metric_uuid] = cast(Metric, default_metric_attributes(metric_type))
     description = f"{{user}} added a new metric to subject '{subject.name}' in report '{report.name}'."
-    uuids = [report.uuid, subject.uuid, metric_uuid]
+    uuids: list[ItemId] = [report.uuid, subject.uuid, metric_uuid]
     result = insert_new_report(database, description, uuids, report)
     result["new_metric_uuid"] = metric_uuid
     return result
@@ -51,7 +52,7 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
         f"{{user}} copied the metric '{source_metric.name}' of subject '{source_subject.name}' from report "
         f"'{source_report.name}' to subject '{target_subject.name}' in report '{target_report.name}'."
     )
-    uuids = [target_report.uuid, target_subject.uuid, metric_copy_uuid]
+    uuids: list[ItemId] = [target_report.uuid, target_subject.uuid, metric_copy_uuid]
     result = insert_new_report(database, description, uuids, target_report)
     result["new_metric_uuid"] = metric_copy_uuid
     return result
@@ -73,7 +74,13 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
         f"'{source_report.name}' to subject '{target_subject.name}' in report '{target_report.name}'."
     )
     target_subject.metrics_dict[metric_uuid] = metric
-    uuids = [target_report.uuid, source_report.uuid, source_subject.uuid, target_subject.uuid, metric.uuid]
+    uuids: list[ItemId] = [
+        target_report.uuid,
+        source_report.uuid,
+        source_subject.uuid,
+        target_subject.uuid,
+        metric.uuid,
+    ]
     if target_report.uuid == source_report.uuid:
         # Metric is moved within the same report
         del source_subject.metrics_dict[metric_uuid]
@@ -92,7 +99,7 @@ def delete_metric(metric_uuid: MetricId, database: Database):
     report = latest_report_for_uuids(all_reports, metric_uuid)[0]
     metric, subject = report.metric_and_subject(metric_uuid)
     description = f"{{user}} deleted metric '{metric.name}' from subject '{subject.name}' in report '{report.name}'."
-    uuids = [report.uuid, subject.uuid, metric_uuid]
+    uuids: list[ItemId] = [report.uuid, subject.uuid, metric_uuid]
     del subject.metrics_dict[metric_uuid]
     return insert_new_report(database, description, uuids, report)
 
@@ -115,7 +122,7 @@ ATTRIBUTES_IMPACTING_STATUS = (
 )
 def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database: Database):
     """Set the metric attribute."""
-    new_value = dict(bottle.request.json)[metric_attribute]
+    new_value = cast(dict, bottle.request.json)[metric_attribute]
     reports = latest_reports(database)
     report = latest_report_for_uuids(reports, metric_uuid)[0]
     metric, subject = report.metric_and_subject(metric_uuid)
@@ -124,7 +131,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
         new_value = sanitize_html(new_value)
     old_value: Any
     if metric_attribute == "position":
-        old_value, new_value = move_item(subject, metric, new_value)
+        old_value, new_value = move_item(subject, metric, cast(Position, new_value))
     elif metric_attribute == "position_index":
         old_value, new_value = move_metric_to_index(subject, metric, int(new_value))
     else:
@@ -135,7 +142,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
         # Update the metric attributes, but keep the sources and the user supplied tags
         default_tags_old_type = DATA_MODEL.metrics[cast(str, metric.type())].tags or []
         user_supplied_tags = [tag for tag in metric["tags"] if tag not in default_tags_old_type]
-        metric.update(default_metric_attributes(new_value), sources=metric["sources"])
+        metric.update(default_metric_attributes(cast(str, new_value)), sources=metric["sources"])
         metric["tags"].extend(user_supplied_tags)
     metric[metric_attribute] = new_value
     description = (
@@ -152,7 +159,7 @@ def post_metric_attribute(metric_uuid: MetricId, metric_attribute: str, database
 @bottle.post("/api/internal/metric/<metric_uuid>/debt", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_metric_debt(metric_uuid: MetricId, database: Database):
     """Turn the technical debt on or off, including technical debt target and end date."""
-    new_accept_debt = dict(bottle.request.json)["accept_debt"]
+    new_accept_debt = cast(dict, bottle.request.json)["accept_debt"]
     report = latest_report_for_uuids(latest_reports(database), metric_uuid)[0]
     metric, subject = report.metric_and_subject(metric_uuid)
     if new_accept_debt:
@@ -211,7 +218,7 @@ def add_metric_issue(metric_uuid: MetricId, database: Database):
 
 def create_issue_text(metric: Metric, measured_value: Value) -> tuple[str, str]:
     """Create an issue description for the metric."""
-    metric_url = dict(bottle.request.json)["metric_url"]
+    metric_url = cast(dict, bottle.request.json)["metric_url"]
     source_names = ", ".join([source.name or DATA_MODEL.sources[str(source.type)].name for source in metric.sources])
     # See https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=links
     # for the text formatting notation used by Jira API version 2.

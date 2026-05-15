@@ -2,19 +2,16 @@
 
 import unittest
 from datetime import datetime
-from typing import TYPE_CHECKING
 
 from dateutil.tz import tzutc
 
+from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.model.report import Report
 
 from strategies.notification_strategy import NotificationFinder
 
 from tests.fixtures import METRIC_ID, METRIC_ID2, NOTIFICATION_DESTINATION_ID, REPORT_ID, REPORT_ID2, SUBJECT_ID
-
-if TYPE_CHECKING:
-    from shared.model.measurement import Measurement
 
 
 class StrategiesTests(unittest.TestCase):
@@ -30,32 +27,37 @@ class StrategiesTests(unittest.TestCase):
         self.white_metric_status = "unknown"
         self.red_metric = self.metric(name="metric1", status="target_not_met")
         self.red_metric_measurements = [
-            {
-                "metric_uuid": METRIC_ID,
-                "start": self.OLD_TIMESTAMP,
-                "end": self.NEW_TIMESTAMP,
-                "count": {"status": "target_met", "value": "5"},
-            },
-            {
-                "metric_uuid": METRIC_ID,
-                "start": self.NEW_TIMESTAMP,
-                "end": self.NEW_TIMESTAMP,
-                "count": {"status": "target_not_met", "value": "10"},
-            },
+            Measurement(
+                self.red_metric,
+                metric_uuid=METRIC_ID,
+                start=self.OLD_TIMESTAMP,
+                end=self.NEW_TIMESTAMP,
+                count={"status": "target_met", "value": "5"},
+            ),
+            Measurement(
+                self.red_metric,
+                metric_uuid=METRIC_ID,
+                start=self.NEW_TIMESTAMP,
+                end=self.NEW_TIMESTAMP,
+                count={"status": "target_not_met", "value": "10"},
+            ),
         ]
         self.reports = [
-            {
-                "report_uuid": REPORT_ID,
-                "title": "Title",
-                "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: self.red_metric}, "type": "software"}},
-                "notification_destinations": {
-                    "destination_uuid": {
-                        "name": "destination",
-                        "report_url": "https://report",
-                        "webhook": "https://xxxxx.webhook.office.com/xxxxxxxxx",
-                    }
+            Report(
+                {},
+                {
+                    "report_uuid": REPORT_ID,
+                    "title": "Title",
+                    "subjects": {SUBJECT_ID: {"metrics": {METRIC_ID: self.red_metric}, "type": "software"}},
+                    "notification_destinations": {
+                        "destination_uuid": {
+                            "name": "destination",
+                            "report_url": "https://report",
+                            "webhook": "https://xxxxx.webhook.office.com/xxxxxxxxx",
+                        }
+                    },
                 },
-            },
+            ),
         ]
 
     @staticmethod
@@ -63,7 +65,6 @@ class StrategiesTests(unittest.TestCase):
         name: str = "metric1",
         status: str = "target_met",
         scale: str = "count",
-        recent_measurements: list[Measurement] | None = None,
         status_start: str | None = None,
     ) -> Metric:
         """Create a metric."""
@@ -74,7 +75,6 @@ class StrategiesTests(unittest.TestCase):
                 "scale": scale,
                 "status": status,
                 "type": "tests",
-                "recent_measurements": recent_measurements or [],
                 "status_start": status_start or "",
             },
             METRIC_ID,
@@ -95,15 +95,15 @@ class StrategiesTests(unittest.TestCase):
 
     def test_no_red_metrics(self):
         """Test that there is nothing to notify when there are no red metrics."""
-        green_metric = self.metric(
-            recent_measurements=[
-                {
-                    "start": self.OLD_TIMESTAMP,
-                    "end": self.NEW_TIMESTAMP,
-                    "count": {"status": "target_met", "value": "0"},
-                },
-            ],
-        )
+        green_metric = self.metric()
+        green_metric["recent_measurements"] = [
+            Measurement(
+                green_metric,
+                start=self.OLD_TIMESTAMP,
+                end=self.NEW_TIMESTAMP,
+                count={"status": "target_met", "value": "0"},
+            )
+        ]
         self.reports[0]["subjects"][SUBJECT_ID]["metrics"] = {METRIC_ID: green_metric}
         self.assertEqual([], self.get_notifications())
 
@@ -133,18 +133,20 @@ class StrategiesTests(unittest.TestCase):
         """Test that a metric that turns white is added."""
         metric = self.metric(status=self.white_metric_status)
         measurements = [
-            {
-                "metric_uuid": METRIC_ID,
-                "start": self.NEW_TIMESTAMP,
-                "end": self.NEW_TIMESTAMP,
-                "count": {"status": "target_met"},
-            },
-            {
-                "metric_uuid": METRIC_ID,
-                "start": self.OLD_TIMESTAMP,
-                "end": self.OLD_TIMESTAMP,
-                "count": {"status": self.white_metric_status},
-            },
+            Measurement(
+                metric,
+                metric_uuid=METRIC_ID,
+                start=self.NEW_TIMESTAMP,
+                end=self.NEW_TIMESTAMP,
+                count={"status": "target_met"},
+            ),
+            Measurement(
+                metric,
+                metric_uuid=METRIC_ID,
+                start=self.OLD_TIMESTAMP,
+                end=self.OLD_TIMESTAMP,
+                count={"status": self.white_metric_status},
+            ),
         ]
         self.assertTrue(
             self.notification_finder.status_changed(metric, measurements, self.most_recent_measurement_seen),
@@ -154,8 +156,8 @@ class StrategiesTests(unittest.TestCase):
         """Test that a metric that was already white isn't added."""
         metric = self.metric(status=self.white_metric_status)
         measurements = [
-            {"start": self.NEW_TIMESTAMP, "count": {"status": self.white_metric_status}},
-            {"start": self.OLD_TIMESTAMP, "count": {"status": self.white_metric_status}},
+            Measurement(metric, start=self.NEW_TIMESTAMP, count={"status": self.white_metric_status}),
+            Measurement(metric, start=self.OLD_TIMESTAMP, count={"status": self.white_metric_status}),
         ]
         self.assertFalse(
             self.notification_finder.status_changed(metric, measurements, self.most_recent_measurement_seen),
@@ -164,7 +166,10 @@ class StrategiesTests(unittest.TestCase):
     def test_no_change_due_to_only_one_measurement(self):
         """Test that metrics with only one measurement (and therefore no changes in value) aren't added."""
         metric = self.metric(status=self.white_metric_status)
-        self.assertFalse(self.notification_finder.status_changed(metric, [{}], self.most_recent_measurement_seen))
+        measurements = [Measurement(metric)]
+        self.assertFalse(
+            self.notification_finder.status_changed(metric, measurements, self.most_recent_measurement_seen)
+        )
 
     def test_no_change_due_to_no_measurements(self):
         """Test that metrics without measurements (and therefore no changes in value) aren't added."""
@@ -173,7 +178,7 @@ class StrategiesTests(unittest.TestCase):
 
     def test_multiple_reports_with_same_destination(self):
         """Test that the correct metrics are notified when multiple reports notify the same destination."""
-        red_metric2 = self.red_metric.copy()
+        red_metric2 = self.metric(name="metric2", status="target_not_met")
         red_metric2["name"] = "metric2"
         subject2 = {"metrics": {METRIC_ID2: red_metric2}, "type": "software"}
         report2 = {
@@ -190,18 +195,20 @@ class StrategiesTests(unittest.TestCase):
         }
         self.reports.append(Report({}, report2))
         red_metric2_measurements = [
-            {
-                "metric_uuid": METRIC_ID2,
-                "start": self.OLD_TIMESTAMP,
-                "end": self.NEW_TIMESTAMP,
-                "count": {"status": "target_met", "value": "5"},
-            },
-            {
-                "metric_uuid": METRIC_ID2,
-                "start": self.NEW_TIMESTAMP,
-                "end": self.NEW_TIMESTAMP,
-                "count": {"status": "target_not_met", "value": "10"},
-            },
+            Measurement(
+                red_metric2,
+                metric_uuid=METRIC_ID2,
+                start=self.OLD_TIMESTAMP,
+                end=self.NEW_TIMESTAMP,
+                count={"status": "target_met", "value": "5"},
+            ),
+            Measurement(
+                red_metric2,
+                metric_uuid=METRIC_ID2,
+                start=self.NEW_TIMESTAMP,
+                end=self.NEW_TIMESTAMP,
+                count={"status": "target_not_met", "value": "10"},
+            ),
         ]
         red_measurements = self.red_metric_measurements + red_metric2_measurements
         metrics = [notification.metrics for notification in self.get_notifications(red_measurements)]

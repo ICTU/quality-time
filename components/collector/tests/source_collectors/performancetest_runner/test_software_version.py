@@ -14,8 +14,8 @@ class PerformanceTestRunnerSoftwareVersionTest(PerformanceTestRunnerTestCase):
             '<html><table class="config"><tr><td class="name">Application version</td>'
             '<td id="application_version">1.2.3</td></tr></table></html>'
         )
-        response = await self.collect(get_request_text=html)
-        self.assert_measurement(response, value="1.2.3")
+        measurement = await self.collect_measurement(get_request_text=html)
+        self.assert_measurement(measurement, value="1.2.3")
 
     async def test_non_semantic_version_with_pattern(self):
         """Test that a non-semantic version can be parsed with a version number pattern."""
@@ -24,5 +24,5 @@ class PerformanceTestRunnerSoftwareVersionTest(PerformanceTestRunnerTestCase):
             '<html><table class="config"><tr><td class="name">Application version</td>'
             '<td id="application_version">1115-code-coverage-SNAPSHOT</td></tr></table></html>'
         )
-        response = await self.collect(get_request_text=html)
-        self.assert_measurement(response, value="1115")
+        measurement = await self.collect_measurement(get_request_text=html)
+        self.assert_measurement(measurement, value="1115")

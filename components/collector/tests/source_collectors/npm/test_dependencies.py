@@ -33,8 +33,8 @@ class NpmDependenciesTest(SourceCollectorTestCase):
                 "latest": "16.13.1",
             },
         ]
-        response = await self.collect(get_request_json_return_value=npm_json)
-        self.assert_measurement(response, value="2", total="2", entities=expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=npm_json)
+        self.assert_measurement(measurement, value="2", total="2", entities=expected_entities)
 
     async def test_multiple_dependents_per_dependency(self):
         """Test that the number of dependencies is returned if a dependency has multiple dependents."""
@@ -60,8 +60,8 @@ class NpmDependenciesTest(SourceCollectorTestCase):
                 "latest": "6.5.0",
             },
         ]
-        response = await self.collect(get_request_json_return_value=npm_json)
-        self.assert_measurement(response, value="2", total="2", entities=expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=npm_json)
+        self.assert_measurement(measurement, value="2", total="2", entities=expected_entities)
 
     async def test_filter_major_updates_only(self):
         """Test that only major updates are included when the user selects 'major'."""
@@ -69,8 +69,8 @@ class NpmDependenciesTest(SourceCollectorTestCase):
         expected_entities = [
             {"key": "zod@3_25_76", "name": "zod", "current": "3.25.76", "wanted": "3.25.76", "latest": "4.2.1"},
         ]
-        response = await self.collect(get_request_json_return_value=self.create_npm_json())
-        self.assert_measurement(response, value="1", total="3", entities=expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.create_npm_json())
+        self.assert_measurement(measurement, value="1", total="3", entities=expected_entities)
 
     async def test_filter_minor_updates_only(self):
         """Test that only minor updates are included when the user selects 'minor'."""
@@ -84,8 +84,8 @@ class NpmDependenciesTest(SourceCollectorTestCase):
                 "latest": "16.13.1",
             },
         ]
-        response = await self.collect(get_request_json_return_value=self.create_npm_json())
-        self.assert_measurement(response, value="1", total="3", entities=expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.create_npm_json())
+        self.assert_measurement(measurement, value="1", total="3", entities=expected_entities)
 
     async def test_filter_patch_updates_only(self):
         """Test that only patch updates are included when the user selects 'patch'."""
@@ -99,8 +99,8 @@ class NpmDependenciesTest(SourceCollectorTestCase):
                 "latest": "4.17.21",
             },
         ]
-        response = await self.collect(get_request_json_return_value=self.create_npm_json())
-        self.assert_measurement(response, value="1", total="3", entities=expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.create_npm_json())
+        self.assert_measurement(measurement, value="1", total="3", entities=expected_entities)
 
     async def test_non_semver_version_is_kept(self):
         """Test that dependencies with non-semver versions are not filtered out."""
@@ -117,5 +117,5 @@ class NpmDependenciesTest(SourceCollectorTestCase):
                 "latest": "latest",
             },
         ]
-        response = await self.collect(get_request_json_return_value=npm_json)
-        self.assert_measurement(response, value="1", total="1", entities=expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=npm_json)
+        self.assert_measurement(measurement, value="1", total="1", entities=expected_entities)

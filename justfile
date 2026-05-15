@@ -37,6 +37,7 @@ fixit := uv_run + " fixit --quiet"
 pyproject_fmt := uv_run + " pyproject-fmt --no-generate-python-version-classifiers"
 ruff := uv_run + " ruff --quiet"
 troml := uv_run + " troml"
+ty := uv_run + " ty check --no-progress --error-on-warning"
 vulture := uv_run + " vulture --exclude .venv --min-confidence 0"
 vulture_whitelist := ".vulture-whitelist.py"
 sphinx_build := uv_run + " sphinx-build"
@@ -233,6 +234,13 @@ junit-xml: install-py-dependencies
 
 # === Run checks ===
 
+# Run ty.
+[no-cd]
+[private]
+ty: install-py-dependencies
+    ?[ {{ pyproject_toml_exists }} = true ]
+    {{ ty }} {{ code }}
+
 # Run mypy.
 [no-cd]
 [private]
@@ -332,7 +340,7 @@ zizmor: install-py-dependencies
 [no-cd]
 [parallel]
 [private]
-check-py: mypy fixit ruff pyproject-fmt troml pip-audit uv-audit bandit vulture vale yamllint zizmor
+check-py: ty mypy fixit ruff pyproject-fmt troml pip-audit uv-audit bandit vulture vale yamllint zizmor
 
 # Run npm lint.
 [no-cd]
@@ -374,6 +382,7 @@ check: check-js check-py
 [private]
 fix-py: install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
+    {{ ty }} --fix {{ code }}
     {{ ruff }} format {{ code }}
     {{ ruff }} check --fix {{ code }}
     {{ fixit }} fix {{ code }}

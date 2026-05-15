@@ -35,44 +35,44 @@ class GrafanaK6TestsTest(SourceCollectorTestCase):
 
     async def test_empty_json(self):
         """Test that the number of tests is 0 if the JSON is empty."""
-        response = await self.collect(get_request_json_return_value={})
-        self.assert_measurement(response, value="0", total="0")
+        measurement = await self.collect_measurement(get_request_json_return_value={})
+        self.assert_measurement(measurement, value="0", total="0")
 
     async def test_no_metrics(self):
         """Test that the number of tests is 0 if the JSON has no metrics."""
-        response = await self.collect(get_request_json_return_value={"metrics": {}})
-        self.assert_measurement(response, value="0", total="0")
+        measurement = await self.collect_measurement(get_request_json_return_value={"metrics": {}})
+        self.assert_measurement(measurement, value="0", total="0")
 
     async def test_metrics_without_thresholds_are_ignored(self):
         """Test that metrics without thresholds are not counted as tests."""
         grafana_k6_json = {"metrics": {"vus": deepcopy(self.GRAFANA_K6_JSON["metrics"]["vus"])}}
-        response = await self.collect(get_request_json_return_value=grafana_k6_json)
-        self.assert_measurement(response, value="0", total="0")
+        measurement = await self.collect_measurement(get_request_json_return_value=grafana_k6_json)
+        self.assert_measurement(measurement, value="0", total="0")
 
     async def test_default_counts_passed_and_failed(self):
         """Test that by default the collector counts both passed and failed tests."""
-        response = await self.collect(get_request_json_return_value=self.GRAFANA_K6_JSON)
-        self.assert_measurement(response, value="2", total="2")
+        measurement = await self.collect_measurement(get_request_json_return_value=self.GRAFANA_K6_JSON)
+        self.assert_measurement(measurement, value="2", total="2")
 
     async def test_only_failed(self):
         """Test that only failed tests are counted if requested."""
         self.set_source_parameter("test_result", ["failed"])
-        response = await self.collect(get_request_json_return_value=self.GRAFANA_K6_JSON)
-        self.assert_measurement(response, value="1", total="2")
+        measurement = await self.collect_measurement(get_request_json_return_value=self.GRAFANA_K6_JSON)
+        self.assert_measurement(measurement, value="1", total="2")
 
     async def test_only_passed(self):
         """Test that only passed tests are counted if requested."""
         self.set_source_parameter("test_result", ["passed"])
-        response = await self.collect(get_request_json_return_value=self.GRAFANA_K6_JSON)
-        self.assert_measurement(response, value="1", total="2")
+        measurement = await self.collect_measurement(get_request_json_return_value=self.GRAFANA_K6_JSON)
+        self.assert_measurement(measurement, value="1", total="2")
 
-    async def test_multiple_thresholds_one_failing_counts_as_failed(self):
+    async def test_multiple_thresholds_one_failing_counts_as_failed(self) -> None:
         """Test that a metric with multiple thresholds counts as failed if any threshold is not ok."""
-        grafana_k6_json = deepcopy(self.GRAFANA_K6_JSON)
+        grafana_k6_json: dict = deepcopy(self.GRAFANA_K6_JSON)
         grafana_k6_json["metrics"]["http_req_failed"]["thresholds"] = {
             "rate<0.01": {"ok": True},
             "rate<0.05": {"ok": False},
         }
         self.set_source_parameter("test_result", ["failed"])
-        response = await self.collect(get_request_json_return_value=grafana_k6_json)
-        self.assert_measurement(response, value="2", total="2")
+        measurement = await self.collect_measurement(get_request_json_return_value=grafana_k6_json)
+        self.assert_measurement(measurement, value="2", total="2")

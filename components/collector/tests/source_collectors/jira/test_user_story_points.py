@@ -13,7 +13,7 @@ class JiraUserStoryPointsTest(JiraTestCase):
 
     METRIC_TYPE = "user_story_points"
 
-    async def _get_fields_response(self, user_stories_json: dict) -> MetricMeasurement | None | tuple:
+    async def _get_fields_response(self, user_stories_json: dict) -> MetricMeasurement:
         """Produce sprint custom field response."""
         fields_json = [{"name": "Field", "id": "field"}, {"name": "Sprint", "id": "custom_field_001"}]
         return await self.get_response(user_stories_json, fields_json)
@@ -21,9 +21,9 @@ class JiraUserStoryPointsTest(JiraTestCase):
     async def test_nr_story_points(self):
         """Test that the number of story points is returned."""
         user_stories_json = {"issues": [self.issue(key="1", field=10), self.issue(key="2", field=32)]}
-        response = await self.get_response(user_stories_json)
+        measurement = await self.get_response(user_stories_json)
         self.assert_measurement(
-            response,
+            measurement,
             value="42",
             entities=[self.entity(key="1", points="10.0"), self.entity(key="2", points="32.0")],
         )
@@ -44,9 +44,9 @@ class JiraUserStoryPointsTest(JiraTestCase):
                 self.issue(key="2", field=32, custom_field_001=None),
             ],
         }
-        response = await self._get_fields_response(user_stories_json)
+        measurement = await self._get_fields_response(user_stories_json)
         self.assert_measurement(
-            response,
+            measurement,
             value="42",
             entities=[
                 self.entity(key="1", points="10.0", sprint="Sprint 1"),
@@ -62,9 +62,9 @@ class JiraUserStoryPointsTest(JiraTestCase):
                 self.issue(key="2", field=32, custom_field_001=None),
             ],
         }
-        response = await self._get_fields_response(user_stories_json)
+        measurement = await self._get_fields_response(user_stories_json)
         self.assert_measurement(
-            response,
+            measurement,
             value="42",
             entities=[
                 self.entity(key="1", points="10.0", sprint="Sprint 1"),
@@ -80,9 +80,9 @@ class JiraUserStoryPointsTest(JiraTestCase):
                 self.issue(key="2", field=32, custom_field_001=None),
             ],
         }
-        response = await self._get_fields_response(user_stories_json)
+        measurement = await self._get_fields_response(user_stories_json)
         self.assert_measurement(
-            response,
+            measurement,
             value="42",
             entities=[
                 self.entity(key="1", points="10.0", sprint=""),
@@ -117,9 +117,9 @@ class JiraUserStoryPointsTest(JiraTestCase):
                 self.issue(key="5", field=8, custom_field_001=None),
             ],
         }
-        response = await self._get_fields_response(user_stories_json)
+        measurement = await self._get_fields_response(user_stories_json)
         self.assert_measurement(
-            response,
+            measurement,
             value="19",
             entities=[
                 self.entity(key="1", points="1.0", sprint="Sprint 1"),

@@ -1,6 +1,6 @@
 """Search endpoint."""
 
-from typing import Literal, TypedDict, TYPE_CHECKING
+from typing import Literal, TypedDict, TYPE_CHECKING, cast
 
 import bottle
 
@@ -82,7 +82,7 @@ def search(domain_object_type: DomainObjectType, database: Database) -> SearchRe
     """Search for domain objects of the specified type by attribute value."""
     logger = get_logger()
     try:
-        query = dict(bottle.request.json)
+        query = cast(dict, bottle.request.json)
         attribute_name, attribute_value = set(query.items()).pop()
     except Exception as reason:  # noqa: BLE001
         logger.warning("Parsing search query for %s failed: %s", domain_object_type, reason)

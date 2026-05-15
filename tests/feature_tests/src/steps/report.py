@@ -2,7 +2,7 @@
 
 import json
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 from urllib import parse
 
 from asserts import assert_equal, assert_not_in
@@ -78,7 +78,7 @@ def re_import_report(context: Context) -> None:
 def import_report(context: Context) -> None:
     """Import a JSON report."""
     with context.external_api():
-        response = context.post("report/import", json=json.loads(context.text))
+        response = context.post("report/import", json=json.loads(cast(str, context.text)))
     if "new_report_uuid" in response:
         context.uuid["report"] = response["new_report_uuid"]
 

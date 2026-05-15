@@ -1,6 +1,6 @@
 """Azure DevOps Server issues collector."""
 
-from typing import Final, cast
+from typing import Final
 
 import aiohttp
 
@@ -31,10 +31,7 @@ class AzureDevopsIssues(SourceCollector):
         """Combine API select and where fields to correct WIQL query."""
         wiql_query_segments = ["Select [System.Id] From WorkItems"]
         wiql_parameter = self._parameter("wiql")
-        if wiql_parameter := cast(  # type: ignore[redundant-cast]
-            str,
-            wiql_parameter[0] if isinstance(wiql_parameter, list) else wiql_parameter,
-        ):
+        if wiql_parameter := wiql_parameter[0] if isinstance(wiql_parameter, list) else wiql_parameter:
             if not wiql_parameter.startswith("WHERE"):
                 wiql_query_segments.append("WHERE")
             wiql_query_segments.append(wiql_parameter)

@@ -19,7 +19,7 @@ class DependencyTrackTestCase(SourceCollectorTestCase):
         """Extend to add the mandatory landing URL."""
         super().setUp()
         self.landing_url = f"https://{self.SOURCE_TYPE}/landing"
-        self.sources["source_id"]["parameters"]["landing_url"] = self.landing_url  # type: ignore[index]
+        self.sources["source_id"]["parameters"]["landing_url"] = self.landing_url
 
     def projects(self, version: str = "1.4", *, is_latest: bool = False) -> list[DependencyTrackProject]:
         """Create the Dependency-Track projects fixture."""

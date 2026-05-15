@@ -26,21 +26,21 @@ class RouteInjectionPluginTest(unittest.TestCase):
     def test_apply_plugin(self):
         """Test that the plugin can be applied to a route."""
 
-        def route(keyword: str) -> str:
+        def fake_route(keyword: str) -> str:
             """Fake route."""
             return keyword
 
         bottle.install(InjectionPlugin("value", "keyword"))
-        route = bottle.Route(bottle.app(), "/", "GET", route)
+        route = bottle.Route(bottle.app(), "/", "GET", fake_route)
         self.assertEqual("value", route.call())
 
     def test_apply_plugin_to_route_that_does_not_take_keyword(self):
         """Test that the plugin can be applied to a route."""
 
-        def route() -> str:
+        def fake_route() -> str:
             """Fake route."""
             return "route"
 
         bottle.install(InjectionPlugin("value", "keyword"))
-        route = bottle.Route(bottle.app(), "/", "GET", route)
+        route = bottle.Route(bottle.app(), "/", "GET", fake_route)
         self.assertEqual("route", route.call())

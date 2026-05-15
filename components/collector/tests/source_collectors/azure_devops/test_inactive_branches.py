@@ -47,14 +47,16 @@ class AzureDevopsInactiveBranchesTest(AzureDevopsTestCase):
     async def test_no_branches_except_default_branch(self):
         """Test that the number of inactive branches is returned."""
         branches = {"value": [self.default_branch]}
-        response = await self.collect(get_request_json_side_effect=[self.repositories, branches])
-        self.assert_measurement(response, value="0", entities=[], landing_url=self.landing_url)
+        measurement = await self.collect_measurement(get_request_json_side_effect=[self.repositories, branches])
+        self.assert_measurement(measurement, value="0", entities=[], landing_url=self.landing_url)
 
     async def test_inactive_branches(self):
         """Test that the number of inactive branches is returned."""
-        response = await self.collect(get_request_json_side_effect=[self.repositories, {"value": self.branches}])
+        measurement = await self.collect_measurement(
+            get_request_json_side_effect=[self.repositories, {"value": self.branches}]
+        )
         self.assert_measurement(
-            response,
+            measurement,
             value="2",
             landing_url=self.landing_url,
             entities=[self.merged_branch_entity, self.unmerged_branch_entity],
@@ -63,9 +65,11 @@ class AzureDevopsInactiveBranchesTest(AzureDevopsTestCase):
     async def test_inactive_unmerged_branches(self):
         """Test that the number of inactive unmerged branches is returned."""
         self.set_source_parameter("branch_merge_status", ["unmerged"])
-        response = await self.collect(get_request_json_side_effect=[self.repositories, {"value": self.branches}])
+        measurement = await self.collect_measurement(
+            get_request_json_side_effect=[self.repositories, {"value": self.branches}]
+        )
         self.assert_measurement(
-            response,
+            measurement,
             value="1",
             landing_url=self.landing_url,
             entities=[self.unmerged_branch_entity],
@@ -74,9 +78,11 @@ class AzureDevopsInactiveBranchesTest(AzureDevopsTestCase):
     async def test_inactive_merged_branches(self):
         """Test that the number of inactive merged branches is returned."""
         self.set_source_parameter("branch_merge_status", ["merged"])
-        response = await self.collect(get_request_json_side_effect=[self.repositories, {"value": self.branches}])
+        measurement = await self.collect_measurement(
+            get_request_json_side_effect=[self.repositories, {"value": self.branches}]
+        )
         self.assert_measurement(
-            response,
+            measurement,
             value="1",
             landing_url=self.landing_url,
             entities=[self.merged_branch_entity],
@@ -85,9 +91,9 @@ class AzureDevopsInactiveBranchesTest(AzureDevopsTestCase):
     async def test_wrong_repository(self):
         """Test that if the repository cannot be found, an error message is returned."""
         self.set_source_parameter("repository", "wrong_repo")
-        response = await self.collect(get_request_json_return_value=self.repositories)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.repositories)
         self.assert_measurement(
-            response,
+            measurement,
             landing_url=f"{self.url}/_git/wrong_repo/branches",
             connection_error="Repository 'wrong_repo' not found",
         )

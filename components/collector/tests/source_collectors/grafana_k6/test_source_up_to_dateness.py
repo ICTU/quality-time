@@ -13,17 +13,19 @@ class GrafanaK6SourceUpToDatenessTest(SourceCollectorTestCase):
 
     async def test_missing_metadata_gives_parse_error(self):
         """Test that a parse error is returned if the JSON has no metadata."""
-        response = await self.collect(get_request_json_return_value={})
-        self.assert_measurement(response, parse_error="Could not find an object")
+        measurement = await self.collect_measurement(get_request_json_return_value={})
+        self.assert_measurement(measurement, parse_error="Could not find an object")
 
     async def test_missing_generated_at_gives_parse_error(self):
         """Test that a parse error is returned if the JSON has no generatedAt in the metadata."""
-        response = await self.collect(get_request_json_return_value={"metadata": {}})
-        self.assert_measurement(response, parse_error="Could not find an object")
+        measurement = await self.collect_measurement(get_request_json_return_value={"metadata": {}})
+        self.assert_measurement(measurement, parse_error="Could not find an object")
 
     async def test_source_up_to_dateness(self):
         """Test the source up-to-dateness."""
         generated_at = "2026-04-21T10:00:00.000Z"
-        response = await self.collect(get_request_json_return_value={"metadata": {"generatedAt": generated_at}})
+        measurement = await self.collect_measurement(
+            get_request_json_return_value={"metadata": {"generatedAt": generated_at}}
+        )
         expected_value = str(days_ago(parse_datetime(generated_at)))
-        self.assert_measurement(response, value=expected_value)
+        self.assert_measurement(measurement, value=expected_value)

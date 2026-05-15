@@ -42,9 +42,8 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
             ],
         }
         total_violations_json = {"total": "4"}
-        response, get_mock, _post_mock = await self.collect(
+        measurement, get_mock, _post_mock = await self.collect_measurement_and_mocks(
             get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json],
-            return_mocks=True,
         )
         call1 = call("https://sonarqube/api/components/show?component=id", allow_redirects=True, headers={}, auth=None)
         call2 = call(
@@ -88,7 +87,7 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
             ),
         ]
         self.assert_measurement(
-            response,
+            measurement,
             value="2",
             total="4",
             entities=expected_entities,
@@ -126,7 +125,7 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
             ],
         }
         total_violations_json = {"total": "1"}
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_side_effect=[{}, {}, wont_fix_rationale_json, total_violations_json],
         )
         expected_entities = [
@@ -144,7 +143,7 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
             ),
         ]
         self.assert_measurement(
-            response,
+            measurement,
             value="1",
             total="1",
             entities=expected_entities,

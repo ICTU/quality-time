@@ -38,15 +38,17 @@ class JiraTimeRemainingTest(JiraTestCase):
         """Test that the time remaining to the end of the active sprint is returned."""
         sprints_json = self.sprints_json(active_sprint=True)
         get_request_json_side_effect = [self.boards_json, sprints_json, sprints_json]
-        response = await self.collect(get_request_json_side_effect=get_request_json_side_effect)
+        measurement = await self.collect_measurement(get_request_json_side_effect=get_request_json_side_effect)
         expected_landing_url = (
             "https://jira/secure/RapidBoard.jspa?rapidView=2&view=reporting&chart=sprintRetrospective&sprint=sprint_id#"
         )
-        self.assert_measurement(response, value="5", landing_url=expected_landing_url, entities=[])
+        self.assert_measurement(measurement, value="5", landing_url=expected_landing_url, entities=[])
 
     async def test_no_active_sprint(self):
         """Test that an error message is show if there is no active sprint."""
         sprints_json = self.sprints_json(active_sprint=False)
         get_request_json_side_effect = [self.boards_json, sprints_json, sprints_json]
-        response = await self.collect(get_request_json_side_effect=get_request_json_side_effect)
-        self.assert_measurement(response, parse_error="No active sprint found", landing_url="https://jira", entities=[])
+        measurement = await self.collect_measurement(get_request_json_side_effect=get_request_json_side_effect)
+        self.assert_measurement(
+            measurement, parse_error="No active sprint found", landing_url="https://jira", entities=[]
+        )

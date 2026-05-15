@@ -10,16 +10,16 @@ class GatlingPerformancetestDurationTest(GatlingTestCase):
 
     async def test_missing_duration(self):
         """Test that the performancetest duration is 0 if there is no duration in the HTML."""
-        response = await self.collect(get_request_text="<span/>")
-        self.assert_measurement(response, value="0")
+        measurement = await self.collect_measurement(get_request_text="<span/>")
+        self.assert_measurement(measurement, value="0")
 
     async def test_duration(self):
         """Test the performancetest duration."""
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_text="""
             <span class="simulation-information-item">
                 <span class="simulation-information-label">Duration: </span>
                 <span>4m 14s </span>
             </span>"""
         )
-        self.assert_measurement(response, value="4")
+        self.assert_measurement(measurement, value="4")

@@ -29,9 +29,9 @@ class RobotFrameworkTestReportTest(RobotFrameworkTestCase):
         ]
         for xml in self.ROBOT_FRAMEWORK_XMLS:
             with self.subTest(xml=xml):
-                response = await self.collect(get_request_text=xml)
+                measurement = await self.collect_measurement(get_request_text=xml)
                 self.assert_measurement(
-                    response,
+                    measurement,
                     value="4",
                     total="4",
                     entities=expected_entities,
@@ -44,9 +44,9 @@ class RobotFrameworkTestReportTest(RobotFrameworkTestCase):
         expected_entities = [self.robot_entity(key="s1-t1", name="Test 1", result="fail", suite="Suite 1")]
         for xml in self.ROBOT_FRAMEWORK_XMLS:
             with self.subTest(xml=xml):
-                response = await self.collect(get_request_text=xml)
+                measurement = await self.collect_measurement(get_request_text=xml)
                 self.assert_measurement(
-                    response,
+                    measurement,
                     value="1",
                     total="4",
                     entities=expected_entities,
@@ -59,9 +59,9 @@ class RobotFrameworkTestReportTest(RobotFrameworkTestCase):
         expected_entities = [self.robot_entity(key="s3-t1", name="Test 4", result="skip", suite="Suite 3")]
         for xml in self.ROBOT_FRAMEWORK_XMLS:
             with self.subTest(xml=xml):
-                response = await self.collect(get_request_text=xml)
+                measurement = await self.collect_measurement(get_request_text=xml)
                 self.assert_measurement(
-                    response,
+                    measurement,
                     value="1",
                     total="4",
                     entities=expected_entities,

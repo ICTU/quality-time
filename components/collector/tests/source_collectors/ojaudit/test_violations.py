@@ -1,5 +1,7 @@
 """Unit tests for the OJAudit violations collector."""
 
+from typing import cast
+
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -59,7 +61,7 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
     </children>
   </construct>
 </audit>"""
-        response = await self.collect(get_request_text=ojaudit_xml)
+        measurement = await self.collect_measurement(get_request_text=ojaudit_xml)
         expected_entities = [
             {
                 "component": "a:20:4",
@@ -76,7 +78,7 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
                 "count": "1",
             },
         ]
-        self.assert_measurement(response, value="2", entities=expected_entities)
+        self.assert_measurement(measurement, value="2", entities=expected_entities)
 
     async def test_missing_location(self):
         """Test that an exception is raised if the violation location is missing."""
@@ -103,8 +105,8 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
     </violation>
   </construct>
 </audit>"""
-        response = await self.collect(get_request_text=ojaudit_xml)
-        self.assertIn("has no location element", response.sources[0].parse_error)
+        measurement = await self.collect_measurement(get_request_text=ojaudit_xml)
+        self.assertIn("has no location element", cast(str, measurement.sources[0].parse_error))
 
     async def test_filter_violations(self):
         """Test that violations of types the user doesn't want to see are not included."""
@@ -136,8 +138,8 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
   </construct>
 </audit>"""
         self.set_source_parameter("severities", ["error"])
-        response = await self.collect(get_request_text=ojaudit_xml)
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_text=ojaudit_xml)
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_ignore_duplicated_violations(self):
         """Test that violations with the same model, message, location, etc. are ignored."""
@@ -184,7 +186,7 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
     </children>
   </construct>
 </audit>"""
-        response = await self.collect(get_request_text=ojaudit_xml)
+        measurement = await self.collect_measurement(get_request_text=ojaudit_xml)
         expected_entities = [
             {
                 "component": "a:20:4",
@@ -194,4 +196,4 @@ class OJAuditViolationsTest(SourceCollectorTestCase):
                 "count": "2",
             },
         ]
-        self.assert_measurement(response, value="2", entities=expected_entities)
+        self.assert_measurement(measurement, value="2", entities=expected_entities)

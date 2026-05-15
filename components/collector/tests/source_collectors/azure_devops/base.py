@@ -87,12 +87,12 @@ class AzureDevopsJobsTestCase(AzureDevopsTestCase):
 class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):
     """Base class for Azure DevOps pipeline collectors."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Extend to set up pipeline data."""
         super().setUp()
         self.test_pipeline = {"id": 42, "name": "azure-pipelines.yml"}
         self.pipelines = {"count": 1, "value": [self.test_pipeline]}
-        self.pipeline_runs = {
+        self.pipeline_runs: dict = {
             "count": 3,
             "value": [
                 {
@@ -128,7 +128,7 @@ class AzureDevopsPipelinesTestCase(AzureDevopsTestCase):
                 },
             ],
         }
-        self.expected_entities = [
+        self.expected_entities: list[dict] = [
             {
                 "name": "20191015.1",
                 "pipeline": self.test_pipeline["name"],

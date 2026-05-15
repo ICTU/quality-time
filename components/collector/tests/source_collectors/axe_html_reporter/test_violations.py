@@ -78,8 +78,8 @@ class AxeHTMLViolationsTest(SourceCollectorTestCase):
 
     async def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
-        response = await self.collect(get_request_text=self.html)
-        self.assert_measurement(response, value="6", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_text=self.html)
+        self.assert_measurement(measurement, value="6", entities=self.expected_entities)
 
     async def test_no_issues(self):
         """Test zero issues."""
@@ -87,54 +87,54 @@ class AxeHTMLViolationsTest(SourceCollectorTestCase):
             '<div class="summary"><a href="https:&#x2F;&#x2F;example.com&#x2F;">'
             "https:&#x2F;&#x2F;example.com&#x2F</a></div>"
         )
-        response = await self.collect(get_request_text=self.html)
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_text=self.html)
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_filter_by_impact(self):
         """Test that violations can be filtered by impact level."""
         self.set_source_parameter("impact", ["serious", "critical"])
-        response = await self.collect(get_request_text=self.html)
-        self.assert_measurement(response, value="4")
+        measurement = await self.collect_measurement(get_request_text=self.html)
+        self.assert_measurement(measurement, value="4")
 
     async def test_filter_by_tag_include(self):
         """Test that violations can be filtered by tag."""
         self.set_source_parameter("tags_to_include", ["wcag2a"])
-        response = await self.collect(get_request_text=self.html)
-        self.assert_measurement(response, value="1", entities=[self.expected_entities[0]])
+        measurement = await self.collect_measurement(get_request_text=self.html)
+        self.assert_measurement(measurement, value="1", entities=[self.expected_entities[0]])
 
     async def test_filter_by_tag_ignore(self):
         """Test that violations can be filtered by tag."""
         self.set_source_parameter("tags_to_ignore", ["best-practice"])
-        response = await self.collect(get_request_text=self.html)
-        self.assert_measurement(response, value="1", entities=[self.expected_entities[0]])
+        measurement = await self.collect_measurement(get_request_text=self.html)
+        self.assert_measurement(measurement, value="1", entities=[self.expected_entities[0]])
 
     async def test_zipped_hrml(self):
         """Test that a zip archive with HTML files is processed correctly."""
         self.set_source_parameter("url", "axe.zip")
         zipfile = self.zipped_report(*[(f"axe{index}.html", self.html) for index in range(2)])
-        response = await self.collect(get_request_content=zipfile)
-        self.assert_measurement(response, value="6", entities=self.expected_entities)  # Duplicates are discarded
+        measurement = await self.collect_measurement(get_request_content=zipfile)
+        self.assert_measurement(measurement, value="6", entities=self.expected_entities)  # Duplicates are discarded
 
     async def test_passed_rules(self):
         """Test that passed rules can be counted as well."""
         self.set_source_parameter("result_types", ["passes"])
-        response = await self.collect(get_request_text=self.html)
-        self.assert_measurement(response, value="12")
+        measurement = await self.collect_measurement(get_request_text=self.html)
+        self.assert_measurement(measurement, value="12")
 
     async def test_inapplicable_rules(self):
         """Test that inapplicable rules can be counted as well."""
         self.set_source_parameter("result_types", ["inapplicable"])
-        response = await self.collect(get_request_text=self.html)
-        self.assert_measurement(response, value="68")
+        measurement = await self.collect_measurement(get_request_text=self.html)
+        self.assert_measurement(measurement, value="68")
 
     async def test_variable_url_regexp(self):
         """Test that parts of URLs can be ignored."""
         self.set_source_parameter("variable_url_regexp", ["example\\.com"])
-        response = await self.collect(get_request_text=self.html)
-        self.assert_measurement(response, value="6")
+        measurement = await self.collect_measurement(get_request_text=self.html)
+        self.assert_measurement(measurement, value="6")
 
     async def test_incomplete_rules(self):
         """Test that incomplete rules can be counted as well."""
         self.set_source_parameter("result_types", ["incomplete"])
-        response = await self.collect(get_request_text=self.html)
-        self.assert_measurement(response, value="0")
+        measurement = await self.collect_measurement(get_request_text=self.html)
+        self.assert_measurement(measurement, value="0")

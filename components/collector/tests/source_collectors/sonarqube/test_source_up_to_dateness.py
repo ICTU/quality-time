@@ -15,11 +15,11 @@ class SonarQubeSourceUpToDatenessTest(SonarQubeTestCase):
     async def test_source_up_to_dateness(self):
         """Test that the number of days since the last analysis is returned."""
         json = {"analyses": [{"date": "2019-03-29T14:20:15+0100"}]}
-        response = await self.collect(get_request_json_return_value=json)
+        measurement = await self.collect_measurement(get_request_json_return_value=json)
         timezone_info = timezone(timedelta(hours=1))
         expected_age = days_ago(datetime(2019, 3, 29, 14, 20, 15, tzinfo=timezone_info))
         self.assert_measurement(
-            response,
+            measurement,
             value=str(expected_age),
             landing_url="https://sonarqube/project/activity?id=id&branch=main",
         )

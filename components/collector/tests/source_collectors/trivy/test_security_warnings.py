@@ -65,29 +65,29 @@ class TrivyJSONSecurityWarningsTest(TrivyJSONTestCase):
         """Test the number of security warnings."""
         for schema_version in self.SCHEMA_VERSIONS:
             with self.subTest(schema_version=schema_version):
-                response = await self.collect(get_request_json_return_value=self.vulnerabilities_json(schema_version))
-                self.assert_measurement(response, value="4", entities=self.expected_entities())
+                measurement = await self.collect_json(schema_version)
+                self.assert_measurement(measurement, value="4", entities=self.expected_entities())
 
     async def test_warning_levels(self):
         """Test the number of security warnings when specifying a level."""
         self.set_source_parameter("levels", ["high", "critical"])
         for schema_version in self.SCHEMA_VERSIONS:
             with self.subTest(schema_version=schema_version):
-                response = await self.collect(get_request_json_return_value=self.vulnerabilities_json(schema_version))
-                self.assert_measurement(response, value="1", entities=[self.expected_entities()[0]])
+                measurement = await self.collect_json(schema_version)
+                self.assert_measurement(measurement, value="1", entities=[self.expected_entities()[0]])
 
     async def test_fix_available(self):
         """Test the number of security warnings when specifying fix availability."""
         self.set_source_parameter("fix_availability", ["fix available"])
         for schema_version in self.SCHEMA_VERSIONS:
             with self.subTest(schema_version=schema_version):
-                response = await self.collect(get_request_json_return_value=self.vulnerabilities_json(schema_version))
-                self.assert_measurement(response, value="1", entities=[self.expected_entities()[0]])
+                measurement = await self.collect_json(schema_version)
+                self.assert_measurement(measurement, value="1", entities=[self.expected_entities()[0]])
 
     async def test_fix_not_available(self):
         """Test the number of security warnings when specifying fix availability."""
         self.set_source_parameter("fix_availability", ["no fix available"])
         for schema_version in self.SCHEMA_VERSIONS:
             with self.subTest(schema_version=schema_version):
-                response = await self.collect(get_request_json_return_value=self.vulnerabilities_json(schema_version))
-                self.assert_measurement(response, value="3", entities=self.expected_entities()[1:])
+                measurement = await self.collect_json(schema_version)
+                self.assert_measurement(measurement, value="3", entities=self.expected_entities()[1:])

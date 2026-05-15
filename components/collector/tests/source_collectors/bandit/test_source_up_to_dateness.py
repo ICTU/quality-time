@@ -17,6 +17,6 @@ class BanditSourceUpToDatenessTest(BanditTestCase):
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
         bandit_json = {"generated_at": "2019-07-12T07:38:47Z"}
-        response = await self.collect(get_request_json_return_value=bandit_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=bandit_json)
         expected_age = days_ago(datetime(2019, 7, 12, 7, 38, 47, tzinfo=tzutc()))
-        self.assert_measurement(response, value=str(expected_age))
+        self.assert_measurement(measurement, value=str(expected_age))

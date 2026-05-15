@@ -12,7 +12,7 @@ class OWASPDependencyCheckXMLSecurityWarningsTest(OWASPDependencyCheckXMLTestCas
 
     async def test_warnings(self):
         """Test that the number of warnings is returned."""
-        response = await self.collect(get_request_text=self.xml)
+        measurement = await self.collect_measurement(get_request_text=self.xml)
         expected_entities = [
             {
                 "key": "12345",
@@ -24,7 +24,7 @@ class OWASPDependencyCheckXMLSecurityWarningsTest(OWASPDependencyCheckXMLTestCas
                 "file_path_after_regexp": self.file_path,
             },
         ]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)
 
     async def test_low_warnings(self):
         """Test that the number of warnings is returned."""
@@ -43,7 +43,7 @@ class OWASPDependencyCheckXMLSecurityWarningsTest(OWASPDependencyCheckXMLTestCas
                 </vulnerabilities>
             </dependency>
         </analysis>"""
-        response = await self.collect(get_request_text=xml)
+        measurement = await self.collect_measurement(get_request_text=xml)
         expected_entities = [
             {
                 "key": "12345",
@@ -55,7 +55,7 @@ class OWASPDependencyCheckXMLSecurityWarningsTest(OWASPDependencyCheckXMLTestCas
                 "file_path_after_regexp": self.file_path,
             },
         ]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)
 
     async def test_multiple_warnings_with_same_filepath(self):
         """Test that the hashes are based on both the file path and the file name."""
@@ -84,7 +84,7 @@ class OWASPDependencyCheckXMLSecurityWarningsTest(OWASPDependencyCheckXMLTestCas
                     </vulnerabilities>
                 </dependency>
             </analysis>"""
-        response = await self.collect(get_request_text=xml)
+        measurement = await self.collect_measurement(get_request_text=xml)
         expected_file_path = "packages.config"
         expected_entities = [
             {
@@ -106,16 +106,16 @@ class OWASPDependencyCheckXMLSecurityWarningsTest(OWASPDependencyCheckXMLTestCas
                 "file_path_after_regexp": expected_file_path,
             },
         ]
-        self.assert_measurement(response, value="2", entities=expected_entities)
+        self.assert_measurement(measurement, value="2", entities=expected_entities)
 
     async def test_invalid_xml(self):
         """Test that the number of warnings is returned."""
         xml = """<?xml version="1.0"?>
         <analysis xmlns="https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd">
         </analysis>"""
-        response = await self.collect(get_request_text=xml)
+        measurement = await self.collect_measurement(get_request_text=xml)
         expected_error = (
             f'The XML root element should be one of "{OWASPDependencyCheckXMLBase.allowed_root_tags}" but is '
             '"{https://jeremylong.github.io/DependencyCheck/dependency-check.1.8.xsd}analysis"'
         )
-        self.assert_measurement(response, parse_error=expected_error)
+        self.assert_measurement(measurement, parse_error=expected_error)

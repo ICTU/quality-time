@@ -10,7 +10,7 @@ class OWASPDependencyCheckJSONSecurityWarningsTest(OWASPDependencyCheckJSONTestC
 
     async def test_warnings(self):
         """Test that the number of warnings is returned."""
-        response = await self.collect(get_request_json_return_value=self.json)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
         expected_entities = [
             {
                 "key": "12345",
@@ -22,7 +22,7 @@ class OWASPDependencyCheckJSONSecurityWarningsTest(OWASPDependencyCheckJSONTestC
                 "file_path_after_regexp": self.file_path,
             },
         ]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)
 
     async def test_low_warnings(self):
         """Test that the number of warnings is returned."""
@@ -35,7 +35,7 @@ class OWASPDependencyCheckJSONSecurityWarningsTest(OWASPDependencyCheckJSONTestC
                 "vulnerabilities": [{"severity": "LOW"}],
             }
         ]
-        response = await self.collect(get_request_json_return_value=self.json)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
         expected_entities = [
             {
                 "key": "12345",
@@ -47,7 +47,7 @@ class OWASPDependencyCheckJSONSecurityWarningsTest(OWASPDependencyCheckJSONTestC
                 "file_path_after_regexp": self.file_path,
             },
         ]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)
 
     async def test_multiple_warnings_with_same_filepath(self):
         """Test that the hashes are based on both the file path and the file name."""
@@ -65,7 +65,7 @@ class OWASPDependencyCheckJSONSecurityWarningsTest(OWASPDependencyCheckJSONTestC
                 "vulnerabilities": [{"severity": "LOW"}],
             },
         ]
-        response = await self.collect(get_request_json_return_value=self.json)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
         expected_file_path = "packages.config"
         expected_entities = [
             {
@@ -87,4 +87,4 @@ class OWASPDependencyCheckJSONSecurityWarningsTest(OWASPDependencyCheckJSONTestC
                 "file_path_after_regexp": expected_file_path,
             },
         ]
-        self.assert_measurement(response, value="2", entities=expected_entities)
+        self.assert_measurement(measurement, value="2", entities=expected_entities)

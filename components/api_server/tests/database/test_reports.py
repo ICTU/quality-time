@@ -3,9 +3,8 @@
 import unittest
 from unittest.mock import Mock
 
-from shared.model.report import Report
-
 from database.reports import insert_new_report, latest_report_for_uuids
+from model.report import Report
 
 from tests.fixtures import (
     JOHN,

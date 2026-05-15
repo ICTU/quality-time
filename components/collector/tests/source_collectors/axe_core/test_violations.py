@@ -12,7 +12,7 @@ class AxeCoreViolationsTest(AxeCoreTestCase):
 
     METRIC_TYPE = "violations"
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Extend to set up test data."""
         super().setUp()
         self.tested_url = "https://tested_url"
@@ -56,7 +56,7 @@ class AxeCoreViolationsTest(AxeCoreTestCase):
                 },
             ],
         }
-        self.expected_entities = [
+        self.expected_entities: list[dict[str, str | None]] = [
             {
                 "description": "description1",
                 "element": "html1",
@@ -90,57 +90,57 @@ class AxeCoreViolationsTest(AxeCoreTestCase):
 
     async def test_nr_of_issues(self):
         """Test that the number of issues is returned."""
-        response = await self.collect(get_request_json_return_value=self.json)
-        self.assert_measurement(response, value="2", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
+        self.assert_measurement(measurement, value="2", entities=self.expected_entities)
 
     async def test_no_issues(self):
         """Test zero issues, with an empty violations list."""
         self.json["violations"] = []
-        response = await self.collect(get_request_json_return_value=self.json)
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_no_violations_key(self):
         """Test zero issues, without a violations list."""
         del self.json["violations"]
-        response = await self.collect(get_request_json_return_value=self.json)
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_filter_by_impact(self):
         """Test that violations can be filtered by impact level."""
         self.set_source_parameter("impact", ["serious", "critical"])
-        response = await self.collect(get_request_json_return_value=self.json)
-        self.assert_measurement(response, value="1")
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
+        self.assert_measurement(measurement, value="1")
 
     async def test_filter_by_tag_include(self):
         """Test that violations can be filtered by tag."""
         self.set_source_parameter("tags_to_include", ["wcag2aa"])
-        response = await self.collect(get_request_json_return_value=self.json)
-        self.assert_measurement(response, value="1", entities=[self.expected_entities[0]])
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
+        self.assert_measurement(measurement, value="1", entities=[self.expected_entities[0]])
 
     async def test_filter_by_tag_ignore(self):
         """Test that violations can be filtered by tag."""
         self.set_source_parameter("tags_to_ignore", ["wcag2aa"])
-        response = await self.collect(get_request_json_return_value=self.json)
-        self.assert_measurement(response, value="1", entities=[self.expected_entities[1]])
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
+        self.assert_measurement(measurement, value="1", entities=[self.expected_entities[1]])
 
     async def test_element_include_filter(self):
         """Test that violations can be filtered by element."""
         self.set_source_parameter("element_include_filter", ["html1"])
-        response = await self.collect(get_request_json_return_value=self.json)
-        self.assert_measurement(response, value="1", entities=[self.expected_entities[0]])
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
+        self.assert_measurement(measurement, value="1", entities=[self.expected_entities[0]])
 
     async def test_element_exclude_filter(self):
         """Test that violations can be filtered by element."""
         self.set_source_parameter("element_exclude_filter", ["html1"])
-        response = await self.collect(get_request_json_return_value=self.json)
-        self.assert_measurement(response, value="1", entities=[self.expected_entities[1]])
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
+        self.assert_measurement(measurement, value="1", entities=[self.expected_entities[1]])
 
     async def test_zipped_json(self):
         """Test that a zip archive with JSON files is processed correctly."""
         self.set_source_parameter("url", "axe.zip")
         zipfile = self.zipped_report(*[(f"axe{index}.json", json.dumps(self.json)) for index in range(2)])
-        response = await self.collect(get_request_content=zipfile)
-        self.assert_measurement(response, value="2", entities=self.expected_entities)  # Duplicates are discarded
+        measurement = await self.collect_measurement(get_request_content=zipfile)
+        self.assert_measurement(measurement, value="2", entities=self.expected_entities)  # Duplicates are discarded
 
     async def test_json_with_only_violations(self):
         """Test that a JSON file with just a list of violations works."""
@@ -148,8 +148,8 @@ class AxeCoreViolationsTest(AxeCoreTestCase):
             entity["page"] = ""
             entity["url"] = ""
         self.set_expected_entity_keys()
-        response = await self.collect(get_request_json_return_value=self.json["violations"])
-        self.assert_measurement(response, value="2", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json["violations"])
+        self.assert_measurement(measurement, value="2", entities=self.expected_entities)
 
     async def test_json_with_nested_lists_with_only_violations(self):
         """Test that a JSON file with a nested list of violations works."""
@@ -157,14 +157,14 @@ class AxeCoreViolationsTest(AxeCoreTestCase):
             entity["page"] = ""
             entity["url"] = ""
         self.set_expected_entity_keys()
-        response = await self.collect(get_request_json_return_value=[self.json["violations"]])
-        self.assert_measurement(response, value="2", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=[self.json["violations"]])
+        self.assert_measurement(measurement, value="2", entities=self.expected_entities)
 
     async def test_json_with_list_of_result_type_dicts(self):
         """Test that a JSON file with a list of result type dicts works."""
         self.set_expected_entity_keys()
-        response = await self.collect(get_request_json_return_value=[self.json])
-        self.assert_measurement(response, value="2", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=[self.json])
+        self.assert_measurement(measurement, value="2", entities=self.expected_entities)
 
     async def test_result_type_parameter(self):
         """Test that other result types besides violations can be counted as well."""
@@ -183,8 +183,8 @@ class AxeCoreViolationsTest(AxeCoreTestCase):
             },
         )
         self.set_expected_entity_keys()
-        response = await self.collect(get_request_json_return_value=self.json)
-        self.assert_measurement(response, value="3", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
+        self.assert_measurement(measurement, value="3", entities=self.expected_entities)
 
     async def test_variable_url_regexp(self):
         """Test that parts of URLs can be ignored."""
@@ -193,8 +193,8 @@ class AxeCoreViolationsTest(AxeCoreTestCase):
             entity["page"] = "variable-part-removed"
             entity["url"] = "variable-part-removed"
         self.set_expected_entity_keys()
-        response = await self.collect(get_request_json_return_value=self.json)
-        self.assert_measurement(response, value="2", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
+        self.assert_measurement(measurement, value="2", entities=self.expected_entities)
 
     async def test_result_type_without_nodes(self):
         """Test that result types without nodes can be counted as well."""
@@ -213,5 +213,5 @@ class AxeCoreViolationsTest(AxeCoreTestCase):
             },
         )
         self.set_expected_entity_keys()
-        response = await self.collect(get_request_json_return_value=self.json)
-        self.assert_measurement(response, value="3", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.json)
+        self.assert_measurement(measurement, value="3", entities=self.expected_entities)

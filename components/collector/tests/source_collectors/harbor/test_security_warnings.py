@@ -75,128 +75,128 @@ class HarborSecurityWarningsTest(SourceCollectorTestCase):
         """Test that invalid credentials result in an error."""
         self.set_source_parameter("username", "user")
         self.set_source_parameter("password", "invalid")
-        response = await self.collect(get_request_json_side_effect=aiohttp.ClientError)
-        self.assert_measurement(response, connection_error="ClientError")
+        measurement = await self.collect_measurement(get_request_json_side_effect=aiohttp.ClientError)
+        self.assert_measurement(measurement, connection_error="ClientError")
 
     async def test_credentials_test_is_skipped_for_robot_users(self):
         """Test that the credentials test is skipped for robot users."""
         self.set_source_parameter("username", "robot_user")
         self.set_source_parameter("password", "invalid")
-        response = await self.collect(get_request_side_effect=[FakeResponse({})])
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_side_effect=[FakeResponse({})])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_no_projects(self):
         """Test that there are no security warnings if there are no projects."""
-        response = await self.collect(get_request_json_return_value=[])
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_json_return_value=[])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_no_repositories(self):
         """Test that there are no security warnings if there are no repositories."""
-        response = await self.collect(get_request_json_side_effect=[[{"name": self.PROJECT_NAME}], []])
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_json_side_effect=[[{"name": self.PROJECT_NAME}], []])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_no_artifacts(self):
         """Test that there are no security warnings if there are no artifacts."""
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_side_effect=[[{"name": self.PROJECT_NAME}], [{"name": self.REPO_NAME}], []],
         )
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_no_scans(self):
         """Test that there are no security warnings if there are no scans."""
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_side_effect=[[{"name": self.PROJECT_NAME}], [{"name": self.REPO_NAME}], [{}]],
         )
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_scan_status_not_successful(self):
         """Test that there are no security warnings if the scan is not successful."""
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_side_effect=[
                 [{"name": self.PROJECT_NAME}],
                 [{"name": self.REPO_NAME}],
                 [{"scan_overview": {self.SCAN_REPORT_MIME_TYPE: {}}}],
             ],
         )
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_scan_overview_has_unknown_report(self):
         """Test that an exception is thrown if the scan report format is not recognized."""
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_side_effect=[
                 [{"name": self.PROJECT_NAME}],
                 [{"name": self.REPO_NAME}],
                 [{"scan_overview": {"unknown_format": {}}}],
             ],
         )
-        self.assert_measurement(response, parse_error="Harbor scanner vulnerability report contains no known format")
+        self.assert_measurement(measurement, parse_error="Harbor scanner vulnerability report contains no known format")
 
     async def test_scan_without_warnings(self):
         """Test that there are no security warnings if the scan has no warnings."""
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_side_effect=[
                 [{"name": self.PROJECT_NAME}],
                 [{"name": self.REPO_NAME}],
                 [{"scan_overview": {self.SCAN_REPORT_MIME_TYPE: {"scan_status": "Success", "summary": {}}}}],
             ],
         )
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_scan_with_warnings(self):
         """Test that there are security warnings if the scan has warnings."""
-        response = await self.collect_data()
-        self.assert_measurement(response, value="1", entities=[self.expected_entity])
+        measurement = await self.collect_data()
+        self.assert_measurement(measurement, value="1", entities=[self.expected_entity])
 
     async def test_filter_severity_match(self):
         """Test that the security warnings can be filtered by severity."""
         self.set_source_parameter("severities", ["unknown"])
-        response = await self.collect_data()
-        self.assert_measurement(response, value="1", entities=[self.expected_entity])
+        measurement = await self.collect_data()
+        self.assert_measurement(measurement, value="1", entities=[self.expected_entity])
 
     async def test_filter_severity_no_match(self):
         """Test that the security warnings can be filtered by severity."""
         self.set_source_parameter("severities", ["high"])
-        response = await self.collect_data()
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_data()
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_fix_available(self):
         """Test that the security warnings can be filtered by fix availability."""
         self.set_source_parameter("fix_availability", ["fix available"])
-        response = await self.collect_data()
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_data()
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_fix_not_available(self):
         """Test that the security warnings can be filtered by fix availability."""
         self.set_source_parameter("fix_availability", ["no fix available"])
-        response = await self.collect_data()
-        self.assert_measurement(response, value="1", entities=[self.expected_entity])
+        measurement = await self.collect_data()
+        self.assert_measurement(measurement, value="1", entities=[self.expected_entity])
 
     async def test_pagination(self):
         """Test that pagination works."""
         links = {"next": {"url": "https://harbor/next_page"}}
-        response = await self.collect(get_request_links=links, get_request_json_side_effect=[[], []])
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_measurement(get_request_links=links, get_request_json_side_effect=[[], []])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_ignore_project(self):
         """Test that a project can be ignored."""
         self.set_source_parameter("projects_to_ignore", self.PROJECT_NAME)
-        response = await self.collect_data()
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_data()
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_include_project(self):
         """Test that a project can be included."""
         self.set_source_parameter("projects_to_include", "other_project")
-        response = await self.collect_data()
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_data()
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_ignore_repository(self):
         """Test that a repository can be ignored."""
         self.set_source_parameter("repositories_to_ignore", self.REPO_NAME)
-        response = await self.collect_data()
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_data()
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_include_repository(self):
         """Test that a repository can be included."""
         self.set_source_parameter("repositories_to_include", "other_repo")
-        response = await self.collect_data()
-        self.assert_measurement(response, value="0", entities=[])
+        measurement = await self.collect_data()
+        self.assert_measurement(measurement, value="0", entities=[])

@@ -14,5 +14,5 @@ class PerformanceTestRunnerDurationTest(PerformanceTestRunnerTestCase):
             '<html><table class="config"><tr><td class="name">Duration</td>'
             '<td id="duration">00:35:00</td></tr></table></html>'
         )
-        response = await self.collect(get_request_text=html)
-        self.assert_measurement(response, value="35")
+        measurement = await self.collect_measurement(get_request_text=html)
+        self.assert_measurement(measurement, value="35")

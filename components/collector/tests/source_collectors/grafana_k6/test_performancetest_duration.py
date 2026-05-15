@@ -11,15 +11,17 @@ class GrafanaK6SlowTransactionsTest(SourceCollectorTestCase):
 
     async def test_missing_state_gives_parse_error(self):
         """Test that a parse error is returned if the JSON has no state."""
-        response = await self.collect(get_request_json_return_value={})
-        self.assert_measurement(response, parse_error="Could not find an object")
+        measurement = await self.collect_measurement(get_request_json_return_value={})
+        self.assert_measurement(measurement, parse_error="Could not find an object")
 
     async def test_missing_duration_gives_parse_error(self):
         """Test that a parse error is returned if the JSON has no duration."""
-        response = await self.collect(get_request_json_return_value={"state": {}})
-        self.assert_measurement(response, parse_error="Could not find an object")
+        measurement = await self.collect_measurement(get_request_json_return_value={"state": {}})
+        self.assert_measurement(measurement, parse_error="Could not find an object")
 
     async def test_duration(self):
         """Test that the duration."""
-        response = await self.collect(get_request_json_return_value={"state": {"testRunDurationMs": 1040803.440334}})
-        self.assert_measurement(response, value="17")
+        measurement = await self.collect_measurement(
+            get_request_json_return_value={"state": {"testRunDurationMs": 1040803.440334}}
+        )
+        self.assert_measurement(measurement, value="17")

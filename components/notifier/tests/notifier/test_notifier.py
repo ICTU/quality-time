@@ -9,6 +9,8 @@ from unittest.mock import Mock, mock_open, patch
 import mongomock
 from dateutil.tz import tzutc
 
+from shared.model.measurement import Measurement
+from shared.model.metric import Metric
 from shared.model.report import Report
 from shared.utils.functions import iso_timestamp
 
@@ -27,7 +29,8 @@ class MostRecentMeasurementTimestampTests(unittest.TestCase):
     def test_one_measurement(self):
         """Test that the end timestamp of the measurement is returned."""
         now = datetime.now(tz=tzutc())
-        measurement = {"end": now.isoformat()}
+        metric = Metric({}, {}, METRIC_ID)
+        measurement = Measurement(metric, {"start": now.isoformat(), "end": now.isoformat()})
         self.assertEqual(now, most_recent_measurement_timestamp([measurement]))
 
 

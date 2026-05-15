@@ -16,7 +16,7 @@ from cryptography.fernet import Fernet
 # and Dlint complains 'insecure use of XML modules, prefer "defusedxml"'
 # but we give autolink_html clean html, so ignore the warning:
 from lxml_html_clean import autolink_html, clean_html  # nosec
-from lxml_html_clean.clean import _link_regexes  # type: ignore[attr-defined]
+from lxml_html_clean.clean import _link_regexes  # type: ignore[attr-defined] # ty: ignore[unresolved-import]
 from lxml.html import fromstring, tostring  # nosec
 
 from shared.utils.type import ItemId

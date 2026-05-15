@@ -43,7 +43,7 @@ def set_entity_attribute(
     entity = first(source["entities"], lambda entity: entity["key"] == entity_key)
     entity_description = "/".join([str(entity[key]) for key in entity if key not in ("key", "url")])
     old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
-    new_value = dict(bottle.request.json)[attribute]
+    new_value = cast(dict, bottle.request.json)[attribute]
     user = sessions.find_user(database)
     description = f"{user.name()} changed the {attribute} of '{entity_description}' from '{old_value}' to '{new_value}'"
     entity_user_data = source.setdefault("entity_user_data", {}).setdefault(entity_key, {})

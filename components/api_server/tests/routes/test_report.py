@@ -1,5 +1,6 @@
 """Unit tests for the report routes."""
 
+from typing import cast
 from unittest.mock import Mock, patch
 import copy
 
@@ -408,7 +409,7 @@ class ReportTest(ReportTestCase):
     def test_get_report_missing(self):
         """Test that a non-existent report can not be retrieved."""
         self.database.reports.aggregate.return_value = []
-        self.assertEqual([], get_report(self.database, ReportId("report does not exist"))["reports"])
+        self.assertEqual([], get_report(self.database, cast(ReportId, "report does not exist"))["reports"])
 
     @patch("bottle.request")
     def test_get_old_report(self, request):

@@ -8,7 +8,7 @@ import pymongo
 import requests
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Generator
 
     from behave.model import Step
     from behave.runner import Context
@@ -31,7 +31,7 @@ def before_all(context: Context) -> None:  # noqa: C901
         return f"{context.base_api_url}/{api}"
 
     @contextmanager
-    def external_api() -> Iterator[None]:
+    def external_api() -> Generator[Context]:
         """Route all calls to external API URL instead of internal."""
         context.base_api_url = context.base_api_url.replace("/internal", "/v3")
         yield context

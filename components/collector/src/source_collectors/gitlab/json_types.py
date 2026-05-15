@@ -44,7 +44,7 @@ class Pipeline(GitLabJSON):
     schedule_description: str = ""  # Pipeline schedule description for scheduled pipelines
 
     @property
-    def datetime(self) -> datetime:
+    def datetime(self) -> datetime:  # ty: ignore[invalid-type-form]
         """Return the datetime of the pipeline."""
         return parse_datetime(self.updated_at or self.created_at)
 

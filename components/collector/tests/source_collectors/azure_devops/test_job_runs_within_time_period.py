@@ -16,49 +16,49 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
         """Test that the pipeline runs are counted."""
         self.set_source_parameter("lookback_days_pipeline_runs", "424242")
 
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_return_value=self.pipeline_runs,
             get_request_json_side_effect=[self.pipelines, self.pipeline_runs],
         )
 
-        self.assert_measurement(response, value=str(len(self.expected_entities)), entities=self.expected_entities)
+        self.assert_measurement(measurement, value=str(len(self.expected_entities)), entities=self.expected_entities)
 
     async def test_pipeline_runs_jobs_exclude(self):
         """Test that the pipeline runs are filtered by name exclude."""
         self.set_source_parameter("lookback_days_pipeline_runs", "424242")
         self.set_source_parameter("jobs_to_ignore", ["azure-pipelines.*"])
 
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_return_value=self.pipeline_runs,
             get_request_json_side_effect=[self.pipelines, self.pipeline_runs],
         )
 
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_pipeline_runs_jobs_exclude_by_result_type(self):
         """Test that the pipeline runs are filtered by result type."""
         self.set_source_parameter("lookback_days_pipeline_runs", "424242")
         self.set_source_parameter("result_type", ["succeeded"])
 
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_return_value=self.pipeline_runs,
             get_request_json_side_effect=[self.pipelines, self.pipeline_runs],
         )
 
         expected_entities = [entity for entity in self.expected_entities if entity.get("build_result") == "succeeded"]
-        self.assert_measurement(response, value=str(len(expected_entities)), entities=expected_entities)
+        self.assert_measurement(measurement, value=str(len(expected_entities)), entities=expected_entities)
 
     async def test_pipeline_runs_jobs_empty_include(self):
         """Test that counting pipeline runs filtered by a not-matching name include, works."""
         self.set_source_parameter("lookback_days_pipeline_runs", "424242")
         self.set_source_parameter("jobs_to_include", ["bogus"])
 
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_return_value=self.pipeline_runs,
             get_request_json_side_effect=[self.pipelines, self.pipeline_runs],
         )
 
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_pipeline_runs_lookback_days(self):
         """Test that the pipeline runs are filtered correctly by lookback_days."""
@@ -95,7 +95,7 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
             ],
         )
 
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_return_value=self.pipeline_runs,
             get_request_json_side_effect=[self.pipelines, self.pipeline_runs],
         )
@@ -112,4 +112,4 @@ class AzureDevopsJobRunsWithinTimePeriodTest(AzureDevopsPipelinesTestCase):
                 "build_status": "completed",
             },
         ]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)

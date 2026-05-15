@@ -36,11 +36,11 @@ class AzureDevopsPipelineDurationTest(AzureDevopsPipelinesTestCase):
         self.create_pipeline_run(
             pipeline_id=5, created_at="2025-09-01T00:00:00.0000000Z", finished_at="2025-09-01T00:20:00.0000000Z"
         )
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_return_value=self.pipeline_runs,
             get_request_json_side_effect=[self.pipelines, self.pipeline_runs],
         )
-        self.assert_measurement(response, value="20", landing_url=self.url)
+        self.assert_measurement(measurement, value="20", landing_url=self.url)
 
     async def test_report_latest_pipeline(self):
         """Test that the duration of the latest pipeline is reported."""
@@ -48,11 +48,11 @@ class AzureDevopsPipelineDurationTest(AzureDevopsPipelinesTestCase):
         self.create_pipeline_run(
             pipeline_id=5, created_at="2025-09-01T00:00:00.0000000Z", finished_at="2025-09-01T00:05:00.0000000Z"
         )
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_return_value=self.pipeline_runs,
             get_request_json_side_effect=[self.pipelines, self.pipeline_runs],
         )
-        self.assert_measurement(response, value="5", landing_url=self.url)
+        self.assert_measurement(measurement, value="5", landing_url=self.url)
 
     async def test_report_average_duration(self):
         """Test that the average duration is reported."""
@@ -60,17 +60,17 @@ class AzureDevopsPipelineDurationTest(AzureDevopsPipelinesTestCase):
         self.create_pipeline_run(
             pipeline_id=5, created_at="2025-09-01T00:00:00.0000000Z", finished_at="2025-09-01T00:20:00.0000000Z"
         )
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_return_value=self.pipeline_runs,
             get_request_json_side_effect=[self.pipelines, self.pipeline_runs],
         )
-        self.assert_measurement(response, value="9", landing_url=self.url)
+        self.assert_measurement(measurement, value="9", landing_url=self.url)
 
     async def test_duration_when_no_match(self):
         """Test that an error is returned when no pipelines match."""
         self.set_source_parameter("jobs_to_include", ["missing"])
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_return_value=self.pipeline_runs,
             get_request_json_side_effect=[self.pipelines, self.pipeline_runs],
         )
-        self.assert_measurement(response, parse_error="No pipelines found with given job filter(s)")
+        self.assert_measurement(measurement, parse_error="No pipelines found with given job filter(s)")

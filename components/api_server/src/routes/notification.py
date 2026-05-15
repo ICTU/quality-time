@@ -1,7 +1,7 @@
 """Notification routes."""
 
 import bottle
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from database.reports import insert_new_report
 from utils.functions import uuid
@@ -29,7 +29,7 @@ def post_new_notification_destination(database: Database, report: Report, report
         "webhook": "",
         "name": "Microsoft Teams webhook",
         "sleep_duration": 0,
-        "report_url": dict(bottle.request.json)["report_url"],
+        "report_url": cast(dict, bottle.request.json)["report_url"],
     }
     delta_description = f"{{user}} created a new destination for notifications in report '{report.name}'."
     uuids = [report_uuid, notification_destination_uuid]
@@ -71,7 +71,7 @@ def post_notification_destination_attributes(
     """Set specified notification destination attributes."""
     notification_destination = report["notification_destinations"][notification_destination_uuid]
     notification_destination_name = notification_destination["name"]
-    attributes = dict(bottle.request.json)
+    attributes = cast(dict, bottle.request.json)
     old_values = []
     for key, value in attributes.items():
         old_values.append(notification_destination.get(key) or "")
@@ -86,5 +86,5 @@ def post_notification_destination_attributes(
         f"'{notification_destination_name}' in report '{report.name}' "
         f"from '{separator.join(old_values)}' to '{separator.join(attributes.values())}'."
     )
-    uuids = [report_uuid, notification_destination_uuid]
+    uuids: list[ItemId] = [report_uuid, notification_destination_uuid]
     return insert_new_report(database, delta_description, uuids, report)

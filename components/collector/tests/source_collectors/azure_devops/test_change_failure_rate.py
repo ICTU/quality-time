@@ -1,12 +1,14 @@
 """Unit tests for the Azure DevOps Server change failure rate collector."""
 
 from copy import deepcopy
+from typing import cast
 from unittest.mock import DEFAULT as STOP_SENTINEL
 from unittest.mock import AsyncMock, PropertyMock, patch
 
 import aiohttp
 
 from base_collectors import MetricCollector
+from model.measurement import MetricMeasurement
 
 from .base import AzureDevopsPipelinesTestCase
 
@@ -18,17 +20,17 @@ class AzureDevopsChangeFailureRateTest(AzureDevopsPipelinesTestCase):
 
     METRIC_TYPE = "change_failure_rate"
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Extend to add Azure DevOps change failure rate fixtures."""
         super().setUp()
         self.set_source_parameter("lookback_days_issues", "424242")
         self.set_source_parameter("lookback_days_pipeline_runs", "424242")
 
-        self.work_item1 = deepcopy(self.work_item)
+        self.work_item1: dict = deepcopy(self.work_item)
         self.work_item1["id"] = "id1"
         self.work_item1["fields"][ISSUE_DATE_FIELD] = "2019-10-15 12:25:00+00:00"
 
-        self.work_item2 = deepcopy(self.work_item)
+        self.work_item2: dict = deepcopy(self.work_item)
         self.work_item2["id"] = "id2"
         self.work_item2["fields"][ISSUE_DATE_FIELD] = "2019-10-15 12:35:00+00:00"
 
@@ -56,13 +58,13 @@ class AzureDevopsChangeFailureRateTest(AzureDevopsPipelinesTestCase):
             self.pipeline_runs,  # needed to mark failed deployments
         ]
 
-    async def collect(
+    async def collect_azure_devops_measurement(
         self,
         *,
-        get_request_json_side_effect=None,
-        post_request_json_side_effect=None,
+        get_request_json_side_effect,
+        post_request_json_side_effect,
         response_url_mock=False,
-    ):
+    ) -> MetricMeasurement:
         """Allow for mocking aiohttp.ClientResponse.url."""
         get_response = AsyncMock()
         get_response.json = AsyncMock(side_effect=get_request_json_side_effect)
@@ -93,11 +95,11 @@ class AzureDevopsChangeFailureRateTest(AzureDevopsPipelinesTestCase):
         post_mock = AsyncMock(return_value=post_response)
         with patch("aiohttp.ClientSession.get", get_mock), patch("aiohttp.ClientSession.post", post_mock):
             async with aiohttp.ClientSession() as session:
-                return await MetricCollector(session, self.metric).collect()
+                return cast(MetricMeasurement, await MetricCollector(session, self.metric).collect())
 
     async def test_collect(self):
         """Smoke test for modified collect in test class."""
-        response = await self.collect(
+        measurement = await self.collect_azure_devops_measurement(
             get_request_json_side_effect=[
                 {"value": []},
                 self.pipeline_runs,  # needed for SourceResponses api_url
@@ -117,34 +119,34 @@ class AzureDevopsChangeFailureRateTest(AzureDevopsPipelinesTestCase):
                 {"value": []},  # these are all needed for repeated calls to .json()
             ],
         )
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_measurement(measurement, value="0", entities=[])
 
     async def test_returns_entities(self):
         """Ensure that entities are returned."""
-        response = await self.collect(
+        measurement = await self.collect_azure_devops_measurement(
             get_request_json_side_effect=self.get_json_side_effects,
             post_request_json_side_effect=self.post_json_side_effects,
             response_url_mock=True,
         )
-        self.assert_measurement(response, value="2", entities=self.expected_entities)
+        self.assert_measurement(measurement, value="2", entities=self.expected_entities)
 
     async def test_match_issues_after_entities(self):
         """Ensure that only entities followed by an issue are returned."""
         self.work_item1["fields"][ISSUE_DATE_FIELD] = "2019-11-15 12:25:00+00:00"
-        response = await self.collect(
+        measurement = await self.collect_azure_devops_measurement(
             get_request_json_side_effect=self.get_json_side_effects,
             post_request_json_side_effect=self.post_json_side_effects,
             response_url_mock=True,
         )
-        self.assert_measurement(response, value="1", entities=self.expected_entities[-1:])
+        self.assert_measurement(measurement, value="1", entities=self.expected_entities[-1:])
 
     async def test_dont_match_issues_before_entities(self):
         """Ensure that entities preceded by issues aren't returned."""
         self.work_item1["fields"][ISSUE_DATE_FIELD] = "2019-10-15 12:20:00+00:00"
         self.work_item2["fields"][ISSUE_DATE_FIELD] = "2019-10-15 12:20:00+00:00"
-        response = await self.collect(
+        measurement = await self.collect_azure_devops_measurement(
             get_request_json_side_effect=self.get_json_side_effects,
             post_request_json_side_effect=self.post_json_side_effects,
             response_url_mock=True,
         )
-        self.assert_measurement(response, value="0", entities=[])
+        self.assert_measurement(measurement, value="0", entities=[])

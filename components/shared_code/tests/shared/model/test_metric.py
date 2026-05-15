@@ -252,7 +252,7 @@ class MetricTest(unittest.TestCase):
 class MetricAdditionTest(DataModelTestCase):
     """Test the addition of metrics."""
 
-    def create_metric(self, metric_type: str, **kwargs: dict[str, Direction]) -> Metric:
+    def create_metric(self, metric_type: str, **kwargs: Direction) -> Metric:
         """Return a metric fixture."""
         return Metric(self.DATA_MODEL, {"type": metric_type, **kwargs}, METRIC_ID)
 

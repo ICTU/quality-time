@@ -80,9 +80,9 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
                 self.create_merge_request(4, branch="dev"),
             ]
         )
-        response = await self.collect(get_request_json_return_value=bitbucket_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=bitbucket_json)
         self.assert_measurement(
-            response,
+            measurement,
             value="1",
             total="4",
             entities=[self.create_entity(1)],
@@ -100,9 +100,9 @@ class BitbucketMergeRequestsTest(BitbucketTestCase):
             ),
             FakeResponse({"size": 1, "isLastPage": True, "values": [self.create_merge_request(3)]}),
         ]
-        response = await self.collect(get_request_side_effect=bitbucket_responses)
+        measurement = await self.collect_measurement(get_request_side_effect=bitbucket_responses)
         self.assert_measurement(
-            response,
+            measurement,
             value="3",
             total="3",
             entities=[self.create_entity(1), self.create_entity(2), self.create_entity(3)],

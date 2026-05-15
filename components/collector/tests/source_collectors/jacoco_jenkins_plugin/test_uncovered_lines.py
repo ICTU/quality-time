@@ -13,5 +13,5 @@ class JaCoCoJenkinsPluginTest(JaCoCoJenkinsPluginTestCase):
 
     async def test_uncovered_lines(self):
         """Test that the number of uncovered lines and the total number of lines are returned."""
-        response = await self.collect(get_request_json_return_value=self.JACOCO_JENKINS_PLUGIN_JSON)
-        self.assert_measurement(response, value="2", total="6")
+        measurement = await self.collect_measurement(get_request_json_return_value=self.JACOCO_JENKINS_PLUGIN_JSON)
+        self.assert_measurement(measurement, value="2", total="6")

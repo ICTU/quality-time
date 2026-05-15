@@ -1,5 +1,7 @@
 """Base classes for the JaCoCo coverage report collectors."""
 
+from typing import TYPE_CHECKING
+
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
 
@@ -9,7 +11,7 @@ class JaCoCoTestCase(SourceCollectorTestCase):
     SOURCE_TYPE = "jacoco"
 
 
-class JaCoCoCommonTestsMixin:
+class JaCoCoCommonTestsMixin(JaCoCoTestCase if TYPE_CHECKING else object):  # type: ignore[misc]
     """Tests common to all JaCoCo collectors."""
 
     async def test_zipped_report_without_xml(self):
@@ -18,11 +20,11 @@ class JaCoCoCommonTestsMixin:
         report = self.zipped_report(
             ("jacoco.html", "<html><body><p>Oops, user included the HTML instead of the XML</p></body></html>"),
         )
-        response = await self.collect(get_request_content=report)
-        self.assert_measurement(response, connection_error="Zipfile contains no files with extension xml")
+        measurement = await self.collect_measurement(get_request_content=report)
+        self.assert_measurement(measurement, connection_error="Zipfile contains no files with extension xml")
 
 
-class JaCoCoCommonCoverageTestsMixin:
+class JaCoCoCommonCoverageTestsMixin(JaCoCoTestCase if TYPE_CHECKING else object):  # type: ignore[misc]
     """Tests common to JaCoCo coverage collectors."""
 
     JACOCO_XML = """
@@ -48,11 +50,13 @@ class JaCoCoCommonCoverageTestsMixin:
 
     async def test_coverage(self):
         """Test that the number of uncovered lines/branches and the total number of lines/branches are returned."""
-        response = await self.collect(get_request_text=self.JACOCO_XML)
-        self.assert_measurement(response, value="2", total="9")
+        measurement = await self.collect_measurement(get_request_text=self.JACOCO_XML)
+        self.assert_measurement(measurement, value="2", total="9")
 
     async def test_zipped_report(self):
         """Test that a zipped report can be read."""
         self.set_source_parameter("url", "https://example.org/jacoco.zip")
-        response = await self.collect(get_request_content=self.zipped_report(("jacoco.xml", self.JACOCO_XML)))
-        self.assert_measurement(response, value="2", total="9")
+        measurement = await self.collect_measurement(
+            get_request_content=self.zipped_report(("jacoco.xml", self.JACOCO_XML))
+        )
+        self.assert_measurement(measurement, value="2", total="9")

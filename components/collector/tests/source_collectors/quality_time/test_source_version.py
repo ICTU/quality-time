@@ -11,5 +11,5 @@ class QualityTimeSourceVersionTest(SourceCollectorTestCase):
 
     async def test_source_version(self):
         """Test that the source version can be measured."""
-        response = await self.collect(get_request_json_return_value={"version": "3.19.1"})
-        self.assert_measurement(response, value="3.19.1", landing_url="https://quality_time")
+        measurement = await self.collect_measurement(get_request_json_return_value={"version": "3.19.1"})
+        self.assert_measurement(measurement, value="3.19.1", landing_url="https://quality_time")

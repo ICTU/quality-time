@@ -12,7 +12,7 @@ class TrelloTestCase(SourceCollectorTestCase):
         """Extend to set up the Trello source and source data."""
         super().setUp()
         self.set_source_parameter("board", "board1")
-        self.cards = {
+        self.cards: dict = {
             "id": "board1",
             "url": "https://trello/board1",
             "dateLastActivity": "2019-02-10",

@@ -18,9 +18,9 @@ class JenkinsJobRunsWithinTimePeriodTest(JenkinsTestCase):
         jenkins_json = {
             "jobs": [{"name": "job", "url": self.job_url, "buildable": True, "color": "blue", "builds": self.builds}],
         }
-        response = await self.collect(get_request_json_return_value=jenkins_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=jenkins_json)
         expected_entities = [{"build_count": "2", "key": "job", "name": "job", "url": self.job_url}]
-        self.assert_measurement(response, value="2", entities=expected_entities)
+        self.assert_measurement(measurement, value="2", entities=expected_entities)
 
     async def test_filter_by_result_type(self):
         """Test that the builds can be filtered by result type."""
@@ -29,9 +29,9 @@ class JenkinsJobRunsWithinTimePeriodTest(JenkinsTestCase):
         jenkins_json = {
             "jobs": [{"name": "job", "url": self.job_url, "buildable": True, "color": "blue", "builds": self.builds}],
         }
-        response = await self.collect(get_request_json_return_value=jenkins_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=jenkins_json)
         expected_entities = [{"build_count": "1", "key": "job", "name": "job", "url": self.job_url}]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)
 
     async def test_job_lookback_days(self):
         """Test that the build lookback_days are verified."""
@@ -50,7 +50,7 @@ class JenkinsJobRunsWithinTimePeriodTest(JenkinsTestCase):
         jenkins_json = {
             "jobs": [{"name": "job", "url": self.job_url, "buildable": True, "color": "blue", "builds": self.builds}],
         }
-        response = await self.collect(get_request_json_return_value=jenkins_json)
+        measurement = await self.collect_measurement(get_request_json_return_value=jenkins_json)
 
         expected_entities = [{"build_count": "1", "key": "job", "name": "job", "url": self.job_url}]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)

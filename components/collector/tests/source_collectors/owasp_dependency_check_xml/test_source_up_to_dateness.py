@@ -14,7 +14,7 @@ class OWASPDependencyCheckXMLSourceUpToDatenessTest(OWASPDependencyCheckXMLTestC
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
-        response = await self.collect(get_request_text=self.xml)
+        measurement = await self.collect_measurement(get_request_text=self.xml)
         timezone_info = timezone(timedelta(hours=2))
         expected_age = days_ago(datetime(2018, 10, 3, 13, 1, 24, 784, tzinfo=timezone_info))
-        self.assert_measurement(response, value=str(expected_age))
+        self.assert_measurement(measurement, value=str(expected_age))

@@ -13,9 +13,9 @@ class JiraManualTestDurationTest(JiraTestCase):
         test_cases_json = {
             "issues": [self.issue(key="1", field=10), self.issue(key="2", field=15), self.issue(key="3", field=None)],
         }
-        response = await self.get_response(test_cases_json)
+        measurement = await self.get_response(test_cases_json)
         self.assert_measurement(
-            response,
+            measurement,
             value="25",
             entities=[self.entity(key="1", duration="10.0"), self.entity(key="2", duration="15.0")],
         )

@@ -7,7 +7,7 @@ import bottle
 from shared_data_model import DATA_MODEL
 from shared_data_model.parameters import PrivateToken
 from shared.model.source import Source
-from shared.utils.type import SourceId
+from shared.utils.type import ItemId, SourceId
 
 from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
 from model.actions import copy_source, move_item
@@ -33,14 +33,14 @@ def post_source_new(metric_uuid: MetricId, database: Database):
     all_reports = latest_reports(database)
     report = latest_report_for_uuids(all_reports, metric_uuid)[0]
     metric, subject = report.metric_and_subject(metric_uuid)
-    source_type = dict(bottle.request.json)["type"]
+    source_type = cast(dict, bottle.request.json)["type"]
     parameters = default_source_parameters(cast(str, metric.type()), source_type)
     source_uuid = cast(SourceId, uuid())
     metric.sources_dict[source_uuid] = cast(Source, {"type": source_type, "parameters": parameters})
     delta_description = (
         f"{{user}} added a new source to metric '{metric.name}' of subject '{subject.name}' in report '{report.name}'."
     )
-    uuids = [report.uuid, subject.uuid, metric.uuid, source_uuid]
+    uuids: list[ItemId] = [report.uuid, subject.uuid, metric.uuid, source_uuid]
     result = insert_new_report(database, delta_description, uuids, report)
     result["new_source_uuid"] = source_uuid
     return result
@@ -61,7 +61,7 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
         f"to metric '{target_metric.name}' of subject "
         f"'{target_subject.name}' in report '{reports[1].name}'."
     )
-    uuids = [reports[1].uuid, target_subject.uuid, target_metric.uuid, source_copy_uuid]
+    uuids: list[ItemId] = [reports[1].uuid, target_subject.uuid, target_metric.uuid, source_copy_uuid]
     result = insert_new_report(database, delta_description, uuids, reports[1])
     result["new_source_uuid"] = source_copy_uuid
     return result
@@ -114,7 +114,7 @@ def delete_source(source_uuid: SourceId, database: Database):
         f"{{user}} deleted the source '{source.name}' from metric "
         f"'{metric.name}' of subject '{subject.name}' in report '{report.name}'."
     )
-    uuids = [report.uuid, subject.uuid, metric.uuid, source_uuid]
+    uuids: list[ItemId] = [report.uuid, subject.uuid, metric.uuid, source_uuid]
     del metric["sources"][source_uuid]
     return insert_new_report(database, delta_description, uuids, report)
 
@@ -128,7 +128,7 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
     report = latest_report_for_uuids(reports, source_uuid)[0]
     source, metric, subject = report.source_metric_and_subject(source_uuid)
     old_source_name = source.name  # in case the name is the attribute that is changed
-    value = dict(bottle.request.json)[source_attribute]
+    value = cast(dict, bottle.request.json)[source_attribute]
     old_value: Any
     if source_attribute == "position":
         old_value, value = move_item(metric, source, value)
@@ -141,9 +141,9 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
         f"{{user}} changed the {source_attribute} of source '{old_source_name}' of metric '{metric.name}' of "
         f"subject '{subject.name}' in report '{report.name}' from '{old_value}' to '{value}'."
     )
-    uuids = [report.uuid, subject.uuid, metric.uuid, source.uuid]
+    uuids: list[ItemId] = [report.uuid, subject.uuid, metric.uuid, source.uuid]
     if source_attribute == "type":
-        source["parameters"] = default_source_parameters(metric["type"], value)
+        source["parameters"] = default_source_parameters(metric["type"], str(value))
     return insert_new_report(database, delta_description, uuids, report)
 
 
@@ -158,7 +158,7 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     old_value = context.source["parameters"].get(parameter_key) or ""
     if old_value == new_value:
         return {"ok": True}  # Nothing to do
-    edit_scope = cast(EditScope, dict(bottle.request.json).get("edit_scope", "source"))
+    edit_scope = cast(EditScope, cast(dict, bottle.request.json).get("edit_scope", "source"))
     changed_ids, changed_source_ids = change_source_parameter(
         context,
         parameter_key,
@@ -190,7 +190,7 @@ def get_source_context(reports: list[Report], source_uuid: SourceId) -> SourceCo
 
 def _new_parameter_value(source: Source, parameter_key: str) -> str | list[str]:
     """Return the new parameter value and if necessary, remove any obsolete multiple choice values."""
-    new_value = dict(bottle.request.json)[parameter_key]
+    new_value = cast(dict, bottle.request.json)[parameter_key]
     source_parameter = DATA_MODEL.sources[source.type].parameters[parameter_key]
     if source_parameter.type in ("multiple_choice_with_defaults", "multiple_choice_without_defaults"):
         new_value = [value for value in new_value if value in (source_parameter.values or [])]

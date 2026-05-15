@@ -97,23 +97,23 @@ class CargoAuditSecurityWarningsTest(SourceCollectorTestCase):
 
     async def test_warnings(self):
         """Test the number of security warnings."""
-        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
-        self.assert_measurement(response, value="3", entities=self.expected_entities)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.vulnerabilities_json)
+        self.assert_measurement(measurement, value="3", entities=self.expected_entities)
 
     async def test_warnings_with_specific_types(self):
         """Test that the security warnings can be filtered by type."""
         self.set_source_parameter("warning_types", ["vulnerability", "unsound"])
-        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
-        self.assert_measurement(response, value="2", entities=self.expected_entities[:2])
+        measurement = await self.collect_measurement(get_request_json_return_value=self.vulnerabilities_json)
+        self.assert_measurement(measurement, value="2", entities=self.expected_entities[:2])
 
     async def test_warnings_with_fix(self):
         """Test that the security warnings can be filtered by fix availability."""
         self.set_source_parameter("fix_availability", ["fix available"])
-        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
-        self.assert_measurement(response, value="1", entities=self.expected_entities[:1])
+        measurement = await self.collect_measurement(get_request_json_return_value=self.vulnerabilities_json)
+        self.assert_measurement(measurement, value="1", entities=self.expected_entities[:1])
 
     async def test_warnings_without_fix(self):
         """Test that the security warnings can be filtered by fix availability."""
         self.set_source_parameter("fix_availability", ["no fix available"])
-        response = await self.collect(get_request_json_return_value=self.vulnerabilities_json)
-        self.assert_measurement(response, value="2", entities=self.expected_entities[1:])
+        measurement = await self.collect_measurement(get_request_json_return_value=self.vulnerabilities_json)
+        self.assert_measurement(measurement, value="2", entities=self.expected_entities[1:])

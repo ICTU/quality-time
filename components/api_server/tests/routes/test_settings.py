@@ -1,7 +1,9 @@
 """Unit tests for the settings routes."""
 
+from typing import cast
 from unittest.mock import patch
 from routes.settings import find_user, get_settings, update_settings
+from utils.type import User
 
 from tests.base import DatabaseTestCase
 
@@ -20,6 +22,8 @@ class SettingsTest(DatabaseTestCase):
     def test_find_user(self):
         """Test that a user can be found."""
         user = find_user(self.database)
+        self.assertIsNotNone(user)
+        user = cast(User, user)
         self.assertEqual(user.username, "test")
         self.assertDictEqual(user.settings, {"test_setting": True})
 

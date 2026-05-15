@@ -157,9 +157,9 @@ class GitHubMergeRequestsTest(GitHubTestCase):
         merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
 
         entities = [self.create_entity(1)]
-        response = await self.collect_merge_requests(execute)
+        measurement = await self.collect_merge_requests(execute)
         self.assert_measurement(
-            response,
+            measurement,
             value="1",
             total="3",
             entities=entities,
@@ -176,9 +176,9 @@ class GitHubMergeRequestsTest(GitHubTestCase):
         merge_requests_page1.json = AsyncMock(return_value=merge_requests_json1)
         merge_requests_page2.json = AsyncMock(return_value=merge_requests_json2)
         entities = [self.create_entity(1), self.create_entity(2)]
-        response = await self.collect_merge_requests(execute)
+        measurement = await self.collect_merge_requests(execute)
         self.assert_measurement(
-            response,
+            measurement,
             value="2",
             total="2",
             entities=entities,
@@ -198,9 +198,9 @@ class GitHubMergeRequestsTest(GitHubTestCase):
         execute = AsyncMock(side_effect=[merge_requests_response])
         merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
         entities = [self.create_entity(1, review_decision="APPROVED")]
-        response = await self.collect_merge_requests(execute)
+        measurement = await self.collect_merge_requests(execute)
         self.assert_measurement(
-            response,
+            measurement,
             value="1",
             total="2",
             entities=entities,
@@ -213,9 +213,9 @@ class GitHubMergeRequestsTest(GitHubTestCase):
         merge_requests_response = AsyncMock()
         execute = AsyncMock(side_effect=[merge_requests_response])
         merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
-        response = await self.collect_merge_requests(execute)
+        measurement = await self.collect_merge_requests(execute)
         self.assert_measurement(
-            response,
+            measurement,
             landing_url=self.LANDING_URL,
             connection_error="Pull request info for repository",
         )
@@ -227,9 +227,9 @@ class GitHubMergeRequestsTest(GitHubTestCase):
         merge_requests_response = AsyncMock()
         execute = AsyncMock(side_effect=[merge_requests_response])
         merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
-        response = await self.collect_merge_requests(execute)
+        measurement = await self.collect_merge_requests(execute)
         self.assert_measurement(
-            response,
+            measurement,
             landing_url=self.LANDING_URL,
             connection_error="Pull request info for repository",
         )

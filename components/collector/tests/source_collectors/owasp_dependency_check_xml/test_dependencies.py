@@ -12,7 +12,7 @@ class OWASPDependencyCheckXMLDependenciesTest(OWASPDependencyCheckXMLTestCase):
 
     async def test_dependencies(self):
         """Test that the dependencies are returned."""
-        response = await self.collect(get_request_text=self.xml)
+        measurement = await self.collect_measurement(get_request_text=self.xml)
         expected_entities = [
             {
                 "key": "12345",
@@ -22,12 +22,12 @@ class OWASPDependencyCheckXMLDependenciesTest(OWASPDependencyCheckXMLTestCase):
                 "file_path_after_regexp": self.file_path,
             },
         ]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)
 
     async def test_ignore_part_of_file_path(self):
         """Test that parts of the file path can be ignored, if the security warning has no sha1."""
         self.set_source_parameter("variable_file_path_regexp", ["/home/[a-z]+/"])
-        response = await self.collect(get_request_text=self.xml.replace("<sha1>12345</sha1>", ""))
+        measurement = await self.collect_measurement(get_request_text=self.xml.replace("<sha1>12345</sha1>", ""))
         file_path_after_regexp = self.file_path[len("/home/jenkins/") :]
         expected_entities = [
             {
@@ -38,4 +38,4 @@ class OWASPDependencyCheckXMLDependenciesTest(OWASPDependencyCheckXMLTestCase):
                 "file_path_after_regexp": file_path_after_regexp,
             },
         ]
-        self.assert_measurement(response, value="1", entities=expected_entities)
+        self.assert_measurement(measurement, value="1", entities=expected_entities)

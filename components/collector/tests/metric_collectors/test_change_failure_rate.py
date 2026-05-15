@@ -3,7 +3,7 @@
 import unittest
 from copy import deepcopy
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, ClassVar
+from typing import ClassVar, cast
 from unittest.mock import AsyncMock, patch
 
 from dateutil.tz import tzlocal, tzutc
@@ -12,12 +12,10 @@ from shared.model.metric import Metric
 
 from base_collectors import config
 from base_collectors.metric_collector import MetricCollector
+from model import MetricMeasurement
 from source_collectors.jira.change_failure_rate import JiraChangeFailureRate
 
 from tests.fixtures import METRIC_ID
-
-if TYPE_CHECKING:
-    from model import MetricMeasurement
 
 
 class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
@@ -68,12 +66,12 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
         self.gitlab_url = "https://gitlab"
         self.jenkins_url = "https://jenkins"
         self.jira_url = "https://jira"
-        self.tickets_json = {"total": 1, "issues": [self.jira_issue()]}
+        self.tickets_json: dict = {"total": 1, "issues": [self.jira_issue()]}
         self.gitlab_source_config = {
             "type": "gitlab",
             "parameters": {"url": self.gitlab_url, "project": "project", "lookback_days": "100000"},
         }
-        self.jenkins_source_config = {"type": "jenkins", "parameters": {"url": self.jenkins_url}}
+        self.jenkins_source_config: dict = {"type": "jenkins", "parameters": {"url": self.jenkins_url}}
         self.jira_source_config = {"type": "jira", "parameters": {"url": self.jira_url, "jql": "jql"}}
 
     def jira_issue(self, key: str = "key-1", **fields):
@@ -139,6 +137,10 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
                 self.assertIsNone(source.parse_error)
         return measurement
 
+    async def collect_measurement(self, sources) -> MetricMeasurement:
+        """Collect the measurement."""
+        return cast(MetricMeasurement, await self.collect(sources))
+
     async def test_no_sources(self):
         """Test metric collection, when there are no sources configured."""
         measurement = await self.collect({})
@@ -151,7 +153,9 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
             self.GITLAB_JOBS_JSON,
             self.JENKINS_JOBS_JSON,
         ]
-        measurement = await self.collect({"gitlab": self.gitlab_source_config, "jenkins": self.jenkins_source_config})
+        measurement = await self.collect_measurement(
+            {"gitlab": self.gitlab_source_config, "jenkins": self.jenkins_source_config}
+        )
 
         # both sources collected one job (total), but it is neither included as entity nor counted in value
         self.assertEqual([], measurement.sources[0].entities)
@@ -168,13 +172,13 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
             self.tickets_json,
             self.tickets_json,
         ]
-        measurement = await self.collect({"jira": self.jira_source_config})
+        measurement = await self.collect_measurement({"jira": self.jira_source_config})
 
         # there is one entity, but it is neither counted in value nor total
-        self.assertEqual(1, len(measurement.sources[0].entities))
+        self.assertEqual(1, len(measurement.sources[0].entities or []))
         self.assertEqual("0", measurement.sources[0].value)
         self.assertEqual("0", measurement.sources[0].total)
-        self.assert_entity(self.jira_entity(), measurement.sources[0].entities[0])
+        self.assert_entity(self.jira_entity(), cast(list, measurement.sources[0].entities)[0])
 
     async def test_excluded_entity(self):
         """Test that metric collection correctly excludes entities."""
@@ -185,7 +189,9 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
             self.tickets_json,
         ]
         self.jenkins_source_config["parameters"]["jobs_to_include"] = ["nothing"]
-        measurement = await self.collect({"jenkins": self.jenkins_source_config, "jira": self.jira_source_config})
+        measurement = await self.collect_measurement(
+            {"jenkins": self.jenkins_source_config, "jira": self.jira_source_config}
+        )
 
         # jenkins collected one job (total), but it is neither included as entity nor counted in value
         self.assertEqual([], measurement.sources[0].entities)
@@ -193,10 +199,10 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("0", measurement.sources[0].value)
 
         # jira has one entity, but neither value nor total is counted
-        self.assertEqual(1, len(measurement.sources[1].entities))
+        self.assertEqual(1, len(measurement.sources[1].entities or []))
         self.assertEqual("0", measurement.sources[1].total)
         self.assertEqual("0", measurement.sources[1].value)
-        self.assert_entity(self.jira_entity(), measurement.sources[1].entities[0])
+        self.assert_entity(self.jira_entity(), cast(list, measurement.sources[1].entities)[0])
 
     async def test_only_match_issue_after_deploy(self):
         """Test that issues are not matched to deployments that were done later."""
@@ -207,7 +213,9 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
             self.tickets_json,
             self.tickets_json,
         ]
-        measurement = await self.collect({"jenkins": self.jenkins_source_config, "jira": self.jira_source_config})
+        measurement = await self.collect_measurement(
+            {"jenkins": self.jenkins_source_config, "jira": self.jira_source_config}
+        )
 
         # jenkins collected one job (total), but it is neither included as entity nor counted in value
         self.assertEqual([], measurement.sources[0].entities)
@@ -215,11 +223,11 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual("0", measurement.sources[0].value)
 
         # jira has one entity, but neither value nor total is counted
-        self.assertEqual(1, len(measurement.sources[1].entities))
+        self.assertEqual(1, len(measurement.sources[1].entities or []))
         self.assertEqual("0", measurement.sources[1].total)
         self.assertEqual("0", measurement.sources[1].value)
 
-        entity = measurement.sources[1].entities[0]
+        entity = cast(list, measurement.sources[1].entities)[0]
         del entity["created"]
         self.assert_entity(self.jira_entity(), entity)
 
@@ -232,17 +240,20 @@ class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):
             self.tickets_json,
             self.tickets_json,
         ]
-        measurement = await self.collect({"gitlab": self.gitlab_source_config, "jira": self.jira_source_config})
+        measurement = await self.collect_measurement(
+            {"gitlab": self.gitlab_source_config, "jira": self.jira_source_config}
+        )
 
         # gitlab collected one job (total), which is included as entity and counted both in value and total
-        self.assertEqual(1, len(measurement.sources[0].entities))
+        self.assertEqual(1, len(measurement.sources[0].entities or []))
         self.assertEqual("1", measurement.sources[0].value)
         self.assertEqual("1", measurement.sources[0].total)
 
         # jira has one entity, but neither value nor total is counted
-        self.assertEqual(1, len(measurement.sources[1].entities))
+        self.assertEqual(1, len(measurement.sources[1].entities or []))
         self.assertEqual("0", measurement.sources[1].value)
         self.assertEqual("0", measurement.sources[1].total)
-
-        self.assert_entity(self.gitlab_entity(), measurement.sources[0].entities[0])
-        self.assert_entity(self.jira_entity(), measurement.sources[1].entities[0])
+        gitlab_entities = cast(list, measurement.sources[0].entities)
+        self.assert_entity(self.gitlab_entity(), gitlab_entities[0])
+        jira_entities = cast(list, measurement.sources[1].entities)
+        self.assert_entity(self.jira_entity(), jira_entities[0])

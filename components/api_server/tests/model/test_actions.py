@@ -2,16 +2,16 @@
 
 import unittest
 from typing import cast
+from unittest.mock import Mock
 
 from shared.model.metric import Metric
 from shared.model.source import Source
 from shared.model.subject import Subject
 from shared.utils.functions import first
-from shared.utils.type import MetricId, SourceId, SubjectId
-from unittest.mock import Mock
 
 from model.actions import copy_metric, copy_report, copy_source, copy_subject, move_metric_to_index
 from model.report import Report
+from tests.fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
 
 class CopySourceTest(unittest.TestCase):
@@ -19,18 +19,17 @@ class CopySourceTest(unittest.TestCase):
 
     def setUp(self):
         """Override to set up the source under test."""
-        self.source_uuid = cast(SourceId, "source_uuid")
         self.source = cast(Source, {"name": "Source", "type": "pip"})
 
     def test_copy_name(self):
         """Test that the copy name is not changed."""
-        source_copy = copy_source(self.source_uuid, self.source)
+        source_copy = copy_source(SOURCE_ID, self.source)
         self.assertEqual("Source", source_copy["name"])
 
     def test_copy_without_name(self):
         """Test that the copy name is not changed."""
         self.source["name"] = ""
-        source_copy = copy_source(self.source_uuid, self.source)
+        source_copy = copy_source(SOURCE_ID, self.source)
         self.assertEqual("", source_copy["name"])
 
 
@@ -39,30 +38,29 @@ class CopyMetricTest(unittest.TestCase):
 
     def setUp(self):
         """Override to set up the metric under test."""
-        self.metric_uuid = cast(MetricId, "source_uuid")
         self.metric = cast(
             Metric,
             {
                 "name": "Metric",
                 "type": "security_warnings",
-                "sources": {"source_uuid": {"type": "owasp_zap", "name": "Source"}},
+                "sources": {SOURCE_ID: {"type": "owasp_zap", "name": "Source"}},
             },
         )
 
     def test_copy_name(self):
         """Test that the copy name is not changed."""
-        metric_copy = copy_metric(self.metric_uuid, self.metric)
+        metric_copy = copy_metric(METRIC_ID, self.metric)
         self.assertEqual("Metric", metric_copy["name"])
 
     def test_copy_without_name(self):
         """Test that the copy name is not changed."""
         self.metric["name"] = ""
-        metric_copy = copy_metric(self.metric_uuid, self.metric)
+        metric_copy = copy_metric(METRIC_ID, self.metric)
         self.assertEqual("", metric_copy["name"])
 
     def test_copy_sources(self):
         """Test that the sources are copied too."""
-        metric_copy = copy_metric(self.metric_uuid, self.metric)
+        metric_copy = copy_metric(METRIC_ID, self.metric)
         self.assertEqual("Source", first(metric_copy["sources"].values())["name"])
 
 
@@ -71,30 +69,29 @@ class CopySubjectTest(unittest.TestCase):
 
     def setUp(self):
         """Override to set up the subject under test."""
-        self.subject_uuid = cast(SubjectId, "subject_uuid")
         self.subject = cast(
             Subject,
             {
                 "type": "software",
                 "name": "Subject",
-                "metrics": {"metric_uuid": {"type": "violations", "name": "Metric", "sources": {}}},
+                "metrics": {METRIC_ID: {"type": "violations", "name": "Metric", "sources": {}}},
             },
         )
 
     def test_copy_name(self):
         """Test that the copy name is not changed."""
-        subject_copy = copy_subject(self.subject_uuid, self.subject)
+        subject_copy = copy_subject(SUBJECT_ID, self.subject)
         self.assertEqual("Subject", subject_copy["name"])
 
     def test_copy_without_name(self):
         """Test that the copy name is not changed."""
         self.subject["name"] = ""
-        subject_copy = copy_subject(self.subject_uuid, self.subject)
+        subject_copy = copy_subject(SUBJECT_ID, self.subject)
         self.assertEqual("", subject_copy["name"])
 
     def test_copy_metrics(self):
         """Test that the metrics are copied too."""
-        subject_copy = copy_subject(self.subject_uuid, self.subject)
+        subject_copy = copy_subject(SUBJECT_ID, self.subject)
         self.assertEqual("Metric", first(subject_copy["metrics"].values())["name"])
 
 
@@ -106,7 +103,7 @@ class CopyReportTest(unittest.TestCase):
         self.report = Report(
             {},
             {
-                "report_uuid": "report_uuid",
+                "report_uuid": REPORT_ID,
                 "title": "Report",
                 "subjects": {"subject_uuid": {"name": "Subject", "type": "software", "metrics": {}}},
             },
@@ -120,7 +117,7 @@ class CopyReportTest(unittest.TestCase):
     def test_copy_report_uuid(self):
         """Test that the report UUID can be changed."""
         report_copy = copy_report(self.report)
-        self.assertNotEqual(self.report["report_uuid"], report_copy["report_uuid"])
+        self.assertNotEqual(self.report[REPORT_ID], report_copy[REPORT_ID])
 
     def test_copy_subjects(self):
         """Test that the subjects are copied too."""
@@ -149,17 +146,17 @@ class MoveItemToIndexTest(unittest.TestCase):
             "name": "Subject",
             "type": "software",
             "metrics": {
-                "metric_uuid_1": {
+                METRIC_ID: {
                     "name": "Metric 1",
                     "type": "security_warnings",
                     "sources": {},
                 },
-                "metric_uuid_2": {
+                METRIC_ID2: {
                     "name": "Metric 2",
                     "type": "security_warnings",
                     "sources": {},
                 },
-                "metric_uuid_3": {
+                METRIC_ID3: {
                     "name": "Metric 3",
                     "type": "security_warnings",
                     "sources": {},
@@ -174,25 +171,25 @@ class MoveItemToIndexTest(unittest.TestCase):
         self.subject = Subject(
             data_model=self.data_model,
             subject_data=self.subject_data,
-            subject_uuid="subject_uuid",
+            subject_uuid=SUBJECT_ID,
             report=self.report,
         )
 
     def test_move_metric_to_index(self):
         """Test that a metric can be moved to a specific index."""
-        metric_to_move = self.subject["metrics"]["metric_uuid_1"]
+        metric_to_move = self.subject["metrics"][METRIC_ID]
         old_index, new_index = move_metric_to_index(self.subject, metric_to_move, 2)
 
         self.assertEqual((0, 2), (old_index, new_index))
         self.assertEqual(
             list(self.subject["metrics"].keys()),
-            ["metric_uuid_2", "metric_uuid_3", "metric_uuid_1"],
+            [METRIC_ID2, METRIC_ID3, METRIC_ID],
         )
 
     def test_move_metric_noop(self):
         """Test that moving a metric to the same index results in no change."""
-        metric_to_move = self.subject["metrics"]["metric_uuid_2"]
+        metric_to_move = self.subject["metrics"][METRIC_ID2]
         old_index, new_index = move_metric_to_index(self.subject, metric_to_move, 1)
 
         self.assertEqual((1, 1), (old_index, new_index))
-        self.assertEqual(list(self.subject["metrics"].keys()), ["metric_uuid_1", "metric_uuid_2", "metric_uuid_3"])
+        self.assertEqual(list(self.subject["metrics"].keys()), [METRIC_ID, METRIC_ID2, METRIC_ID3])

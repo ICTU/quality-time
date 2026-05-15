@@ -1,5 +1,6 @@
 """Unit tests for the type module."""
 
+from collections import defaultdict
 import unittest
 
 from utils.type import User
@@ -14,7 +15,7 @@ class UserTests(unittest.TestCase):
             username="jadoe",
             email="jadoe@example.org",
             common_name="Jane Doe",
-            settings={"test_setting": True},
+            settings=defaultdict(test_setting=True),
         )
 
     def test_to_dict(self):

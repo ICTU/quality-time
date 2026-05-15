@@ -23,25 +23,27 @@ class CoberturaSourceUpToDatenessTest(CoberturaTestCase):
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
-        response = await self.collect(get_request_text=self.cobertura_xml())
-        self.assert_measurement(response, value=self.expected_age)
+        measurement = await self.collect_measurement(get_request_text=self.cobertura_xml())
+        self.assert_measurement(measurement, value=self.expected_age)
 
     async def test_source_up_to_dateness_with_timestamp_in_seconds(self):
         """Test that the source age in days is returned."""
         timestamp = 1553821197
-        response = await self.collect(get_request_text=self.cobertura_xml(timestamp=str(timestamp)))
-        self.assert_measurement(response, value=self.expected_age)
+        measurement = await self.collect_measurement(get_request_text=self.cobertura_xml(timestamp=str(timestamp)))
+        self.assert_measurement(measurement, value=self.expected_age)
         timestamp -= 24 * 60 * 60  # One day older
-        response = await self.collect(get_request_text=self.cobertura_xml(timestamp=str(timestamp)))
-        self.assert_measurement(response, value=str(int(self.expected_age) + 1))
+        measurement = await self.collect_measurement(get_request_text=self.cobertura_xml(timestamp=str(timestamp)))
+        self.assert_measurement(measurement, value=str(int(self.expected_age) + 1))
 
     async def test_zipped_report(self):
         """Test that a zipped report can be read."""
         self.set_source_parameter("url", "https://example.org/cobertura.zip")
-        response = await self.collect(get_request_content=self.zipped_report(("cobertura.xml", self.cobertura_xml())))
-        self.assert_measurement(response, value=self.expected_age)
+        measurement = await self.collect_measurement(
+            get_request_content=self.zipped_report(("cobertura.xml", self.cobertura_xml()))
+        )
+        self.assert_measurement(measurement, value=self.expected_age)
 
     async def test_missing_timestamp(self):
         """Test that an exception is thrown when the timestamp is missing."""
-        response = await self.collect(get_request_text=self.cobertura_xml(timestamp=None))
-        self.assert_measurement(response, parse_error="Cobertura XML tag 'timestamp' not found")
+        measurement = await self.collect_measurement(get_request_text=self.cobertura_xml(timestamp=None))
+        self.assert_measurement(measurement, parse_error="Cobertura XML tag 'timestamp' not found")

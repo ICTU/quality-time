@@ -4,6 +4,7 @@ import asyncio
 import logging
 import pathlib
 import unittest
+from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, Mock, _patch, call, mock_open, patch
 
 import aiohttp
@@ -15,6 +16,9 @@ import quality_time_collector
 from base_collectors import Collector, config
 
 from tests.fixtures import METRIC_ID, METRIC_ID2, SOURCE_ID, SUBJECT_ID, create_report
+
+if TYPE_CHECKING:
+    from pymongo import MongoClient
 
 
 @patch("model.entity.iso_timestamp", new=Mock(return_value="2023-01-01"))
@@ -33,10 +37,10 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         """Override to enable logging."""
         logging.disable(logging.NOTSET)
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Override to set up common test data."""
         self.url = "https://url"
-        self.metrics = {
+        self.metrics: dict = {
             "metric_uuid": {
                 "report_uuid": "report_uuid",
                 "type": "dependencies",
@@ -44,7 +48,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             },
         }
         self.pip_json = [{"name": "a dependency"}]
-        self.client = mongomock.MongoClient()
+        self.client: MongoClient = mongomock.MongoClient()
         self.database = self.client["quality_time_db"]
         self.collector = Collector(self.database)
         self.database["reports"].insert_one(create_report())

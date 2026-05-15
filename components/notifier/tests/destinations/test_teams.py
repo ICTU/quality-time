@@ -6,13 +6,16 @@ from unittest import TestCase, mock
 
 from pymsteams import cardsection, connectorcard
 
+from shared.model.measurement import Measurement
 from shared.model.metric import Metric
+from shared.model.report import Report
+from shared.model.subject import Subject
 
 from destinations.ms_teams import ICON_URL, create_connector_card, send_notification
 from models.metric_notification_data import MetricNotificationData
 from models.notification import Notification
 
-from tests.fixtures import METRIC_ID, METRIC_ID2
+from tests.fixtures import METRIC_ID, METRIC_ID2, SUBJECT_ID
 
 if TYPE_CHECKING:
     from shared.utils.type import MetricId
@@ -24,12 +27,13 @@ class MsTeamsTestCase(TestCase):
     def setUp(self):
         """Provide a default report for the rest of the class."""
         self.report_url = "https://report1"
-        self.report = {"title": "Report 1"}
-        self.subject = {"type": "software", "name": "Subject"}
+        data_model = {}
+        self.report = Report(data_model, {"title": "Report 1"})
+        self.subject = Subject(data_model, {"type": "software", "name": "Subject"}, SUBJECT_ID, self.report)
         metric = self.create_metric()
         measurements = [
-            {"count": {"value": "10", "status": "near_target_met"}},
-            {"count": {"value": "42", "status": "target_not_met"}},
+            Measurement(metric, {"count": {"value": "10", "status": "near_target_met"}}),
+            Measurement(metric, {"count": {"value": "42", "status": "target_not_met"}}),
         ]
         self.metric_notification_data = MetricNotificationData(metric, METRIC_ID, measurements, self.subject)
         self.notification = Notification(self.report, self.report_url, [self.metric_notification_data], {})
@@ -92,8 +96,8 @@ class BuildNotificationMessageTests(MsTeamsTestCase):
         """Test that the text is correct."""
         metric2 = self.create_metric(METRIC_ID, name=None)
         measurements2 = [
-            {"count": {"value": "1", "status": "target_met"}},
-            {"count": {"value": "10", "status": "target_not_met"}},
+            Measurement(metric2, {"count": {"value": "1", "status": "target_met"}}),
+            Measurement(metric2, {"count": {"value": "10", "status": "target_not_met"}}),
         ]
         metric_notification_data2 = MetricNotificationData(metric2, METRIC_ID2, measurements2, self.subject)
         notification = Notification(
@@ -126,8 +130,8 @@ class BuildNotificationMessageTests(MsTeamsTestCase):
         """Test that the text is correct if the new value is unknown."""
         metric = self.create_metric()
         measurements = [
-            {"count": {"value": "0", "status": "near_target_met"}},
-            {"count": {"value": None, "status": "unknown"}},
+            Measurement(metric, {"count": {"value": "0", "status": "near_target_met"}}),
+            Measurement(metric, {"count": {"value": None, "status": "unknown"}}),
         ]
         metric_notification_data = MetricNotificationData(metric, METRIC_ID, measurements, self.subject)
         notification = Notification(self.report, self.report_url, [metric_notification_data], {})
@@ -149,8 +153,8 @@ class BuildNotificationMessageTests(MsTeamsTestCase):
         """Test that the text is correct if the old value is unknown."""
         metric = self.create_metric()
         measurements = [
-            {"count": {"value": None, "status": "unknown"}},
-            {"count": {"value": "0", "status": "near_target_met"}},
+            Measurement(metric, {"count": {"value": None, "status": "unknown"}}),
+            Measurement(metric, {"count": {"value": "0", "status": "near_target_met"}}),
         ]
         metric_notification_data = MetricNotificationData(metric, METRIC_ID, measurements, self.subject)
         notification = Notification(self.report, self.report_url, [metric_notification_data], {})

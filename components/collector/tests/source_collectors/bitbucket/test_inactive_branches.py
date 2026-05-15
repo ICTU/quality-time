@@ -67,26 +67,26 @@ class BitbucketInactiveBranchesTest(BitbucketBranchesTestCase):
 
     async def test_inactive_branches(self):
         """Test that the number of inactive branches can be measured."""
-        response = await self.collect(get_request_json_return_value=self.branches)
-        self.assert_measurement(response, value="1", entities=self.entities, landing_url=self.landing_url)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.branches)
+        self.assert_measurement(measurement, value="1", entities=self.entities, landing_url=self.landing_url)
 
     async def test_unmerged_inactive_branches(self):
         """Test that the number of unmerged inactive branches can be measured."""
         self.set_source_parameter("branch_merge_status", ["unmerged"])
-        response = await self.collect(get_request_json_return_value=self.branches)
+        measurement = await self.collect_measurement(get_request_json_return_value=self.branches)
         self.assert_measurement(
-            response, value="1", entities=[self.unmerged_branch_entity], landing_url=self.landing_url
+            measurement, value="1", entities=[self.unmerged_branch_entity], landing_url=self.landing_url
         )
 
     async def test_no_branches_found(self):
         """Test that a parse error is returned when no branches are found."""
-        response = await self.collect(get_request_json_return_value={"isLastPage": True, "values": []})
-        self.assert_measurement(response, landing_url=self.landing_url, parse_error="Branch info for repository")
+        measurement = await self.collect_measurement(get_request_json_return_value={"isLastPage": True, "values": []})
+        self.assert_measurement(measurement, landing_url=self.landing_url, parse_error="Branch info for repository")
 
     async def test_private_token(self):
         """Test that the private token is used."""
         self.set_source_parameter("private_token", "token")
-        _, get, _ = await self.collect(get_request_json_return_value=self.branches, return_mocks=True)
+        _, get, _ = await self.collect_measurement_and_mocks(get_request_json_return_value=self.branches)
         get.assert_called_once_with(
             "https://bitbucket/rest/api/1.0/projects/owner/repos/repository/branches?limit100&&details=true&start=0",
             allow_redirects=True,

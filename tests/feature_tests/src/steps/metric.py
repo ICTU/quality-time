@@ -1,6 +1,6 @@
 """Feature tests for metric specific attributes."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from asserts import assert_equal, assert_false, assert_is_none, assert_is_not_none, assert_true
 from behave import then, when
@@ -19,7 +19,7 @@ def assert_issue_status(context: Context, attribute: str, value: str) -> None:
     if value == "None":
         assert_true(issue_status is None or len(issue_status) == 0 or issue_status[0].get(attribute) is None)
     else:
-        assert_equal(value, issue_status[0].get(attribute))
+        assert_equal(value, cast(list, issue_status)[0].get(attribute))
 
 
 @then("the issue id suggestions are missing")

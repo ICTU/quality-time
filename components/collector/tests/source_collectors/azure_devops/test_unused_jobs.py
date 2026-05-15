@@ -15,9 +15,9 @@ class AzureDevopsUnusedJobsTest(AzureDevopsJobsTestCase):
         """
         self.set_source_parameter("jobs_to_include", ["folder/include.*"])
         self.set_source_parameter("jobs_to_ignore", ["folder/include_but_ignore_by_name", "folder/.*ignore.*"])
-        response = await self.collect(get_request_json_return_value={"value": self.jobs})
+        measurement = await self.collect_measurement(get_request_json_return_value={"value": self.jobs})
         self.assert_measurement(
-            response,
+            measurement,
             value="1",
             landing_url=self.landing_url,
             api_url=self.api_url,
@@ -27,5 +27,5 @@ class AzureDevopsUnusedJobsTest(AzureDevopsJobsTestCase):
     async def test_no_jobs_without_build_date(self):
         """Test that unused jobs without build_date are not returned."""
         self.set_source_parameter("jobs_to_include", ["folder/include_but_ignore_by_re"])
-        response = await self.collect(get_request_json_return_value={"value": self.jobs})
-        self.assert_measurement(response, value="0", landing_url=self.landing_url, api_url=self.api_url, entities=[])
+        measurement = await self.collect_measurement(get_request_json_return_value={"value": self.jobs})
+        self.assert_measurement(measurement, value="0", landing_url=self.landing_url, api_url=self.api_url, entities=[])

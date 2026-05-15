@@ -16,7 +16,7 @@ class AzureDevopsFailedJobsTest(AzureDevopsJobsTestCase):
         self.set_source_parameter("failure_type", ["failed"])
         self.set_source_parameter("jobs_to_include", ["folder/include.*"])
         self.set_source_parameter("jobs_to_ignore", ["folder/include_but_ignore_by_name", "folder/.*ignore.*"])
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_return_value={
                 "value": [
                     *self.jobs,
@@ -30,7 +30,7 @@ class AzureDevopsFailedJobsTest(AzureDevopsJobsTestCase):
             },
         )
         self.assert_measurement(
-            response,
+            measurement,
             value="1",
             landing_url=self.landing_url,
             api_url=self.api_url,

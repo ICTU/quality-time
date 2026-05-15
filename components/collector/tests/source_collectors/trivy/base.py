@@ -1,6 +1,11 @@
 """Base class for Trivy JSON collector unit tests."""
 
+from typing import TYPE_CHECKING
+
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
+
+if TYPE_CHECKING:
+    from model.measurement import MetricMeasurement
 
 
 class TrivyJSONTestCase(SourceCollectorTestCase):
@@ -65,3 +70,8 @@ class TrivyJSONTestCase(SourceCollectorTestCase):
         if schema_version == 1:
             return results
         return {"SchemaVersion": 2, "CreatedAt": "2024-12-26T21:58:15.943876+05:30", "Results": results}
+
+    async def collect_json(self, schema_version: int) -> MetricMeasurement:
+        """Collect the measurement."""
+        json = self.vulnerabilities_json(schema_version)
+        return await self.collect_measurement(get_request_json_return_value=json)

@@ -2,7 +2,7 @@
 
 from typing import Literal, Self
 
-from pydantic import HttpUrl, model_validator
+from pydantic import model_validator
 
 from shared.model.source import CREDENTIAL_PARAMETERS
 
@@ -357,7 +357,7 @@ def access_parameters(
     include: dict[str, bool] | None = None,
     source_type: str = "",
     source_type_format: Literal["", "CSV", "HTML", "JSON", "XML"] = "",
-    kwargs: dict[str, dict[str, str | bool | HttpUrl | list[str]]] | None = None,
+    kwargs: dict | None = None,
 ) -> dict[str, Parameter]:
     """Create the access parameters, needed to access the source."""
     include = include or {}
@@ -371,7 +371,7 @@ def access_parameters(
         private_token_kwargs = kwargs.get("private_token", {})
         parameters["private_token"] = PrivateToken(metrics=metrics, **private_token_kwargs)
         validate_on.append("private_token")
-    url_kwargs = kwargs.get("url") or {"name": "URL"}
+    url_kwargs: dict = kwargs.get("url") or {}
     if source_type:
         source_type_article = "an" if source_type.startswith("an ") else "a"
         source_type = source_type.removeprefix("an ")

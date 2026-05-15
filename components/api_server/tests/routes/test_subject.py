@@ -141,7 +141,7 @@ class SubjectTest(DataModelTestCase):
         super().setUp()
         self.email = "jenny@example.org"
         self.database.sessions.find_one.return_value = {"user": "Jenny", "email": self.email}
-        self.report = Report(None, create_report())
+        self.report = Report({}, create_report())
         self.database.reports.find.return_value = [self.report]
         self.database.measurements.find.return_value = []
 
@@ -190,7 +190,7 @@ class SubjectTest(DataModelTestCase):
         """Test that a subject can be moved to another report."""
         subject = self.report["subjects"][SUBJECT_ID]
         target_report = Report(
-            None,
+            {},
             {"_id": "target_report", "title": "Target", "report_uuid": REPORT_ID2, "subjects": {}},
         )
         self.database.reports.find.return_value = [self.report, target_report]

@@ -31,7 +31,7 @@ def get_settings(database: Database) -> dict[str, defaultdict]:
 @bottle.put("/api/internal/settings", authentication_required=True)
 def update_settings(database: Database) -> dict[str, bool]:
     """Update the settings for the logged-in user."""
-    new_settings = dict(bottle.request.json)
+    new_settings = cast(dict, bottle.request.json)
     user = cast(User, find_user(database))  # There is always a user since auth_required is true for this endpoint
     user.settings = cast(defaultdict, new_settings)
     upsert_user(database, user)

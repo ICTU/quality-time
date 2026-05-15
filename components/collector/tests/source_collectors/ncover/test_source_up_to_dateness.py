@@ -17,6 +17,6 @@ class NCoverSourceUpToDatenessTest(NCoverTestCase):
 
     async def test_source_up_to_dateness(self):
         """Test that the source age in days is returned."""
-        response = await self.collect(get_request_text=self.NCOVER_HTML)
+        measurement = await self.collect_measurement(get_request_text=self.NCOVER_HTML)
         expected_age = days_ago(datetime_from_timestamp(1440425155042))
-        self.assert_measurement(response, value=str(expected_age))
+        self.assert_measurement(measurement, value=str(expected_age))

@@ -13,7 +13,7 @@ class AzureDevopsTestsTest(AzureDevopsTestCase):
         self.set_source_parameter("test_result", ["passed"])
         self.set_source_parameter("test_run_names_to_include", ["A.*"])
         self.set_source_parameter("test_run_states_to_include", ["completed"])
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_return_value={
                 "value": [
                     {
@@ -80,7 +80,7 @@ class AzureDevopsTestsTest(AzureDevopsTestCase):
             },
         )
         self.assert_measurement(
-            response,
+            measurement,
             value="9",
             total="10",
             entities=[
@@ -135,9 +135,9 @@ class AzureDevopsTestsTest(AzureDevopsTestCase):
     async def test_nr_of_failed_tests(self):
         """Test that the number of failed tests is returned."""
         self.sources["source_id"]["test_result"] = ["failed"]
-        response = await self.collect(
+        measurement = await self.collect_measurement(
             get_request_json_return_value={
                 "value": [{"id": "1", "build": {"id": "1"}, "state": "Completed", "unanalyzedTests": 4}],
             },
         )
-        self.assert_measurement(response, value="4")
+        self.assert_measurement(measurement, value="4")

@@ -1,7 +1,7 @@
 """Data model routes."""
 
 import bottle
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from shared.utils.functions import md5_hash
 
@@ -18,7 +18,7 @@ def get_data_model(database: Database):
     data_model = latest_datamodel(database, report_date_time())
     if data_model:
         md5 = md5_hash(data_model["timestamp"])
-        if md5 == bottle.request.headers.get("If-None-Match"):
+        if md5 == cast(dict, bottle.request.headers).get("If-None-Match"):
             bottle.abort(304)  # Data model unchanged
         bottle.response.set_header("ETag", md5)
     return data_model
