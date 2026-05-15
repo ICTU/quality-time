@@ -11,7 +11,7 @@ classifiers = [
 ]
 dependencies = [
     "packaging==26.2",
-    "requests==2.34.1",
+    "requests==2.34.2",
     "rich==15.0.0",
 ]
 
