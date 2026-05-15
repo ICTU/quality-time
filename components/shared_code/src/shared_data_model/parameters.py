@@ -352,6 +352,21 @@ class VariableURLRegExp(MultipleChoiceWithAdditionParameter):
     )
 
 
+class UpdatesToInclude(MultipleChoiceWithDefaultsParameter):
+    """Parameter for specifying dependencies to include based on possible update (patch. minor, major)."""
+
+    name: str = "Updates to include"
+    placeholder: str | None = "all updates"
+    help: str | None = (
+        "Limit which updates to include based on the semantic version difference between the current and "
+        "latest version. Select 'major' to include updates where the major version changes, 'minor' to include "
+        "updates where the major version stays the same but the minor version changes, and 'patch' to include "
+        "updates where the major and minor versions stay the same but the patch version changes."
+    )
+    values: list[str] | None = ["major", "minor", "patch"]
+    metrics: list[str] = ["dependencies"]
+
+
 def access_parameters(
     metrics: list[str],
     include: dict[str, bool] | None = None,

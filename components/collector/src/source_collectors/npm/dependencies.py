@@ -5,12 +5,13 @@ from typing import TypedDict, cast
 from packaging.version import InvalidVersion, Version
 
 from base_collectors import JSONFileSourceCollector
+from collector_utilities.functions import version_update
 from collector_utilities.type import JSON, JSONDict
 from model import Entities, Entity
 
 
 class DependencyVersionInfo(TypedDict):
-    """Dependency version information."""
+    """Dependency version information as produced by `npm outdated --json`."""
 
     current: str  # Current version
     dependent: str  # Dependent component, i.e. user of the dependency
@@ -48,16 +49,9 @@ class NpmDependencies(JSONFileSourceCollector):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether the entity's update type is in the selected updates to include."""
-        updates_to_include = self._parameter("updates_to_include")
         try:
             current = Version(entity["current"])
             latest = Version(entity["latest"])
         except InvalidVersion:
             return True  # If versions can't be parsed as semver, don't filter the entity out
-        if latest.major > current.major:
-            update_type = "major"
-        elif latest.minor > current.minor:
-            update_type = "minor"
-        else:
-            update_type = "patch"
-        return update_type in updates_to_include
+        return version_update(latest, current) in self._parameter("updates_to_include")
