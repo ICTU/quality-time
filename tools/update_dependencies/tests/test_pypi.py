@@ -28,7 +28,7 @@ class GetChangesTest(unittest.TestCase):
         logging.disable(logging.NOTSET)
 
     def create_mock_response(
-        self, mock_get: Mock, *json: dict, text: str = "", status_code: int = HTTPStatus.OK
+        self, mock_get: Mock, *json: dict | list, text: str = "", status_code: int = HTTPStatus.OK
     ) -> None:
         """Create a mock response for the mock requests.get method with the JSON result."""
         response = Mock()
@@ -69,7 +69,7 @@ class GetChangesTest(unittest.TestCase):
             self.create_mock_response(
                 mock_get,
                 {"info": {"project_urls": {"docs": docs, key: repo}}},
-                {"body": changelog, "tag_name": "1.1"},
+                [{"draft": False, "prerelease": False, "body": changelog, "tag_name": "1.1"}],
                 {"sha": "sha"},
             )
             self.assertEqual(changelog, get_changes(f"package-4-{key}", "1.1", LOG))
@@ -87,7 +87,7 @@ class GetChangesTest(unittest.TestCase):
         self.create_mock_response(
             mock_get,
             {"info": {"description": f"Package description\n{github_url}\n"}},
-            {"tag_name": "1.1", "body": changelog},
+            [{"draft": False, "prerelease": False, "tag_name": "1.1", "body": changelog}],
             {"sha": "sha"},
         )
         self.assertEqual(changelog, get_changes("package-6", "1.1", LOG))
@@ -98,7 +98,7 @@ class GetChangesTest(unittest.TestCase):
         self.create_mock_response(
             mock_get,
             {"info": {"description": f"Package description\n{github_url}\n"}},
-            {"tag_name": "1.1"},
+            [{"draft": False, "prerelease": False, "tag_name": "1.1"}],
             {"sha": "sha"},
         )
         self.assertEqual("", get_changes("package-7", "1.1", LOG))

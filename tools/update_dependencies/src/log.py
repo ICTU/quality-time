@@ -31,6 +31,10 @@ class Logger:
         """Log an invalid version."""
         self.log.error("Got an invalid version for %s: %s", dependency, invalid_version, stacklevel=2)
 
+    def no_version(self, dependency: str) -> None:
+        """Log no version found."""
+        self.log.error("No valid version found for %s", dependency, stacklevel=2)
+
     def path(self, path: Path) -> None:
         """Log working on path."""
         self.log.info("Updating %s", path.relative_to(Path.cwd()), stacklevel=2)
