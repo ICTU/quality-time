@@ -24,7 +24,7 @@
         "cov": "vitest run --coverage",
         "test": "vitest",
         "lint": "eslint *.mjs src; npx prettier *.mjs src --check --log-level warn",
-        "fix": "npx prettier *.mjs src --write --log-level warn"
+        "fix": "eslint *.mjs src --fix; npx prettier *.mjs src --write --log-level warn"
     },
     "engines": {
         "node": "26.1.0"

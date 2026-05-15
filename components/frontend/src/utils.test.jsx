@@ -9,6 +9,7 @@ import {
     createDragGhost,
     DOCUMENTATION_URL,
     endOfDayFromISODateString,
+    formatParameterValue,
     getMetricResponseDeadline,
     getMetricResponseOverrun,
     getMetricTags,
@@ -20,6 +21,7 @@ import {
     getSubjectType,
     getSubjectTypeMetrics,
     getUserPermissions,
+    identifyingParameterValues,
     isMeasurementOutdated,
     isMeasurementRequested,
     isMeasurementStale,
@@ -157,6 +159,42 @@ it("gets the source name from the data model if the source has no name", () => {
     expect(getSourceName({ type: "source_type" }, { sources: { source_type: { name: "source" } } })).toStrictEqual(
         "source",
     )
+})
+
+it("formats a date parameter value", () => {
+    expect(formatParameterValue({ type: "date" }, "2026-06-01")).toStrictEqual("Jun 1, 2026")
+})
+
+it("falls back to the raw value when a date can not be parsed", () => {
+    expect(formatParameterValue({ type: "date" }, "not-a-date")).toStrictEqual("not-a-date")
+})
+
+it("formats a numeric parameter value with its unit", () => {
+    expect(formatParameterValue({ type: "integer", unit: "days" }, "30")).toStrictEqual("30 days")
+})
+
+it("formats a list parameter value as comma-separated", () => {
+    expect(formatParameterValue({ type: "multiple_choice_with_defaults" }, ["a", "b"])).toStrictEqual("a, b")
+})
+
+it("formats a plain string parameter value as-is", () => {
+    expect(formatParameterValue({ type: "string" }, "value")).toStrictEqual("value")
+})
+
+it("returns null for an empty parameter value", () => {
+    expect(formatParameterValue({ type: "string" }, "")).toBeNull()
+    expect(formatParameterValue({ type: "string" }, undefined)).toBeNull()
+    expect(formatParameterValue({ type: "multiple_choice_with_defaults" }, [])).toBeNull()
+})
+
+it("collects identifying parameter values", () => {
+    const source = { parameters: { date: "2026-06-01" } }
+    const dataModelSource = { identifying_parameters: ["date"], parameters: { date: { type: "date" } } }
+    expect(identifyingParameterValues(source, dataModelSource)).toStrictEqual(["Jun 1, 2026"])
+})
+
+it("returns no identifying parameter values when none are configured", () => {
+    expect(identifyingParameterValues({}, { parameters: {} })).toStrictEqual([])
 })
 
 it("gets the subject type", () => {

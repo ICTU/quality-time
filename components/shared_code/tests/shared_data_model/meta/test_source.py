@@ -67,3 +67,25 @@ class SourceTest(MetaModelTestCase):
             "Source Source has a GitHub personal access token parameter but no repository URL.",
             **extra_model_kwargs,
         )
+
+    def test_unknown_identifying_parameter(self):
+        """Test that a source's identifying parameters must be defined as parameters."""
+        extra_model_kwargs = {
+            "parameters": {"url": {"name": "URL", "type": "url", "metrics": ["metric"]}},
+            "identifying_parameters": ["date"],
+        }
+        self.check_source_validation_error(
+            "Source Source has identifying parameter date but no parameter date",
+            **extra_model_kwargs,
+        )
+
+    def test_password_identifying_parameter(self):
+        """Test that a source's identifying parameters can not be passwords."""
+        extra_model_kwargs = {
+            "parameters": {"token": {"name": "Token", "type": "password", "metrics": ["metric"]}},
+            "identifying_parameters": ["token"],
+        }
+        self.check_source_validation_error(
+            "Source Source has identifying parameter token but parameter token is a password",
+            **extra_model_kwargs,
+        )

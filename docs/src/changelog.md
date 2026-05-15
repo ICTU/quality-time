@@ -14,6 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
+- Show the configured date below the source name in the metrics table for calendar date sources, so the date is visible when the metric is collapsed. Closes [#11143](https://github.com/ICTU/quality-time/issues/11143).
 - When measuring outdated dependencies with pip as source, allow for filtering major, minor, or patch updates. Closes [#12979](https://github.com/ICTU/quality-time/issues/12979).
 
 ### Removed
