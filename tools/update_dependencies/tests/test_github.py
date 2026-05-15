@@ -48,10 +48,20 @@ class GitHubReleaseJSONTest(unittest.TestCase):
 
     # Note get_latest_release_json uses caching, so the owner and/or repository need to be different for each test
 
-    @patch("requests.get", Mock(return_value=Mock(json=Mock(side_effect=[{"tag_name": "1.0"}, {"sha": "sha"}]))))
+    @patch(
+        "requests.get",
+        Mock(
+            return_value=Mock(
+                json=Mock(side_effect=[[{"draft": False, "prerelease": False, "tag_name": "1.0"}], {"sha": "sha"}])
+            )
+        ),
+    )
     def test_get_latest_release_json(self):
         """Test getting the latest release JSON."""
-        self.assertEqual({"tag_name": "1.0", "commit_sha": "sha"}, get_latest_release_json("owner", "repository"))
+        self.assertEqual(
+            {"draft": False, "prerelease": False, "tag_name": "1.0", "commit_sha": "sha"},
+            get_latest_release_json("owner", "repository"),
+        )
 
     @patch("requests.get")
     def test_get_latest_release_json_when_repo_has_no_releases(self, mock_get: Mock):
@@ -59,11 +69,39 @@ class GitHubReleaseJSONTest(unittest.TestCase):
         mock_get.return_value = Mock(raise_for_status=Mock(side_effect=requests.exceptions.HTTPError))
         self.assertEqual({}, get_latest_release_json("owner", "repository without releases"))
 
+    @patch(
+        "requests.get",
+        Mock(return_value=Mock(json=Mock(return_value=[{"draft": True, "prerelease": False, "tag_name": "1.0"}]))),
+    )
+    def test_skip_draft_releases(self):
+        """Test that draft releases are not included."""
+        self.assertEqual({}, get_latest_release_json("owner", "repository with only a draft release"))
+
+    @patch(
+        "requests.get",
+        Mock(return_value=Mock(json=Mock(return_value=[{"draft": False, "prerelease": True, "tag_name": "1.0"}]))),
+    )
+    def test_skip_prerelease_releases(self):
+        """Test that prerelease releases are not included."""
+        self.assertEqual({}, get_latest_release_json("owner", "repository with only a prerelease release"))
+
+    @patch(
+        "requests.get",
+        Mock(
+            return_value=Mock(
+                json=Mock(return_value=[{"draft": False, "prerelease": False, "tag_name": "invalid-1.0"}])
+            )
+        ),
+    )
+    def test_invalid_versions(self):
+        """Test that invalid versions are not included."""
+        self.assertEqual({}, get_latest_release_json("owner", "repository with a invalid version"))
+
     @patch("requests.get")
     def test_http_error_on_commits_endpoint(self, mock_get: Mock):
         """Test getting the latest release JSON when an HTTP error occurs on the commits endpoint."""
         mock_get.side_effect = [
-            Mock(json=Mock(return_value={"tag_name": "1.0"})),
+            Mock(json=Mock(return_value=[{"draft": False, "prerelease": False, "tag_name": "1.0"}])),
             Mock(raise_for_status=Mock(side_effect=requests.exceptions.HTTPError)),
         ]
         self.assertEqual({}, get_latest_release_json("owner", "repository 2"))

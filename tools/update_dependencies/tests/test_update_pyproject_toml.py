@@ -73,7 +73,10 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         Mock(
             side_effect=[
                 Mock(json=Mock(return_value=pypi_metadata())),
-                Mock(headers={"Content-Type": "text/html"}),
+                Mock(
+                    headers={"Content-Type": "text/html"},
+                    json=Mock(return_value=[{"draft": False, "prerelease": False, "tag_name": "v1.1"}]),
+                ),
             ]
         ),
     )
@@ -98,7 +101,11 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         Mock(
             side_effect=[
                 Mock(json=Mock(return_value=pypi_metadata(changelog_url=""))),
-                Mock(json=Mock(return_value={"body": changelog, "tag_name": "v1.1"})),
+                Mock(
+                    json=Mock(
+                        return_value=[{"draft": False, "prerelease": False, "body": changelog, "tag_name": "v1.1"}]
+                    )
+                ),
                 Mock(json=Mock(return_value={"sha": "sha"})),
             ]
         ),

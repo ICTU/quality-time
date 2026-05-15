@@ -2,6 +2,17 @@
 
 from dataclasses import dataclass
 
+from packaging.version import InvalidVersion, Version
+
+
+def is_valid(version: str) -> bool:
+    """Return whether the version is valid."""
+    try:
+        Version(version)
+    except InvalidVersion:
+        return False
+    return True
+
 
 @dataclass(frozen=True)
 class DependencyVersion:

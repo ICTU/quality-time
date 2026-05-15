@@ -7,7 +7,7 @@ import sys
 from functools import cache
 from pathlib import Path
 
-from packaging.version import InvalidVersion, Version
+from packaging.version import Version
 
 from filesystem import update_files
 from github import get_latest_release_json
@@ -24,11 +24,11 @@ def get_latest_version(action: str, current_version_string: str) -> DependencyVe
     owner, repository, *_path = action.split("/")
     current_version = Version(current_version_string)
     json = get_latest_release_json(owner, repository)
-    latest_tag = json.get("tag_name", "").strip("v")
-    try:
+    if "tag_name" in json:
+        latest_tag = json["tag_name"].strip("v")
         latest_version = Version(latest_tag)
-    except InvalidVersion:
-        LOG.invalid_version(f"{owner}/{repository}", f"'{latest_tag}'")
+    else:
+        LOG.no_version(f"{owner}/{repository}")
         latest_version = Version("0.0.0")
     changes = json.get("body", "")
     return DependencyVersion(str(max(latest_version, current_version)), changes, json.get("commit_sha", ""))
