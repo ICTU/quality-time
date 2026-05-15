@@ -5,7 +5,7 @@ import re
 import urllib.parse
 from decimal import ROUND_HALF_UP, Decimal
 from itertools import islice
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from defusedxml import ElementTree
 
@@ -15,6 +15,8 @@ from .type import URL, Namespaces, Response
 if TYPE_CHECKING:
     from collections.abc import Collection, Iterable
     from xml.etree.ElementTree import Element  # nosec # Element is not available from defusedxml, but only used as type
+
+    from packaging.version import Version
 
 
 async def parse_source_response_xml(response: Response, allowed_root_tags: Collection[str] | None = None) -> Element:
@@ -86,7 +88,7 @@ def is_regexp(string: str) -> bool:
     return False if matches_semantic_version(string) else bool(set("$^?.+*[]") & set(string))
 
 
-def matches_semantic_version(string) -> bool:
+def matches_semantic_version(string: str) -> bool:
     """Return whether the string is a semantic version number.
 
     Regular expression taken from
@@ -131,3 +133,12 @@ def stabilize(path_or_url: str, reg_exps: list[str], replacement: str = "") -> s
     for reg_exp in reg_exps:
         stable_path_or_url = re.sub(reg_exp, replacement, stable_path_or_url)
     return stable_path_or_url
+
+
+def version_update(v1: Version, v2: Version) -> Literal["major", "minor", "patch"]:
+    """Return the difference between the two versions."""
+    if v1.major != v2.major:
+        return "major"
+    if v1.minor != v2.minor:
+        return "minor"
+    return "patch"
