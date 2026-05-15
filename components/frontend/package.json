@@ -36,7 +36,7 @@
         "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.2",
         "@testing-library/user-event": "^14.6.1",
-        "@vitejs/plugin-react": "^6.0.1",
+        "@vitejs/plugin-react": "^6.0.2",
         "@vitest/coverage-v8": "^4.1.6",
         "eslint": "^10.3.0",
         "eslint-config-prettier": "^10.1.8",
@@ -48,7 +48,7 @@
         "jest-axe": "^10.0.0",
         "jsdom": "^29.1.1",
         "prettier": "^3.8.3",
-        "vite": "^8.0.12",
+        "vite": "^8.0.13",
         "vitest": "^4.1.6"
     },
     "overrides": {
