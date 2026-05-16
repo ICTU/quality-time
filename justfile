@@ -1,6 +1,6 @@
-set guards := true
-set positional-arguments := true
-set quiet := true
+set guards
+set positional-arguments
+set quiet
 
 _default:
     @just --list
@@ -36,6 +36,7 @@ uv_run := "uv run --quiet"
 update_dep := uv_run + " --project tools/update_dependencies tools/update_dependencies/src/update_"
 coverage := uv_run + " coverage"
 fixit := uv_run + " fixit --quiet"
+just_fmt := "just --unstable --fmt"
 pyproject_fmt := uv_run + " pyproject-fmt --no-generate-python-version-classifiers"
 ruff := uv_run + " ruff --quiet"
 troml := uv_run + " troml"
@@ -338,6 +339,11 @@ zizmor: install-py-dependencies
     ?[ {{ has_zizmor }} = true ]
     {{ zizmor }}
 
+# Check the justfile
+[private]
+check-justfile:
+    {{ just_fmt }} --check
+
 # Run Python checks.
 [no-cd]
 [parallel]
@@ -373,13 +379,11 @@ check-js: npm-lint npm-audit npm-outdated
 
 # Run the quality checks, in the current working directory.
 [no-cd]
-check: check-js check-py
-    ?[ {{ pyproject_toml_exists }} = false ] && [ {{ package_json_exists }} = false ]
-    echo "Nothing to check in this folder"
+check: check-js check-py check-justfile
 
 # === Fix issues ===
 
-# Fix Python quality issues that can be fixed automatically.
+# Fix Python quality issues that can be fixed automatically, in the current working directory.
 [no-cd]
 [private]
 fix-py: install-py-dependencies
@@ -396,18 +400,18 @@ fix-py: install-py-dependencies
     ?[ {{ has_zizmor }} = true ]
     {{ zizmor }} --fix=all
 
-# Fix JavaScript quality issues that can be fixed automatically.
+# Fix JavaScript quality issues that can be fixed automatically, in the current working directory.
 [no-cd]
 [private]
 fix-js: install-js-dependencies
     ?[ {{ has_js_fix_script }} = true ]
     {{ npm_run }} fix
 
-# Fix quality issues that can be fixed automatically, in the current working directory.
+# Fix quality issues that can be fixed automatically, in the current working directory and the root folder.
 [no-cd]
+[parallel]
 fix: fix-py fix-js
-    ?[ {{ pyproject_toml_exists }} = false ] && [ {{ has_js_fix_script }} = false ]
-    echo "Nothing to fix in this folder"
+    {{ just_fmt }}
 
 # === Release ===
 
