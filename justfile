@@ -8,6 +8,8 @@ _default:
 alias help := _default
 
 export COVERAGE_RCFILE := justfile_directory() + "/.coveragerc"
+dependency_update_cooldown_days := "7"
+export NPM_CONFIG_MIN_RELEASE_AGE := dependency_update_cooldown_days
 components := `ls components`
 docker_folder_exists := path_exists(invocation_directory() + '/docker')
 src_folder_exists := path_exists(invocation_directory() + '/src')
