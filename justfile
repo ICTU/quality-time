@@ -65,6 +65,7 @@ update-github-actions:
     {{ update_dep }}github_action.py
 
 # Update direct and indirect Python dependencies.
+[env("UV_EXCLUDE_NEWER", "P" + dependency_update_cooldown_days + "D")]
 [private]
 update-py-dependencies:
     {{ update_dep }}pyproject_toml.py
