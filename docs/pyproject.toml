@@ -24,7 +24,7 @@ dev = [
     "tools",
     "vale==3.13.0.0",       # Documentation grammar and style checker
     "yamllint==1.38.0",
-    "zizmor==1.25.0",       # Static analysis tool for GitHub Actions
+    "zizmor==1.25.2",       # Static analysis tool for GitHub Actions
 ]
 
 [tool.uv]
