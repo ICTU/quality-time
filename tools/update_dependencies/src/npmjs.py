@@ -4,7 +4,7 @@ from functools import cache
 
 import requests
 
-from github import get_latest_release_json
+from github import get_latest_release
 
 
 @cache
@@ -17,5 +17,5 @@ def get_changes(package: str, version: str) -> str:
     repository_url = repository_url.split("#")[0]
     repository_url = repository_url.removesuffix(".git")
     owner, repository = repository_url.split("/")[3:5]
-    json = get_latest_release_json(owner, repository)
-    return json.get("body", "")
+    release = get_latest_release(owner, repository)
+    return release.body if release else ""

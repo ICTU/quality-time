@@ -1,11 +1,13 @@
 """GitHub unit tests."""
 
 import unittest
+from datetime import UTC, datetime, timedelta
+from typing import cast
 from unittest.mock import Mock, patch
 
 import requests
 
-from github import get_latest_release_json, github_owner_and_repository, github_to_raw
+from github import Release, get_latest_release, github_owner_and_repository, github_to_raw
 
 
 class GitHubURLtoRawTest(unittest.TestCase):
@@ -43,31 +45,27 @@ class GitHubOwnerAndRepositoryTest(unittest.TestCase):
         self.assertEqual(("", ""), github_owner_and_repository("https://github.com/ICTU"))
 
 
-class GitHubReleaseJSONTest(unittest.TestCase):
-    """Unit tests for getting the latest release JSON for a GitHub repo."""
+class GetLatestReleaseTest(unittest.TestCase):
+    """Unit tests for getting the latest release for a GitHub repo."""
 
-    # Note get_latest_release_json uses caching, so the owner and/or repository need to be different for each test
-
-    @patch(
-        "requests.get",
-        Mock(
-            return_value=Mock(
-                json=Mock(side_effect=[[{"draft": False, "prerelease": False, "tag_name": "1.0"}], {"sha": "sha"}])
-            )
-        ),
-    )
-    def test_get_latest_release_json(self):
-        """Test getting the latest release JSON."""
-        self.assertEqual(
-            {"draft": False, "prerelease": False, "tag_name": "1.0", "commit_sha": "sha"},
-            get_latest_release_json("owner", "repository"),
-        )
+    # Note get_latest_release uses caching, so the owner and/or repository need to be different for each test
 
     @patch("requests.get")
-    def test_get_latest_release_json_when_repo_has_no_releases(self, mock_get: Mock):
-        """Test getting the latest release JSON when the repository has no releases."""
+    def test_get_latest_release(self, mock_get: Mock):
+        """Test getting the latest release."""
+        mock_get.side_effect = [
+            Mock(json=Mock(return_value=[{"draft": False, "prerelease": False, "tag_name": "1.0"}])),
+            Mock(json=Mock(return_value={"sha": "sha"})),
+        ]
+        release = get_latest_release("owner", "repository")
+        self.assertEqual(Release(owner="owner", repository="repository", tag_name="1.0"), release)
+        self.assertEqual("sha", cast("Release", release).commit_sha)
+
+    @patch("requests.get")
+    def test_get_latest_release_when_repo_has_no_releases(self, mock_get: Mock):
+        """Test getting the latest release when the repository has no releases."""
         mock_get.return_value = Mock(raise_for_status=Mock(side_effect=requests.exceptions.HTTPError))
-        self.assertEqual({}, get_latest_release_json("owner", "repository without releases"))
+        self.assertIsNone(get_latest_release("owner", "repository without releases"))
 
     @patch(
         "requests.get",
@@ -75,7 +73,7 @@ class GitHubReleaseJSONTest(unittest.TestCase):
     )
     def test_skip_draft_releases(self):
         """Test that draft releases are not included."""
-        self.assertEqual({}, get_latest_release_json("owner", "repository with only a draft release"))
+        self.assertIsNone(get_latest_release("owner", "repository with only a draft release"))
 
     @patch(
         "requests.get",
@@ -83,7 +81,7 @@ class GitHubReleaseJSONTest(unittest.TestCase):
     )
     def test_skip_prerelease_releases(self):
         """Test that prerelease releases are not included."""
-        self.assertEqual({}, get_latest_release_json("owner", "repository with only a prerelease release"))
+        self.assertIsNone(get_latest_release("owner", "repository with only a prerelease release"))
 
     @patch(
         "requests.get",
@@ -95,13 +93,48 @@ class GitHubReleaseJSONTest(unittest.TestCase):
     )
     def test_invalid_versions(self):
         """Test that invalid versions are not included."""
-        self.assertEqual({}, get_latest_release_json("owner", "repository with a invalid version"))
+        self.assertIsNone(get_latest_release("owner", "repository with a invalid version"))
 
+    @patch("logging.Logger.error")
     @patch("requests.get")
-    def test_http_error_on_commits_endpoint(self, mock_get: Mock):
-        """Test getting the latest release JSON when an HTTP error occurs on the commits endpoint."""
+    def test_http_error_on_commits_endpoint(self, mock_get: Mock, mock_error: Mock):
+        """Test that reading commit_sha returns an empty string and logs an error when the commits endpoint fails."""
         mock_get.side_effect = [
             Mock(json=Mock(return_value=[{"draft": False, "prerelease": False, "tag_name": "1.0"}])),
             Mock(raise_for_status=Mock(side_effect=requests.exceptions.HTTPError)),
         ]
-        self.assertEqual({}, get_latest_release_json("owner", "repository 2"))
+        release = get_latest_release("owner", "repository 2")
+        self.assertIsNotNone(release)
+        self.assertIsNone(cast("Release", release).commit_sha)
+        mock_error.assert_called_once_with(
+            "Could not fetch commit SHA for %s %s: %s",
+            "owner/repository 2",
+            "1.0",
+            "https://github.com/owner/repository 2/releases/tag/1.0",
+            stacklevel=2,
+        )
+
+    @patch.dict("os.environ", {"DEPENDENCY_UPDATE_COOLDOWN_DAYS": "7"})
+    @patch("requests.get")
+    def test_skip_releases_within_cooldown(self, mock_get: Mock):
+        """Test that releases published within the cooldown period are skipped in favor of older releases."""
+        recent = (datetime.now(UTC) - timedelta(days=1)).isoformat()
+        old_iso = (datetime.now(UTC) - timedelta(days=10)).isoformat()
+        mock_get.return_value = Mock(
+            json=Mock(
+                return_value=[
+                    {"draft": False, "prerelease": False, "tag_name": "2.0", "published_at": recent},
+                    {"draft": False, "prerelease": False, "tag_name": "1.0", "published_at": old_iso},
+                ]
+            )
+        )
+        release = get_latest_release("owner", "repository with cooldown")
+        self.assertEqual(
+            Release(
+                owner="owner",
+                repository="repository with cooldown",
+                tag_name="1.0",
+                published_at=datetime.fromisoformat(old_iso),
+            ),
+            release,
+        )

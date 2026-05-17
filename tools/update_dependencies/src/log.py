@@ -35,6 +35,10 @@ class Logger:
         """Log no version found."""
         self.log.error("No valid version found for %s", dependency, stacklevel=2)
 
+    def no_commit_sha(self, dependency: str, version: str, url: str) -> None:
+        """Log that no commit SHA could be fetched for an otherwise-eligible release."""
+        self.log.error("Could not fetch commit SHA for %s %s: %s", dependency, version, url, stacklevel=2)
+
     def path(self, path: Path) -> None:
         """Log working on path."""
         self.log.info("Updating %s", path.relative_to(Path.cwd()), stacklevel=2)

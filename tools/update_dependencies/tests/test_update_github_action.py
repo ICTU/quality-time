@@ -3,6 +3,8 @@
 import unittest
 from unittest.mock import Mock, patch
 
+import requests
+
 from update_github_action import get_latest_version
 
 
@@ -56,3 +58,13 @@ class UpdateGitHubActionTest(unittest.TestCase):
         mock_get.return_value = Mock(json=Mock(return_value=[]))
         self.assertEqual("1.0", get_latest_version("docker/action", "1.0").version)
         mock_error.assert_called_once_with("No valid version found for %s", "docker/action", stacklevel=2)
+
+    @patch("logging.Logger.error", Mock())
+    @patch("requests.get")
+    def test_no_commit_sha(self, mock_get: Mock):
+        """Test that the version is not updated when the commit SHA can't be fetched for an eligible release."""
+        mock_get.side_effect = [
+            Mock(json=Mock(return_value=[{"draft": False, "prerelease": False, "tag_name": "1.1"}])),
+            Mock(raise_for_status=Mock(side_effect=requests.exceptions.HTTPError)),
+        ]
+        self.assertEqual("1.0", get_latest_version("docker/no-sha-action", "1.0").version)
