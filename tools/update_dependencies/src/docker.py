@@ -1,14 +1,14 @@
 """Get the latest available tags from Docker Hub."""
 
-import os
 from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
+from datetime import datetime
 from functools import cache
 from typing import cast
 
 import requests
 from packaging.version import InvalidVersion, Version
 
+from cooldown import within_cooldown
 from version import DependencyVersion
 
 
@@ -20,10 +20,10 @@ class Tag:
     last_pushed: datetime | None = None
 
     @classmethod
-    def from_json(cls, result: dict) -> Tag:
+    def from_json(cls, tag: dict) -> Tag:
         """Create a Tag from a Docker Hub tags endpoint result."""
-        last_pushed = result.get("tag_last_pushed")
-        return cls(name=result["name"], last_pushed=datetime.fromisoformat(last_pushed) if last_pushed else None)
+        last_pushed = tag.get("tag_last_pushed")
+        return cls(name=tag["name"], last_pushed=datetime.fromisoformat(last_pushed) if last_pushed else None)
 
     @property
     def version(self) -> Version | None:
@@ -42,10 +42,7 @@ class Tag:
     @property
     def within_cooldown(self) -> bool:
         """Return whether the tag was pushed within the configured cooldown period."""
-        if self.last_pushed is None:
-            return False
-        cooldown_days = int(os.environ.get("DEPENDENCY_UPDATE_COOLDOWN_DAYS", "0"))
-        return datetime.now(UTC) - self.last_pushed < timedelta(days=cooldown_days)
+        return within_cooldown(self.last_pushed)
 
     def with_version(self, version: Version) -> Tag:
         """Return a new Tag with the same suffix but the given version."""

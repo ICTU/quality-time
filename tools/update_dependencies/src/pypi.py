@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 import requests
 
 from changelog import get_version_changes_from_changelog
-from github import get_latest_release_json, github_owner_and_repository, github_to_raw
+from github import get_latest_release, github_owner_and_repository, github_to_raw
 
 if TYPE_CHECKING:
     from log import Logger
@@ -69,4 +69,7 @@ def changelog_from_github_url_in_description(description: str) -> str:
 def changelog_from_github_releases(url: str) -> str:
     """Get the changelog from the GitHub releases."""
     owner, repository = github_owner_and_repository(url)
-    return get_latest_release_json(owner, repository).get("body", "") if owner and repository else ""
+    if not (owner and repository):
+        return ""
+    release = get_latest_release(owner, repository)
+    return release.body if release else ""
