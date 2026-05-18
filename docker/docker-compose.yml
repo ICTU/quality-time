@@ -1,64 +1,76 @@
 ---
 # Base Docker-composition. For development, this composition is augmented in docker-compose.override.yml.
 
+x-security-opt: &security-opt
+  - no-new-privileges:true
+
+x-tz: &tz TZ=${TZ:-Europe/Amsterdam} # Timezone for log timestamps and date formatting; installed in each image
+
 services:
   www:
     image: ictu/quality-time_proxy:${QUALITY_TIME_VERSION}
     ports:
       - "80:${PROXY_PORT:-80}"
     environment:
+      - *tz
       - PROXY_PORT=${PROXY_PORT:-80}
       - FRONTEND_HOST=${FRONTEND_HOST:-frontend}
       - FRONTEND_PORT=${FRONTEND_PORT:-5000}
       - API_SERVER_HOST=${API_SERVER_HOST:-api_server}
       - API_SERVER_PORT=${API_SERVER_PORT:-5001}
-    volumes:
-      - "/etc/localtime:/etc/localtime:ro"
     depends_on:
       - api_server
       - frontend
+    cap_drop:
+      - ALL
+    cap_add:
+      # nginx binary has CAP_NET_BIND_SERVICE via setcap (see components/proxy/Dockerfile)
+      # so it can listen on port 80 as non-root
+      - NET_BIND_SERVICE
+    security_opt: *security-opt
   frontend:
     image: ictu/quality-time_frontend:${QUALITY_TIME_VERSION}
     environment:
+      - *tz
       - FRONTEND_PORT=${FRONTEND_PORT:-5000}
-    volumes:
-      - "/etc/localtime:/etc/localtime:ro"
     depends_on:
       - api_server
     cap_drop:
       - ALL
+    security_opt: *security-opt
   collector:
     image: ictu/quality-time_collector:${QUALITY_TIME_VERSION}
     environment:
+      - *tz
       - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
       - COLLECTOR_MEASUREMENT_FREQUENCY=${COLLECTOR_MEASUREMENT_FREQUENCY:-900}
       - COLLECTOR_MEASUREMENT_LIMIT=${COLLECTOR_MEASUREMENT_LIMIT:-30}
       - COLLECTOR_MEASUREMENT_TIMEOUT=${COLLECTOR_MEASUREMENT_TIMEOUT:-120}
       - COLLECTOR_SLEEP_DURATION=${COLLECTOR_SLEEP_DURATION:-20}
       - COLLECTOR_LOG_LEVEL=${COLLECTOR_LOG_LEVEL:-WARNING}
-      - COLUMNS=${COLUMNS}  # Tell the Rich logging handler the terminal width
-    volumes:
-      - "/etc/localtime:/etc/localtime:ro"
+      - COLUMNS=${COLUMNS} # Tell the Rich logging handler the terminal width
     depends_on:
       - database
     cap_drop:
       - ALL
+    security_opt: *security-opt
   notifier:
     image: ictu/quality-time_notifier:${QUALITY_TIME_VERSION}
     environment:
+      - *tz
       - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
       - NOTIFIER_SLEEP_DURATION=${NOTIFIER_SLEEP_DURATION:-60}
       - NOTIFIER_LOG_LEVEL=${NOTIFIER_LOG_LEVEL:-WARNING}
-      - COLUMNS=${COLUMNS}  # Tell the Rich logging handler the terminal width
-    volumes:
-      - "/etc/localtime:/etc/localtime:ro"
+      - COLUMNS=${COLUMNS} # Tell the Rich logging handler the terminal width
     depends_on:
       - database
     cap_drop:
       - ALL
+    security_opt: *security-opt
   api_server:
     image: ictu/quality-time_api_server:${QUALITY_TIME_VERSION}
     environment:
+      - *tz
       - API_SERVER_PORT=${API_SERVER_PORT:-5001}
       - API_SERVER_LOG_LEVEL=${API_SERVER_LOG_LEVEL:-WARNING}
       - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
@@ -73,30 +85,31 @@ services:
       - RENDERER_HOST=${RENDERER_HOST:-renderer}
       - RENDERER_PORT=${RENDERER_PORT:-9000}
       - USER_SESSION_DURATION=${USER_SESSION_DURATION:-120}
-      - COLUMNS=${COLUMNS}  # Tell the Rich logging handler the terminal width
-    volumes:
-      - "/etc/localtime:/etc/localtime:ro"
+      - COLUMNS=${COLUMNS} # Tell the Rich logging handler the terminal width
     depends_on:
       - database
     cap_drop:
       - ALL
+    security_opt: *security-opt
   database:
     image: ictu/quality-time_database:${QUALITY_TIME_VERSION}
     command: --quiet
     environment:
+      - *tz
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME:-root}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD:-root}
     volumes:
-      - "/etc/localtime:/etc/localtime:ro"
       - "dbdata:/data/db"
+    security_opt: *security-opt
   renderer:
     image: ictu/quality-time_renderer:${QUALITY_TIME_VERSION}
     environment:
+      - *tz
       - PROXY_HOST=${PROXY_HOST:-www}
       - PROXY_PORT=${PROXY_PORT:-80}
-      - LC_ALL=${LC_ALL:-en_GB.UTF-8}  # Set the date format in the PDF export to DD-MM-YYYY
-      - TZ=${TZ:-Europe/Amsterdam}  # Make the PDF export use the correct timezone
-    volumes:
-      - "/etc/localtime:/etc/localtime:ro"
+      - LC_ALL=${LC_ALL:-en_GB.UTF-8} # Set the date format in the PDF export to DD-MM-YYYY
+    cap_drop:
+      - ALL
+    security_opt: *security-opt
 volumes:
   dbdata:

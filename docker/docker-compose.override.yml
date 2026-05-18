@@ -1,6 +1,9 @@
 ---
 # Extra services and overridden parameters for development
 
+x-security-opt: &security-opt
+  - no-new-privileges:true
+
 services:
   www:
     build: ../components/proxy
@@ -32,26 +35,33 @@ services:
   database:
     build: ../components/database
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
   renderer:
     build: ../components/renderer
     ports:
-      - "9000:9000"
+      - "127.0.0.1:9000:9000"
   testdata:
     build: ../components/testdata
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
+    cap_drop:
+      - ALL
+    security_opt: *security-opt
   mongo-express:
-    image: mongo-express
+    image: mongo-express:1.0.2
     ports:
-      - "8081:8081"
+      - "127.0.0.1:8081:8081"
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_INITDB_ROOT_USERNAME:-root}
       - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_INITDB_ROOT_PASSWORD:-root}
       - ME_CONFIG_MONGODB_SERVER=database
     depends_on:
       - database
+    cap_drop:
+      - ALL
+    security_opt: *security-opt
   ldap:
     build: ../components/testldap
     ports:
-      - "389:389"
+      - "127.0.0.1:389:389"
+    security_opt: *security-opt

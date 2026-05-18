@@ -3,7 +3,7 @@ FROM nginxinc/nginx-unprivileged:1.31-alpine3.23-slim AS compile-image
 # hadolint ignore=DL3002
 USER root
 # Add the CAP_NET_BIND_SERVICE to provide backwards compatibility, running on privileged port (80)
-RUN apk add --no-cache libcap=2.78-r0 && setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/nginx
+RUN apk add --no-cache libcap=2.78-r0 tzdata=2026b-r0 && setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/nginx
 
 FROM nginxinc/nginx-unprivileged:1.31-alpine3.23-slim
 
@@ -17,6 +17,7 @@ ENV API_SERVER_HOST=api_server
 ENV API_SERVER_PORT=5001
 
 COPY --from=compile-image /usr/sbin/nginx /usr/sbin/nginx
+COPY --from=compile-image /usr/share/zoneinfo /usr/share/zoneinfo
 COPY *.template /etc/nginx/templates/
 COPY security_headers.conf /etc/nginx/snippets/security_headers.conf
 
