@@ -52,10 +52,11 @@ description:
       measurements and presents them to the user.
 
       *Quality-time* is developed by [ICTU](https://www.ictu.nl/en/about-us), an
-      impartial project organization within the government. ICTU's services
-      consist of the realization of projects and programs, giving advice, and
-      development of custom made software solutions. Driven by quality, with a
-      heart for the public task, not for profit.
+      independent and impartial project organization within the Dutch
+      government. ICTU's services consist of the realization of projects and
+      programs, giving advice, and development of custom made software
+      solutions. Driven by quality, with a heart for the public task, and not
+      for profit.
     documentation: https://quality-time.readthedocs.io/en/latest
     apiDocumentation: https://quality-time.readthedocs.io/en/latest/api.html
     features:
