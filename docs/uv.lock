@@ -237,6 +237,18 @@ wheels = [
 ]
 
 [[package]]
+name = "compose-lint"
+version = "0.7.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyyaml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/72/bf/54f6d200366c522da986a1a6e79c0d3e6269426a41fa1e131f72c0c88f9c/compose_lint-0.7.0.tar.gz", hash = "sha256:f72dc21b2bd08f1dcfdce2c75896482c95922e4e021a6429da1997ffdc5cf32a", size = 318416, upload-time = "2026-05-01T04:08:00.779Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/23/de/747c720f607996fb5d3fd5a675be26e2869a03f7232d1dc417c26a2710a0/compose_lint-0.7.0-py3-none-any.whl", hash = "sha256:a6bff8fef67655d5cdea09887e4cfe6fa5a52b78c4f88b175dd2aee8a8d9b9bf", size = 94737, upload-time = "2026-05-01T04:07:59.023Z" },
+]
+
+[[package]]
 name = "coverage"
 version = "7.14.0"
 source = { registry = "https://pypi.org/simple" }
@@ -324,8 +336,6 @@ dev = [
     { name = "sphinx-design" },
     { name = "tools" },
     { name = "vale" },
-    { name = "yamllint" },
-    { name = "zizmor" },
 ]
 
 [package.metadata]
@@ -341,8 +351,6 @@ dev = [
     { name = "sphinx-design", specifier = "==0.7.0" },
     { name = "tools", virtual = "../tools/third_party" },
     { name = "vale", specifier = "==3.13.0.0" },
-    { name = "yamllint", specifier = "==1.38.0" },
-    { name = "zizmor", specifier = "==1.25.2" },
 ]
 
 [[package]]
@@ -1317,6 +1325,7 @@ source = { virtual = "../tools/third_party" }
 dependencies = [
     { name = "bandit" },
     { name = "codespell" },
+    { name = "compose-lint" },
     { name = "coverage" },
     { name = "fixit" },
     { name = "mypy" },
@@ -1327,12 +1336,15 @@ dependencies = [
     { name = "ty" },
     { name = "unittest-xml-reporting" },
     { name = "vulture" },
+    { name = "yamllint" },
+    { name = "zizmor" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "bandit", specifier = "==1.9.4" },
     { name = "codespell", specifier = "==2.4.2" },
+    { name = "compose-lint", specifier = "==0.7.0" },
     { name = "coverage", specifier = "==7.14.0" },
     { name = "fixit", specifier = "==2.2.1" },
     { name = "mypy", specifier = "==2.1.0" },
@@ -1343,6 +1355,8 @@ requires-dist = [
     { name = "ty", specifier = "==0.0.37" },
     { name = "unittest-xml-reporting", specifier = "==4.0.0" },
     { name = "vulture", specifier = "==2.16" },
+    { name = "yamllint", specifier = "==1.38.0" },
+    { name = "zizmor", specifier = "==1.25.2" },
 ]
 
 [package.metadata.requires-dev]

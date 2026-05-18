@@ -3,6 +3,8 @@ FROM python:3.14.5-alpine3.23
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time notifier"
 
+RUN apk add --no-cache tzdata=2026b-r0
+
 ENV UV_COMPILE_BYTECODE=1 UV_NO_CACHE=1 UV_PYTHON_DOWNLOADS=0 VIRTUAL_ENV=/home/notifier/venv
 
 WORKDIR /home/notifier

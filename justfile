@@ -26,9 +26,8 @@ has_js_test_script := if js_scripts =~ '"test"' { "true" } else { "false" }
 has_js_fix_script := if js_scripts =~ '"fix"' { "true" } else { "false" }
 has_py_unit_tests := if pyproject_toml_exists == "true" { tests_folder_exists } else { "false" }
 has_sphinx := if pyproject_toml_contents =~ '"sphinx[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
-has_yamllint := if pyproject_toml_contents =~ '"yamllint[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
 has_vale := if pyproject_toml_contents =~ '"vale[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
-has_zizmor := if pyproject_toml_contents =~ '"zizmor[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
+at_root := if invocation_directory() == justfile_directory() { "true" } else { "false" }
 src_folder := if src_folder_exists == "true" { "src" } else { "" }
 tests_folder := if tests_folder_exists == "true" { "tests" } else { "" }
 code := if trim(src_folder + " " + tests_folder) == "" { ".?*.py" } else { src_folder + " " + tests_folder }
@@ -46,7 +45,7 @@ vulture := uv_run + " vulture --exclude .venv --min-confidence 0"
 vulture_whitelist := ".vulture-whitelist.py"
 sphinx_build := uv_run + " sphinx-build"
 npm_run := "npm run --silent"
-zizmor := uv_run + " zizmor --no-progress --quiet " + justfile_directory() + "/.github/workflows"
+project_wide_tools := uv_run + " --project " + justfile_directory() + "/tools/third_party"
 
 # === Update dependencies ===
 
@@ -54,6 +53,11 @@ zizmor := uv_run + " zizmor --no-progress --quiet " + justfile_directory() + "/.
 [private]
 update-circle-ci-config:
     {{ update_dep }}circle_ci_config.py
+
+# Update Docker images in the Compose files.
+[private]
+update-docker-compose:
+    {{ update_dep }}docker_compose.py
 
 # Update Docker base images in Dockerfiles.
 [private]
@@ -91,7 +95,7 @@ alias update-deps := update-dependencies
 
 # Update direct and indirect dependencies. Set the GITHUB_TOKEN environment variable to prevent hitting GitHub rate limits.
 [parallel]
-update-dependencies: update-docker-base-images update-py-dependencies update-github-actions update-circle-ci-config update-jsdelivr
+update-dependencies: update-docker-base-images update-py-dependencies update-github-actions update-circle-ci-config update-docker-compose update-jsdelivr
     just update-node-engine
     just update-js-dependencies
 
@@ -323,9 +327,9 @@ vale: install-py-dependencies
 # Run yamllint.
 [no-cd]
 [private]
-yamllint: install-py-dependencies
-    ?[ {{ has_yamllint }} = true ]
-    {{ uv_run }} yamllint -c .yamllint {{ justfile_directory() }}
+yamllint:
+    ?[ {{ at_root }} = true ]
+    {{ project_wide_tools }} yamllint -c .yamllint .
 
 # Run sphinx linkcheck. Excluded from `just check` because external link availability makes it flaky and slow; runs on a schedule in CI.
 [no-cd]
@@ -337,9 +341,19 @@ linkcheck: install-py-dependencies
 # Run zizmor.
 [no-cd]
 [private]
-zizmor: install-py-dependencies
-    ?[ {{ has_zizmor }} = true ]
-    {{ zizmor }}
+zizmor:
+    ?[ {{ at_root }} = true ]
+    {{ project_wide_tools }} zizmor --no-progress --quiet .github/workflows
+
+# Run compose-lint on docker-compose.yml and on the merged dev and CI configurations.
+[no-cd]
+[private]
+compose-lint:
+    ?[ {{ at_root }} = true ]
+    trap 'rm -f /tmp/compose-dev-{{ random_string }}.yml /tmp/compose-ci-{{ random_string }}.yml' EXIT; \
+    docker compose --file docker/docker-compose.yml --file docker/docker-compose.override.yml config --no-interpolate > /tmp/compose-dev-{{ random_string }}.yml || exit; \
+    docker compose --file docker/docker-compose.yml --file docker/docker-compose.ci.yml config --no-interpolate > /tmp/compose-ci-{{ random_string }}.yml || exit; \
+    output=$({{ project_wide_tools }} compose-lint --config docker/.compose-lint.yml --fail-on low --skip-suppressed docker/docker-compose.yml /tmp/compose-dev-{{ random_string }}.yml /tmp/compose-ci-{{ random_string }}.yml 2>&1) || { printf '%s\n' "$output"; exit 1; }
 
 # Check the justfile
 [private]
@@ -350,7 +364,7 @@ check-justfile:
 [no-cd]
 [parallel]
 [private]
-check-py: ty mypy fixit ruff pyproject-fmt troml pip-audit uv-audit bandit vulture vale yamllint zizmor
+check-py: ty mypy fixit ruff pyproject-fmt troml pip-audit uv-audit bandit vulture vale
 
 # Run npm lint.
 [no-cd]
@@ -379,9 +393,9 @@ npm-outdated: install-js-dependencies
 [private]
 check-js: npm-lint npm-audit npm-outdated
 
-# Run the quality checks, in the current working directory.
+# Run the quality checks, in the current working directory. Project-wide checks (yamllint, zizmor, compose-lint) only run when invoked from the repo root.
 [no-cd]
-check: check-js check-py check-justfile
+check: check-js check-py check-justfile yamllint zizmor compose-lint
 
 # === Fix issues ===
 
@@ -399,8 +413,13 @@ fix-py: install-py-dependencies
     {{ troml }} suggest --fix
     # Vulture returns exit code 3 when there is dead code, ignore it when writing the whitelist:
     {{ vulture }} --make-whitelist {{ code }} > {{ vulture_whitelist }} || true
-    ?[ {{ has_zizmor }} = true ]
-    {{ zizmor }} --fix=all
+
+# Fix zizmor issues that can be fixed automatically.
+[no-cd]
+[private]
+fix-zizmor:
+    ?[ {{ at_root }} = true ]
+    {{ project_wide_tools }} zizmor --no-progress --quiet --fix=all .github/workflows
 
 # Fix JavaScript quality issues that can be fixed automatically, in the current working directory.
 [no-cd]
@@ -412,7 +431,7 @@ fix-js: install-js-dependencies
 # Fix quality issues that can be fixed automatically, in the current working directory and the root folder.
 [no-cd]
 [parallel]
-fix: fix-py fix-js
+fix: fix-py fix-js fix-zizmor
     {{ just_fmt }}
 
 # === Release ===

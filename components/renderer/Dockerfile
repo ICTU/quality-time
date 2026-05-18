@@ -4,7 +4,7 @@ LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
 
 # hadolint ignore=DL3018
-RUN apk add --no-cache chromium
+RUN apk add --no-cache chromium tzdata=2026b-r0
 
 WORKDIR /home/renderer
 COPY package*.json /home/renderer/

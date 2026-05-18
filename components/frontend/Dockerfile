@@ -1,5 +1,7 @@
 FROM node:26.1.0-alpine3.23 AS compile-image
 
+RUN apk add --no-cache tzdata=2026b-r0
+
 WORKDIR /home/frontend
 COPY public /home/frontend/public
 COPY package*.json /home/frontend
@@ -18,6 +20,7 @@ LABEL description="Quality-time frontend"
 ENV FRONTEND_PORT=5000
 
 COPY --from=compile-image /home/frontend/dist /usr/share/nginx/html
+COPY --from=compile-image /usr/share/zoneinfo /usr/share/zoneinfo
 
 # Use the Shell form of CMD instead of the Exec form so the environment variable is substituted
 # hadolint ignore=DL3025

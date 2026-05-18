@@ -50,6 +50,9 @@ jobs:
           - folder: tests/feature_tests
             name: tests-feature_tests
             language: python
+          - folder: .
+            name: root
+            language: misc
     steps:
       - name: Login to DockerHub
         if: env.SONAR_TOKEN != null
@@ -78,6 +81,7 @@ jobs:
         with:
           name: sonar-${{ matrix.name }}
           path: ${{ matrix.folder }}/build
+          if-no-files-found: ignore
           retention-days: 1
 
   scan:
