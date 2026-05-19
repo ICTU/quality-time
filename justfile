@@ -243,6 +243,10 @@ junit-xml: install-py-dependencies
     mkdir -p build
     {{ uv_run }} --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml
 
+# Run the unit tests, in all relevant folders.
+[parallel]
+test-all: (run "test" "components/api_server") (run "test" "components/collector") (run "test" "components/frontend") (run "test" "components/notifier") (run "test" "components/renderer") (run "test" "components/shared_code") (run "test" "docs") (run "test" "tools/release") (run "test" "tools/update_dependencies")
+
 # === Run checks ===
 
 # Run ty.
@@ -360,6 +364,7 @@ compose-lint:
 # Check the justfile
 [private]
 check-justfile:
+    ?[ {{ at_root }} = true ]
     {{ just_fmt }} --check
 
 # Run Python checks.
@@ -398,6 +403,10 @@ check-js: npm-lint npm-audit npm-outdated
 # Run the quality checks, in the current working directory. Project-wide checks (yamllint, zizmor, compose-lint) only run when invoked from the repo root.
 [no-cd]
 check: check-js check-py check-justfile yamllint zizmor compose-lint
+
+# Run the quality checks, in all relevant folders.
+[parallel]
+check-all: (run "check" "components/api_server") (run "check" "components/collector") (run "check" "components/frontend") (run "check" "components/notifier") (run "check" "components/renderer") (run "check" "components/shared_code") (run "check" "docs") (run "check" "tests/application_tests") (run "check" "tests/feature_tests") (run "check" "tools/release") (run "check" "tools/third_party") (run "check" "tools/update_dependencies") (run "check" ".")
 
 # === Fix issues ===
 
@@ -468,3 +477,10 @@ clean:
     rm -rf */.venv */*/.venv
     rm -rf */*/dist
     rm -rf */*/htmlcov
+
+# === Utility recipes ===
+
+# Run the recipe in the folder.
+[private]
+run recipe folder:
+    cd {{ folder }} && just {{ recipe }}
