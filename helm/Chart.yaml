@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
 name: quality-time
-version: v5.55.0-rc.0
+version: 5.55.0-rc.0
 appVersion: "v5.55.0-rc.0"
 description: Helm chart for Quality-time, an automated quality system for software development and maintenance
 type: application

@@ -21,6 +21,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Removed
 
 - Remove the feature to mass edit source parameters of sources with the same type in a metric, in a subject, or in all reports. This prepares for the introduction of source locations as objects separate from sources. Source location parameters (URLs and credentials) can still be changed for sources with the same type in a report via the "Sources" tab in the report title. Closes [#13153](https://github.com/ICTU/quality-time/issues/13153).
+- Removed the "v"-prefix from the Helm chart version number to comply with SemVerV2 enforced by the Helm linter. Closes [#13246](https://github.com/ICTU/quality-time/issues/13246).
 
 ### Fixed
 
