@@ -48,7 +48,8 @@ class Metadata(TypedDict):
     """Class representing the metadata object in a summary.json file."""
 
     generatedAt: str
-    k6Version: str
+    k6Version: NotRequired[str]
+    k6_version: NotRequired[str]  # k6 v1.7.x uses snake_case instead of camelCase as specified by the schema.
 
 
 class SummaryJSON(TypedDict):
