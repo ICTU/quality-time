@@ -32,6 +32,8 @@ src_folder := if src_folder_exists == "true" { "src" } else { "" }
 tests_folder := if tests_folder_exists == "true" { "tests" } else { "" }
 code := if trim(src_folder + " " + tests_folder) == "" { ".?*.py" } else { src_folder + " " + tests_folder }
 random_string := uuid()
+# Terminal width is read at parse time from stderr (still a TTY when stdout is captured by $() ); falls back to 200 if there's no TTY (CI, piped output).
+term_width := shell("uv run --quiet --project tools/third_party python -c 'import os; print(os.get_terminal_size(2).columns if os.isatty(2) else 200)'")
 uv_run := "uv run --quiet"
 update_dep := uv_run + " --project tools/update_dependencies tools/update_dependencies/src/update_"
 coverage := uv_run + " coverage"
@@ -162,7 +164,7 @@ build-help:
 [private]
 start-docker-component *components:
     ?[ {{ docker_folder_exists }} = true ]
-    COLUMNS=$({{ uv_run }} python -c 'import shutil, subprocess; w = shutil.get_terminal_size().columns; s = subprocess.run(["docker", "compose", "config", "--services"], capture_output=True, text=True).stdout; print(w - max(len(line.strip()) for line in s.splitlines()) - 6)') docker compose up {{ components }}
+    COLUMNS=$({{ uv_run }} python -c 'import subprocess; s = subprocess.run(["docker", "compose", "config", "--services"], capture_output=True, text=True).stdout; print({{ term_width }} - max(len(line.strip()) for line in s.splitlines()) - 6)') docker compose up {{ components }}
 
 # Start the Python component.
 [no-cd]
