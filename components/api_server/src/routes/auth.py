@@ -79,7 +79,7 @@ class LDAPConfig:
 
     username: str
     root_dn: str = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
-    urls: tuple[str, ...] = tuple(os.environ.get("LDAP_URL", "ldap://localhost:389").split(","))
+    urls: tuple[str, ...] = tuple(os.environ.get("LDAP_URL", "ldap://localhost:10389").split(","))
     lookup_user_dn: str = os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org")
     lookup_user_pw: str = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
     search_filter: str = field(init=False)

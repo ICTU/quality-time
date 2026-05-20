@@ -33,7 +33,7 @@ services:
   ldap:
     build: ../components/testldap
     ports:
-      - "127.0.0.1:389:389"
+      - "127.0.0.1:10389:389"
     security_opt: *security-opt
   renderer:
     build: ../components/renderer
