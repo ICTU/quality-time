@@ -1,5 +1,6 @@
 """Get the latest available tags from Docker Hub."""
 
+import os
 from dataclasses import dataclass
 from datetime import datetime
 from functools import cache
@@ -80,9 +81,19 @@ def _get_available_tags(image: str) -> list[Tag]:
     url = f"https://registry.hub.docker.com/v2/namespaces/{namespace}/repositories/{repository}/tags?page_size=100"
     tags: list[Tag] = []
     while url:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, headers=_docker_hub_headers(), timeout=10)
         response.raise_for_status()
         json = response.json()
         tags.extend(Tag.from_json(result) for result in json.get("results", []))
         url = json.get("next")
     return tags
+
+
+def _docker_hub_headers() -> dict[str, str]:
+    """Return Docker Hub API request headers with bearer token if DOCKER_HUB_USERNAME and DOCKER_HUB_TOKEN are set."""
+    if (token := os.environ.get("DOCKER_HUB_TOKEN")) and (username := os.environ.get("DOCKER_HUB_USERNAME")):
+        url = "https://hub.docker.com/v2/auth/token"
+        response = requests.post(url, timeout=10, json={"identifier": username, "secret": token})
+        response.raise_for_status()
+        return {"Authorization": f"Bearer {response.json()['access_token']}"}
+    return {}

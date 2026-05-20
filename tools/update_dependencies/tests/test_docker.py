@@ -7,6 +7,7 @@ from unittest.mock import Mock, patch
 from docker import get_latest_tag
 
 
+@patch.dict("os.environ", {}, clear=True)
 class GetLatestTagTest(unittest.TestCase):
     """Unit tests for getting the latest tag."""
 
@@ -101,3 +102,16 @@ class GetLatestTagTest(unittest.TestCase):
         old = (datetime.now(UTC) - timedelta(days=10)).isoformat()
         self.create_mock_response(mock_get, {"results": [{"name": "1.4", "tag_last_pushed": old}]})
         self.assertEqual("1.4", get_latest_tag("outside_cooldown", "1.3").version)
+
+    @patch.dict("os.environ", {"DOCKER_HUB_USERNAME": "joe_doe", "DOCKER_HUB_TOKEN": "pat123"})  # nosec
+    @patch("requests.post")
+    @patch("requests.get")
+    def test_user_bearer_token(self, mock_get: Mock, mock_post: Mock):
+        """Test that a bearer token is retrieved when Docker Hub credentials are set."""
+        self.create_mock_response(mock_get, {"results": [{"name": "2.1"}]})
+        self.assertEqual("2.1", get_latest_tag("new_version_available_with_credentials", "1.2").version)
+        mock_post.assert_called_once_with(
+            "https://hub.docker.com/v2/auth/token",
+            timeout=10,
+            json={"identifier": "joe_doe", "secret": "pat123"},  # nosec
+        )
