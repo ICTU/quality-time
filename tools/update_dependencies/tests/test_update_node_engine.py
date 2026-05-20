@@ -79,3 +79,23 @@ class UpdateNodeEnginesTest(unittest.TestCase):
         mock_warning.assert_not_called()
         mock_error.assert_called_with("Expected Dockerfile %s to have a Node base image", Path("/Dockerfile"))
         mock_package_json.write_text.assert_not_called()
+
+    @patch("pathlib.Path.exists", Mock(return_value=False))
+    def test_fallback_dockerfile(self, mock_glob: Mock, mock_info: Mock, mock_warning: Mock, mock_error: Mock):
+        """Test that a Node base image elsewhere in the repo is used when the package.json has no local Dockerfile."""
+        mock_package_json = self.create_package_json()
+        fallback_dockerfile = Mock(
+            relative_to=Mock(return_value=Mock(parts=[])), read_text=Mock(return_value="FROM node:20")
+        )
+        # Two rglob calls: glob("package.json") returns the package.json; glob("Dockerfile") returns the local path
+        # (which we want skipped via the `continue` branch) plus the fallback Dockerfile.
+        mock_glob.side_effect = lambda pattern: iter(
+            [mock_package_json] if pattern == "package.json" else [Path("/Dockerfile"), fallback_dockerfile]
+        )
+        self.assertEqual(0, update_node_engines())
+        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=2)
+        mock_warning.assert_called_once_with(
+            "New version available for %s: %s\n%s", "node", "20", "No changelog available!", stacklevel=2
+        )
+        mock_error.assert_not_called()
+        mock_package_json.write_text.assert_called_once_with('{"engines": {"node": "20" }}\n')
