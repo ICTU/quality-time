@@ -61,7 +61,7 @@ update-circle-ci-config:
 update-docker-compose:
     {{ update_dep }}docker_compose.py
 
-# Update Docker base images in Dockerfiles.
+# Update Docker base images in Dockerfiles. Set the DOCKER_HUB_USERNAME and DOCKER_HUB_TOKEN environment variables to prevent hitting Docker rate limits.
 [private]
 update-docker-base-images:
     {{ update_dep }}dockerfile_base_image.py
