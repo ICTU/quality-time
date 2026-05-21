@@ -372,6 +372,14 @@ check-justfile folder="":
     ?[ {{ at_root }} = true ]
     {{ start_check(folder) }} {{ just_fmt }} --check --color=$_color {{ end_check }}
 
+# Run helm lint
+[no-cd]
+[private]
+helm-lint folder="":
+    ?[ {{ at_root }} = true ]
+    ?[ `which helm` ]
+    {{ start_check(folder) }} helm lint --quiet --strict helm/ {{ end_check }}
+
 # Run Python checks.
 [no-cd]
 [parallel]
@@ -405,9 +413,10 @@ npm-outdated folder="": install-js-dependencies
 [private]
 check-js folder="": (npm-lint folder) (npm-audit folder) (npm-outdated folder)
 
+# Run the quality checks, in the current working directory. Project-wide checks only run when invoked from the repo root.
 [no-cd]
 [private]
-_check folder="": (check-js folder) (check-py folder) (check-justfile folder) (yamllint folder) (zizmor folder) (compose-lint folder)
+_check folder="": (check-js folder) (check-py folder) (check-justfile folder) (yamllint folder) (zizmor folder) (compose-lint folder) (helm-lint folder)
 
 # Run `_check` for one folder. `cd folder` is a no-op when `folder` is `.`.
 [no-cd]
