@@ -12,7 +12,7 @@ dependencies = [
     "argon2-cffi==25.1.0",
     "bottle==0.13.4",
     "cryptography==48.0.0",
-    "gevent==26.4.0",
+    "gevent==26.5.0",
     "ldap3==2.9.1",
     "lxml==6.1.0",
     "lxml-html-clean==0.4.4",
