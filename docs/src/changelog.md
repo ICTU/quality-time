@@ -27,6 +27,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Fixed
 
 - The documentation on importing reports was claiming that a report with credentials can only be re-imported into the same *Quality-time* instance. This is no longer true since v5.52.0. Fixes [#13080](https://github.com/ICTU/quality-time/issues/13080).
+- When a metric had multiple sources where one source was created by copying another, the copied source's entity user data (such as suppressed violation statuses) was overwritten with the original source's user data on every measurement, causing suppressed violations to revert to "unconfirmed". Fixes [#13275](https://github.com/ICTU/quality-time/issues/13275).
 
 ### Deprecated
 
