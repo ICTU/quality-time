@@ -21,7 +21,9 @@ class GrafanaK6SourceUpToDateness(JSONFileSourceCollector, TimePassedCollector):
         """Override to parse the date of the report."""
         json = cast(SummaryJSON, await response.json(content_type=None))
         try:
-            return parse_datetime(json["metadata"]["generatedAt"])
+            # k6 v1.7.x uses "generated_at" instead of "generatedAt" as specified by the schema, so support both.
+            metadata = json["metadata"]
+            return parse_datetime(metadata.get("generatedAt") or metadata["generated_at"])
         except KeyError as error:
             message = 'Could not find an object {"metadata": {"generatedAt": value}} in summary.json.'
             raise CollectorError(message) from error
