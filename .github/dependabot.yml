@@ -3,6 +3,8 @@ version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
@@ -11,6 +13,8 @@ updates:
     directory: "/tools/third_party"
     allow:
       - dependency-type: "direct"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
@@ -19,6 +23,8 @@ updates:
     directory: "/tools/update_dependencies"
     allow:
       - dependency-type: "direct"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
@@ -27,12 +33,16 @@ updates:
     directory: "/components/collector"
     allow:
       - dependency-type: "direct"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/collector"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     ignore:
@@ -41,15 +51,19 @@ updates:
 
   - package-ecosystem: docker
     directory: "/components/database"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     ignore:
       - dependency-name: "mongo"
-        update-types: ["version-update:semver-major", "version-update:semver-minor"]  # Patches only, please
+        update-types: ["version-update:semver-major", "version-update:semver-minor"] # Patches only, please
     open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/frontend"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     ignore:
@@ -58,6 +72,8 @@ updates:
 
   - package-ecosystem: npm
     directory: "/components/frontend"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
@@ -66,12 +82,16 @@ updates:
     directory: "/components/notifier"
     allow:
       - dependency-type: "direct"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/notifier"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     ignore:
@@ -80,12 +100,16 @@ updates:
 
   - package-ecosystem: docker
     directory: "/components/proxy"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/renderer"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     ignore:
@@ -96,12 +120,16 @@ updates:
     directory: "/components/renderer"
     allow:
       - dependency-type: "direct"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/api_server"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     ignore:
@@ -112,6 +140,8 @@ updates:
     directory: "/components/api_server"
     allow:
       - dependency-type: "direct"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
@@ -120,12 +150,16 @@ updates:
     directory: "/components/shared_code"
     allow:
       - dependency-type: "direct"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
 
   - package-ecosystem: docker
     directory: "/components/testdata"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     ignore:
@@ -136,6 +170,8 @@ updates:
     directory: "/docs"
     allow:
       - dependency-type: "direct"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
@@ -144,6 +180,8 @@ updates:
     directory: "/docs"
     allow:
       - dependency-type: "direct"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
@@ -152,6 +190,8 @@ updates:
     directory: "/tools/release"
     allow:
       - dependency-type: "direct"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
@@ -160,6 +200,8 @@ updates:
     directory: "/tests/application_tests"
     allow:
       - dependency-type: "direct"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
@@ -168,6 +210,8 @@ updates:
     directory: "/tests/feature_tests"
     allow:
       - dependency-type: "direct"
+    cooldown:
+      default-days: 7
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
