@@ -24,7 +24,7 @@ dependencies = [
 dev = [
     "mongomock==4.3.0",
     "tools",
-    "types-python-dateutil==2.9.0.20260508",
+    "types-python-dateutil==2.9.0.20260518",
 ]
 
 [tool.setuptools]
