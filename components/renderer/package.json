@@ -19,7 +19,7 @@
         "globals": "^17.6.0",
         "prettier": "^3.8.3",
         "supertest": "^7.2.2",
-        "vitest": "^4.1.6"
+        "vitest": "^4.1.7"
     },
     "scripts": {
         "start": "vite",
