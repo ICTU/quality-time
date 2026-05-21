@@ -29,3 +29,12 @@ class GrafanaK6SourceUpToDatenessTest(SourceCollectorTestCase):
         )
         expected_value = str(days_ago(parse_datetime(generated_at)))
         self.assert_measurement(measurement, value=expected_value)
+
+    async def test_source_up_to_dateness_with_snake_case_key(self):
+        """Test the source up-to-dateness when k6 uses the snake_case "generated_at" key (k6 v1.7.x)."""
+        generated_at = "2026-04-21T10:00:00.000Z"
+        measurement = await self.collect_measurement(
+            get_request_json_return_value={"metadata": {"generated_at": generated_at}}
+        )
+        expected_value = str(days_ago(parse_datetime(generated_at)))
+        self.assert_measurement(measurement, value=expected_value)
