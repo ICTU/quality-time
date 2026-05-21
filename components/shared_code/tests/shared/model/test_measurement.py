@@ -188,11 +188,7 @@ class MeasurementTest(MeasurementTestCase):
         measurement_1 = Measurement(
             self.metric(),
             sources=[
-                {
-                    "source_uuid": SOURCE_ID,
-                    "type": "azure_devops",
-                    "entity_user_data": {"key": {}},
-                },
+                {"source_uuid": SOURCE_ID, "type": "azure_devops", "entity_user_data": {"key": {}}},
             ],
         )
         measurement_2 = Measurement(
@@ -227,6 +223,41 @@ class MeasurementTest(MeasurementTestCase):
 
         measurement_2.copy_entity_user_data(measurement_1)
         self.assertIn("key", measurement_2.sources()[0]["entity_user_data"])
+
+    def test_entity_user_data_with_copied_source_alongside_original(self):
+        """Test that a copied source's own user data is preserved when both the original and the copy coexist."""
+        metric = self.metric(
+            sources={SOURCE_ID: cast(Source, {}), SOURCE_ID2: cast(Source, {"copied_from": SOURCE_ID})},
+        )
+        measurement_1 = Measurement(
+            metric,
+            sources=[
+                {
+                    "source_uuid": SOURCE_ID,
+                    "type": "azure_devops",
+                    "entities": [{"key": "original_key"}],
+                    "entity_user_data": {"original_key": {"status": "false_positive"}},
+                },
+                {
+                    "source_uuid": SOURCE_ID2,
+                    "type": "azure_devops",
+                    "entities": [{"key": "copy_key"}],
+                    "entity_user_data": {"copy_key": {"status": "wont_fix"}},
+                },
+            ],
+        )
+        measurement_2 = Measurement(
+            metric,
+            sources=[
+                {"source_uuid": SOURCE_ID, "type": "azure_devops", "entities": [{"key": "original_key"}]},
+                {"source_uuid": SOURCE_ID2, "type": "azure_devops", "entities": [{"key": "copy_key"}]},
+            ],
+        )
+        measurement_2.copy_entity_user_data(measurement_1)
+        original_source = measurement_2.sources()[0]
+        copy_source = measurement_2.sources()[1]
+        self.assertEqual("false_positive", original_source["entity_user_data"]["original_key"]["status"])
+        self.assertEqual("wont_fix", copy_source["entity_user_data"]["copy_key"]["status"])
 
     def test_copy_first_seen_timestamps(self):
         """Test that the first seen timestamps can be copied."""

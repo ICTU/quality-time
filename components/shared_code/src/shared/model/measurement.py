@@ -255,7 +255,10 @@ class Measurement(dict):
         """Return matching old/new source pairs."""
         old_sources = {source["source_uuid"]: source for source in previous_measurement.sources()}
         for source_uuid, source in self.metric["sources"].items():
-            if "copied_from" in source and source["copied_from"] in old_sources:
+            # Only apply the copied_from redirect when the copy has no previous measurement of its own yet, i.e. on the
+            # first measurement after the copy. Otherwise the copy's own entity user data would be overwritten with the
+            # original's on every measurement.
+            if source_uuid not in old_sources and "copied_from" in source and source["copied_from"] in old_sources:
                 old_sources[source_uuid] = old_sources[source["copied_from"]]
         return [
             (old_source, new_source)
