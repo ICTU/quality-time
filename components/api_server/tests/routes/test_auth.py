@@ -80,19 +80,19 @@ class LoginTests(AuthTestCase):
             "session_expiration_datetime": datetime.min.replace(tzinfo=tzutc()).isoformat(),
         }
 
-    def assert_ldap_connection_search_called(self):
+    def assert_ldap_connection_search_called(self, attributes=("userPassword", "cn", "mail")):
         """Assert that the LDAP connection search method is called with the correct arguments."""
         self.ldap_connection.search.assert_called_with(
             self.LDAP_ROOT_DN,
             f"(|(uid={USERNAME})(cn={USERNAME}))",
-            attributes=["userPassword", "cn", "mail"],
+            attributes=list(attributes),
         )
 
     def assert_ldap_lookup_connection_created(self, connection_mock):
         """Assert that the LDAP lookup connection was created with the lookup user dn and password."""
         self.assertEqual(
             connection_mock.call_args_list[0][1],
-            {"user": self.LOOKUP_USER_DN, "password": "admin", "return_empty_attributes": True},  # nosec
+            {"user": self.LOOKUP_USER_DN, "password": "admin"},  # nosec
         )
 
     def assert_ldap_bind_connection_created(self, connection_mock):
@@ -263,6 +263,20 @@ class LoginTests(AuthTestCase):
         self.assertEqual(login_ok, login(self.database))
         self.assert_cookie_has_session_id()
         self.assert_ldap_lookup_connection_created(connection_mock)
+
+    @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
+    @patch("routes.auth.datetime", MOCK_DATETIME)
+    def test_ldap_attribute_error(self, connection_mock, connection_enter):
+        """Test that an LDAP bind is done if the LDAP-server throws an attribute error."""
+        connection_mock.return_value = None
+        self.ldap_entry.userPassword.value = None
+        self.ldap_connection.search.side_effect = [exceptions.LDAPAttributeError, None]
+        connection_enter.return_value = self.ldap_connection
+        self.assertEqual(self.login_ok, login(self.database))
+        self.assert_cookie_has_session_id()
+        self.assert_ldap_lookup_connection_created(connection_mock)
+        self.assert_ldap_bind_connection_created(connection_mock)
+        self.assert_ldap_connection_search_called(("cn", "mail"))
 
 
 class LogoutTests(AuthTestCase):
