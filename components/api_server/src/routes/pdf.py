@@ -16,9 +16,11 @@ def export_as_pdf(report_uuid: ReportId | None = None):
     renderer_host = os.environ.get("RENDERER_HOST", "renderer")
     renderer_port = os.environ.get("RENDERER_PORT", "9000")
     render_url = f"http://{renderer_host}:{renderer_port}/api/render"
-    # Tell the frontend to not display toast messages to prevent them from being included in the PDF:
-    query_string = "?hide_toasts=true" + (f"&{bottle.request.query_string}" if bottle.request.query_string else "")
-    path = parse.quote(f"{report_uuid or ''}{query_string}")
+    # Tell the frontend to not display toast messages to prevent them from being included in the PDF.
+    # Re-encode any forwarded query parameters via parse_qsl+urlencode so untrusted input is normalised
+    # rather than concatenated into the renderer URL (avoids CodeQL py/reflective-xss false positive).
+    query_params = [("hide_toasts", "true"), *parse.parse_qsl(bottle.request.query_string, keep_blank_values=True)]
+    path = parse.quote(f"{report_uuid or ''}?{parse.urlencode(query_params)}")
     response = requests.get(f"{render_url}?path={path}", timeout=120)
     response.raise_for_status()
     bottle.response.content_type = "application/pdf"
