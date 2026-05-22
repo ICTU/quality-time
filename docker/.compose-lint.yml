@@ -41,10 +41,3 @@ rules:
       ${QUALITY_TIME_VERSION} rather than an immutable digest. The release
       process treats published tags as immutable, and adding a digest pin
       would require updating these files on every release.
-  CL-0021:
-    enabled: false
-    reason: >-
-      DATABASE_URL falls back to mongodb://root:root@database:27017 only when
-      the environment variable is unset, which is the local development
-      default. Real deployments override DATABASE_URL with a secret.
-      Issue to fix this: https://github.com/ICTU/quality-time/issues/13244

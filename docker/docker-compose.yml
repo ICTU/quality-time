@@ -42,13 +42,19 @@ services:
     image: ictu/quality-time_collector:${QUALITY_TIME_VERSION}
     environment:
       - *tz
-      - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
+      - DATABASE_USERNAME_FILE=/run/secrets/database_username
+      - DATABASE_PASSWORD_FILE=/run/secrets/database_password
+      - DATABASE_HOST=${DATABASE_HOST:-database}
+      - DATABASE_PORT=${DATABASE_PORT:-27017}
       - COLLECTOR_MEASUREMENT_FREQUENCY=${COLLECTOR_MEASUREMENT_FREQUENCY:-900}
       - COLLECTOR_MEASUREMENT_LIMIT=${COLLECTOR_MEASUREMENT_LIMIT:-30}
       - COLLECTOR_MEASUREMENT_TIMEOUT=${COLLECTOR_MEASUREMENT_TIMEOUT:-120}
       - COLLECTOR_SLEEP_DURATION=${COLLECTOR_SLEEP_DURATION:-20}
       - COLLECTOR_LOG_LEVEL=${COLLECTOR_LOG_LEVEL:-WARNING}
       - COLUMNS=${COLUMNS} # Tell the Rich logging handler the terminal width
+    secrets:
+      - database_username
+      - database_password
     depends_on:
       - database
     cap_drop:
@@ -58,10 +64,16 @@ services:
     image: ictu/quality-time_notifier:${QUALITY_TIME_VERSION}
     environment:
       - *tz
-      - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
+      - DATABASE_USERNAME_FILE=/run/secrets/database_username
+      - DATABASE_PASSWORD_FILE=/run/secrets/database_password
+      - DATABASE_HOST=${DATABASE_HOST:-database}
+      - DATABASE_PORT=${DATABASE_PORT:-27017}
       - NOTIFIER_SLEEP_DURATION=${NOTIFIER_SLEEP_DURATION:-60}
       - NOTIFIER_LOG_LEVEL=${NOTIFIER_LOG_LEVEL:-WARNING}
       - COLUMNS=${COLUMNS} # Tell the Rich logging handler the terminal width
+    secrets:
+      - database_username
+      - database_password
     depends_on:
       - database
     cap_drop:
@@ -73,7 +85,10 @@ services:
       - *tz
       - API_SERVER_PORT=${API_SERVER_PORT:-5001}
       - API_SERVER_LOG_LEVEL=${API_SERVER_LOG_LEVEL:-WARNING}
-      - DATABASE_URL=${DATABASE_URL:-mongodb://root:root@database:27017}
+      - DATABASE_USERNAME_FILE=/run/secrets/database_username
+      - DATABASE_PASSWORD_FILE=/run/secrets/database_password
+      - DATABASE_HOST=${DATABASE_HOST:-database}
+      - DATABASE_PORT=${DATABASE_PORT:-27017}
       - LDAP_URL=${LDAP_URL:-ldap://ldap:389}
       - LDAP_ROOT_DN=${LDAP_ROOT_DN:-dc=example,dc=org}
       - LDAP_LOOKUP_USER_DN=${LDAP_LOOKUP_USER_DN:-cn=admin,dc=example,dc=org}
@@ -86,6 +101,9 @@ services:
       - RENDERER_PORT=${RENDERER_PORT:-9000}
       - USER_SESSION_DURATION=${USER_SESSION_DURATION:-120}
       - COLUMNS=${COLUMNS} # Tell the Rich logging handler the terminal width
+    secrets:
+      - database_username
+      - database_password
     depends_on:
       - database
     cap_drop:
@@ -96,8 +114,11 @@ services:
     command: --quiet
     environment:
       - *tz
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME:-root}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD:-root}
+      - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/database_username
+      - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/database_password
+    secrets:
+      - database_username
+      - database_password
     volumes:
       - "dbdata:/data/db"
     security_opt: *security-opt
@@ -113,3 +134,8 @@ services:
     security_opt: *security-opt
 volumes:
   dbdata:
+secrets:
+  database_password:
+    file: database_password.txt
+  database_username:
+    file: database_username.txt

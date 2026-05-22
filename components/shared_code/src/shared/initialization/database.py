@@ -2,6 +2,7 @@
 
 import contextlib
 import os
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pymongo
@@ -16,8 +17,14 @@ def mongo_client() -> Generator[pymongo.MongoClient]:  # pragma: no feature-test
     """Return a pymongo client."""
     database_url = os.environ.get("DATABASE_URL")
     if not database_url:
-        db_user = os.environ.get("DATABASE_USERNAME", "root")
-        db_pass = os.environ.get("DATABASE_PASSWORD", "root")
+        if user_file := os.environ.get("DATABASE_USERNAME_FILE"):
+            db_user = Path(user_file).read_text().strip()
+        else:
+            db_user = os.environ.get("DATABASE_USERNAME", "root")
+        if password_file := os.environ.get("DATABASE_PASSWORD_FILE"):
+            db_pass = Path(password_file).read_text().strip()
+        else:
+            db_pass = os.environ.get("DATABASE_PASSWORD", "root")
         db_host = os.environ.get("DATABASE_HOST", "localhost")
         db_port = os.environ.get("DATABASE_PORT", "27017")
         database_url = f"mongodb://{db_user}:{db_pass}@{db_host}:{db_port}"

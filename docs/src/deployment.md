@@ -37,6 +37,7 @@ To changes this, adapt the default port mapping of the `www` service in the comp
 For example:
 
 ```yaml
+services:
   www:
     ports:
       - "1080:${PROXY_PORT:-80}"
@@ -62,6 +63,7 @@ Note that `LDAP_URL` may be a comma-separated list of LDAP connection URL(s).
 Add the LDAP environment variables to the API-server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
 
 ```yaml
+services:
   api_server:
     environment:
       - LDAP_URL=ldap://ldap:389
@@ -74,13 +76,14 @@ Add the LDAP environment variables to the API-server service in the [compose fil
 Alternatively, for a Kubernetes deployment, add the LDAP environment variables to the API-server service in the [Helm values.yaml](https://github.com/ICTU/quality-time/blob/master/helm/values.yaml):
 
 ```yaml
-api_server:
-  env:
-    LDAP_URL: "ldap://host.docker.internal:389"
-    LDAP_ROOT_DN: "dc=example,dc=org"
-    LDAP_LOOKUP_USER_DN: "cn=admin,dc=example,dc=org"
-    LDAP_LOOKUP_USER_PASSWORD: "admin"
-    LDAP_SEARCH_FILTER: "(|(uid=$$username)(cn=$$username))"
+services:
+  api_server:
+    env:
+      LDAP_URL: "ldap://host.docker.internal:389"
+      LDAP_ROOT_DN: "dc=example,dc=org"
+      LDAP_LOOKUP_USER_DN: "cn=admin,dc=example,dc=org"
+      LDAP_LOOKUP_USER_PASSWORD: "admin"
+      LDAP_SEARCH_FILTER: "(|(uid=$$username)(cn=$$username))"
 ```
 
 When using the `LDAP_SEARCH_FILTER` as shown above, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box.
@@ -102,6 +105,7 @@ Quality-time tries two methods to authenticate users:
 To configure Forwarded Authentication, set the `FORWARD_AUTH_ENABLED` and `FORWARD_AUTH_HEADER` environment variables. Add the environment variables to the API-server service in the [compose file](https://github.com/ICTU/quality-time/blob/master/docker/docker-compose.yml):
 
 ```yaml
+services:
   api_server:
     environment:
       - FORWARD_AUTH_ENABLED=True
@@ -121,6 +125,7 @@ The hostnames and ports of the different containers can be configured via enviro
 By default, the server will check for the presence of example reports in the database on startup. If none are present, three example reports will be added to the database. To prevent this behavior, set the `LOAD_EXAMPLE_REPORTS` environment variable to false for the API-server:
 
 ```yaml
+services:
   api_server:
     environment:
       - LOAD_EXAMPLE_REPORTS=False
@@ -131,6 +136,7 @@ By default, the server will check for the presence of example reports in the dat
 By default, the server will log out logged-in users after 120 hours. To change the default user session duration, set the `USER_SESSION_DURATION` environment variable to the desired session duration (in hours):
 
 ```yaml
+services:
   api_server:
     environment:
       - USER_SESSION_DURATION=48
@@ -145,6 +151,7 @@ If a metric has been recently measured and its parameters haven't been changed, 
 By default, the collector measures metrics whose configuration hasn't been changed every 15 minutes, sleeps 20 seconds in between measurements, measures at most 30 metrics every time it wakes up, and times out connections to sources after 2 minutes. The defaults can be changed as follows:
 
 ```yaml
+services:
   collector:
     environment:
       - COLLECTOR_SLEEP_DURATION=10  # Wake up every 10 seconds
@@ -164,6 +171,7 @@ The notifier component is responsible for notifying users via MS Teams about cha
 By default, the notifier wakes up every minute to check for changed metric statuses. This frequency can be changed as follows:
 
 ```yaml
+services:
   notifier:
     environment:
       - NOTIFIER_SLEEP_DURATION=120  # Check for notifications every two minutes
@@ -174,10 +182,29 @@ By default, the notifier wakes up every minute to check for changed metric statu
 The default {index}`MongoDB` credentials can be changed as follows:
 
 ```yaml
+services:
   database:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=secret
+```
+
+In production, [it is recommended to store secrets in files](https://docs.docker.com/compose/how-tos/use-secrets/):
+
+```yaml
+services:
+  database:
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/database_username
+      - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/database_password
+    secrets:
+      - database_username
+      - database_password
+secrets:
+  database_password:
+    file: database_password.txt
+  database_username:
+    file: database_username.txt
 ```
 
 See the [documentation on the MongoDB image](https://hub.docker.com/_/mongo) for more information.

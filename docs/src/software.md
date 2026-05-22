@@ -1,6 +1,6 @@
 # Software documentation
 
-This document describes the *Quality-time* software. It is aimed at *Quality-time* developers and maintainers.
+This document describes the _Quality-time_ software. It is aimed at _Quality-time_ developers and maintainers.
 
 ## Component overview
 
@@ -12,7 +12,7 @@ This document describes the *Quality-time* software. It is aimed at *Quality-tim
    :class: only-light
 ```
 
-*Quality-time* consists of seven Docker components, as depicted above. Each oval is a Docker component.
+_Quality-time_ consists of seven Docker components, as depicted above. Each oval is a Docker component.
 
 ### Bespoke components
 
@@ -27,7 +27,7 @@ Source code that is shared between the Python components lives in the [shared da
 
 ### Standard components
 
-*Quality-time* uses three standard components:
+_Quality-time_ uses three standard components:
 
 - A [proxy](#proxy), routing traffic from and to the user's browser. The proxy is based on [Nginx](https://nginx.org).
 - A [database](#database), for storing reports and measurements. The database is based on [MongoDB](https://www.mongodb.com).
@@ -56,12 +56,13 @@ As a health check, the favicon is downloaded.
 The frontend uses the following environment variables:
 
 | Name            | Default value | Description                       |
-|:----------------|:--------------|:----------------------------------|
+| :-------------- | :------------ | :-------------------------------- |
 | `FRONTEND_PORT` | `5000`        | The port the frontend listens on. |
 
 ## API-server
 
 ```{index} API
+
 ```
 
 ### API
@@ -85,19 +86,21 @@ If the server is healthy the end-point returns a response with HTTP-status 200 a
 The API-server uses the following environment variables:
 
 | Name                        | Default value                             | Description                                                                                                                                                                                                                                                                 |
-|:----------------------------|:------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :-------------------------- | :---------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `API_SERVER_PORT`           | `5001`                                    | Port of the API-server.                                                                                                                                                                                                                                                     |
 | `API_SERVER_LOG_LEVEL`      | `WARNING`                                 | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.                                                                                                                                                                                          |
 | `DATABASE_URL`              | `mongodb://root:root@localhost:27017`     | Mongo database connection URL.                                                                                                                                                                                                                                              |
-| `DATABASE_USERNAME`         | `root`                                    | Mongo database connection username. This value is only used when `DATABASE_URL` is not provided.                                                                                                                                                                            |
-| `DATABASE_PASSWORD`         | `root`                                    | Mongo database connection password. This value is only used when `DATABASE_URL` is not provided.                                                                                                                                                                            |
+| `DATABASE_USERNAME_FILE`    | None                                      | Filename of file with Mongo database connection username. This value is only used when `DATABASE_URL` is not provided.                                                                                                                                                      |
+| `DATABASE_USERNAME`         | `root`                                    | Mongo database connection username. This value is only used when `DATABASE_URL` and `DATABASE_USERNAME_FILE` are not provided.                                                                                                                                              |
+| `DATABASE_PASSWORD_FILE`    | None                                      | Filename of file with Mongo database connection password. This value is only used when `DATABASE_URL` is not provided.                                                                                                                                                      |
+| `DATABASE_PASSWORD`         | `root`                                    | Mongo database connection password. This value is only used when `DATABASE_URL` and `DATABASE_PASSWORD_FILE` are not provided.                                                                                                                                              |
 | `DATABASE_HOST`             | `localhost`                               | Mongo database connection hostname. This value is only used when `DATABASE_URL` is not provided.                                                                                                                                                                            |
 | `DATABASE_PORT`             | `27017`                                   | Mongo database connection port. This value is only used when `DATABASE_URL` is not provided.                                                                                                                                                                                |
 | `LDAP_URL`                  | `ldap://ldap:389`                         | Comma-separated list of LDAP connection URL(s).                                                                                                                                                                                                                             |
 | `LDAP_ROOT_DN`              | `dc=example,dc=org`                       | LDAP root distinguished name.                                                                                                                                                                                                                                               |
 | `LDAP_LOOKUP_USER_DN`       | `cn=admin,dc=example,dc=org`              | LDAP lookup user distinguished name.                                                                                                                                                                                                                                        |
 | `LDAP_LOOKUP_USER_PASSWORD` | `admin`                                   | LDAP lookup user password.                                                                                                                                                                                                                                                  |
-| `LDAP_SEARCH_FILTER`        | `(&#124;(uid=$$username)(cn=$$username))` | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by *Quality-time* at run time with the username that the user enters in the login dialog box. |
+| `LDAP_SEARCH_FILTER`        | `(&#124;(uid=$$username)(cn=$$username))` | LDAP search filter. With this default search filter, users can use either their LDAP canonical name (`cn`) or their LDAP user id to login. The `$username` variable is filled by _Quality-time_ at run time with the username that the user enters in the login dialog box. |
 | `LOAD_EXAMPLE_REPORTS`      | `True`                                    | Whether or not to import example reports in the database on start up.                                                                                                                                                                                                       |
 | `FORWARD_AUTH_ENABLED`      | `False`                                   | Whether or not to enable forward authentication.                                                                                                                                                                                                                            |
 | `FORWARD_AUTH_HEADER`       | `X-Forwarded-User`                        | Header to use for getting the username if forward authentication is turned on.                                                                                                                                                                                              |
@@ -120,15 +123,17 @@ Every time the collector wakes up, it writes the current date and time in ISO fo
 The collector uses the following environment variables:
 
 | Name                              | Default value                         | Description                                                                                                                                                                       |
-|:----------------------------------|:--------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :-------------------------------- | :------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `COLLECTOR_LOG_LEVEL`             | `WARNING`                             | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `CRITICAL`, and `ERROR`.                                                                                                |
 | `COLLECTOR_SLEEP_DURATION`        | `20`                                  | The maximum amount of time (in seconds) that the collector sleeps between collecting measurements.                                                                                |
 | `COLLECTOR_MEASUREMENT_FREQUENCY` | `900`                                 | The amount of time (in seconds) after which a metric should be measured again.                                                                                                    |
 | `COLLECTOR_MEASUREMENT_LIMIT`     | `30`                                  | The maximum number of metrics that the collector measures each time it wakes up. If more metrics need to be measured, they will be measured the next time the collector wakes up. |
 | `COLLECTOR_MEASUREMENT_TIMEOUT`   | `120`                                 | The amount of time (in seconds) after which a source connection should timeout.                                                                                                   |
 | `DATABASE_URL`                    | `mongodb://root:root@localhost:27017` | Mongo database connection URL.                                                                                                                                                    |
-| `DATABASE_USERNAME`               | `root`                                | Mongo database connection username. This value is only used when `DATABASE_URL` is not provided.                                                                                  |
-| `DATABASE_PASSWORD`               | `root`                                | Mongo database connection password. This value is only used when `DATABASE_URL` is not provided.                                                                                  |
+| `DATABASE_USERNAME_FILE`          | None                                  | Filename of file with Mongo database connection username. This value is only used when `DATABASE_URL` is not provided.                                                            |
+| `DATABASE_USERNAME`               | `root`                                | Mongo database connection username. This value is only used when `DATABASE_URL` and `DATABASE_USERNAME_FILE` are not provided.                                                    |
+| `DATABASE_PASSWORD_FILE`          | None                                  | Filename of file with Mongo database connection password. This value is only used when `DATABASE_URL` is not provided.                                                            |
+| `DATABASE_PASSWORD`               | `root`                                | Mongo database connection password. This value is only used when `DATABASE_URL` and `DATABASE_PASSWORD_FILE` are not provided.                                                    |
 | `DATABASE_HOST`                   | `localhost`                           | Mongo database connection hostname. This value is only used when `DATABASE_URL` is not provided.                                                                                  |
 | `DATABASE_PORT`                   | `27017`                               | Mongo database connection port. This value is only used when `DATABASE_URL` is not provided.                                                                                      |
 | `HEALTH_CHECK_FILE`               | `/home/collector/health_check.txt`    | Path to the file used for health check.                                                                                                                                           |
@@ -150,16 +155,18 @@ Every time the notifier wakes up, it writes the current date and time in ISO for
 
 The notifier uses the following environment variables:
 
-| Name                      | Default value                         | Description                                                                                      |
-|:--------------------------|:--------------------------------------|:-------------------------------------------------------------------------------------------------|
-| `DATABASE_URL`            | `mongodb://root:root@localhost:27017` | Mongo database connection URL.                                                                   |
-| `DATABASE_USERNAME`       | `root`                                | Mongo database connection username. This value is only used when `DATABASE_URL` is not provided. |
-| `DATABASE_PASSWORD`       | `root`                                | Mongo database connection password. This value is only used when `DATABASE_URL` is not provided. |
-| `DATABASE_HOST`           | `localhost`                           | Mongo database connection hostname. This value is only used when `DATABASE_URL` is not provided. |
-| `DATABASE_PORT`           | `27017`                               | Mongo database connection port. This value is only used when `DATABASE_URL` is not provided.     |
-| `HEALTH_CHECK_FILE`       | `/home/notifier/health_check.txt`     | Path to the file used for health check.                                                          |
-| `NOTIFIER_LOG_LEVEL`      | `WARNING`                             | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.               |
-| `NOTIFIER_SLEEP_DURATION` | `60`                                  | The amount of time (in seconds) that the notifier sleeps between sending notifications.          |
+| Name                      | Default value                         | Description                                                                                                                    |
+| :------------------------ | :------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`            | `mongodb://root:root@localhost:27017` | Mongo database connection URL.                                                                                                 |
+| `DATABASE_USERNAME_FILE`  | None                                  | Filename of file with Mongo database connection username. This value is only used when `DATABASE_URL` is not provided.         |
+| `DATABASE_USERNAME`       | `root`                                | Mongo database connection username. This value is only used when `DATABASE_URL` and `DATABASE_USERNAME_FILE` are not provided. |
+| `DATABASE_PASSWORD_FILE`  | None                                  | Filename of file with Mongo database connection password. This value is only used when `DATABASE_URL` is not provided.         |
+| `DATABASE_PASSWORD`       | `root`                                | Mongo database connection password. This value is only used when `DATABASE_URL` and `DATABASE_PASSWORD_FILE` are not provided. |
+| `DATABASE_HOST`           | `localhost`                           | Mongo database connection hostname. This value is only used when `DATABASE_URL` is not provided.                               |
+| `DATABASE_PORT`           | `27017`                               | Mongo database connection port. This value is only used when `DATABASE_URL` is not provided.                                   |
+| `HEALTH_CHECK_FILE`       | `/home/notifier/health_check.txt`     | Path to the file used for health check.                                                                                        |
+| `NOTIFIER_LOG_LEVEL`      | `WARNING`                             | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.                                             |
+| `NOTIFIER_SLEEP_DURATION` | `60`                                  | The amount of time (in seconds) that the notifier sleeps between sending notifications.                                        |
 
 ## Shared code
 
@@ -260,7 +267,7 @@ The `url` links to a landing page describing the source type.
 
 ##### Configuration
 
-In cases where *Quality-time* needs information about sources that doesn't need to be parameterizable, `Configurations` can be added to the source. A configuration consists of a name (via `NamedModel`), a list of metrics to which the configuration applies, and a value:
+In cases where _Quality-time_ needs information about sources that doesn't need to be parameterizable, `Configurations` can be added to the source. A configuration consists of a name (via `NamedModel`), a list of metrics to which the configuration applies, and a value:
 
 ```python
 class Configuration(NamedModel):
@@ -348,9 +355,9 @@ To specify the data type of the attribute/column, use the `type` field. If no ty
 
 Values can be mapped to colors using the optional `color` field with a column-value-to-color mapping as value. Possible colors are `positive` (green), `negative` (red), `warning` (yellow) and `active` (grey).
 
-Users can mark entities as false positive to ignore them. By default, *Quality-time* subtracts one from the metric value for each ignored entity. However, this would be incorrect if an entity represents a value greater than one, for example when the metric is the amount of ready user story points and each entity is a user story. In that case *Quality-time* can use an attribute of the entity to subtract from the value. The entity field `measured_attribute` determines which attribute to use.
+Users can mark entities as false positive to ignore them. By default, _Quality-time_ subtracts one from the metric value for each ignored entity. However, this would be incorrect if an entity represents a value greater than one, for example when the metric is the amount of ready user story points and each entity is a user story. In that case _Quality-time_ can use an attribute of the entity to subtract from the value. The entity field `measured_attribute` determines which attribute to use.
 
-In most cases, the measured attribute is one of the attributes. In other cases, the measured attribute may depend on the parameters selected by the user. For example, when measuring 'tests' using Azure DevOps as source, the test results (failed/passed/etc.) selected by the user influence how many tests *Quality-time* has to subtract from the total if the user decides to ignore a test run. To accommodate this, it is possible to add an attribute that is not shown by the front end, but is used as measured attribute, by marking the attribute as not visible.
+In most cases, the measured attribute is one of the attributes. In other cases, the measured attribute may depend on the parameters selected by the user. For example, when measuring 'tests' using Azure DevOps as source, the test results (failed/passed/etc.) selected by the user influence how many tests _Quality-time_ has to subtract from the total if the user decides to ignore a test run. To accommodate this, it is possible to add an attribute that is not shown by the front end, but is used as measured attribute, by marking the attribute as not visible.
 
 Of course, the collector needs to compute the extra attribute and add it to the measurement entities.
 
@@ -371,9 +378,9 @@ The list of `metrics` contains the metrics that make the most sense for the subj
 
 ## Proxy
 
-The proxy routes traffic from and to the user's browser. *Quality-time* uses [Nginx](https://nginx.org), but this can be replaced by another proxy if so desired.
+The proxy routes traffic from and to the user's browser. _Quality-time_ uses [Nginx](https://nginx.org), but this can be replaced by another proxy if so desired.
 
-The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile) adds the *Quality-time* configuration to the Nginx image.
+The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/proxy/Dockerfile) adds the _Quality-time_ configuration to the Nginx image.
 
 ### Health check
 
@@ -384,7 +391,7 @@ As a health check, the favicon is downloaded from the frontend container.
 The proxy uses the following environment variables:
 
 | Name              | Default value | Description                                              |
-|:------------------|:--------------|:---------------------------------------------------------|
+| :---------------- | :------------ | :------------------------------------------------------- |
 | `PROXY_PORT`      | `80`          | Port of the proxy, within the internal (Docker) network. |
 | `FRONTEND_HOST`   | `frontend`    | The host name of the frontend.                           |
 | `FRONTEND_PORT`   | `5000`        | The port the frontend listens on.                        |
@@ -395,9 +402,9 @@ The proxy uses the following environment variables:
 
 The database component consists of a [MongoDB](https://www.mongodb.com) database to store reports and measurements.
 
-The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile) wraps the {index}`MongoDB` image in a *Quality-time* image so the MongoDB version number can be changed when needed.
+The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile) wraps the {index}`MongoDB` image in a _Quality-time_ image so the MongoDB version number can be changed when needed.
 
-*Quality-time* stores its data in a Mongo database using the following collections: `datamodels`, `measurements`, `reports`, `reports_overviews`, and `sessions`.
+_Quality-time_ stores its data in a Mongo database using the following collections: `datamodels`, `measurements`, `reports`, `reports_overviews`, and `sessions`.
 
 Data models, reports, and reports overviews are [temporal objects](https://www.martinfowler.com/eaaDev/TemporalObject.html). Every time a new version of the data model is loaded or the user edits a report or the reports overview, an updated copy of the object (a "document" in Mongo-parlance) is added to the collection. Since each copy has a timestamp, this enables the API-server to retrieve the documents as they were at a specific moment in time and provide time-travel functionality.
 
@@ -410,13 +417,13 @@ The MongoDB container currently has no health check.
 The database uses the following environment variables:
 
 | Name                         | Default value | Description                |
-|:-----------------------------|:--------------|:---------------------------|
+| :--------------------------- | :------------ | :------------------------- |
 | `MONGO_INITDB_ROOT_USERNAME` | `root`        | The MongoDB root username. |
 | `MONGO_INITDB_ROOT_PASSWORD` | `root`        | The MongoDB root password. |
 
 ## Renderer
 
-The renderer component is used to export quality reports to PDF. *Quality-time* uses [puppeteer](https://github.com/puppeteer/puppeteer).
+The renderer component is used to export quality reports to PDF. _Quality-time_ uses [puppeteer](https://github.com/puppeteer/puppeteer).
 
 The renderer [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/renderer/Dockerfile) wraps puppeteer with a small API that uses puppeteer to convert a report URL into a PDF file.
 
@@ -429,7 +436,7 @@ The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/ren
 The renderer uses the following environment variables:
 
 | Name             | Default value | Description                                                                                                                            |
-|:-----------------|:--------------|:---------------------------------------------------------------------------------------------------------------------------------------|
+| :--------------- | :------------ | :------------------------------------------------------------------------------------------------------------------------------------- |
 | `PROXY_HOST`     | `www`         | Hostname of the proxy. The renderer uses this to access the reports that need to be exported to PDF.                                   |
 | `PROXY_PORT`     | `80`          | Port of the proxy, within the internal (Docker) network. The renderer uses this to access the reports that need to be exported to PDF. |
 | `PROXY_PROTOCOL` | `http`        | Protocol of the proxy. The renderer uses this to access the reports that need to be exported to PDF.                                   |
@@ -477,7 +484,7 @@ The test LDAP server container has no health check.
 The LDAP database has two users:
 
 | User     | Email address         | Username | Password |
-|----------|-----------------------|----------|----------|
+| -------- | --------------------- | -------- | -------- |
 | Jane Doe | `janedoe@example.org` | `jadoe`  | `secret` |
 | John Doe | `johndoe@example.org` | `jodoe`  | `secret` |
 
