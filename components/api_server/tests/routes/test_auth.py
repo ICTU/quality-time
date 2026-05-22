@@ -92,7 +92,7 @@ class LoginTests(AuthTestCase):
         """Assert that the LDAP lookup connection was created with the lookup user dn and password."""
         self.assertEqual(
             connection_mock.call_args_list[0][1],
-            {"user": self.LOOKUP_USER_DN, "password": "admin"},  # nosec
+            {"user": self.LOOKUP_USER_DN, "password": "admin", "return_empty_attributes": True},  # nosec
         )
 
     def assert_ldap_bind_connection_created(self, connection_mock):

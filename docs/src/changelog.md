@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- If an LDAP server does not return the user password attribute when Quality-time tries to authenticate a user, attempt an LDAP bind instead of throwing an exception. Fixes [#13305](https://github.com/ICTU/quality-time/issues/13305).
+
 ## v5.55.0 - 2026-05-21
 
 ### Added

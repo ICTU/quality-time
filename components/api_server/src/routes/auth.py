@@ -99,7 +99,9 @@ def verify_user(database: Database, username: str, password: str) -> User:
         ldap_server_pool = ServerPool([Server(url, get_info=ALL) for url in ldap.urls])
         logger.debug("Created LDAP server pool for URLs: %s", ldap.urls)
         # Look up the user to authenticate, using the lookup-user credentials:
-        with Connection(ldap_server_pool, user=ldap.lookup_user_dn, password=ldap.lookup_user_pw) as lookup_connection:
+        with Connection(
+            ldap_server_pool, user=ldap.lookup_user_dn, password=ldap.lookup_user_pw, return_empty_attributes=True
+        ) as lookup_connection:
             logger.debug("Created LDAP lookup connection for lookup user %s", ldap.lookup_user_dn)
             if not lookup_connection.bind():  # pragma: no feature-test-cover
                 logger.warning("Could not bind LDAP lookup connection for lookup user %s", ldap.lookup_user_dn)
