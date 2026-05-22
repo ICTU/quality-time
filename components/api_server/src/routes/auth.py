@@ -99,21 +99,29 @@ def verify_user(database: Database, username: str, password: str) -> User:
         ldap_server_pool = ServerPool([Server(url, get_info=ALL) for url in ldap.urls])
         logger.debug("Created LDAP server pool for URLs: %s", ldap.urls)
         # Look up the user to authenticate, using the lookup-user credentials:
-        with Connection(
-            ldap_server_pool, user=ldap.lookup_user_dn, password=ldap.lookup_user_pw, return_empty_attributes=True
-        ) as lookup_connection:
+        with Connection(ldap_server_pool, user=ldap.lookup_user_dn, password=ldap.lookup_user_pw) as lookup_connection:
             logger.debug("Created LDAP lookup connection for lookup user %s", ldap.lookup_user_dn)
             if not lookup_connection.bind():  # pragma: no feature-test-cover
                 logger.warning("Could not bind LDAP lookup connection for lookup user %s", ldap.lookup_user_dn)
                 raise exceptions.LDAPBindError  # noqa: TRY301
             logger.debug("Successfully bound LDAP lookup connection for lookup user %s", ldap.lookup_user_dn)
-            lookup_connection.search(ldap.root_dn, ldap.search_filter, attributes=["userPassword", "cn", "mail"])
+            try:
+                lookup_connection.search(ldap.root_dn, ldap.search_filter, attributes=["userPassword", "cn", "mail"])
+                received_user_password_hash = True
+            except exceptions.LDAPAttributeError:  # pragma: no feature-test-cover
+                received_user_password_hash = False
+                logger.debug("Search for LDAP user with userPassword failed, attempting search without userPassword")
+                lookup_connection.search(ldap.root_dn, ldap.search_filter, attributes=["cn", "mail"])
             logger.debug("Searched for LDAP user using configured LDAP search filter")
             ldap_user = lookup_connection.entries[0]
             logger.debug("Found LDAP user with dn %s using configured LDAP search filter", ldap_user.entry_dn)
         # If the LDAP-server returned the user's password-hash, check the password against the hash, otherwise
         # attempt a bind operation using the user's distinguished name (dn) and password:
-        if (password_hash := ldap_user.userPassword.value) and check_password(password_hash, password):
+        if (
+            received_user_password_hash
+            and (password_hash := ldap_user.userPassword.value)
+            and check_password(password_hash, password)
+        ):
             logger.info("LDAP password check succeeded for LDAP user with dn %s", ldap_user.entry_dn)
         else:  # pragma: no feature-test-cover
             logger.debug("LDAP password check failed, attempting LDAP bind with the user's dn %s", ldap_user.entry_dn)
