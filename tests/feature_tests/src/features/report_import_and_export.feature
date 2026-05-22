@@ -9,6 +9,10 @@ Feature: report
     And the client downloads the report as PDF
     Then the client receives the PDF
 
+  Scenario: export non-existing report as PDF
+    When the client downloads the report non_existing_report_uuid as PDF
+    Then the client receives no PDF
+
   Scenario: export report as JSON
     When the client creates a report
     And the client changes the report tracker_type to "jira"
@@ -35,8 +39,8 @@ Feature: report
     And the client downloads the report as JSON via the internal API
     Then the client receives the JSON
 
-  Scenario: export nonexisting report as JSON
-    When the client downloads the report non_existing_report_uuid as json
+  Scenario: export non-existing report as JSON
+    When the client downloads the report non_existing_report_uuid as JSON
     Then the client receives no JSON
 
   Scenario: export report as JSON with own public key

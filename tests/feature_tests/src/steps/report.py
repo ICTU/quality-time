@@ -31,16 +31,18 @@ def check_report_metric_status_summary(context: Context) -> None:
         assert_equal(0, summary[color])
 
 
-@when("the client downloads the report as PDF")
+@when("the client downloads the report {report_uuid} as PDF")
 @when("the client downloads the reports overview as PDF")
-def download_report_as_pdf(context: Context) -> None:
+def download_report_as_pdf(context: Context, report_uuid: str | None = None) -> None:
     """Download the report as PDF."""
-    path = "reports_overview" if "overview" in context.step.name else f"report/{context.uuid['report']}"
+    if report_uuid is None:
+        report_uuid = context.uuid["report"]
+    path = "reports_overview" if "overview" in context.step.name else f"report/{report_uuid}"
     context.get(path + "/pdf")
 
 
 @when("the client downloads the report as JSON")
-@when("the client downloads the report {report_uuid} as json")
+@when("the client downloads the report {report_uuid} as JSON")
 def download_report_as_json(context: Context, report_uuid: str | None = None) -> None:
     """Download the report as JSON."""
     if report_uuid is None:
@@ -110,8 +112,15 @@ def time_travel(context: Context) -> None:
 @then("the client receives the PDF")
 def check_pdf(context: Context) -> None:
     """Check the PDF."""
+    assert_equal(200, context.response.status_code)
     assert_equal("application/pdf", context.response.headers["Content-Type"])
     assert_equal(b"%PDF", context.response.content[:4])
+
+
+@then("the client receives no PDF")
+def check_no_pdf(context: Context) -> None:
+    """Check the PDF."""
+    assert_equal(404, context.response.status_code)
 
 
 @then("the client receives the JSON")

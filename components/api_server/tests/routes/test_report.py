@@ -477,15 +477,23 @@ class ReportTest(ReportTestCase):
         self.database.reports.insert_one.assert_not_called()
 
     @patch("requests.get")
-    def test_get_pdf_report(self, requests_get):
+    def test_get_pdf_version_of_report(self, requests_get):
         """Test that a PDF version of the report can be retrieved."""
         response = Mock()
         response.content = b"PDF"
         requests_get.return_value = response
-        self.assertEqual(b"PDF", export_report_as_pdf(REPORT_ID))
+        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.assertEqual(b"PDF", export_report_as_pdf(self.database, REPORT_ID))
         requests_get.assert_called_once_with(
             f"http://renderer:9000/api/render?path={REPORT_ID}%3Fhide_toasts%3Dtrue",
             timeout=120,
+        )
+
+    def test_get_pdf_version_of_non_existing_report(self):
+        """Test that a  PDF version of the report can be retrieved."""
+        self.database.reports.distinct.return_value = [REPORT_ID]
+        self.assertEqual(
+            {"ok": False, "error": "Cannot find the report."}, export_report_as_pdf(self.database, REPORT_ID2)
         )
 
     def test_delete_report(self):

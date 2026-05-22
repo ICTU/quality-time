@@ -12,7 +12,7 @@ from shared_data_model.parameters import PrivateToken
 
 from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements
-from database.reports import insert_new_report, latest_report, latest_reports_before_timestamp
+from database.reports import insert_new_report, latest_report, latest_reports_before_timestamp, report_exists
 from initialization.app_secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.defaults import default_report_attributes
@@ -135,9 +135,12 @@ def post_report_copy(database: Database, report: Report, report_uuid: ReportId):
 
 @bottle.get("/api/internal/report/<report_uuid>/pdf", authentication_required=False)
 @bottle.get("/api/v3/report/<report_uuid>/pdf", authentication_required=False)
-def export_report_as_pdf(report_uuid: ReportId):
+def export_report_as_pdf(database: Database, report_uuid: ReportId):
     """Download the report as PDF."""
-    return export_as_pdf(report_uuid)
+    if report_exists(database, report_uuid):
+        return export_as_pdf(report_uuid)
+    bottle.response.status = HTTPStatus.NOT_FOUND
+    return {"ok": False, "error": "Cannot find the report."}
 
 
 @bottle.get("/api/internal/report/<report_uuid>/json", authentication_required=True)
