@@ -2,7 +2,6 @@
 
 import asyncio
 import os
-from typing import NoReturn
 
 from shared.initialization.database import get_database, mongo_client
 from shared.utils.log import init_logging
@@ -10,7 +9,7 @@ from shared.utils.log import init_logging
 from notifier.notifier import notify
 
 
-def start_notifications() -> NoReturn:
+def start_notifications() -> None:
     """Notify indefinitely."""
     init_logging(str(os.getenv("NOTIFIER_LOG_LEVEL", "WARNING")))
     sleep_duration = int(os.getenv("NOTIFIER_SLEEP_DURATION", "60"))
