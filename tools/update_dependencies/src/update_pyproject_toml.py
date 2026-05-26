@@ -69,7 +69,7 @@ def update_pyproject_toml(pyproject_toml: Path) -> None:
 def update_uv_lock(pyproject_toml: Path) -> None:
     """Update the uv.lock file for the pyproject.toml."""
     LOG.path(pyproject_toml.parent / "uv.lock")
-    run(["uv", "sync", "--directory", str(pyproject_toml.parent), "--upgrade", "--quiet", "--no-progress"])
+    run(["uv", "lock", "--directory", str(pyproject_toml.parent), "--upgrade", "--quiet", "--no-progress"])
 
 
 def update_pyproject_tomls() -> int:
