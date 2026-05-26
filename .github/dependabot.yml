@@ -45,8 +45,6 @@ updates:
       default-days: 7
     schedule:
       interval: "daily"
-    ignore:
-      - dependency-name: "python"
     open-pull-requests-limit: 10
 
   - package-ecosystem: docker
@@ -55,9 +53,6 @@ updates:
       default-days: 7
     schedule:
       interval: "daily"
-    ignore:
-      - dependency-name: "mongo"
-        update-types: ["version-update:semver-major", "version-update:semver-minor"] # Patches only, please
     open-pull-requests-limit: 10
 
   - package-ecosystem: docker
@@ -66,8 +61,6 @@ updates:
       default-days: 7
     schedule:
       interval: "daily"
-    ignore:
-      - dependency-name: "node"
     open-pull-requests-limit: 10
 
   - package-ecosystem: npm
@@ -94,8 +87,6 @@ updates:
       default-days: 7
     schedule:
       interval: "daily"
-    ignore:
-      - dependency-name: "python"
     open-pull-requests-limit: 10
 
   - package-ecosystem: docker
@@ -112,8 +103,6 @@ updates:
       default-days: 7
     schedule:
       interval: "daily"
-    ignore:
-      - dependency-name: "node"
     open-pull-requests-limit: 10
 
   - package-ecosystem: npm
@@ -132,8 +121,6 @@ updates:
       default-days: 7
     schedule:
       interval: "daily"
-    ignore:
-      - dependency-name: "python"
     open-pull-requests-limit: 10
 
   - package-ecosystem: uv
@@ -162,8 +149,6 @@ updates:
       default-days: 7
     schedule:
       interval: "daily"
-    ignore:
-      - dependency-name: "python"
     open-pull-requests-limit: 10
 
   - package-ecosystem: npm
