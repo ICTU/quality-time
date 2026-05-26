@@ -116,7 +116,7 @@ install-py-dependencies:
 install-js-dependencies:
     ?[ {{ package_json_exists }} = true ]
     ?[ ! -e node_modules/.package-lock.json ] || [ package-lock.json -nt node_modules/.package-lock.json ]
-    npm ci --ignore-scripts --silent
+    npm ci --silent
 
 # === Build artifacts ===
 
@@ -132,7 +132,7 @@ build-docker *components:
 [private]
 build-js: install-js-dependencies
     ?[ {{ has_js_script("build") }} = true ]
-    {{ npm_run }} --ignore-scripts build
+    {{ npm_run }} build
 
 # Build the documentation from the code.
 [no-cd]

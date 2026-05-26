@@ -25,7 +25,7 @@ class UpdatePackageJsonTest(unittest.TestCase):
     def assert_npm_called(self, mock_run: Mock) -> None:
         """Assert that npm outdated and npm update have been called."""
         npm_outdated = ["npm", "outdated", "--silent", "--json", "--include=dev"]
-        npm_update = ["npm", "update", "--save", "--fund=false", "--ignore-scripts", "--silent", "--include=dev"]
+        npm_update = ["npm", "update", "--save", "--silent", "--include=dev"]
         run_kwargs = {"capture_output": True, "text": True, "check": True, "cwd": Path("/")}
         mock_run.assert_has_calls((call(npm_outdated, **run_kwargs), call(npm_update, **run_kwargs)))
 
