@@ -18,7 +18,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "tools",
-    "types-requests==2.33.0.20260513",
+    "types-requests==2.33.0.20260518",
 ]
 
 [tool.uv]

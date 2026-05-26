@@ -12,6 +12,14 @@
 # findings outside this set will fail `just check`.
 
 rules:
+  CL-0005:
+    exclude_services:
+      www: >-
+        The www service is the product's reverse proxy and is intended to
+        be the publicly reachable entry point. Binding to 127.0.0.1 would
+        defeat its purpose. Operators terminating TLS in front of Quality-time
+        can override the port mapping (and bind address) in their own
+        override file or Helm chart.
   CL-0006:
     exclude_services:
       database: >-
