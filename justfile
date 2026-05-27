@@ -9,9 +9,6 @@ _default:
 alias help := _default
 
 export COVERAGE_RCFILE := justfile_directory() + "/.coveragerc"
-dependency_update_cooldown_days := "7"
-export DEPENDENCY_UPDATE_COOLDOWN_DAYS := dependency_update_cooldown_days
-export NPM_CONFIG_MIN_RELEASE_AGE := dependency_update_cooldown_days
 components := `ls components`
 exists(path) := path_exists(invocation_directory() + "/" + path)
 docker_folder_exists := exists("docker")
@@ -72,7 +69,6 @@ update-github-actions:
     {{ update_dep }}github_action.py
 
 # Update direct and indirect Python dependencies.
-[env("UV_EXCLUDE_NEWER", "P" + dependency_update_cooldown_days + "D")]
 [private]
 update-py-dependencies:
     {{ update_dep }}pyproject_toml.py

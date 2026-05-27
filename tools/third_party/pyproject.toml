@@ -12,15 +12,15 @@ classifiers = [
 dependencies = [
     "bandit==1.9.4",
     "codespell==2.4.2",
-    "compose-lint==0.12.1",
+    "compose-lint==0.7.0",
     "coverage==7.14.0",
     "fixit==2.2.1",
     "mypy==2.1.0",
     "pip-audit==2.10.0",
     "pyproject-fmt==2.21.2",
-    "ruff==0.15.14",
+    "ruff==0.15.13",
     "troml==0.4.1",
-    "ty==0.0.39",
+    "ty==0.0.38",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
     "vulture==2.16",
     "yamllint==1.38.0",
@@ -32,10 +32,11 @@ just = [
     "rust-just==1.51.0",
 ]
 uv = [
-    "uv==0.11.16",
+    "uv==0.11.15",
 ]
 
 [tool.uv]
+exclude-newer = "7 days"
 package = false
 
 [tool.ruff]

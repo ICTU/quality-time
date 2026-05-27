@@ -28,6 +28,7 @@ dev = [
 [tool.uv]
 sources.shared-code = { path = "../components/shared_code", editable = true }
 sources.tools = { path = "../tools/third_party", package = false }
+exclude-newer = "7 days"
 
 [tool.ruff]
 line-length = 120

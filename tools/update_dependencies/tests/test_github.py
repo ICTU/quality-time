@@ -114,7 +114,6 @@ class GetLatestReleaseTest(unittest.TestCase):
             stacklevel=2,
         )
 
-    @patch.dict("os.environ", {"DEPENDENCY_UPDATE_COOLDOWN_DAYS": "7"})
     @patch("requests.get")
     def test_skip_releases_within_cooldown(self, mock_get: Mock):
         """Test that releases published within the cooldown period are skipped in favor of older releases."""
