@@ -1,4 +1,4 @@
-FROM node:26.1.0-alpine3.23 AS compile-image
+FROM node:26.2.0-alpine3.23 AS compile-image
 
 RUN apk add --no-cache tzdata=2026b-r0
 

@@ -6,6 +6,6 @@
         "lint": "markdownlint src/**/*.md"
     },
     "engines": {
-        "node": "26.1.0"
+        "node": "26.2.0"
     }
 }
