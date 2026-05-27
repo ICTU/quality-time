@@ -1,9 +1,10 @@
 {
     "devDependencies": {
+        "lockfile-lint": "^5.0.0",
         "markdownlint-cli": "^0.48.0"
     },
     "scripts": {
-        "lint": "markdownlint src/**/*.md"
+        "lint": "markdownlint src/**/*.md; lockfile-lint"
     },
     "engines": {
         "node": "26.2.0"
