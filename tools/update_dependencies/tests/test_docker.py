@@ -87,7 +87,6 @@ class GetLatestTagTest(unittest.TestCase):
         self.create_mock_response(mock_get, {"results": [{"name": "1.4-windows"}]})
         self.assertEqual("1.3", get_latest_tag("different_suffix", "1.3").version)
 
-    @patch.dict("os.environ", {"DEPENDENCY_UPDATE_COOLDOWN_DAYS": "7"})
     @patch("requests.get")
     def test_within_cooldown(self, mock_get: Mock):
         """Test that tags pushed within the cooldown period are ignored."""
@@ -95,7 +94,6 @@ class GetLatestTagTest(unittest.TestCase):
         self.create_mock_response(mock_get, {"results": [{"name": "1.4", "tag_last_pushed": recent}]})
         self.assertEqual("1.3", get_latest_tag("within_cooldown", "1.3").version)
 
-    @patch.dict("os.environ", {"DEPENDENCY_UPDATE_COOLDOWN_DAYS": "7"})
     @patch("requests.get")
     def test_outside_cooldown(self, mock_get: Mock):
         """Test that tags pushed before the cooldown period are considered."""

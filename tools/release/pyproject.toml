@@ -21,6 +21,7 @@ dev = [
 
 [tool.uv]
 sources.tools = { path = "../third_party", package = false }
+exclude-newer = "7 days"
 
 [tool.ruff]
 line-length = 120
