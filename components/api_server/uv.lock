@@ -324,14 +324,14 @@ wheels = [
 
 [[package]]
 name = "compose-lint"
-version = "0.7.0"
+version = "0.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/72/bf/54f6d200366c522da986a1a6e79c0d3e6269426a41fa1e131f72c0c88f9c/compose_lint-0.7.0.tar.gz", hash = "sha256:f72dc21b2bd08f1dcfdce2c75896482c95922e4e021a6429da1997ffdc5cf32a", size = 318416, upload-time = "2026-05-01T04:08:00.779Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/da/58/94612c99bcf454f32fe4a34002bc7189f5265f01e00e6fc75c3ba8ed4c46/compose_lint-0.7.1.tar.gz", hash = "sha256:7d007c08ca9b7c177529dfb6530fe4815b6bf6dc316a5a66dc0fb32ecaa656a6", size = 353758, upload-time = "2026-05-21T04:27:21.963Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/23/de/747c720f607996fb5d3fd5a675be26e2869a03f7232d1dc417c26a2710a0/compose_lint-0.7.0-py3-none-any.whl", hash = "sha256:a6bff8fef67655d5cdea09887e4cfe6fa5a52b78c4f88b175dd2aee8a8d9b9bf", size = 94737, upload-time = "2026-05-01T04:07:59.023Z" },
+    { url = "https://files.pythonhosted.org/packages/34/58/c0534fa067def7e8acfce13dc5e1509718565d35e02ddfd5f199e57dac2b/compose_lint-0.7.1-py3-none-any.whl", hash = "sha256:87f28bb94fc99704b490fbef1a5554406007bda2842d6e6508f22d8a88fabb0f", size = 94751, upload-time = "2026-05-21T04:27:20.453Z" },
 ]
 
 [[package]]
@@ -1266,7 +1266,7 @@ dependencies = [
 requires-dist = [
     { name = "bandit", specifier = "==1.9.4" },
     { name = "codespell", specifier = "==2.4.2" },
-    { name = "compose-lint", specifier = "==0.7.0" },
+    { name = "compose-lint", specifier = "==0.7.1" },
     { name = "coverage", specifier = "==7.14.0" },
     { name = "fixit", specifier = "==2.2.1" },
     { name = "mypy", specifier = "==2.1.0" },
