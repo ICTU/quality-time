@@ -6,6 +6,8 @@ from unittest.mock import Mock, patch
 
 from update_node_engine import update_node_engines
 
+from .helpers import mock_path
+
 
 @patch("pathlib.Path.cwd", Mock(return_value=Path("/")))
 @patch("logging.Logger.error")
@@ -17,7 +19,7 @@ class UpdateNodeEnginesTest(unittest.TestCase):
 
     def create_package_json(self, contents: str = '{"engines": {"node": "18" }}') -> Mock:
         """Create a mock package.json file."""
-        mock_package_json = Mock(relative_to=Mock(return_value=Mock(parts=[])), read_text=Mock(return_value=contents))
+        mock_package_json = mock_path(contents)
         mock_package_json.parent = Path("/")
         return mock_package_json
 
@@ -84,9 +86,7 @@ class UpdateNodeEnginesTest(unittest.TestCase):
     def test_fallback_dockerfile(self, mock_glob: Mock, mock_info: Mock, mock_warning: Mock, mock_error: Mock):
         """Test that a Node base image elsewhere in the repo is used when the package.json has no local Dockerfile."""
         mock_package_json = self.create_package_json()
-        fallback_dockerfile = Mock(
-            relative_to=Mock(return_value=Mock(parts=[])), read_text=Mock(return_value="FROM node:20")
-        )
+        fallback_dockerfile = mock_path("FROM node:20")
         # Two rglob calls: glob("package.json") returns the package.json; glob("Dockerfile") returns the local path
         # (which we want skipped via the `continue` branch) plus the fallback Dockerfile.
         mock_glob.side_effect = lambda pattern: iter(

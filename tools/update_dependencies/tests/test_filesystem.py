@@ -7,6 +7,8 @@ from unittest.mock import Mock, patch
 from filesystem import glob, update_file, update_files
 from version import DependencyVersion
 
+from .helpers import mock_path
+
 
 @patch("pathlib.Path.cwd", Mock(return_value=Path("/")))
 @patch("pathlib.Path.glob")
@@ -43,7 +45,7 @@ class UpdateFileTest(unittest.TestCase):
 
     def test_no_changes(self):
         """Test no changes."""
-        mock_file = Mock(read_text=Mock(return_value="line1\nline2\n"))
+        mock_file = mock_path("line1\nline2\n")
         mock_logger = Mock()
         self.assertEqual(
             0, update_file(mock_file, "regexp", lambda *_args: DependencyVersion(version="1.1"), mock_logger)
@@ -53,7 +55,7 @@ class UpdateFileTest(unittest.TestCase):
 
     def test_new_version(self):
         """Test a new version."""
-        mock_file = Mock(read_text=Mock(return_value="line1\nimage: python:3.14\n"))
+        mock_file = mock_path("line1\nimage: python:3.14\n")
         mock_logger = Mock()
         self.assertEqual(
             0, update_file(mock_file, REGEXP, lambda *_args: DependencyVersion(version="3.15"), mock_logger)
@@ -65,7 +67,7 @@ class UpdateFileTest(unittest.TestCase):
         """Test a new version with a sha."""
         old_sha = "a" * 40
         regexp = r"uses: (?P<dependency>[\w\d\./-]+)@(?P<sha>[a-f0-9]{40}) # v?(?P<version>[\d\w\.\-]+)"
-        mock_file = Mock(read_text=Mock(return_value=f"line1\nuses: action/action@{old_sha} # v3.14\n"))
+        mock_file = mock_path(f"line1\nuses: action/action@{old_sha} # v3.14\n")
         mock_logger = Mock()
         new_sha = "b" * 40
         new_version = DependencyVersion(version="3.15", sha=new_sha)
@@ -75,7 +77,7 @@ class UpdateFileTest(unittest.TestCase):
 
     def test_old_version(self):
         """Test a new version that is actually older."""
-        mock_file = Mock(read_text=Mock(return_value="line1\nimage: python:3.14\n"))
+        mock_file = mock_path("line1\nimage: python:3.14\n")
         mock_logger = Mock()
         self.assertEqual(
             0, update_file(mock_file, REGEXP, lambda *_args: DependencyVersion(version="3.13"), mock_logger)
@@ -88,16 +90,9 @@ class UpdateFileTest(unittest.TestCase):
 class UpdateFilesTest(unittest.TestCase):
     """Unit tests for the update file function."""
 
-    def mock_file(self, contents: str) -> Mock:
-        """Create a mock file (Path) fixture."""
-        mock_file = Mock()
-        mock_file.read_text.return_value = contents
-        mock_file.relative_to.return_value = Mock(parts=[])
-        return mock_file
-
     def test_no_changes(self, mock_glob: Mock):
         """Test that files are unchanged if there is no new version."""
-        mock_file = self.mock_file("line1\nline2\n")
+        mock_file = mock_path("line1\nline2\n")
         mock_glob.return_value = [mock_file]
         mock_logger = Mock()
         self.assertEqual(
@@ -108,7 +103,7 @@ class UpdateFilesTest(unittest.TestCase):
 
     def test_new_version(self, mock_glob: Mock):
         """Test that files are updated with the new version."""
-        mock_file = self.mock_file("line1\nimage: python:3.14\n")
+        mock_file = mock_path("line1\nimage: python:3.14\n")
         mock_glob.return_value = [mock_file]
         mock_logger = Mock()
         self.assertEqual(
