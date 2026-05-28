@@ -72,14 +72,14 @@ def get_latest_tag(image: str, current_tag: str) -> DependencyVersion:
         # Can't determine a newer tag if the tag doesn't contain a valid version
         return DependencyVersion(version=current_tag)
     latest_version = current.version
-    commit_sha = ""
+    sha = ""
     for tag in _get_available_tags(image):
         if tag.is_eligible_as_update_of(current):
             tag_version = cast("Version", tag.version)
             if tag_version > latest_version:
                 latest_version = tag_version
-                commit_sha = tag.digest
-    return DependencyVersion(version=current.with_version(latest_version).name, commit_sha=commit_sha)
+                sha = tag.digest
+    return DependencyVersion(version=current.with_version(latest_version).name, sha=sha)
 
 
 @cache

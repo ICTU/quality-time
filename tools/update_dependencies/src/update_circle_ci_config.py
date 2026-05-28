@@ -8,7 +8,7 @@ from filesystem import update_file
 from log import get_logger
 
 LOG = get_logger("circleci")
-IMAGE_RE = r"image: (?P<dependency>[\w\d\./-]+):(?P<version>[\d\w\.\-]+)"
+IMAGE_RE = r"image: (?P<dependency>[\w\d\./-]+):(?P<version>[\d\w\.\-]+)@(?P<sha>sha256:[a-f0-9]{64})"
 
 
 def update_circle_ci_config(config_yml: Path) -> int:

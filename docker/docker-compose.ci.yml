@@ -40,7 +40,7 @@ services:
     ports:
       - "127.0.0.1:9000:9000"
   selenium:
-    image: selenium/standalone-firefox:149.0.2
+    image: selenium/standalone-firefox:149.0.2@sha256:1755df90c9532351158d500ed64a6ebe070a402f05dc121aafc5d18a2b11945e
     shm_size: 2gb
     ports:
       - "127.0.0.1:4444:4444"
