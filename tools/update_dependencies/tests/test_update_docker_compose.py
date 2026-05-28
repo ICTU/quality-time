@@ -5,6 +5,8 @@ from unittest.mock import Mock, patch
 
 from update_docker_compose import update_docker_compose_files
 
+from .fixtures import DIGEST
+
 
 @patch("logging.Logger.warning")
 @patch("logging.Logger.info")
@@ -39,7 +41,7 @@ class UpdateDockerComposeTest(unittest.TestCase):
 
     def test_changes(self, mock_get: Mock, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
         """Test the image tag is bumped when a newer version is available."""
-        self.create_mock_response(mock_get, {"results": [{"name": "149.0.3"}]})
+        self.create_mock_response(mock_get, {"results": [{"name": "149.0.3", "digest": DIGEST}]})
         mock_compose = self.create_mock_compose(mock_glob, "selenium/standalone-firefox", "149.0.2")
         self.assertEqual(0, update_docker_compose_files())
         mock_compose.write_text.assert_called_with("    image: selenium/standalone-firefox:149.0.3\n")

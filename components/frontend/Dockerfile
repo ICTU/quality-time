@@ -1,4 +1,4 @@
-FROM node:26.2.0-alpine3.23 AS compile-image
+FROM node:26.2.0-alpine3.23@sha256:7c6af15abe4e3de859690e7db171d0d711bf37d27528eddfe625b2fe89e097f8 AS compile-image
 
 RUN apk add --no-cache tzdata=2026b-r0
 
@@ -12,7 +12,7 @@ COPY .env /home/frontend
 RUN npm ci --ignore-scripts && \
     npm run --ignore-scripts build
 
-FROM nginxinc/nginx-unprivileged:1.31-alpine3.23-slim
+FROM nginxinc/nginx-unprivileged:1.31.0-alpine3.23-slim@sha256:01cb6604af2fd0dce17f7aab60759e47ad288bec0425ad4b43e749369d2eecca
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"
