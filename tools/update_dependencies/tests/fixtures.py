@@ -1,5 +1,8 @@
 """Test fixtures."""
 
-DIGEST = DIGEST1 = f"sha256:{'a' * 64}"
-DIGEST2 = f"sha256:{'b' * 64}"
-DIGEST3 = f"sha256:{'c' * 64}"
+HASH1 = "a" * 64
+HASH2 = "b" * 64
+HASH3 = "c" * 64
+DIGEST = DIGEST1 = f"sha256:{HASH1}"
+DIGEST2 = f"sha256:{HASH2}"
+DIGEST3 = f"sha256:{HASH3}"

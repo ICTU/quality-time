@@ -68,7 +68,13 @@ html_favicon = "../../components/frontend/public/favicon.ico"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 html_css_files = ["copy_button.css"]
-html_js_files = ["https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js", "copy_button.js"]
+html_js_files = [
+    (
+        "https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js",
+        {"integrity": "sha256-4XodgW4TwIJuDtf+v6vDJ39FVxI0veC/kSCCmnFp7ck=", "crossorigin": "anonymous"},
+    ),
+    "copy_button.js",
+]
 
 # -- Options for linkcheck ---------------------------------------------------
 
