@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 import requests
 
 from changelog import get_version_changes_from_changelog
-from github import get_latest_release, github_owner_and_repository, github_to_raw
+from github import get_release, github_owner_and_repository, github_to_raw
 
 if TYPE_CHECKING:
     from log import Logger
@@ -37,10 +37,14 @@ def get_changes(package: str, version: str, logger: Logger) -> str:
         if url_key.lower() in CHANGELOG_URL_KEYS and (changelog := changelog_from_url(url, version, logger)):
             return changelog
     for url_key, url in urls.items():
-        if url_key.lower() in REPOSITORY_URL_KEYS and (changelog := changelog_from_github_releases(url)):
+        if url_key.lower() in REPOSITORY_URL_KEYS and (
+            changelog := changelog_from_github_releases(url, package, version)
+        ):
             return changelog
     description = info["description"]
-    return changelog_from_description(description, version) or changelog_from_github_url_in_description(description)
+    return changelog_from_description(description, version) or changelog_from_github_url_in_description(
+        description, package, version
+    )
 
 
 def changelog_from_url(url: str, version: str, logger: Logger) -> str:
@@ -60,16 +64,18 @@ def changelog_from_description(description: str, version: str) -> str:
     return get_version_changes_from_changelog(description, version) if version in description else ""
 
 
-def changelog_from_github_url_in_description(description: str) -> str:
+def changelog_from_github_url_in_description(description: str, package: str, version: str) -> str:
     """Get the changelog from the description posted to PyPI."""
     github_url = r"https://github\.com/([\w.-]+)/([\w.-]+)"
-    return changelog_from_github_releases(match.group()) if (match := re.search(github_url, description)) else ""
+    if not (match := re.search(github_url, description)):
+        return ""
+    return changelog_from_github_releases(match.group(), package, version)
 
 
-def changelog_from_github_releases(url: str) -> str:
+def changelog_from_github_releases(url: str, package: str, version: str) -> str:
     """Get the changelog from the GitHub releases."""
     owner, repository = github_owner_and_repository(url)
     if not (owner and repository):
         return ""
-    release = get_latest_release(owner, repository)
+    release = get_release(owner, repository, package, version)
     return release.body if release else ""

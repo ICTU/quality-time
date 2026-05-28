@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 
 import requests
 
-from github import Release, get_latest_release, github_owner_and_repository, github_to_raw
+from github import Release, get_latest_release, get_release, github_owner_and_repository, github_to_raw
 
 
 class GitHubURLtoRawTest(unittest.TestCase):
@@ -137,3 +137,56 @@ class GetLatestReleaseTest(unittest.TestCase):
             ),
             release,
         )
+
+
+class GetReleaseTest(unittest.TestCase):
+    """Unit tests for getting a release matching a specific package and version."""
+
+    # Note _list_releases uses caching, so the owner and/or repository need to be different for each test
+
+    @patch("requests.get")
+    def test_monorepo_tag_match(self, mock_get: Mock):
+        """Test finding a release in a monorepo where tags are prefixed with the package name."""
+        mock_get.return_value = Mock(
+            json=Mock(
+                return_value=[
+                    {"draft": False, "prerelease": False, "tag_name": "puppeteer-v25.1.0"},
+                    {"draft": False, "prerelease": False, "tag_name": "puppeteer-core-v25.0.4", "body": "Changelog"},
+                ]
+            )
+        )
+        release = get_release("puppeteer", "monorepo", "puppeteer-core", "25.0.4")
+        self.assertEqual("puppeteer-core-v25.0.4", cast("Release", release).tag_name)
+        self.assertEqual("Changelog", cast("Release", release).body)
+
+    @patch(
+        "requests.get",
+        Mock(return_value=Mock(json=Mock(return_value=[{"draft": False, "prerelease": False, "tag_name": "v1.2.3"}]))),
+    )
+    def test_v_prefix_tag_match(self):
+        """Test finding a release whose tag is the version prefixed with 'v'."""
+        release = get_release("owner", "repo with v prefix", "any", "1.2.3")
+        self.assertEqual("v1.2.3", cast("Release", release).tag_name)
+
+    @patch(
+        "requests.get",
+        Mock(return_value=Mock(json=Mock(return_value=[{"draft": False, "prerelease": False, "tag_name": "1.2.3"}]))),
+    )
+    def test_bare_version_tag_match(self):
+        """Test finding a release whose tag is the bare version."""
+        release = get_release("owner", "repo with bare version", "any", "1.2.3")
+        self.assertEqual("1.2.3", cast("Release", release).tag_name)
+
+    @patch(
+        "requests.get",
+        Mock(return_value=Mock(json=Mock(return_value=[{"draft": False, "prerelease": False, "tag_name": "v1.0"}]))),
+    )
+    def test_no_matching_tag(self):
+        """Test that None is returned when no tag matches the requested version."""
+        self.assertIsNone(get_release("owner", "repo with non matching tag", "any", "1.1"))
+
+    @patch("requests.get")
+    def test_repo_without_releases(self, mock_get: Mock):
+        """Test that None is returned when the repository can't be reached."""
+        mock_get.return_value = Mock(raise_for_status=Mock(side_effect=requests.exceptions.HTTPError))
+        self.assertIsNone(get_release("owner", "repo without releases for get_release", "any", "1.0"))

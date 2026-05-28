@@ -93,19 +93,39 @@ def github_owner_and_repository(url: str) -> tuple[str, str]:
 
 
 @cache
+def _list_releases(owner: str, repository: str) -> tuple[dict, ...]:
+    """Fetch the GitHub releases for a repo. Returns an empty tuple when the repo can't be reached."""
+    releases_url = f"https://api.github.com/repos/{owner}/{repository}/releases?per_page=100"
+    response = requests.get(releases_url, headers=_github_headers(), timeout=10)
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError:
+        return ()
+    return tuple(response.json())
+
+
 def get_latest_release(owner: str, repository: str) -> Release | None:
     """Get the latest eligible release from the GitHub releases API.
 
     Don't use the latest release endpoint, but rather get recent releases and weed out invalid versions.
     """
-    releases_url = f"https://api.github.com/repos/{owner}/{repository}/releases"
-    response = requests.get(releases_url, headers=_github_headers(), timeout=10)
-    try:
-        response.raise_for_status()
-    except requests.exceptions.HTTPError:
-        return None
-    releases = (Release.from_json(owner, repository, release) for release in response.json())
-    return next((r for r in releases if r.is_eligible), None)
+    candidates = (Release.from_json(owner, repository, release) for release in _list_releases(owner, repository))
+    return next((r for r in candidates if r.is_eligible), None)
+
+
+def get_release(owner: str, repository: str, package: str, version: str) -> Release | None:
+    """Get the release matching the package and version from the GitHub releases API.
+
+    Tries tag names in order of specificity:
+    1. ``<package>-v<version>`` (monorepo, e.g. ``puppeteer-core-v25.0.4``)
+    2. ``v<version>`` (e.g. ``v25.0.4``)
+    3. ``<version>`` (e.g. ``25.0.4``)
+    """
+    releases_by_tag = {release.get("tag_name"): release for release in _list_releases(owner, repository)}
+    for tag in (f"{package}-v{version}", f"v{version}", version):
+        if tag in releases_by_tag:
+            return Release.from_json(owner, repository, releases_by_tag[tag])
+    return None
 
 
 def _github_headers() -> dict[str, str]:
