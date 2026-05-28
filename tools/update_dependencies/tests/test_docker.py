@@ -1,21 +1,18 @@
 """Unit tests for the Docker module."""
 
-import unittest
 from datetime import UTC, datetime, timedelta
 from unittest.mock import Mock, patch
 
 from docker import get_latest_tag
 
 from .fixtures import DIGEST, DIGEST1, DIGEST2, DIGEST3
-from .helpers import mock_response
+from .helpers import CacheClearingTestCase, mock_response
 
 
 @patch.dict("os.environ", {}, clear=True)
 @patch("requests.get")
-class GetLatestTagTest(unittest.TestCase):
+class GetLatestTagTest(CacheClearingTestCase):
     """Unit tests for getting the latest tag."""
-
-    # Note get_latest_tag uses caching, so the image name needs to be difficult for each test
 
     def test_invalid_current_tag(self, mock_get: Mock):
         """Test that the current tag is returned without querying Docker Hub if it's not a valid version."""

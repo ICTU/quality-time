@@ -1,20 +1,17 @@
 """Unit tests for the package.json update script."""
 
-import unittest
 from unittest.mock import Mock, patch
 
 import requests
 
 from update_github_action import get_latest_version
 
-from .helpers import mock_response
+from .helpers import CacheClearingTestCase, mock_response
 
 
 @patch("requests.get")
-class UpdateGitHubActionTest(unittest.TestCase):
+class UpdateGitHubActionTest(CacheClearingTestCase):
     """Unit tests for the get latest GitHub Action version function."""
-
-    # Note get_latest_version uses caching, so the action needs to be difficult for each test
 
     def test_unchanged(self, mock_get: Mock):
         """Test an unchanged version."""

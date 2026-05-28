@@ -1,21 +1,20 @@
 """Unit tests for the PyPI module."""
 
 import logging
-import unittest
 from http import HTTPStatus
 from unittest.mock import Mock, patch
 
 from log import get_logger
 from pypi import CHANGELOG_URL_KEYS, REPOSITORY_URL_KEYS, get_changes
 
+from .helpers import CacheClearingTestCase
+
 LOG = get_logger("test_pipy")
 
 
 @patch("requests.get")
-class GetChangesTest(unittest.TestCase):
+class GetChangesTest(CacheClearingTestCase):
     """Unit tests for getting the changes."""
-
-    # Note get_changes uses caching, so the package and/or version need to be difficult for each test
 
     @classmethod
     def setUpClass(cls) -> None:

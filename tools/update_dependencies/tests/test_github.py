@@ -9,7 +9,7 @@ import requests
 
 from github import Release, get_latest_release, get_release, github_owner_and_repository, github_to_raw
 
-from .helpers import mock_response
+from .helpers import CacheClearingTestCase, mock_response
 
 
 class GitHubURLtoRawTest(unittest.TestCase):
@@ -47,10 +47,8 @@ class GitHubOwnerAndRepositoryTest(unittest.TestCase):
         self.assertEqual(("", ""), github_owner_and_repository("https://github.com/ICTU"))
 
 
-class GetLatestReleaseTest(unittest.TestCase):
+class GetLatestReleaseTest(CacheClearingTestCase):
     """Unit tests for getting the latest release for a GitHub repo."""
-
-    # Note get_latest_release uses caching, so the owner and/or repository need to be different for each test
 
     @patch("requests.get")
     def test_get_latest_release(self, mock_get: Mock):
@@ -129,10 +127,8 @@ class GetLatestReleaseTest(unittest.TestCase):
         )
 
 
-class GetReleaseTest(unittest.TestCase):
+class GetReleaseTest(CacheClearingTestCase):
     """Unit tests for getting a release matching a specific package and version."""
-
-    # Note _list_releases uses caching, so the owner and/or repository need to be different for each test
 
     @patch("requests.get")
     def test_monorepo_tag_match(self, mock_get: Mock):

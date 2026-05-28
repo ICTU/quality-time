@@ -1,13 +1,12 @@
 """Unit tests for the package.json update script."""
 
 import subprocess  # nosec
-import unittest
 from pathlib import Path
 from unittest.mock import Mock, call, patch
 
 from update_package_json import update_package_jsons
 
-from .helpers import mock_path, mock_response
+from .helpers import CacheClearingTestCase, mock_path, mock_response
 
 
 @patch("pathlib.Path.cwd", Mock(return_value=Path("/")))
@@ -15,7 +14,7 @@ from .helpers import mock_path, mock_response
 @patch("logging.Logger.info")
 @patch("pathlib.Path.rglob")
 @patch("subprocess.run")
-class UpdatePackageJsonTest(unittest.TestCase):
+class UpdatePackageJsonTest(CacheClearingTestCase):
     """Unit tests for the update package.jsons function."""
 
     def create_package_json(self) -> Mock:
