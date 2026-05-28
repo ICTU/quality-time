@@ -35,6 +35,12 @@ class Versions:
         return f'"{name}=={version}"'
 
 
+def parse_line_with_update(line: str) -> tuple[str, str]:
+    """Parse the package name and latest version from a `uv tree --outdated` line, e.g. '| package (latest: v1.1)'."""
+    fields = line.split()
+    return fields[1], fields[-1].lstrip("v").rstrip(")")
+
+
 def update_pyproject_toml(pyproject_toml: Path) -> None:
     """Update the pyproject.toml file with latest version of dependencies."""
     LOG.path(pyproject_toml)
@@ -52,13 +58,10 @@ def update_pyproject_toml(pyproject_toml: Path) -> None:
     outdated = run(uv_tree)
     lines_with_updates = [line for line in outdated.splitlines() if " (latest: " in line]
     for line in lines_with_updates:
-        package = line.split()[1]
-        version = line.split()[-1].lstrip("v").rstrip(")")
+        package, version = parse_line_with_update(line)
         dependency_version = DependencyVersion(version, get_changes(package, version, LOG))
         LOG.new_version(package, dependency_version)
-    latest_versions = Versions(
-        {line.split()[1]: line.split()[-1].lstrip("v").rstrip(")") for line in lines_with_updates}
-    )
+    latest_versions = Versions(dict(parse_line_with_update(line) for line in lines_with_updates))
     package_spec = re.compile(r'"(?P<name>[A-Za-z0-9_.\-]+)==(?P<version>[A-Za-z0-9_.\-]+)"')
     current_pyproject_toml = pyproject_toml.read_text()
     updated_pyproject_toml = package_spec.sub(latest_versions.get_package_spec, current_pyproject_toml)

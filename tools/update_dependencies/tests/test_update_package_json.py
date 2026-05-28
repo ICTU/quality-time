@@ -7,6 +7,8 @@ from unittest.mock import Mock, call, patch
 
 from update_package_json import update_package_jsons
 
+from .helpers import mock_path, mock_response
+
 
 @patch("pathlib.Path.cwd", Mock(return_value=Path("/")))
 @patch("logging.Logger.warning")
@@ -18,7 +20,7 @@ class UpdatePackageJsonTest(unittest.TestCase):
 
     def create_package_json(self) -> Mock:
         """Create a mock package.json file."""
-        mock_package_json = Mock(relative_to=Mock(return_value=Mock(parts=[])), read_text=Mock(return_value="{}"))
+        mock_package_json = mock_path("{}")
         mock_package_json.parent = Path("/")
         return mock_package_json
 
@@ -43,13 +45,9 @@ class UpdatePackageJsonTest(unittest.TestCase):
         "requests.get",
         Mock(
             side_effect=[
-                Mock(json=Mock(return_value={"repository": {"url": "https://github.com/package/1.1"}})),
-                Mock(
-                    json=Mock(
-                        return_value=[{"draft": False, "prerelease": False, "body": "Changelog", "tag_name": "v1.1"}]
-                    )
-                ),
-                Mock(json=Mock(return_value={"sha": "sha"})),
+                mock_response({"repository": {"url": "https://github.com/package/1.1"}}),
+                mock_response([{"draft": False, "prerelease": False, "body": "Changelog", "tag_name": "v1.1"}]),
+                mock_response({"sha": "sha"}),
             ]
         ),
     )

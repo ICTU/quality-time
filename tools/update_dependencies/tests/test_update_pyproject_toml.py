@@ -7,6 +7,8 @@ from unittest.mock import Mock, patch
 
 from update_pyproject_toml import update_pyproject_tomls
 
+from .helpers import mock_path, mock_response
+
 
 @patch("pathlib.Path.cwd", Mock(return_value=Path("/")))
 @patch("logging.Logger.warning")
@@ -30,11 +32,11 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
 
     def create_pyproject_toml(self, contents: str) -> Mock:
         """Create a mock pyproject.toml file."""
-        mock_pyproject_toml = Mock(relative_to=Mock(return_value=Mock(parts=[])), read_text=Mock(return_value=contents))
+        mock_pyproject_toml = mock_path(contents)
         mock_pyproject_toml.parent = Path("/")
         return mock_pyproject_toml
 
-    @patch("requests.get", Mock(return_value=Mock(json=Mock(return_value={"info": {"description": "Package"}}))))
+    @patch("requests.get", Mock(return_value=mock_response({"info": {"description": "Package"}})))
     @patch("subprocess.run", Mock(return_value=Mock(stdout="| package (latest: v1.1)\n")))
     def test_update(self, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
         """Test updating a pyproject.toml."""
@@ -51,7 +53,7 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         "requests.get",
         Mock(
             side_effect=[
-                Mock(json=Mock(return_value=pypi_metadata())),
+                mock_response(pypi_metadata()),
                 Mock(headers={"Content-Type": "text"}, text=changelog),
             ]
         ),
@@ -72,10 +74,10 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         "requests.get",
         Mock(
             side_effect=[
-                Mock(json=Mock(return_value=pypi_metadata())),
-                Mock(
+                mock_response(pypi_metadata()),
+                mock_response(
+                    [{"draft": False, "prerelease": False, "tag_name": "v1.1"}],
                     headers={"Content-Type": "text/html"},
-                    json=Mock(return_value=[{"draft": False, "prerelease": False, "tag_name": "v1.1"}]),
                 ),
             ]
         ),
@@ -100,13 +102,9 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         "requests.get",
         Mock(
             side_effect=[
-                Mock(json=Mock(return_value=pypi_metadata(changelog_url=""))),
-                Mock(
-                    json=Mock(
-                        return_value=[{"draft": False, "prerelease": False, "body": changelog, "tag_name": "v1.1"}]
-                    )
-                ),
-                Mock(json=Mock(return_value={"sha": "sha"})),
+                mock_response(pypi_metadata(changelog_url="")),
+                mock_response([{"draft": False, "prerelease": False, "body": changelog, "tag_name": "v1.1"}]),
+                mock_response({"sha": "sha"}),
             ]
         ),
     )
@@ -124,11 +122,7 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
 
     @patch(
         "requests.get",
-        Mock(
-            return_value=Mock(
-                json=Mock(return_value=pypi_metadata(changelog_url="", repository="https://gitlab.com/org/repo"))
-            ),
-        ),
+        Mock(return_value=mock_response(pypi_metadata(changelog_url="", repository="https://gitlab.com/org/repo"))),
     )
     @patch("subprocess.run", Mock(return_value=Mock(stdout="| package_without_github_releases (latest: v1.1)\n")))
     def test_update_without_github_url(self, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
