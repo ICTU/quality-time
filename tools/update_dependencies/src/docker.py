@@ -97,6 +97,7 @@ def _get_available_tags(image: str) -> list[Tag]:
     return tags
 
 
+@cache
 def _docker_hub_headers() -> dict[str, str]:
     """Return Docker Hub API request headers with bearer token if DOCKER_HUB_USERNAME and DOCKER_HUB_TOKEN are set."""
     if (token := os.environ.get("DOCKER_HUB_TOKEN")) and (username := os.environ.get("DOCKER_HUB_USERNAME")):
