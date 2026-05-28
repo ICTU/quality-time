@@ -7,7 +7,7 @@ from filesystem import update_files
 from log import get_logger
 
 LOG = get_logger("dockerfile")
-IMAGE_RE = r"FROM (?P<dependency>[\w\d\./-]+):(?P<version>[\d\w\.\-]+)@(?P<commit_sha>sha256:[a-f0-9]{64})"
+IMAGE_RE = r"FROM (?P<dependency>[\w\d\./-]+):(?P<version>[\d\w\.\-]+)@(?P<sha>sha256:[a-f0-9]{64})"
 
 
 def update_dockerfiles() -> int:

@@ -7,12 +7,13 @@ from filesystem import update_files
 from log import get_logger
 
 LOG = get_logger("docker_compose")
-IMAGE_RE = r"image: (?P<dependency>[\w\d\./-]+):(?P<version>[\d\w\.\-]+)"
+IMAGE_RE = r"image: (?P<dependency>[\w\d\./-]+):(?P<version>[\d\w\.\-]+)@(?P<sha>sha256:[a-f0-9]{64})"
 
 
 def update_docker_compose_files() -> int:
-    """Update the image tags in Docker Compose files.
+    """Update the image tags and digests in Docker Compose files.
 
+    Third-party images are pinned as ``tag@sha256:digest``; both the tag and digest are kept in sync.
     Lines using ${VAR} for the tag are left untouched because the regex does not match shell substitution syntax.
     """
     return update_files("docker-compose*.yml", IMAGE_RE, get_latest_tag, LOG)

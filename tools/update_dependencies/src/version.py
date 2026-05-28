@@ -20,7 +20,7 @@ class DependencyVersion:
 
     version: str
     _changes: str = ""
-    commit_sha: str = ""
+    sha: str = ""
 
     @property
     def changes(self) -> str:

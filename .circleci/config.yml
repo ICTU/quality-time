@@ -7,7 +7,7 @@ orbs:
 jobs:
   unittests:
     docker:
-      - image: cimg/python:3.14.5-node
+      - image: cimg/python:3.14.5-node@sha256:d91cf4d0a099f5c290b63f52809dcd3ef1ce58dc15d0155bb22ae0f302885a3f
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD

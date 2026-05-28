@@ -48,7 +48,7 @@ services:
       - ALL
     security_opt: *security-opt
   mongo-express:
-    image: mongo-express:1.0.2
+    image: mongo-express:1.0.2@sha256:1b23d7976f0210dbec74045c209e52fbb26d29b2e873d6c6fa3d3f0ae32c2a64
     ports:
       - "127.0.0.1:8081:8081"
     environment:

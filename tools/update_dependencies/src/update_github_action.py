@@ -15,7 +15,7 @@ from log import get_logger
 from version import DependencyVersion
 
 LOG = get_logger("github action")
-ACTION_RE = r"uses: (?P<dependency>[\w\d\./-]+)@(?P<commit_sha>[a-f0-9]{40}) # v?(?P<version>[\d\w\.\-]+)"
+ACTION_RE = r"uses: (?P<dependency>[\w\d\./-]+)@(?P<sha>[a-f0-9]{40}) # v?(?P<version>[\d\w\.\-]+)"
 
 
 @cache

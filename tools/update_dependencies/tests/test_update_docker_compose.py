@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 from update_docker_compose import update_docker_compose_files
 
-from .fixtures import DIGEST
+from .fixtures import DIGEST, DIGEST1, DIGEST2
 
 
 @patch("logging.Logger.warning")
@@ -21,11 +21,11 @@ class UpdateDockerComposeTest(unittest.TestCase):
         response.json.return_value = json
         mock_get.return_value = response
 
-    def create_mock_compose(self, mock_glob: Mock, image: str, version: str) -> Mock:
-        """Create a mock Compose file with one image:version line and register it with the path glob mock."""
+    def create_mock_compose(self, mock_glob: Mock, image: str) -> Mock:
+        """Create a mock Compose file with one image line and register it with the path glob mock."""
         mock_compose = Mock(
             relative_to=Mock(return_value=Mock(parts=[])),
-            read_text=Mock(return_value=f"    image: {image}:{version}\n"),
+            read_text=Mock(return_value=f"    image: {image}\n"),
         )
         mock_glob.return_value = [mock_compose]
         return mock_compose
@@ -33,18 +33,18 @@ class UpdateDockerComposeTest(unittest.TestCase):
     def test_no_changes(self, mock_get: Mock, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
         """Test no changes are made when no newer tag is available."""
         self.create_mock_response(mock_get, {})
-        mock_compose = self.create_mock_compose(mock_glob, "mongo-express", "1.0.2")
+        mock_compose = self.create_mock_compose(mock_glob, f"mongo-express:1.0.2@{DIGEST}")
         self.assertEqual(0, update_docker_compose_files())
         mock_compose.write_text.assert_not_called()
         mock_info.assert_called_with("Updating %s", mock_compose.relative_to(), stacklevel=2)
         mock_warning.assert_not_called()
 
     def test_changes(self, mock_get: Mock, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
-        """Test the image tag is bumped when a newer version is available."""
-        self.create_mock_response(mock_get, {"results": [{"name": "149.0.3", "digest": DIGEST}]})
-        mock_compose = self.create_mock_compose(mock_glob, "selenium/standalone-firefox", "149.0.2")
+        """Test the image tag and digest are bumped when a newer version is available."""
+        self.create_mock_response(mock_get, {"results": [{"name": "149.0.3", "digest": DIGEST2}]})
+        mock_compose = self.create_mock_compose(mock_glob, f"selenium/standalone-firefox:149.0.2@{DIGEST1}")
         self.assertEqual(0, update_docker_compose_files())
-        mock_compose.write_text.assert_called_with("    image: selenium/standalone-firefox:149.0.3\n")
+        mock_compose.write_text.assert_called_with(f"    image: selenium/standalone-firefox:149.0.3@{DIGEST2}\n")
         mock_info.assert_called_with("Updating %s", mock_compose.relative_to(), stacklevel=2)
         mock_warning.assert_called_with(
             "New version available for %s: %s\n%s",
@@ -57,7 +57,7 @@ class UpdateDockerComposeTest(unittest.TestCase):
     def test_variable_substitution_ignored(self, mock_get: Mock, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
         """Test that image tags using ${...} substitution are not modified."""
         self.create_mock_response(mock_get, {"results": [{"name": "999.0"}]})
-        mock_compose = self.create_mock_compose(mock_glob, "ictu/quality-time_proxy", "${QUALITY_TIME_VERSION}")
+        mock_compose = self.create_mock_compose(mock_glob, "ictu/quality-time_proxy:${QUALITY_TIME_VERSION}")
         self.assertEqual(0, update_docker_compose_files())
         mock_compose.write_text.assert_not_called()
         mock_info.assert_called_with("Updating %s", mock_compose.relative_to(), stacklevel=2)
