@@ -18,13 +18,15 @@ class Tag:
     """A result from the Docker Hub tags endpoint."""
 
     name: str
+    digest: str = ""
     last_pushed: datetime | None = None
 
     @classmethod
     def from_json(cls, tag: dict) -> Tag:
         """Create a Tag from a Docker Hub tags endpoint result."""
         last_pushed = tag.get("tag_last_pushed")
-        return cls(name=tag["name"], last_pushed=datetime.fromisoformat(last_pushed) if last_pushed else None)
+        last_pushed_datetime_or_none = datetime.fromisoformat(last_pushed) if last_pushed else None
+        return cls(name=tag["name"], digest=tag.get("digest", ""), last_pushed=last_pushed_datetime_or_none)
 
     @property
     def version(self) -> Version | None:
@@ -54,6 +56,8 @@ class Tag:
         """Return whether this tag is eligible as an update of the current tag."""
         if self.version is None:
             return False  # Ignore tags if the version is not valid
+        if not self.digest:
+            return False  # Ignore tags without digest
         if self.version.is_prerelease:
             return False  # Ignore tags if the version is a prerelease
         if self.suffix != current.suffix:
@@ -68,10 +72,14 @@ def get_latest_tag(image: str, current_tag: str) -> DependencyVersion:
         # Can't determine a newer tag if the tag doesn't contain a valid version
         return DependencyVersion(version=current_tag)
     latest_version = current.version
+    commit_sha = ""
     for tag in _get_available_tags(image):
         if tag.is_eligible_as_update_of(current):
-            latest_version = max(latest_version, cast("Version", tag.version))
-    return DependencyVersion(version=current.with_version(latest_version).name)
+            tag_version = cast("Version", tag.version)
+            if tag_version > latest_version:
+                latest_version = tag_version
+                commit_sha = tag.digest
+    return DependencyVersion(version=current.with_version(latest_version).name, commit_sha=commit_sha)
 
 
 @cache

@@ -5,6 +5,8 @@ from unittest.mock import Mock, patch
 
 from update_circle_ci_config import update_circle_ci_config
 
+from .fixtures import DIGEST
+
 
 @patch("logging.Logger.warning")
 @patch("logging.Logger.info")
@@ -30,7 +32,7 @@ class UpdateCircleCIConfigTest(unittest.TestCase):
     @patch("requests.get")
     def test_changes(self, mock_get: Mock, mock_info: Mock, mock_warning: Mock):
         """Test changes."""
-        self.create_mock_response(mock_get, {"results": [{"name": "3.14.2"}]})
+        self.create_mock_response(mock_get, {"results": [{"name": "3.14.2", "digest": DIGEST}]})
         config_yml = Mock(read_text=Mock(return_value="image: cimg/py:3.14.1\n"))
         self.assertEqual(0, update_circle_ci_config(config_yml))
         config_yml.write_text.assert_called_with("image: cimg/py:3.14.2\n")
