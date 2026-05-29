@@ -1,12 +1,12 @@
 """Unit tests for the Docker Compose file update script."""
 
 import unittest
-from unittest.mock import ANY, Mock, patch
+from unittest.mock import Mock, patch
 
 from update_docker_compose import update_docker_compose_files
 
 from .fixtures import DIGEST, DIGEST1, DIGEST2
-from .helpers import mock_path, mock_response
+from .helpers import assert_new_version_logged, assert_path_logged, mock_path, mock_response
 
 
 @patch("logging.Logger.warning")
@@ -28,7 +28,7 @@ class UpdateDockerComposeTest(unittest.TestCase):
         mock_compose = self.create_mock_compose(mock_glob, f"mongo-express:1.0.2@{DIGEST}")
         self.assertEqual(0, update_docker_compose_files())
         mock_compose.write_text.assert_not_called()
-        mock_info.assert_called_with("Updating %s", mock_compose.relative_to(), stacklevel=ANY)
+        assert_path_logged(mock_info, mock_compose.relative_to())
         mock_warning.assert_not_called()
 
     def test_changes(self, mock_get: Mock, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
@@ -37,14 +37,8 @@ class UpdateDockerComposeTest(unittest.TestCase):
         mock_compose = self.create_mock_compose(mock_glob, f"selenium/standalone-firefox:149.0.2@{DIGEST1}")
         self.assertEqual(0, update_docker_compose_files())
         mock_compose.write_text.assert_called_with(f"    image: selenium/standalone-firefox:149.0.3@{DIGEST2}\n")
-        mock_info.assert_called_with("Updating %s", mock_compose.relative_to(), stacklevel=ANY)
-        mock_warning.assert_called_with(
-            "New version available for %s: %s\n%s",
-            "selenium/standalone-firefox",
-            "149.0.3",
-            "No changelog available!",
-            stacklevel=ANY,
-        )
+        assert_path_logged(mock_info, mock_compose.relative_to())
+        assert_new_version_logged(mock_warning, "selenium/standalone-firefox", "149.0.3")
 
     def test_variable_substitution_ignored(self, mock_get: Mock, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
         """Test that image tags using ${...} substitution are not modified."""
@@ -52,5 +46,5 @@ class UpdateDockerComposeTest(unittest.TestCase):
         mock_compose = self.create_mock_compose(mock_glob, "ictu/quality-time_proxy:${QUALITY_TIME_VERSION}")
         self.assertEqual(0, update_docker_compose_files())
         mock_compose.write_text.assert_not_called()
-        mock_info.assert_called_with("Updating %s", mock_compose.relative_to(), stacklevel=ANY)
+        assert_path_logged(mock_info, mock_compose.relative_to())
         mock_warning.assert_not_called()

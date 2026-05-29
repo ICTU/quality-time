@@ -2,11 +2,18 @@
 
 import subprocess  # nosec
 from pathlib import Path
-from unittest.mock import ANY, Mock, call, patch
+from unittest.mock import Mock, call, patch
 
 from update_package_json import update_package_jsons
 
-from .helpers import CacheClearingTestCase, mock_path, mock_response
+from .helpers import (
+    CacheClearingTestCase,
+    assert_new_version_logged,
+    assert_path_logged,
+    mock_path,
+    mock_response,
+    release_json,
+)
 
 
 @patch("pathlib.Path.cwd", Mock(return_value=Path("/")))
@@ -36,7 +43,7 @@ class UpdatePackageJsonTest(CacheClearingTestCase):
         mock_glob.return_value = [mock_package_json]
         mock_run.side_effect = [Mock(stdout="{}"), Mock(stdout="")]
         self.assertEqual(0, update_package_jsons())
-        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=ANY)
+        assert_path_logged(mock_info, mock_package_json.relative_to())
         mock_warning.assert_not_called()
         self.assert_npm_called(mock_run)
 
@@ -45,7 +52,7 @@ class UpdatePackageJsonTest(CacheClearingTestCase):
         Mock(
             side_effect=[
                 mock_response({"repository": {"url": "https://github.com/package/1.1"}}),
-                mock_response([{"draft": False, "prerelease": False, "body": "Changelog", "tag_name": "v1.1"}]),
+                mock_response([release_json("v1.1", body="Changelog")]),
                 mock_response({"sha": "sha"}),
             ]
         ),
@@ -60,8 +67,6 @@ class UpdatePackageJsonTest(CacheClearingTestCase):
             Mock(stdout=""),
         ]
         self.assertEqual(0, update_package_jsons())
-        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=ANY)
-        mock_warning.assert_called_with(
-            "New version available for %s: %s\n%s", "package", "1.1", "Changelog", stacklevel=ANY
-        )
+        assert_path_logged(mock_info, mock_package_json.relative_to())
+        assert_new_version_logged(mock_warning, "package", "1.1", "Changelog")
         self.assert_npm_called(mock_run)

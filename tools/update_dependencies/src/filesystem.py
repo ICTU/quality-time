@@ -33,7 +33,7 @@ def _update_line(
         dependency = match.group("dependency")
         version = match.group("version")
         latest_version = get_new_version(dependency, version)
-        if latest_version.version > version:
+        if latest_version.version != version:
             logger.new_version(dependency, latest_version)
             if "sha" in match.groupdict():
                 line = line.replace(match.group("sha"), latest_version.sha)

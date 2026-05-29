@@ -2,6 +2,7 @@
 
 import logging
 import sys
+from datetime import UTC
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -52,11 +53,14 @@ class Logger:
         log_method(msg, *args, stacklevel=_caller_stacklevel())
 
     def new_version(self, dependency: str, version: DependencyVersion) -> None:
-        """Log the availability of a new version."""
+        """Log the availability of a new version, including its publication date in UTC when known."""
         suppression_message = "Suppressing changelog already shown, see above"
         changes = suppression_message if (dependency, version) in self.logged_changes else version.changes
         self.logged_changes.add((dependency, version))
-        self._log(self.log.warning, "New version available for %s: %s\n%s", dependency, version.version, changes)
+        new_version = version.version
+        if version.published is not None:
+            new_version += f", published: {version.published.astimezone(UTC):%Y-%m-%d %H:%M}"
+        self._log(self.log.warning, "New version available for %s: %s\n%s", dependency, new_version, changes)
 
     def invalid_version(self, dependency: str, invalid_version: str) -> None:
         """Log an invalid version."""

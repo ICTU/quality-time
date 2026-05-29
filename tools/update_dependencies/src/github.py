@@ -7,6 +7,7 @@ from functools import cache, cached_property
 from urllib.parse import urlparse
 
 import requests
+from packaging.version import Version
 
 from cooldown import within_cooldown
 from log import get_logger
@@ -70,6 +71,11 @@ class Release:
             )
             return None
         return response.json()["sha"]
+
+    @property
+    def version(self) -> Version:
+        """Return the release version."""
+        return Version(self.tag_name.lstrip("v"))
 
 
 def github_to_raw(url: str) -> str:

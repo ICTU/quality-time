@@ -1,5 +1,6 @@
 """Logger unit tests."""
 
+from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import TestCase
@@ -27,6 +28,40 @@ class LoggerTests(TestCase):
             "dependency",
             "1.0",
             "Suppressing changelog already shown, see above",
+            stacklevel=ANY,
+        )
+
+    @patch("logging.Logger.warning")
+    def test_new_version_without_publication_date(self, mock_warning: Mock):
+        """Test that the version is logged without a publication date when it is unknown."""
+        Logger("no date").new_version("dependency", DependencyVersion("1.0", "Changelog"))
+        mock_warning.assert_called_once_with(
+            "New version available for %s: %s\n%s", "dependency", "1.0", "Changelog", stacklevel=ANY
+        )
+
+    @patch("logging.Logger.warning")
+    def test_new_version_with_publication_date(self, mock_warning: Mock):
+        """Test that the publication date is appended to the version when it is known."""
+        published = datetime(2026, 5, 29, 13, 54, tzinfo=UTC)
+        Logger("date").new_version("dependency", DependencyVersion("1.0", "Changelog", published=published))
+        mock_warning.assert_called_once_with(
+            "New version available for %s: %s\n%s",
+            "dependency",
+            "1.0, published: 2026-05-29 13:54",
+            "Changelog",
+            stacklevel=ANY,
+        )
+
+    @patch("logging.Logger.warning")
+    def test_publication_date_is_logged_in_utc(self, mock_warning: Mock):
+        """Test that a non-UTC publication date is converted to UTC before logging."""
+        published = datetime(2026, 5, 29, 15, 54, tzinfo=timezone(timedelta(hours=2)))
+        Logger("utc").new_version("dependency", DependencyVersion("1.0", published=published))
+        mock_warning.assert_called_once_with(
+            "New version available for %s: %s\n%s",
+            "dependency",
+            "1.0, published: 2026-05-29 13:54",
+            "No changelog available!",
             stacklevel=ANY,
         )
 

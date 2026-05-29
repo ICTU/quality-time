@@ -22,15 +22,14 @@ ACTION_RE = r"uses: (?P<dependency>[\w\d\./-]+)@(?P<sha>[a-f0-9]{40}) # v?(?P<ve
 def get_latest_version(action: str, current_version_string: str) -> DependencyVersion:
     """Fetch the latest version for the action."""
     owner, repository, *_path = action.split("/")
-    current_version = Version(current_version_string)
     release = get_latest_release(owner, repository)
     if release is None:
         LOG.no_version(f"{owner}/{repository}")
-        return DependencyVersion(str(current_version))
+        return DependencyVersion(current_version_string)
     if release.commit_sha is None:
-        return DependencyVersion(str(current_version))
-    latest_version = Version(release.tag_name.lstrip("v"))
-    return DependencyVersion(str(max(latest_version, current_version)), release.body, release.commit_sha)
+        return DependencyVersion(current_version_string)
+    latest_version = max(release.version, Version(current_version_string))
+    return DependencyVersion(str(latest_version), release.body, release.commit_sha, published=release.published_at)
 
 
 if __name__ == "__main__":  # pragma: no cover
