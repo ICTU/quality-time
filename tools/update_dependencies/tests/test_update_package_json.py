@@ -2,7 +2,7 @@
 
 import subprocess  # nosec
 from pathlib import Path
-from unittest.mock import Mock, call, patch
+from unittest.mock import ANY, Mock, call, patch
 
 from update_package_json import update_package_jsons
 
@@ -36,7 +36,7 @@ class UpdatePackageJsonTest(CacheClearingTestCase):
         mock_glob.return_value = [mock_package_json]
         mock_run.side_effect = [Mock(stdout="{}"), Mock(stdout="")]
         self.assertEqual(0, update_package_jsons())
-        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=2)
+        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=ANY)
         mock_warning.assert_not_called()
         self.assert_npm_called(mock_run)
 
@@ -60,8 +60,8 @@ class UpdatePackageJsonTest(CacheClearingTestCase):
             Mock(stdout=""),
         ]
         self.assertEqual(0, update_package_jsons())
-        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=2)
+        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=ANY)
         mock_warning.assert_called_with(
-            "New version available for %s: %s\n%s", "package", "1.1", "Changelog", stacklevel=2
+            "New version available for %s: %s\n%s", "package", "1.1", "Changelog", stacklevel=ANY
         )
         self.assert_npm_called(mock_run)

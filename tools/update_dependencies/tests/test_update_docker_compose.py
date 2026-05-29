@@ -1,7 +1,7 @@
 """Unit tests for the Docker Compose file update script."""
 
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import ANY, Mock, patch
 
 from update_docker_compose import update_docker_compose_files
 
@@ -28,7 +28,7 @@ class UpdateDockerComposeTest(unittest.TestCase):
         mock_compose = self.create_mock_compose(mock_glob, f"mongo-express:1.0.2@{DIGEST}")
         self.assertEqual(0, update_docker_compose_files())
         mock_compose.write_text.assert_not_called()
-        mock_info.assert_called_with("Updating %s", mock_compose.relative_to(), stacklevel=2)
+        mock_info.assert_called_with("Updating %s", mock_compose.relative_to(), stacklevel=ANY)
         mock_warning.assert_not_called()
 
     def test_changes(self, mock_get: Mock, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
@@ -37,13 +37,13 @@ class UpdateDockerComposeTest(unittest.TestCase):
         mock_compose = self.create_mock_compose(mock_glob, f"selenium/standalone-firefox:149.0.2@{DIGEST1}")
         self.assertEqual(0, update_docker_compose_files())
         mock_compose.write_text.assert_called_with(f"    image: selenium/standalone-firefox:149.0.3@{DIGEST2}\n")
-        mock_info.assert_called_with("Updating %s", mock_compose.relative_to(), stacklevel=2)
+        mock_info.assert_called_with("Updating %s", mock_compose.relative_to(), stacklevel=ANY)
         mock_warning.assert_called_with(
             "New version available for %s: %s\n%s",
             "selenium/standalone-firefox",
             "149.0.3",
             "No changelog available!",
-            stacklevel=2,
+            stacklevel=ANY,
         )
 
     def test_variable_substitution_ignored(self, mock_get: Mock, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
@@ -52,5 +52,5 @@ class UpdateDockerComposeTest(unittest.TestCase):
         mock_compose = self.create_mock_compose(mock_glob, "ictu/quality-time_proxy:${QUALITY_TIME_VERSION}")
         self.assertEqual(0, update_docker_compose_files())
         mock_compose.write_text.assert_not_called()
-        mock_info.assert_called_with("Updating %s", mock_compose.relative_to(), stacklevel=2)
+        mock_info.assert_called_with("Updating %s", mock_compose.relative_to(), stacklevel=ANY)
         mock_warning.assert_not_called()

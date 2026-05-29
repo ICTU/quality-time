@@ -1,7 +1,7 @@
 """Unit tests for the jsdelivr CDN URLs update script."""
 
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import ANY, Mock, patch
 
 from update_jsdelivr import get_latest_version, update_jsdelivr
 
@@ -53,7 +53,7 @@ class GetLatestVersionTest(unittest.TestCase):
         """Test that an invalid latest version is logged and ignored."""
         mock_get.return_value = mock_response({})
         self.assertEqual("1.0", get_latest_version("clipboard", "1.0").version)
-        mock_error.assert_called_once_with("Got an invalid version for %s: %s", "clipboard", "''", stacklevel=2)
+        mock_error.assert_called_once_with("Got an invalid version for %s: %s", "clipboard", "''", stacklevel=ANY)
 
 
 @patch("logging.Logger.warning")

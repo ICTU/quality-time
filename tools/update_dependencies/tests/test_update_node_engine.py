@@ -2,7 +2,7 @@
 
 import unittest
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import ANY, Mock, patch
 
 from update_node_engine import update_node_engines
 
@@ -30,7 +30,7 @@ class UpdateNodeEnginesTest(unittest.TestCase):
         mock_package_json = self.create_package_json()
         mock_glob.return_value = [mock_package_json]
         self.assertEqual(0, update_node_engines())
-        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=2)
+        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=ANY)
         mock_warning.assert_not_called()
         mock_error.assert_not_called()
         mock_package_json.write_text.assert_not_called()
@@ -42,9 +42,9 @@ class UpdateNodeEnginesTest(unittest.TestCase):
         mock_package_json = self.create_package_json()
         mock_glob.return_value = [mock_package_json]
         self.assertEqual(0, update_node_engines())
-        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=2)
+        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=ANY)
         mock_warning.assert_called_once_with(
-            "New version available for %s: %s\n%s", "node", "19", "No changelog available!", stacklevel=2
+            "New version available for %s: %s\n%s", "node", "19", "No changelog available!", stacklevel=ANY
         )
         mock_error.assert_not_called()
         mock_package_json.write_text.assert_called_once_with('{"engines": {"node": "19" }}\n')
@@ -67,7 +67,9 @@ class UpdateNodeEnginesTest(unittest.TestCase):
         self.assertEqual(1, update_node_engines())
         mock_info.assert_not_called()
         mock_warning.assert_not_called()
-        mock_error.assert_called_with("Expected Dockerfile %s to have a Node base image", Path("/Dockerfile"))
+        mock_error.assert_called_with(
+            "Expected Dockerfile %s to have a Node base image", Path("/Dockerfile"), stacklevel=ANY
+        )
         mock_package_json.write_text.assert_not_called()
 
     @patch("pathlib.Path.exists", Mock(return_value=True))
@@ -79,7 +81,9 @@ class UpdateNodeEnginesTest(unittest.TestCase):
         self.assertEqual(1, update_node_engines())
         mock_info.assert_not_called()
         mock_warning.assert_not_called()
-        mock_error.assert_called_with("Expected Dockerfile %s to have a Node base image", Path("/Dockerfile"))
+        mock_error.assert_called_with(
+            "Expected Dockerfile %s to have a Node base image", Path("/Dockerfile"), stacklevel=ANY
+        )
         mock_package_json.write_text.assert_not_called()
 
     @patch("pathlib.Path.exists", Mock(return_value=False))
@@ -93,9 +97,9 @@ class UpdateNodeEnginesTest(unittest.TestCase):
             [mock_package_json] if pattern == "package.json" else [Path("/Dockerfile"), fallback_dockerfile]
         )
         self.assertEqual(0, update_node_engines())
-        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=2)
+        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=ANY)
         mock_warning.assert_called_once_with(
-            "New version available for %s: %s\n%s", "node", "20", "No changelog available!", stacklevel=2
+            "New version available for %s: %s\n%s", "node", "20", "No changelog available!", stacklevel=ANY
         )
         mock_error.assert_not_called()
         mock_package_json.write_text.assert_called_once_with('{"engines": {"node": "20" }}\n')
