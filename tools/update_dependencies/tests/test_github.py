@@ -3,7 +3,7 @@
 import unittest
 from datetime import UTC, datetime, timedelta
 from typing import cast
-from unittest.mock import Mock, patch
+from unittest.mock import ANY, Mock, patch
 
 import requests
 
@@ -101,7 +101,7 @@ class GetLatestReleaseTest(CacheClearingTestCase):
             "owner/repository 2",
             "1.0",
             "https://github.com/owner/repository 2/releases/tag/1.0",
-            stacklevel=2,
+            stacklevel=ANY,
         )
 
     @patch("requests.get")

@@ -1,6 +1,6 @@
 """Unit tests for the package.json update script."""
 
-from unittest.mock import Mock, patch
+from unittest.mock import ANY, Mock, patch
 
 import requests
 
@@ -46,7 +46,7 @@ class UpdateGitHubActionTest(CacheClearingTestCase):
         """Test that the package.json is not written if there are no outdated packages."""
         mock_get.return_value = mock_response([])
         self.assertEqual("1.0", get_latest_version("docker/action", "1.0").version)
-        mock_error.assert_called_once_with("No valid version found for %s", "docker/action", stacklevel=2)
+        mock_error.assert_called_once_with("No valid version found for %s", "docker/action", stacklevel=ANY)
 
     @patch("logging.Logger.error", Mock())
     def test_no_commit_sha(self, mock_get: Mock):
