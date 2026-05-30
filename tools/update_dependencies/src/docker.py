@@ -73,13 +73,15 @@ def get_latest_tag(image: str, current_tag: str) -> DependencyVersion:
         return DependencyVersion(version=current_tag)
     latest_version = current.version
     sha = ""
+    published: datetime | None = None
     for tag in _get_available_tags(image):
         if tag.is_eligible_as_update_of(current):
             tag_version = cast("Version", tag.version)
             if tag_version > latest_version:
                 latest_version = tag_version
                 sha = tag.digest
-    return DependencyVersion(version=current.with_version(latest_version).name, sha=sha)
+                published = tag.last_pushed
+    return DependencyVersion(version=current.with_version(latest_version).name, sha=sha, published=published)
 
 
 @cache

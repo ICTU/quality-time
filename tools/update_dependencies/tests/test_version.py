@@ -15,3 +15,7 @@ class IsValidTest(unittest.TestCase):
     def test_is_invalid(self):
         """Test that a invalid version is reported as invalid."""
         self.assertFalse(is_valid("nope-1.0"))
+
+    def test_v_prefix_is_allowed(self):
+        """Test that a version with a v-prefix is valid."""
+        self.assertTrue(is_valid("v1.0"))

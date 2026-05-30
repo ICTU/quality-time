@@ -40,9 +40,11 @@ class GetLatestTagTest(CacheClearingTestCase):
         self.assertEqual("1.1", get_latest_tag("newer", "1.1").version)
 
     def test_new_version_available(self, mock_get: Mock):
-        """Test that the new tag is returned if it's newer."""
+        """Test that the new tag is returned if it's newer, without a publication date when the push date is unknown."""
         mock_get.return_value = mock_response({"results": [{"name": "2.1", "digest": DIGEST}]})
-        self.assertEqual("2.1", get_latest_tag("new_version_available", "1.2").version)
+        latest = get_latest_tag("new_version_available", "1.2")
+        self.assertEqual("2.1", latest.version)
+        self.assertIsNone(latest.published)
 
     def test_multiple_new_versions_available(self, mock_get: Mock):
         """Test that the newest tag is returned if multiple newer tags are available."""
@@ -95,10 +97,12 @@ class GetLatestTagTest(CacheClearingTestCase):
         self.assertEqual("1.3", get_latest_tag("within_cooldown", "1.3").version)
 
     def test_outside_cooldown(self, mock_get: Mock):
-        """Test that tags pushed before the cooldown period are considered."""
+        """Test that tags pushed before the cooldown are considered, with the push date as publication date."""
         old = (datetime.now(UTC) - timedelta(days=10)).isoformat()
         mock_get.return_value = mock_response({"results": [{"name": "1.4", "digest": DIGEST, "tag_last_pushed": old}]})
-        self.assertEqual("1.4", get_latest_tag("outside_cooldown", "1.3").version)
+        latest = get_latest_tag("outside_cooldown", "1.3")
+        self.assertEqual("1.4", latest.version)
+        self.assertEqual(datetime.fromisoformat(old), latest.published)
 
     @patch.dict("os.environ", {"DOCKER_HUB_USERNAME": "joe_doe", "DOCKER_HUB_TOKEN": "pat123"})  # nosec
     @patch("requests.post")

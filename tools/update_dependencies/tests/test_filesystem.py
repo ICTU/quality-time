@@ -75,15 +75,44 @@ class UpdateFileTest(unittest.TestCase):
         mock_file.write_text.assert_called_with(f"line1\nuses: action/action@{new_sha} # v3.15\n")
         mock_logger.new_version.assert_called_with("action/action", new_version)
 
-    def test_old_version(self):
-        """Test a new version that is actually older."""
+    def test_unchanged_version(self):
+        """Test that the file is not changed when the latest version equals the current version."""
+        mock_file = mock_path("line1\nimage: python:3.14\n")
+        mock_logger = Mock()
+        self.assertEqual(
+            0, update_file(mock_file, REGEXP, lambda *_args: DependencyVersion(version="3.14"), mock_logger)
+        )
+        mock_file.write_text.assert_not_called()
+        mock_logger.new_version.assert_not_called()
+
+    def test_new_version_sorting_lower_than_current(self):
+        """Test the regression where a newer version sorts lexicographically lower than the current one.
+
+        get_new_version returns the highest version (compared as a packaging.Version), so e.g. "3.10" must be
+        applied over "3.9" even though the string "3.10" < "3.9".
+        """
+        mock_file = mock_path("line1\nimage: python:3.9\n")
+        mock_logger = Mock()
+        self.assertEqual(
+            0, update_file(mock_file, REGEXP, lambda *_args: DependencyVersion(version="3.10"), mock_logger)
+        )
+        mock_file.write_text.assert_called_with("line1\nimage: python:3.10\n")
+        mock_logger.new_version.assert_called_with("python", DependencyVersion(version="3.10"))
+
+    def test_version_from_source_is_applied_even_when_lower(self):
+        """Test that _update_line applies any differing version get_new_version returns, trusting the source.
+
+        _update_line no longer guards against downgrades itself; the source functions decide the target version
+        (the real ones return the maximum). This lets, for example, update_node_engine sync the package.json Node
+        version down to a downgraded Docker base image.
+        """
         mock_file = mock_path("line1\nimage: python:3.14\n")
         mock_logger = Mock()
         self.assertEqual(
             0, update_file(mock_file, REGEXP, lambda *_args: DependencyVersion(version="3.13"), mock_logger)
         )
-        mock_file.write_text.assert_not_called()
-        mock_logger.new_version.assert_not_called()
+        mock_file.write_text.assert_called_with("line1\nimage: python:3.13\n")
+        mock_logger.new_version.assert_called_with("python", DependencyVersion(version="3.13"))
 
 
 @patch("pathlib.Path.glob")

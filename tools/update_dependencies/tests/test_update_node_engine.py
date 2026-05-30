@@ -6,7 +6,7 @@ from unittest.mock import ANY, Mock, patch
 
 from update_node_engine import update_node_engines
 
-from .helpers import mock_path
+from .helpers import assert_new_version_logged, assert_path_logged, mock_path
 
 
 @patch("pathlib.Path.cwd", Mock(return_value=Path("/")))
@@ -30,7 +30,7 @@ class UpdateNodeEnginesTest(unittest.TestCase):
         mock_package_json = self.create_package_json()
         mock_glob.return_value = [mock_package_json]
         self.assertEqual(0, update_node_engines())
-        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=ANY)
+        assert_path_logged(mock_info, mock_package_json.relative_to())
         mock_warning.assert_not_called()
         mock_error.assert_not_called()
         mock_package_json.write_text.assert_not_called()
@@ -42,10 +42,8 @@ class UpdateNodeEnginesTest(unittest.TestCase):
         mock_package_json = self.create_package_json()
         mock_glob.return_value = [mock_package_json]
         self.assertEqual(0, update_node_engines())
-        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=ANY)
-        mock_warning.assert_called_once_with(
-            "New version available for %s: %s\n%s", "node", "19", "No changelog available!", stacklevel=ANY
-        )
+        assert_path_logged(mock_info, mock_package_json.relative_to())
+        assert_new_version_logged(mock_warning, "node", "19", once=True)
         mock_error.assert_not_called()
         mock_package_json.write_text.assert_called_once_with('{"engines": {"node": "19" }}\n')
 
@@ -97,9 +95,7 @@ class UpdateNodeEnginesTest(unittest.TestCase):
             [mock_package_json] if pattern == "package.json" else [Path("/Dockerfile"), fallback_dockerfile]
         )
         self.assertEqual(0, update_node_engines())
-        mock_info.assert_called_with("Updating %s", mock_package_json.relative_to(), stacklevel=ANY)
-        mock_warning.assert_called_once_with(
-            "New version available for %s: %s\n%s", "node", "20", "No changelog available!", stacklevel=ANY
-        )
+        assert_path_logged(mock_info, mock_package_json.relative_to())
+        assert_new_version_logged(mock_warning, "node", "20", once=True)
         mock_error.assert_not_called()
         mock_package_json.write_text.assert_called_once_with('{"engines": {"node": "20" }}\n')

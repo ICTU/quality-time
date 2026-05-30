@@ -3,11 +3,11 @@
 import unittest
 from pathlib import Path
 from typing import ClassVar
-from unittest.mock import ANY, Mock, patch
+from unittest.mock import Mock, patch
 
 from update_pyproject_toml import update_pyproject_tomls
 
-from .helpers import mock_path, mock_response
+from .helpers import assert_new_version_logged, assert_path_logged, mock_path, mock_response, release_json
 
 
 @patch("pathlib.Path.cwd", Mock(return_value=Path("/")))
@@ -44,10 +44,8 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         mock_glob.return_value = [mock_pyproject_toml]
         self.assertEqual(0, update_pyproject_tomls())
         mock_pyproject_toml.write_text.assert_called_with('"package==1.1"\n')
-        mock_info.assert_called_with("Updating %s", Path("uv.lock"), stacklevel=ANY)
-        mock_warning.assert_called_with(
-            "New version available for %s: %s\n%s", "package", "1.1", "No changelog available!", stacklevel=ANY
-        )
+        assert_path_logged(mock_info, Path("uv.lock"))
+        assert_new_version_logged(mock_warning, "package", "1.1")
 
     @patch(
         "requests.get",
@@ -65,20 +63,15 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         mock_glob.return_value = [mock_pyproject_toml]
         self.assertEqual(0, update_pyproject_tomls())
         mock_pyproject_toml.write_text.assert_called_with('"package_with_changelog==1.1"\n')
-        mock_info.assert_called_with("Updating %s", Path("uv.lock"), stacklevel=ANY)
-        mock_warning.assert_called_with(
-            "New version available for %s: %s\n%s", "package_with_changelog", "1.1", self.changelog, stacklevel=ANY
-        )
+        assert_path_logged(mock_info, Path("uv.lock"))
+        assert_new_version_logged(mock_warning, "package_with_changelog", "1.1", self.changelog)
 
     @patch(
         "requests.get",
         Mock(
             side_effect=[
                 mock_response(pypi_metadata()),
-                mock_response(
-                    [{"draft": False, "prerelease": False, "tag_name": "v1.1"}],
-                    headers={"Content-Type": "text/html"},
-                ),
+                mock_response([release_json("v1.1")], headers={"Content-Type": "text/html"}),
             ]
         ),
     )
@@ -89,21 +82,15 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         mock_glob.return_value = [mock_pyproject_toml]
         self.assertEqual(0, update_pyproject_tomls())
         mock_pyproject_toml.write_text.assert_called_with('"package_with_html_changelog==1.1"\n')
-        mock_info.assert_called_with("Updating %s", Path("uv.lock"), stacklevel=ANY)
-        mock_warning.assert_called_with(
-            "New version available for %s: %s\n%s",
-            "package_with_html_changelog",
-            "1.1",
-            self.changelog,
-            stacklevel=ANY,
-        )
+        assert_path_logged(mock_info, Path("uv.lock"))
+        assert_new_version_logged(mock_warning, "package_with_html_changelog", "1.1", self.changelog)
 
     @patch(
         "requests.get",
         Mock(
             side_effect=[
                 mock_response(pypi_metadata(changelog_url="")),
-                mock_response([{"draft": False, "prerelease": False, "body": changelog, "tag_name": "v1.1"}]),
+                mock_response([release_json("v1.1", body=changelog)]),
                 mock_response({"sha": "sha"}),
             ]
         ),
@@ -115,14 +102,8 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         mock_glob.return_value = [mock_pyproject_toml]
         self.assertEqual(0, update_pyproject_tomls())
         mock_pyproject_toml.write_text.assert_called_with('"package_with_github_releases==1.1"\n')
-        mock_info.assert_called_with("Updating %s", Path("uv.lock"), stacklevel=ANY)
-        mock_warning.assert_called_with(
-            "New version available for %s: %s\n%s",
-            "package_with_github_releases",
-            "1.1",
-            self.changelog,
-            stacklevel=ANY,
-        )
+        assert_path_logged(mock_info, Path("uv.lock"))
+        assert_new_version_logged(mock_warning, "package_with_github_releases", "1.1", self.changelog)
 
     @patch(
         "requests.get",
@@ -135,14 +116,8 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         mock_glob.return_value = [mock_pyproject_toml]
         self.assertEqual(0, update_pyproject_tomls())
         mock_pyproject_toml.write_text.assert_called_with('"package_without_github_releases==1.1"\n')
-        mock_info.assert_called_with("Updating %s", Path("uv.lock"), stacklevel=ANY)
-        mock_warning.assert_called_with(
-            "New version available for %s: %s\n%s",
-            "package_without_github_releases",
-            "1.1",
-            "No changelog available!",
-            stacklevel=ANY,
-        )
+        assert_path_logged(mock_info, Path("uv.lock"))
+        assert_new_version_logged(mock_warning, "package_without_github_releases", "1.1")
 
     @patch("subprocess.run", Mock(return_value=Mock(stdout="| package\n")))
     def test_unchanged(self, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
@@ -151,5 +126,5 @@ class UpdatePyprojectTomlsTest(unittest.TestCase):
         mock_glob.return_value = [mock_pyproject_toml]
         self.assertEqual(0, update_pyproject_tomls())
         mock_pyproject_toml.write_text.assert_not_called()
-        mock_info.assert_called_with("Updating %s", Path("uv.lock"), stacklevel=ANY)
+        assert_path_logged(mock_info, Path("uv.lock"))
         mock_warning.assert_not_called()

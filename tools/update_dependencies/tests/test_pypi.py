@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 from log import get_logger
 from pypi import CHANGELOG_URL_KEYS, REPOSITORY_URL_KEYS, get_changes
 
-from .helpers import CacheClearingTestCase
+from .helpers import CacheClearingTestCase, release_json
 
 LOG = get_logger("test_pipy")
 
@@ -68,7 +68,7 @@ class GetChangesTest(CacheClearingTestCase):
             self.create_mock_response(
                 mock_get,
                 {"info": {"project_urls": {"docs": docs, key: repo}}},
-                [{"draft": False, "prerelease": False, "body": changelog, "tag_name": "1.1"}],
+                [release_json("1.1", body=changelog)],
                 {"sha": "sha"},
             )
             self.assertEqual(changelog, get_changes(f"package-4-{key}", "1.1", LOG))
@@ -86,7 +86,7 @@ class GetChangesTest(CacheClearingTestCase):
         self.create_mock_response(
             mock_get,
             {"info": {"description": f"Package description\n{github_url}\n"}},
-            [{"draft": False, "prerelease": False, "tag_name": "1.1", "body": changelog}],
+            [release_json("1.1", body=changelog)],
             {"sha": "sha"},
         )
         self.assertEqual(changelog, get_changes("package-6", "1.1", LOG))
@@ -97,7 +97,7 @@ class GetChangesTest(CacheClearingTestCase):
         self.create_mock_response(
             mock_get,
             {"info": {"description": f"Package description\n{github_url}\n"}},
-            [{"draft": False, "prerelease": False, "tag_name": "1.1"}],
+            [release_json("1.1")],
             {"sha": "sha"},
         )
         self.assertEqual("", get_changes("package-7", "1.1", LOG))
