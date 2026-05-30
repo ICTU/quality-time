@@ -39,6 +39,11 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           tools: linked
+          # Don't analyze generated vulture whitelist files; their bare-name entries trip code quality queries
+          # such as py/ineffectual-statement (https://github.com/ICTU/quality-time/pull/13361).
+          config: |
+            paths-ignore:
+              - "**/.vulture-whitelist.py"
 
       # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
       # If this step fails, then you should remove it and run the build manually (see below)

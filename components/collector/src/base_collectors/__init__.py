@@ -9,6 +9,7 @@ from .file_source_collector import (
     JSONFileSourceCollector,
     XMLFileSourceCollector,
 )
+from .graphql import collect_graphql_responses
 from .metric_collector import MetricCollector
 from .source_collector import (
     BranchType,
