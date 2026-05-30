@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 from filesystem import glob
 from log import get_logger
 from process import run
-from pypi import get_changes
+from pypi import get_changes, get_publication_datetime
 from version import DependencyVersion
 
 if TYPE_CHECKING:
@@ -59,7 +59,9 @@ def update_pyproject_toml(pyproject_toml: Path) -> None:
     lines_with_updates = [line for line in outdated.splitlines() if " (latest: " in line]
     for line in lines_with_updates:
         package, version = parse_line_with_update(line)
-        dependency_version = DependencyVersion(version, get_changes(package, version, LOG))
+        changes = get_changes(package, version, LOG)
+        published = get_publication_datetime(package, version)
+        dependency_version = DependencyVersion(version, changes, published=published)
         LOG.new_version(package, dependency_version)
     latest_versions = Versions(dict(parse_line_with_update(line) for line in lines_with_updates))
     package_spec = re.compile(r'"(?P<name>[A-Za-z0-9_.\-]+)==(?P<version>[A-Za-z0-9_.\-]+)"')

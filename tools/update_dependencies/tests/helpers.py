@@ -1,14 +1,19 @@
 """Shared test helpers."""
 
 import unittest
+from typing import TYPE_CHECKING
 from unittest.mock import ANY, Mock
 
-from docker import _docker_hub_headers, _get_available_tags
-from github import _list_releases
+from docker import _docker_hub_headers as docker_hub_headers
+from docker import _get_available_tags as docker_hub_get_available_tags
+from github import _list_releases as github_list_release
 from npmjs import get_changes as npmjs_get_changes
 from npmjs import get_publication_datetime as npmjs_get_publication_datetime
-from pypi import get_changes as pypi_get_changes
-from update_github_action import get_latest_version
+from pypi import release_metadata as pypi_release_metadata
+from update_github_action import get_latest_version as github_get_latest_version
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 
 class CacheClearingTestCase(unittest.TestCase):
@@ -18,13 +23,13 @@ class CacheClearingTestCase(unittest.TestCase):
     """
 
     CACHES = (
-        _docker_hub_headers,
-        _get_available_tags,
-        _list_releases,
+        docker_hub_get_available_tags,
+        docker_hub_headers,
+        github_get_latest_version,
+        github_list_release,
         npmjs_get_changes,
         npmjs_get_publication_datetime,
-        pypi_get_changes,
-        get_latest_version,
+        pypi_release_metadata,
     )
 
     def setUp(self) -> None:
@@ -34,7 +39,7 @@ class CacheClearingTestCase(unittest.TestCase):
             cache.cache_clear()
 
 
-def mock_response(json: dict | list | None = None, **kwargs: object) -> Mock:
+def mock_response(json: Mapping | list | None = None, **kwargs: object) -> Mock:
     """Return a mock requests Response whose .json() returns the given value.
 
     Extra response attributes (text, status_code, headers, ...) can be set via keyword arguments.

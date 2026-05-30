@@ -1,13 +1,14 @@
 """Unit tests for the PyPI module."""
 
 import logging
+from datetime import UTC, datetime
 from http import HTTPStatus
 from unittest.mock import Mock, patch
 
 from log import get_logger
-from pypi import CHANGELOG_URL_KEYS, REPOSITORY_URL_KEYS, get_changes
+from pypi import CHANGELOG_URL_KEYS, REPOSITORY_URL_KEYS, get_changes, get_publication_datetime
 
-from .helpers import CacheClearingTestCase, release_json
+from .helpers import CacheClearingTestCase, mock_response, release_json
 
 LOG = get_logger("test_pipy")
 
@@ -101,3 +102,28 @@ class GetChangesTest(CacheClearingTestCase):
             {"sha": "sha"},
         )
         self.assertEqual("", get_changes("package-7", "1.1", LOG))
+
+
+class GetPublicationDateTimeTest(CacheClearingTestCase):
+    """Unit tests for getting the publication date time of releases."""
+
+    @patch("requests.get")
+    def test_publication_datetime(self, mock_get: Mock):
+        """Test that the publication datetime is returned."""
+        mock_get.return_value = mock_response({"urls": [{"upload_time_iso_8601": "2026-05-30T12:00:03.678901Z"}]})
+        published = datetime(2026, 5, 30, 12, 0, 3, 678901, tzinfo=UTC)
+        self.assertEqual(published, get_publication_datetime("package", "1.0"))
+
+    @patch("requests.get")
+    def test_max_publication_datetime(self, mock_get: Mock):
+        """Test that the latest publication datetime is returned if there are multiple distributions."""
+        mock_get.return_value = mock_response(
+            {
+                "urls": [
+                    {"upload_time_iso_8601": "2026-05-30T12:00:03.678901Z"},
+                    {"upload_time_iso_8601": "2026-05-30T12:00:03.543210Z"},
+                ]
+            }
+        )
+        published = datetime(2026, 5, 30, 12, 0, 3, 678901, tzinfo=UTC)
+        self.assertEqual(published, get_publication_datetime("package", "1.0"))

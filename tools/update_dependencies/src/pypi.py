@@ -2,8 +2,9 @@
 
 import http
 import re
+from datetime import datetime
 from functools import cache
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 
 import requests
 
@@ -18,7 +19,28 @@ CHANGELOG_URL_KEYS = {"changes", "changelog", "release notes"}
 REPOSITORY_URL_KEYS = {"repository", "source", "homepage"}
 
 
+class Info(TypedDict):
+    """PyPI release info."""
+
+    description: str
+    project_urls: dict[str, str]
+
+
+class Release(TypedDict):
+    """PyPI release metadata."""
+
+    info: Info
+    urls: list[dict[str, str]]
+
+
 @cache
+def release_metadata(package: str, version: str) -> Release:
+    """Get the release metadata from PyPI."""
+    response = requests.get(f"https://pypi.org/pypi/{package}/{version}/json", timeout=10)
+    response.raise_for_status()
+    return response.json()
+
+
 def get_changes(package: str, version: str, logger: Logger) -> str:
     """Return the changelog for the PyPI package and version.
 
@@ -29,9 +51,7 @@ def get_changes(package: str, version: str, logger: Logger) -> str:
     - Check for a changelog in the package description
     - Check for a GitHub URL in the package description and use that to find GitHub releases
     """
-    response = requests.get(f"https://pypi.org/pypi/{package}/{version}/json", timeout=10)
-    response.raise_for_status()
-    info = response.json()["info"]
+    info = release_metadata(package, version)["info"]
     urls = info.get("project_urls", {})
     for url_key, url in urls.items():
         if url_key.lower() in CHANGELOG_URL_KEYS and (changelog := changelog_from_url(url, version, logger)):
@@ -45,6 +65,13 @@ def get_changes(package: str, version: str, logger: Logger) -> str:
     return changelog_from_description(description, version) or changelog_from_github_url_in_description(
         description, package, version
     )
+
+
+def get_publication_datetime(package: str, version: str) -> datetime:
+    """Return the datetime that the version of the package was published."""
+    urls = release_metadata(package, version)["urls"]
+    upload_time = max(url["upload_time_iso_8601"] for url in urls)
+    return datetime.fromisoformat(upload_time)
 
 
 def changelog_from_url(url: str, version: str, logger: Logger) -> str:
