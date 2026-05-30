@@ -8,6 +8,7 @@ import requests
 from packaging.version import InvalidVersion, Version
 
 from log import get_logger
+from npmjs import get_publication_datetime
 from version import DependencyVersion
 
 LOG = get_logger("jsdelivr")
@@ -25,7 +26,8 @@ def get_latest_version(dependency: str, current_version_string: str) -> Dependen
     current_version = Version(current_version_string)
     latest_version = _get_latest_version(dependency, current_version)
     integrity = _get_integrity_hash(dependency, latest_version) if latest_version > current_version else ""
-    return DependencyVersion(version=str(latest_version), sha=integrity)
+    published = get_publication_datetime(dependency, str(latest_version))
+    return DependencyVersion(version=str(latest_version), sha=integrity, published=published)
 
 
 def _get_latest_version(dependency: str, current_version: Version) -> Version:
