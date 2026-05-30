@@ -53,6 +53,7 @@ class UpdatePackageJsonTest(CacheClearingTestCase):
             side_effect=[
                 mock_response({"repository": {"url": "https://github.com/package/1.1"}}),
                 mock_response([release_json("v1.1", body="Changelog")]),
+                mock_response({"time": {"1.1": "20260530T10:26:45.543Z"}}),
                 mock_response({"sha": "sha"}),
             ]
         ),
@@ -68,5 +69,5 @@ class UpdatePackageJsonTest(CacheClearingTestCase):
         ]
         self.assertEqual(0, update_package_jsons())
         assert_path_logged(mock_info, mock_package_json.relative_to())
-        assert_new_version_logged(mock_warning, "package", "1.1", "Changelog")
+        assert_new_version_logged(mock_warning, "package", "1.1, published: 2026-05-30 10:26", "Changelog")
         self.assert_npm_called(mock_run)

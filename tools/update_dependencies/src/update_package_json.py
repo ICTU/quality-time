@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from filesystem import glob
 from log import get_logger
-from npmjs import get_changes
+from npmjs import get_changes, get_publication_datetime
 from process import run
 from version import DependencyVersion
 
@@ -22,7 +22,10 @@ def update_package_json(package_json: Path) -> int:
     npm_outdated = ["npm", "outdated", "--silent", "--json", "--include=dev"]
     outdated_packages = json.loads(run(npm_outdated, cwd=package_json.parent))
     for package, version in outdated_packages.items():
-        LOG.new_version(package, DependencyVersion(version["latest"], get_changes(package, version["latest"])))
+        changes = get_changes(package, version["latest"])
+        published = get_publication_datetime(package, version["latest"])
+        package_version = DependencyVersion(version["latest"], changes, published=published)
+        LOG.new_version(package, package_version)
     npm_update = ["npm", "update", "--save", "--silent", "--include=dev"]
     run(npm_update, cwd=package_json.parent)
     return 0
