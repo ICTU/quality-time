@@ -6,6 +6,7 @@ from unittest.mock import ANY, Mock
 from docker import _docker_hub_headers, _get_available_tags
 from github import _list_releases
 from npmjs import get_changes as npmjs_get_changes
+from npmjs import get_publication_datetime as npmjs_get_publication_datetime
 from pypi import get_changes as pypi_get_changes
 from update_github_action import get_latest_version
 
@@ -21,6 +22,7 @@ class CacheClearingTestCase(unittest.TestCase):
         _get_available_tags,
         _list_releases,
         npmjs_get_changes,
+        npmjs_get_publication_datetime,
         pypi_get_changes,
         get_latest_version,
     )
