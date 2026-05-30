@@ -105,15 +105,25 @@ def matches_semantic_version(string: str) -> bool:
     )
 
 
-def match_string_or_regular_expression(string: str, strings_and_or_regular_expressions: Collection[str]) -> bool:
-    """Return whether the string is equal to one of the strings or matches one of the regular expressions."""
-    for string_or_regular_expression in strings_and_or_regular_expressions:
-        if is_regexp(string_or_regular_expression):
-            if re.match(string_or_regular_expression, string):
+def _matches(value: str, patterns: Collection[str], *, match_if_empty: bool) -> bool:
+    """Return whether the value equals one of the patterns.
+
+    Patterns can be strings or regular expressions. An empty collection of patterns returns `match_if_empty`.
+    """
+    if not patterns:
+        return match_if_empty
+    for pattern in patterns:
+        if is_regexp(pattern):
+            if re.match(pattern, value):
                 return True
-        elif string_or_regular_expression == string:
+        elif pattern == value:
             return True
     return False
+
+
+def matches_filter(value: str, include: Collection[str] = (), exclude: Collection[str] = ()) -> bool:
+    """Return whether the value matches the include patterns and does not match the exclude patterns."""
+    return _matches(value, include, match_if_empty=True) and not _matches(value, exclude, match_if_empty=False)
 
 
 def iterable_to_batches(iterable: Iterable, batch_size: int) -> Iterable:

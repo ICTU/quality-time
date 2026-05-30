@@ -14,11 +14,7 @@ from shared_data_model import DATA_MODEL
 
 from collector_utilities.date_time import days_ago, days_to_go
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.functions import (
-    match_string_or_regular_expression,
-    stable_traceback,
-    tokenless,
-)
+from collector_utilities.functions import matches_filter, stable_traceback, tokenless
 from collector_utilities.log import get_logger
 from collector_utilities.type import URL, Response, Responses, Value
 from model import Entities, Entity, IssueStatus, SourceMeasurement, SourceParameters, SourceResponses
@@ -181,6 +177,12 @@ class SourceCollector:
         """Return whether to include the entity in the measurement."""
         return True
 
+    def _matches_filter(self, value: str, include_parameter: str = "", exclude_parameter: str = "") -> bool:
+        """Return whether the value matches the include and/or exclude filter parameters."""
+        include = self._parameter(include_parameter) if include_parameter else ()
+        exclude = self._parameter(exclude_parameter) if exclude_parameter else ()
+        return matches_filter(value, include, exclude)
+
     async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Parse the value from the responses."""
         return str(len(included_entities))
@@ -232,6 +234,39 @@ class SourceCollector:
             Direction,
             str(self._metric.get("direction") or DATA_MODEL.metrics[self._metric["type"]].direction.value),
         )
+
+
+class TokenAuthenticationSourceCollector(SourceCollector):
+    """Base class for collectors that pass a private token in a request header."""
+
+    AUTH_HEADER: str = "Authorization"  # Header the private token is passed in
+    AUTH_PREFIX: str = ""  # Authentication scheme prefix, e.g. "Bearer "
+
+    def _headers(self) -> dict[str, str]:
+        """Extend to add the private token to the request headers, if configured."""
+        headers = super()._headers()
+        if token := self._parameter("private_token"):
+            headers[self.AUTH_HEADER] = f"{self.AUTH_PREFIX}{token}"
+        return headers
+
+
+class LinkPaginationSourceCollector(SourceCollector):
+    """Base class for collectors that follow the 'next' pagination links in the response headers."""
+
+    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
+        """Extend to follow the pagination links, if necessary."""
+        all_responses = responses = await super()._get_source_responses(*urls)
+        while next_urls := await self._next_urls(responses):
+            # Retrieving consecutive big responses without reading the response hangs the client, see
+            # https://github.com/aio-libs/aiohttp/issues/2217
+            for response in responses:
+                await response.read()
+            all_responses.extend(responses := await super()._get_source_responses(*next_urls))
+        return all_responses
+
+    async def _next_urls(self, responses: SourceResponses) -> list[URL]:
+        """Return the next (pagination) links from the responses."""
+        return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
 
 
 class BranchType(TypedDict):
@@ -292,7 +327,7 @@ class InactiveBranchesSourceCollector[Branch: BranchType](SourceCollector, ABC):
 
     def _ignore_branch(self, branch: Branch) -> bool:
         """Return whether to ignore the branch."""
-        return match_string_or_regular_expression(branch["name"], self._parameter("branches_to_ignore"))
+        return not self._matches_filter(branch["name"], exclude_parameter="branches_to_ignore")
 
     @abstractmethod
     def _commit_datetime(self, branch: Branch) -> datetime:
@@ -449,13 +484,6 @@ class VersionCollector(SourceCollector):
 class TransactionEntity(Entity):
     """Entity representing a performance transaction."""
 
-    def is_to_be_included(self, transactions_to_include: list[str], transactions_to_ignore: list[str]) -> bool:
-        """Return whether the transaction should be included."""
-        name = self["name"]
-        if transactions_to_include and not match_string_or_regular_expression(name, transactions_to_include):
-            return False
-        return not match_string_or_regular_expression(name, transactions_to_ignore)
-
     def is_slow(
         self,
         response_time_to_evaluate: str,
@@ -466,7 +494,7 @@ class TransactionEntity(Entity):
         name, response_time = self["name"], float(self[response_time_to_evaluate])
         for transaction_specific_target_response_time in transaction_specific_target_response_times:
             re_or_name, target = transaction_specific_target_response_time.rsplit(":", maxsplit=1)
-            if match_string_or_regular_expression(name, [re_or_name]):
+            if matches_filter(name, [re_or_name]):
                 return response_time > float(target)
         return bool(response_time > target_response_time)
 
@@ -477,8 +505,6 @@ class SlowTransactionsCollector(SourceCollector):
     def __init__(self, session: aiohttp.ClientSession, metric, source) -> None:
         """Extend to set up the parameters."""
         super().__init__(session, metric, source)
-        self.__transactions_to_include = cast(list[str], self._parameter("transactions_to_include"))
-        self.__transactions_to_ignore = cast(list[str], self._parameter("transactions_to_ignore"))
         self._response_time_to_evaluate = cast(str, self._parameter("response_time_to_evaluate"))
         self.__target_response_time = float(cast(int, self._parameter("target_response_time")))
         self.__transaction_specific_target_response_times = cast(
@@ -488,9 +514,8 @@ class SlowTransactionsCollector(SourceCollector):
 
     def _is_to_be_included_and_is_slow(self, entity: TransactionEntity) -> bool:
         """Return whether the transaction entity is to be included and is slow."""
-        return entity.is_to_be_included(
-            self.__transactions_to_include,
-            self.__transactions_to_ignore,
+        return self._matches_filter(
+            entity["name"], "transactions_to_include", "transactions_to_ignore"
         ) and entity.is_slow(
             self._response_time_to_evaluate,
             self.__target_response_time,
@@ -521,9 +546,7 @@ class MergeRequestCollector(SourceCollector):
 
     def _request_matches_branches(self, entity: Entity) -> bool:
         """Return whether the merge request target branch matches the configured branches."""
-        branches = self._parameter("target_branches_to_include")
-        target_branch = entity["target_branch"]
-        return match_string_or_regular_expression(target_branch, branches) if branches else True
+        return self._matches_filter(entity["target_branch"], "target_branches_to_include")
 
     def _request_matches_state(self, entity: Entity) -> bool:
         """Return whether the merge request state matches the configured states."""

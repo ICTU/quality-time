@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from base_collectors import SourceCollector
 from collector_utilities.date_time import datetime_from_timestamp
-from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
@@ -51,10 +50,7 @@ class JenkinsJobs(SourceCollector):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether the job should be counted."""
-        jobs_to_include = self._parameter("jobs_to_include")
-        if len(jobs_to_include) > 0 and not match_string_or_regular_expression(entity["name"], jobs_to_include):
-            return False
-        return not match_string_or_regular_expression(entity["name"], self._parameter("jobs_to_ignore"))
+        return self._matches_filter(entity["name"], "jobs_to_include", "jobs_to_ignore")
 
     def _builds(self, job: Job) -> list[Build]:
         """Return the builds of the job."""

@@ -6,7 +6,6 @@ from types import SimpleNamespace
 from typing import cast
 
 from base_collectors import SourceCollector
-from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
@@ -30,7 +29,6 @@ class AzureDevopsTests(SourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the test runs."""
         test_results = cast(list[str], self._parameter("test_result"))
-        test_run_names_to_include = cast(list[str], self._parameter("test_run_names_to_include")) or ["all"]
         test_run_states_to_include = [value.lower() for value in self._parameter("test_run_states_to_include")] or [
             "all",
         ]
@@ -38,10 +36,7 @@ class AzureDevopsTests(SourceCollector):
         highest_build: dict[str, TestRun] = defaultdict(TestRun)
         for run in runs:
             name = run.get("name", "Unknown test run name")
-            if test_run_names_to_include != ["all"] and not match_string_or_regular_expression(
-                name,
-                test_run_names_to_include,
-            ):
+            if not self._matches_filter(name, "test_run_names_to_include"):
                 continue
             state = run.get("state", "Unknown test run state")
             if test_run_states_to_include != ["all"] and state.lower() not in test_run_states_to_include:

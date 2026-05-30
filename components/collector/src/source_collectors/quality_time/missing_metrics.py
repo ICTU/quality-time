@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from shared.model.iterators import metrics, subjects
 
-from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
 from model import SourceMeasurement, SourceResponses
 from model.entity import Entities, Entity
@@ -60,21 +59,17 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
         if metric_type in self._parameter("metric_types_to_ignore"):
             return False
 
-        subjects_to_include = self._parameter("subjects_to_include")
-        if subjects_to_include and not self.__subject_matches(entity, subjects_to_include):
+        title, uuid = entity["subject"], entity["subject_uuid"]
+
+        parameter = "subjects_to_include"
+        if not self._matches_filter(title, parameter) and not self._matches_filter(uuid, parameter):
             return False
 
-        subjects_to_ignore = self._parameter("subjects_to_ignore")
-        if subjects_to_ignore and self.__subject_matches(entity, subjects_to_ignore):  # noqa: SIM103
+        parameter = "subjects_to_ignore"
+        if not self._matches_filter(title, "", parameter) or not self._matches_filter(uuid, "", parameter):  # noqa: SIM103
             return False
 
         return True
-
-    def __subject_matches(self, entity: Entity, subjects_to_match: list[str] | str) -> bool:
-        """Return whether the entity's subject matches the subjects to match by name or UUID."""
-        subject_name_matches = match_string_or_regular_expression(entity["subject"], subjects_to_match)
-        subject_uuid_matches = match_string_or_regular_expression(entity["subject_uuid"], subjects_to_match)
-        return subject_name_matches or subject_uuid_matches
 
     def __nr_of_possible_metric_types(self, data_model: dict, reports: list[dict]) -> int:
         """Return the number of possible metric types in the reports."""

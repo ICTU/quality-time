@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, cast
 from shared.utils.functions import md5_hash
 
 from base_collectors import JSONFileSourceCollector, SourceCollector
-from collector_utilities.functions import match_string_or_regular_expression, stabilize
+from collector_utilities.functions import stabilize
 from collector_utilities.type import URL
 from model import Entities, Entity
 
@@ -33,27 +33,13 @@ class AxeViolationsCollector(SourceCollector):
     def _include_entity_based_on_tags(self, entity: Entity) -> bool:
         """Return whether to include the entity based on the tags."""
         tags = entity["tags"].split(", ")
-        if tags_to_include := self._parameter("tags_to_include"):
-            for tag in tags:
-                if match_string_or_regular_expression(tag, tags_to_include):
-                    break
-            else:
-                return False
-        if tags_to_ignore := self._parameter("tags_to_ignore"):
-            for tag in tags:
-                if match_string_or_regular_expression(tag, tags_to_ignore):
-                    return False
-        return True
+        if not any(self._matches_filter(tag, "tags_to_include") for tag in tags):
+            return False
+        return all(self._matches_filter(tag, exclude_parameter="tags_to_ignore") for tag in tags)
 
     def _include_entity_based_on_element_filter(self, entity: Entity) -> bool:
         """Return whether to include the entity based on the element filters."""
-        element_include_filter = self._parameter("element_include_filter")
-        if element_include_filter and not match_string_or_regular_expression(entity["element"], element_include_filter):
-            return False
-        element_exclude_filter = self._parameter("element_exclude_filter")
-        return not bool(
-            element_exclude_filter and match_string_or_regular_expression(entity["element"], element_exclude_filter)
-        )
+        return self._matches_filter(entity["element"], "element_include_filter", "element_exclude_filter")
 
     def _stable_url(self, url: URL) -> URL:
         """Return the url without the variable parts."""

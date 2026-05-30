@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from base_collectors import SourceCollector
+from base_collectors import TokenAuthenticationSourceCollector
 from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL
 
@@ -10,8 +10,10 @@ if TYPE_CHECKING:
     from .json_types import Board
 
 
-class JiraBase(SourceCollector):
+class JiraBase(TokenAuthenticationSourceCollector):
     """Base class for Jira collectors."""
+
+    AUTH_PREFIX = "Bearer "
 
     def _basic_auth_credentials(self) -> tuple[str, str] | None:
         """Extend to only return the basic auth credentials if no private token is configured.
@@ -20,13 +22,6 @@ class JiraBase(SourceCollector):
         credentials encoded in URL".
         """
         return None if self._parameter("private_token") else super()._basic_auth_credentials()
-
-    def _headers(self) -> dict[str, str]:
-        """Extend to add the token, if present, to the headers for the get request."""
-        headers = super()._headers()
-        if token := self._parameter("private_token"):
-            headers["Authorization"] = f"Bearer {token}"
-        return headers
 
     @property
     def _rest_api_version(self) -> str:
