@@ -211,10 +211,10 @@ class TestResultAggregationStrategy(SingleChoiceParameter):
 
 
 class Upvotes(IntegerParameter):
-    """Minimum number of merge request up-votes parameter."""
+    """Required number of merge request up-votes parameter."""
 
-    name: str = "Minimum number of upvotes"
-    help: str = "Only count merge requests with fewer than the minimum number of upvotes."
+    name: str = "Required number of upvotes"
+    help: str | None = "Only count merge requests with fewer than the required number of upvotes."
     unit: Unit = Unit.UPVOTES
     metrics: list[str] = ["merge_requests"]
 

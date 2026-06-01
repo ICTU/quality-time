@@ -556,6 +556,6 @@ class MergeRequestCollector(SourceCollector):
         """Return whether the merge request upvotes matches the configured upvotes."""
         # If the required number of upvotes is zero, merge requests are included regardless of how many upvotes they
         # actually have. If the required number of upvotes is more than zero then only merge requests that have fewer
-        # than the minimum number of upvotes are included in the count:
+        # than the required number of upvotes are included in the count:
         required_upvotes = int(cast(str, self._parameter("upvotes")))
         return required_upvotes == 0 or int(entity["upvotes"]) < required_upvotes
