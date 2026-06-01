@@ -14,6 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
+- Rename the merge requests parameter "Minimum number of upvotes" to "Required number of upvotes" to make the purpose of the parameter clearer. Fixes [#13016](https://github.com/ICTU/quality-time/issues/13016).
 - If an LDAP server does not return the user password attribute when Quality-time tries to authenticate a user, attempt an LDAP bind instead of throwing an exception. Fixes [#13305](https://github.com/ICTU/quality-time/issues/13305).
 
 ## v5.55.0 - 2026-05-21

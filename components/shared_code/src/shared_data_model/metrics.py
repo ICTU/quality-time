@@ -288,8 +288,8 @@ itself.""",
         rationale="Merge requests need to be reviewed and approved. This metric allows for measuring the number "
         "of merge requests without the required approvals.",
         documentation="""In itself, the number of merge requests is not indicative of software quality. However,
-by setting the parameter "Minimum number of upvotes", the metric can report on merge requests that have fewer than the
-minimum number of upvotes. The parameter "Merge request state" can be used to exclude closed merge requests, for
+by setting the parameter "Required number of upvotes", the metric can report on merge requests that have fewer than the
+required number of upvotes. The parameter "Merge request state" can be used to exclude closed merge requests, for
 example. The parameter "Target branches to include" can be used to further limit the merge requests to only count merge
 requests that target specific branches, for example the "develop" branch.""",
         scales=["count", "percentage"],
