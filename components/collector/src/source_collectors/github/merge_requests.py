@@ -3,6 +3,7 @@
 import aiohttp
 from aiogqlc import GraphQLClient
 
+from base_collectors import collect_graphql_responses
 from collector_utilities.exceptions import NotFoundError
 from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceResponses
@@ -72,11 +73,7 @@ class GitHubMergeRequests(GitHubBase):
         # We need to create a new session because the GraphQLClient expects the session to provide the headers:
         async with aiohttp.ClientSession(raise_for_status=True, timeout=timeout, headers=self._headers()) as session:
             client = GraphQLClient(f"{api_url}/graphql", session=session)
-            responses, has_next_page, cursor = SourceResponses(), True, ""
-            while has_next_page:
-                response, has_next_page, cursor = await self._get_pull_request_response(client, cursor)
-                responses.append(response)
-        return responses
+            return await collect_graphql_responses(lambda cursor: self._get_pull_request_response(client, cursor))
 
     async def _get_pull_request_response(
         self,

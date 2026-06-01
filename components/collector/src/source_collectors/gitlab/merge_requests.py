@@ -3,7 +3,7 @@
 import aiohttp
 from aiogqlc import GraphQLClient
 
-from base_collectors import MergeRequestCollector
+from base_collectors import MergeRequestCollector, collect_graphql_responses
 from collector_utilities.exceptions import CollectorError, NotFoundError
 from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceResponses
@@ -81,11 +81,9 @@ class GitLabMergeRequests(MergeRequestCollector, GitLabBase):
         async with aiohttp.ClientSession(raise_for_status=False, timeout=timeout, headers=self._headers()) as session:
             client = GraphQLClient(f"{api_url}/api/graphql", session=session)
             approved_field = await self._approved_field(client)
-            responses, has_next_page, cursor = SourceResponses(), True, ""
-            while has_next_page:
-                response, has_next_page, cursor = await self._get_merge_request_response(client, approved_field, cursor)
-                responses.append(response)
-        return responses
+            return await collect_graphql_responses(
+                lambda cursor: self._get_merge_request_response(client, approved_field, cursor),
+            )
 
     async def _approved_field(self, client: GraphQLClient) -> str:
         """Determine whether the GitLab instance has the approved field for merge requests.
