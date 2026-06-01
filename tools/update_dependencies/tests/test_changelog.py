@@ -41,3 +41,22 @@ class GetChangeFromChangelogTest(unittest.TestCase):
         v1_change = "## Version 1.0\n\n- Fixed ...\n- Changed ..."
         changelog = f"Changelog\n\n{v1_change}\n\n## Version 0.9\n\n- Fixed ...\n"
         self.assertEqual(v1_change, get_version_changes_from_changelog(changelog, "1.0", max_length=3))
+
+    def test_prose_mention_of_version_does_not_anchor_parsing(self):
+        """Test that a prose mention of the version in a newer section doesn't anchor parsing there."""
+        v2_change = "## [2.0.0]\n\n- A feature, completing the work started in 1.0.0."
+        v1_change = "## [1.0.0]\n\n- Fixed ...\n- Changed ..."
+        changelog = f"# Changelog\n\n{v2_change}\n\n{v1_change}\n\n## [0.9.0]\n\n- Fixed ...\n"
+        self.assertEqual(v1_change, get_version_changes_from_changelog(changelog, "1.0.0"))
+
+    def test_repeated_prose_mention_without_heading_anchors_on_first(self):
+        """Test that without a heading, parsing anchors on the first of several prose mentions."""
+        changelog = "Upgrade to 1.0.0 is recommended.\nThe 1.0.0 release fixes things."
+        self.assertEqual(changelog, get_version_changes_from_changelog(changelog, "1.0.0"))
+
+    def test_version_in_footer_link_does_not_anchor_parsing(self):
+        """Test that a version mention in a footer comparison link doesn't anchor parsing there."""
+        v1_change = "## [1.0.0]\n\n- Fixed ...\n- Changed ..."
+        footer = "[1.0.0]: https://example.org/compare/v0.9.0...v1.0.0"
+        changelog = f"# Changelog\n\n{v1_change}\n\n## [0.9.0]\n\n- Fixed ...\n\n{footer}\n"
+        self.assertEqual(v1_change, get_version_changes_from_changelog(changelog, "1.0.0"))
