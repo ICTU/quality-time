@@ -2,7 +2,6 @@
 
 from typing import TYPE_CHECKING
 
-from collector_utilities.functions import match_string_or_regular_expression
 from model import Entities, Entity, SourceResponses
 
 from .base import PerformanceTestRunnerBaseClass
@@ -28,19 +27,13 @@ class PerformanceTestRunnerSlowTransactions(PerformanceTestRunnerBaseClass):
     async def __slow_transactions(self, responses: SourceResponses) -> list[Tag]:
         """Return the slow transactions in the performance test report."""
         thresholds = self._parameter("thresholds")
-        transactions_to_include = self._parameter("transactions_to_include")
-        transactions_to_ignore = self._parameter("transactions_to_ignore")
-
-        def include(transaction) -> bool:
-            """Return whether the transaction should be included."""
-            name = self._name(transaction)
-            if transactions_to_include and not match_string_or_regular_expression(name, transactions_to_include):
-                return False
-            return not match_string_or_regular_expression(name, transactions_to_ignore)
-
         slow_transactions: list[Tag] = []
         for response in responses:
             soup = await self._soup(response)
             for color in thresholds:
                 slow_transactions.extend(soup.select(f"tr.transaction:has(> td.{color}.evaluated)"))
-        return [transaction for transaction in slow_transactions if include(transaction)]
+        return [
+            transaction
+            for transaction in slow_transactions
+            if self._matches_filter(self._name(transaction), "transactions_to_include", "transactions_to_ignore")
+        ]

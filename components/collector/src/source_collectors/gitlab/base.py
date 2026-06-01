@@ -6,45 +6,24 @@ from typing import cast
 
 from shared.utils.date_time import now
 
-from base_collectors import SourceCollector
+from base_collectors import LinkPaginationSourceCollector, TokenAuthenticationSourceCollector
 from collector_utilities.date_time import parse_datetime
-from collector_utilities.functions import add_query, match_string_or_regular_expression
+from collector_utilities.functions import add_query
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
 from .json_types import Job, Pipeline, PipelineSchedule
 
 
-class GitLabBase(SourceCollector, ABC):
+class GitLabBase(LinkPaginationSourceCollector, TokenAuthenticationSourceCollector, ABC):
     """Base class for GitLab collectors."""
 
     PAGE_SIZE = "per_page=100"
-
-    async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """Extend to follow GitLab pagination links, if necessary."""
-        all_responses = responses = await super()._get_source_responses(*urls)
-        while next_urls := await self._next_urls(responses):
-            # Retrieving consecutive big responses without reading the response hangs the client, see
-            # https://github.com/aio-libs/aiohttp/issues/2217
-            for response in responses:
-                await response.read()
-            all_responses.extend(responses := await super()._get_source_responses(*next_urls))
-        return all_responses
+    AUTH_HEADER = "Private-Token"
 
     def _basic_auth_credentials(self) -> tuple[str, str] | None:
         """Override to return None, as the private token is passed as header."""
         return None
-
-    def _headers(self) -> dict[str, str]:
-        """Extend to add the private token, if any, to the headers."""
-        headers = super()._headers()
-        if private_token := self._parameter("private_token"):
-            headers["Private-Token"] = str(private_token)
-        return headers
-
-    async def _next_urls(self, responses: SourceResponses) -> list[URL]:
-        """Return the next (pagination) links from the responses."""
-        return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
 
 
 class GitLabProjectBase(GitLabBase, ABC):
@@ -118,13 +97,9 @@ class GitLabJobsBase(GitLabProjectBase):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to count the job."""
-        jobs_to_include = self._parameter("jobs_to_include")
-        refs_to_include = self._parameter("refs_to_include")
         return (
-            (match_string_or_regular_expression(entity["name"], jobs_to_include) if jobs_to_include else True)
-            and (match_string_or_regular_expression(entity["branch"], refs_to_include) if refs_to_include else True)
-            and not match_string_or_regular_expression(entity["name"], self._parameter("jobs_to_ignore"))
-            and not match_string_or_regular_expression(entity["branch"], self._parameter("refs_to_ignore"))
+            self._matches_filter(entity["name"], "jobs_to_include", "jobs_to_ignore")
+            and self._matches_filter(entity["branch"], "refs_to_include", "refs_to_ignore")
             and entity["build_datetime"] >= self._lookback_datetime()
         )
 
@@ -177,14 +152,8 @@ class GitLabPipelineBase(GitLabProjectBase):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether this entity should be considered."""
-        branches = self._parameter("branches")
-        matches_branches = match_string_or_regular_expression(entity["ref"], branches) if branches else True
-        schedule_descriptions = self._parameter("pipeline_schedules_to_include")
-        matches_schedule_description = (
-            match_string_or_regular_expression(entity["schedule"], schedule_descriptions)
-            if schedule_descriptions
-            else True
-        )
+        matches_branches = self._matches_filter(entity["ref"], "branches")
+        matches_schedule_description = self._matches_filter(entity["schedule"], "pipeline_schedules_to_include")
         matches_status = entity["status"] in self._parameter("pipeline_statuses_to_include")
         matches_trigger = entity["trigger"] in self._parameter("pipeline_triggers_to_include")
         return matches_branches and matches_schedule_description and matches_status and matches_trigger

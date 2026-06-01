@@ -13,6 +13,7 @@ from collector_utilities.functions import (
     hashless,
     is_regexp,
     iterable_to_batches,
+    matches_filter,
     stable_traceback,
     tokenless,
 )
@@ -144,6 +145,42 @@ class IsRegularExpressionTest(unittest.TestCase):
         self.assertFalse(is_regexp("1.2.3-rc.0"))
         self.assertTrue(is_regexp("v10.2"))
         self.assertTrue(is_regexp("foo 10.2"))
+
+
+class PassesFilterTest(unittest.TestCase):
+    """Unit tests for the matches_filter function."""
+
+    def test_empty_filters_include_everything(self):
+        """Test that a value passes when both filters are empty."""
+        self.assertTrue(matches_filter("anything", [], []))
+
+    def test_exclude_filter_is_optional(self):
+        """Test that the exclude filter is optional."""
+        self.assertTrue(matches_filter("anything", []))
+        self.assertTrue(matches_filter("foo", ["foo"]))
+        self.assertFalse(matches_filter("baz", ["foo"]))
+
+    def test_include_filter_is_optional(self):
+        """Test that the include filter is optional."""
+        self.assertTrue(matches_filter("anything", exclude=[]))
+        self.assertFalse(matches_filter("foo", exclude=["foo"]))
+        self.assertTrue(matches_filter("baz", exclude=["foo"]))
+
+    def test_included_and_not_excluded(self):
+        """Test that a value passes when it matches the include filter and not the exclude filter."""
+        self.assertTrue(matches_filter("foo", ["foo"], ["bar"]))
+
+    def test_not_included(self):
+        """Test that a value does not pass when it does not match a non-empty include filter."""
+        self.assertFalse(matches_filter("baz", ["foo"], []))
+
+    def test_excluded(self):
+        """Test that a value does not pass when it matches the exclude filter."""
+        self.assertFalse(matches_filter("foo", [], ["foo"]))
+
+    def test_exclude_takes_precedence_over_include(self):
+        """Test that the exclude filter wins when a value matches both filters."""
+        self.assertFalse(matches_filter("foo", ["foo"], ["foo"]))
 
 
 class IterableToBatchesTest(unittest.TestCase):

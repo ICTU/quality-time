@@ -4,14 +4,19 @@ from abc import ABC
 from typing import TypedDict, cast
 from urllib.parse import quote, unquote
 
-from base_collectors import SecurityWarningsSourceCollector, SourceCollector
+from base_collectors import LinkPaginationSourceCollector, SecurityWarningsSourceCollector
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
+# Media types of the vulnerability report formats Harbor may use as keys in an artifact's scan overview:
+VULNERABILITY_REPORT_KEYS = (
+    "application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0",
+    "application/vnd.security.vulnerability.report; version=1.1",
+)
 
-class HarborBase(SourceCollector, ABC):
+
+class HarborBase(LinkPaginationSourceCollector, ABC):
     """Base class for Harbor collectors."""
 
     async def _api_url(self) -> URL:
@@ -19,16 +24,9 @@ class HarborBase(SourceCollector, ABC):
         return URL(await super()._api_url() + "/api/v2.0")
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
-        """Extend to follow Harbor pagination links, if necessary."""
+        """Extend to check the credentials before following the pagination links."""
         await self._check_credentials()
-        all_responses = responses = await super()._get_source_responses(*urls)
-        while next_urls := self._next_urls(responses):
-            # Retrieving consecutive big responses without reading the response hangs the client, see
-            # https://github.com/aio-libs/aiohttp/issues/2217
-            for response in responses:
-                await response.read()
-            all_responses.extend(responses := await super()._get_source_responses(*next_urls))
-        return all_responses
+        return await super()._get_source_responses(*urls)
 
     async def _check_credentials(self) -> None:
         """Check that the user credentials are valid.
@@ -43,10 +41,6 @@ class HarborBase(SourceCollector, ABC):
         if username and not username.startswith(robot_account_prefix):
             # This will raise an exception for status >= 400:
             await super()._get_source_responses(URL(await self._api_url() + "/users/current"))
-
-    def _next_urls(self, responses: SourceResponses) -> list[URL]:
-        """Return the next (pagination) links from the responses."""
-        return [URL(next_url) for response in responses if (next_url := response.links.get("next", {}).get("url"))]
 
 
 class HarborScannerVulnerabilityReportError(CollectorError):
@@ -108,19 +102,14 @@ class HarborSecurityWarnings(HarborBase, SecurityWarningsSourceCollector):
         projects_responses = await super()._get_source_responses(projects_api)
         for projects_response in projects_responses:
             for project in await projects_response.json():
-                if self._skip_project(project["name"]):
-                    continue
-                repositories_api = URL(f"{projects_api}/{project['name']}/repositories")
-                responses.extend(await self._get_source_responses_for_project(project, repositories_api))
+                if self._include_project(project["name"]):
+                    repositories_api = URL(f"{projects_api}/{project['name']}/repositories")
+                    responses.extend(await self._get_source_responses_for_project(project, repositories_api))
         return responses
 
-    def _skip_project(self, project_name: str) -> bool:
-        """Return whether the project should be skipped."""
-        projects_to_ignore = self._parameter("projects_to_ignore")
-        if projects_to_ignore and match_string_or_regular_expression(project_name, projects_to_ignore):
-            return True
-        projects_to_include = self._parameter("projects_to_include")
-        return bool(projects_to_include and not match_string_or_regular_expression(project_name, projects_to_include))
+    def _include_project(self, project_name: str) -> bool:
+        """Return whether the project should be include."""
+        return self._matches_filter(project_name, "projects_to_include", "projects_to_ignore")
 
     async def _get_source_responses_for_project(self, project: Project, repositories_api: URL) -> SourceResponses:
         """Return the source responses for a specific project."""
@@ -129,23 +118,16 @@ class HarborSecurityWarnings(HarborBase, SecurityWarningsSourceCollector):
         for repositories_response in repositories_responses:
             for repository in await repositories_response.json():
                 repository_name = repository["name"].removeprefix(f"{project['name']}/")
-                if self._skip_repository(repository_name):
-                    continue
-                # The repository name contains a slash. For some reason it needs to be encoded twice.
-                repository_name = quote(quote(repository_name, safe=""), safe="")
-                artifacts_api = URL(f"{repositories_api}/{repository_name}/artifacts?with_scan_overview=true")
-                responses.extend(await super()._get_source_responses(artifacts_api))
+                if self._include_repository(repository_name):
+                    # The repository name contains a slash. For some reason it needs to be encoded twice.
+                    repository_name = quote(quote(repository_name, safe=""), safe="")
+                    artifacts_api = URL(f"{repositories_api}/{repository_name}/artifacts?with_scan_overview=true")
+                    responses.extend(await super()._get_source_responses(artifacts_api))
         return responses
 
-    def _skip_repository(self, repository_name: str) -> bool:
-        """Return whether the repository should be skipped."""
-        repositories_to_ignore = self._parameter("repositories_to_ignore")
-        if repositories_to_ignore and match_string_or_regular_expression(repository_name, repositories_to_ignore):
-            return True
-        repositories_to_include = self._parameter("repositories_to_include")
-        return bool(
-            repositories_to_include and not match_string_or_regular_expression(repository_name, repositories_to_include)
-        )
+    def _include_repository(self, repository_name: str) -> bool:
+        """Return whether the repository should be included."""
+        return self._matches_filter(repository_name, "repositories_to_include", "repositories_to_ignore")
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the Harbor security warnings."""
@@ -193,12 +175,9 @@ class HarborSecurityWarnings(HarborBase, SecurityWarningsSourceCollector):
 
     @staticmethod
     def _scan_overview(artifact: Artifact) -> ScanOverview:
-        """Return the scan overview or raise an exception."""
-        vulnerability_report_keys = (
-            "application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0",
-            "application/vnd.security.vulnerability.report; version=1.1",
-        )
-        for key in vulnerability_report_keys:
-            if key in artifact["scan_overview"]:
-                return artifact["scan_overview"][key]
+        """Return the scan overview, or raise an exception if it has no known vulnerability report format."""
+        scan_overview = artifact["scan_overview"]
+        for key in VULNERABILITY_REPORT_KEYS:
+            if key in scan_overview:
+                return scan_overview[key]
         raise HarborScannerVulnerabilityReportError

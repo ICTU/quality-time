@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Any
 from base_collectors import SourceCollector
 from collector_utilities.date_time import minutes, parse_datetime
 from collector_utilities.exceptions import NotFoundError
-from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Response
 from model import Entities, Entity, SourceResponses
 
@@ -79,10 +78,7 @@ class AzureDevopsJobs(SourceCollector):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether this job should be included."""
-        jobs_to_include = self._parameter("jobs_to_include")
-        if len(jobs_to_include) > 0 and not match_string_or_regular_expression(entity["name"], jobs_to_include):
-            return False
-        return not match_string_or_regular_expression(entity["name"], self._parameter("jobs_to_ignore"))
+        return self._matches_filter(entity["name"], "jobs_to_include", "jobs_to_ignore")
 
     @staticmethod
     def _latest_build_result(job: Job) -> str:
@@ -173,7 +169,4 @@ class AzureDevopsPipelines(SourceCollector):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether this pipeline should be included."""
-        jobs_to_include = self._parameter("jobs_to_include")
-        if len(jobs_to_include) > 0 and not match_string_or_regular_expression(entity["pipeline"], jobs_to_include):
-            return False
-        return not match_string_or_regular_expression(entity["pipeline"], self._parameter("jobs_to_ignore"))
+        return self._matches_filter(entity["pipeline"], "jobs_to_include", "jobs_to_ignore")

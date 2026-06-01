@@ -3,7 +3,6 @@
 from collections import defaultdict
 
 from base_collectors import JSONFileSourceCollector
-from collector_utilities.functions import match_string_or_regular_expression
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 
@@ -13,27 +12,33 @@ class ClocLOC(JSONFileSourceCollector):
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the LOC from the JSON responses."""
         # The JSON is produced by cloc --json or by cloc --by-file --json, so be prepared for both formats
-        languages_to_ignore = self._parameter("languages_to_ignore")
-        files_to_include = self._parameter("files_to_include")
         cloc_by_language: dict[str, dict[str, int]] = defaultdict(
             lambda: {"nFiles": 0, "blank": 0, "comment": 0, "code": 0},
         )
         total = 0
         for response in responses:
             for key, value in (await response.json(content_type=None)).items():
-                language = self.determine_language(key, value)
-                if key in ("header", "SUM") or match_string_or_regular_expression(language, languages_to_ignore):
+                if key in ("header", "SUM"):
                     continue
-                # Count the total LOC for all files so the user can measure the percentage of test code, for example.
+                language = self.determine_language(key, value)
+                if not self._matches_filter(language, exclude_parameter="languages_to_ignore"):
+                    continue
+                # Count the total LOC for all files so the user can use the percentage scale, for example
+                # to measure the percentage of test code.
                 total += value["code"]
                 filename = self.determine_filename(key, value)
-                if filename and files_to_include and not match_string_or_regular_expression(filename, files_to_include):
+                if filename and not self._matches_filter(filename, "files_to_include"):
                     continue
-                for field, default_value in {"blank": 0, "comment": 0, "code": 0, "nFiles": 1}.items():
-                    cloc_by_language[language][field] += value.get(field, default_value)
+                self._add_counts(cloc_by_language[language], value)
         loc = sum(value["code"] for value in cloc_by_language.values())
         entities = Entities(self.create_entity(key, value, loc) for key, value in cloc_by_language.items())
         return SourceMeasurement(value=str(loc), total=str(total), entities=entities)
+
+    @staticmethod
+    def _add_counts(language_counts: dict[str, int], value: dict[str, int]) -> None:
+        """Add the blank, comment, code, and file counts of the value to the per-language counts."""
+        for field, default_value in {"blank": 0, "comment": 0, "code": 0, "nFiles": 1}.items():
+            language_counts[field] += value.get(field, default_value)
 
     @staticmethod
     def create_entity(language: str, cloc: dict[str, int], total: int) -> Entity:

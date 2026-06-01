@@ -13,6 +13,7 @@ from .metric_collector import MetricCollector
 from .source_collector import (
     BranchType,
     InactiveBranchesSourceCollector,
+    LinkPaginationSourceCollector,
     MergeRequestCollector,
     SecurityWarningsSourceCollector,
     SlowTransactionsCollector,
@@ -20,6 +21,7 @@ from .source_collector import (
     SourceMeasurement,
     TimePassedCollector,
     TimeRemainingCollector,
+    TokenAuthenticationSourceCollector,
     TransactionEntity,
     VersionCollector,
 )

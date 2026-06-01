@@ -1,10 +1,10 @@
 """Dependency-Track base collector."""
 
-from typing import TYPE_CHECKING, Literal, cast
+from typing import TYPE_CHECKING, Literal
 
-from base_collectors import SourceCollector
+from base_collectors import TokenAuthenticationSourceCollector
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.functions import add_query, match_string_or_regular_expression
+from collector_utilities.functions import add_query
 from collector_utilities.type import URL, Response
 from model import Entity, SourceResponses
 
@@ -14,22 +14,16 @@ if TYPE_CHECKING:
     from .json_types import DependencyTrackProject
 
 
-class DependencyTrackBase(SourceCollector):
+class DependencyTrackBase(TokenAuthenticationSourceCollector):
     """Dependency-Track base class."""
 
     # Max page size is 100, see https://github.com/DependencyTrack/dependency-track/issues/209.
     PAGE_SIZE = 100
+    AUTH_HEADER = "X-Api-Key"
 
     async def _api_url(self) -> URL:
         """Override to add the API version."""
         return URL((await super()._api_url()) + "/api/v1")
-
-    def _headers(self) -> dict[str, str]:
-        """Return the headers for the get request."""
-        headers = super()._headers()
-        if api_key := str(self._parameter("private_token")):
-            headers["X-Api-Key"] = api_key
-        return headers
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to load multiple pages, if necessary."""
@@ -66,17 +60,14 @@ class DependencyTrackBase(SourceCollector):
 
     async def _get_projects_from_response(self, response: Response) -> AsyncIterator[DependencyTrackProject]:
         """Return the projects from the response that match the configured project names and versions."""
-        project_names = cast(list, self._parameter("project_names"))
-        project_versions = cast(list, self._parameter("project_versions"))
         for project in await response.json(content_type=None):
-            if self._project_matches(project, project_names, project_versions):
+            if self._project_matches(project):
                 yield project
 
-    def _project_matches(self, project: DependencyTrackProject, names: list[str], versions: list[str]) -> bool:
+    def _project_matches(self, project: DependencyTrackProject) -> bool:
         """Return whether the project name matches the project names and versions."""
-        project_matches_name = match_string_or_regular_expression(project["name"], names) if names else True
-        project_version = project.get("version", "unknown")
-        project_matches_version = match_string_or_regular_expression(project_version, versions) if versions else True
+        project_matches_name = self._matches_filter(project["name"], "project_names")
+        project_matches_version = self._matches_filter(project.get("version", "unknown"), "project_versions")
         only_include_latest_project_version = self._parameter("only_include_latest_project_versions")
         project_matches_latest = not (only_include_latest_project_version == "yes" and not self._is_latest(project))
         return project_matches_name and project_matches_version and project_matches_latest
@@ -101,12 +92,7 @@ class DependencyTrackLatestVersionStatusBase(DependencyTrackBase):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the entity in the measurement."""
-        component_name = entity["component"]
-        components_to_include = self._parameter("components_to_include")
-        if components_to_include and not match_string_or_regular_expression(component_name, components_to_include):
-            return False
-        components_to_ignore = self._parameter("components_to_ignore")
-        if components_to_ignore and match_string_or_regular_expression(component_name, components_to_ignore):
+        if not self._matches_filter(entity["component"], "components_to_include", "components_to_ignore"):
             return False
         has_latest_version_status = entity["latest_version_status"] in self._parameter("latest_version_status")
         return super()._include_entity(entity) and has_latest_version_status

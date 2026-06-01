@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, TypedDict, cast
 
 from base_collectors import SourceCollector
 from collector_utilities.date_time import minutes
-from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
 
 from .json_types import Build, Job
@@ -65,9 +64,7 @@ class JenkinsPipelineDuration(SourceCollector):
 
     def _include_branch(self, branch: str) -> bool:
         """Return whether the branch should be considered."""
-        if branches := self._parameter("branches"):
-            return match_string_or_regular_expression(branch, branches)
-        return True
+        return self._matches_filter(branch, "branches")
 
     def _include_build(self, build: Build) -> bool:
         """Return whether the build should be included."""

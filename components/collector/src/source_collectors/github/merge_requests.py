@@ -4,7 +4,6 @@ import aiohttp
 from aiogqlc import GraphQLClient
 
 from collector_utilities.exceptions import NotFoundError
-from collector_utilities.functions import match_string_or_regular_expression
 from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceResponses
 
@@ -133,10 +132,7 @@ class GitHubMergeRequests(GitHubBase):
         """Return whether the pull request should be counted."""
         pr_matches_state = entity["state"] in self._parameter("merge_request_state")
         pr_matches_review_decision = entity["review_decision"] in self._parameter("review_decision")
-        base_ref_name = entity["base_ref_name"]
-        branches = self._parameter("target_branches_to_include")
-        pr_matches_branches = match_string_or_regular_expression(base_ref_name, branches) if branches else True
-
+        pr_matches_branches = self._matches_filter(entity["base_ref_name"], "target_branches_to_include")
         return pr_matches_state and pr_matches_branches and pr_matches_review_decision
 
     @classmethod

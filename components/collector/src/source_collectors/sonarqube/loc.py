@@ -2,7 +2,7 @@
 
 from typing import ClassVar
 
-from collector_utilities.functions import match_string_or_regular_expression
+from collector_utilities.functions import matches_filter
 from model import Entities, Entity
 
 from .base import SonarQubeMetricsBaseClass
@@ -87,7 +87,7 @@ class SonarQubeLOC(SonarQubeMetricsBaseClass):
         return [
             (language_count.split("=")[0], int(language_count.split("=")[1]))
             for language_count in metrics["ncloc_language_distribution"].split(";")
-            if not match_string_or_regular_expression(language_count.split("=")[0], keys_to_ignore)
+            if matches_filter(language_count.split("=")[0], exclude=keys_to_ignore)
         ]
 
     def __total(self, metrics: dict[str, str]) -> int:

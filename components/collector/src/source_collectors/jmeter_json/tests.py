@@ -1,8 +1,6 @@
 """JMeter JSON tests collector."""
 
-from typing import cast
-
-from base_collectors import JSONFileSourceCollector, TransactionEntity
+from base_collectors import JSONFileSourceCollector
 from model import SourceMeasurement, SourceResponses
 
 
@@ -11,19 +9,16 @@ class JMeterJSONTests(JSONFileSourceCollector):
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the transactions from the responses and return the transactions with the desired status."""
-        transactions_to_include = cast(list[str], self._parameter("transactions_to_include"))
-        transactions_to_ignore = cast(list[str], self._parameter("transactions_to_ignore"))
         counts = {"failed": 0, "success": 0}
         for response in responses:
             json = await response.json(content_type=None)
             transactions = [transaction for key, transaction in json.items() if key != "Total"]
             for transaction in transactions:
-                entity = TransactionEntity(name=transaction["transaction"], key=transaction["transaction"])
-                if not entity.is_to_be_included(transactions_to_include, transactions_to_ignore):
-                    continue
-                sample_count = transaction["sampleCount"]
-                error_count = transaction["errorCount"]
-                counts["success"] += sample_count - error_count
-                counts["failed"] += error_count
+                name = transaction["transaction"]
+                if self._matches_filter(name, "transactions_to_include", "transactions_to_ignore"):
+                    sample_count = transaction["sampleCount"]
+                    error_count = transaction["errorCount"]
+                    counts["success"] += sample_count - error_count
+                    counts["failed"] += error_count
         value = sum(counts[status] for status in self._parameter("test_result"))
         return SourceMeasurement(value=str(value), total=str(sum(counts.values())))
