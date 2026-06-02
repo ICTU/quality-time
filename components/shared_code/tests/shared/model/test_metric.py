@@ -8,8 +8,8 @@ from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.utils.functions import iso_timestamp
 
-from tests.fixtures import METRIC_ID, SOURCE_ID, SOURCE_ID2
-from tests.shared.base import DataModelTestCase
+from shared_test_code.base import DataModelTestCase
+from shared_test_code.fixtures import METRIC_ID, SOURCE_ID, SOURCE_ID2
 
 if TYPE_CHECKING:
     from shared.utils.type import Direction, SourceId

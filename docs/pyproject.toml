@@ -64,6 +64,7 @@ lint.per-file-ignores."src/create_reference_md.py" = [
 ]
 lint.per-file-ignores."tests/**/*.py" = [
     "ANN201", # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/ - don't require test functions to have return types
+    "ANN205", # https://docs.astral.sh/ruff/rules/missing-return-type-static-method/ - don't require static test methods to have return types
 ]
 lint.isort.section-order = [
     "future",

@@ -6,8 +6,7 @@ from unittest.mock import Mock
 from database.reports import insert_new_report, latest_report_for_uuids
 from model.report import Report
 
-from tests.fixtures import (
-    JOHN,
+from shared_test_code.fixtures import (
     METRIC_ID,
     METRIC_ID2,
     METRIC_ID3,
@@ -19,6 +18,8 @@ from tests.fixtures import (
     SUBJECT_ID,
     SUBJECT_ID2,
 )
+
+from tests.fixtures import JOHN
 
 
 class LatestReportForUuidsTest(unittest.TestCase):

@@ -6,8 +6,8 @@ from shared.database.measurements import insert_new_measurement, latest_measurem
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 
-from tests.fixtures import METRIC_ID
-from tests.shared.base import DataModelTestCase
+from shared_test_code.base import DataModelTestCase
+from shared_test_code.fixtures import METRIC_ID
 
 
 class MeasurementsTestCase(DataModelTestCase):

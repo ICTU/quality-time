@@ -2,7 +2,9 @@
 
 import unittest
 
-from .fixtures import METRIC_ID, REPORT_ID, SUBJECT_ID, create_report_data
+from shared_test_code.fixtures import METRIC_ID, REPORT_ID, SUBJECT_ID
+
+from .fixtures import create_report_data
 
 
 class FixtureTest(unittest.TestCase):

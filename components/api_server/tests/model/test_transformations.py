@@ -1,11 +1,13 @@
 """Model transformation unit tests."""
 
+from model.source import SourceContext
 from model.report import Report
 from model.transformations import change_source_parameter, hide_credentials, CREDENTIALS_REPLACEMENT_TEXT
 
+from shared_test_code.fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID
+
 from tests.base import DataModelTestCase
-from tests.fixtures import create_report, METRIC_ID2, SUBJECT_ID, METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_ID2
-from utils.type import SourceContext
+from tests.fixtures import create_report
 
 
 class HideCredentialsTest(DataModelTestCase):

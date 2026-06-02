@@ -4,10 +4,11 @@ from typing import Literal, Self
 
 from pydantic import model_validator
 
-from shared.model.source import CREDENTIAL_PARAMETERS
-
 from .meta.parameter import Parameter, ParameterType
 from .meta.unit import Unit
+
+PASSWORD_PARAMETERS = {"password", "private_token"}
+CREDENTIAL_PARAMETERS = {*PASSWORD_PARAMETERS, "username"}
 
 
 class DateParameter(Parameter):

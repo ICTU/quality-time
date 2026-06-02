@@ -11,11 +11,13 @@ from routes import (
     post_notification_destination_attributes,
 )
 
-from tests.base import DataModelTestCase
-from tests.fixtures import REPORT_ID, NOTIFICATION_DESTINATION_ID, create_report
+from shared_test_code.fixtures import NOTIFICATION_DESTINATION_ID, REPORT_ID
+
+from tests.base import DatabaseTestCase
+from tests.fixtures import create_report
 
 
-class NotificationTestCase(DataModelTestCase):
+class NotificationTestCase(DatabaseTestCase):
     """Base class for notification unit tests."""
 
     def setUp(self):

@@ -4,8 +4,19 @@ from unittest.mock import Mock, patch
 
 from routes import search
 
-from tests.base import DatabaseTestCase, disable_logging
-from tests.fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, REPORT_ID2, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, SUBJECT_ID2
+from shared_test_code import disable_logging
+from shared_test_code.fixtures import (
+    METRIC_ID,
+    METRIC_ID2,
+    REPORT_ID,
+    REPORT_ID2,
+    SOURCE_ID,
+    SOURCE_ID2,
+    SUBJECT_ID,
+    SUBJECT_ID2,
+)
+
+from tests.base import DatabaseTestCase
 
 
 class SearchTest(DatabaseTestCase):

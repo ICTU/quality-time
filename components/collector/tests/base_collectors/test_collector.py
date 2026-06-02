@@ -13,9 +13,11 @@ import mongomock
 from shared.utils.functions import iso_timestamp
 
 import quality_time_collector
-from base_collectors import Collector, config
+from base_collectors.collector import Collector, config
 
-from tests.fixtures import METRIC_ID, METRIC_ID2, SOURCE_ID, SUBJECT_ID, create_report
+from shared_test_code.fixtures import METRIC_ID, METRIC_ID2, SOURCE_ID, SUBJECT_ID
+
+from tests.fixtures import create_report
 
 if TYPE_CHECKING:
     from pymongo import MongoClient

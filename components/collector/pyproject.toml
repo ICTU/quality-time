@@ -24,6 +24,7 @@ dependencies = [
 dev = [
     "mongomock==4.3.0",
     "pydantic==2.13.4",                      # Needed for importing the data model in the tests from the shared code component
+    "shared-test-code",
     "tools",
     "types-beautifulsoup4==4.12.0.20250516",
     "types-defusedxml==0.7.0.20260504",
@@ -32,6 +33,7 @@ dev = [
 
 [tool.uv]
 sources.shared-code = { path = "../shared_code", package = true }
+sources.shared-test-code = { path = "../../tests/shared_test_code", package = true }
 sources.tools = { path = "../../tools/third_party", package = false }
 exclude-newer = "7 days"
 exclude-newer-package = { aiohttp = false }  # June 4: GHSA-jg22-mg44-37j8: AIOHTTP is Vulnerable to Deserialization of Untrusted Data
@@ -81,12 +83,16 @@ lint.isort.section-order = [
     "third-party",
     "second-party",
     "first-party",
+    "shared-test-code",
     "tests",
     "local-folder",
 ]
 lint.isort.sections.second-party = [
     "shared",
     "shared_data_model",
+]
+lint.isort.sections.shared-test-code = [
+    "shared_test_code",
 ]
 lint.isort.sections.tests = [
     "tests",

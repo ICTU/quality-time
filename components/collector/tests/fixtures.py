@@ -1,16 +1,11 @@
 """Fixture for reports."""
 
-from typing import cast
+from typing import TYPE_CHECKING
 
-from shared.utils.type import MetricId, NotificationDestinationId, ReportId, SourceId, SubjectId
+from shared_test_code.fixtures import METRIC_ID, NOTIFICATION_DESTINATION_ID, SOURCE_ID, SUBJECT_ID
 
-METRIC_ID = cast(MetricId, "metric_uuid")
-METRIC_ID2 = cast(MetricId, "metric_uuid2")
-NOTIFICATION_DESTINATION_ID = cast(NotificationDestinationId, "destination1")
-REPORT_ID = cast(ReportId, "report_uuid")
-SOURCE_ID = cast(SourceId, "source_uuid")
-SOURCE_ID2 = cast(SourceId, "source_uuid2")
-SUBJECT_ID = cast(SubjectId, "subject_uuid")
+if TYPE_CHECKING:
+    from shared.utils.type import MetricId
 
 
 def create_report(title: str = "Title", report_uuid: str = "report1", **kwargs) -> dict:

@@ -6,9 +6,8 @@ from typing import cast, TYPE_CHECKING
 
 import bottle
 
-from shared.model.source import CREDENTIAL_PARAMETERS, PASSWORD_PARAMETERS
 from shared_data_model import DATA_MODEL
-from shared_data_model.parameters import PrivateToken
+from shared_data_model.parameters import CREDENTIAL_PARAMETERS, PASSWORD_PARAMETERS, PrivateToken
 
 from database.datamodels import latest_datamodel
 from database.measurements import recent_measurements

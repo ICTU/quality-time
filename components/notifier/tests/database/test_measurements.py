@@ -12,7 +12,9 @@ from shared.utils.functions import iso_timestamp
 
 from database.measurements import get_recent_measurements
 
-from tests.fixtures import METRIC_ID, create_report_data
+from shared_test_code.fixtures import METRIC_ID
+
+from tests.fixtures import create_report_data
 
 if TYPE_CHECKING:
     from pymongo.database import Database

@@ -14,7 +14,7 @@ RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv \
     --mount=type=bind,source=components/shared_code,target=/home/shared_code,rw \
     --mount=type=bind,source=components/api_server/uv.lock,target=/home/server/uv.lock \
     --mount=type=bind,source=components/api_server/pyproject.toml,target=/home/server/pyproject.toml \
-    uv sync --active --locked --no-dev --no-install-project
+    uv sync --active --frozen --no-dev --no-install-project
 
 RUN adduser -S server
 USER server

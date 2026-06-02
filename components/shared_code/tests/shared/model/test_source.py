@@ -9,7 +9,7 @@ from shared.model.metric import Metric
 from shared.model.source import Source
 from shared.utils.functions import iso_timestamp
 
-from tests.fixtures import METRIC_ID, SOURCE_ID
+from shared_test_code.fixtures import METRIC_ID, SOURCE_ID
 
 
 class SourceTest(unittest.TestCase):

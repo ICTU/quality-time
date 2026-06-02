@@ -12,7 +12,7 @@ jobs:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
     resource_class: large
-    parallelism: 13
+    parallelism: 14
     steps:
       - checkout
       - run: |
@@ -31,7 +31,8 @@ jobs:
             9) component=tools/release;;
             10) component=tools/third_party;;
             11) component=tools/update_dependencies;;
-            12) component=.;;
+            12) component=tests/shared_test_code;;
+            13) component=.;;
           esac
           cd $component
           mkdir -p build

@@ -50,6 +50,9 @@ jobs:
           - folder: tests/feature_tests
             name: tests-feature_tests
             language: python
+          - folder: tests/shared_test_code
+            name: tests-shared_test_code
+            language: python
           - folder: .
             name: root
             language: misc

@@ -1,6 +1,5 @@
 """Unit tests for the Teams notification destination."""
 
-import logging
 from typing import TYPE_CHECKING
 from unittest import TestCase, mock
 
@@ -15,7 +14,8 @@ from destinations.ms_teams import ICON_URL, create_connector_card, send_notifica
 from models.metric_notification_data import MetricNotificationData
 from models.notification import Notification
 
-from tests.fixtures import METRIC_ID, METRIC_ID2, SUBJECT_ID
+from shared_test_code import disable_logging
+from shared_test_code.fixtures import METRIC_ID, METRIC_ID2, SUBJECT_ID
 
 if TYPE_CHECKING:
     from shared.utils.type import MetricId
@@ -57,13 +57,12 @@ class MsTeamsTestCase(TestCase):
 class SendNotificationToTeamsTests(MsTeamsTestCase):
     """Unit tests for the Teams destination for notifications."""
 
+    @disable_logging
     def test_invalid_webhook(self, mock_send: mock.Mock):
         """Test that exceptions are caught."""
-        logging.disable(logging.CRITICAL)
         mock_send.side_effect = OSError("Some error")
         send_notification("invalid_webhook", self.notification)
         mock_send.assert_called()
-        logging.disable(logging.NOTSET)
 
     def test_valid_webhook(self, mock_send: mock.Mock):
         """Test that a valid message is sent to a valid webhook."""

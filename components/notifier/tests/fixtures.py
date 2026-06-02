@@ -1,15 +1,6 @@
 """Fixtures for tests."""
 
-from typing import cast
-
-from shared.utils.type import MetricId, NotificationDestinationId, ReportId, SubjectId
-
-METRIC_ID = cast(MetricId, "metric_uuid")
-METRIC_ID2 = cast(MetricId, "metric_uuid2")
-NOTIFICATION_DESTINATION_ID = cast(NotificationDestinationId, "destination1")
-REPORT_ID = cast(ReportId, "report_uuid")
-REPORT_ID2 = cast(ReportId, "report_uuid2")
-SUBJECT_ID = cast(SubjectId, "subject_uuid")
+from shared_test_code.fixtures import METRIC_ID, NOTIFICATION_DESTINATION_ID, REPORT_ID, SUBJECT_ID
 
 
 def create_report_data(deleted: bool = False) -> dict:

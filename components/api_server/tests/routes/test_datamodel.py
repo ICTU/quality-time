@@ -9,10 +9,10 @@ from shared.utils.functions import md5_hash
 
 from routes import get_data_model
 
-from tests.base import DataModelTestCase
+from tests.base import DatabaseWithDataModelTestCase
 
 
-class DataModelTest(DataModelTestCase):
+class DataModelTest(DatabaseWithDataModelTestCase):
     """Unit tests for the data model route."""
 
     def test_get_data_model(self):

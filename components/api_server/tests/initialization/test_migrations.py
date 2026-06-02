@@ -2,11 +2,12 @@
 
 from initialization.migrations import perform_migrations
 
-from tests.base import DataModelTestCase
-from tests.fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID
+from shared_test_code.fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID
+
+from tests.base import DatabaseTestCase
 
 
-class MigrationTestCase(DataModelTestCase):
+class MigrationTestCase(DatabaseTestCase):
     """Base class for migration unit tests."""
 
     def existing_report(self, **kwargs):

@@ -119,6 +119,15 @@ wheels = [
 ]
 
 [[package]]
+name = "archunitpython"
+version = "1.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/00/92/e64d32b0f5c794934687e82dcd39b25599ee8cd5eda7e75a818858b15fe5/archunitpython-1.1.1.tar.gz", hash = "sha256:8d1a2be48c7acec2b36b524d2996e51ca3a32fa3cbe48181c44f6e607dac17f8", size = 366008, upload-time = "2026-05-24T07:41:33.514Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3a/78/7b4d3705ec75d3155324a2db0686cb7e3b5860c69435c0e64ec351198339/archunitpython-1.1.1-py3-none-any.whl", hash = "sha256:f4a432e596cc50a0278cee9359adc523723456ab9dce7599f83b90cf2d5b2314", size = 61980, upload-time = "2026-05-24T07:41:32.145Z" },
+]
+
+[[package]]
 name = "ast-serialize"
 version = "0.5.0"
 source = { registry = "https://pypi.org/simple" }
@@ -322,6 +331,7 @@ dependencies = [
 dev = [
     { name = "mongomock" },
     { name = "pydantic" },
+    { name = "shared-test-code" },
     { name = "tools" },
     { name = "types-beautifulsoup4" },
     { name = "types-defusedxml" },
@@ -345,6 +355,7 @@ requires-dist = [
 dev = [
     { name = "mongomock", specifier = "==4.3.0" },
     { name = "pydantic", specifier = "==2.13.4" },
+    { name = "shared-test-code", directory = "../../tests/shared_test_code" },
     { name = "tools", virtual = "../../tools/third_party" },
     { name = "types-beautifulsoup4", specifier = "==4.12.0.20250516" },
     { name = "types-defusedxml", specifier = "==0.7.0.20260504" },
@@ -1200,9 +1211,24 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "mongomock", specifier = "==4.3.0" },
+    { name = "shared-test-code", directory = "../../tests/shared_test_code" },
     { name = "tools", virtual = "../../tools/third_party" },
     { name = "types-python-dateutil", specifier = "==2.9.0.20260518" },
 ]
+
+[[package]]
+name = "shared-test-code"
+version = "5.55.1rc1"
+source = { directory = "../../tests/shared_test_code" }
+dependencies = [
+    { name = "shared-code" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "shared-code", directory = "../shared_code" }]
+
+[package.metadata.requires-dev]
+dev = [{ name = "tools", virtual = "../../tools/third_party" }]
 
 [[package]]
 name = "shellingham"
@@ -1308,6 +1334,7 @@ name = "tools"
 version = "5.55.1rc1"
 source = { virtual = "../../tools/third_party" }
 dependencies = [
+    { name = "archunitpython" },
     { name = "bandit" },
     { name = "codespell" },
     { name = "compose-lint" },
@@ -1327,6 +1354,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "archunitpython", specifier = "==1.1.1" },
     { name = "bandit", specifier = "==1.9.4" },
     { name = "codespell", specifier = "==2.4.2" },
     { name = "compose-lint", specifier = "==0.12.1" },

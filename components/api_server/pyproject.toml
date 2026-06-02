@@ -25,6 +25,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pydantic==2.13.4",                      # Needed for importing the data model in the tests from the shared code component
+    "shared-test-code",
     "tools",
     "types-ldap3==2.9.13.20260518",
     "types-python-dateutil==2.9.0.20260518",
@@ -33,6 +34,7 @@ dev = [
 
 [tool.uv]
 sources.shared-code = { path = "../shared_code", package = true }
+sources.shared-test-code = { path = "../../tests/shared_test_code", package = true }
 sources.tools = { path = "../../tools/third_party", package = false }
 exclude-newer = "7 days"
 
@@ -84,12 +86,16 @@ lint.isort.section-order = [
     "third-party",
     "second-party",
     "first-party",
+    "shared-test-code",
     "tests",
     "local-folder",
 ]
 lint.isort.sections.second-party = [
     "shared",
     "shared_data_model",
+]
+lint.isort.sections.shared-test-code = [
+    "shared_test_code",
 ]
 lint.isort.sections.tests = [
     "tests",
