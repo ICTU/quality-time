@@ -12,7 +12,7 @@ classifiers = [
 dependencies = [
     "bandit==1.9.4",
     "codespell==2.4.2",
-    "compose-lint==0.10.0",
+    "compose-lint==0.12.1",
     "coverage==7.14.0",
     "fixit==2.2.1",
     "mypy==2.1.0",
