@@ -247,14 +247,14 @@ wheels = [
 
 [[package]]
 name = "compose-lint"
-version = "0.10.0"
+version = "0.12.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a8/70/af3849586f8ac02da84476996d8cbeeba93db0e1f368a3ef740f120bbca7/compose_lint-0.10.0.tar.gz", hash = "sha256:9ab47cfc5819dcce39f333f2e7509e0beed893c41dac3c2fc3bf0a16fb8e774e", size = 1651241, upload-time = "2026-05-25T12:05:41.526Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bf/20/db69b62464b481da0cd0e086d57728e70185723850944cff6169ac09ff10/compose_lint-0.12.1.tar.gz", hash = "sha256:6c9838d73b4778b42ed4546831ec7b957bd350a779f31327566e326a2600f8ea", size = 1670239, upload-time = "2026-05-25T23:45:55.403Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/71/aa/5fd66741acbc5a7511c2e65de507cc5f9a826d09ab0ddd88c3de71c2bcce/compose_lint-0.10.0-py3-none-any.whl", hash = "sha256:445421e3a4c52cb14ae31f6a46a9aa8a53dcb040a9c444e9d29682fb986b1f18", size = 133904, upload-time = "2026-05-25T12:05:39.965Z" },
+    { url = "https://files.pythonhosted.org/packages/2d/7c/c9ba5df9110ed5d16899b2b895adae077600b9d27ac453085d404d4e2ad4/compose_lint-0.12.1-py3-none-any.whl", hash = "sha256:067744646defb3e359e27be887188f3f3d7ee8a5fb8ac5ef88fc4956afd5226a", size = 141284, upload-time = "2026-05-25T23:45:53.168Z" },
 ]
 
 [[package]]
@@ -1001,7 +1001,7 @@ dependencies = [
 requires-dist = [
     { name = "bandit", specifier = "==1.9.4" },
     { name = "codespell", specifier = "==2.4.2" },
-    { name = "compose-lint", specifier = "==0.10.0" },
+    { name = "compose-lint", specifier = "==0.12.1" },
     { name = "coverage", specifier = "==7.14.0" },
     { name = "fixit", specifier = "==2.2.1" },
     { name = "mypy", specifier = "==2.1.0" },
@@ -1114,17 +1114,17 @@ wheels = [
 
 [[package]]
 name = "typer"
-version = "0.23.1"
+version = "0.26.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-doc" },
-    { name = "click" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "rich" },
     { name = "shellingham" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fd/07/b822e1b307d40e263e8253d2384cf98c51aa2368cc7ba9a07e523a1d964b/typer-0.23.1.tar.gz", hash = "sha256:2070374e4d31c83e7b61362fd859aa683576432fd5b026b060ad6b4cd3b86134", size = 120047, upload-time = "2026-02-13T10:04:30.984Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/08/26/8e9a4f2c98caefcf4ac25788d48939516a9dd4265fcf9bdd578a2a1b55dd/typer-0.26.1.tar.gz", hash = "sha256:537d27ae686d82967f6383382a952cb32ba4768898541effccb69ca75bbd5d23", size = 198884, upload-time = "2026-05-26T17:49:07.912Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d5/91/9b286ab899c008c2cb05e8be99814807e7fbbd33f0c0c960470826e5ac82/typer-0.23.1-py3-none-any.whl", hash = "sha256:3291ad0d3c701cbf522012faccfbb29352ff16ad262db2139e6b01f15781f14e", size = 56813, upload-time = "2026-02-13T10:04:32.008Z" },
+    { url = "https://files.pythonhosted.org/packages/be/27/8a22d4833fe8aa0836ce7fa59096ad50d7e93b83be6d5383f11f9a140d54/typer-0.26.1-py3-none-any.whl", hash = "sha256:933e4f0083521f3c57d6a5aedf3b073271b2f95a19761b171b494dd6fdb21ff6", size = 123097, upload-time = "2026-05-26T17:49:09.065Z" },
 ]
 
 [[package]]
