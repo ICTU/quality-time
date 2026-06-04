@@ -14,12 +14,8 @@ import { useContext } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import { datesPropType, measurementsPropType, metricPropType, reportPropType } from "../sharedPropTypes"
-import { getMetricResponseOverrun, pluralize } from "../utils"
+import { formatDays, getMetricResponseOverrun } from "../utils"
 import { StatusIcon } from "./StatusIcon"
-
-function formatDays(days) {
-    return `${days} ${pluralize("day", days)}`
-}
 
 export function Overrun({ metricUuid, metric, report, measurements, dates }) {
     const dataModel = useContext(DataModelContext)

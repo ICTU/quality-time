@@ -9,7 +9,7 @@ import { setSourceEntityAttribute } from "../api/source"
 import { accessGranted, EDIT_ENTITY_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import { entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
-import { capitalize, getDesiredResponseTime } from "../utils"
+import { capitalize, formatDays, getDesiredResponseTime } from "../utils"
 import { Header } from "../widgets/Header"
 import { SOURCE_ENTITY_STATUS_ACTION, SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
 
@@ -28,7 +28,7 @@ entityStatusOption.propTypes = {
 
 function responseTimeClause(report, status, prefix = "for") {
     const responseTime = getDesiredResponseTime(report, status)
-    return responseTime === null ? "" : ` ${prefix} ${responseTime} days`
+    return responseTime === null ? "" : ` ${prefix} ${formatDays(responseTime)}`
 }
 responseTimeClause.propTypes = {
     status: entityStatusPropType,

@@ -8,10 +8,8 @@ import { DataModelContext } from "../context/DataModel"
 import { datePropType, measurementPropType, metricPropType } from "../sharedPropTypes"
 import { IGNORABLE_SOURCE_ENTITY_STATUSES, SOURCE_ENTITY_STATUS_NAME } from "../source/source_entity_status"
 import {
-    formatMetricValue,
-    getMetricScale,
+    getFormattedMetricValue,
     getMetricUnit,
-    getMetricValue,
     isMeasurementOutdated,
     isMeasurementRequested,
     isMeasurementStale,
@@ -98,13 +96,7 @@ ignoredEntitiesMessage.propTypes = {
 
 export function MeasurementValue({ metric, reportDate }) {
     const dataModel = useContext(DataModelContext)
-    const metricValue = getMetricValue(metric, dataModel)
-    let value = metricValue || "?"
-    const scale = getMetricScale(metric, dataModel)
-    if (scale === "percentage") {
-        value += "%"
-    }
-    value = formatMetricValue(scale, value)
+    const value = getFormattedMetricValue(metric, dataModel)
     const unit = getMetricUnit(metric, dataModel, value)
     const stale = isMeasurementStale(metric, reportDate)
     const complete = isSourceConfigurationComplete(dataModel, metric)

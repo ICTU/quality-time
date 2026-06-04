@@ -23,6 +23,15 @@ import {
     visibleMetrics,
 } from "../utils"
 
+export function reverseSortMeasurements(measurements) {
+    // Sort measurements in reverse order so that if there are multiple measurements on a day, measurementOnDate finds
+    // the most recent one
+    return measurements.slice().sort((m1, m2) => (m1.start < m2.start ? 1 : -1))
+}
+reverseSortMeasurements.propTypes = {
+    measurements: measurementsPropType,
+}
+
 export function measurementOnDate(date, measurements, metricUuid) {
     const isoDateString = date.toISOString().split("T")[0]
     return measurements?.find((m) => {

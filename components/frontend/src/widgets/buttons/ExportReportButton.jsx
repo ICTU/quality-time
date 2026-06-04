@@ -46,7 +46,7 @@ export function ExportReportButton({ reportUuid }) {
                 startIcon={<DownloadIcon />}
                 variant="outlined"
             >
-                {"Export report"}
+                {"Export as JSON"}
             </Button>
         </Tooltip>
     )
