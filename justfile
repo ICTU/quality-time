@@ -501,6 +501,16 @@ clean:
     rm -rf */*/dist
     rm -rf */*/htmlcov
 
+# Lock the Python lock file in the folder
+[no-cd]
+[private]
+lock-folder folder:
+    cd {{ folder }} && uv lock
+
+# Relock all Python lockfiles
+[parallel]
+lock-all: (lock-folder "components/api_server") (lock-folder "components/collector") (lock-folder "components/notifier") (lock-folder "components/shared_code") (lock-folder "docs") (lock-folder "tests/application_tests") (lock-folder "tests/feature_tests") (lock-folder "tests/shared_test_code") (lock-folder "tools/release") (lock-folder "tools/third_party") (lock-folder "tools/update_dependencies")
+
 # === Utility recipes ===
 
 # Run the recipe in the folder.
