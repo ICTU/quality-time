@@ -915,7 +915,7 @@ wheels = [
 
 [[package]]
 name = "release"
-version = "5.55.1rc0"
+version = "5.55.1"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -1106,7 +1106,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.55.1rc0"
+version = "5.55.1"
 source = { virtual = "../third_party" }
 dependencies = [
     { name = "archunitpython" },
