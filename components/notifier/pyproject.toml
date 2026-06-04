@@ -9,7 +9,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "aiohttp==3.13.5",
+    "aiohttp==3.14.0",
     "pymsteams==0.2.5",
     "python-dateutil==2.9.0.post0",
     "shared-code",
@@ -27,6 +27,7 @@ dev = [
 sources.shared-code = { path = "../shared_code", package = true }
 sources.tools = { path = "../../tools/third_party", package = false }
 exclude-newer = "7 days"
+exclude-newer-package = { aiohttp = false }  # June 4: GHSA-jg22-mg44-37j8: AIOHTTP is Vulnerable to Deserialization of Untrusted Data
 
 [tool.ruff]
 line-length = 120
