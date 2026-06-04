@@ -1,25 +1,6 @@
 """Shared test data."""
 
-from typing import cast
-
-from shared.utils.type import MetricId, ReportId, SourceId, SubjectId, NotificationDestinationId
-
-
-METRIC_ID = cast(MetricId, "metric_uuid")
-METRIC_ID2 = cast(MetricId, "metric_uuid2")
-METRIC_ID3 = cast(MetricId, "metric_uuid3")
-METRIC_ID4 = cast(MetricId, "metric_uuid4")
-NOTIFICATION_DESTINATION_ID = cast(NotificationDestinationId, "destination_uuid")
-REPORT_ID = cast(ReportId, "report_uuid")
-REPORT_ID2 = cast(ReportId, "report_uuid2")
-SOURCE_ID = cast(SourceId, "source_uuid")
-SOURCE_ID2 = cast(SourceId, "source_uuid2")
-SOURCE_ID3 = cast(SourceId, "source_uuid3")
-SOURCE_ID4 = cast(SourceId, "source_uuid4")
-SOURCE_ID5 = cast(SourceId, "source_uuid5")
-SOURCE_ID6 = cast(SourceId, "source_uuid6")
-SUBJECT_ID = cast(SubjectId, "subject_uuid")
-SUBJECT_ID2 = cast(SubjectId, "subject_uuid2")
+from shared_test_code.fixtures import METRIC_ID, NOTIFICATION_DESTINATION_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
 JOHN = {"user": "John", "email": "john@example.org", "common_name": "John Doe"}
 JENNY = {"user": "Jenny", "email": "jenny@example.org", "common_name": "Jenny Doe"}

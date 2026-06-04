@@ -1,17 +1,10 @@
 """Fixture for reports."""
 
 import unittest
-from typing import cast
 
-from shared.utils.type import MetricId, NotificationDestinationId, SourceId, SubjectId
+from shared_test_code.fixtures import METRIC_ID, METRIC_ID2, SOURCE_ID, SUBJECT_ID
 
 from .fixtures import create_report
-
-METRIC_ID = cast(MetricId, "metric_uuid")
-METRIC_ID2 = cast(MetricId, "metric_uuid2")
-NOTIFICATION_DESTINATION_ID = cast(NotificationDestinationId, "destination1")
-SOURCE_ID = cast(SourceId, "source_uuid")
-SUBJECT_ID = cast(SubjectId, "subject_uuid")
 
 
 class FixtureTest(unittest.TestCase):

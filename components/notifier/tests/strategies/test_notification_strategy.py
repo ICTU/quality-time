@@ -11,7 +11,14 @@ from shared.model.report import Report
 
 from strategies.notification_strategy import NotificationFinder
 
-from tests.fixtures import METRIC_ID, METRIC_ID2, NOTIFICATION_DESTINATION_ID, REPORT_ID, REPORT_ID2, SUBJECT_ID
+from shared_test_code.fixtures import (
+    METRIC_ID,
+    METRIC_ID2,
+    NOTIFICATION_DESTINATION_ID,
+    REPORT_ID,
+    REPORT_ID2,
+    SUBJECT_ID,
+)
 
 
 class StrategiesTests(unittest.TestCase):

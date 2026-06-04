@@ -19,9 +19,8 @@ from routes import (
     post_move_metric,
 )
 
-from tests.base import DataModelTestCase, disable_logging
-from tests.fixtures import (
-    JOHN,
+from shared_test_code import disable_logging
+from shared_test_code.fixtures import (
     METRIC_ID,
     METRIC_ID2,
     REPORT_ID,
@@ -30,14 +29,16 @@ from tests.fixtures import (
     SOURCE_ID2,
     SUBJECT_ID,
     SUBJECT_ID2,
-    create_report,
 )
+
+from tests.base import DatabaseTestCase
+from tests.fixtures import JOHN, create_report
 
 if TYPE_CHECKING:
     from shared.utils.type import ItemId
 
 
-class MetricTestCase(DataModelTestCase):
+class MetricTestCase(DatabaseTestCase):
     """Base class for unit tests for the metric routes."""
 
     def updated_report(self):
@@ -566,7 +567,7 @@ class MetricTest(MetricTestCase):
 
 
 @patch("model.issue_tracker.requests.post")
-class MetricIssueTest(DataModelTestCase):
+class MetricIssueTest(DatabaseTestCase):
     """Unit tests for metric issue routes."""
 
     METRIC_URL = "https://quality_time/metric42"

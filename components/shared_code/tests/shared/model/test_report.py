@@ -11,8 +11,10 @@ from shared.model.report import Report, get_metrics_from_reports
 from shared.model.source import Source
 from shared.model.subject import Subject
 
-from tests.fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
-from tests.shared.base import DataModelTestCase
+from shared_test_code.base import DataModelTestCase
+from shared_test_code.fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
+
+from tests.fixtures import create_report
 
 if TYPE_CHECKING:
     from pymongo.database import Database

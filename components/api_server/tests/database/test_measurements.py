@@ -5,7 +5,7 @@ from database.measurements import all_metric_measurements, measurements_in_perio
 from shared.model.metric import Metric
 
 from tests.base import DatabaseTestCase
-from tests.fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3
+from shared_test_code.fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3
 
 
 class MeasurementsByMetricTest(DatabaseTestCase):

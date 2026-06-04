@@ -5,10 +5,10 @@ from unittest.mock import Mock, mock_open, patch
 
 from initialization.database import init_database
 
-from tests.base import DataModelTestCase
+from tests.base import DatabaseTestCase
 
 
-class DatabaseInitTest(DataModelTestCase):
+class DatabaseInitTest(DatabaseTestCase):
     """Unit tests for database initialization."""
 
     def setUp(self):

@@ -7,7 +7,9 @@ import mongomock
 
 from database.measurements import create_measurement
 
-from tests.fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID, create_report
+from shared_test_code.fixtures import METRIC_ID, METRIC_ID2, REPORT_ID, SOURCE_ID, SOURCE_ID2, SUBJECT_ID
+
+from tests.fixtures import create_report
 
 
 class TestMeasurements(unittest.TestCase):

@@ -7,7 +7,9 @@ import mongomock
 
 from database.reports import get_reports_and_measurements
 
-from tests.fixtures import METRIC_ID, create_report_data
+from shared_test_code.fixtures import METRIC_ID
+
+from tests.fixtures import create_report_data
 
 if TYPE_CHECKING:
     from pymongo.database import Database

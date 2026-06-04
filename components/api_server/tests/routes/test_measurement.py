@@ -9,8 +9,10 @@ from shared.utils.date_time import now
 
 from routes import get_metric_measurements, get_measurements, set_entity_attribute, stream_nr_measurements
 
-from tests.base import DatabaseTestCase, DataModelTestCase
-from tests.fixtures import JOHN, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
+from shared_test_code.fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
+
+from tests.base import DatabaseTestCase
+from tests.fixtures import JOHN, create_report
 
 
 class GetMetricMeasurementsTest(DatabaseTestCase):
@@ -72,7 +74,7 @@ class GetMetricMeasurementsTest(DatabaseTestCase):
         self.assertEqual({"measurements": []}, get_metric_measurements(METRIC_ID, self.database))
 
 
-class GetMeasurementsTest(DataModelTestCase):
+class GetMeasurementsTest(DatabaseTestCase):
     """Unit tests for the get measurements route."""
 
     def setUp(self):
@@ -92,7 +94,7 @@ class GetMeasurementsTest(DataModelTestCase):
         self.assertEqual({"measurements": [self.measurement]}, get_measurements(self.database))
 
 
-class SetEntityAttributeTest(DataModelTestCase):
+class SetEntityAttributeTest(DatabaseTestCase):
     """Unit tests for the set entity attribute route."""
 
     def setUp(self) -> None:

@@ -5,10 +5,10 @@ from unittest.mock import Mock, patch
 from routes import export_reports_overview_as_pdf, get_reports_overview, post_reports_overview_attribute
 from routes.plugins.auth_plugin import EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION
 
-from tests.base import DataModelTestCase
+from tests.base import DatabaseTestCase
 
 
-class ReportsOverviewTest(DataModelTestCase):
+class ReportsOverviewTest(DatabaseTestCase):
     """Unit tests for the reports overview routes."""
 
     def setUp(self):

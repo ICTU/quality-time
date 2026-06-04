@@ -14,7 +14,7 @@ RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv \
     --mount=type=bind,source=components/shared_code,target=/home/shared_code,rw \
     --mount=type=bind,source=components/collector/uv.lock,target=/home/collector/uv.lock \
     --mount=type=bind,source=components/collector/pyproject.toml,target=/home/collector/pyproject.toml \
-    uv sync --active --locked --no-dev --no-install-project
+    uv sync --active --frozen --no-dev --no-install-project
 
 ENV HEALTH_CHECK_FILE=/home/collector/health_check.txt
 RUN adduser -S collector && adduser collector root

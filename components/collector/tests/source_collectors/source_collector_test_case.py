@@ -15,7 +15,7 @@ from shared.model.metric import Metric
 from base_collectors import MetricCollector
 from model import MetricMeasurement
 
-from tests.fixtures import METRIC_ID
+from shared_test_code.fixtures import METRIC_ID
 
 
 class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):

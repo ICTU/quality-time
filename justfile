@@ -104,7 +104,7 @@ update-dependencies: update-docker-base-images update-py-dependencies update-git
 [private]
 install-py-dependencies:
     ?[ {{ pyproject_toml_exists }} = true ]
-    uv sync --no-progress --quiet --locked --all-extras --all-groups --reinstall-package shared-code
+    uv sync --no-progress --quiet --locked --all-extras --all-groups --reinstall-package shared-code --reinstall-package shared-test-code
 
 # Install JavaScript dependencies from the lock file.
 [no-cd]
@@ -300,7 +300,7 @@ troml folder="": install-py-dependencies
 pip-audit folder="": install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
     req=$(mktemp); trap "rm -f $req" EXIT; \
-    {{ start_check(folder) }} uv export --quiet --color never --directory . --format requirements-txt --no-emit-package shared-code > $req && \
+    {{ start_check(folder) }} uv export --quiet --color never --directory . --format requirements-txt --no-emit-package shared-code --no-emit-package shared-test-code > $req && \
     {{ uv_run }} pip-audit --requirement $req --ignore-vuln GHSA-58qw-9mgm-455v --disable-pip --progress-spinner off {{ end_check }}
 
 # Run uv audit to check Python dependencies for known security vulnerabilities.
@@ -429,7 +429,7 @@ check scope="" *folders:
 # Run the quality checks, in all relevant folders.
 [parallel]
 [private]
-check-all: (check-folder "components/api_server") (check-folder "components/collector") (check-folder "components/frontend") (check-folder "components/notifier") (check-folder "components/renderer") (check-folder "components/shared_code") (check-folder "docs") (check-folder "tests/application_tests") (check-folder "tests/feature_tests") (check-folder "tools/release") (check-folder "tools/third_party") (check-folder "tools/update_dependencies") (check-folder ".")
+check-all: (check-folder "components/api_server") (check-folder "components/collector") (check-folder "components/frontend") (check-folder "components/notifier") (check-folder "components/renderer") (check-folder "components/shared_code") (check-folder "docs") (check-folder "tests/application_tests") (check-folder "tests/feature_tests") (check-folder "tests/shared_test_code") (check-folder "tools/release") (check-folder "tools/third_party") (check-folder "tools/update_dependencies") (check-folder ".")
 
 # === Fix issues ===
 

@@ -16,7 +16,9 @@ from shared.utils.functions import iso_timestamp
 
 from notifier.notifier import most_recent_measurement_timestamp, notify, record_health
 
-from tests.fixtures import METRIC_ID, METRIC_ID2, NOTIFICATION_DESTINATION_ID, REPORT_ID, SUBJECT_ID, create_report_data
+from shared_test_code.fixtures import METRIC_ID, METRIC_ID2, NOTIFICATION_DESTINATION_ID, REPORT_ID, SUBJECT_ID
+
+from tests.fixtures import create_report_data
 
 
 class MostRecentMeasurementTimestampTests(unittest.TestCase):

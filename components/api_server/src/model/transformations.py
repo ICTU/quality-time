@@ -19,7 +19,8 @@ if TYPE_CHECKING:
     from shared.utils.type import ItemId, MetricId, ReportId, SourceId, SubjectId
 
     from model.report import Report
-    from utils.type import EditScope, SourceContext
+    from model.source import SourceContext
+    from utils.type import EditScope
 
 
 CREDENTIALS_REPLACEMENT_TEXT = "this string replaces credentials"

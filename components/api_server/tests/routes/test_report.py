@@ -26,11 +26,14 @@ from routes import (
 )
 from utils.functions import asymmetric_encrypt
 
-from tests.base import DataModelTestCase, disable_logging
-from tests.fixtures import JENNY, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, create_report
+from shared_test_code import disable_logging
+from shared_test_code.fixtures import METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID
+
+from tests.base import DatabaseWithDataModelTestCase
+from tests.fixtures import JENNY, create_report
 
 
-class ReportTestCase(DataModelTestCase):
+class ReportTestCase(DatabaseWithDataModelTestCase):
     """Base class for report route unit tests."""
 
     ISSUE_TRACKER_URL = "https://jira"

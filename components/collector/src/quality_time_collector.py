@@ -9,7 +9,8 @@ from shared.utils.log import init_logging
 # Make sure subclasses are registered
 import metric_collectors  # noqa: F401
 import source_collectors  # noqa: F401
-from base_collectors import Collector, config
+from base_collectors import config
+from base_collectors.collector import Collector
 
 
 async def collect() -> NoReturn:

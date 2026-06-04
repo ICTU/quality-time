@@ -1,0 +1,56 @@
+[project]
+name = "shared-test-code"
+version = "5.55.1-rc.1"
+requires-python = ">=3.14"
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Programming Language :: Python :: 3.16",
+]
+dependencies = [
+    "shared-code",
+]
+
+[dependency-groups]
+dev = [
+    "tools",
+]
+
+[tool.setuptools]
+package-data."*" = [ "py.typed" ]
+packages.find.where = [
+    "src",
+]
+
+[tool.uv]
+sources.shared-code = { path = "../../components/shared_code", package = true }
+sources.tools = { path = "../../tools/third_party", package = false }
+exclude-newer = "7 days"
+
+[tool.ruff]
+line-length = 120
+src = [
+    "src",
+]
+lint.select = [
+    "ALL",
+]
+lint.ignore = [
+    "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
+    "D203",   # https://docs.astral.sh/ruff/rules/one-blank-line-before-class/ - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
+    "D213",   # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/ - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
+    "ISC001", # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter
+    "TC006",  # https://docs.astral.sh/ruff/rules/runtime-cast-value/ - the rule claims it's often necessary to quote the first argument passed to cast(), but that's not the case in this code base
+]
+lint.per-file-ignores.".vulture-whitelist.py" = [
+    "ALL",
+]
+lint.per-file-ignores."__init__.py" = [
+    "D104", # https://docs.astral.sh/ruff/rules/undocumented-public-package/ - don't require doc strings in __init__.py files
+]
+
+[tool.pyproject-fmt]
+indent = 4
+keep_full_version = true  # Don't remove trailing zero's from version specifiers

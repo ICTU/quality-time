@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING
 
 from shared.model.iterators import issue_trackers, sources
-from shared.model.source import PASSWORD_PARAMETERS
+from shared_data_model.parameters import PASSWORD_PARAMETERS
 
 from .queries import is_password_parameter
 

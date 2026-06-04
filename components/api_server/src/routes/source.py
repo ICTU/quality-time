@@ -13,9 +13,10 @@ from database.reports import insert_new_report, latest_report_for_uuids, latest_
 from model.actions import copy_source, move_item
 from model.defaults import default_source_parameters
 from model.queries import is_password_parameter
+from model.source import SourceContext
 from model.transformations import change_source_parameter
 from utils.functions import check_url_availability, uuid
-from utils.type import EditScope, SourceContext
+from utils.type import EditScope
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 

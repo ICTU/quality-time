@@ -7,11 +7,6 @@ from typing import Literal, NewType, TypedDict, TYPE_CHECKING
 if TYPE_CHECKING:
     from datetime import datetime
 
-    from model.report import Report
-    from shared.model.metric import Metric
-    from shared.model.source import Source
-    from shared.model.subject import Subject
-
 Change = dict[str, str | dict[str, str]]
 EditScope = Literal["source", "report"]
 Position = Literal["first", "last", "next", "previous"]
@@ -51,13 +46,3 @@ class SessionData(TypedDict, total=False):
     email: str
     common_name: str
     session_expiration_datetime: datetime
-
-
-@dataclass
-class SourceContext:
-    """Source, combined with its containing metric, subject, and report."""
-
-    metric: Metric
-    report: Report
-    source: Source
-    subject: Subject

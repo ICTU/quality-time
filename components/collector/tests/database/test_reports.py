@@ -10,7 +10,9 @@ from shared.utils.type import MetricId
 
 from database.reports import latest_metric
 
-from tests.fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, create_report
+from shared_test_code.fixtures import METRIC_ID, REPORT_ID, SOURCE_ID
+
+from tests.fixtures import create_report
 
 
 class TestLatestMetric(unittest.TestCase):

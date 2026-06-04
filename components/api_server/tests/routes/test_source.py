@@ -20,7 +20,7 @@ from routes import (
     post_source_parameter,
 )
 
-from tests.fixtures import (
+from shared_test_code.fixtures import (
     METRIC_ID,
     METRIC_ID2,
     METRIC_ID3,
@@ -34,16 +34,16 @@ from tests.fixtures import (
     SOURCE_ID6,
     SUBJECT_ID,
     SUBJECT_ID2,
-    create_report,
 )
 
-from tests.base import DataModelTestCase
+from tests.base import DatabaseTestCase
+from tests.fixtures import create_report
 
 if TYPE_CHECKING:
     from shared.utils.type import SourceId
 
 
-class SourceTestCase(DataModelTestCase):
+class SourceTestCase(DatabaseTestCase):
     """Common fixtures for the source route unit tests."""
 
     def setUp(self):

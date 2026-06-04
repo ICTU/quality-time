@@ -10,7 +10,7 @@ from base_collectors import SourceCollector
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
-from tests.test_fixtures import METRIC_ID
+from shared_test_code.fixtures import METRIC_ID
 
 from .source_collector_test_case import SourceCollectorTestCase
 

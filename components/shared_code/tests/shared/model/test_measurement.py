@@ -1,21 +1,20 @@
 """Test the measurements model."""
 
 from datetime import datetime, timedelta
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from dateutil.tz import tzutc
 from packaging.version import Version
 
-from shared.model.measurement import (
-    Measurement,
-    VersionNumberScaleMeasurement,
-)
+from shared.model.measurement import Measurement, VersionNumberScaleMeasurement
 from shared.model.metric import Metric
 from shared.model.source import Source
-from shared.utils.type import SourceId
 
-from tests.fixtures import METRIC_ID, SOURCE_ID, SOURCE_ID2
-from tests.shared.base import DataModelTestCase
+from shared_test_code.base import DataModelTestCase
+from shared_test_code.fixtures import METRIC_ID, SOURCE_ID, SOURCE_ID2
+
+if TYPE_CHECKING:
+    from shared.utils.type import SourceId
 
 
 class MeasurementTestCase(DataModelTestCase):
@@ -536,12 +535,12 @@ class CalculateMeasurementValueTest(MeasurementTestCase):
     ) -> Source:
         """Create a source fixture."""
         self.source_count += 1
-        source_number = "" if self.source_count == 1 else str(self.source_count)
+        source_id = SOURCE_ID if self.source_count == 1 else SOURCE_ID2
         return Source(
-            cast(SourceId, f"source{source_number}"),
+            source_id,
             metric,
             {
-                "source_uuid": f"source{source_number}",
+                "source_uuid": source_id,
                 "connection_error": None,
                 "parse_error": parse_error,
                 "total": total,

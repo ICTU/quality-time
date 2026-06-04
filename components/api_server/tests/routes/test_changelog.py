@@ -8,9 +8,10 @@ from routes import (
     get_subject_changelog,
 )
 
-from tests.fixtures import JENNY, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
+from shared_test_code.fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
 from tests.base import DatabaseTestCase
+from tests.fixtures import JENNY
 
 
 class ChangeLogTest(DatabaseTestCase):

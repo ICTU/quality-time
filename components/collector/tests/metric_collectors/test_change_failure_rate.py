@@ -15,7 +15,7 @@ from base_collectors.metric_collector import MetricCollector
 from model import MetricMeasurement
 from source_collectors.jira.change_failure_rate import JiraChangeFailureRate
 
-from tests.fixtures import METRIC_ID
+from shared_test_code.fixtures import METRIC_ID
 
 
 class ChangeFailureRateTest(unittest.IsolatedAsyncioTestCase):

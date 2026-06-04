@@ -83,7 +83,7 @@ class Subject(dict):  # noqa: PLW1641
         return uuids
 
     def rename_tag(self, tag: str, new_tag: str) -> list[MetricId]:
-        """Rename a tag in the report and return the UUIDs of the affected metrics."""
+        """Rename a tag in the subject and return the UUIDs of the affected metrics."""
         uuids = []
         for metric_uuid, metric in self.metrics_dict.items():
             if metric.rename_tag(tag, new_tag):

@@ -11,7 +11,8 @@ from shared.utils.functions import first
 
 from model.actions import copy_metric, copy_report, copy_source, copy_subject, move_metric_to_index
 from model.report import Report
-from tests.fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3, REPORT_ID, SOURCE_ID, SUBJECT_ID
+
+from shared_test_code.fixtures import METRIC_ID, METRIC_ID2, METRIC_ID3, REPORT_ID, SOURCE_ID, SUBJECT_ID
 
 
 class CopySourceTest(unittest.TestCase):

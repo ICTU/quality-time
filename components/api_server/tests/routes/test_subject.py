@@ -13,15 +13,17 @@ from routes import (
     post_subject_copy,
 )
 
-from tests.base import DataModelTestCase
-from tests.fixtures import REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2, create_report
+from shared_test_code.fixtures import REPORT_ID, REPORT_ID2, SUBJECT_ID, SUBJECT_ID2
+
+from tests.base import DatabaseTestCase
+from tests.fixtures import create_report
 
 if TYPE_CHECKING:
     from shared.utils.type import SubjectId
 
 
 @patch("bottle.request")
-class PostSubjectAttributeTest(DataModelTestCase):
+class PostSubjectAttributeTest(DatabaseTestCase):
     """Unit tests for the post subject report attribute route."""
 
     def setUp(self):
@@ -133,7 +135,7 @@ class PostSubjectAttributeTest(DataModelTestCase):
         )
 
 
-class SubjectTest(DataModelTestCase):
+class SubjectTest(DatabaseTestCase):
     """Unit tests for adding and deleting subjects."""
 
     def setUp(self):

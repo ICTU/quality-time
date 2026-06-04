@@ -6,9 +6,8 @@ from shared.model.subject import Subject
 
 from models.metric_notification_data import MetricNotificationData
 
-from tests.fixtures import METRIC_ID, SUBJECT_ID
-
-from .base import DataModelTestCase
+from shared_test_code.base import DataModelTestCase
+from shared_test_code.fixtures import METRIC_ID, SUBJECT_ID
 
 
 class MetricNotificationDataModelTestCase(DataModelTestCase):
