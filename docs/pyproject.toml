@@ -26,9 +26,11 @@ dev = [
 ]
 
 [tool.uv]
+override-dependencies = [ "pip==26.1.2" ]
 sources.shared-code = { path = "../components/shared_code", editable = true }
 sources.tools = { path = "../tools/third_party", package = false }
 exclude-newer = "7 days"
+exclude-newer-package = { pip = false }
 
 [tool.ruff]
 line-length = 120

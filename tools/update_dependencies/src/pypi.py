@@ -1,6 +1,5 @@
 """Python Package Index."""
 
-import http
 import re
 from datetime import datetime
 from functools import cache
@@ -77,12 +76,11 @@ def get_publication_datetime(package: str, version: str) -> datetime:
 def changelog_from_url(url: str, version: str, logger: Logger) -> str:
     """Get the changelog from the URL."""
     changelog_response = requests.get(github_to_raw(url), timeout=10)
-    if changelog_response.status_code == http.HTTPStatus.NOT_FOUND:
+    if not changelog_response.ok:
         logger.response(changelog_response)
         return ""
     if changelog_response.headers["Content-Type"].startswith("text/html"):
         return ""
-    changelog_response.raise_for_status()
     return get_version_changes_from_changelog(changelog_response.text, version)
 
 

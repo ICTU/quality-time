@@ -35,6 +35,7 @@ class GetChangesTest(CacheClearingTestCase):
         response.json.side_effect = list(json)
         response.text = text
         response.status_code = status_code
+        response.ok = status_code < HTTPStatus.BAD_REQUEST
         response.headers = {"Content-Type": "text/text"}
         mock_get.return_value = response
 
@@ -50,15 +51,16 @@ class GetChangesTest(CacheClearingTestCase):
             self.create_mock_response(mock_get, {"info": {"project_urls": {key: "https://changes"}}}, text=changelog)
             self.assertEqual("## 1.1\n- Fixed foo", get_changes(f"package-2-{key}", "1.1", LOG))
 
-    def test_changelog_url_gives_404(self, mock_get: Mock):
-        """Test that changelog URLs are skipped if they result in a 404."""
-        for key in CHANGELOG_URL_KEYS:
-            self.create_mock_response(
-                mock_get,
-                {"info": {"description": "Package-foo description", "project_urls": {key: "https://changes"}}},
-                status_code=HTTPStatus.NOT_FOUND,
-            )
-            self.assertEqual("", get_changes(f"package-3-{key}", "1.1", LOG))
+    def test_changelog_url_gives_error(self, mock_get: Mock):
+        """Test that changelog URLs are skipped if they result in an HTTP error."""
+        for status_code in (HTTPStatus.BAD_REQUEST, HTTPStatus.NOT_FOUND):
+            for key in CHANGELOG_URL_KEYS:
+                self.create_mock_response(
+                    mock_get,
+                    {"info": {"description": "Package-foo description", "project_urls": {key: "https://changes"}}},
+                    status_code=status_code,
+                )
+                self.assertEqual("", get_changes(f"package-3-{status_code}-{key}", "1.1", LOG))
 
     def test_repository_url_found(self, mock_get: Mock):
         """Test that the changes are returned if a repository URL is returned by PyPI."""
