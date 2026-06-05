@@ -41,7 +41,9 @@ uv = [
 ]
 
 [tool.uv]
-override-dependencies = [ "pip==26.1.2" ]
+override-dependencies = [
+    "pip==26.1.2",
+]  # June 5: pip 26.1.1 has 1 known vulnerability: PYSEC-2026-196: No summary provided. Fixed in: 26.1.2. Advisory information: http://www.openwall.com/lists/oss-security/2026/06/01/5
 exclude-newer = "7 days"
 exclude-newer-package = { pip = false }
 package = false
