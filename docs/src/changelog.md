@@ -10,6 +10,16 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Add an "Export as CSV" button to the report header to export the report to a CSV file, mirroring the report as currently displayed (sort order, visible columns, hidden tags, and date(s)). Closes [#13324](https://github.com/ICTU/quality-time/issues/13324).
+
+### Changed
+
+- Rename the "Export report" button in the report header to "Export as JSON", to distinguish it from the new "Export as CSV" button. Closes [#13324](https://github.com/ICTU/quality-time/issues/13324).
+
 ## v5.55.1 - 2026-06-04
 
 ### Fixed

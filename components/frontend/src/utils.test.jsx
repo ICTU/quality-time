@@ -9,12 +9,18 @@ import {
     createDragGhost,
     DOCUMENTATION_URL,
     endOfDayFromISODateString,
+    formatDays,
+    formatMetricValueWithScale,
     formatParameterValue,
+    getFormattedMetricTarget,
+    getFormattedMetricTimeLeft,
+    getFormattedMetricValue,
     getMetricResponseDeadline,
     getMetricResponseOverrun,
     getMetricTags,
     getMetricTarget,
     getMetricUnit,
+    getMetricValue,
     getReportTags,
     getSourceName,
     getSubjectName,
@@ -149,6 +155,87 @@ it("gets the metric target", () => {
 
 it("gets the metric target, even if the target is missing", () => {
     expect(getMetricTarget({})).toStrictEqual("0")
+})
+
+it("gets the metric value", () => {
+    expect(
+        getMetricValue({ type: "metric_type", latest_measurement: { count: { value: "42" } } }, dataModel),
+    ).toStrictEqual("42")
+})
+
+it("returns an empty string by default if the metric has no value", () => {
+    expect(getMetricValue({ type: "metric_type" }, dataModel)).toStrictEqual("")
+})
+
+it("returns the default value if the metric has no measurement", () => {
+    expect(getMetricValue({ type: "metric_type" }, dataModel, "?")).toStrictEqual("?")
+})
+
+it("returns the default value if the metric value is empty", () => {
+    expect(
+        getMetricValue({ type: "metric_type", latest_measurement: { count: { value: "" } } }, dataModel, "?"),
+    ).toStrictEqual("?")
+})
+
+it("gets the formatted metric value", () => {
+    expect(
+        getFormattedMetricValue({ type: "metric_type", latest_measurement: { count: { value: "42" } } }, dataModel),
+    ).toStrictEqual("42")
+})
+
+it("gets the formatted metric value of a percentage metric", () => {
+    expect(
+        getFormattedMetricValue(
+            { scale: "percentage", latest_measurement: { percentage: { value: "42" } } },
+            dataModel,
+        ),
+    ).toStrictEqual("42%")
+})
+
+it("gets a question mark as formatted metric value if the metric has no value", () => {
+    expect(getFormattedMetricValue({ type: "metric_type" }, dataModel)).toStrictEqual("?")
+})
+
+it("gets the formatted metric target, joined with a non-breaking space by default", () => {
+    expect(getFormattedMetricTarget({ type: "metric_type", direction: "<", target: "10" }, dataModel)).toStrictEqual(
+        "≦\u00a010",
+    )
+})
+
+it("gets the formatted metric target, joined with the given separator", () => {
+    expect(
+        getFormattedMetricTarget({ type: "metric_type", direction: "<", target: "10" }, dataModel, " "),
+    ).toStrictEqual("≦ 10")
+})
+
+it("gets an empty formatted metric target if the metric does not evaluate targets", () => {
+    expect(
+        getFormattedMetricTarget(
+            { type: "metric_type", direction: "<", target: "10", evaluate_targets: false },
+            dataModel,
+        ),
+    ).toStrictEqual("")
+})
+
+it("formats a metric value with its scale", () => {
+    expect(formatMetricValueWithScale({ type: "metric_type" }, dataModel, "42")).toStrictEqual("42")
+    expect(formatMetricValueWithScale({ scale: "percentage" }, dataModel, "42")).toStrictEqual("42%")
+})
+
+it("formats a number of days, singular and plural", () => {
+    expect(formatDays(0)).toStrictEqual("0 days")
+    expect(formatDays(1)).toStrictEqual("1 day")
+    expect(formatDays(5)).toStrictEqual("5 days")
+})
+
+it("gets the formatted time left, clamped to zero for an overdue metric", () => {
+    expect(getFormattedMetricTimeLeft({ status: "target_not_met", status_start: "2000-01-01" }, {})).toStrictEqual(
+        "0 days",
+    )
+})
+
+it("gets an empty formatted time left if the metric has no deadline", () => {
+    expect(getFormattedMetricTimeLeft({}, {})).toStrictEqual("")
 })
 
 it("gets the source name", () => {

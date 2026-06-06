@@ -183,7 +183,7 @@ function UnitPlural({ metric, metricUuid, reload }) {
             disabled={disabled}
             label="Metric unit plural"
             placeholder={metricType.unit}
-            startAdornment={formatMetricScale(metric, dataModel, "2")}
+            startAdornment={formatMetricScale(metric, dataModel)}
             onChange={(value) => setMetricAttribute(metricUuid, "unit", value, reload)}
             value={metric.unit || metricType.unit}
         />
@@ -205,7 +205,7 @@ function UnitSingular({ metric, metricUuid, reload }) {
             disabled={disabled}
             label="Metric unit singular"
             placeholder={metricType.unit_singular}
-            startAdornment={formatMetricScale(metric, dataModel, "1")}
+            startAdornment={formatMetricScale(metric, dataModel)}
             onChange={(value) => setMetricAttribute(metricUuid, "unit_singular", value, reload)}
             value={metric.unit_singular || metricType.unit_singular}
         />

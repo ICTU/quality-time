@@ -11,10 +11,11 @@ import { deleteReport } from "../api/report"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { NotificationDestinations } from "../notification/NotificationDestinations"
-import { reportPropType, settingsPropType } from "../sharedPropTypes"
+import { datesPropType, measurementsPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { ExportReportButton } from "../widgets/buttons/ExportReportButton"
+import { ExportReportCsvButton } from "../widgets/buttons/ExportReportCsvButton"
 import { PermLinkButton } from "../widgets/buttons/PermLinkButton"
 import { HeaderWithDetails } from "../widgets/HeaderWithDetails"
 import { Tabs } from "../widgets/Tabs"
@@ -25,7 +26,8 @@ import { ReportConfiguration } from "./ReportConfiguration"
 import { ReportSources } from "./ReportSources"
 import { Tags } from "./Tags"
 
-function ReportTitleButtonRow({ reportUuid, openReportsOverview, settings, url }) {
+function ReportTitleButtonRow({ report, measurements, dates, openReportsOverview, settings, url }) {
+    const reportUuid = report.report_uuid
     const deleteButton = (
         <DeleteButton
             itemType="report"
@@ -35,26 +37,41 @@ function ReportTitleButtonRow({ reportUuid, openReportsOverview, settings, url }
             }}
         />
     )
+    // The CSV export button is shown to all users because the CSV contains no credentials; the other buttons require
+    // edit permission.
     return (
-        <ReadOnlyOrEditable
-            requiredPermissions={[EDIT_REPORT_PERMISSION]}
-            editableComponent={
-                <ButtonRow rightButton={deleteButton} paddingBottom={2} paddingLeft={0} paddingRight={0} paddingTop={2}>
-                    <PermLinkButton itemType="report" url={url} />
-                    <ExportReportButton reportUuid={reportUuid} />
-                </ButtonRow>
+        <ButtonRow
+            rightButton={
+                <ReadOnlyOrEditable requiredPermissions={[EDIT_REPORT_PERMISSION]} editableComponent={deleteButton} />
             }
-        />
+            paddingBottom={2}
+            paddingLeft={0}
+            paddingRight={0}
+            paddingTop={2}
+        >
+            <ExportReportCsvButton report={report} measurements={measurements} dates={dates} settings={settings} />
+            <ReadOnlyOrEditable
+                requiredPermissions={[EDIT_REPORT_PERMISSION]}
+                editableComponent={
+                    <>
+                        <ExportReportButton reportUuid={reportUuid} />
+                        <PermLinkButton itemType="report" url={url} />
+                    </>
+                }
+            />
+        </ButtonRow>
     )
 }
 ReportTitleButtonRow.propTypes = {
-    reportUuid: string,
+    report: reportPropType,
+    measurements: measurementsPropType,
+    dates: datesPropType,
     openReportsOverview: func,
     settings: settingsPropType,
     url: string,
 }
 
-export function ReportTitle({ openReportsOverview, reload, report, settings }) {
+export function ReportTitle({ dates, measurements, openReportsOverview, reload, report, settings }) {
     const reportUuid = report.report_uuid
     const reportUrl = `${globalThis.location}`
     setDocumentTitle(report.title)
@@ -92,7 +109,9 @@ export function ReportTitle({ openReportsOverview, reload, report, settings }) {
                 <ChangeLog reportUuid={reportUuid} timestamp={report.timestamp} />
             </Tabs>
             <ReportTitleButtonRow
-                reportUuid={reportUuid}
+                report={report}
+                measurements={measurements}
+                dates={dates}
                 openReportsOverview={openReportsOverview}
                 settings={settings}
                 url={reportUrl}
@@ -101,6 +120,8 @@ export function ReportTitle({ openReportsOverview, reload, report, settings }) {
     )
 }
 ReportTitle.propTypes = {
+    dates: datesPropType,
+    measurements: measurementsPropType,
     openReportsOverview: func,
     reload: func,
     report: reportPropType,

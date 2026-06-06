@@ -487,13 +487,29 @@ See the [API-documentation](api.md#export-to-pdf) for exporting reports via the 
 
 *Quality-time* provides functionality for importing and exporting reports in JSON format. This functionality can be used to import template reports, to back up reports, or for transferring reports from one *Quality-time* instance to another one.
 
-To export a report, use the "Export report" button in the report header. The exported JSON file contains the report configuration but does not include measurements. Source credentials in the exported report are encrypted using the public key of the exporting *Quality-time* instance. This means that an exported report *including its credentials* can only be re-imported into the same instance. To transfer a report including its credentials to a different *Quality-time* instance, use the [API](api.md#export-and-import-reports-as-json) to encrypt the credentials with the public key of the destination instance. It is possible to import a report in a Quality-time instance whose public key was not used to encrypt the credentials, but in that case the credentials will not be imported.
+To export a report, use the "Export as JSON" button in the report header. The exported JSON file contains the report configuration but does not include measurements. Source credentials in the exported report are encrypted using the public key of the exporting *Quality-time* instance. This means that an exported report *including its credentials* can only be re-imported into the same instance. To transfer a report including its credentials to a different *Quality-time* instance, use the [API](api.md#export-and-import-reports-as-json) to encrypt the credentials with the public key of the destination instance. It is possible to import a report in a Quality-time instance whose public key was not used to encrypt the credentials, but in that case the credentials will not be imported.
 
 To import a report, use the "Import report" button on the reports overview page to select a report in JSON format and import it.
 
 The export and the import buttons are only available to logged-in users.
 
 Both the import and the export functionality are also available via the [API](api.md#export-and-import-reports-as-json).
+
+```{index} Export report
+```
+
+```{index} CSV
+```
+
+## Export reports as CSV
+
+*Quality-time* reports can be downloaded as a CSV (comma-separated values) file, for example to import the report into a spreadsheet.
+
+To export a report as CSV, navigate to the report and click the "Export as CSV" button in the report header.
+
+The exported CSV mirrors the report as currently displayed: it contains the same subjects and metrics, honors the current sort order, hidden tags, and hidden or empty columns, and contains a column for each visible date (the same contract as the [PDF export](#export-reports-as-pdf)). The trend sparkline column is not included because it has no textual representation.
+
+As the CSV contains no source credentials, the "Export as CSV" button is available to all users, also when not logged in.
 
 ```{index} Issue tracker
 ```

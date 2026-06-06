@@ -22,13 +22,17 @@ beforeEach(() => {
     vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
 })
 
-function ReportTitleWrapper({ issueTrackerType, tags }) {
+const reportDates = [new Date()]
+
+function ReportTitleWrapper({ issueTrackerType, permissions, tags }) {
     const settings = useSettings()
     return (
         <DataModelContext value={{ sources: { jira: { name: "Jira", issue_tracker: true } } }}>
-            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <PermissionsContext value={permissions}>
                 <SnackbarAlerts messages={[]} showMessage={vi.fn()}>
                     <ReportTitle
+                        dates={reportDates}
+                        measurements={[]}
                         report={{
                             issue_tracker: { type: issueTrackerType },
                             report_uuid: "report_uuid",
@@ -44,14 +48,22 @@ function ReportTitleWrapper({ issueTrackerType, tags }) {
     )
 }
 
-function renderReportTitle({ tags = ["foo"], issueTrackerType = null } = {}) {
-    return render(<ReportTitleWrapper issueTrackerType={issueTrackerType} tags={tags} />)
+function renderReportTitle({ tags = ["foo"], issueTrackerType = null, permissions = [EDIT_REPORT_PERMISSION] } = {}) {
+    return render(<ReportTitleWrapper issueTrackerType={issueTrackerType} permissions={permissions} tags={tags} />)
 }
 
 it("shows the export report button", async () => {
     history.push("?expanded=report_uuid:0")
     const { container } = renderReportTitle()
-    expect(screen.getByText(/Export report/)).toBeInTheDocument()
+    expect(screen.getByText(/Export as JSON/)).toBeInTheDocument()
+    await expectNoAccessibilityViolations(container)
+})
+
+it("shows the export as CSV button to all users", async () => {
+    history.push("?expanded=report_uuid:0")
+    const { container } = renderReportTitle({ permissions: [] })
+    expect(screen.getByText(/Export as CSV/)).toBeInTheDocument()
+    expect(screen.queryByText(/Export as JSON/)).not.toBeInTheDocument()
     await expectNoAccessibilityViolations(container)
 })
 

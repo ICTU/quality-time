@@ -211,7 +211,7 @@ export function getMetricResponseDeadline(metric, report) {
         const desiredResponseTime = getDesiredResponseTime(report, status)
         if (Number.isInteger(desiredResponseTime)) {
             deadline = new Date(metric.status_start)
-            deadline.setDate(deadline.getDate() + getDesiredResponseTime(report, status))
+            deadline.setDate(deadline.getDate() + desiredResponseTime)
         }
     }
     return deadline
@@ -221,6 +221,17 @@ export function getMetricResponseTimeLeft(metric, report) {
     const deadline = getMetricResponseDeadline(metric, report)
     const now = new Date()
     return deadline === null ? null : deadline.getTime() - now.getTime()
+}
+
+export function formatDays(numberOfDays) {
+    // Format a number of days as e.g. "1 day" or "5 days"
+    return `${numberOfDays} ${pluralize("day", numberOfDays)}`
+}
+
+export function getFormattedMetricTimeLeft(metric, report) {
+    // Return the number of days left to address the metric, formatted as e.g. "5 days", or "" if there is no deadline
+    const timeLeft = getMetricResponseTimeLeft(metric, report)
+    return timeLeft === null ? "" : formatDays(days(Math.max(0, timeLeft)))
 }
 
 function getMetricResponseOverruns(metricUuid, metric, measurements, dataModel) {
@@ -279,9 +290,31 @@ export function getDesiredResponseTime(report, status) {
     return desiredResponseTime === null ? null : Number.parseInt(desiredResponseTime)
 }
 
-export function getMetricValue(metric, dataModel) {
+export function getMetricValue(metric, dataModel, defaultValue = "") {
     const scale = getMetricScale(metric, dataModel)
-    return metric?.latest_measurement?.[scale]?.value ?? ""
+    // Return the default value if the metric has no value, including an empty string value
+    return metric?.latest_measurement?.[scale]?.value || defaultValue
+}
+
+export function getFormattedMetricValue(metric, dataModel, defaultValue = "?") {
+    // Return the metric's latest measurement value, formatted with its scale (e.g. "42", "50%", or "?")
+    return formatMetricValueWithScale(metric, dataModel, getMetricValue(metric, dataModel, defaultValue))
+}
+
+export function formatMetricValueWithScale(metric, dataModel, value) {
+    // Format a value with the metric's scale, e.g. "42" (count) or "42%" (percentage)
+    return `${formatMetricValue(getMetricScale(metric, dataModel), value)}${formatMetricScale(metric, dataModel)}`
+}
+
+export function getFormattedMetricTarget(metric, dataModel, separator = "\u00a0") {
+    // Return the metric's target, formatted with its direction and scale (e.g. "≦ 10" or "≧ 50%"), or "" if the
+    // metric does not evaluate targets. The separator
+    // defaults to "\u00a0" (a non-breaking space, i.e. &nbsp;) so the direction and value don't wrap to separate lines.
+    if (metric?.evaluate_targets === false) {
+        return ""
+    }
+    const direction = formatMetricDirection(metric, dataModel)
+    return `${direction}${separator}${formatMetricValueWithScale(metric, dataModel, getMetricTarget(metric))}`
 }
 
 export function getMetricComment(metric) {

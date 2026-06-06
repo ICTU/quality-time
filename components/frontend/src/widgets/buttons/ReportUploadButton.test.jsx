@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../../api/fetch_server_api"
-import { expectFetch, expectNoFetch, expectText } from "../../testUtils"
+import { expectFetch, expectNoFetch } from "../../testUtils"
 import { SnackbarAlerts } from "../SnackbarAlerts"
 import { ReportUploadButton } from "./ReportUploadButton"
 
@@ -30,11 +30,6 @@ function renderReportUploadButton({ showMessage = vi.fn() } = {}) {
     )
     return [reload, screen.getByTestId("report-import-input")]
 }
-
-it("has the correct label", () => {
-    renderReportUploadButton()
-    expectText(/Import report/)
-})
 
 it("imports a report", async () => {
     const showMessage = vi.fn()

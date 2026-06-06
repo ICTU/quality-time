@@ -38,9 +38,9 @@ import {
     stringsPropType,
 } from "../sharedPropTypes"
 import {
-    formatMetricScale,
     formatMetricScaleAndUnit,
     formatMetricValue,
+    formatMetricValueWithScale,
     getMetricDirection,
     getMetricName,
     getMetricScale,
@@ -127,14 +127,30 @@ deltaLabel.propTypes = {
     previousValue: string,
 }
 
-function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousValue }) {
+export function metricDelta(scale, metricValue, previousValue, dateOrderAscending) {
+    // Return the delta label between the previous and current value (e.g. "+5"), or "" when there is no meaningful
+    // delta (a value is unknown, or the values are equal)
+    if (previousValue === "?" || metricValue === "?" || previousValue === metricValue) {
+        return ""
+    }
+    const increased = didValueIncrease(dateOrderAscending, metricValue, previousValue, scale)
+    return deltaLabel(increased, scale, metricValue, previousValue)
+}
+metricDelta.propTypes = {
+    scale: scalePropType,
+    metricValue: string,
+    previousValue: string,
+    dateOrderAscending: bool,
+}
+
+function DeltaCell({ dateOrderAscending, metric, metricValue, previousValue }) {
     const dataModel = useContext(DataModelContext)
+    const scale = getMetricScale(metric, dataModel)
+    // Note that the delta cell only gets content if the previous and current values are both available and unequal
+    const delta = metricDelta(scale, metricValue, previousValue, dateOrderAscending)
     let label = null
-    if (index > 0 && previousValue !== "?" && metricValue !== "?" && previousValue !== metricValue) {
-        // Note that the delta cell only gets content if the previous and current values are both available and unequal
-        const scale = getMetricScale(metric, dataModel)
+    if (delta) {
         const increased = didValueIncrease(dateOrderAscending, metricValue, previousValue, scale)
-        const delta = deltaLabel(increased, scale, metricValue, previousValue)
         const oldValue = dateOrderAscending ? previousValue : metricValue
         const newValue = dateOrderAscending ? metricValue : previousValue
         const direction = getMetricDirection(metric, dataModel)
@@ -152,12 +168,11 @@ function DeltaCell({ dateOrderAscending, index, metric, metricValue, previousVal
 DeltaCell.propTypes = {
     dateOrderAscending: bool,
     metric: metricPropType,
-    index: number,
     metricValue: string,
     previousValue: string,
 }
 
-function metricValueAndStatusOnDate(dataModel, metric, metricUuid, measurements, date) {
+export function metricValueAndStatusOnDate(dataModel, metric, metricUuid, measurements, date) {
     const measurement = measurementOnDate(date, measurements, metricUuid)
     const scale = getMetricScale(metric, dataModel)
     return [measurement?.[scale]?.value ?? "?", measurement?.[scale]?.status ?? "unknown"]
@@ -174,7 +189,6 @@ function MeasurementCells({ dates, metric, metricUuid, measurements, settings })
     const dataModel = useContext(DataModelContext)
     const showDeltaColumns = settings.hiddenColumns.excludes("delta")
     const dateOrderAscending = settings.dateOrder.value === "ascending"
-    const scale = getMetricScale(metric, dataModel)
     const cells = []
     let previousValue = "?"
     dates.forEach((date, index) => {
@@ -183,7 +197,6 @@ function MeasurementCells({ dates, metric, metricUuid, measurements, settings })
             cells.push(
                 <DeltaCell
                     dateOrderAscending={dateOrderAscending}
-                    index={index}
                     key={`${date}-delta`}
                     metric={metric}
                     metricValue={metricValue}
@@ -204,8 +217,7 @@ function MeasurementCells({ dates, metric, metricUuid, measurements, settings })
                     },
                 }}
             >
-                {formatMetricValue(scale, metricValue)}
-                {formatMetricScale(metric, dataModel)}
+                {formatMetricValueWithScale(metric, dataModel, metricValue)}
             </TableCell>,
         )
         previousValue = metricValue === "?" ? previousValue : metricValue

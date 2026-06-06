@@ -94,6 +94,7 @@ Implemented features include:
 - Generic false-positive management.
 - Metric tags can be used to summarize metrics with the same tag across subjects, e.g. to summarize all security metrics.
 - Export of reports to PDF, both via the UI as well as via the API.
+- Export of reports to CSV via the UI.
 - Notifications of events, such as metrics turning red, to Microsoft Teams.
 - Side-by-side comparison of measurements at different points in time.
 - Integration with issue tracker (Jira only at the moment) to manage actions and technical debt.

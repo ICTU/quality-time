@@ -23,6 +23,7 @@ import { ReportUploadButton } from "../widgets/buttons/ReportUploadButton"
 import { CommentSegment } from "../widgets/CommentSegment"
 import { reportOptions } from "../widgets/menu_options"
 import { WarningMessage } from "../widgets/WarningMessage"
+import { reverseSortMeasurements } from "./report_utils"
 import { ReportsOverviewDashboard } from "./ReportsOverviewDashboard"
 import { ReportsOverviewTitle } from "./ReportsOverviewTitle"
 
@@ -67,8 +68,6 @@ export function ReportsOverview({
     if (reports.length === 0 && reportDate !== null) {
         return <WarningMessage title="No reports found">{`Sorry, no reports existed at ${reportDate}`}</WarningMessage>
     }
-    // Sort measurements in reverse order so that if there multiple measurements on a day, we find the most recent one:
-    const reversedMeasurements = measurements.slice().sort((m1, m2) => (m1.start < m2.start ? 1 : -1))
     return (
         <div id="dashboard">
             <PageHeader lastUpdate={lastUpdate} reportDate={reportDate} />
@@ -77,7 +76,7 @@ export function ReportsOverview({
             <ReportsOverviewDashboard
                 dates={dates}
                 layout={reportsOverview.layout ?? []}
-                measurements={reversedMeasurements}
+                measurements={reverseSortMeasurements(measurements)}
                 onClickTag={(tag) => {
                     // If there are hidden tags (hiddenTags.length > 0), show the hidden tags.
                     // Otherwise, hide all tags in all reports except the one clicked on.

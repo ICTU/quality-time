@@ -3,15 +3,7 @@ import { useContext, useState } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import { metricPropType } from "../sharedPropTypes"
-import {
-    formatMetricDirection,
-    formatMetricScale,
-    formatMetricScaleAndUnit,
-    formatMetricValue,
-    getMetricScale,
-    getMetricTarget,
-    isValidISODate,
-} from "../utils"
+import { formatMetricDirection, formatMetricScaleAndUnit, getFormattedMetricTarget, isValidISODate } from "../utils"
 import { Label } from "../widgets/Label"
 
 function popupText(metric, debtEndDateInThePast, allIssuesDone, dataModel) {
@@ -45,18 +37,8 @@ export function MeasurementTarget({ metric }) {
     const [endDate] = useState(() =>
         metric.debt_end_date && isValidISODate(metric.debt_end_date) ? new Date(metric.debt_end_date) : new Date(),
     )
-    if (metric?.evaluate_targets === false) {
-        return null
-    }
-    const metricDirection = formatMetricDirection(metric, dataModel)
-    const scale = getMetricScale(metric, dataModel)
-    const valueAndScale = `${formatMetricValue(scale, getMetricTarget(metric))}${formatMetricScale(metric, dataModel)}`
-    const target = (
-        <>
-            {metricDirection}&nbsp;{valueAndScale}
-        </>
-    )
-    if (!metric.accept_debt) {
+    const target = getFormattedMetricTarget(metric, dataModel)
+    if (!target || !metric.accept_debt) {
         return target
     }
     const allIssuesDone =

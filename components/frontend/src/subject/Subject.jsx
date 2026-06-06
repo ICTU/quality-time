@@ -32,7 +32,7 @@ import { CommentSegment } from "../widgets/CommentSegment"
 import { SubjectTable } from "./SubjectTable"
 import { SubjectTitle } from "./SubjectTitle"
 
-function sortMetrics(dataModel, metrics, sortDirection, sortColumn, report, measurements) {
+export function sortMetrics(dataModel, metrics, sortDirection, sortColumn, report, measurements) {
     const statusOrder = {
         unknown: "0",
         target_not_met: "1",
@@ -106,7 +106,7 @@ function sortMetrics(dataModel, metrics, sortDirection, sortColumn, report, meas
     }
 }
 
-function subjectIsEmptyDueToFilters(atReportsOverview, filteredMetrics, metrics, settings) {
+export function subjectIsEmptyDueToFilters(atReportsOverview, filteredMetrics, metrics, settings) {
     // Hide the subject if it has no metrics after filtering and at least one of the following conditions holds:
     // - the user is at the reports overview page
     // - the user is hiding all metrics or metrics that don't require action
