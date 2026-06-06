@@ -110,8 +110,8 @@ keep_full_version = true  # Don't remove trailing zero's from version specifiers
 
 [tool.mypy]
 ignore_missing_imports = false
-incremental = false
 warn_redundant_casts = true
+warn_unused_ignores = true
 warn_return_any = true
 warn_unreachable = true
-warn_unused_ignores = true
+incremental = false
