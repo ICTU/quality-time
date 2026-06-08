@@ -19,10 +19,10 @@ dev = [
 ]
 
 [tool.setuptools]
-package-data."*" = [ "py.typed" ]
 packages.find.where = [
     "src",
 ]
+package-data."*" = [ "py.typed" ]
 
 [tool.uv]
 override-dependencies = [ "pip==26.1.2" ]

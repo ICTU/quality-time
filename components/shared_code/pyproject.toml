@@ -29,10 +29,10 @@ dev = [
 ]
 
 [tool.setuptools]
-package-data."*" = [ "*.png" ]
 packages.find.where = [
     "src",
 ]
+package-data."*" = [ "*.png" ]
 
 [tool.uv]
 override-dependencies = [ "pip==26.1.2" ]
@@ -101,10 +101,10 @@ indent = 4
 keep_full_version = true  # Don't remove trailing zero's from version specifiers
 
 [tool.mypy]
-plugins = "pydantic.mypy"
 ignore_missing_imports = false
-incremental = false
 warn_redundant_casts = true
+warn_unused_ignores = true
 warn_return_any = true
 warn_unreachable = true
-warn_unused_ignores = true
+incremental = false
+plugins = "pydantic.mypy"

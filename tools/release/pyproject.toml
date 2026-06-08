@@ -74,13 +74,13 @@ serialize = [
     "{major}.{minor}.{patch}-{pre_release_label}.{pre_release_number}",
     "{major}.{minor}.{patch}",
 ]
-commit = true
 tag = true
+commit = true
+parts.pre_release_label.optional_value = "final"
 parts.pre_release_label.values = [
     "rc",
     "final",
 ]
-parts.pre_release_label.optional_value = "final"
 
 [[tool.bumpversion.files]]
 glob = "../../components/*/package.json"
