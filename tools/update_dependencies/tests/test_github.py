@@ -58,11 +58,15 @@ class GetLatestReleaseTest(CacheClearingTestCase):
         self.assertEqual(Release(owner="owner", repository="repository", tag_name="1.0"), release)
         self.assertEqual("sha", cast("Release", release).commit_sha)
 
+    @patch("logging.Logger.warning")
     @patch("requests.get")
-    def test_get_latest_release_when_repo_has_no_releases(self, mock_get: Mock):
+    def test_get_latest_release_when_repo_has_no_releases(self, mock_get: Mock, mock_warning: Mock):
         """Test getting the latest release when the repository has no releases."""
         mock_get.return_value = Mock(raise_for_status=Mock(side_effect=requests.exceptions.HTTPError))
         self.assertIsNone(get_latest_release("owner", "repository without releases"))
+        mock_warning.assert_called_once_with(
+            "Could not fetch %s: %s", mock_get().url, mock_get().status_code, stacklevel=ANY
+        )
 
     @patch("requests.get", Mock(return_value=mock_response([release_json("1.0", draft=True)])))
     def test_skip_draft_releases(self):
@@ -154,8 +158,24 @@ class GetReleaseTest(CacheClearingTestCase):
         """Test that None is returned when no tag matches the requested version."""
         self.assertIsNone(get_release("owner", "repo with non matching tag", "any", "1.1"))
 
+    @patch("logging.Logger.warning")
     @patch("requests.get")
-    def test_repo_without_releases(self, mock_get: Mock):
+    def test_repo_without_releases(self, mock_get: Mock, mock_warning: Mock):
         """Test that None is returned when the repository can't be reached."""
         mock_get.return_value = Mock(raise_for_status=Mock(side_effect=requests.exceptions.HTTPError))
         self.assertIsNone(get_release("owner", "repo without releases for get_release", "any", "1.0"))
+        mock_warning.assert_called_once_with(
+            "Could not fetch %s: %s", mock_get().url, mock_get().status_code, stacklevel=ANY
+        )
+
+    @patch("logging.Logger.warning")
+    @patch("requests.get")
+    def test_timeout(self, mock_get: Mock, mock_warning: Mock):
+        """Test that None is returned when the repository can't be reached."""
+        mock_get.side_effect = requests.exceptions.Timeout
+        self.assertIsNone(get_release("owner", "repo without releases for get_release", "any", "1.0"))
+        mock_warning.assert_called_once_with(
+            "Timeout while fetching %s",
+            "https://api.github.com/repos/owner/repo without releases for get_release/releases?per_page=100",
+            stacklevel=ANY,
+        )
