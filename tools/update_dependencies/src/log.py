@@ -86,6 +86,10 @@ class Logger:
         """Log a response's status code."""
         self._log(self.log.warning, "Could not fetch %s: %s", response.url, response.status_code)
 
+    def timeout(self, url: str) -> None:
+        """Log a request timeout."""
+        self._log(self.log.warning, "Timeout while fetching %s", url)
+
 
 def get_logger(name: str) -> Logger:
     """Initialize a logger."""

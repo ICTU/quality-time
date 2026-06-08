@@ -102,10 +102,15 @@ def github_owner_and_repository(url: str) -> tuple[str, str]:
 def _list_releases(owner: str, repository: str) -> tuple[dict, ...]:
     """Fetch the GitHub releases for a repo. Returns an empty tuple when the repo can't be reached."""
     releases_url = f"https://api.github.com/repos/{owner}/{repository}/releases?per_page=100"
-    response = requests.get(releases_url, headers=_github_headers(), timeout=10)
+    try:
+        response = requests.get(releases_url, headers=_github_headers(), timeout=10)
+    except requests.exceptions.Timeout:
+        LOG.timeout(releases_url)
+        return ()
     try:
         response.raise_for_status()
     except requests.exceptions.HTTPError:
+        LOG.response(response)
         return ()
     return tuple(response.json())
 
