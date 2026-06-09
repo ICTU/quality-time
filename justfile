@@ -13,6 +13,9 @@ help recipe="":
     if just --show {{ recipe }}-help > /dev/null 2>&1; then just {{ recipe }}-help; fi; fi
 
 export COVERAGE_RCFILE := justfile_directory() + "/.coveragerc"
+# Enable uv's malware check on every sync (it can't be enabled via pyproject.toml). The experimental-feature
+# warning is suppressed by the --quiet flag on `uv sync`. See https://astral.sh/blog/uv-audit.
+export UV_MALWARE_CHECK := "1"
 components := `ls components`
 exists(path) := path_exists(invocation_directory() + "/" + path)
 docker_folder_exists := exists("docker")
@@ -104,7 +107,7 @@ lock scope="":
 [private]
 lock-in-folder:
     ?[ {{ exists("uv.lock") }} = true ]
-    uv lock
+    uv lock --quiet
 
 # Update all Python lockfiles. Folders without a lock file are skipped by lock-in-folder's guard above.
 [private]
