@@ -6,7 +6,11 @@ set unstable # for user-defined functions
 _default:
     @just --list
 
-alias help := _default
+# List all recipes, or show usage (options and arguments) for one recipe, e.g. `just help test`.
+help recipe="":
+    @if [ -z "{{ recipe }}" ]; then just --list; \
+    else just --usage {{ recipe }}; \
+    if just --show {{ recipe }}-help > /dev/null 2>&1; then just {{ recipe }}-help; fi; fi
 
 export COVERAGE_RCFILE := justfile_directory() + "/.coveragerc"
 components := `ls components`
@@ -20,13 +24,13 @@ has_js_script(name) := if js_scripts =~ f'"{{name}}"' { "true" } else { "false" 
 has_py_pkg(name) := if pyproject_toml_contents =~ f'"{{name}}[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
 has_py_unit_tests := if pyproject_toml_exists == "true" { exists("tests") } else { "false" }
 at_root := if invocation_directory() == justfile_directory() { "true" } else { "false" }
+# The current folder relative to the repo root (empty at the root); used by `ci` to label its output.
+current_folder := if at_root == "true" { "" } else { replace(invocation_directory(), justfile_directory() + "/", "") }
 src_folder := if exists("src") == "true" { "src" } else { "" }
 tests_folder := if exists("tests") == "true" { "tests" } else { "" }
 code := if trim(src_folder + " " + tests_folder) == "" { ".?*.py" } else { src_folder + " " + tests_folder }
-# Terminal width is read at parse time from stderr (still a TTY when stdout is captured by $() ); falls back to 200 if there's no TTY (CI, piped output).
-term_width := shell("uv run --quiet --project tools/third_party python -c 'import os; print(os.get_terminal_size(2).columns if os.isatty(2) else 200)'")
 uv_run := "uv run --quiet"
-update_dep := uv_run + " --project tools/update_dependencies tools/update_dependencies/src/update_"
+python := uv_run + " python"
 coverage := uv_run + " coverage"
 fixit := uv_run + " fixit --quiet"
 just_fmt := "just --unstable --fmt"
@@ -39,63 +43,36 @@ vulture_whitelist := ".vulture-whitelist.py"
 sphinx_build := uv_run + " sphinx-build"
 npm_run := "npm run --silent"
 project_wide_tools := uv_run + " --project " + justfile_directory() + "/tools/third_party"
-# Prefix and suffix that wrap a check command: `{{ start_check(folder) }} <cmd> {{ end_check }}` captures stdout+stderr, prints `<recipe-name> [<folder>/ ]OK` or `NOK` + captured output on failure.
+# Prefix and suffix that wrap a command (such as a check): `{{ start_capture(folder) }} <cmd> {{ end_capture(name) }}` captures stdout+stderr, prints `<recipe-name> [<folder>/ ]OK` or `NOK`, and replays the captured output on failure.
 folder_prefix(folder) := if folder == "" { "" } else if folder == "." { "" } else { " " + trim_end_match(folder, "/") + "/" }
-# Pick a tool-flag value based on `$_color` set by `start_check`. Useful for tools whose color flag values aren't `auto`/`always`/`never` (e.g. bandit's `screen`/`txt`, yamllint's `colored`/`auto`).
+# Pick a tool-flag value based on `$_color` set by `start_capture`. Useful for tools whose color flag values aren't `auto`/`always`/`never` (e.g. bandit's `screen`/`txt`, yamllint's `colored`/`auto`).
 when_color(yes, no) := f'$([ "$_color" = always ] && echo {{yes}} || echo {{no}})'
-start_check(folder) := f'_color=auto; [ -t 1 ] && { _color=always; export FORCE_COLOR=1; }; f="{{folder_prefix(folder)}}"; output=$({'
-end_check := f'; } 2>&1) || { printf "%s%s {{RED}}NOK{{NORMAL}}\n%s\n" "$0" "$f" "$output"; exit 1; }; printf "%s%s {{GREEN}}OK{{NORMAL}}\n" "$0" "$f"'
+start_capture(folder) := f'_color=auto; [ -t 1 ] && { _color=always; export FORCE_COLOR=1; }; f="{{folder_prefix(folder)}}"; output=$({'
+end_capture(name) := f'; } 2>&1) || { printf "%s%s {{RED}}NOK{{NORMAL}}\n%s\n" {{name}} "$f" "$output"; exit 1; }; printf "%s%s {{GREEN}}OK{{NORMAL}}\n" {{name}} "$f"'
+# Like start_capture/end_capture, but for slow commands (e.g. tests): run them in the background and animate a spinner while they run. The spinner only shows for an unlabelled run on a terminal (a direct, interactive `just test`); labelled runs (a parallel `ci` or fan-out) skip it, so it never smears into their atomic OK/NOK lines.
+start_progress(folder) := f'f="{{folder_prefix(folder)}}"; if [ -t 1 ] && [ -z "$f" ]; then spin=1; else spin=; fi; tmp=$(mktemp); trap "rm -f $tmp" EXIT; { '
+end_progress(name) := f'; } > "$tmp" 2>&1 & pid=$!; sp="|/-\\"; while kill -0 "$pid" 2>/dev/null; do [ -n "$spin" ] && printf "\r%c" "$sp"; sp="${sp#?}${sp%???}"; sleep 0.1; done; [ -n "$spin" ] && printf "\r"; wait "$pid" && printf "%s%s {{GREEN}}OK{{NORMAL}}\n" {{name}} "$f" || { printf "%s%s {{RED}}NOK{{NORMAL}}\n%s\n" {{name}} "$f" "$(cat "$tmp")"; exit 1; }'
+pid_filename := "/tmp/quality-time-" + file_name(invocation_directory()) + "-pid.txt"
+# Run a started component in the background (detach) or foreground, recording its PID either way.
+record_pid(mode) := if mode == "detach" { "& echo $! > " + pid_filename } else { "; echo $! > " + pid_filename }
+# Terminal width is read at parse time from stderr (still a TTY when stdout is captured by $() ); falls back to 200 if there's no TTY (CI, piped output).
+term_width := shell(f"{{project_wide_tools}} python -c 'import os; print(os.get_terminal_size(2).columns if os.isatty(2) else 200)'")
 
 # === Update dependencies ===
 
-# Update Docker images in the CircleCI config.
+# Update dependencies of type.
 [private]
-update-circle-ci-config:
-    {{ update_dep }}circle_ci_config.py
+update dependency_type:
+    {{ uv_run }} --project tools/update_dependencies tools/update_dependencies/src/update_{{ dependency_type }}.py
 
-# Update Docker images in the Compose files.
-[private]
-update-docker-compose:
-    {{ update_dep }}docker_compose.py
-
-# Update Docker base images in Dockerfiles. Set the DOCKER_HUB_USERNAME and DOCKER_HUB_TOKEN environment variables to prevent hitting Docker rate limits.
-[private]
-update-docker-base-images:
-    {{ update_dep }}dockerfile_base_image.py
-
-# Update GitHub Actions in GitHub workflow YAML files.
-[private]
-update-github-actions:
-    {{ update_dep }}github_action.py
-
-# Update direct and indirect Python dependencies.
-[private]
-update-py-dependencies:
-    {{ update_dep }}pyproject_toml.py
-
-# Update direct and indirect JavaScript dependencies.
-[private]
-update-js-dependencies:
-    # Note: major updates are not done automatically by npm
-    {{ update_dep }}package_json.py
-
-# Update the Node engine version in package.json files.
-[private]
-update-node-engine:
-    {{ update_dep }}node_engine.py
-
-# Update the jsdelivr CDN package versions in the Sphinx config.
-[private]
-update-jsdelivr:
-    {{ update_dep }}jsdelivr.py
+# Update direct and indirect dependencies. Set GITHUB_TOKEN, DOCKER_HUB_USERNAME, and DOCKER_HUB_TOKEN to prevent hitting rate limits.
+[parallel]
+update-dependencies: (update "dockerfile_base_image") (update "pyproject_toml") (update "github_action") (update "circle_ci_config") (update "docker_compose") (update "jsdelivr")
+    # node_engine and package_json both rewrite the package.json files, so they run sequentially here (not as parallel dependencies) to avoid concurrent writes to the same files.
+    just update "node_engine"
+    just update "package_json"
 
 alias update-deps := update-dependencies
-
-# Update direct and indirect dependencies. Set the GITHUB_TOKEN environment variable to prevent hitting GitHub rate limits.
-[parallel]
-update-dependencies: update-docker-base-images update-py-dependencies update-github-actions update-circle-ci-config update-docker-compose update-jsdelivr
-    just update-node-engine
-    just update-js-dependencies
 
 # === Install dependencies ===
 
@@ -113,6 +90,25 @@ install-js-dependencies:
     ?[ {{ package_json_exists }} = true ]
     ?[ ! -e node_modules/.package-lock.json ] || [ package-lock.json -nt node_modules/.package-lock.json ]
     npm ci --silent
+
+# === Lock dependencies ===
+
+# Update the Python lock file(s). Run `just help lock` for more information.
+[arg("scope", long="all", short="a", value="all", help="Update lock files in all relevant folders, not just the current folder")]
+[no-cd]
+lock scope="":
+    {{ if scope == "all" { "just lock-all" } else if exists("uv.lock") == "true" { "just lock-in-folder" } else { 'echo "No lock file to update in this folder"' } }}
+
+# Update the Python lock file in the current folder.
+[no-cd]
+[private]
+lock-in-folder:
+    ?[ {{ exists("uv.lock") }} = true ]
+    uv lock
+
+# Update all Python lockfiles. Folders without a lock file are skipped by lock-in-folder's guard above.
+[private]
+lock-all: (for-each folders_to_check "run lock-in-folder")
 
 # === Build artifacts ===
 
@@ -137,54 +133,71 @@ build-docs: install-py-dependencies
     ?[ {{ has_py_pkg("sphinx") }} = true ]
     {{ sphinx_build }} -W --keep-going src build
 
-# Build artifacts or components from the code. Run `just build-help` for more information.
+# Build artifacts in the current folder. Run `just help build` for more information.
 [no-cd]
-build *components: build-docs build-js (build-docker components)
+build *components:
+    just build-in-folder {{ components }}
+
+# Build the artifacts or components.
+[no-cd]
+[private]
+build-in-folder *components: build-docs build-js (build-docker components)
     ?[ {{ has_py_pkg("sphinx") }} = false ] && [ {{ has_js_script("build") }} = false ] && [ {{ docker_folder_exists }} = false ]
     echo "Nothing to build in this folder"
 
+# Show extended help for the build recipe.
 [private]
 build-help:
-    echo build *{{ CYAN }}components{{ NORMAL }} {{ BLUE }}
+    echo
+    echo {{ BOLD }}{{ YELLOW }}'What `build` does in each folder:'{{ NORMAL }}
     echo - In docs/, builds the documentation.
     echo - In components/frontend/, builds the frontend bundle.
     echo - In the project root, builds Docker components. Pass one or more component names
     echo "  to build specific Docker components or no names to build them all."
     echo "  Possible Docker component names are:"
-    echo '  {{ CYAN }}{{ replace(components, "\n", ", ") }}'
+    echo '  {{ CYAN }}{{ replace(components, "\n", ", ") }}'{{ NORMAL }}
 
-# === Start components ===
+# === Start and stop components ===
 
 # Start the Docker containers.
 [no-cd]
 [private]
-start-docker-component *components:
+start-docker-component mode *components:
     ?[ {{ docker_folder_exists }} = true ]
-    COLUMNS=$({{ uv_run }} python -c 'import subprocess; s = subprocess.run(["docker", "compose", "config", "--services"], capture_output=True, text=True).stdout; print({{ term_width }} - max(len(line.strip()) for line in s.splitlines()) - 6)') docker compose up {{ components }}
+    COLUMNS=$({{ python }} -c 'import subprocess; s = subprocess.run(["docker", "compose", "config", "--services"], capture_output=True, text=True).stdout; print({{ term_width }} - max(len(line.strip()) for line in s.splitlines()) - 6)') docker compose up {{ if mode == "detach" { "--detach" } else { "" } }} {{ components }}
 
 # Start the Python component.
 [no-cd]
 [private]
-start-py-component: install-py-dependencies
+start-py-component mode="attach": install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
-    {{ uv_run }} python src/quality_time*.py
+    {{ python }} src/quality_time*.py {{ record_pid(mode) }}
 
 # Start the JavaScript component.
 [no-cd]
 [private]
-start-js-component: install-js-dependencies
+start-js-component mode="attach": install-js-dependencies
     ?[ {{ has_js_script("start") }} = true ]
-    {{ npm_run }} start
+    {{ npm_run }} start {{ record_pid(mode) }}
 
-# Start one or more component(s). Run `just start-help` for more information.
+# Start the component(s) in the current folder. Run `just help start` for more information.
+[arg("mode", long="detach", short="d", value="detach", help="Run components in the background")]
 [no-cd]
-start *components: start-py-component start-js-component (start-docker-component components)
+start mode="attach" *components:
+    just start-in-folder {{ mode }} {{ components }}
+
+# Start the component(s) in the current folder, if possible.
+[no-cd]
+[private]
+start-in-folder mode="attach" *components: (start-py-component mode) (start-js-component mode) (start-docker-component mode components)
     ?[ {{ pyproject_toml_exists }} = false ] && [ {{ has_js_script("start") }} = false ] && [ {{ docker_folder_exists }} = false ]
     echo "Nothing to start in this folder"
 
+# Show extended help for the start recipe.
 [private]
 start-help:
-    echo start *{{ CYAN }}components{{ NORMAL }} {{ BLUE }}
+    echo
+    echo {{ BOLD }}{{ YELLOW }}'What `start` does in each folder:'{{ NORMAL }}
     echo - In components/api_server/, starts the API-server locally.
     echo - In components/collector/, starts the collector locally.
     echo - In components/notifier/, starts the notifier locally.
@@ -192,7 +205,27 @@ start-help:
     echo - In the project root, starts Docker components. Pass one or more component names
     echo '  to start specific Docker components or no names to start them all.'
     echo '  Possible Docker component names are:'
-    echo '  {{ CYAN }}{{ replace(components, "\n", ", ") }}'
+    echo '  {{ CYAN }}{{ replace(components, "\n", ", ") }}'{{ NORMAL }}
+
+# Stop the locally started component, if any.
+[no-cd]
+[private]
+stop-component:
+    ?[ {{ path_exists(pid_filename) }} = true ]
+    kill $(cat {{ pid_filename }})
+    rm {{ pid_filename }}
+
+# Stop one or more Docker components
+[no-cd]
+[private]
+stop-docker-components *components:
+    ?[ {{ docker_folder_exists }} = true ]
+    docker compose stop {{ components }}
+
+# Stop the component(s) in the current folder.
+stop *components: stop-component (stop-docker-components components)
+    ?[ {{ pyproject_toml_exists }} = false ] && [ {{ has_js_script("start") }} = false ] && [ {{ docker_folder_exists }} = false ]
+    echo "Nothing to stop in this folder"
 
 # === Run tests ===
 
@@ -202,38 +235,47 @@ start-help:
 [env("PYTHONPATH", "src")]
 [no-cd]
 [private]
-py-unit-test cov="yes" *tests: install-py-dependencies
+py-unit-test cov="yes" folder="" *tests: install-py-dependencies
     ?[ {{ has_py_unit_tests }} = true ]
-    {{ if cov == "no" { uv_run + " python" } else { coverage + " run" } }} -m unittest --quiet {{ tests }}
-    ?[ "{{ cov }}" != "no" ]
-    {{ coverage }} report --fail-under=0
-    {{ coverage }} html --quiet --fail-under=0
-    {{ coverage }} xml --quiet  # Fail if coverage is too low, but only after the text and HTML reports have been generated
+    # Show a spinner while running; suppress output unless the run fails; with coverage, also write the reports (xml fails if coverage is too low, but only after the text and HTML reports have been generated).
+    {{ start_progress(folder) }} {{ if cov == "no" { python } else { coverage + " run" } }} -m unittest --quiet {{ tests }}{{ if cov != "no" { " && " + coverage + " report --fail-under=0 && " + coverage + " html --quiet --fail-under=0 && " + coverage + " xml --quiet" } else { "" } }} {{ end_progress("py-unit-test") }}
 
 # Run the JavaScript unit tests. Pass '--coverage=yes' to measure test coverage. Without explicit tests or coverage, only the tests for uncommitted changes are run if there are any.
 [arg("cov", long="coverage", short="c", pattern="default|yes|no", help="Measure unit test coverage?")]
 [no-cd]
 [private]
-js-unit-test cov="no" *tests: install-js-dependencies
+js-unit-test cov="no" folder="" *tests: install-js-dependencies
     ?[ {{ has_js_script("test") }} = true ]
-    if [ "{{ cov }}" = "yes" ]; then args="--coverage"; \
+    # Show a spinner while running; suppress output unless the tests fail. Without explicit tests or coverage, only run the tests for uncommitted changes, if any.
+    {{ start_progress(folder) }} if [ "{{ cov }}" = "yes" ]; then args="--coverage"; \
     elif [ -n "{{ tests }}" ]; then args="{{ tests }}"; \
     elif ! git diff --quiet HEAD -- {{ invocation_directory() }}/src; then args="--changed"; \
     else args=""; fi; \
-    {{ npm_run }} test -- $args
+    {{ npm_run }} test -- $args {{ end_progress("js-unit-test") }}
 
 [no-cd]
 [private]
-_test cov="default" *tests: (py-unit-test cov tests) (js-unit-test cov tests)
+test-in-folder cov="default" folder="" *tests: (py-unit-test cov folder tests) (js-unit-test cov folder tests)
     ?[ {{ has_py_unit_tests }} = false ] && [ {{ has_js_script("test") }} = false ]
     echo "Nothing to test in this folder"
 
-# Run the unit tests. Without args, runs in the current working directory; with --all/-a, runs in all relevant folders. Pass --coverage=yes/no to override the default (Python coverage on, JavaScript coverage off).
+# Run the unit tests. Run `just help test` for more information.
 [arg("cov", long="coverage", short="c", pattern="default|yes|no", help="Measure unit test coverage? Default means yes for Python and no for Javascript")]
 [arg("scope", long="all", short="a", value="all", help="Run tests in all relevant folders")]
 [no-cd]
 test cov="default" scope="" *tests:
-    {{ if scope == "all" { "just test-all" } else { "just _test " + cov + " " + tests } }}
+    {{ if scope == "all" { "just test-all" } else { "just test-in-folder " + cov + " '' " + tests } }}
+
+# Show extended help for the test recipe.
+[private]
+test-help:
+    echo
+    echo {{ BOLD }}{{ YELLOW }}'What `test` does:'{{ NORMAL }}
+    echo - Without arguments, runs the unit tests in the current folder.
+    echo "  (cd into a component or docs folder first, or use {{ GREEN }}-a, --all{{ NORMAL }} for all relevant folders)."
+    echo - Pass test names or paths as positional arguments to run only those tests.
+    echo "- Coverage defaults to on for Python and off for JavaScript; override with {{ GREEN }}--coverage yes|no{{ NORMAL }}."
+    echo "  For JavaScript, without tests or coverage given, only tests for uncommitted changes run."
 
 # Generate a JUnit XML test report at build/unittests.xml. Re-runs Python tests via xmlrunner; used by CI to feed test results to SonarCloud.
 [env("PYTHONDEVMODE", "1")]
@@ -243,56 +285,58 @@ test cov="default" scope="" *tests:
 junit-xml: install-py-dependencies
     ?[ {{ has_py_unit_tests }} = true ]
     mkdir -p build
-    {{ uv_run }} --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml
+    {{ start_capture(current_folder) }} {{ uv_run }} --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml {{ end_capture("junit-xml") }}
+
+# Folders with unit tests, run by `test-all`.
+test_folders := "components/api_server components/collector components/frontend components/notifier components/renderer components/shared_code docs tools/release tools/update_dependencies"
+
+# Change into the folder and run the tests there (passing the folder so the OK/NOK output is labelled with it).
+[no-cd]
+[private]
+cd-to-folder-and-test folder: (run f"test-in-folder default {{folder}}" folder)
 
 # Run the unit tests, in all relevant folders.
-[parallel]
 [private]
-test-all: (run "test" "components/api_server") (run "test" "components/collector") (run "test" "components/frontend") (run "test" "components/notifier") (run "test" "components/renderer") (run "test" "components/shared_code") (run "test" "docs") (run "test" "tools/release") (run "test" "tools/update_dependencies")
+test-all: (for-each test_folders "cd-to-folder-and-test")
 
 # === Run checks ===
+
+# Run a Python check.
+[no-cd]
+[private]
+py-check name check folder="": install-py-dependencies
+    ?[ {{ pyproject_toml_exists }} = true ]
+    {{ start_capture(folder) }} {{ check }} {{ end_capture(name) }}
 
 # Run ty to type check Python code.
 [no-cd]
 [private]
-ty folder="": install-py-dependencies
-    ?[ {{ pyproject_toml_exists }} = true ]
-    {{ start_check(folder) }} {{ ty }} {{ code }} {{ end_check }}
+ty folder="": (py-check "ty" f"{{ty}} {{code}}" folder)
 
 # Run mypy to type check Python code.
 [no-cd]
 [private]
-mypy folder="": install-py-dependencies
-    ?[ {{ pyproject_toml_exists }} = true ]
-    {{ start_check(folder) }} {{ uv_run }} mypy {{ code }} {{ end_check }}
+mypy folder="": (py-check "mypy" f"{{uv_run}} mypy {{code}}" folder)
 
 # Run fixit to lint Python code.
 [no-cd]
 [private]
-fixit folder="": install-py-dependencies
-    ?[ {{ pyproject_toml_exists }} = true ]
-    {{ start_check(folder) }} {{ fixit }} lint {{ code }} {{ end_check }}
+fixit folder="": (py-check "fixit" f"{{fixit}} lint {{code}}" folder)
 
 # Run ruff to lint and check the formatting of Python code.
 [no-cd]
 [private]
-ruff folder="": install-py-dependencies
-    ?[ {{ pyproject_toml_exists }} = true ]
-    {{ start_check(folder) }} {{ ruff }} format --check {{ code }} && {{ ruff }} check {{ code }} {{ end_check }}
+ruff folder="": (py-check "ruff" f"{{ruff}} format --check {{code}} && {{ruff}} check {{code}}" folder)
 
 # Run pyproject-fmt to check the formatting of pyproject.toml files.
 [no-cd]
 [private]
-pyproject-fmt folder="": install-py-dependencies
-    ?[ {{ pyproject_toml_exists }} = true ]
-    {{ start_check(folder) }} {{ pyproject_fmt }} --check pyproject.toml {{ end_check }}
+pyproject-fmt folder="": (py-check "pyproject-fmt" f"{{pyproject_fmt}} --check pyproject.toml" folder)
 
 # Run troml to the check the classifiers in pyproject.toml files.
 [no-cd]
 [private]
-troml folder="": install-py-dependencies
-    ?[ {{ pyproject_toml_exists }} = true ]
-    {{ start_check(folder) }} {{ troml }} check {{ end_check }}
+troml folder="": (py-check "troml" f"{{troml}} check" folder)
 
 # Run pip-audit to check Python dependencies for known security vulnerabilities.
 [no-cd]
@@ -300,43 +344,128 @@ troml folder="": install-py-dependencies
 pip-audit folder="": install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
     req=$(mktemp); trap "rm -f $req" EXIT; \
-    {{ start_check(folder) }} uv export --quiet --color never --directory . --format requirements-txt --no-emit-package shared-code --no-emit-package shared-test-code > $req && \
-    {{ uv_run }} pip-audit --requirement $req --ignore-vuln GHSA-58qw-9mgm-455v --disable-pip --progress-spinner off {{ end_check }}
+    {{ start_capture(folder) }} uv export --quiet --color never --directory . --format requirements-txt --no-emit-package shared-code --no-emit-package shared-test-code > $req && \
+    {{ uv_run }} pip-audit --requirement $req --disable-pip --progress-spinner off {{ end_capture("pip-audit") }}
 
 # Run uv audit to check Python dependencies for known security vulnerabilities.
 [no-cd]
 [private]
-uv-audit folder="": install-py-dependencies
-    ?[ {{ pyproject_toml_exists }} = true ]
-    {{ start_check(folder) }} uv audit --locked --quiet --ignore-until-fixed GHSA-58qw-9mgm-455v {{ end_check }}
+uv-audit folder="": (py-check "uv-audit" f"uv audit --locked --quiet" folder)
 
 # Run bandit to check Python code for security vulnerabilities.
 [no-cd]
 [private]
-bandit folder="": install-py-dependencies
-    ?[ {{ pyproject_toml_exists }} = true ]
-    {{ start_check(folder) }} {{ uv_run }} bandit --configfile pyproject.toml --quiet --recursive --format {{ when_color("screen", "txt") }} {{ code }} {{ end_check }}
+bandit folder="": (py-check "bandit" f"{{uv_run}} bandit --configfile pyproject.toml --quiet --recursive --format {{when_color("screen", "txt")}} {{code}}" folder)
 
 # Run vulture to check for dead Python code.
 [no-cd]
 [private]
-vulture folder="": install-py-dependencies
-    ?[ {{ pyproject_toml_exists }} = true ]
-    {{ start_check(folder) }} {{ vulture }} {{ code }} {{ vulture_whitelist }} {{ end_check }}
+vulture folder="": (py-check "vulture" f"{{vulture}} {{code}} {{vulture_whitelist}}" folder)
 
 # Run vale to check markdown files for spelling and style.
 [no-cd]
 [private]
 vale folder="": install-py-dependencies
     ?[ {{ has_py_pkg("vale") }} = true ]
-    {{ start_check(folder) }} {{ uv_run }} vale sync && {{ uv_run }} vale --no-wrap --glob '*.md' src {{ end_check }}
+    {{ start_capture(folder) }} {{ uv_run }} vale sync && {{ uv_run }} vale --no-wrap --glob '*.md' src {{ end_capture("vale") }}
+
+# Run a JavaScript check.
+[no-cd]
+[private]
+js-check name check folder="": install-js-dependencies
+    ?[ {{ package_json_exists }} = true ]
+    {{ start_capture(folder) }} {{ check }} {{ end_capture(name) }}
+
+# Run npm lint to check JavaScript code.
+[no-cd]
+[private]
+npm-lint folder="": (js-check "npm-lint" f"{{npm_run}} lint --if-present" folder)
+
+# Run npm audit to check JavaScript dependencies for known security vulnerabilities.
+[no-cd]
+[private]
+npm-audit folder="": (js-check "npm-audit" f"npm audit" folder)
+
+# Run npm outdated to check for outdated JavaScript dependencies. Ignore outdated packages that can't be updated (current == wanted).
+[no-cd]
+[private]
+npm-outdated folder="": install-js-dependencies
+    ?[ {{ package_json_exists }} = true ]
+    {{ start_capture(folder) }} npm outdated --json | {{ python }} -c "import json, sys; updates = [f'{k}: {v['current']} -> {v['wanted']}' for k, v in json.loads(sys.stdin.read()).items() if v['wanted'] != v['current']]; print('\n'.join(updates), end='\n' if updates else ''); sys.exit(1 if updates else 0)" {{ end_capture("npm-outdated") }}
 
 # Run yamllint to lint YAML files such as workflow definitions.
 [no-cd]
 [private]
 yamllint folder="":
     ?[ {{ at_root }} = true ]
-    {{ start_check(folder) }} {{ project_wide_tools }} yamllint -c .yamllint -f {{ when_color("colored", "auto") }} . {{ end_check }}
+    {{ start_capture(folder) }} {{ project_wide_tools }} yamllint -c .yamllint -f {{ when_color("colored", "auto") }} . {{ end_capture("yamllint") }}
+
+# Run zizmor to audit GitHub Action workflows.
+[no-cd]
+[private]
+zizmor folder="":
+    ?[ {{ at_root }} = true ]
+    {{ start_capture(folder) }} {{ project_wide_tools }} zizmor --no-progress --quiet .github/workflows {{ end_capture("zizmor") }}
+
+# Run compose-lint on docker-compose.yml and on the merged dev and CI configurations.
+[no-cd]
+[private]
+compose-lint folder="":
+    ?[ {{ at_root }} = true ]
+    tmp=$(mktemp -d); trap "rm -rf $tmp" EXIT; \
+    {{ start_capture(folder) }} docker compose --file docker/docker-compose.yml --file docker/docker-compose.override.yml config --no-interpolate > $tmp/dev.yml && \
+    docker compose --file docker/docker-compose.yml --file docker/docker-compose.ci.yml config --no-interpolate > $tmp/ci.yml && \
+    {{ project_wide_tools }} compose-lint --config docker/.compose-lint.yml --fail-on low --skip-suppressed docker/docker-compose.yml $tmp/dev.yml $tmp/ci.yml {{ end_capture("compose-lint") }}
+
+# Check the justfile for correct formatting.
+[private]
+check-justfile folder="":
+    ?[ {{ at_root }} = true ]
+    {{ start_capture(folder) }} {{ just_fmt }} --check --color=$_color {{ end_capture("check-justfile") }}
+
+# Run helm lint
+[no-cd]
+[private]
+helm-lint folder="":
+    ?[ {{ at_root }} = true ]
+    ?[ `which helm` ]
+    {{ start_capture(folder) }} helm lint --quiet --strict helm/ {{ end_capture("helm-lint") }}
+
+# Run the quality checks in the current folder.
+[no-cd]
+[parallel]
+[private]
+check-in-folder folder="": (ty folder) (mypy folder) (fixit folder) (ruff folder) (pyproject-fmt folder) (troml folder) (pip-audit folder) (uv-audit folder) (bandit folder) (vulture folder) (vale folder) (npm-lint folder) (npm-audit folder) (npm-outdated folder) (check-justfile folder) (yamllint folder) (zizmor folder) (compose-lint folder) (helm-lint folder)
+
+# Change into the folder and run the checks there (passing the folder so the OK/NOK output is labelled with it).
+[no-cd]
+[private]
+cd-to-folder-and-check folder: (run f"check-in-folder {{folder}}" folder)
+
+# Run the quality checks. Run `just help check` for more information.
+[arg("scope", long="all", short="a", value="all", help="Run checks in all relevant folders")]
+[no-cd]
+check scope="" *folders:
+    {{ if scope == "all" { "just check-all" } else if folders == "" { "just check-in-folder" } else { "just for-each \"" + folders + "\" cd-to-folder-and-check" } }}
+
+# Show extended help for the check recipe.
+[private]
+check-help:
+    echo
+    echo {{ BOLD }}{{ YELLOW }}'What `check` does:'{{ NORMAL }}
+    echo - Without arguments, runs the quality checks in the current folder.
+    echo "  (cd into a component or docs folder first)."
+    echo - With folder arguments, runs the checks in those folders in parallel.
+    echo - With {{ GREEN }}-a, --all{{ NORMAL }}, runs the checks in all relevant folders.
+    echo - These project-wide checks only run from the repo root:
+    echo '  {{ CYAN }}yamllint, zizmor, compose-lint, check-justfile, helm-lint'{{ NORMAL }}
+
+# Folders to be checked for quality.
+folders_to_check := "components/api_server components/collector components/frontend components/notifier components/renderer components/shared_code docs tests/application_tests tests/feature_tests tests/shared_test_code tools/release tools/third_party tools/update_dependencies ."
+
+# Run the quality checks, in all relevant folders.
+[private]
+check-all: (for-each folders_to_check "cd-to-folder-and-check")
 
 # Run sphinx linkcheck. Excluded from `just check` because external link availability makes it flaky and slow; runs on a schedule in CI.
 [no-cd]
@@ -345,95 +474,9 @@ linkcheck: install-py-dependencies
     echo Running sphinx linkcheck may take a while, be patient...
     {{ sphinx_build }} -M linkcheck src build --quiet --jobs auto
 
-# Run zizmor to audit GitHub Action workflows.
-[no-cd]
-[private]
-zizmor folder="":
-    ?[ {{ at_root }} = true ]
-    {{ start_check(folder) }} {{ project_wide_tools }} zizmor --no-progress --quiet .github/workflows {{ end_check }}
-
-# Run compose-lint on docker-compose.yml and on the merged dev and CI configurations.
-[no-cd]
-[private]
-compose-lint folder="":
-    ?[ {{ at_root }} = true ]
-    tmp=$(mktemp -d); trap "rm -rf $tmp" EXIT; \
-    {{ start_check(folder) }} docker compose --file docker/docker-compose.yml --file docker/docker-compose.override.yml config --no-interpolate > $tmp/dev.yml && \
-    docker compose --file docker/docker-compose.yml --file docker/docker-compose.ci.yml config --no-interpolate > $tmp/ci.yml && \
-    {{ project_wide_tools }} compose-lint --config docker/.compose-lint.yml --fail-on low --skip-suppressed docker/docker-compose.yml $tmp/dev.yml $tmp/ci.yml {{ end_check }}
-
-# Check the justfile for correct formatting.
-[private]
-check-justfile folder="":
-    ?[ {{ at_root }} = true ]
-    {{ start_check(folder) }} {{ just_fmt }} --check --color=$_color {{ end_check }}
-
-# Run helm lint
-[no-cd]
-[private]
-helm-lint folder="":
-    ?[ {{ at_root }} = true ]
-    ?[ `which helm` ]
-    {{ start_check(folder) }} helm lint --quiet --strict helm/ {{ end_check }}
-
-# Run Python checks.
-[no-cd]
-[parallel]
-[private]
-check-py folder="": (ty folder) (mypy folder) (fixit folder) (ruff folder) (pyproject-fmt folder) (troml folder) (pip-audit folder) (uv-audit folder) (bandit folder) (vulture folder) (vale folder)
-
-# Run npm lint to check JavaScript code.
-[no-cd]
-[private]
-npm-lint folder="": install-js-dependencies
-    ?[ {{ package_json_exists }} = true ]
-    {{ start_check(folder) }} {{ npm_run }} lint --if-present {{ end_check }}
-
-# Run npm audit to check JavaScript dependencies for known security vulnerabilities..
-[no-cd]
-[private]
-npm-audit folder="": install-js-dependencies
-    ?[ {{ package_json_exists }} = true ]
-    {{ start_check(folder) }} npm audit {{ end_check }}
-
-# Run npm outdated to check for outdated JavaScript dependencies. Ignore outdated packages that can't be updated (current == wanted).
-[no-cd]
-[private]
-npm-outdated folder="": install-js-dependencies
-    ?[ {{ package_json_exists }} = true ]
-    {{ start_check(folder) }} npm outdated --json | uv run python -c "import json, sys; updates = [f'{k}: {v['current']} -> {v['wanted']}' for k, v in json.loads(sys.stdin.read()).items() if v['wanted'] != v['current']]; print('\n'.join(updates), end='\n' if updates else ''); sys.exit(1 if updates else 0)" {{ end_check }}
-
-# Run JavaScript checks.
-[no-cd]
-[parallel]
-[private]
-check-js folder="": (npm-lint folder) (npm-audit folder) (npm-outdated folder)
-
-# Run the quality checks, in the current working directory. Project-wide checks only run when invoked from the repo root.
-[no-cd]
-[private]
-_check folder="": (check-js folder) (check-py folder) (check-justfile folder) (yamllint folder) (zizmor folder) (compose-lint folder) (helm-lint folder)
-
-# Run `_check` for one folder. `cd folder` is a no-op when `folder` is `.`.
-[no-cd]
-[private]
-check-folder folder:
-    cd {{ folder }} && just _check {{ folder }}
-
-# Run the quality checks. Without args, runs in the current working directory; with folder arguments, runs in those folders (in parallel); with --all/-a, runs in all relevant folders. Project-wide checks (yamllint, zizmor, compose-lint, check-justfile) only run from the repo root.
-[arg("scope", long="all", short="a", value="all", help="Run checks in all relevant folders")]
-[no-cd]
-check scope="" *folders:
-    {{ if scope == "all" { "just check-all" } else if folders == "" { "just _check" } else { "echo " + folders + " | xargs --max-args=1 --max-procs=0 just check-folder" } }}
-
-# Run the quality checks, in all relevant folders.
-[parallel]
-[private]
-check-all: (check-folder "components/api_server") (check-folder "components/collector") (check-folder "components/frontend") (check-folder "components/notifier") (check-folder "components/renderer") (check-folder "components/shared_code") (check-folder "docs") (check-folder "tests/application_tests") (check-folder "tests/feature_tests") (check-folder "tests/shared_test_code") (check-folder "tools/release") (check-folder "tools/third_party") (check-folder "tools/update_dependencies") (check-folder ".")
-
 # === Fix issues ===
 
-# Fix Python quality issues that can be fixed automatically, in the current working directory.
+# Fix Python quality issues that can be fixed automatically, in the current folder.
 [no-cd]
 [private]
 fix-py: install-py-dependencies
@@ -455,38 +498,60 @@ fix-zizmor:
     ?[ {{ at_root }} = true ]
     {{ project_wide_tools }} zizmor --no-progress --quiet --fix=all .github/workflows
 
-# Fix JavaScript quality issues that can be fixed automatically, in the current working directory.
+# Fix JavaScript quality issues that can be fixed automatically, in the current folder.
 [no-cd]
 [private]
 fix-js: install-js-dependencies
     ?[ {{ has_js_script("fix") }} = true ]
     {{ npm_run }} fix
 
-# Fix quality issues that can be fixed automatically, in the current working directory and the root folder.
+# Fix quality issues that can be fixed automatically, in the current folder.
 [no-cd]
 [parallel]
 fix: fix-py fix-js fix-zizmor
     {{ just_fmt }}
 
+# === Development modes ===
+
+# The component folders that run as local processes in the development scenarios.
+app_folders := "components/api_server components/collector components/notifier components/frontend"
+# The same components as bare names, for use as Docker service names.
+app_components := replace(app_folders, "components/", "")
+
+# Start every component in Docker (scenario 1 in the developer manual).
+start-docker: (for-each app_folders "run stop")
+    just start -d
+
+[private]
+start-hybrid-start: (start-docker-component "detach" "database" "ldap" "renderer" "mongo-express" "testdata") (for-each app_folders 'run "start -d"')
+
+# Start a combination of Docker services and local processes for development (scenario 2 in the developer manual).
+start-hybrid: (stop-docker-components app_components)
+    just start-hybrid-start
+
 # === Release ===
 
-# Release Quality-time. Run `just release-help` for more information.
+# Release Quality-time. Run `just help release` for more information.
 [working-directory('tools/release')]
 release *args:
     {{ uv_run }} --script src/release.py {{ args }}
 
+# Show the release script's own help, dropping its `usage:` line (the usage is already printed by `help` via `just --usage release`). Force color so the captured help stays colored; strip the first line with shell parameter expansion to avoid an external tool.
 [private]
-[working-directory('tools/release')]
 release-help:
-    {{ uv_run }} --script src/release.py --help
+    @export FORCE_COLOR=1; \
+    nl=$(printf '\nx'); nl=${nl%x}; \
+    help=$(just release --help); \
+    printf '%s\n' "${help#*"$nl"}"
 
 # === CI/CD ===
 
 # Run all tests and checks in CI. Meant for running tests and checks in GitHub Actions and CircleCI.
+# Calls the workers directly (not the `test`/`check` dispatchers) with the folder label, so the parallel output is labelled and readable and the interactive test spinner is suppressed.
 [no-cd]
 [parallel]
 [private]
-ci $CI="true": (test "yes") check junit-xml
+ci: (test-in-folder "yes" current_folder) (check-in-folder current_folder) junit-xml
 
 # === Clean ===
 
@@ -501,19 +566,15 @@ clean:
     rm -rf */*/dist
     rm -rf */*/htmlcov
 
-# Lock the Python lock file in the folder
-[no-cd]
-[private]
-lock-folder folder:
-    cd {{ folder }} && uv lock
-
-# Relock all Python lockfiles
-[parallel]
-lock-all: (lock-folder "components/api_server") (lock-folder "components/collector") (lock-folder "components/notifier") (lock-folder "components/shared_code") (lock-folder "docs") (lock-folder "tests/application_tests") (lock-folder "tests/feature_tests") (lock-folder "tests/shared_test_code") (lock-folder "tools/release") (lock-folder "tools/third_party") (lock-folder "tools/update_dependencies")
-
 # === Utility recipes ===
 
 # Run the recipe in the folder.
 [private]
+[working-directory(folder)]
 run recipe folder:
-    cd {{ folder }} && just {{ recipe }}
+    just {{ recipe }}
+
+# Run the recipe for each whitespace-separated item, in parallel.
+[private]
+for-each items recipe:
+    echo {{ items }} | xargs --max-args=1 --max-procs=0 just {{ recipe }}
