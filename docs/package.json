@@ -7,6 +7,6 @@
         "lint": "markdownlint src/**/*.md; lockfile-lint"
     },
     "engines": {
-        "node": "26.2.0"
+        "node": "26.3.0"
     }
 }
