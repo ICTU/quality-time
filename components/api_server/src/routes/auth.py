@@ -132,6 +132,7 @@ def verify_user(database: Database, username: str, password: str) -> User:
 
 @bottle.post("/api/internal/login", authentication_required=False)
 @bottle.post("/api/v3/login", authentication_required=False)
+@bottle.post("/api/v4/login", authentication_required=False)
 def login(database: Database) -> dict[str, bool | str]:
     """Log the user in. Add credentials as JSON payload, e.g. {username: 'user', password: 'pass'}."""
     if os.environ.get("FORWARD_AUTH_ENABLED", "").lower() == "true":  # pragma: no feature-test-cover
@@ -153,6 +154,7 @@ def login(database: Database) -> dict[str, bool | str]:
 
 @bottle.post("/api/internal/logout", authentication_required=True)
 @bottle.post("/api/v3/logout", authentication_required=True)
+@bottle.post("/api/v4/logout", authentication_required=True)
 def logout(database: Database) -> dict[str, bool]:
     """Log the user out."""
     delete_session(database)
@@ -160,6 +162,7 @@ def logout(database: Database) -> dict[str, bool]:
 
 
 @bottle.get("/api/v3/public_key", authentication_required=False)
+@bottle.get("/api/v4/public_key", authentication_required=False)
 def get_public_key(database: Database) -> dict:
     """Return a serialized version of the public key."""
     public_key = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"public_key": True, "_id": False})

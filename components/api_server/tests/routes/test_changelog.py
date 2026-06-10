@@ -5,10 +5,11 @@ from routes import (
     get_metric_changelog,
     get_report_changelog,
     get_source_changelog,
+    get_source_location_changelog,
     get_subject_changelog,
 )
 
-from tests.fixtures import JENNY, METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID
+from tests.fixtures import JENNY, METRIC_ID, REPORT_ID, SOURCE_ID, SOURCE_LOCATION_ID, SUBJECT_ID
 
 from tests.base import DatabaseTestCase
 
@@ -60,6 +61,13 @@ class ChangeLogTest(DatabaseTestCase):
     def test_get_source_changelog(self):
         """Test that the changelog can be limited to a specific source."""
         self.assertEqual(self.expected_changelog, get_source_changelog(SOURCE_ID, 10, self.database))
+
+    def test_get_source_location_changelog(self):
+        """Test that the changelog can be limited to a specific source location."""
+        self.assertEqual(
+            self.expected_changelog,
+            get_source_location_changelog(SOURCE_LOCATION_ID, 10, self.database),
+        )
 
     def test_get_moved_item_changelog(self):
         """Test that the changelog does not contain the moved item twice."""

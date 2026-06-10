@@ -11,7 +11,7 @@ import { deleteReport } from "../api/report"
 import { ChangeLog } from "../changelog/ChangeLog"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { NotificationDestinations } from "../notification/NotificationDestinations"
-import { reportPropType, settingsPropType } from "../sharedPropTypes"
+import { availabilityMessagePropType, reportPropType, settingsPropType } from "../sharedPropTypes"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
 import { ExportReportButton } from "../widgets/buttons/ExportReportButton"
@@ -22,7 +22,7 @@ import { setDocumentTitle } from "./document_title"
 import { IssueTracker } from "./IssueTracker"
 import { ReactionTimes } from "./ReactionTimes"
 import { ReportConfiguration } from "./ReportConfiguration"
-import { ReportSources } from "./ReportSources"
+import { SourceLocations } from "./SourceLocations"
 import { Tags } from "./Tags"
 
 function ReportTitleButtonRow({ reportUuid, openReportsOverview, settings, url }) {
@@ -54,7 +54,7 @@ ReportTitleButtonRow.propTypes = {
     url: string,
 }
 
-export function ReportTitle({ openReportsOverview, reload, report, settings }) {
+export function ReportTitle({ fieldWithUrlAvailabilityError, openReportsOverview, reload, report, settings }) {
     const reportUuid = report.report_uuid
     const reportUrl = `${globalThis.location}`
     setDocumentTitle(report.title)
@@ -73,7 +73,7 @@ export function ReportTitle({ openReportsOverview, reload, report, settings }) {
                     { label: "Desired reaction times", icon: <TimerIcon /> },
                     { label: "Notifications", icon: <NotificationsIcon /> },
                     { label: "Issue tracker", icon: <AssignmentIcon /> },
-                    { label: "Sources", icon: <StorageIcon /> },
+                    { label: "Source locations", icon: <StorageIcon /> },
                     { label: "Tags", icon: <SellOutlinedIcon /> },
                     { label: "Changelog", icon: <HistoryIcon /> },
                 ]}
@@ -87,7 +87,12 @@ export function ReportTitle({ openReportsOverview, reload, report, settings }) {
                     reload={reload}
                 />
                 <IssueTracker report={report} reload={reload} />
-                <ReportSources reload={reload} report={report} settings={settings} />
+                <SourceLocations
+                    fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
+                    reload={reload}
+                    report={report}
+                    settings={settings}
+                />
                 <Tags reload={reload} report={report} />
                 <ChangeLog reportUuid={reportUuid} timestamp={report.timestamp} />
             </Tabs>
@@ -101,6 +106,7 @@ export function ReportTitle({ openReportsOverview, reload, report, settings }) {
     )
 }
 ReportTitle.propTypes = {
+    fieldWithUrlAvailabilityError: availabilityMessagePropType,
     openReportsOverview: func,
     reload: func,
     report: reportPropType,

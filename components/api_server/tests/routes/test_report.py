@@ -26,7 +26,16 @@ from routes import (
 from utils.functions import asymmetric_encrypt
 
 from tests.base import DataModelTestCase, disable_logging
-from tests.fixtures import JENNY, METRIC_ID, REPORT_ID, REPORT_ID2, SOURCE_ID, SUBJECT_ID, create_report
+from tests.fixtures import (
+    JENNY,
+    METRIC_ID,
+    REPORT_ID,
+    REPORT_ID2,
+    SOURCE_ID,
+    SOURCE_LOCATION_ID,
+    SUBJECT_ID,
+    create_report,
+)
 
 
 class ReportTestCase(DataModelTestCase):
@@ -418,7 +427,7 @@ class ReportTest(ReportTestCase):
         self.assertEqual("this string replaces credentials", report["issue_tracker"]["parameters"]["password"])
         self.assertEqual(
             "this string replaces credentials",
-            report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]["password"],
+            report["source_locations"][SOURCE_LOCATION_ID]["password"],
         )
         expected_counts = {"blue": 0, "red": 0, "green": 0, "yellow": 0, "grey": 0, "white": 1}
         self.assertEqual(expected_counts, report["summary"])
@@ -558,17 +567,14 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_get_json_report(self):
         """Test that a JSON version of the report can be retrieved with encrypted credentials."""
         expected_report = copy.deepcopy(self.report)
-        expected_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"].pop(
-            "password",
-        )
+        expected_report["source_locations"][SOURCE_LOCATION_ID].pop("password")
         expected_report["issue_tracker"]["parameters"].pop("password")
+        expected_report["report_format_version"] = "v4"
         self.database.reports.find_one.return_value = copy.deepcopy(self.report)
 
         # Without provided public key
         exported_report = export_report_as_json(self.database, REPORT_ID)
-        exported_password = exported_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID][
-            "parameters"
-        ].pop("password")
+        exported_password = exported_report["source_locations"][SOURCE_LOCATION_ID].pop("password")
         exported_report["issue_tracker"]["parameters"].pop("password")
 
         self.assertDictEqual(exported_report, expected_report)
@@ -593,20 +599,17 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_get_json_report_with_public_key(self, request):
         """Test that a provided public key can be used to encrypt the passwords."""
         expected_report = copy.deepcopy(self.report)
-        expected_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"].pop(
-            "password",
-        )
+        expected_report["source_locations"][SOURCE_LOCATION_ID].pop("password")
         expected_report["issue_tracker"]["parameters"].pop("password")
+        expected_report["report_format_version"] = "v4"
 
         request.query = {"public_key": self.public_key}
         mocked_report = copy.deepcopy(self.report)
-        parameters = mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
-        parameters["password"] = ["0", "1"]  # nosec  # Use a list as password for coverage of the last line
+        source_location = mocked_report["source_locations"][SOURCE_LOCATION_ID]
+        source_location["password"] = ["0", "1"]  # nosec  # Use a list as password for coverage of the last line
         self.database.reports.find_one.return_value = mocked_report
         exported_report = export_report_as_json(self.database, REPORT_ID)
-        exported_password = exported_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID][
-            "parameters"
-        ].pop("password")
+        exported_password = exported_report["source_locations"][SOURCE_LOCATION_ID].pop("password")
         exported_report["issue_tracker"]["parameters"].pop("password")
 
         self.assertDictEqual(exported_report, expected_report)
@@ -617,8 +620,8 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_post_report_import(self, request):
         """Test that a report is imported correctly."""
         mocked_report = copy.deepcopy(self.report)
-        parameters = mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
-        parameters["password"] = asymmetric_encrypt(self.public_key, "test_message")  # nosec
+        source_location = mocked_report["source_locations"][SOURCE_LOCATION_ID]
+        source_location["password"] = asymmetric_encrypt(self.public_key, "test_message")  # nosec
         request.json = mocked_report
         post_report_import(self.database)
         inserted = self.database.reports.insert_one.call_args_list[0][0][0]
@@ -630,38 +633,74 @@ PvjuXJ8zuyW+Jo6DrwIDAQAB
     def test_post_report_import_without_encrypted_credentials(self, request):
         """Test that a report is imported correctly."""
         mocked_report = copy.deepcopy(self.report)
-        parameters = mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
-        parameters["password"] = "unencrypted_password"  # nosec
+        source_location = mocked_report["source_locations"][SOURCE_LOCATION_ID]
+        source_location["password"] = "unencrypted_password"  # nosec
         request.json = mocked_report
         post_report_import(self.database)
         inserted_report = self.database.reports.insert_one.call_args_list[0][0][0]
-        inserted_subject = first(inserted_report["subjects"].values())
-        inserted_metric = first(inserted_subject["metrics"].values())
-        inserted_source = first(inserted_metric["sources"].values())
-        self.assertEqual("unencrypted_password", inserted_source["parameters"]["password"])
+        inserted_source_location = first(inserted_report["source_locations"].values())
+        self.assertEqual("unencrypted_password", inserted_source_location["password"])
 
     @patch("bottle.request")
     def test_post_report_import_with_failed_decryption(self, request):
         """Test that a report is imported correctly."""
         mocked_report = copy.deepcopy(self.report)
-        parameters = mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
-        parameters["password"] = ("not_properly_encrypted==", "test_message")  # nosec
+        source_location = mocked_report["source_locations"][SOURCE_LOCATION_ID]
+        source_location["password"] = ("not_properly_encrypted==", "test_message")  # nosec
         request.json = mocked_report
         response = post_report_import(self.database)
         inserted_report = self.database.reports.insert_one.call_args_list[0][0][0]
+        inserted_source_location = first(inserted_report["source_locations"].values())
+        self.assertNotIn("password", inserted_source_location)
+        self.assertIn("warning", response)
+
+    @patch("bottle.request")
+    def test_post_report_import_v3_report(self, request):
+        """Test that a report with the old (v3) structure is converted to the new structure on import."""
+        old_structure_report = {
+            "report_uuid": REPORT_ID,
+            "title": "Report",
+            "report_format_version": "v3",
+            "subjects": {
+                SUBJECT_ID: {
+                    "name": "Subject",
+                    "type": "software",
+                    "metrics": {
+                        METRIC_ID: {
+                            "name": "Metric",
+                            "type": "violations",
+                            "sources": {
+                                SOURCE_ID: {
+                                    "type": "sonarqube",
+                                    "name": "Source",
+                                    "parameters": {"url": "https://url", "password": "secret"},  # nosec
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        }
+        request.json = old_structure_report
+        post_report_import(self.database)
+        inserted_report = self.database.reports.insert_one.call_args_list[0][0][0]
+        self.assertNotIn("report_format_version", inserted_report)
+        inserted_location_uuid, inserted_location = first(inserted_report["source_locations"].items())
+        self.assertEqual("https://url", inserted_location["url"])
+        self.assertEqual("secret", inserted_location["password"])
         inserted_subject = first(inserted_report["subjects"].values())
         inserted_metric = first(inserted_subject["metrics"].values())
         inserted_source = first(inserted_metric["sources"].values())
-        self.assertNotIn("password", inserted_source["parameters"])
-        self.assertIn("warning", response)
+        self.assertEqual(inserted_location_uuid, inserted_source["source_location"])
+        self.assertEqual({}, inserted_source["parameters"])
 
     @patch("bottle.request")
     def test_post_report_import_without_private_key(self, request):
         """Test that a report cannot be imported if the Quality-time instance has no private key."""
         self.database.secrets.find_one.return_value = None
         mocked_report = copy.deepcopy(self.report)
-        parameters = mocked_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
-        parameters["password"] = "unencrypted_password"  # nosec
+        source_location = mocked_report["source_locations"][SOURCE_LOCATION_ID]
+        source_location["password"] = "unencrypted_password"  # nosec
         request.json = mocked_report
         response = post_report_import(self.database)
         self.assertIn("error", response)

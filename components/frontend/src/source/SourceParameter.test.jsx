@@ -45,7 +45,6 @@ const report = {
 }
 
 function renderSourceParameter({
-    editScope = "source",
     parameter = { name: "URL", type: "url" },
     parameterKey = "key1",
     parameterValue = "https://test",
@@ -61,7 +60,6 @@ function renderSourceParameter({
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <PermissionsContext value={permissions}>
                 <SourceParameter
-                    editScope={editScope}
                     parameter={parameter}
                     parameterKey={parameterKey}
                     parameterValue={parameterValue}
@@ -135,7 +133,6 @@ it("sets the date to today", async () => {
     clickLabeledElement(/Choose date/)
     clickButton("Today")
     expectFetch("post", "source/source_uuid/parameter/key1", {
-        edit_scope: "source",
         key1: dayjs().startOf("day"),
     })
 })
@@ -148,7 +145,6 @@ it("sets the next date one day from previous date", async () => {
     })
     clickButton("Set next date")
     expectFetch("post", "source/source_uuid/parameter/key1", {
-        edit_scope: "source",
         key1: dayjs("2025-10-10").add(1, "day"),
     })
 })
@@ -163,7 +159,6 @@ it("sets the next date two weeks from previous date", async () => {
     })
     clickButton("Set next date")
     expectFetch("post", "source/source_uuid/parameter/key1", {
-        edit_scope: "source",
         key1: dayjs("2025-10-10").add(2, "week"),
     })
 })
@@ -179,7 +174,6 @@ it("sets the next date three months from current date", async () => {
     })
     clickButton("Set next date")
     expectFetch("post", "source/source_uuid/parameter/key1", {
-        edit_scope: "source",
         key1: dayjs().add(3, "month"),
     })
 })
@@ -193,7 +187,6 @@ it("sets the next date a year from current date", async () => {
     })
     clickButton("Set next date")
     expectFetch("post", "source/source_uuid/parameter/key1", {
-        edit_scope: "source",
         key1: dayjs().add(1, "year"),
     })
 })
@@ -319,14 +312,8 @@ it("renders a help text", async () => {
     vi.useRealTimers() // Prevent test timeout
 })
 
-it("eidts the value", async () => {
+it("edits the value", async () => {
     renderSourceParameter({})
     await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
-    expectFetch("post", "source/source_uuid/parameter/key1", { key1: "https://test/new", edit_scope: "source" })
-})
-
-it("mass edits the value", async () => {
-    renderSourceParameter({ editScope: "report" })
-    await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
-    expectFetch("post", "source/source_uuid/parameter/key1", { key1: "https://test/new", edit_scope: "report" })
+    expectFetch("post", "source/source_uuid/parameter/key1", { key1: "https://test/new" })
 })

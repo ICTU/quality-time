@@ -2,7 +2,7 @@ import { Tooltip, Typography } from "@mui/material"
 import { useContext } from "react"
 
 import { DataModelContext } from "../context/DataModel"
-import { measurementSourcePropType, metricPropType } from "../sharedPropTypes"
+import { measurementSourcePropType, metricPropType, reportPropType } from "../sharedPropTypes"
 import { getMetricName, getSourceName } from "../utils"
 import { HyperLink } from "../widgets/HyperLink"
 import { Label } from "../widgets/Label"
@@ -14,14 +14,14 @@ hasMessage.propTypes = {
     measurementSource: measurementSourcePropType,
 }
 
-export function SourceStatus({ metric, measurementSource }) {
+export function SourceStatus({ metric, measurementSource, report }) {
     const dataModel = useContext(DataModelContext)
     // Source may be deleted from report but still referenced in the latest measurement, be prepared:
     if (!Object.keys(metric.sources).includes(measurementSource.source_uuid)) {
         return null
     }
     const source = metric.sources[measurementSource.source_uuid]
-    const sourceName = getSourceName(source, dataModel)
+    const sourceName = getSourceName(source, dataModel, report?.source_locations)
     const configError = !dataModel.metrics[metric.type].sources.includes(source.type)
     function sourceLabel() {
         return measurementSource.landing_url ? (
@@ -69,4 +69,5 @@ export function SourceStatus({ metric, measurementSource }) {
 SourceStatus.propTypes = {
     metric: metricPropType,
     measurementSource: measurementSourcePropType,
+    report: reportPropType,
 }

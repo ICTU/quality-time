@@ -2,13 +2,21 @@
 
 from typing import Any
 
+from shared.model.source import LOCATION_PARAMETERS
 from shared_data_model import DATA_MODEL
 
 
 def default_source_parameters(metric_type: str, source_type: str):
-    """Return the source parameters with their default values for the specified metric type."""
+    """Return the source parameters with their default values for the specified metric type.
+
+    The location parameters are not included because they are stored in source locations at the report level.
+    """
     parameters = DATA_MODEL.sources[source_type].parameters.items()
-    return {key: value.default_value for key, value in parameters if metric_type in value.metrics}
+    return {
+        key: value.default_value
+        for key, value in parameters
+        if metric_type in value.metrics and key not in LOCATION_PARAMETERS
+    }
 
 
 def default_metric_attributes(metric_type: str):
@@ -33,7 +41,7 @@ def default_metric_attributes(metric_type: str):
 
 def default_report_attributes() -> dict[str, str | dict]:
     """Return the default attributes with their default values for a new report."""
-    return {"title": "New report", "subjects": {}}
+    return {"title": "New report", "subjects": {}, "source_locations": {}}
 
 
 def default_subject_attributes(subject_type: str) -> dict[str, Any]:

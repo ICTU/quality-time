@@ -44,8 +44,21 @@ export function getSourceTypeName(source, dataModel) {
     return dataModel.sources[source.type].name
 }
 
-export function getSourceName(source, dataModel) {
-    return source.name || dataModel.sources[source.type].name
+export function getSourceName(source, dataModel, sourceLocations) {
+    // Return the source name, the name of the source location of the source, or the source type name, in that order
+    return (
+        source.name || sourceLocations?.[source.source_location]?.location_name || dataModel.sources[source.type].name
+    )
+}
+
+export function getSourceLocationName(sourceLocation, dataModel) {
+    // Return the source location name or the source type name if the source location has no name
+    return sourceLocation.location_name || dataModel.sources[sourceLocation.source_type]?.name || ""
+}
+
+export function sourceTypeHasLocation(dataModel, sourceType) {
+    // Return whether the source type has source location parameters; source types without URL don't have locations
+    return Object.keys(dataModel.sources[sourceType]?.parameters ?? {}).includes("url")
 }
 
 function allMetrics(subject) {
@@ -126,18 +139,19 @@ isMeasurementOutdated.propTypes = {
     metric: metricPropType,
 }
 
-export function isSourceConfigurationComplete(dataModel, metric) {
+export function isSourceConfigurationComplete(dataModel, metric, sourceLocations) {
     // Return whether the metric can be measured, meaning that there is at least one source and all sources have
-    // all mandatory parameters configured
+    // all mandatory parameters configured, either on the source or on the source location of the source
     const sources = Object.values(metric.sources ?? {})
     if (sources.length === 0) {
         return false
     }
     return sources.every((source) => {
         const parameters = dataModel.sources[source.type].parameters
+        const sourceLocation = sourceLocations?.[source.source_location] ?? {}
         return Object.entries(parameters).every(([parameterKey, parameter]) => {
             if (parameter.mandatory && parameter.metrics.includes(metric.type) && !parameter.default_value) {
-                return source?.parameters?.[parameterKey]
+                return source?.parameters?.[parameterKey] || sourceLocation[parameterKey]
             }
             return true
         })

@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, cast
 
-from shared.utils.type import Color, ItemId, MetricId, ReportId, SourceId, Status, SubjectId
+from shared.utils.type import Color, ItemId, MetricId, ReportId, SourceId, SourceLocationId, Status, SubjectId
 
 from .subject import Subject
 
@@ -45,6 +45,9 @@ class Report(dict):  # noqa: PLW1641
         self.sources_dict = self._sources()
         self.sources = list(self.sources_dict.values())
 
+        for metric in self.metrics:
+            metric.source_locations = self.source_locations_dict
+
         if "_id" in self:  # pragma: no feature-test-cover
             self["_id"] = str(self["_id"])
 
@@ -57,6 +60,16 @@ class Report(dict):  # noqa: PLW1641
     def source_uuids(self) -> set[SourceId]:
         """Return only the source ids."""
         return set(self.sources_dict.keys())
+
+    @property
+    def source_locations_dict(self) -> dict[SourceLocationId, dict]:
+        """Return the dict with source location uuids as keys and source locations as values."""
+        return cast(dict[SourceLocationId, dict], self.get("source_locations", {}))
+
+    @property
+    def source_location_uuids(self) -> set[SourceLocationId]:
+        """Return only the source location ids."""
+        return set(self.source_locations_dict.keys())
 
     @property
     def uuid(self) -> ReportId:
@@ -142,7 +155,11 @@ class Report(dict):  # noqa: PLW1641
 
 
 def get_metrics_from_reports(reports: list[Report]) -> dict[MetricId, Metric]:  # pragma: no feature-test-cover
-    """Return the metrics from the reports."""
+    """Return the metrics from the reports.
+
+    The metrics are augmented with the information from the report that is needed to measure them: the report uuid,
+    the issue tracker, and the location parameters of the source locations that the sources of the metric refer to.
+    """
     metrics: dict[MetricId, Metric] = {}
 
     for report in reports:
@@ -150,5 +167,7 @@ def get_metrics_from_reports(reports: list[Report]) -> dict[MetricId, Metric]:  
         for metric in metrics_dict.values():
             metric["report_uuid"] = report["report_uuid"]
             metric["issue_tracker"] = report.get("issue_tracker", {})
+            for source in metric.sources:
+                source["parameters"] = source.parameters_including_location()
         metrics.update(metrics_dict)
     return metrics

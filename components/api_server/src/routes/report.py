@@ -17,6 +17,7 @@ from initialization.app_secrets import EXPORT_FIELDS_KEYS_NAME
 from model.actions import copy_report
 from model.defaults import default_report_attributes
 from model.transformations import (
+    add_source_locations,
     decrypt_credentials,
     encrypt_credentials,
     hide_credentials,
@@ -78,6 +79,7 @@ def get_report(database: Database, report_uuid: ReportId | None = None):
 
 
 @bottle.get("/api/v3/report/<report_uuid>/metric_status_summary", authentication_required=False)
+@bottle.get("/api/v4/report/<report_uuid>/metric_status_summary", authentication_required=False)
 @with_report
 def get_report_metric_status_summary(database: Database, report: Report, report_uuid: ReportId):
     """Return a metric status summary of the report."""
@@ -88,6 +90,7 @@ def get_report_metric_status_summary(database: Database, report: Report, report_
 
 @bottle.post("/api/internal/report/import", permissions_required=[EDIT_REPORT_PERMISSION])
 @bottle.post("/api/v3/report/import", permissions_required=[EDIT_REPORT_PERMISSION])
+@bottle.post("/api/v4/report/import", permissions_required=[EDIT_REPORT_PERMISSION])
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
     report = dict(bottle.request.json)
@@ -99,6 +102,8 @@ def post_report_import(database: Database):
         return {"ok": False, "error": "Cannot find the private key of this Quality-time instance."}
 
     decryption_successful = decrypt_credentials(secret["private_key"], report)
+    report.pop("report_format_version", None)
+    add_source_locations(report)  # Convert reports with the old report structure, if needed
     replace_report_uuids(report)
     result = insert_new_report(database, "{user} imported a new report", [report["report_uuid"]], report)
     result["new_report_uuid"] = report["report_uuid"]
@@ -135,6 +140,7 @@ def post_report_copy(database: Database, report: Report, report_uuid: ReportId):
 
 @bottle.get("/api/internal/report/<report_uuid>/pdf", authentication_required=False)
 @bottle.get("/api/v3/report/<report_uuid>/pdf", authentication_required=False)
+@bottle.get("/api/v4/report/<report_uuid>/pdf", authentication_required=False)
 def export_report_as_pdf(report_uuid: ReportId):
     """Download the report as PDF."""
     return export_as_pdf(report_uuid)
@@ -142,6 +148,7 @@ def export_report_as_pdf(report_uuid: ReportId):
 
 @bottle.get("/api/internal/report/<report_uuid>/json", authentication_required=True)
 @bottle.get("/api/v3/report/<report_uuid>/json", authentication_required=True)
+@bottle.get("/api/v4/report/<report_uuid>/json", authentication_required=True)
 @with_report(pass_report_uuid=False)
 def export_report_as_json(database: Database, report: Report):
     """Return the quality-time report, including encrypted credentials for api access to the sources."""
@@ -155,6 +162,7 @@ def export_report_as_json(database: Database, report: Report):
         public_key = document["public_key"]
 
     encrypt_credentials(public_key, report)
+    report["report_format_version"] = "v4"
     return report
 
 

@@ -22,10 +22,9 @@ export function setSourceAttribute(sourceUuid, attribute, value, reload) {
     }).then(reload)
 }
 
-export function setSourceParameter(sourceUuid, key, value, editScope, reload) {
+export function setSourceParameter(sourceUuid, key, value, reload) {
     return fetchServerApi("post", `source/${sourceUuid}/parameter/${key}`, {
         [key]: value,
-        edit_scope: editScope,
     }).then(reload)
 }
 

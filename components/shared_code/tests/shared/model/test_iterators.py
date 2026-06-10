@@ -2,7 +2,7 @@
 
 import unittest
 
-from shared.model.iterators import issue_trackers, metrics, sources, subjects
+from shared.model.iterators import issue_trackers, metrics, source_locations, sources, subjects
 
 
 class SubjectIteratorTest(unittest.TestCase):
@@ -44,6 +44,18 @@ class SourceIteratorTest(unittest.TestCase):
                 sources({"subjects": {"subject_uuid": {"metrics": {"metric_uuid": {"sources": {"source_uuid": {}}}}}}})
             ),
         )
+
+
+class SourceLocationIteratorTest(unittest.TestCase):
+    """Unit test for the source location iterator."""
+
+    def test_empty_report(self):
+        """Test that an empty report contains no source locations."""
+        self.assertEqual([], list(source_locations({})))
+
+    def test_one_source_location(self):
+        """Test that the source location is returned."""
+        self.assertEqual([{}], list(source_locations({"source_locations": {"source_location_uuid": {}}})))
 
 
 class IssueTrackerIteratorTest(unittest.TestCase):

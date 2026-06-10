@@ -3,6 +3,7 @@
 from collections.abc import MutableMapping
 from typing import cast, TYPE_CHECKING
 
+from shared.model.iterators import sources
 from shared.model.subject import Subject
 from shared.model.metric import Metric
 from shared.model.source import Source
@@ -41,9 +42,64 @@ def copy_subject(subject_uuid: SubjectId, subject: Subject) -> Subject:
 
 
 def copy_report(report: Report) -> Report:
-    """Return a copy of the report, its subjects, their metrics, and their sources."""
+    """Return a copy of the report, its source locations, its subjects, their metrics, and their sources."""
     subjects = {uuid(): copy_subject(subject_uuid, subject) for subject_uuid, subject in report["subjects"].items()}
-    return copy_item(report, report_uuid=uuid(), subjects=subjects, copied_from={"report": report.uuid})
+    new_location_uuids = {location_uuid: uuid() for location_uuid in report.get("source_locations", {})}
+    source_locations = {
+        new_location_uuids[location_uuid]: dict(location)
+        for location_uuid, location in report.get("source_locations", {}).items()
+    }
+    for subject in subjects.values():
+        for metric in subject["metrics"].values():
+            for source in metric["sources"].values():
+                if location_uuid := source.get("source_location"):
+                    source["source_location"] = new_location_uuids.get(location_uuid, location_uuid)
+    return copy_item(
+        report,
+        report_uuid=uuid(),
+        subjects=subjects,
+        source_locations=source_locations,
+        copied_from={"report": report.uuid},
+    )
+
+
+def import_referenced_source_locations(  # pragma: no feature-test-cover
+    target_report: Report,
+    source_report: Report,
+) -> list[ItemId]:
+    """Copy source locations from the source report to the target report when sources refer to them.
+
+    When sources are copied or moved between reports, the sources may refer to source locations that only exist in
+    the source report. Copy these source locations to the target report, reusing equal source locations that already
+    exist in the target report. Return the uuids of the source locations added to the target report.
+    """
+    if target_report.uuid == source_report.uuid:
+        return []
+    target_locations = target_report.setdefault("source_locations", {})
+    new_location_uuids: dict[ItemId, ItemId] = {}
+    added_location_uuids: list[ItemId] = []
+    for source in sources(target_report):
+        location_uuid = source.get("source_location")
+        if not location_uuid or location_uuid in target_locations:
+            continue
+        if location_uuid in new_location_uuids:
+            source["source_location"] = new_location_uuids[location_uuid]
+            continue
+        location = source_report.get("source_locations", {}).get(location_uuid)
+        if location is None:
+            source["source_location"] = ""
+            continue
+        for target_location_uuid, target_location in target_locations.items():
+            if target_location == location:
+                new_location_uuids[location_uuid] = target_location_uuid
+                break
+        else:
+            new_location_uuid = uuid()
+            target_locations[new_location_uuid] = dict(location)
+            new_location_uuids[location_uuid] = new_location_uuid
+            added_location_uuids.append(new_location_uuid)
+        source["source_location"] = new_location_uuids[location_uuid]
+    return added_location_uuids
 
 
 type ItemsDictType = MutableMapping[ItemId, Metric | Source | Subject]

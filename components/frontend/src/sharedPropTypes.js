@@ -181,6 +181,16 @@ export const sourceTypePropType = shape({
     name: string,
 })
 
+export const sourceLocationPropType = shape({
+    location_name: string,
+    source_type: string,
+    url: string,
+    landing_url: string,
+    username: string,
+    password: string,
+    private_token: string,
+})
+
 export const subjectPropType = shape({
     type: string,
 })

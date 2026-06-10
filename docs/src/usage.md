@@ -344,9 +344,11 @@ If you add multiple sources for one metric the measurement values of each source
 
 After you've added a source, you can change the source type using the "Source type" drop-down menu. The available source types depend on the metric type. E.g. OWASP Dependency-Check supports the security warnings metric type, but GitLab does not so GitLab is not shown.
 
-By default, the name of the source equals the source type but this can be overridden using the "Source name" field.
+By default, the name of the source equals the name of its source location, or the source type if the source has no source location, but this can be overridden using the "Source name" field.
 
-The parameters that sources need differ per source type. Most sources need a URL, and optionally take either a username and password or a token so that *Quality-time* can access the source. If a parameter is required, this is indicated with an asterix (*) as shown below.
+Most sources need a URL, and optionally take either a username and password or a token so that *Quality-time* can access the source. These location parameters are not configured on the source itself, but in a source location. Use the "Source location" drop-down menu to select one of the source locations of the report. Only source locations with the same source type as the source are listed. If the report does not have a source location for the source type yet, expand the report title and add one in the "Source locations" tab. See [adding source locations](#adding-source-locations) below.
+
+The other parameters that sources need differ per source type. These parameters configure which data of the source is used for the metric, for example which branch to use or whether to count failed tests, errored tests, or both. If a parameter is required, this is indicated with an asterix (*) as shown below.
 
 ```{image} screenshots/editing_source.png
 :alt: Screenshot of dialog to edit source showing fields for the source type, source name, and source parameters such as URL and credentials
@@ -358,7 +360,15 @@ The parameters that sources need differ per source type. Most sources need a URL
 :class: only-dark
 ```
 
-To change location parameters (URLs, usernames, passwords, etc.) of a source that is used multiple times in a report, expand the report title, and activate the "Sources" tab. Changes made to a source there are applied across the report.
+#### Adding source locations
+
+Source locations contain the location parameters of sources: the URL, landing URL, username, password, and private token. Because source locations are part of the report, multiple metrics can share the same source location. Changing a location parameter of a source location, for example the password, applies to all sources that use the source location.
+
+To manage the source locations of a report, expand the report title and activate the "Source locations" tab. Click the "Add source location" button and select a source type to add a new source location. Note that source types that don't have location parameters, such as the calendar date and the manual number source types, don't have source locations.
+
+To edit a source location, expand it in the source locations table. The source location name can be changed using the "Source location name" field. By default, the name of a source location equals its source type. Which location parameters a source location has depends on the source type.
+
+A source location can only be deleted when it is no longer used by any source. Source locations are not deleted automatically when they are no longer used.
 
 #### Deleting sources
 

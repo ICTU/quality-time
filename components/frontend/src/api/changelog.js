@@ -1,7 +1,7 @@
 import { fetchServerApi } from "./fetch_server_api"
 
 export function getChangelog(nrChanges, uuids) {
-    const entityTypes = ["source", "metric", "subject", "report"]
+    const entityTypes = ["source_location", "source", "metric", "subject", "report"]
 
     for (const entityType of entityTypes) {
         const uuidKey = `${entityType}_uuid`

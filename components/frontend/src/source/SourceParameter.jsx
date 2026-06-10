@@ -71,7 +71,6 @@ collectParameterValues.propTypes = {
 }
 
 export function SourceParameter({
-    editScope,
     parameter,
     parameterKey,
     parameterValue,
@@ -108,7 +107,7 @@ export function SourceParameter({
         helperText: helperText,
         label: label,
         onChange: (value) => {
-            setSourceParameter(sourceUuid, parameterKey, value, editScope ?? "source", reload)
+            setSourceParameter(sourceUuid, parameterKey, value, reload)
         },
         placeholder: parameter?.placeholder || "",
         required: parameter?.mandatory,
@@ -127,13 +126,7 @@ export function SourceParameter({
                 <Button
                     disabled={disabled || !value || Number.parseInt(source.parameters?.["recurrence_frequency"]) === 0}
                     onClick={() => {
-                        setSourceParameter(
-                            sourceUuid,
-                            parameterKey,
-                            nextDate(source.parameters, value),
-                            "source",
-                            reload,
-                        )
+                        setSourceParameter(sourceUuid, parameterKey, nextDate(source.parameters, value), reload)
                     }}
                     startIcon={<UpdateIcon />}
                     variant="outlined"
@@ -185,7 +178,6 @@ export function SourceParameter({
     return parameterInput
 }
 SourceParameter.propTypes = {
-    editScope: string,
     parameter: object,
     parameterKey: string,
     parameterValue: oneOfType([string, stringsPropType]),

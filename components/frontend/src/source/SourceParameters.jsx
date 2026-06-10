@@ -12,6 +12,9 @@ import { SourceParameter } from "./SourceParameter"
 // Default layout to be used when the user is time traveling to a version of the data model that has no parameter layouts
 const DEFAULT_LAYOUT = { all: { name: "Source parameters", parameters: [] } }
 
+// The location parameters are part of the source location of the source and are not editable per source
+const LOCATION_PARAMETERS = ["url", "landing_url", "username", "password", "private_token"]
+
 function collectGroupedParameters(parameterLayout) {
     // Grouped parameters are source parameters that are explicitly part of a group
     let parameters = []
@@ -29,7 +32,10 @@ function collectRemainingParameters(allParameters, groupedParameters) {
 function applicableParameters(allParameters, remainingParameters, parameterGroup, metric) {
     // Return the applicable parameters for a parameter group
     const parameterKeys = parameterGroup.parameters.length > 0 ? parameterGroup.parameters : remainingParameters
-    return parameterKeys.filter((parameterKey) => allParameters[parameterKey]?.metrics?.includes(metric.type))
+    return parameterKeys.filter(
+        (parameterKey) =>
+            !LOCATION_PARAMETERS.includes(parameterKey) && allParameters[parameterKey]?.metrics?.includes(metric.type),
+    )
 }
 
 export function SourceParameters({ fieldWithUrlAvailabilityError, metric, reload, report, source, sourceUuid }) {

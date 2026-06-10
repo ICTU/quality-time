@@ -4,7 +4,10 @@ import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectNoText, expectText, expectTextAfterWait, hoverText } from "../testUtils"
 import { SourceStatus } from "./SourceStatus"
 
-const dataModel = { metrics: { metric_type: { sources: ["source_type"] } } }
+const dataModel = {
+    metrics: { metric_type: { sources: ["source_type"] } },
+    sources: { source_type: { name: "Source type name" } },
+}
 
 function metric(source_type = "source_type") {
     return {
@@ -13,10 +16,10 @@ function metric(source_type = "source_type") {
     }
 }
 
-function renderSourceStatus(metric, measurementSource) {
+function renderSourceStatus(metric, measurementSource, report) {
     return render(
         <DataModelContext value={dataModel}>
-            <SourceStatus metric={metric} measurementSource={measurementSource} />
+            <SourceStatus metric={metric} measurementSource={measurementSource} report={report} />
         </DataModelContext>,
     )
 }
@@ -67,4 +70,24 @@ it("renders the source label and the popup if there is an info message", async (
 it("renders nothing if the source has been deleted", async () => {
     renderSourceStatus(metric(), { source_uuid: "other_source_uuid" })
     expectNoText(/Source name/)
+})
+
+it("renders the source location name if the source has no name but its source location does", async () => {
+    const metricWithUnnamedSource = {
+        type: "metric_type",
+        sources: { source_uuid: { type: "source_type", source_location: "source_location_uuid" } },
+    }
+    const report = { source_locations: { source_location_uuid: { location_name: "Source location name" } } }
+    renderSourceStatus(metricWithUnnamedSource, { source_uuid: "source_uuid" }, report)
+    expectText(/Source location name/)
+})
+
+it("renders the source type name if neither the source nor its source location has a name", async () => {
+    const metricWithUnnamedSource = {
+        type: "metric_type",
+        sources: { source_uuid: { type: "source_type", source_location: "source_location_uuid" } },
+    }
+    const report = { source_locations: { source_location_uuid: {} } }
+    renderSourceStatus(metricWithUnnamedSource, { source_uuid: "source_uuid" }, report)
+    expectText(/Source type name/)
 })

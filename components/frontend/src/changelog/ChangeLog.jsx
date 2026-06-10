@@ -24,7 +24,7 @@ Event.propTypes = {
     timestamp: string,
 }
 
-function ChangeLogWithoutMemo({ reportUuid, subjectUuid, metricUuid, sourceUuid, timestamp }) {
+function ChangeLogWithoutMemo({ reportUuid, subjectUuid, metricUuid, sourceUuid, sourceLocationUuid, timestamp }) {
     const showMessageRef = useRef(useContext(SnackbarContext))
     const [changes, setChanges] = useState([])
     const [nrChanges, setNrChanges] = useState(5)
@@ -43,6 +43,9 @@ function ChangeLogWithoutMemo({ reportUuid, subjectUuid, metricUuid, sourceUuid,
         if (sourceUuid) {
             uuids.source_uuid = sourceUuid
         }
+        if (sourceLocationUuid) {
+            uuids.source_location_uuid = sourceLocationUuid
+        }
         getChangelog(nrChanges, uuids)
             .then(function (json) {
                 if (!didCancel) {
@@ -60,7 +63,7 @@ function ChangeLogWithoutMemo({ reportUuid, subjectUuid, metricUuid, sourceUuid,
         return () => {
             didCancel = true
         }
-    }, [reportUuid, subjectUuid, metricUuid, sourceUuid, timestamp, nrChanges])
+    }, [reportUuid, subjectUuid, metricUuid, sourceUuid, sourceLocationUuid, timestamp, nrChanges])
 
     let scope = "Changes in this instance of Quality-time"
     if (reportUuid) {
@@ -74,6 +77,9 @@ function ChangeLogWithoutMemo({ reportUuid, subjectUuid, metricUuid, sourceUuid,
     }
     if (sourceUuid) {
         scope = "Changes to this source"
+    }
+    if (sourceLocationUuid) {
+        scope = "Changes to this source location"
     }
 
     return (
@@ -105,6 +111,7 @@ ChangeLogWithoutMemo.propTypes = {
     subjectUuid: string,
     metricUuid: string,
     sourceUuid: string,
+    sourceLocationUuid: string,
     timestamp: string,
 }
 

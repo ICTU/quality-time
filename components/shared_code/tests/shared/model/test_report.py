@@ -11,7 +11,15 @@ from shared.model.report import Report, get_metrics_from_reports
 from shared.model.source import Source
 from shared.model.subject import Subject
 
-from tests.fixtures import METRIC_ID, REPORT_ID, SOURCE_ID, SUBJECT_ID, create_report
+from tests.fixtures import (
+    METRIC_ID,
+    REPORT_ID,
+    SOURCE_ID,
+    SOURCE_LOCATION_ID,
+    SUBJECT_ID,
+    create_report,
+    create_source_location,
+)
 from tests.shared.base import DataModelTestCase
 
 if TYPE_CHECKING:
@@ -73,6 +81,24 @@ class ReportTest(DataModelTestCase):
     def test_source_uuids(self):
         """Test that the source uuids can be retrieved."""
         self.assertEqual({SOURCE_ID}, self.report.source_uuids)
+
+    def test_source_locations_dict(self):
+        """Test that the source locations can be retrieved."""
+        self.assertEqual({}, self.report.source_locations_dict)
+        report = Report(self.DATA_MODEL, create_report())
+        self.assertEqual({SOURCE_LOCATION_ID: create_source_location()}, report.source_locations_dict)
+
+    def test_source_location_uuids(self):
+        """Test that the source location uuids can be retrieved."""
+        self.assertEqual(set(), self.report.source_location_uuids)
+        report = Report(self.DATA_MODEL, create_report())
+        self.assertEqual({SOURCE_LOCATION_ID}, report.source_location_uuids)
+
+    def test_metrics_have_source_locations(self):
+        """Test that the metrics of the report know the source locations of the report."""
+        report = Report(self.DATA_MODEL, create_report())
+        for metric in report.metrics:
+            self.assertEqual({SOURCE_LOCATION_ID: create_source_location()}, metric.source_locations)
 
     def test_summarize(self):
         """Test that the report can be sumamrized."""
@@ -151,3 +177,14 @@ class TestMetrics(unittest.TestCase):
         metrics = get_metrics_from_reports(reports)
         self.assertEqual(metrics[METRIC_ID]["name"], report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["name"])
         self.assertEqual(metrics[METRIC_ID]["issue_tracker"], report["issue_tracker"])
+
+    def test_get_metrics_from_reports_merges_location_parameters(self):
+        """Test that the location parameters of the source locations are merged into the source parameters."""
+        report = create_report(metric_id=METRIC_ID)
+        self.database["reports"].insert_one(report)
+        reports = get_reports(self.database)
+        metrics = get_metrics_from_reports(reports)
+        self.assertEqual(
+            {"tags": ["security"], "url": "https://url", "password": "password"},  # nosec
+            metrics[METRIC_ID]["sources"][SOURCE_ID]["parameters"],
+        )

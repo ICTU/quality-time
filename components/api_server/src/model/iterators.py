@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from shared.model.iterators import issue_trackers, sources
+from shared.model.iterators import issue_trackers, source_locations, sources
 from shared.model.source import PASSWORD_PARAMETERS
 
 from .queries import is_password_parameter
@@ -17,6 +17,8 @@ def credential_holders(*reports, data_model: dict | None = None) -> Iterator[tup
     """Yield (parameters, keys) for each item in the reports holding credentials. Keys with empty values are skipped."""
     for source in sources(*reports):
         yield source["parameters"], _password_parameter_keys(source, data_model)
+    for source_location in source_locations(*reports):
+        yield source_location, [key for key in PASSWORD_PARAMETERS if source_location.get(key)]
     for issue_tracker in issue_trackers(*reports):
         parameters = issue_tracker.get("parameters") or {}
         if parameters:

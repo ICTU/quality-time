@@ -4,25 +4,26 @@ import json
 from json.decoder import JSONDecodeError
 from typing import cast, TYPE_CHECKING
 
+from shared.model.iterators import sources
+from shared.model.source import LOCATION_PARAMETERS
 from shared_data_model import DATA_MODEL
 
-from utils.functions import asymmetric_decrypt, asymmetric_encrypt, unique, uuid, DecryptionError
+from utils.functions import asymmetric_decrypt, asymmetric_encrypt, uuid, DecryptionError
 
 from .iterators import credential_holders
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from shared.utils.type import ItemId
 
-    from shared.model.metric import Metric
-    from shared.model.source import Source
-    from shared.model.subject import Subject
-    from shared.utils.type import ItemId, MetricId, ReportId, SourceId, SubjectId
-
-    from model.report import Report
-    from utils.type import EditScope, SourceContext
+    from utils.type import SourceContext
 
 
 CREDENTIALS_REPLACEMENT_TEXT = "this string replaces credentials"
+
+# Source types without location parameters don't use source locations:
+SOURCE_TYPES_WITHOUT_LOCATION = frozenset(
+    source_type for source_type, source in DATA_MODEL.sources.items() if "url" not in source.parameters
+)
 
 
 def hide_credentials(data_model, *reports) -> None:
@@ -79,75 +80,53 @@ def replace_report_uuids(*reports) -> None:
     """Change all uuids in this report."""
     for report in reports:
         report["report_uuid"] = uuid()
+        new_location_uuids = {location_uuid: uuid() for location_uuid in report.get("source_locations", {})}
+        report["source_locations"] = {
+            new_location_uuids[location_uuid]: location
+            for location_uuid, location in report.get("source_locations", {}).items()
+        }
         for subject_uuid in report.get("subjects", {}).copy():
             subject = report["subjects"][uuid()] = report["subjects"].pop(subject_uuid)
             for metric_uuid in subject.get("metrics", {}).copy():
                 metric = subject["metrics"][uuid()] = subject["metrics"].pop(metric_uuid)
                 for source_uuid in metric.get("sources").copy():
-                    metric["sources"][uuid()] = metric["sources"].pop(source_uuid)
+                    source = metric["sources"][uuid()] = metric["sources"].pop(source_uuid)
+                    if location_uuid := source.get("source_location"):
+                        source["source_location"] = new_location_uuids.get(location_uuid, location_uuid)
+
+
+def add_source_locations(report) -> str:
+    """Move the location parameters of the sources in the report to source locations at the report level.
+
+    This migration is run on reports in the database at startup and on incoming reports with the old structure when
+    they are imported. Skip reports that already have source locations to make the migration idempotent.
+    """
+    if "source_locations" in report:
+        return ""
+    locations: dict[str, dict[str, str]] = {}
+    report["source_locations"] = locations
+    location_uuids: dict[str, str] = {}
+    for source in sources(report):
+        if source["type"] in SOURCE_TYPES_WITHOUT_LOCATION:
+            continue
+        parameters = source.setdefault("parameters", {})
+        location: dict[str, str] = {"location_name": source.get("name") or "", "source_type": source["type"]}
+        for parameter_key in LOCATION_PARAMETERS:
+            location[parameter_key] = parameters.pop(parameter_key, "") or ""
+        # Reuse an existing source location if one with the same name, source type, and parameters exists:
+        location_key = repr(sorted(location.items()))
+        if location_key not in location_uuids:
+            location_uuids[location_key] = uuid()
+            locations[location_uuids[location_key]] = location
+        source["source_location"] = location_uuids[location_key]
+    return "add source locations"
 
 
 def change_source_parameter(
     context: SourceContext,
     parameter_key: str,
-    old_value: str | list[str],
     new_value: str | list[str],
-    scope: EditScope,
-) -> tuple[list[ItemId], set[ItemId]]:
-    """Change the parameter of all sources of the specified type and the same old value to the new value.
-
-    Return the ids of the changed reports, subjects, metrics, and sources.
-    """
-    changed_ids: list[ItemId] = []
-    changed_source_uuids: set[ItemId] = set()
-    for source_to_change, uuids in _all_sources_to_change(context, scope, parameter_key, old_value):
-        source_to_change["parameters"][parameter_key] = new_value
-        changed_ids.extend(uuids)
-        changed_source_uuids.add(uuids[-1])
-    return list(unique(changed_ids)), changed_source_uuids
-
-
-def _all_sources_to_change(
-    context: SourceContext,
-    scope: EditScope,
-    parameter_key: str,
-    old_value: str | list[str],
-) -> Iterator[tuple[Source, tuple[ReportId, SubjectId, MetricId, SourceId]]]:
-    """Return the sources to change, given the scope."""
-    for subject_uuid, subject in _subjects_to_change(context.report, context.subject, scope):
-        for metric_uuid, metric in _metrics_to_change(subject, context.metric, scope):
-            for source_uuid, source in _sources_to_change(metric, context.source, scope, parameter_key, old_value):
-                yield source, (context.report["report_uuid"], subject_uuid, metric_uuid, source_uuid)
-
-
-def _subjects_to_change(report: Report, subject: Subject, scope: EditScope) -> Iterator[tuple[SubjectId, Subject]]:
-    """Return the subjects to change, given the scope."""
-    yield from {subject.uuid: subject}.items() if scope == "source" else report.subjects_dict.items()
-
-
-def _metrics_to_change(subject: Subject, metric: Metric, scope: EditScope) -> Iterator[tuple[MetricId, Metric]]:
-    """Return the metrics to change, given the scope."""
-    yield from {metric.uuid: metric}.items() if scope == "source" else subject.metrics_dict.items()
-
-
-def _sources_to_change(
-    metric: Metric,
-    source: Source,
-    scope: EditScope,
-    parameter_key: str,
-    old_value: str | list[str],
-) -> Iterator[tuple[SourceId, Source]]:
-    """Return the sources to change, given the scope."""
-    if metric["type"] in DATA_MODEL.sources[source["type"]].parameters[parameter_key].metrics:
-        if scope == "source":
-            sources_to_change = {source.uuid: source}
-        else:
-            sources_to_change = {
-                source_uuid: source_to_change
-                for source_uuid, source_to_change in metric.sources_dict.items()
-                if source.type == source_to_change.type
-                and (source_to_change["parameters"].get(parameter_key) or None) == (old_value or None)
-            }
-    else:
-        sources_to_change = {}  # pragma: no feature-test-cover
-    yield from sources_to_change.items()
+) -> list[ItemId]:
+    """Change the parameter of the source to the new value and return the ids of the changed items."""
+    context.source["parameters"][parameter_key] = new_value
+    return [context.report["report_uuid"], context.subject.uuid, context.metric.uuid, context.source.uuid]

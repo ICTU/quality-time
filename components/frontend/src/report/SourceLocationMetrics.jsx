@@ -1,15 +1,16 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
+import { string } from "prop-types"
 import { useContext } from "react"
 
 import { DataModelContext } from "../context/DataModel"
-import { reportPropType, sourcePropType } from "../sharedPropTypes"
+import { reportPropType } from "../sharedPropTypes"
 import { theme } from "../theme"
 import { UnsortableTableHeaderCell } from "../widgets/TableHeaderCell"
-import { metricsUsingSource } from "./report_utils"
+import { metricsUsingSourceLocation } from "./report_utils"
 
-export function SourceMetrics({ report, source }) {
+export function SourceLocationMetrics({ report, sourceLocationUuid }) {
     const dataModel = useContext(DataModelContext)
-    const metrics = metricsUsingSource(dataModel, report, source)
+    const metrics = metricsUsingSourceLocation(dataModel, report, sourceLocationUuid)
     return (
         <TableContainer>
             <Table size="small">
@@ -45,7 +46,7 @@ export function SourceMetrics({ report, source }) {
         </TableContainer>
     )
 }
-SourceMetrics.propTypes = {
+SourceLocationMetrics.propTypes = {
     report: reportPropType,
-    source: sourcePropType,
+    sourceLocationUuid: string,
 }

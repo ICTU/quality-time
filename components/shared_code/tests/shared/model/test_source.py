@@ -5,10 +5,11 @@ from datetime import datetime, timedelta
 
 from dateutil.tz import tzutc
 
+from shared.model.metric import Metric
 from shared.model.source import Source
 from shared.utils.functions import iso_timestamp
 
-from tests.fixtures import SOURCE_ID
+from tests.fixtures import METRIC_ID, SOURCE_ID, SOURCE_LOCATION_ID, create_source_location
 
 
 class SourceTest(unittest.TestCase):
@@ -49,6 +50,61 @@ class SourceTest(unittest.TestCase):
         """Test that we get the expected type."""
         source = Source(SOURCE_ID, metric=None, type="test")
         self.assertEqual(source.type, "test")
+
+    def test_location(self):
+        """Test that the source location can be retrieved via the metric."""
+        metric = Metric({}, {"type": "violations", "sources": {}}, METRIC_ID)
+        metric.source_locations = {SOURCE_LOCATION_ID: create_source_location()}
+        source = Source(SOURCE_ID, metric=metric, source_location=SOURCE_LOCATION_ID)
+        self.assertEqual(create_source_location(), source.location)
+
+    def test_location_without_source_location(self):
+        """Test that the source location is empty when the source does not reference a source location."""
+        metric = Metric({}, {"type": "violations", "sources": {}}, METRIC_ID)
+        metric.source_locations = {SOURCE_LOCATION_ID: create_source_location()}
+        self.assertEqual({}, Source(SOURCE_ID, metric=metric).location)
+        self.assertEqual({}, Source(SOURCE_ID, metric=metric, source_location="").location)
+        self.assertEqual({}, Source(SOURCE_ID, metric=metric, source_location="missing").location)
+
+    def test_parameters_including_location(self):
+        """Test that the location parameters are merged into the source parameters."""
+        metric = Metric({}, {"type": "violations", "sources": {}}, METRIC_ID)
+        metric.source_locations = {SOURCE_LOCATION_ID: create_source_location()}
+        source = Source(
+            SOURCE_ID,
+            metric=metric,
+            source_location=SOURCE_LOCATION_ID,
+            parameters={"tags": ["security"]},
+        )
+        self.assertEqual(
+            {"tags": ["security"], "url": "https://url", "password": "password"},  # nosec
+            source.parameters_including_location(),
+        )
+
+    def test_parameters_including_location_does_not_overwrite_with_empty_values(self):
+        """Test that empty location parameter values do not overwrite source parameters."""
+        metric = Metric({}, {"type": "violations", "sources": {}}, METRIC_ID)
+        metric.source_locations = {SOURCE_LOCATION_ID: create_source_location(url="", password="")}  # nosec
+        source = Source(
+            SOURCE_ID,
+            metric=metric,
+            source_location=SOURCE_LOCATION_ID,
+            parameters={"url": "https://source-url"},
+        )
+        self.assertEqual({"url": "https://source-url"}, source.parameters_including_location())
+
+    def test_parameters_including_location_without_location(self):
+        """Test that the source parameters are returned unchanged when the source has no source location."""
+        metric = Metric({}, {"type": "violations", "sources": {}}, METRIC_ID)
+        source = Source(SOURCE_ID, metric=metric, parameters={"url": "https://source-url"})
+        self.assertEqual({"url": "https://source-url"}, source.parameters_including_location())
+
+    def test_parameters_including_location_without_parameters(self):
+        """Test that the location parameters are returned when the source has no parameters."""
+        metric = Metric({}, {"type": "violations", "sources": {}}, METRIC_ID)
+        metric.source_locations = {SOURCE_LOCATION_ID: create_source_location()}
+        source = Source(SOURCE_ID, metric=metric, source_location=SOURCE_LOCATION_ID)
+        self.assertEqual({"url": "https://url", "password": "password"}, source.parameters_including_location())  # nosec
 
     def test_copy_first_seen_timestamps(self):
         """Test that the first seen timestamps can be copied."""

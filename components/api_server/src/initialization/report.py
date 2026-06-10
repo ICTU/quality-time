@@ -5,6 +5,7 @@ import pathlib
 from typing import TYPE_CHECKING
 
 from database.reports import insert_new_report, insert_new_reports_overview, latest_reports_overview, report_exists
+from model.transformations import add_source_locations
 from utils.log import get_logger
 
 if TYPE_CHECKING:
@@ -39,6 +40,7 @@ def import_report(database: Database, filename: pathlib.Path) -> None:
     if report_exists(database, imported_report["report_uuid"]):  # pragma: no feature-test-cover
         logger.info("Skipping import of %s; it already exists", filename)
     else:  # pragma: no feature-test-cover
+        add_source_locations(imported_report)  # Convert reports with the old report structure, if needed
         insert_new_report(database, "{{user}} imported a new report", [imported_report["report_uuid"]], imported_report)
         logger.info("Report %s imported", filename)
 

@@ -1,6 +1,11 @@
 """Unit tests for the model defaults."""
 
-from model.defaults import default_metric_attributes, default_source_parameters, default_subject_attributes
+from model.defaults import (
+    default_metric_attributes,
+    default_report_attributes,
+    default_source_parameters,
+    default_subject_attributes,
+)
 
 from tests.base import DataModelTestCase
 
@@ -9,16 +14,19 @@ class DefaultAttributesTest(DataModelTestCase):
     """Test the default attributes."""
 
     def test_default_source_parameters(self):
-        """Test that the default source parameters can be retrieved from the data model."""
-        expected_parameters = {
-            "landing_url": "",
-            "password": "",  # nosec
-            "private_token": "",  # nosec
-            "severities": ["low", "medium", "high"],
-            "url": "",
-            "username": "",
-        }
+        """Test that the default source parameters can be retrieved from the data model.
+
+        The location parameters are not included because they are stored in source locations at the report level.
+        """
+        expected_parameters = {"severities": ["low", "medium", "high"]}
         self.assertEqual(expected_parameters, default_source_parameters("security_warnings", "snyk"))
+
+    def test_default_report_attributes(self):
+        """Test that the default report attributes include an empty source locations dict."""
+        self.assertEqual(
+            {"title": "New report", "subjects": {}, "source_locations": {}},
+            default_report_attributes(),
+        )
 
     def test_default_metric_attributes(self):
         """Test that the default metric attributes can be retrieved from the data model."""

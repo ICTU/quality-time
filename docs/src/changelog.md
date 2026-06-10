@@ -12,6 +12,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Added
+
+- Make source locations first class citizens in reports. Each report now has source locations that contain the location parameters of sources (URL, landing URL, username, password, and private token) so that metrics can share the location of a source. Source locations can be managed via the "Source locations" tab in the report title, which replaces the "Sources" tab. Sources of metrics refer to a source location instead of having their own location parameters. Existing reports are migrated automatically on startup of the API-server. Because the structure of reports changed, the public API was bumped to v4: all v3 endpoints have a v4 equivalent. The v3 endpoints, including the import endpoint that accepts reports with the old structure, remain available. Exported JSON reports now contain a `report_format_version` key that corresponds to the API version. Closes [#12901](https://github.com/ICTU/quality-time/issues/12901).
+
 ### Removed
 
 - Remove the feature to mass edit source parameters of sources with the same type in a metric, in a subject, or in all reports. This prepares for the introduction of source locations as objects separate from sources. Source location parameters (URLs and credentials) can still be changed for sources with the same type in a report via the "Sources" tab in the report title. Closes [#13153](https://github.com/ICTU/quality-time/issues/13153).

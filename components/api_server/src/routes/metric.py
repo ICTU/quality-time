@@ -10,7 +10,7 @@ from shared.utils.type import MetricId, SubjectId, Value
 from shared_data_model import DATA_MODEL
 
 from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
-from model.actions import copy_metric, move_item, move_metric_to_index
+from model.actions import copy_metric, import_referenced_source_locations, move_item, move_metric_to_index
 from model.defaults import default_metric_attributes
 from utils.functions import sanitize_html, uuid
 
@@ -18,6 +18,8 @@ from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 if TYPE_CHECKING:
     from pymongo.database import Database
+
+    from shared.model.source import Source
 
 
 @bottle.post("/api/internal/metric/new/<subject_uuid>", permissions_required=[EDIT_REPORT_PERMISSION])
@@ -47,6 +49,7 @@ def post_metric_copy(metric_uuid: MetricId, subject_uuid: SubjectId, database: D
     target_subject = target_report.subjects_dict[subject_uuid]
     metric_copy_uuid = cast(MetricId, uuid())
     target_subject.metrics_dict[metric_copy_uuid] = copy_metric(metric_uuid, source_metric)
+    import_referenced_source_locations(target_report, source_report)
     description = (
         f"{{user}} copied the metric '{source_metric.name}' of subject '{source_subject.name}' from report "
         f"'{source_report.name}' to subject '{target_subject.name}' in report '{target_report.name}'."
@@ -73,6 +76,7 @@ def post_move_metric(metric_uuid: MetricId, target_subject_uuid: SubjectId, data
         f"'{source_report.name}' to subject '{target_subject.name}' in report '{target_report.name}'."
     )
     target_subject.metrics_dict[metric_uuid] = metric
+    import_referenced_source_locations(target_report, source_report)
     uuids = [target_report.uuid, source_report.uuid, source_subject.uuid, target_subject.uuid, metric.uuid]
     if target_report.uuid == source_report.uuid:
         # Metric is moved within the same report
@@ -227,7 +231,7 @@ def create_issue_text(metric: Metric, measured_value: Value) -> tuple[str, str]:
     return issue_summary, issue_description
 
 
-def get_source_url(source: dict[str, dict[str, str]]) -> str:
-    """Get the URL from the source. Prefer landing URL over API URL."""
-    parameters = source.get("parameters", {})
-    return parameters.get("landing_url", "") or parameters.get("url", "")
+def get_source_url(source: Source) -> str:
+    """Get the URL from the source location of the source. Prefer landing URL over API URL."""
+    parameters = source.parameters_including_location()
+    return str(parameters.get("landing_url", "") or parameters.get("url", ""))

@@ -20,18 +20,20 @@ class ReportInitTest(DataModelTestCase):
         self.report_json = json.dumps(
             {
                 "report_uuid": "id",
-                "subjects": [
-                    {
+                "subjects": {
+                    "subject_uuid": {
                         "name": "name",
                         "type": "software",
-                        "metrics": [
-                            {
+                        "metrics": {
+                            "metric_uuid": {
                                 "type": "security_warnings",
-                                "sources": [{"type": "sonarqube", "parameters": {"url": {}}}],
+                                "sources": {
+                                    "source_uuid": {"type": "sonarqube", "parameters": {"url": "https://url"}},
+                                },
                             },
-                        ],
+                        },
                     },
-                ],
+                },
             },
         )
         self.database.sessions.find_one.return_value = {"user": "jadoe"}
@@ -45,6 +47,13 @@ class ReportInitTest(DataModelTestCase):
         """Test that a report can be imported."""
         self.import_report(self.report_json)
         self.database.reports.insert_one.assert_called_once()
+
+    def test_import_converts_old_structure_reports(self):
+        """Test that imported reports with the old structure get source locations."""
+        self.import_report(self.report_json)
+        inserted_report = self.database.reports.insert_one.call_args[0][0]
+        source_location = next(iter(inserted_report["source_locations"].values()))
+        self.assertEqual("https://url", source_location["url"])
 
     def test_import_is_skipped(self):
         """Test that a report isn't imported when it's already in the database."""

@@ -71,13 +71,15 @@ def match_attribute(
     """Return whether the domain object has an attribute with the specified name and value."""
     # Note that we don't use domain_object.get(attribute_name) because that would make it impossible to search for None.
     if domain_object_type == "source":
-        parameters = domain_object["parameters"]
+        # Include the location parameters of the source location, if any, so sources can be searched by URL:
+        parameters = domain_object.parameters_including_location()
         if attribute_name in parameters and parameters[attribute_name] == attribute_value:
             return True
     return attribute_name in domain_object and domain_object[attribute_name] == attribute_value
 
 
 @bottle.post("/api/v3/<domain_object_type>/search", authentication_required=False)
+@bottle.post("/api/v4/<domain_object_type>/search", authentication_required=False)
 def search(domain_object_type: DomainObjectType, database: Database) -> SearchResults | ParseError | SearchError:
     """Search for domain objects of the specified type by attribute value."""
     logger = get_logger()

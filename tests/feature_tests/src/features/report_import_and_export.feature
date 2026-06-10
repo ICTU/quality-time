@@ -91,6 +91,24 @@ Feature: report
                       "url": "https://sonarcloud.io",
                       "password": "unencrypted secret"
                     }
+                  },
+                  "source_uuid2": {
+                    "type": "sonarqube",
+                    "parameters": {
+                      "url": "https://sonarcloud.io",
+                      "password": "unencrypted secret"
+                    }
+                  }
+                }
+              },
+              "metric_uuid2": {
+                "type": "time_remaining",
+                "sources": {
+                  "source_uuid3": {
+                    "type": "calendar",
+                    "parameters": {
+                      "date": "2026-12-31"
+                    }
                   }
                 }
               }
@@ -100,6 +118,7 @@ Feature: report
       }
       """
     Then the report title is "Imported report"
+    And the report contains 1 source_location
 
   Scenario: import report with credentials encrypted for another Quality-time instance
     When the client imports a report

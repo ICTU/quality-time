@@ -96,7 +96,7 @@ ignoredEntitiesMessage.propTypes = {
     unit: string,
 }
 
-export function MeasurementValue({ metric, reportDate }) {
+export function MeasurementValue({ metric, report, reportDate }) {
     const dataModel = useContext(DataModelContext)
     const metricValue = getMetricValue(metric, dataModel)
     let value = metricValue || "?"
@@ -107,7 +107,7 @@ export function MeasurementValue({ metric, reportDate }) {
     value = formatMetricValue(scale, value)
     const unit = getMetricUnit(metric, dataModel, value)
     const stale = isMeasurementStale(metric, reportDate)
-    const complete = isSourceConfigurationComplete(dataModel, metric)
+    const complete = isSourceConfigurationComplete(dataModel, metric, report?.source_locations)
     const outdated = isMeasurementOutdated(metric)
     const requested = isMeasurementRequested(metric)
     const updating = complete && (outdated || requested)

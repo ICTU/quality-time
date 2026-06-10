@@ -6,6 +6,7 @@ from .changelog import (
     get_metric_changelog,
     get_subject_changelog,
     get_source_changelog,
+    get_source_location_changelog,
     get_report_changelog,
 )
 from .datamodel import get_data_model
@@ -54,6 +55,13 @@ from .source import (
     post_source_copy,
     post_source_new,
     post_source_parameter,
+)
+from .source_location import (
+    delete_source_location,
+    get_source_location,
+    post_source_location_attribute,
+    post_source_location_new,
+    post_source_location_parameter,
 )
 from .subject import (
     delete_subject,

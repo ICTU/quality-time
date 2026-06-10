@@ -53,6 +53,7 @@ export function Report({
             <PageHeader lastUpdate={lastUpdate} report={report} reportDate={reportDate} />
             <Paper elevation={5} sx={{ marginTop: "20px" }}>
                 <ReportTitle
+                    fieldWithUrlAvailabilityError={fieldWithUrlAvailabilityError}
                     openReportsOverview={openReportsOverview}
                     reload={reload}
                     report={report}

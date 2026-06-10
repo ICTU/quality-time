@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from shared.model.iterators import metrics, subjects
 
+from model.transformations import add_source_locations
 from utils.log import get_logger
 
 if TYPE_CHECKING:
@@ -29,6 +30,21 @@ def perform_migrations(database: Database) -> None:
         if any(changes):
             logger.info("Updating report %s to %s", report_uuid, " and ".join(change for change in changes if change))
             replace_document(database.reports, report)
+    add_source_locations_to_reports(database)
+
+
+def add_source_locations_to_reports(database: Database) -> None:
+    """Add source locations to all report documents that don't have them yet.
+
+    Unlike the other migrations, this migration is applied to all report documents, including deleted reports and
+    older versions of reports, so that time traveling also works with the new report structure.
+    """
+    # Added after Quality-time v5.55.0, see https://github.com/ICTU/quality-time/issues/12901
+    logger = get_logger()
+    for report in database.reports.find(filter={"source_locations": {"$exists": False}}):
+        logger.info("Adding source locations to report %s", report["report_uuid"])
+        add_source_locations(report)
+        replace_document(database.reports, report)
 
 
 def remove_metric_addition(report) -> str:

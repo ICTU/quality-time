@@ -10,8 +10,25 @@ from shared.utils.functions import first
 from shared.utils.type import MetricId, SourceId, SubjectId
 from unittest.mock import Mock
 
-from model.actions import copy_metric, copy_report, copy_source, copy_subject, move_metric_to_index
+from model.actions import (
+    copy_metric,
+    copy_report,
+    copy_source,
+    copy_subject,
+    import_referenced_source_locations,
+    move_metric_to_index,
+)
 from model.report import Report
+
+from tests.fixtures import (
+    METRIC_ID,
+    REPORT_ID2,
+    SOURCE_LOCATION_ID,
+    SOURCE_LOCATION_ID2,
+    SUBJECT_ID,
+    create_report,
+    create_source_location,
+)
 
 
 class CopySourceTest(unittest.TestCase):
@@ -126,6 +143,81 @@ class CopyReportTest(unittest.TestCase):
         """Test that the subjects are copied too."""
         report_copy = copy_report(self.report)
         self.assertEqual("Subject", first(report_copy["subjects"].values())["name"])
+
+
+class CopyReportWithSourceLocationsTest(unittest.TestCase):
+    """Unit tests for copying a report with source locations."""
+
+    def setUp(self):
+        """Override to set up the report under test."""
+        self.report = Report({}, create_report())
+
+    def test_copy_source_locations(self):
+        """Test that the source locations are copied under new uuids."""
+        report_copy = copy_report(self.report)
+        location_uuid, location = first(report_copy["source_locations"].items())
+        self.assertNotEqual(SOURCE_LOCATION_ID, location_uuid)
+        self.assertEqual(create_source_location(), location)
+
+    def test_copy_updates_source_location_references(self):
+        """Test that the copied sources reference the copied source locations."""
+        report_copy = copy_report(self.report)
+        location_uuid = first(report_copy["source_locations"].keys())
+        copied_subject = first(report_copy["subjects"].values())
+        copied_metric = first(copied_subject["metrics"].values())
+        copied_source = first(copied_metric["sources"].values())
+        self.assertEqual(location_uuid, copied_source["source_location"])
+
+
+class ImportReferencedSourceLocationsTest(unittest.TestCase):
+    """Unit tests for the import referenced source locations action."""
+
+    def setUp(self):
+        """Override to set up the source and target reports under test."""
+        self.source_report = Report({}, create_report())
+        target_report_data = create_report()
+        target_report_data["report_uuid"] = REPORT_ID2
+        target_report_data["source_locations"] = {}
+        self.target_report = Report({}, target_report_data)
+        sources = self.target_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"]
+        self.target_source = first(sources.values())
+
+    def test_import_new_source_location(self):
+        """Test that a referenced source location is copied to the target report under a new uuid."""
+        added_location_uuids = import_referenced_source_locations(self.target_report, self.source_report)
+        self.assertEqual(1, len(added_location_uuids))
+        new_location_uuid = added_location_uuids[0]
+        self.assertNotEqual(SOURCE_LOCATION_ID, new_location_uuid)
+        self.assertEqual(create_source_location(), self.target_report["source_locations"][new_location_uuid])
+        self.assertEqual(new_location_uuid, self.target_source["source_location"])
+
+    def test_reuse_equal_source_location(self):
+        """Test that an equal source location in the target report is reused."""
+        self.target_report["source_locations"][SOURCE_LOCATION_ID2] = create_source_location()
+        added_location_uuids = import_referenced_source_locations(self.target_report, self.source_report)
+        self.assertEqual([], added_location_uuids)
+        self.assertEqual([SOURCE_LOCATION_ID2], list(self.target_report["source_locations"].keys()))
+        self.assertEqual(SOURCE_LOCATION_ID2, self.target_source["source_location"])
+
+    def test_clear_dangling_source_location_reference(self):
+        """Test that a reference to a source location that exists in neither report is cleared."""
+        self.source_report["source_locations"] = {}
+        added_location_uuids = import_referenced_source_locations(self.target_report, self.source_report)
+        self.assertEqual([], added_location_uuids)
+        self.assertEqual("", self.target_source["source_location"])
+
+    def test_same_report_is_no_op(self):
+        """Test that importing source locations from the report itself is a no-op."""
+        added_location_uuids = import_referenced_source_locations(self.source_report, self.source_report)
+        self.assertEqual([], added_location_uuids)
+        self.assertEqual([SOURCE_LOCATION_ID], list(self.source_report["source_locations"].keys()))
+
+    def test_existing_reference_is_kept(self):
+        """Test that sources referencing a source location that exists in the target report are left unchanged."""
+        self.target_report["source_locations"][SOURCE_LOCATION_ID] = create_source_location(url="https://other")
+        added_location_uuids = import_referenced_source_locations(self.target_report, self.source_report)
+        self.assertEqual([], added_location_uuids)
+        self.assertEqual(SOURCE_LOCATION_ID, self.target_source["source_location"])
 
 
 class MoveItemToIndexTest(unittest.TestCase):

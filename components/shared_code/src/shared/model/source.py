@@ -8,13 +8,15 @@ from shared.utils.functions import iso_timestamp
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from shared.utils.type import SourceId
+    from shared.utils.type import SourceId, SourceLocationId
 
     from .metric import Metric
 
 
 PASSWORD_PARAMETERS = {"password", "private_token"}
 CREDENTIAL_PARAMETERS = {*PASSWORD_PARAMETERS, "username"}
+# The parameters that are part of the source location, in addition to the location name and the source type:
+LOCATION_PARAMETERS = ("url", "landing_url", "username", "password", "private_token")
 
 
 class Source(dict):
@@ -34,6 +36,20 @@ class Source(dict):
     def name(self) -> str | None:
         """Easier way to access name."""
         return self.get("name")
+
+    @property
+    def location(self) -> dict:
+        """Return the source location of this source, if any."""
+        source_location_uuid = cast("SourceLocationId", self.get("source_location") or "")
+        return self.metric.source_locations.get(source_location_uuid, {})
+
+    def parameters_including_location(self) -> dict:
+        """Return the source parameters, with the location parameters of the source location merged in."""
+        parameters = dict(self.get("parameters") or {})
+        for parameter_key in LOCATION_PARAMETERS:
+            if value := self.location.get(parameter_key):
+                parameters[parameter_key] = value
+        return parameters
 
     def total(self) -> str | None:
         """Return the measurement total of the source."""

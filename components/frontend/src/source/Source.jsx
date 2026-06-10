@@ -24,6 +24,7 @@ import { ReorderButtonGroup } from "../widgets/buttons/ReorderButtonGroup"
 import { HyperLink } from "../widgets/HyperLink"
 import { Tabs } from "../widgets/Tabs"
 import { InfoMessage, WarningMessage } from "../widgets/WarningMessage"
+import { SourceLocationSelect } from "./SourceLocationSelect"
 import { SourceParameters } from "./SourceParameters"
 import { SourceType } from "./SourceType"
 
@@ -114,8 +115,11 @@ function Parameters({
                     label="Source name"
                     placeholder={sourceType.name}
                     onChange={(value) => setSourceAttribute(sourceUuid, "name", value, reload)}
-                    value={getSourceName(source, dataModel)}
+                    value={getSourceName(source, dataModel, report.source_locations)}
                 />
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <SourceLocationSelect reload={reload} report={report} source={source} sourceUuid={sourceUuid} />
             </Grid>
             <Grid size={{ xs: 1, sm: 2, md: 2 }}>
                 <SourceParameters

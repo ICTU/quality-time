@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from shared.model.subject import Subject
 
 Change = dict[str, str | dict[str, str]]
-EditScope = Literal["source", "report"]
 Position = Literal["first", "last", "next", "previous"]
 SessionId = NewType("SessionId", str)
 URL = NewType("URL", str)

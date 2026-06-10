@@ -12,6 +12,15 @@ Feature: source
     Then the source type is "axe_core"
     And "components/shared_code/src/shared_data_model/logos/axe_core.png" is returned as source logo
 
+  Scenario: add source with a source type that has no source location
+    When the client creates a source with type "manual_number"
+    Then the source type is "manual_number"
+
+  Scenario: change source type to a source type that has no source location
+    Given an existing source
+    When the client changes the source type to "manual_number"
+    Then the source type is "manual_number"
+
   Scenario: delete source
     Given an existing source
     When the client deletes the source

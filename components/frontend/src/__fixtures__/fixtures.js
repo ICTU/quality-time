@@ -30,6 +30,13 @@ export const dataModel = {
 
 export const report = {
     report_uuid: "report_uuid",
+    source_locations: {
+        source_location_uuid: {
+            location_name: "Source location 1",
+            source_type: "source_type",
+            url: "https://source.org",
+        },
+    },
     subjects: {
         subject_uuid: {
             type: "subject_type",
@@ -44,7 +51,8 @@ export const report = {
                         source_uuid: {
                             name: "Source",
                             type: "source_type",
-                            parameters: { url: "https://source1.org" },
+                            source_location: "source_location_uuid",
+                            parameters: {},
                         },
                     },
                     status: "target_not_met",
@@ -62,7 +70,8 @@ export const report = {
                         source_uuid2: {
                             name: "Source 2",
                             type: "source_type",
-                            parameters: { url: "https://source2.org" },
+                            source_location: "source_location_uuid",
+                            parameters: {},
                         },
                     },
                     status: "informative",

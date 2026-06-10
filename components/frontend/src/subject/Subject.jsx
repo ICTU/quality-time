@@ -68,9 +68,13 @@ function sortMetrics(dataModel, metrics, sortDirection, sortColumn, report, meas
             return m1Status.localeCompare(m2Status)
         },
         source: (m1, m2) => {
-            let m1SourceNames = Object.values(m1[1].sources).map((source) => getSourceName(source, dataModel))
+            let m1SourceNames = Object.values(m1[1].sources).map((source) =>
+                getSourceName(source, dataModel, report.source_locations),
+            )
             sortWithLocaleCompare(m1SourceNames)
-            let m2SourceNames = Object.values(m2[1].sources).map((source) => getSourceName(source, dataModel))
+            let m2SourceNames = Object.values(m2[1].sources).map((source) =>
+                getSourceName(source, dataModel, report.source_locations),
+            )
             sortWithLocaleCompare(m2SourceNames)
             return m1SourceNames.join().localeCompare(m2SourceNames.join())
         },

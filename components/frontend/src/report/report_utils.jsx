@@ -10,15 +10,13 @@ import {
     reportPropType,
     reportsPropType,
     settingsPropType,
-    sourcePropType,
-    sourceTypePropType,
 } from "../sharedPropTypes"
 import {
     addCounts,
     getMetricName,
     getMetricScale,
     getMetricTags,
-    getSourceName,
+    getSourceLocationName,
     getSubjectName,
     visibleMetrics,
 } from "../utils"
@@ -107,36 +105,39 @@ summarizeReportsOnDate.propTypes = {
     tag: string,
 }
 
-export function reportSources(dataModel, report) {
-    const sourceIds = new Set()
-    const sources = {}
-    for (const { source, sourceUuid } of iterateSources(report)) {
-        const sourceId = createSourceId(dataModel, source)
-        if (sourceIds.has(sourceId)) {
-            sources[sourceId].nrMetrics += 1
-        } else {
-            source["uuid"] = sourceUuid
-            source["nrMetrics"] = 1
-            sources[sourceId] = source
-            sourceIds.add(sourceId)
-        }
-    }
-    const sortedSources = Object.values(sources)
-    sortedSources.sort((s1, s2) => (s1.name || s1.type).localeCompare(s2.name || s2.type))
-    return sortedSources
+export function sortedSourceLocations(dataModel, report) {
+    // Return the source locations of the report as a sorted list of [sourceLocationUuid, sourceLocation] pairs
+    const sourceLocations = Object.entries(report.source_locations ?? {})
+    sourceLocations.sort((location1, location2) =>
+        getSourceLocationName(location1[1], dataModel).localeCompare(getSourceLocationName(location2[1], dataModel)),
+    )
+    return sourceLocations
 }
-reportSources.propTypes = {
+sortedSourceLocations.propTypes = {
     dataModel: dataModelPropType,
     report: reportPropType,
 }
 
-export function metricsUsingSource(dataModel, report, source) {
-    // Return the metrics in the report that use the source with the given sourceUuid or a source with the same
-    // parameters
+export function sourcesUsingSourceLocation(report, sourceLocationUuid) {
+    // Return the number of sources in the report that use the source location
+    let nrSources = 0
+    for (const { source } of iterateSources(report)) {
+        if (source.source_location === sourceLocationUuid) {
+            nrSources += 1
+        }
+    }
+    return nrSources
+}
+sourcesUsingSourceLocation.propTypes = {
+    report: reportPropType,
+    sourceLocationUuid: string,
+}
+
+export function metricsUsingSourceLocation(dataModel, report, sourceLocationUuid) {
+    // Return the metrics in the report that have a source that uses the source location
     const metrics = {}
-    const sourceId = createSourceId(dataModel, source)
     for (const { subject, subjectUuid, metric, metricUuid, source } of iterateSources(report)) {
-        if (createSourceId(dataModel, source) === sourceId) {
+        if (source.source_location === sourceLocationUuid) {
             metrics[metricUuid] = {
                 name: getMetricName(metric, dataModel),
                 secondary_name: metric.secondary_name ?? "",
@@ -147,53 +148,34 @@ export function metricsUsingSource(dataModel, report, source) {
     }
     return metrics
 }
-metricsUsingSource.propTypes = {
+metricsUsingSourceLocation.propTypes = {
     dataModel: dataModelPropType,
     report: reportPropType,
-    source: sourcePropType,
+    sourceLocationUuid: string,
 }
 
-export function unusedMetricTypesSupportedBySource(dataModel, report, source) {
-    // Return the metric types that can be measured with the source but aren't currently measured in the report
+export function unusedMetricTypesSupportedBySourceLocation(dataModel, report, sourceLocationUuid) {
+    // Return the metric types that can be measured with the source location but aren't currently measured in the
+    // report using the source location
+    const sourceType = report.source_locations?.[sourceLocationUuid]?.source_type
     const supportedMetricTypes = new Set()
     for (const [metricType, metric] of Object.entries(dataModel.metrics)) {
-        if (metric.sources.includes(source.type)) {
+        if (metric.sources.includes(sourceType)) {
             supportedMetricTypes.add(metricType)
         }
     }
     const usedMetricTypes = new Set()
-    const sourceId = createSourceId(dataModel, source)
     for (const { metric, source } of iterateSources(report)) {
-        if (createSourceId(dataModel, source) === sourceId) {
+        if (source.source_location === sourceLocationUuid) {
             usedMetricTypes.add(metric.type)
         }
     }
     return supportedMetricTypes.difference(usedMetricTypes)
 }
-unusedMetricTypesSupportedBySource.propTypes = {
+unusedMetricTypesSupportedBySourceLocation.propTypes = {
     dataModel: dataModelPropType,
     report: reportPropType,
-    source: sourceTypePropType,
-}
-
-function createSourceId(dataModel, source) {
-    // Return the stringified version of the source. This creates a source identifier that makes
-    // sources with the same location parameters equal and ignores the source uuid and parameters such as filters,
-    const identifyingFields = {
-        name: getSourceName(source, dataModel),
-        type: source.type,
-        url: source.parameters?.url ?? "",
-        landing_url: source.parameters?.landing_url ?? "",
-        username: source.parameters?.username ?? "",
-        password: source.parameters?.password ?? "",
-        private_token: source.parameters?.private_token ?? "",
-        api_version: source.parameters?.api_version ?? "",
-    }
-    return JSON.stringify(identifyingFields)
-}
-createSourceId.propTypes = {
-    dataModel: dataModelPropType,
-    source: sourcePropType,
+    sourceLocationUuid: string,
 }
 
 function iterateSources(report) {

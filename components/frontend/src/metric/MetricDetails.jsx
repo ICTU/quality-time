@@ -42,9 +42,9 @@ export const METRIC_DEBT_TAB_INDEX = 2
 export const TREND_GRAPH_TAB_INDEX = 4
 export const SOURCE_TAB_INDEX = 5
 
-function RequestMeasurementButton({ metric, metricUuid, reload }) {
+function RequestMeasurementButton({ metric, metricUuid, reload, report }) {
     const dataModel = useContext(DataModelContext)
-    const configurationComplete = isSourceConfigurationComplete(dataModel, metric)
+    const configurationComplete = isSourceConfigurationComplete(dataModel, metric, report?.source_locations)
     const measurementRequested = isMeasurementRequested(metric)
     return (
         <ActionButton
@@ -66,6 +66,7 @@ RequestMeasurementButton.propTypes = {
     metric: metricPropType,
     metricUuid: string,
     reload: func,
+    report: reportPropType,
 }
 
 function MetricDetailsButtonRow({
@@ -74,6 +75,7 @@ function MetricDetailsButtonRow({
     metric,
     metricUuid,
     reload,
+    report,
     settings,
     stopFilteringAndSorting,
     url,
@@ -103,7 +105,7 @@ function MetricDetailsButtonRow({
                         }}
                     />
                     <PermLinkButton itemType="metric" url={url} />
-                    <RequestMeasurementButton metric={metric} metricUuid={metricUuid} reload={reload} />
+                    <RequestMeasurementButton metric={metric} metricUuid={metricUuid} reload={reload} report={report} />
                 </ButtonRow>
             }
         />
@@ -115,6 +117,7 @@ MetricDetailsButtonRow.propTypes = {
     metric: metricPropType,
     metricUuid: string,
     reload: func,
+    report: reportPropType,
     settings: settingsPropType,
     stopFilteringAndSorting: func,
     url: string,
@@ -221,7 +224,7 @@ export function MetricDetails({
         { label: "Trend graph", icon: <ShowChartIcon /> },
     ]
     for (const [sourceUuid, source] of Object.entries(metric.sources)) {
-        const sourceName = getSourceName(source, dataModel)
+        const sourceName = getSourceName(source, dataModel, report.source_locations)
         tabs.push({
             image: <Logo logo={source.type} alt={sourceName} width="21px" height="21px" marginBottom="6px" />,
             label: sourceName,
@@ -251,6 +254,7 @@ export function MetricDetails({
                 isFirstMetric={isFirstMetric}
                 isLastMetric={isLastMetric}
                 reload={reload}
+                report={report}
                 settings={settings}
                 stopFilteringAndSorting={stopFilteringAndSorting}
                 url={metricUrl}

@@ -26,14 +26,19 @@ def add_item(  # noqa: PLR0913
 ) -> None:
     """Add an item with and optionally set attribute to value."""
     api = f"{item}/new"
-    container = {"source": "metric", "metric": "subject", "subject": "report"}.get(item)
+    container = {"source": "metric", "metric": "subject", "subject": "report", "source_location": "report"}.get(item)
     if container:
         api += f"/{context.uuid[container]}"
     if attribute == "type":
         item_type = value
         attribute = value = None
     else:
-        item_type = {"source": "axe_core", "metric": "violations", "subject": "software"}.get(item)
+        item_type = {
+            "source": "axe_core",
+            "source_location": "axe_core",
+            "metric": "violations",
+            "subject": "software",
+        }.get(item)
     if "tries to" in context.step.name:
         context.post(api, {"type": item_type})
         return
@@ -109,6 +114,8 @@ def get_item(context: Context, item: str) -> dict:
         )
         if item == "notification_destination":
             return cast(dict, item_instance["notification_destinations"][context.uuid["notification_destination"]])
+        if item == "source_location":
+            return cast(dict, item_instance["source_locations"][context.uuid["source_location"]])
         if item != "report":
             item_instance = item_instance["subjects"][context.uuid["subject"]]
             if item != "subject":
@@ -143,6 +150,7 @@ def check_item_does_not_exist(context: Context, item: str) -> None:
     reports = context.get(f"report/{context.uuid[item]}") if item == "report" else context.get("report/")
     for report in reports["reports"]:
         uuids.append(report["report_uuid"])
+        uuids.extend(report.get("source_locations", {}).keys())
         uuids.extend(report["subjects"].keys())
         for subject in report["subjects"].values():
             uuids.extend(subject["metrics"].keys())

@@ -5,7 +5,17 @@ from datetime import date
 from typing import TYPE_CHECKING, cast
 
 from shared.utils.functions import md5_hash
-from shared.utils.type import Direction, MetricId, Scale, SourceId, Status, SubjectId, TargetType, Value
+from shared.utils.type import (
+    Direction,
+    MetricId,
+    Scale,
+    SourceId,
+    SourceLocationId,
+    Status,
+    SubjectId,
+    TargetType,
+    Value,
+)
 
 from .source import Source
 
@@ -26,6 +36,8 @@ class Metric(dict):  # noqa: PLW1641
         self.__data_model = data_model
         self.uuid = metric_uuid
         self.subject_uuid = subject_uuid or cast(SubjectId, "")
+        # The source locations of the report this metric belongs to, set by the report after instantiating the metric:
+        self.source_locations: dict[SourceLocationId, dict] = {}
 
         source_data = metric_data.get("sources", {})
         metric_data["sources"] = {
@@ -181,9 +193,17 @@ class Metric(dict):  # noqa: PLW1641
         return summary
 
     def source_parameter_hash(self) -> str:  # pragma: no feature-test-cover
-        """Return a hash of the source parameters that can be used to check for changed parameters."""
+        """Return a hash of the source parameters that can be used to check for changed parameters.
+
+        The location parameters of the source location, if any, are included in the hash so that changing a source
+        location parameter also marks measurements as outdated.
+        """
         sources = [source for _, source in sorted(self.sources_dict.items())]  # Make hash independent of source order
-        source_parameters = [source.get("parameters") for source in sources]
+        source_parameters = []
+        for source in sources:
+            parameters = source.parameters_including_location()
+            # Make the hash independent of the parameter order:
+            source_parameters.append({parameter_key: parameters[parameter_key] for parameter_key in sorted(parameters)})
         return md5_hash(str(source_parameters))
 
     def delete_tag(self, tag: str) -> bool:

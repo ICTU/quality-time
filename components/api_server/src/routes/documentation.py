@@ -6,6 +6,7 @@ import bottle
 
 
 @bottle.get("/api/v3/docs", authentication_required=False)
+@bottle.get("/api/v4/docs", authentication_required=False)
 def get_api_docs() -> dict[str, dict[str, str]]:
     """Return the API docs."""
     port = os.environ.get("API_SERVER_PORT", "5001")

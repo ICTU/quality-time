@@ -24,6 +24,12 @@ def sources(*reports) -> Iterator:
         yield from metric.get("sources", {}).values()
 
 
+def source_locations(*reports) -> Iterator:
+    """Return all source locations in the reports."""
+    for report in reports:
+        yield from report.get("source_locations", {}).values()
+
+
 def issue_trackers(*reports) -> Iterator:
     """Return all issue trackers in the reports."""
     for report in reports:

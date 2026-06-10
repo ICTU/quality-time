@@ -15,6 +15,7 @@ import {
     getMetricTarget,
     getMetricUnit,
     getReportTags,
+    getSourceLocationName,
     getSourceName,
     getSubjectName,
     getSubjectType,
@@ -30,6 +31,7 @@ import {
     reportUuidFromPath,
     scaledNumber,
     sortWithLocaleCompare,
+    sourceTypeHasLocation,
     sum,
     visibleMetrics,
 } from "./utils"
@@ -157,6 +159,64 @@ it("gets the source name from the data model if the source has no name", () => {
     expect(getSourceName({ type: "source_type" }, { sources: { source_type: { name: "source" } } })).toStrictEqual(
         "source",
     )
+})
+
+it("gets the source name from the source location if the source has no name", () => {
+    expect(
+        getSourceName(
+            { type: "source_type", source_location: "source_location_uuid" },
+            { sources: { source_type: { name: "source" } } },
+            { source_location_uuid: { location_name: "location" } },
+        ),
+    ).toStrictEqual("location")
+})
+
+it("prefers the source name over the source location name", () => {
+    expect(
+        getSourceName(
+            { name: "source", type: "source_type", source_location: "source_location_uuid" },
+            { sources: { source_type: { name: "source type" } } },
+            { source_location_uuid: { location_name: "location" } },
+        ),
+    ).toStrictEqual("source")
+})
+
+it("gets the source name from the data model if neither the source nor its source location has a name", () => {
+    expect(
+        getSourceName(
+            { type: "source_type", source_location: "source_location_uuid" },
+            { sources: { source_type: { name: "source" } } },
+            { source_location_uuid: {} },
+        ),
+    ).toStrictEqual("source")
+})
+
+it("gets the source location name", () => {
+    expect(getSourceLocationName({ location_name: "location" }, { sources: {} })).toStrictEqual("location")
+})
+
+it("gets the source location name from the data model if the source location has no name", () => {
+    expect(
+        getSourceLocationName({ source_type: "source_type" }, { sources: { source_type: { name: "source type" } } }),
+    ).toStrictEqual("source type")
+})
+
+it("gets an empty source location name if the source location has no name and the source type is unknown", () => {
+    expect(getSourceLocationName({ source_type: "unknown_source_type" }, { sources: {} })).toStrictEqual("")
+})
+
+it("returns whether a source type has a location", () => {
+    const dataModel = {
+        sources: {
+            source_type_with_url: { parameters: { url: { type: "url" } } },
+            source_type_without_url: { parameters: { password: { type: "password" } } },
+            source_type_without_parameters: {},
+        },
+    }
+    expect(sourceTypeHasLocation(dataModel, "source_type_with_url")).toBe(true)
+    expect(sourceTypeHasLocation(dataModel, "source_type_without_url")).toBe(false)
+    expect(sourceTypeHasLocation(dataModel, "source_type_without_parameters")).toBe(false)
+    expect(sourceTypeHasLocation(dataModel, "unknown_source_type")).toBe(false)
 })
 
 it("gets the subject type", () => {
@@ -571,6 +631,27 @@ it("returns whether a metric can be measured", () => {
     dataModel.sources["source_type"].parameters["url"]["default_value"] = "https://example.org"
     metric.sources["source_uuid"].parameters = {}
     expect(isSourceConfigurationComplete(dataModel, metric)).toBe(true)
+})
+
+it("returns whether a metric can be measured when the source has a source location", () => {
+    const dataModel = {
+        sources: { source_type: { parameters: { url: { mandatory: true, metrics: ["metric_type"] } } } },
+    }
+    const metric = {
+        type: "metric_type",
+        sources: { source_uuid: { type: "source_type", source_location: "source_location_uuid", parameters: {} } },
+    }
+    // A metric with a source without configured location parameters is not measurable:
+    expect(isSourceConfigurationComplete(dataModel, metric)).toBe(false)
+    // A metric with a source whose source location is missing the mandatory parameter is not measurable:
+    expect(isSourceConfigurationComplete(dataModel, metric, { source_location_uuid: {} })).toBe(false)
+    // A metric with a source whose source location has the mandatory parameter is measurable:
+    expect(
+        isSourceConfigurationComplete(dataModel, metric, { source_location_uuid: { url: "https://example.org" } }),
+    ).toBe(true)
+    // A metric with a source that has the mandatory parameter itself is measurable:
+    metric.sources["source_uuid"].parameters["url"] = "https://example.org"
+    expect(isSourceConfigurationComplete(dataModel, metric, { source_location_uuid: {} })).toBe(true)
 })
 
 it("returns the reference documentation URL", () => {

@@ -256,7 +256,7 @@ describe("issue tracker tab", () => {
     })
 })
 
-describe("sources tab", () => {
+describe("source locations tab", () => {
     beforeEach(() => history.push("?expanded=report_uuid:4"))
 
     it("has no accessibility violations", async () => {
@@ -264,9 +264,9 @@ describe("sources tab", () => {
         await expectNoAccessibilityViolations(container)
     })
 
-    it("shows the sources, if available", async () => {
+    it("shows a message if there are no source locations", async () => {
         renderReportTitle()
-        expectText(/No sources have been configured yet/)
+        expectText(/No source locations have been configured yet/)
     })
 })
 

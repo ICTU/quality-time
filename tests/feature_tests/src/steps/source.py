@@ -23,12 +23,11 @@ def sanitize_value(value: str) -> str | list[str]:
 
 
 @when('the client sets the source parameter {parameter} to "{value}"')
-@when('the client sets the source parameter {parameter} to "{value}" with scope "{scope}"')
-def change_source_parameter(context: Context, parameter: str, value: str, scope: str = "source") -> None:
+def change_source_parameter(context: Context, parameter: str, value: str) -> None:
     """Change the source parameter to value."""
     context.post(
         f"source/{context.uuid['source']}/parameter/{parameter}",
-        json={parameter: sanitize_value(value), "edit_scope": scope},
+        json={parameter: sanitize_value(value)},
     )
 
 
@@ -63,16 +62,6 @@ def check_source_parameter_availability_reason(
     reason = str(post_response["availability"]["reason"])
     messages = [message for message in (message1, message2, message3) if message]
     assert_in(reason, messages)
-
-
-@then('''the parameter {parameter} of the report's sources equals "{value}"''')
-def check_sources_parameter(context: Context, parameter: str, value: str) -> None:
-    """Check that all sources within the report have a parameter with the specified value."""
-    report = get_item(context, "report")
-    for subject in report["subjects"].values():
-        for metric in subject["metrics"].values():
-            for source in metric["sources"].values():
-                assert_equal(value, source["parameters"][parameter])
 
 
 @then('"{path}" is returned as source logo')

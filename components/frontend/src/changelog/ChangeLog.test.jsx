@@ -65,6 +65,11 @@ it("renders one source change", async () => {
     expectNrEventsToBe(1)
 })
 
+it("renders one source location change", async () => {
+    await renderChangeLog({ sourceLocationUuid: "uuid" })
+    expectNrEventsToBe(1)
+})
+
 it("loads more changes", async () => {
     await renderChangeLog({ sourceUuid: "uuid" })
     fetchServerApi.fetchServerApi.mockImplementation(() =>

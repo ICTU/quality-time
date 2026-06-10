@@ -6,7 +6,7 @@ import { MeasurementSources } from "./MeasurementSources"
 
 const dataModel = { metrics: { metric_type: { sources: ["source_type"] } } }
 
-function renderMeasurementSources(sources, latestMeasurement) {
+function renderMeasurementSources(sources, latestMeasurement, report) {
     return render(
         <DataModelContext value={dataModel}>
             <MeasurementSources
@@ -15,6 +15,7 @@ function renderMeasurementSources(sources, latestMeasurement) {
                     sources: sources,
                     latest_measurement: latestMeasurement,
                 }}
+                report={report}
             />
         </DataModelContext>,
     )
@@ -34,6 +35,15 @@ it("renders one measurement source", async () => {
         { sources: [{ source_uuid: "source_uuid" }] },
     )
     expectText(/Source name/)
+})
+
+it("renders the source location name if the source has no name", async () => {
+    renderMeasurementSources(
+        { source_uuid: { type: "source_type", source_location: "source_location_uuid" } },
+        { sources: [{ source_uuid: "source_uuid" }] },
+        { source_locations: { source_location_uuid: { location_name: "Source location name" } } },
+    )
+    expectText(/Source location name/)
 })
 
 it("renders multiple measurement sources", async () => {

@@ -10,19 +10,19 @@ from shared.model.source import Source
 from shared.utils.type import SourceId
 
 from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
-from model.actions import copy_source, move_item
+from model.actions import copy_source, import_referenced_source_locations, move_item
 from model.defaults import default_source_parameters
 from model.queries import is_password_parameter
-from model.transformations import change_source_parameter
+from model.transformations import change_source_parameter, SOURCE_TYPES_WITHOUT_LOCATION
 from utils.functions import check_url_availability, uuid
-from utils.type import EditScope, SourceContext
+from utils.type import SourceContext
 
 from .plugins.auth_plugin import EDIT_REPORT_PERMISSION
 
 if TYPE_CHECKING:
     from pymongo.database import Database
 
-    from shared.utils.type import ItemId, MetricId
+    from shared.utils.type import ItemId, MetricId, SourceLocationId
 
     from model.report import Report
 
@@ -36,7 +36,10 @@ def post_source_new(metric_uuid: MetricId, database: Database):
     source_type = dict(bottle.request.json)["type"]
     parameters = default_source_parameters(cast(str, metric.type()), source_type)
     source_uuid = cast(SourceId, uuid())
-    metric.sources_dict[source_uuid] = cast(Source, {"type": source_type, "parameters": parameters})
+    source = cast(Source, {"type": source_type, "parameters": parameters})
+    if source_type not in SOURCE_TYPES_WITHOUT_LOCATION:
+        source["source_location"] = ""
+    metric.sources_dict[source_uuid] = source
     delta_description = (
         f"{{user}} added a new source to metric '{metric.name}' of subject '{subject.name}' in report '{report.name}'."
     )
@@ -55,6 +58,7 @@ def post_source_copy(source_uuid: SourceId, metric_uuid: MetricId, database: Dat
     target_metric, target_subject = reports[1].metric_and_subject(metric_uuid)
 
     target_metric["sources"][(source_copy_uuid := uuid())] = copy_source(source_uuid, source)
+    import_referenced_source_locations(reports[1], reports[0])
     delta_description = (
         f"{{user}} copied the source '{source.name}' of metric '{source_metric.name}' of subject "
         f"'{source_subject.name}' from report '{reports[0].name}' "
@@ -84,6 +88,7 @@ def post_move_source(source_uuid: SourceId, target_metric_uuid: MetricId, databa
         f"'{target_subject.name}' in report '{reports[1].name}'."
     )
     target_metric["sources"][source_uuid] = source
+    import_referenced_source_locations(reports[1], reports[0])
     uuids: list[ItemId] = [
         reports[1].uuid,
         target_subject.uuid,
@@ -137,13 +142,21 @@ def post_source_attribute(source_uuid: SourceId, source_attribute: str, database
         source[source_attribute] = value
     if old_value == value:
         return {"ok": True}  # Nothing to do
+    described_old_value, described_new_value = old_value, value
+    if source_attribute == "source_location":
+        described_old_value = _source_location_name(report, old_value)
+        described_new_value = _source_location_name(report, value)
     delta_description = (
         f"{{user}} changed the {source_attribute} of source '{old_source_name}' of metric '{metric.name}' of "
-        f"subject '{subject.name}' in report '{report.name}' from '{old_value}' to '{value}'."
+        f"subject '{subject.name}' in report '{report.name}' from '{described_old_value}' to '{described_new_value}'."
     )
     uuids = [report.uuid, subject.uuid, metric.uuid, source.uuid]
     if source_attribute == "type":
         source["parameters"] = default_source_parameters(metric["type"], value)
+        if value in SOURCE_TYPES_WITHOUT_LOCATION:
+            source.pop("source_location", None)
+        else:
+            source["source_location"] = ""
     return insert_new_report(database, delta_description, uuids, report)
 
 
@@ -158,25 +171,17 @@ def post_source_parameter(source_uuid: SourceId, parameter_key: str, database: D
     old_value = context.source["parameters"].get(parameter_key) or ""
     if old_value == new_value:
         return {"ok": True}  # Nothing to do
-    edit_scope = cast(EditScope, dict(bottle.request.json).get("edit_scope", "source"))
-    changed_ids, changed_source_ids = change_source_parameter(
-        context,
-        parameter_key,
-        old_value,
-        new_value,
-        edit_scope,
-    )
+    changed_ids = change_source_parameter(context, parameter_key, new_value)
     if is_password_parameter(context.source.type, parameter_key):
         new_value, old_value = "*" * len(new_value), "*" * len(old_value)
-    source_description = _source_description(context, edit_scope, parameter_key, old_value)
     delta_description = (
-        f"{{user}} changed the {parameter_key} of {source_description} from '{old_value}' to '{new_value}'."
+        f"{{user}} changed the {parameter_key} of source '{context.source.name}' of metric '{context.metric.name}' "
+        f"of subject '{context.subject.name}' in report '{context.report.name}' "
+        f"from '{old_value}' to '{new_value}'."
     )
-    reports_to_insert = [report for report in reports if report["report_uuid"] in changed_ids]
-    result = insert_new_report(database, delta_description, changed_ids, *reports_to_insert)
-    result["nr_sources_mass_edited"] = len(changed_source_ids) if edit_scope != "source" else 0
-    result["availability"] = _availability_check(
-        context.source["type"], context.source["parameters"], context.source.uuid, parameter_key
+    result = insert_new_report(database, delta_description, changed_ids, context.report)
+    result["availability"] = availability_check(
+        context.source["type"], context.source.parameters_including_location(), context.source.uuid, parameter_key
     )
     return result
 
@@ -188,6 +193,21 @@ def get_source_context(reports: list[Report], source_uuid: SourceId) -> SourceCo
     return SourceContext(source=source, metric=metric, subject=subject, report=report)
 
 
+def _source_location_name(report: Report, source_location_uuid: SourceLocationId) -> str:
+    """Return the name of the source location to use in delta descriptions."""
+    if not source_location_uuid:
+        return ""
+    source_location = report.source_locations_dict.get(source_location_uuid, {})
+    if location_name := source_location.get("location_name"):
+        return str(location_name)
+    if source_type := source_location.get("source_type"):
+        if source_type in DATA_MODEL.sources:
+            return str(DATA_MODEL.sources[source_type].name)
+        # Be prepared for source locations with a source type that is no longer part of the data model:
+        return str(source_type)  # pragma: no feature-test-cover
+    return ""  # pragma: no feature-test-cover
+
+
 def _new_parameter_value(source: Source, parameter_key: str) -> str | list[str]:
     """Return the new parameter value and if necessary, remove any obsolete multiple choice values."""
     new_value = dict(bottle.request.json)[parameter_key]
@@ -197,28 +217,7 @@ def _new_parameter_value(source: Source, parameter_key: str) -> str | list[str]:
     return cast(str, new_value)
 
 
-def _source_description(
-    context: SourceContext,
-    edit_scope: EditScope,
-    parameter_key: str,
-    old_value: str | None,
-) -> str:
-    """Return the description of the source."""
-    source_type_name = DATA_MODEL.sources[context.source.type].name
-    source_description = (
-        f"source '{context.source.name}'"
-        if edit_scope == "source"
-        else f"all sources of type '{source_type_name}' with {parameter_key} '{old_value}'"
-    )
-    if edit_scope in ["source", "metric"]:
-        source_description += f" of metric '{context.metric.name}'"
-    if edit_scope in ["subject", "metric", "source"]:
-        source_description += f" of subject '{context.subject.name}'"
-    source_description += " in all reports" if edit_scope == "reports" else f" in report '{context.report.name}'"
-    return source_description
-
-
-def _availability_check(
+def availability_check(
     source_type: str,
     parameters: dict,
     identifier: SourceId | str,

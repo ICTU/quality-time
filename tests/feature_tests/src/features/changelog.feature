@@ -122,3 +122,20 @@ Feature: changelog
       """
       Jane Doe added a new source to metric 'Violations' of subject 'Software' in report 'New report'.
       """
+
+  Scenario: move a source to another report
+    When the client creates a report
+    And the client creates a subject
+    And the client creates a metric
+    And the client creates a source
+    And the client creates a report
+    And the client creates a subject
+    And the client creates a metric
+    And the client moves the source to the metric
+    Then the report changelog reads
+      """
+      Jane Doe moved the source 'None' from metric 'Violations' of subject 'Software' in report 'New report' to metric 'Violations' of subject 'Software' in report 'New report'.
+      Jane Doe added a new metric to subject 'Software' in report 'New report'.
+      Jane Doe created a new subject in report 'New report'.
+      Jane Doe created a new report.
+      """

@@ -57,7 +57,7 @@ export function sourceOptions(reports, dataModel, currentMetricType, currentMetr
                     if (!metricSources.includes(source.type)) {
                         return
                     }
-                    const sourceName = getSourceName(source, dataModel)
+                    const sourceName = getSourceName(source, dataModel, report.source_locations)
                     options.push({
                         content: (
                             <ItemBreadcrumb

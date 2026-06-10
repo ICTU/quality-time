@@ -22,6 +22,7 @@ def get_reports_overview(database: Database):
 
 @bottle.get("/api/internal/reports_overview/pdf", authentication_required=False)
 @bottle.get("/api/v3/reports_overview/pdf", authentication_required=False)
+@bottle.get("/api/v4/reports_overview/pdf", authentication_required=False)
 def export_reports_overview_as_pdf():
     """Download the reports overview as PDF."""
     return export_as_pdf()

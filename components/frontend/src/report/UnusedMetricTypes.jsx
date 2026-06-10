@@ -1,21 +1,22 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
+import { string } from "prop-types"
 import { useContext } from "react"
 
 import { DataModelContext } from "../context/DataModel"
-import { reportPropType, sourcePropType } from "../sharedPropTypes"
+import { reportPropType } from "../sharedPropTypes"
 import { theme } from "../theme"
 import { referenceDocumentationURL } from "../utils"
 import { UnsortableTableHeaderCell } from "../widgets/TableHeaderCell"
 import { InfoMessage } from "../widgets/WarningMessage"
-import { unusedMetricTypesSupportedBySource } from "./report_utils"
+import { unusedMetricTypesSupportedBySourceLocation } from "./report_utils"
 
-export function UnusedMetricTypes({ report, source }) {
+export function UnusedMetricTypes({ report, sourceLocationUuid }) {
     const dataModel = useContext(DataModelContext)
-    const unusedMetricTypes = unusedMetricTypesSupportedBySource(dataModel, report, source)
+    const unusedMetricTypes = unusedMetricTypesSupportedBySourceLocation(dataModel, report, sourceLocationUuid)
     if (unusedMetricTypes.size === 0) {
         return (
             <InfoMessage title="No unused metric types">
-                All metric types that this source supports are being used.
+                All metric types that this source location supports are being used.
             </InfoMessage>
         )
     }
@@ -55,5 +56,5 @@ export function UnusedMetricTypes({ report, source }) {
 }
 UnusedMetricTypes.propTypes = {
     report: reportPropType,
-    source: sourcePropType,
+    sourceLocationUuid: string,
 }

@@ -8,7 +8,7 @@ from shared.model.subject import Subject
 from shared.utils.type import ReportId, SubjectId
 
 from database.reports import insert_new_report, latest_report_for_uuids, latest_reports
-from model.actions import copy_subject, move_item
+from model.actions import copy_subject, import_referenced_source_locations, move_item
 from model.defaults import default_subject_attributes
 from utils.functions import sanitize_html, uuid
 
@@ -43,6 +43,7 @@ def post_subject_copy(subject_uuid: SubjectId, report_uuid: ReportId, database: 
     subject = source_report.subjects_dict[subject_uuid]
     subject_copy_uuid = cast(SubjectId, uuid())
     target_report.subjects_dict[subject_copy_uuid] = copy_subject(subject_uuid, subject)
+    import_referenced_source_locations(target_report, source_report)
     delta_description = (
         f"{{user}} copied the subject '{subject.name}' from report "
         f"'{source_report.name}' to report '{target_report.name}'."
@@ -65,6 +66,7 @@ def post_move_subject(subject_uuid: SubjectId, target_report_uuid: ReportId, dat
     subject = source_report.subjects_dict[subject_uuid]
     target_report.subjects_dict[subject_uuid] = subject
     del source_report.subjects_dict[subject_uuid]
+    import_referenced_source_locations(target_report, source_report)
     delta_description = (
         f"{{user}} moved the subject '{subject.name}' from report "
         f"'{source_report.name}' to report '{target_report.name}'."

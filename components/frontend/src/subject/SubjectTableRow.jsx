@@ -360,7 +360,7 @@ export function SubjectTableRow({
             )}
             {!columnsToHide.includes("measurement") && (
                 <TableCell align="right" onClick={onColumnClick(SOURCE_TAB_INDEX)} sx={columnSx}>
-                    <MeasurementValue metric={metric} reportDate={reportDate} />
+                    <MeasurementValue metric={metric} report={report} reportDate={reportDate} />
                 </TableCell>
             )}
             {!columnsToHide.includes("target") && (
@@ -375,7 +375,7 @@ export function SubjectTableRow({
             )}
             {!columnsToHide.includes("source") && (
                 <TableCell onClick={onColumnClick(SOURCES_TAB_INDEX)} sx={columnSx}>
-                    <MeasurementSources metric={metric} />
+                    <MeasurementSources metric={metric} report={report} />
                 </TableCell>
             )}
             {!columnsToHide.includes("time_left") && (

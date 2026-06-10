@@ -33,9 +33,9 @@ def before_all(context: Context) -> None:  # noqa: C901
     @contextmanager
     def external_api() -> Iterator[None]:
         """Route all calls to external API URL instead of internal."""
-        context.base_api_url = context.base_api_url.replace("/internal", "/v3")
+        context.base_api_url = context.base_api_url.replace("/internal", "/v4")
         yield context
-        context.base_api_url = context.base_api_url.replace("/v3", "/internal")
+        context.base_api_url = context.base_api_url.replace("/v4", "/internal")
 
     def get(api: str, headers: dict[str, str] | None = None) -> requests.Response | JSON:
         """Get the resource."""

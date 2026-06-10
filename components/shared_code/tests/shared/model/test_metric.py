@@ -8,7 +8,7 @@ from shared.model.measurement import Measurement
 from shared.model.metric import Metric
 from shared.utils.functions import iso_timestamp
 
-from tests.fixtures import METRIC_ID, SOURCE_ID, SOURCE_ID2
+from tests.fixtures import METRIC_ID, SOURCE_ID, SOURCE_ID2, SOURCE_LOCATION_ID, create_source_location
 from tests.shared.base import DataModelTestCase
 
 if TYPE_CHECKING:
@@ -205,6 +205,22 @@ class MetricTest(unittest.TestCase):
         metric1 = self.create_metric(sources=self.create_source_arguments_for_metric(multiple=True))
         metric2 = self.create_metric(sources=self.create_source_arguments_for_metric(multiple=True, reverse=True))
         self.assertEqual(metric1.source_parameter_hash(), metric2.source_parameter_hash())
+
+    def test_source_parameter_hash_does_not_depend_on_parameter_order(self):
+        """Test that the source parameter hash does not depend on the order of the parameters."""
+        metric1 = self.create_metric(sources={SOURCE_ID: {"parameters": {"parameter1": "a", "parameter2": "b"}}})
+        metric2 = self.create_metric(sources={SOURCE_ID: {"parameters": {"parameter2": "b", "parameter1": "a"}}})
+        self.assertEqual(metric1.source_parameter_hash(), metric2.source_parameter_hash())
+
+    def test_source_parameter_hash_includes_location_parameters(self):
+        """Test that the source parameter hash changes when a location parameter of the source location changes."""
+        metric = self.create_metric(
+            sources={SOURCE_ID: {"parameters": {"parameter": "value1"}, "source_location": SOURCE_LOCATION_ID}},
+        )
+        metric.source_locations = {SOURCE_LOCATION_ID: create_source_location()}
+        hash_before_change = metric.source_parameter_hash()
+        metric.source_locations[SOURCE_LOCATION_ID]["url"] = "https://changed-url"
+        self.assertNotEqual(hash_before_change, metric.source_parameter_hash())
 
     def test_delete_non_existing_tag(self):
         """Test deleting a non-existing tag from a metric."""

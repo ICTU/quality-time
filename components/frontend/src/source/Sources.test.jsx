@@ -21,13 +21,23 @@ const dataModel = {
     sources: {
         source_type1: {
             name: "Source type 1",
-            parameters: { url: { type: "url", name: "URL", metrics: ["metric_type"] } },
+            parameters: {
+                url: { type: "url", name: "URL", metrics: ["metric_type"] },
+                branch: { type: "string", name: "Branch", metrics: ["metric_type"] },
+            },
         },
         source_type2: { name: "Source type 2", parameters: {} },
     },
 }
 
 const report = {
+    source_locations: {
+        source_location_uuid: {
+            location_name: "Source location",
+            source_type: "source_type1",
+            url: "https://test.nl",
+        },
+    },
     subjects: {
         subject_uuid: {
             name: "Subject",
@@ -39,7 +49,8 @@ const report = {
                         source_uuid: {
                             name: "Source 1",
                             type: "source_type1",
-                            parameters: { url: "https://test.nl" },
+                            source_location: "source_location_uuid",
+                            parameters: { branch: "main" },
                         },
                         non_existing_source_type: {
                             name: "Source with non-existing source type",
@@ -64,12 +75,14 @@ const report = {
                         source_uuid1: {
                             name: "Source 3",
                             type: "source_type1",
-                            parameters: { url: "https://test.nl" },
+                            source_location: "source_location_uuid",
+                            parameters: {},
                         },
                         source_uuid2: {
                             name: "Source 4",
                             type: "source_type1",
-                            parameters: { url: "https://test.nl" },
+                            source_location: "source_location_uuid",
+                            parameters: {},
                         },
                     },
                 },
@@ -107,7 +120,7 @@ function renderSources(props) {
 }
 
 beforeEach(() => {
-    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true, nr_sources_mass_edited: 0 })
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
 })
 
 it("has no accessibility violations", async () => {
@@ -165,18 +178,21 @@ it("moves a source", async () => {
 })
 
 it("updates a parameter of a source", async () => {
-    const showMessage = vi.fn()
-    renderSources({ showMessage: showMessage })
-    await userEvent.type(screen.getByDisplayValue(/https:\/\/test.nl/), "https://other{Enter}", {
+    renderSources()
+    await userEvent.type(screen.getByDisplayValue(/main/), "develop{Enter}", {
         initialSelectionStart: 0,
-        initialSelectionEnd: 15,
+        initialSelectionEnd: 4,
     })
     await act(async () => {
         fireEvent.click(screen.getByDisplayValue("Source 1"))
     })
-    expect(screen.getAllByDisplayValue("https://other").length).toBe(1)
-    expectFetch("post", "source/source_uuid/parameter/url", { edit_scope: "source", url: "https://other" })
-    expect(showMessage).toHaveBeenCalledTimes(0)
+    expect(screen.getAllByDisplayValue("develop").length).toBe(1)
+    expectFetch("post", "source/source_uuid/parameter/branch", { branch: "develop" })
+})
+
+it("does not show the location parameters of the source", async () => {
+    renderSources()
+    expect(screen.queryAllByLabelText(/URL/).length).toBe(0)
 })
 
 it("repositions a source", async () => {

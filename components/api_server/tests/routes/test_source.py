@@ -8,8 +8,7 @@ import requests
 from shared.model.metric import Metric
 
 from shared.model.report import Report
-from shared.model.subject import Subject
-from shared.model.source import Source
+from shared.utils.functions import first
 
 from routes import (
     delete_source,
@@ -29,12 +28,11 @@ from tests.fixtures import (
     SOURCE_ID,
     SOURCE_ID2,
     SOURCE_ID3,
-    SOURCE_ID4,
-    SOURCE_ID5,
-    SOURCE_ID6,
+    SOURCE_LOCATION_ID,
     SUBJECT_ID,
     SUBJECT_ID2,
     create_report,
+    create_source_location,
 )
 
 from tests.base import DataModelTestCase
@@ -136,6 +134,24 @@ class PostSourceAttributeTest(SourceTestCase):
         self.assertEqual({"ok": True}, post_source_attribute(SOURCE_ID, "name", self.database))
         self.database.reports.insert_one.assert_not_called()
 
+    def test_post_source_type_with_location(self, request):
+        """Test that changing the source type to a type with locations resets the source location."""
+        self.sources[SOURCE_ID]["source_location"] = SOURCE_LOCATION_ID
+        request.json = {"type": "ojaudit"}
+        self.assertEqual({"ok": True}, post_source_attribute(SOURCE_ID, "type", self.database))
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        source = updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
+        self.assertEqual("", source["source_location"])
+
+    def test_post_source_type_without_location(self, request):
+        """Test that changing the source type to a type without locations removes the source location."""
+        self.sources[SOURCE_ID]["source_location"] = SOURCE_LOCATION_ID
+        request.json = {"type": "manual_number"}
+        self.assertEqual({"ok": True}, post_source_attribute(SOURCE_ID, "type", self.database))
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        source = updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
+        self.assertNotIn("source_location", source)
+
 
 @patch("bottle.request")
 class PostSourceParameterTest(SourceTestCase):
@@ -175,7 +191,7 @@ class PostSourceParameterTest(SourceTestCase):
             "source_uuid": source_uuid,
             "parameter_key": "url",
         }
-        self.assertEqual({"ok": True, "availability": availability, "nr_sources_mass_edited": 0}, response)
+        self.assertEqual({"ok": True, "availability": availability}, response)
 
     def assert_delta(self, description: str, uuids=None, report=None) -> None:
         """Extend to set up fixed parameters."""
@@ -257,7 +273,7 @@ class PostSourceParameterTest(SourceTestCase):
         mock_get.return_value = self.url_check_get_response
         request.json = {"landing_url": "unimportant"}
         response = post_source_parameter(SOURCE_ID, "landing_url", self.database)
-        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": {}})
+        self.assertEqual(response, {"ok": True, "availability": {}})
         mock_get.assert_not_called()
 
     @patch.object(requests, "get")
@@ -266,7 +282,7 @@ class PostSourceParameterTest(SourceTestCase):
         self.sources[SOURCE_ID]["parameters"]["url"] = self.url
         request.json = {"url": ""}
         response = post_source_parameter(SOURCE_ID, "url", self.database)
-        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": {}})
+        self.assertEqual(response, {"ok": True, "availability": {}})
         mock_get.assert_not_called()
 
     @patch.object(requests, "get")
@@ -311,7 +327,7 @@ class PostSourceParameterTest(SourceTestCase):
         """Test that the password can be changed and is not logged."""
         request.json = {"password": "secret"}  # nosec
         response = post_source_parameter(SOURCE_ID, "password", self.database)
-        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": {}})
+        self.assertEqual(response, {"ok": True, "availability": {}})
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
             """password of source 'Source' of metric 'Metric' of subject """
@@ -333,7 +349,7 @@ class PostSourceParameterTest(SourceTestCase):
         self.assertEqual(["high", "blocker"], parameters["risks"])
         request.json = {"risks": ["medium", "high", "critical"]}
         response = post_source_parameter(SOURCE_ID, "risks", self.database)
-        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": {}})
+        self.assertEqual(response, {"ok": True, "availability": {}})
         self.assertEqual(["medium", "high"], parameters["risks"])
 
     def test_regexp_with_curly_braces(self, request):
@@ -344,7 +360,7 @@ class PostSourceParameterTest(SourceTestCase):
         parameters = self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]["parameters"]
         request.json = {"variable_url_regexp": [r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"]}
         response = post_source_parameter(SOURCE_ID, "variable_url_regexp", self.database)
-        self.assertEqual(response, {"ok": True, "nr_sources_mass_edited": 0, "availability": {}})
+        self.assertEqual(response, {"ok": True, "availability": {}})
         self.assertEqual([r"[\w]{3}-[\w]{3}-[\w]{4}-[\w]{3}\/"], parameters["variable_url_regexp"])
         updated_report = self.database.reports.insert_one.call_args[0][0]
         self.assert_delta(
@@ -352,96 +368,6 @@ class PostSourceParameterTest(SourceTestCase):
             r"from '' to '['[\\w]{3}-[\\w]{3}-[\\w]{4}-[\\w]{3}\\/']'",
             report=updated_report,
         )
-
-
-@patch("bottle.request")
-class PostSourceParameterMassEditTest(SourceTestCase):
-    """Unit tests for the mass edit variants of the post source parameter route."""
-
-    UNCHANGED_VALUE = "different username"
-    OLD_VALUE = "username"
-    NEW_VALUE = "new username"
-
-    def setUp(self):
-        """Extend to add a report fixture."""
-        super().setUp()
-        self.source_3 = Source(
-            SOURCE_ID3,
-            None,
-            {"name": "Source 3", "type": "owasp_zap", "parameters": {"username": self.UNCHANGED_VALUE}},
-        )
-        self.source_4 = Source(
-            SOURCE_ID4,
-            None,
-            {"name": "Source 4", "type": "owasp_dependency_check_xml", "parameters": {"username": self.OLD_VALUE}},
-        )
-        self.sources2 = {
-            SOURCE_ID5: Source(
-                SOURCE_ID5,
-                None,
-                {"name": "Source 5", "type": "owasp_zap", "parameters": {"username": self.OLD_VALUE}},
-            ),
-        }
-        self.sources3 = {
-            SOURCE_ID6: Source(
-                SOURCE_ID6,
-                None,
-                {"name": "Source 6", "type": "owasp_zap", "parameters": {"username": self.OLD_VALUE}},
-            ),
-        }
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID3] = self.source_3
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID4] = self.source_4
-        self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2] = Metric(
-            self.DATA_MODEL,
-            {"name": "Metric 2", "type": "security_warnings", "sources": self.sources2},
-            METRIC_ID2,
-            SUBJECT_ID,
-        )
-        self.report["subjects"][SUBJECT_ID2] = Subject(
-            self.DATA_MODEL,
-            {
-                "name": "Subject 2",
-                "metrics": {METRIC_ID3: {"name": "Metric 3", "type": "security_warnings", "sources": self.sources3}},
-            },
-            SUBJECT_ID2,
-            self.report,
-        )
-        self.database.reports.find.return_value = [self.report]
-
-    def assert_value(self, value_sources_mapping):
-        """Assert that the parameters have the correct value."""
-        for value, sources in value_sources_mapping.items():
-            for source in sources:
-                self.assertEqual(value, source["parameters"]["username"])
-
-    def assert_delta(self, description: str, uuids=None, report=None) -> None:
-        """Extend to set up fixed parameters."""
-        uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID, SOURCE_ID2] + (uuids or [])
-        description = (
-            f"Jenny changed the username of all sources of type 'OWASP ZAP' with username 'username' {description}."
-        )
-        super().assert_delta(description, uuids, report)
-
-    def test_mass_edit_report(self, request):
-        """Test that a source parameter can be mass edited."""
-        request.json = {"username": self.NEW_VALUE, "edit_scope": "report"}
-        response = post_source_parameter(SOURCE_ID, "username", self.database)
-        self.assertEqual({"ok": True, "nr_sources_mass_edited": 4, "availability": {}}, response)
-        self.assert_value(
-            {
-                self.NEW_VALUE: [
-                    self.sources[SOURCE_ID],
-                    self.sources[SOURCE_ID2],
-                    self.sources2[SOURCE_ID5],
-                    self.sources3[SOURCE_ID6],
-                ],
-                self.OLD_VALUE: [self.source_4],
-                self.UNCHANGED_VALUE: [self.source_3],
-            },
-        )
-        extra_uuids = [METRIC_ID2, SOURCE_ID5, SUBJECT_ID2, METRIC_ID3, SOURCE_ID6]
-        updated_report = self.database.reports.insert_one.call_args[0][0]
-        self.assert_delta("in report 'Report' from 'username' to 'new username'", extra_uuids, updated_report)
 
 
 class SourceTest(SourceTestCase):
@@ -464,10 +390,34 @@ class SourceTest(SourceTestCase):
         uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, source_uuid]
         description = "Jenny added a new source to metric 'Metric' of subject 'Subject' in report 'Report'."
         self.assert_delta(description, uuids, updated_report)
-        self.assertEqual(
-            "ojaudit",
-            updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][source_uuid]["type"],
+        new_source = updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][source_uuid]
+        self.assertEqual("ojaudit", new_source["type"])
+        self.assertEqual("", new_source["source_location"])
+
+    @patch("bottle.request")
+    def test_add_source_without_location(self, request):
+        """Test that a new source of a type without locations does not get a source location reference."""
+        request.json = {"type": "manual_number"}
+        self.assertTrue(post_source_new(METRIC_ID, self.database)["ok"])
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        source_uuid = list(updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"].keys())[1]
+        new_source = updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][source_uuid]
+        self.assertEqual("manual_number", new_source["type"])
+        self.assertNotIn("source_location", new_source)
+
+    @patch("bottle.request")
+    def test_change_source_location(self, request):
+        """Test that the source location of a source can be changed."""
+        request.json = {"source_location": ""}
+        self.assertEqual({"ok": True}, post_source_attribute(SOURCE_ID, "source_location", self.database))
+        updated_report = self.database.reports.insert_one.call_args[0][0]
+        source = updated_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"][SOURCE_ID]
+        self.assertEqual("", source["source_location"])
+        description = (
+            "Jenny changed the source_location of source 'Source' of metric 'Metric' of subject 'Subject' in report "
+            "'Report' from 'Source location' to ''."
         )
+        self.assert_delta(description, [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID], updated_report)
 
     def test_copy_source(self):
         """Test that a source can be copied."""
@@ -535,7 +485,12 @@ class SourceTest(SourceTestCase):
         self.database.reports.find.return_value = [self.report, target_report]
         self.assertEqual({"ok": True}, post_move_source(SOURCE_ID, METRIC_ID2, self.database))
         self.assertEqual({}, self.report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID]["sources"])
-        self.assertEqual((SOURCE_ID, source), next(iter(target_metric["sources"].items())))
+        moved_source_uuid, moved_source = next(iter(target_metric["sources"].items()))
+        self.assertEqual(SOURCE_ID, moved_source_uuid)
+        self.assertEqual(
+            {key: value for key, value in source.items() if key != "source_location"},
+            {key: value for key, value in moved_source.items() if key != "source_location"},
+        )
         expected_description = (
             "Jenny moved the source 'Source' from metric 'Metric' of subject 'Subject' in report "
             f"'Report' to metric '{self.target_metric_name}' of subject 'Target subject' in "
@@ -548,6 +503,11 @@ class SourceTest(SourceTestCase):
         updated_source_report = updated_reports[1]
         self.assert_delta(expected_description, expected_uuids, updated_source_report)
         self.assert_delta(expected_description, expected_uuids, updated_target_report)
+        # The source location referenced by the moved source is imported into the target report under a new uuid:
+        imported_location_uuid, imported_location = first(updated_target_report["source_locations"].items())
+        self.assertNotEqual(SOURCE_LOCATION_ID, imported_location_uuid)
+        self.assertEqual(create_source_location(), imported_location)
+        self.assertEqual(imported_location_uuid, moved_source["source_location"])
 
     def test_delete_source(self):
         """Test that the source can be deleted."""
