@@ -1,6 +1,6 @@
 [project]
 name = "collector"
-version = "5.55.1"
+version = "5.56.0-rc.0"
 requires-python = "==3.14.5"
 classifiers = [
     "Framework :: aiohttp",
