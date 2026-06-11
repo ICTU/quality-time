@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- When using GitLab as source for the 'failed jobs' metric, instead of asking GitLab for only failed jobs, fetch all jobs within the look-back period and then filter them for status so that jobs that first fail and then pass are not reported as failed. Fixes [#13478](https://github.com/ICTU/quality-time/issues/13478).
+
 ## v5.56.0 - 2026-06-11
 
 ### Added
