@@ -32,6 +32,12 @@ git clone https://github.com/ICTU/quality-time.git
 cd quality-time
 ```
 
+Some of the container images are based on [Docker Hardened Images](https://docs.docker.com/dhi/). These base images are free to use, but pulling them requires authentication to the Docker Hardened Images registry with a (free) Docker account:
+
+```console
+docker login dhi.io
+```
+
 #### Scenario 1: run all components in Docker
 
 To run *Quality-time* in Docker completely, open a terminal and start all containers with docker compose:

@@ -1,9 +1,4 @@
-FROM python:3.14.5-alpine3.23@sha256:5a824eb82cc75361f98611f3cfc5091ea33f10a6ccea4d4ebdabbc523b9a1614
-
-LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
-LABEL description="Quality-time collector"
-
-RUN apk add --no-cache tzdata=2026b-r0
+FROM dhi.io/python:3.14.5-alpine3.23-dev@sha256:35e345d2ca9052ad826f62ea89c3e4e99de9290f356f193e588427868a0044ae AS compile-image
 
 ENV UV_COMPILE_BYTECODE=1 UV_NO_CACHE=1 UV_PYTHON_DOWNLOADS=0 VIRTUAL_ENV=/home/collector/venv
 
@@ -17,15 +12,22 @@ RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv \
     uv sync --active --frozen --no-dev --no-install-project
 
 ENV HEALTH_CHECK_FILE=/home/collector/health_check.txt
-RUN adduser -S collector && adduser collector root
-USER collector
+# Make the health check file writable by the non-root user (65532) of the runtime image and by the
+# root group, for platforms that run containers with an arbitrary user ID in the root group
+RUN touch "${HEALTH_CHECK_FILE}" && chown 65532:0 "${HEALTH_CHECK_FILE}" && chmod g+w "${HEALTH_CHECK_FILE}"
 
-RUN touch "${HEALTH_CHECK_FILE}" && chmod g+w "${HEALTH_CHECK_FILE}" && chgrp root "${HEALTH_CHECK_FILE}"
-# Use the Shell form of CMD instead of the Exec form so the environment variable is substituted
-# hadolint ignore=DL3025
-HEALTHCHECK CMD python -c "from datetime import datetime as dt, timedelta, UTC; import sys; sys.exit(dt.now(tz=UTC) - dt.fromisoformat(open('${HEALTH_CHECK_FILE}', encoding='utf-8').read().strip()) > timedelta(seconds=600))"
+FROM dhi.io/python:3.14.5-alpine3.23@sha256:658c88b53d0525c13675b3808fbaeebe912eb8fe64ee3b761dfcc12787334981
 
+LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
+LABEL description="Quality-time collector"
+
+WORKDIR /home/collector
+
+COPY --from=compile-image /home/collector /home/collector
 COPY components/collector/src /home/collector
+
+ENV HEALTH_CHECK_FILE=/home/collector/health_check.txt
+HEALTHCHECK CMD ["python", "-c", "from datetime import datetime as dt, timedelta, UTC; import os, sys; sys.exit(dt.now(tz=UTC) - dt.fromisoformat(open(os.environ['HEALTH_CHECK_FILE'], encoding='utf-8').read().strip()) > timedelta(seconds=600))"]
 
 ENV PATH="/home/collector/venv/bin:$PATH"
 CMD ["python", "/home/collector/quality_time_collector.py"]
