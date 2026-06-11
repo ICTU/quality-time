@@ -1,4 +1,4 @@
-"""GitHub Action updater script finds GitHub workflows and updates 'uses' keys to latest versions.
+"""GitHub Action updater script finds YAML files in the GitHub directory and updates 'uses' keys to latest versions.
 
 If an environment variable GITHUB_TOKEN is set, the script will use it to increase the GitHub rate limit.
 """
@@ -9,7 +9,7 @@ from pathlib import Path
 
 from packaging.version import Version
 
-from filesystem import update_files
+from filesystem import YAML_GLOB_PATTERNS, update_files
 from github import get_latest_release
 from log import get_logger
 from version import DependencyVersion
@@ -32,5 +32,12 @@ def get_latest_version(action: str, current_version_string: str) -> DependencyVe
     return DependencyVersion(str(latest_version), release.body, release.commit_sha, published=release.published_at)
 
 
+def update_github_actions(github_dir: Path) -> int:
+    """Update the GitHub Actions in all YAML files under the GitHub directory, including composite actions."""
+    return update_files(
+        *YAML_GLOB_PATTERNS, regexp=ACTION_RE, get_new_version=get_latest_version, logger=LOG, start=github_dir
+    )
+
+
 if __name__ == "__main__":  # pragma: no cover
-    sys.exit(update_files("*.yml", ACTION_RE, get_latest_version, LOG, start=Path.cwd() / ".github" / "workflows"))
+    sys.exit(update_github_actions(Path.cwd() / ".github"))

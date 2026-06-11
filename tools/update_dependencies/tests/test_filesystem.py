@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 from filesystem import glob, update_file, update_files
 from version import DependencyVersion
 
-from .helpers import mock_path
+from .helpers import mock_path, new_version_getter
 
 
 @patch("pathlib.Path.cwd", Mock(return_value=Path("/")))
@@ -30,6 +30,11 @@ class GlobTest(unittest.TestCase):
         mock_glob.return_value = [Path("/example/file.txt")]
         self.assertEqual([Path("/example/file.txt")], list(glob("*.txt", start=Path("/example"))))
 
+    def test_multiple_patterns(self, mock_glob: Mock):
+        """Test that multiple glob patterns can be passed."""
+        mock_glob.side_effect = [[Path("/file.yml")], [Path("/file.yaml")]]
+        self.assertEqual([Path("/file.yml"), Path("/file.yaml")], list(glob("*.yml", "*.yaml")))
+
     def test_ignore_folders(self, mock_glob: Mock):
         """Test that some folders are ignored."""
         folders_that_should_be_ignored = ["/project/build", "/example/node_modules", "/src/__pycache__", "/.git"]
@@ -47,9 +52,7 @@ class UpdateFileTest(unittest.TestCase):
         """Test no changes."""
         mock_file = mock_path("line1\nline2\n")
         mock_logger = Mock()
-        self.assertEqual(
-            0, update_file(mock_file, "regexp", lambda *_args: DependencyVersion(version="1.1"), mock_logger)
-        )
+        self.assertEqual(0, update_file(mock_file, "regexp", new_version_getter("1.1"), mock_logger))
         mock_file.write_text.assert_not_called()
         mock_logger.new_version.assert_not_called()
 
@@ -57,9 +60,7 @@ class UpdateFileTest(unittest.TestCase):
         """Test a new version."""
         mock_file = mock_path("line1\nimage: python:3.14\n")
         mock_logger = Mock()
-        self.assertEqual(
-            0, update_file(mock_file, REGEXP, lambda *_args: DependencyVersion(version="3.15"), mock_logger)
-        )
+        self.assertEqual(0, update_file(mock_file, REGEXP, new_version_getter("3.15"), mock_logger))
         mock_file.write_text.assert_called_with("line1\nimage: python:3.15\n")
         mock_logger.new_version.assert_called_with("python", DependencyVersion(version="3.15"))
 
@@ -70,18 +71,15 @@ class UpdateFileTest(unittest.TestCase):
         mock_file = mock_path(f"line1\nuses: action/action@{old_sha} # v3.14\n")
         mock_logger = Mock()
         new_sha = "b" * 40
-        new_version = DependencyVersion(version="3.15", sha=new_sha)
-        self.assertEqual(0, update_file(mock_file, regexp, lambda *_args: new_version, mock_logger))
+        self.assertEqual(0, update_file(mock_file, regexp, new_version_getter("3.15", new_sha), mock_logger))
         mock_file.write_text.assert_called_with(f"line1\nuses: action/action@{new_sha} # v3.15\n")
-        mock_logger.new_version.assert_called_with("action/action", new_version)
+        mock_logger.new_version.assert_called_with("action/action", DependencyVersion(version="3.15", sha=new_sha))
 
     def test_unchanged_version(self):
         """Test that the file is not changed when the latest version equals the current version."""
         mock_file = mock_path("line1\nimage: python:3.14\n")
         mock_logger = Mock()
-        self.assertEqual(
-            0, update_file(mock_file, REGEXP, lambda *_args: DependencyVersion(version="3.14"), mock_logger)
-        )
+        self.assertEqual(0, update_file(mock_file, REGEXP, new_version_getter("3.14"), mock_logger))
         mock_file.write_text.assert_not_called()
         mock_logger.new_version.assert_not_called()
 
@@ -93,9 +91,7 @@ class UpdateFileTest(unittest.TestCase):
         """
         mock_file = mock_path("line1\nimage: python:3.9\n")
         mock_logger = Mock()
-        self.assertEqual(
-            0, update_file(mock_file, REGEXP, lambda *_args: DependencyVersion(version="3.10"), mock_logger)
-        )
+        self.assertEqual(0, update_file(mock_file, REGEXP, new_version_getter("3.10"), mock_logger))
         mock_file.write_text.assert_called_with("line1\nimage: python:3.10\n")
         mock_logger.new_version.assert_called_with("python", DependencyVersion(version="3.10"))
 
@@ -108,9 +104,7 @@ class UpdateFileTest(unittest.TestCase):
         """
         mock_file = mock_path("line1\nimage: python:3.14\n")
         mock_logger = Mock()
-        self.assertEqual(
-            0, update_file(mock_file, REGEXP, lambda *_args: DependencyVersion(version="3.13"), mock_logger)
-        )
+        self.assertEqual(0, update_file(mock_file, REGEXP, new_version_getter("3.13"), mock_logger))
         mock_file.write_text.assert_called_with("line1\nimage: python:3.13\n")
         mock_logger.new_version.assert_called_with("python", DependencyVersion(version="3.13"))
 
@@ -125,7 +119,8 @@ class UpdateFilesTest(unittest.TestCase):
         mock_glob.return_value = [mock_file]
         mock_logger = Mock()
         self.assertEqual(
-            0, update_files("Dockerfile", REGEXP, lambda *_args: DependencyVersion(version="1.1"), mock_logger)
+            0,
+            update_files("Dockerfile", regexp=REGEXP, get_new_version=new_version_getter("1.1"), logger=mock_logger),
         )
         mock_file.write_text.assert_not_called()
         mock_logger.new_version.assert_not_called()
@@ -136,7 +131,22 @@ class UpdateFilesTest(unittest.TestCase):
         mock_glob.return_value = [mock_file]
         mock_logger = Mock()
         self.assertEqual(
-            0, update_files("config.yml", REGEXP, lambda *_args: DependencyVersion(version="3.15"), mock_logger)
+            0,
+            update_files("config.yml", regexp=REGEXP, get_new_version=new_version_getter("3.15"), logger=mock_logger),
         )
         mock_file.write_text.assert_called_with("line1\nimage: python:3.15\n")
         mock_logger.new_version.assert_called_with("python", DependencyVersion(version="3.15"))
+
+    def test_multiple_patterns(self, mock_glob: Mock):
+        """Test that files matching any of multiple glob patterns are updated."""
+        yml_file = mock_path("image: python:3.14\n")
+        yaml_file = mock_path("image: python:3.14\n")
+        mock_glob.side_effect = [[yml_file], [yaml_file]]
+        mock_logger = Mock()
+        patterns = "*.yml", "*.yaml"
+        self.assertEqual(
+            0,
+            update_files(*patterns, regexp=REGEXP, get_new_version=new_version_getter("3.15"), logger=mock_logger),
+        )
+        yml_file.write_text.assert_called_with("image: python:3.15\n")
+        yaml_file.write_text.assert_called_with("image: python:3.15\n")

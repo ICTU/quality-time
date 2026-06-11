@@ -11,9 +11,10 @@ from npmjs import get_changes as npmjs_get_changes
 from npmjs import get_publication_datetime as npmjs_get_publication_datetime
 from pypi import release_metadata as pypi_release_metadata
 from update_github_action import get_latest_version as github_get_latest_version
+from version import DependencyVersion
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Callable, Mapping
 
 
 class CacheClearingTestCase(unittest.TestCase):
@@ -37,6 +38,11 @@ class CacheClearingTestCase(unittest.TestCase):
         super().setUp()
         for cache in self.CACHES:
             cache.cache_clear()
+
+
+def new_version_getter(version: str, sha: str = "") -> Callable[[str, str], DependencyVersion]:
+    """Return a new-version-getter."""
+    return lambda *_args: DependencyVersion(version=version, sha=sha)
 
 
 def mock_response(json: Mapping | list | None = None, **kwargs: object) -> Mock:

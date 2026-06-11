@@ -12,7 +12,7 @@ IMAGE_RE = r"FROM (?P<dependency>[\w\d\./-]+):(?P<version>[\d\w\.\-]+)@(?P<sha>s
 
 def update_dockerfiles() -> int:
     """Update the base image of Dockerfiles."""
-    return update_files("Dockerfile", IMAGE_RE, get_latest_tag, LOG)
+    return update_files("Dockerfile", regexp=IMAGE_RE, get_new_version=get_latest_tag, logger=LOG)
 
 
 if __name__ == "__main__":  # pragma: no cover

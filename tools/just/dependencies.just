@@ -21,17 +21,17 @@ alias update-deps := update-dependencies
 # Install Python dependencies from the lock file.
 [no-cd]
 [private]
-install-py-dependencies:
+install-py-dependencies folder="":
     ?[ {{ pyproject_toml_exists }} = true ]
-    uv sync --no-progress --quiet --locked --all-extras --all-groups --reinstall-package shared-code --reinstall-package shared-test-code
+    {{ start_capture(folder) }} uv sync --no-progress --locked --all-extras --all-groups --reinstall-package shared-code --reinstall-package shared-test-code {{ end_capture("install-py-dependencies") }}
 
 # Install JavaScript dependencies from the lock file.
 [no-cd]
 [private]
-install-js-dependencies:
+install-js-dependencies folder="":
     ?[ {{ package_json_exists }} = true ]
     ?[ ! -e node_modules/.package-lock.json ] || [ package-lock.json -nt node_modules/.package-lock.json ]
-    npm ci --silent
+    {{ start_capture(folder) }} npm ci {{ end_capture("install-js-dependencies") }}
 
 # === Lock dependencies ===
 

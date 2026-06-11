@@ -1,13 +1,15 @@
 """Unit tests for the GitHub Action update script."""
 
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 from unittest.mock import ANY, Mock, patch
 
 import requests
 
-from update_github_action import get_latest_version
+from update_github_action import get_latest_version, update_github_actions
+from version import DependencyVersion
 
-from .helpers import CacheClearingTestCase, mock_response, release_json
+from .helpers import CacheClearingTestCase, mock_path, mock_response, release_json
 
 
 @patch("requests.get")
@@ -66,3 +68,34 @@ class UpdateGitHubActionTest(CacheClearingTestCase):
             Mock(raise_for_status=Mock(side_effect=requests.exceptions.HTTPError)),
         ]
         self.assertEqual("1.0", get_latest_version("docker/no-sha-action", "1.0").version)
+
+
+GITHUB_DIR = Path("/repo/.github")
+OLD_SHA = "a" * 40
+NEW_SHA = "b" * 40
+
+
+@patch("logging.Logger.warning", Mock())
+@patch("logging.Logger.info", Mock())
+@patch("update_github_action.get_latest_version")
+@patch("pathlib.Path.glob")
+class UpdateGitHubActionsTest(CacheClearingTestCase):
+    """Unit tests for the update GitHub Actions function."""
+
+    def test_multiple_files(self, mock_glob: Mock, mock_get_latest_version: Mock):
+        """Test that actions are updated in all YAML files under the GitHub directory, not just workflows."""
+        mock_get_latest_version.return_value = DependencyVersion(version="1.1", sha=NEW_SHA)
+        workflow_yml = mock_path(f"uses: action/action@{OLD_SHA} # v1.0\n")
+        composite_action_yaml = mock_path(f"uses: action/action@{OLD_SHA} # v1.0\n")
+        mock_glob.side_effect = [[workflow_yml], [composite_action_yaml]]
+        self.assertEqual(0, update_github_actions(GITHUB_DIR))
+        workflow_yml.write_text.assert_called_with(f"uses: action/action@{NEW_SHA} # v1.1\n")
+        composite_action_yaml.write_text.assert_called_with(f"uses: action/action@{NEW_SHA} # v1.1\n")
+
+    def test_file_without_actions(self, mock_glob: Mock, mock_get_latest_version: Mock):
+        """Test that YAML files without actions are left untouched."""
+        dependabot_yml = mock_path("version: 2\n")
+        mock_glob.side_effect = [[dependabot_yml], []]
+        self.assertEqual(0, update_github_actions(GITHUB_DIR))
+        dependabot_yml.write_text.assert_not_called()
+        mock_get_latest_version.assert_not_called()
