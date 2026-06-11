@@ -11,7 +11,7 @@ has_py_unit_tests := if pyproject_toml_exists == "true" { exists("tests") } else
 [env("PYTHONPATH", "src")]
 [no-cd]
 [private]
-py-unit-test cov="yes" folder="" *tests: install-py-dependencies
+py-unit-test cov="yes" folder="" *tests: (install-py-dependencies folder)
     ?[ {{ has_py_unit_tests }} = true ]
     # Show a spinner while running; suppress output unless the run fails; with coverage, also write the reports (xml fails if coverage is too low, but only after the text and HTML reports have been generated).
     {{ start_progress(folder) }} {{ if cov == "no" { python } else { coverage + " run" } }} -m unittest --quiet {{ tests }}{{ if cov != "no" { " && " + coverage + " report --fail-under=0 && " + coverage + " html --quiet --fail-under=0 && " + coverage + " xml --quiet" } else { "" } }} {{ end_progress("py-unit-test") }}
@@ -20,7 +20,7 @@ py-unit-test cov="yes" folder="" *tests: install-py-dependencies
 [arg("cov", long="coverage", short="c", pattern="default|yes|no", help="Measure unit test coverage?")]
 [no-cd]
 [private]
-js-unit-test cov="no" folder="" *tests: install-js-dependencies
+js-unit-test cov="no" folder="" *tests: (install-js-dependencies folder)
     ?[ {{ has_js_script("test") }} = true ]
     # Show a spinner while running; suppress output unless the tests fail. Without explicit tests or coverage, only run the tests for uncommitted changes, if any.
     {{ start_progress(folder) }} if [ "{{ cov }}" = "yes" ]; then args="--coverage"; \

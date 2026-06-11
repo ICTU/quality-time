@@ -16,7 +16,7 @@ def update_docker_compose_files() -> int:
     Third-party images are pinned as ``tag@sha256:digest``; both the tag and digest are kept in sync.
     Lines using ${VAR} for the tag are left untouched because the regex does not match shell substitution syntax.
     """
-    return update_files("docker-compose*.yml", IMAGE_RE, get_latest_tag, LOG)
+    return update_files("docker-compose*.yml", regexp=IMAGE_RE, get_new_version=get_latest_tag, logger=LOG)
 
 
 if __name__ == "__main__":  # pragma: no cover

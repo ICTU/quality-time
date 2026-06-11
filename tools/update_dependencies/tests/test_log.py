@@ -10,6 +10,8 @@ import filesystem
 from log import Logger
 from version import DependencyVersion
 
+from .helpers import new_version_getter
+
 
 class LoggerTests(TestCase):
     """Unit tests for the logger class."""
@@ -87,9 +89,9 @@ class LogOriginTests(TestCase):
             ):
                 filesystem.update_files(
                     "*.yml",
-                    r"(?P<dependency>dependency): (?P<version>[\d.]+)",
-                    lambda *_args: DependencyVersion("2.0"),
-                    logger,
+                    regexp=r"(?P<dependency>dependency): (?P<version>[\d.]+)",
+                    get_new_version=new_version_getter("2.0"),
+                    logger=logger,
                     start=Path(directory),
                 )
         origins = {Path(record.pathname).name for record in captured.records}

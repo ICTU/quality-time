@@ -10,19 +10,22 @@ if TYPE_CHECKING:
     from log import Logger
     from version import DependencyVersion
 
+YAML_GLOB_PATTERNS = ("*.yml", "*.yaml")
 
-def glob(glob_pattern: str, start: Path | None = None) -> Iterator[Path]:
-    """Return an iterator over all paths matching the given glob pattern."""
+
+def glob(*glob_patterns: str, start: Path | None = None) -> Iterator[Path]:
+    """Return an iterator over all paths matching any of the given glob patterns."""
     if start is None:
         start = Path.cwd()
     path_parts_to_ignore = {"build", "node_modules", "__pycache__"}
-    for path in start.rglob(glob_pattern):
-        relative_path = path.relative_to(start)
-        if any(part.startswith(".") for part in relative_path.parts):
-            continue
-        if any(part in path_parts_to_ignore for part in relative_path.parts):
-            continue
-        yield path
+    for glob_pattern in glob_patterns:
+        for path in start.rglob(glob_pattern):
+            relative_path = path.relative_to(start)
+            if any(part.startswith(".") for part in relative_path.parts):
+                continue
+            if any(part in path_parts_to_ignore for part in relative_path.parts):
+                continue
+            yield path
 
 
 def _update_line(
@@ -54,12 +57,12 @@ def update_file(
 
 
 def update_files(
-    glob_pattern: str,
+    *glob_patterns: str,
     regexp: str,
     get_new_version: Callable[[str, str], DependencyVersion],
     logger: Logger,
     start: Path | None = None,
 ) -> int:
     """Update the files using the regexp to find the current version and get_new_version to find new versions."""
-    results = {update_file(path, regexp, get_new_version, logger) for path in glob(glob_pattern, start)}
+    results = {update_file(path, regexp, get_new_version, logger) for path in glob(*glob_patterns, start=start)}
     return max(results, default=0)

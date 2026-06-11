@@ -14,7 +14,7 @@ vulture_whitelist := ".vulture-whitelist.py"
 # Run a Python check.
 [no-cd]
 [private]
-py-check name check folder="": install-py-dependencies
+py-check name check folder="": (install-py-dependencies folder)
     ?[ {{ pyproject_toml_exists }} = true ]
     {{ start_capture(folder) }} {{ check }} {{ end_capture(name) }}
 
@@ -51,7 +51,7 @@ troml folder="": (py-check "troml" f"{{troml}} check" folder)
 # Run pip-audit to check Python dependencies for known security vulnerabilities.
 [no-cd]
 [private]
-pip-audit folder="": install-py-dependencies
+pip-audit folder="": (install-py-dependencies folder)
     ?[ {{ pyproject_toml_exists }} = true ]
     req=$(mktemp); trap "rm -f $req" EXIT; \
     {{ start_capture(folder) }} uv export --quiet --color never --directory . --format requirements-txt --no-emit-package shared-code --no-emit-package shared-test-code > $req && \
@@ -75,14 +75,14 @@ vulture folder="": (py-check "vulture" f"{{vulture}} {{code}} {{vulture_whitelis
 # Run vale to check markdown files for spelling and style.
 [no-cd]
 [private]
-vale folder="": install-py-dependencies
+vale folder="": (install-py-dependencies folder)
     ?[ {{ has_py_pkg("vale") }} = true ]
     {{ start_capture(folder) }} {{ uv_run }} vale sync && {{ uv_run }} vale --no-wrap --glob '*.md' src {{ end_capture("vale") }}
 
 # Run a JavaScript check.
 [no-cd]
 [private]
-js-check name check folder="": install-js-dependencies
+js-check name check folder="": (install-js-dependencies folder)
     ?[ {{ package_json_exists }} = true ]
     {{ start_capture(folder) }} {{ check }} {{ end_capture(name) }}
 
@@ -99,7 +99,7 @@ npm-audit folder="": (js-check "npm-audit" f"npm audit" folder)
 # Run npm outdated to check for outdated JavaScript dependencies. Ignore outdated packages that can't be updated (current == wanted).
 [no-cd]
 [private]
-npm-outdated folder="": install-js-dependencies
+npm-outdated folder="": (install-js-dependencies folder)
     ?[ {{ package_json_exists }} = true ]
     {{ start_capture(folder) }} npm outdated --json | {{ python }} -c "import json, sys; updates = [f'{k}: {v['current']} -> {v['wanted']}' for k, v in json.loads(sys.stdin.read()).items() if v['wanted'] != v['current']]; print('\n'.join(updates), end='\n' if updates else ''); sys.exit(1 if updates else 0)" {{ end_capture("npm-outdated") }}
 
