@@ -49,6 +49,21 @@ spec:
           resources: {{- toYaml . | nindent 12 }}
           {{- end }}
           securityContext: {{- toYaml .Values.notifier.securityContext | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          livenessProbe:
+            exec:
+              command:
+                - python
+                - -c
+                - "from datetime import datetime as dt, timedelta, UTC; import os, sys; sys.exit(dt.now(tz=UTC) - dt.fromisoformat(open(os.environ['HEALTH_CHECK_FILE'], encoding='utf-8').read().strip()) > timedelta(seconds=600))"
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 10
+      volumes:
+        - name: tmp
+          emptyDir: {}
       restartPolicy: Always
 ---
 {{- if .Values.notifier.env }}

@@ -43,6 +43,18 @@ jobs:
           kubectl apply -f helm/deploy-ci.yaml
           helm dependency build helm
           helm upgrade --install --render-subchart-notes quality-time helm
-          kubectl wait --all pods --timeout=2m --for=condition=Ready
+          # The timeout needs to accommodate pulling all images and the readiness probes passing
+          kubectl wait --all pods --timeout=5m --for=condition=Ready
           kubectl wait --all deployments --timeout=30s --for=condition=Available
-        timeout-minutes: 3
+        timeout-minutes: 7
+
+      - name: Show diagnostics on failure
+        if: failure()
+        run: |
+          kubectl get pods
+          kubectl get events --sort-by=.lastTimestamp | tail -50
+          kubectl describe pods
+          for pod in $(kubectl get pods --output name); do
+            echo "=== Logs for ${pod}"
+            kubectl logs --all-containers --prefix --tail=50 ${pod} || true
+          done

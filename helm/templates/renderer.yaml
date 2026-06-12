@@ -39,6 +39,26 @@ spec:
           resources: {{- toYaml . | nindent 12 }}
           {{- end }}
           securityContext: {{- toYaml .Values.renderer.securityContext | nindent 12 }}
+          volumeMounts:
+            # Chromium, used to render PDFs, writes its temporary files, crash handler database,
+            # and caches to /tmp
+            - name: tmp
+              mountPath: /tmp
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 9000
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 9000
+            periodSeconds: 10
+            timeoutSeconds: 10
+      volumes:
+        - name: tmp
+          emptyDir: {}
       restartPolicy: Always
 ---
 apiVersion: v1

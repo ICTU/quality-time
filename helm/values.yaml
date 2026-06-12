@@ -8,6 +8,7 @@ api_server:
     capabilities:
       drop:
         - ALL
+    readOnlyRootFilesystem: true
   extraVolumes: []
   #    - name: cert-config-map
   #      configMap:
@@ -29,8 +30,13 @@ collector:
     capabilities:
       drop:
         - ALL
+    readOnlyRootFilesystem: true
   image:
     repository: "ictu/quality-time_collector"
+  env:
+    # The health check file is written to /tmp because that is the only writable folder
+    # with a read-only root filesystem; the liveness probe reads the same environment variable
+    HEALTH_CHECK_FILE: "/tmp/health_check.txt"
 
 database:
   storageSize: "1Gi"
@@ -43,6 +49,7 @@ database:
         - SETUID
       drop:
         - ALL
+    readOnlyRootFilesystem: true
   image:
     repository: "ictu/quality-time_database"
   resources:
@@ -58,6 +65,7 @@ frontend:
     capabilities:
       drop:
         - ALL
+    readOnlyRootFilesystem: true
   image:
     repository: "ictu/quality-time_frontend"
 
@@ -66,19 +74,29 @@ notifier:
     capabilities:
       drop:
         - ALL
+    readOnlyRootFilesystem: true
   image:
     repository: "ictu/quality-time_notifier"
+  env:
+    # The health check file is written to /tmp because that is the only writable folder
+    # with a read-only root filesystem; the liveness probe reads the same environment variable
+    HEALTH_CHECK_FILE: "/tmp/health_check.txt"
 
 renderer:
   securityContext:
     capabilities:
       drop:
         - ALL
+    readOnlyRootFilesystem: true
   image:
     repository: "ictu/quality-time_renderer"
   env:
     LC_ALL: "en_GB.UTF-8"
     TZ: "Europe/Amsterdam"
+    # Point the configuration and cache folders of Chromium, which include the Crashpad crash handler
+    # database and the fontconfig cache, to /tmp, the only writable folder with a read-only root filesystem
+    XDG_CONFIG_HOME: "/tmp"
+    XDG_CACHE_HOME: "/tmp"
 
 www:
   securityContext:
@@ -90,6 +108,7 @@ www:
         - NET_BIND_SERVICE
       drop:
         - ALL
+    readOnlyRootFilesystem: true
   # -- When www.deployProxy is false the quality-time_proxy is not used and ingress is pointed directly to the backend api and frontend. Note that this breaks PDF-exports. See https://github.com/ICTU/quality-time/issues/13065.
   deployProxy: true
   image:
