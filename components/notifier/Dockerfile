@@ -16,11 +16,10 @@ RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv \
     --mount=type=bind,source=components/notifier/pyproject.toml,target=/home/notifier/pyproject.toml \
     uv sync --active --frozen --no-dev --no-install-project
 
-ENV HEALTH_CHECK_FILE=/home/notifier/health_check.txt
-RUN adduser -S notifier && adduser notifier root
+ENV HEALTH_CHECK_FILE=/tmp/health_check.txt
+RUN adduser -S notifier
 USER notifier
 
-RUN touch "${HEALTH_CHECK_FILE}" && chmod g+w "${HEALTH_CHECK_FILE}" && chgrp root "${HEALTH_CHECK_FILE}"
 HEALTHCHECK CMD ["python", "-c", "from datetime import datetime as dt, timedelta, UTC; import os, sys; sys.exit(dt.now(tz=UTC) - dt.fromisoformat(open(os.environ['HEALTH_CHECK_FILE'], encoding='utf-8').read().strip()) > timedelta(seconds=600))"]
 
 COPY components/notifier/src /home/notifier

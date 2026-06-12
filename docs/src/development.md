@@ -91,18 +91,6 @@ cd components/collector
 just start
 ```
 
-By default, the collector attempts to write a health check time stamp to `/home/collector/health_check.txt` every few seconds. If that fails, you'll see these messages in the log:
-
-```console
-Could not write health check time stamp to /home/collector/health_check.txt: [Errno 2] No such file or directory: '/home/collector/health_check.txt'
-```
-
-To prevent the error and the resulting log messages, set the `HEALTH_CHECK_FILE` environment variable to a location that can be written on your machine, for example:
-
-```console
-export HEALTH_CHECK_FILE=/tmp/health_check.txt
-```
-
 ##### Start the {index}`frontend <Frontend component>`
 
 Open another terminal and start the frontend:

@@ -136,7 +136,7 @@ The collector uses the following environment variables:
 | `DATABASE_PASSWORD`               | `root`                                | Mongo database connection password. This value is only used when `DATABASE_URL` and `DATABASE_PASSWORD_FILE` are not provided.                                                    |
 | `DATABASE_HOST`                   | `localhost`                           | Mongo database connection hostname. This value is only used when `DATABASE_URL` is not provided.                                                                                  |
 | `DATABASE_PORT`                   | `27017`                               | Mongo database connection port. This value is only used when `DATABASE_URL` is not provided.                                                                                      |
-| `HEALTH_CHECK_FILE`               | `/home/collector/health_check.txt`    | Path to the file used for health check.                                                                                                                                           |
+| `HEALTH_CHECK_FILE`               | `/tmp/health_check.txt`               | Path to the file used for health check.                                                                                                                                           |
 | `HTTP(S)_PROXY`                   |                                       | Proxy to use by the collector.                                                                                                                                                    |
 
 ```{seealso}
@@ -164,7 +164,7 @@ The notifier uses the following environment variables:
 | `DATABASE_PASSWORD`       | `root`                                | Mongo database connection password. This value is only used when `DATABASE_URL` and `DATABASE_PASSWORD_FILE` are not provided. |
 | `DATABASE_HOST`           | `localhost`                           | Mongo database connection hostname. This value is only used when `DATABASE_URL` is not provided.                               |
 | `DATABASE_PORT`           | `27017`                               | Mongo database connection port. This value is only used when `DATABASE_URL` is not provided.                                   |
-| `HEALTH_CHECK_FILE`       | `/home/notifier/health_check.txt`     | Path to the file used for health check.                                                                                        |
+| `HEALTH_CHECK_FILE`       | `/tmp/health_check.txt`               | Path to the file used for health check.                                                                                        |
 | `NOTIFIER_LOG_LEVEL`      | `WARNING`                             | Log level. Allowed values are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.                                             |
 | `NOTIFIER_SLEEP_DURATION` | `60`                                  | The amount of time (in seconds) that the notifier sleeps between sending notifications.                                        |
 
