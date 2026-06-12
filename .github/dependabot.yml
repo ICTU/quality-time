@@ -1,5 +1,11 @@
 ---
 version: 2
+registries:
+  docker-hardened-images:
+    type: docker-registry
+    url: https://dhi.io
+    username: ${{secrets.DEPENDABOT_DOCKER_USERNAME}}
+    password: ${{secrets.DEPENDABOT_DOCKER_PASSWORD}}
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -41,6 +47,8 @@ updates:
 
   - package-ecosystem: docker
     directory: "/components/collector"
+    registries:
+      - docker-hardened-images
     cooldown:
       default-days: 7
     schedule:
@@ -83,6 +91,8 @@ updates:
 
   - package-ecosystem: docker
     directory: "/components/notifier"
+    registries:
+      - docker-hardened-images
     cooldown:
       default-days: 7
     schedule:
@@ -117,6 +127,8 @@ updates:
 
   - package-ecosystem: docker
     directory: "/components/api_server"
+    registries:
+      - docker-hardened-images
     cooldown:
       default-days: 7
     schedule:
@@ -145,6 +157,8 @@ updates:
 
   - package-ecosystem: docker
     directory: "/components/testdata"
+    registries:
+      - docker-hardened-images
     cooldown:
       default-days: 7
     schedule:

@@ -44,6 +44,13 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Login to the Docker Hardened Images registry
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        with:
+          registry: dhi.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build image from Dockerfile
         working-directory: ${{ matrix.build_path }}
         run: docker build -f ${{ matrix.docker_file }} -t docker.io/ictu/quality-time_${{ matrix.component }} .
