@@ -12,6 +12,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Changed
+
+- Change the default location of the health check file that the collector and notifier write, from the home directory of the user running the component to the system temporary directory (`/tmp` in the containers). The `HEALTH_CHECK_FILE` environment variable can still be used to configure a different location.
+
 ### Fixed
 
 - When using GitLab as source for the 'failed jobs' metric, instead of asking GitLab for only failed jobs, fetch all jobs within the look-back period and then filter them for status so that jobs that first fail and then pass are not reported as failed. Fixes [#13478](https://github.com/ICTU/quality-time/issues/13478).

@@ -2,6 +2,7 @@
 
 import asyncio
 import pathlib
+import tempfile
 from datetime import datetime
 from os import getenv
 from typing import TYPE_CHECKING, NoReturn
@@ -46,7 +47,7 @@ async def notify(database: Database, sleep_duration: int = 60) -> NoReturn:
 def record_health() -> None:
     """Record the current date and time in a file to allow for health checks."""
     logger = get_logger()
-    filepath = pathlib.Path(getenv("HEALTH_CHECK_FILE", "/home/notifier/health_check.txt"))
+    filepath = pathlib.Path(getenv("HEALTH_CHECK_FILE", pathlib.Path(tempfile.gettempdir()) / "health_check.txt"))
     try:
         with filepath.open("w", encoding="utf-8") as health_check:
             health_check.write(iso_timestamp())

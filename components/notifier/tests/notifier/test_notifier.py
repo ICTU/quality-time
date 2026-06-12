@@ -2,6 +2,7 @@
 
 import contextlib
 import pathlib
+import tempfile
 import unittest
 from datetime import datetime, timedelta
 from unittest.mock import Mock, mock_open, patch
@@ -41,7 +42,7 @@ class HealthCheckTest(unittest.TestCase):
 
     def setUp(self):
         """Set variables required by testcases."""
-        self.filename = pathlib.Path("/home/notifier/health_check.txt")
+        self.filename = pathlib.Path(tempfile.gettempdir()) / "health_check.txt"
 
     @patch("pathlib.Path.open", new_callable=mock_open)
     @patch("notifier.notifier.iso_timestamp")

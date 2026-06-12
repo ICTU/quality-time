@@ -3,6 +3,7 @@
 import asyncio
 import logging
 import pathlib
+import tempfile
 import unittest
 from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, Mock, _patch, call, mock_open, patch
@@ -319,5 +320,5 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
         self.collector.record_health()
         logger.exception.assert_called_once_with(
             "Could not write health check time stamp to %s",
-            pathlib.Path("/home/collector/health_check.txt"),
+            pathlib.Path(tempfile.gettempdir()) / "health_check.txt",
         )
