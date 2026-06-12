@@ -32,6 +32,12 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.database.backupVol.claimName }}
         {{- end }}
+        - name: tmp
+          emptyDir: {}
+        # The MongoDB image declares /data/configdb as a volume; Docker creates it automatically,
+        # Kubernetes does not, so mount it explicitly to keep it writable with a read-only root filesystem
+        - name: configdb
+          emptyDir: {}
       containers:
         - name: {{ template "database_name" . }}
           image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag | default .Chart.AppVersion }}"
@@ -64,6 +70,21 @@ spec:
             - mountPath: {{ .Values.database.backupVol.mountPath }}
               name: backups
             {{- end }}
+            - mountPath: /tmp # MongoDB creates its Unix domain socket in /tmp
+              name: tmp
+            - mountPath: /data/configdb
+              name: configdb
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 27017
+            periodSeconds: 10
+            timeoutSeconds: 10
       restartPolicy: Always
 ---
 apiVersion: v1

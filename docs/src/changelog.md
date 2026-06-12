@@ -14,7 +14,9 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Changed
 
-- Change the default location of the health check file that the collector and notifier write, from the home directory of the user running the component to the system temporary directory (`/tmp` in the containers). The `HEALTH_CHECK_FILE` environment variable can still be used to configure a different location.
+- Run all containers in both the Docker-composition and the Helm chart with a read-only root filesystem (except the development-only LDAP and Mongo Express containers in the Docker-composition), with mounts for the locations the components write to, such as `/tmp`. The database data is unaffected as it is stored on a volume. Partially realizes [#13477](https://github.com/ICTU/quality-time/issues/13477).
+- Collector and notifier now write the health check file to `/tmp`. The `HEALTH_CHECK_FILE` environment variable can still be used to configure a different location. Partially realizes [#13477](https://github.com/ICTU/quality-time/issues/13477).
+- Add liveness probes (all components) and readiness probes (all components that serve traffic) to the Helm chart, mirroring the Docker health checks. Partially realizes [#13477](https://github.com/ICTU/quality-time/issues/13477).
 
 ### Fixed
 

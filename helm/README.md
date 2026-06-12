@@ -24,7 +24,7 @@ helm upgrade quality-time helm
 
 ## Set up port-forwarding
 
-Finally, enable port-forwarding on the proxy pod to make Quality-time reachable: 
+Finally, enable port-forwarding on the proxy pod to make Quality-time reachable:
 
 ```console
 kubectl port-forward quality-time-www-pod-suffix 8080:8080
@@ -35,3 +35,7 @@ If you don't have tab completion working for kubectl you can find out the pod-su
 ```console
 kubectl get pods | grep quality-time-www
 ```
+
+## Customizing
+
+Note that the `securityContext` of each component in the Helm chart values contains `readOnlyRootFilesystem: true`; when overriding the `securityContext` of a component, include `readOnlyRootFilesystem: true` in the override to keep the read-only root filesystem, as overrides replace the whole `securityContext`.
