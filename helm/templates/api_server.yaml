@@ -62,16 +62,36 @@ spec:
             - name: LDAP_SEARCH_FILTER  # override to make sure that double dollar signs are processed like in docker
               value: {{ .Values.api_server.env.LDAP_SEARCH_FILTER }}
           securityContext: {{- toYaml .Values.api_server.securityContext | nindent 12 }}
-          {{- with .Values.api_server.extraVolumeMounts }}
-          volumeMounts: {{- toYaml . | nindent 12 }}
-          {{- end }}
+          volumeMounts:
+            # Bottle, the web framework used by the API-server, buffers large request bodies,
+            # such as imported reports, in temporary files
+            - name: tmp
+              mountPath: /tmp
+            {{- with .Values.api_server.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /api/internal/health
+              port: 5001
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/internal/health
+              port: 5001
+            periodSeconds: 10
+            timeoutSeconds: 10
           {{- with .Values.api_server.resources }}
           resources: {{- toYaml . | nindent 12 }}
           {{- end }}
       restartPolicy: Always
-      {{- with .Values.api_server.extraVolumes }}
-      volumes: {{- toYaml . | nindent 8 }}
-      {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- with .Values.api_server.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
 ---
 apiVersion: v1
 kind: Service

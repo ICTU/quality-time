@@ -44,11 +44,13 @@ config
 coroutine
 discoverability
 donut
+emptyDir
 errored
 favicon
 fixme
 hostnames?
 hotspots?
+liveness
 mimetype
 misconfigured
 mypy

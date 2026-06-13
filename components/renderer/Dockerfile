@@ -19,4 +19,9 @@ HEALTHCHECK CMD ["node", "/home/renderer/healthcheck.cjs"]
 
 ENV NODE_ENV=production
 
+# Point the configuration and cache folders of Chromium, which include the Crashpad crash handler database and
+# the fontconfig cache, to /tmp, the only writable folder when the container runs with a read-only root filesystem
+ENV XDG_CONFIG_HOME=/tmp
+ENV XDG_CACHE_HOME=/tmp
+
 CMD ["node", "/home/renderer/index.js"]

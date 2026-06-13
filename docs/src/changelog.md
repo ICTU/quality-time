@@ -15,6 +15,9 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Changed
 
 - Change the default location of the health check file that the collector and notifier write, from the home directory of the user running the component to the system temporary directory (`/tmp` in the containers). The `HEALTH_CHECK_FILE` environment variable can still be used to configure a different location.
+- Run all containers in the Docker-composition with a read-only root filesystem, with mounts for the locations the components write to, such as `/tmp` and, for the Nginx-based components, `/etc/nginx/conf.d`. The database data is unaffected as it is stored on a volume.
+- Run all containers in the Helm chart with a read-only root filesystem as well, with emptyDir volumes for the locations the components write to. Note that the `securityContext` of each component in the Helm chart values now contains `readOnlyRootFilesystem: true`; when overriding the `securityContext` of a component, include `readOnlyRootFilesystem: true` in the override to keep the read-only root filesystem, as overrides replace the whole `securityContext`.
+- Add liveness probes (all components) and readiness probes (all components that serve traffic) to the Helm chart, mirroring the Docker health checks.
 
 ### Fixed
 

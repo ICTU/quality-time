@@ -34,6 +34,29 @@ spec:
           resources: {{- toYaml . | nindent 12 }}
           {{- end }}
           securityContext: {{- toYaml .Values.frontend.securityContext | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            # Nginx renders its configuration templates into /etc/nginx/conf.d at startup
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+          livenessProbe:
+            httpGet:
+              path: /favicon.ico
+              port: 5000
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /favicon.ico
+              port: 5000
+            periodSeconds: 10
+            timeoutSeconds: 10
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: nginx-config
+          emptyDir: {}
       restartPolicy: Always
 ---
 apiVersion: v1
