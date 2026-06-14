@@ -19,6 +19,13 @@ LABEL description="Quality-time frontend"
 
 ENV FRONTEND_PORT=5000
 
+# Reduce the attack surface by removing the package manager, which the Nginx runtime does not need. The
+# shell is kept because the Nginx entrypoint renders the configuration templates with it at startup.
+USER root
+RUN apk --purge --quiet del apk-tools alpine-keys scanelf && \
+    rm -rf /etc/apk /lib/apk /var/cache/apk
+USER 101
+
 COPY --from=compile-image /home/frontend/dist /usr/share/nginx/html
 COPY --from=compile-image /usr/share/zoneinfo /usr/share/zoneinfo
 

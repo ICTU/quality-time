@@ -16,6 +16,13 @@ ENV FRONTEND_PORT=5000
 ENV API_SERVER_HOST=api_server
 ENV API_SERVER_PORT=5001
 
+# Reduce the attack surface by removing the package manager, which the Nginx runtime does not need. The
+# shell is kept because the Nginx entrypoint renders the configuration templates with it at startup.
+USER root
+RUN apk --purge --quiet del apk-tools alpine-keys scanelf && \
+    rm -rf /etc/apk /lib/apk /var/cache/apk
+USER 101
+
 COPY --from=compile-image /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=compile-image /usr/share/zoneinfo /usr/share/zoneinfo
 COPY *.template /etc/nginx/templates/
