@@ -4,6 +4,14 @@
 x-security-opt: &security-opt
   - no-new-privileges:true
 
+# The Nginx-based images render their configuration templates into /etc/nginx/conf.d at startup,
+# so that folder needs to be writable for the non-root Nginx user, also with a read-only root filesystem
+x-nginx-config-dir: &nginx-config-dir
+  - type: tmpfs
+    target: /etc/nginx/conf.d
+    tmpfs:
+      mode: 0o1777
+
 x-tz: &tz TZ=${TZ:-Europe/Amsterdam} # Timezone for log timestamps and date formatting; installed in each image
 
 services:
@@ -24,10 +32,14 @@ services:
     cap_drop:
       - ALL
     cap_add:
-      # nginx binary has CAP_NET_BIND_SERVICE via setcap (see components/proxy/Dockerfile)
+      # Nginx binary has CAP_NET_BIND_SERVICE via setcap (see components/proxy/Dockerfile)
       # so it can listen on port 80 as non-root
       - NET_BIND_SERVICE
     security_opt: *security-opt
+    read_only: true
+    tmpfs:
+      - /tmp # Nginx writes its pid file and temporary files to /tmp
+    volumes: *nginx-config-dir
   frontend:
     image: ictu/quality-time_frontend:${QUALITY_TIME_VERSION}
     environment:
@@ -38,6 +50,10 @@ services:
     cap_drop:
       - ALL
     security_opt: *security-opt
+    read_only: true
+    tmpfs:
+      - /tmp # Nginx writes its pid file and temporary files to /tmp
+    volumes: *nginx-config-dir
   collector:
     image: ictu/quality-time_collector:${QUALITY_TIME_VERSION}
     environment:
@@ -60,6 +76,9 @@ services:
     cap_drop:
       - ALL
     security_opt: *security-opt
+    read_only: true
+    tmpfs:
+      - /tmp # The collector writes its health check file to /tmp
   notifier:
     image: ictu/quality-time_notifier:${QUALITY_TIME_VERSION}
     environment:
@@ -79,6 +98,9 @@ services:
     cap_drop:
       - ALL
     security_opt: *security-opt
+    read_only: true
+    tmpfs:
+      - /tmp # The notifier writes its health check file to /tmp
   api_server:
     image: ictu/quality-time_api_server:${QUALITY_TIME_VERSION}
     environment:
@@ -109,6 +131,9 @@ services:
     cap_drop:
       - ALL
     security_opt: *security-opt
+    read_only: true
+    tmpfs:
+      - /tmp # Bottle buffers large request bodies, such as imported reports, in temporary files
   database:
     image: ictu/quality-time_database:${QUALITY_TIME_VERSION}
     command: --quiet
@@ -122,6 +147,9 @@ services:
     volumes:
       - "dbdata:/data/db"
     security_opt: *security-opt
+    read_only: true
+    tmpfs:
+      - /tmp # MongoDB creates its Unix domain socket in /tmp
   renderer:
     image: ictu/quality-time_renderer:${QUALITY_TIME_VERSION}
     environment:
@@ -132,6 +160,9 @@ services:
     cap_drop:
       - ALL
     security_opt: *security-opt
+    read_only: true
+    tmpfs:
+      - /tmp # Chromium, used to render PDFs, writes temporary files to /tmp
 volumes:
   dbdata:
 secrets:

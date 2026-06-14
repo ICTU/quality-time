@@ -17,6 +17,9 @@ jobs:
           persist-credentials: false
 
       - name: Set yaml value change dict with random generated secrets
+        # Use printf instead of echo so the base64-encoded secrets do not contain a trailing newline;
+        # MongoDB rejects usernames and passwords with control characters (SASLprep), which would prevent
+        # the root user from being created and make all database authentication fail
         # yamllint disable rule:line-length
         run: |
           echo "VALUE_CHANGES={\"[0].data.DATABASE_USERNAME\":\"$(printf "%s" ${RANDOM} | base64)\",\"[0].data.DATABASE_PASSWORD\":\"$(printf "%s" ${RANDOM} | base64)\",\"[1].data.LDAP_LOOKUP_USER_PASSWORD\":\"$(printf "%s" ${RANDOM} | base64)\"}" >> $GITHUB_ENV
@@ -43,6 +46,18 @@ jobs:
           kubectl apply -f helm/deploy-ci.yaml
           helm dependency build helm
           helm upgrade --install --render-subchart-notes quality-time helm
-          kubectl wait --all pods --timeout=2m --for=condition=Ready
+          # The timeout needs to accommodate pulling all images and the readiness probes passing
+          kubectl wait --all pods --timeout=5m --for=condition=Ready
           kubectl wait --all deployments --timeout=30s --for=condition=Available
-        timeout-minutes: 3
+        timeout-minutes: 7
+
+      - name: Show diagnostics on failure
+        if: failure()
+        run: |
+          kubectl get pods
+          kubectl get events --sort-by=.lastTimestamp | tail -50
+          kubectl describe pods
+          for pod in $(kubectl get pods --output name); do
+            echo "=== Logs for ${pod}"
+            kubectl logs --all-containers --prefix --tail=50 ${pod} || true
+          done
