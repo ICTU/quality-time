@@ -14,9 +14,15 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Changed
 
-- Run all containers in both the Docker-composition and the Helm chart with a read-only root filesystem (except the development-only LDAP and Mongo Express containers in the Docker-composition), with mounts for the locations the components write to, such as `/tmp`. The database data is unaffected as it is stored on a volume. Partially realizes [#13477](https://github.com/ICTU/quality-time/issues/13477).
-- Collector and notifier now write the health check file to `/tmp`. The `HEALTH_CHECK_FILE` environment variable can still be used to configure a different location. Partially realizes [#13477](https://github.com/ICTU/quality-time/issues/13477).
-- Add liveness probes (all components) and readiness probes (all components that serve traffic) to the Helm chart, mirroring the Docker health checks. Partially realizes [#13477](https://github.com/ICTU/quality-time/issues/13477).
+- Harden the production container images. Closes [#13477](https://github.com/ICTU/quality-time/issues/13477). Changes made:
+  - Run all containers in both the Docker-composition and the Helm chart with a read-only root filesystem (except the development-only LDAP and Mongo Express containers in the Docker-composition), with mounts for the locations the components write to, such as `/tmp`.
+  - Collector and notifier now write the health check file to `/tmp`. The `HEALTH_CHECK_FILE` environment variable can still be used to configure a different location if needed.
+  - Add liveness probes (all components) and readiness probes (all components that serve traffic) to the Helm chart, mirroring the Docker health checks.
+  - Remove the shell, package manager, and Python installer and developer tools from the production Python container images to reduce their attack surface. As a result, the running container no longer has a shell, so opening a shell in it (for example with `docker exec` or `kubectl exec`) is no longer possible.
+  - Remove the package manager from the frontend and proxy container images to reduce their attack surface.
+  - Remove npm and the package manager from the renderer container image to reduce its attack surface.
+  - Run the renderer container as a non-login system user, consistent with the other components.
+  - Remove the unused MongoDB database tools (`mongodump`, `mongorestore`, `mongoexport`, `mongostat`, and so on) from the database container image to reduce its attack surface. Backups continue to work as documented, using a separate Mongo container.
 
 ### Fixed
 
