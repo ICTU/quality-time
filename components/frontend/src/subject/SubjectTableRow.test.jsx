@@ -37,10 +37,12 @@ function SubjectTableRowWrapper({
     direction,
     evaluateTargets,
     issueIds,
+    multipleDates,
     name,
     scale,
     secondaryName,
     tags,
+    value,
 }) {
     const settings = useSettings()
     const dates = [new Date("2024-01-03"), new Date("2024-01-02"), new Date("2024-01-01")]
@@ -52,7 +54,7 @@ function SubjectTableRowWrapper({
             metric_uuid: "metric_uuid",
             start: "2024-01-03T00:00",
             end: "2024-01-03T00:00",
-            count: { value: "8", status: "target_met" },
+            count: { value: value || "8", status: "target_met" },
             version_number: { value: "0.8", status: "target_met" },
         },
         {
@@ -75,14 +77,17 @@ function SubjectTableRowWrapper({
             <TableBody>
                 <SubjectTableRow
                     columnsToHide={[]}
-                    dates={dates}
+                    dates={multipleDates ? dates : [dates[0]]}
                     measurements={[]}
                     metric={{
                         comment: comment,
                         direction: direction,
                         evaluate_targets: evaluateTargets,
                         issue_ids: issueIds,
-                        latest_measurement: { sources: [{ source_uuid: "source_uuid" }] },
+                        latest_measurement: {
+                            count: { value: value || "8" },
+                            sources: [{ source_uuid: "source_uuid" }],
+                        },
                         name: name,
                         recent_measurements: [],
                         scale: scale,
@@ -112,10 +117,12 @@ function renderSubjectTableRow({
     scale = "count",
     evaluateTargets = undefined,
     issueIds = undefined,
-    permissions = "",
+    multipleDates = true,
     name = "",
+    permissions = "",
     secondaryName = "",
     tags = undefined,
+    value = undefined,
 } = {}) {
     return render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -128,10 +135,12 @@ function renderSubjectTableRow({
                             direction={direction}
                             evaluateTargets={evaluateTargets}
                             issueIds={issueIds}
+                            multipleDates={multipleDates}
                             name={name}
                             scale={scale}
                             secondaryName={secondaryName}
                             tags={tags}
+                            value={value}
                         />
                     </SnackbarAlerts>
                 </DataModelContext>
@@ -279,14 +288,14 @@ it("does not change the search when the sparkline is clicked on an expanded row"
 
 it("expands the metric on the first source tab when the measurement value is clicked", async () => {
     renderSubjectTableRow()
-    await asyncClickRole("cell", "?")
+    await asyncClickRole("cell", "8", 1)
     expectSearch(`?expanded=metric_uuid%3A${SOURCE_TAB_INDEX}`)
 })
 
 it("does not change the search when the measurement value is clicked on an expanded row", async () => {
     history.push(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
     renderSubjectTableRow()
-    await asyncClickRole("cell", "?")
+    await asyncClickRole("cell", "8", 1)
     expectSearch(`?expanded=metric_uuid:${METRIC_CONFIGURATION_TAB_INDEX}`)
 })
 
@@ -301,6 +310,31 @@ it("does not change the search when the measurement target is clicked on an expa
     renderSubjectTableRow()
     await asyncClickRole("cell", "≦ 0")
     expectSearch(`?expanded=metric_uuid:${SOURCE_TAB_INDEX}`)
+})
+
+it("shows the plural unit when the measurement value is undefined", async () => {
+    renderSubjectTableRow({ value: undefined })
+    expectText("things")
+})
+
+it("shows the plural unit when the measurement value is 0", async () => {
+    renderSubjectTableRow({ value: "0" })
+    expectText("things")
+})
+
+it("shows the singular unit when the measurement value is 1", async () => {
+    renderSubjectTableRow({ value: "1", multipleDates: false })
+    expectText("thing")
+})
+
+it("shows the plural unit when the measurement value is 1 but multiple dates are shown", async () => {
+    renderSubjectTableRow({ value: "1", multipleDates: true })
+    expectText("things")
+})
+
+it("shows the plural unit when the measurement value is 2", async () => {
+    renderSubjectTableRow({ value: "2" })
+    expectText("things")
 })
 
 it("expands the metric on the configuration tab when the unit is clicked", async () => {
