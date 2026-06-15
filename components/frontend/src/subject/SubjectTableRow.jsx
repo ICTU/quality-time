@@ -46,6 +46,7 @@ import {
     getMetricScale,
     getMetricTags,
     getMetricUnit,
+    getMetricValue,
 } from "../utils"
 import { DivWithHtml } from "../widgets/DivWithHtml"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
@@ -294,9 +295,10 @@ export function SubjectTableRow({
     onDrop,
 }) {
     const dataModel = useContext(DataModelContext)
-    const scale = getMetricScale(metric, dataModel)
-    const unit = getMetricUnit(metric, dataModel)
     const nrDates = dates.length
+    const scale = getMetricScale(metric, dataModel)
+    const value = getMetricValue(metric, dataModel)
+    const unit = getMetricUnit(metric, dataModel, nrDates > 1 ? "0" : value) // Use plural unit when multiple dates are shown
 
     const rowRef = useRef(null)
     const dragHandleRef = useRef(null)
