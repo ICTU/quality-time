@@ -18,7 +18,7 @@
         "eslint-plugin-simple-import-sort": "^13.0.0",
         "globals": "^17.6.0",
         "lockfile-lint": "^5.0.0",
-        "prettier": "^3.8.3",
+        "prettier": "^3.8.4",
         "supertest": "^7.2.2",
         "vitest": "^4.1.6"
     },
