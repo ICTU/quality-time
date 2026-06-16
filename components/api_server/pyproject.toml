@@ -11,7 +11,7 @@ classifiers = [
 dependencies = [
     "argon2-cffi==25.1.0",
     "bottle==0.13.4",
-    "cryptography==48.0.0",
+    "cryptography==48.0.1",
     "gevent==26.5.0",
     "ldap3==2.9.1",
     "lxml==6.1.1",
@@ -33,12 +33,12 @@ dev = [
 ]
 
 [tool.uv]
-override-dependencies = [ "pip==26.1.2" ]
+override-dependencies = [ "cryptography==48.0.1" ]
 sources.shared-code = { path = "../shared_code", package = true }
 sources.shared-test-code = { path = "../../tests/shared_test_code", package = true }
 sources.tools = { path = "../../tools/third_party", package = false }
 exclude-newer = "7 days"
-exclude-newer-package = { pip = false }
+exclude-newer-package = { cryptography = false }
 
 [tool.ruff]
 line-length = 120

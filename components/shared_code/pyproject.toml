@@ -35,11 +35,9 @@ packages.find.where = [
 package-data."*" = [ "*.png" ]
 
 [tool.uv]
-override-dependencies = [ "pip==26.1.2" ]
 sources.shared-test-code = { path = "../../tests/shared_test_code", package = true }
 sources.tools = { path = "../../tools/third_party", package = false }
 exclude-newer = "7 days"
-exclude-newer-package = { pip = false }
 
 [tool.ruff]
 line-length = 120

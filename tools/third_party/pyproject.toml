@@ -25,7 +25,7 @@ dependencies = [
     # Remove this pin once pyproject-fmt is bumped to >=2.23.0 (which vendors toml-fmt-common).
     "toml-fmt-common==1.3.5",
     "troml==0.4.1",
-    "ty==0.0.44",
+    "ty==0.0.46",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
     "vulture==2.16",
     "yamllint==1.38.0",
@@ -34,18 +34,14 @@ dependencies = [
 
 [dependency-groups]
 just = [
-    "rust-just==1.51.0",
+    "rust-just==1.52.0",
 ]
 uv = [
     "uv==0.11.19",
 ]
 
 [tool.uv]
-override-dependencies = [
-    "pip==26.1.2",
-]  # June 5: pip 26.1.1 has 1 known vulnerability: PYSEC-2026-196: No summary provided. Fixed in: 26.1.2. Advisory information: http://www.openwall.com/lists/oss-security/2026/06/01/5
 exclude-newer = "7 days"
-exclude-newer-package = { pip = false }
 package = false
 
 [tool.ruff]
