@@ -25,12 +25,11 @@ dev = [
 ]
 
 [tool.uv]
-override-dependencies = [ "pip==26.1.2" ]
 sources.shared-code = { path = "../shared_code", package = true }
 sources.shared-test-code = { path = "../../tests/shared_test_code", package = true }
 sources.tools = { path = "../../tools/third_party", package = false }
 exclude-newer = "7 days"
-exclude-newer-package = { aiohttp = false, pip = false }  # June 4: GHSA-jg22-mg44-37j8: AIOHTTP is Vulnerable to Deserialization of Untrusted Data
+exclude-newer-package = { aiohttp = false }  # June 4: GHSA-jg22-mg44-37j8: AIOHTTP is Vulnerable to Deserialization of Untrusted Data
 
 [tool.ruff]
 line-length = 120

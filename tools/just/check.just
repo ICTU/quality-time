@@ -91,10 +91,16 @@ js-check name check folder="": (install-js-dependencies folder)
 [private]
 npm-lint folder="": (js-check "npm-lint" f"{{npm_run}} lint --if-present" folder)
 
-# Run npm audit to check JavaScript dependencies for known security vulnerabilities.
+# GHSA advisory IDs to ignore in npm audit. Document why each one is safe to ignore.
+# - GHSA-h67p-54hq-rp68 JS-YAML: Quadratic-complexity DoS in merge key handling via repeated aliases, dev/test-only transitive dependency
+# - GHSA-6v5v-wf23-fmfq markdown-it: Quadratic complexity DoS in smartquotes rule via replaceAt string operations, dev-only dependency
+# - GHSA-hmw2-7cc7-3qxx form-data: CRLF injection in form-data via unescaped multipart field names and filenames
+npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-6v5v-wf23-fmfq GHSA-hmw2-7cc7-3qxx"
+
+# Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]
 [private]
-npm-audit folder="": (js-check "npm-audit" f"npm audit" folder)
+npm-audit folder="": (js-check "npm-audit" f"npm audit --json | {{ python }} {{ justfile_directory() }}/tools/just/npm_audit_filter.py {{ npm_audit_ignore }}" folder)
 
 # Run npm outdated to check for outdated JavaScript dependencies. Ignore outdated packages that can't be updated (current == wanted).
 [no-cd]
