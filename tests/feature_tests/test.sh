@@ -44,7 +44,7 @@ done
 tests/feature_tests/.venv/bin/coverage erase
 result=0
 tests/feature_tests/.venv/bin/coverage run -m behave --format pretty "${1:-tests/feature_tests/src/features}" || result=$?
-# Bottle's reloader (reloader=True in quality_time_server.serve) runs the server
+# Bottle's reloader (reloader=True in quality_time_api_server.serve) runs the server
 # in a child process; the parent (captured in $api_server_pid) is just a monitor.
 # Signal the child so its signal handler saves the API-server's coverage data,
 # then wait for the parent to exit, which happens once the child is gone.

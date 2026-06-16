@@ -1,4 +1,4 @@
-"""Quality-time server."""
+"""Quality-time API-server."""
 
 from gevent import monkey
 
@@ -16,7 +16,7 @@ from initialization.bottle import init_bottle
 
 
 def serve() -> None:  # pragma: no feature-test-cover
-    """Connect to the database and start the application server."""
+    """Connect to the database and start the API-server."""
     logger = init_logging(str(os.getenv("API_SERVER_LOG_LEVEL", "WARNING")))
     with mongo_client() as client:
         admin_database = get_database(client, "admin")
