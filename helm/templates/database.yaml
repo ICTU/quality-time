@@ -23,6 +23,8 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: {{ template "database_name" . }}
     spec:
+      securityContext:
+        {{- toYaml .Values.database.podSecurityContext | nindent 8 }}
       volumes:
         - name: {{ .Release.Name }}-{{ template "database_name" . }}
           persistentVolumeClaim:

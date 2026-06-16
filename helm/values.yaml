@@ -42,16 +42,19 @@ collector:
 
 database:
   storageSize: "1Gi"
+  # The database runs as the non-root mongodb user (UID 999) by default. To run it as a UID >= 1000 or an
+  # arbitrary UID (for example on OpenShift), override runAsUser and fsGroup; see the "Customizing" section
+  # in helm/README.md.
   securityContext:
     capabilities:
-      add:
-        - CHOWN
-        - DAC_OVERRIDE
-        - SETGID
-        - SETUID
       drop:
         - ALL
     readOnlyRootFilesystem: true
+    runAsUser: 999
+    runAsGroup: 999
+  podSecurityContext:
+    fsGroup: 999
+    fsGroupChangePolicy: OnRootMismatch
   image:
     pullPolicy: "Always"
     repository: "ictu/quality-time_database"

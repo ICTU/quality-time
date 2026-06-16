@@ -146,6 +146,8 @@ services:
       - database_password
     volumes:
       - "dbdata:/data/db"
+    cap_drop:
+      - ALL
     security_opt: *security-opt
     read_only: true
     tmpfs:

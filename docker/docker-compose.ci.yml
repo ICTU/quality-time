@@ -45,4 +45,6 @@ services:
     shm_size: 2gb
     ports:
       - "127.0.0.1:4444:4444"
+    cap_drop:
+      - ALL
     security_opt: *security-opt
