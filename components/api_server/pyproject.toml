@@ -73,7 +73,7 @@ lint.per-file-ignores."__init__.py" = [
 lint.per-file-ignores."src/model/issue_tracker.py" = [
     "BLE001", # https://docs.astral.sh/ruff/rules/blind-except/ - allow for catching blind exception `Exception`
 ]
-lint.per-file-ignores."src/quality_time_server.py" = [
+lint.per-file-ignores."src/quality_time_api_server.py" = [
     "E402",
     "INP001", # https://docs.astral.sh/ruff/rules/implicit-namespace-package/ - false positive because this is the main script
 ]
