@@ -25,7 +25,7 @@ spec:
       containers:
         - name: {{ template "api_server_name" . }}
           image: "{{ .Values.api_server.image.repository }}:{{ .Values.api_server.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.api_server.image.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-{{ template "api_server_name" . }}-env

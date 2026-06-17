@@ -110,7 +110,7 @@ spec:
     spec:
       containers:
         - name: ldap
-          image: quality-time_testldap
+          image: ictu/quality-time_testldap:ci
           imagePullPolicy: Never
           ports:
             - containerPort: 389

@@ -42,10 +42,12 @@ jobs:
 
       - name: Build and run chart
         run: |
-          eval $(minikube -p minikube docker-env)
-          # Build the test LDAP image into the cluster's image store (it is not published); deploy-ci.yaml pulls it
-          # with policy Never. minikube image build works regardless of the container runtime, unlike docker-env.
-          minikube image build --tag quality-time_testldap components/testldap
+          QUALITY_TIME_VERSION=ci docker compose --progress quiet \
+            --file docker/docker-compose.yml --file docker/docker-compose.ci.yml \
+            --project-name quality-time build
+          for image in api_server collector database frontend notifier proxy renderer testldap; do
+            minikube image load ictu/quality-time_${image}:ci
+          done
           kubectl apply -f helm/deploy-ci.yaml
           helm dependency build helm
           helm upgrade --install --render-subchart-notes quality-time helm -f helm/values-application-tests.yaml

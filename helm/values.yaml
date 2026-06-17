@@ -19,6 +19,7 @@ api_server:
   #      mountPath: "/etc/ssl/certs/ca-certificates.crt"
   #      readOnly: true
   image:
+    pullPolicy: "Always"
     repository: "ictu/quality-time_api_server"
   env:
     LDAP_URL: "ldap://host.docker.internal:389"
@@ -32,6 +33,7 @@ collector:
         - ALL
     readOnlyRootFilesystem: true
   image:
+    pullPolicy: "Always"
     repository: "ictu/quality-time_collector"
   env:
     # The health check file is written to /tmp because that is the only writable folder
@@ -51,6 +53,7 @@ database:
         - ALL
     readOnlyRootFilesystem: true
   image:
+    pullPolicy: "Always"
     repository: "ictu/quality-time_database"
   resources:
     limits:
@@ -67,6 +70,7 @@ frontend:
         - ALL
     readOnlyRootFilesystem: true
   image:
+    pullPolicy: "Always"
     repository: "ictu/quality-time_frontend"
 
 notifier:
@@ -76,6 +80,7 @@ notifier:
         - ALL
     readOnlyRootFilesystem: true
   image:
+    pullPolicy: "Always"
     repository: "ictu/quality-time_notifier"
   env:
     # The health check file is written to /tmp because that is the only writable folder
@@ -89,6 +94,7 @@ renderer:
         - ALL
     readOnlyRootFilesystem: true
   image:
+    pullPolicy: "Always"
     repository: "ictu/quality-time_renderer"
   env:
     LC_ALL: "en_GB.UTF-8"
@@ -112,6 +118,7 @@ www:
   # -- When www.deployProxy is false the quality-time_proxy is not used and ingress is pointed directly to the backend api and frontend. Note that this breaks PDF-exports. See https://github.com/ICTU/quality-time/issues/13065.
   deployProxy: true
   image:
+    pullPolicy: "Always"
     repository: "ictu/quality-time_proxy"
   ingress:
     enabled: false

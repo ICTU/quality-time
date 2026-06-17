@@ -180,7 +180,7 @@ docker compose up -d
 docker run -it -w `pwd` -v `pwd`:`pwd` --network=container:qualitytime_www_1 ghcr.io/astral-sh/uv:python3.14-bookworm tests/application_tests/test.sh
 ```
 
-In CI the application tests run against both a Docker Compose deployment (the `Application tests (Docker)` workflow) and a Kubernetes deployment (the `Application tests (Kubernetes)` workflow, which deploys the Helm chart to a minikube cluster). The tests select their target through three environment variables, which default to the Docker Compose service names so the command above needs no extra configuration:
+In CI the application tests run against both a Docker Compose deployment (the `Application tests (Docker)` workflow) and a Kubernetes deployment (the `Application tests (Kubernetes)` workflow, which deploys the Helm chart to a minikube cluster). Both workflows build images from the tested branch, rather than pulling published images. The tests select their target through three environment variables, which default to the Docker Compose service names so the command above needs no extra configuration:
 
 - `WWW_URL` — the URL the test process uses to reach the proxy for API requests (default `http://www:8080`).
 - `WWW_BROWSER_URL` — the URL the Selenium browser uses to reach the proxy (defaults to `WWW_URL`). On Kubernetes this differs from `WWW_URL` because the test process reaches the proxy via a `kubectl port-forward` on `localhost`, while the in-cluster browser must use the cluster service name.
