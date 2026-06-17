@@ -41,7 +41,7 @@ spec:
       containers:
         - name: {{ template "database_name" . }}
           image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.database.image.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-{{ template "database_name" . }}-env

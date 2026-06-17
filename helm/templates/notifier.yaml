@@ -25,7 +25,7 @@ spec:
       containers:
         - name: {{ template "notifier_name" . }}
           image: "{{ .Values.notifier.image.repository }}:{{ .Values.notifier.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.notifier.image.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-{{ template "notifier_name" . }}-env

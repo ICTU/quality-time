@@ -25,7 +25,7 @@ spec:
       containers:
         - name: {{ template "frontend_name" . }}
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-{{ template "frontend_name" . }}-env

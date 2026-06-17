@@ -32,6 +32,7 @@ services:
       - "127.0.0.1:27017:27017"
   ldap:
     build: ../components/testldap
+    image: ictu/quality-time_testldap:${QUALITY_TIME_VERSION}
     ports:
       - "127.0.0.1:10389:389"
     security_opt: *security-opt

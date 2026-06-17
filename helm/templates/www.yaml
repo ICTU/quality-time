@@ -26,7 +26,7 @@ spec:
       containers:
         - name: {{ template "www_name" . }}
           image: "{{ .Values.www.image.repository }}:{{ .Values.www.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.www.image.pullPolicy }}
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-{{ template "www_name" . }}-env
