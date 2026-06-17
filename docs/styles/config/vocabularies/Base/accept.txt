@@ -52,6 +52,7 @@ hostnames?
 hotspots?
 liveness
 mimetype
+minikube
 misconfigured
 mypy
 namespace

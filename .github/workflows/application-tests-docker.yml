@@ -1,5 +1,5 @@
 ---
-name: Application tests
+name: Application tests (Docker)
 
 # yamllint disable-line rule:truthy
 on:

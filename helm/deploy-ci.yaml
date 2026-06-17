@@ -19,5 +19,124 @@ metadata:
     app.kubernetes.io/name: quality-time
     app.kubernetes.io/instance: quality-time
 data:
+  # cn=admin,dc=example,dc=org base64-encoded; the testldap image bootstraps cn=admin as the LDAP admin user
+  LDAP_LOOKUP_USER_DN: "Y249YWRtaW4sZGM9ZXhhbXBsZSxkYz1vcmc="
+  # The workflow injects a random password here; testldap reuses it as its admin password so the two always match
   LDAP_LOOKUP_USER_PASSWORD: ""
 type: Opaque
+---
+# CI-only Selenium server, used by the application tests to drive a remote browser.
+# Not part of the production Helm chart. The image is pinned by digest to match docker/docker-compose.ci.yml.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selenium
+  labels:
+    app.kubernetes.io/name: quality-time
+    app.kubernetes.io/instance: quality-time
+    app.kubernetes.io/component: selenium
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: quality-time
+      app.kubernetes.io/instance: quality-time
+      app.kubernetes.io/component: selenium
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: quality-time
+        app.kubernetes.io/instance: quality-time
+        app.kubernetes.io/component: selenium
+    spec:
+      containers:
+        - name: selenium
+          # yamllint disable-line rule:line-length
+          image: selenium/standalone-firefox:151.0.1@sha256:48b316658347e270ec82b68aaeb0b22a212622a8a9f6389de99464093a0c111d
+          ports:
+            - containerPort: 4444
+          volumeMounts:
+            # Selenium/Firefox needs a large /dev/shm to avoid browser crashes (docker-compose.ci.yml uses shm_size 2gb)
+            - name: dshm
+              mountPath: /dev/shm
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium
+  labels:
+    app.kubernetes.io/name: quality-time
+    app.kubernetes.io/instance: quality-time
+    app.kubernetes.io/component: selenium
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: quality-time
+    app.kubernetes.io/instance: quality-time
+    app.kubernetes.io/component: selenium
+  ports:
+    - protocol: TCP
+      port: 4444
+      targetPort: 4444
+---
+# CI-only test LDAP server, used by the application tests to log in as uid=jadoe. Not part of the production Helm
+# chart. The image is built locally by the workflow (it is not published), so it is pulled with policy Never.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quality-time-ldap
+  labels:
+    app.kubernetes.io/name: quality-time
+    app.kubernetes.io/instance: quality-time
+    app.kubernetes.io/component: ldap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: quality-time
+      app.kubernetes.io/instance: quality-time
+      app.kubernetes.io/component: ldap
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: quality-time
+        app.kubernetes.io/instance: quality-time
+        app.kubernetes.io/component: ldap
+    spec:
+      containers:
+        - name: ldap
+          image: quality-time_testldap
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 389
+          env:
+            # Set the cn=admin password to the same random value the api_server uses to bind as the lookup user
+            - name: LDAP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: quality-time-ldap-secret
+                  key: LDAP_LOOKUP_USER_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quality-time-ldap
+  labels:
+    app.kubernetes.io/name: quality-time
+    app.kubernetes.io/instance: quality-time
+    app.kubernetes.io/component: ldap
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: quality-time
+    app.kubernetes.io/instance: quality-time
+    app.kubernetes.io/component: ldap
+  ports:
+    - protocol: TCP
+      port: 389
+      targetPort: 389
