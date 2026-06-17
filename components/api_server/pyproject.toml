@@ -11,7 +11,7 @@ classifiers = [
 dependencies = [
     "argon2-cffi==25.1.0",
     "bottle==0.13.4",
-    "cryptography==48.0.1",
+    "cryptography==49.0.0",
     "gevent==26.5.0",
     "ldap3==2.9.1",
     "lxml==6.1.1",
@@ -33,7 +33,7 @@ dev = [
 ]
 
 [tool.uv]
-override-dependencies = [ "cryptography==48.0.1" ]
+override-dependencies = [ "cryptography==49.0.0" ]
 sources.shared-code = { path = "../shared_code", package = true }
 sources.shared-test-code = { path = "../../tests/shared_test_code", package = true }
 sources.tools = { path = "../../tools/third_party", package = false }
