@@ -1,0 +1,8 @@
+---
+# CI-only values for the application tests: point the api_server at the in-cluster test LDAP server, which
+# helm/deploy-ci.yaml deploys as the quality-time-ldap service. The production default in values.yaml points at
+# host.docker.internal, which does not resolve in the cluster. Merged on top of values.yaml, so the other
+# api_server.env entries (LDAP_ROOT_DN, LDAP_SEARCH_FILTER) are kept.
+api_server:
+  env:
+    LDAP_URL: "ldap://quality-time-ldap:389"

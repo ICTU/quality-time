@@ -9,6 +9,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expect
 from selenium.webdriver.support.ui import WebDriverWait
 
+from .base import SELENIUM_URL, WWW_BROWSER_URL
+
 
 class ElementHasNoCCSClass:
     """An expectation for checking that an element has no CSS class.
@@ -51,10 +53,11 @@ class OpenReportTest(unittest.TestCase):
         """Override to setup the driver."""
         firefox_options = webdriver.FirefoxOptions()
         firefox_options.add_argument("--headless")
-        self.driver = webdriver.Remote("http://selenium:4444", options=firefox_options)
+        self.driver = webdriver.Remote(SELENIUM_URL, options=firefox_options)
         self.driver.implicitly_wait(10)
         self.wait = WebDriverWait(self.driver, 10)
-        self.driver.get("http://www:8080?hide_toasts=true")  # Hide toasts so they don't block other visual elements
+        # Hide toasts so they don't block other visual elements
+        self.driver.get(f"{WWW_BROWSER_URL}?hide_toasts=true")
 
     def tearDown(self):
         """Override to close the driver."""

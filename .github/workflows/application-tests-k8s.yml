@@ -1,5 +1,5 @@
 ---
-name: Helm Chart CI
+name: Application tests (Kubernetes)
 
 # yamllint disable-line rule:truthy
 on:
@@ -43,13 +43,42 @@ jobs:
       - name: Build and run chart
         run: |
           eval $(minikube -p minikube docker-env)
+          # Build the test LDAP image into the cluster's image store (it is not published); deploy-ci.yaml pulls it
+          # with policy Never. minikube image build works regardless of the container runtime, unlike docker-env.
+          minikube image build --tag quality-time_testldap components/testldap
           kubectl apply -f helm/deploy-ci.yaml
           helm dependency build helm
-          helm upgrade --install --render-subchart-notes quality-time helm
+          helm upgrade --install --render-subchart-notes quality-time helm -f helm/values-application-tests.yaml
           # The timeout needs to accommodate pulling all images and the readiness probes passing
           kubectl wait --all pods --timeout=5m --for=condition=Ready
           kubectl wait --all deployments --timeout=30s --for=condition=Available
         timeout-minutes: 7
+
+      - name: Run application tests
+        run: |
+          mkdir --parents build
+          # Reach the in-cluster proxy and Selenium from the runner via background port-forwards
+          kubectl port-forward service/quality-time-www 8080:8080 &
+          kubectl port-forward service/selenium 4444:4444 &
+          # Wait until both port-forwards accept connections before starting the tests
+          curl --silent --output /dev/null --retry 30 --retry-delay 1 --retry-connrefused http://localhost:8080
+          curl --silent --output /dev/null --retry 30 --retry-delay 1 --retry-connrefused http://localhost:4444
+          # --network=host lets the container reach the runner's port-forwards. WWW_URL and SELENIUM_URL are used by
+          # the test process; WWW_BROWSER_URL is used by the in-cluster Selenium browser, which reaches www via DNS.
+          docker run --quiet --tty --workdir "$(pwd)" --volume "$(pwd):$(pwd)" --network=host \
+            --env WWW_URL=http://localhost:8080 \
+            --env SELENIUM_URL=http://localhost:4444 \
+            --env WWW_BROWSER_URL=http://quality-time-www:8080 \
+            --env COLUMNS=120 \
+            ghcr.io/astral-sh/uv:python3.14-bookworm tests/application_tests/test.sh
+        timeout-minutes: 10
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: build-artifacts
+          path: build
 
       - name: Show diagnostics on failure
         if: failure()
