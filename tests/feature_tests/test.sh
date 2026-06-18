@@ -24,7 +24,7 @@ just_spec=$(uv export --project tools/third_party --only-group just --quiet --no
 cd components/api_server || exit
 uvx --from=rust-just --with-requirements <(echo $just_spec) just install-py-dependencies
 .venv/bin/coverage erase
-RENDERER_HOST=localhost .venv/bin/python tests/quality_time_api_server_under_coverage.py &> ../../build/quality_time_api_server.log &
+RENDERER_HOST=localhost .venv/bin/python tests/main_under_coverage.py &> ../../build/quality_time_api_server.log &
 api_server_pid=$!
 for _ in $(seq 60); do
   curl --fail --silent --output /dev/null "http://localhost:${API_SERVER_PORT:-5001}/api/internal/health" && break
@@ -44,13 +44,13 @@ done
 tests/feature_tests/.venv/bin/coverage erase
 result=0
 tests/feature_tests/.venv/bin/coverage run -m behave --format pretty "${1:-tests/feature_tests/src/features}" || result=$?
-# Bottle's reloader (reloader=True in quality_time_api_server.serve) runs the server
+# Bottle's reloader (reloader=True in main.serve) runs the server
 # in a child process; the parent (captured in $api_server_pid) is just a monitor.
 # Signal the child so its signal handler saves the API-server's coverage data,
 # then wait for the parent to exit, which happens once the child is gone.
 # pgrep short flags (-n newest, -f match full command line) are used because
 # macOS pgrep doesn't support the GNU long-form equivalents.
-kill -s TERM "$(pgrep -n -f tests/quality_time_api_server_under_coverage.py)" || true
+kill -s TERM "$(pgrep -n -f tests/main_under_coverage.py)" || true
 wait "$api_server_pid" 2>/dev/null || true
 if [[ "$result" -eq "0" ]]
 then

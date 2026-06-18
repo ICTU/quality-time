@@ -26,7 +26,7 @@ def signal_handler(*_args):
 if __name__ == "__main__":
     signal.signal(signal.SIGTERM, signal_handler)
     cov.start()
-    from quality_time_api_server import serve
+    from main import serve
 
     try:
         serve()

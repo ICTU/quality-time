@@ -19,10 +19,10 @@ jobs:
         include:
           - component: api_server
             build_path: .
-            docker_file: components/api_server/Dockerfile
+            docker_file: components/python.Dockerfile
           - component: collector
             build_path: .
-            docker_file: components/collector/Dockerfile
+            docker_file: components/python.Dockerfile
           - component: database
             build_path: components/database
             docker_file: Dockerfile
@@ -31,7 +31,7 @@ jobs:
             docker_file: Dockerfile
           - component: notifier
             build_path: .
-            docker_file: components/notifier/Dockerfile
+            docker_file: components/python.Dockerfile
           - component: proxy
             build_path: components/proxy
             docker_file: Dockerfile
@@ -46,7 +46,7 @@ jobs:
 
       - name: Build image from Dockerfile
         working-directory: ${{ matrix.build_path }}
-        run: docker build -f ${{ matrix.docker_file }} -t docker.io/ictu/quality-time_${{ matrix.component }} .
+        run: docker build --build-arg COMPONENT=${{ matrix.component}} -f ${{ matrix.docker_file }} -t docker.io/ictu/quality-time_${{ matrix.component }} . # yamllint disable-line rule:line-length
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
