@@ -19,7 +19,7 @@ dependencies = [
     "mypy==2.1.0",
     "pip-audit==2.10.1",
     "pyproject-fmt==2.24.0",
-    "ruff==0.15.16",
+    "ruff==0.15.17",
     # Pinned to work around pyproject-fmt==2.21.2, which under-constrains toml-fmt-common (no upper bound):
     # toml-fmt-common>=1.3.3 moved --table-format into the shared base, conflicting with pyproject-fmt's own flag.
     # Remove this pin once pyproject-fmt is bumped to >=2.23.0 (which vendors toml-fmt-common).
@@ -37,7 +37,7 @@ just = [
     "rust-just==1.52.0",
 ]
 uv = [
-    "uv==0.11.20",
+    "uv==0.11.21",
 ]
 
 [tool.uv]
