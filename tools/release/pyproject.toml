@@ -104,16 +104,6 @@ search = "v{current_version}"
 replace = "v{new_version}"
 
 [[tool.bumpversion.files]]
-filename = "../../.circleci/config.yml"
-search = "v{current_version}"
-replace = "v{new_version}"
-
-[[tool.bumpversion.files]]
-filename = "../../.github/workflows/application-tests.yml"
-search = "v{current_version}"
-replace = "v{new_version}"
-
-[[tool.bumpversion.files]]
 filename = "../../components/shared_code/src/shared/utils/version.py"
 search = 'QUALITY_TIME_VERSION = "{current_version}"'
 replace = 'QUALITY_TIME_VERSION = "{new_version}"'
