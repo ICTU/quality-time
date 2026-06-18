@@ -56,8 +56,7 @@ spec:
             exec:
               command:
                 - python
-                - -c
-                - "from datetime import datetime as dt, timedelta, UTC; import os, sys; sys.exit(dt.now(tz=UTC) - dt.fromisoformat(open(os.environ['HEALTH_CHECK_FILE'], encoding='utf-8').read().strip()) > timedelta(seconds=600))"
+                - healthcheck.py
             initialDelaySeconds: 10
             periodSeconds: 30
             timeoutSeconds: 10

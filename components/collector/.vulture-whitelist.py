@@ -59,7 +59,7 @@ GatlingSourceVersion  # unused class (src/source_collectors/gatling/source_versi
 GenericJSONSecurityWarnings  # unused class (src/source_collectors/generic_json/security_warnings.py:12)
 GitHubMergeRequests  # unused class (src/source_collectors/github/merge_requests.py:60)
 GitLabChangeFailureRate  # unused class (src/source_collectors/gitlab/change_failure_rate.py:6)
-GitLabFailedJobs  # unused class (src/source_collectors/gitlab/failed_jobs.py:13)
+GitLabFailedJobs  # unused class (src/source_collectors/gitlab/failed_jobs.py:11)
 commit  # unused variable (src/source_collectors/gitlab/inactive_branches.py:24)
 GitLabInactiveBranches  # unused class (src/source_collectors/gitlab/inactive_branches.py:30)
 GitLabMergeRequests  # unused class (src/source_collectors/gitlab/merge_requests.py:61)
