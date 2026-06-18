@@ -93,9 +93,11 @@ npm-lint folder="": (js-check "npm-lint" f"{{npm_run}} lint --if-present" folder
 
 # GHSA advisory IDs to ignore in npm audit. Document why each one is safe to ignore.
 # - GHSA-h67p-54hq-rp68 JS-YAML: Quadratic-complexity DoS in merge key handling via repeated aliases, dev/test-only transitive dependency
-# - GHSA-6v5v-wf23-fmfq markdown-it: Quadratic complexity DoS in smartquotes rule via replaceAt string operations, dev-only dependency
+# - GHSA-6v5v-wf23-fmfq markdown-it: Quadratic complexity DoS in smartquotes rule via replaceAt string operations
 # - GHSA-hmw2-7cc7-3qxx form-data: CRLF injection in form-data via unescaped multipart field names and filenames
-npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-6v5v-wf23-fmfq GHSA-hmw2-7cc7-3qxx"
+# - GHSA-pr7r-676h-xcf6 undici: Vulnerable to cross-user information disclosure via shared cache whitespace bypass
+# - GHSA-vmh5-mc38-953g undici: Vulnerable to TLS certificate validation bypass via dropped requestTls in SOCKS5 ProxyAgent
+npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-6v5v-wf23-fmfq GHSA-hmw2-7cc7-3qxx GHSA-pr7r-676h-xcf6 GHSA-vmh5-mc38-953g"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]
