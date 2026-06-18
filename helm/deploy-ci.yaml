@@ -55,6 +55,15 @@ spec:
           image: selenium/standalone-firefox:151.0.1@sha256:48b316658347e270ec82b68aaeb0b22a212622a8a9f6389de99464093a0c111d
           ports:
             - containerPort: 4444
+          # Selenium/Firefox takes a while to bind port 4444; without a readiness probe Kubernetes marks the
+          # pod Ready as soon as the process starts, so `kubectl wait --for=condition=Ready` returns before
+          # Selenium is listening and the application tests' port-forward races against a closed port.
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: 4444
+            periodSeconds: 2
+            failureThreshold: 60
           volumeMounts:
             # Selenium/Firefox needs a large /dev/shm to avoid browser crashes (docker-compose.ci.yml uses shm_size 2gb)
             - name: dshm
