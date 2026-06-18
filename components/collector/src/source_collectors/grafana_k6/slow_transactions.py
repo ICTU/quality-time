@@ -80,6 +80,6 @@ class GrafanaK6SlowTransactions(SlowTransactionsCollector, JSONFileSourceCollect
         result = []
         for threshold in thresholds:
             metric_value_key = threshold.split("<")[0]
-            actual_value = metric["values"][metric_value_key]  # type: ignore[literal-required] # ty: ignore[invalid-key]
+            actual_value = metric["values"][metric_value_key]  # type: ignore[literal-required]
             result.append(f"Expected {threshold} but got {round(actual_value)}")
         return ", ".join(result)
