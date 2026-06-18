@@ -72,7 +72,7 @@ jobs:
           mkdir -p build
           export ENV=ci
           export PROXY_PORT=8080
-          export QUALITY_TIME_VERSION=v5.56.0
+          export QUALITY_TIME_VERSION=ci
           export COMPOSE_PATH_SEPARATOR=':'
           export COLUMNS=${COLUMNS:-120}
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
