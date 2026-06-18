@@ -1,10 +1,6 @@
 ---
 # Configuration for compose-lint (https://github.com/tmatens/compose-lint).
 #
-# Only docker-compose.yml is linted (the canonical Compose file).
-# docker-compose.override.yml and docker-compose.ci.yml are layered fragments,
-# never used standalone, so linting them as standalone files is not meaningful.
-#
 # The rules disabled below reflect deliberate trade-offs for docker-compose.yml
 # as shipped: it serves both local development and as a starting point for
 # production-style deployments (Compose-based or Helm-based). Operators are
@@ -22,26 +18,24 @@ rules:
         override file or Helm chart.
   CL-0006:
     exclude_services:
-      database: >-
-        mongo's entrypoint chowns /data/db to the mongodb user on first
-        run, which needs CAP_CHOWN. cap_drop ALL would prevent volume
-        initialization. Hardening this would require running as a fixed
-        UID/GID and pre-creating the volume with correct ownership.
       ldap: >-
         Test LDAP service from docker-compose.override.yml /
+        docker-compose.ci.yml; not part of the product and never run in
+        production.
+  CL-0007:
+    exclude_services:
+      ldap: >-
+        Test LDAP service from docker-compose.override.yml /
+        docker-compose.ci.yml; not part of the product and never run in
+        production.
+      mongo-express: >-
+        MongoDB viewer service from docker-compose.override.yml /
         docker-compose.ci.yml; not part of the product and never run in
         production.
       selenium: >-
         Browser-based test runner from docker-compose.ci.yml. Chromium /
         Firefox sandboxing typically needs specific caps; cap_drop ALL would
         likely break test execution.
-  CL-0007:
-    enabled: false
-    reason: >-
-      Services do not set read_only on the root filesystem. Each service's
-      writable paths have not been audited and declared via tmpfs/volumes;
-      operators running in production are expected to add this hardening
-      in their own override file or in the Helm chart.
   CL-0019:
     enabled: false
     reason: >-

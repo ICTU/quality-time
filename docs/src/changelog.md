@@ -23,6 +23,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
   - Remove npm and the package manager from the renderer container image to reduce its attack surface.
   - Run the renderer container as a non-login system user, consistent with the other components.
   - Remove the unused MongoDB database tools (`mongodump`, `mongorestore`, `mongoexport`, `mongostat`, and so on) from the database container image to reduce its attack surface. Backups continue to work as documented, using a separate Mongo container.
+  - Use the default non-root `mongodb` user (UID 999) so that `gosu` can be removed from the database container image to reduce its attack surface. The database image also supports running as a UID >= 1000 or an arbitrary UID (for example on OpenShift); see the "Customizing" section in the Helm chart README.
 
 ### Fixed
 
