@@ -40,23 +40,14 @@ updates:
     open-pull-requests-limit: 10
 
   - package-ecosystem: docker
-    directory: "/components/collector"
-    cooldown:
-      default-days: 7
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-
-  - package-ecosystem: docker
-    directory: "/components/database"
-    cooldown:
-      default-days: 7
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-
-  - package-ecosystem: docker
-    directory: "/components/frontend"
+    directories:
+      - "/components"
+      - "/components/database"
+      - "/components/frontend"
+      - "/components/proxy"
+      - "/components/renderer"
+      - "/components/testdata"
+      - "/components/testldap"
     cooldown:
       default-days: 7
     schedule:
@@ -81,42 +72,10 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 10
 
-  - package-ecosystem: docker
-    directory: "/components/notifier"
-    cooldown:
-      default-days: 7
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-
-  - package-ecosystem: docker
-    directory: "/components/proxy"
-    cooldown:
-      default-days: 7
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-
-  - package-ecosystem: docker
-    directory: "/components/renderer"
-    cooldown:
-      default-days: 7
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-
   - package-ecosystem: npm
     directory: "/components/renderer"
     allow:
       - dependency-type: "direct"
-    cooldown:
-      default-days: 7
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-
-  - package-ecosystem: docker
-    directory: "/components/api_server"
     cooldown:
       default-days: 7
     schedule:
@@ -137,14 +96,6 @@ updates:
     directory: "/components/shared_code"
     allow:
       - dependency-type: "direct"
-    cooldown:
-      default-days: 7
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-
-  - package-ecosystem: docker
-    directory: "/components/testdata"
     cooldown:
       default-days: 7
     schedule:

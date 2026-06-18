@@ -4,10 +4,10 @@ import logging
 import unittest
 from unittest.mock import AsyncMock, Mock, patch
 
-from quality_time_notifier import start_notifications
+from main import start_notifications
 
 
-@patch("quality_time_notifier.notify", AsyncMock())
+@patch("main.notify", AsyncMock())
 class NotifierTestCase(unittest.TestCase):
     """Unit tests for the notifier."""
 

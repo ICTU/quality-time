@@ -54,7 +54,7 @@ lint.per-file-ignores.".vulture-whitelist.py" = [
 lint.per-file-ignores."__init__.py" = [
     "D104", # https://docs.astral.sh/ruff/rules/undocumented-public-package/ - don't require doc strings in __init__.py files
 ]
-lint.per-file-ignores."src/quality_time_notifier.py" = [
+lint.per-file-ignores."src/main.py" = [
     "INP001", # https://docs.astral.sh/ruff/rules/implicit-namespace-package/ - false positive because this is the main script
 ]
 lint.per-file-ignores."tests/**/*.py" = [

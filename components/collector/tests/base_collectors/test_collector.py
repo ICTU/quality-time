@@ -13,7 +13,7 @@ import mongomock
 
 from shared.utils.functions import iso_timestamp
 
-import quality_time_collector
+import main
 from base_collectors.collector import Collector, config
 
 from shared_test_code.fixtures import METRIC_ID, METRIC_ID2, SOURCE_ID, SUBJECT_ID
@@ -206,11 +206,8 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
     @patch("asyncio.sleep", AsyncMock(side_effect=[RuntimeError]))
     async def test_collect(self):
         """Test the collect method."""
-        with (
-            patch("quality_time_collector.get_database", return_value=self.database),
-            self.assertRaises(RuntimeError),
-        ):
-            await quality_time_collector.collect()
+        with patch("main.get_database", return_value=self.database), self.assertRaises(RuntimeError):
+            await main.collect()
         # Wait for the created tasks to finish. As we don't have access to Collector.running_tasks, we wait for all
         # runnings tasks, except the one where this test is running:
         await asyncio.gather(*asyncio.all_tasks() - {asyncio.current_task()})

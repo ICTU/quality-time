@@ -14,7 +14,9 @@ services:
       - COLLECTOR_LOG_LEVEL=${COLLECTOR_LOG_LEVEL:-INFO}
     build:
       context: ..
-      dockerfile: components/collector/Dockerfile
+      dockerfile: components/python.Dockerfile
+      args:
+        COMPONENT: collector
     depends_on:
       - testdata
   notifier:
@@ -22,13 +24,17 @@ services:
       - NOTIFIER_LOG_LEVEL=${NOTIFIER_LOG_LEVEL:-INFO}
     build:
       context: ..
-      dockerfile: components/notifier/Dockerfile
+      dockerfile: components/python.Dockerfile
+      args:
+        COMPONENT: notifier
   api_server:
     environment:
       - API_SERVER_LOG_LEVEL=${API_SERVER_LOG_LEVEL:-INFO}
     build:
       context: ..
-      dockerfile: components/api_server/Dockerfile
+      dockerfile: components/python.Dockerfile
+      args:
+        COMPONENT: api_server
     depends_on:
       - ldap
       - renderer

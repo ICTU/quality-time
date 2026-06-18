@@ -4,7 +4,7 @@ import logging
 import unittest
 from unittest.mock import AsyncMock, patch
 
-from quality_time_collector import collect
+from main import collect
 
 
 class CollectorTestCase(unittest.IsolatedAsyncioTestCase):

@@ -13,15 +13,21 @@ services:
   collector:
     build:
       context: ..
-      dockerfile: components/collector/Dockerfile
+      dockerfile: components/python.Dockerfile
+      args:
+        COMPONENT: collector
   notifier:
     build:
       context: ..
-      dockerfile: components/notifier/Dockerfile
+      dockerfile: components/python.Dockerfile
+      args:
+        COMPONENT: notifier
   api_server:
     build:
       context: ..
-      dockerfile: components/api_server/Dockerfile
+      dockerfile: components/python.Dockerfile
+      args:
+        COMPONENT: api_server
     environment:
       - LOAD_EXAMPLE_REPORTS=False
     depends_on:

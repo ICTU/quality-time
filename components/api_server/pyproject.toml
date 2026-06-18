@@ -70,12 +70,12 @@ lint.per-file-ignores."__init__.py" = [
     "D104", # https://docs.astral.sh/ruff/rules/undocumented-public-package/ - don't require doc strings in __init__.py files
     "F401", # https://docs.astral.sh/ruff/rules/unused-import/ - routes are imported in __init__.py files to flatten the module hierarchy
 ]
-lint.per-file-ignores."src/model/issue_tracker.py" = [
-    "BLE001", # https://docs.astral.sh/ruff/rules/blind-except/ - allow for catching blind exception `Exception`
-]
-lint.per-file-ignores."src/quality_time_api_server.py" = [
+lint.per-file-ignores."src/main.py" = [
     "E402",
     "INP001", # https://docs.astral.sh/ruff/rules/implicit-namespace-package/ - false positive because this is the main script
+]
+lint.per-file-ignores."src/model/issue_tracker.py" = [
+    "BLE001", # https://docs.astral.sh/ruff/rules/blind-except/ - allow for catching blind exception `Exception`
 ]
 lint.per-file-ignores."tests/**/*.py" = [
     "ANN201", # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/ - don't require test functions to have return types

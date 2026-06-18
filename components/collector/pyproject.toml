@@ -71,7 +71,7 @@ lint.per-file-ignores."__init__.py" = [
 lint.per-file-ignores."src/base_collectors/source_collector.py" = [
     "BLE001", # https://docs.astral.sh/ruff/rules/blind-except/ - allow for catching blind exception `Exception`
 ]
-lint.per-file-ignores."src/quality_time_collector.py" = [
+lint.per-file-ignores."src/main.py" = [
     "INP001", # https://docs.astral.sh/ruff/rules/implicit-namespace-package/ - false positive because this is the main script
 ]
 lint.per-file-ignores."tests/**/*.py" = [
