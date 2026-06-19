@@ -1,6 +1,6 @@
 """Dependency-Track security warnings collector."""
 
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 from base_collectors import SecurityWarningsSourceCollector
 from collector_utilities.type import URL
@@ -23,8 +23,8 @@ class DependencyTrackVulnerability(TypedDict):
     """Vulnerability as returned by Dependency-Track."""
 
     vulnId: str
-    description: str
-    severity: str
+    description: NotRequired[str]
+    severity: NotRequired[str]
 
 
 class DependencyTrackFinding(TypedDict):
@@ -66,7 +66,7 @@ class DependencyTrackSecurityWarnings(SecurityWarningsSourceCollector, Dependenc
         return Entity(
             component=component["name"],
             component_landing_url=f"{landing_url}/components/{component['uuid']}",
-            description=vulnerability["description"],
+            description=vulnerability.get("description", ""),
             identifier=vulnerability["vulnId"],
             key=finding["matrix"],  # Matrix is a combination of project, component, and vulnerability
             latest=latest_version,
@@ -74,6 +74,6 @@ class DependencyTrackSecurityWarnings(SecurityWarningsSourceCollector, Dependenc
             project=self._projects[project_uuid]["name"],
             project_landing_url=f"{landing_url}/projects/{project_uuid}",
             project_version=self._projects[project_uuid].get("version", ""),
-            severity=vulnerability["severity"].capitalize(),
+            severity=vulnerability.get("severity", "UNASSIGNED").capitalize(),
             version=current_version,
         )
