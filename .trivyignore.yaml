@@ -1,0 +1,17 @@
+---
+# Suppressed Trivy findings. Every entry must say why it is safe, and carry an `expired_at` date so
+# the finding re-surfaces in the nightly scan for re-evaluation instead of being silenced forever.
+vulnerabilities:
+  # "Rand is unsound with a custom logger using rand::rng()" (LOW). Source: rand 0.9.1 embedded in
+  # /usr/lib/librav1e.so.* (the Rust AV1 encoder), pulled in transitively by Alpine's chromium ->
+  # ffmpeg/libavcodec. We do not build it and cannot pin its rand version; the fix has to come from
+  # Alpine rebuilding rav1e against rand >= 0.9.3. The advisory only affects code that installs a
+  # custom global logger calling rand::rng(); the headless-Chromium HTML-to-PDF path never exercises
+  # the AV1 encoder, so it is not reachable here. Scoped to librav1e so it cannot mask this GHSA on
+  # any other package. When this expires, the nightly scan reports it again: if Alpine has shipped a
+  # fixed rav1e the finding is gone and this entry can be deleted; otherwise bump expired_at.
+  - id: GHSA-cq8v-f236-94qc
+    paths:
+      - "usr/lib/librav1e.so.*"
+    statement: "Upstream Alpine rav1e/rand issue; not reachable on the headless-Chromium PDF path."
+    expired_at: 2026-09-19
