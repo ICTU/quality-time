@@ -13,6 +13,11 @@ LABEL description="Quality-time database"
 # Upgrade several libraries to pick up the latest Ubuntu security fixes; the MongoDB base image lags behind the Ubuntu
 # security updates. Each guard fails the build once the base image itself ships the fixed version, signalling that
 # workaround can be removed; bump the version in a guard whenever a newer fix needs to be pulled in.
+# The base image also bundles js-yaml 3.13.1 (/opt/js-yaml, symlinked as /js-yaml.js) solely so the entrypoint can
+# parse a mongod YAML config passed via --config. Quality-time never passes --config (see docker-compose.yml and the
+# Helm chart), so this parser is unreachable here, yet it carries CVE-2025-64718 (prototype pollution). Remove it to
+# drop the finding and shrink the attack surface; its guard fails the build if the base image stops shipping js-yaml
+# at this path, signalling that this cleanup can be removed.
 # DL3008 (pin apt versions) is intentionally ignored: --only-upgrade pulls the latest security patch rather
 # than a fixed version, and the guards above bound the minimum. SC2086 is ignored for the deliberate word-split
 # of "package min-version" pairs in the loop.
@@ -40,7 +45,12 @@ RUN PACKAGE_VERSIONS="\
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/local/bin/gosu && \
     chgrp -R 0 /data/db /data/configdb && \
-    chmod -R g=u /data/db /data/configdb
+    chmod -R g=u /data/db /data/configdb && \
+    if [ ! -e /opt/js-yaml/package.json ]; then \
+        echo "ERROR: /opt/js-yaml not found; remove this cleanup from the Dockerfile." >&2; \
+        exit 1; \
+    fi && \
+    rm -rf /opt/js-yaml /js-yaml.js
 
 # Run as the non-root MongoDB user by default. Platforms that require a UID >= 1000 can override this with a
 # securityContext (see the deployment documentation); the data directories above are group-writable for GID 0.
