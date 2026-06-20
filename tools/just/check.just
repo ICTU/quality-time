@@ -92,12 +92,19 @@ js-check name check folder="": (install-js-dependencies folder)
 npm-lint folder="": (js-check "npm-lint" f"{{npm_run}} lint --if-present" folder)
 
 # GHSA advisory IDs to ignore in npm audit. Document why each one is safe to ignore.
-# - GHSA-h67p-54hq-rp68 JS-YAML: Quadratic-complexity DoS in merge key handling via repeated aliases, dev/test-only transitive dependency
-# - GHSA-6v5v-wf23-fmfq markdown-it: Quadratic complexity DoS in smartquotes rule via replaceAt string operations
-# - GHSA-hmw2-7cc7-3qxx form-data: CRLF injection in form-data via unescaped multipart field names and filenames
-# - GHSA-pr7r-676h-xcf6 undici: Vulnerable to cross-user information disclosure via shared cache whitespace bypass
-# - GHSA-vmh5-mc38-953g undici: Vulnerable to TLS certificate validation bypass via dropped requestTls in SOCKS5 ProxyAgent
-npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-6v5v-wf23-fmfq GHSA-hmw2-7cc7-3qxx GHSA-pr7r-676h-xcf6 GHSA-vmh5-mc38-953g"
+# JS-YAML, dev/test-only transitive dependency
+# - GHSA-h67p-54hq-rp68 Quadratic-complexity DoS in merge key handling via repeated aliases
+# markdown-it, dev/test-only transitive dependency
+# - GHSA-6v5v-wf23-fmfq Quadratic complexity DoS in smartquotes rule via replaceAt string operations
+# undici, dev/test-only transitive dependency:
+# - GHSA-pr7r-676h-xcf6 Vulnerable to cross-user information disclosure via shared cache whitespace bypass
+# - GHSA-vmh5-mc38-953g Vulnerable to TLS certificate validation bypass via dropped requestTls in SOCKS5 ProxyAgent
+# - GHSA-35p6-xmwp-9g52 Vulnerable to HTTP response queue poisoning via keep-alive socket reuse
+# - GHSA-g8m3-5g58-fq7m Vulnerable to Set-Cookie SameSite attribute downgrade via permissive substring matching
+# - GHSA-hm92-r4w5-c3mj Vulnerable to cross-origin request routing via SOCKS5 proxy pool reuse
+# - GHSA-p88m-4jfj-68fv Vulnerable to HTTP header injection via Set-Cookie percent-decoding
+# - GHSA-vxpw-j846-p89q WebSocket client vulnerable to denial of service via fragment count bypass
+npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-6v5v-wf23-fmfq GHSA-pr7r-676h-xcf6 GHSA-vmh5-mc38-953g GHSA-35p6-xmwp-9g52 GHSA-g8m3-5g58-fq7m GHSA-hm92-r4w5-c3mj GHSA-p88m-4jfj-68fv GHSA-vxpw-j846-p89q"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]

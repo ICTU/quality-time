@@ -41,7 +41,11 @@ uv = [
 ]
 
 [tool.uv]
+override-dependencies = [
+    "msgpack==1.2.1"
+]  # GHSA-6v7p-g79w-8964: MessagePack for Python: Out-of-bounds read / crash on Unpacker reuse after a caught error
 exclude-newer = "7 days"
+exclude-newer-package = { msgpack = false }
 package = false
 
 [tool.ruff]
