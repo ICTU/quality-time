@@ -20,7 +20,7 @@ start-docker-component mode *components:
 [private]
 start-py-component mode="attach": install-py-dependencies
     ?[ {{ pyproject_toml_exists }} = true ]
-    {{ python }} src/quality_time*.py {{ record_pid(mode) }}
+    {{ python }} src/main.py {{ record_pid(mode) }}
 
 # Start the JavaScript component.
 [no-cd]
