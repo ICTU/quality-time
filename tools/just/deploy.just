@@ -65,7 +65,7 @@ stop-docker-component *components:
     ?[ {{ docker_folder_exists }} = true ]
     docker compose stop {{ components }}
 
-# Stop one or more component(s).
+# Stop one or more component(s). Run `just help stop` for more information.
 [arg("all", long="all", short="a", value="all", help="Also stop the local processes started by `just start-hybrid`")]
 stop all="" *components: stop-component (stop-docker-component components)
     {{ if all == "all" { "just stop-app-folders" } else { "" } }}
