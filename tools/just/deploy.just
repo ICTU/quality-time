@@ -32,13 +32,7 @@ start-js-component mode="attach": install-js-dependencies
 # Start the component(s) in the current folder. Run `just help start` for more information.
 [arg("mode", long="detach", short="d", value="detach", help="Run components in the background")]
 [no-cd]
-start mode="attach" *components:
-    just start-in-folder {{ mode }} {{ components }}
-
-# Start the component(s) in the current folder, if possible.
-[no-cd]
-[private]
-start-in-folder mode="attach" *components: (start-py-component mode) (start-js-component mode) (start-docker-component mode components)
+start mode="attach" *components: (start-py-component mode) (start-js-component mode) (start-docker-component mode components)
     ?[ {{ pyproject_toml_exists }} = false ] && [ {{ has_js_script("start") }} = false ] && [ {{ docker_folder_exists }} = false ]
     echo "Nothing to start in this folder"
 
@@ -64,15 +58,17 @@ stop-component:
     kill $(cat {{ pid_filename }})
     rm {{ pid_filename }}
 
-# Stop one or more Docker components
+# Stop the Docker containers.
 [no-cd]
 [private]
-stop-docker-components *components:
+stop-docker-component *components:
     ?[ {{ docker_folder_exists }} = true ]
     docker compose stop {{ components }}
 
-# Stop the component(s) in the current folder.
-stop *components: stop-component (stop-docker-components components)
+# Stop one or more component(s).
+[arg("all", long="all", short="a", value="all", help="Also stop the local processes started by `just start-hybrid`")]
+stop all="" *components: stop-component (stop-docker-component components)
+    {{ if all == "all" { "just stop-app-folders" } else { "" } }}
     ?[ {{ pyproject_toml_exists }} = false ] && [ {{ has_js_script("start") }} = false ] && [ {{ docker_folder_exists }} = false ]
     echo "Nothing to stop in this folder"
 
@@ -83,13 +79,17 @@ app_folders := "components/api_server components/collector components/notifier c
 # The same components as bare names, for use as Docker service names.
 app_components := replace(app_folders, "components/", "")
 
+# Stop the local processes started by `start-hybrid` (one per app component folder).
+[private]
+stop-app-folders: (for-each app_folders "run stop")
+
 # Start every component in Docker (scenario 1 in the developer manual).
-start-docker: (for-each app_folders "run stop")
+start-docker: stop-app-folders
     just start -d
 
 [private]
 start-hybrid-start: (start-docker-component "detach" "database" "ldap" "renderer" "mongo-express" "testdata") (for-each app_folders 'run "start -d"')
 
 # Start a combination of Docker services and local processes for development (scenario 2 in the developer manual).
-start-hybrid: (stop-docker-components app_components)
+start-hybrid: (stop-docker-component app_components)
     just start-hybrid-start
