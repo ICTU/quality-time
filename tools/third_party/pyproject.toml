@@ -13,12 +13,12 @@ dependencies = [
     "archunitpython==1.1.1",
     "bandit==1.9.4",
     "codespell==2.4.2",
-    "compose-lint==0.12.1",
+    "compose-lint==0.12.2",
     "coverage==7.14.1",
     "fixit==2.2.1",
     "mypy==2.1.0",
     "pip-audit==2.10.1",
-    "pyproject-fmt==2.24.0",
+    "pyproject-fmt==2.24.1",
     "ruff==0.15.17",
     # Pinned to work around pyproject-fmt==2.21.2, which under-constrains toml-fmt-common (no upper bound):
     # toml-fmt-common>=1.3.3 moved --table-format into the shared base, conflicting with pyproject-fmt's own flag.
