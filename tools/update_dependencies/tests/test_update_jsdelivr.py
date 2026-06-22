@@ -3,10 +3,10 @@
 import unittest
 from unittest.mock import ANY, Mock, patch
 
-from update_jsdelivr import get_latest_version, update_jsdelivr
+from update_jsdelivr import get_latest_version, update_jsdelivr, update_jsdelivrs
 
 from .fixtures import HASH1, HASH2
-from .helpers import assert_new_version_logged, mock_response
+from .helpers import assert_new_version_logged, assert_path_logged, mock_path, mock_response
 
 # A flat package listing as returned by the jsDelivr API with the ?structure=flat query parameter.
 FLAT_FILES = {"default": "/dist/clipboard.min.js", "files": [{"name": "/dist/clipboard.min.js", "hash": HASH2}]}
@@ -94,4 +94,41 @@ class UpdateJsdelivrTest(unittest.TestCase):
             mock_response({"time": {"2.0.11": "20260530T10:14:40.567Z"}}),
         ]
         self.assertEqual(CONF, update_jsdelivr(CONF))
+        mock_warning.assert_not_called()
+
+
+@patch("logging.Logger.warning")
+@patch("logging.Logger.info")
+@patch("pathlib.Path.rglob")
+@patch("requests.get")
+class UpdateJsdelivrsTest(unittest.TestCase):
+    """Unit tests for discovering and updating the Sphinx config files under docs/."""
+
+    def test_changes(self, mock_get: Mock, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
+        """Test that a discovered Sphinx config is updated when a new version is available."""
+        mock_get.side_effect = [
+            mock_response({"tags": {"latest": "2.0.12"}}),
+            mock_response(FLAT_FILES),
+            mock_response({"time": {"2.0.12": "20260530T10:14:40.567Z"}}),
+        ]
+        mock_conf = mock_path(CONF)
+        mock_glob.return_value = [mock_conf]
+        self.assertEqual(0, update_jsdelivrs())
+        written = mock_conf.write_text.call_args.args[0]
+        self.assertIn("clipboard@2.0.12/dist/clipboard.min.js", written)
+        self.assertIn(f'"integrity": "sha256-{HASH2}"', written)
+        assert_path_logged(mock_info, mock_conf.relative_to())
+        assert_new_version_logged(mock_warning, "clipboard", ANY, ANY)
+
+    def test_no_changes(self, mock_get: Mock, mock_glob: Mock, mock_info: Mock, mock_warning: Mock):
+        """Test that a discovered Sphinx config is not rewritten when there is no new version."""
+        mock_get.side_effect = [
+            mock_response({"tags": {"latest": "2.0.11"}}),
+            mock_response({"time": {"2.0.11": "20260530T10:14:40.567Z"}}),
+        ]
+        mock_conf = mock_path(CONF)
+        mock_glob.return_value = [mock_conf]
+        self.assertEqual(0, update_jsdelivrs())
+        mock_conf.write_text.assert_not_called()
+        assert_path_logged(mock_info, mock_conf.relative_to())
         mock_warning.assert_not_called()
