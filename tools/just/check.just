@@ -79,6 +79,11 @@ vale folder="": (install-py-dependencies folder)
     ?[ {{ has_py_pkg("vale") }} = true ]
     {{ start_capture(folder) }} {{ uv_run }} vale sync && {{ uv_run }} vale --no-wrap --glob '*.md' src {{ end_capture("vale") }}
 
+# Run codespell to check code for spelling.
+[no-cd]
+[private]
+codespell folder="": (py-check "codespell" f"{{ uv_run }} codespell {{ when_color("--enable-colors", "") }} {{ code }}" folder)
+
 # Run a JavaScript check.
 [no-cd]
 [private]
@@ -160,7 +165,7 @@ helm-lint folder="":
 [no-cd]
 [parallel]
 [private]
-check-in-folder folder="": (ty folder) (mypy folder) (fixit folder) (ruff folder) (pyproject-fmt folder) (troml folder) (pip-audit folder) (uv-audit folder) (bandit folder) (vulture folder) (vale folder) (npm-lint folder) (npm-audit folder) (npm-outdated folder) (check-justfile folder) (yamllint folder) (zizmor folder) (compose-lint folder) (helm-lint folder)
+check-in-folder folder="": (ty folder) (mypy folder) (fixit folder) (ruff folder) (pyproject-fmt folder) (troml folder) (pip-audit folder) (uv-audit folder) (bandit folder) (vulture folder) (vale folder) (codespell folder) (npm-lint folder) (npm-audit folder) (npm-outdated folder) (check-justfile folder) (yamllint folder) (zizmor folder) (compose-lint folder) (helm-lint folder)
 
 # Change into the folder and run the checks there (passing the folder so the OK/NOK output is labelled with it).
 [no-cd]

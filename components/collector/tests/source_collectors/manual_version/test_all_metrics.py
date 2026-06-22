@@ -16,7 +16,7 @@ class ManualVersionTest(SourceCollectorTestCase):
         self.assert_measurement(measurement, value="1.3.4")
 
     async def test_invalid_source_version(self):
-        """Test an invalud source version."""
+        """Test an invalid source version."""
         self.set_source_parameter("version", "invalid")
         measurement = await self.collect_measurement()
         self.assert_measurement(measurement, parse_error="Invalid version: 'invalid'")
