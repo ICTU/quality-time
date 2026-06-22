@@ -2,17 +2,9 @@ import 'utils.just'
 
 # === Update dependencies ===
 
-# Update dependencies of type.
-[private]
-update dependency_type:
-    {{ uv_run }} --project tools/update_dependencies tools/update_dependencies/src/update_{{ dependency_type }}.py
-
 # Update direct and indirect dependencies. Set GITHUB_TOKEN, DOCKER_HUB_USERNAME, and DOCKER_HUB_TOKEN to prevent hitting rate limits.
-[parallel]
-update-dependencies: (update "dockerfile_base_image") (update "pyproject_toml") (update "github_action") (update "circle_ci_config") (update "manifest_images") (update "jsdelivr")
-    # node_engine and package_json both rewrite the package.json files, so they run sequentially here (not as parallel dependencies) to avoid concurrent writes to the same files.
-    just update "node_engine"
-    just update "package_json"
+update-dependencies:
+    {{ uv_run }} --project tools/update_dependencies tools/update_dependencies/src/update.py
 
 alias update-deps := update-dependencies
 

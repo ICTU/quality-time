@@ -7,6 +7,7 @@ from pathlib import Path
 import requests
 from packaging.version import InvalidVersion, Version
 
+from filesystem import glob
 from log import get_logger
 from npmjs import get_publication_datetime
 from version import DependencyVersion
@@ -68,11 +69,16 @@ def update_jsdelivr(content: str) -> str:
     return JSDELIVR_RE.sub(replace, content)
 
 
+def update_jsdelivrs() -> int:
+    """Find the Sphinx config files under docs/ and update the jsDelivr URLs in them."""
+    for sphinx_config_py in glob("conf.py", start=Path.cwd() / "docs"):
+        LOG.path(sphinx_config_py)
+        old_content = sphinx_config_py.read_text()
+        new_content = update_jsdelivr(old_content)
+        if new_content != old_content:
+            sphinx_config_py.write_text(new_content)
+    return 0
+
+
 if __name__ == "__main__":  # pragma: no cover
-    sphinx_config_py = Path.cwd() / "docs" / "src" / "conf.py"
-    LOG.path(sphinx_config_py)
-    old_content = sphinx_config_py.read_text()
-    new_content = update_jsdelivr(old_content)
-    if new_content != old_content:
-        sphinx_config_py.write_text(new_content)
-    sys.exit(0)
+    sys.exit(update_jsdelivrs())
