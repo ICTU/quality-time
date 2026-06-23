@@ -14,7 +14,7 @@ classifiers = [
 dev = [
     "axe-selenium-python==3.0.0",
     "requests==2.34.2",
-    "selenium==4.44.0",
+    "selenium==4.45.0",
     "tools",
     "types-requests==2.33.0.20260518",
 ]
