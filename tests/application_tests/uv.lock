@@ -1042,7 +1042,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-just = [{ name = "rust-just", specifier = "==1.52.0" }]
+just = [{ name = "rust-just", specifier = "==1.53.0" }]
 uv = [{ name = "uv", specifier = "==0.11.21" }]
 
 [[package]]
