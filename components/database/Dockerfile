@@ -26,7 +26,8 @@ RUN PACKAGE_VERSIONS="\
         libgnutls30t64 3.8.3-1.1ubuntu3.6 \
         libudev1 255.4-1ubuntu8.16 \
         libgcrypt20 1.10.3-2ubuntu0.1 \
-        liblzma5 5.6.1+really5.4.5-1ubuntu0.3" && \
+        liblzma5 5.6.1+really5.4.5-1ubuntu0.3 \
+        perl-base 5.38.2-3.2ubuntu0.3" && \
     set -- $PACKAGE_VERSIONS && \
     packages="" && \
     while [ "$#" -gt 0 ]; do \
