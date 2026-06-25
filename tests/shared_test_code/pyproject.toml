@@ -1,6 +1,6 @@
 [project]
 name = "shared-test-code"
-version = "5.57.0-rc.0"
+version = "5.57.0"
 requires-python = ">=3.14"
 classifiers = [
     "Programming Language :: Python",

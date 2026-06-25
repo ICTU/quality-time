@@ -880,7 +880,7 @@ wheels = [
 
 [[package]]
 name = "shared-code"
-version = "5.57.0rc0"
+version = "5.57.0"
 source = { directory = "../../components/shared_code" }
 dependencies = [
     { name = "bottle" },
@@ -911,7 +911,7 @@ dev = [
 
 [[package]]
 name = "shared-test-code"
-version = "5.57.0rc0"
+version = "5.57.0"
 source = { virtual = "." }
 dependencies = [
     { name = "shared-code" },
@@ -1020,7 +1020,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.57.0rc0"
+version = "5.57.0"
 source = { virtual = "../../tools/third_party" }
 dependencies = [
     { name = "archunitpython" },
