@@ -9,7 +9,7 @@ import { CommentField } from "../fields/CommentField"
 import { TextField } from "../fields/TextField"
 import { subjectPropType } from "../sharedPropTypes"
 import { getSubjectName, getSubjectTypeName } from "../utils"
-import { SubjectType } from "./SubjectType"
+import { SubjectTypeSelector } from "./SubjectTypeSelector"
 
 export function SubjectParameters({ subject, subjectUuid, reload }) {
     const dataModel = useContext(DataModelContext)
@@ -18,7 +18,7 @@ export function SubjectParameters({ subject, subjectUuid, reload }) {
     return (
         <Grid container spacing={{ xs: 1, sm: 1, md: 2 }} columns={{ xs: 1, sm: 1, md: 3 }}>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
-                <SubjectType
+                <SubjectTypeSelector
                     id={`${subjectUuid}-type`}
                     setValue={(value) => setSubjectAttribute(subjectUuid, "type", value, reload)}
                     subjectType={subject.type}

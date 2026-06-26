@@ -10,7 +10,9 @@ import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissio
 import {
     clickButton,
     clickLabeledElement,
+    expectDisplayValue,
     expectFetch,
+    expectLabelText,
     expectNoAccessibilityViolations,
     expectNoFetch,
     expectNoText,
@@ -94,20 +96,20 @@ it("has no accessibility violations", async () => {
 
 it("renders an URL parameter", async () => {
     renderSourceParameter({})
-    expect(screen.queryAllByLabelText(/URL/).length).toBe(1)
+    expectLabelText(/URL/)
     expect(screen.getByDisplayValue(/https:\/\/test/)).toBeValid()
 })
 
 it("renders an URL parameter with warning", async () => {
     renderSourceParameter({ warning: true })
-    expect(screen.queryAllByLabelText(/URL/).length).toBe(1)
+    expectLabelText(/URL/)
     expect(screen.getByDisplayValue(/https:\/\/test/)).not.toBeValid()
 })
 
 it("renders a string parameter", async () => {
     renderSourceParameter({ parameter: { name: "String", type: "string" } })
-    expect(screen.queryAllByLabelText(/String/).length).toBe(1)
-    expect(screen.queryAllByDisplayValue(/https/).length).toBe(1)
+    expectLabelText(/String/)
+    expectDisplayValue(/https/)
 })
 
 it("renders a password parameter", async () => {
@@ -121,7 +123,7 @@ it("renders a date parameter", async () => {
         parameterValue: "2021-10-10",
     })
     expect(screen.queryAllByLabelText(/Date/, { selector: "input" }).length).toBe(1)
-    expect(screen.queryAllByDisplayValue("10/10/2021").length).toBe(1)
+    expectDisplayValue("10/10/2021")
 })
 
 it("renders a date parameter without date", async () => {
@@ -224,7 +226,7 @@ it("renders an integer parameter", async () => {
         parameter: { name: "Integer", type: "integer" },
         parameterValue: "0",
     })
-    expect(screen.queryAllByLabelText(/Integer/).length).toBe(1)
+    expectLabelText(/Integer/)
     expect(screen.getByLabelText(/Integer/)).toBeValid()
 })
 
@@ -233,7 +235,7 @@ it("does not accept floats as number", async () => {
         parameter: { name: "Integer", type: "integer" },
         parameterValue: "0.1",
     })
-    expect(screen.queryAllByLabelText(/Integer/).length).toBe(1)
+    expectLabelText(/Integer/)
     expect(screen.getByLabelText(/Integer/)).not.toBeValid()
 })
 
@@ -242,7 +244,7 @@ it("does not accept negative integers as number", async () => {
         parameter: { name: "Integer", type: "integer" },
         parameterValue: "-1",
     })
-    expect(screen.queryAllByLabelText(/Integer/).length).toBe(1)
+    expectLabelText(/Integer/)
     expect(screen.getByLabelText(/Integer/)).not.toBeValid()
 })
 
@@ -260,7 +262,7 @@ it("renders a single choice parameter", async () => {
         parameter: { name: "Single choice", type: "single_choice", values: ["option 1", "option 2"] },
         parameterValue: "option 1",
     })
-    expect(screen.queryAllByLabelText(/Single choice/).length).toBe(1)
+    expectLabelText(/Single choice/)
     expectText(/option 1/)
 })
 
@@ -274,7 +276,7 @@ it("renders a multiple choice parameter with default", async () => {
         },
         parameterValue: null,
     })
-    expect(screen.queryAllByLabelText(/Multiple choice/).length).toBe(1)
+    expectLabelText(/Multiple choice/)
     expectText(/option 1/)
     expectNoText(/option 2/)
 })
@@ -288,7 +290,7 @@ it("renders a multiple choice parameter without defaults", async () => {
         },
         parameterValue: [],
     })
-    expect(screen.queryAllByLabelText(/Multiple choice/).length).toBe(1)
+    expectLabelText(/Multiple choice/)
     expectNoText(/option 1/)
     expectNoText(/option 2/)
 })

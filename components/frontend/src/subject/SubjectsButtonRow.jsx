@@ -10,7 +10,7 @@ import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
 import { CopyButton } from "../widgets/buttons/CopyButton"
 import { MoveButton } from "../widgets/buttons/MoveButton"
 import { subjectOptions } from "../widgets/menu_options"
-import { subjectTypes } from "./SubjectType"
+import { subjectTypes } from "./SubjectTypeSelector"
 
 export function SubjectsButtonRow({ reload, report, reports, settings }) {
     const dataModel = useContext(DataModelContext)

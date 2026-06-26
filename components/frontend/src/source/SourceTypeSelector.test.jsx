@@ -1,12 +1,11 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { expectNoAccessibilityViolations, expectText } from "../testUtils"
-import { SourceType } from "./SourceType"
+import { asyncClickText, expectDisplayValue, expectNoAccessibilityViolations, expectText } from "../testUtils"
+import { SourceTypeSelector } from "./SourceTypeSelector"
 
 beforeEach(() => {
     vi.spyOn(fetchServerApi, "fetchServerApi")
@@ -48,7 +47,7 @@ async function renderSourceType(metricType, sourceType, mockSetSourceAttribute) 
         result = render(
             <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
                 <DataModelContext value={dataModel}>
-                    <SourceType
+                    <SourceTypeSelector
                         metricType={metricType}
                         sourceType={sourceType}
                         setSourceAttribute={mockSetSourceAttribute}
@@ -68,23 +67,24 @@ it("has no accessibility violations", async () => {
 it("sets the source type", async () => {
     const mockSetSourceAttribute = vi.fn()
     await renderSourceType("violations", "sonarqube", mockSetSourceAttribute)
-    await userEvent.type(screen.getByRole("combobox"), "GitLab{Enter}")
+    fireEvent.click(screen.getByDisplayValue("SonarQube"))
+    await asyncClickText("GitLab")
     expect(mockSetSourceAttribute).toHaveBeenLastCalledWith("type", "gitlab")
 })
 
-it("shows the metric type even when not supported by the subject type", async () => {
+it("shows the source type even when not supported by the metric type", async () => {
     await renderSourceType("violations", "unsupported")
-    expectText(/Unsupported/)
+    expectDisplayValue(/Unsupported/)
 })
 
-it("shows the supported source versions", async () => {
+it("shows the supported source versions in the menu", async () => {
     await renderSourceType("violations", "sonarqube")
+    fireEvent.click(screen.getByDisplayValue("SonarQube"))
     expectText(/Supported SonarQube versions: >=8.2/)
 })
 
 it("shows sources as deprecated if they are deprecated", async () => {
-    await renderSourceType("violations", "sonarqube")
-    fireEvent.mouseDown(screen.getByLabelText(/Source type/))
+    await renderSourceType("violations", "gitlab")
     expectText(/Deprecated/)
 })
 

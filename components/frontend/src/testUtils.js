@@ -24,7 +24,7 @@ export function expectSearch(query) {
 }
 
 export function expectText(text, count = 1) {
-    expect(screen.getAllByText(text).length).toBe(count)
+    expect(screen.getAllByText(text)).toHaveLength(count)
 }
 
 export async function expectTextAfterWait(text) {
@@ -33,7 +33,7 @@ export async function expectTextAfterWait(text) {
     })
 }
 export function expectNoText(text) {
-    expect(screen.queryAllByText(text).length).toBe(0)
+    expect(screen.queryAllByText(text)).toHaveLength(0)
 }
 
 export async function expectNoTextAfterWait(text) {
@@ -43,19 +43,27 @@ export async function expectNoTextAfterWait(text) {
 }
 
 export function expectLabelText(text, count = 1) {
-    expect(screen.getAllByLabelText(text).length).toBe(count)
+    expect(screen.getAllByLabelText(text)).toHaveLength(count)
 }
 
 export function expectNoLabelText(text) {
-    expect(screen.queryAllByLabelText(text).length).toBe(0)
+    expect(screen.queryAllByLabelText(text)).toHaveLength(0)
 }
 
 export function expectAltText(text, count = 1) {
-    expect(screen.getAllByAltText(text).length).toBe(count)
+    expect(screen.getAllByAltText(text)).toHaveLength(count)
 }
 
 export function expectNoAltText(text) {
-    expect(screen.queryAllByAltText(text).length).toBe(0)
+    expect(screen.queryAllByAltText(text)).toHaveLength(0)
+}
+
+export function expectDisplayValue(text, count = 1) {
+    expect(screen.getAllByDisplayValue(text)).toHaveLength(count)
+}
+
+export function expectNoDisplayValue(text) {
+    expect(screen.queryAllByDisplayValue(text)).toHaveLength(0)
 }
 
 export function clickText(text, index) {

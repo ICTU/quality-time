@@ -10,7 +10,7 @@ import { SnackbarContext } from "../context/Snackbar"
 import { MultipleChoiceField } from "../fields/MultipleChoiceField"
 import { TextField } from "../fields/TextField"
 import { reportPropType } from "../sharedPropTypes"
-import { sourceTypeOption } from "../source/SourceType"
+import { sourceTypeOption } from "../source/SourceTypeSelector"
 import { HyperLink } from "../widgets/HyperLink"
 import { WarningMessage } from "../widgets/WarningMessage"
 

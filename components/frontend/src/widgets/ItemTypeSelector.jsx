@@ -80,7 +80,7 @@ Filters.propTypes = {
     setHideUsedItemsScope: func,
 }
 
-export function ItemSelector({
+export function ItemTypeSelector({
     renderAnchor,
     tooltip,
     itemSubtypes,
@@ -116,7 +116,13 @@ export function ItemSelector({
             <Tooltip title={tooltip} placement="top">
                 {renderAnchor(handleMenu)}
             </Tooltip>
-            <Popover id="dropdown-menu" anchorEl={anchorEl} onClose={() => setAnchorEl(null)} open={Boolean(anchorEl)}>
+            <Popover
+                id="dropdown-menu"
+                anchorEl={anchorEl}
+                anchorOrigin={{ vertical: "bottom" }}
+                onClose={() => setAnchorEl(null)}
+                open={Boolean(anchorEl)}
+            >
                 <TextField
                     autoFocus
                     fullWidth
@@ -156,7 +162,7 @@ export function ItemSelector({
         </>
     )
 }
-ItemSelector.propTypes = {
+ItemTypeSelector.propTypes = {
     allItemSubtypes: array,
     itemSubtypes: array,
     itemType: string,

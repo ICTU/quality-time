@@ -59,7 +59,7 @@ it("invokes the callback on clicking delete", async () => {
 
 it("changes the source type", async () => {
     renderSource(metric)
-    fireEvent.mouseDown(screen.getByLabelText(/Source type/))
+    fireEvent.click(screen.getByLabelText(/Source type/))
     clickText(/Source type 2/)
     expectFetch("post", "source/source_uuid/attribute/type", { type: "source_type2" })
 })

@@ -78,6 +78,7 @@ it("has no accessibility violations", async () => {
 
 it("changes the subject type", async () => {
     await renderSubjectTitle()
+    fireEvent.click(screen.getAllByDisplayValue("Default subject type")[0])
     fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
     clickText(/Other subject type/)
     expectFetch("post", "subject/subject_uuid/attribute/type", { type: "subject_type2" })
@@ -85,6 +86,7 @@ it("changes the subject type", async () => {
 
 it("changes the subject type to a nested type", async () => {
     await renderSubjectTitle()
+    fireEvent.click(screen.getAllByDisplayValue("Default subject type")[0])
     fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
     clickText(/Nested subject type/)
     expectFetch("post", "subject/subject_uuid/attribute/type", { type: "nested_subject_type" })
@@ -92,6 +94,7 @@ it("changes the subject type to a nested type", async () => {
 
 it("changes the subject type from a nested type", async () => {
     await renderSubjectTitle("nested_subject_type")
+    fireEvent.click(screen.getAllByDisplayValue("Nested subject type")[0])
     fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
     clickText(/Other subject type/)
     expectFetch("post", "subject/subject_uuid/attribute/type", { type: "subject_type2" })

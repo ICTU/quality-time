@@ -3,9 +3,9 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
 import { asyncClickRole, asyncClickText, expectNoText, expectText } from "../testUtils"
-import { ItemSelector } from "./ItemSelector"
+import { ItemTypeSelector } from "./ItemTypeSelector"
 
-function renderItemSelector({
+function renderItemTypeSelector({
     nrItems = 2,
     totalItems = 10,
     usedItemKeysInReport = [],
@@ -28,7 +28,7 @@ function renderItemSelector({
         }
     }
     render(
-        <ItemSelector
+        <ItemTypeSelector
             allItemSubtypes={allItemSubtypes}
             itemType="foo"
             itemSubtypes={itemSubtypes.toReversed()} // Pass items in reversed order to test they are sorted correctly
@@ -47,22 +47,22 @@ function renderItemSelector({
     return mockCallback
 }
 
-test("ItemSelector renders the child anchor", async () => {
-    renderItemSelector()
+test("ItemTypeSelector renders the child anchor", async () => {
+    renderItemTypeSelector()
     expectText(/Add foo/)
     expectNoText(/Available/) // Menu is closed until the anchor is clicked
 })
 
-test("ItemSelector mouse navigation", async () => {
-    const mockCallback = renderItemSelector()
+test("ItemTypeSelector mouse navigation", async () => {
+    const mockCallback = renderItemTypeSelector()
     await asyncClickText(/Add foo/)
     expect(screen.getByLabelText(/Filter/)).toHaveFocus()
     await asyncClickText(/Sub 2/)
     expect(mockCallback).toHaveBeenCalledWith("sub 2")
 })
 
-test("ItemSelector keyboard navigation", async () => {
-    const mockCallback = renderItemSelector()
+test("ItemTypeSelector keyboard navigation", async () => {
+    const mockCallback = renderItemTypeSelector()
     await asyncClickText(/Add foo/)
     expect(screen.getByLabelText(/Filter/)).toHaveFocus()
     await act(async () => {
@@ -80,42 +80,42 @@ test("ItemSelector keyboard navigation", async () => {
     expect(mockCallback).toHaveBeenCalledWith("sub 2")
 })
 
-test("ItemSelector is sorted", async () => {
-    renderItemSelector()
+test("ItemTypeSelector is sorted", async () => {
+    renderItemTypeSelector()
     await asyncClickText(/Add foo/)
     expect(screen.getAllByText(/Sub/).map((item) => item.innerHTML)).toStrictEqual(["Sub 1", "Sub 2"])
 })
 
-test("ItemSelector is not sorted", async () => {
-    renderItemSelector({ sort: false })
+test("ItemTypeSelector is not sorted", async () => {
+    renderItemTypeSelector({ sort: false })
     await asyncClickText(/Add foo/)
     expect(screen.getAllByText(/Sub/).map((item) => item.innerHTML)).toStrictEqual(["Sub 2", "Sub 1"])
 })
 
-test("ItemSelector filter one item", async () => {
-    renderItemSelector({ nrItems: 6 })
+test("ItemTypeSelector filter one item", async () => {
+    renderItemTypeSelector({ nrItems: 6 })
     await asyncClickText(/Add foo/)
     await userEvent.type(screen.getByRole("searchbox"), "Sub 3")
     expect(screen.getAllByText(/Sub/).map((item) => item.innerHTML)).toStrictEqual(["Sub 3"])
 })
 
-test("ItemSelector filter zero items", async () => {
-    renderItemSelector({ nrItems: 6 })
+test("ItemTypeSelector filter zero items", async () => {
+    renderItemTypeSelector({ nrItems: 6 })
     await asyncClickText(/Add foo/)
     await userEvent.type(screen.getByRole("searchbox"), "FOO{Enter}")
     expectNoText(/Sub/)
 })
 
-test("ItemSelector select from all items", async () => {
-    const mockCallback = renderItemSelector()
+test("ItemTypeSelector select from all items", async () => {
+    const mockCallback = renderItemTypeSelector()
     await asyncClickText(/Add foo/)
     await asyncClickRole("checkbox")
     await asyncClickText(/Sub 3/)
     expect(mockCallback).toHaveBeenCalledWith("sub 3")
 })
 
-test("ItemSelector hide used items in report", async () => {
-    renderItemSelector({
+test("ItemTypeSelector hide used items in report", async () => {
+    renderItemTypeSelector({
         nrItems: 2,
         totalItems: 3,
         usedItemKeysInReport: ["sub 1"],
@@ -131,8 +131,8 @@ test("ItemSelector hide used items in report", async () => {
     expectNoText(/Sub 3/) // Still hidden because it's not supported by the subject type
 })
 
-test("ItemSelector hide used items in subject", async () => {
-    renderItemSelector({
+test("ItemTypeSelector hide used items in subject", async () => {
+    renderItemTypeSelector({
         nrItems: 2,
         totalItems: 3,
         usedItemKeysInReport: ["sub 1", "sub 2"],
@@ -149,16 +149,16 @@ test("ItemSelector hide used items in subject", async () => {
     expectNoText(/Sub 3/) // Still hidden because it's not supported by the subject type
 })
 
-test("ItemSelector add all items by keyboard", async () => {
-    const mockCallback = renderItemSelector()
+test("ItemTypeSelector add all items by keyboard", async () => {
+    const mockCallback = renderItemTypeSelector()
     await asyncClickText(/Add foo/)
     await userEvent.type(screen.getByRole("checkbox"), "{Enter}")
     await asyncClickText(/Sub 3/)
     expect(mockCallback).toHaveBeenCalledWith("sub 3")
 })
 
-test("ItemSelector menu can be closed without selecting an item", async () => {
-    const mockCallback = renderItemSelector()
+test("ItemTypeSelector menu can be closed without selecting an item", async () => {
+    const mockCallback = renderItemTypeSelector()
     await asyncClickText(/Add foo/)
     await userEvent.keyboard("{Escape}")
     expectNoText(/Sub/)

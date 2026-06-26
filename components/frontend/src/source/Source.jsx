@@ -25,7 +25,7 @@ import { HyperLink } from "../widgets/HyperLink"
 import { Tabs } from "../widgets/Tabs"
 import { InfoMessage, WarningMessage } from "../widgets/WarningMessage"
 import { SourceParameters } from "./SourceParameters"
-import { SourceType } from "./SourceType"
+import { SourceTypeSelector } from "./SourceTypeSelector"
 
 function SourceButtonRow({ firstSource, lastSource, reload, sourceUuid }) {
     const deleteButton = <DeleteButton itemType="source" onClick={() => deleteSource(sourceUuid, reload)} />
@@ -100,7 +100,7 @@ function Parameters({
                 </Grid>
             )}
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
-                <SourceType
+                <SourceTypeSelector
                     metricType={metric.type}
                     setSourceAttribute={(a, v) => setSourceAttribute(sourceUuid, a, v, reload)}
                     sourceUuid={sourceUuid}

@@ -18,7 +18,7 @@ import {
     getMetricUnit,
     getReportTags,
 } from "../utils"
-import { MetricType } from "./MetricType"
+import { MetricTypeSelector } from "./MetricTypeSelector"
 import { Target } from "./Target"
 import { TargetVisualiser } from "./TargetVisualiser"
 
@@ -253,7 +253,13 @@ export function MetricConfigurationParameters({ metric, metricUuid, reload, repo
     return (
         <Grid container spacing={{ xs: 1, sm: 2, md: 3 }} columns={{ xs: 1, sm: 3, md: 3 }}>
             <Grid size={1}>
-                <MetricType metric={metric} metricUuid={metricUuid} reload={reload} subjectType={subject.type} />
+                <MetricTypeSelector
+                    metric={metric}
+                    metricUuid={metricUuid}
+                    reload={reload}
+                    report={report}
+                    subject={subject}
+                />
             </Grid>
             <Grid size={1}>
                 <Stack spacing={{ xs: 1, sm: 1, md: 1 }}>

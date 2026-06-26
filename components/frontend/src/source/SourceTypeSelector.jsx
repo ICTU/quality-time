@@ -1,12 +1,13 @@
-import { Chip, MenuItem, Stack, Typography } from "@mui/material"
+import { Chip, InputAdornment, Stack, Typography } from "@mui/material"
 import { func, string } from "prop-types"
 import { useContext } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { TextField } from "../fields/TextField"
 import { dataModelPropType, sourceTypePropType } from "../sharedPropTypes"
 import { referenceDocumentationURL } from "../utils"
+import { ItemTypeSelector } from "../widgets/ItemTypeSelector"
+import { ItemTypeSelectorTextField } from "../widgets/ItemTypeSelectorTextField"
 import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
 import { Logo } from "./Logo"
 
@@ -67,7 +68,7 @@ sourceTypeOptions.propTypes = {
     metricType: string,
 }
 
-export function SourceType({ metricType, setSourceAttribute, sourceType }) {
+export function SourceTypeSelector({ metricType, setSourceAttribute, sourceType }) {
     const dataModel = useContext(DataModelContext)
     const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
@@ -79,29 +80,39 @@ export function SourceType({ metricType, setSourceAttribute, sourceType }) {
     const sourceTypeDocumentation = dataModel.sources[sourceType]?.documentation
     const hasExtraDocs = sourceTypeDocumentation?.generic || sourceTypeDocumentation?.[metricType]
     const howToConfigure = ` for ${hasExtraDocs ? "additional " : ""}information on how to configure this source type.`
+    const sourceTypeName = dataModel.sources[sourceType].name
+    const sourceTypeDeprecated = dataModel.sources[sourceType].deprecated
     return (
-        <TextField
-            disabled={disabled}
-            helperText={
-                <>
-                    <ReadTheDocsLink url={referenceDocumentationURL(dataModel.sources[sourceType].name)} />
-                    {howToConfigure}
-                </>
-            }
-            label="Source type"
-            onChange={(value) => setSourceAttribute("type", value)}
-            select
-            value={sourceType}
-        >
-            {options.map((option) => (
-                <MenuItem key={option.key} sx={{ width: "50vw" }} value={option.value}>
-                    {option.content}
-                </MenuItem>
-            ))}
-        </TextField>
+        <ItemTypeSelector
+            itemSubtypes={options}
+            itemType="source"
+            onClick={(value) => setSourceAttribute("type", value)}
+            renderAnchor={(handleMenu) => (
+                <ItemTypeSelectorTextField
+                    disabled={disabled}
+                    handleMenu={handleMenu}
+                    helperText={
+                        <>
+                            <ReadTheDocsLink url={referenceDocumentationURL(sourceTypeName)} />
+                            {howToConfigure}
+                        </>
+                    }
+                    label="Source type"
+                    startAdornment={
+                        <InputAdornment position="start">
+                            {sourceTypeDeprecated && (
+                                <Chip color="warning" label="Deprecated" size="small" sx={{ marginRight: "10px" }} />
+                            )}
+                            <Logo logo={sourceType} alt={sourceTypeName} width="1em" height="1em" />
+                        </InputAdornment>
+                    }
+                    value={sourceTypeName}
+                />
+            )}
+        />
     )
 }
-SourceType.propTypes = {
+SourceTypeSelector.propTypes = {
     metricType: string,
     setSourceAttribute: func,
     sourceType: string,

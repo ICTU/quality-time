@@ -47,7 +47,7 @@ async function renderMetricParameters(scale = "count") {
             <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
                 <DataModelContext value={dataModel}>
                     <MetricConfigurationParameters
-                        subject={{ type: "subject_type" }}
+                        subject={{ type: "subject_type", metrics: {} }}
                         metric={{
                             type: "violations",
                             scale: scale,
@@ -139,7 +139,7 @@ it("skips the metric unit fields for metrics with the version number scale", asy
         <DataModelContext value={dataModel}>
             <MetricConfigurationParameters
                 report={{ subjects: {} }}
-                subject={{ type: "subject_type" }}
+                subject={{ type: "subject_type", metrics: {} }}
                 metric={{ type: "source_version" }}
                 metricUuid="metric_uuid"
             />

@@ -21,7 +21,7 @@ import { MoveButton } from "../widgets/buttons/MoveButton"
 import { sourceOptions } from "../widgets/menu_options"
 import { InfoMessage } from "../widgets/WarningMessage"
 import { Source } from "./Source"
-import { sourceTypeOptions } from "./SourceType"
+import { sourceTypeOptions } from "./SourceTypeSelector"
 
 function ButtonSegment({ metric, metricUuid, reload, reports }) {
     const dataModel = useContext(DataModelContext)

@@ -10,7 +10,7 @@ import {
     metricTypeOptions,
     usedMetricTypesInReport,
     usedMetricTypesInSubject,
-} from "../metric/MetricType"
+} from "../metric/MetricTypeSelector"
 import { reportPropType, reportsPropType, subjectPropType } from "../sharedPropTypes"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
