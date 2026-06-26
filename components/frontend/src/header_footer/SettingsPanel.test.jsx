@@ -1,10 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { vi } from "vitest"
 
 import { useSettings } from "../app_ui_settings"
-import { asyncClickText, clickText, expectNoAccessibilityViolations, expectSearch } from "../testUtils"
+import { asyncClickText, clickText, expectNoAccessibilityViolations, expectSearch, typeText } from "../testUtils"
 import { SettingsPanel } from "./SettingsPanel"
 
 beforeEach(() => {
@@ -43,7 +42,7 @@ it("shows all metrics", async () => {
 it("shows all metrics by keypress", async () => {
     history.push("?metrics_to_hide=no_action_required")
     renderSettingsPanel()
-    await userEvent.type(screen.getByText(/All metrics/), " ")
+    await typeText(/All metrics/, " ")
     expectSearch("")
 })
 
@@ -118,7 +117,7 @@ for (const sortOrder of Array("ascending", "descending")) {
 it("sorts a column by keypress", async () => {
     const handleSort = vi.fn()
     renderSettingsPanel({ handleSort: handleSort })
-    await userEvent.type(screen.getAllByText(/Comment/)[1], " ")
+    await typeText(/Comment/, " ", 1)
     expect(handleSort).toHaveBeenCalledWith("comment")
 })
 

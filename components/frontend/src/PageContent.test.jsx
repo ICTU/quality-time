@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react"
+import { act, render } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
@@ -8,7 +8,7 @@ import { useSettings } from "./app_ui_settings"
 import { DataModelContext } from "./context/DataModel"
 import { mockGetAnimations } from "./dashboard/MockAnimations"
 import { PageContent } from "./PageContent"
-import { expectFetch, expectNoAccessibilityViolations, expectText } from "./testUtils"
+import { expectFetch, expectNoAccessibilityViolations, expectRole, expectText } from "./testUtils"
 import { SnackbarAlerts } from "./widgets/SnackbarAlerts"
 
 beforeEach(async () => {
@@ -97,7 +97,7 @@ it("shows that the report was missing", async () => {
 
 it("shows the loading spinner", async () => {
     await renderPageContent({ loading: true })
-    expect(screen.getAllByRole("progressbar").length).toBe(1)
+    expectRole("progressbar")
 })
 
 function expectMeasurementsCall(date, offset = 0) {

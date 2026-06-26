@@ -1,5 +1,4 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
 import history from "history/browser"
 import { vi } from "vitest"
 
@@ -7,7 +6,7 @@ import * as fetchServerApi from "../api/fetch_server_api"
 import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { clickText, expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
+import { clickText, enterLabeledText, expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { Source } from "./Source"
 
 beforeEach(() => {
@@ -66,7 +65,7 @@ it("changes the source type", async () => {
 
 it("changes the source name", async () => {
     renderSource(metric)
-    await userEvent.type(screen.getByLabelText(/Source name/), "New source name{Enter}", {
+    await enterLabeledText(/Source name/, "New source name", {
         initialSelectionStart: 0,
         initialSelectionEnd: 100,
     })

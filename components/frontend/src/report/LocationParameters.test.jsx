@@ -1,12 +1,11 @@
-import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { render } from "@testing-library/react"
 import { vi } from "vitest"
 
 import { dataModel } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { expectFetch, expectText } from "../testUtils"
+import { enterLabeledText, expectFetch, expectText } from "../testUtils"
 import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
 import { LocationParameters } from "./LocationParameters"
 
@@ -42,7 +41,7 @@ it("changes the value of a parameter of a source without parameter layout", asyn
         source: { type: "source_type", parameters: { url: "https://source.org" } },
         showMessage,
     })
-    await userEvent.type(screen.getAllByLabelText(/URL/)[0], "/new{Enter}")
+    await enterLabeledText(/URL/, "/new")
     expectFetch("post", "source/source_uuid/parameter/url", { url: "https://source.org/new", edit_scope: "report" })
     expect(showMessage).not.toHaveBeenCalled()
 })
@@ -54,7 +53,7 @@ it("mass changes the value of a parameter", async () => {
         source: { type: "source_type", parameters: { url: "https://source.org" } },
         showMessage,
     })
-    await userEvent.type(screen.getAllByLabelText(/URL/)[0], "/new{Enter}")
+    await enterLabeledText(/URL/, "/new")
     expectFetch("post", "source/source_uuid/parameter/url", { url: "https://source.org/new", edit_scope: "report" })
     expect(showMessage).toHaveBeenCalledWith({
         description: "Changed 2 sources",
@@ -77,7 +76,7 @@ it("changes the value of a parameter of a source with parameter layout", async (
         showMessage,
         theDataModel,
     })
-    await userEvent.type(screen.getByLabelText(/API version/), "{Backspace}3{Enter}")
+    await enterLabeledText(/API version/, "{Backspace}3")
     expectFetch("post", "source/source_uuid/parameter/api_version", { api_version: "3", edit_scope: "report" })
     expect(showMessage).not.toHaveBeenCalled()
 })

@@ -1,11 +1,18 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { act, render } from "@testing-library/react"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { clickText, expectFetch, expectNoAccessibilityViolations, expectNoText } from "../testUtils"
+import {
+    clickText,
+    enterLabeledText,
+    expectFetch,
+    expectNoAccessibilityViolations,
+    expectNoText,
+    mouseDownLabeledElement,
+    typeLabeledText,
+} from "../testUtils"
 import { MetricConfigurationParameters } from "./MetricConfigurationParameters"
 
 const dataModel = {
@@ -64,7 +71,7 @@ async function renderMetricParameters(scale = "count") {
 }
 
 async function typeInField(label, text, confirm = "Enter") {
-    await userEvent.type(screen.getByLabelText(label), `${text}{${confirm}}`, {
+    await typeLabeledText(label, `${text}{${confirm}}`, {
         initialSelectionStart: 0,
         initialSelectionEnd: 11,
     })
@@ -106,14 +113,14 @@ it("adds a tag on tab", async () => {
 
 it("changes the scale", async () => {
     await renderMetricParameters()
-    fireEvent.mouseDown(screen.getByLabelText(/Metric scale/))
+    mouseDownLabeledElement(/Metric scale/)
     clickText(/Percentage/)
     expectMetricAttributePost("scale", "percentage")
 })
 
 it("changes the direction", async () => {
     await renderMetricParameters()
-    fireEvent.mouseDown(screen.getByLabelText(/direction/))
+    mouseDownLabeledElement(/direction/)
     clickText(/More violations is better/)
     expectMetricAttributePost("direction", ">")
 })
@@ -150,6 +157,6 @@ it("skips the metric unit fields for metrics with the version number scale", asy
 
 it("turns off evaluation of targets", async () => {
     await renderMetricParameters()
-    await userEvent.type(screen.getByLabelText(/Evaluate metric targets/), "No{Enter}")
+    await enterLabeledText(/Evaluate metric targets/, "No")
     expectMetricAttributePost("evaluate_targets", false)
 })

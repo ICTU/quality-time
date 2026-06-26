@@ -1,11 +1,10 @@
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { render } from "@testing-library/react"
 import history from "history/browser"
 
 import { useSettings } from "../app_ui_settings"
-import { asyncClickText, clickText, expectNoAccessibilityViolations, expectSearch } from "../testUtils"
+import { asyncClickText, clickText, expectNoAccessibilityViolations, expectSearch, typeText } from "../testUtils"
 import { ReportPeriodPanel } from "./ReportPeriodPanel"
 
 beforeEach(() => {
@@ -39,7 +38,7 @@ it("sets the number of dates", async () => {
 
 it("sets the number of dates by keypress", async () => {
     renderReportPeriodPanel()
-    await userEvent.type(screen.getByText(/5 dates/), " ")
+    await typeText(/5 dates/, " ")
     expectSearch("?nr_dates=5")
 })
 
@@ -60,7 +59,7 @@ it("sets the date interval to one day", () => {
 it("sets the date interval by keypress", async () => {
     history.push("?nr_dates=2&date_interval=7")
     renderReportPeriodPanel()
-    await userEvent.type(screen.getByText(/1 day/), " ")
+    await typeText(/1 day/, " ")
     expectSearch("?nr_dates=2&date_interval=1")
 })
 
@@ -74,6 +73,6 @@ it("sorts the dates descending", () => {
 it("sorts the dates ascending by keypress", async () => {
     history.push("?nr_dates=2")
     renderReportPeriodPanel()
-    await userEvent.type(screen.getByText(/Ascending/), " ")
+    await typeText(/Ascending/, " ")
     expectSearch("?nr_dates=2&date_order=ascending")
 })

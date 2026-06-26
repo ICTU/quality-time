@@ -1,11 +1,17 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { act, render, screen } from "@testing-library/react"
 import { vi } from "vitest"
 
 import * as reportApi from "../api/report"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { clickText, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
+import {
+    clickText,
+    enterLabeledText,
+    expectNoAccessibilityViolations,
+    expectNoText,
+    expectText,
+    mouseDownLabeledElement,
+} from "../testUtils"
 import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
 import { IssueTracker } from "./IssueTracker"
 
@@ -69,7 +75,7 @@ it("has no accessibility violations", async () => {
 
 it("sets the issue tracker type", async () => {
     await renderIssueTracker()
-    fireEvent.mouseDown(screen.getByLabelText(/Issue tracker type/))
+    mouseDownLabeledElement(/Issue tracker type/)
     clickText("Jira")
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith("report_uuid", "type", "jira", reload)
     clickText("None")
@@ -99,7 +105,7 @@ it("cannot edit issue tracker fields if the issue tracker type is None", async (
 
 it("sets the issue tracker url", async () => {
     await renderIssueTracker({ report: reportWithIssueTracker })
-    await userEvent.type(screen.getByLabelText(/URL/), "https://jira.example.org{Enter}")
+    await enterLabeledText(/URL/, "https://jira.example.org")
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "url",
@@ -111,7 +117,7 @@ it("sets the issue tracker url", async () => {
 it("sets the issue tracker username", async () => {
     await renderIssueTracker({ report: reportWithIssueTracker })
     expect(screen.getByLabelText(/Username/)).not.toBeDisabled()
-    await userEvent.type(screen.getByLabelText(/Username/), "janedoe{Enter}")
+    await enterLabeledText(/Username/, "janedoe")
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "username",
@@ -122,7 +128,7 @@ it("sets the issue tracker username", async () => {
 
 it("sets the issue tracker password", async () => {
     await renderIssueTracker({ report: reportWithIssueTracker })
-    await userEvent.type(screen.getByLabelText(/Password/), "secret{Enter}")
+    await enterLabeledText(/Password/, "secret")
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "password",
@@ -133,7 +139,7 @@ it("sets the issue tracker password", async () => {
 
 it("sets the issue tracker private token", async () => {
     await renderIssueTracker({ report: reportWithIssueTracker })
-    await userEvent.type(screen.getByLabelText(/Private token/), "secret{Enter}")
+    await enterLabeledText(/Private token/, "secret")
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "private_token",
@@ -165,7 +171,7 @@ it("shows the issue tracker private token help url", async () => {
 
 it("sets the issue tracker API version", async () => {
     await renderIssueTracker({ report: reportWithIssueTracker })
-    fireEvent.mouseDown(screen.getByLabelText(/API version/))
+    mouseDownLabeledElement(/API version/)
     clickText(/v3/)
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
@@ -177,7 +183,7 @@ it("sets the issue tracker API version", async () => {
 
 it("sets the issue tracker project", async () => {
     await renderIssueTracker({ report: reportWithIssueTracker, helpUrl: "https://help" })
-    fireEvent.mouseDown(screen.getByLabelText(/Project for new issues/))
+    mouseDownLabeledElement(/Project for new issues/)
     clickText(/Project name/)
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
@@ -189,7 +195,7 @@ it("sets the issue tracker project", async () => {
 
 it("sets the issue tracker issue type", async () => {
     await renderIssueTracker({ report: reportWithIssueTracker, helpUrl: "https://help" })
-    fireEvent.mouseDown(screen.getByLabelText(/Issue type/))
+    mouseDownLabeledElement(/Issue type/)
     clickText(/Bug/)
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
@@ -201,7 +207,7 @@ it("sets the issue tracker issue type", async () => {
 
 it("sets the issue tracker issue labels", async () => {
     await renderIssueTracker({ report: reportWithIssueTracker, helpUrl: "https://help" })
-    await userEvent.type(screen.getByLabelText(/Labels/), "Label{Enter}")
+    await enterLabeledText(/Labels/, "Label")
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "issue_labels",
@@ -212,7 +218,7 @@ it("sets the issue tracker issue labels", async () => {
 
 it("sets the issue tracker epic link", async () => {
     await renderIssueTracker({ report: reportWithIssueTracker, helpUrl: "https://help" })
-    fireEvent.mouseDown(screen.getByLabelText(/Epic link/))
+    mouseDownLabeledElement(/Epic link/)
     clickText(/FOO-420/)
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
@@ -307,7 +313,7 @@ it("ignores stale fetch responses when props change", async () => {
             epic_links: [],
         }),
     )
-    fireEvent.mouseDown(screen.getByLabelText(/Project for new issues/))
+    mouseDownLabeledElement(/Project for new issues/)
     expectText(/Fresh project A/)
     expectText(/Fresh project B/)
     expectNoText(/Stale project/)

@@ -1,15 +1,11 @@
 import { render } from "@testing-library/react"
 
+import { dataModelWithSource } from "../__fixtures__/fixtures"
 import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
 import { MeasurementSources } from "./MeasurementSources"
 
-const dataModel = {
-    metrics: { metric_type: { sources: ["source_type"] } },
-    sources: { source_type: { parameters: {} } },
-}
-
-const dataModelWithIdentifying = {
+const dataModelWithIdentifyingParameters = {
     metrics: { metric_type: { sources: ["source_type"] } },
     sources: {
         source_type: {
@@ -19,7 +15,7 @@ const dataModelWithIdentifying = {
     },
 }
 
-function renderMeasurementSources(sources, latestMeasurement, customDataModel = dataModel) {
+function renderMeasurementSources(sources, latestMeasurement, customDataModel = dataModelWithSource) {
     return render(
         <DataModelContext value={customDataModel}>
             <MeasurementSources
@@ -75,7 +71,7 @@ it("uses a whitespace separator instead of a comma when any source has identifyi
         {
             sources: [{ source_uuid: "source_uuid1" }, { source_uuid: "source_uuid2" }],
         },
-        dataModelWithIdentifying,
+        dataModelWithIdentifyingParameters,
     )
     expectText(/Source name 1/)
     expectText(/Source name 2/)

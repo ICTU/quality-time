@@ -3,6 +3,7 @@ import { render } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
+import { dataModelWithCountScale } from "../__fixtures__/fixtures"
 import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
@@ -14,12 +15,6 @@ beforeEach(() => {
     mockGetAnimations()
     history.push("")
 })
-
-const dataModel = {
-    metrics: {
-        metric_type: { default_scale: "count" },
-    },
-}
 
 const report = {
     report_uuid: "report_uuid",
@@ -42,7 +37,7 @@ function ReportsOverviewDashboardWrapper({ dates, openReport, reports }) {
     const settings = useSettings()
     return (
         <ThemeProvider theme={theme}>
-            <DataModelContext value={dataModel}>
+            <DataModelContext value={dataModelWithCountScale}>
                 <div id="dashboard">
                     <ReportsOverviewDashboard
                         dates={dates}

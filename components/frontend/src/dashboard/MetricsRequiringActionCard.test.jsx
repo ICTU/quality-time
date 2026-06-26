@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 
-import { expectNoAccessibilityViolations, expectText } from "../testUtils"
+import { expectNoAccessibilityViolations, expectRole, expectText } from "../testUtils"
 import { MetricsRequiringActionCard } from "./MetricsRequiringActionCard"
 
 const report = {
@@ -46,8 +46,8 @@ it("shows the title as selected when the card is selected", async () => {
 
 it("shows the number of metrics", async () => {
     renderMetricsRequiringActionCard()
-    expect(screen.getByRole("row", { name: "Unknown 0" })).toBeInTheDocument()
-    expect(screen.getByRole("row", { name: "Target not met 1" })).toBeInTheDocument()
-    expect(screen.getByRole("row", { name: "Near target met 2" })).toBeInTheDocument()
-    expect(screen.getByRole("row", { name: "Total 3" })).toBeInTheDocument()
+    expectRole("row", { name: "Unknown 0" })
+    expectRole("row", { name: "Target not met 1" })
+    expectRole("row", { name: "Near target met 2" })
+    expectRole("row", { name: "Total 3" })
 })

@@ -3,7 +3,7 @@ import { act, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
-import { expectNoAccessibilityViolations } from "../testUtils"
+import { expectNoAccessibilityViolations, expectNoRole, expectText } from "../testUtils"
 import { theme } from "../theme"
 import { DashboardCard } from "./DashboardCard"
 
@@ -38,13 +38,13 @@ afterEach(() => {
 
 it("shows the title", () => {
     renderDashboardCard()
-    expect(screen.getByText("Card title")).toBeInTheDocument()
+    expectText("Card title")
 })
 
 it("does not show a tooltip when the title fits", async () => {
     renderDashboardCard({ title: "Short" })
     await hoverHeader("Short")
-    expect(screen.queryByRole("tooltip")).toBeNull()
+    expectNoRole("tooltip")
 })
 
 it("shows a tooltip with the full title when the title is truncated", async () => {
@@ -60,7 +60,7 @@ it("does not show a tooltip when the title is not a string", async () => {
     renderDashboardCard({ title: <span>{elementTitle}</span> })
     fakeTruncation()
     await hoverHeader(elementTitle)
-    expect(screen.queryByRole("tooltip")).toBeNull()
+    expectNoRole("tooltip")
 })
 
 it("has no accessibility violations", async () => {

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { vi } from "vitest"
 
-import { expectNoAccessibilityViolations, expectText } from "../testUtils"
+import { clickDisplayValue, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { ItemTypeSelectorTextField } from "./ItemTypeSelectorTextField"
 
 function renderItemTypeSelectorTextField({ disabled = false, handleMenu = vi.fn(), startAdornment = null } = {}) {
@@ -46,14 +46,14 @@ it("shows the start adornment when given", () => {
 it("opens the menu when clicked", () => {
     const handleMenu = vi.fn()
     renderItemTypeSelectorTextField({ handleMenu })
-    fireEvent.click(screen.getByDisplayValue("Item value"))
+    clickDisplayValue("Item value")
     expect(handleMenu).toHaveBeenCalled()
 })
 
 it("does not open the menu when clicked while disabled", () => {
     const handleMenu = vi.fn()
     renderItemTypeSelectorTextField({ disabled: true, handleMenu })
-    fireEvent.click(screen.getByDisplayValue("Item value"))
+    clickDisplayValue("Item value")
     expect(handleMenu).not.toHaveBeenCalled()
 })
 

@@ -28,6 +28,19 @@ export const dataModel = {
     },
 }
 
+// A minimal data model with a single metric type that has a count scale.
+export const dataModelWithCountScale = {
+    metrics: {
+        metric_type: { default_scale: "count" },
+    },
+}
+
+// A minimal data model with a single metric type and a source type without parameters.
+export const dataModelWithSource = {
+    metrics: { metric_type: { sources: ["source_type"] } },
+    sources: { source_type: { parameters: {} } },
+}
+
 export const report = {
     report_uuid: "report_uuid",
     subjects: {

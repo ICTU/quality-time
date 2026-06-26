@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { act, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
@@ -9,6 +9,7 @@ import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissio
 import {
     asyncClickButton,
     asyncClickText,
+    clickDisplayValue,
     expectDisplayValue,
     expectFetch,
     expectNoAccessibilityViolations,
@@ -174,7 +175,7 @@ it("updates a parameter of a source", async () => {
         initialSelectionEnd: 15,
     })
     await act(async () => {
-        fireEvent.click(screen.getByDisplayValue("Source 1"))
+        clickDisplayValue("Source 1")
     })
     expectDisplayValue("https://other")
     expectFetch("post", "source/source_uuid/parameter/url", { edit_scope: "source", url: "https://other" })

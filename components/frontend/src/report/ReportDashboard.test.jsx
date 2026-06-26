@@ -3,6 +3,7 @@ import { render } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
+import { dataModelWithCountScale } from "../__fixtures__/fixtures"
 import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
 import { mockGetAnimations } from "../dashboard/MockAnimations"
@@ -33,17 +34,11 @@ beforeEach(() => {
     }
 })
 
-const dataModel = {
-    metrics: {
-        metric_type: { default_scale: "count" },
-    },
-}
-
 function DashboardWrapper({ dates, onClick, reportToRender }) {
     const settings = useSettings()
     return (
         <ThemeProvider theme={theme}>
-            <DataModelContext value={dataModel}>
+            <DataModelContext value={dataModelWithCountScale}>
                 <div id="dashboard">
                     <ReportDashboard dates={dates} onClick={onClick} report={reportToRender} settings={settings} />
                 </div>

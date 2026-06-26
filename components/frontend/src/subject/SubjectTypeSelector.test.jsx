@@ -1,9 +1,15 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import { vi } from "vitest"
 
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { asyncClickText, expectDisplayValue, expectNoAccessibilityViolations, expectText } from "../testUtils"
+import {
+    asyncClickText,
+    clickDisplayValue,
+    expectDisplayValue,
+    expectNoAccessibilityViolations,
+    expectText,
+} from "../testUtils"
 import { SubjectTypeSelector } from "./SubjectTypeSelector"
 
 const dataModel = {
@@ -51,14 +57,14 @@ it("has no accessibility violations", async () => {
 it("sets the subject type", async () => {
     const setValue = vi.fn()
     renderSubjectTypeSelector({ setValue })
-    fireEvent.click(screen.getByDisplayValue("Software"))
+    clickDisplayValue("Software")
     await asyncClickText("Process")
     expect(setValue).toHaveBeenLastCalledWith("process")
 })
 
 it("shows nested subject types in the menu", () => {
     renderSubjectTypeSelector()
-    fireEvent.click(screen.getByDisplayValue("Software"))
+    clickDisplayValue("Software")
     expectText(/Application/)
 })
 

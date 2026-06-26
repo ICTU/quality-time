@@ -1,12 +1,11 @@
-import { act, render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { act, render } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
 import { useSettings } from "../app_ui_settings"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { expectFetch, expectNoAccessibilityViolations } from "../testUtils"
+import { enterLabeledText, expectFetch, expectNoAccessibilityViolations, typeLabeledText } from "../testUtils"
 import { ReportsOverviewTitle } from "./ReportsOverviewTitle"
 
 beforeEach(() => {
@@ -36,33 +35,33 @@ it("has no accessibility violations", async () => {
 
 it("sets the title", async () => {
     renderReportsOverviewTitle()
-    await userEvent.type(screen.getByLabelText(/Report overview title/), "{Delete}New title{Enter}")
+    await enterLabeledText(/Report overview title/, "{Delete}New title")
     expectFetch("post", "reports_overview/attribute/title", { title: "New title" })
 })
 
 it("sets the subtitle", async () => {
     renderReportsOverviewTitle()
-    await userEvent.type(screen.getByLabelText(/Report overview subtitle/), "{Delete}New subtitle{Enter}")
+    await enterLabeledText(/Report overview subtitle/, "{Delete}New subtitle")
     expectFetch("post", "reports_overview/attribute/subtitle", { subtitle: "New subtitle" })
 })
 
 it("sets the comment", async () => {
     renderReportsOverviewTitle()
-    await userEvent.type(screen.getByLabelText(/Comment/), "{Delete}New comment{Shift>}{Enter}")
+    await typeLabeledText(/Comment/, "{Delete}New comment{Shift>}{Enter}")
     expectFetch("post", "reports_overview/attribute/comment", { comment: "New comment" })
 })
 
 it("sets the edit report permission", async () => {
     history.push("?expanded=reports_overview:1")
     renderReportsOverviewTitle()
-    await userEvent.type(screen.getByLabelText(/Users allowed to edit reports/), "jadoe{Enter}")
+    await enterLabeledText(/Users allowed to edit reports/, "jadoe")
     expectFetch("post", "reports_overview/attribute/permissions", { permissions: { edit_reports: ["jadoe"] } })
 })
 
 it("sets the edit entities permission", async () => {
     history.push("?expanded=reports_overview:1")
     renderReportsOverviewTitle()
-    await userEvent.type(screen.getByLabelText(/Users allowed to edit measured entities/), "jodoe{Enter}")
+    await enterLabeledText(/Users allowed to edit measured entities/, "jodoe")
     expectFetch("post", "reports_overview/attribute/permissions", { permissions: { edit_entities: ["jodoe"] } })
 })
 

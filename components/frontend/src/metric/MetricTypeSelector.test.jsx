@@ -1,10 +1,16 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { asyncClickText, expectFetch, expectNoAccessibilityViolations, expectText } from "../testUtils"
+import {
+    asyncClickText,
+    clickDisplayValue,
+    expectFetch,
+    expectNoAccessibilityViolations,
+    expectText,
+} from "../testUtils"
 import { MetricTypeSelector } from "./MetricTypeSelector"
 
 const dataModel = {
@@ -63,7 +69,7 @@ it("has no accessibility violations", async () => {
 it("sets the metric type", async () => {
     vi.spyOn(fetchServerApi, "fetchServerApi").mockResolvedValue({ ok: true })
     renderMetricTypeSelector()
-    fireEvent.click(screen.getByDisplayValue("Violations"))
+    clickDisplayValue("Violations")
     await asyncClickText("Source version")
     expectFetch("post", "metric/metric_uuid/attribute/type", { type: "source_version" })
 })

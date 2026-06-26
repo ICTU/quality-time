@@ -1,9 +1,9 @@
-import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { render } from "@testing-library/react"
 import { vi } from "vitest"
 
 import { DataModelContext } from "../../context/DataModel"
 import * as reportCsv from "../../report/report_csv"
+import { clickText } from "../../testUtils"
 import * as download from "../download"
 import { SnackbarAlerts } from "../SnackbarAlerts"
 import { ExportReportCsvButton } from "./ExportReportCsvButton"
@@ -28,7 +28,7 @@ it("downloads a CSV file", async () => {
     const triggerDownload = vi.spyOn(download, "triggerDownload").mockImplementation(() => {})
     vi.spyOn(reportCsv, "reportToCSV").mockReturnValue("Subject,Metric\r\nSubject 1,M1")
     renderButton()
-    await userEvent.click(screen.getByText(/Export as CSV/))
+    clickText(/Export as CSV/)
     expect(triggerDownload).toHaveBeenCalledTimes(1)
     const [blob, filename] = triggerDownload.mock.calls[0]
     expect(blob.type).toContain("text/csv")
@@ -45,7 +45,7 @@ it("shows a message when CSV generation fails", async () => {
         throw new Error("Boom")
     })
     renderButton({ showMessage: showMessage })
-    await userEvent.click(screen.getByText(/Export as CSV/))
+    clickText(/Export as CSV/)
     expect(showMessage).toHaveBeenCalledWith({
         severity: "error",
         title: "Could not export report to CSV",

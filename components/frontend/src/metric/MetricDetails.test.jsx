@@ -1,6 +1,6 @@
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { act, render, screen } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
@@ -20,6 +20,7 @@ import {
     expectNoText,
     expectSearch,
     expectText,
+    mouseDownText,
 } from "../testUtils"
 import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
 import { MetricDetails } from "./MetricDetails"
@@ -292,7 +293,7 @@ it("reloads the measurements after editing a measurement entity", async () => {
     await renderMetricDetails()
     expect(measurementApi.getMetricMeasurements).toHaveBeenCalledTimes(1)
     clickButton("Expand/collapse")
-    fireEvent.mouseDown(screen.getByText("Unconfirm"))
+    mouseDownText("Unconfirm")
     await asyncClickText("Confirm")
     expect(measurementApi.getMetricMeasurements).toHaveBeenCalledTimes(2)
 })
