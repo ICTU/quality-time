@@ -49,7 +49,7 @@ const report = {
                         },
                     },
                 },
-                metric_uuid2: { name: "Metric 2", sources: {} },
+                metric_uuid2: { name: "Metric 2", sources: {}, type: "violations" },
             },
         },
     },
@@ -73,6 +73,7 @@ function createDataModel({ deprecateSonarQube = false, mandatoryURL = false } = 
         },
         metrics: {
             violations: {
+                name: "Violations",
                 direction: "<",
                 tags: [],
                 sources: ["sonarqube"],

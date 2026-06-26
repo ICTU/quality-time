@@ -7,7 +7,7 @@ import { EDIT_REPORT_PERMISSION } from "../context/Permissions"
 import { SnackbarContext } from "../context/Snackbar"
 import { reportPropType, sourcePropType } from "../sharedPropTypes"
 import { SourceParameter } from "../source/SourceParameter"
-import { SourceTypeRichDescription } from "../source/SourceType"
+import { SourceTypeRichDescription } from "../source/SourceTypeSelector"
 import { pluralize } from "../utils"
 import { InfoMessage } from "../widgets/WarningMessage"
 

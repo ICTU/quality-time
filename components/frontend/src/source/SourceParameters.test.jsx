@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 
 import { DataModelContext } from "../context/DataModel"
-import { expectNoAccessibilityViolations, expectText } from "../testUtils"
+import { expectDisplayValue, expectLabelText, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { SourceParameters } from "./SourceParameters"
 
 function renderSourceParameters({
@@ -70,7 +70,7 @@ it("has no accessibility violations", async () => {
 
 it("renders a string parameter", async () => {
     renderSourceParameters({})
-    expect(screen.queryAllByLabelText(/Parameter/).length).toBe(1)
+    expectLabelText(/Parameter/)
 })
 
 it("renders a string parameter with placeholder", async () => {
@@ -80,12 +80,12 @@ it("renders a string parameter with placeholder", async () => {
 
 it("renders a default value if the source parameter has no value", async () => {
     renderSourceParameters({})
-    expect(screen.queryAllByDisplayValue(/Default value/).length).toBe(1)
+    expectDisplayValue(/Default value/)
 })
 
 it("renders the source parameter value", async () => {
     renderSourceParameters({ sourceParameterValue: "Value" })
-    expect(screen.queryAllByDisplayValue(/Value/).length).toBe(1)
+    expectDisplayValue(/Value/)
 })
 
 it("does not render a warning if a mandatory parameter has a value", async () => {
@@ -122,5 +122,5 @@ it("renders parameter groups", async () => {
 
 it("renders ungrouped parameters in the group without explicitly listed parameters", async () => {
     renderSourceParameters({})
-    expect(screen.queryAllByLabelText(/Other parameter/).length).toBe(1)
+    expectLabelText(/Other parameter/)
 })

@@ -1,13 +1,14 @@
 import CircleIcon from "@mui/icons-material/Circle"
-import { MenuItem, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { func, number, objectOf, string } from "prop-types"
 import { useContext } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { TextField } from "../fields/TextField"
 import { subjectPropType } from "../sharedPropTypes"
 import { getSubjectType, referenceDocumentationURL } from "../utils"
+import { ItemTypeSelector } from "../widgets/ItemTypeSelector"
+import { ItemTypeSelectorTextField } from "../widgets/ItemTypeSelectorTextField"
 import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
 
 export function subjectTypes(subjectTypesMapping, level = 0) {
@@ -50,29 +51,30 @@ subjectTypes.propTypes = {
     level: number,
 }
 
-export function SubjectType({ subjectType, setValue }) {
+export function SubjectTypeSelector({ subjectType, setValue }) {
     const dataModel = useContext(DataModelContext)
     const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const subjectTypeName = getSubjectType(subjectType, dataModel.subjects).name
     return (
-        <TextField
-            disabled={disabled}
-            helperText={<ReadTheDocsLink url={referenceDocumentationURL(subjectTypeName)} />}
-            label="Subject type"
-            onChange={(value) => setValue(value)}
-            select
-            value={subjectType}
-        >
-            {subjectTypes(dataModel.subjects).map((subjectType) => (
-                <MenuItem key={subjectType.key} value={subjectType.value}>
-                    {subjectType.content}
-                </MenuItem>
-            ))}
-        </TextField>
+        <ItemTypeSelector
+            itemSubtypes={subjectTypes(dataModel.subjects)}
+            itemType="subject"
+            onClick={(value) => setValue(value)}
+            renderAnchor={(handleMenu) => (
+                <ItemTypeSelectorTextField
+                    disabled={disabled}
+                    handleMenu={handleMenu}
+                    helperText={<ReadTheDocsLink url={referenceDocumentationURL(subjectTypeName)} />}
+                    label="Subject type"
+                    value={subjectTypeName}
+                />
+            )}
+            sort={false}
+        />
     )
 }
-SubjectType.propTypes = {
+SubjectTypeSelector.propTypes = {
     subjectType: string,
     setValue: func,
 }

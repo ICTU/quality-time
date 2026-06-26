@@ -9,8 +9,10 @@ import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissio
 import {
     asyncClickButton,
     asyncClickText,
+    expectDisplayValue,
     expectFetch,
     expectNoAccessibilityViolations,
+    expectNoDisplayValue,
     expectText,
 } from "../testUtils"
 import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
@@ -127,8 +129,8 @@ it("shows a message if there are no sources", async () => {
 
 it("doesn't show sources not in the data model", async () => {
     renderSources()
-    expect(screen.queryAllByDisplayValue(/Source 1/).length).toBe(1)
-    expect(screen.queryAllByDisplayValue(/Source with non-existing source type/).length).toBe(0)
+    expectDisplayValue(/Source 1/)
+    expectNoDisplayValue(/Source with non-existing source type/)
 })
 
 it("shows errored sources", async () => {
@@ -174,7 +176,7 @@ it("updates a parameter of a source", async () => {
     await act(async () => {
         fireEvent.click(screen.getByDisplayValue("Source 1"))
     })
-    expect(screen.getAllByDisplayValue("https://other").length).toBe(1)
+    expectDisplayValue("https://other")
     expectFetch("post", "source/source_uuid/parameter/url", { edit_scope: "source", url: "https://other" })
     expect(showMessage).toHaveBeenCalledTimes(0)
 })

@@ -3,7 +3,7 @@ import { Button } from "@mui/material"
 import { array, arrayOf, bool, func, string } from "prop-types"
 
 import { AddItemIcon } from "../icons"
-import { ItemSelector } from "../ItemSelector"
+import { ItemTypeSelector } from "../ItemTypeSelector"
 
 export function AddDropdownButton({
     itemSubtypes,
@@ -15,7 +15,7 @@ export function AddDropdownButton({
     sort,
 }) {
     return (
-        <ItemSelector
+        <ItemTypeSelector
             allItemSubtypes={allItemSubtypes}
             itemSubtypes={itemSubtypes}
             itemType={itemType}

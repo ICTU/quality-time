@@ -1,7 +1,7 @@
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 
 import { DataModelContext } from "../context/DataModel"
-import { expectNoAccessibilityViolations, expectText } from "../testUtils"
+import { expectNoAccessibilityViolations, expectNoDisplayValue, expectText } from "../testUtils"
 import { Overrun } from "./Overrun"
 
 const dates = [new Date("2020-01-01"), new Date("2020-12-31")]
@@ -32,7 +32,7 @@ it("has no accessibility violations", async () => {
 
 it("renders nothing if there is no overrun", async () => {
     renderOverrun()
-    expect(screen.queryAllByDisplayValue(/days/).length).toBe(0)
+    expectNoDisplayValue(/days/)
 })
 
 it("renders the days overrun if the metric has overrun its deadline", async () => {

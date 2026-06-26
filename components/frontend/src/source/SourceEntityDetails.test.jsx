@@ -7,7 +7,7 @@ import { vi } from "vitest"
 
 import * as sourceApi from "../api/source"
 import { EDIT_ENTITY_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { clickText, expectNoAccessibilityViolations, expectText } from "../testUtils"
+import { clickText, expectDisplayValue, expectNoAccessibilityViolations, expectText } from "../testUtils"
 import { SourceEntityDetails } from "./SourceEntityDetails"
 
 const reload = vi.fn
@@ -100,7 +100,7 @@ it("changes the entity status", async () => {
 
 it("shows the entity status end date", async () => {
     renderSourceEntityDetails({ statusEndDate: "20250112" })
-    expect(screen.queryAllByDisplayValue("01/12/2025").length).toBe(1)
+    expectDisplayValue("01/12/2025")
 })
 
 it("changes the entity status end date", async () => {

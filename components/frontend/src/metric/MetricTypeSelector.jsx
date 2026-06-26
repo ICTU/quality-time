@@ -1,13 +1,14 @@
-import { MenuItem, Stack, Typography } from "@mui/material"
+import { Stack, Typography } from "@mui/material"
 import { func, string } from "prop-types"
 import { useContext } from "react"
 
 import { setMetricAttribute } from "../api/metric"
 import { DataModelContext } from "../context/DataModel"
 import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { TextField } from "../fields/TextField"
-import { metricPropType } from "../sharedPropTypes"
+import { metricPropType, reportPropType, subjectPropType } from "../sharedPropTypes"
 import { getMetricTypeName, getSubjectTypeMetrics, referenceDocumentationURL } from "../utils"
+import { ItemTypeSelector } from "../widgets/ItemTypeSelector"
+import { ItemTypeSelectorTextField } from "../widgets/ItemTypeSelectorTextField"
 import { ReadTheDocsLink } from "../widgets/ReadTheDocsLink"
 
 export function metricTypeOption(key, metricType) {
@@ -55,43 +56,42 @@ export function usedMetricTypesInReport(report) {
     return Array.from(metricTypes)
 }
 
-export function MetricType({ metric, metricUuid, reload, subjectType }) {
+export function MetricTypeSelector({ metric, metricUuid, reload, report, subject }) {
     const dataModel = useContext(DataModelContext)
     const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
-    const options = metricTypeOptions(dataModel, subjectType)
     const metricType = metric.type
-    const metricTypes = options.map((option) => option.key)
-    if (!metricTypes.includes(metricType)) {
-        options.push(metricTypeOption(metricType, dataModel.metrics[metricType]))
-    }
     const hasExtraDocs = dataModel.metrics[metricType].documentation
     const howToConfigure = ` for ${hasExtraDocs ? "additional " : ""}information on how to configure this metric type.`
     return (
-        <TextField
-            disabled={disabled}
-            helperText={
-                <>
-                    <ReadTheDocsLink url={referenceDocumentationURL(getMetricTypeName(metric, dataModel))} />
-                    {howToConfigure}
-                </>
-            }
-            label="Metric type"
-            onChange={(value) => setMetricAttribute(metricUuid, "type", value, reload)}
-            select
-            value={metricType}
-        >
-            {options.map((option) => (
-                <MenuItem key={option.key} value={option.value}>
-                    {option.content}
-                </MenuItem>
-            ))}
-        </TextField>
+        <ItemTypeSelector
+            allItemSubtypes={allMetricTypeOptions(dataModel)}
+            itemSubtypes={metricTypeOptions(dataModel, subject.type)}
+            itemType="metric"
+            onClick={(value) => setMetricAttribute(metricUuid, "type", value, reload)}
+            renderAnchor={(handleMenu) => (
+                <ItemTypeSelectorTextField
+                    disabled={disabled}
+                    handleMenu={handleMenu}
+                    helperText={
+                        <>
+                            <ReadTheDocsLink url={referenceDocumentationURL(getMetricTypeName(metric, dataModel))} />
+                            {howToConfigure}
+                        </>
+                    }
+                    label="Metric type"
+                    value={getMetricTypeName(metric, dataModel)}
+                />
+            )}
+            usedItemSubtypeKeysInReport={usedMetricTypesInReport(report)}
+            usedItemSubtypeKeysInSubject={usedMetricTypesInSubject(subject)}
+        />
     )
 }
-MetricType.propTypes = {
+MetricTypeSelector.propTypes = {
     metric: metricPropType,
     metricUuid: string,
     reload: func,
-    subjectType: string,
+    report: reportPropType,
+    subject: subjectPropType,
 }
