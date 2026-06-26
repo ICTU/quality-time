@@ -1,22 +1,15 @@
 import { render } from "@testing-library/react"
 
+import { dataModelWithCountScale } from "../__fixtures__/fixtures"
 import { DataModelContext } from "../context/DataModel"
 import { expectNoAccessibilityViolations, expectNoDisplayValue, expectText } from "../testUtils"
 import { Overrun } from "./Overrun"
 
 const dates = [new Date("2020-01-01"), new Date("2020-12-31")]
 
-const dataModel = {
-    metrics: {
-        metric_type: {
-            default_scale: "count",
-        },
-    },
-}
-
 function renderOverrun({ measurements = [], dates = [] } = {}) {
     return render(
-        <DataModelContext value={dataModel}>
+        <DataModelContext value={dataModelWithCountScale}>
             <Overrun dates={dates} metric={{ type: "metric_type" }} metricUuid="uuid" measurements={measurements} />
         </DataModelContext>,
     )

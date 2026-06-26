@@ -1,10 +1,16 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
+import { act, render, screen } from "@testing-library/react"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
 import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { asyncClickText, expectDisplayValue, expectNoAccessibilityViolations, expectText } from "../testUtils"
+import {
+    asyncClickText,
+    clickDisplayValue,
+    expectDisplayValue,
+    expectNoAccessibilityViolations,
+    expectText,
+} from "../testUtils"
 import { SourceTypeSelector } from "./SourceTypeSelector"
 
 beforeEach(() => {
@@ -67,7 +73,7 @@ it("has no accessibility violations", async () => {
 it("sets the source type", async () => {
     const mockSetSourceAttribute = vi.fn()
     await renderSourceType("violations", "sonarqube", mockSetSourceAttribute)
-    fireEvent.click(screen.getByDisplayValue("SonarQube"))
+    clickDisplayValue("SonarQube")
     await asyncClickText("GitLab")
     expect(mockSetSourceAttribute).toHaveBeenLastCalledWith("type", "gitlab")
 })
@@ -79,7 +85,7 @@ it("shows the source type even when not supported by the metric type", async () 
 
 it("shows the supported source versions in the menu", async () => {
     await renderSourceType("violations", "sonarqube")
-    fireEvent.click(screen.getByDisplayValue("SonarQube"))
+    clickDisplayValue("SonarQube")
     expectText(/Supported SonarQube versions: >=8.2/)
 })
 

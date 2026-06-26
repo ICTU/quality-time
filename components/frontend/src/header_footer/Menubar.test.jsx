@@ -16,6 +16,7 @@ import {
     expectNoAccessibilityViolations,
     expectNoText,
     expectText,
+    typeText,
 } from "../testUtils"
 import { Menubar } from "./Menubar"
 
@@ -171,9 +172,9 @@ it("shows and hides the settings panel on button click", async () => {
 
 it("shows and hides the settings panel on keypress", async () => {
     renderMenubar({ reportUuid: "", panel: <div>Hello</div> })
-    await userEvent.type(screen.getByText(/Settings/), " ")
+    await typeText(/Settings/, " ")
     expectText(/Hello/)
-    await userEvent.type(screen.getByText(/Hello/), "{Escape}")
+    await typeText(/Hello/, "{Escape}")
     await waitFor(() => expectNoText(/Hello/))
 })
 

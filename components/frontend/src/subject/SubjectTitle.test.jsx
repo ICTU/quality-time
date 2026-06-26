@@ -1,5 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { act, render, screen } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
@@ -10,10 +9,14 @@ import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissio
 import {
     asyncClickButton,
     asyncClickText,
+    clickDisplayValue,
     clickText,
+    enterLabeledText,
     expectFetch,
     expectNoAccessibilityViolations,
     expectSearch,
+    mouseDownLabeledElement,
+    typeLabeledText,
 } from "../testUtils"
 import { SubjectTitle } from "./SubjectTitle"
 
@@ -78,31 +81,31 @@ it("has no accessibility violations", async () => {
 
 it("changes the subject type", async () => {
     await renderSubjectTitle()
-    fireEvent.click(screen.getAllByDisplayValue("Default subject type")[0])
-    fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
+    clickDisplayValue("Default subject type", 0)
+    mouseDownLabeledElement(/Subject type/)
     clickText(/Other subject type/)
     expectFetch("post", "subject/subject_uuid/attribute/type", { type: "subject_type2" })
 })
 
 it("changes the subject type to a nested type", async () => {
     await renderSubjectTitle()
-    fireEvent.click(screen.getAllByDisplayValue("Default subject type")[0])
-    fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
+    clickDisplayValue("Default subject type", 0)
+    mouseDownLabeledElement(/Subject type/)
     clickText(/Nested subject type/)
     expectFetch("post", "subject/subject_uuid/attribute/type", { type: "nested_subject_type" })
 })
 
 it("changes the subject type from a nested type", async () => {
     await renderSubjectTitle("nested_subject_type")
-    fireEvent.click(screen.getAllByDisplayValue("Nested subject type")[0])
-    fireEvent.mouseDown(screen.getByLabelText(/Subject type/))
+    clickDisplayValue("Nested subject type", 0)
+    mouseDownLabeledElement(/Subject type/)
     clickText(/Other subject type/)
     expectFetch("post", "subject/subject_uuid/attribute/type", { type: "subject_type2" })
 })
 
 it("changes the subject title", async () => {
     await renderSubjectTitle()
-    await userEvent.type(screen.getByLabelText(/Subject title/), "New title{Enter}", {
+    await enterLabeledText(/Subject title/, "New title", {
         initialSelectionStart: 0,
         initialSelectionEnd: 100,
     })
@@ -111,14 +114,14 @@ it("changes the subject title", async () => {
 
 it("changes the subject subtitle", async () => {
     const { container } = await renderSubjectTitle()
-    await userEvent.type(screen.getByLabelText(/Subject subtitle/), "{Delete}New subtitle{Enter}")
+    await enterLabeledText(/Subject subtitle/, "{Delete}New subtitle")
     expectFetch("post", "subject/subject_uuid/attribute/subtitle", { subtitle: "New subtitle" })
     await expectNoAccessibilityViolations(container)
 })
 
 it("changes the subject comment", async () => {
     await renderSubjectTitle()
-    await userEvent.type(screen.getByLabelText(/Comment/), "{Delete}New comment{Shift>}{Enter}")
+    await typeLabeledText(/Comment/, "{Delete}New comment{Shift>}{Enter}")
     expectFetch("post", "subject/subject_uuid/attribute/comment", { comment: "New comment" })
 })
 

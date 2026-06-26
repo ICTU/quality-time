@@ -66,6 +66,14 @@ export function expectNoDisplayValue(text) {
     expect(screen.queryAllByDisplayValue(text)).toHaveLength(0)
 }
 
+export function expectRole(text, options = {}, count = 1) {
+    expect(screen.getAllByRole(text, options)).toHaveLength(count)
+}
+
+export function expectNoRole(text) {
+    expect(screen.queryAllByRole(text)).toHaveLength(0)
+}
+
 export function clickText(text, index) {
     // Click the element containing the text. Returns the element.
     // If index is provided, assume multiple elements match and click the element with the given index
@@ -159,4 +167,36 @@ export async function asyncClickByTestId(testId) {
 
 export async function hoverText(text) {
     await userEvent.hover(screen.queryByText(text))
+}
+
+export async function typeText(text, textToType, index = 0) {
+    await userEvent.type(screen.getAllByText(text)[index], textToType)
+}
+
+export async function typeLabeledText(label, text, options, index = 0) {
+    // Type the text into the element labeled with the given label. Pass options through to userEvent.type.
+    await userEvent.type(screen.getAllByLabelText(label)[index], text, options)
+}
+
+export async function enterLabeledText(label, text, options, index = 0) {
+    // Type the text into the element labeled with the given label and submit it by pressing Enter.
+    await typeLabeledText(label, `${text}{Enter}`, options, index)
+}
+
+export function clickDisplayValue(value, index) {
+    // Click the element with the given display value. Returns the element.
+    // If index is provided, assume multiple elements match and click the element with the given index.
+    const element = index === undefined ? screen.getByDisplayValue(value) : screen.getAllByDisplayValue(value)[index]
+    fireEvent.click(element)
+    return element
+}
+
+export function mouseDownText(text) {
+    // Press the mouse button down on the element containing the text, e.g. to open a dropdown.
+    fireEvent.mouseDown(screen.getByText(text))
+}
+
+export function mouseDownLabeledElement(label) {
+    // Press the mouse button down on the element labeled with the label, e.g. to open a dropdown.
+    fireEvent.mouseDown(screen.getByLabelText(label))
 }

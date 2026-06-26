@@ -1,5 +1,4 @@
-import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { render } from "@testing-library/react"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
@@ -7,8 +6,10 @@ import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissio
 import {
     asyncClickLabeledElement,
     asyncClickText,
+    enterLabeledText,
     expectFetch,
     expectNoAccessibilityViolations,
+    expectRole,
     expectText,
 } from "../testUtils"
 import { Tags } from "./Tags"
@@ -59,7 +60,7 @@ it("deletes a tag", async () => {
 it("renames a tag", async () => {
     renderTags()
     await asyncClickLabeledElement(/Expand/, 0)
-    await userEvent.type(screen.getByLabelText("Tag"), "bar{Enter}", {
+    await enterLabeledText("Tag", "bar", {
         initialSelectionStart: 0,
         initialSelectionEnd: 3,
     })
@@ -70,5 +71,5 @@ it("shows the correct count per tag when metrics have different tags", async () 
     renderTags({ metrics: { m1: { tags: ["foo"] }, m2: { tags: ["bar"] } } })
     expectText(/foo/)
     expectText(/bar/)
-    expect(screen.getAllByRole("cell", { name: "1" })).toHaveLength(2)
+    expectRole("cell", { name: "1" }, 2)
 })

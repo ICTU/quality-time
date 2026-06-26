@@ -1,15 +1,18 @@
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 
+import { dataModelWithSource } from "../__fixtures__/fixtures"
 import { DataModelContext } from "../context/DataModel"
-import { expectNoAccessibilityViolations, expectNoText, expectText, expectTextAfterWait, hoverText } from "../testUtils"
+import {
+    expectNoAccessibilityViolations,
+    expectNoText,
+    expectRole,
+    expectText,
+    expectTextAfterWait,
+    hoverText,
+} from "../testUtils"
 import { SourceStatus } from "./SourceStatus"
 
-const dataModel = {
-    metrics: { metric_type: { sources: ["source_type"] } },
-    sources: { source_type: { parameters: {} } },
-}
-
-function dataModelWithIdentifying(parameterType = "date") {
+function dataModelWithIdentifyingParameters(parameterType = "date") {
     return {
         metrics: { metric_type: { sources: ["source_type"] } },
         sources: {
@@ -28,7 +31,7 @@ function metric(source_type = "source_type", parameters = undefined) {
     }
 }
 
-function renderSourceStatus(metric, measurementSource, customDataModel = dataModel) {
+function renderSourceStatus(metric, measurementSource, customDataModel = dataModelWithSource) {
     return render(
         <DataModelContext value={customDataModel}>
             <SourceStatus metric={metric} measurementSource={measurementSource} />
@@ -43,7 +46,7 @@ it("has no accessibility violations", async () => {
 
 it("renders the hyperlink label if the source has a landing url", async () => {
     renderSourceStatus(metric(), { landing_url: "https://landing", source_uuid: "source_uuid" })
-    expect(screen.getAllByRole("link").length).toBe(1)
+    expectRole("link")
 })
 
 it("renders the source label if there is no error", async () => {
@@ -88,14 +91,18 @@ it("renders the identifying parameter value below the source name", async () => 
     renderSourceStatus(
         metric("source_type", { date: "2026-06-01" }),
         { source_uuid: "source_uuid" },
-        dataModelWithIdentifying(),
+        dataModelWithIdentifyingParameters(),
     )
     expectText(/Source name/)
     expectText(/Jun 1, 2026/)
 })
 
 it("does not render the identifying line when the parameter value is empty", async () => {
-    renderSourceStatus(metric("source_type", { date: "" }), { source_uuid: "source_uuid" }, dataModelWithIdentifying())
+    renderSourceStatus(
+        metric("source_type", { date: "" }),
+        { source_uuid: "source_uuid" },
+        dataModelWithIdentifyingParameters(),
+    )
     expectText(/Source name/)
     expectNoText(/Jun/)
 })
@@ -104,7 +111,7 @@ it("renders the identifying parameter value next to the connection error label",
     renderSourceStatus(
         metric("source_type", { date: "2026-06-01" }),
         { source_uuid: "source_uuid", connection_error: "error" },
-        dataModelWithIdentifying(),
+        dataModelWithIdentifyingParameters(),
     )
     expectText(/Source name/)
     expectText(/Jun 1, 2026/)

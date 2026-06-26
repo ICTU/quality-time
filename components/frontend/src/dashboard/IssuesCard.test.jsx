@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 
-import { expectNoAccessibilityViolations, expectText } from "../testUtils"
+import { expectNoAccessibilityViolations, expectRole, expectText } from "../testUtils"
 import { IssuesCard } from "./IssuesCard"
 
 const report = {
@@ -46,8 +46,8 @@ it("shows the title as selected when the card is selected", async () => {
 
 it("shows the number of issues", async () => {
     renderIssuesCard()
-    expect(screen.getByRole("row", { name: "Todo 0" })).toBeInTheDocument()
-    expect(screen.getByRole("row", { name: "Doing 1" })).toBeInTheDocument()
-    expect(screen.getByRole("row", { name: "Done 0" })).toBeInTheDocument()
-    expect(screen.getByRole("row", { name: "Unknown 3" })).toBeInTheDocument()
+    expectRole("row", { name: "Todo 0" })
+    expectRole("row", { name: "Doing 1" })
+    expectRole("row", { name: "Done 0" })
+    expectRole("row", { name: "Unknown 3" })
 })

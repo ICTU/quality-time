@@ -1,7 +1,6 @@
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { render } from "@testing-library/react"
 import dayjs from "dayjs"
 import { vi } from "vitest"
 
@@ -11,10 +10,12 @@ import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissio
 import {
     clickButton,
     clickLabeledElement,
+    enterLabeledText,
     expectFetch,
     expectNoAccessibilityViolations,
     expectNoFetch,
     expectText,
+    typeLabeledText,
 } from "../testUtils"
 import { MetricDebtParameters } from "./MetricDebtParameters"
 
@@ -77,37 +78,37 @@ it("has no accessibility violations", async () => {
 
 it("accepts technical debt", async () => {
     renderMetricDebtParameters()
-    await userEvent.type(screen.getByLabelText(/Accept technical debt/), "Yes{Enter}")
+    await enterLabeledText(/Accept technical debt/, "Yes")
     expectFetch("post", "metric/metric_uuid/attribute/accept_debt", { accept_debt: true })
 })
 
 it("accepts technical debt and sets target and end date", async () => {
     renderMetricDebtParameters()
-    await userEvent.type(screen.getByLabelText(/Accept technical debt/), "Yes, and{Enter}")
+    await enterLabeledText(/Accept technical debt/, "Yes, and")
     expectFetch("post", "metric/metric_uuid/debt", { accept_debt: true })
 })
 
 it("unaccepts technical debt and resets target and end date", async () => {
     renderMetricDebtParameters({ acceptDebt: true })
-    await userEvent.type(screen.getByLabelText(/Accept technical debt/), "No, and{Enter}")
+    await enterLabeledText(/Accept technical debt/, "No, and")
     expectFetch("post", "metric/metric_uuid/debt", { accept_debt: false })
 })
 
 it("adds a comment", async () => {
     renderMetricDebtParameters()
-    await userEvent.type(screen.getByLabelText(/Comment/), "Keep cool{Tab}")
+    await typeLabeledText(/Comment/, "Keep cool{Tab}")
     expectFetch("post", "metric/metric_uuid/attribute/comment", { comment: "Keep cool" })
 })
 
 it("undoes changes to a comment", async () => {
     renderMetricDebtParameters()
-    await userEvent.type(screen.getByLabelText(/Comment/), "Keep cool{Escape}")
+    await typeLabeledText(/Comment/, "Keep cool{Escape}")
     expectNoFetch()
 })
 
 it("sets the technical debt end date", async () => {
     renderMetricDebtParameters()
-    await userEvent.type(screen.getAllByLabelText(/Technical debt end date/)[0], "12312022{Enter}")
+    await enterLabeledText(/Technical debt end date/, "12312022")
     expectFetch("post", "metric/metric_uuid/attribute/debt_end_date", { debt_end_date: dayjs("2022-12-31") })
 })
 

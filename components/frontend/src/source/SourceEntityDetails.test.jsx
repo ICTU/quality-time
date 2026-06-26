@@ -1,13 +1,21 @@
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import { fireEvent, render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import dayjs from "dayjs"
 import { vi } from "vitest"
 
 import * as sourceApi from "../api/source"
 import { EDIT_ENTITY_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { clickText, expectDisplayValue, expectNoAccessibilityViolations, expectText } from "../testUtils"
+import {
+    clickText,
+    enterLabeledText,
+    expectDisplayValue,
+    expectNoAccessibilityViolations,
+    expectText,
+    mouseDownText,
+    typeLabeledText,
+} from "../testUtils"
 import { SourceEntityDetails } from "./SourceEntityDetails"
 
 const reload = vi.fn
@@ -42,7 +50,7 @@ it("has no accessibility violations", async () => {
 
 it("shows the default desired response times when the report has no desired response times", async () => {
     renderSourceEntityDetails()
-    fireEvent.mouseDown(screen.getByText("Unconfirm"))
+    mouseDownText("Unconfirm")
     const expectedMenuItemDescriptions = [
         "This violation has been reviewed and should be addressed within 180 days.",
         "Ignore this violation for 7 days because it has been fixed or will be fixed shortly.",
@@ -57,7 +65,7 @@ it("shows the default desired response times when the report has no desired resp
 it("shows the configured desired response times", async () => {
     const report = { desired_response_times: { confirmed: "2", fixed: "4", false_positive: "600", wont_fix: "100" } }
     renderSourceEntityDetails({ report: report })
-    fireEvent.mouseDown(screen.getByText("Unconfirm"))
+    mouseDownText("Unconfirm")
     const expectedMenuItemDescriptions = [
         "This violation has been reviewed and should be addressed within 2 days.",
         "Ignore this violation for 4 days because it has been fixed or will be fixed shortly.",
@@ -72,7 +80,7 @@ it("shows the configured desired response times", async () => {
 it("shows no desired response times when the report has been configured to not have desired response times", async () => {
     const report = { desired_response_times: { confirmed: null, fixed: null, false_positive: null, wont_fix: null } }
     renderSourceEntityDetails({ report: report })
-    fireEvent.mouseDown(screen.getByText("Unconfirm"))
+    mouseDownText("Unconfirm")
     const expectedMenuItemDescriptions = [
         "This violation has been reviewed and should be addressed.",
         "Ignore this violation because it has been fixed or will be fixed shortly.",
@@ -86,7 +94,7 @@ it("shows no desired response times when the report has been configured to not h
 
 it("changes the entity status", async () => {
     renderSourceEntityDetails()
-    fireEvent.mouseDown(screen.getByText("Unconfirm"))
+    mouseDownText("Unconfirm")
     clickText(/Confirm/)
     expect(sourceApi.setSourceEntityAttribute).toHaveBeenCalledWith(
         "metric_uuid",
@@ -105,7 +113,7 @@ it("shows the entity status end date", async () => {
 
 it("changes the entity status end date", async () => {
     renderSourceEntityDetails()
-    await userEvent.type(screen.getAllByLabelText(/Violation status end date/)[0], "01012222{Enter}")
+    await enterLabeledText(/Violation status end date/, "01012222", {}, 0)
     expect(sourceApi.setSourceEntityAttribute).toHaveBeenCalledWith(
         "metric_uuid",
         "source_uuid",
@@ -118,7 +126,7 @@ it("changes the entity status end date", async () => {
 
 it("changes the rationale", async () => {
     renderSourceEntityDetails()
-    await userEvent.type(screen.getByLabelText(/rationale/), "Rationale")
+    await typeLabeledText(/rationale/, "Rationale")
     await userEvent.tab()
     expect(sourceApi.setSourceEntityAttribute).toHaveBeenCalledWith(
         "metric_uuid",

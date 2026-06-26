@@ -4,7 +4,15 @@ import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { clickText, expectFetch, expectNoAccessibilityViolations, expectNoText, expectText } from "../testUtils"
+import {
+    clickText,
+    enterLabeledText,
+    expectFetch,
+    expectNoAccessibilityViolations,
+    expectNoText,
+    expectText,
+    typeLabeledText,
+} from "../testUtils"
 import { SnackbarAlerts } from "../widgets/SnackbarAlerts"
 import { IssuesRows } from "./IssuesRows"
 
@@ -135,7 +143,7 @@ it("disables the create issue button if the user has no permissions", async () =
 it("adds an issue id", async () => {
     fetchServerApi.fetchServerApi.mockResolvedValue({ suggestions: [{ key: "FOO-42", text: "Suggestion" }] })
     renderIssuesRow()
-    await userEvent.type(screen.getByLabelText(/Issue identifiers/), "FOO-42{Enter}")
+    await enterLabeledText(/Issue identifiers/, "FOO-42")
     expectFetch("post", "metric/metric_uuid/attribute/issue_ids", {
         issue_ids: ["FOO-42"],
     })
@@ -146,7 +154,7 @@ it("shows issue id suggestions", async () => {
     renderIssuesRow({
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
     })
-    await userEvent.type(screen.getByLabelText(/Issue identifiers/), "u")
+    await typeLabeledText(/Issue identifiers/, "u")
     expectText(/FOO-42: Suggestion/)
 })
 
@@ -157,7 +165,7 @@ it("shows an error message if fetching suggestions fails", async () => {
         report: { issue_tracker: { type: "Jira", parameters: { url: "https://jira" } } },
         showMessage: showMessage,
     })
-    await userEvent.type(screen.getByLabelText(/Issue identifiers/), "u")
+    await typeLabeledText(/Issue identifiers/, "u")
     expect(showMessage).toHaveBeenCalledTimes(1)
     expect(showMessage).toHaveBeenCalledWith({
         severity: "error",

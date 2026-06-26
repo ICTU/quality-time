@@ -1,8 +1,8 @@
-import { render, screen } from "@testing-library/react"
+import { render } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 
-import { clickLabeledElement, clickText, expectNoAccessibilityViolations } from "../testUtils"
+import { clickLabeledElement, clickText, expectNoAccessibilityViolations, typeText } from "../testUtils"
 import { UIModeMenu } from "./UIModeMenu"
 
 const openUIModeMenu = () => clickLabeledElement(/Dark\/light mode/)
@@ -40,7 +40,7 @@ it("sets dark mode on keypress", async () => {
     const setUIMode = vi.fn()
     render(<UIModeMenu setUIMode={setUIMode} uiMode="light" />)
     openUIModeMenu()
-    await userEvent.type(screen.getByText(/Dark mode/), " ")
+    await typeText(/Dark mode/, " ")
     expect(setUIMode).toHaveBeenCalledWith("dark")
 })
 

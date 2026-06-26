@@ -1,5 +1,6 @@
 import { vi } from "vitest"
 
+import { dataModelWithCountScale as dataModel } from "./__fixtures__/fixtures"
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from "./context/Permissions"
 import { defaultDesiredResponseTimes } from "./defaults"
 import {
@@ -41,14 +42,6 @@ import {
     sum,
     visibleMetrics,
 } from "./utils"
-
-const dataModel = {
-    metrics: {
-        metric_type: {
-            default_scale: "count",
-        },
-    },
-}
 
 const metric = {
     type: "metric_type",

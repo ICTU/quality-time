@@ -4,7 +4,7 @@ import { vi } from "vitest"
 
 import * as fetchServerApi from "../api/fetch_server_api"
 import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
-import { clickText, expectFetch, expectNoAccessibilityViolations } from "../testUtils"
+import { clickText, enterLabeledText, expectFetch, expectNoAccessibilityViolations } from "../testUtils"
 import { NotificationDestinations } from "./NotificationDestinations"
 
 const notificationDestinations = {
@@ -49,7 +49,7 @@ it("creates a new notification destination when the add notification destination
 
 it("edits notification destination name attribute when it is changed in the input field", async () => {
     renderNotificationDestinations(notificationDestinations)
-    await userEvent.type(screen.getByLabelText(/Webhook name/), " changed{Enter}")
+    await enterLabeledText(/Webhook name/, " changed")
     expectFetch("post", "report/report_uuid/notification_destination/destination_uuid1/attributes", {
         name: "new changed",
     })

@@ -1,9 +1,8 @@
-import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
+import { render } from "@testing-library/react"
 import { vi } from "vitest"
 
 import * as fetchServerApi from "../../api/fetch_server_api"
-import { expectFetch } from "../../testUtils"
+import { asyncClickText, expectFetch } from "../../testUtils"
 import { SnackbarAlerts } from "../SnackbarAlerts"
 import { ExportReportButton } from "./ExportReportButton"
 
@@ -27,7 +26,7 @@ function renderExportReportButton({ showMessage = vi.fn() } = {}) {
 it("exports a report", async () => {
     const showMessage = vi.fn()
     renderExportReportButton({ showMessage: showMessage })
-    await userEvent.click(screen.getByText(/Export as JSON/))
+    await asyncClickText(/Export as JSON/)
     expectFetch("get", "report/report_uuid/json")
     expect(showMessage).not.toHaveBeenCalled()
 })
@@ -38,7 +37,7 @@ it("shows message when export fails", async () => {
         Promise.resolve({ ok: false, status: 500, statusText: "Internal Server Error" }),
     )
     renderExportReportButton({ showMessage: showMessage })
-    await userEvent.click(screen.getByText(/Export as JSON/))
+    await asyncClickText(/Export as JSON/)
     expectFetch("get", "report/report_uuid/json")
     expect(showMessage).toHaveBeenCalledWith({
         severity: "error",
@@ -51,7 +50,7 @@ it("shows message when fetch throws", async () => {
     const showMessage = vi.fn()
     vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() => Promise.reject(new Error("Network error")))
     renderExportReportButton({ showMessage: showMessage })
-    await userEvent.click(screen.getByText(/Export as JSON/))
+    await asyncClickText(/Export as JSON/)
     expect(showMessage).toHaveBeenCalledWith({
         severity: "error",
         title: "Could not export report",

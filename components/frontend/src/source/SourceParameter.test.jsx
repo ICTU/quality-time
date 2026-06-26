@@ -1,7 +1,6 @@
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { fireEvent, render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
 import dayjs from "dayjs"
 import { vi } from "vitest"
 
@@ -10,6 +9,7 @@ import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissio
 import {
     clickButton,
     clickLabeledElement,
+    enterLabeledText,
     expectDisplayValue,
     expectFetch,
     expectLabelText,
@@ -323,12 +323,12 @@ it("renders a help text", async () => {
 
 it("eidts the value", async () => {
     renderSourceParameter({})
-    await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
+    await enterLabeledText(/URL/, "/new")
     expectFetch("post", "source/source_uuid/parameter/key1", { key1: "https://test/new", edit_scope: "source" })
 })
 
 it("mass edits the value", async () => {
     renderSourceParameter({ editScope: "report" })
-    await userEvent.type(screen.getByLabelText(/URL/), "/new{Enter}")
+    await enterLabeledText(/URL/, "/new")
     expectFetch("post", "source/source_uuid/parameter/key1", { key1: "https://test/new", edit_scope: "report" })
 })
