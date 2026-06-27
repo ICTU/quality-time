@@ -13,7 +13,7 @@ import {
 } from "../metric/MetricTypeSelector"
 import { reportPropType, reportsPropType, subjectPropType } from "../sharedPropTypes"
 import { ButtonRow } from "../widgets/ButtonRow"
-import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
+import { AddItemByTypeButton } from "../widgets/buttons/AddItemByTypeButton"
 import { CopyButton } from "../widgets/buttons/CopyButton"
 import { MoveButton } from "../widgets/buttons/MoveButton"
 import { metricOptions } from "../widgets/menu_options"
@@ -24,7 +24,7 @@ function SubjectTableFooterButtonRow({ subject, subjectUuid, reload, report, rep
         <TableRow>
             <TableCell colSpan="99">
                 <ButtonRow paddingLeft={0} paddingRight={0}>
-                    <AddDropdownButton
+                    <AddItemByTypeButton
                         allItemSubtypes={allMetricTypeOptions(dataModel)}
                         itemType="metric"
                         itemSubtypes={metricTypeOptions(dataModel, subject.type)}

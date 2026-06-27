@@ -15,7 +15,7 @@ import {
     settingsPropType,
 } from "../sharedPropTypes"
 import { ButtonRow } from "../widgets/ButtonRow"
-import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
+import { AddItemByTypeButton } from "../widgets/buttons/AddItemByTypeButton"
 import { CopyButton } from "../widgets/buttons/CopyButton"
 import { MoveButton } from "../widgets/buttons/MoveButton"
 import { sourceOptions } from "../widgets/menu_options"
@@ -30,7 +30,7 @@ function ButtonSegment({ metric, metricUuid, reload, reports }) {
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
                 <ButtonRow paddingLeft={0} paddingRight={0} paddingTop={2}>
-                    <AddDropdownButton
+                    <AddItemByTypeButton
                         itemType="source"
                         itemSubtypes={sourceTypeOptions(dataModel, metric.type)}
                         onClick={(subtype) => addSource(metricUuid, subtype, reload)}
