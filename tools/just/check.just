@@ -114,7 +114,7 @@ npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-6v5v-wf23-fmfq GHSA-pr7r-676h-xcf6
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]
 [private]
-npm-audit folder="": (js-check "npm-audit" f"npm audit --json | {{ python }} {{ justfile_directory() }}/tools/just/npm_audit_filter.py {{ npm_audit_ignore }}" folder)
+npm-audit folder="": (js-check "npm-audit" f"npm audit --json | {{ python }} {{ justfile_directory() }}/tools/just/src/npm_audit_filter.py {{ npm_audit_ignore }}" folder)
 
 # Run npm outdated to check for outdated JavaScript dependencies. Ignore outdated packages that can't be updated (current == wanted).
 [no-cd]

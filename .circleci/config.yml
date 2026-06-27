@@ -12,27 +12,28 @@ jobs:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
     resource_class: large
-    parallelism: 14
+    parallelism: 15
     steps:
       - checkout
       - run: |
           pip install --upgrade pip
           pip install --group tools/third_party/pyproject.toml:uv
           case $CIRCLE_NODE_INDEX in
-            0) component=components/collector;;
-            1) component=components/notifier;;
-            2) component=components/api_server;;
-            3) component=components/shared_code;;
-            4) component=components/frontend;;
-            5) component=components/renderer;;
-            6) component=tests/application_tests;;
-            7) component=tests/feature_tests;;
-            8) component=docs;;
-            9) component=tools/release;;
-            10) component=tools/third_party;;
-            11) component=tools/update_dependencies;;
-            12) component=tests/shared_test_code;;
-            13) component=.;;
+            0) component=components/api_server;;
+            1) component=components/collector;;
+            2) component=components/frontend;;
+            3) component=components/notifier;;
+            4) component=components/renderer;;
+            5) component=components/shared_code;;
+            6) component=docs;;
+            7) component=tests/application_tests;;
+            8) component=tests/feature_tests;;
+            9) component=tests/shared_test_code;;
+            10) component=tools/just;;
+            11) component=tools/release;;
+            12) component=tools/third_party;;
+            13) component=tools/update_dependencies;;
+            14) component=.;;
           esac
           cd $component
           mkdir -p build
@@ -55,6 +56,8 @@ jobs:
           path: components/feature_tests/build
       - store_artifacts:
           path: docs/build
+      - store_artifacts:
+          path: tools/just/build
       - store_artifacts:
           path: tools/release/build
       - store_artifacts:
