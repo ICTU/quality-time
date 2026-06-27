@@ -10,5 +10,5 @@ it("shows the comment", () => {
 
 it("doesn't show the comment if it's empty", () => {
     const { container } = render(<CommentSegment />)
-    expect(container.children.length).toBe(0)
+    expect(container.children).toHaveLength(0)
 })

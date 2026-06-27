@@ -7,7 +7,10 @@ from pathlib import Path
 
 def latest_release(file_path: Path) -> str:
     """Extract changes for the latest release."""
-    with file_path.open(encoding="utf-8") as file:
+    base_directory = Path.cwd().resolve()
+    resolved_path = (base_directory / file_path).resolve()
+    resolved_path.relative_to(base_directory)  # Raises ValueError on path traversal outside the working directory
+    with resolved_path.open(encoding="utf-8") as file:
         lines = file.readlines()
 
     extracted_lines: list[str] = []

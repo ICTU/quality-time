@@ -38,5 +38,5 @@ it("shows the tooltip", async () => {
     const unknownPie = queryAllByRole(container, "presentation")[0]
     const unknownLabel = "Unknown"
     await userEvent.hover(unknownPie)
-    expect(queryAllByText(container, unknownLabel).length).toBe(1)
+    expect(queryAllByText(container, unknownLabel)).toHaveLength(1)
 })

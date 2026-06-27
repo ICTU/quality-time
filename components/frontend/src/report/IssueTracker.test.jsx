@@ -153,12 +153,12 @@ it("does not show the issue tracker private token help url if there is no issue 
         report: { report_uuid: "report_uuid", title: "Report", issue_tracker: {} },
         helpUrl: "https://help.example.org",
     })
-    expect(container.querySelector("a")).toBe(null)
+    expect(container.querySelector("a")).toBeNull()
 })
 
 it("does not show the issue tracker private token help url if the data model has no help url", async () => {
     const { container } = await renderIssueTracker()
-    expect(container.querySelector("a")).toBe(null)
+    expect(container.querySelector("a")).toBeNull()
 })
 
 it("shows the issue tracker private token help url", async () => {

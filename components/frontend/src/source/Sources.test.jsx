@@ -120,7 +120,7 @@ it("has no accessibility violations", async () => {
 
 it("shows a source", async () => {
     renderSources()
-    expect(screen.getAllByPlaceholderText(/Source type 1/).length).toBe(1)
+    expect(screen.getAllByPlaceholderText(/Source type 1/)).toHaveLength(1)
 })
 
 it("shows a message if there are no sources", async () => {

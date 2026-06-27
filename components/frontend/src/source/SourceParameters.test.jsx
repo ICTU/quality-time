@@ -75,7 +75,7 @@ it("renders a string parameter", async () => {
 
 it("renders a string parameter with placeholder", async () => {
     renderSourceParameters({ placeholder: "Placeholder" })
-    expect(screen.queryAllByPlaceholderText(/Placeholder/).length).toBe(1)
+    expect(screen.queryAllByPlaceholderText(/Placeholder/)).toHaveLength(1)
 })
 
 it("renders a default value if the source parameter has no value", async () => {

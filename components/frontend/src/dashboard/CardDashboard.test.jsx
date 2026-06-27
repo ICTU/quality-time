@@ -42,12 +42,12 @@ it("has no accessibility violations", async () => {
 
 it("returns null without cards", async () => {
     const { container } = renderCardDashboard()
-    expect(container.children[0].children.length).toBe(0)
+    expect(container.children[0].children).toHaveLength(0)
 })
 
 it("adds the card to the dashboard", async () => {
     const { container } = renderCardDashboard({ cards: [metricSummaryCard()] })
-    expect(container.children.length).toBe(1)
+    expect(container.children).toHaveLength(1)
 })
 
 it("does not save the layout after click", async () => {
