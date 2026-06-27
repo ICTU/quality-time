@@ -8,7 +8,6 @@ import {
     Radio,
     RadioGroup,
     TextField,
-    Tooltip,
     Typography,
 } from "@mui/material"
 import { array, arrayOf, bool, func, string } from "prop-types"
@@ -82,7 +81,6 @@ Filters.propTypes = {
 
 export function ItemTypeSelector({
     renderAnchor,
-    tooltip,
     itemSubtypes,
     itemType,
     onClick,
@@ -113,9 +111,7 @@ export function ItemTypeSelector({
     }
     return (
         <>
-            <Tooltip title={tooltip} placement="top">
-                {renderAnchor(handleMenu)}
-            </Tooltip>
+            {renderAnchor(handleMenu)}
             <Popover
                 id="dropdown-menu"
                 anchorEl={anchorEl}
@@ -169,7 +165,6 @@ ItemTypeSelector.propTypes = {
     onClick: func,
     renderAnchor: func,
     sort: bool,
-    tooltip: string,
     usedItemSubtypeKeysInReport: arrayOf(string),
     usedItemSubtypeKeysInSubject: arrayOf(string),
 }

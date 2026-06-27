@@ -6,7 +6,7 @@ import { DataModelContext } from "../context/DataModel"
 import { EDIT_REPORT_PERMISSION, ReadOnlyOrEditable } from "../context/Permissions"
 import { reportPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
 import { ButtonRow } from "../widgets/ButtonRow"
-import { AddDropdownButton } from "../widgets/buttons/AddDropdownButton"
+import { AddItemByTypeButton } from "../widgets/buttons/AddItemByTypeButton"
 import { CopyButton } from "../widgets/buttons/CopyButton"
 import { MoveButton } from "../widgets/buttons/MoveButton"
 import { subjectOptions } from "../widgets/menu_options"
@@ -23,7 +23,7 @@ export function SubjectsButtonRow({ reload, report, reports, settings }) {
             requiredPermissions={[EDIT_REPORT_PERMISSION]}
             editableComponent={
                 <ButtonRow paddingLeft={0} paddingTop={7}>
-                    <AddDropdownButton
+                    <AddItemByTypeButton
                         itemType="subject"
                         itemSubtypes={subjectTypes(dataModel.subjects)}
                         onClick={(subtype) => {

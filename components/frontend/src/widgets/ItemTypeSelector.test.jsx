@@ -38,7 +38,6 @@ function renderItemTypeSelector({
                     Add foo
                 </button>
             )}
-            tooltip="Add a new foo here"
             usedItemSubtypeKeysInReport={usedItemKeysInReport}
             usedItemSubtypeKeysInSubject={usedItemKeysInSubject}
             sort={sort}

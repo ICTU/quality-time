@@ -1,11 +1,11 @@
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
-import { Button } from "@mui/material"
+import { Button, Tooltip } from "@mui/material"
 import { array, arrayOf, bool, func, string } from "prop-types"
 
 import { AddItemIcon } from "../icons"
 import { ItemTypeSelector } from "../ItemTypeSelector"
 
-export function AddDropdownButton({
+export function AddItemByTypeButton({
     itemSubtypes,
     itemType,
     onClick,
@@ -21,18 +21,19 @@ export function AddDropdownButton({
             itemType={itemType}
             onClick={onClick}
             renderAnchor={(handleMenu) => (
-                <Button aria-describedby="dropdown-menu" onClick={handleMenu} variant="outlined">
-                    <AddItemIcon /> {`Add ${itemType} `} <ArrowDropDownIcon />
-                </Button>
+                <Tooltip title={`Add a new ${itemType} here`} placement="top">
+                    <Button aria-describedby="dropdown-menu" onClick={handleMenu} variant="outlined">
+                        <AddItemIcon /> {`Add ${itemType} `} <ArrowDropDownIcon />
+                    </Button>
+                </Tooltip>
             )}
             sort={sort}
-            tooltip={`Add a new ${itemType} here`}
             usedItemSubtypeKeysInReport={usedItemSubtypeKeysInReport}
             usedItemSubtypeKeysInSubject={usedItemSubtypeKeysInSubject}
         />
     )
 }
-AddDropdownButton.propTypes = {
+AddItemByTypeButton.propTypes = {
     allItemSubtypes: array,
     itemSubtypes: array,
     itemType: string,
