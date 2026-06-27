@@ -35,6 +35,9 @@ jobs:
           - folder: components/renderer
             name: components-renderer
             language: js
+          - folder: tools/just
+            name: tools-just
+            language: python
           - folder: tools/release
             name: tools-release
             language: python
@@ -109,7 +112,7 @@ jobs:
         if: env.SONAR_TOKEN != null
         # yamllint disable rule:line-length
         run: |
-          for dir in components/api_server components/collector components/notifier components/shared_code components/frontend components/renderer tools/release tools/update_dependencies; do
+          for dir in components/api_server components/collector components/notifier components/shared_code components/frontend components/renderer tools/just tools/release tools/update_dependencies; do
             mkdir -p $dir/build
             cp -r artifacts/sonar-${dir//\//-}/. $dir/build/
           done
@@ -120,7 +123,7 @@ jobs:
         run: |
           touch components/__init__.py
           touch tools/__init__.py
-          for dir in components/api_server components/collector components/notifier components/shared_code tools/release tools/update_dependencies; do
+          for dir in components/api_server components/collector components/notifier components/shared_code tools/just tools/release tools/update_dependencies; do
             touch $dir/__init__.py
             touch $dir/src/__init__.py
             sed --in-place "s#name=\"\([^\"]*\)\" filename=\"\([^\"]*\)\"#name=\"$GITHUB_WORKSPACE/$dir/\2\" filename=\"$GITHUB_WORKSPACE/$dir/\2\"#g" $dir/build/unittest-coverage.xml
