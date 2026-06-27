@@ -27,21 +27,19 @@ it("has no accessibility violations", async () => {
 
 it("shows the number of metrics per status when the total is zero", async () => {
     renderBarChart(0, 0)
-    expect(screen.queryAllByLabelText(`Status on ${dateString}: no metrics`, { exact: false }).length).toBe(1)
+    expect(screen.queryAllByLabelText(`Status on ${dateString}: no metrics`, { exact: false })).toHaveLength(1)
 })
 
 it("shows the number of metrics per status when the total is not zero", async () => {
     renderBarChart(10, 0)
-    expect(screen.queryAllByLabelText(`Status on ${dateString}: no metrics`, { exact: false }).length).toBe(1)
+    expect(screen.queryAllByLabelText(`Status on ${dateString}: no metrics`, { exact: false })).toHaveLength(1)
 })
 
 it("shows the number of metrics per status", async () => {
     renderBarChart(2, 2)
     expect(
-        screen.queryAllByLabelText(`Status on ${dateString}: 2 metrics, 2 target not met`, {
-            exact: false,
-        }).length,
-    ).toBe(1)
+        screen.queryAllByLabelText(`Status on ${dateString}: 2 metrics, 2 target not met`, { exact: false }),
+    ).toHaveLength(1)
 })
 
 it("shows the tooltip", async () => {
@@ -49,5 +47,5 @@ it("shows the tooltip", async () => {
     const targetNotMetBar = queryAllByRole(container, "presentation")[4]
     const targetNotMetLabel = "Target not met"
     await userEvent.hover(targetNotMetBar)
-    expect(queryAllByText(container, targetNotMetLabel).length).toBe(1)
+    expect(queryAllByText(container, targetNotMetLabel)).toHaveLength(1)
 })

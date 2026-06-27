@@ -86,7 +86,7 @@ it("has no accessibility violations", async () => {
 
 it("shows the correct number of rows", async () => {
     renderSubjectTableBody()
-    expect(screen.queryAllByTestId(/^metric-row-/).length).toBe(2)
+    expect(screen.queryAllByTestId(/^metric-row-/)).toHaveLength(2)
 })
 
 it("shows drop indicator when dragging over a row", () => {

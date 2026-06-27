@@ -114,7 +114,7 @@ it("renders a string parameter", async () => {
 
 it("renders a password parameter", async () => {
     renderSourceParameter({ parameter: { name: "Password", type: "password" } })
-    expect(screen.queryAllByLabelText(/Password/).length).toBe(1)
+    expect(screen.queryAllByLabelText(/Password/)).toHaveLength(1)
 })
 
 it("renders a date parameter", async () => {
@@ -122,14 +122,14 @@ it("renders a date parameter", async () => {
         parameter: { name: "Date", type: "date" },
         parameterValue: "2021-10-10",
     })
-    expect(screen.queryAllByLabelText(/Date/, { selector: "input" }).length).toBe(1)
+    expect(screen.queryAllByLabelText(/Date/, { selector: "input" })).toHaveLength(1)
     expectDisplayValue("10/10/2021")
 })
 
 it("renders a date parameter without date", async () => {
     renderSourceParameter({ parameter: { name: "Date", type: "date" }, parameterValue: "" })
-    expect(screen.queryAllByLabelText(/Date/, { selector: "input" }).length).toBe(1)
-    expect(screen.queryAllByPlaceholderText(/YYYY/).length).toBe(0)
+    expect(screen.queryAllByLabelText(/Date/, { selector: "input" })).toHaveLength(1)
+    expect(screen.queryAllByPlaceholderText(/YYYY/)).toHaveLength(0)
 })
 
 it("sets the date to today", async () => {
@@ -300,7 +300,7 @@ it("renders a multiple choice with addition parameter", async () => {
         parameter: { name: "Multiple choice with addition", type: "multiple_choice_with_addition" },
         parameterValue: ["option 1", "option 2"],
     })
-    expect(screen.queryAllByLabelText(/Multiple choice/).length).toBe(1)
+    expect(screen.queryAllByLabelText(/Multiple choice/)).toHaveLength(1)
 })
 
 it("renders nothing on unknown parameter type", async () => {

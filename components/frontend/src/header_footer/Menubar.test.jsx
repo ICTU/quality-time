@@ -111,7 +111,7 @@ it("closes the dialog on cancel", async () => {
     clickText(/Login/)
     await asyncClickText(/Cancel/)
     await waitFor(async () => {
-        expect(screen.queryAllByLabelText("Username").length).toBe(0)
+        expect(screen.queryAllByLabelText("Username")).toHaveLength(0)
     })
     expect(setUser).not.toHaveBeenCalled()
 })
@@ -122,7 +122,7 @@ it("closes the dialog on escape", async () => {
     clickText(/Login/)
     await userEvent.keyboard("{Escape}")
     await waitFor(() => {
-        expect(screen.queryAllByLabelText("Username").length).toBe(0)
+        expect(screen.queryAllByLabelText("Username")).toHaveLength(0)
     })
     expect(setUser).not.toHaveBeenCalled()
 })

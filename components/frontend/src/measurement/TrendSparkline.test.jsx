@@ -15,12 +15,12 @@ it("has no accessibility violations", async () => {
 
 it("returns null when the metric scale is version number", async () => {
     render(<TrendSparkline scale="version_number" />)
-    expect(screen.queryAllByLabelText(/sparkline graph/).length).toBe(0)
+    expect(screen.queryAllByLabelText(/sparkline graph/)).toHaveLength(0)
 })
 
 it("renders an empty sparkline if there are no measurements", async () => {
     render(<TrendSparkline />)
-    expect(screen.queryAllByLabelText(/sparkline graph showing 0 different measurement values/).length).toBe(1)
+    expect(screen.queryAllByLabelText(/sparkline graph showing 0 different measurement values/)).toHaveLength(1)
 })
 
 it("renders a recent measurement", async () => {

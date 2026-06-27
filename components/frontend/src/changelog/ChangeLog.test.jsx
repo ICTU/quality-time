@@ -31,7 +31,7 @@ async function renderChangeLog(props) {
 function expectNrEventsToBe(nr) {
     // Assert that the change log contains nr events
     const rows = document.querySelectorAll(".MuiListItem-root")
-    expect(rows.length).toBe(nr)
+    expect(rows).toHaveLength(nr)
 }
 
 it("has no accessibility violations", async () => {

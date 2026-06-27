@@ -349,7 +349,7 @@ it("gets the subject name from the data model if the subject has no name", () =>
 })
 
 it("returns the metric response deadline", () => {
-    expect(getMetricResponseDeadline({}, {})).toStrictEqual(null)
+    expect(getMetricResponseDeadline({}, {})).toBeNull()
 })
 
 it("returns the metric response deadline based on the tech debt end date", () => {
@@ -372,9 +372,7 @@ it("returns the metric response deadline based on the desired response time", ()
 
 it("does not return a metric response deadline when the report has been configured not to have a desired response time", () => {
     const report = { desired_response_times: { near_target_met: "" } }
-    expect(getMetricResponseDeadline({ status: "near_target_met", status_start: "2024-02-02" }, report)).toStrictEqual(
-        null,
-    )
+    expect(getMetricResponseDeadline({ status: "near_target_met", status_start: "2024-02-02" }, report)).toBeNull()
 })
 
 it("returns the metric response overrun when there are no measurements", () => {

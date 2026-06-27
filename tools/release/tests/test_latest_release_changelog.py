@@ -32,3 +32,7 @@ class LatestReleaseTest(unittest.TestCase):
         changelog = "# Changelog\n\n## v1.0\n\n### Added\n\n- Some feature\n\n## v0.9\n\n### Added\n\n- Feature"
         expected_changelog = "# v1.0\n\n## Added\n\n- Some feature\n\n"
         self.assertEqual(expected_changelog, self.get_latest_release(changelog))
+
+    def test_path_outside_working_directory(self):
+        """Test that a path pointing outside the working directory is rejected."""
+        self.assertRaises(ValueError, latest_release, pathlib.Path("/etc/passwd"))

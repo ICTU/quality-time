@@ -59,13 +59,13 @@ it("renders the value", async () => {
 it("renders an unknown value", async () => {
     renderMeasurementValue({ latestMeasurement: { count: { value: null } } })
     expectText(/\?/)
-    expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
+    expect(screen.queryAllByTestId("LoopIcon")).toHaveLength(0)
 })
 
 it("renders a value that has not been measured yet", async () => {
     renderMeasurementValue()
     expectText(/\?/)
-    expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
+    expect(screen.queryAllByTestId("LoopIcon")).toHaveLength(0)
 })
 
 it("renders a value that can not be measured yet", async () => {
@@ -79,7 +79,7 @@ it("renders a value that can not be measured yet", async () => {
         url: "",
     })
     expectText(/1/)
-    expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
+    expect(screen.queryAllByTestId("LoopIcon")).toHaveLength(0)
 })
 
 it("renders an outdated value", async () => {
@@ -91,7 +91,7 @@ it("renders an outdated value", async () => {
             end: new Date().toISOString(),
         },
     })
-    expect(screen.getAllByTestId("LoopIcon").length).toBe(1)
+    expect(screen.getAllByTestId("LoopIcon")).toHaveLength(1)
     await hoverText(/1/)
     await expectTextAfterWait(/Latest measurement out of date/)
     expectText(/The source configuration of this metric was changed after the latest measurement/)
@@ -103,7 +103,7 @@ it("renders a value for which a measurement was requested", async () => {
         latestMeasurement: { count: { value: 1 }, start: now, end: now },
         measurementRequested: now,
     })
-    expect(screen.getAllByTestId("LoopIcon").length).toBe(1)
+    expect(screen.getAllByTestId("LoopIcon")).toHaveLength(1)
     await hoverText(/1/)
     await expectTextAfterWait(/Measurement requested/)
     expectText(/An update of the latest measurement was requested by a user/)
@@ -115,7 +115,7 @@ it("renders a value for which a measurement was requested, but which is now up t
         latestMeasurement: { count: { value: 1 }, start: now, end: now },
         measurementRequested: "2024-01-01T00:00:00",
     })
-    expect(screen.queryAllByTestId("LoopIcon").length).toBe(0)
+    expect(screen.queryAllByTestId("LoopIcon")).toHaveLength(0)
     await hoverText(/1/)
     await expectNoTextAfterWait(/Measurement requested/)
     expectNoText(/An update of the latest measurement was requested by a user/)
