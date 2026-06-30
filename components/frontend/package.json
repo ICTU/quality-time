@@ -43,7 +43,7 @@
         "eslint-plugin-jest": "^29.15.2",
         "eslint-plugin-prettier": "^5.5.6",
         "eslint-plugin-simple-import-sort": "^13.0.0",
-        "globals": "^17.6.0",
+        "globals": "^17.7.0",
         "jest": "^30.4.2",
         "jest-axe": "^10.0.0",
         "jsdom": "^29.1.1",
