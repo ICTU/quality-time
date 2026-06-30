@@ -10,11 +10,13 @@ import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissio
 import {
     clickButton,
     clickLabeledElement,
+    clickRole,
     enterLabeledText,
     expectFetch,
     expectNoAccessibilityViolations,
     expectNoFetch,
     expectText,
+    mouseDownLabeledElement,
     typeLabeledText,
 } from "../testUtils"
 import { MetricDebtParameters } from "./MetricDebtParameters"
@@ -84,13 +86,15 @@ it("accepts technical debt", async () => {
 
 it("accepts technical debt and sets target and end date", async () => {
     renderMetricDebtParameters()
-    await enterLabeledText(/Accept technical debt/, "Yes, and")
+    mouseDownLabeledElement(/Accept technical debt/)
+    clickRole("option", /Yes, and/)
     expectFetch("post", "metric/metric_uuid/debt", { accept_debt: true })
 })
 
 it("unaccepts technical debt and resets target and end date", async () => {
     renderMetricDebtParameters({ acceptDebt: true })
-    await enterLabeledText(/Accept technical debt/, "No, and")
+    mouseDownLabeledElement(/Accept technical debt/)
+    clickRole("option", /No, and/)
     expectFetch("post", "metric/metric_uuid/debt", { accept_debt: false })
 })
 
