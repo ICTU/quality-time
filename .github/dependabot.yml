@@ -20,16 +20,6 @@ updates:
     open-pull-requests-limit: 10
 
   - package-ecosystem: uv
-    directory: "/tools/update_dependencies"
-    allow:
-      - dependency-type: "direct"
-    cooldown:
-      default-days: 7
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-
-  - package-ecosystem: uv
     directory: "/components/collector"
     allow:
       - dependency-type: "direct"

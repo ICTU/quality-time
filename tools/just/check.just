@@ -191,7 +191,7 @@ check-help:
     echo '  {{ CYAN }}yamllint, zizmor, compose-lint, check-justfile, helm-lint'{{ NORMAL }}
 
 # Folders to be checked for quality.
-folders_to_check := "components/api_server components/collector components/frontend components/notifier components/renderer components/shared_code docs tests/application_tests tests/feature_tests tests/shared_test_code tools/release tools/third_party tools/update_dependencies ."
+folders_to_check := "components/api_server components/collector components/frontend components/notifier components/renderer components/shared_code docs tests/application_tests tests/feature_tests tests/shared_test_code tools/just tools/release tools/third_party ."
 
 # Run the quality checks, in all relevant folders.
 [private]

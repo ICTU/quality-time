@@ -186,7 +186,6 @@ def main() -> None:
         "tests/shared_test_code",
         "tools/release",
         "tools/third_party",
-        "tools/update_dependencies",
     ]:
         run(("uv", "lock"), cwd=str(REPO_ROOT / python_project_folder), check=True)  # noqa: S607
     run(("git", "add", "**/uv.lock"), cwd=str(REPO_ROOT), check=True)  # noqa: S607

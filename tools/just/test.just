@@ -64,7 +64,7 @@ junit-xml: install-py-dependencies
     {{ start_capture(current_folder) }} {{ uv_run }} --with=unittest-xml-reporting -m xmlrunner --output-file build/unittests.xml {{ end_capture("junit-xml") }}
 
 # Folders with unit tests, run by `test-all`.
-test_folders := "components/api_server components/collector components/frontend components/notifier components/renderer components/shared_code docs tools/release tools/update_dependencies"
+test_folders := "components/api_server components/collector components/frontend components/notifier components/renderer components/shared_code docs tools/release"
 
 # Change into the folder and run the tests there (passing the folder so the OK/NOK output is labelled with it).
 [no-cd]
