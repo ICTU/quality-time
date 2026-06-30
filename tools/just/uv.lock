@@ -861,6 +861,7 @@ dependencies = [
     { name = "troml" },
     { name = "ty" },
     { name = "unittest-xml-reporting" },
+    { name = "update-time" },
     { name = "vulture" },
     { name = "yamllint" },
     { name = "zizmor" },
@@ -882,6 +883,7 @@ requires-dist = [
     { name = "troml", specifier = "==0.4.1" },
     { name = "ty", specifier = "==0.0.52" },
     { name = "unittest-xml-reporting", specifier = "==4.0.0" },
+    { name = "update-time", specifier = "==0.0.2" },
     { name = "vulture", specifier = "==2.16" },
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.26.1" },
@@ -986,6 +988,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/42/6b/5847d0e6e95d08e056f23b3f8cd95bede2d3ade10a1c1a9d5b50916454e1/unittest_xml_reporting-4.0.0.tar.gz", hash = "sha256:bfa1ed65e9e6f33c161d04470d89050458cfb65a5a5d0358834ef7ce037d9136", size = 43152, upload-time = "2026-01-07T15:50:58.983Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fe/5d/18d3c571c3a842a0ffbc4ad04637646a991d05eb3eab412b5226bbdbf294/unittest_xml_reporting-4.0.0-py2.py3-none-any.whl", hash = "sha256:e3e24bac8ea27c454d8be1d718851b2c5c8f712d75281920b6af81bdfef2f9bc", size = 20298, upload-time = "2026-01-07T15:50:57.222Z" },
+]
+
+[[package]]
+name = "update-time"
+version = "0.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+    { name = "requests" },
+    { name = "rich" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5b/56/722ba4976bf7337a1564b7ce689c4daafd5d0bc648811dc76791ae7953ca/update_time-0.0.2.tar.gz", hash = "sha256:815e832a5aefc20392f57223f2ce3c2880212ad474975b0401ef9adfd75838b3", size = 17669, upload-time = "2026-06-22T11:59:25.951Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f4/56/24c5ea468f5359824b0a11aa13e24a6bc8710f44a5cd8b57f99eb343f3af/update_time-0.0.2-py3-none-any.whl", hash = "sha256:f18718440093119231944cd09a9d0bc70ae8872d583e6c0d94eb454468c61c98", size = 26014, upload-time = "2026-06-22T11:59:25.003Z" },
 ]
 
 [[package]]
