@@ -1,4 +1,4 @@
-FROM node:26.3.0-alpine3.23@sha256:144769ec3f32e8ee36b3cfde91e82bee25d9367b20f31a151f3f7eea3a2a8541 AS compile-image
+FROM node:26.3.1-alpine3.23@sha256:d1f2956a218f864a8667d0c3f30ca52ed64f488e523a43399bc92de325046476 AS compile-image
 
 RUN apk add --no-cache tzdata=2026b-r0
 
