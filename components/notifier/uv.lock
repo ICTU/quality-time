@@ -111,11 +111,11 @@ wheels = [
 
 [[package]]
 name = "archunitpython"
-version = "1.1.1"
+version = "1.1.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/00/92/e64d32b0f5c794934687e82dcd39b25599ee8cd5eda7e75a818858b15fe5/archunitpython-1.1.1.tar.gz", hash = "sha256:8d1a2be48c7acec2b36b524d2996e51ca3a32fa3cbe48181c44f6e607dac17f8", size = 366008, upload-time = "2026-05-24T07:41:33.514Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/da/f7/9844e0d12a6bac28b787ab634f6e60dcb91e7fb718ec1b438f772091e3a5/archunitpython-1.1.2.tar.gz", hash = "sha256:f66fb50a5fc80e312266ece7cdf839249dae56d44f5d6f585bcf1ae29ba0d8d1", size = 367270, upload-time = "2026-06-23T20:18:27.655Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3a/78/7b4d3705ec75d3155324a2db0686cb7e3b5860c69435c0e64ec351198339/archunitpython-1.1.1-py3-none-any.whl", hash = "sha256:f4a432e596cc50a0278cee9359adc523723456ab9dce7599f83b90cf2d5b2314", size = 61980, upload-time = "2026-05-24T07:41:32.145Z" },
+    { url = "https://files.pythonhosted.org/packages/da/d6/17b7018a5b84cee888925872ccc3e743835291a3d317273ec9d5bef80fd9/archunitpython-1.1.2-py3-none-any.whl", hash = "sha256:d567ea92b1681a8ff11e662800681dad46bd419158ac1e59a6c7f1934370caaf", size = 62091, upload-time = "2026-06-23T20:18:26.249Z" },
 ]
 
 [[package]]
@@ -1328,7 +1328,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "archunitpython", specifier = "==1.1.1" },
+    { name = "archunitpython", specifier = "==1.1.2" },
     { name = "bandit", specifier = "==1.9.4" },
     { name = "codespell", specifier = "==2.4.2" },
     { name = "compose-lint", specifier = "==0.12.2" },
