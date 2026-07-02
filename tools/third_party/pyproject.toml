@@ -27,7 +27,7 @@ dependencies = [
     "troml==0.4.1",
     "ty==0.0.53",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
-    "update-time==0.0.3",
+    "update-time==0.0.4",
     "vulture==2.16",
     "yamllint==1.38.0",
     "zizmor==1.26.1",                # Static analysis tool for GitHub Actions
