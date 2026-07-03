@@ -1,4 +1,4 @@
-FROM mongo:8.3.4@sha256:48a009d2d8007e92d6d7e8baa31713cd11c48c06e827e856240e5a1d319b49d9
+FROM mongo:8.3.4@sha256:0f887198e29c093fd2b36c3e2eb43c7b98e47c081d89fbd5bc212da0cd43ec58
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time database"
