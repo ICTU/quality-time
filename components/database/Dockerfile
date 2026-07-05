@@ -3,30 +3,22 @@ FROM mongo:8.3.4@sha256:48a009d2d8007e92d6d7e8baa31713cd11c48c06e827e856240e5a1d
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time database"
 
-# Remove the MongoDB database tools (mongodump, mongorestore, mongoexport, mongostat, etc.). They are not used
-# by the server, by Quality-time (the components connect via PyMongo), or for backups (which use a separate
-# mongo container, see the deployment documentation), and they ship with their own vulnerabilities. The server
-# (mongod) and the shell (mongosh, needed by the entrypoint to create the root user) are kept.
-# Make the data directories group-owned by the root group (GID 0) and group-writable so the container can run
-# as an arbitrary non-root user (some platforms, such as OpenShift, assign a random high UID with GID 0). This,
-# combined with running as non-root, means gosu is no longer needed and can be removed to reduce the attack surface.
-# Upgrade several libraries to pick up the latest Ubuntu security fixes; the MongoDB base image lags behind the Ubuntu
-# security updates. Each guard fails the build once the base image itself ships the fixed version, signalling that
-# workaround can be removed; bump the version in a guard whenever a newer fix needs to be pulled in.
-# The base image also bundles js-yaml 3.13.1 (/opt/js-yaml, symlinked as /js-yaml.js) solely so the entrypoint can
-# parse a mongod YAML config passed via --config. Quality-time never passes --config (see docker-compose.yml and the
-# Helm chart), so this parser is unreachable here, yet it carries CVE-2025-64718 (prototype pollution). Remove it to
-# drop the finding and shrink the attack surface; its guard fails the build if the base image stops shipping js-yaml
-# at this path, signalling that this cleanup can be removed.
-# DL3008 (pin apt versions) is intentionally ignored: --only-upgrade pulls the latest security patch rather
-# than a fixed version, and the guards above bound the minimum. SC2086 is ignored for the deliberate word-split
-# of "package min-version" pairs in the loop.
+# Harden the base MongoDB image: remove unused tooling that ships known vulnerabilities (MongoDB database tools, gosu,
+# js-yaml, ncurses-bin), upgrade libraries to the latest Ubuntu security fixes ahead of the base image, and make the
+# data directories group-writable so the container can run as a non-root/arbitrary UID. Each step is guarded to fail
+# the build once the base image makes it redundant. See README.md ("Container hardening") for the full rationale, CVE
+# references, and when each workaround can be removed. The DL3008/SC2086 ignores are explained there too.
 # hadolint ignore=DL3008,SC2086
 RUN PACKAGE_VERSIONS="\
         libgnutls30t64 3.8.3-1.1ubuntu3.6 \
         libudev1 255.4-1ubuntu8.16 \
+        libcurl4t64 8.5.0-2ubuntu10.10 \
         libgcrypt20 1.10.3-2ubuntu0.1 \
         liblzma5 5.6.1+really5.4.5-1ubuntu0.3 \
+        libnghttp2-14 1.59.0-1ubuntu0.4 \
+        libncursesw6 6.4+20240113-1ubuntu2.1 \
+        libtinfo6 6.4+20240113-1ubuntu2.1 \
+        ncurses-base 6.4+20240113-1ubuntu2.1 \
         perl-base 5.38.2-3.2ubuntu0.3 \
         tar 1.35+dfsg-3ubuntu0.1" && \
     set -- $PACKAGE_VERSIONS && \
@@ -42,6 +34,7 @@ RUN PACKAGE_VERSIONS="\
     done && \
     apt-get update && \
     apt-get purge --yes mongodb-database-tools mongodb-org-database-tools-extra && \
+    apt-get purge --yes --allow-remove-essential ncurses-bin && \
     apt-get install --only-upgrade --yes --no-install-recommends $packages && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
@@ -54,6 +47,5 @@ RUN PACKAGE_VERSIONS="\
     fi && \
     rm -rf /opt/js-yaml /js-yaml.js
 
-# Run as the non-root MongoDB user by default. Platforms that require a UID >= 1000 can override this with a
-# securityContext (see the deployment documentation); the data directories above are group-writable for GID 0.
+# Run as the non-root MongoDB user by default; see README.md ("Runtime user") for overriding the UID.
 USER 999
