@@ -10,7 +10,7 @@ classifiers = [
     "Programming Language :: Python :: 3.16",
 ]
 dependencies = [
-    "archunitpython==1.2.0",
+    "archunitpython==1.2.1",
     "bandit==1.9.4",
     "codespell==2.4.2",
     "compose-lint==0.12.2",
