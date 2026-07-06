@@ -1150,7 +1150,7 @@ requires-dist = [
     { name = "troml", specifier = "==0.4.1" },
     { name = "ty", specifier = "==0.0.55" },
     { name = "unittest-xml-reporting", specifier = "==4.0.0" },
-    { name = "update-time", specifier = "==0.0.9" },
+    { name = "update-time", specifier = "==0.0.11" },
     { name = "vulture", specifier = "==2.16" },
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.26.1" },
@@ -1289,16 +1289,17 @@ wheels = [
 
 [[package]]
 name = "update-time"
-version = "0.0.9"
+version = "0.0.11"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "packaging" },
+    { name = "pyyaml" },
     { name = "requests" },
     { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/49/39/32224fd63604662517b863f85dd395c790c3c80b71ad371f0cee1be7fa4e/update_time-0.0.9.tar.gz", hash = "sha256:7389d4db03d89bdb98e36ba0aa5bfdbc2308ddf8005a3e217f25ac5f6a7df089", size = 27554, upload-time = "2026-06-29T06:37:21.468Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/37/c7/b499e6eebf5367e3c1ef10264169078af5b0f9248733edbff5e8974f3a85/update_time-0.0.11.tar.gz", hash = "sha256:efc2c36363755c85b70ebeda49de7a177a8284505c52df30588d0ec2cc316bdf", size = 30053, upload-time = "2026-06-29T15:25:38.481Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f8/82/82512b0a4364229ee3cca0fb0d2a98ae1ee2f2cea6e5233fb4e19b6b817c/update_time-0.0.9-py3-none-any.whl", hash = "sha256:995665a7e64303d49dc7716fd63ffd1fc3a5bdddbf2ff123b3e0d3841507f992", size = 39714, upload-time = "2026-06-29T06:37:20.421Z" },
+    { url = "https://files.pythonhosted.org/packages/92/0c/01582943b4f688c3047519d6e81e7cf4069c4f69a35b6afb0436d8b7f25b/update_time-0.0.11-py3-none-any.whl", hash = "sha256:046c5540fa4537da366572e3c600e693b25881a0cec326191793536d39219825", size = 42789, upload-time = "2026-06-29T15:25:37.394Z" },
 ]
 
 [[package]]
@@ -1333,11 +1334,11 @@ wheels = [
 
 [[package]]
 name = "wcwidth"
-version = "0.8.1"
+version = "0.8.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/49/b4/51fe890511f0f242d07cb1ebe6a5b6db417262b9d2568b460347c57d95cc/wcwidth-0.8.1.tar.gz", hash = "sha256:faf5b4a5366a72dc49cad48cdf21f52bdf63bdda995178e483ba247ff79089b9", size = 1466072, upload-time = "2026-06-08T05:57:23.146Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/34/74/c6428f875774288bec1396f5bfcbc2d925700a4dad61727fd5f2b12f249d/wcwidth-0.8.2.tar.gz", hash = "sha256:91fbef97204b96a3d4d421609b80340b760cf33e26da123ff243d76b1fda8dda", size = 1466253, upload-time = "2026-06-29T18:11:11.601Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bd/6e/95b0e537de1f4d4301f76f944642c6da50d1511cc7b3d64dc418a66c7509/wcwidth-0.8.1-py3-none-any.whl", hash = "sha256:f453740b1e4a4f3291faa37944c555d71056c4da08d59809b307ef4feba695c8", size = 323092, upload-time = "2026-06-08T05:57:21.413Z" },
+    { url = "https://files.pythonhosted.org/packages/96/42/3e5985a0a7e57de470b320c6d6a1a67c844f6737a587f3d44dd13d1819e7/wcwidth-0.8.2-py3-none-any.whl", hash = "sha256:d63947694a0539a1d51e01eda7caf800c291020e6cdd7e28ad7b14dd33ad4f85", size = 323166, upload-time = "2026-06-29T18:11:09.888Z" },
 ]
 
 [[package]]
