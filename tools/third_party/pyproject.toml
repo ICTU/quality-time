@@ -10,7 +10,7 @@ classifiers = [
     "Programming Language :: Python :: 3.16",
 ]
 dependencies = [
-    "archunitpython==1.2.0",
+    "archunitpython==1.2.1",
     "bandit==1.9.4",
     "codespell==2.4.2",
     "compose-lint==0.12.2",
@@ -20,14 +20,10 @@ dependencies = [
     "pip-audit==2.10.1",
     "pyproject-fmt==2.25.1",
     "ruff==0.15.20",
-    # Pinned to work around pyproject-fmt==2.21.2, which under-constrains toml-fmt-common (no upper bound):
-    # toml-fmt-common>=1.3.3 moved --table-format into the shared base, conflicting with pyproject-fmt's own flag.
-    # Remove this pin once pyproject-fmt is bumped to >=2.23.0 (which vendors toml-fmt-common).
-    "toml-fmt-common==1.3.5",
     "troml==0.4.1",
     "ty==0.0.55",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
-    "update-time==0.0.7",
+    "update-time==0.0.9",
     "vulture==2.16",
     "yamllint==1.38.0",
     "zizmor==1.26.1",                # Static analysis tool for GitHub Actions
