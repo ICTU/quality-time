@@ -1293,15 +1293,6 @@ wheels = [
 ]
 
 [[package]]
-name = "toml-fmt-common"
-version = "1.3.5"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/2a/7d/5b52616000b657f01b19f0c553522076ae5e02ee9d91b6899027b6f75efd/toml_fmt_common-1.3.5.tar.gz", hash = "sha256:0ec689125bda650bf8ab96340aab98d27793b8d531510f5f55de91a602340916", size = 9729, upload-time = "2026-05-29T14:07:59.225Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/89/00/042625abd15b1babb24379c5fa669bee76b5b42c77f99815bf4a1496b9ce/toml_fmt_common-1.3.5-py3-none-any.whl", hash = "sha256:da7c12c75e5267c8a64a1ff33d477e50f102f9c2bf7d5ada89c4f16b0b31330e", size = 7434, upload-time = "2026-05-29T14:07:57.933Z" },
-]
-
-[[package]]
 name = "tomli"
 version = "2.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1361,7 +1352,6 @@ dependencies = [
     { name = "pip-audit" },
     { name = "pyproject-fmt" },
     { name = "ruff" },
-    { name = "toml-fmt-common" },
     { name = "troml" },
     { name = "ty" },
     { name = "unittest-xml-reporting" },
@@ -1383,7 +1373,6 @@ requires-dist = [
     { name = "pip-audit", specifier = "==2.10.1" },
     { name = "pyproject-fmt", specifier = "==2.25.1" },
     { name = "ruff", specifier = "==0.15.20" },
-    { name = "toml-fmt-common", specifier = "==1.3.5" },
     { name = "troml", specifier = "==0.4.1" },
     { name = "ty", specifier = "==0.0.55" },
     { name = "unittest-xml-reporting", specifier = "==4.0.0" },
