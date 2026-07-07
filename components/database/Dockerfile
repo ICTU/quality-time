@@ -4,7 +4,7 @@ LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time database"
 
 # Harden the base MongoDB image: remove unused tooling that ships known vulnerabilities (MongoDB database tools, gosu,
-# js-yaml, ncurses-bin), upgrade libraries to the latest Ubuntu security fixes ahead of the base image, and make the
+# js-yaml, ncurses-bin, gzip), upgrade libraries to the latest Ubuntu security fixes ahead of the base image, and make the
 # data directories group-writable so the container can run as a non-root/arbitrary UID. Each step is guarded to fail
 # the build once the base image makes it redundant. See README.md ("Container hardening") for the full rationale, CVE
 # references, and when each workaround can be removed. The DL3008/SC2086 ignores are explained there too.
@@ -34,7 +34,7 @@ RUN PACKAGE_VERSIONS="\
     done && \
     apt-get update && \
     apt-get purge --yes mongodb-database-tools mongodb-org-database-tools-extra && \
-    apt-get purge --yes --allow-remove-essential ncurses-bin && \
+    apt-get purge --yes --allow-remove-essential ncurses-bin gzip && \
     apt-get install --only-upgrade --yes --no-install-recommends $packages && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
