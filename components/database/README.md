@@ -34,6 +34,13 @@ that fails the build once the base image makes the workaround redundant, signall
   source — `ncurses-base` (terminfo data) and the shared libraries `libtinfo6` and `libncursesw6` (needed by `bash`,
   `procps`, and `util-linux`) — cannot all be removed and do not contain the flawed `infocmp` code, so they are
   *upgraded* rather than removed for the same CVE; see "Library upgrades".
+- **`gzip`.** Ships the `gzip`, `gunzip`, `zcat`, and `gzexe` command-line tools. Not used by `mongod` (which links its
+  own compression libraries), by `mongosh`, or by the entrypoint (verified), and nothing installed depends on it. It
+  carries [CVE-2026-41991](https://www.cve.org/CVERecord?id=CVE-2026-41991) (arbitrary file overwrite via insecure
+  temporary files in `gzexe`) and [CVE-2026-41992](https://www.cve.org/CVERecord?id=CVE-2026-41992) (buffer overflow in
+  the LZH decoder), both in the `gzip` binaries themselves, so removing the package deletes the vulnerable code rather
+  than merely upgrading it. `--allow-remove-essential` is required because `gzip` is marked essential; that is safe here
+  because the container never installs packages at runtime.
 
 ### Library upgrades
 
