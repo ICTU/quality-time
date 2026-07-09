@@ -19,7 +19,7 @@ dependencies = [
     "pymongo==4.17.0",
     "python-dateutil==2.9.0.post0",
     "shared-code",
-    "typing-extensions==4.15.0",
+    "typing-extensions==4.16.0",
 ]
 
 [dependency-groups]
