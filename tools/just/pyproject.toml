@@ -16,6 +16,9 @@ dev = [
 ]
 
 [tool.uv]
+override-dependencies = [
+    "click==8.3.3"  # PYSEC-2026-2132: No summary provided
+]
 sources.tools = { path = "../third_party", package = false }
 exclude-newer = "7 days"
 
