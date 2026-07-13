@@ -21,8 +21,7 @@ dev = [
 
 [tool.uv]
 override-dependencies = [
-    "msgpack==1.2.1",            # GHSA-6v7p-g79w-8964: MessagePack for Python: Out-of-bounds read / crash on Unpacker reuse after a caught error
-    "pydantic-settings==2.14.2", # GHSA-4xgf-cpjx-pc3j: pydantic-settings: NestedSecretsSettingsSource follows symlinks outside secrets_dir, enabling local file read and bypassing secrets_dir_max_size
+    "click==8.3.3"  # PYSEC-2026-2132: No summary provided
 ]
 sources.tools = { path = "../third_party", package = false }
 exclude-newer = "7 days"
