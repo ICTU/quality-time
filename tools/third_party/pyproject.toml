@@ -13,7 +13,7 @@ dependencies = [
     "archunitpython==1.2.1",
     "bandit==1.9.4",
     "codespell==2.4.2",
-    "compose-lint==0.12.2",
+    "compose-lint==0.13.0",
     "coverage==7.15.0",
     "fixit==2.2.1",
     "mypy==2.1.0",
