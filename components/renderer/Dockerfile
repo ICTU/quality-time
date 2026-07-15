@@ -9,7 +9,7 @@ COPY package*.json /home/renderer/
 # Install, then reduce the attack surface: remove npm/corepack (not needed at runtime) and the package manager.
 # The shell is kept because Chromium's launcher (/usr/bin/chromium-browser) is a shell script.
 # hadolint ignore=DL3018
-RUN apk add --no-cache chromium tzdata=2026b-r0 && \
+RUN apk add --no-cache chromium tzdata=2026c-r0 && \
     npm ci --omit=dev --ignore-scripts && \
     adduser -S renderer && \
     rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx \
