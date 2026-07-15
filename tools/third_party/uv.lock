@@ -897,7 +897,7 @@ requires-dist = [
     { name = "troml", specifier = "==0.4.1" },
     { name = "ty", specifier = "==0.0.56" },
     { name = "unittest-xml-reporting", specifier = "==4.0.0" },
-    { name = "update-time", specifier = "==0.0.15" },
+    { name = "update-time", specifier = "==0.0.16" },
     { name = "vulture", specifier = "==2.16" },
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.26.1" },
@@ -1006,7 +1006,7 @@ wheels = [
 
 [[package]]
 name = "update-time"
-version = "0.0.15"
+version = "0.0.16"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "packaging" },
@@ -1015,9 +1015,9 @@ dependencies = [
     { name = "rich" },
     { name = "tomlkit" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/18/c6/06fac1469dfafec6e6aff49cc141b317875cb95b1eb2c51ab33497f440a6/update_time-0.0.15.tar.gz", hash = "sha256:f8ceb9cb2684bd717808fcba43b073e8de451687f3032e0890499e8100786694", size = 49548, upload-time = "2026-07-05T20:55:48.622Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e6/2f/e7efc2fb9670dbd5d83df94788e929312af4cf372ae931d8f04d493d876e/update_time-0.0.16.tar.gz", hash = "sha256:93438d76ecc85d98c856560e22dbd038941f1c4ae1b4a283fe4b0decbaaf3d68", size = 51796, upload-time = "2026-07-07T21:11:14.766Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3f/3d/9cff17475afce4ff29f27d3de937c34b8c6646a7f575f41bb90ec275700d/update_time-0.0.15-py3-none-any.whl", hash = "sha256:02d2aa78dd174bb629a668c488406fec25a6d4f4aa08eb14c1d1bfa2f63a0289", size = 68641, upload-time = "2026-07-05T20:55:47.372Z" },
+    { url = "https://files.pythonhosted.org/packages/5e/43/24868499742ab219902e44b42b719721ddb4289d03caa39884ed12764fcf/update_time-0.0.16-py3-none-any.whl", hash = "sha256:99efc3eee24437378644422c0a827c2e840a1e4de55e9616e05e7c28198a9590", size = 70882, upload-time = "2026-07-07T21:11:13.731Z" },
 ]
 
 [[package]]
