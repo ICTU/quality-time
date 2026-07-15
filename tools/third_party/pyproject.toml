@@ -16,14 +16,14 @@ dependencies = [
     "compose-lint==0.13.0",
     "coverage==7.15.0",
     "fixit==2.2.1",
-    "mypy==2.1.0",
+    "mypy==2.2.0",
     "pip-audit==2.10.1",
     "pyproject-fmt==2.25.1",
     "ruff==0.15.20",
     "troml==0.4.1",
-    "ty==0.0.56",
+    "ty==0.0.57",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
-    "update-time==0.0.15",
+    "update-time==0.0.16",
     "vulture==2.16",
     "yamllint==1.38.0",
     "zizmor==1.26.1",                # Static analysis tool for GitHub Actions
@@ -34,7 +34,7 @@ just = [
     "rust-just==1.55.1",
 ]
 uv = [
-    "uv==0.11.26",
+    "uv==0.11.28",
 ]
 
 [tool.uv]

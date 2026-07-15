@@ -58,7 +58,7 @@ class ParseError(BaseFailedSearchResponse):
     """Response for failed search query parsing."""
 
 
-class SearchError(BaseQueryParsedSearchResponse, BaseFailedSearchResponse):  # type: ignore[misc]
+class SearchError(BaseQueryParsedSearchResponse, BaseFailedSearchResponse):
     """Response for searches that failed after successfully parsing the search query."""
 
     # Ignore the false positive mypy error: Overwriting TypedDict field "domain_object_type" while merging.
