@@ -16,7 +16,7 @@ dev = [
     "requests==2.34.2",
     "selenium==4.46.0",
     "tools",
-    "types-requests==2.33.0.20260518",
+    "types-requests==2.33.0.20260712",
 ]
 
 [tool.uv]
