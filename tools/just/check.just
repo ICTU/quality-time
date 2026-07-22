@@ -99,6 +99,7 @@ npm-lint folder="": (js-check "npm-lint" f"{{npm_run}} lint --if-present" folder
 # GHSA advisory IDs to ignore in npm audit. Document why each one is safe to ignore.
 # JS-YAML, dev/test-only transitive dependency
 # - GHSA-h67p-54hq-rp68 Quadratic-complexity DoS in merge key handling via repeated aliases
+# - GHSA-52cp-r559-cp3m YAML merge-key chains can force quadratic CPU consumption
 # markdown-it, dev/test-only transitive dependency
 # - GHSA-6v5v-wf23-fmfq Quadratic complexity DoS in smartquotes rule via replaceAt string operations
 # undici, dev/test-only transitive dependency:
@@ -109,7 +110,9 @@ npm-lint folder="": (js-check "npm-lint" f"{{npm_run}} lint --if-present" folder
 # - GHSA-hm92-r4w5-c3mj Vulnerable to cross-origin request routing via SOCKS5 proxy pool reuse
 # - GHSA-p88m-4jfj-68fv Vulnerable to HTTP header injection via Set-Cookie percent-decoding
 # - GHSA-vxpw-j846-p89q WebSocket client vulnerable to denial of service via fragment count bypass
-npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-6v5v-wf23-fmfq GHSA-pr7r-676h-xcf6 GHSA-vmh5-mc38-953g GHSA-35p6-xmwp-9g52 GHSA-g8m3-5g58-fq7m GHSA-hm92-r4w5-c3mj GHSA-p88m-4jfj-68fv GHSA-vxpw-j846-p89q"
+# brace-expansion
+# - GHSA-mh99-v99m-4gvg DoS via unbounded expansion length causing an out-of-memory process crash
+npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-52cp-r559-cp3m GHSA-6v5v-wf23-fmfq GHSA-pr7r-676h-xcf6 GHSA-vmh5-mc38-953g GHSA-35p6-xmwp-9g52 GHSA-g8m3-5g58-fq7m GHSA-hm92-r4w5-c3mj GHSA-p88m-4jfj-68fv GHSA-vxpw-j846-p89q GHSA-mh99-v99m-4gvg"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]

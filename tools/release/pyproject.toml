@@ -13,10 +13,10 @@ classifiers = [
 [dependency-groups]
 dev = [
     "bump-my-version==1.4.1",
-    "gitpython==3.1.51",
+    "gitpython==3.1.55",
     "python-dateutil==2.9.0.post0",
     "tools",
-    "types-python-dateutil==2.9.0.20260518",
+    "types-python-dateutil==2.9.0.20260716",
 ]
 
 [tool.uv]
@@ -25,7 +25,7 @@ override-dependencies = [
 ]
 sources.tools = { path = "../third_party", package = false }
 exclude-newer = "7 days"
-exclude-newer-package = { msgpack = false, pydantic-settings = false }
+exclude-newer-package = { gitpython = false }
 
 [tool.ruff]
 line-length = 120
