@@ -14,7 +14,7 @@ dependencies = [
     "bandit==1.9.4",
     "codespell==2.4.2",
     "compose-lint==0.13.0",
-    "coverage==7.15.1",
+    "coverage==7.15.2",
     "fixit==2.2.1",
     "mypy==2.3.0",
     "pip-audit==2.10.1",
