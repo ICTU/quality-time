@@ -30,7 +30,7 @@ dev = [
     "shared-test-code",
     "tools",
     "types-ldap3==2.9.13.20260518",
-    "types-python-dateutil==2.9.0.20260518",
+    "types-python-dateutil==2.9.0.20260716",
     "types-requests==2.33.0.20260712",
 ]
 
