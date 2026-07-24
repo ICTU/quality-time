@@ -1117,7 +1117,7 @@ dev = [
     { name = "mongomock", specifier = "==4.3.0" },
     { name = "shared-test-code", directory = "../tests/shared_test_code" },
     { name = "tools", virtual = "../tools/third_party" },
-    { name = "types-python-dateutil", specifier = "==2.9.0.20260518" },
+    { name = "types-python-dateutil", specifier = "==2.9.0.20260716" },
 ]
 
 [[package]]
