@@ -25,7 +25,6 @@ override-dependencies = [
 ]
 sources.tools = { path = "../../tools/third_party", package = false }
 exclude-newer = "7 days"
-exclude-newer-package = { msgpack = false }
 
 [tool.ruff]
 line-length = 120
