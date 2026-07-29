@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from behave.runner import Context
 
 
-def create_measurement(  # noqa: PLR0913
+def create_measurement(  # noqa: PLR0913, PLR0917
     context: Context,
     status: str | None = None,
     value: str | None = None,

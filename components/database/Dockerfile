@@ -1,5 +1,5 @@
 # update-time: allow[digest-drift]
-FROM mongo:8.3.4@sha256:309d760ba3f7962e14d54ac6123c7fe72ed2d465196b4d0eaf8abcea7dd39450
+FROM mongo:8.3.7@sha256:a7f5aa200005611166adcec0192c2f11d0acc3bfd9d5eb68e1a998a990412e41
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time database"
@@ -11,7 +11,6 @@ LABEL description="Quality-time database"
 # The DL3008/SC2086 ignores are explained there too.
 # hadolint ignore=DL3008,SC2086
 RUN PACKAGE_VERSIONS="\
-        libnghttp2-14 1.59.0-1ubuntu0.4 \
         libncursesw6 6.4+20240113-1ubuntu2.1 \
         libtinfo6 6.4+20240113-1ubuntu2.1 \
         ncurses-base 6.4+20240113-1ubuntu2.1 \

@@ -36,9 +36,11 @@ class JiraUserStoryPointsTest(JiraTestCase):
                     key="1",
                     field=10,
                     custom_field_001=[
-                        "com.atlassian.greenhopper.service.sprint.Sprint@2d1e5c"
-                        "[id=1,rapidViewId=186,state=CLOSED,name=Sprint 1,"
-                        "startDate=2026-03-01T11:27:00.000+01:00,sequence=5335,goal=]"
+                        (
+                            "com.atlassian.greenhopper.service.sprint.Sprint@2d1e5c"
+                            "[id=1,rapidViewId=186,state=CLOSED,name=Sprint 1,"
+                            "startDate=2026-03-01T11:27:00.000+01:00,sequence=5335,goal=]"
+                        )
                     ],
                 ),
                 self.issue(key="2", field=32, custom_field_001=None),
@@ -98,18 +100,22 @@ class JiraUserStoryPointsTest(JiraTestCase):
                     key="1",
                     field=1,
                     custom_field_001=[
-                        "com.atlassian.greenhopper.service.sprint.Sprint@2d1e5c"
-                        "[id=1,rapidViewId=186,state=CLOSED,name=Sprint 1,"
-                        "startDate=2026-03-01T11:27:00.000+01:00,sequence=5335,goal=]"
+                        (
+                            "com.atlassian.greenhopper.service.sprint.Sprint@2d1e5c"
+                            "[id=1,rapidViewId=186,state=CLOSED,name=Sprint 1,"
+                            "startDate=2026-03-01T11:27:00.000+01:00,sequence=5335,goal=]"
+                        )
                     ],
                 ),
                 self.issue(
                     key="2",
                     field=2,
                     custom_field_001=[
-                        "com.atlassian.greenhopper.service.sprint.Sprint@3e2f6d"
-                        "[id=2,rapidViewId=186,state=CLOSED,name=Sprint 1,"
-                        "startDate=2026-03-08T11:27:00.000+01:00,sequence=5336,goal=]"
+                        (
+                            "com.atlassian.greenhopper.service.sprint.Sprint@3e2f6d"
+                            "[id=2,rapidViewId=186,state=CLOSED,name=Sprint 1,"
+                            "startDate=2026-03-08T11:27:00.000+01:00,sequence=5336,goal=]"
+                        )
                     ],
                 ),
                 self.issue(key="3", field=3, custom_field_001=[{"id": 1, "name": "Sprint 2", "state": "closed"}]),

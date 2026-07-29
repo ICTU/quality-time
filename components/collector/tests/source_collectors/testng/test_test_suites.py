@@ -61,7 +61,7 @@ class TestNGTestSuitesTest(TestNGCollectorTestCase):
             self.create_entity("suite5", "passed", passed=1),
         ]
 
-    def create_entity(  # noqa: PLR0913
+    def create_entity(  # noqa: PLR0913, PLR0917
         self,
         name: str,
         result: str,

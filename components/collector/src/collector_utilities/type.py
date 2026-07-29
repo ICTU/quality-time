@@ -7,8 +7,8 @@ import aiohttp
 
 type ElementMap = dict[Element, Element]
 
-type ErrorMessage = None | str
-type InfoMessage = None | str
+type ErrorMessage = str | None
+type InfoMessage = str | None
 type JSONList = list[dict[str, Any]]
 type JSONDict = dict[str, Any]
 type JSON = JSONDict | JSONList

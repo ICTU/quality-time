@@ -45,9 +45,9 @@ class MetricTest(unittest.TestCase):
 
     def create_expected_summary(
         self, status: str = "", measurement_timestamp: str = "", outdated: bool = False, **kwargs
-    ) -> dict[str, None | str | list | dict]:
+    ) -> dict[str, str | list | dict | None]:
         """Return an expected summary."""
-        latest_measurement: None | dict[str, dict | list | str | bool]
+        latest_measurement: dict[str, dict | list | str | bool] | None
         if measurement_timestamp:
             latest_measurement = {
                 "count": {"value": 1, "start": measurement_timestamp},

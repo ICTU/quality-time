@@ -74,7 +74,7 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
                     self.collector.collect_metrics(session)
                     await asyncio.gather(*self.collector.running_tasks)  # Wait for the running tasks to finish
 
-    def expected_source(self, **kwargs: str | None) -> dict[str, str | None | list[dict[str, str]]]:
+    def expected_source(self, **kwargs: str | None) -> dict[str, str | list[dict[str, str]] | None]:
         """Create an expected source."""
         connection_error = kwargs.get("connection_error")
         entities = kwargs.get(

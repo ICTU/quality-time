@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 @when("the client creates a {item}")
 @when('the client creates a {item} with {attribute} "{value}"')
 @when("the client tries to create a {item}")
-def add_item(  # noqa: PLR0913
+def add_item(  # noqa: PLR0913, PLR0917
     context: Context,
     item: str,
     attribute: str | None = None,
@@ -171,7 +171,7 @@ def check_container_contains_item(context: Context, container: str, item: str) -
 
 
 @then('''the {container}'s {position} {item} has {attribute} "{value}"''')
-def check_item_order(  # noqa: PLR0913
+def check_item_order(  # noqa: PLR0913, PLR0917
     context: Context,
     container: str,
     position: str,
@@ -200,7 +200,7 @@ def check_nr_children(context: Context, container: str, number: str, children: s
 
 
 @then('the {container} has a {item} at index {index:d} with {attribute} "{value}"')
-def check_item_index(  # noqa: PLR0913
+def check_item_index(  # noqa: PLR0913, PLR0917
     context: Context,
     container: str,
     item: str,

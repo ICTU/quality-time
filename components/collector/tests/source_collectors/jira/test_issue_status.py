@@ -27,7 +27,7 @@ class JiraIssuesTest(JiraTestCase):
         self.metric["issue_tracker"] = {"type": "jira", "parameters": {"url": "https://jira"}}
         self.metric["issue_ids"] = ["FOO-42"]
 
-    def assert_issue_status(  # noqa: PLR0913
+    def assert_issue_status(  # noqa: PLR0913, PLR0917
         self,
         measurement,
         summary: str | None = None,

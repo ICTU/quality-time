@@ -16,7 +16,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
     LANDING_URL = "https://gitlab/namespace/project/-/merge_requests"
 
     @staticmethod
-    def merge_request_json(  # noqa: PLR0913
+    def merge_request_json(  # noqa: PLR0913, PLR0917
         number: int,
         branch: str = "default",
         state: str = "merged",

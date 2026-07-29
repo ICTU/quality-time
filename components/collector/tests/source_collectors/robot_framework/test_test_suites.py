@@ -9,7 +9,7 @@ class RobotFrameworkTestSuitesTest(RobotFrameworkTestCase):
     METRIC_TYPE = "test_suites"
     LANDING_URL = "https://robot_framework"
 
-    def create_entity(  # noqa: PLR0913
+    def create_entity(  # noqa: PLR0913, PLR0917
         self,
         key: str,
         name: str,
