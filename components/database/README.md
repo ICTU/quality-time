@@ -20,11 +20,6 @@ that fails the build once the base image makes the workaround redundant, signall
 - **`gosu`.** The data directories are made group-owned by the root group (GID 0) and group-writable so the container
   can run as an arbitrary non-root user (some platforms, such as OpenShift, assign a random high UID with GID 0).
   Combined with running as non-root, this means `gosu` is no longer needed.
-- **`js-yaml` 3.13.1** (`/opt/js-yaml`, symlinked as `/js-yaml.js`). Bundled by the base image solely so the entrypoint
-  can parse a `mongod` YAML config passed via `--config`. *Quality-time* never passes `--config` (see
-  `docker-compose.yml` and the Helm chart), so this parser is unreachable here, yet it carries
-  [CVE-2025-64718](https://www.cve.org/CVERecord?id=CVE-2025-64718) (prototype pollution). A guard fails the build if
-  the base image stops shipping `js-yaml` at this path, signalling that this cleanup can be removed.
 - **`ncurses-bin`.** Ships only terminal command-line tools (`tic`, `infocmp`, `tput`, `clear`, `reset`), none of which
   are needed by `mongod` or `mongosh` (verified) and nothing installed depends on it. It carries
   [CVE-2025-69720](https://www.cve.org/CVERecord?id=CVE-2025-69720), a stack-based buffer overflow in `analyze_string`
