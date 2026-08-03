@@ -96,6 +96,6 @@ class QualityTimeMetrics(QualityTimeCollector):
         return not (source_types and (source_types & metric_source_types) == set())
 
     @staticmethod
-    def __metric_status_start(status_start: str) -> None | datetime:
+    def __metric_status_start(status_start: str) -> datetime | None:
         """Return the status start date/time of the metric."""
         return parse_datetime(status_start) if status_start else None

@@ -10,7 +10,7 @@ classifiers = [
     "Programming Language :: Python :: 3.16",
 ]
 dependencies = [
-    "archunitpython==1.3.0",
+    "archunitpython==1.5.0",
     "bandit==1.9.4",
     "codespell==2.4.3",
     "compose-lint==0.13.0",
@@ -18,23 +18,23 @@ dependencies = [
     "fixit==2.2.1",
     "mypy==2.3.0",
     "pip-audit==2.10.1",
-    "pyproject-fmt==2.25.3",
-    "ruff==0.15.22",
+    "pyproject-fmt==2.25.4",
+    "ruff==0.16.0",
     "troml==0.4.1",
-    "ty==0.0.61",
+    "ty==0.0.63",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
-    "update-time==0.0.19",
+    "update-time==0.0.21",
     "vulture==2.16",
     "yamllint==1.38.0",
-    "zizmor==1.26.1",                # Static analysis tool for GitHub Actions
+    "zizmor==1.28.0",                # Static analysis tool for GitHub Actions
 ]
 
 [dependency-groups]
 just = [
-    "rust-just==1.56.0",
+    "rust-just==1.57.0",
 ]
 uv = [
-    "uv==0.11.29",
+    "uv==0.11.32",
 ]
 
 [tool.uv]
@@ -54,6 +54,7 @@ lint.select = [
 ]
 lint.ignore = [
     "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
+    "CPY001", # https://docs.astral.sh/ruff/rules/missing-copyright-notice/ - not sure of the value of repeating the notice in every file
     "D203",   # https://docs.astral.sh/ruff/rules/one-blank-line-before-class/ - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
     "D213",   # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/ - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`
     "ISC001", # https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/ - this rule may cause conflicts when used with the ruff formatter

@@ -41,7 +41,7 @@ def parse_duration(text: str) -> int:
     return decimal_round_half_up(60 * hours + minutes + seconds / 60)
 
 
-def datetime_from_parts(  # noqa: PLR0913
+def datetime_from_parts(  # noqa: PLR0913, PLR0917
     year: int,
     month: int,
     day: int,

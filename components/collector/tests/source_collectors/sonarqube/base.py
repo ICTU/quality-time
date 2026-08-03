@@ -20,7 +20,7 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         self.metric_landing_url = "https://sonarqube/component_measures?id=id&branch=main&metric={0}"
 
     @staticmethod
-    def entity(  # noqa: PLR0913
+    def entity(  # noqa: PLR0913, PLR0917
         key: str,
         component: str,
         message: str,

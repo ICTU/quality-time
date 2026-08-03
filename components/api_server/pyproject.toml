@@ -14,7 +14,7 @@ dependencies = [
     "argon2-cffi==25.1.0",
     "bottle==0.13.4",
     "cryptography==49.0.0",
-    "gevent==26.5.0",
+    "gevent==26.7.0",
     "ldap3==2.9.1",
     "lxml==6.1.1",
     "lxml-html-clean==0.4.5",
@@ -57,6 +57,7 @@ lint.ignore = [
     "ANN003", # https://docs.astral.sh/ruff/rules/missing-type-kwargs/ - leads to false positives for super().__init__(*args, **kwargs)
     "ANN201", # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/ - too many untyped return values atm to turn this rule on
     "COM812", # https://docs.astral.sh/ruff/rules/missing-trailing-comma/ - this rule may cause conflicts when used with the ruff formatter
+    "CPY001", # https://docs.astral.sh/ruff/rules/missing-copyright-notice/ - not sure of the value of repeating the notice in every file
     "D107",   # https://docs.astral.sh/ruff/rules/undocumented-public-init/ - requiring __init__() methods to have docstrings seems a bit much
     "D203",   # https://docs.astral.sh/ruff/rules/one-blank-line-before-class/ - prevent warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`
     "D213",   # https://docs.astral.sh/ruff/rules/multi-line-summary-second-line/ - prevent warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`

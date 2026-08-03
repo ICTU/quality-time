@@ -54,7 +54,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         post_request_json_return_value: dict | None = None,
         post_request_json_side_effect=None,
         return_mocks: bool = False,
-    ) -> MetricMeasurement | None | tuple[MetricMeasurement | None, Mock, Mock]:
+    ) -> MetricMeasurement | tuple[MetricMeasurement | None, Mock, Mock] | None:
         """Collect the metric."""
         get_response = self.__get_response(
             get_request_json_return_value,
@@ -81,7 +81,7 @@ class SourceCollectorTestCase(unittest.IsolatedAsyncioTestCase):
         return cast(tuple[MetricMeasurement, Mock, Mock], await self.collect(*args, **kwargs, return_mocks=True))
 
     @staticmethod
-    def __get_response(  # noqa: PLR0913
+    def __get_response(  # noqa: PLR0913, PLR0917
         json_return_value: dict | list | None,
         json_side_effect,
         content: bytes,

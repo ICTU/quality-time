@@ -159,13 +159,17 @@ class IssueTrackerTest(unittest.TestCase):
             [
                 (
                     "",
-                    "Invalid URL 'invalid/rest/api/2/issue': No scheme supplied. Perhaps you meant "
-                    "https://invalid/rest/api/2/issue?",
+                    (
+                        "Invalid URL 'invalid/rest/api/2/issue': No scheme supplied. Perhaps you meant "
+                        "https://invalid/rest/api/2/issue?"
+                    ),
                 ),
                 (
                     "",
-                    "Invalid URL 'invalid/rest/api/2/issue': No scheme supplied. Perhaps you meant "
-                    "http://invalid/rest/api/2/issue?",  # Python <3.11 and Windows
+                    (
+                        "Invalid URL 'invalid/rest/api/2/issue': No scheme supplied. Perhaps you meant "
+                        "http://invalid/rest/api/2/issue?"
+                    ),  # Python <3.11 and Windows
                 ),
             ],
         )

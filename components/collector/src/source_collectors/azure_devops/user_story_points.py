@@ -33,7 +33,7 @@ class AzureDevopsUserStoryPoints(AzureDevopsIssues):
         calculated_value = sum(self.__story_points(work_item) for work_item in await self._work_items(responses))
         return str(decimal_round_half_up(calculated_value))
 
-    def __story_points(self, work_item: dict[str, dict[str, None | float]]) -> float:
+    def __story_points(self, work_item: dict[str, dict[str, float | None]]) -> float:
         """Return the number of story points from the work item."""
         story_points = work_item["fields"].get(self._STORY_POINTS_FIELD)
         effort = work_item["fields"].get(self._EFFORT_FIELD)
