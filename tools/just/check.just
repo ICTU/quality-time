@@ -112,7 +112,8 @@ npm-lint folder="": (js-check "npm-lint" f"{{npm_run}} lint --if-present" folder
 # - GHSA-vxpw-j846-p89q WebSocket client vulnerable to denial of service via fragment count bypass
 # brace-expansion
 # - GHSA-mh99-v99m-4gvg DoS via unbounded expansion length causing an out-of-memory process crash
-npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-52cp-r559-cp3m GHSA-6v5v-wf23-fmfq GHSA-pr7r-676h-xcf6 GHSA-vmh5-mc38-953g GHSA-35p6-xmwp-9g52 GHSA-g8m3-5g58-fq7m GHSA-hm92-r4w5-c3mj GHSA-p88m-4jfj-68fv GHSA-vxpw-j846-p89q GHSA-mh99-v99m-4gvg"
+# - GHSA-rgw5-rvv9-x895 DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation
+npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-52cp-r559-cp3m GHSA-6v5v-wf23-fmfq GHSA-pr7r-676h-xcf6 GHSA-vmh5-mc38-953g GHSA-35p6-xmwp-9g52 GHSA-g8m3-5g58-fq7m GHSA-hm92-r4w5-c3mj GHSA-p88m-4jfj-68fv GHSA-vxpw-j846-p89q GHSA-mh99-v99m-4gvg GHSA-rgw5-rvv9-x895"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]
