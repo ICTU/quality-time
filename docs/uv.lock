@@ -1327,11 +1327,11 @@ wheels = [
 
 [[package]]
 name = "tomlkit"
-version = "0.15.0"
+version = "0.15.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/51/db/03eaf4331631ef6b27d6e3c9b68c54dc6f0d63d87201fed600cc409307fd/tomlkit-0.15.0.tar.gz", hash = "sha256:7d1a9ecba3086638211b13814ea79c90dd54dd11993564376f3aa92271f5c7a3", size = 161875, upload-time = "2026-05-10T07:38:22.245Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/96/e07752635b98536177fa1f37671c8f3cdde2e724c6bcf6034b2cfb571565/tomlkit-0.15.1.tar.gz", hash = "sha256:e25bbf38843005246210a12982776f27f99cb9be67160e14434d0c0d21ee1e97", size = 180129, upload-time = "2026-07-17T01:48:04.562Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6a/43/8bd850ee71a191bf072e31302c73a66be413fecdd98fdcd111ecbcce13ca/tomlkit-0.15.0-py3-none-any.whl", hash = "sha256:4dbc8f0fc024412b57ced8757ac7461305126a648ff8c2c807fcb8e133a78738", size = 41328, upload-time = "2026-05-10T07:38:23.517Z" },
+    { url = "https://files.pythonhosted.org/packages/13/bc/8c13eb66537dce1d2bd3a57132902f38d0e7f5bb46fa9f4daed9fe9d76ee/tomlkit-0.15.1-py3-none-any.whl", hash = "sha256:177a05aece5a8ca5266fd3c448abb47b8d352f09d477d3ca8332db4d89b24304", size = 49449, upload-time = "2026-07-17T01:48:05.728Z" },
 ]
 
 [[package]]
@@ -1373,7 +1373,7 @@ requires-dist = [
     { name = "troml", specifier = "==0.4.1" },
     { name = "ty", specifier = "==0.0.63" },
     { name = "unittest-xml-reporting", specifier = "==4.0.0" },
-    { name = "update-time", specifier = "==0.0.21" },
+    { name = "update-time", specifier = "==0.0.22" },
     { name = "vulture", specifier = "==2.16" },
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.28.0" },
@@ -1494,7 +1494,7 @@ wheels = [
 
 [[package]]
 name = "update-time"
-version = "0.0.21"
+version = "0.0.22"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "packaging" },
@@ -1503,9 +1503,9 @@ dependencies = [
     { name = "rich" },
     { name = "tomlkit" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4c/75/260ed5bda1fd21c1b0d2cfc8a97442ec176662d16d847e25400db3d5a2fc/update_time-0.0.21.tar.gz", hash = "sha256:8e190f052353f455acdc450b2fbb2f71e27fad6cb2f555c9e628eaadc747c5aa", size = 103264, upload-time = "2026-07-22T21:16:05.43Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/87/b3/5e5ddb127763d76e282ed14784a26597fd2dd893354cc2773e38909b4c47/update_time-0.0.22.tar.gz", hash = "sha256:3f0115d5ac75c7c11b358860bd370fd3c842f418ae6d385cb65ddcdf3002b595", size = 111014, upload-time = "2026-07-27T22:34:25.941Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b5/57/8515cb8828c976f48b4a6b5f7c1ab3f5ff5a1745b02e91ae39fd08f5cde4/update_time-0.0.21-py3-none-any.whl", hash = "sha256:3a1516014bc50ce883005f2d0efa3ce9341cfcd21701f6a4833ed9c53cc485bd", size = 119995, upload-time = "2026-07-22T21:16:04.077Z" },
+    { url = "https://files.pythonhosted.org/packages/b6/40/8c1221473052c87d3db93771c3955fd72c66062cbe8bce3c3a62547ed25a/update_time-0.0.22-py3-none-any.whl", hash = "sha256:7581775977d69a2d4f302927ac1c0d0084cc169def7ba20b407462988fdde46f", size = 127204, upload-time = "2026-07-27T22:34:24.463Z" },
 ]
 
 [[package]]
