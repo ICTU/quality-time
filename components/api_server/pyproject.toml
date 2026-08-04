@@ -13,7 +13,7 @@ classifiers = [
 dependencies = [
     "argon2-cffi==25.1.0",
     "bottle==0.13.4",
-    "cryptography==49.0.0",
+    "cryptography==50.0.0",
     "gevent==26.7.0",
     "ldap3==2.9.1",
     "lxml==6.1.1",
@@ -42,6 +42,7 @@ sources.shared-code = { path = "../shared_code", package = true }
 sources.shared-test-code = { path = "../../tests/shared_test_code", package = true }
 sources.tools = { path = "../../tools/third_party", package = false }
 exclude-newer = "7 days"
+exclude-newer-package = { cryptography = false }  # GHSA-g6cj-pr64-35w5: cryptography 49.0.0: PKCS-7 EnvelopedData decryption exposes a Bleichenbacher oracle through distinguishable errors and timing
 
 [tool.ruff]
 line-length = 120
