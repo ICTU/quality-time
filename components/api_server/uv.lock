@@ -18,11 +18,11 @@ overrides = [{ name = "click", specifier = "==8.3.3" }]
 
 [[package]]
 name = "annotated-doc"
-version = "0.0.4"
+version = "0.0.5"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/57/ba/046ceea27344560984e26a590f90bc7f4a75b06701f653222458922b558c/annotated_doc-0.0.4.tar.gz", hash = "sha256:fbcda96e87e9c92ad167c2e53839e57503ecfda18804ea28102353485033faa4", size = 7288, upload-time = "2025-11-10T22:07:42.062Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5a/8e/38aa427ed5402449e226975b649c5dc73ccadfefeb95e6aecb8f8ea4b6b6/annotated_doc-0.0.5.tar.gz", hash = "sha256:c7e58ce09192557605d8bbd92836d7e1d520ac9580096042c0bfd197efacf1bb", size = 10758, upload-time = "2026-07-28T13:50:58.129Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1e/d3/26bf1008eb3d2daa8ef4cacc7f3bfdc11818d111f7e2d0201bc6e3b49d45/annotated_doc-0.0.4-py3-none-any.whl", hash = "sha256:571ac1dc6991c450b25a9c2d84a3705e2ae7a53467b5d111c24fa8baabbed320", size = 5303, upload-time = "2025-11-10T22:07:40.673Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/30/e900b21425a860e195f32e37657aa1f7c7f2b1bfb26f03ca209b90933c06/annotated_doc-0.0.5-py3-none-any.whl", hash = "sha256:117bac03a25ede5df5440e855b32d556049ca169ead221505badf432fed4b101", size = 5302, upload-time = "2026-07-28T13:50:57.239Z" },
 ]
 
 [[package]]
@@ -366,14 +366,14 @@ wheels = [
 
 [[package]]
 name = "compose-lint"
-version = "0.13.0"
+version = "0.14.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/08/05/4c6625969b3ada31c625abe7c2c113a6f5f5142f88004b85a613e53b03f1/compose_lint-0.13.0.tar.gz", hash = "sha256:0d3341ee942dc5a35ad6367b3ddd77872811d5a0bf9eb43b4cf00a91fdd1e569", size = 1716295, upload-time = "2026-07-05T02:16:29.693Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c6/17/e065bc63eb84319a00bd18897428ab6f09360401f2debf1b21fcb6cff666/compose_lint-0.14.0.tar.gz", hash = "sha256:1ca38a023a1b2f6567e39f127e78605bdeeb4d64e56b40a82ced4c35a3fbab30", size = 1898425, upload-time = "2026-07-29T01:56:42.037Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/15/15/3c3e1c0966dd2bb545351f1b9a94b9967874390849a450ca35b05aa9c6b8/compose_lint-0.13.0-py3-none-any.whl", hash = "sha256:0099985714b500b15496d37e2cabe3c1cea4159f0bb1abf08ad8850f4736a930", size = 154703, upload-time = "2026-07-05T02:16:28.056Z" },
+    { url = "https://files.pythonhosted.org/packages/fc/aa/f57f390689f353fbeb22e0e4c48f2a940102c31679ef039e16684447c444/compose_lint-0.14.0-py3-none-any.whl", hash = "sha256:0ec4adc099aeb18e7b636aee88b05129765ef85023f2c1061715328d714ac289", size = 158854, upload-time = "2026-07-29T01:56:40.502Z" },
 ]
 
 [[package]]
@@ -1354,7 +1354,7 @@ requires-dist = [
     { name = "archunitpython", specifier = "==1.5.0" },
     { name = "bandit", specifier = "==1.9.4" },
     { name = "codespell", specifier = "==2.4.3" },
-    { name = "compose-lint", specifier = "==0.13.0" },
+    { name = "compose-lint", specifier = "==0.14.0" },
     { name = "coverage", specifier = "==7.15.2" },
     { name = "fixit", specifier = "==2.2.1" },
     { name = "mypy", specifier = "==2.3.0" },
@@ -1372,7 +1372,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 just = [{ name = "rust-just", specifier = "==1.57.0" }]
-uv = [{ name = "uv", specifier = "==0.11.32" }]
+uv = [{ name = "uv", specifier = "==0.12.0" }]
 
 [[package]]
 name = "trailrunner"

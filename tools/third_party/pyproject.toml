@@ -13,7 +13,7 @@ dependencies = [
     "archunitpython==1.5.0",
     "bandit==1.9.4",
     "codespell==2.4.3",
-    "compose-lint==0.13.0",
+    "compose-lint==0.14.0",
     "coverage==7.15.2",
     "fixit==2.2.1",
     "mypy==2.3.0",
@@ -34,7 +34,7 @@ just = [
     "rust-just==1.57.0",
 ]
 uv = [
-    "uv==0.11.32",
+    "uv==0.12.0",
 ]
 
 [tool.uv]
