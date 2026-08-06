@@ -14,7 +14,7 @@
         "prop-types": "^15.8.1",
         "react": "^19.2.8",
         "react-dom": "^19.2.8",
-        "react-grid-layout": "^2.2.3",
+        "react-grid-layout": "^2.2.4",
         "victory": "^37.3.6"
     },
     "scripts": {
