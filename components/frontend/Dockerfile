@@ -1,4 +1,4 @@
-FROM node:26.5-alpine3.24@sha256:e88a35be04478413b7c71c455cd9865de9b9360e1f43456be5951032d7ac1a66 AS compile-image
+FROM node:26.5.1-alpine3.24@sha256:233761595746769ebfdb6090f44fc7cdf818ae0ce62d2b37e0367723b9823e36 AS compile-image
 
 RUN apk add --no-cache tzdata=2026c-r0
 
@@ -21,6 +21,8 @@ ENV FRONTEND_PORT=5000
 
 # Reduce the attack surface by removing the package manager, which the Nginx runtime does not need. The
 # shell is kept because the Nginx entrypoint renders the configuration templates with it at startup.
+# # Hadolint says: DL3066 info: Non-numeric user-id may not be resolvable by host system. Fix TBD.
+# hadolint ignore=DL3066
 USER root
 RUN apk --purge --quiet del apk-tools alpine-keys scanelf && \
     rm -rf /etc/apk /lib/apk /var/cache/apk

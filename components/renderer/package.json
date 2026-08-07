@@ -32,7 +32,7 @@
         "fix": "npx prettier *.mjs src --write --log-level warn"
     },
     "engines": {
-        "node": "26.5"
+        "node": "26.5.1"
     },
     "prettier": {
         "printWidth": 120,
