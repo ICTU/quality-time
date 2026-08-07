@@ -26,6 +26,9 @@ RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv \
     apk --purge --quiet del apk-tools alpine-keys musl-utils scanelf ssl_client && \
     rm -rf /etc/apk /lib/apk /var/cache/apk /bin/sh /bin/busybox
 
+# The user-id is a variable, so hadolint says: DL3066 info: Non-numeric user-id may not be resolvable by host system
+# However, ${COMPONENT} is the component name (so not a numeric user-id) meaning the warning does apply. Fix TBD.
+# hadolint ignore=DL3066
 USER ${COMPONENT}
 
 HEALTHCHECK CMD ["python", "healthcheck.py"]

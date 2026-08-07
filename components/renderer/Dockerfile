@@ -1,4 +1,4 @@
-FROM node:26.5-alpine3.24@sha256:e88a35be04478413b7c71c455cd9865de9b9360e1f43456be5951032d7ac1a66
+FROM node:26.5.1-alpine3.24@sha256:233761595746769ebfdb6090f44fc7cdf818ae0ce62d2b37e0367723b9823e36
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
@@ -19,6 +19,8 @@ RUN apk add --no-cache chromium tzdata=2026c-r0 && \
 
 COPY src/*js /home/renderer/
 
+# Hadolint says: DL3066 info: Non-numeric user-id may not be resolvable by host system. Fix TBD.
+# hadolint ignore=DL3066
 USER renderer
 
 HEALTHCHECK CMD ["node", "/home/renderer/healthcheck.cjs"]

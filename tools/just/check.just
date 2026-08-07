@@ -100,6 +100,7 @@ npm-lint folder="": (js-check "npm-lint" f"{{npm_run}} lint --if-present" folder
 # JS-YAML, dev/test-only transitive dependency
 # - GHSA-h67p-54hq-rp68 Quadratic-complexity DoS in merge key handling via repeated aliases
 # - GHSA-52cp-r559-cp3m YAML merge-key chains can force quadratic CPU consumption
+# - GHSA-5p4m-2wfm-xmqj Quadratic CPU consumption in !!omap resolution (3.x and 4.x) — CVE-2026-59870 fix not backported
 # markdown-it, dev/test-only transitive dependency
 # - GHSA-6v5v-wf23-fmfq Quadratic complexity DoS in smartquotes rule via replaceAt string operations
 # undici, dev/test-only transitive dependency:
@@ -113,7 +114,7 @@ npm-lint folder="": (js-check "npm-lint" f"{{npm_run}} lint --if-present" folder
 # brace-expansion
 # - GHSA-mh99-v99m-4gvg DoS via unbounded expansion length causing an out-of-memory process crash
 # - GHSA-rgw5-rvv9-x895 DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation
-npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-52cp-r559-cp3m GHSA-6v5v-wf23-fmfq GHSA-pr7r-676h-xcf6 GHSA-vmh5-mc38-953g GHSA-35p6-xmwp-9g52 GHSA-g8m3-5g58-fq7m GHSA-hm92-r4w5-c3mj GHSA-p88m-4jfj-68fv GHSA-vxpw-j846-p89q GHSA-mh99-v99m-4gvg GHSA-rgw5-rvv9-x895"
+npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-52cp-r559-cp3m GHSA-5p4m-2wfm-xmqj GHSA-6v5v-wf23-fmfq GHSA-pr7r-676h-xcf6 GHSA-vmh5-mc38-953g GHSA-35p6-xmwp-9g52 GHSA-g8m3-5g58-fq7m GHSA-hm92-r4w5-c3mj GHSA-p88m-4jfj-68fv GHSA-vxpw-j846-p89q GHSA-mh99-v99m-4gvg GHSA-rgw5-rvv9-x895"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]

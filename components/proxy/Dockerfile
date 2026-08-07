@@ -1,6 +1,7 @@
 FROM nginxinc/nginx-unprivileged:1.31.3-alpine3.24-slim@sha256:98edb4ebb9aae4d8ff4bd2ea5edc9939cc2f7cd206a20644928ada32a657c052 AS compile-image
 
-# hadolint ignore=DL3002
+# Hadolint says: DL3066 info: Non-numeric user-id may not be resolvable by host system. Fix TBD.
+# hadolint ignore=DL3002,DL3066
 USER root
 # Add the CAP_NET_BIND_SERVICE to provide backwards compatibility, running on privileged port (80)
 RUN apk add --no-cache libcap=2.78-r0 tzdata=2026c-r0 && setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/nginx
@@ -18,6 +19,8 @@ ENV API_SERVER_PORT=5001
 
 # Reduce the attack surface by removing the package manager, which the Nginx runtime does not need. The
 # shell is kept because the Nginx entrypoint renders the configuration templates with it at startup.
+# Hadolint says: DL3066 info: Non-numeric user-id may not be resolvable by host system. Fix TBD.
+# hadolint ignore=DL3066
 USER root
 RUN apk --purge --quiet del apk-tools alpine-keys scanelf && \
     rm -rf /etc/apk /lib/apk /var/cache/apk
