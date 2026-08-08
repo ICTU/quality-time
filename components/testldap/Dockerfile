@@ -1,4 +1,4 @@
-# update-time: allow[digest-drift]
+# update-time: allow[hash-drift]
 FROM debian:13.6-slim@sha256:020c0d20b9880058cbe785a9db107156c3c75c2ac944a6aa7ab59f2add76a7bd
 
 # Install slapd and requirements

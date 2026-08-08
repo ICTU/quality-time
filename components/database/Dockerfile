@@ -1,4 +1,4 @@
-# update-time: allow[digest-drift]
+# update-time: allow[hash-drift]
 FROM mongo:8.3.7@sha256:a7f5aa200005611166adcec0192c2f11d0acc3bfd9d5eb68e1a998a990412e41
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
