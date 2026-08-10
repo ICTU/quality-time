@@ -175,7 +175,7 @@ def source_section(source: Source, source_key: str, level: int) -> str:
     if source.supported_versions_description:
         title = f"Supported {source.name} versions"
         markdown += admonition(source.supported_versions_description, title, "important")
-    if source.deprecated:
+    if source.deprecated:  # pragma: no cover
         deprecation_message = (
             f"Support for using {source.name} as source is deprecated. "
             f"See this [GitHub issue]({source.deprecation_url}) for more information."

@@ -142,6 +142,35 @@ class RemoveTrelloTest(MigrationTestCase):
         self.check_inserted_report(inserted_report)
 
 
+class RemoveCoberturaJenkinsPluginTest(MigrationTestCase):
+    """Init tests for the migration to remove the Cobertura Jenkins plugin sources from metrics."""
+
+    def existing_report(self, **kwargs):
+        """Extend to add the Cobertura Jenkins plugin source."""
+        report = super().existing_report(**kwargs)
+        metrics = report["subjects"][SUBJECT_ID]["metrics"]
+        metrics[METRIC_ID2] = {
+            "type": "source_up_to_dateness",
+            "sources": {SOURCE_ID: {"type": "cobertura_jenkins_plugin"}},
+        }
+        metrics[METRIC_ID3] = {"type": "source_up_to_dateness", "sources": {SOURCE_ID2: {"type": "sonarqube"}}}
+        return report
+
+    def test_report_without_trello(self):
+        """Test that the migration succeeds with reports without Cobertura Jenkins plugin sources."""
+        self.database.reports.find.return_value = [super().existing_report()]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_report_with_trello(self):
+        """Test that the migration succeeds with reports without Cobertura Jenkins plugin sources."""
+        self.database.reports.find.return_value = [self.existing_report()]
+        perform_migrations(self.database)
+        inserted_report = self.inserted_report()
+        del inserted_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2]["sources"][SOURCE_ID]
+        self.check_inserted_report(inserted_report)
+
+
 class RemoveSubjectDescriptionTest(MigrationTestCase):
     """Unit tests for the migration to remove description fields from subjects."""
 

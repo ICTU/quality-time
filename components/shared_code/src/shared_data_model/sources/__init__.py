@@ -8,7 +8,7 @@ from .bitbucket import BITBUCKET
 from .calendar_date import CALENDAR
 from .cargo_audit import CARGO_AUDIT
 from .cloc import CLOC
-from .cobertura import COBERTURA, COBERTURA_JENKINS_PLUGIN
+from .cobertura import COBERTURA
 from .composer import COMPOSER
 from .dependency_track import DEPENDENCY_TRACK
 from .gatling import GATLING
@@ -54,7 +54,6 @@ SOURCES = {
     "cargo_audit": CARGO_AUDIT,
     "cloc": CLOC,
     "cobertura": COBERTURA,
-    "cobertura_jenkins_plugin": COBERTURA_JENKINS_PLUGIN,
     "composer": COMPOSER,
     "dependency_track": DEPENDENCY_TRACK,
     "gatling": GATLING,

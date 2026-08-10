@@ -63,7 +63,11 @@ def remove_pyupio_safety_and_trello(report) -> str:
     change_description = ""
     for metric in metrics(report):
         sources = metric.get("sources", {})
-        for source_type, source_type_name in {"pyupio_safety": "Pyupio Safety", "trello": "Trello"}.items():
+        for source_type, source_type_name in {
+            "cobertura_jenkins_plugin": "Cobertura Jenkins plugin",
+            "pyupio_safety": "Pyupio Safety",
+            "trello": "Trello",
+        }.items():
             if source_ids_to_remove := [
                 source_id for source_id, source in sources.items() if source["type"] == source_type
             ]:

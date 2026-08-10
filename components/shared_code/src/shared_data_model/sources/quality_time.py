@@ -78,7 +78,6 @@ ALL_SOURCES = {
     "Cargo Audit": "cargo_audit",
     "cloc": "cloc",
     "Cobertura": "cobertura",
-    "Cobertura Jenkins plugin": "cobertura_jenkins_plugin",
     "Composer": "composer",
     "Dependency-Track": "dependency_track",
     "Gatling": "gatling",

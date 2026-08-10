@@ -34,9 +34,6 @@ from .cobertura.source_up_to_dateness import CoberturaSourceUpToDateness
 from .cobertura.source_version import CoberturaSourceVersion
 from .cobertura.uncovered_branches import CoberturaUncoveredBranches
 from .cobertura.uncovered_lines import CoberturaUncoveredLines
-from .cobertura_jenkins_plugin.source_up_to_dateness import CoberturaJenkinsPluginSourceUpToDateness
-from .cobertura_jenkins_plugin.uncovered_branches import CoberturaJenkinsPluginUncoveredBranches
-from .cobertura_jenkins_plugin.uncovered_lines import CoberturaJenkinsPluginUncoveredLines
 from .composer.dependencies import ComposerDependencies
 from .dependency_track.dependencies import DependencyTrackDependencies
 from .dependency_track.security_warnings import DependencyTrackSecurityWarnings
