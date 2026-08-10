@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Removed
+
+- Drop support for the deprecated Pyupio Safety as source for security warnings because *Quality-time* only supports v1 of the Safety JSON output and upgrading to v3 is blocked. Closes [#13079](https://github.com/ICTU/quality-time/issues/13079).
+
 ## v5.57.0 - 2026-06-25
 
 ### Changed

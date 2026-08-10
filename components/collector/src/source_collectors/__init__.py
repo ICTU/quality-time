@@ -132,7 +132,6 @@ from .performancetest_runner.software_version import PerformanceTestRunnerSoftwa
 from .performancetest_runner.source_up_to_dateness import PerformanceTestRunnerSourceUpToDateness
 from .performancetest_runner.tests import PerformanceTestRunnerTests
 from .pip.dependencies import PipDependencies
-from .pyupio_safety.security_warnings import PyupioSafetySecurityWarnings
 from .quality_time.metrics import QualityTimeMetrics
 from .quality_time.missing_metrics import QualityTimeMissingMetrics
 from .quality_time.source_up_to_dateness import QualityTimeSourceUpToDateness

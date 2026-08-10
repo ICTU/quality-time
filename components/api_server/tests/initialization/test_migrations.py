@@ -90,6 +90,32 @@ class RemoveCheckmarxTest(MigrationTestCase):
         self.check_inserted_report(inserted_report)
 
 
+class RemovePyupioSafetyTest(MigrationTestCase):
+    """Init tests for the migration to remove Pyupio Safety sources from metrics."""
+
+    def existing_report(self, **kwargs):
+        """Extend to add Pyupio Safety source."""
+        report = super().existing_report(**kwargs)
+        metrics = report["subjects"][SUBJECT_ID]["metrics"]
+        metrics[METRIC_ID2] = {"type": "security_warnings", "sources": {SOURCE_ID: {"type": "pyupio_safety"}}}
+        metrics[METRIC_ID3] = {"type": "security_warnings", "sources": {SOURCE_ID2: {"type": "sonarqube"}}}
+        return report
+
+    def test_report_without_pyupio_safety(self):
+        """Test that the migration succeeds with reports without Pyupio Safety sources."""
+        self.database.reports.find.return_value = [super().existing_report()]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_report_with_pyupio_safety(self):
+        """Test that the migration succeeds with reports without Pyupio Safety sources."""
+        self.database.reports.find.return_value = [self.existing_report()]
+        perform_migrations(self.database)
+        inserted_report = self.inserted_report()
+        del inserted_report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2]["sources"][SOURCE_ID]
+        self.check_inserted_report(inserted_report)
+
+
 class RemoveSubjectDescriptionTest(MigrationTestCase):
     """Unit tests for the migration to remove description fields from subjects."""
 

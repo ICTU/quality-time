@@ -148,7 +148,6 @@ PerformanceTestRunnerSlowTransactions  # unused class (src/source_collectors/per
 PerformanceTestRunnerSoftwareVersion  # unused class (src/source_collectors/performancetest_runner/software_version.py:15)
 PerformanceTestRunnerSourceUpToDateness  # unused class (src/source_collectors/performancetest_runner/source_up_to_dateness.py:18)
 PipDependencies  # unused class (src/source_collectors/pip/dependencies.py:23)
-PyupioSafetySecurityWarnings  # unused class (src/source_collectors/pyupio_safety/security_warnings.py:14)
 QualityTimeMetrics  # unused class (src/source_collectors/quality_time/metrics.py:20)
 QualityTimeSourceUpToDateness  # unused class (src/source_collectors/quality_time/source_up_to_dateness.py:17)
 QualityTimeSourceVersion  # unused class (src/source_collectors/quality_time/source_version.py:9)
