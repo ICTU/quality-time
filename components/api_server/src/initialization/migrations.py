@@ -22,7 +22,7 @@ def perform_migrations(database: Database) -> None:
             for change in (
                 remove_metric_addition(report),
                 remove_checkmarx(report),
-                remove_pyupio_safety(report),
+                remove_pyupio_safety_and_trello(report),
                 remove_subject_description(report),
             )
             if change
@@ -56,18 +56,20 @@ def remove_checkmarx(report) -> str:
     return change_description
 
 
-def remove_pyupio_safety(report) -> str:
-    """Remove the Pyupio Safety source from all metrics."""
-    # Added after Quality-time v5.57.0, see https://github.com/ICTU/quality-time/issues/13079
+def remove_pyupio_safety_and_trello(report) -> str:
+    """Remove the Pyupio Safety and Trello sources from all metrics."""
+    # Added after Quality-time v5.57.0, see https://github.com/ICTU/quality-time/issues/13079 and
+    # https://github.com/ICTU/quality-time/issues/12818
     change_description = ""
     for metric in metrics(report):
         sources = metric.get("sources", {})
-        if source_ids_to_remove := [
-            source_id for source_id, source in sources.items() if source["type"] == "pyupio_safety"
-        ]:
-            change_description = "remove the Pyupio Safety source from metrics"
-            for source_id in source_ids_to_remove:
-                del metric["sources"][source_id]
+        for source_type, source_type_name in {"pyupio_safety": "Pyupio Safety", "trello": "Trello"}.items():
+            if source_ids_to_remove := [
+                source_id for source_id, source in sources.items() if source["type"] == source_type
+            ]:
+                change_description = f"remove the {source_type_name} source from metrics"
+                for source_id in source_ids_to_remove:
+                    del metric["sources"][source_id]
     return change_description
 
 

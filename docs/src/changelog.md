@@ -14,7 +14,8 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Removed
 
-- Drop support for the deprecated Pyupio Safety as source for security warnings because *Quality-time* only supports v1 of the Safety JSON output and upgrading to v3 is blocked. Closes [#13079](https://github.com/ICTU/quality-time/issues/13079).
+- Drop support for Trello as source for metrics. Closes [#12818](https://github.com/ICTU/quality-time/issues/12818).
+- Drop support for Pyupio Safety as source for metrics. Closes [#13079](https://github.com/ICTU/quality-time/issues/13079).
 
 ## v5.57.0 - 2026-06-25
 

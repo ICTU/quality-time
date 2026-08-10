@@ -167,8 +167,6 @@ from .testng.source_up_to_dateness import TestNGSourceUpToDateness
 from .testng.test_cases import TestNGTestCases
 from .testng.test_suites import TestNGTestSuites
 from .testng.tests import TestNGTests
-from .trello.issues import TrelloIssues
-from .trello.source_up_to_dateness import TrelloSourceUpToDateness
 from .trivy.security_warnings import TrivyJSONSecurityWarnings
 from .trivy.source_up_to_dateness import TrivyJSONSourceUpToDateness
 from .visual_studio_trx.source_up_to_dateness import VisualStudioTRXSourceUpToDateness

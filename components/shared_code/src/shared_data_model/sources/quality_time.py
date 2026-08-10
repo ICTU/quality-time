@@ -114,7 +114,6 @@ ALL_SOURCES = {
     "Snyk": "snyk",
     "SonarQube": "sonarqube",
     "TestNG": "testng",
-    "Trello": "trello",
     "Trivy JSON": "trivy_json",
     "Visual Studio TRX": "visual_studio_trx",
 }

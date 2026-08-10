@@ -38,7 +38,6 @@ from .sarif import SARIF_JSON
 from .snyk import SNYK
 from .sonarqube import SONARQUBE
 from .testng import TESTNG
-from .trello import TRELLO
 from .trivy import TRIVY_JSON
 from .visual_studio_trx import VISUAL_STUDIO_TRX
 
@@ -92,6 +91,5 @@ SOURCES = {
     "sonarqube": SONARQUBE,
     "testng": TESTNG,
     "trivy_json": TRIVY_JSON,
-    "trello": TRELLO,
     "visual_studio_trx": VISUAL_STUDIO_TRX,
 }
