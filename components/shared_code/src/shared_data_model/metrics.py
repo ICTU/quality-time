@@ -184,7 +184,7 @@ other parameters to select deployment jobs. Make sure the look-back period is th
         "counted can be specified using the query language of the source.",
         unit=Unit.ISSUES,
         unit_singular=Unit.ISSUE,
-        sources=["azure_devops", "jira", "manual_number", "trello"],
+        sources=["azure_devops", "jira", "manual_number"],
     ),
     "job_runs_within_time_period": Metric(
         name="Job runs within time period",
@@ -540,7 +540,6 @@ report(s).
             "robot_framework_jenkins_plugin",
             "sonarqube",
             "testng",
-            "trello",
             "trivy_json",
             "visual_studio_trx",
         ],

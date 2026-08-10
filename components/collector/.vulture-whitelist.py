@@ -172,8 +172,6 @@ SonarQubeSuppressedViolations  # unused class (src/source_collectors/sonarqube/s
 SonarQubeTodoAndFixmeComments  # unused class (src/source_collectors/sonarqube/todo_and_fixme_comments.py:6)
 SonarQubeUncoveredBranches  # unused class (src/source_collectors/sonarqube/uncovered_branches.py:6)
 SonarQubeUncoveredLines  # unused class (src/source_collectors/sonarqube/uncovered_lines.py:6)
-TrelloIssues  # unused class (src/source_collectors/trello/issues.py:13)
-TrelloSourceUpToDateness  # unused class (src/source_collectors/trello/source_up_to_dateness.py:16)
 VulnerabilityID  # unused variable (src/source_collectors/trivy/json_types.py:15)
 Title  # unused variable (src/source_collectors/trivy/json_types.py:16)
 Description  # unused variable (src/source_collectors/trivy/json_types.py:17)

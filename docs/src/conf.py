@@ -87,8 +87,6 @@ linkcheck_ignore = [
     "https://github.com/AlDanial/cloc#recognized-languages-",
     # False negative: Anchor 'api-name-axerun' not found:
     "https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#api-name-axerun",
-    "https://trello.com/1/members/me/boards",  # Only works when logged in
-    "https://trello.com/app-key",  # Only works when logged in
     # False negative: Anchor 'results-object' not found":
     "https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#results-object",
     "https://www.npmjs.com/package/.*",  # False negative: 403 Client Error: Forbidden for url
