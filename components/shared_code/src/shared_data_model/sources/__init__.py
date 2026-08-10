@@ -32,7 +32,6 @@ from .owasp_dependency_check import OWASP_DEPENDENCY_CHECK_JSON, OWASP_DEPENDENC
 from .owasp_zap import OWASP_ZAP
 from .performancetest_runner import PERFORMANCETEST_RUNNER
 from .pip import PIP
-from .pyupio_safety import PYUPIO_SAFETY
 from .quality_time import QUALITY_TIME
 from .robot_framework import ROBOT_FRAMEWORK, ROBOT_FRAMEWORK_JENKINS_PLUGIN
 from .sarif import SARIF_JSON
@@ -85,7 +84,6 @@ SOURCES = {
     "owasp_zap": OWASP_ZAP,
     "performancetest_runner": PERFORMANCETEST_RUNNER,
     "pip": PIP,
-    "pyupio_safety": PYUPIO_SAFETY,
     "quality_time": QUALITY_TIME,
     "robot_framework": ROBOT_FRAMEWORK,
     "robot_framework_jenkins_plugin": ROBOT_FRAMEWORK_JENKINS_PLUGIN,

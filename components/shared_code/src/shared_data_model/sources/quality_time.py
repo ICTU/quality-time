@@ -107,7 +107,6 @@ ALL_SOURCES = {
     "OWASP ZAP": "owasp_zap",
     "Performancetest-runner": "performancetest_runner",
     "pip": "pip",
-    "Pyupio Safety": "pyupio_safety",
     "Quality-time": "quality_time",
     "Robot Framework": "robot_framework",
     "Robot Framework Jenkins plugin": "robot_framework_jenkins_plugin",

@@ -445,7 +445,6 @@ report(s).
             "owasp_dependency_check_json",
             "owasp_dependency_check_xml",
             "owasp_zap",
-            "pyupio_safety",
             "sarif_json",
             "snyk",
             "sonarqube",
