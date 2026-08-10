@@ -517,7 +517,6 @@ report(s).
             "bandit",
             "calendar",
             "cobertura",
-            "cobertura_jenkins_plugin",
             "dependency_track",
             "gatling",
             "gitlab",
@@ -793,7 +792,6 @@ MP-4 above).
         near_target="100",
         sources=[
             "cobertura",
-            "cobertura_jenkins_plugin",
             "jacoco",
             "jacoco_jenkins_plugin",
             "manual_number",
@@ -813,7 +811,6 @@ MP-4 above).
         near_target="100",
         sources=[
             "cobertura",
-            "cobertura_jenkins_plugin",
             "jacoco",
             "jacoco_jenkins_plugin",
             "manual_number",

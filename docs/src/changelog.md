@@ -14,6 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Removed
 
+- Drop support for the Cobertura Jenkins plugin as source for metrics. Closes [#12817](https://github.com/ICTU/quality-time/issues/12817).
 - Drop support for Trello as source for metrics. Closes [#12818](https://github.com/ICTU/quality-time/issues/12818).
 - Drop support for Pyupio Safety as source for metrics. Closes [#13079](https://github.com/ICTU/quality-time/issues/13079).
 

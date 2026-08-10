@@ -29,8 +29,8 @@ The MongoDB version, the MongoDB feature compatibility, and the migrations all l
 
 | Version    | Date       | Mongo  | FC     | Migrations | Max. downgrade | Max. upgrade | Manual changes |
 |------------|------------|--------|--------|------------|----------------|--------------|----------------|
-| v5.58.0    | 2026-08-10 | v8     | v8     | added⁵     | not supported  | n/a          | no             |
-| v5.57.0    | 2026-06-25 | v8     | v8     |            | v5.50.0        | n/a          | no             |
+| v5.58.0    | unreleased | v8     | v8     | added⁵     | not supported  | n/a          | no             |
+| v5.57.0    | 2026-06-25 | v8     | v8     |            | v5.50.0        | latest       | no             |
 | v5.56.0    | 2026-06-11 | v8     | v8     |            | v5.50.0        | latest       | no             |
 | v5.55.1    | 2026-06-04 | v8     | v8     |            | v5.50.0        | latest       | no             |
 | v5.55.0    | 2026-05-21 | v8     | v8     |            | v5.50.0        | latest       | no             |
@@ -111,6 +111,12 @@ The MongoDB version, the MongoDB feature compatibility, and the migrations all l
 | v4.10.0    | 2023-04-26 | v5     | v5     |            | n/a            | v5.2.0       | no             |
 
 (5) Remove support for several sources:
+
+- [Remove support for the Cobertura Jenkins plugin](https://github.com/ICTU/quality-time/issues/12817):
+
+    * Remove Cobertura Jenkins plugin as available source.
+    * Remove existing Cobertura Jenkins plugin sources from reports.
+    * Note: downgrading is officially not supported, but if the Cobertura Jenkins plugin isn't used in any report it should be possible to downgrade.
 
 - [Remove support for Trello](https://github.com/ICTU/quality-time/issues/12818):
 
