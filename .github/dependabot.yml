@@ -40,6 +40,12 @@ updates:
       - "/components/testldap"
     cooldown:
       default-days: 7
+    ignore:
+      # Dependabot does not recognize PEP 440 pre-release tags such as 3.15.0b4 as pre-releases,
+      # see https://github.com/dependabot/dependabot-core/issues/13809. Bump Python minor and major
+      # versions manually; patch updates are still proposed by Dependabot.
+      - dependency-name: "python"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
