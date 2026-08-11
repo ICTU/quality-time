@@ -13,7 +13,7 @@ from shared.utils.type import MetricId, SourceId
 from database import sessions
 from database.measurements import count_measurements, all_metric_measurements, measurements_in_period
 from database.reports import latest_report_for_uuids, latest_reports
-from utils.functions import report_date_time
+from utils.functions import report_date_time, sanitize_html
 from utils.log import get_logger
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
@@ -44,6 +44,8 @@ def set_entity_attribute(
     entity_description = "/".join([str(entity[key]) for key in entity if key not in ("key", "url")])
     old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
     new_value = cast(dict, bottle.request.json)[attribute]
+    if attribute == "rationale" and new_value:
+        new_value = sanitize_html(new_value)
     user = sessions.find_user(database)
     description = f"{user.name()} changed the {attribute} of '{entity_description}' from '{old_value}' to '{new_value}'"
     entity_user_data = source.setdefault("entity_user_data", {}).setdefault(entity_key, {})

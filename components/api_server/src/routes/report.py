@@ -90,7 +90,6 @@ def get_report_metric_status_summary(database: Database, report: Report, report_
 def post_report_import(database: Database):
     """Import a preconfigured report into the database."""
     report = cast(dict, bottle.request.json)
-    report["delta"] = {"uuids": [report["report_uuid"]]}
 
     secret = database.secrets.find_one({"name": EXPORT_FIELDS_KEYS_NAME}, {"private_key": True, "_id": False})
     if not secret:  # pragma: no feature-test-cover
@@ -98,9 +97,9 @@ def post_report_import(database: Database):
         return {"ok": False, "error": "Cannot find the private key of this Quality-time instance."}
 
     decryption_successful = decrypt_credentials(secret["private_key"], report)
-    replace_report_uuids(report)
-    result = insert_new_report(database, "{user} imported a new report", [report["report_uuid"]], report)
-    result["new_report_uuid"] = report["report_uuid"]
+    new_report_uuid = replace_report_uuids(report)
+    result = insert_new_report(database, "{user} imported a new report", [new_report_uuid], report)
+    result["new_report_uuid"] = new_report_uuid
     if not decryption_successful:
         result["warning"] = (
             "Credentials could not be decrypted, most likely because they were not encrypted with the public key of "

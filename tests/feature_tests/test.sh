@@ -55,8 +55,11 @@ wait "$api_server_pid" 2>/dev/null || true
 if [[ "$result" -eq "0" ]]
 then
   tests/feature_tests/.venv/bin/coverage combine . components/api_server
+  # Write the text and HTML reports first and don't let them fail, so that the HTML report is always available as
+  # CI-artefact to see what is uncovered. The XML report is written last because it fails when the coverage is too
+  # low, and 'set -e' would prevent the other reports from being written if it failed first.
+  tests/feature_tests/.venv/bin/coverage report --fail-under=0
+  tests/feature_tests/.venv/bin/coverage html --fail-under=0
   tests/feature_tests/.venv/bin/coverage xml
-  tests/feature_tests/.venv/bin/coverage html
-  tests/feature_tests/.venv/bin/coverage report
 fi
 exit $result
