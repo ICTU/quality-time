@@ -5,12 +5,14 @@ See the [software documentation](https://quality-time.readthedocs.io/en/latest/s
 ## Container hardening
 
 The `Dockerfile` starts from the official `mongo` image and then hardens it to reduce the attack surface. The
-MongoDB base image lags behind the Ubuntu security updates and ships tooling that *Quality-time* does not use, so the
-`RUN` instruction removes what is unneeded, upgrades what is outdated, and adjusts file ownership so the container can
-run as a non-root user. This section documents each modification, why it is safe, and — where applicable — the guard
-that fails the build once the base image makes the workaround redundant, signalling that it can be removed.
+MongoDB base image ships tooling that *Quality-time* does not use, so the `RUN` instruction removes what is unneeded
+and adjusts file ownership so the container can run as a non-root user. This section documents each modification and
+why it is safe, and — under "Library upgrades" — what to do when the base image lags behind an Ubuntu security fix.
 
 ### Removals
+
+The removals are not guarded: `apt-get purge` reports a package that is not installed and still exits successfully, so
+if a future base image stops shipping one of them, the build keeps working and the removal quietly becomes a no-op.
 
 - **MongoDB database tools** (`mongodb-database-tools`, `mongodb-org-database-tools-extra`: `mongodump`,
   `mongorestore`, `mongoexport`, `mongostat`, etc.). Not used by the server, by *Quality-time* (the components connect
@@ -39,25 +41,22 @@ that fails the build once the base image makes the workaround redundant, signall
 
 ### Library upgrades
 
-Several libraries are upgraded to pick up the latest Ubuntu security fixes ahead of the base image. Each package is
-paired with a minimum version in a guard that fails the build once the base image itself ships that version or newer,
-signalling that the manual upgrade can be removed; bump the version in a guard whenever a newer fix needs to be pulled
-in.
+No libraries are upgraded at the moment: the base image ships the Ubuntu security fixes *Quality-time* needs. It has
+not always been so, and may not stay so. When the base image lags behind a fix that has to be pulled in, add the
+package back to an `apt-get install --only-upgrade` step, and pair it with a minimum version in a guard that fails the
+build — naming the package — once the base image ships that version or newer, or stops shipping the package at all.
+That is what signals the manual upgrade can be dropped again. Check the whole list in one pass and fail only after
+reporting all of it, so a single build shows every entry that has become redundant rather than one per rebuild. See
+the git history of the `Dockerfile` for the previous implementation, which was removed once the base image caught up.
 
-`ncurses-base`, `libtinfo6`, and `libncursesw6` are upgraded here (not removed) for
-[CVE-2025-69720](https://www.cve.org/CVERecord?id=CVE-2025-69720), even though their sibling `ncurses-bin` is removed
-for that same CVE. The vulnerable code lives only in the `infocmp` binary shipped by `ncurses-bin`; these three
-packages contain terminfo data (`ncurses-base`) and shared library code (`libtinfo6`, `libncursesw6`) that do not
-include the flawed function, so Trivy flags them purely on the shared `ncurses` source version. They cannot simply be
-dropped — `libtinfo6` and `libncursesw6` are required by `bash`, `procps`, and `util-linux`, and `ncurses-base`
-provides the terminfo that `mongosh` and `bash` use for interactive terminal rendering — so upgrading to the fixed
-version is the way to clear these findings.
-
-### Linter exceptions
-
-- **DL3008** (pin apt versions) is intentionally ignored: `--only-upgrade` pulls the latest security patch rather than a
-  fixed version, and the guards above bound the minimum.
-- **SC2086** is ignored for the deliberate word-split of "package min-version" pairs in the upgrade loop.
+`ncurses-base`, `libtinfo6`, and `libncursesw6` are left as the base image ships them, even though their sibling
+`ncurses-bin` is removed for [CVE-2025-69720](https://www.cve.org/CVERecord?id=CVE-2025-69720). The vulnerable code
+lives only in the `infocmp` binary shipped by `ncurses-bin`; these three packages contain terminfo data
+(`ncurses-base`) and shared library code (`libtinfo6`, `libncursesw6`) that do not include the flawed function, so
+Trivy flags them purely on the shared `ncurses` source version. They cannot simply be dropped either — `libtinfo6` and
+`libncursesw6` are required by `bash`, `procps`, and `util-linux`, and `ncurses-base` provides the terminfo that
+`mongosh` and `bash` use for interactive terminal rendering. The base image now ships the fixed `ncurses` version, so
+these findings are clear without a manual upgrade.
 
 ### Runtime user
 
