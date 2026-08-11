@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from shared.model.iterators import metrics, subjects
+from shared.model.iterators import metrics, sources, subjects
 
 from utils.log import get_logger
 
@@ -24,6 +24,7 @@ def perform_migrations(database: Database) -> None:
                 remove_checkmarx(report),
                 remove_pyupio_safety_and_trello(report),
                 remove_subject_description(report),
+                remove_sonarqube_hotspot_parameters(report),
             )
             if change
         ]
@@ -85,6 +86,19 @@ def remove_subject_description(report) -> str:
         if "description" in subject:
             change_description = "remove the description field from subjects"
             del subject["description"]
+    return change_description
+
+
+def remove_sonarqube_hotspot_parameters(report) -> str:
+    """Remove the hotspot parameters from SonarQube sources."""
+    # Added after Quality-time v5.57.0, see https://github.com/ICTU/quality-time/issues/12911
+    change_description = ""
+    for source in sources(report):
+        if source["type"] == "sonarqube" and "parameters" in source:
+            for obsolete_parameter in ("hotspot_statuses", "review_priorities", "security_types"):
+                if obsolete_parameter in source["parameters"]:
+                    del source["parameters"][obsolete_parameter]
+                    change_description = "remove hotspot parameters from SonarQube sources"
     return change_description
 
 

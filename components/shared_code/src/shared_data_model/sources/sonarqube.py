@@ -26,10 +26,7 @@ class Lines(StrEnum):
     CODE = "lines with code"
 
 
-def violation_entity_attributes(
-    include_security_warning_attributes=False,
-    include_suppressed_violation_attributes=False,
-) -> list[EntityAttribute]:
+def violation_entity_attributes(*, include_suppressed_violation_attributes: bool = False) -> list[EntityAttribute]:
     """Return the violation entity attributes."""
     attributes = [
         EntityAttribute(name="Message"),
@@ -50,12 +47,6 @@ def violation_entity_attributes(
         ),
         EntityAttribute(name="Clean code attribute", key="clean_code_attribute_category"),
     ]
-    if include_security_warning_attributes:
-        attributes.append(EntityAttribute(name="Warning type", key="security_type"))
-        attributes.append(EntityAttribute(name="Hotspot status"))
-        attributes.append(
-            EntityAttribute(name="Review priority", color={"high": Color.NEGATIVE, "medium": Color.WARNING}),
-        )
     if include_suppressed_violation_attributes:
         attributes.append(EntityAttribute(name="Issue status"))
         attributes.append(EntityAttribute(name="Rationale"))
@@ -103,8 +94,6 @@ ALL_SONARQUBE_METRICS = sorted(
 )
 
 VIOLATION_ENTITY = Entity(name="violation", attributes=violation_entity_attributes())
-
-ISSUE_SECURITY_TYPE = "issue with security impact"
 
 SONARQUBE = Source(
     name="SonarQube",
@@ -371,8 +360,7 @@ SONARQUBE = Source(
         "version_number_pattern": VersionNumberPattern(),
         "directories_to_include": MultipleChoiceWithAdditionParameter(
             name="Directories to include",
-            help="Only report issues for the listed directories. Note that SonarQube does not support filtering "
-            "security hotspots by directory.",
+            help="Only report issues for the listed directories.",
             placeholder="all directories",
             metrics=PROJECT_ISSUES_METRICS,
         ),
@@ -417,21 +405,6 @@ SONARQUBE = Source(
             values=["adaptable", "consistent", "intentional", "responsible"],
             metrics=["suppressed_violations", "violations"],
         ),
-        "hotspot_statuses": MultipleChoiceWithDefaultsParameter(
-            name="Security hotspot statuses",
-            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/security-hotspots/"),
-            placeholder="acknowledged, to review",
-            values=["to review", "acknowledged", "safe", "fixed"],
-            default_value=["to review", "acknowledged"],
-            metrics=["security_warnings"],
-        ),
-        "review_priorities": MultipleChoiceWithDefaultsParameter(
-            name="Security hotspot review priorities",
-            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/security-hotspots/"),
-            placeholder="all review priorities",
-            values=["low", "medium", "high"],
-            metrics=["security_warnings"],
-        ),
         "effort_types": MultipleChoiceWithDefaultsParameter(
             name="Types of effort",
             placeholder="all effort types",
@@ -449,14 +422,6 @@ SONARQUBE = Source(
                 "effort to fix all vulnerabilities": "security_remediation_effort",
             },
             metrics=["remediation_effort"],
-        ),
-        "security_types": MultipleChoiceWithDefaultsParameter(
-            name="Security issue types",
-            placeholder=ISSUE_SECURITY_TYPE,
-            help_url=HttpUrl("https://docs.sonarsource.com/sonarqube-server/latest/user-guide/rules/overview/"),
-            default_value=[ISSUE_SECURITY_TYPE],
-            values=["security hotspot", ISSUE_SECURITY_TYPE],
-            metrics=["security_warnings"],
         ),
         "tags": MultipleChoiceWithAdditionParameter(
             name="Tags to include",
@@ -493,7 +458,7 @@ SONARQUBE = Source(
         ),
         "security_warnings": Entity(
             name="security warning",
-            attributes=violation_entity_attributes(include_security_warning_attributes=True),
+            attributes=violation_entity_attributes(),
         ),
         "suppressed_violations": Entity(
             name="violation",

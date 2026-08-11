@@ -24,48 +24,31 @@ class SonarQubeTestCase(SourceCollectorTestCase):
         key: str,
         component: str,
         message: str,
-        security_type: str | None = None,
-        impacts: str | None = None,
-        clean_code_attribute_category: str | None = None,
+        impacts: str,
+        clean_code_attribute_category: str,
+        tags: str,
         issue_status: str | None = None,
         rationale: str | None = None,
-        review_priority: str | None = None,
         creation_date: str | None = None,
         update_date: str | None = None,
-        hotspot_status: str | None = None,
-        tags: str | None = None,
         hostname: str = "sonarqube",
     ) -> Entity:
         """Create an entity."""
-        url = (
-            f"https://{hostname}/security_hotspots?id=id&branch=main&hotspots={key}"
-            if security_type == "security hotspot"
-            else f"https://{hostname}/project/issues?id=id&branch=main&issues={key}&open={key}"
-        )
         entity = Entity(
             key=key,
             component=component,
             message=message,
-            url=url,
+            impacts=impacts,
+            clean_code_attribute_category=clean_code_attribute_category,
             creation_date=creation_date,
             update_date=update_date,
+            tags=tags,
+            url=f"https://{hostname}/project/issues?id=id&branch=main&issues={key}&open={key}",
         )
-        if security_type is not None:
-            entity["security_type"] = security_type
-        if impacts is not None:
-            entity["impacts"] = impacts
-        if clean_code_attribute_category is not None:
-            entity["clean_code_attribute_category"] = clean_code_attribute_category
         if issue_status is not None:
             entity["issue_status"] = issue_status
         if rationale is not None:
             entity["rationale"] = rationale
-        if review_priority is not None:
-            entity["review_priority"] = review_priority
-        if hotspot_status is not None:
-            entity["hotspot_status"] = hotspot_status
-        if tags is not None:
-            entity["tags"] = tags
         return entity
 
     @staticmethod
