@@ -227,6 +227,21 @@ class PostSourceParameterTest(SourceTestCase):
         )
 
     @patch.object(requests, "get")
+    def test_url_error_without_errno(self, mock_get, request):
+        """Test that the exception message is not reported if it has no errno, as it may expose internals."""
+        mock_get.side_effect = requests.exceptions.SSLError(
+            "HTTPSConnectionPool(host='internal.example.org', port=443): Max retries exceeded"
+        )
+        request.json = {"url": self.url}
+        response = post_source_parameter(SOURCE_ID, "url", self.database)
+        self.assert_url_check(response, -1, "SSLError")
+        self.assert_delta(
+            "url of source 'Source' of metric 'Metric' of subject 'Subject' in report 'Report' "
+            f"from '' to '{self.url}'",
+            report=self.inserted_report(),
+        )
+
+    @patch.object(requests, "get")
     def test_url_socket_error(self, mock_get, request):
         """Test that the error is reported if a request exception occurs, while checking connection of a url."""
         mock_get.side_effect = socket.gaierror("This is some text that should be ignored ([Errno 1234] Error message)")

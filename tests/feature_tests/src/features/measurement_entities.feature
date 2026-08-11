@@ -60,6 +60,18 @@ Feature: measurement entities
     And the client sets the status_end_date of entity 1 to "2022-02-02"
     Then the metric status is "target_met"
 
+  Scenario: the rationale for the status of an entity is sanitized
+    Given an existing metric with type "user_story_points"
+    And an existing source with type "azure_devops"
+    When the collector measures "120"
+      | key | story_points |
+      | 1   | 100          |
+    And the client sets the rationale of entity 1 to "<b>Fixed</b> in the next release<script>alert('XSS')</script>"
+    Then the source changelog reads
+      """
+      Jane Doe changed the rationale of '100' from '' to '<b>Fixed</b> in the next release'.
+      """
+
   Scenario: mark an entity to a different status with the same desired response time
     Given an existing metric with type "user_story_points"
     And an existing source with type "azure_devops"

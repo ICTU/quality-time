@@ -76,16 +76,16 @@ def decrypt_credential(private_key: str, credential: str | tuple[str, str]) -> s
         return decrypted_credential
 
 
-def replace_report_uuids(*reports) -> None:
-    """Change all uuids in this report."""
-    for report in reports:
-        report["report_uuid"] = uuid()
-        for subject_uuid in report.get("subjects", {}).copy():
-            subject = report["subjects"][uuid()] = report["subjects"].pop(subject_uuid)
-            for metric_uuid in subject.get("metrics", {}).copy():
-                metric = subject["metrics"][uuid()] = subject["metrics"].pop(metric_uuid)
-                for source_uuid in metric.get("sources").copy():
-                    metric["sources"][uuid()] = metric["sources"].pop(source_uuid)
+def replace_report_uuids(report: dict) -> ReportId:
+    """Change all uuids in this report and return the report's new uuid."""
+    report["report_uuid"] = report_uuid = cast("ReportId", uuid())
+    for subject_uuid in report.get("subjects", {}).copy():
+        subject = report["subjects"][uuid()] = report["subjects"].pop(subject_uuid)
+        for metric_uuid in subject.get("metrics", {}).copy():
+            metric = subject["metrics"][uuid()] = subject["metrics"].pop(metric_uuid)
+            for source_uuid in metric.get("sources").copy():
+                metric["sources"][uuid()] = metric["sources"].pop(source_uuid)
+    return report_uuid
 
 
 def change_source_parameter(

@@ -146,6 +146,12 @@ class SetEntityAttributeTest(DatabaseTestCase):
             measurement["delta"],
         )
 
+    def test_set_rationale_sanitizes_html(self):
+        """Test that dangerous HTML is removed from the rationale, because the frontend renders it as HTML."""
+        measurement = self.set_entity_attribute("rationale", '<img src="x" onerror="alert(1)">Why not')
+        entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
+        self.assertEqual({"rationale": '<img src="x">Why not'}, entity)
+
     def test_set_status_also_sets_status_end_date_if_status_has_a_desired_response_time(self):
         """Test that setting the status also sets the end date when the desired status resolution has been set."""
         deadline = (now() + timedelta(days=10)).date()

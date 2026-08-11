@@ -48,10 +48,11 @@ def check_url_availability(
         response = requests.get(url, auth=credentials, headers=headers, timeout=10)
         status_code, exception_reason = response.status_code, response.reason
     except Exception as exception_instance:  # noqa: BLE001
-        exception_reason = str(exception_instance) or exception_instance.__class__.__name__
-        # If the reason contains an errno, only return the errno and accompanying text, and leave out the traceback
-        # that led to the error:
-        exception_reason = re.sub(r".*(\[errno \-?\d+\] [^\)^']+).*", r"\1", exception_reason, flags=re.IGNORECASE)
+        # If the exception message contains an errno, only return the errno and accompanying text, and leave out the
+        # traceback that led to the error. Return the exception class name if the exception message has no errno,
+        # because the rest of the message may expose internals, such as the HTTP libraries and hosts used:
+        errno = re.search(r"""\[errno \-?\d+\] [^\)^'"]+""", str(exception_instance), flags=re.IGNORECASE)
+        exception_reason = errno.group() if errno else exception_instance.__class__.__name__
         status_code = -1
     return {"status_code": status_code, "reason": exception_reason}
 
