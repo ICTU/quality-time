@@ -193,3 +193,59 @@ class RemoveSubjectDescriptionTest(MigrationTestCase):
         inserted_report = self.inserted_report()
         del inserted_report["subjects"][SUBJECT_ID]["description"]
         self.check_inserted_report(inserted_report)
+
+
+class RemoveSonarQubeHotspotParametersTest(MigrationTestCase):
+    """Init tests for the migration to remove the hotspot parameters from SonarQube sources."""
+
+    HOTSPOT_PARAMETERS = ("hotspot_statuses", "review_priorities", "security_types")
+
+    def existing_report(self, **kwargs):
+        """Extend to add a SonarQube source."""
+        report = super().existing_report(**kwargs)
+        metrics = report["subjects"][SUBJECT_ID]["metrics"]
+        metrics[METRIC_ID2] = {
+            "type": "security_warnings",
+            "sources": {
+                SOURCE_ID: {
+                    "type": "sonarqube",
+                    "parameters": {
+                        "url": "https://sonarqube",
+                        "hotspot_statuses": ["to review"],
+                        "review_priorities": ["high"],
+                        "security_types": [],
+                    },
+                },
+            },
+        }
+        return report
+
+    @classmethod
+    def remove_hotspot_parameters(cls, report) -> None:
+        """Remove the hotspot parameters from the SonarQube source in the report."""
+        parameters = report["subjects"][SUBJECT_ID]["metrics"][METRIC_ID2]["sources"][SOURCE_ID]["parameters"]
+        for parameter in cls.HOTSPOT_PARAMETERS:
+            del parameters[parameter]
+
+    def test_report_without_hotspot_parameters(self):
+        """Test that the migration succeeds with reports whose SonarQube sources have no hotspot parameters."""
+        report = self.existing_report()
+        self.remove_hotspot_parameters(report)
+        self.database.reports.find.return_value = [report]
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_not_called()
+
+    def test_remove_hotspot_parameters(self):
+        """Test that the migration removes the hotspot parameters."""
+        self.database.reports.find.return_value = [self.existing_report()]
+        perform_migrations(self.database)
+        inserted_report = self.inserted_report()
+        self.remove_hotspot_parameters(inserted_report)
+        self.check_inserted_report(inserted_report)
+
+    def test_remove_hotspot_parameters_idempotency(self):
+        """Test that the migration does not change the report again when it is run twice."""
+        self.database.reports.find.return_value = [self.existing_report()]
+        perform_migrations(self.database)
+        perform_migrations(self.database)
+        self.database.reports.replace_one.assert_called_once()

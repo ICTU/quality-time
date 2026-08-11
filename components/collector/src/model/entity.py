@@ -39,10 +39,6 @@ class Entities(list[Entity]):
         self.__keys: set[str] = set()  # Keep track of the keys in a set to make adding entities faster
         self.extend(entities)
 
-    def __add__(self, other):
-        """Return the concatenation of the entities."""
-        return self.__class__(super().__add__(other))
-
     def __getitem__(self, item):
         """Override to return an Entities slice or an Entity."""
         return self.__class__(super().__getitem__(item)) if isinstance(item, slice) else super().__getitem__(item)
