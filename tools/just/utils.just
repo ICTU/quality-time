@@ -7,7 +7,10 @@ pyproject_toml_contents := if pyproject_toml_exists == "true" { read(invocation_
 has_py_pkg(name) := if pyproject_toml_contents =~ f'"{{name}}[<=]=[A-Za-z0-9_.\-]+"' { "true" } else { "false" }
 
 uv_run := "uv run --quiet"
-uv_run_project_wide_tool := uv_run + " --project " + justfile_directory() + "/tools/third_party"
+third_party := justfile_directory() + "/tools/third_party"
+uv_run_project_wide_tool := uv_run + " --project " + third_party + " --group project-wide"
+# Update-time is run from its own group only, so that its pinned dependencies don't constrain the other tools.
+uv_run_update_time := uv_run + " --project " + third_party + " --only-group update-time"
 python := uv_run + " python"
 
 # === JavaScript/npm/package.json ===

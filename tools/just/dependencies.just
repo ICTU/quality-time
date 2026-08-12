@@ -4,7 +4,7 @@ import 'utils.just'
 
 # Update direct and indirect dependencies. Set GITHUB_TOKEN, DOCKER_HUB_USERNAME, and DOCKER_HUB_TOKEN to prevent hitting rate limits.
 update-dependencies:
-    {{ uv_run }} update-time
+    {{ uv_run_update_time }} update-time
 
 alias update-deps := update-dependencies
 
