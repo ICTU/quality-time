@@ -1138,7 +1138,7 @@ project-wide = [
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.29.0" },
 ]
-update-time = [{ name = "update-time", specifier = "==0.0.22" }]
+update-time = [{ name = "update-time", specifier = "==0.0.23" }]
 uv = [{ name = "uv", specifier = "==0.12.1" }]
 
 [[package]]
