@@ -41,7 +41,7 @@ update-time = [
     "update-time==0.0.22",
 ]
 uv = [
-    "uv==0.12.1",
+    "uv==0.12.2",
 ]
 
 [tool.uv]
