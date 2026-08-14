@@ -13,14 +13,14 @@ dependencies = [
     "archunitpython==1.5.0",
     "bandit==1.9.4",
     "codespell==2.4.3",
-    "coverage==7.15.3",
+    "coverage==7.15.4",
     "fixit==2.2.1",
     "mypy==2.3.0",
     "pip-audit==2.10.1",
     "pyproject-fmt==2.27.0",
-    "ruff==0.16.1",
+    "ruff==0.16.2",
     "troml==0.4.1",
-    "ty==0.0.68",
+    "ty==0.0.69",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
     "vulture==2.16",
 ]
@@ -32,16 +32,16 @@ just = [
 # Tools that are run on the repository as a whole, instead of per component, are in a group so that they are not
 # installed in the components' environments, where their dependencies would needlessly constrain the resolution.
 project-wide = [
-    "compose-lint==0.14.1",
+    "compose-lint==0.15.2",
     "yamllint==1.38.0",
     "zizmor==1.29.0",       # Static analysis tool for GitHub Actions
 ]
 # Update-time is only run on the repository as a whole, and pins its dependencies, so it also gets its own group.
 update-time = [
-    "update-time==0.0.23",
+    "update-time==0.0.25",
 ]
 uv = [
-    "uv==0.12.2",
+    "uv==0.12.3",
 ]
 
 [tool.uv]
