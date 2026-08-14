@@ -13,7 +13,7 @@ dependencies = [
     "archunitpython==1.5.0",
     "bandit==1.9.4",
     "codespell==2.4.3",
-    "coverage==7.15.3",
+    "coverage==7.15.4",
     "fixit==2.2.1",
     "mypy==2.3.0",
     "pip-audit==2.10.1",
