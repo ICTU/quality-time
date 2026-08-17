@@ -1327,7 +1327,7 @@ project-wide = [
     { name = "zizmor", specifier = "==1.29.0" },
 ]
 update-time = [{ name = "update-time", specifier = "==0.0.23" }]
-uv = [{ name = "uv", specifier = "==0.12.2" }]
+uv = [{ name = "uv", specifier = "==0.12.3" }]
 
 [[package]]
 name = "trailrunner"
