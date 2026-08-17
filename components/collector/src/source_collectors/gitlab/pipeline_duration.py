@@ -20,9 +20,26 @@ class GitLabPipelineDuration(GitLabPipelineBase):
     def _create_entity(self, pipeline: Pipeline) -> Entity:
         """Extend to also add the duration to the entity created from a GitLab pipeline."""
         entity = super()._create_entity(pipeline)
-        exclude_idle_time = self._parameter("exclude_idle_time_from_pipeline_duration") == "yes"
-        entity["duration"] = str(minutes(pipeline.pipeline_duration(exclude_idle_time)))
+        entity["duration"] = str(minutes(pipeline.bruto_duration))
         return entity
+
+    async def _parse_entities(self, responses: SourceResponses) -> Entities:
+        """Extend to replace the bruto durations with the netto durations, if idle time is to be excluded."""
+        entities = await super()._parse_entities(responses)
+        if self._parameter("exclude_idle_time_from_pipeline_duration") == "yes":
+            await self._replace_bruto_with_netto_duration(entities)
+        return entities
+
+    async def _replace_bruto_with_netto_duration(self, entities: Entities) -> None:
+        """Replace the duration of the entities that pass the filters with the netto duration of their pipeline.
+
+        Only the GitLab API to get one pipeline returns the duration of a pipeline, so the details of each pipeline
+        that passes the filters have to be retrieved separately. The key of the entities is the pipeline id.
+        """
+        included_entities = [entity for entity in entities if self._include_entity(entity)]
+        pipelines = await self._pipeline_details([entity["key"] for entity in included_entities])
+        for entity, pipeline in zip(included_entities, pipelines, strict=True):
+            entity["duration"] = str(minutes(pipeline.netto_duration))
 
     async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Parse the value from the responses."""

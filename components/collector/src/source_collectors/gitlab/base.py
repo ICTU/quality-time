@@ -158,6 +158,15 @@ class GitLabPipelineBase(GitLabProjectBase):
         matches_trigger = entity["trigger"] in self._parameter("pipeline_triggers_to_include")
         return matches_branches and matches_schedule_description and matches_status and matches_trigger
 
+    async def _pipeline_details(self, pipeline_ids: list[str]) -> list[Pipeline]:
+        """Get the details, such as the duration, of the pipelines with the specified ids, in the same order."""
+        if not pipeline_ids:
+            return []
+        urls = [await self._gitlab_api_url(f"pipelines/{pipeline_id}") for pipeline_id in pipeline_ids]
+        # Skip GitLabPipelineBase._get_source_responses() because the pipeline schedules have already been retrieved
+        responses = await super()._get_source_responses(*urls)
+        return [Pipeline.from_json(**await response.json()) for response in responses]
+
     async def _pipelines(self, responses: SourceResponses) -> list[Pipeline]:
         """Get the pipelines from the responses."""
         pipelines = []

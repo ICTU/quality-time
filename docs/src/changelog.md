@@ -19,6 +19,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - Drop support for SonarQube security hotspots as source for security warnings. Note that security warning metrics with SonarQube as source that were configured to only measure security hotspots will now measure issues with security impact (as the parameter to choose between issues with security impact and security hotspots has been removed). Closes [#12911](https://github.com/ICTU/quality-time/issues/12911).
 - Drop support for Pyupio Safety as source for metrics. Closes [#13079](https://github.com/ICTU/quality-time/issues/13079).
 
+### Fixed
+
+- When using GitLab as source for the 'CI-pipeline duration' metric with the parameter 'exclude idle time from pipeline duration' set to 'yes', the duration of each pipeline would be zero minutes. The reason is that GitLab does not report the duration of pipelines when listing the pipelines of a project. Get the details of each pipeline that passes the filters to retrieve its duration. Fixes [#13944](https://github.com/ICTU/quality-time/issues/13944).
+
 ## v5.57.0 - 2026-06-25
 
 ### Changed
