@@ -40,6 +40,11 @@ services:
     tmpfs:
       - /tmp # Nginx writes its pid file and temporary files to /tmp
     volumes: *nginx-config-dir
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.50'
   frontend:
     image: ictu/quality-time_frontend:${QUALITY_TIME_VERSION}
     environment:
@@ -54,6 +59,11 @@ services:
     tmpfs:
       - /tmp # Nginx writes its pid file and temporary files to /tmp
     volumes: *nginx-config-dir
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.50'
   collector:
     image: ictu/quality-time_collector:${QUALITY_TIME_VERSION}
     environment:
@@ -79,6 +89,11 @@ services:
     read_only: true
     tmpfs:
       - /tmp # The collector writes its health check file to /tmp
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1'
   notifier:
     image: ictu/quality-time_notifier:${QUALITY_TIME_VERSION}
     environment:
@@ -101,6 +116,11 @@ services:
     read_only: true
     tmpfs:
       - /tmp # The notifier writes its health check file to /tmp
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.50'
   api_server:
     image: ictu/quality-time_api_server:${QUALITY_TIME_VERSION}
     environment:
@@ -134,6 +154,11 @@ services:
     read_only: true
     tmpfs:
       - /tmp # Bottle buffers large request bodies, such as imported reports, in temporary files
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '2'
   database:
     image: ictu/quality-time_database:${QUALITY_TIME_VERSION}
     command: --quiet
@@ -152,6 +177,11 @@ services:
     read_only: true
     tmpfs:
       - /tmp # MongoDB creates its Unix domain socket in /tmp
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2'
   renderer:
     image: ictu/quality-time_renderer:${QUALITY_TIME_VERSION}
     environment:
@@ -165,6 +195,11 @@ services:
     read_only: true
     tmpfs:
       - /tmp # Chromium, used to render PDFs, writes temporary files to /tmp
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2'
 volumes:
   dbdata:
 secrets:
