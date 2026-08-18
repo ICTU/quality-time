@@ -42,6 +42,11 @@ services:
     ports:
       - "127.0.0.1:10389:389"
     security_opt: *security-opt
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.50'
   renderer:
     build: ../components/renderer
     ports:
@@ -54,3 +59,8 @@ services:
     cap_drop:
       - ALL
     security_opt: *security-opt
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1'
