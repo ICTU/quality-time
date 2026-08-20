@@ -1,4 +1,4 @@
-FROM python:3.14.6-alpine3.24@sha256:26730869004e2b9c4b9ad09cab8625e81d256d1ce97e72df5520e806b1709f92
+FROM python:3.14.7-alpine3.24@sha256:05b2b8b732ecd268fee8727a369f936f022d1321b59befd13c30ede22769dcdc
 
 ARG COMPONENT
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
