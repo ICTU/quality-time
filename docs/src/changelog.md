@@ -12,6 +12,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Added
+
+- New metric 'CI-pipelines' that counts CI-pipelines, with GitLab as source. Which pipelines are counted can be configured by branch, pipeline status, pipeline trigger, and pipeline schedule. In addition, the metric can be limited to the most recent pipeline of each branch, making it possible to measure whether the most recent pipeline of a branch has failed. Closes [#12965](https://github.com/ICTU/quality-time/issues/12965).
+
 ### Removed
 
 - Drop support for the Cobertura Jenkins plugin as source for metrics. Closes [#12817](https://github.com/ICTU/quality-time/issues/12817).
@@ -22,6 +26,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Fixed
 
 - When using GitLab as source for the 'CI-pipeline duration' metric with the parameter 'exclude idle time from pipeline duration' set to 'yes', the duration of each pipeline would be zero minutes. The reason is that GitLab does not report the duration of pipelines when listing the pipelines of a project. Get the details of each pipeline that passes the filters to retrieve its duration. Fixes [#13944](https://github.com/ICTU/quality-time/issues/13944).
+- When using GitLab as source for the 'CI-pipeline duration' metric, make the pipeline names in the measurement details clickable, and color the pipeline statuses. Fixed as part of [#12965](https://github.com/ICTU/quality-time/issues/12965).
 
 ## v5.57.0 - 2026-06-25
 

@@ -15,6 +15,7 @@ SUBJECTS = {
                     "failed_jobs",
                     "job_runs_within_time_period",
                     "pipeline_duration",
+                    "pipelines",
                     "unused_jobs",
                 ],
             ),

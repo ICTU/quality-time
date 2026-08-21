@@ -30,6 +30,7 @@ ALL_GITLAB_METRICS = [
     "job_runs_within_time_period",
     "merge_requests",
     "pipeline_duration",
+    "pipelines",
     "source_up_to_dateness",
     "source_version",
     "unused_jobs",
@@ -59,16 +60,30 @@ JOB_ENTITY = Entity(
     ],
 )
 
-PIPELINE_ENTITY = Entity(
+PIPELINE_ENTITY_ATTRIBUTES = [
+    EntityAttribute(name="Pipeline name", key="name", url="url"),
+    EntityAttribute(name="Ref"),
+    EntityAttribute(
+        name="Status",
+        color={
+            "canceled": Color.ACTIVE,
+            "failed": Color.NEGATIVE,
+            "skipped": Color.WARNING,
+            "success": Color.POSITIVE,
+        },
+    ),
+    EntityAttribute(name="Trigger"),
+    EntityAttribute(name="Schedule"),
+    EntityAttribute(name="Created", type=EntityAttributeType.DATETIME),
+    EntityAttribute(name="Updated", type=EntityAttributeType.DATETIME),
+]
+
+PIPELINE_ENTITY = Entity(name="pipeline", attributes=PIPELINE_ENTITY_ATTRIBUTES)
+
+PIPELINE_DURATION_ENTITY = Entity(
     name="pipeline",
     attributes=[
-        EntityAttribute(name="Pipeline name", key="name", url="url"),
-        EntityAttribute(name="Ref"),
-        EntityAttribute(name="Status"),
-        EntityAttribute(name="Trigger"),
-        EntityAttribute(name="Schedule"),
-        EntityAttribute(name="Created", type=EntityAttributeType.DATETIME),
-        EntityAttribute(name="Updated", type=EntityAttributeType.DATETIME),
+        *PIPELINE_ENTITY_ATTRIBUTES,
         EntityAttribute(name="Duration (minutes)", key="duration", type=EntityAttributeType.INTEGER),
     ],
 )
@@ -139,6 +154,7 @@ ref=<branch>`
                 "failed_jobs",
                 "job_runs_within_time_period",
                 "pipeline_duration",
+                "pipelines",
                 "merge_requests",
                 "source_up_to_dateness",
                 "unused_jobs",
@@ -162,7 +178,7 @@ ref=<branch>`
             metrics=["source_up_to_dateness"],
         ),
         "branch": Branch(help_url=GITLAB_BRANCH_HELP_URL),
-        "branches": Branches(help_url=GITLAB_BRANCH_HELP_URL),
+        "branches": Branches(help_url=GITLAB_BRANCH_HELP_URL, metrics=["pipeline_duration", "pipelines"]),
         "branches_to_ignore": BranchesToIgnore(help_url=GITLAB_BRANCH_HELP_URL),
         "branch_merge_status": BranchMergeStatus(),
         "refs_to_ignore": MultipleChoiceWithAdditionParameter(
@@ -213,7 +229,7 @@ ref=<branch>`
         "lookback_days_pipelines": Days(
             name="Number of days to look back for selecting pipelines",
             default_value="7",
-            metrics=["pipeline_duration"],
+            metrics=["pipeline_duration", "pipelines"],
         ),
         "merge_request_state": MergeRequestState(values=["opened", "locked", "merged", "closed"]),
         "approval_state": MultipleChoiceWithDefaultsParameter(
@@ -247,7 +263,7 @@ ref=<branch>`
             ],
             api_values={"waiting for resource": "waiting_for_resource"},
             placeholder="all pipeline statuses",
-            metrics=["pipeline_duration", "source_up_to_dateness"],
+            metrics=["pipeline_duration", "pipelines", "source_up_to_dateness"],
         ),
         "pipeline_triggers_to_include": MultipleChoiceWithDefaultsParameter(
             name="Pipeline triggers to include",
@@ -276,13 +292,23 @@ ref=<branch>`
                 "web-IDE": "webide",
             },
             placeholder="all pipeline triggers",
-            metrics=["pipeline_duration", "source_up_to_dateness"],
+            metrics=["pipeline_duration", "pipelines", "source_up_to_dateness"],
         ),
         "pipeline_schedules_to_include": MultipleChoiceWithAdditionParameter(
             name="Pipeline schedules to include",
             help="Pipeline schedules to include can be specified by description or by regular expression.",
             placeholder="all pipeline schedules",
-            metrics=["pipeline_duration", "source_up_to_dateness"],
+            metrics=["pipeline_duration", "pipelines", "source_up_to_dateness"],
+        ),
+        "only_include_most_recent_pipeline_per_branch": SingleChoiceParameter(
+            name="Only include the most recent pipeline per branch",
+            help="If 'yes', the most recent pipeline of each branch is selected first, and the pipeline status "
+            "filter is applied afterwards. This makes it possible to measure whether the most recent pipeline of a "
+            "branch has a certain status, for example 'failed'. The filters for branches, pipeline triggers, and "
+            "pipeline schedules are applied before the most recent pipeline of each branch is selected.",
+            values=["yes", "no"],
+            default_value="no",
+            metrics=["pipelines"],
         ),
         "pipeline_selection": SingleChoiceParameter(
             name="Pipeline selection",
@@ -358,7 +384,8 @@ ref=<branch>`
                 EntityAttribute(name="Merge status"),
             ],
         ),
-        "pipeline_duration": PIPELINE_ENTITY,
+        "pipeline_duration": PIPELINE_DURATION_ENTITY,
+        "pipelines": PIPELINE_ENTITY,
         "unused_jobs": JOB_ENTITY,
     },
 )
