@@ -52,6 +52,7 @@ from .gitlab.inactive_branches import GitLabInactiveBranches
 from .gitlab.job_runs_within_time_period import GitLabJobRunsWithinTimePeriod
 from .gitlab.merge_requests import GitLabMergeRequests
 from .gitlab.pipeline_duration import GitLabPipelineDuration
+from .gitlab.pipelines import GitLabPipelines
 from .gitlab.source_up_to_dateness import GitLabSourceUpToDateness
 from .gitlab.source_version import GitLabSourceVersion
 from .gitlab.unused_jobs import GitLabUnusedJobs

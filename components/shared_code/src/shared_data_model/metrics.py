@@ -388,6 +388,38 @@ report(s).
         sources=["azure_devops", "gitlab", "jenkins", "manual_number"],
         tags=[Tag.CI],
     ),
+    "pipelines": Metric(
+        name="CI-pipelines",
+        description="The number of continuous integration pipelines.",
+        rationale="Keeping track of the number of pipelines with a certain status, for example failed pipelines, "
+        "helps to keep the continuous integration process healthy. By limiting the metric to the most recent "
+        "pipeline per branch, the metric reports the current state of the pipelines instead of their history.",
+        documentation="""By default, this metric counts all pipelines that were updated in the look-back period.
+Use the parameters to limit which pipelines are counted. The parameters are applied in the following order:
+
+1. Pipelines updated in the look-back period ("Number of days to look back for selecting pipelines") are retrieved.
+2. The pipelines are filtered by branch, by pipeline trigger, and by pipeline schedule.
+3. If "Only include the most recent pipeline per branch" is "yes", only the most recent remaining pipeline of each
+   branch is kept.
+4. Finally, the remaining pipelines are filtered by pipeline status.
+
+Because the status filter is applied last, this metric can report whether the *most recent* pipeline of a branch has
+a certain status. For example, to measure whether the most recent pipeline of the branch "main" has failed, set
+"Branches" to "main", set "Only include the most recent pipeline per branch" to "yes", and set "Pipeline statuses to
+include" to "failed". The metric then measures either zero pipelines (the most recent pipeline of "main" did not fail)
+or one pipeline (it did fail).
+
+Make sure the look-back period is long enough. Branches without pipelines in the look-back period are not measured,
+also not when "Only include the most recent pipeline per branch" is "yes".
+""",
+        unit=Unit.CI_PIPELINES,
+        unit_singular=Unit.CI_PIPELINE,
+        direction=Direction.FEWER_IS_BETTER,
+        target="0",
+        near_target="5",
+        sources=["gitlab"],
+        tags=[Tag.CI],
+    ),
     "remediation_effort": Metric(
         name="Violation remediation effort",
         description="The amount of effort it takes to remediate violations.",

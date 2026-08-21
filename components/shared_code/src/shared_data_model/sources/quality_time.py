@@ -25,6 +25,7 @@ ALL_METRICS = {
     "Average issue lead time": "average_issue_lead_time",
     "Change failure rate": "change_failure_rate",
     "CI-pipeline duration": "pipeline_duration",
+    "CI-pipelines": "pipelines",
     "Commented out code": "commented_out_code",
     "Complex units": "complex_units",
     "Compliance": "compliance",

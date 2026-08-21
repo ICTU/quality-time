@@ -14,6 +14,8 @@ class Unit(StrEnum):
     CI_JOBS = "CI-jobs"
     CI_JOB_RUN = "CI-job run"
     CI_JOB_RUNS = "CI-job runs"
+    CI_PIPELINE = "CI-pipeline"
+    CI_PIPELINES = "CI-pipelines"
     COMPLEX_UNIT = "complex unit"
     COMPLEX_UNITS = "complex units"
     COMPLIANCE = auto()

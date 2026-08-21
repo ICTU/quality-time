@@ -122,9 +122,13 @@ class GitLabPipelineBase(GitLabProjectBase):
         return await self._gitlab_api_url(f"pipelines?updated_after={lookback_date}")
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
-        """Override to return a landing URL for the first pipeline."""
+        """Override to return a landing URL for the first pipeline, or the pipelines page if there are none."""
         pipelines = await self._pipelines(responses)
-        return URL(pipelines[0].web_url)
+        return URL(pipelines[0].web_url) if pipelines else await self._project_pipelines_landing_url(responses)
+
+    async def _project_pipelines_landing_url(self, responses: SourceResponses) -> URL:
+        """Return the landing URL of the pipelines page of the project."""
+        return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/-/pipelines")
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to get pipeline schedule descriptions."""
@@ -148,15 +152,23 @@ class GitLabPipelineBase(GitLabProjectBase):
             schedule=pipeline.schedule_description,
             created=pipeline.created_at,
             updated=pipeline.updated_at,
+            url=pipeline.web_url,
         )
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether this entity should be considered."""
+        return self._matches_selection_filters(entity) and self._matches_status_filter(entity)
+
+    def _matches_selection_filters(self, entity: Entity) -> bool:
+        """Return whether the entity matches the branch, schedule, and trigger filters."""
         matches_branches = self._matches_filter(entity["ref"], "branches")
         matches_schedule_description = self._matches_filter(entity["schedule"], "pipeline_schedules_to_include")
-        matches_status = entity["status"] in self._parameter("pipeline_statuses_to_include")
         matches_trigger = entity["trigger"] in self._parameter("pipeline_triggers_to_include")
-        return matches_branches and matches_schedule_description and matches_status and matches_trigger
+        return matches_branches and matches_schedule_description and matches_trigger
+
+    def _matches_status_filter(self, entity: Entity) -> bool:
+        """Return whether the entity matches the pipeline status filter."""
+        return entity["status"] in self._parameter("pipeline_statuses_to_include")
 
     async def _pipeline_details(self, pipeline_ids: list[str]) -> list[Pipeline]:
         """Get the details, such as the duration, of the pipelines with the specified ids, in the same order."""
