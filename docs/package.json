@@ -1,6 +1,6 @@
 {
     "devDependencies": {
-        "lockfile-lint": "^5.0.0",
+        "lockfile-lint": "^5.0.1",
         "markdownlint-cli": "^0.49.1"
     },
     "scripts": {

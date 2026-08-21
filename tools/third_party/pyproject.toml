@@ -18,7 +18,7 @@ dependencies = [
     "mypy==2.3.0",
     "pip-audit==2.10.1",
     "pyproject-fmt==2.27.1",
-    "ruff==0.16.2",
+    "ruff==0.16.3",
     "troml==0.4.1",
     "ty==0.0.71",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
@@ -41,7 +41,7 @@ update-time = [
     "update-time==0.0.27",
 ]
 uv = [
-    "uv==0.12.3",
+    "uv==0.12.4",
 ]
 
 [tool.uv]
