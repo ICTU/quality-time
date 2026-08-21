@@ -29,7 +29,7 @@ The MongoDB version, the MongoDB feature compatibility, and the migrations all l
 
 | Version    | Date       | Mongo  | FC     | Migrations | Max. downgrade | Max. upgrade | Manual changes |
 |------------|------------|--------|--------|------------|----------------|--------------|----------------|
-| v5.58.0    | unreleased | v8     | v8     | added⁵     | not supported  | n/a          | no             |
+| v5.58.0    | 2026-08-21 | v8     | v8     | added⁵     | not supported  | n/a          | no             |
 | v5.57.0    | 2026-06-25 | v8     | v8     |            | v5.50.0        | latest       | no             |
 | v5.56.0    | 2026-06-11 | v8     | v8     |            | v5.50.0        | latest       | no             |
 | v5.55.1    | 2026-06-04 | v8     | v8     |            | v5.50.0        | latest       | no             |
