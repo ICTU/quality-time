@@ -134,7 +134,7 @@ services:
       - LDAP_URL=${LDAP_URL:-ldap://ldap:389}
       - LDAP_ROOT_DN=${LDAP_ROOT_DN:-dc=example,dc=org}
       - LDAP_LOOKUP_USER_DN=${LDAP_LOOKUP_USER_DN:-cn=admin,dc=example,dc=org}
-      - LDAP_LOOKUP_USER_PASSWORD=${LDAP_LOOKUP_USER_PASSWORD:-admin}
+      - LDAP_LOOKUP_USER_PASSWORD_FILE=/run/secrets/ldap_lookup_user_password
       - LDAP_SEARCH_FILTER=${LDAP_SEARCH_FILTER:-(|(uid=$$username)(cn=$$username))}
       - LOAD_EXAMPLE_REPORTS=${LOAD_EXAMPLE_REPORTS:-True}
       - FORWARD_AUTH_ENABLED=${FORWARD_AUTH_ENABLED:-False}
@@ -146,6 +146,7 @@ services:
     secrets:
       - database_username
       - database_password
+      - ldap_lookup_user_password
     depends_on:
       - database
     cap_drop:
@@ -207,3 +208,5 @@ secrets:
     file: database_password.txt
   database_username:
     file: database_username.txt
+  ldap_lookup_user_password:
+    file: ldap_lookup_user_password.txt

@@ -10,6 +10,16 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- The password of the LDAP lookup user can be read from a file, using the `LDAP_LOOKUP_USER_PASSWORD_FILE` environment variable, so that the password does not have to be passed to the API-server as an environment variable. See the [deployment instructions](deployment.md#ldap).
+
+### Changed
+
+- The compose file that comes with *Quality-time* passes the password of the LDAP lookup user to the API-server as a secret, read from `docker/ldap_lookup_user_password.txt`, instead of as an environment variable. If you use the `LDAP_LOOKUP_USER_PASSWORD` environment variable to configure the compose file, put the password in the secret file instead, or point the secret to a file of your own. See the [deployment instructions](deployment.md#ldap).
+
 ## v5.58.0 - 2026-08-21
 
 ### Added

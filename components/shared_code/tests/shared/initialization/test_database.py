@@ -52,7 +52,7 @@ class TestConnectionParams(unittest.TestCase):
         }
         with (
             patch.dict("os.environ", env),
-            patch("shared.initialization.database.Path.read_text", Mock(side_effect=["user", "pass"])),
+            patch("shared.utils.functions.Path.read_text", Mock(side_effect=["user", "pass"])),
             mongo_client() as client,
         ):
             self._assert_dbclient_host_url(client, "mongodb://user:pass@host:4242")

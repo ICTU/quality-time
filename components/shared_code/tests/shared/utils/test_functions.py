@@ -2,11 +2,40 @@
 
 import unittest
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from dateutil.tz import tzutc
 
-from shared.utils.functions import first, iso_timestamp, md5_hash, slugify
+from shared.utils.functions import first, getenv_or_file, iso_timestamp, md5_hash, slugify
+
+
+class GetenvOrFileTest(unittest.TestCase):
+    """Unit tests for the getenv_or_file function."""
+
+    def test_default(self):
+        """Test that the default value is returned if neither environment variable exists."""
+        self.assertEqual("default", getenv_or_file("PASSWORD", "default"))
+
+    def test_environment_variable(self):
+        """Test that the value of the environment variable is returned."""
+        with patch.dict("os.environ", {"PASSWORD": "secret"}):  # nosec
+            self.assertEqual("secret", getenv_or_file("PASSWORD", "default"))
+
+    def test_file(self):
+        """Test that the contents of the file is returned, without surrounding whitespace."""
+        with (
+            patch.dict("os.environ", {"PASSWORD_FILE": "password.txt"}),  # nosec
+            patch("shared.utils.functions.Path.read_text", Mock(return_value="secret\n")),
+        ):
+            self.assertEqual("secret", getenv_or_file("PASSWORD", "default"))
+
+    def test_file_takes_precedence(self):
+        """Test that the contents of the file is returned, even if the environment variable also exists."""
+        with (
+            patch.dict("os.environ", {"PASSWORD": "other secret", "PASSWORD_FILE": "password.txt"}),  # nosec
+            patch("shared.utils.functions.Path.read_text", Mock(return_value="secret\n")),
+        ):
+            self.assertEqual("secret", getenv_or_file("PASSWORD", "default"))
 
 
 class IsoTimestampTest(unittest.TestCase):

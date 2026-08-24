@@ -73,6 +73,22 @@ services:
       - LDAP_SEARCH_FILTER=(|(uid=$username)(cn=$username))
 ```
 
+Because environment variables can be read by anyone with access to the Docker daemon, [it is recommended to store secrets in files](https://docs.docker.com/compose/how-tos/use-secrets/). Set `LDAP_LOOKUP_USER_PASSWORD_FILE` to the name of a file containing the password of the LDAP lookup user, instead of setting `LDAP_LOOKUP_USER_PASSWORD`. This is how the compose file that comes with *Quality-time* is configured:
+
+```yaml
+services:
+  api_server:
+    environment:
+      - LDAP_LOOKUP_USER_PASSWORD_FILE=/run/secrets/ldap_lookup_user_password
+    secrets:
+      - ldap_lookup_user_password
+secrets:
+  ldap_lookup_user_password:
+    file: ldap_lookup_user_password.txt
+```
+
+Change the contents of the `ldap_lookup_user_password.txt` file to the password of your LDAP lookup user, or point the secret to a file of your own. If both `LDAP_LOOKUP_USER_PASSWORD_FILE` and `LDAP_LOOKUP_USER_PASSWORD` are set, the file takes precedence.
+
 Alternatively, for a Kubernetes deployment, add the LDAP environment variables to the API-server service in the [Helm values.yaml](https://github.com/ICTU/quality-time/blob/master/helm/values.yaml):
 
 ```yaml

@@ -64,9 +64,12 @@ services:
     ports:
       - "127.0.0.1:8081:8081"
     environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_INITDB_ROOT_USERNAME:-root}
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_INITDB_ROOT_PASSWORD:-root}
+      - ME_CONFIG_MONGODB_ADMINUSERNAME_FILE=/run/secrets/database_username
+      - ME_CONFIG_MONGODB_ADMINPASSWORD_FILE=/run/secrets/database_password
       - ME_CONFIG_MONGODB_SERVER=database
+    secrets:
+      - database_username
+      - database_password
     depends_on:
       - database
     cap_drop:
