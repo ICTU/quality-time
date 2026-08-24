@@ -1,8 +1,10 @@
 """Utility functions."""
 
 import hashlib
+import os
 from datetime import datetime
 from decimal import ROUND_HALF_UP, Decimal
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from dateutil.tz import tzutc
@@ -11,6 +13,17 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
 
     from .type import Direction
+
+
+def getenv_or_file(name: str, default: str) -> str:
+    """Return the value of the environment variable, or the contents of the file it points to.
+
+    If the environment variable "<name>_FILE" exists, its value is the name of a file containing the value, so that
+    secrets can be passed to the containers as files instead of as environment variables.
+    """
+    if filename := os.environ.get(f"{name}_FILE"):
+        return Path(filename).read_text().strip()
+    return os.environ.get(name, default)
 
 
 def iso_timestamp() -> str:

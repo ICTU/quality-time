@@ -14,6 +14,8 @@ from dateutil.tz import tzutc
 from ldap3 import ALL, Connection, Server, ServerPool, AUTO_BIND_NO_TLS
 from ldap3.core import exceptions
 
+from shared.utils.functions import getenv_or_file
+
 from database.users import upsert_user, get_user
 from database import sessions
 from initialization.app_secrets import EXPORT_FIELDS_KEYS_NAME
@@ -81,7 +83,7 @@ class LDAPConfig:
     root_dn: str = os.environ.get("LDAP_ROOT_DN", "dc=example,dc=org")
     urls: tuple[str, ...] = tuple(os.environ.get("LDAP_URL", "ldap://localhost:10389").split(","))
     lookup_user_dn: str = os.environ.get("LDAP_LOOKUP_USER_DN", "cn=admin,dc=example,dc=org")
-    lookup_user_pw: str = os.environ.get("LDAP_LOOKUP_USER_PASSWORD", "admin")
+    lookup_user_pw: str = field(default_factory=lambda: getenv_or_file("LDAP_LOOKUP_USER_PASSWORD", "admin"))
     search_filter: str = field(init=False)
 
     def __post_init__(self) -> None:

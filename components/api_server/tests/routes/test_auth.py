@@ -88,11 +88,11 @@ class LoginTests(AuthTestCase):
             attributes=list(attributes),
         )
 
-    def assert_ldap_lookup_connection_created(self, connection_mock):
+    def assert_ldap_lookup_connection_created(self, connection_mock, password="admin"):  # nosec  # noqa: S107
         """Assert that the LDAP lookup connection was created with the lookup user dn and password."""
         self.assertEqual(
             connection_mock.call_args_list[0][1],
-            {"user": self.LOOKUP_USER_DN, "password": "admin"},  # nosec
+            {"user": self.LOOKUP_USER_DN, "password": password},
         )
 
     def assert_ldap_bind_connection_created(self, connection_mock):
@@ -151,6 +151,25 @@ class LoginTests(AuthTestCase):
         self.assertEqual(self.login_ok, login(self.database))
         self.assert_cookie_has_session_id()
         self.assert_ldap_lookup_connection_created(connection_mock)
+        self.assert_ldap_connection_search_called()
+
+    @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
+    @patch("routes.auth.datetime", MOCK_DATETIME)
+    def test_successful_login_with_lookup_user_password_from_file(self, connection_mock, connection_enter):
+        """Test successful login with the LDAP lookup user password read from a file."""
+        connection_mock.return_value = None
+        self.ldap_entry.userPassword.value = (
+            b"{ARGON2}$argon2id$v=19$m=65536,t=3,p=4$rTmNv6FmvVQaSIXzLvcStQ$F2qtxHsklGS+sgWMrbekjeUn4bWbMvt3Liqsw7jOV1I"
+        )
+        connection_enter.return_value = self.ldap_connection
+        env = {"LDAP_LOOKUP_USER_PASSWORD_FILE": "ldap_lookup_user_password.txt"}  # nosec
+        with (
+            patch.dict("os.environ", env),
+            patch("shared.utils.functions.Path.read_text", Mock(return_value="secret\n")),
+        ):
+            self.assertEqual(self.login_ok, login(self.database))
+        self.assert_cookie_has_session_id()
+        self.assert_ldap_lookup_connection_created(connection_mock, password="secret")  # nosec
         self.assert_ldap_connection_search_called()
 
     @patch("bottle.request", Mock(json={"username": USERNAME, "password": PASSWORD}))
