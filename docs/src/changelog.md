@@ -14,6 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
+- When using GitLab as source for the 'Failed CI-jobs' metric, jobs that failed only incidentally can be ignored with the new parameter 'Minimum number of failures before considering a job as failed'. Closes [#11975](https://github.com/ICTU/quality-time/issues/11975).
 - The password of the LDAP lookup user can be read from a file, using the `LDAP_LOOKUP_USER_PASSWORD_FILE` environment variable, so that the password does not have to be passed to the API-server as an environment variable. See the [deployment instructions](deployment.md#ldap).
 
 ### Changed

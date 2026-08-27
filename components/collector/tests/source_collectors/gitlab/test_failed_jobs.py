@@ -8,6 +8,25 @@ class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabJobsTestCase):
 
     METRIC_TYPE = "failed_jobs"
 
+    def setUp(self):
+        """Extend to add the number of consecutive failures to the expected entities."""
+        super().setUp()
+        for entity in self.expected_entities:
+            entity["failure_count"] = "1"
+
+    @staticmethod
+    def failed_job2_run(job_id: str, created_at: str, status: str = "failed") -> dict[str, str]:
+        """Return a previous run of the second job."""
+        return {
+            "id": job_id,
+            "status": status,
+            "name": "job2",
+            "stage": "stage",
+            "created_at": created_at,
+            "web_url": f"https://gitlab/jobs/{job_id}",
+            "ref": "develop",
+        }
+
     async def test_nr_of_failed_jobs(self):
         """Test that the number of failed jobs is returned."""
         measurement = await self.collect_measurement(get_request_json_return_value=self.gitlab_jobs_json)
@@ -54,6 +73,41 @@ class GitLabFailedJobsTest(CommonGitLabJobsTestsMixin, GitLabJobsTestCase):
         self.assert_measurement(
             measurement, value="1", entities=self.expected_entities[-1:], landing_url=self.LANDING_URL
         )
+
+    async def test_minimum_number_of_failures(self):
+        """Test that jobs that failed fewer times in a row than the minimum are not counted."""
+        self.set_source_parameter("minimum_number_of_failures", "2")
+        measurement = await self.collect_measurement(get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(measurement, value="0", entities=[], landing_url=self.LANDING_URL)
+
+    async def test_consecutive_failures(self):
+        """Test that jobs that failed at least the minimum number of times in a row are counted."""
+        self.set_source_parameter("minimum_number_of_failures", "2")
+        self.gitlab_jobs_json.append(self.failed_job2_run("5", "2019-03-31T19:39:39.927Z"))
+        expected_entities = self.expected_entities[-1:]
+        expected_entities[0]["failure_count"] = "2"
+        measurement = await self.collect_measurement(get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(measurement, value="1", entities=expected_entities, landing_url=self.LANDING_URL)
+
+    async def test_successful_run_ends_the_sequence_of_failures(self):
+        """Test that a successful run before the failed runs ends the sequence of failures."""
+        self.set_source_parameter("minimum_number_of_failures", "2")
+        self.gitlab_jobs_json.extend(
+            [
+                self.failed_job2_run("5", "2019-03-31T19:39:39.927Z", status="success"),
+                self.failed_job2_run("6", "2019-03-31T19:38:39.927Z"),
+            ],
+        )
+        measurement = await self.collect_measurement(get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(measurement, value="0", entities=[], landing_url=self.LANDING_URL)
+
+    async def test_failed_runs_outside_the_lookback_period(self):
+        """Test that failed runs outside the look-back period do not count as failures."""
+        self.set_source_parameter("lookback_days", "20000")  # Look back to about 1971
+        self.set_source_parameter("minimum_number_of_failures", "2")
+        self.gitlab_jobs_json.append(self.failed_job2_run("5", "1970-03-31T19:39:39.927Z"))
+        measurement = await self.collect_measurement(get_request_json_return_value=self.gitlab_jobs_json)
+        self.assert_measurement(measurement, value="0", entities=[], landing_url=self.LANDING_URL)
 
     async def test_private_token(self):
         """Test that the private token is used."""

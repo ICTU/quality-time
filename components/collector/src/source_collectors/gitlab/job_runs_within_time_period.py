@@ -15,9 +15,8 @@ if TYPE_CHECKING:
 class GitLabJobRunsWithinTimePeriod(GitLabJobsBase):
     """Collector class to measure the number of GitLab CI builds run within a specified time period."""
 
-    @staticmethod
-    async def _jobs(responses: SourceResponses) -> list[Job]:
-        """Return the jobs to count, not deduplicated to latest branch or tag run."""
+    async def _jobs(self, responses: SourceResponses) -> list[Job]:
+        """Override to return the jobs to count, not deduplicated to latest branch or tag run."""
         jobs: list[Job] = []
         for response in responses:
             jobs.extend(list(await response.json()))

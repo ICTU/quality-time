@@ -1,7 +1,9 @@
 """GitLab collector base classes."""
 
 from abc import ABC
+from collections import defaultdict
 from datetime import datetime, timedelta
+from operator import itemgetter
 from typing import cast
 
 from shared.utils.date_time import now
@@ -64,36 +66,35 @@ class GitLabJobsBase(GitLabProjectBase):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs from the responses."""
-        return Entities(
-            [
-                Entity(
-                    branch=job["ref"],
-                    build_date=str(self._build_datetime(job).date()),
-                    build_datetime=self._build_datetime(job),
-                    build_result=job["status"],
-                    key=job["id"],
-                    name=job["name"],
-                    stage=job["stage"],
-                    url=job["web_url"],
-                )
-                for job in await self._jobs(responses)
-            ],
+        return Entities([self._create_entity(job) for job in await self._jobs(responses)])
+
+    def _create_entity(self, job: Job) -> Entity:
+        """Create an entity from a job."""
+        return Entity(
+            branch=job["ref"],
+            build_date=str(self._build_datetime(job).date()),
+            build_datetime=self._build_datetime(job),
+            build_result=job["status"],
+            key=job["id"],
+            name=job["name"],
+            stage=job["stage"],
+            url=job["web_url"],
         )
 
+    async def _jobs(self, responses: SourceResponses) -> list[Job]:
+        """Return the jobs to count, that is, the most recent run of each job."""
+        return [runs[0] for runs in (await self._job_runs(responses)).values()]
+
     @staticmethod
-    async def _jobs(responses: SourceResponses) -> list[Job]:
-        """Return the jobs to count."""
-
-        def newer(job1: Job, job2: Job) -> Job:
-            """Return the newer of the two jobs."""
-            return job1 if job1["created_at"] > job2["created_at"] else job2
-
-        jobs: dict[tuple[str, str, str], Job] = {}
+    async def _job_runs(responses: SourceResponses) -> dict[tuple[str, str, str], list[Job]]:
+        """Return the runs of each job, most recent run first. Jobs are identified by name, stage, and ref."""
+        job_runs: dict[tuple[str, str, str], list[Job]] = defaultdict(list)
         for response in responses:
             for job in await response.json():
-                key = job["name"], job["stage"], job["ref"]
-                jobs[key] = newer(job, jobs.get(key, job))
-        return list(jobs.values())
+                job_runs[(job["name"], job["stage"], job["ref"])].append(job)
+        for runs in job_runs.values():
+            runs.sort(key=itemgetter("created_at"), reverse=True)
+        return job_runs
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to count the job."""
