@@ -20,6 +20,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - The compose file that comes with *Quality-time* passes the password of the LDAP lookup user to the API-server as a secret, read from `docker/ldap_lookup_user_password.txt`, instead of as an environment variable. If you use the `LDAP_LOOKUP_USER_PASSWORD` environment variable to configure the compose file, put the password in the secret file instead, or point the secret to a file of your own. See the [deployment instructions](deployment.md#ldap).
 
+### Removed
+
+- The database container image no longer accepts a YAML configuration file passed with `--config`. To parse such a file, the official MongoDB image that *Quality-time* builds on vendors a copy of the js-yaml library that carries a known vulnerability ([GHSA-5p4m-2wfm-xmqj](https://github.com/advisories/GHSA-5p4m-2wfm-xmqj)), so that copy has been removed from the image. Neither the compose file nor the Helm chart that come with *Quality-time* pass `--config`; if your own deployment does, configure `mongod` with command-line flags instead.
+
 ### Fixed
 
 - When clicking the 'Reset settings' button while not time traveling, a spinner would appear and never disappear. This bug was introduced in v5.55.0. Fixes [#14553](https://github.com/ICTU/quality-time/issues/14553).
