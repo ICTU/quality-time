@@ -23,10 +23,15 @@ function metricSummaryCard(key = "card") {
     )
 }
 
-function renderCardDashboard({ cards = [], initialLayout = [], saveLayout = vi.fn } = {}) {
+function renderCardDashboard({
+    cards = [],
+    initialLayout = [],
+    saveLayout = vi.fn,
+    permissions = [EDIT_REPORT_PERMISSION],
+} = {}) {
     return render(
         <ThemeProvider theme={theme}>
-            <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
+            <PermissionsContext value={permissions}>
                 <div id="dashboard">
                     <CardDashboard cards={cards} initialLayout={initialLayout} saveLayout={saveLayout} />
                 </div>
@@ -65,8 +70,19 @@ it("reuses initial layout entries for matching cards", async () => {
         saveLayout: saveLayout,
     })
     // y=12 with rowHeight 24 + default margin 10 → pixel y = 12*24 + 12*10 + 10 = 418px.
-    // If the initial entry were ignored, the card would be placed fresh at y=0.
+    // If the initial entry were ignored, the card would be placed fresh at y=0. Cards are positioned with top/left
+    // instead of CSS transforms so that they don't fly in from the top left.
     const gridItem = container.querySelector(".react-grid-item")
-    expect(gridItem.style.transform).toContain("418px")
+    expect(gridItem.style.top).toBe("418px")
     expect(saveLayout).not.toHaveBeenCalled()
+})
+
+it("allows for dragging cards with the edit report permission", async () => {
+    const { container } = renderCardDashboard({ cards: [metricSummaryCard()] })
+    expect(container.querySelector(".react-grid-item")).toHaveClass("react-draggable")
+})
+
+it("does not allow for dragging cards without the edit report permission", async () => {
+    const { container } = renderCardDashboard({ cards: [metricSummaryCard()], permissions: [] })
+    expect(container.querySelector(".react-grid-item")).not.toHaveClass("react-draggable")
 })
