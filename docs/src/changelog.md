@@ -28,6 +28,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - When clicking the 'Reset settings' button while not time traveling, a spinner would appear and never disappear. This bug was introduced in v5.55.0. Fixes [#14553](https://github.com/ICTU/quality-time/issues/14553).
 - Fix several bugs in the dashboards: when dragging a card, other cards would be moved around and could end up hidden behind each other (this bug was introduced in v5.48.2), cards could be dragged by users without the 'edit report' permission (this bug was introduced in v5.48.0), and dragging a card while other cards were hidden, for example because their tags were hidden, would make the dashboard forget the position of the hidden cards. Fixes [#14557](https://github.com/ICTU/quality-time/issues/14557).
+- The [deployment instructions on how to move *Quality-time*](deployment.md#moving-quality-time) did not work. The instructions still assumed that the database container image contains the MongoDB Database Tools, which were removed in v5.57.0, and that the database can be reached from outside the Docker network. In addition, the instructions did not specify the authentication database, causing `mongodump` and `mongorestore` to fail with "Authentication failed". The instructions now cover both Docker-composition and Kubernetes deployments. Fixes [#14086](https://github.com/ICTU/quality-time/issues/14086).
 
 ## v5.58.0 - 2026-08-21
 

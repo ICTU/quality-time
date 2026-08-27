@@ -267,20 +267,74 @@ The proxy access log is turned off. Please submit an issue if you need this and 
 
 ## Moving *Quality-time*
 
-The easiest way to move a *Quality-time* instance is to deploy a new *Quality-time* instance at the new location and then copy the database contents from the old instance to the new instance. All *Quality-time* data is contained in the Mongo database, so that is the only data that needs to be copied.
+The easiest way to move a *Quality-time* instance is to deploy a new *Quality-time* instance at the new location and then copy the database contents from the old instance to the new instance. All *Quality-time* data is contained in the Mongo database, so that is the only data that needs to be copied. The same procedure can be used to back up a *Quality-time* instance and restore it later.
 
-Start a new mongo container and use that to run the `mongodump` and `mongorestore` commands:
+Copying the database is done with the MongoDB Database Tools `mongodump` and `mongorestore`. The *Quality-time* database container image does not contain these tools, so run them from a separate container, based on the [official MongoDB image](https://hub.docker.com/_/mongo), or [install them locally](https://www.mongodb.com/docs/database-tools/installation/installation/). Use the same major MongoDB version as the *Quality-time* database container. To look up that version, see the `FROM` instruction in the [Dockerfile of the database component](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile).
+
+The database does not publish a port. Run the tools in the same network as the database, or forward the database port to the machine where the tools run, as described per deployment type below.
+
+In the commands below, replace `<username>` and `<password>` with the [MongoDB credentials](#configuring-mongodb-credentials-optional) of the instance being addressed. The source and the target instance can have different credentials. Pass the options as shown:
+
+- `authSource=admin`, because the MongoDB credentials are those of the administrator, which MongoDB stores in the `admin` database.
+- `--drop`, so that `mongorestore` empties each collection before restoring it. A freshly deployed *Quality-time* instance creates collections, and optionally [example reports](#configuring-example-reports-optional), when it starts, which would otherwise be mixed with the restored data.
+
+### Docker-composition
+
+Docker compose puts the containers in a network named after the compose project, `<compose project>_default`, where the compose project defaults to the name of the folder that contains the compose file. Use `docker network ls` to look up the exact name.
+
+Run `mongodump` in a temporary container in the network of the old instance, and write the dump to a file on the host:
 
 ```console
-docker run -dP --rm --name mongo mongo
-docker exec -ti mongo mongodump --uri "mongodb://root:<pwd>@<hostname or ip>:27017" --out /tmp/dump/qt_dump
-docker exec -ti mongo mongorestore --uri "mongodb://root:<pwd>@<hostname or ip>:27017" /tmp/dump/qt_dump
+docker run --rm --network <compose project>_default mongo:<major version> \
+    mongodump --uri "mongodb://<username>:<password>@database:27017/quality_time_db?authSource=admin" \
+    --archive --quiet > qt_dump.archive
 ```
 
-The `<hostname or ip>` is the hostname or IP address of the Swarm manager in case of Docker Swarm.
+Run `mongorestore` in a temporary container in the network of the new instance, and read the dump from the file on the host:
 
-As the dump is stored in a temporary container, the dump will disappear as soon as the container is removed. To keep the dump around, map a folder (`-v`) in the `mongo` container.
+```console
+docker run --rm --interactive --network <compose project>_default mongo:<major version> \
+    mongorestore --uri "mongodb://<username>:<password>@database:27017/?authSource=admin" \
+    --archive --drop < qt_dump.archive
+```
+
+The old and the new instance each have their own network, also when they run on the same machine, so make sure to use the compose project name of the old instance when dumping and that of the new instance when restoring.
+
+### Kubernetes
+
+Forward the port of the database service to the machine where the MongoDB Database Tools are installed:
+
+```console
+kubectl port-forward service/<release name>-database 27017:27017
+```
+
+Then, in another terminal, dump the database of the old instance:
+
+```console
+mongodump --uri "mongodb://<username>:<password>@localhost:27017/quality_time_db?authSource=admin" \
+    --archive=qt_dump.archive
+```
+
+Stop the port forward, start a port forward to the new instance, and restore the dump:
+
+```console
+mongorestore --uri "mongodb://<username>:<password>@localhost:27017/?authSource=admin" \
+    --archive=qt_dump.archive --drop
+```
+
+Alternatively, if the MongoDB Database Tools cannot be installed locally, run them in a temporary pod in the same namespace as the *Quality-time* instance. Run the `mongodump` command in the namespace of the old instance and the `mongorestore` command in the namespace of the new instance, creating a temporary pod in each:
+
+```console
+kubectl run mongo-tools --image=mongo:<major version> --restart=Never --command -- sleep 3600
+kubectl exec mongo-tools -- \
+    mongodump --uri "mongodb://<username>:<password>@<release name>-database:27017/quality_time_db?authSource=admin" \
+    --archive --quiet > qt_dump.archive
+kubectl exec --stdin mongo-tools -- \
+    mongorestore --uri "mongodb://<username>:<password>@<release name>-database:27017/?authSource=admin" \
+    --archive --drop < qt_dump.archive
+kubectl delete pod mongo-tools
+```
 
 ```{seealso}
-See [Back Up and Restore a Self-Managed Deployment with MongoDB Tools](https://www.mongodb.com/docs/manual/tutorial/backup-and-restore-tools/) for more information about the `mongodump` and `mongorestore` commands.
+See [Back Up and Restore a Self-Managed Deployment with MongoDB Tools](https://www.mongodb.com/docs/manual/tutorial/backup-and-restore-tools/) for more information about the `mongodump` and `mongorestore` commands. Both commands accept a `--gzip` option to compress the archive. Pass it to both commands or to neither.
 ```
