@@ -27,6 +27,7 @@ class Unit(StrEnum):
     DOWNVOTES = auto()
     FAILED_DEPLOYMENT = "failed deployment"
     FAILED_DEPLOYMENTS = "failed deployments"
+    FAILURES = auto()
     ISSUE = auto()
     ISSUES = auto()
     LINE = auto()

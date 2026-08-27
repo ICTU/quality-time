@@ -4,6 +4,7 @@ from pydantic import HttpUrl
 
 from shared_data_model.meta.entity import Color, Entity, EntityAttribute, EntityAttributeType
 from shared_data_model.meta.source import Source
+from shared_data_model.meta.unit import Unit
 from shared_data_model.parameters import (
     URL,
     Branch,
@@ -12,6 +13,7 @@ from shared_data_model.parameters import (
     BranchMergeStatus,
     Days,
     FailureType,
+    IntegerParameter,
     MergeRequestState,
     MultipleChoiceWithAdditionParameter,
     MultipleChoiceWithDefaultsParameter,
@@ -203,6 +205,15 @@ ref=<branch>`
             metrics=["unused_jobs"],
         ),
         "failure_type": FailureType(values=["canceled", "failed", "skipped"]),
+        "minimum_number_of_failures": IntegerParameter(
+            name="Minimum number of failures before considering a job as failed",
+            help="Only count jobs whose most recent runs failed at least this many times in a row. Runs outside the "
+            "look-back period are ignored.",
+            default_value="1",
+            min_value="1",
+            unit=Unit.FAILURES,
+            metrics=["failed_jobs"],
+        ),
         "result_type": ResultType(values=["canceled", "failed", "skipped", "success"]),
         "jobs_to_ignore": MultipleChoiceWithAdditionParameter(
             name="Jobs to ignore (regular expressions or job names)",
@@ -352,6 +363,11 @@ ref=<branch>`
                 ),
                 EntityAttribute(
                     name="Date of most recent failed build", key="build_date", type=EntityAttributeType.DATE
+                ),
+                EntityAttribute(
+                    name="Number of consecutive failures",
+                    key="failure_count",
+                    type=EntityAttributeType.INTEGER,
                 ),
             ],
         ),
