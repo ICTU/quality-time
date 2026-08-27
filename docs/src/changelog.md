@@ -20,6 +20,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - The compose file that comes with *Quality-time* passes the password of the LDAP lookup user to the API-server as a secret, read from `docker/ldap_lookup_user_password.txt`, instead of as an environment variable. If you use the `LDAP_LOOKUP_USER_PASSWORD` environment variable to configure the compose file, put the password in the secret file instead, or point the secret to a file of your own. See the [deployment instructions](deployment.md#ldap).
 
+### Fixed
+
+- When clicking the 'Reset settings' button while not time traveling, a spinner would appear and never disappear. This bug was introduced in v5.55.0. Fixes [#14553](https://github.com/ICTU/quality-time/issues/14553).
+
 ## v5.58.0 - 2026-08-21
 
 ### Added

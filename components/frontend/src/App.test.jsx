@@ -176,6 +176,16 @@ it("handles a date reset", async () => {
     expect(reportDateButton().textContent).toMatch(/today/)
 })
 
+it("hides the spinner after resetting the settings when the report date is today", async () => {
+    // Regression test for https://github.com/ICTU/quality-time/issues/14553
+    history.push("?expanded=subject_uuid:0")
+    mockSuccessfulFetches()
+    render(<App />)
+    await waitFor(() => expectNoLabelText(/Loading/))
+    clickText("Reset settings")
+    expectNoLabelText(/Loading/)
+})
+
 it("navigates to a report when its card is clicked", async () => {
     mockSuccessfulFetches({ reports: [{ report_uuid: "report_uuid", title: "Report title", subjects: {} }] })
     render(<App />)
