@@ -203,6 +203,9 @@ export default function App() {
             date = null
         }
         history.replace({ search: toSearchString(parsed) })
+        if (date?.getTime() === reportDate?.getTime()) {
+            return // The report date did not change; don't show the spinner because no reports will be fetched
+        }
         setReportDate(date)
         setLoading(true)
     }
