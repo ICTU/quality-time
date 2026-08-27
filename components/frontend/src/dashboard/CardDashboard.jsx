@@ -1,8 +1,13 @@
 import { array, arrayOf, bool, element, func } from "prop-types"
 import { useEffect, useState } from "react"
-import ReactGridLayout, { noCompactor, useContainerWidth } from "react-grid-layout"
+import ReactGridLayout, { getCompactor, useContainerWidth } from "react-grid-layout"
+import { absoluteStrategy } from "react-grid-layout/core"
 
 import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
+
+// Don't compact the layout, so cards can be placed anywhere, but do prevent cards from overlapping. Note that
+// react-grid-layout reads preventCollision from the compactor; passing it as a prop has no effect.
+const compactor = getCompactor(null, false, true)
 
 function cardDivs(cards, isDragging) {
     return cards.map((card) => (
@@ -30,7 +35,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
     const cols = 32
     const cardWidth = 4
     const cardHeight = 6
-    const { width, containerRef, mounted } = useContainerWidth()
+    const { width, containerRef, mounted } = useContainerWidth({ measureBeforeMount: true })
     const [mousePos, setMousePos] = useState([0, 0, 0])
     const [dragging, setDragging] = useState(false)
     useEffect(() => {
@@ -45,6 +50,9 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
     }
     const cardKeys = new Set(cards.map((card) => card.key))
     const layout = (initialLayout ?? []).filter((layoutItem) => cardKeys.has(layoutItem.i))
+    // Keep the layout of cards that are currently hidden, for example because the user hid their tags, so their
+    // position is not lost when the user drags a card and the layout is saved
+    const hiddenLayout = (initialLayout ?? []).filter((layoutItem) => !cardKeys.has(layoutItem.i))
     const layoutItemIds = new Set(layout.map((layoutItem) => layoutItem.i))
     const newCards = cards.filter((card) => !layoutItemIds.has(card.key))
     const maxY = layout.length === 0 ? 0 : Math.max(...layout.map((card) => card.y)) + cardHeight
@@ -68,7 +76,7 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
 
     function onDragStop(newLayout, _oldItem, _newItem, _placeholder, event) {
         if (isDragging(event) && newLayout !== layout) {
-            saveLayout(newLayout)
+            saveLayout(newLayout.concat(hiddenLayout))
         }
         setTimeout(() => setDragging(false), 200) // User was dragging, prevent click event propagation
     }
@@ -93,15 +101,13 @@ export function CardDashboard({ cards, initialLayout, saveLayout }) {
                 <div ref={containerRef}>
                     {mounted && (
                         <ReactGridLayout
-                            compactor={noCompactor}
-                            isDraggable={accessGranted(permissions, [EDIT_REPORT_PERMISSION])}
+                            compactor={compactor}
+                            dragConfig={{ enabled: accessGranted(permissions, [EDIT_REPORT_PERMISSION]) }}
                             gridConfig={{ cols: cols, rowHeight: 24 }}
                             layout={layout}
-                            measureBeforeMount={true}
                             onDragStart={onDragStart}
                             onDragStop={onDragStop}
-                            preventCollision={true}
-                            useCSSTransforms={false} // Don't fly-in the cards from the top left
+                            positionStrategy={absoluteStrategy} // Don't fly-in the cards from the top left
                             width={width}
                         >
                             {cardDivs(cards, isDragging)}
