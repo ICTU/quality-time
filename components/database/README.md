@@ -54,7 +54,7 @@ build keeps working and the removal quietly becomes a no-op.
 
 ### Library upgrades
 
-Three packages are upgraded to pull in Ubuntu security fixes the base image does not ship yet.
+Five packages are upgraded to pull in Ubuntu security fixes the base image does not ship yet.
 
 **`openssl` and `libssl3t64`** are upgraded to `3.0.13-0ubuntu3.15`, from
 [USN-8678-1](https://ubuntu.com/security/notices/USN-8678-1). Trivy flags the image on
@@ -77,8 +77,44 @@ certificate settings. Pinning the guard to `.12` would announce the upgrade as r
 Only the library is installed here — the `curl` command-line package is not in the base image — and `libcurl4t64` is
 required by `mongodb-org-server`, so it is upgraded rather than removed.
 
-None of these are reachable from *Quality-time*: `mongod` uses OpenSSL for TLS and never acts as a CMP or CMS
-endpoint, and it does not drive libcurl through Digest-authenticated transfers or client-certificate handle reuse.
+**`libp11-kit0`** is upgraded to `0.25.3-4ubuntu2.2`, from
+[USN-8687-1](https://ubuntu.com/security/notices/USN-8687-1), which fixes
+[CVE-2026-13757](https://www.cve.org/CVERecord?id=CVE-2026-13757) (stack exhaustion through unbounded recursion while
+parsing RPC attributes) and [CVE-2026-18938](https://www.cve.org/CVERecord?id=CVE-2026-18938) (an integer overflow in
+the RPC attribute-array length calculation that under-allocates nested attributes; a heap out-of-bounds write on 32-bit
+architectures only, which this image is not). Both are in the p11-kit RPC client, which is only used when a PKCS#11
+module is served over the p11-kit remoting protocol. The library is in the image solely as a dependency of
+`libgnutls30t64`, so it is upgraded rather than removed.
+
+**`perl-base`** is upgraded to `5.38.2-3.2ubuntu0.4`, from
+[USN-8684-1](https://ubuntu.com/security/notices/USN-8684-1). Trivy flags the image on all nine CVEs in that notice,
+because it matches on the shared `perl` source version rather than on the files the image actually installs:
+[CVE-2026-12087](https://www.cve.org/CVERecord?id=CVE-2026-12087) (out-of-bounds heap read in
+`Socket::pack_ip_mreq_source`), [CVE-2026-13221](https://www.cve.org/CVERecord?id=CVE-2026-13221) (a 16-bit overflow in
+the regex engine's trie optimisation, causing incorrect matches),
+[CVE-2026-57432](https://www.cve.org/CVERecord?id=CVE-2026-57432) (integer overflow leading to an out-of-bounds read in
+`pack`/`unpack`), [CVE-2026-57433](https://www.cve.org/CVERecord?id=CVE-2026-57433) (signed integer overflow in
+`Storable` deserialization), [CVE-2026-7017](https://www.cve.org/CVERecord?id=CVE-2026-7017) (`HTTP::Tiny` forwards
+credential headers across a cross-origin redirect), [CVE-2026-9538](https://www.cve.org/CVERecord?id=CVE-2026-9538)
+(memory exhaustion in `Archive::Tar` entry size handling),
+[CVE-2025-15649](https://www.cve.org/CVERecord?id=CVE-2025-15649) and
+[CVE-2026-48959](https://www.cve.org/CVERecord?id=CVE-2026-48959) (uncaught exception and CPU exhaustion in
+`IO::Uncompress::Unzip`), and [CVE-2026-48962](https://www.cve.org/CVERecord?id=CVE-2026-48962) (arbitrary code
+execution via `eval STRING` in `File::GlobMapper`). Only the first three touch code that is present: the base image
+installs `perl-base` alone, not `perl-modules-5.38`, so `Storable`, `HTTP::Tiny`, `Archive::Tar`,
+`IO::Uncompress::Unzip`, and `File::GlobMapper` are not in the image at all (verified with `perl -M<module>`).
+
+Unlike `ncurses-bin` and `gzip`, `perl-base` is upgraded rather than removed, even though no installed package declares
+a dependency on it — essential packages do not have to be declared. The image installs `debconf`, whose frontend
+(`/usr/share/debconf/frontend`) and `dpkg-reconfigure` are Perl scripts that `apt` and `dpkg` run while configuring and
+purging packages, so removing `perl-base` would break the purge steps above. This is the second time `perl-base` has to
+be upgraded here (it was upgraded to `5.38.2-3.2ubuntu0.3` before, and dropped from the list again when the base image
+caught up), which is exactly what the guard is for.
+
+None of these are reachable from *Quality-time*: `mongod` uses OpenSSL for TLS — not GnuTLS or p11-kit — and never
+acts as a CMP or CMS endpoint, it does not drive libcurl through Digest-authenticated transfers or client-certificate
+handle reuse, and it does not run Perl at all — `perl-base` is present only because the base image's package tooling
+needs it.
 They are upgraded anyway, because the fix is a package upgrade rather than a code change, and a published image that
 ships a package version with a known fix available is reported by every downstream scan.
 
