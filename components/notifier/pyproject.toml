@@ -1,6 +1,6 @@
 [project]
 name = "notifier"
-version = "5.58.0"
+version = "5.59.0-rc.0"
 requires-python = ">=3.14"
 classifiers = [
     "Framework :: aiohttp",
