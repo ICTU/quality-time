@@ -15,8 +15,10 @@ RUN fix="remove the manual upgrade from this Dockerfile." && \
     set -- && \
     for spec in \
         libcurl4t64=8.5.0-2ubuntu10.13 \
+        libp11-kit0=0.25.3-4ubuntu2.2 \
         libssl3t64=3.0.13-0ubuntu3.15 \
-        openssl=3.0.13-0ubuntu3.15; \
+        openssl=3.0.13-0ubuntu3.15 \
+        perl-base=5.38.2-3.2ubuntu0.4; \
     do \
         package="${spec%%=*}"; \
         if ! installed="$(dpkg-query --showformat='${Version}' --show "$package" 2>/dev/null)"; then \
