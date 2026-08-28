@@ -272,14 +272,14 @@ wheels = [
 
 [[package]]
 name = "compose-lint"
-version = "0.20.0"
+version = "0.21.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/42/c1/9dca687d938f5ee81a5223fc1350bb3e065b8a519ee7cd7a0ed0c83bf3d4/compose_lint-0.20.0.tar.gz", hash = "sha256:2a84c4a2e25749a98906a1d23d95a509c12af2b4f5254c01b2e6426a124ba211", size = 2667932, upload-time = "2026-08-18T11:29:44.964Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bd/bf/ced365b1a5a0e2d7c84243a6a439d248cc206a8022c9164843aa3badbae1/compose_lint-0.21.0.tar.gz", hash = "sha256:6d35b8ca5b94a877dec8e4cd6590a29e1bb375aebabe700755b88f049a86d949", size = 2714569, upload-time = "2026-08-20T12:08:33.904Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/50/9f/29dd046c835f208bf32cedd9e0a84216aab67e4cfb23861fd3a3d73a2c26/compose_lint-0.20.0-py3-none-any.whl", hash = "sha256:4901bd8120e7b43f55e9db4667fe71e98f197016950ef0792b12d9802ea6758c", size = 257188, upload-time = "2026-08-18T11:29:43.411Z" },
+    { url = "https://files.pythonhosted.org/packages/88/66/a08bfa3488b333e422f1a11d57f3853f6c74f5659f1424a11babbba68767/compose_lint-0.21.0-py3-none-any.whl", hash = "sha256:64b574971a0bb2e8feeb7805d4e8b5ba022115ae8722ba690efe083d45f2ced6", size = 259941, upload-time = "2026-08-20T12:08:32.185Z" },
 ]
 
 [[package]]
@@ -1107,7 +1107,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 just = [{ name = "rust-just", specifier = "==1.58.0" }]
 project-wide = [
-    { name = "compose-lint", specifier = "==0.20.0" },
+    { name = "compose-lint", specifier = "==0.21.0" },
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.29.0" },
 ]
