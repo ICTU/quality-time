@@ -1560,7 +1560,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 just = [{ name = "rust-just", specifier = "==1.58.0" }]
 project-wide = [
-    { name = "compose-lint", specifier = "==0.21.0" },
+    { name = "compose-lint", specifier = "==0.22.0" },
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.29.0" },
 ]
@@ -1687,11 +1687,11 @@ wheels = [
 
 [[package]]
 name = "types-webencodings"
-version = "0.6.0.20260821"
+version = "0.6.0.20260822"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/2c/69/216bcc56230ea37fcbb78babb08b8fe7cf38208234a7552b021603b0423e/types_webencodings-0.6.0.20260821.tar.gz", hash = "sha256:4247c9850d536e518cda08be989b2b7eebe217fab8f6fbfefc0c43690ffd4da1", size = 7688, upload-time = "2026-08-21T02:52:40.911Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/52/a3/b41d0d159282408f58b795be4129d1373c87d04d4d355886b7387819a917/types_webencodings-0.6.0.20260822.tar.gz", hash = "sha256:0df63380f9493d9985b2b9f934f8827a257064db5590c93d7646fe60fd0de5af", size = 7683, upload-time = "2026-08-22T02:43:55.152Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/62/f9/417d08803411411d09827d54639e2ca272a26143c8deb4db5c10feae323b/types_webencodings-0.6.0.20260821-py3-none-any.whl", hash = "sha256:99c27a0135ba89a70d8f4c9a68cbb14f845f13310ef3c1a9d853957a89984c41", size = 8561, upload-time = "2026-08-21T02:52:40.124Z" },
+    { url = "https://files.pythonhosted.org/packages/80/14/be7485fb90072720c6bc376b3a736eb929bfd7b51d0a969af17c1504fd3d/types_webencodings-0.6.0.20260822-py3-none-any.whl", hash = "sha256:57228045d03df76c29d178f1ad53c36f6386867e77e2e2f1ece1ad553d4d87da", size = 8557, upload-time = "2026-08-22T02:43:54.279Z" },
 ]
 
 [[package]]
