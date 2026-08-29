@@ -399,7 +399,7 @@ wheels = [
 
 [[package]]
 name = "just"
-version = "5.59.0rc0"
+version = "5.59.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -1023,7 +1023,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.59.0rc0"
+version = "5.59.0"
 source = { virtual = "../third_party" }
 dependencies = [
     { name = "archunitpython" },
@@ -1061,7 +1061,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 just = [{ name = "rust-just", specifier = "==1.58.0" }]
 project-wide = [
-    { name = "compose-lint", specifier = "==0.21.0" },
+    { name = "compose-lint", specifier = "==0.22.0" },
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.29.0" },
 ]

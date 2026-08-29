@@ -459,14 +459,14 @@ dev = [
 [package.metadata.requires-dev]
 dev = [
     { name = "furo", specifier = "==2025.12.19" },
-    { name = "gitpython", specifier = "==3.1.60" },
+    { name = "gitpython", specifier = "==3.1.61" },
     { name = "myst-parser", specifier = "==5.1.0" },
     { name = "pydantic", specifier = "==2.13.4" },
     { name = "shared-code", editable = "../components/shared_code" },
     { name = "sphinx", specifier = "==9.1.0" },
     { name = "sphinx-design", specifier = "==0.7.0" },
     { name = "tools", virtual = "../tools/third_party" },
-    { name = "vale", specifier = "==3.17.1.0" },
+    { name = "vale", specifier = "==3.18.0.0" },
 ]
 
 [[package]]
@@ -533,14 +533,14 @@ wheels = [
 
 [[package]]
 name = "gitpython"
-version = "3.1.60"
+version = "3.1.61"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "gitdb" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/84/14/e6b1a48d831755a53c2029351fcef82e70db4a08f338daefe29d8d0cf31c/gitpython-3.1.60.tar.gz", hash = "sha256:e936431879fa85581b4311fa63492ea52251909e2d655b6529c704c904ddcc24", size = 230793, upload-time = "2026-08-25T18:33:46.102Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6f/61/3285044215fb596bf093e39ccb96ece0a1076a8ca57a61e069a6a33cdb1b/gitpython-3.1.61.tar.gz", hash = "sha256:f51c24d8c0f733a195447385f5774a5dfe8767f5acfd7994a33755644c6ecc95", size = 231680, upload-time = "2026-08-28T11:01:13.761Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/71/63/ba28697918b7c190af9f3f21940d03e8814e25dd4ddd39d6929f3a553995/gitpython-3.1.60-py3-none-any.whl", hash = "sha256:39548bffb8fa0f3a548133348868bb4838e79d73283052207dc97781a569b6b4", size = 221893, upload-time = "2026-08-25T18:33:44.75Z" },
+    { url = "https://files.pythonhosted.org/packages/6f/5e/49cc172da4d0578644ba37cec5cb365b1fefc603b26edea9bcac1c7f830a/gitpython-3.1.61-py3-none-any.whl", hash = "sha256:8ab28c9da863cdd9e7d7694ec46cf3e6c9a12d8a30a1acd3447aec11975d530c", size = 222118, upload-time = "2026-08-28T11:01:12.262Z" },
 ]
 
 [[package]]
@@ -1562,7 +1562,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 just = [{ name = "rust-just", specifier = "==1.58.0" }]
 project-wide = [
-    { name = "compose-lint", specifier = "==0.21.0" },
+    { name = "compose-lint", specifier = "==0.22.0" },
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.29.0" },
 ]
@@ -1689,11 +1689,11 @@ wheels = [
 
 [[package]]
 name = "vale"
-version = "3.17.1.0"
+version = "3.18.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e8/25/413e39126ff83eb034c14fa699cb0779d580bd606a885b31d87236578b1f/vale-3.17.1.0.tar.gz", hash = "sha256:7e78e2c880225aa9002a16e2300716dc0d09566b279a785638bc9e006604459f", size = 5374, upload-time = "2026-08-18T20:25:05.629Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/81/c5/c1b3e93e90f7612e4ec88b6b37f589191e42c98dc7a6b9134c958b548a1a/vale-3.18.0.0.tar.gz", hash = "sha256:790288d41aa97f4d061f7b2b00538cfb92874b1cb3522c57a8ad5448d9e0c7db", size = 5387, upload-time = "2026-08-22T07:55:54.147Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/85/eb/497b0442acf74b39bfd7350bf22db15a90f053c411a96a1a00dfccfed3ff/vale-3.17.1.0-py3-none-any.whl", hash = "sha256:1b7caf0e2cda71b2c0813d691949bdd99f83c5d8e18fe24153c262ded4d7e0c4", size = 5943, upload-time = "2026-08-18T20:25:04.377Z" },
+    { url = "https://files.pythonhosted.org/packages/f0/49/f2d60b1bf15941c15f10627a9e6f4bfd8b06b7c5a41368d570149b4b6c55/vale-3.18.0.0-py3-none-any.whl", hash = "sha256:871643f2294c26809a19d8b2e163342c05c5d1fdc073ca8946758fd1859764cb", size = 5943, upload-time = "2026-08-22T07:55:53.086Z" },
 ]
 
 [[package]]
