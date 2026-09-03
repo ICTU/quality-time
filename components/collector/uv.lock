@@ -1564,8 +1564,8 @@ project-wide = [
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.29.0" },
 ]
-update-time = [{ name = "update-time", specifier = "==0.0.29" }]
-uv = [{ name = "uv", specifier = "==0.12.5" }]
+update-time = [{ name = "update-time", specifier = "==0.0.31" }]
+uv = [{ name = "uv", specifier = "==0.12.6" }]
 
 [[package]]
 name = "trailrunner"
@@ -1687,11 +1687,11 @@ wheels = [
 
 [[package]]
 name = "types-webencodings"
-version = "0.6.0.20260825"
+version = "0.6.0.20260826"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/61/a1/6b5f83b8ff62b70cf249f58bf564217aaf963e498ab5aaa473d6dd76d55e/types_webencodings-0.6.0.20260825.tar.gz", hash = "sha256:06faef4d563d1a2051db7d2985985d53c7e437cde0fe965ff1912a339fa030fe", size = 7698, upload-time = "2026-08-25T02:48:39.667Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3a/66/3b8884734f186cdc8f383204d8cc128bac8515d4a1209f0a30bbe7362c7f/types_webencodings-0.6.0.20260826.tar.gz", hash = "sha256:55ad82cd1c10d0dd3824e2fc779666a44375c61348a7f0939825af79994c0d69", size = 7689, upload-time = "2026-08-26T02:54:46.474Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/28/c1/c48a7de0a309d9b97ec3e6488c3b6e5d3b9c963e974a739a33d7397d6680/types_webencodings-0.6.0.20260825-py3-none-any.whl", hash = "sha256:6bd5f0fb6d822d10fb0fb1af37567c5a316174bbb224686bf360900d2a5bdad1", size = 8562, upload-time = "2026-08-25T02:48:38.729Z" },
+    { url = "https://files.pythonhosted.org/packages/31/2d/c98d88c03a2af7ded4d77abdb8def60962e5cf4a3f03613ac11ef0590bba/types_webencodings-0.6.0.20260826-py3-none-any.whl", hash = "sha256:f2fd1c5cb45fc196b6dcb9852ca5a5d1bce48802c1190c5dad0233983b699859", size = 8559, upload-time = "2026-08-26T02:54:45.635Z" },
 ]
 
 [[package]]
