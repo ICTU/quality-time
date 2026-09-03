@@ -20,7 +20,7 @@ dependencies = [
     "pyproject-fmt==2.28.1",
     "ruff==0.16.4",
     "troml==0.4.1",
-    "ty==0.0.74",
+    "ty==0.0.75",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
     "vulture==2.16",
 ]
