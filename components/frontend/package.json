@@ -40,7 +40,7 @@
         "@vitest/coverage-v8": "^4.1.6",
         "eslint": "^10.9.1",
         "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-jest": "^29.16.2",
+        "eslint-plugin-jest": "^29.16.5",
         "eslint-plugin-prettier": "^5.5.6",
         "eslint-plugin-simple-import-sort": "^14.0.0",
         "globals": "^17.11.0",
