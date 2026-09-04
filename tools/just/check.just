@@ -96,36 +96,34 @@ js-check name check folder="": (install-js-dependencies folder)
 [private]
 npm-lint folder="": (js-check "npm-lint" f"{{npm_run}} lint --if-present" folder)
 
-# GHSA advisory IDs to ignore in npm audit. Document why each one is safe to ignore.
-# JS-YAML, dev/test-only transitive dependency
-# - GHSA-h67p-54hq-rp68 Quadratic-complexity DoS in merge key handling via repeated aliases
-# - GHSA-52cp-r559-cp3m YAML merge-key chains can force quadratic CPU consumption
-# - GHSA-5p4m-2wfm-xmqj Quadratic CPU consumption in !!omap resolution (3.x and 4.x) — CVE-2026-59870 fix not backported
-# markdown-it, dev/test-only transitive dependency
-# - GHSA-6v5v-wf23-fmfq Quadratic complexity DoS in smartquotes rule via replaceAt string operations
-# nanoid
-# - GHSA-2v37-7h3g-55p8 custom generators can loop indefinitely when size is zero
-# undici, dev/test-only transitive dependency:
-# - GHSA-pr7r-676h-xcf6 Vulnerable to cross-user information disclosure via shared cache whitespace bypass
-# - GHSA-vmh5-mc38-953g Vulnerable to TLS certificate validation bypass via dropped requestTls in SOCKS5 ProxyAgent
-# - GHSA-35p6-xmwp-9g52 Vulnerable to HTTP response queue poisoning via keep-alive socket reuse
-# - GHSA-g8m3-5g58-fq7m Vulnerable to Set-Cookie SameSite attribute downgrade via permissive substring matching
-# - GHSA-hm92-r4w5-c3mj Vulnerable to cross-origin request routing via SOCKS5 proxy pool reuse
-# - GHSA-p88m-4jfj-68fv Vulnerable to HTTP header injection via Set-Cookie percent-decoding
-# - GHSA-vxpw-j846-p89q WebSocket client vulnerable to denial of service via fragment count bypass
-# brace-expansion
-# - GHSA-mh99-v99m-4gvg DoS via unbounded expansion length causing an out-of-memory process crash
-# - GHSA-rgw5-rvv9-x895 DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation
+# Check that the lockfile-lint configuration does not allow package name aliases the lock file no longer uses.
+[no-cd]
+[private]
+lockfile-aliases folder="": (js-check "lockfile-aliases" f"{{ python }} {{ justfile_directory() }}/tools/just/src/lockfile_alias_check.py" folder)
+
+# GHSA advisory IDs to ignore in npm audit. Document why each one is safe to ignore. The npm-audit-ignores recipe
+# below fails when an advisory listed here is no longer reported, so that fixed advisories don't linger in this list.
 # qs, transitive dependency of express. Fixed in qs 6.16.0, which was released on 2026-08-29 and hence blocked by the
 # `min-release-age = 7` setting in .npmrc until 2026-09-05. Remove these ignores when the lock file has been updated.
 # - GHSA-4mjr-xmp4-gh2g DoS via attacker controlled isBuffer
 # - GHSA-x5fp-wj9c-mxmx Array-limit bypass via bracket-key comma parsing
-npm_audit_ignore := "GHSA-h67p-54hq-rp68 GHSA-52cp-r559-cp3m GHSA-5p4m-2wfm-xmqj GHSA-6v5v-wf23-fmfq GHSA-2v37-7h3g-55p8 GHSA-pr7r-676h-xcf6 GHSA-vmh5-mc38-953g GHSA-35p6-xmwp-9g52 GHSA-g8m3-5g58-fq7m GHSA-hm92-r4w5-c3mj GHSA-p88m-4jfj-68fv GHSA-vxpw-j846-p89q GHSA-mh99-v99m-4gvg GHSA-rgw5-rvv9-x895 GHSA-4mjr-xmp4-gh2g GHSA-x5fp-wj9c-mxmx"
+npm_audit_ignore := "GHSA-4mjr-xmp4-gh2g GHSA-x5fp-wj9c-mxmx"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]
 [private]
 npm-audit folder="": (js-check "npm-audit" f"npm audit --json | {{ python }} {{ justfile_directory() }}/tools/just/src/npm_audit_filter.py {{ npm_audit_ignore }}" folder)
+
+# The folders to check that have JavaScript dependencies, and hence an npm audit that the ignore list above applies to.
+# Derived from folders_to_check so that adding a folder with a package.json does not need a second list to be updated.
+js_folders := shell('for folder in $1; do if [ -f "$folder/package.json" ]; then printf "%s " "$folder"; fi; done', folders_to_check)
+
+# Check that the npm audit ignore list does not contain advisories that none of the js_folders reports anymore.
+[no-cd]
+[private]
+npm-audit-ignores folder="":
+    ?[ {{ at_root }} = true ]
+    {{ start_capture(folder) }} {{ python }} {{ justfile_directory() }}/tools/just/src/npm_ignore_check.py "{{ js_folders }}" {{ npm_audit_ignore }} {{ end_capture("npm-audit-ignores") }}
 
 # Run npm outdated to check for outdated JavaScript dependencies. Ignore outdated packages that can't be updated (current == wanted).
 [no-cd]
@@ -176,7 +174,7 @@ helm-lint folder="":
 [no-cd]
 [parallel]
 [private]
-check-in-folder folder="": (ty folder) (mypy folder) (fixit folder) (ruff folder) (pyproject-fmt folder) (troml folder) (pip-audit folder) (uv-audit folder) (bandit folder) (vulture folder) (vale folder) (codespell folder) (npm-lint folder) (npm-audit folder) (npm-outdated folder) (check-justfile folder) (yamllint folder) (zizmor folder) (compose-lint folder) (helm-lint folder)
+check-in-folder folder="": (ty folder) (mypy folder) (fixit folder) (ruff folder) (pyproject-fmt folder) (troml folder) (pip-audit folder) (uv-audit folder) (bandit folder) (vulture folder) (vale folder) (codespell folder) (npm-lint folder) (lockfile-aliases folder) (npm-audit folder) (npm-audit-ignores folder) (npm-outdated folder) (check-justfile folder) (yamllint folder) (zizmor folder) (compose-lint folder) (helm-lint folder)
 
 # Change into the folder and run the checks there (passing the folder so the OK/NOK output is labelled with it).
 [no-cd]

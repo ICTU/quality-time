@@ -6,5 +6,10 @@
     "validate-integrity": true,
     "empty-hostname": false,
     "allowed-hosts": ["npm"],
-    "allowed-package-name-aliases": ["react-is-18:react-is", "react-is-19:react-is"]
+    "allowed-package-name-aliases": [
+        "react-is-18:react-is",
+        "react-is-19:react-is",
+        "@jest/react-is-18:react-is",
+        "@jest/react-is-19:react-is"
+    ]
 }
