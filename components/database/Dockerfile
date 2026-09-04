@@ -14,11 +14,29 @@ RUN fix="remove the manual upgrade from this Dockerfile." && \
     redundant=0 && \
     set -- && \
     for spec in \
+        bsdutils=1:2.39.3-9ubuntu6.6 \
+        coreutils=9.4-3ubuntu6.3 \
+        diffutils=1:3.10-1ubuntu0.1 \
+        gpgv=2.4.4-2ubuntu17.6 \
+        libattr1=1:2.5.2-1ubuntu0.1 \
+        libblkid1=2.39.3-9ubuntu6.6 \
+        libbz2-1.0=1.0.8-5.1ubuntu0.1 \
         libcurl4t64=8.5.0-2ubuntu10.13 \
+        libgcrypt20=1.10.3-2ubuntu0.2 \
+        libmount1=2.39.3-9ubuntu6.6 \
+        libncursesw6=6.4+20240113-1ubuntu2.2 \
         libp11-kit0=0.25.3-4ubuntu2.2 \
+        libsmartcols1=2.39.3-9ubuntu6.6 \
+        libssh-4=0.10.6-2ubuntu0.5 \
         libssl3t64=3.0.13-0ubuntu3.15 \
+        libtinfo6=6.4+20240113-1ubuntu2.2 \
+        libuuid1=2.39.3-9ubuntu6.6 \
+        mount=2.39.3-9ubuntu6.6 \
+        ncurses-base=6.4+20240113-1ubuntu2.2 \
         openssl=3.0.13-0ubuntu3.15 \
-        perl-base=5.38.2-3.2ubuntu0.4; \
+        perl-base=5.38.2-3.2ubuntu0.4 \
+        util-linux=2.39.3-9ubuntu6.6 \
+        zlib1g=1:1.3.dfsg-3.1ubuntu2.2; \
     do \
         package="${spec%%=*}"; \
         if ! installed="$(dpkg-query --showformat='${Version}' --show "$package" 2>/dev/null)"; then \
