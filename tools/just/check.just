@@ -103,11 +103,7 @@ lockfile-aliases folder="": (js-check "lockfile-aliases" f"{{ python }} {{ justf
 
 # GHSA advisory IDs to ignore in npm audit. Document why each one is safe to ignore. The npm-audit-ignores recipe
 # below fails when an advisory listed here is no longer reported, so that fixed advisories don't linger in this list.
-# qs, transitive dependency of express. Fixed in qs 6.16.0, which was released on 2026-08-29 and hence blocked by the
-# `min-release-age = 7` setting in .npmrc until 2026-09-05. Remove these ignores when the lock file has been updated.
-# - GHSA-4mjr-xmp4-gh2g DoS via attacker controlled isBuffer
-# - GHSA-x5fp-wj9c-mxmx Array-limit bypass via bracket-key comma parsing
-npm_audit_ignore := "GHSA-4mjr-xmp4-gh2g GHSA-x5fp-wj9c-mxmx"
+npm_audit_ignore := ""
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]

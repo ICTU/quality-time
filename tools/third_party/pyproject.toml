@@ -13,11 +13,11 @@ dependencies = [
     "archunitpython==1.5.0",
     "bandit==1.9.4",
     "codespell==2.4.3",
-    "coverage==7.15.4",
+    "coverage==7.16.0",
     "fixit==2.2.1",
     "mypy==2.3.1",
     "pip-audit==2.10.1",
-    "pyproject-fmt==2.28.1",
+    "pyproject-fmt==2.29.0",
     "ruff==0.16.5",
     "troml==0.4.1",
     "ty==0.0.75",
@@ -34,11 +34,11 @@ just = [
 project-wide = [
     "compose-lint==0.26.0",
     "yamllint==1.38.0",
-    "zizmor==1.29.0",       # Static analysis tool for GitHub Actions
+    "zizmor==1.30.0",       # Static analysis tool for GitHub Actions
 ]
 # Update-time is only run on the repository as a whole, and pins its dependencies, so it also gets its own group.
 update-time = [
-    "update-time==0.0.31",
+    "update-time==0.0.32",
 ]
 uv = [
     "uv==0.12.7",
@@ -46,7 +46,7 @@ uv = [
 
 [tool.uv]
 override-dependencies = [
-    "click==8.3.3"  # PYSEC-2026-2132: No summary provided
+    "click==8.3.3" # PYSEC-2026-2132: No summary provided
 ]
 exclude-newer = "7 days"
 package = false

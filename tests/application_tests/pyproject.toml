@@ -21,7 +21,7 @@ dev = [
 
 [tool.uv]
 override-dependencies = [
-    "click==8.3.3"  # PYSEC-2026-2132: No summary provided
+    "click==8.3.3" # PYSEC-2026-2132: No summary provided
 ]
 sources.tools = { path = "../../tools/third_party", package = false }
 exclude-newer = "7 days"
@@ -66,5 +66,5 @@ warn_return_any = true
 warn_unreachable = true
 incremental = false
 overrides = [ { module = [
-    "axe_selenium_python",
-], ignore_missing_imports = true } ]
+        "axe_selenium_python",
+    ], ignore_missing_imports = true } ]
