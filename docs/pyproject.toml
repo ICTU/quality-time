@@ -15,9 +15,9 @@ classifiers = [
 [dependency-groups]
 dev = [
     "furo==2025.12.19",
-    "gitpython==3.1.61",
+    "gitpython==3.1.62",
     "myst-parser==5.1.0",
-    "pydantic==2.13.4",     # Needed for generating the reference docs from the data model
+    "pydantic==2.13.5",     # Needed for generating the reference docs from the data model
     "shared-code",
     "sphinx==9.1.0",
     "sphinx-design==0.7.0",
@@ -27,7 +27,7 @@ dev = [
 
 [tool.uv]
 override-dependencies = [
-    "click==8.3.3"  # PYSEC-2026-2132: No summary provided
+    "click==8.3.3" # PYSEC-2026-2132: No summary provided
 ]
 sources.shared-code = { path = "../components/shared_code", editable = true }
 sources.tools = { path = "../tools/third_party", package = false }
