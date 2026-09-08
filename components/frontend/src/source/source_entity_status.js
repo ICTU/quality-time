@@ -1,4 +1,6 @@
-import { entityPropType, sourcePropType } from "../sharedPropTypes"
+import { string } from "prop-types"
+
+import { entityPropType, entityStatusPropType, sourcePropType } from "../sharedPropTypes"
 
 export const IGNORABLE_SOURCE_ENTITY_STATUSES = ["false_positive", "fixed", "wont_fix"]
 
@@ -49,4 +51,29 @@ export function entityStatusRationale(source, entity) {
 entityStatusRationale.propTypes = {
     source: sourcePropType,
     entity: entityPropType,
+}
+
+export function entityUserData(source, entity) {
+    return {
+        status: entityStatus(source, entity),
+        statusEndDate: entityStatusEndDate(source, entity),
+        rationale: entityStatusRationale(source, entity),
+    }
+}
+entityUserData.propTypes = {
+    source: sourcePropType,
+    entity: entityPropType,
+}
+
+export function entityCanBeIgnored(status, statusEndDateString) {
+    const statusEndDate = new Date(statusEndDateString)
+    const now = new Date()
+    if (statusEndDate < now) {
+        return false
+    }
+    return IGNORABLE_SOURCE_ENTITY_STATUSES.includes(status)
+}
+entityCanBeIgnored.propTypes = {
+    status: entityStatusPropType,
+    statusEndDateString: string,
 }

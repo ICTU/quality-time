@@ -6,7 +6,13 @@ import { useContext } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import { datePropType, measurementPropType, metricPropType } from "../sharedPropTypes"
-import { IGNORABLE_SOURCE_ENTITY_STATUSES, SOURCE_ENTITY_STATUS_NAME } from "../source/source_entity_status"
+import {
+    entityCanBeIgnored,
+    entityStatus,
+    entityStatusEndDate,
+    IGNORABLE_SOURCE_ENTITY_STATUSES,
+    SOURCE_ENTITY_STATUS_NAME,
+} from "../source/source_entity_status"
 import {
     getFormattedMetricValue,
     getMetricUnit,
@@ -58,11 +64,12 @@ measurementValueLabel.propTypes = {
 function ignoredEntitiesCount(measurement) {
     const count = Object.fromEntries(IGNORABLE_SOURCE_ENTITY_STATUSES.map((status) => [status, 0]))
     for (const source of measurement?.sources ?? []) {
-        // Ignore entity user data that refers to entities that no longer exist by checking the entity keys
-        const validKeys = new Set((source.entities ?? []).map((entity) => entity.key))
-        for (const [entityKey, entity] of Object.entries(source.entity_user_data ?? {})) {
-            if (validKeys.has(entityKey) && Object.keys(count).includes(entity.status)) {
-                count[entity.status]++
+        // Iterate over the entities, and not over the entity user data, to ignore user data of entities that no
+        // longer exist
+        for (const entity of source.entities ?? []) {
+            const status = entityStatus(source, entity)
+            if (entityCanBeIgnored(status, entityStatusEndDate(source, entity))) {
+                count[status]++
             }
         }
     }

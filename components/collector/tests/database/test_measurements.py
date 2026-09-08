@@ -144,7 +144,16 @@ class TestMeasurements(unittest.TestCase):
         )
         create_measurement(self.database, self.measurement_data(metric_uuid=METRIC_ID2, source_uuid=SOURCE_ID2))
         inserted_measurement = self.database.measurements.find_one(filter={"metric_uuid": METRIC_ID2})
-        self.assertEqual(entity_user_data, cast(dict, inserted_measurement)["sources"][0]["entity_user_data"])
+        # The copied entity user data also has the exclusion attributes, translated from the status attributes
+        expected_entity_user_data = {
+            "1": {
+                "excluded": True,
+                "exclusion_end_date": "2026-03-10",
+                "status": "false_positive",
+                "status_end_date": "2026-03-10",
+            },
+        }
+        self.assertEqual(expected_entity_user_data, cast(dict, inserted_measurement)["sources"][0]["entity_user_data"])
 
     def test_create_measurement_for_copied_metric_without_measurement(self):
         """Test that the entity user data are not copied from the original measurement if it has no measurements."""

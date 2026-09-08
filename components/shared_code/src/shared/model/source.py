@@ -1,9 +1,8 @@
 """Source model class."""
 
-from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, cast
 
-from shared.utils.functions import iso_timestamp
+from .entity_user_data import EntityUserData
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -57,22 +56,20 @@ class Source(dict):
         }
         # Copy the user data of entities, keeping 'orphaned' entity user data around for a while in case the entity
         # returns in a later measurement:
-        max_timedelta_to_keep_orphaned_entity_user_data = timedelta(days=21)
         for entity_key, attributes in source.get("entity_user_data", {}).items():
             entity_key = changed_entity_keys.get(entity_key, entity_key)  # noqa: PLW2901
+            entity_user_data = EntityUserData(attributes)
+            entity_user_data.translate_legacy_attributes()
             if entity_key in new_entity_keys:
-                if "orphaned_since" in attributes:
-                    del attributes["orphaned_since"]  # The entity reappeared, remove the orphaned since date/time
-            elif "orphaned_since" in attributes:
-                orphaned_since = datetime.fromisoformat(attributes["orphaned_since"])
-                orphaned_timedelta = datetime.now(tz=orphaned_since.tzinfo) - orphaned_since
-                if orphaned_timedelta > max_timedelta_to_keep_orphaned_entity_user_data:
+                entity_user_data.mark_not_orphaned()  # The entity reappeared
+            elif entity_user_data.is_orphaned():
+                if entity_user_data.orphaned_too_long():
                     continue  # Don't copy this user data, it has been orphaned too long
             else:
                 # The entity user data refers to a disappeared entity. Keep it around in case the entity
-                # returns, but also set the current date/time so we can eventually remove the user data.
-                attributes["orphaned_since"] = iso_timestamp()
-            self.setdefault("entity_user_data", {})[entity_key] = attributes
+                # returns, but also record the current date/time so we can eventually remove the user data.
+                entity_user_data.mark_orphaned()
+            self.setdefault("entity_user_data", {})[entity_key] = entity_user_data
 
     def value_of_entities_to_ignore(self) -> int:
         """Return the value of ignored entities, i.e. entities marked as fixed, false positive or won't fix.
@@ -95,15 +92,4 @@ class Source(dict):
         """Return the entities to ignore."""
         user_data = self.get("entity_user_data", {})
         entities = self.get("entities", [])
-        return [entity for entity in entities if self._entity_to_be_ignored(user_data.get(entity["key"], {}))]
-
-    @staticmethod
-    def _entity_to_be_ignored(entity: dict[str, str]) -> bool:
-        """Return whether to ignore the entity."""
-        statuses_to_ignore = ("fixed", "false_positive", "wont_fix")
-        status_end_date = entity.get("status_end_date")
-        if status_end_date:
-            status_end_datetime = datetime.fromisoformat(status_end_date)
-            if status_end_datetime < datetime.now(tz=status_end_datetime.tzinfo):
-                return False
-        return entity.get("status") in statuses_to_ignore
+        return [entity for entity in entities if EntityUserData(user_data.get(entity["key"], {})).is_ignored()]

@@ -209,6 +209,46 @@ it("shows ignored measurement entities", async () => {
     await expectTextAfterWait(/Ignored foo/)
 })
 
+it("does not show ignored measurement entities whose status end date has passed", async () => {
+    renderMeasurementValue({
+        status: "target_met",
+        unit_singular: "foo",
+        latestMeasurement: {
+            start: "2022-01-16T00:31:00",
+            end: "2022-01-16T00:51:00",
+            count: { value: "1" },
+            sources: [
+                {
+                    entities: [{ key: "entity1" }],
+                    entity_user_data: { entity1: { status: "false_positive", status_end_date: "2022-02-02" } },
+                },
+            ],
+        },
+    })
+    await hoverText(/1/)
+    await expectNoTextAfterWait(/Ignored foo/)
+})
+
+it("shows ignored measurement entities whose status end date has not passed", async () => {
+    renderMeasurementValue({
+        status: "target_met",
+        unit_singular: "foo",
+        latestMeasurement: {
+            start: "2022-01-16T00:31:00",
+            end: "2022-01-16T00:51:00",
+            count: { value: "1" },
+            sources: [
+                {
+                    entities: [{ key: "entity1" }],
+                    entity_user_data: { entity1: { status: "false_positive", status_end_date: "3000-01-01" } },
+                },
+            ],
+        },
+    })
+    await hoverText(/1/)
+    await expectTextAfterWait(/Ignored foo/)
+})
+
 it("does not show ignored measurement entities that no longer exist", async () => {
     renderMeasurementValue({
         status: "target_met",

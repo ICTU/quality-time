@@ -28,11 +28,10 @@ function renderSourceEntityDetails({ report = null, statusEndDate = null } = {})
                     metricUuid="metric_uuid"
                     sourceUuid="source_uuid"
                     entity={{ key: "key" }}
-                    status="unconfirmed"
+                    entityUserData={{ rationale: "", status: "unconfirmed", statusEndDate: statusEndDate }}
                     name="violation"
                     reload={reload}
                     report={report}
-                    statusEndDate={statusEndDate}
                 />
             </PermissionsContext>
         </LocalizationProvider>,
