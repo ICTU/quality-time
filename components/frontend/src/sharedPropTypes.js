@@ -117,6 +117,13 @@ export const entityPropType = shape({
     key: string,
 })
 
+// The user data of one measurement entity, as passed to the components that show and edit it
+export const entityUserDataPropType = shape({
+    status: entityStatusPropType,
+    statusEndDate: string,
+    rationale: string,
+})
+
 export const entityAttributePropType = shape({
     key: string,
 })
@@ -153,12 +160,22 @@ export const issueStatusPropType = shape({
     updated: string,
 })
 
-const entityUserDataPropType = shape({
-    status: entityStatusPropType,
-})
+// The user data of the measurement entities of one source, as stored in a measurement, keyed by entity key.
+// The API-server writes the excluded and exclusion end date attributes, but the frontend does not read them yet,
+// see https://github.com/ICTU/quality-time/issues/9856.
+const measurementEntityUserDataPropType = objectOf(
+    shape({
+        excluded: bool,
+        exclusion_end_date: string,
+        orphaned_since: string,
+        rationale: string,
+        status: entityStatusPropType,
+        status_end_date: string,
+    }),
+)
 
 export const measurementSourcePropType = shape({
-    entity_user_date: entityUserDataPropType,
+    entity_user_data: measurementEntityUserDataPropType,
     connection_error: string,
     parse_error: string,
 })
@@ -171,7 +188,7 @@ export const measurementsPropType = arrayOf(measurementPropType)
 
 export const sourcePropType = shape({
     entities: array,
-    entity_user_data: object,
+    entity_user_data: measurementEntityUserDataPropType,
     source_uuid: string,
 })
 

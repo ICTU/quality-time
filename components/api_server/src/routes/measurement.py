@@ -1,6 +1,7 @@
 """Measurement routes."""
 
 import time
+from http import HTTPStatus
 from typing import cast, TYPE_CHECKING
 
 import bottle
@@ -13,7 +14,8 @@ from shared.utils.type import MetricId, SourceId
 from database import sessions
 from database.measurements import count_measurements, all_metric_measurements, measurements_in_period
 from database.reports import latest_report_for_uuids, latest_reports
-from utils.functions import report_date_time, sanitize_html
+from model.entity_user_data import EntityUserData
+from utils.functions import report_date_time
 from utils.log import get_logger
 
 from .plugins.auth_plugin import EDIT_ENTITY_PERMISSION
@@ -22,6 +24,8 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from pymongo.database import Database
+
+    from utils.type import ErrorResponse
 
 
 @bottle.post(
@@ -34,31 +38,26 @@ def set_entity_attribute(
     entity_key: str,
     attribute: str,
     database: Database,
-) -> Measurement:
+) -> Measurement | ErrorResponse:
     """Set an entity attribute."""
+    if attribute not in EntityUserData.SETTABLE_ATTRIBUTES:
+        bottle.response.status = HTTPStatus.BAD_REQUEST
+        settable_attributes = ", ".join(EntityUserData.SETTABLE_ATTRIBUTES)
+        return {"ok": False, "error": f"Entity attribute {attribute} cannot be set, use one of: {settable_attributes}."}
     report = latest_report_for_uuids(latest_reports(database), metric_uuid)[0]
     metric = report.metrics_dict[metric_uuid]
     new_measurement = cast(Measurement, latest_measurement(database, metric)).copy()
     source = first(new_measurement["sources"], lambda source: source["source_uuid"] == source_uuid)
     entity = first(source["entities"], lambda entity: entity["key"] == entity_key)
     entity_description = "/".join([str(entity[key]) for key in entity if key not in ("key", "url")])
-    old_value = source.get("entity_user_data", {}).get(entity_key, {}).get(attribute) or ""
+    entity_user_data = EntityUserData(source.get("entity_user_data", {}).get(entity_key, {}))
     new_value = cast(dict, bottle.request.json)[attribute]
-    if attribute == "rationale" and new_value:
-        new_value = sanitize_html(new_value)
+    description = entity_user_data.set_attribute(attribute, new_value, entity_description, report)
+    source.setdefault("entity_user_data", {})[entity_key] = entity_user_data
     user = sessions.find_user(database)
-    description = f"{user.name()} changed the {attribute} of '{entity_description}' from '{old_value}' to '{new_value}'"
-    entity_user_data = source.setdefault("entity_user_data", {}).setdefault(entity_key, {})
-    entity_user_data[attribute] = new_value
-    if attribute == "status":
-        new_end_date = report.deadline(new_value)
-        old_end_date = entity_user_data.get("status_end_date")
-        if new_end_date != old_end_date:
-            entity_user_data["status_end_date"] = new_end_date
-            description += f" and changed the status end date from '{old_end_date}' to '{new_end_date}'"
     new_measurement["delta"] = {
         "uuids": [report.uuid, metric.subject_uuid, metric_uuid, source_uuid],
-        "description": description + ".",
+        "description": f"{user.name()} {description}.",
         "email": user.email,
     }
     return insert_new_measurement(database, new_measurement)

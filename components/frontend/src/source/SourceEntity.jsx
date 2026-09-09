@@ -5,7 +5,7 @@ import { useState } from "react"
 import {
     entityAttributesPropType,
     entityPropType,
-    entityStatusPropType,
+    entityUserDataPropType,
     reportPropType,
     stringsPropType,
 } from "../sharedPropTypes"
@@ -13,22 +13,9 @@ import { DivWithHtml } from "../widgets/DivWithHtml"
 import { TableRowWithDetails } from "../widgets/TableRowWithDetails"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 import { alignment } from "./source_entity_alignment"
-import { IGNORABLE_SOURCE_ENTITY_STATUSES, SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
+import { entityCanBeIgnored, SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
 import { SourceEntityAttribute } from "./SourceEntityAttribute"
 import { SourceEntityDetails } from "./SourceEntityDetails"
-
-export function entityCanBeIgnored(status, statusEndDateString) {
-    const statusEndDate = new Date(statusEndDateString)
-    const now = new Date()
-    if (statusEndDate < now) {
-        return false
-    }
-    return IGNORABLE_SOURCE_ENTITY_STATUSES.includes(status)
-}
-entityCanBeIgnored.propTypes = {
-    status: entityStatusPropType,
-    statusEndDateString: string,
-}
 
 export function SourceEntity({
     columnsToHide,
@@ -38,14 +25,13 @@ export function SourceEntity({
     entity,
     entityName,
     entityAttributes,
-    rationale,
+    entityUserData,
     reload,
     report,
-    status,
-    statusEndDate,
 }) {
     const [expanded, setExpanded] = useState(false)
 
+    const { rationale, status, statusEndDate } = entityUserData
     const ignoredEntity = entityCanBeIgnored(status, statusEndDate)
     if (hideIgnoredEntities && ignoredEntity) {
         return null
@@ -63,14 +49,12 @@ export function SourceEntity({
     const details = (
         <SourceEntityDetails
             entity={entity}
+            entityUserData={entityUserData}
             metricUuid={metricUuid}
             name={entityName}
-            rationale={rationale}
             reload={reload}
             report={report}
             sourceUuid={sourceUuid}
-            status={status}
-            statusEndDate={statusEndDate}
         />
     )
     return (
@@ -119,9 +103,7 @@ SourceEntity.propTypes = {
     entity: entityPropType,
     entityName: string,
     entityAttributes: entityAttributesPropType,
-    rationale: string,
+    entityUserData: entityUserDataPropType,
     reload: func,
     report: reportPropType,
-    status: entityStatusPropType,
-    statusEndDate: string,
 }

@@ -34,6 +34,7 @@ if TYPE_CHECKING:
     from shared.utils.type import ReportId
 
     from model.report import Report
+    from utils.type import ErrorResponse
 
 
 def with_report[ReturnType](route: Callable[..., ReturnType] | None = None, pass_report_uuid: bool = True):
@@ -42,7 +43,7 @@ def with_report[ReturnType](route: Callable[..., ReturnType] | None = None, pass
         return partial(with_report, pass_report_uuid=pass_report_uuid)
 
     @wraps(route)
-    def wrapper(database: Database, report_uuid: ReportId, *args, **kwargs) -> ReturnType | dict[str, str | bool]:
+    def wrapper(database: Database, report_uuid: ReportId, *args, **kwargs) -> ReturnType | ErrorResponse:
         report = latest_report(database, report_uuid)
         if report is None:
             bottle.response.status = HTTPStatus.NOT_FOUND

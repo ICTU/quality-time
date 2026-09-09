@@ -217,6 +217,17 @@ it("shows the hide ignored entities button with two ignored entities", async () 
     expectLabelText(/Hide the 2 entities that have been/)
 })
 
+it("counts the ignored entities by status, ignoring the exclusion attributes", async () => {
+    // The API-server writes the exclusion attributes ahead of the user interface, which still uses the status
+    // attributes, see https://github.com/ICTU/quality-time/issues/9856
+    const fixture = JSON.parse(JSON.stringify(sourceFixture))
+    fixture.entity_user_data["2"].status_end_date = "3000-01-01"
+    fixture.entity_user_data["2"].excluded = false
+    fixture.entity_user_data["2"].exclusion_end_date = "2020-01-02"
+    renderSourceEntities({ measurements: [{ sources: [fixture] }] })
+    expectLabelText(/Hide the 1 entity name that has been/)
+})
+
 it("shows the show ignored entities button", async () => {
     history.push("?hide_ignored_entities=metric_uuid")
     const fixture = JSON.parse(JSON.stringify(sourceFixture))

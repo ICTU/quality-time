@@ -89,3 +89,12 @@ Feature: measurement entities
     Then the metric status is "target_not_met"
     When the client sets the status of entity 1 to "confirmed"
     Then the metric status is "target_met"
+
+  Scenario: an entity attribute that users cannot set is rejected
+    Given an existing metric with type "user_story_points"
+    And an existing source with type "azure_devops"
+    When the collector measures "100"
+      | key | story_points |
+      | 1   | 100          |
+    And the client sets the orphaned_since of entity 1 to "2026-01-01"
+    Then the server returns a 400

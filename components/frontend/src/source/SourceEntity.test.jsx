@@ -24,10 +24,8 @@ function renderSourceEntity({
                         entity={{ attr1: "good", attr2: "bad", first_seen: firstSeen }}
                         entityAttributes={[{ key: "attr1" }, { key: "attr2", color: { bad: "warning" } }]}
                         entityName="entity"
+                        entityUserData={{ rationale: rationale, status: status, statusEndDate: statusEndDate }}
                         hideIgnoredEntities={hideIgnoredEntities}
-                        rationale={rationale}
-                        status={status}
-                        statusEndDate={statusEndDate}
                     />
                 </TableBody>
             </Table>

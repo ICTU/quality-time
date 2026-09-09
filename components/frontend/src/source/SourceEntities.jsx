@@ -37,8 +37,14 @@ import { SortableTableHeaderCell } from "../widgets/TableHeaderCell"
 import { FailedToLoadMeasurementsWarningMessage, InfoMessage } from "../widgets/WarningMessage"
 import { alignment } from "./source_entity_alignment"
 import { determineColumnsToHide } from "./source_entity_column"
-import { entityStatus, entityStatusEndDate, entityStatusRationale } from "./source_entity_status"
-import { entityCanBeIgnored, SourceEntity } from "./SourceEntity"
+import {
+    entityCanBeIgnored,
+    entityStatus,
+    entityStatusEndDate,
+    entityStatusRationale,
+    entityUserData,
+} from "./source_entity_status"
+import { SourceEntity } from "./SourceEntity"
 
 function EntityAttributeHeaderCell({ entityAttribute, ...sortProps }) {
     return (
@@ -241,10 +247,8 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
             key={entity.key}
             metricUuid={metricUuid}
             reload={reload}
+            entityUserData={entityUserData(lastMeasurementSource, entity)}
             report={report}
-            status={entityStatus(lastMeasurementSource, entity)}
-            statusEndDate={entityStatusEndDate(lastMeasurementSource, entity)}
-            rationale={entityStatusRationale(lastMeasurementSource, entity)}
             sourceUuid={sourceUuid}
         />
     ))

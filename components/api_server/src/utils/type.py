@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 Change = dict[str, str | dict[str, str]]
 EditScope = Literal["source", "report"]
+ErrorResponse = dict[str, str | bool]
 Position = Literal["first", "last", "next", "previous"]
 SessionId = NewType("SessionId", str)
 URL = NewType("URL", str)

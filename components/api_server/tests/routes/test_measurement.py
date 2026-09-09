@@ -1,6 +1,7 @@
 """Unit tests for the measurement routes."""
 
 from datetime import timedelta
+from http import HTTPStatus
 from typing import cast
 from unittest.mock import Mock, patch
 
@@ -117,6 +118,7 @@ class SetEntityAttributeTest(DatabaseTestCase):
             ],
         }
         self.database.measurements.find_one.return_value = self.measurement
+        self.uuids = [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID]  # The UUIDs affected by the change
 
         def insert_one(new_measurement) -> None:
             """Fake setting an id on the inserted measurement."""
@@ -127,7 +129,19 @@ class SetEntityAttributeTest(DatabaseTestCase):
         self.report = create_report()
         self.database.reports.find.return_value = [self.report]
 
-    def set_entity_attribute(self, attribute: str = "attribute", value: str = "value") -> Measurement:
+    def assert_delta(self, measurement: Measurement, description: str) -> None:
+        """Assert that the measurement has the expected delta attributes."""
+        self.assertEqual(
+            {
+                "description": description
+                or "John Doe changed the status_end_date of 'entity title/foo/None' from '' to '3000-01-01'.",
+                "email": JOHN["email"],
+                "uuids": [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
+            },
+            measurement["delta"],
+        )
+
+    def set_entity_attribute(self, attribute: str = "status_end_date", value: str = "3000-01-01") -> Measurement:
         """Set the entity attribute and return the new measurement."""
         with patch("bottle.request", Mock(json={attribute: value})):
             return cast(Measurement, set_entity_attribute(METRIC_ID, SOURCE_ID, "entity_key", attribute, self.database))
@@ -136,21 +150,24 @@ class SetEntityAttributeTest(DatabaseTestCase):
         """Test that setting an attribute inserts a new measurement."""
         measurement = self.set_entity_attribute()
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
-        self.assertEqual({"attribute": "value"}, entity)
-        self.assertEqual(
-            {
-                "description": "John Doe changed the attribute of 'entity title/foo/None' from '' to 'value'.",
-                "email": JOHN["email"],
-                "uuids": [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
-            },
-            measurement["delta"],
-        )
+        self.assertEqual({"excluded": False, "status_end_date": "3000-01-01"}, entity)
+        description = "John Doe changed the status_end_date of 'entity title/foo/None' from '' to '3000-01-01'."
+        self.assert_delta(measurement, description)
+
+    @patch("bottle.response")
+    def test_set_attribute_that_cannot_be_set(self, response):
+        """Test that setting an attribute that users cannot set fails."""
+        result = self.set_entity_attribute("attribute", "value")
+        expected_error = "Entity attribute attribute cannot be set, use one of: status, status_end_date, rationale."
+        self.assertEqual({"ok": False, "error": expected_error}, result)
+        self.assertEqual(HTTPStatus.BAD_REQUEST, response.status)
+        self.database.measurements.find_one.assert_not_called()
 
     def test_set_rationale_sanitizes_html(self):
         """Test that dangerous HTML is removed from the rationale, because the frontend renders it as HTML."""
         measurement = self.set_entity_attribute("rationale", '<img src="x" onerror="alert(1)">Why not')
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
-        self.assertEqual({"rationale": '<img src="x">Why not'}, entity)
+        self.assertEqual({"excluded": False, "rationale": '<img src="x">Why not'}, entity)
 
     def test_set_status_also_sets_status_end_date_if_status_has_a_desired_response_time(self):
         """Test that setting the status also sets the end date when the desired status resolution has been set."""
@@ -158,16 +175,20 @@ class SetEntityAttributeTest(DatabaseTestCase):
         self.report["desired_response_times"] = {"false_positive": 10}
         measurement = self.set_entity_attribute("status", "false_positive")
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
-        self.assertEqual({"status": "false_positive", "status_end_date": str(deadline)}, entity)
         self.assertEqual(
             {
-                "description": "John Doe changed the status of 'entity title/foo/None' from '' to 'false_positive' "
-                f"and changed the status end date from 'None' to '{deadline}'.",
-                "email": JOHN["email"],
-                "uuids": [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
+                "excluded": True,
+                "exclusion_end_date": str(deadline),
+                "status": "false_positive",
+                "status_end_date": str(deadline),
             },
-            measurement["delta"],
+            entity,
         )
+        description = (
+            "John Doe changed the status of 'entity title/foo/None' from '' to 'false_positive' "
+            f"and changed the status end date from 'None' to '{deadline}'."
+        )
+        self.assert_delta(measurement, description)
 
     def test_set_status_does_not_set_the_status_end_date_if_it_is_unchanged(self):
         """Test that setting the status does not set the end date if it hasn't changed."""
@@ -176,44 +197,34 @@ class SetEntityAttributeTest(DatabaseTestCase):
         self.report["desired_response_times"] = {"false_positive": 10}
         measurement = self.set_entity_attribute("status", "false_positive")
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
-        self.assertEqual({"status": "false_positive", "status_end_date": str(deadline)}, entity)
         self.assertEqual(
             {
-                "description": "John Doe changed the status of 'entity title/foo/None' from '' to 'false_positive'.",
-                "email": JOHN["email"],
-                "uuids": [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
+                "excluded": True,
+                "exclusion_end_date": str(deadline),
+                "status": "false_positive",
+                "status_end_date": str(deadline),
             },
-            measurement["delta"],
+            entity,
         )
+        description = "John Doe changed the status of 'entity title/foo/None' from '' to 'false_positive'."
+        self.assert_delta(measurement, description)
 
     def test_set_status_does_not_set_status_end_date_if_desired_response_time_turned_off(self):
         """Test that setting the status does not set the end date if the desired response time has been turned off."""
         self.report["desired_response_times"] = {"false_positive": None}
         measurement = self.set_entity_attribute("status", "false_positive")
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
-        self.assertEqual({"status": "false_positive"}, entity)
-        self.assertEqual(
-            {
-                "description": "John Doe changed the status of 'entity title/foo/None' from '' to 'false_positive'.",
-                "email": JOHN["email"],
-                "uuids": [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
-            },
-            measurement["delta"],
-        )
+        self.assertEqual({"excluded": True, "status": "false_positive"}, entity)
+        description = "John Doe changed the status of 'entity title/foo/None' from '' to 'false_positive'."
+        self.assert_delta(measurement, description)
 
     def test_set_status_does_not_reset_status_end_date_if_status_is_unconfirmed(self):
         """Test that setting the status to unconfirmed does not reset the end date."""
         measurement = self.set_entity_attribute("status", "unconfirmed")
         entity = measurement["sources"][0]["entity_user_data"]["entity_key"]
-        self.assertEqual({"status": "unconfirmed"}, entity)
-        self.assertEqual(
-            {
-                "description": "John Doe changed the status of 'entity title/foo/None' from '' to 'unconfirmed'.",
-                "email": JOHN["email"],
-                "uuids": [REPORT_ID, SUBJECT_ID, METRIC_ID, SOURCE_ID],
-            },
-            measurement["delta"],
-        )
+        self.assertEqual({"excluded": False, "status": "unconfirmed"}, entity)
+        description = "John Doe changed the status of 'entity title/foo/None' from '' to 'unconfirmed'."
+        self.assert_delta(measurement, description)
 
 
 class StreamNrMeasurementsTest(DatabaseTestCase):

@@ -8,7 +8,7 @@ import { useContext } from "react"
 import { setSourceEntityAttribute } from "../api/source"
 import { accessGranted, EDIT_ENTITY_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
-import { entityPropType, entityStatusPropType, reportPropType } from "../sharedPropTypes"
+import { entityPropType, entityStatusPropType, entityUserDataPropType, reportPropType } from "../sharedPropTypes"
 import { capitalize, formatDays, getDesiredResponseTime } from "../utils"
 import { Header } from "../widgets/Header"
 import { SOURCE_ENTITY_STATUS_ACTION, SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
@@ -67,19 +67,10 @@ entityStatusOptions.propTypes = {
     report: reportPropType,
 }
 
-export function SourceEntityDetails({
-    entity,
-    metricUuid,
-    name,
-    rationale,
-    reload,
-    report,
-    status,
-    statusEndDate,
-    sourceUuid,
-}) {
+export function SourceEntityDetails({ entity, entityUserData, metricUuid, name, reload, report, sourceUuid }) {
     const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_ENTITY_PERMISSION])
+    const { rationale, status, statusEndDate } = entityUserData
     return (
         <Grid container spacing={{ xs: 1, sm: 2, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} sx={{ margin: "10px" }}>
             <Grid size={{ xs: 1, sm: 2, md: 3 }}>
@@ -134,12 +125,10 @@ export function SourceEntityDetails({
 }
 SourceEntityDetails.propTypes = {
     entity: entityPropType,
+    entityUserData: entityUserDataPropType,
     metricUuid: string,
     name: string,
-    rationale: string,
     reload: func,
     report: reportPropType,
-    status: entityStatusPropType,
-    statusEndDate: string,
     sourceUuid: string,
 }
