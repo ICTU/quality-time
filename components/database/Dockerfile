@@ -50,10 +50,10 @@ RUN fix="remove the manual upgrade from this Dockerfile." && \
         fi; \
     done && \
     [ "$redundant" -eq 0 ] && \
-    apt-get update && \
+    apt-get --option Acquire::Retries=3 update && \
     apt-get purge --yes mongodb-database-tools mongodb-org-database-tools-extra && \
     apt-get purge --yes --allow-remove-essential ncurses-bin gzip && \
-    apt-get install --only-upgrade --yes --no-install-recommends "$@" && \
+    apt-get --option Acquire::Retries=3 install --only-upgrade --yes --no-install-recommends "$@" && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/local/bin/gosu && \

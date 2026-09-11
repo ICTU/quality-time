@@ -90,6 +90,14 @@ parameters so the install can pass a quoted `"$@"` instead of word-splitting an 
 is what lets the step pass ShellCheck's SC2086 and SonarQube's S6570 without a suppression in either tool. Add new
 packages to that one list and nothing else needs touching.
 
+### Transient mirror failures
+
+The two `apt-get` invocations that hit the network pass `--option Acquire::Retries=3`. The base image configures no
+retries, so a single `archive.ubuntu.com` hiccup — a 503, a reset connection, a hash sum mismatch — aborts the whole
+step with apt's exit code 100, which surfaces as a build failure that does not reproduce. CI builds this image in four
+workflows in parallel, which makes hitting one likely enough to guard against. Note that the guard above exits 1, not
+100, so an exit code of 100 always points at apt itself rather than at a redundant upgrade.
+
 ### Linter exceptions
 
 **DL3008** (pin apt versions) is ignored because `--only-upgrade` pulls the latest security patch rather than a fixed
