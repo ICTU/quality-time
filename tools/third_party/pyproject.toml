@@ -32,16 +32,16 @@ just = [
 # Tools that are run on the repository as a whole, instead of per component, are in a group so that they are not
 # installed in the components' environments, where their dependencies would needlessly constrain the resolution.
 project-wide = [
-    "compose-lint==0.26.0",
+    "compose-lint==0.27.0",
     "yamllint==1.38.0",
     "zizmor==1.30.0",       # Static analysis tool for GitHub Actions
 ]
 # Update-time is only run on the repository as a whole, and pins its dependencies, so it also gets its own group.
 update-time = [
-    "update-time==0.0.33",
+    "update-time==0.0.34",
 ]
 uv = [
-    "uv==0.12.9",
+    "uv==0.12.10",
 ]
 
 [tool.uv]

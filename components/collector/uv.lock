@@ -1582,12 +1582,12 @@ requires-dist = [
 [package.metadata.requires-dev]
 just = [{ name = "rust-just", specifier = "==1.58.0" }]
 project-wide = [
-    { name = "compose-lint", specifier = "==0.26.0" },
+    { name = "compose-lint", specifier = "==0.27.0" },
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.30.0" },
 ]
-update-time = [{ name = "update-time", specifier = "==0.0.33" }]
-uv = [{ name = "uv", specifier = "==0.12.9" }]
+update-time = [{ name = "update-time", specifier = "==0.0.34" }]
+uv = [{ name = "uv", specifier = "==0.12.10" }]
 
 [[package]]
 name = "trailrunner"
@@ -1709,11 +1709,11 @@ wheels = [
 
 [[package]]
 name = "types-webencodings"
-version = "0.6.0.20260827"
+version = "0.6.0.20260907"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/1d/b7/33bd0df774f09d3316894a792c7585f64ce044fca60c047e4ed02e937d10/types_webencodings-0.6.0.20260827.tar.gz", hash = "sha256:b7a8ce68141ae0d318fbc479137f28dc245ba578ae07f6ec6ce35b294f04cf41", size = 7693, upload-time = "2026-08-27T12:06:12.036Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/01/74/b83cf1d523516bc818ffe6fa7c2f5504e0eeee7c5c394ecc1b404f95fe92/types_webencodings-0.6.0.20260907.tar.gz", hash = "sha256:efa85bc5114419ed45aec227ca5051cca63fa3e2bd13fcf79017ee4107603efc", size = 7748, upload-time = "2026-09-07T06:43:22.142Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cd/73/a9a0f2845cdb4ffe0d5123ebfe96f5c3b3f5a1f1848ff350eef4d2e0dbc0/types_webencodings-0.6.0.20260827-py3-none-any.whl", hash = "sha256:10600b0833f6c2a565879df74f806df69659f6fd87857f11438b924c74587416", size = 8559, upload-time = "2026-08-27T12:06:11.097Z" },
+    { url = "https://files.pythonhosted.org/packages/42/e7/dc1ea506e123c437c4551c35498eaade289f52d7f7ddf3f77cf94f0675dc/types_webencodings-0.6.0.20260907-py3-none-any.whl", hash = "sha256:86dc9b5a14665b24d5d7d061149c8c3f50355243df5ef285bf816c2e2cc093d5", size = 8584, upload-time = "2026-09-07T06:43:21.177Z" },
 ]
 
 [[package]]

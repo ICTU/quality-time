@@ -1083,12 +1083,12 @@ requires-dist = [
 [package.metadata.requires-dev]
 just = [{ name = "rust-just", specifier = "==1.58.0" }]
 project-wide = [
-    { name = "compose-lint", specifier = "==0.26.0" },
+    { name = "compose-lint", specifier = "==0.27.0" },
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.30.0" },
 ]
-update-time = [{ name = "update-time", specifier = "==0.0.33" }]
-uv = [{ name = "uv", specifier = "==0.12.9" }]
+update-time = [{ name = "update-time", specifier = "==0.0.34" }]
+uv = [{ name = "uv", specifier = "==0.12.10" }]
 
 [[package]]
 name = "trailrunner"
