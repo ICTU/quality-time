@@ -14,7 +14,7 @@ import {
     clickButton,
     clickRole,
     clickText,
-    expectAltText,
+    expectAltTextAfterWait,
     expectLabelText,
     expectNoAccessibilityViolations,
     expectNoAltText,
@@ -78,7 +78,7 @@ it("sets the user from local storage", async () => {
     setUserInLocalStorage(1)
     render(<App />)
     expectText(/admin/)
-    expectAltText(/Avatar for admin/)
+    await expectAltTextAfterWait(/Avatar for admin/)
 })
 
 it("does not set invalid email addresses", async () => {
@@ -124,7 +124,7 @@ it("logs in via forward authentication when the server returns ok", async () => 
     )
     render(<App />)
     await expectTextAfterWait(/fwd@example.org/)
-    expectAltText(/Avatar for fwd@example.org/)
+    await expectAltTextAfterWait(/Avatar for fwd@example.org/)
 })
 
 it("shows an error toast when forward authentication rejects", async () => {

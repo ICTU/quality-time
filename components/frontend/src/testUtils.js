@@ -54,6 +54,12 @@ export function expectAltText(text, count = 1) {
     expect(screen.getAllByAltText(text)).toHaveLength(count)
 }
 
+export async function expectAltTextAfterWait(text, count = 1) {
+    await waitFor(() => {
+        expectAltText(text, count)
+    })
+}
+
 export function expectNoAltText(text) {
     expect(screen.queryAllByAltText(text)).toHaveLength(0)
 }
