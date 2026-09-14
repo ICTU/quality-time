@@ -3,6 +3,7 @@ APIs
 Caddy
 Checkmarx
 Cobertura
+Crypto
 Deden
 Dependabot
 Docker-composition
@@ -10,7 +11,7 @@ Dockerfile
 DTDs
 ESLint
 Grafana
-Gravatar
+Gravatars?
 ICTU's
 Jira
 JMeter

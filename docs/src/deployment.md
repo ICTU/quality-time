@@ -51,6 +51,19 @@ Note that the helm chart does not support overriding port numbers.
 Although setting port environment variables in the `values.yaml` will change the ports that the app within the pod listens to, it will *not* change the service port mapping and therefore lead to a malfunctioning service.
 Instead, only the ingress should be configured.
 
+```{index} HTTPS
+```
+```{index} Secure context
+```
+
+## Serving *Quality-time* over HTTPS (recommended)
+
+*Quality-time* does not terminate TLS itself; that is the responsibility of the reverse proxy or ingress in front of it. Serving *Quality-time* over HTTPS is recommended not only for security reasons, but also because browsers make some web APIs available only in a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts).
+
+When *Quality-time* is served over plain HTTP from a hostname other than `localhost`, the following feature does not work:
+
+- To look up the [Gravatar](https://gravatar.com) of a user, the frontend hashes the user's email address with the [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API). Because that API is unavailable in an insecure context, a placeholder icon is shown instead of the user's Gravatar.
+
 ## Configuring authentication (mandatory)
 
 You need to either configure an LDAP server to authenticate users with or configure forwarded authentication.
