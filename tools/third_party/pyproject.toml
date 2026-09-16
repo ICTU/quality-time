@@ -17,7 +17,7 @@ dependencies = [
     "fixit==2.2.1",
     "mypy==2.3.1",
     "pip-audit==2.10.1",
-    "pyproject-fmt==2.29.3",
+    "pyproject-fmt==2.29.4",
     "ruff==0.16.6",
     "troml==0.4.1",
     "ty==0.0.79",
@@ -34,14 +34,14 @@ just = [
 project-wide = [
     "compose-lint==0.28.0",
     "yamllint==1.38.0",
-    "zizmor==1.30.0",       # Static analysis tool for GitHub Actions
+    "zizmor==1.30.1",       # Static analysis tool for GitHub Actions
 ]
 # Update-time is only run on the repository as a whole, and pins its dependencies, so it also gets its own group.
 update-time = [
     "update-time==0.0.34",
 ]
 uv = [
-    "uv==0.12.10",
+    "uv==0.12.11",
 ]
 
 [tool.uv]
