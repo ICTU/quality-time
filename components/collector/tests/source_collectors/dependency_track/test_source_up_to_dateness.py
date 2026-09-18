@@ -180,7 +180,12 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
         """Test that the source up-to-dateness can be measured when pagination is needed."""
         default_size = DependencyTrackBase.PAGE_SIZE
         DependencyTrackBase.PAGE_SIZE = 1
-        measurement = await self.collect_measurement(get_request_json_return_value=self.projects())
+        # Dependency-Track reports the total number of projects in the X-Total-Count header, so that the collector
+        # knows how many pages to retrieve. Each mocked page returns all projects; they are deduplicated by UUID.
+        measurement = await self.collect_measurement(
+            get_request_json_return_value=self.projects(),
+            get_request_headers={"X-Total-Count": str(len(self.projects()))},
+        )
         self.assert_measurement(measurement, value="7", landing_url=self.landing_url, entities=self.entities())
         DependencyTrackBase.PAGE_SIZE = default_size
 

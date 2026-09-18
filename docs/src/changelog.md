@@ -14,6 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Fixed
 
+- When using Dependency-Track as source, the collector would retrieve one hundred items per page, and retrieve the pages one after the other. Measuring a project with many components or findings could therefore need so many requests it would time out. The collector now retrieves a thousand items per page, and retrieves the pages concurrently, at most ten at a time. Prepares for [#8687](https://github.com/ICTU/quality-time/issues/14624).
 - The tooltip of the measurement value would report measurement entities as excluded from the measurement value even when their status end date had passed. As the measurement value does include such entities again, the tooltip could for example claim that "The measurement value excludes 3 violations" while it excluded none of them. Fixes [#14624](https://github.com/ICTU/quality-time/issues/14624).
 
 ## v5.59.0 - 2026-08-28
