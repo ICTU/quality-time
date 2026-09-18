@@ -1,7 +1,10 @@
 """Dependency-Track base collector."""
 
 import asyncio
+import json
+from collections import defaultdict
 from math import ceil
+from operator import itemgetter
 from typing import TYPE_CHECKING, Literal
 
 from base_collectors import TokenAuthenticationSourceCollector
@@ -13,7 +16,38 @@ from model import Entity, SourceResponses
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator
 
-    from .json_types import DependencyTrackProject
+    from .json_types import DependencyTrackComponent, DependencyTrackProject
+
+
+class DependencyTrackComponentGraph:
+    """The dependency graph of the components of one Dependency-Track project."""
+
+    def __init__(self, components: list[DependencyTrackComponent]) -> None:
+        self.__names = {component["uuid"]: component["name"] for component in components}
+        self.__parents: dict[str, set[str]] = defaultdict(set)
+        for component in components:
+            for child in json.loads(component.get("directDependencies") or "[]"):
+                self.__parents[child["uuid"]].add(component["uuid"])
+
+    def root_components(self, uuid: str) -> dict[str, str]:
+        """Return the UUIDs and names of the project's direct dependencies that include the component, transitively.
+
+        The result is empty if the project depends on the component directly, or if the component is unknown.
+        """
+        roots: set[str] = set()
+        visited: set[str] = set()
+        queue = [uuid]
+        while queue:
+            current = queue.pop()
+            if current in visited:
+                continue  # Guard against cycles in the graph
+            visited.add(current)
+            if parents := self.__parents.get(current):
+                queue.extend(parents)
+            elif current != uuid:  # A component without parents is a direct dependency of the project
+                roots.add(current)
+        named_roots = {root: self.__names[root] for root in roots}
+        return dict(sorted(named_roots.items(), key=itemgetter(1, 0)))
 
 
 class DependencyTrackBase(TokenAuthenticationSourceCollector):
@@ -22,12 +56,24 @@ class DependencyTrackBase(TokenAuthenticationSourceCollector):
     PAGE_SIZE = 1000
     # Maximum number of pages to retrieve at the same time, so that big projects don't overload Dependency-Track.
     # Note that PAGE_SIZE * MAX_CONCURRENT_PAGES items can be in flight at the same time.
-    MAX_CONCURRENT_PAGES = 10
+    MAX_CONCURRENT_PAGES = 5
     AUTH_HEADER = "X-Api-Key"
 
     async def _api_url(self) -> URL:
         """Override to add the API version."""
         return URL((await super()._api_url()) + "/api/v1")
+
+    def _landing_url_of_component(self, uuid: str) -> URL:
+        """Return the landing URL of the component with the specified UUID."""
+        return URL(f"{self.__landing_url()}/components/{uuid}")
+
+    def _landing_url_of_project(self, uuid: str) -> URL:
+        """Return the landing URL of the project with the specified UUID."""
+        return URL(f"{self.__landing_url()}/projects/{uuid}")
+
+    def __landing_url(self) -> str:
+        """Return the landing URL of the Dependency-Track instance, without trailing slash."""
+        return str(self._parameter("landing_url")).strip("/")
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to load multiple pages, if necessary."""
@@ -108,6 +154,14 @@ class DependencyTrackBase(TokenAuthenticationSourceCollector):
 
 class DependencyTrackLatestVersionStatusBase(DependencyTrackBase):
     """Base class for Dependency-Track collectors that can be filtered by latest version status."""
+
+    def _root_component_attributes(self, uuid: str, graph: DependencyTrackComponentGraph) -> dict[str, str]:
+        """Return the root component entity attributes for the component with the specified UUID."""
+        roots = graph.root_components(uuid)
+        attributes = {"root_component": ", ".join(roots.values())}
+        if len(roots) == 1:  # Entity attributes support at most one URL, so only link if there's exactly one root
+            attributes["root_component_landing_url"] = self._landing_url_of_component(next(iter(roots)))
+        return attributes
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether to include the entity in the measurement."""

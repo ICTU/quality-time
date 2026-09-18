@@ -1,8 +1,13 @@
 """Base classes for Dependency-Track collector unit tests."""
 
+import json
 from typing import TYPE_CHECKING
 
-from source_collectors.dependency_track.json_types import DependencyTrackMetrics, DependencyTrackProject
+from source_collectors.dependency_track.json_types import (
+    DependencyTrackComponent,
+    DependencyTrackMetrics,
+    DependencyTrackProject,
+)
 
 from tests.source_collectors.source_collector_test_case import SourceCollectorTestCase
 
@@ -33,6 +38,31 @@ class DependencyTrackTestCase(SourceCollectorTestCase):
         if version:
             project["version"] = version
         return [project]
+
+    def component(
+        self,
+        name: str = "component name",
+        uuid: str = "component-uuid",
+        direct_dependencies: list[str] | None = None,
+        project: DependencyTrackProject | None = None,
+    ) -> DependencyTrackComponent:
+        """Create a Dependency-Track component fixture, with the UUIDs of its direct dependencies, if any."""
+        component = DependencyTrackComponent(
+            name=name,
+            project=self.projects()[0] if project is None else project,
+            uuid=uuid,
+            version="1.0",
+        )
+        if direct_dependencies is not None:
+            component["directDependencies"] = json.dumps([{"uuid": child} for child in direct_dependencies])
+        return component
+
+    def root_component_attributes(self, name: str, uuid: str = "") -> dict[str, str]:
+        """Create the expected root component entity attributes. Pass the UUID if a landing URL is expected."""
+        attributes = {"root_component": name}
+        if uuid:
+            attributes["root_component_landing_url"] = f"{self.landing_url}/components/{uuid}"
+        return attributes
 
     def assert_no_projects_found(self, measurement: MetricMeasurement) -> None:
         """Assert that no projects have been found."""
