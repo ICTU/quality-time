@@ -1,34 +1,19 @@
-"""Dependency-Track security warnings collector."""
+"""Dependency-Track dependencies collector."""
 
-from typing import TYPE_CHECKING, NotRequired, TypedDict
+from collections import defaultdict
+from typing import TYPE_CHECKING
 
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
-from .base import DependencyTrackLatestVersionStatusBase
+from .base import DependencyTrackComponentGraph, DependencyTrackLatestVersionStatusBase
 
 if TYPE_CHECKING:
-    from .json_types import DependencyTrackProject
-
-
-class DependencyTrackRepositoryMetaData(TypedDict):
-    """Repository meta data as returned by Dependency-Track."""
-
-    latestVersion: str
-
-
-class DependencyTrackComponent(TypedDict):
-    """Component as returned by Dependency-Track."""
-
-    name: str
-    project: DependencyTrackProject
-    uuid: str
-    repositoryMeta: NotRequired[DependencyTrackRepositoryMetaData]
-    version: NotRequired[str]
+    from .json_types import DependencyTrackComponent
 
 
 class DependencyTrackDependencies(DependencyTrackLatestVersionStatusBase):
-    """Dependency-Track collector for security warnings."""
+    """Dependency-Track collector for dependencies."""
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to get the components."""
@@ -39,26 +24,31 @@ class DependencyTrackDependencies(DependencyTrackLatestVersionStatusBase):
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Parse the entities from the responses."""
-        entities = Entities()
+        components_by_project: dict[str, list[DependencyTrackComponent]] = defaultdict(list)
         for response in responses:
-            components = await response.json(content_type=None)
-            entities.extend([self._create_entity(component) for component in components])
+            for component in await response.json(content_type=None):
+                components_by_project[component["project"]["uuid"]].append(component)
+        entities = Entities()
+        for components in components_by_project.values():
+            # Create one dependency graph per project so the parent components can be looked up
+            graph = DependencyTrackComponentGraph(components)
+            entities.extend([self._create_entity(component, graph) for component in components])
         return entities
 
-    def _create_entity(self, component: DependencyTrackComponent) -> Entity:
+    def _create_entity(self, component: DependencyTrackComponent, graph: DependencyTrackComponentGraph) -> Entity:
         """Create an entity from the component."""
         project = component["project"]
         current_version = component.get("version", "unknown")
         latest_version = component.get("repositoryMeta", {}).get("latestVersion", "unknown")
-        landing_url = str(self._parameter("landing_url")).strip("/")
         return Entity(
             component=component["name"],
-            component_landing_url=f"{landing_url}/components/{component['uuid']}",
+            component_landing_url=self._landing_url_of_component(component["uuid"]),
             key=component["uuid"],
             latest=latest_version,
             latest_version_status=self._latest_version_status(current_version, latest_version),
             project=project["name"],
-            project_landing_url=f"{landing_url}/projects/{project['uuid']}",
+            project_landing_url=self._landing_url_of_project(project["uuid"]),
             project_version=project.get("version", ""),
             version=current_version,
+            **self._parent_component_attributes(component["uuid"], graph),
         )

@@ -6,8 +6,8 @@ from aiohttp import BasicAuth
 
 from source_collectors.dependency_track.base import DependencyTrackBase
 from source_collectors.dependency_track.security_warnings import (
-    DependencyTrackComponent,
     DependencyTrackFinding,
+    DependencyTrackFindingComponent,
     DependencyTrackVulnerability,
 )
 
@@ -15,7 +15,7 @@ from .base_test import DependencyTrackTestCase
 
 if TYPE_CHECKING:
     from model.measurement import MetricMeasurement
-    from source_collectors.dependency_track.json_types import DependencyTrackProject
+    from source_collectors.dependency_track.json_types import DependencyTrackComponent, DependencyTrackProject
 
 
 class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
@@ -36,7 +36,7 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
             vulnerability["severity"] = severity
         return [
             DependencyTrackFinding(
-                component=DependencyTrackComponent(
+                component=DependencyTrackFindingComponent(
                     latestVersion="2",
                     name="component name",
                     project="project uuid",
@@ -48,7 +48,12 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
             ),
         ]
 
-    def entities(self, description: str = "description", severity: str = "Unassigned") -> list[dict[str, str]]:
+    def entities(
+        self,
+        description: str = "description",
+        severity: str = "Unassigned",
+        **attributes: str,
+    ) -> list[dict[str, str]]:
         """Create the expected entities."""
         return [
             {
@@ -59,23 +64,27 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
                 "key": "matrix",
                 "latest": "2",
                 "latest_version_status": "update possible",
+                "parent_component": "",
                 "project": "project name",
                 "project_landing_url": f"{self.landing_url}/projects/project uuid",
                 "project_version": "1.4",
                 "severity": severity,
                 "version": "1",
-            },
+            }
+            | attributes,
         ]
 
     async def collect_findings(
         self,
         projects: list[DependencyTrackProject] | None = None,
         findings: list[DependencyTrackFinding] | None = None,
+        components: list[DependencyTrackComponent] | None = None,
     ) -> MetricMeasurement:
-        """Collect a measurement for the given projects and findings, defaulting to the fixtures."""
+        """Collect a measurement for the given projects, components, and findings, defaulting to the fixtures."""
         return await self.collect_measurement(
             get_request_json_side_effect=[
                 self.projects() if projects is None else projects,
+                [self.component()] if components is None else components,
                 self.findings() if findings is None else findings,
             ],
         )
@@ -188,6 +197,38 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
         """Test filtering by component name regular expression."""
         self.set_source_parameter("components_to_ignore", ["other.*"])
         measurement = await self.collect_findings()
+        self.assert_measurement(measurement, value="1", entities=self.entities())
+
+    async def test_transitive_dependency(self):
+        """Test that the parent component of a vulnerable transitive dependency is reported."""
+        components = [
+            self.component(name="parent", uuid="parent-uuid", direct_dependencies=["component-uuid"]),
+            self.component(),
+        ]
+        measurement = await self.collect_findings(components=components)
+        self.assert_measurement(
+            measurement,
+            value="1",
+            entities=self.entities(**self.parent_component_attributes("parent", "parent-uuid")),
+        )
+
+    async def test_multiple_parent_components(self):
+        """Test that all parent components are reported, sorted by name, and without landing URL."""
+        components = [
+            self.component(name="root b", uuid="root-b-uuid", direct_dependencies=["component-uuid"]),
+            self.component(name="root a", uuid="root-a-uuid", direct_dependencies=["component-uuid"]),
+            self.component(),
+        ]
+        measurement = await self.collect_findings(components=components)
+        self.assert_measurement(
+            measurement,
+            value="1",
+            entities=self.entities(**self.parent_component_attributes("root a, root b")),
+        )
+
+    async def test_vulnerable_component_without_dependency_graph(self):
+        """Test that a vulnerable component that is not in the component list has no parent component."""
+        measurement = await self.collect_findings(components=[])
         self.assert_measurement(measurement, value="1", entities=self.entities())
 
     async def test_api_key(self):
