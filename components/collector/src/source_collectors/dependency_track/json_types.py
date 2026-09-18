@@ -21,3 +21,21 @@ class DependencyTrackProject(TypedDict):
     isLatest: NotRequired[bool]
     metrics: NotRequired[DependencyTrackMetrics]
     version: NotRequired[str]
+
+
+class DependencyTrackRepositoryMetaData(TypedDict):
+    """Repository meta data as returned by Dependency-Track."""
+
+    latestVersion: str
+
+
+class DependencyTrackComponent(TypedDict):
+    """Component as returned by the Dependency-Track component API."""
+
+    name: str
+    project: DependencyTrackProject
+    uuid: str
+    # Direct dependencies is a JSON string with a list of component identities, and null if the component has none
+    directDependencies: NotRequired[str | None]
+    repositoryMeta: NotRequired[DependencyTrackRepositoryMetaData]
+    version: NotRequired[str]

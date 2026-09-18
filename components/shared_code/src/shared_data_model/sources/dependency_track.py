@@ -25,6 +25,16 @@ PROJECT_ATTRIBUTES = [
     EntityAttribute(name="Project", url="project_landing_url"),
     EntityAttribute(name="Project version"),
 ]
+COMPONENT_ATTRIBUTES = [
+    EntityAttribute(name="Component", url="component_landing_url"),
+    EntityAttribute(
+        name="Parent component",
+        url="parent_component_landing_url",
+        help="The direct dependency of the project through which this component is included. Empty if the project "
+        "depends on this component directly. If the component is included through more than one dependency, all of "
+        "them are listed.",
+    ),
+]
 VERSION_ATTRIBUTES = [
     EntityAttribute(name="Current version", key="version"),
     EntityAttribute(name="Latest version", key="latest"),
@@ -115,7 +125,7 @@ DEPENDENCY_TRACK = Source(
             name_plural="dependencies",
             attributes=[
                 *PROJECT_ATTRIBUTES,
-                EntityAttribute(name="Component", url="component_landing_url"),
+                *COMPONENT_ATTRIBUTES,
                 *VERSION_ATTRIBUTES,
             ],
         ),
@@ -123,7 +133,7 @@ DEPENDENCY_TRACK = Source(
             name="security warning",
             attributes=[
                 *PROJECT_ATTRIBUTES,
-                EntityAttribute(name="Component", url="component_landing_url"),
+                *COMPONENT_ATTRIBUTES,
                 EntityAttribute(name="Identifier"),
                 EntityAttribute(name="Description"),
                 EntityAttribute(name="Severity", color={"Critical": Color.NEGATIVE, "High": Color.WARNING}),

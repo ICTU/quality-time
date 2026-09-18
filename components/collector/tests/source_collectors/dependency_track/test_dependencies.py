@@ -1,11 +1,14 @@
-"""Unit tests for the Dependency-Track security warnings collector."""
+"""Unit tests for the Dependency-Track dependencies collector."""
 
 from typing import TYPE_CHECKING
+
+from source_collectors.dependency_track.json_types import DependencyTrackProject
 
 from .base_test import DependencyTrackTestCase
 
 if TYPE_CHECKING:
-    from source_collectors.dependency_track.dependencies import DependencyTrackComponent
+    from model.measurement import MetricMeasurement
+    from source_collectors.dependency_track.json_types import DependencyTrackComponent
 
 
 class DependencyTrackDependenciesTest(DependencyTrackTestCase):
@@ -15,31 +18,33 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
 
     def dependencies(self, latest_version: str) -> list[DependencyTrackComponent]:
         """Create a list of dependencies as returned by Dependency-Track."""
-        dependency: DependencyTrackComponent = {
-            "name": "component name",
-            "project": self.projects()[0],
-            "version": "1.0",
-            "uuid": "component-uuid",
-        }
+        dependency = self.component()
         if latest_version:
             dependency["repositoryMeta"] = {"latestVersion": latest_version}
         return [dependency]
 
+    def entity(self, name: str = "component name", uuid: str = "component-uuid", **attributes) -> dict[str, str]:
+        """Create an expected entity for the component with the specified name and UUID."""
+        return {
+            "component": name,
+            "component_landing_url": f"{self.landing_url}/components/{uuid}",
+            "key": uuid,
+            "latest": "unknown",
+            "latest_version_status": "unknown",
+            "parent_component": "",
+            "project": "project name",
+            "project_landing_url": f"{self.landing_url}/projects/project uuid",
+            "project_version": "1.4",
+            "version": "1.0",
+        } | attributes
+
     def entities(self, latest_version: str, latest_version_status: str) -> list[dict[str, str]]:
         """Create a list of expected entities."""
-        return [
-            {
-                "component": "component name",
-                "component_landing_url": f"{self.landing_url}/components/component-uuid",
-                "key": "component-uuid",
-                "latest": latest_version,
-                "latest_version_status": latest_version_status,
-                "project": "project name",
-                "project_landing_url": f"{self.landing_url}/projects/project uuid",
-                "project_version": "1.4",
-                "version": "1.0",
-            },
-        ]
+        return [self.entity(latest=latest_version, latest_version_status=latest_version_status)]
+
+    async def collect_components(self, components: list[DependencyTrackComponent]) -> MetricMeasurement:
+        """Collect a measurement for the given components."""
+        return await self.collect_measurement(get_request_json_side_effect=[self.projects(), components])
 
     async def test_no_projects(self):
         """Test that there are no dependencies if there are no projects."""
@@ -144,3 +149,128 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         self.set_source_parameter("only_include_latest_project_versions", "yes")
         measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects()])
         self.assert_no_projects_found(measurement)
+
+    async def test_direct_dependency_has_no_parent_component(self):
+        """Test that a component the project depends on directly has no parent component."""
+        measurement = await self.collect_components([self.component(direct_dependencies=[])])
+        self.assert_measurement(measurement, value="1", entities=[self.entity()])
+
+    async def test_transitive_dependency(self):
+        """Test that the parent component of a transitive dependency is reported."""
+        components = [
+            self.component(name="parent", uuid="parent-uuid", direct_dependencies=["component-uuid"]),
+            self.component(),
+        ]
+        measurement = await self.collect_components(components)
+        self.assert_measurement(
+            measurement,
+            value="2",
+            entities=[
+                self.entity(name="parent", uuid="parent-uuid"),
+                self.entity(**self.parent_component_attributes("parent", "parent-uuid")),
+            ],
+        )
+
+    async def test_deeply_nested_dependency(self):
+        """Test that the root dependency is reported, and not the direct parent of the component."""
+        components = [
+            self.component(name="root", uuid="root-uuid", direct_dependencies=["intermediate-uuid"]),
+            self.component(name="intermediate", uuid="intermediate-uuid", direct_dependencies=["component-uuid"]),
+            self.component(),
+        ]
+        measurement = await self.collect_components(components)
+        self.assert_measurement(
+            measurement,
+            value="3",
+            entities=[
+                self.entity(name="root", uuid="root-uuid"),
+                self.entity(
+                    name="intermediate",
+                    uuid="intermediate-uuid",
+                    **self.parent_component_attributes("root", "root-uuid"),
+                ),
+                self.entity(**self.parent_component_attributes("root", "root-uuid")),
+            ],
+        )
+
+    async def test_multiple_parent_components(self):
+        """Test that all parent components are reported, sorted by name, and without landing URL."""
+        components = [
+            self.component(name="root b", uuid="root-b-uuid", direct_dependencies=["component-uuid"]),
+            self.component(name="root a", uuid="root-a-uuid", direct_dependencies=["component-uuid"]),
+            self.component(),
+        ]
+        measurement = await self.collect_components(components)
+        self.assert_measurement(
+            measurement,
+            value="3",
+            entities=[
+                self.entity(name="root b", uuid="root-b-uuid"),
+                self.entity(name="root a", uuid="root-a-uuid"),
+                self.entity(**self.parent_component_attributes("root a, root b")),
+            ],
+        )
+
+    async def test_cycle_in_the_dependency_graph(self):
+        """Test that a cycle in the dependency graph does not cause an endless loop."""
+        components = [
+            self.component(name="root", uuid="root-uuid", direct_dependencies=["cycle-uuid"]),
+            self.component(name="cycle", uuid="cycle-uuid", direct_dependencies=["component-uuid"]),
+            self.component(direct_dependencies=["cycle-uuid"]),
+        ]
+        measurement = await self.collect_components(components)
+        self.assert_measurement(
+            measurement,
+            value="3",
+            entities=[
+                self.entity(name="root", uuid="root-uuid"),
+                self.entity(name="cycle", uuid="cycle-uuid", **self.parent_component_attributes("root", "root-uuid")),
+                self.entity(**self.parent_component_attributes("root", "root-uuid")),
+            ],
+        )
+
+    async def test_dependency_graph_without_edges(self):
+        """Test that components without dependency graph have no parent component."""
+        components = [self.component(), self.component(name="other", uuid="other-uuid")]
+        components[0]["directDependencies"] = None  # Dependency-Track returns null if there is no dependency graph
+        measurement = await self.collect_components(components)
+        self.assert_measurement(
+            measurement,
+            value="2",
+            entities=[self.entity(), self.entity(name="other", uuid="other-uuid")],
+        )
+
+    async def test_dependency_on_a_service(self):
+        """Test that a service that a component depends on does not become a parent component."""
+        components = [self.component(direct_dependencies=["service-uuid"])]
+        measurement = await self.collect_components(components)
+        self.assert_measurement(measurement, value="1", entities=[self.entity()])
+
+    async def test_components_of_multiple_projects(self):
+        """Test that each project has its own dependency graph."""
+        other_project = DependencyTrackProject(name="other project", uuid="other-project-uuid", version="2.0")
+        measurement = await self.collect_measurement(
+            get_request_json_side_effect=[
+                [*self.projects(), other_project],
+                [
+                    self.component(name="parent", uuid="parent-uuid", direct_dependencies=["component-uuid"]),
+                    self.component(),
+                ],
+                [self.component(name="other", uuid="other-uuid", direct_dependencies=[], project=other_project)],
+            ],
+        )
+        self.assert_measurement(
+            measurement,
+            value="3",
+            entities=[
+                self.entity(name="parent", uuid="parent-uuid"),
+                self.entity(**self.parent_component_attributes("parent", "parent-uuid")),
+                self.entity(
+                    name="other",
+                    uuid="other-uuid",
+                    project="other project",
+                    project_landing_url=f"{self.landing_url}/projects/other-project-uuid",
+                    project_version="2.0",
+                ),
+            ],
+        )
