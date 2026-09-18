@@ -1,5 +1,7 @@
 """Dependency-Track base collector."""
 
+import asyncio
+from math import ceil
 from typing import TYPE_CHECKING, Literal
 
 from base_collectors import TokenAuthenticationSourceCollector
@@ -17,8 +19,10 @@ if TYPE_CHECKING:
 class DependencyTrackBase(TokenAuthenticationSourceCollector):
     """Dependency-Track base class."""
 
-    # Max page size is 100, see https://github.com/DependencyTrack/dependency-track/issues/209.
-    PAGE_SIZE = 100
+    PAGE_SIZE = 1000
+    # Maximum number of pages to retrieve at the same time, so that big projects don't overload Dependency-Track.
+    # Note that PAGE_SIZE * MAX_CONCURRENT_PAGES items can be in flight at the same time.
+    MAX_CONCURRENT_PAGES = 10
     AUTH_HEADER = "X-Api-Key"
 
     async def _api_url(self) -> URL:
@@ -29,18 +33,33 @@ class DependencyTrackBase(TokenAuthenticationSourceCollector):
         """Extend to load multiple pages, if necessary."""
         responses = SourceResponses()
         for url in urls:
-            page_nr = 1  # Page numbers start at 1
-            total_count = 1  # Total count is still unknown, make sure we retrieve at least one page
-            while (page_nr - 1) * self.PAGE_SIZE < total_count:
-                offsetted_url = add_query(url, f"pageSize={self.PAGE_SIZE}&pageNumber={page_nr}")
-                response = (await super()._get_source_responses(offsetted_url))[0]
-                # Retrieving consecutive big responses without reading the response hangs the client, see
-                # https://github.com/aio-libs/aiohttp/issues/2217
-                await response.read()
-                total_count = int(response.headers.get("X-Total-Count", 0))
+            for response in await self.__get_pages(url):
                 responses.append(response)
-                page_nr += 1
         return responses
+
+    async def __get_pages(self, url: URL) -> list[Response]:
+        """Return all pages of the paginated URL, in page order.
+
+        The first page has to be retrieved first, because its X-Total-Count header tells how many pages there are.
+        The other pages are retrieved in batches of at most MAX_CONCURRENT_PAGES, because retrieving them one by one
+        would need one round trip per PAGE_SIZE items, which times out for projects with many components. Batching
+        also bounds the number of requests that are prepared at the same time, no matter how big the total count is.
+        """
+        pages = [await self.__get_page(url, 1)]  # Page numbers start at 1
+        page_count = ceil(int(pages[0].headers.get("X-Total-Count", 0)) / self.PAGE_SIZE)
+        for batch_start in range(2, page_count + 1, self.MAX_CONCURRENT_PAGES):
+            batch = range(batch_start, min(batch_start + self.MAX_CONCURRENT_PAGES, page_count + 1))
+            pages.extend(await asyncio.gather(*[self.__get_page(url, page_nr) for page_nr in batch]))
+        return pages
+
+    async def __get_page(self, url: URL, page_nr: int) -> Response:
+        """Return one page of the paginated URL."""
+        paginated_url = add_query(url, f"pageSize={self.PAGE_SIZE}&pageNumber={page_nr}")
+        response: Response = (await super()._get_source_responses(paginated_url))[0]
+        # Retrieving consecutive big responses without reading the response hangs the client, see
+        # https://github.com/aio-libs/aiohttp/issues/2217
+        await response.read()
+        return response
 
     async def _get_projects_by_uuid(self) -> dict[str, DependencyTrackProject]:
         """Return a mapping of project UUIDs to projects."""
