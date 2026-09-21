@@ -24,11 +24,11 @@ wheels = [
 
 [[package]]
 name = "archunitpython"
-version = "1.5.0"
+version = "1.7.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ff/8e/95f2d0c7f5f402a3b880cbff718d0ec8e3fe458e6df389d7af3800319d0b/archunitpython-1.5.0.tar.gz", hash = "sha256:d9ad8d66df62426f0c0f1027dc3b57729f27b48a1648db1a485f31ca425d96b5", size = 393834, upload-time = "2026-07-18T21:17:49.482Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ad/09/f5bf75a5c3b2f44dffca595b0f2d959b623fda8cb0b0b2467da566a88ce3/archunitpython-1.7.0.tar.gz", hash = "sha256:bb7565aae3d56ee1802283fd20f58d069989a5543efdfd458048fea43fb5c166", size = 400221, upload-time = "2026-09-13T13:25:22.26Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7f/1d/5a5bc46122de30d96cc6d477a55c49a0abd72ce4ec9fe57b8d735ecefbc7/archunitpython-1.5.0-py3-none-any.whl", hash = "sha256:bb335e67018c1a846929966837b8023dc9ee28bbb8413f4e1fb8becbcd7805f1", size = 78729, upload-time = "2026-07-18T21:17:48.476Z" },
+    { url = "https://files.pythonhosted.org/packages/00/1c/ef53252a8b15b948aa6aefbb2ec0b57f452fa5c38eb93e82064ab6f35dba/archunitpython-1.7.0-py3-none-any.whl", hash = "sha256:1f995a6eef9eeacc18585008b814e52716581412e90756930316aa4309fe8490", size = 81309, upload-time = "2026-09-13T13:25:21.067Z" },
 ]
 
 [[package]]
@@ -1111,7 +1111,7 @@ uv = [
 
 [package.metadata]
 requires-dist = [
-    { name = "archunitpython", specifier = "==1.5.0" },
+    { name = "archunitpython", specifier = "==1.7.0" },
     { name = "bandit", specifier = "==1.9.4" },
     { name = "codespell", specifier = "==2.4.3" },
     { name = "coverage", specifier = "==7.16.0" },
