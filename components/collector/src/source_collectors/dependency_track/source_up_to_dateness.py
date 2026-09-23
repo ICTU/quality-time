@@ -39,7 +39,6 @@ class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Parse the entities from the responses."""
-        landing_url = str(self._parameter("landing_url")).strip("/")
         entities = Entities()
         for response in responses:
             async for project in self._get_projects_from_response(response):
@@ -51,7 +50,7 @@ class DependencyTrackSourceUpToDateness(DependencyTrackBase, TimePassedCollector
                     last_bom_analysis="" if last_bom_analysis is None else last_bom_analysis.isoformat(),
                     last_bom_import="" if last_bom_import is None else last_bom_import.isoformat(),
                     project=project["name"],
-                    project_landing_url=f"{landing_url}/projects/{uuid}",
+                    project_landing_url=self._landing_url_of_project(uuid),
                     project_version=project.get("version", ""),
                     is_latest="true" if self._is_latest(project) else "false",
                     up_to_date=self._up_to_dateness(project),
