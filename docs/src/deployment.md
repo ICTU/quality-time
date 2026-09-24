@@ -284,6 +284,8 @@ The easiest way to move a *Quality-time* instance is to deploy a new *Quality-ti
 
 Copying the database is done with the MongoDB Database Tools `mongodump` and `mongorestore`. The *Quality-time* database container image does not contain these tools, so run them from a separate container, based on the [official MongoDB image](https://hub.docker.com/_/mongo), or [install them locally](https://www.mongodb.com/docs/database-tools/installation/installation/). Use the same major MongoDB version as the *Quality-time* database container. To look up that version, see the `FROM` instruction in the [Dockerfile of the database component](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile).
 
+Ensure no services attempt to write to the database while running the migration by stopping containers or scaling down pods.
+
 The database does not publish a port. Run the tools in the same network as the database, or forward the database port to the machine where the tools run, as described per deployment type below.
 
 In the commands below, replace `<username>` and `<password>` with the [MongoDB credentials](#configuring-mongodb-credentials-optional) of the instance being addressed. The source and the target instance can have different credentials. Pass the options as shown:
@@ -342,9 +344,10 @@ kubectl run mongo-tools --image=mongo:<major version> --restart=Never --command 
 kubectl exec mongo-tools -- \
     mongodump --uri "mongodb://<username>:<password>@<release name>-database:27017/quality_time_db?authSource=admin" \
     --archive --quiet > qt_dump.archive
-kubectl exec --stdin mongo-tools -- \
+kubectl cp qt_dump.archive mongo-tools:/tmp/qt_dump.archive
+kubectl exec -it mongo-tools -- \
     mongorestore --uri "mongodb://<username>:<password>@<release name>-database:27017/?authSource=admin" \
-    --archive --drop < qt_dump.archive
+    --archive=/tmp/qt_dump.archive --drop --numParallelCollections=4
 kubectl delete pod mongo-tools
 ```
 
