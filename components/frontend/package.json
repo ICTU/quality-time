@@ -7,7 +7,7 @@
         "@emotion/styled": "^11.14.1",
         "@mui/icons-material": "^9.4.0",
         "@mui/material": "^9.4.0",
-        "@mui/x-date-pickers": "^9.13.0",
+        "@mui/x-date-pickers": "^9.14.0",
         "dayjs": "^1.11.23",
         "history": "^5.3.0",
         "prop-types": "^15.8.1",
