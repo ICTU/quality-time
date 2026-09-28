@@ -466,7 +466,7 @@ dev = [
     { name = "sphinx", specifier = "==9.1.0" },
     { name = "sphinx-design", specifier = "==0.7.0" },
     { name = "tools", virtual = "../tools/third_party" },
-    { name = "vale", specifier = "==3.21.0.0" },
+    { name = "vale", specifier = "==3.22.0.0" },
 ]
 
 [[package]]
@@ -1711,11 +1711,11 @@ wheels = [
 
 [[package]]
 name = "vale"
-version = "3.21.0.0"
+version = "3.22.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f6/b1/8aab734733e8659fcd37469cb1bee576a8419b9cc428483ad5738f576d68/vale-3.21.0.0.tar.gz", hash = "sha256:c8757c37408d4de77a340ac3396d8a743da13d1bf13434ee8b869917a358e038", size = 5368, upload-time = "2026-09-10T07:50:21.51Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a3/53/4ac171f2521de4985c7f097f29a7057ee35c27c61b7513e701aeda101f99/vale-3.22.0.0.tar.gz", hash = "sha256:7597e92958de6b6c951e807b050fc78366026a35dc1e593561b6fccc6f76cf12", size = 5386, upload-time = "2026-09-18T07:35:07.675Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ba/84/65954c3769f4103f945c332db40386fea44d7c657397dbca6a46181f70ee/vale-3.21.0.0-py3-none-any.whl", hash = "sha256:1a152f930dc9b44b024cfef90f98838204d6cfb6d1aaaba5b62e4744d52b2048", size = 5943, upload-time = "2026-09-10T07:50:20.386Z" },
+    { url = "https://files.pythonhosted.org/packages/87/6f/23c2cd295e419e0f803e55232144357e1c696e8f7980c123ca013460effb/vale-3.22.0.0-py3-none-any.whl", hash = "sha256:db7de242dd36f5eaf0b705e5cf5a8f957a693066879434ff192c735372c51d31", size = 5942, upload-time = "2026-09-18T07:35:06.538Z" },
 ]
 
 [[package]]
