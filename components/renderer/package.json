@@ -18,8 +18,8 @@
         "eslint-plugin-simple-import-sort": "^14.0.0",
         "globals": "^17.12.0",
         "lockfile-lint": "^5.0.1",
-        "prettier": "^3.9.8",
-        "supertest": "^7.2.2",
+        "prettier": "^3.9.9",
+        "supertest": "^7.3.0",
         "vitest": "^5.0.0"
     },
     "scripts": {
@@ -32,7 +32,7 @@
         "fix": "npx prettier *.mjs src --write --log-level warn"
     },
     "engines": {
-        "node": "26.9.0"
+        "node": "26.10.0"
     },
     "prettier": {
         "printWidth": 120,
