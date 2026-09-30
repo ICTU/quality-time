@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- Expanding a metric with many measurements, for example a 'test cases' metric with multiple test reports as source, could take a long time or fail with "Loading measurements failed". The database would scan the measurements of all metrics instead of only those of the expanded metric, and the API-server would run out of memory because it included the sources of all measurements of the metric in its response, while the frontend only needs the sources of the latest measurement. Fixes [#14721](https://github.com/ICTU/quality-time/issues/14721).
+
 ## v5.60.0 - 2026-09-28
 
 ### Added

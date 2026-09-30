@@ -44,6 +44,22 @@ class MeasurementsByMetricTest(DatabaseTestCase):
         for measurement in measurements:
             self.assertEqual(measurement["metric_uuid"], METRIC_ID)
 
+    def test_get_all_measurements_for_one_metric_sorted_by_start(self):
+        """Test that the measurements are sorted by start only, so the database can use the metric_uuid-start index."""
+        self.database.measurements.find.return_value = self.measurements[0:3]
+        all_metric_measurements(self.database, METRIC_ID, max_iso_timestamp="8")
+        self.assertEqual([("start", 1)], self.database.measurements.find.call_args.kwargs["sort"])
+
+    def test_get_all_measurements_for_one_metric_without_sources_except_latest(self):
+        """Test that only the latest measurement has sources, to keep the response small."""
+        self.database.measurements.find.return_value = self.measurements[0:3]
+        self.database.measurements.find_one.return_value = self.measurements[2]
+        measurements = all_metric_measurements(self.database, METRIC_ID, max_iso_timestamp="8")
+        projection = self.database.measurements.find.call_args.kwargs["projection"]
+        self.assertFalse(projection["sources"])
+        self.assertNotIn("sources", self.database.measurements.find_one.call_args.kwargs["projection"])
+        self.assertEqual(self.measurements[2], measurements[-1])
+
     def test_recent_measurements(self):
         """Test that we get all measurements with all metric ids."""
         self.database.measurements.find.return_value = self.measurements
