@@ -103,7 +103,8 @@ lockfile-aliases folder="": (js-check "lockfile-aliases" f"{{ python }} {{ justf
 
 # GHSA advisory IDs to ignore in npm audit. Document why each one is safe to ignore. The npm-audit-ignores recipe
 # below fails when an advisory listed here is no longer reported, so that fixed advisories don't linger in this list.
-npm_audit_ignore := ""
+# moderate: GHSA-r3ph-w7gj-g6xm js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources
+npm_audit_ignore := "GHSA-r3ph-w7gj-g6xm"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]
