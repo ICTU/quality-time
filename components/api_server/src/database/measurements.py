@@ -19,9 +19,11 @@ if TYPE_CHECKING:
 NO_ID = {"_id": False}
 NO_SOURCE_DETAILS = NO_ID | {"sources.entities": False}
 NO_MEASUREMENT_DETAILS = NO_SOURCE_DETAILS | {"issue_status": False}
+NO_SOURCES = NO_ID | {"sources": False, "issue_status": False}
 
-# Sort options
-START_ASCENDING = [("start", pymongo.ASCENDING), ("end", pymongo.DESCENDING)]
+# Sort options. Don't add end to START_ASCENDING: for metrics with many measurements, MongoDB would then prefer the
+# start-end index over the metric_uuid-start index and scan the measurements of all metrics.
+START_ASCENDING = [("start", pymongo.ASCENDING)]
 START_DESCENDING = [("start", pymongo.DESCENDING)]
 
 
@@ -50,7 +52,7 @@ def measurements_in_period(database: Database, min_iso_timestamp: str, max_iso_t
 
 
 def all_metric_measurements(database: Database, metric_uuid: MetricId, max_iso_timestamp: str):
-    """Return all measurements for one metric, without entities and issue status, except for the most recent one."""
+    """Return all measurements for one metric, without sources and issue status, except for the most recent one."""
     measurement_filter: dict[str, str | dict[str, str]] = {"metric_uuid": str(metric_uuid)}
     if max_iso_timestamp:
         measurement_filter["start"] = {"$lte": max_iso_timestamp}
@@ -58,7 +60,7 @@ def all_metric_measurements(database: Database, metric_uuid: MetricId, max_iso_t
     if not latest_measurement:
         return []
     all_measurements_stripped = list(
-        database.measurements.find(measurement_filter, sort=START_ASCENDING, projection=NO_MEASUREMENT_DETAILS),
+        database.measurements.find(measurement_filter, sort=START_ASCENDING, projection=NO_SOURCES),
     )
     return [*all_measurements_stripped[:-1], latest_measurement]
 
