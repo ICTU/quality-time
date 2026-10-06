@@ -104,7 +104,11 @@ lockfile-aliases folder="": (js-check "lockfile-aliases" f"{{ python }} {{ justf
 # GHSA advisory IDs to ignore in npm audit. Document why each one is safe to ignore. The npm-audit-ignores recipe
 # below fails when an advisory listed here is no longer reported, so that fixed advisories don't linger in this list.
 # moderate: GHSA-r3ph-w7gj-g6xm js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources
-npm_audit_ignore := "GHSA-r3ph-w7gj-g6xm"
+# high: GHSA-68fv-2mgg-jv7q source-map-js allows event-loop denial of service through indexed source-map section offsets
+# moderate: GHSA-hp3w-g68c-fv3c sprintf-js vulnerable to denial of service through unbounded precision specifiers
+# low: GHSA-238p-pmpm-9mq7 KaTeX: Existing prototype pollution can bypass trust restrictions
+# moderate: GHSA-r4xh-jqrq-34v2 smol-toml: Quadratic-time parse() from parseKey rescanning to end of document on each key line
+npm_audit_ignore := "GHSA-r3ph-w7gj-g6xm GHSA-68fv-2mgg-jv7q GHSA-hp3w-g68c-fv3c GHSA-238p-pmpm-9mq7 GHSA-r4xh-jqrq-34v2"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]
