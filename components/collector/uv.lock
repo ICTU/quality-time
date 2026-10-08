@@ -124,11 +124,11 @@ wheels = [
 
 [[package]]
 name = "archunitpython"
-version = "1.7.0"
+version = "1.8.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ad/09/f5bf75a5c3b2f44dffca595b0f2d959b623fda8cb0b0b2467da566a88ce3/archunitpython-1.7.0.tar.gz", hash = "sha256:bb7565aae3d56ee1802283fd20f58d069989a5543efdfd458048fea43fb5c166", size = 400221, upload-time = "2026-09-13T13:25:22.26Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/aa/30/e8572545c2e5dd2c0edaf7815bd5e5b943a52c2ec9791b314136fa4adf16/archunitpython-1.8.0.tar.gz", hash = "sha256:b1784582533519ca1bd99524926b32c02ac0425aa798232a48ecc50e2f19eae3", size = 407995, upload-time = "2026-09-30T16:18:08.082Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/00/1c/ef53252a8b15b948aa6aefbb2ec0b57f452fa5c38eb93e82064ab6f35dba/archunitpython-1.7.0-py3-none-any.whl", hash = "sha256:1f995a6eef9eeacc18585008b814e52716581412e90756930316aa4309fe8490", size = 81309, upload-time = "2026-09-13T13:25:21.067Z" },
+    { url = "https://files.pythonhosted.org/packages/c8/22/6d2d01e31502102bb5d68c37fa7207142e5cb6fd22b0cd2e84324c9f5cd8/archunitpython-1.8.0-py3-none-any.whl", hash = "sha256:e99eb5d4681db2128e89c95c697a4c958e2f1f1589565cff722f0627df716348", size = 86387, upload-time = "2026-09-30T16:18:06.933Z" },
 ]
 
 [[package]]
@@ -556,11 +556,11 @@ wheels = [
 
 [[package]]
 name = "filelock"
-version = "4.0.7"
+version = "4.0.8"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/35/f5/14097cca69f53794270d8c7970b48321636302affe3154c7e0ba114eeff9/filelock-4.0.7.tar.gz", hash = "sha256:da5915714a70b55d167fdc7e251ad91302b0a36816fb574dfafae8f4f2c9bb21", size = 248489, upload-time = "2026-09-29T23:04:05.995Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cc/19/d4f21fc4b7ad098dd3c774ccb2a2929178b15d6e1a3ba7d0929817c0b30c/filelock-4.0.8.tar.gz", hash = "sha256:733d9b6b153fc63672f86104324186818b6bbe9dd7db84e9bb9887b6a04a2775", size = 249830, upload-time = "2026-10-01T06:15:21.755Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/06/cf/1731c0dd182ee35f80a39e63afb3d03056ea0dd561b7498932b10b2e34d9/filelock-4.0.7-py3-none-any.whl", hash = "sha256:a93c4d93269b339a6af4848342c7e940d0f9928ad95eff64764699e5f1bf8a6a", size = 109242, upload-time = "2026-09-29T23:04:04.696Z" },
+    { url = "https://files.pythonhosted.org/packages/89/6b/b45e5ad90c6ac8805b72277d75ef651bca11d3665194de7c0162bd8324eb/filelock-4.0.8-py3-none-any.whl", hash = "sha256:325ff22f358c18443b1fcdfa0a7aa3faec4b500c2807c554719da4567b533d31", size = 109665, upload-time = "2026-10-01T06:15:19.736Z" },
 ]
 
 [[package]]
@@ -1650,7 +1650,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "archunitpython", specifier = "==1.7.0" },
+    { name = "archunitpython", specifier = "==1.8.0" },
     { name = "bandit", specifier = "==1.9.4" },
     { name = "codespell", specifier = "==2.4.3" },
     { name = "coverage", specifier = "==7.16.2" },
@@ -1672,7 +1672,7 @@ project-wide = [
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.30.1" },
 ]
-update-time = [{ name = "update-time", specifier = "==0.0.40" }]
+update-time = [{ name = "update-time", specifier = "==0.0.41" }]
 uv = [{ name = "uv", specifier = "==0.12.21" }]
 
 [[package]]
