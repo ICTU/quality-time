@@ -20,7 +20,7 @@
         "lockfile-lint": "^5.0.1",
         "prettier": "^3.9.9",
         "supertest": "^7.3.0",
-        "vitest": "^5.0.0"
+        "vitest": "^5.0.3"
     },
     "scripts": {
         "start": "vite",
