@@ -1,6 +1,6 @@
 [project]
 name = "shared-code"
-version = "5.60.1-rc.0"
+version = "5.60.1"
 requires-python = ">=3.14"
 classifiers = [
     "Framework :: Bottle",
