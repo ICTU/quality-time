@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.14"
 resolution-markers = [
     "python_full_version >= '3.15'",
@@ -448,7 +448,7 @@ wheels = [
 
 [[package]]
 name = "feature-tests"
-version = "5.60.0"
+version = "5.60.1rc0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -1324,7 +1324,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.60.0"
+version = "5.60.1rc0"
 source = { virtual = "../../tools/third_party" }
 dependencies = [
     { name = "archunitpython" },

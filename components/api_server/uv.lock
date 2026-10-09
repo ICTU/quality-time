@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.14"
 resolution-markers = [
     "python_full_version >= '3.15'",
@@ -33,7 +33,7 @@ wheels = [
 
 [[package]]
 name = "api-server"
-version = "5.60.0"
+version = "5.60.1rc0"
 source = { virtual = "." }
 dependencies = [
     { name = "argon2-cffi" },
@@ -1436,7 +1436,7 @@ wheels = [
 
 [[package]]
 name = "shared-code"
-version = "5.60.0"
+version = "5.60.1rc0"
 source = { directory = "../shared_code" }
 dependencies = [
     { name = "bottle" },
@@ -1467,7 +1467,7 @@ dev = [
 
 [[package]]
 name = "shared-test-code"
-version = "5.60.0"
+version = "5.60.1rc0"
 source = { directory = "../../tests/shared_test_code" }
 dependencies = [
     { name = "shared-code" },
@@ -1562,7 +1562,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.60.0"
+version = "5.60.1rc0"
 source = { virtual = "../../tools/third_party" }
 dependencies = [
     { name = "archunitpython" },
