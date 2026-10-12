@@ -17,7 +17,7 @@ dependencies = [
     "fixit==2.2.1",
     "mypy==2.4.0",
     "pip-audit==2.10.1",
-    "pyproject-fmt==2.29.4",
+    "pyproject-fmt==2.30.1",
     "ruff==0.16.10",
     "troml==0.4.1",
     "ty==0.0.84",
