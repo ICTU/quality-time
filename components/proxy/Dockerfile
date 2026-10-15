@@ -1,12 +1,12 @@
-FROM nginxinc/nginx-unprivileged:1.31.5-alpine3.24-slim@sha256:736aa11ab9f9c320825722e411661c64559881e15e77f37137eef168ebe9515c AS compile-image
+FROM nginxinc/nginx-unprivileged:1.31.6-alpine3.24-slim@sha256:ac4d9c7e457c6510b95ac72dd84b27f7cc68ecb9a83fbd44f05a6460cf08aba4 AS compile-image
 
 # Hadolint says: DL3066 info: Non-numeric user-id may not be resolvable by host system. Fix TBD.
 # hadolint ignore=DL3002,DL3066
 USER root
 # Add the CAP_NET_BIND_SERVICE to provide backwards compatibility, running on privileged port (80)
-RUN apk add --no-cache libcap=2.78-r0 tzdata=2026c-r0 && setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/nginx
+RUN apk add --no-cache libcap=2.78-r0 tzdata=2026e-r0 && setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/nginx
 
-FROM nginxinc/nginx-unprivileged:1.31.5-alpine3.24-slim@sha256:736aa11ab9f9c320825722e411661c64559881e15e77f37137eef168ebe9515c
+FROM nginxinc/nginx-unprivileged:1.31.6-alpine3.24-slim@sha256:ac4d9c7e457c6510b95ac72dd84b27f7cc68ecb9a83fbd44f05a6460cf08aba4
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time proxy"

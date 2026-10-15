@@ -1,6 +1,6 @@
 """Unit tests for the release script."""
 
-import datetime
+import datetime as dt
 import sys
 import unittest
 from typing import cast
@@ -114,7 +114,7 @@ class MainTest(unittest.TestCase):
             self.run_main()
         self.assertIn("the following arguments are required: bump", stderr_write.call_args[0][0])
 
-    @patch("release.utc_today", Mock(return_value=datetime.date(2026, 5, 13)))
+    @patch("release.utc_today", Mock(return_value=dt.date(2026, 5, 13)))
     def test_bump_without_meeting_preconditions(self):
         """Test that an error message is shown if the preconditions are not met."""
         expected_exit_message = (
@@ -155,7 +155,7 @@ class MainTest(unittest.TestCase):
         self.assert_tag_moved("v2.2.2")
         self.assert_tag_pushed()
 
-    @patch("release.utc_today", Mock(return_value=datetime.date(2026, 5, 14)))
+    @patch("release.utc_today", Mock(return_value=dt.date(2026, 5, 14)))
     def test_bump_release(self):
         """Test releasing when all preconditions are met."""
         self.prepare_docs(self.changelog(), self.versioning_policy("v2.2.2", "2026-05-14"))
@@ -165,7 +165,7 @@ class MainTest(unittest.TestCase):
         self.assert_tag_moved("v2.2.2-rc.1")
         self.assert_tag_pushed()
 
-    @patch("release.utc_today", Mock(return_value=datetime.date(2026, 5, 14)))
+    @patch("release.utc_today", Mock(return_value=dt.date(2026, 5, 14)))
     def test_bump_release_check_preconditions(self):
         """Test checking the preconditions before releasing."""
         self.prepare_docs(self.changelog(), self.versioning_policy("v2.2.2", "2026-05-14"))
