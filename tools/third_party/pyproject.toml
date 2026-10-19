@@ -10,17 +10,17 @@ classifiers = [
     "Programming Language :: Python :: 3.16",
 ]
 dependencies = [
-    "archunitpython==1.8.0",
+    "archunitpython==1.8.1",
     "bandit==1.9.4",
     "codespell==2.4.3",
     "coverage==7.16.2",
     "fixit==2.2.1",
     "mypy==2.4.0",
     "pip-audit==2.10.1",
-    "pyproject-fmt==2.29.4",
-    "ruff==0.16.10",
+    "pyproject-fmt==2.30.3",
+    "ruff==0.17.0",
     "troml==0.4.1",
-    "ty==0.0.84",
+    "ty==0.0.86",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
     "vulture==2.16",
 ]
@@ -32,16 +32,16 @@ just = [
 # Tools that are run on the repository as a whole, instead of per component, are in a group so that they are not
 # installed in the components' environments, where their dependencies would needlessly constrain the resolution.
 project-wide = [
-    "compose-lint==0.32.0",
+    "compose-lint==0.34.1",
     "yamllint==1.38.0",
     "zizmor==1.30.1",       # Static analysis tool for GitHub Actions
 ]
 # Update-time is only run on the repository as a whole, and pins its dependencies, so it also gets its own group.
 update-time = [
-    "update-time==0.0.41",
+    "update-time==0.0.43",
 ]
 uv = [
-    "uv==0.12.22",
+    "uv==0.13.0",
 ]
 
 [tool.uv]

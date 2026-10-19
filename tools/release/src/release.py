@@ -2,7 +2,7 @@
 
 """Release the application."""
 
-import datetime
+import datetime as dt
 import os
 import pathlib
 import re
@@ -146,9 +146,9 @@ def failed_preconditions_version_overview(current_version: str) -> list[str]:
     return messages
 
 
-def utc_today() -> datetime.date:
+def utc_today() -> dt.date:
     """Return today in UTC."""
-    return datetime.datetime.now(tz=tzutc()).date()
+    return dt.datetime.now(tz=tzutc()).date()
 
 
 def bump_my_version_spec() -> str:
