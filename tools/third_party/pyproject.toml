@@ -41,14 +41,15 @@ update-time = [
     "update-time==0.0.44",
 ]
 uv = [
-    "uv==0.13.0",
+    "uv==0.13.4",
 ]
 
 [tool.uv]
 override-dependencies = [
-    "click==8.3.3" # PYSEC-2026-2132: No summary provided
+    "click==8.3.3" # PYSEC-2026-2132 (CVE-2026-7246); fixit pins click<8.2, see https://github.com/Instagram/Fixit/issues/570
 ]
 exclude-newer = "7 days"
+exclude-newer-package = { certifi = false, uv = false }  # GHSA-6q48-6c7w-9gw2 (certifi) and GHSA-hq85-5cpj-mr62 (uv) both concern trusting compromised emSign intermediate CAs; the fixes in certifi 2026.10.19 and uv 0.13.4, released 2026-10-20, would be blocked by exclude-newer; remove after 2026-10-27
 package = false
 
 [tool.ruff]

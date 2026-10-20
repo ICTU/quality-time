@@ -52,7 +52,7 @@ services:
     ports:
       - "127.0.0.1:9000:9000"
   selenium:
-    image: selenium/standalone-firefox:156.0-20260909@sha256:430b43aa2a573ad692fdde106e19330bdae68c8d5841615c45fd7627225d81d6 # yamllint disable-line rule:line-length
+    image: selenium/standalone-firefox:156.0.1-20260909@sha256:575e394cc9bf8e882248c5cf75c3c187481c197b8e1f01f98392abce31de1039 # yamllint disable-line rule:line-length
     shm_size: 2gb
     ports:
       - "127.0.0.1:4444:4444"
