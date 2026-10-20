@@ -6,7 +6,7 @@
     "proxy": "http://localhost:9000",
     "dependencies": {
         "@braintree/sanitize-url": "^7.1.2",
-        "express": "^5.2.1",
+        "express": "^5.3.0",
         "puppeteer-core": "^25.13.0"
     },
     "devDependencies": {
@@ -14,11 +14,11 @@
         "@vitest/coverage-v8": "^5.0.0",
         "eslint": "^10.12.0",
         "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-prettier": "^5.5.6",
+        "eslint-plugin-prettier": "^5.5.7",
         "eslint-plugin-simple-import-sort": "^14.0.0",
         "globals": "^17.13.0",
-        "lockfile-lint": "^5.0.1",
-        "prettier": "^3.9.9",
+        "lockfile-lint": "^5.1.0",
+        "prettier": "^3.9.10",
         "supertest": "^7.3.1",
         "vitest": "^5.0.0"
     },
