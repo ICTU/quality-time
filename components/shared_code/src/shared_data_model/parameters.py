@@ -83,7 +83,7 @@ class MultipleChoiceWithoutDefaultsParameter(Parameter):
 
     type: ParameterType = ParameterType.MULTIPLE_CHOICE_WITHOUT_DEFAULTS
     default_value: str | list[str] = []
-    placeholder: str = "none"
+    placeholder: str | None = "none"
 
     @model_validator(mode="after")
     def check_default_value(self) -> Self:
@@ -98,14 +98,14 @@ class MultipleChoiceWithAdditionParameter(MultipleChoiceWithDefaultsParameter):
     """Multiple choice parameter that allows the user to add additional options."""
 
     type: ParameterType = ParameterType.MULTIPLE_CHOICE_WITH_ADDITION
-    placeholder: str = "none"
+    placeholder: str | None = "none"
 
 
 class VersionNumberPattern(StringParameter):
     """Regular expression to extract a valid version number from a non-standard version string."""
 
     name: str = "Version number pattern (regular expression)"
-    help: str = (
+    help: str | None = (
         "If the version number reported by the source is not a valid semantic version, "
         "use this regular expression to extract a valid version number from the reported version. "
         "Quality-time uses the first match. For example, use '\\d+(\\.\\d+)*' to extract a version "
@@ -154,7 +154,7 @@ class APIVersion(SingleChoiceParameter):
 class Days(IntegerParameter):
     """Number of days parameter."""
 
-    unit: Unit = Unit.DAYS
+    unit: Unit | str | None = Unit.DAYS
     min_value: str = "1"
 
 
@@ -172,7 +172,7 @@ class Severities(MultipleChoiceWithDefaultsParameter):
     """Security warning severities."""
 
     name: str = "Severities"
-    placeholder: str = "all severities"
+    placeholder: str | None = "all severities"
     metrics: list[str] = ["security_warnings"]
 
     @model_validator(mode="after")
@@ -187,12 +187,12 @@ class TestResult(MultipleChoiceWithDefaultsParameter):
     """Test result parameter."""
 
     name: str = "Test results"
-    help: str = (
+    help: str | None = (
         "Limit which test results to count. Note: depending on which results are selected, the direction of the "
         "metric may need to be adapted. For example, when counting passed tests, more is better, but when counting "
         "failed tests, fewer is better."
     )
-    placeholder: str = "all test results"
+    placeholder: str | None = "all test results"
     metrics: list[str] = ["tests"]
 
 
@@ -200,7 +200,7 @@ class TestResultAggregationStrategy(SingleChoiceParameter):
     """Test result aggregation strategy."""
 
     name: str = "Test result aggregation strategy"
-    help: str = (
+    help: str | None = (
         "How to aggregate test results of individual tests to create the result of a test case. "
         "Strict (default) assigns the worst result of the tests to the test case they belong to. "
         "Lenient assigns the best result of the tests to the test case they belong to. "
@@ -216,7 +216,7 @@ class Upvotes(IntegerParameter):
 
     name: str = "Required number of upvotes"
     help: str | None = "Only count merge requests with fewer than the required number of upvotes."
-    unit: Unit = Unit.UPVOTES
+    unit: Unit | str | None = Unit.UPVOTES
     metrics: list[str] = ["merge_requests"]
 
 
@@ -232,7 +232,7 @@ class Branches(MultipleChoiceWithAdditionParameter):
     """Branches parameter."""
 
     name: str = "Branches (regular expressions or branch names)"
-    placeholder: str = "all branches"
+    placeholder: str | None = "all branches"
     metrics: list[str] = ["pipeline_duration"]
 
 
@@ -247,7 +247,7 @@ class TargetBranchesToInclude(MultipleChoiceWithAdditionParameter):
     """Target branches to include parameter."""
 
     name: str = "Target branches to include (regular expressions or branch names)"
-    placeholder: str = "all target branches"
+    placeholder: str | None = "all target branches"
     metrics: list[str] = ["merge_requests"]
 
 
@@ -255,18 +255,18 @@ class BranchMergeStatus(MultipleChoiceWithDefaultsParameter):
     """Branch merge status."""
 
     name: str = "Branch merge status"
-    help: str = "Limit which merge states to count."
-    placeholder: str = "all merge states"
+    help: str | None = "Limit which merge states to count."
+    placeholder: str | None = "all merge states"
     metrics: list[str] = ["inactive_branches"]
-    values: list[str] = ["merged", "unmerged"]
+    values: list[str] | None = ["merged", "unmerged"]
 
 
 class MergeRequestState(MultipleChoiceWithDefaultsParameter):
     """Merge request states parameter."""
 
     name: str = "Merge request states"
-    help: str = "Limit which merge request states to count."
-    placeholder: str = "all states"
+    help: str | None = "Limit which merge request states to count."
+    placeholder: str | None = "all states"
     metrics: list[str] = ["merge_requests"]
 
 
@@ -274,8 +274,8 @@ class FailureType(MultipleChoiceWithDefaultsParameter):
     """Failure type parameter."""
 
     name: str = "Failure types"
-    help: str = "Limit which failure types to count as failed."
-    placeholder: str = "all failure types"
+    help: str | None = "Limit which failure types to count as failed."
+    placeholder: str | None = "all failure types"
     metrics: list[str] = ["failed_jobs"]
 
 
@@ -283,8 +283,8 @@ class ResultType(MultipleChoiceWithDefaultsParameter):
     """Build result type parameter."""
 
     name: str = "Build result types"
-    help: str = "Limit which build result types to include."
-    placeholder: str = "all result types"
+    help: str | None = "Limit which build result types to include."
+    placeholder: str | None = "all result types"
     metrics: list[str] = ["job_runs_within_time_period"]
 
 
@@ -292,7 +292,7 @@ class TransactionsToIgnore(MultipleChoiceWithAdditionParameter):
     """Transactions to ignore parameter."""
 
     name: str = "Transactions to ignore (regular expressions or transaction names)"
-    help: str = "Transactions to ignore can be specified by transaction name or by regular expression."
+    help: str | None = "Transactions to ignore can be specified by transaction name or by regular expression."
     metrics: list[str] = ["slow_transactions", "tests"]
 
 
@@ -300,8 +300,8 @@ class TransactionsToInclude(MultipleChoiceWithAdditionParameter):
     """Transactions to include parameter."""
 
     name: str = "Transactions to include (regular expressions or transaction names)"
-    help: str = "Transactions to include can be specified by transaction name or by regular expression."
-    placeholder: str = "all transactions"
+    help: str | None = "Transactions to include can be specified by transaction name or by regular expression."
+    placeholder: str | None = "all transactions"
     metrics: list[str] = ["slow_transactions", "tests"]
 
 
@@ -314,7 +314,9 @@ class ResponseTimeToEvaluate(SingleChoiceParameter):
     """Response time to evaluate parameter."""
 
     name: str = "Response time type to evaluate against the target response time"
-    help: str = "Which response time type to compare with the target response time to determine slow transactions."
+    help: str | None = (
+        "Which response time type to compare with the target response time to determine slow transactions."
+    )
     metrics: list[str] = ["slow_transactions"]
 
 
@@ -322,9 +324,11 @@ class TargetResponseTime(IntegerParameter):
     """Target response time parameter."""
 
     name: str = "Target response time"
-    help: str = "The response times of the transactions should be less than or equal to the target response time."
-    default_value: str = "1000"
-    unit: str = "milliseconds"
+    help: str | None = (
+        "The response times of the transactions should be less than or equal to the target response time."
+    )
+    default_value: str | list[str] = "1000"
+    unit: Unit | str | None = "milliseconds"
     metrics: list[str] = ["slow_transactions"]
 
 
@@ -334,11 +338,11 @@ class TransactionSpecificTargetResponseTimes(MultipleChoiceWithAdditionParameter
     name: str = (
         "Transaction-specific target response times (regular expressions or transaction names:target response time)"
     )
-    help: str = (
+    help: str | None = (
         "Transactions-specific target responses times (in milliseconds) can be specified by transaction name or by "
         "regular expression, separated from the target response time by a colon, e.g.: '/api/v?/search/.*:1500'."
     )
-    placeholder: str = "none"
+    placeholder: str | None = "none"
     metrics: list[str] = ["slow_transactions"]
 
 
