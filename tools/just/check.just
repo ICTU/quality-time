@@ -107,7 +107,9 @@ lockfile-aliases folder="": (js-check "lockfile-aliases" f"{{ python }} {{ justf
 # moderate: GHSA-hp3w-g68c-fv3c sprintf-js vulnerable to denial of service through unbounded precision specifiers
 # low: GHSA-238p-pmpm-9mq7 KaTeX: Existing prototype pollution can bypass trust restrictions
 # moderate: GHSA-r4xh-jqrq-34v2 smol-toml: Quadratic-time parse() from parseKey rescanning to end of document on each key line
-npm_audit_ignore := "GHSA-r3ph-w7gj-g6xm GHSA-hp3w-g68c-fv3c GHSA-238p-pmpm-9mq7 GHSA-r4xh-jqrq-34v2"
+# high: GHSA-gfr2-rv44-r23c markdown-it: Quadratic-time rendering of a single multi-line link reference definition with default options (regression since 14.0)
+# low: GHSA-vfgh-jcmw-g37q markdown-it: Quadratic-time denial of service in inline HTML parsing with html enabled
+npm_audit_ignore := "GHSA-r3ph-w7gj-g6xm GHSA-hp3w-g68c-fv3c GHSA-238p-pmpm-9mq7 GHSA-r4xh-jqrq-34v2 GHSA-gfr2-rv44-r23c GHSA-vfgh-jcmw-g37q"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]

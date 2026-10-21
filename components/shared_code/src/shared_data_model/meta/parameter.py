@@ -6,6 +6,7 @@ from typing import Self
 from pydantic import ConfigDict, Field, HttpUrl, model_validator
 
 from .base import NamedModel
+from .unit import Unit  # noqa: TC001
 
 
 class ParameterType(StrEnum):
@@ -33,7 +34,7 @@ class Parameter(NamedModel):
     placeholder: str | None = None
     mandatory: bool = False
     default_value: str | list[str] = ""
-    unit: str | None = None
+    unit: Unit | str | None = None
     metrics: list[str] = Field(..., min_length=1)
     values: list[str] | None = None
     api_values: dict[str, str] | None = None
@@ -104,6 +105,9 @@ class Parameter(NamedModel):
     def is_multiple_choice_with_addition(self) -> bool:
         """Return whether the parameter is multiple choice with addition."""
         return bool(self.type == ParameterType.MULTIPLE_CHOICE_WITH_ADDITION)
+
+
+Parameter.model_rebuild()
 
 
 class ParameterGroup(NamedModel):

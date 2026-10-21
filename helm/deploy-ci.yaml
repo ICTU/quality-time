@@ -52,7 +52,7 @@ spec:
       containers:
         - name: selenium
           # yamllint disable-line rule:line-length
-          image: selenium/standalone-firefox:156.0.1-20260909@sha256:575e394cc9bf8e882248c5cf75c3c187481c197b8e1f01f98392abce31de1039
+          image: selenium/standalone-firefox:158.0-20261010@sha256:3100e3cd43f0399dcf753165175445fb7fb160cf6c9ef4311178c62b34725bc9
           ports:
             - containerPort: 4444
           # Selenium/Firefox takes a while to bind port 4444; without a readiness probe Kubernetes marks the
