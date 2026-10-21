@@ -5,7 +5,7 @@ from .scales import VERSION_NUMBER_EXPLANATION, VERSION_NUMBER_EXPLANATION_URLS
 
 SIG_TUVIT_EVALUATION_CRITERIA = (
     "https://www.softwareimprovementgroup.com/wp-content/uploads/SIG-TUViT-Evaluation-Criteria-Trusted-Product-"
-    "Maintainability-Guidance-for-producers.pdf"
+    "Maintainability.pdf"
 )
 FOWLER_TEST_COVERAGE = "https://martinfowler.com/bliki/TestCoverage.html"
 
@@ -217,9 +217,6 @@ Unfortunately, SonarQube can only used to measure the absolute size of the softw
 sizes of files with test code for all programming languages. Hence it cannot be used to measure the relative size of
 test code.
 ```""",
-        rationale_urls=[
-            SIG_TUVIT_EVALUATION_CRITERIA,
-        ],
         unit=Unit.LINES,
         unit_singular=Unit.LINE,
         scales=["count", "percentage"],
