@@ -102,7 +102,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         logger.exception.assert_called_once()
         self.assertEqual(logger.exception.mock_calls[0].args[0], "Getting reports and measurements failed")
 
-    @patch("pymsteams.connectorcard.send")
+    @patch("notifier.notifier.send_notification")
     @patch("asyncio.sleep")
     @patch("notifier.notifier.get_reports_and_measurements")
     async def test_no_new_red_metrics(self, mocked_get: Mock, mocked_sleep: Mock, mocked_send: Mock):
@@ -165,7 +165,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(mocked_get.call_count, 2)
         self.assertEqual(mocked_send.call_count, 1)
 
-    @patch("pymsteams.connectorcard.send")
+    @patch("notifier.notifier.send_notification")
     @patch("asyncio.sleep")
     @patch("notifier.notifier.get_reports_and_measurements")
     async def test_one_old_red_metric_with_one_measurement(
@@ -208,7 +208,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
 
         mocked_send.assert_not_called()
 
-    @patch("pymsteams.connectorcard.send")
+    @patch("notifier.notifier.send_notification")
     @patch("asyncio.sleep")
     @patch("notifier.notifier.get_reports_and_measurements")
     async def test_no_webhook_in_notification_destination(

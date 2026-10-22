@@ -4,15 +4,16 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from shared.model.report import Report
+
     from models.metric_notification_data import MetricNotificationData
-    from notifier_utilities.type import JSON
 
 
 @dataclass
 class Notification:
     """Handle notification contents and status."""
 
-    report: JSON
+    report: Report
     report_url: str  # The landing URL to be included in the notification so users can navigate back to Quality-time
     metrics: list[MetricNotificationData]
     destination: dict[str, str]

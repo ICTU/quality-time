@@ -1043,7 +1043,6 @@ version = "5.60.1"
 source = { virtual = "." }
 dependencies = [
     { name = "aiohttp" },
-    { name = "pymsteams" },
     { name = "python-dateutil" },
     { name = "shared-code" },
 ]
@@ -1060,7 +1059,6 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "aiohttp", specifier = "==3.14.5" },
-    { name = "pymsteams", specifier = "==0.2.5" },
     { name = "python-dateutil", specifier = "==2.9.0.post0" },
     { name = "shared-code", directory = "../shared_code" },
 ]
@@ -1399,18 +1397,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/40/f2/391d41d24384545b2a6ed09694b2444f765a6e20932c75ed4eb507c9ef36/pymongo-4.19.0-cp315-cp315t-win32.whl", hash = "sha256:eececca812e8f5b3c12ad33dc90201ac20f5f193da446f7719f4321a0841387b", size = 826638, upload-time = "2026-10-14T19:48:11.962Z" },
     { url = "https://files.pythonhosted.org/packages/d1/48/96b923a2d29456896c7f11f8e6104339818112f5a8621f42ba51f131a510/pymongo-4.19.0-cp315-cp315t-win_amd64.whl", hash = "sha256:f17b100fdc16b65c12997ec4fcc78eecc0a6395254c7ec92a4596e855ff1f33a", size = 835209, upload-time = "2026-10-14T19:48:14.063Z" },
     { url = "https://files.pythonhosted.org/packages/46/6b/2ede9f64d96393e8111d250620f5340d64e62f4617322a43800516027ce9/pymongo-4.19.0-cp315-cp315t-win_arm64.whl", hash = "sha256:bfcb5f8912edd9714a52564ad41c0dcd72e5408d1d3d67b41f6145df4a516318", size = 827452, upload-time = "2026-10-14T19:48:17.534Z" },
-]
-
-[[package]]
-name = "pymsteams"
-version = "0.2.5"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "requests" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d9/f5/8b9b9572d4f582e5a3a135110c07218cd43ad6d067a986576d0467bf6251/pymsteams-0.2.5.tar.gz", hash = "sha256:9f76ca3a3de17b49ce3c5c314ee0e88b8bd2be78fc66f693ade1b7cabf23af70", size = 88943, upload-time = "2025-01-07T23:59:10.763Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/77/55/2f83baa2a9d1eada20f41dcced4d4fb7ba14d864b160be812786802e39c3/pymsteams-0.2.5-py3-none-any.whl", hash = "sha256:bda78f36c4a59baa10fa21928980349a841b03c78dc7d6020f230aea4aeab2b7", size = 14684, upload-time = "2025-01-07T23:59:08.351Z" },
 ]
 
 [[package]]

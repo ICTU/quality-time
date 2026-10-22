@@ -12,7 +12,6 @@ classifiers = [
 ]
 dependencies = [
     "aiohttp==3.14.5",
-    "pymsteams==0.2.5",
     "python-dateutil==2.9.0.post0",
     "shared-code",
 ]
@@ -98,6 +97,3 @@ warn_unused_ignores = true
 warn_return_any = true
 warn_unreachable = true
 incremental = false
-overrides = [ { module = [
-        "pymsteams",
-    ], ignore_missing_imports = true } ]

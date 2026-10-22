@@ -12,6 +12,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Added
+
+- Support sending notifications to Microsoft Teams webhooks created with the Microsoft Teams Workflows app. *Quality-time* now sends notifications as Adaptive Cards, which work with both Workflows webhooks and the retired Office 365 connector webhooks. See the [user manual](usage.md#notifications). Closes [#12326](https://github.com/ICTU/quality-time/issues/12326).
+
 ### Changed
 
 - Updated the link to the SIG/TÜV NORD CERT "Evaluation Criteria Trusted Product Maintainability: Guidance for Producers" to the 2026 version. Removed the link from the 'size (LOC)' metric, as the 2026 version no longer uses volume as maintainability criterion. Closes [#14738](https://github.com/ICTU/quality-time/issues/14738).
