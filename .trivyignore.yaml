@@ -1,0 +1,4 @@
+---
+# Suppressed Trivy findings. Every entry must say why it is safe, and carry an `expired_at` date so
+# the finding re-surfaces in the nightly scan for re-evaluation instead of being silenced forever.
+vulnerabilities:
