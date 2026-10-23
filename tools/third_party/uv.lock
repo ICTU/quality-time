@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.14"
 resolution-markers = [
     "python_full_version >= '3.15'",
@@ -11,8 +11,8 @@ exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for 
 exclude-newer-span = "P7D"
 
 [options.exclude-newer-package]
-uv = false
 certifi = false
+uv = false
 
 [manifest]
 overrides = [{ name = "click", specifier = "==8.3.3" }]
@@ -276,14 +276,14 @@ wheels = [
 
 [[package]]
 name = "compose-lint"
-version = "0.35.0"
+version = "0.36.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/81/54/333fbc2e3cc6dd4852ea585f8a279c1d10063e1c34912228818d78396a0f/compose_lint-0.35.0.tar.gz", hash = "sha256:c8773e36edd8b1ec994b0430ac35b1224d4eb5f33b507d3f06b1cb517adadf73", size = 5108900, upload-time = "2026-10-15T01:59:09.932Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/f9/11793bd039e0005cf346fdbaaf4bbe2add598be6d95aa2481ff2d0620a98/compose_lint-0.36.0.tar.gz", hash = "sha256:e5851737b10c170c7a24414b9bebc10dd151b3a42962e608eb90d6d20fffbadb", size = 5128965, upload-time = "2026-10-15T16:24:20.789Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/05/a9d2224088f2bf752d03fc87f8e899896c6a781faaf5c2c016d6ffde9b01/compose_lint-0.35.0-py3-none-any.whl", hash = "sha256:38ac64b726be243df0df477f32b596fb5163eb8ca8b605f48e518ad346dc5b0b", size = 396085, upload-time = "2026-10-15T01:59:07.781Z" },
+    { url = "https://files.pythonhosted.org/packages/63/1c/14e96db05934a37f003b5582d6b74ffeaa4b4fb7b1d47d0520d735e350f3/compose_lint-0.36.0-py3-none-any.whl", hash = "sha256:8ae16ff07518a0add38143b216dae6b1625b788e51f10d1b710ba2f986c20f6a", size = 405979, upload-time = "2026-10-15T16:24:18.836Z" },
 ]
 
 [[package]]
@@ -1155,7 +1155,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 just = [{ name = "rust-just", specifier = "==1.58.0" }]
 project-wide = [
-    { name = "compose-lint", specifier = "==0.35.0" },
+    { name = "compose-lint", specifier = "==0.36.0" },
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.31.0" },
 ]
