@@ -539,6 +539,10 @@ DORA metrics are a set of four key metrics for measuring the performance of soft
 
 ## Notifications
 
-*Quality-time* can send notifications about metrics that change status to {index}`Microsoft Teams` channels. To enable notifications for a report, expand the report header and paste a [Microsoft Teams webhook](https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook).
+*Quality-time* can send notifications about metrics that change status to {index}`Microsoft Teams` channels and chats. To enable notifications for a report, expand the report header and paste a Microsoft Teams webhook. Create the webhook with the Workflows app in Microsoft Teams, using the "Send webhook alerts to a channel" or "Send webhook alerts to a chat" template, as described in [Send messages in Teams using incoming webhooks](https://support.microsoft.com/en-us/office/send-messages-in-teams-using-incoming-webhooks-323660ec-12ca-40b1-a1d3-a3df47e808c4). Webhooks created with the retired Office 365 Incoming Webhook connector also work, for as long as Microsoft will continue to support them.
 
-If a {index}`webhook <Webhook>` has been configured, *Quality-time* will check for changes in the status of metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel configured by the webhook.
+If a {index}`webhook <Webhook>` has been configured, *Quality-time* will check for changes in the status of metrics every minute. As soon as one or more metrics in the report change status, a notification will be sent to the Microsoft Teams channel or chat configured by the webhook.
+
+```{tip}
+If notifications don't show up in Microsoft Teams, open the Workflows app in Microsoft Teams and check the run history of the workflow for errors.
+```

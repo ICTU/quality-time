@@ -38,7 +38,7 @@ async def notify(database: Database, sleep_duration: int = 60) -> NoReturn:
             measurements = []
 
         for notification in notification_finder.get_notifications(reports, measurements, most_recent_measurement_seen):
-            send_notification(str(notification.destination["webhook"]), notification)
+            await send_notification(str(notification.destination["webhook"]), notification)
         most_recent_measurement_seen = most_recent_measurement_timestamp(measurements)
         logger.info("Sleeping %.1f seconds...", sleep_duration)
         await asyncio.sleep(sleep_duration)
