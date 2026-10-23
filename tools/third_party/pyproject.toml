@@ -34,7 +34,7 @@ just = [
 project-wide = [
     "compose-lint==0.35.0",
     "yamllint==1.38.0",
-    "zizmor==1.31.0",       # Static analysis tool for GitHub Actions
+    "zizmor==1.31.1",       # Static analysis tool for GitHub Actions
 ]
 # Update-time is only run on the repository as a whole, and pins its dependencies, so it also gets its own group.
 update-time = [
