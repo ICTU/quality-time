@@ -10,9 +10,12 @@ def create_report_data(deleted: bool = False) -> dict:
         "title": "Title",
         "subjects": {
             SUBJECT_ID: {
+                "type": "software",
                 "metrics": {
                     METRIC_ID: {
+                        "type": "tests",
                         "name": "Metric",
+                        "scale": "count",
                     },
                 },
             },

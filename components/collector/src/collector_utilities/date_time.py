@@ -4,7 +4,6 @@ import re
 from datetime import datetime, timedelta
 from typing import Final
 
-from dateutil.parser import parse
 from dateutil.tz import tzlocal, tzutc
 
 from .functions import decimal_round_half_up
@@ -23,12 +22,6 @@ def days_to_go(date_time: datetime) -> int:
     """Return the days remaining until the date/time."""
     difference = (date_time - datetime.now(tz=date_time.tzinfo)).days + 1
     return max(difference, 0)
-
-
-def parse_datetime(text: str) -> datetime:
-    """Parse the datetime from the text. If the text does not contain a timezone add the local timezone."""
-    date_time = parse(text)
-    return date_time.replace(tzinfo=tzlocal()) if date_time.tzinfo is None else date_time
 
 
 def parse_duration(text: str) -> int:

@@ -9,8 +9,10 @@ from urllib.parse import quote
 
 import aiohttp
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import SourceCollector, TimePassedCollector
-from collector_utilities.date_time import days_ago, parse_datetime
+from collector_utilities.date_time import days_ago
 from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL, Response, Value
 from model import Entities, SourceMeasurement, SourceResponses

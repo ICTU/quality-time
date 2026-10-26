@@ -8,7 +8,9 @@ from aiohttp import ClientResponseError, RequestInfo
 from aiohttp.client_reqrep import URL, CIMultiDict, CIMultiDictProxy
 from dateutil.tz import tzutc
 
-from collector_utilities.date_time import days_ago, parse_datetime
+from shared.utils.date_time import parse_datetime
+
+from collector_utilities.date_time import days_ago
 
 from .base import FakeResponse, GitLabTestCase
 

@@ -1,17 +1,20 @@
 import { Tooltip } from "@mui/material"
+import { useContext } from "react"
 
+import { DataModelContext } from "../context/DataModel"
 import { metricPropType, reportPropType } from "../sharedPropTypes"
 import { getFormattedMetricTimeLeft, getMetricResponseDeadline, getMetricResponseTimeLeft } from "../utils"
 import { Label } from "../widgets/Label"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 
 export function TimeLeft({ metric, report }) {
-    const deadline = getMetricResponseDeadline(metric, report)
+    const dataModel = useContext(DataModelContext)
+    const deadline = getMetricResponseDeadline(metric, report, dataModel)
     if (deadline === null) {
         return null
     }
-    const timeLeft = getMetricResponseTimeLeft(metric, report)
-    const triggerText = getFormattedMetricTimeLeft(metric, report)
+    const timeLeft = getMetricResponseTimeLeft(metric, report, dataModel)
+    const triggerText = getFormattedMetricTimeLeft(metric, report, dataModel)
     let deadlineLabel = "Deadline to address this metric was"
     let trigger = <Label color="error">{triggerText}</Label>
     if (timeLeft >= 0) {

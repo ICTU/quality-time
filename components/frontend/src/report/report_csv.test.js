@@ -1,6 +1,8 @@
+import { desiredResponseTimes } from "../__fixtures__/fixtures"
 import { listSeparator, reportToCSV } from "./report_csv"
 
 const dataModel = {
+    config: { desired_response_times: desiredResponseTimes },
     metrics: {
         violations: {
             name: "Violations",

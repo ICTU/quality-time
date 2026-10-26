@@ -135,7 +135,7 @@ def check_nr_of_measurements_stream(context: Context, message_type: str) -> None
 def get_reports_overview_measurements(context: Context, the_current_or_past: str) -> None:
     """Get the reports overview measurements."""
     now = datetime.now(tz=tzutc())
-    last_week = now - timedelta(days=7)
+    last_week = now - timedelta(weeks=1)
     context.min_report_date = last_week.isoformat()
     if the_current_or_past == "past":
         just_now = now - timedelta(seconds=1)

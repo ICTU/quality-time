@@ -3,9 +3,10 @@
 from typing import TYPE_CHECKING
 
 from shared.model.iterators import metrics
+from shared.utils.date_time import parse_datetime
 
 from base_collectors import TimePassedCollector
-from collector_utilities.date_time import MIN_DATETIME, parse_datetime
+from collector_utilities.date_time import MIN_DATETIME
 from collector_utilities.type import URL, Response
 
 from .base import QualityTimeCollector

@@ -15,9 +15,11 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Added
 
 - Support sending notifications to Microsoft Teams webhooks created with the Microsoft Teams Workflows app. *Quality-time* now sends notifications as Adaptive Cards, which work with both Workflows webhooks and the retired Office 365 connector webhooks. See the [user manual](usage.md#notifications). Closes [#12326](https://github.com/ICTU/quality-time/issues/12326).
+- Send a daily 7 AM notification to configured notification destinations, with the metrics that have a week or less left to address them, including metrics whose desired response time has already passed. See the [user manual](usage.md#notifications). Closes [#7613](https://github.com/ICTU/quality-time/issues/7613).
 
 ### Changed
 
+- The Helm chart now sets the timezone of all containers, instead of only the renderer, using the new `timezone` value. If you set the `TZ` environment variable of the renderer in your Helm values, set `timezone` instead. See the [deployment documentation](deployment.md#configuring-the-timezone-optional).
 - Updated the link to the SIG/TÜV NORD CERT "Evaluation Criteria Trusted Product Maintainability: Guidance for Producers" to the 2026 version. Removed the link from the 'size (LOC)' metric, as the 2026 version no longer uses volume as maintainability criterion. Closes [#14738](https://github.com/ICTU/quality-time/issues/14738).
 
 ### Fixed
