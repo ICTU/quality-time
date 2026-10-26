@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.14"
 resolution-markers = [
     "python_full_version >= '3.15'",
@@ -155,7 +155,7 @@ wheels = [
 
 [[package]]
 name = "bump-my-version"
-version = "1.6.0"
+version = "1.6.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -168,9 +168,9 @@ dependencies = [
     { name = "tomlkit" },
     { name = "wcmatch" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/73/75/8f7d22e08f304cc3923adcdaa184edad857f174519cef3667acfa31bd9d3/bump_my_version-1.6.0.tar.gz", hash = "sha256:ba2c81ed0c17bf0a95e24f9676b8ffaf3b24d29fcb978f06b4ef0f57ee9f39ad", size = 1163463, upload-time = "2026-10-11T12:22:09.442Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/30/4a/c8d1330dd23349ee3f1a0f0ae2fb9ffb8f8e8e3f1a6cfc8511edcced2b12/bump_my_version-1.6.3.tar.gz", hash = "sha256:a886d5b8a86b439bb1119eecc3625a940c545e8e7b093ae5fd52a754c904c165", size = 1129141, upload-time = "2026-10-18T17:50:58.538Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0e/13/7df5ce9a79ffd8f1a3f79b337fbdf2e1902d407986d3f503523f69219373/bump_my_version-1.6.0-py3-none-any.whl", hash = "sha256:e01a80fcbe265d3d3d4e6060e21bf5bb9c5521986e6582a122a0e5dfd48f74ee", size = 65686, upload-time = "2026-10-11T12:22:04.706Z" },
+    { url = "https://files.pythonhosted.org/packages/68/53/2b79c2317d2a41231597b8ae7da3c44eaa06b9fff79e51f9104b8ef82839/bump_my_version-1.6.3-py3-none-any.whl", hash = "sha256:48d4a302e49a507f3b71e0532a317121f58815ed446ad36b52fb2589c134f548", size = 67139, upload-time = "2026-10-18T17:50:56.65Z" },
 ]
 
 [[package]]
@@ -1197,7 +1197,7 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bump-my-version", specifier = "==1.6.0" },
+    { name = "bump-my-version", specifier = "==1.6.3" },
     { name = "gitpython", specifier = "==3.2.1" },
     { name = "python-dateutil", specifier = "==2.9.0.post0" },
     { name = "tools", virtual = "../third_party" },
