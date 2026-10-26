@@ -11,6 +11,7 @@ import { EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissio
 import {
     asyncClickButton,
     asyncClickRole,
+    asyncClickText,
     clickButton,
     expectFetch,
     expectNoAccessibilityViolations,
@@ -50,8 +51,8 @@ const dates = [
     new Date("2020-01-13T00:00:00+00:00"),
 ]
 
-function SubjectTableWrapper({ dates, reportDate }) {
-    const settings = useSettings()
+function SubjectTableWrapper({ dates, reportDate, reportUuid }) {
+    const settings = useSettings(reportUuid)
     return (
         <PermissionsContext value={[EDIT_REPORT_PERMISSION]}>
             <DataModelContext value={dataModel}>
@@ -113,8 +114,14 @@ function SubjectTableWrapper({ dates, reportDate }) {
     )
 }
 
-function renderSubjectTable({ dates = [] } = {}) {
-    return render(<SubjectTableWrapper dates={dates} reportDate={new Date("2020-01-15T00:00:00+00:00")} />)
+function renderSubjectTable({ dates = [], reportUuid } = {}) {
+    return render(
+        <SubjectTableWrapper
+            dates={dates}
+            reportDate={new Date("2020-01-15T00:00:00+00:00")}
+            reportUuid={reportUuid}
+        />,
+    )
 }
 
 beforeEach(() => {
@@ -242,6 +249,51 @@ it("moves a metric", async () => {
     renderSubjectTable()
     await asyncClickButton("Move metric to the next row")
     expectFetch("post", "metric/1/attribute/position", { position: "next" })
+})
+
+it("shows all metrics after moving a metric", async () => {
+    history.push("?expanded=1:2&metrics_to_hide=no_issues")
+    renderSubjectTable()
+    await asyncClickButton("Move metric to the next row")
+    expectSearch("?expanded=1%3A2")
+})
+
+it("shows all metrics after moving a metric in the reports overview", async () => {
+    history.push("?expanded=1:2&metrics_to_hide=none")
+    renderSubjectTable({ reportUuid: "" })
+    await asyncClickButton("Move metric to the next row")
+    expectSearch("?expanded=1%3A2&metrics_to_hide=none")
+})
+
+it("adds a metric", async () => {
+    renderSubjectTable()
+    await asyncClickText(/Add metric/)
+    await asyncClickText(/Metric type/)
+    expectFetch("post", "metric/new/subject_uuid", { type: "metric_type" })
+})
+
+it("shows all metrics after adding a metric", async () => {
+    history.push("?metrics_to_hide=no_action_required&hidden_tags=Tag 1")
+    renderSubjectTable()
+    await asyncClickText(/Add metric/)
+    await asyncClickText(/Metric type/)
+    expectSearch("")
+})
+
+it("shows all metrics after adding a metric in the reports overview", async () => {
+    history.push("?metrics_to_hide=none")
+    renderSubjectTable({ reportUuid: "" })
+    await asyncClickText(/Add metric/)
+    await asyncClickText(/Metric type/)
+    expectSearch("?metrics_to_hide=none")
+})
+
+it("shows all metrics after adding a metric in the reports overview when hiding metrics", async () => {
+    history.push("?metrics_to_hide=no_action_required")
+    renderSubjectTable({ reportUuid: "" })
+    await asyncClickText(/Add metric/)
+    await asyncClickText(/Metric type/)
+    expectSearch("?metrics_to_hide=none")
 })
 
 it("adds a source", async () => {
