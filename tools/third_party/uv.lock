@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.14"
 resolution-markers = [
     "python_full_version >= '3.15'",
@@ -11,8 +11,8 @@ exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for 
 exclude-newer-span = "P7D"
 
 [options.exclude-newer-package]
-uv = false
 certifi = false
+uv = false
 
 [manifest]
 overrides = [{ name = "click", specifier = "==8.3.3" }]
@@ -1159,7 +1159,7 @@ project-wide = [
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.31.1" },
 ]
-update-time = [{ name = "update-time", specifier = "==0.0.46" }]
+update-time = [{ name = "update-time", specifier = "==0.0.49" }]
 uv = [{ name = "uv", specifier = "==0.13.5" }]
 
 [[package]]
@@ -1261,7 +1261,7 @@ wheels = [
 
 [[package]]
 name = "update-time"
-version = "0.0.46"
+version = "0.0.49"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cvss" },
@@ -1271,9 +1271,9 @@ dependencies = [
     { name = "rich" },
     { name = "tomlkit" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/40/7e/ad40b8a09848793767ea1bcb032e98a25bed283bb3cbedde10114f5372f0/update_time-0.0.46.tar.gz", hash = "sha256:51af792d85a5075285bededa07e50d3b8ca3e5430beeb90a5ad3fb572c1b7f2d", size = 244471, upload-time = "2026-10-15T20:51:07.596Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2d/ab/67f572e1d715b20f8503b00376b651f75a3bf3a4df997a3bef5dd6a6f2f2/update_time-0.0.49.tar.gz", hash = "sha256:6b98c5af5b59fe2e8f882823a24ef326a60a3d24d303bc44520fcb38ad40203e", size = 258077, upload-time = "2026-10-18T16:11:49.314Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/20/20/062bbe4077608b84172ed69113fdbd254277bdd69c2544f22caa5824161d/update_time-0.0.46-py3-none-any.whl", hash = "sha256:885652c697263b4791e289ea2efe947cffbc735b544af2dfeebaeba82660d38e", size = 245014, upload-time = "2026-10-15T20:51:05.942Z" },
+    { url = "https://files.pythonhosted.org/packages/a6/46/7836ba58cd4d74f571fa0ee7a8bd029a6da580e4c165a674d9a50f3c4d5c/update_time-0.0.49-py3-none-any.whl", hash = "sha256:0a747605816ce1d08f4cf3f0fa91471b552152fac0532d5c6fdb01d68746d95f", size = 257425, upload-time = "2026-10-18T16:11:47.858Z" },
 ]
 
 [[package]]
