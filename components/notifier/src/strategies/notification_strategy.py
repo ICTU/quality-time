@@ -1,54 +1,86 @@
 """Strategies for notifying users about metrics."""
 
-from datetime import datetime
-from typing import TYPE_CHECKING
+from collections import defaultdict
+from datetime import datetime, timedelta
+from typing import TYPE_CHECKING, Final
 
-from models.metric_notification_data import NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS_CHANGE, MetricNotificationData
-from models.notification import Notification
+from models.metric_notification_data import MetricNotificationData
+from models.notification import MetricStatusNotification, TimeLeftNotification
+from notifier_utilities.log import get_logger
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
+
     from shared.model.measurement import Measurement
-    from shared.model.metric import Metric
-    from shared.model.report import Report
+    from shared.utils.type import MetricId
+
+    from models.destination import Destination
+    from models.report import Report
+
+TIME_LEFT_WINDOW: Final = timedelta(weeks=1)  # Notify of metrics with this amount of time or less left to address them
 
 
-class NotificationFinder:
-    """Handle notification contents and status."""
+def get_metric_status_notifications(
+    reports: list[Report],
+    measurements: list[Measurement],
+    most_recent_measurement_seen: datetime,
+) -> list[MetricStatusNotification]:
+    """Return the notifications for the metrics that changed status."""
+    notifications: list[MetricStatusNotification] = []
+    for report, destinations, metrics in _notification_data_per_report(reports, measurements):
+        if changed_metrics := [
+            metric for metric in metrics if metric.status_changed_after(most_recent_measurement_seen)
+        ]:
+            notifications.extend(
+                MetricStatusNotification(report, changed_metrics, destination) for destination in destinations
+            )
+    return notifications
 
-    def get_notifications(
-        self,
-        reports: list[Report],
-        measurements: list[Measurement],
-        most_recent_measurement_seen: datetime,
-    ) -> list[Notification]:
-        """Return the reports that have a webhook and metrics that require notifying."""
-        measurements.sort(key=lambda measurement: str(measurement["end"]))  # Sort ascending by end timestamp
-        notifications = []
-        for report in reports:
-            notable_metrics = []
-            for subject in report["subjects"].values():
-                for metric_uuid, metric in subject["metrics"].items():
-                    metric_measurements = [m for m in measurements if m["metric_uuid"] == metric_uuid]
-                    if self.status_changed(metric, metric_measurements, most_recent_measurement_seen):
-                        notification_data = MetricNotificationData(metric, metric_uuid, metric_measurements, subject)
-                        notable_metrics.append(notification_data)
-            if notable_metrics:
-                destinations = report.get("notification_destinations", {}).values()
-                notifications.extend(
-                    [
-                        Notification(report, destination.get("report_url", "").strip("/"), notable_metrics, destination)
-                        for destination in destinations
-                        if destination["webhook"]
-                    ],
-                )
-        return notifications
 
-    @staticmethod
-    def status_changed(metric: Metric, measurements: list[Measurement], most_recent_measurement_seen: datetime) -> bool:
-        """Determine if a metric got a new status after the given timestamp."""
-        if len(measurements) < NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS_CHANGE:
-            return False
-        scale = metric.scale()
-        metric_had_other_status = measurements[-2][scale]["status"] != measurements[-1][scale]["status"]
-        change_was_recent = datetime.fromisoformat(measurements[-1]["start"]) > most_recent_measurement_seen
-        return bool(metric_had_other_status and change_was_recent)
+def get_time_left_notifications(
+    reports: list[Report],
+    measurements: list[Measurement],
+    now: datetime,
+) -> list[TimeLeftNotification]:
+    """Return the notifications for the metrics that have little time left."""
+    notifications: list[TimeLeftNotification] = []
+    for report, destinations, metrics in _notification_data_per_report(reports, measurements):
+        if urgent_metrics := [metric for metric in metrics if metric.deadline_on_or_before(now + TIME_LEFT_WINDOW)]:
+            notifications.extend(
+                TimeLeftNotification(report, urgent_metrics, destination, now) for destination in destinations
+            )
+    return notifications
+
+
+def _notification_data_per_report(
+    reports: list[Report], measurements: list[Measurement]
+) -> Iterator[tuple[Report, list[Destination], list[MetricNotificationData]]]:
+    """Yield the reports with notification destinations, together with the destinations and their metrics."""
+    measurements_by_metric = _measurements_per_metric(measurements)
+    for report in reports:
+        if destinations := report.destinations():
+            yield report, destinations, _notification_data(report, measurements_by_metric)
+
+
+def _measurements_per_metric(measurements: list[Measurement]) -> dict[MetricId, list[Measurement]]:
+    """Return the measurements per metric, sorted ascending by end timestamp."""
+    measurements_per_metric: dict[MetricId, list[Measurement]] = defaultdict(list)
+    for measurement in sorted(measurements, key=lambda measurement: str(measurement["end"])):
+        measurements_per_metric[measurement["metric_uuid"]].append(measurement)
+    return measurements_per_metric
+
+
+def _notification_data(
+    report: Report, measurements_by_metric: dict[MetricId, list[Measurement]]
+) -> list[MetricNotificationData]:
+    """Return the notification data of the metrics of the report, skipping metrics whose data can't be determined."""
+    logger = get_logger()
+    notification_data = []
+    for subject in report["subjects"].values():
+        for metric_uuid, metric in subject["metrics"].items():
+            metric_measurements = measurements_by_metric.get(metric_uuid, [])
+            try:
+                notification_data.append(MetricNotificationData(metric, metric_uuid, metric_measurements, subject))
+            except Exception:
+                logger.exception("Skipping metric %s because determining its notification data failed", metric_uuid)
+    return notification_data

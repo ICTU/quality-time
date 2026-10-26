@@ -6,10 +6,9 @@ from datetime import datetime, timedelta
 from operator import itemgetter
 from typing import cast
 
-from shared.utils.date_time import now
+from shared.utils.date_time import now, parse_datetime
 
 from base_collectors import LinkPaginationSourceCollector, TokenAuthenticationSourceCollector
-from collector_utilities.date_time import parse_datetime
 from collector_utilities.functions import add_query
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses

@@ -4,7 +4,7 @@ import contextlib
 import pathlib
 import tempfile
 import unittest
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 from unittest.mock import Mock, mock_open, patch
 
 import mongomock
@@ -12,10 +12,11 @@ from dateutil.tz import tzutc
 
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
-from shared.model.report import Report
 from shared.utils.functions import iso_timestamp
 
-from notifier.notifier import most_recent_measurement_timestamp, notify, record_health
+from models.notification import TimeLeftNotification
+from models.report import Report
+from notifier.notifier import most_recent_measurement_timestamp, next_time_left_notification_time, notify, record_health
 
 from shared_test_code.fixtures import METRIC_ID, METRIC_ID2, NOTIFICATION_DESTINATION_ID, REPORT_ID, SUBJECT_ID
 
@@ -35,6 +36,36 @@ class MostRecentMeasurementTimestampTests(unittest.TestCase):
         metric = Metric({}, {}, METRIC_ID)
         measurement = Measurement(metric, {"start": now.isoformat(), "end": now.isoformat()})
         self.assertEqual(now, most_recent_measurement_timestamp([measurement]))
+
+
+class NextTimeLeftNotificationTimeTests(unittest.TestCase):
+    """Unit tests for the next time left notification time method."""
+
+    def test_before_notification_time(self):
+        """Test that the next notification time is today if the notification time has not passed yet."""
+        now = datetime(2026, 10, 26, 6, 59, tzinfo=tzutc())
+        self.assertEqual(datetime(2026, 10, 26, 7, 0, tzinfo=tzutc()), next_time_left_notification_time(now))
+
+    def test_at_notification_time(self):
+        """Test that the next notification time is tomorrow if it is the notification time."""
+        now = datetime(2026, 10, 26, 7, 0, tzinfo=tzutc())
+        self.assertEqual(datetime(2026, 10, 27, 7, 0, tzinfo=tzutc()), next_time_left_notification_time(now))
+
+    def test_after_notification_time(self):
+        """Test that the next notification time is tomorrow if the notification time has passed."""
+        now = datetime(2026, 10, 26, 23, 0, tzinfo=tzutc())
+        self.assertEqual(datetime(2026, 10, 27, 7, 0, tzinfo=tzutc()), next_time_left_notification_time(now))
+
+    @patch("notifier.notifier.TIME_LEFT_NOTIFICATION_TIMES", [time(hour=7, minute=0), time(hour=13, minute=30)])
+    def test_multiple_notification_times(self):
+        """Test that the next notification time is the first notification time that has not passed yet."""
+        for now, expected_next_time in [
+            (datetime(2026, 10, 26, 6, 0, tzinfo=tzutc()), datetime(2026, 10, 26, 7, 0, tzinfo=tzutc())),
+            (datetime(2026, 10, 26, 7, 0, tzinfo=tzutc()), datetime(2026, 10, 26, 13, 30, tzinfo=tzutc())),
+            (datetime(2026, 10, 26, 13, 30, tzinfo=tzutc()), datetime(2026, 10, 27, 7, 0, tzinfo=tzutc())),
+        ]:
+            with self.subTest(now=now):
+                self.assertEqual(expected_next_time, next_time_left_notification_time(now))
 
 
 class HealthCheckTest(unittest.TestCase):
@@ -189,6 +220,7 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             "webhook": "https://webhook",
             "subjects": {
                 SUBJECT_ID: {
+                    "type": "software",
                     "metrics": {
                         METRIC_ID: {
                             "type": "tests",
@@ -227,3 +259,41 @@ class NotifyTests(unittest.IsolatedAsyncioTestCase):
             await notify(self.database)
 
         mocked_send.assert_not_called()
+
+    @patch("notifier.notifier.next_time_left_notification_time")
+    @patch("notifier.notifier.send_notification")
+    @patch("asyncio.sleep")
+    @patch("notifier.notifier.get_reports_and_measurements")
+    async def test_time_left_notification(
+        self,
+        mocked_get: Mock,
+        mocked_sleep: Mock,
+        mocked_send: Mock,
+        mocked_next_time: Mock,
+    ):
+        """Test that a time left notification is sent once when the time left notification time has passed."""
+        report_data = {
+            "report_uuid": REPORT_ID,
+            "title": self.title,
+            "notification_destinations": {
+                NOTIFICATION_DESTINATION_ID: {"name": "destination", "webhook": "www.webhook.com"},
+            },
+            "subjects": self.subjects,
+        }
+        now = iso_timestamp()
+        week_ago = (datetime.now(tz=tzutc()) - timedelta(weeks=1)).isoformat()
+        measurement = {
+            "metric_uuid": METRIC_ID,
+            "end": now,
+            "start": now,
+            "count": {"status": "target_not_met", "value": "10", "status_start": week_ago},
+        }
+        mocked_get.return_value = ([Report({}, report_data)], [measurement])
+        past, future = datetime.min.replace(tzinfo=tzutc()), datetime.max.replace(tzinfo=tzutc())
+        mocked_next_time.side_effect = [past, future]
+        mocked_sleep.side_effect = [None, RuntimeError]
+        with contextlib.suppress(RuntimeError):
+            await notify(self.database)
+
+        mocked_send.assert_called_once()
+        self.assertIsInstance(mocked_send.call_args.args[1], TimeLeftNotification)

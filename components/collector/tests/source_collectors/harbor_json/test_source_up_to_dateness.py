@@ -1,6 +1,8 @@
 """Unit tests for the Harbor JSON source up-to-dateness collector."""
 
-from collector_utilities.date_time import days_ago, parse_datetime
+from shared.utils.date_time import parse_datetime
+
+from collector_utilities.date_time import days_ago
 
 from .base import HarborJSONCollectorTestCase
 

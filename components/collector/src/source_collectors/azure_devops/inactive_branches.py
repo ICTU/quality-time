@@ -2,8 +2,9 @@
 
 from typing import TYPE_CHECKING, TypedDict, cast
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import BranchType, InactiveBranchesSourceCollector
-from collector_utilities.date_time import parse_datetime
 from collector_utilities.type import URL
 
 from .base import AzureDevopsRepositoryBase

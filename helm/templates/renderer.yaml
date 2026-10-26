@@ -31,6 +31,8 @@ spec:
                 name: {{ .Release.Name }}-{{ template "renderer_name" . }}-env
                 optional: true
           env:
+            - name: TZ
+              value: {{ .Values.timezone | quote }}
             - name: PROXY_HOST
               value: {{ .Release.Name }}-{{ template "www_name" . }}
             - name: PROXY_PORT

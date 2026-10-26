@@ -31,6 +31,8 @@ spec:
                 name: {{ .Release.Name }}-{{ template "notifier_name" . }}-env
                 optional: true
           env:
+            - name: TZ
+              value: {{ .Values.timezone | quote }}
             - name: DATABASE_HOST
               value: {{ .Release.Name }}-{{ template "database_name" . }}
             - name: DATABASE_USERNAME

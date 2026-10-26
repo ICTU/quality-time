@@ -2,8 +2,10 @@
 
 from typing import TYPE_CHECKING
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import SourceCollector
-from collector_utilities.date_time import datetime_from_timestamp, days_ago, parse_datetime
+from collector_utilities.date_time import datetime_from_timestamp, days_ago
 from collector_utilities.type import URL, Value
 
 if TYPE_CHECKING:

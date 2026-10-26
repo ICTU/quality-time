@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING, cast
 
 from shared.utils.type import Color, ItemId, MetricId, ReportId, SourceId, Status, SubjectId
+from shared_data_model import DATA_MODEL
 
 from .subject import Subject
 
@@ -72,6 +73,15 @@ class Report(dict):  # noqa: PLW1641
     def name(self) -> str:
         """A different access to title."""
         return cast(str, self.get("title", ""))
+
+    def desired_response_time(self, status: str) -> int | None:
+        """Return the desired response time in days for metrics or measurement entities with the given status."""
+        if status not in self.get("desired_response_times", {}):
+            return DATA_MODEL.config.desired_response_times.get(status)
+        try:
+            return int(self["desired_response_times"][status])
+        except ValueError, TypeError:  # None means the user turned it off; treat any non-integer as None too
+            return None
 
     def __eq__(self, other: object) -> bool:
         """Return whether the reports are equal."""

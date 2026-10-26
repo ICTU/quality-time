@@ -4,6 +4,7 @@ import { func, oneOfType } from "prop-types"
 import { useContext } from "react"
 
 import { setReportAttribute } from "../api/report"
+import { DataModelContext } from "../context/DataModel"
 import { accessGranted, EDIT_REPORT_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
 import { STATUS_DESCRIPTION, STATUS_NAME, statusPropType } from "../metric/status"
@@ -12,6 +13,7 @@ import { SOURCE_ENTITY_STATUS_DESCRIPTION, SOURCE_ENTITY_STATUS_NAME } from "../
 import { getDesiredResponseTime } from "../utils"
 
 function DesiredResponseTimeInput({ reload, report, status }) {
+    const dataModel = useContext(DataModelContext)
     const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_REPORT_PERMISSION])
     const desiredResponseTimes = report.desired_response_times ?? {}
@@ -30,7 +32,7 @@ function DesiredResponseTimeInput({ reload, report, status }) {
                 setReportAttribute(report.report_uuid, "desired_response_times", desiredResponseTimes, reload)
             }}
             type="number"
-            value={getDesiredResponseTime(report, status)?.toString()}
+            value={getDesiredResponseTime(report, status, dataModel)?.toString()}
         />
     )
 }

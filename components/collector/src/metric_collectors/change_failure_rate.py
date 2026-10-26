@@ -4,8 +4,10 @@ from datetime import datetime
 from itertools import pairwise
 from typing import TYPE_CHECKING, ClassVar, cast
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import MetricCollector
-from collector_utilities.date_time import MAX_DATETIME, parse_datetime
+from collector_utilities.date_time import MAX_DATETIME
 from model import Entities, Entity, MetricMeasurement, SourceMeasurement
 
 if TYPE_CHECKING:

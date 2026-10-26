@@ -22,7 +22,7 @@ class DependencyTrackSourceUpToDatenessVersionTest(DependencyTrackTestCase):
         yesterday_timestamp = round(self.yesterday.timestamp() * 1000)
         self.day_before_yesterday = now - timedelta(days=2)
         day_before_yesterday_timestamp = round(self.day_before_yesterday.timestamp() * 1000)
-        self.last_week = now - timedelta(days=7)
+        self.last_week = now - timedelta(weeks=1)
         self.last_week_timestamp = round(self.last_week.timestamp() * 1000)
         self.few_days_ago = now - timedelta(days=4)
         self.few_days_ago_timestamp = round(self.few_days_ago.timestamp() * 1000)

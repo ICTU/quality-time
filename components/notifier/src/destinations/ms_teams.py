@@ -3,10 +3,12 @@
 See https://learn.microsoft.com/en-us/connectors/teams/#microsoft-teams-webhook for the message format.
 """
 
-from typing import TYPE_CHECKING, Literal, NotRequired, TypedDict
+from datetime import datetime, timedelta
+from typing import TYPE_CHECKING, Literal, NotRequired, TypedDict, cast
 
 import aiohttp
 
+from models.notification import TimeLeftNotification
 from notifier_utilities.log import get_logger
 
 if TYPE_CHECKING:
@@ -123,17 +125,8 @@ class Message(TypedDict):
     attachments: list[Attachment]
 
 
-def metric_container(metric: MetricNotificationData, report_url: str) -> Container:
-    """Create an Adaptive Card container for a metric status change."""
-    if metric.new_metric_value is None:
-        new_value = "unknown"
-    else:
-        new_value = f"{metric.new_metric_value}{unit_text(metric, metric.new_metric_value)}"
-    if metric.old_metric_value is None:
-        old_value = "unknown"
-    else:
-        old_value = f"{metric.old_metric_value}{unit_text(metric, metric.old_metric_value)}"
-    old_value_text = " (unchanged)" if metric.new_metric_value == metric.old_metric_value else f", was {old_value}"
+def metric_container(metric: MetricNotificationData, notification: Notification) -> Container:
+    """Create an Adaptive Card container for a metric."""
     return {
         "type": "Container",
         "separator": True,
@@ -162,21 +155,55 @@ def metric_container(metric: MetricNotificationData, report_url: str) -> Contain
                     },
                 ],
             },
-            {
-                "type": "FactSet",
-                "facts": [
-                    {"title": "Status:", "value": f"{metric.new_metric_status}, was {metric.old_metric_status}"},
-                    {"title": "Value:", "value": f"{new_value}{old_value_text}"},
-                ],
-            },
+            {"type": "FactSet", "facts": metric_facts(metric, notification)},
             {
                 "type": "ActionSet",
                 "actions": [
-                    {"type": "Action.OpenUrl", "title": "View metric", "url": f"{report_url}#{metric.metric_uuid}"},
+                    {
+                        "type": "Action.OpenUrl",
+                        "title": "View metric",
+                        "url": f"{notification.destination.report_url}#{metric.metric_uuid}",
+                    },
                 ],
             },
         ],
     }
+
+
+def metric_facts(metric: MetricNotificationData, notification: Notification) -> list[Fact]:
+    """Create the Adaptive Card facts for a metric."""
+    new_value = value_text(metric, metric.new_metric_value)
+    if isinstance(notification, TimeLeftNotification):
+        return [
+            {"title": "Status:", "value": metric.new_metric_status},
+            {"title": "Value:", "value": new_value},
+            {"title": "Time left:", "value": time_left_text(metric, notification.now)},
+        ]
+    old_value = value_text(metric, metric.old_metric_value)
+    old_value_text = " (unchanged)" if metric.new_metric_value == metric.old_metric_value else f", was {old_value}"
+    return [
+        {"title": "Status:", "value": f"{metric.new_metric_status}, was {metric.old_metric_status}"},
+        {"title": "Value:", "value": f"{new_value}{old_value_text}"},
+    ]
+
+
+def value_text(metric: MetricNotificationData, value: str | None) -> str:
+    """Return the metric value with unit, or "unknown" if the value is unknown."""
+    return "unknown" if value is None else f"{value}{unit_text(metric, value)}"
+
+
+def time_left_text(metric: MetricNotificationData, now: datetime) -> str:
+    """Return the time left to address the metric, or the time the metric is overdue."""
+    deadline = cast(datetime, metric.deadline)  # Metrics in time left notifications always have a deadline
+    nr_days = round((deadline - now) / timedelta(days=1))
+    if deadline < now:
+        return f"overdue by {_days_text(max(1, -nr_days))}"
+    return _days_text(nr_days)
+
+
+def _days_text(nr_days: int) -> str:
+    """Return the number of days as text, e.g. "1 day" or "5 days"."""
+    return f"{nr_days} day{'' if nr_days == 1 else 's'}"
 
 
 def unit_text(metric: MetricNotificationData, value: str) -> str:
@@ -188,7 +215,6 @@ def unit_text(metric: MetricNotificationData, value: str) -> str:
 def create_adaptive_card(notification: Notification) -> AdaptiveCard:
     """Create an Adaptive Card with the notification."""
     title = f"Quality-time notifications for {notification.report_title}"
-    metrics = sorted(notification.metrics, key=lambda metric: metric.metric_name)
     return {
         "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
         "type": "AdaptiveCard",
@@ -198,7 +224,7 @@ def create_adaptive_card(notification: Notification) -> AdaptiveCard:
         "body": [
             {"type": "TextBlock", "text": title, "size": "Large", "weight": "Bolder", "wrap": True},
             {"type": "TextBlock", "text": notification.summary, "isSubtle": True, "wrap": True},
-            *[metric_container(metric, notification.report_url) for metric in metrics],
+            *[metric_container(metric, notification) for metric in notification.sorted_metrics],
         ],
     }
 

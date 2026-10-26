@@ -1,5 +1,6 @@
 """Unit tests for the Teams notification destination."""
 
+from datetime import UTC, datetime, timedelta
 from itertools import permutations
 from typing import TYPE_CHECKING
 from unittest import IsolatedAsyncioTestCase, mock
@@ -8,19 +9,20 @@ import aiohttp
 
 from shared.model.measurement import Measurement
 from shared.model.metric import Metric
-from shared.model.report import Report
 from shared.model.subject import Subject
 
 from destinations.ms_teams import ICONS_URL, create_message, send_notification
+from models.destination import Destination
 from models.metric_notification_data import MetricNotificationData
-from models.notification import Notification
+from models.notification import MetricStatusNotification, TimeLeftNotification
+from models.report import Report
 
 from shared_test_code.fixtures import METRIC_ID, METRIC_ID2, SUBJECT_ID
 
 if TYPE_CHECKING:
     from shared.utils.type import MetricId
 
-    from destinations.ms_teams import Container, Message
+    from destinations.ms_teams import Container, Fact, Message
 
 
 class MsTeamsTestCase(IsolatedAsyncioTestCase):
@@ -28,7 +30,7 @@ class MsTeamsTestCase(IsolatedAsyncioTestCase):
 
     def setUp(self):
         """Provide a default report for the rest of the class."""
-        self.report_url = "https://report1"
+        self.destination = Destination(webhook="https://webhook", report_url="https://report1")
         data_model = {}
         self.report = Report(data_model, {"title": "Report 1"})
         self.subject = Subject(data_model, {"type": "software", "name": "Subject"}, SUBJECT_ID, self.report)
@@ -38,7 +40,7 @@ class MsTeamsTestCase(IsolatedAsyncioTestCase):
             Measurement(metric, {"count": {"value": "42", "status": "target_not_met"}}),
         ]
         self.metric_notification_data = MetricNotificationData(metric, METRIC_ID, measurements, self.subject)
-        self.notification = Notification(self.report, self.report_url, [self.metric_notification_data], {})
+        self.notification = MetricStatusNotification(self.report, [self.metric_notification_data], self.destination)
 
     def create_metric(self, metric_id: MetricId = METRIC_ID, name: str | None = "Metric") -> Metric:
         """Create a metric fixture."""
@@ -88,18 +90,22 @@ class SendNotificationToTeamsTests(MsTeamsTestCase):
         mock_get_logger.return_value.exception.assert_called_once_with("Could not deliver notification")
 
 
-class BuildNotificationMessageTests(MsTeamsTestCase):
-    """Unit tests for the message builder."""
+class MessageTestCase(MsTeamsTestCase):
+    """Base class for message builder unit tests."""
 
-    def create_container(
+    def create_container(  # noqa: PLR0913, PLR0917
         self,
         title: str,
         status: str,
         status_text: str,
         value: str,
         metric_uuid: str,
+        time_left: str | None = None,
     ) -> Container:
         """Create the expected Adaptive Card container for a metric."""
+        facts: list[Fact] = [{"title": "Status:", "value": status_text}, {"title": "Value:", "value": value}]
+        if time_left is not None:
+            facts.append({"title": "Time left:", "value": time_left})
         return {
             "type": "Container",
             "separator": True,
@@ -128,10 +134,7 @@ class BuildNotificationMessageTests(MsTeamsTestCase):
                         },
                     ],
                 },
-                {
-                    "type": "FactSet",
-                    "facts": [{"title": "Status:", "value": status_text}, {"title": "Value:", "value": value}],
-                },
+                {"type": "FactSet", "facts": facts},
                 {
                     "type": "ActionSet",
                     "actions": [
@@ -175,6 +178,10 @@ class BuildNotificationMessageTests(MsTeamsTestCase):
             ],
         }
 
+
+class BuildNotificationMessageTests(MessageTestCase):
+    """Unit tests for the message builder."""
+
     def test_changed_status_text(self):
         """Test that the text is correct and that metrics are sorted by name."""
         metric2 = self.create_metric(METRIC_ID, name=None)
@@ -202,7 +209,7 @@ class BuildNotificationMessageTests(MsTeamsTestCase):
         )
         for metrics in permutations([self.metric_notification_data, metric_notification_data2]):
             with self.subTest(metrics=[metric.metric_name for metric in metrics]):
-                notification = Notification(self.report, self.report_url, list(metrics), {})
+                notification = MetricStatusNotification(self.report, list(metrics), self.destination)
                 self.assertEqual(expected_message, create_message(notification))
 
     def test_unchanged_value(self):
@@ -213,7 +220,7 @@ class BuildNotificationMessageTests(MsTeamsTestCase):
             Measurement(metric, {"count": {"value": "1", "status": "target_not_met"}}),
         ]
         metric_notification_data = MetricNotificationData(metric, METRIC_ID, measurements, self.subject)
-        notification = Notification(self.report, self.report_url, [metric_notification_data], {})
+        notification = MetricStatusNotification(self.report, [metric_notification_data], self.destination)
         expected_message = self.create_expected_message(
             "Report 1 has 1 metric that changed status",
             self.create_container(
@@ -234,7 +241,7 @@ class BuildNotificationMessageTests(MsTeamsTestCase):
             Measurement(metric, {"count": {"value": None, "status": "unknown"}}),
         ]
         metric_notification_data = MetricNotificationData(metric, METRIC_ID, measurements, self.subject)
-        notification = Notification(self.report, self.report_url, [metric_notification_data], {})
+        notification = MetricStatusNotification(self.report, [metric_notification_data], self.destination)
         expected_message = self.create_expected_message(
             "Report 1 has 1 metric that changed status",
             self.create_container(
@@ -255,7 +262,7 @@ class BuildNotificationMessageTests(MsTeamsTestCase):
             Measurement(metric, {"count": {"value": "0", "status": "near_target_met"}}),
         ]
         metric_notification_data = MetricNotificationData(metric, METRIC_ID, measurements, self.subject)
-        notification = Notification(self.report, self.report_url, [metric_notification_data], {})
+        notification = MetricStatusNotification(self.report, [metric_notification_data], self.destination)
         expected_message = self.create_expected_message(
             "Report 1 has 1 metric that changed status",
             self.create_container(
@@ -267,3 +274,62 @@ class BuildNotificationMessageTests(MsTeamsTestCase):
             ),
         )
         self.assertEqual(expected_message, create_message(notification))
+
+
+class BuildTimeLeftNotificationMessageTests(MessageTestCase):
+    """Unit tests for the message builder for time left notifications."""
+
+    NOW = datetime(2026, 10, 26, 7, 0, tzinfo=UTC)
+
+    def time_left_notification(self, *metrics: MetricNotificationData) -> TimeLeftNotification:
+        """Create a time left notification."""
+        return TimeLeftNotification(self.report, list(metrics), self.destination, self.NOW)
+
+    def test_time_left_text(self):
+        """Test that the text is correct and that metrics are sorted by deadline."""
+        self.metric_notification_data.deadline = self.NOW + timedelta(days=3)
+        metric2 = self.create_metric(METRIC_ID2, name="Another metric")
+        measurements2 = [Measurement(metric2, {"count": {"value": "1", "status": "near_target_met"}})]
+        metric_notification_data2 = MetricNotificationData(metric2, METRIC_ID2, measurements2, self.subject)
+        metric_notification_data2.deadline = self.NOW - timedelta(days=2)
+        expected_message = self.create_expected_message(
+            "Report 1 has 2 metrics with a week or less left to address",
+            self.create_container(
+                "Another metric",
+                "near_target_met",
+                "near target met (yellow)",
+                "1 security warning",
+                METRIC_ID2,
+                "overdue by 2 days",
+            ),
+            self.create_container(
+                "Metric", "target_not_met", "target not met (red)", "42 security warnings", METRIC_ID, "3 days"
+            ),
+        )
+        for metrics in permutations([self.metric_notification_data, metric_notification_data2]):
+            with self.subTest(metrics=[metric.metric_name for metric in metrics]):
+                self.assertEqual(expected_message, create_message(self.time_left_notification(*metrics)))
+
+    def test_time_left(self):
+        """Test that the time left is rounded to days and that overdue metrics are overdue for at least one day."""
+        for time_left, expected_text in [
+            (timedelta(days=1), "1 day"),
+            (timedelta(hours=1), "0 days"),
+            (timedelta(hours=-1), "overdue by 1 day"),
+            (timedelta(days=-1, hours=-13), "overdue by 2 days"),
+        ]:
+            with self.subTest(time_left=time_left):
+                self.metric_notification_data.deadline = self.NOW + time_left
+                expected_message = self.create_expected_message(
+                    "Report 1 has 1 metric with a week or less left to address",
+                    self.create_container(
+                        "Metric",
+                        "target_not_met",
+                        "target not met (red)",
+                        "42 security warnings",
+                        METRIC_ID,
+                        expected_text,
+                    ),
+                )
+                notification = self.time_left_notification(self.metric_notification_data)
+                self.assertEqual(expected_message, create_message(notification))
