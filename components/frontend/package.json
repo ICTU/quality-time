@@ -26,10 +26,10 @@
         "fix": "eslint *.mjs src --fix; npx prettier *.mjs src --write --log-level warn"
     },
     "engines": {
-        "node": "26.11.1"
+        "node": "26.12.0"
     },
     "devDependencies": {
-        "@eslint-react/eslint-plugin": "^5.28.0",
+        "@eslint-react/eslint-plugin": "^5.28.2",
         "@eslint/js": "^10.0.1",
         "@testing-library/dom": "^10.4.2",
         "@testing-library/jest-dom": "^7.0.1",
@@ -37,7 +37,7 @@
         "@testing-library/user-event": "^14.6.8",
         "@vitejs/plugin-react": "^6.1.2",
         "@vitest/coverage-v8": "^5.0.0",
-        "eslint": "^10.12.0",
+        "eslint": "^10.13.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-jest": "^29.17.0",
         "eslint-plugin-prettier": "^5.5.7",
