@@ -20,6 +20,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - Updated the link to the SIG/TÜV NORD CERT "Evaluation Criteria Trusted Product Maintainability: Guidance for Producers" to the 2026 version. Removed the link from the 'size (LOC)' metric, as the 2026 version no longer uses volume as maintainability criterion. Closes [#14738](https://github.com/ICTU/quality-time/issues/14738).
 
+### Fixed
+
+- Adding, copying, moving, or reordering a metric in the reports overview would reset the visible metrics setting to 'no metrics', hiding all metrics. Fixes [#14889](https://github.com/ICTU/quality-time/issues/14889).
+
 ## v5.60.1 - 2026-10-09
 
 ### Fixed

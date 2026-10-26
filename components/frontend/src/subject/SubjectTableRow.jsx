@@ -337,7 +337,7 @@ export function SubjectTableRow({
                     stopFilteringAndSorting={() => {
                         handleSort(null)
                         settings.hiddenTags.reset()
-                        settings.metricsToHide.reset()
+                        settings.metricsToHide.set("none")
                     }}
                     subjectUuid={subjectUuid}
                 />
