@@ -38,10 +38,10 @@ project-wide = [
 ]
 # Update-time is only run on the repository as a whole, and pins its dependencies, so it also gets its own group.
 update-time = [
-    "update-time==0.0.49",
+    "update-time==0.0.50",
 ]
 uv = [
-    "uv==0.13.5",
+    "uv==0.13.6",
 ]
 
 [tool.uv]
