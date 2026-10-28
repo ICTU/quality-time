@@ -19,7 +19,7 @@ dev = [
     "myst-parser==5.1.0",
     "pydantic==2.14.1",     # Needed for generating the reference docs from the data model
     "shared-code",
-    "sphinx==9.1.1",
+    "sphinx==9.2.0",
     "sphinx-design==0.7.0",
     "tools",
     "vale==3.22.0.0",       # Documentation grammar and style checker
