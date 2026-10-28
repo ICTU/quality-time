@@ -35,9 +35,13 @@ class Collector:
         self.database: Database = database
         self.running_tasks: set[asyncio.Task] = set()
 
-    @staticmethod
-    def record_health() -> None:
-        """Record the current date and time in a file to allow for health checks."""
+    def record_health(self) -> None:
+        """Record the current date and time in a file to allow for health checks.
+
+        Don't record the current date and time if too many tasks are running, so the collector is reported unhealthy.
+        """
+        if len(self.running_tasks) > config.RUNNING_TASKS_HEALTHY_THRESHOLD:
+            return
         logger = get_logger()
         filename = pathlib.Path(config.HEALTH_CHECK_FILE)
         try:
