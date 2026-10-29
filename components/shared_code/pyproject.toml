@@ -16,7 +16,7 @@ dependencies = [
     "packaging==26.3",
     "pydantic==2.14.1",
     "pymongo==4.19.0",
-    "python-dateutil==2.9.0.post0",
+    "python-dateutil==3.0.0",
     "rich==15.0.0",
 ]
 
