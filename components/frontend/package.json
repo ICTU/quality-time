@@ -29,7 +29,7 @@
         "node": "26.12.0"
     },
     "devDependencies": {
-        "@eslint-react/eslint-plugin": "^5.28.4",
+        "@eslint-react/eslint-plugin": "^5.28.6",
         "@eslint/js": "^10.0.1",
         "@testing-library/dom": "^10.4.2",
         "@testing-library/jest-dom": "^7.0.1",

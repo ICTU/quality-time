@@ -17,7 +17,7 @@ dependencies = [
     "defusedxml==0.7.1",
     "packaging==26.3",
     "pymongo==4.19.0",
-    "python-dateutil==2.9.0.post0",
+    "python-dateutil==3.0.0",
     "shared-code",
     "typing-extensions==4.16.0",
 ]
