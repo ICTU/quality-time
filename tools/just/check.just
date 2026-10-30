@@ -106,9 +106,8 @@ lockfile-aliases folder="": (js-check "lockfile-aliases" f"{{ python }} {{ justf
 # moderate: GHSA-r3ph-w7gj-g6xm js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources
 # low: GHSA-238p-pmpm-9mq7 KaTeX: Existing prototype pollution can bypass trust restrictions
 # moderate: GHSA-r4xh-jqrq-34v2 smol-toml: Quadratic-time parse() from parseKey rescanning to end of document on each key line
-# high: GHSA-27r3-jxmh-p828 body-parser vulnerable to Denial of Service via trailing bytes after a compressed request body
 # low: GHSA-gcqx-w48m-w2h4 deepmerge mergeObject() allows prototype poisoning of returned objects
-npm_audit_ignore := "GHSA-r3ph-w7gj-g6xm GHSA-238p-pmpm-9mq7 GHSA-r4xh-jqrq-34v2 GHSA-27r3-jxmh-p828 GHSA-gcqx-w48m-w2h4"
+npm_audit_ignore := "GHSA-r3ph-w7gj-g6xm GHSA-238p-pmpm-9mq7 GHSA-r4xh-jqrq-34v2 GHSA-gcqx-w48m-w2h4"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]
