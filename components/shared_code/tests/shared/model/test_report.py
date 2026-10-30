@@ -48,6 +48,24 @@ class ReportTest(DataModelTestCase):
         """Test that the report name equals the report title."""
         self.assertEqual("Report", self.report.name)
 
+    def test_default_desired_response_time(self):
+        """Test that the default desired response time is returned if the report doesn't override it."""
+        self.assertEqual(7, self.report.desired_response_time("target_not_met"))
+
+    def test_desired_response_time(self):
+        """Test that the desired response time of the report is returned."""
+        self.report["desired_response_times"] = {"target_not_met": "10"}
+        self.assertEqual(10, self.report.desired_response_time("target_not_met"))
+
+    def test_desired_response_time_turned_off(self):
+        """Test that the desired response time is None if the report turned it off."""
+        self.report["desired_response_times"] = {"target_not_met": None}
+        self.assertIsNone(self.report.desired_response_time("target_not_met"))
+
+    def test_desired_response_time_for_status_without_desired_response_time(self):
+        """Test that the desired response time is None if the status has no desired response time."""
+        self.assertIsNone(self.report.desired_response_time("target_met"))
+
     def test_equality(self):
         """Test that reports are equal if their ids are."""
         self.assertEqual(Report(self.DATA_MODEL, {"report_uuid": REPORT_ID}), self.report)

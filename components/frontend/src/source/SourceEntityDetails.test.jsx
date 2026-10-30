@@ -5,7 +5,9 @@ import userEvent from "@testing-library/user-event"
 import dayjs from "dayjs"
 import { vi } from "vitest"
 
+import { dataModelWithCountScale as dataModel } from "../__fixtures__/fixtures"
 import * as sourceApi from "../api/source"
+import { DataModelContext } from "../context/DataModel"
 import { EDIT_ENTITY_PERMISSION, PermissionsContext } from "../context/Permissions"
 import {
     clickText,
@@ -23,17 +25,19 @@ const reload = vi.fn
 function renderSourceEntityDetails({ report = null, statusEndDate = null } = {}) {
     return render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <PermissionsContext value={[EDIT_ENTITY_PERMISSION]}>
-                <SourceEntityDetails
-                    metricUuid="metric_uuid"
-                    sourceUuid="source_uuid"
-                    entity={{ key: "key" }}
-                    entityUserData={{ rationale: "", status: "unconfirmed", statusEndDate: statusEndDate }}
-                    name="violation"
-                    reload={reload}
-                    report={report}
-                />
-            </PermissionsContext>
+            <DataModelContext value={dataModel}>
+                <PermissionsContext value={[EDIT_ENTITY_PERMISSION]}>
+                    <SourceEntityDetails
+                        metricUuid="metric_uuid"
+                        sourceUuid="source_uuid"
+                        entity={{ key: "key" }}
+                        entityUserData={{ rationale: "", status: "unconfirmed", statusEndDate: statusEndDate }}
+                        name="violation"
+                        reload={reload}
+                        report={report}
+                    />
+                </PermissionsContext>
+            </DataModelContext>
         </LocalizationProvider>,
     )
 }

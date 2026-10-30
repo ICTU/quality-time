@@ -30,6 +30,9 @@ spec:
             - configMapRef:
                 name: {{ .Release.Name }}-{{ template "frontend_name" . }}-env
                 optional: true
+          env:
+            - name: TZ
+              value: {{ .Values.timezone | quote }}
           {{- with .Values.frontend.resources }}
           resources: {{- toYaml . | nindent 12 }}
           {{- end }}

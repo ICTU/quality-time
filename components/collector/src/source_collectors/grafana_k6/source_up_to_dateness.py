@@ -2,8 +2,9 @@
 
 from typing import TYPE_CHECKING, cast
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import JSONFileSourceCollector, TimePassedCollector
-from collector_utilities.date_time import parse_datetime
 from collector_utilities.exceptions import CollectorError
 
 from .json_types import SummaryJSON

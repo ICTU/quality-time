@@ -1,4 +1,17 @@
+// The default desired response times, as included in the data model configuration by the API-server.
+export const desiredResponseTimes = {
+    debt_target_met: 60,
+    near_target_met: 21,
+    target_not_met: 7,
+    unknown: 3,
+    confirmed: 180,
+    false_positive: 180,
+    wont_fix: 180,
+    fixed: 7,
+}
+
 export const dataModel = {
+    config: { desired_response_times: desiredResponseTimes },
     subjects: {
         subject_type: { name: "Subject type", metrics: ["metric_type"] },
     },
@@ -30,6 +43,7 @@ export const dataModel = {
 
 // A minimal data model with a single metric type that has a count scale.
 export const dataModelWithCountScale = {
+    config: { desired_response_times: desiredResponseTimes },
     metrics: {
         metric_type: { default_scale: "count" },
     },

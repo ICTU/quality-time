@@ -234,6 +234,7 @@ subjectTypeShape.subjects = arrayOf(shape(subjectTypeShape))
 export const subjectTypePropType = shape(subjectTypeShape)
 
 export const dataModelPropType = shape({
+    config: shape({ desired_response_times: objectOf(number) }),
     metrics: objectOf(metricTypePropType),
     sources: objectOf(sourceTypePropType),
     subjects: objectOf(subjectTypePropType),

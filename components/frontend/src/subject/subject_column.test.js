@@ -1,6 +1,7 @@
 import { renderHook } from "@testing-library/react"
 import history from "history/browser"
 
+import { dataModelWithCountScale as dataModel } from "../__fixtures__/fixtures"
 import { useSettings } from "../app_ui_settings"
 import { determineColumnsToHide } from "./subject_column"
 
@@ -41,7 +42,7 @@ it("does not hide non-empty columns when hide_empty_columns is on", async () => 
         status_start: "2020-01-01T00:00:00Z",
         scale: "count",
     }
-    const columnsToHide = determineColumnsToHide({}, [], [["m1", metric]], 1, {}, testableSettings())
+    const columnsToHide = determineColumnsToHide(dataModel, [], [["m1", metric]], 1, {}, testableSettings())
     expect(columnsToHide).toEqual(["overrun"])
 })
 
@@ -56,7 +57,7 @@ it("does not hide the overrun column when overruns exist", async () => {
             end: "2020-12-31T00:00:00Z",
         },
     ]
-    const columnsToHide = determineColumnsToHide({}, measurements, [["m1", metric]], 2, {}, testableSettings())
+    const columnsToHide = determineColumnsToHide(dataModel, measurements, [["m1", metric]], 2, {}, testableSettings())
     // overrun is absent because there's a non-zero overrun; time_left is absent because status_start is set
     expect(columnsToHide).toEqual(["comment", "issues", "measurement", "status", "tags", "target", "trend"])
 })

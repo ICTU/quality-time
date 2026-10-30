@@ -5,7 +5,6 @@ import { arrayOf, number, objectOf, oneOf, string } from "prop-types"
 dayjs.extend(localizedFormat)
 
 import { PERMISSIONS } from "./context/Permissions"
-import { defaultDesiredResponseTimes } from "./defaults"
 import { STATUSES_NOT_REQUIRING_ACTION } from "./metric/status"
 import {
     dataModelPropType,
@@ -199,7 +198,7 @@ isMeasurementStale.propTypes = {
     reportDate: datePropType,
 }
 
-export function getMetricResponseDeadline(metric, report) {
+export function getMetricResponseDeadline(metric, report, dataModel) {
     let deadline = null
     const status = metric.status || "unknown"
     if (status === "debt_target_met") {
@@ -207,8 +206,8 @@ export function getMetricResponseDeadline(metric, report) {
             deadline = new Date(metric.debt_end_date)
             deadline.setHours(23, 59, 59)
         }
-    } else if (status in defaultDesiredResponseTimes && metric.status_start) {
-        const desiredResponseTime = getDesiredResponseTime(report, status)
+    } else if (hasDesiredResponseTime(dataModel, status) && metric.status_start) {
+        const desiredResponseTime = getDesiredResponseTime(report, status, dataModel)
         if (Number.isInteger(desiredResponseTime)) {
             deadline = new Date(metric.status_start)
             deadline.setDate(deadline.getDate() + desiredResponseTime)
@@ -217,8 +216,8 @@ export function getMetricResponseDeadline(metric, report) {
     return deadline
 }
 
-export function getMetricResponseTimeLeft(metric, report) {
-    const deadline = getMetricResponseDeadline(metric, report)
+export function getMetricResponseTimeLeft(metric, report, dataModel) {
+    const deadline = getMetricResponseDeadline(metric, report, dataModel)
     const now = new Date()
     return deadline === null ? null : deadline.getTime() - now.getTime()
 }
@@ -228,9 +227,9 @@ export function formatDays(numberOfDays) {
     return `${numberOfDays} ${pluralize("day", numberOfDays)}`
 }
 
-export function getFormattedMetricTimeLeft(metric, report) {
+export function getFormattedMetricTimeLeft(metric, report, dataModel) {
     // Return the number of days left to address the metric, formatted as e.g. "5 days", or "" if there is no deadline
-    const timeLeft = getMetricResponseTimeLeft(metric, report)
+    const timeLeft = getMetricResponseTimeLeft(metric, report, dataModel)
     return timeLeft === null ? "" : formatDays(days(Math.max(0, timeLeft)))
 }
 
@@ -258,8 +257,8 @@ export function getMetricResponseOverrun(metricUuid, metric, report, measurement
     const overruns = []
     consolidatedMeasurements.forEach((measurement) => {
         const status = measurement?.[scale]?.status || "unknown"
-        if (status in defaultDesiredResponseTimes) {
-            let desiredResponseTime = getDesiredResponseTime(report, status)
+        if (hasDesiredResponseTime(dataModel, status)) {
+            let desiredResponseTime = getDesiredResponseTime(report, status, dataModel)
             if (Number.isInteger(desiredResponseTime)) {
                 desiredResponseTime *= MILLISECONDS_PER_DAY
                 const actualResponseTime = new Date(measurement.end).getTime() - new Date(measurement.start).getTime()
@@ -281,11 +280,16 @@ export function getMetricResponseOverrun(metricUuid, metric, report, measurement
     return { totalOverrun: days(totalOverrun), overruns: overruns }
 }
 
-export function getDesiredResponseTime(report, status) {
-    // Precondition: status is a key of defaultDesiredResponseTimes
+function hasDesiredResponseTime(dataModel, status) {
+    // Return whether the status has a default desired response time, i.e. whether the status requires action
+    return status in (dataModel?.config?.desired_response_times ?? {})
+}
+
+export function getDesiredResponseTime(report, status, dataModel) {
+    // Precondition: status has a default desired response time in the data model
     const desiredResponseTime = report?.desired_response_times?.[status]
     if (desiredResponseTime === undefined) {
-        return defaultDesiredResponseTimes[status]
+        return dataModel?.config?.desired_response_times?.[status] ?? null
     }
     return desiredResponseTime === null ? null : Number.parseInt(desiredResponseTime)
 }

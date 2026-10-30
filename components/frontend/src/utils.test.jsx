@@ -1,8 +1,7 @@
 import { vi } from "vitest"
 
-import { dataModelWithCountScale as dataModel } from "./__fixtures__/fixtures"
+import { dataModelWithCountScale as dataModel, desiredResponseTimes } from "./__fixtures__/fixtures"
 import { EDIT_ENTITY_PERMISSION, EDIT_REPORT_PERMISSION } from "./context/Permissions"
-import { defaultDesiredResponseTimes } from "./defaults"
 import {
     addCounts,
     capitalize,
@@ -222,13 +221,13 @@ it("formats a number of days, singular and plural", () => {
 })
 
 it("gets the formatted time left, clamped to zero for an overdue metric", () => {
-    expect(getFormattedMetricTimeLeft({ status: "target_not_met", status_start: "2000-01-01" }, {})).toStrictEqual(
-        "0 days",
-    )
+    expect(
+        getFormattedMetricTimeLeft({ status: "target_not_met", status_start: "2000-01-01" }, {}, dataModel),
+    ).toStrictEqual("0 days")
 })
 
 it("gets an empty formatted time left if the metric has no deadline", () => {
-    expect(getFormattedMetricTimeLeft({}, {})).toStrictEqual("")
+    expect(getFormattedMetricTimeLeft({}, {}, dataModel)).toStrictEqual("")
 })
 
 it("gets the source name", () => {
@@ -349,7 +348,7 @@ it("gets the subject name from the data model if the subject has no name", () =>
 })
 
 it("returns the metric response deadline", () => {
-    expect(getMetricResponseDeadline({}, {})).toBeNull()
+    expect(getMetricResponseDeadline({}, {}, dataModel)).toBeNull()
 })
 
 it("returns the metric response deadline based on the tech debt end date", () => {
@@ -357,22 +356,24 @@ it("returns the metric response deadline based on the tech debt end date", () =>
     tomorrow.setDate(tomorrow.getDate() + 1)
     tomorrow.setHours(23, 59, 59)
     expect(
-        getMetricResponseDeadline({ status: "debt_target_met", debt_end_date: tomorrow.toISOString() }, {}),
+        getMetricResponseDeadline({ status: "debt_target_met", debt_end_date: tomorrow.toISOString() }, {}, dataModel),
     ).toStrictEqual(tomorrow)
 })
 
 it("returns the metric response deadline based on the desired response time", () => {
     const statusStart = "2024-01-01"
     const expectedDeadline = new Date(statusStart)
-    expectedDeadline.setDate(expectedDeadline.getDate() + defaultDesiredResponseTimes.near_target_met)
-    expect(getMetricResponseDeadline({ status: "near_target_met", status_start: statusStart }, {})).toStrictEqual(
-        expectedDeadline,
-    )
+    expectedDeadline.setDate(expectedDeadline.getDate() + desiredResponseTimes.near_target_met)
+    expect(
+        getMetricResponseDeadline({ status: "near_target_met", status_start: statusStart }, {}, dataModel),
+    ).toStrictEqual(expectedDeadline)
 })
 
 it("does not return a metric response deadline when the report has been configured not to have a desired response time", () => {
     const report = { desired_response_times: { near_target_met: "" } }
-    expect(getMetricResponseDeadline({ status: "near_target_met", status_start: "2024-02-02" }, report)).toBeNull()
+    expect(
+        getMetricResponseDeadline({ status: "near_target_met", status_start: "2024-02-02" }, report, dataModel),
+    ).toBeNull()
 })
 
 it("returns the metric response overrun when there are no measurements", () => {
