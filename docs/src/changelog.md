@@ -14,6 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
+- The collector reports itself as unhealthy when more measurement tasks are running than the threshold set with the new `COLLECTOR_RUNNING_TASKS_HEALTHY_THRESHOLD` environment variable (default 120). See the [software documentation](software.md#collector). Closes [#8507](https://github.com/ICTU/quality-time/issues/8507).
 - Support sending notifications to Microsoft Teams webhooks created with the Microsoft Teams Workflows app. *Quality-time* now sends notifications as Adaptive Cards, which work with both Workflows webhooks and the retired Office 365 connector webhooks. See the [user manual](usage.md#notifications). Closes [#12326](https://github.com/ICTU/quality-time/issues/12326).
 
 ### Changed
