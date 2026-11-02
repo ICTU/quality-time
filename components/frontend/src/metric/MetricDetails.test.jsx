@@ -36,7 +36,7 @@ const report = {
     report_uuid: "report_uuid",
     subjects: {
         subject_uuid: {
-            name: "Metric",
+            name: "Example subject",
             type: "subject_type",
             metrics: {
                 metric_uuid: {
@@ -256,6 +256,9 @@ it("loads a missing list of measurements", async () => {
     expect(showSnackbarMessage).toHaveBeenCalledTimes(0)
 })
 
+const expectedFetchMeasurementsErrorTitle =
+    "Could not reach the Quality-time API-server to retrieve measurements for metric Violations in subject Example subject. Please check your network connectivity."
+
 it("fails to load measurements due to a failed promise", async () => {
     history.push("?expanded=metric_uuid:5")
     const showSnackbarMessage = vi.fn()
@@ -267,24 +270,24 @@ it("fails to load measurements due to a failed promise", async () => {
     expect(showSnackbarMessage).toHaveBeenCalledTimes(1)
     expect(showSnackbarMessage).toHaveBeenCalledWith({
         severity: "error",
-        title: "Could not fetch measurements",
+        title: expectedFetchMeasurementsErrorTitle,
         description: "Failure",
     })
 })
 
-it("fails to load measurements due to an internal server error", async () => {
+it("fails to load measurements due to an HTTP error", async () => {
     history.push("?expanded=metric_uuid:5")
     const showSnackbarMessage = vi.fn()
     await renderMetricDetails({
-        getMetricMeasurements: () => Promise.resolve({ ok: false, statusText: "Internal Server Error" }),
+        getMetricMeasurements: () => Promise.resolve({ ok: false, status: 502, statusText: "Bad gateway" }),
         showSnackbarMessage: showSnackbarMessage,
     })
     expectText(/Loading measurements failed/)
     expect(showSnackbarMessage).toHaveBeenCalledTimes(1)
     expect(showSnackbarMessage).toHaveBeenCalledWith({
         severity: "error",
-        title: "Could not fetch measurements",
-        description: "Internal Server Error",
+        title: expectedFetchMeasurementsErrorTitle,
+        description: "HTTP status code: 502. HTTP status message: Bad gateway.",
     })
 })
 
