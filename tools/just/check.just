@@ -107,7 +107,9 @@ lockfile-aliases folder="": (js-check "lockfile-aliases" f"{{ python }} {{ justf
 # low: GHSA-238p-pmpm-9mq7 KaTeX: Existing prototype pollution can bypass trust restrictions
 # moderate: GHSA-r4xh-jqrq-34v2 smol-toml: Quadratic-time parse() from parseKey rescanning to end of document on each key line
 # low: GHSA-gcqx-w48m-w2h4 deepmerge mergeObject() allows prototype poisoning of returned objects
-npm_audit_ignore := "GHSA-r3ph-w7gj-g6xm GHSA-238p-pmpm-9mq7 GHSA-r4xh-jqrq-34v2 GHSA-gcqx-w48m-w2h4"
+# moderate: GHSA-g3hv-75wg-m249 minimatch has potential denial of service via globparts amplification
+# moderate: GHSA-3g3m-2fjr-6pw4 Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal
+npm_audit_ignore := "GHSA-r3ph-w7gj-g6xm GHSA-238p-pmpm-9mq7 GHSA-r4xh-jqrq-34v2 GHSA-gcqx-w48m-w2h4 GHSA-g3hv-75wg-m249 GHSA-3g3m-2fjr-6pw4"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]
