@@ -64,7 +64,7 @@ export function PageContent({
             .catch((error) =>
                 showMessageRef.current({
                     severity: "error",
-                    title: "Could not fetch measurements",
+                    title: "Could not reach the Quality-time API-server to retrieve measurements. Please check your network connectivity.",
                     description: `${error.message}`,
                 }),
             )
