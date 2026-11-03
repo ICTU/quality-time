@@ -2,8 +2,9 @@
 
 from typing import TYPE_CHECKING
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import TimePassedCollector
-from collector_utilities.date_time import parse_datetime
 
 from .base import SonarQubeProjectAnalysesBase
 

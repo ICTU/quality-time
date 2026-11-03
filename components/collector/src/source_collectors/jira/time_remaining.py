@@ -3,8 +3,9 @@
 from typing import TYPE_CHECKING
 from urllib.parse import urlsplit
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors.source_collector import TimeRemainingCollector
-from collector_utilities.date_time import parse_datetime
 from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL, Response
 

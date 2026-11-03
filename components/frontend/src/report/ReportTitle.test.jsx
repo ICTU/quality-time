@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import history from "history/browser"
 import { vi } from "vitest"
 
+import { desiredResponseTimes } from "../__fixtures__/fixtures"
 import * as fetchServerApi from "../api/fetch_server_api"
 import { useSettings } from "../app_ui_settings"
 import { DataModelContext } from "../context/DataModel"
@@ -30,7 +31,12 @@ const reportDates = [new Date()]
 function ReportTitleWrapper({ issueTrackerType, permissions, tags }) {
     const settings = useSettings()
     return (
-        <DataModelContext value={{ sources: { jira: { name: "Jira", issue_tracker: true } } }}>
+        <DataModelContext
+            value={{
+                config: { desired_response_times: desiredResponseTimes },
+                sources: { jira: { name: "Jira", issue_tracker: true } },
+            }}
+        >
             <PermissionsContext value={permissions}>
                 <SnackbarAlerts messages={[]} showMessage={vi.fn()}>
                     <ReportTitle

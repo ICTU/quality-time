@@ -32,6 +32,8 @@ spec:
                 name: {{ .Release.Name }}-{{ template "www_name" . }}-env
                 optional: true
           env:
+            - name: TZ
+              value: {{ .Values.timezone | quote }}
             - name: API_SERVER_HOST
               value: {{ .Release.Name }}-{{ template "api_server_name" . }}
             - name: FRONTEND_HOST

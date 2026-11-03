@@ -5,8 +5,9 @@ from typing import TYPE_CHECKING, cast
 
 import aiohttp
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import BranchType, InactiveBranchesSourceCollector
-from collector_utilities.date_time import parse_datetime
 from collector_utilities.functions import add_query
 from collector_utilities.type import URL
 

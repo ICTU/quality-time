@@ -44,7 +44,7 @@ const COLUMNS = [
     {
         key: "time_left",
         label: "Time left",
-        value: (metric, _uuid, { report }) => getFormattedMetricTimeLeft(metric, report),
+        value: (metric, _uuid, { dataModel, report }) => getFormattedMetricTimeLeft(metric, report, dataModel),
     },
     { key: "overrun", label: "Overrun", value: overrunValue },
     { key: "comment", label: "Comment", value: (metric) => htmlToText(getMetricComment(metric)) },

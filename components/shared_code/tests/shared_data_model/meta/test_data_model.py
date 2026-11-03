@@ -19,7 +19,13 @@ class DataModelTest(MetaModelTestCase):
 
     def check_data_model_validation_error(self, expected_message: str, **extra_model_kwargs) -> None:
         """Check the validation error when instantiation the DataModel model."""
-        model_kwargs: dict[str, dict] = {"scales": {}, "metrics": {}, "sources": {}, "subjects": {}}
+        model_kwargs: dict[str, dict] = {
+            "scales": {},
+            "metrics": {},
+            "sources": {},
+            "subjects": {},
+            "config": {"desired_response_times": {}},
+        }
         self.check_validation_error(expected_message, DataModel, **(model_kwargs | extra_model_kwargs))
 
     @classmethod
@@ -199,3 +205,8 @@ class DataModelTest(MetaModelTestCase):
         }
         expected_message = "Parameter source_type of source quality_time doesn't list source types: Quality-time"
         self.check_data_model_validation_error(expected_message, **extra_model_kwargs)
+
+    def test_desired_response_times_are_positive(self):
+        """Test that the desired response times are positive."""
+        expected_message = "Input should be greater than 0"
+        self.check_data_model_validation_error(expected_message, config={"desired_response_times": {"unknown": 0}})

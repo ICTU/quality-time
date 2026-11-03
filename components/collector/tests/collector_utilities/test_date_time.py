@@ -3,7 +3,7 @@
 import unittest
 from datetime import datetime, timedelta
 
-from dateutil.tz import tzlocal, tzutc
+from dateutil.tz import tzlocal
 
 from shared.utils.date_time import now
 
@@ -13,7 +13,6 @@ from collector_utilities.date_time import (
     days_ago,
     days_to_go,
     minutes,
-    parse_datetime,
     parse_duration,
 )
 
@@ -64,18 +63,6 @@ class DaysToGoTest(unittest.TestCase):
     def test_yesterday(self):
         """Test that yesterday is zero days to go."""
         self.assertEqual(0, days_to_go(now() - timedelta(days=1)))
-
-
-class ParseDateTimeTest(unittest.TestCase):
-    """Unit tests for the parse_datetime function."""
-
-    def test_datetime_without_timezone(self):
-        """Test that a date time without timezone gets the local time zone."""
-        self.assertEqual(tzlocal(), parse_datetime("2023-05-25T23:11:00").tzinfo)
-
-    def test_datetime_with_timezone(self):
-        """Test that a date time with timezone gets the parsed time zone."""
-        self.assertEqual(tzutc(), parse_datetime("2023-05-25T23:11:00Z").tzinfo)
 
 
 class DateTimeFromPartsTest(unittest.TestCase):

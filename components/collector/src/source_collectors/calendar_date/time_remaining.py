@@ -2,8 +2,10 @@
 
 from typing import TYPE_CHECKING, cast
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import TimeRemainingCollector
-from collector_utilities.date_time import MIN_DATETIME, parse_datetime
+from collector_utilities.date_time import MIN_DATETIME
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

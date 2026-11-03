@@ -4,8 +4,10 @@ import urllib.parse
 from abc import ABC
 from typing import TYPE_CHECKING, Any
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import SourceCollector
-from collector_utilities.date_time import minutes, parse_datetime
+from collector_utilities.date_time import minutes
 from collector_utilities.exceptions import NotFoundError
 from collector_utilities.type import URL, Response
 from model import Entities, Entity, SourceResponses

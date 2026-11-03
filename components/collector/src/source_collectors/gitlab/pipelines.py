@@ -2,7 +2,8 @@
 
 from typing import TYPE_CHECKING
 
-from collector_utilities.date_time import parse_datetime
+from shared.utils.date_time import parse_datetime
+
 from model import Entities
 
 from .base import GitLabPipelineBase
