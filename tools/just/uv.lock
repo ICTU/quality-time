@@ -407,7 +407,7 @@ wheels = [
 
 [[package]]
 name = "just"
-version = "5.60.1"
+version = "5.61.0rc0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -1075,7 +1075,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.60.1"
+version = "5.61.0rc0"
 source = { virtual = "../third_party" }
 dependencies = [
     { name = "archunitpython" },
@@ -1117,7 +1117,7 @@ project-wide = [
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.31.1" },
 ]
-update-time = [{ name = "update-time", specifier = "==0.0.53" }]
+update-time = [{ name = "update-time", specifier = "==0.0.54" }]
 uv = [{ name = "uv", specifier = "==0.13.6" }]
 
 [[package]]

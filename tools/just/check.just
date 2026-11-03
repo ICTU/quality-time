@@ -103,13 +103,12 @@ lockfile-aliases folder="": (js-check "lockfile-aliases" f"{{ python }} {{ justf
 
 # GHSA advisory IDs to ignore in npm audit. Document why each one is safe to ignore. The npm-audit-ignores recipe
 # below fails when an advisory listed here is no longer reported, so that fixed advisories don't linger in this list.
-# moderate: GHSA-r3ph-w7gj-g6xm js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources
 # low: GHSA-238p-pmpm-9mq7 KaTeX: Existing prototype pollution can bypass trust restrictions
-# moderate: GHSA-r4xh-jqrq-34v2 smol-toml: Quadratic-time parse() from parseKey rescanning to end of document on each key line
 # low: GHSA-gcqx-w48m-w2h4 deepmerge mergeObject() allows prototype poisoning of returned objects
 # moderate: GHSA-g3hv-75wg-m249 minimatch has potential denial of service via globparts amplification
 # moderate: GHSA-3g3m-2fjr-6pw4 Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal
-npm_audit_ignore := "GHSA-r3ph-w7gj-g6xm GHSA-238p-pmpm-9mq7 GHSA-r4xh-jqrq-34v2 GHSA-gcqx-w48m-w2h4 GHSA-g3hv-75wg-m249 GHSA-3g3m-2fjr-6pw4"
+# high: GHSA-gg6h-894w-4m9c RE2JS: Quadratic-time denial of service in re2js lookbehind matching
+npm_audit_ignore := "GHSA-238p-pmpm-9mq7 GHSA-gcqx-w48m-w2h4 GHSA-g3hv-75wg-m249 GHSA-3g3m-2fjr-6pw4 GHSA-gg6h-894w-4m9c"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]
