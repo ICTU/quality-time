@@ -10,7 +10,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
-## v5.61.0 - 2026-11-03
+## [Unreleased]
 
 ### Added
 
@@ -25,6 +25,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Fixed
 
 - Adding, copying, moving, or reordering a metric in the reports overview would reset the visible metrics setting to 'no metrics', hiding all metrics. Fixes [#14889](https://github.com/ICTU/quality-time/issues/14889).
+
+## v5.61.0 - 2026-11-03
+
+Release yanked: release pipeline did not run to completion due to out of date lock files.
 
 ## v5.60.1 - 2026-10-09
 

@@ -29,7 +29,8 @@ The MongoDB version, the MongoDB feature compatibility, and the migrations all l
 
 | Version    | Date       | Mongo  | FC     | Migrations | Max. downgrade | Max. upgrade | Manual changes |
 |------------|------------|--------|--------|------------|----------------|--------------|----------------|
-| v5.61.0    | 2026-11-03 | v9     | v8     |            | v5.58.0        | n/a          | no             |
+| v5.62.0    | 2026-11-03 | v9     | v8     |            | v5.58.0        | n/a          | no             |
+| v5.61.0    | yanked⁶    | v9     | v8     |            | n/a            | n/a          | n/a            |
 | v5.60.1    | 2026-10-09 | **v9** | v8     |            | v5.58.0        | latest       | no             |
 | v5.60.0    | 2026-09-28 | v8     | v8     |            | v5.58.0        | latest       | no             |
 | v5.59.0    | 2026-08-28 | v8     | v8     |            | v5.58.0        | latest       | no             |
@@ -113,6 +114,8 @@ The MongoDB version, the MongoDB feature compatibility, and the migrations all l
 | v5.0.1     | 2023-06-26 | v6     | v5     |            | v4.10.0        | v5.2.0       | no             |
 | **v5.0.0** | 2023-06-23 | **v6** | v5     |            | v4.10.0        | v5.2.0       | **yes**        |
 | v4.10.0    | 2023-04-26 | v5     | v5     |            | n/a            | v5.2.0       | no             |
+
+(6) Release v5.61.0 was yanked: the release pipeline did not run to completion due to out of date lock files.
 
 (5) Remove support for several sources:
 
