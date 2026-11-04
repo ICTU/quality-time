@@ -1,6 +1,7 @@
 """Unit tests for the Dependency-Track security warnings collector."""
 
 from typing import TYPE_CHECKING
+from unittest.mock import patch
 
 from aiohttp import BasicAuth
 
@@ -224,6 +225,26 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
             measurement,
             value="1",
             entities=self.entities(**self.root_component_attributes("root a, root b")),
+        )
+
+    async def test_root_component_on_another_page(self):
+        """Test that the root component is reported if the components are spread over multiple pages."""
+        with patch.object(DependencyTrackBase, "PAGE_SIZE", 1):
+            measurement = await self.collect_measurement(
+                get_request_json_side_effect=[
+                    self.projects(),
+                    [],  # Second page of projects
+                    [self.component(name="parent", uuid="parent-uuid", direct_dependencies=["component-uuid"])],
+                    [self.component()],
+                    self.findings(),
+                    [],  # Second page of findings
+                ],
+                get_request_headers={"X-Total-Count": "2"},
+            )
+        self.assert_measurement(
+            measurement,
+            value="1",
+            entities=self.entities(**self.root_component_attributes("parent", "parent-uuid")),
         )
 
     async def test_vulnerable_component_without_dependency_graph(self):
