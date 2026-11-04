@@ -319,3 +319,30 @@ class CollectorTest(unittest.IsolatedAsyncioTestCase):
             "Could not write health check time stamp to %s",
             pathlib.Path(tempfile.gettempdir()) / "health_check.txt",
         )
+
+    def _add_running_tasks(self, nr_tasks: int) -> None:
+        """Add tasks to the collector's running tasks that keep running until the test is done."""
+        for _ in range(nr_tasks):
+            task = asyncio.create_task(asyncio.sleep(60))
+            self.addCleanup(task.cancel)
+            self.collector.running_tasks.add(task)
+
+    @patch.object(config, "RUNNING_TASKS_HEALTHY_THRESHOLD", 2)
+    @patch("pathlib.Path.open", new_callable=mock_open)
+    async def test_skip_writing_health_check_when_too_many_tasks_are_running(self, mocked_open: Mock):
+        """Test that the health check file is not written when more tasks are running than the threshold."""
+        self._add_running_tasks(3)
+        self.collector.record_health()
+        mocked_open.assert_not_called()
+
+    @patch.object(config, "RUNNING_TASKS_HEALTHY_THRESHOLD", 2)
+    @patch("pathlib.Path.open", new_callable=mock_open)
+    @patch("base_collectors.collector.iso_timestamp")
+    async def test_writing_health_check_when_running_tasks_equal_threshold(
+        self, mocked_iso_timestamp: Mock, mocked_open: Mock
+    ):
+        """Test that the health check file is written when the number of running tasks equals the threshold."""
+        mocked_iso_timestamp.return_value = now = iso_timestamp()
+        self._add_running_tasks(2)
+        self.collector.record_health()
+        mocked_open().write.assert_called_once_with(now)
