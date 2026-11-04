@@ -1,6 +1,6 @@
 FROM node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS compile-image
 
-RUN apk add --no-cache tzdata=2026e-r0
+RUN apk add --no-cache tzdata=2026f-r0
 
 WORKDIR /home/frontend
 COPY public /home/frontend/public
