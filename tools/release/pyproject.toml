@@ -16,7 +16,7 @@ dev = [
     "gitpython==3.2.1",
     "python-dateutil==3.0.0",
     "tools",
-    "types-python-dateutil==2.9.0.20261021",
+    "types-python-dateutil==2.9.0.20261029",
 ]
 
 [tool.uv]
