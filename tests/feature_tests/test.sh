@@ -8,7 +8,6 @@
 set -e
 
 mkdir -p build
-export COLUMNS=${COLUMNS:-120}  # Prevent Docker Compose warning about unset COLUMNS variable
 export COVERAGE_RCFILE="$(pwd)"/tests/feature_tests/.coveragerc
 export PROXY_PORT=8080
 export DOCKER_CLI_HINTS=false  # Suppress Docker Desktop "What's next" promotional output
