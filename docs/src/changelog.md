@@ -14,7 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Changed
 
-- The collector, notifier, and API-server write each log message as a single line of plain text. Previously, log messages were laid out in columns and, when running in a container, wrapped to 80 columns, which made them hard to read and search. Closes [#14959](https://github.com/ICTU/quality-time/issues/14959).
+- The collector, notifier, and API-server write each log message as a single line of plain text. Previously, log messages were laid out in columns and, when running in a container, wrapped to 80 columns, which made them hard to read and search. The database no longer logs the progress messages of the WiredTiger storage engine. The database image now passes the `--quiet` flag to MongoDB itself, so the database also logs less when deployed with the Helm chart. If you copied `command: --quiet` from the *Quality-time* compose file into your own compose file, you may want to remove it, as it overrides the new default. See the [deployment documentation](deployment.md#configuring-logging-optional). Closes [#14959](https://github.com/ICTU/quality-time/issues/14959).
 
 ### Fixed
 

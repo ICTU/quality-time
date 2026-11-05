@@ -16,3 +16,6 @@ RUN apt-get purge --yes mongodb-database-tools mongodb-org-database-tools-extra 
 
 # Run as the non-root MongoDB user by default; see README.md ("Runtime user") for overriding the UID.
 USER 999
+
+# Log less than mongod does by default; see README.md ("Logging").
+CMD ["mongod", "--quiet", "--wiredTigerEngineConfigString=verbose=[]"]

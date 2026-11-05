@@ -30,7 +30,7 @@ package deletes the vulnerable code outright, so it is preferred over upgrading 
 - **`/opt/js-yaml` and the `/js-yaml.js` symlink**, for
   [GHSA-5p4m-2wfm-xmqj](https://github.com/advisories/GHSA-5p4m-2wfm-xmqj), which was never backported to the vendored
   js-yaml 3.13.1 browser bundle. The entrypoint uses the bundle only for `mongod --config <file>`, a path neither the
-  compose file (it passes `--quiet`) nor the Helm chart (it sets no `command` or `args`) takes.
+  compose file nor the Helm chart (neither sets a `command` or `args`) takes.
 
 `ncurses-bin` and `gzip` are marked essential, hence `--allow-remove-essential`; that is safe because the container
 never installs packages at runtime.
@@ -67,6 +67,20 @@ works, reintroduce an upgrade step: `apt-get --option Acquire::Retries=3 update`
 fails the build once the base image makes the upgrade redundant. The retries matter because the base image configures
 none, and CI builds this image in four workflows in parallel, so a single `archive.ubuntu.com` hiccup — a 503, a reset
 connection, a hash sum mismatch — would abort the build with apt's exit code 100 and not reproduce.
+
+### Logging
+
+The `CMD` starts `mongod` with two flags that reduce its logging, because the official image starts `mongod` without
+flags:
+
+- **`--quiet`** suppresses connection events and replication activity.
+- **`--wiredTigerEngineConfigString=verbose=[]`** suppresses the WiredTiger progress messages. `mongod` configures
+  WiredTiger with `verbose=[recovery_progress:1,checkpoint_progress:1,...]`, so WiredTiger logs several lines for every
+  checkpoint, which it makes every minute while data is being written, and many lines on every start-up. Info is the
+  lowest severity `mongod` has, so `logComponentVerbosity` can't silence these. `mongod` appends the configured string
+  to its own WiredTiger configuration, and the empty list replaces the generated one. WiredTiger then uses its default
+  level, notice, for every category, and still logs warnings and errors. Setting a category to a lower level doesn't
+  work, because WiredTiger rejects levels below info. Verified with `mongo:9.0.4`.
 
 ### Runtime user
 
