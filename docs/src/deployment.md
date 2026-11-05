@@ -293,6 +293,8 @@ The collector, notifier, and API-server all have log level `WARNING` as default.
 | API-server | `API_SERVER_LOG_LEVEL`         |
 | Notifier   | `NOTIFIER_LOG_LEVEL`           |
 
+The collector, notifier, and API-server write each log record as a single line of plain text, consisting of the date and time, the log level, the source file and line number, and the log message. For example: `2026-11-04 09:26:52 WARNING  source_collector.py:106 Measuring metric failed`.
+
 The proxy access log is turned off. Please submit an issue if you need this and possibly other logging settings to be configurable.
 
 ## Moving *Quality-time*

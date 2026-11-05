@@ -71,7 +71,6 @@ jobs:
             --env WWW_URL=http://localhost:8080 \
             --env SELENIUM_URL=http://localhost:4444 \
             --env WWW_BROWSER_URL=http://quality-time-www:8080 \
-            --env COLUMNS=120 \
             ghcr.io/astral-sh/uv:python3.14-bookworm tests/application_tests/test.sh
         timeout-minutes: 10
 

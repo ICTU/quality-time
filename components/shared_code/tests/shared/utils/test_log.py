@@ -1,12 +1,11 @@
 """Unit tests for the logging utilities."""
 
 import logging
+import sys
 import unittest
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
-from rich.logging import RichHandler
-
-from shared.utils.log import get_logger, init_logging
+from shared.utils.log import LOG_FORMAT, get_logger, init_logging
 
 if TYPE_CHECKING:
     from logging import Logger
@@ -28,7 +27,48 @@ class LogTest(unittest.TestCase):
 
         self.assertEqual("quality_time.component.tests.shared.utils.test_log", get_logger_indirectly().name)
 
-    def test_init_log(self):
-        """Test log initialization."""
+
+class InitLoggingTest(unittest.TestCase):
+    """Unit tests for the log initialization."""
+
+    def setUp(self):
+        """Save the root logger's handlers and level."""
+        self.root_logger = logging.getLogger()
+        self.original_handlers = self.root_logger.handlers[:]
+        self.original_level = self.root_logger.level
+
+    def tearDown(self):
+        """Restore the root logger's handlers and level."""
+        for handler in self.root_logger.handlers[:]:
+            self.root_logger.removeHandler(handler)
+            handler.close()
+        self.root_logger.handlers[:] = self.original_handlers
+        self.root_logger.setLevel(self.original_level)
+
+    def test_handler(self):
+        """Test that the root logger has one stream handler, writing to stdout with the log format."""
+        handlers = init_logging("INFO").handlers
+        self.assertEqual(1, len(handlers))
+        handler = cast(logging.StreamHandler, handlers[0])
+        self.assertIsInstance(handler, logging.StreamHandler)
+        self.assertIs(sys.stdout, handler.stream)
+        self.assertEqual(LOG_FORMAT, cast(logging.Formatter, handler.formatter)._fmt)  # noqa: SLF001
+
+    def test_long_messages_are_not_wrapped(self):
+        """Test that the handler formats long messages on a single line."""
+        handler = init_logging("INFO").handlers[0]
+        message = "Long message " + "x" * 200
+        record = logging.LogRecord("name", logging.WARNING, "source_collector.py", 106, message, None, None)
+        formatted_record = handler.format(record)
+        self.assertNotIn("\n", formatted_record)
+        self.assertIn(message, formatted_record)
+        self.assertIn("WARNING  source_collector.py:106 Long message", formatted_record)
+
+    def test_init_logging_twice(self):
+        """Test that initializing the logging twice leaves one handler."""
         init_logging("INFO")
-        self.assertEqual(RichHandler, logging.getLogger().handlers[0].__class__)
+        self.assertEqual(1, len(init_logging("INFO").handlers))
+
+    def test_level(self):
+        """Test that the level is applied to the root logger."""
+        self.assertEqual(logging.DEBUG, init_logging("DEBUG").level)
