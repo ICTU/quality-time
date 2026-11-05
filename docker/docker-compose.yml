@@ -159,7 +159,6 @@ services:
           cpus: '2'
   database:
     image: ictu/quality-time_database:${QUALITY_TIME_VERSION}
-    command: --quiet
     environment:
       - *tz
       - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/database_username

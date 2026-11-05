@@ -278,11 +278,11 @@ To configure the timezone of exported PDFs, see [configuring the timezone](#conf
 
 ## Configuring logging (optional)
 
-The options for configuring logging are limited at the moment. The MongoDB daemon can be told to produce less logging by passing the `--quiet` flag:
+The options for configuring logging are limited at the moment. To reduce its logging, the database container starts MongoDB with the `--quiet` flag, which suppresses connection events among other things, and with `--wiredTigerEngineConfigString=verbose=[]`, which suppresses the progress messages that the WiredTiger storage engine logs on start-up and every minute while data is being written. To get the default MongoDB logging, override the database command:
 
 ```yaml
   database:
-    command: --quiet
+    command: mongod
 ```
 
 The collector, notifier, and API-server all have log level `WARNING` as default. This can be overridden by setting an environment variable to `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`.
