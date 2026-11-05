@@ -3,6 +3,7 @@
 import asyncio
 import json
 from collections import defaultdict
+from itertools import batched
 from math import ceil
 from operator import itemgetter
 from typing import TYPE_CHECKING, Literal
@@ -14,7 +15,7 @@ from collector_utilities.type import URL, Response
 from model import Entity, SourceResponses
 
 if TYPE_CHECKING:
-    from collections.abc import AsyncIterator
+    from collections.abc import AsyncIterator, Iterable
 
     from .json_types import DependencyTrackComponent, DependencyTrackProject
 
@@ -22,10 +23,18 @@ if TYPE_CHECKING:
 class DependencyTrackComponentGraph:
     """The dependency graph of the components of one Dependency-Track project."""
 
-    def __init__(self, components: list[DependencyTrackComponent]) -> None:
-        self.__names = {component["uuid"]: component["name"] for component in components}
+    def __init__(self) -> None:
+        self.__names: dict[str, str] = {}
         self.__parents: dict[str, set[str]] = defaultdict(set)
+
+    def add_components(self, components: Iterable[DependencyTrackComponent]) -> None:
+        """Add the components to the graph.
+
+        Components can be added page by page. The graph only keeps the names of the components and their parent-child
+        relations, so the components themselves need not be kept in memory.
+        """
         for component in components:
+            self.__names[component["uuid"]] = component["name"]
             for child in json.loads(component.get("directDependencies") or "[]"):
                 self.__parents[child["uuid"]].add(component["uuid"])
 
@@ -53,7 +62,7 @@ class DependencyTrackComponentGraph:
 class DependencyTrackBase(TokenAuthenticationSourceCollector):
     """Dependency-Track base class."""
 
-    PAGE_SIZE = 1000
+    PAGE_SIZE = 5000
     # Maximum number of pages to retrieve at the same time, so that big projects don't overload Dependency-Track.
     # Note that PAGE_SIZE * MAX_CONCURRENT_PAGES items can be in flight at the same time.
     MAX_CONCURRENT_PAGES = 5
@@ -79,24 +88,24 @@ class DependencyTrackBase(TokenAuthenticationSourceCollector):
         """Extend to load multiple pages, if necessary."""
         responses = SourceResponses()
         for url in urls:
-            for response in await self.__get_pages(url):
-                responses.append(response)
+            async for pages in self.__get_page_batches(url):
+                responses.extend(SourceResponses(responses=pages))
         return responses
 
-    async def __get_pages(self, url: URL) -> list[Response]:
-        """Return all pages of the paginated URL, in page order.
+    async def __get_page_batches(self, url: URL) -> AsyncIterator[list[Response]]:
+        """Yield all pages of the paginated URL, in batches, in page order.
 
         The first page has to be retrieved first, because its X-Total-Count header tells how many pages there are.
         The other pages are retrieved in batches of at most MAX_CONCURRENT_PAGES, because retrieving them one by one
         would need one round trip per PAGE_SIZE items, which times out for projects with many components. Batching
         also bounds the number of requests that are prepared at the same time, no matter how big the total count is.
         """
-        pages = [await self.__get_page(url, 1)]  # Page numbers start at 1
-        page_count = ceil(int(pages[0].headers.get("X-Total-Count", 0)) / self.PAGE_SIZE)
-        for batch_start in range(2, page_count + 1, self.MAX_CONCURRENT_PAGES):
-            batch = range(batch_start, min(batch_start + self.MAX_CONCURRENT_PAGES, page_count + 1))
-            pages.extend(await asyncio.gather(*[self.__get_page(url, page_nr) for page_nr in batch]))
-        return pages
+        first_page = await self.__get_page(url, 1)  # Page numbers start at 1
+        page_count = ceil(int(first_page.headers.get("X-Total-Count", 0)) / self.PAGE_SIZE)
+        yield [first_page]
+        del first_page  # Free memory
+        for batch in batched(range(2, page_count + 1), self.MAX_CONCURRENT_PAGES, strict=False):
+            yield await asyncio.gather(*[self.__get_page(url, page_nr) for page_nr in batch])
 
     async def __get_page(self, url: URL, page_nr: int) -> Response:
         """Return one page of the paginated URL."""
@@ -106,6 +115,17 @@ class DependencyTrackBase(TokenAuthenticationSourceCollector):
         # https://github.com/aio-libs/aiohttp/issues/2217
         await response.read()
         return response
+
+    async def _get_paginated_items(self, url: URL) -> AsyncIterator[list]:
+        """Yield the items of the paginated URL, page by page, in page order.
+
+        Unlike _get_source_responses(), this doesn't keep all pages in memory. The response of a page can be garbage
+        collected as soon as the caller has processed its items, so callers can keep only the data they need, which
+        matters for projects with many components.
+        """
+        async for pages in self.__get_page_batches(url):
+            for page in pages:
+                yield await page.json(content_type=None)
 
     async def _get_projects_by_uuid(self) -> dict[str, DependencyTrackProject]:
         """Return a mapping of project UUIDs to projects."""

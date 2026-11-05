@@ -1,7 +1,9 @@
 """Unit tests for the Dependency-Track dependencies collector."""
 
 from typing import TYPE_CHECKING
+from unittest.mock import patch
 
+from source_collectors.dependency_track.base import DependencyTrackBase
 from source_collectors.dependency_track.json_types import DependencyTrackProject
 
 from .base_test import DependencyTrackTestCase
@@ -245,6 +247,34 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         components = [self.component(direct_dependencies=["service-uuid"])]
         measurement = await self.collect_components(components)
         self.assert_measurement(measurement, value="1", entities=[self.entity()])
+
+    async def test_root_component_on_another_page(self):
+        """Test that the root component is reported if the components are spread over multiple pages."""
+        with patch.object(DependencyTrackBase, "PAGE_SIZE", 1):
+            measurement = await self.collect_measurement(
+                get_request_json_side_effect=[
+                    self.projects(),
+                    [],  # Second page of projects
+                    [self.component(name="parent", uuid="parent-uuid", direct_dependencies=["component-uuid"])],
+                    [self.component()],
+                ],
+                get_request_headers={"X-Total-Count": "2"},
+            )
+        self.assert_measurement(
+            measurement,
+            value="2",
+            entities=[
+                self.entity(name="parent", uuid="parent-uuid"),
+                self.entity(**self.root_component_attributes("parent", "parent-uuid")),
+            ],
+        )
+
+    async def test_component_without_version(self):
+        """Test that the version of a component without version is unknown."""
+        component = self.component()
+        del component["version"]
+        measurement = await self.collect_components([component])
+        self.assert_measurement(measurement, value="1", entities=[self.entity(version="unknown")])
 
     async def test_components_of_multiple_projects(self):
         """Test that each project has its own dependency graph."""

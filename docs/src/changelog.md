@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Fixed
+
+- When measuring dependencies or security warnings with Dependency-Track as source, the collector would keep all components of the Dependency-Track projects in memory, which could crash the collector for projects with many components. The collector now processes the components page by page, keeping only the data it needs. Fixes [#14957](https://github.com/ICTU/quality-time/issues/14957).
+
 ## v5.62.0 - 2026-11-03
 
 ### Added
