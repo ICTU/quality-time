@@ -1,6 +1,6 @@
 [project]
 name = "just"
-version = "5.62.0"
+version = "5.62.1-rc.0"
 requires-python = ">=3.14"
 classifiers = [
     "Programming Language :: Python",
