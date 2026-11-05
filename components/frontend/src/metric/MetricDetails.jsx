@@ -24,7 +24,13 @@ import {
 import { Logo } from "../source/Logo"
 import { SourceEntities } from "../source/SourceEntities"
 import { Sources } from "../source/Sources"
-import { getSourceName, isMeasurementRequested, isSourceConfigurationComplete } from "../utils"
+import {
+    getMetricName,
+    getSourceName,
+    getSubjectName,
+    isMeasurementRequested,
+    isSourceConfigurationComplete,
+} from "../utils"
 import { ButtonRow } from "../widgets/ButtonRow"
 import { ActionButton } from "../widgets/buttons/ActionButton"
 import { DeleteButton } from "../widgets/buttons/DeleteButton"
@@ -120,14 +126,23 @@ MetricDetailsButtonRow.propTypes = {
     url: string,
 }
 
-function fetchMeasurements(reportDate, metricUuid, setMeasurements, setMeasurementsStatus, showMessage) {
+function fetchMeasurements(
+    reportDate,
+    metricUuid,
+    metricName,
+    subjectName,
+    setMeasurements,
+    setMeasurementsStatus,
+    showMessage,
+) {
+    const title = `Could not reach the Quality-time API-server to retrieve measurements for metric ${metricName} in subject ${subjectName}. Please check your network connectivity.`
     getMetricMeasurements(metricUuid, reportDate)
         .then(function (json) {
             if (json.ok === false) {
                 showMessage({
                     severity: "error",
-                    title: "Could not fetch measurements",
-                    description: `${json.statusText}`,
+                    title: title,
+                    description: `HTTP status code: ${json.status}. HTTP status message: ${json.statusText}.`,
                 })
                 setMeasurementsStatus("failed")
             } else {
@@ -137,16 +152,18 @@ function fetchMeasurements(reportDate, metricUuid, setMeasurements, setMeasureme
             return null
         })
         .catch((error) => {
-            showMessage({ severity: "error", title: "Could not fetch measurements", description: `${error.message}` })
+            showMessage({ severity: "error", title: title, description: `${error.message}` })
             setMeasurementsStatus("failed")
         })
 }
 fetchMeasurements.propTypes = {
+    metricName: string,
     metricUuid: string,
     reportDate: datePropType,
     setMeasurements: func,
     setMeasurementsStatus: func,
     showMessage: func,
+    subjectName: string,
 }
 
 export function MetricDetails({
@@ -166,15 +183,35 @@ export function MetricDetails({
     const showMessageRef = useRef(useContext(SnackbarContext))
     const [measurements, setMeasurements] = useState([])
     const [measurementsStatus, setMeasurementsStatus] = useState("loading")
+    const subject = report.subjects[subjectUuid]
+    const metric = subject.metrics[metricUuid]
+    const metricName = getMetricName(metric, dataModel)
+    const subjectName = getSubjectName(subject, dataModel)
     useEffect(() => {
-        fetchMeasurements(reportDate, metricUuid, setMeasurements, setMeasurementsStatus, showMessageRef.current)
+        fetchMeasurements(
+            reportDate,
+            metricUuid,
+            metricName,
+            subjectName,
+            setMeasurements,
+            setMeasurementsStatus,
+            showMessageRef.current,
+        )
+        // The metric and subject names are only used in error messages, so changing them should not refetch measurements
+        // eslint-disable-next-line @eslint-react/exhaustive-deps
     }, [metricUuid, reportDate])
     function measurementsReload() {
         reload()
-        fetchMeasurements(reportDate, metricUuid, setMeasurements, setMeasurementsStatus, showMessageRef.current)
+        fetchMeasurements(
+            reportDate,
+            metricUuid,
+            metricName,
+            subjectName,
+            setMeasurements,
+            setMeasurementsStatus,
+            showMessageRef.current,
+        )
     }
-    const subject = report.subjects[subjectUuid]
-    const metric = subject.metrics[metricUuid]
     const lastMeasurement = measurements.at(-1)
     let anyError = lastMeasurement?.sources.some((source) => source.connection_error || source.parse_error)
     let anyWarning = Object.values(metric.sources).some((source) => dataModel.sources[source.type].deprecated)
