@@ -4,10 +4,19 @@ from typing import TYPE_CHECKING
 
 from base_collectors import TokenAuthenticationSourceCollector
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.type import URL
+from collector_utilities.type import URL, Response
 
 if TYPE_CHECKING:
+    import aiohttp
+
     from .json_types import Board
+
+
+class JiraError(CollectorError):
+    """Jira responded with an error."""
+
+    def __init__(self, status: int, reason: str, error_messages: list[str]) -> None:
+        super().__init__(f"Jira responded with HTTP status {status} ({reason}): {' '.join(error_messages)}")
 
 
 class JiraBase(TokenAuthenticationSourceCollector):
@@ -27,6 +36,34 @@ class JiraBase(TokenAuthenticationSourceCollector):
     def _rest_api_version(self) -> str:
         """Return the Jira REST API version set by the user."""
         return str(self._parameter("api_version"))
+
+    async def _get_source_response(self, url: URL, headers: dict[str, str], auth: aiohttp.BasicAuth | None) -> Response:
+        """Override to add the error messages that Jira returns to the error, if the request fails.
+
+        The session raises an error without the response body if a request fails, and discards the body. To be able
+        to read the error messages from the response body, override the session setting for Jira requests.
+        """
+        response = await self._session.get(
+            url, allow_redirects=True, headers=headers, auth=auth, raise_for_status=False
+        )
+        if not response.ok:
+            if error_messages := await self._error_messages(response):
+                raise JiraError(response.status, str(response.reason), error_messages)
+            response.raise_for_status()
+        return response
+
+    @staticmethod
+    async def _error_messages(response: Response) -> list[str]:
+        """Return the error messages from the Jira response, if any."""
+        try:
+            json = await response.json(content_type=None)
+        except ValueError:  # The response body is not JSON, for example an HTML error page of a proxy
+            return []
+        if not isinstance(json, dict):
+            return []
+        return [str(message) for message in json.get("errorMessages") or []] + [
+            str(message) for message in (json.get("errors") or {}).values()
+        ]
 
 
 class JiraBoardBase(JiraBase):

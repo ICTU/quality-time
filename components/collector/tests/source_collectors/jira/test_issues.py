@@ -1,8 +1,17 @@
 """Unit tests for the Jira issues collector."""
 
+import json
+from typing import TYPE_CHECKING
+from unittest.mock import AsyncMock, Mock, patch
+
+import aiohttp
+
 from source_collectors.jira.issues import JiraIssues
 
 from .base import JiraTestCase
+
+if TYPE_CHECKING:
+    from model import MetricMeasurement
 
 
 class JiraIssuesTest(JiraTestCase):
@@ -65,3 +74,58 @@ class JiraIssuesTest(JiraTestCase):
         side_effect = [[{"id": "field", "name": "Field"}], 50, issues_json, issues_json]
         _, get_mock, _ = await self.collect_measurement_and_mocks(get_request_json_side_effect=side_effect)
         self.assertTrue(get_mock.mock_calls[2].startswith("https://jira/rest/api/3"))
+
+
+class JiraIssuesErrorTest(JiraTestCase):
+    """Unit tests for the Jira issue collector when Jira responds with an error."""
+
+    METRIC_TYPE = "issues"
+
+    @staticmethod
+    def error_response(json=None, json_side_effect=None) -> AsyncMock:
+        """Create a Jira error response."""
+        response = AsyncMock(ok=False, status=400, reason="Bad Request")
+        response.json = AsyncMock(return_value=json, side_effect=json_side_effect)
+        error = aiohttp.ClientResponseError(Mock(), (), status=400, message="Bad Request")
+        response.raise_for_status = Mock(side_effect=error)
+        return response
+
+    async def collect_error(self, error_response: AsyncMock) -> tuple[MetricMeasurement, Mock, Mock]:
+        """Collect the measurement, with Jira responding with an error to the search request."""
+        fields_response = AsyncMock()
+        fields_response.json = AsyncMock(return_value=[{"id": "field", "name": "Field"}])
+        with patch.object(JiraIssues, "max_results", 50):
+            return await self.collect_measurement_and_mocks(get_request_side_effect=[fields_response, error_response])
+
+    async def test_error_messages(self):
+        """Test that the error messages Jira returns are added to the connection error."""
+        error_messages = ["The value 'abc' does not exist for the field 'project'."]
+        response = self.error_response({"errorMessages": error_messages, "errors": {}})
+        measurement, get_mock, _ = await self.collect_error(response)
+        self.assert_measurement(
+            measurement,
+            connection_error="Jira responded with HTTP status 400 (Bad Request): "
+            "The value 'abc' does not exist for the field 'project'.",
+        )
+        self.assertFalse(get_mock.mock_calls[1].kwargs["raise_for_status"])
+
+    async def test_field_errors(self):
+        """Test that the field errors Jira returns are added to the connection error."""
+        response = self.error_response({"errorMessages": [], "errors": {"jql": "Error in the JQL query."}})
+        measurement, _, _ = await self.collect_error(response)
+        self.assert_measurement(
+            measurement, connection_error="Jira responded with HTTP status 400 (Bad Request): Error in the JQL query."
+        )
+
+    async def test_error_without_json(self):
+        """Test that the HTTP error is the connection error if the error response contains no JSON."""
+        response = self.error_response(json_side_effect=json.JSONDecodeError("Expecting value", "<html>", 0))
+        measurement, _, _ = await self.collect_error(response)
+        self.assert_measurement(measurement, connection_error="400, message='Bad Request'")
+
+    async def test_error_without_error_messages(self):
+        """Test that the HTTP error is the connection error if the error response contains no error messages."""
+        for json_body in ({}, {"errorMessages": [], "errors": {}}, ["unexpected"]):
+            with self.subTest(json_body=json_body):
+                measurement, _, _ = await self.collect_error(self.error_response(json_body))
+                self.assert_measurement(measurement, connection_error="400, message='Bad Request'")
