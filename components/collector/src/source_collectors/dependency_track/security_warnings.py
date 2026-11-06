@@ -52,12 +52,11 @@ class DependencyTrackSecurityWarnings(SecurityWarningsSourceCollector, Dependenc
 
     async def _get_component_graph(self, project_uuid: str) -> DependencyTrackComponentGraph:
         """Return the dependency graph of the components of the project."""
-        components_api = URL(f"{await self._api_url()}/component/project/{project_uuid}")
         graph = DependencyTrackComponentGraph()
         # Add the components to the graph page by page, so that only the graph is kept in memory and not the
         # components. Don't add the responses to the source responses, so that only the findings are parsed into
         # entities.
-        async for components in self._get_paginated_items(components_api):
+        async for components in self._get_components(project_uuid):
             graph.add_components(components)
         return graph
 

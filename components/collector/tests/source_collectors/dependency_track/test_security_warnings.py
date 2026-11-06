@@ -16,7 +16,7 @@ from .base_test import DependencyTrackTestCase
 
 if TYPE_CHECKING:
     from model.measurement import MetricMeasurement
-    from source_collectors.dependency_track.json_types import DependencyTrackComponent, DependencyTrackProject
+    from source_collectors.dependency_track.json_types import DependencyTrackProject
 
 
 class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
@@ -79,7 +79,7 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
         self,
         projects: list[DependencyTrackProject] | None = None,
         findings: list[DependencyTrackFinding] | None = None,
-        components: list[DependencyTrackComponent] | None = None,
+        components: list[dict[str, object]] | None = None,
     ) -> MetricMeasurement:
         """Collect a measurement for the given projects, components, and findings, defaulting to the fixtures."""
         return await self.collect_measurement(

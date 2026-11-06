@@ -1,5 +1,6 @@
 """Unit tests for the Dependency-Track dependencies collector."""
 
+import json
 from typing import TYPE_CHECKING
 from unittest.mock import patch
 
@@ -10,7 +11,6 @@ from .base_test import DependencyTrackTestCase
 
 if TYPE_CHECKING:
     from model.measurement import MetricMeasurement
-    from source_collectors.dependency_track.json_types import DependencyTrackComponent
 
 
 class DependencyTrackDependenciesTest(DependencyTrackTestCase):
@@ -18,7 +18,7 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
 
     METRIC_TYPE = "dependencies"
 
-    def dependencies(self, latest_version: str) -> list[DependencyTrackComponent]:
+    def dependencies(self, latest_version: str) -> list[dict[str, object]]:
         """Create a list of dependencies as returned by Dependency-Track."""
         dependency = self.component()
         if latest_version:
@@ -44,7 +44,7 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         """Create a list of expected entities."""
         return [self.entity(latest=latest_version, latest_version_status=latest_version_status)]
 
-    async def collect_components(self, components: list[DependencyTrackComponent]) -> MetricMeasurement:
+    async def collect_components(self, components: list[dict[str, object]]) -> MetricMeasurement:
         """Collect a measurement for the given components."""
         return await self.collect_measurement(get_request_json_side_effect=[self.projects(), components])
 
@@ -57,6 +57,18 @@ class DependencyTrackDependenciesTest(DependencyTrackTestCase):
         """Test one project without dependencies."""
         measurement = await self.collect_measurement(get_request_json_side_effect=[self.projects(), []])
         self.assert_measurement(measurement, value="0", entities=[])
+
+    async def test_project_with_many_direct_dependencies(self):
+        """Test that components are parsed correctly if the project included in each component is big.
+
+        Dependency-Track includes the project, with its direct dependencies, in each component. Make the project bigger
+        than the buffer used to read the response, so the components need to be parsed from multiple chunks.
+        """
+        direct_dependencies = json.dumps([{"uuid": f"direct-dependency-uuid-{index}"} for index in range(5000)])
+        project = dict(self.projects()[0], directDependencies=direct_dependencies)
+        components = [self.component(project=project), self.component(name="other", uuid="other-uuid", project=project)]
+        measurement = await self.collect_components(components)
+        self.assert_measurement(measurement, value="2", entities=[self.entity(), self.entity("other", "other-uuid")])
 
     async def test_updateable_dependencies(self):
         """Test one project with a component that can be updated."""

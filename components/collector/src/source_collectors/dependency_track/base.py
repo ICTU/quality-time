@@ -6,7 +6,9 @@ from collections import defaultdict
 from itertools import batched
 from math import ceil
 from operator import itemgetter
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal
+
+import ijson  # type: ignore[import-untyped]  # ijson has no type information
 
 from base_collectors import TokenAuthenticationSourceCollector
 from collector_utilities.exceptions import CollectorError
@@ -14,10 +16,12 @@ from collector_utilities.functions import add_query
 from collector_utilities.type import URL, Response
 from model import Entity, SourceResponses
 
-if TYPE_CHECKING:
-    from collections.abc import AsyncIterator, Iterable
+from .json_types import DependencyTrackComponent
 
-    from .json_types import DependencyTrackComponent, DependencyTrackProject
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator, Awaitable, Callable, Iterable
+
+    from .json_types import DependencyTrackProject
 
 
 class DependencyTrackComponentGraph:
@@ -88,44 +92,74 @@ class DependencyTrackBase(TokenAuthenticationSourceCollector):
         """Extend to load multiple pages, if necessary."""
         responses = SourceResponses()
         for url in urls:
-            async for pages in self.__get_page_batches(url):
+            async for pages in self.__get_page_batches(url, self.__read_response):
                 responses.extend(SourceResponses(responses=pages))
         return responses
 
-    async def __get_page_batches(self, url: URL) -> AsyncIterator[list[Response]]:
-        """Yield all pages of the paginated URL, in batches, in page order.
+    async def _get_components(self, project_uuid: str) -> AsyncIterator[list[DependencyTrackComponent]]:
+        """Yield the components of the project, page by page, in page order.
+
+        Each component as returned by Dependency-Track contains the project, including the project's direct
+        dependencies, so the size of a page is quadratic in the number of direct dependencies of the project. To
+        not need memory for that, parse the components one by one while reading the response, and keep only the
+        attributes the collector needs.
+        """
+        components_api = URL(f"{await self._api_url()}/component/project/{project_uuid}")
+        async for pages in self.__get_page_batches(components_api, self.__read_components):
+            for page in pages:
+                yield page
+
+    async def __get_page_batches[T](
+        self, url: URL, read_page: Callable[[Response], Awaitable[T]]
+    ) -> AsyncIterator[list[T]]:
+        """Yield all pages of the paginated URL, read with the read page function, in batches, in page order.
 
         The first page has to be retrieved first, because its X-Total-Count header tells how many pages there are.
         The other pages are retrieved in batches of at most MAX_CONCURRENT_PAGES, because retrieving them one by one
         would need one round trip per PAGE_SIZE items, which times out for projects with many components. Batching
         also bounds the number of requests that are prepared at the same time, no matter how big the total count is.
         """
-        first_page = await self.__get_page(url, 1)  # Page numbers start at 1
-        page_count = ceil(int(first_page.headers.get("X-Total-Count", 0)) / self.PAGE_SIZE)
-        yield [first_page]
-        del first_page  # Free memory
+        first_response = await self.__get_page(url, 1)  # Page numbers start at 1
+        page_count = ceil(int(first_response.headers.get("X-Total-Count", 0)) / self.PAGE_SIZE)
+        yield [await read_page(first_response)]
+        del first_response  # Free memory
         for batch in batched(range(2, page_count + 1), self.MAX_CONCURRENT_PAGES, strict=False):
-            yield await asyncio.gather(*[self.__get_page(url, page_nr) for page_nr in batch])
+            yield await asyncio.gather(*[self.__get_and_read_page(url, page_nr, read_page) for page_nr in batch])
+
+    async def __get_and_read_page[T](self, url: URL, page_nr: int, read_page: Callable[[Response], Awaitable[T]]) -> T:
+        """Return one page of the paginated URL, read with the read page function."""
+        return await read_page(await self.__get_page(url, page_nr))
 
     async def __get_page(self, url: URL, page_nr: int) -> Response:
-        """Return one page of the paginated URL."""
+        """Return the response for one page of the paginated URL, without reading it."""
         paginated_url = add_query(url, f"pageSize={self.PAGE_SIZE}&pageNumber={page_nr}")
         response: Response = (await super()._get_source_responses(paginated_url))[0]
+        return response
+
+    @staticmethod
+    async def __read_response(response: Response) -> Response:
+        """Read the response and return it."""
         # Retrieving consecutive big responses without reading the response hangs the client, see
         # https://github.com/aio-libs/aiohttp/issues/2217
         await response.read()
         return response
 
-    async def _get_paginated_items(self, url: URL) -> AsyncIterator[list]:
-        """Yield the items of the paginated URL, page by page, in page order.
+    @classmethod
+    async def __read_components(cls, response: Response) -> list[DependencyTrackComponent]:
+        """Read the components from the response, one by one, keeping only the attributes the collector needs."""
+        return [cls.__slim_component(component) async for component in ijson.items_async(response.content, "item")]
 
-        Unlike _get_source_responses(), this doesn't keep all pages in memory. The response of a page can be garbage
-        collected as soon as the caller has processed its items, so callers can keep only the data they need, which
-        matters for projects with many components.
-        """
-        async for pages in self.__get_page_batches(url):
-            for page in pages:
-                yield await page.json(content_type=None)
+    @staticmethod
+    def __slim_component(component: dict[str, Any]) -> DependencyTrackComponent:
+        """Return a copy of the component with only the attributes the collector needs."""
+        slim_component = DependencyTrackComponent(name=component["name"], uuid=component["uuid"])
+        if "directDependencies" in component:
+            slim_component["directDependencies"] = component["directDependencies"]
+        if "repositoryMeta" in component:
+            slim_component["repositoryMeta"] = component["repositoryMeta"]
+        if "version" in component:
+            slim_component["version"] = component["version"]
+        return slim_component
 
     async def _get_projects_by_uuid(self) -> dict[str, DependencyTrackProject]:
         """Return a mapping of project UUIDs to projects."""
