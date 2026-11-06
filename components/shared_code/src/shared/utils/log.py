@@ -23,4 +23,7 @@ def init_logging(level: str) -> logging.Logger:
     logging.basicConfig(datefmt=DATE_FORMAT, format=LOG_FORMAT, handlers=[handler], force=True)
     logger = logging.getLogger()
     logger.setLevel(level)
+    # The MongoDB client logs every command, connection, and server selection at debug level, which drowns out the
+    # Quality-time debug messages, so never let it log below info level:
+    logging.getLogger("pymongo").setLevel(max(logger.level, logging.INFO))
     return logger

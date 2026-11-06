@@ -285,7 +285,7 @@ The options for configuring logging are limited at the moment. To reduce its log
     command: mongod
 ```
 
-The collector, notifier, and API-server all have log level `WARNING` as default. This can be overridden by setting an environment variable to `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`.
+The collector, notifier, and API-server all have log level `WARNING` as default. This can be overridden by setting an environment variable to `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`. The MongoDB client used by the components never logs below level `INFO`, to keep debug logging readable.
 
 | Component  | Log level environment variable |
 |:-----------|:-------------------------------|
