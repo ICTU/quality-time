@@ -67,7 +67,6 @@ GitLabSourceUpToDateness  # unused class (src/source_collectors/gitlab/source_up
 __new__  # unused function (src/source_collectors/gitlab/source_up_to_dateness.py:112)
 GitLabSourceVersion  # unused class (src/source_collectors/gitlab/source_version.py:11)
 GitLabUnusedJobs  # unused class (src/source_collectors/gitlab/unused_jobs.py:13)
-ok  # unused variable (src/source_collectors/grafana_k6/json_types.py:11)
 avg  # unused variable (src/source_collectors/grafana_k6/json_types.py:24)
 med  # unused variable (src/source_collectors/grafana_k6/json_types.py:26)
 contains  # unused variable (src/source_collectors/grafana_k6/json_types.py:36)

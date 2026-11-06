@@ -21,6 +21,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - When measuring dependencies or security warnings with Dependency-Track as source, the collector would keep all components of the Dependency-Track projects in memory, which could crash the collector for projects with many components. The collector now processes the components page by page, keeping only the data it needs. Fixes [#14957](https://github.com/ICTU/quality-time/issues/14957).
 - When measuring dependencies or security warnings with Dependency-Track as source, the collector could still use a lot of memory for projects with many direct dependencies, because Dependency-Track includes the project and its direct dependencies in each component. The collector now parses the components while reading the response, without keeping the response in memory, and keeps only the data it needs. Fixes [#14974](https://github.com/ICTU/quality-time/issues/14974).
 - Fix broken links to Dockerfiles in the software documentation. Fixes [#14768](https://github.com/ICTU/quality-time/issues/14768).
+- When Jira responded with an error, for example because the JQL query refers to a project that has been renamed, *Quality-time* would only show the HTTP status, such as "400, message='Bad Request'", and not the error message Jira returned. *Quality-time* now includes the error messages Jira returns in the connection error. Fixes [#14925](https://github.com/ICTU/quality-time/issues/14925).
 
 ## v5.62.0 - 2026-11-03
 
