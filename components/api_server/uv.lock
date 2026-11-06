@@ -1684,7 +1684,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 just = [{ name = "rust-just", specifier = "==1.59.0" }]
 project-wide = [
-    { name = "compose-lint", specifier = "==0.36.3" },
+    { name = "compose-lint", specifier = "==1.0.0" },
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.31.1" },
 ]
