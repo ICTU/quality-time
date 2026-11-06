@@ -20,7 +20,7 @@ dependencies = [
     "pyproject-fmt==2.30.3",
     "ruff==0.17.3",
     "troml==0.4.1",
-    "ty==0.0.94",
+    "ty==0.0.95",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
     "vulture==2.16",
 ]
@@ -32,7 +32,7 @@ just = [
 # Tools that are run on the repository as a whole, instead of per component, are in a group so that they are not
 # installed in the components' environments, where their dependencies would needlessly constrain the resolution.
 project-wide = [
-    "compose-lint==0.36.2",
+    "compose-lint==0.36.3",
     "yamllint==1.38.0",
     "zizmor==1.31.1",       # Static analysis tool for GitHub Actions
 ]

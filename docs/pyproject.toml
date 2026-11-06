@@ -17,7 +17,7 @@ dev = [
     "furo==2025.12.19",
     "gitpython==3.2.1",
     "myst-parser==5.1.0",
-    "pydantic==2.14.1",     # Needed for generating the reference docs from the data model
+    "pydantic==2.14.2",     # Needed for generating the reference docs from the data model
     "shared-code",
     "sphinx==9.2.0",
     "sphinx-design==0.7.0",

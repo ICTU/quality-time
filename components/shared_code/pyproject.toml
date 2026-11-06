@@ -14,7 +14,7 @@ classifiers = [
 dependencies = [
     "bottle==0.13.4",
     "packaging==26.3",
-    "pydantic==2.14.1",
+    "pydantic==2.14.2",
     "pymongo==4.19.0",
     "python-dateutil==3.0.0",
 ]
