@@ -184,6 +184,7 @@ def main() -> None:
         "tests/application_tests",
         "tests/feature_tests",
         "tests/shared_test_code",
+        "tools/just",
         "tools/release",
         "tools/third_party",
     ]:
