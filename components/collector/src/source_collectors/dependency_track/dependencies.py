@@ -2,14 +2,14 @@
 
 from typing import TYPE_CHECKING
 
-from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
 from .base import DependencyTrackComponentGraph, DependencyTrackLatestVersionStatusBase
-from .json_types import DependencyTrackComponent
 
 if TYPE_CHECKING:
-    from .json_types import DependencyTrackProject
+    from collector_utilities.type import URL
+
+    from .json_types import DependencyTrackComponent, DependencyTrackProject
 
 
 class DependencyTrackDependencies(DependencyTrackLatestVersionStatusBase):
@@ -22,43 +22,35 @@ class DependencyTrackDependencies(DependencyTrackLatestVersionStatusBase):
         that the responses for projects with many components don't need to be kept in memory. As the components are
         kept by the collector, the source responses are empty.
         """
-        api_url = await self._api_url()
-        self._components: list[tuple[DependencyTrackComponentGraph, list[DependencyTrackComponent]]] = []
+        self._components: list[
+            tuple[DependencyTrackProject, DependencyTrackComponentGraph, list[DependencyTrackComponent]]
+        ] = []
         for project_uuid, project in (await self._get_projects_by_uuid()).items():
             # Create one dependency graph per project so the root components can be looked up
             graph = DependencyTrackComponentGraph()
             components: list[DependencyTrackComponent] = []
-            async for page in self._get_paginated_items(URL(f"{api_url}/component/project/{project_uuid}")):
+            async for page in self._get_components(project_uuid):
                 graph.add_components(page)
-                components.extend(self._slim_component(component, project) for component in page)
-            self._components.append((graph, components))
+                for component in page:
+                    component.pop("directDependencies", None)  # Not needed once the component is in the graph
+                components.extend(page)
+            self._components.append((project, graph, components))
         return SourceResponses()
-
-    @staticmethod
-    def _slim_component(
-        component: DependencyTrackComponent, project: DependencyTrackProject
-    ) -> DependencyTrackComponent:
-        """Return a copy of the component with only the attributes needed to create the entity.
-
-        The copy refers to the project instead of having its own copy of the project, to save memory.
-        """
-        slim_component = DependencyTrackComponent(name=component["name"], project=project, uuid=component["uuid"])
-        if "repositoryMeta" in component:
-            slim_component["repositoryMeta"] = component["repositoryMeta"]
-        if "version" in component:
-            slim_component["version"] = component["version"]
-        return slim_component
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Parse the entities from the components."""
         entities = Entities()
-        for graph, components in self._components:
-            entities.extend([self._create_entity(component, graph) for component in components])
+        for project, graph, components in self._components:
+            entities.extend([self._create_entity(component, project, graph) for component in components])
         return entities
 
-    def _create_entity(self, component: DependencyTrackComponent, graph: DependencyTrackComponentGraph) -> Entity:
+    def _create_entity(
+        self,
+        component: DependencyTrackComponent,
+        project: DependencyTrackProject,
+        graph: DependencyTrackComponentGraph,
+    ) -> Entity:
         """Create an entity from the component."""
-        project = component["project"]
         current_version = component.get("version", "unknown")
         latest_version = component.get("repositoryMeta", {}).get("latestVersion", "unknown")
         return Entity(

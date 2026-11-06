@@ -30,10 +30,9 @@ class DependencyTrackRepositoryMetaData(TypedDict):
 
 
 class DependencyTrackComponent(TypedDict):
-    """Component as returned by the Dependency-Track component API."""
+    """Component as returned by the Dependency-Track component API, with only the attributes the collector needs."""
 
     name: str
-    project: DependencyTrackProject
     uuid: str
     # Direct dependencies is a JSON string with a list of component identities, and null if the component has none
     directDependencies: NotRequired[str | None]
