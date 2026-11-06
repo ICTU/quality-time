@@ -38,7 +38,8 @@ class InitLoggingTest(unittest.TestCase):
         self.original_level = self.root_logger.level
 
     def tearDown(self):
-        """Restore the root logger's handlers and level."""
+        """Restore the root logger's handlers and level, and the MongoDB client logger's level."""
+        logging.getLogger("pymongo").setLevel(logging.NOTSET)
         for handler in self.root_logger.handlers[:]:
             self.root_logger.removeHandler(handler)
             handler.close()
@@ -72,3 +73,13 @@ class InitLoggingTest(unittest.TestCase):
     def test_level(self):
         """Test that the level is applied to the root logger."""
         self.assertEqual(logging.DEBUG, init_logging("DEBUG").level)
+
+    def test_mongodb_client_does_not_log_debug_messages(self):
+        """Test that the MongoDB client logger does not log debug messages, even if the level is debug."""
+        init_logging("DEBUG")
+        self.assertEqual(logging.INFO, logging.getLogger("pymongo").level)
+
+    def test_mongodb_client_level_follows_level_above_debug(self):
+        """Test that the MongoDB client logger has the same level as the root logger if that is above debug."""
+        init_logging("WARNING")
+        self.assertEqual(logging.WARNING, logging.getLogger("pymongo").level)
