@@ -54,7 +54,7 @@ export function StatusIcon({ status, statusStart }) {
     const statusName = STATUS_SHORT_NAME[status]
     const icon = STATUS_ICONS[status]({ borderRadius: 99, fontSize: "1.5em" })
     if (statusStart) {
-        const tooltipTitle = <TimeAgoWithDate date={statusStart}>{`${statusName} since`}</TimeAgoWithDate>
+        const tooltipTitle = <TimeAgoWithDate dateFirst date={statusStart}>{`${statusName} since`}</TimeAgoWithDate>
         return <Tooltip title={tooltipTitle}>{icon}</Tooltip>
     }
     return icon
