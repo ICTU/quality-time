@@ -22,6 +22,7 @@ beforeEach(() => {
             projects: [{ key: "PRJ", name: "Project name" }],
             issue_types: [{ key: "10001", name: "Bug" }],
             fields: [{ key: "labels", name: "Labels" }],
+            mandatory_fields: [],
             epic_links: [{ key: "FOO-420", name: "FOO-420" }],
         }),
     )
@@ -289,6 +290,7 @@ it("does show the issue labels warning with issue type that does not support lab
             projects: [{ key: "PRJ", name: "Project name" }],
             issue_types: [{ key: "Bug", name: "Bug" }],
             fields: [],
+            mandatory_fields: [],
             epic_links: [],
         }),
     )
@@ -305,6 +307,41 @@ it("does show the issue labels warning with issue type that does not support lab
     expectText(/Labels not supported/)
 })
 
+it("does not show the mandatory fields warning with issue type without mandatory fields", async () => {
+    await renderIssueTracker({
+        report: {
+            report_uuid: "report_uuid",
+            title: "Report",
+            issue_tracker: { type: "jira", parameters: { project_key: "PRJ", issue_type: "10001" } },
+        },
+    })
+    expectNoText(/Mandatory fields not supported/)
+})
+
+it("shows the mandatory fields warning with issue type with mandatory fields", async () => {
+    reportApi.getReportIssueTrackerOptions.mockImplementation(() =>
+        Promise.resolve({
+            projects: [{ key: "PRJ", name: "Project name" }],
+            issue_types: [{ key: "10001", name: "Bug" }],
+            fields: [],
+            mandatory_fields: [
+                { key: "customfield_1", name: "Team" },
+                { key: "customfield_2", name: "Sprint" },
+            ],
+            epic_links: [],
+        }),
+    )
+    await renderIssueTracker({
+        report: {
+            report_uuid: "report_uuid",
+            title: "Report",
+            issue_tracker: { type: "jira", parameters: { project_key: "PRJ", issue_type: "10001" } },
+        },
+    })
+    expectText(/Mandatory fields not supported/)
+    expectText(/The issue type 'Bug' in project 'PRJ' has mandatory fields that Quality-time cannot fill: Team, Sprint/)
+})
+
 it("ignores stale fetch responses when props change", async () => {
     let resolveStale
     reportApi.getReportIssueTrackerOptions
@@ -317,6 +354,7 @@ it("ignores stale fetch responses when props change", async () => {
                 ],
                 issue_types: [],
                 fields: [],
+                mandatory_fields: [],
                 epic_links: [],
             }),
         )
@@ -335,6 +373,7 @@ it("ignores stale fetch responses when props change", async () => {
             projects: [{ key: "STALE", name: "Stale project" }],
             issue_types: [],
             fields: [],
+            mandatory_fields: [],
             epic_links: [],
         }),
     )
