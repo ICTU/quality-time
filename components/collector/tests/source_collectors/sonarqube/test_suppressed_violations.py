@@ -45,22 +45,18 @@ class SonarQubeSuppressedViolationsTest(SonarQubeTestCase):
         measurement, get_mock, _post_mock = await self.collect_measurement_and_mocks(
             get_request_json_side_effect=[{}, violations_json, wont_fix_json, total_violations_json],
         )
-        call1 = call("https://sonarqube/api/components/show?component=id", allow_redirects=True, headers={}, auth=None)
+        call1 = call("https://sonarqube/api/components/show?component=id", allow_redirects=True, headers={})
         call2 = call(
             "https://sonarqube/api/issues/search?projects=id&branch=main&resolved=false&ps=500&rules=c:NoSonar,cpp:NoSonar,csharpsquid:S1309,java:NoSonar,java:S1309,java:S1310,java:S1315,javascript:S1291,objc:NoSonar,php:NoSonar,plsql:NoSonarCheck,python:NoSonar,python:S1309,tsql:NoSonar,typescript:S1291",
             allow_redirects=True,
             headers={},
-            auth=None,
         )
         call3 = call(
             "https://sonarqube/api/issues/search?projects=id&branch=main&issueStatuses=ACCEPTED,FALSE_POSITIVE,IN_SANDBOX&additionalFields=comments&ps=500",
             allow_redirects=True,
             headers={},
-            auth=None,
         )
-        call4 = call(
-            "https://sonarqube/api/issues/search?projects=id&branch=main", allow_redirects=True, headers={}, auth=None
-        )
+        call4 = call("https://sonarqube/api/issues/search?projects=id&branch=main", allow_redirects=True, headers={})
         get_mock.assert_has_calls([call1, call2, call3, call4])
         expected_entities = [
             self.entity(

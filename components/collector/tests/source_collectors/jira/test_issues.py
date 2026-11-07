@@ -41,8 +41,20 @@ class JiraIssuesTest(JiraTestCase):
         """Test that the private token is added to the headers."""
         self.set_source_parameter("private_token", "xxx")
         issues_json = {"total": 1, "issues": [self.issue()]}
-        measurement = await self.get_response(issues_json)
+        side_effect = [[{"id": "field", "name": "Field"}], 50, issues_json, issues_json]
+        measurement, get_mock, _ = await self.collect_measurement_and_mocks(get_request_json_side_effect=side_effect)
         self.assert_measurement(measurement, value="1", entities=[self.entity()])
+        self.assertEqual({"Authorization": "Bearer xxx"}, get_mock.mock_calls[0].kwargs["headers"])
+
+    async def test_basic_auth_header(self):
+        """Test that the username and password are added to the headers if no private token is configured."""
+        self.set_source_parameter("username", "user")
+        self.set_source_parameter("password", "secret")
+        issues_json = {"total": 1, "issues": [self.issue()]}
+        side_effect = [[{"id": "field", "name": "Field"}], 50, issues_json, issues_json]
+        measurement, get_mock, _ = await self.collect_measurement_and_mocks(get_request_json_side_effect=side_effect)
+        self.assert_measurement(measurement, value="1", entities=[self.entity()])
+        self.assertEqual({"Authorization": "Basic dXNlcjpzZWNyZXQ="}, get_mock.mock_calls[0].kwargs["headers"])
 
     async def test_determine_max_results_from_api(self):
         """Test that the maxResults param is determined via API call value."""

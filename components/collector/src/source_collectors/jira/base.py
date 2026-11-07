@@ -7,8 +7,6 @@ from collector_utilities.exceptions import CollectorError
 from collector_utilities.type import URL, Response
 
 if TYPE_CHECKING:
-    import aiohttp
-
     from .json_types import Board
 
 
@@ -24,28 +22,18 @@ class JiraBase(TokenAuthenticationSourceCollector):
 
     AUTH_PREFIX = "Bearer "
 
-    def _basic_auth_credentials(self) -> tuple[str, str] | None:
-        """Extend to only return the basic auth credentials if no private token is configured.
-
-        This prevents aiohttp from complaining that it "Cannot combine AUTHORIZATION header with AUTH argument or
-        credentials encoded in URL".
-        """
-        return None if self._parameter("private_token") else super()._basic_auth_credentials()
-
     @property
     def _rest_api_version(self) -> str:
         """Return the Jira REST API version set by the user."""
         return str(self._parameter("api_version"))
 
-    async def _get_source_response(self, url: URL, headers: dict[str, str], auth: aiohttp.BasicAuth | None) -> Response:
+    async def _get_source_response(self, url: URL, headers: dict[str, str]) -> Response:
         """Override to add the error messages that Jira returns to the error, if the request fails.
 
         The session raises an error without the response body if a request fails, and discards the body. To be able
         to read the error messages from the response body, override the session setting for Jira requests.
         """
-        response = await self._session.get(
-            url, allow_redirects=True, headers=headers, auth=auth, raise_for_status=False
-        )
+        response = await self._session.get(url, allow_redirects=True, headers=headers, raise_for_status=False)
         if not response.ok:
             if error_messages := await self._error_messages(response):
                 raise JiraError(response.status, str(response.reason), error_messages)

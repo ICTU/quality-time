@@ -3,8 +3,6 @@
 from typing import TYPE_CHECKING
 from unittest.mock import patch
 
-from aiohttp import BasicAuth
-
 from source_collectors.dependency_track.base import DependencyTrackBase
 from source_collectors.dependency_track.security_warnings import (
     DependencyTrackFinding,
@@ -259,6 +257,5 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
         get.assert_called_once_with(
             f"https://dependency_track/api/v1/project?pageSize={DependencyTrackBase.PAGE_SIZE}&pageNumber=1",
             allow_redirects=True,
-            auth=BasicAuth(login="API key", password="", encoding="latin1"),  # nosec
-            headers={"X-Api-Key": "API key"},
+            headers={"Authorization": "Basic QVBJIGtleTo=", "X-Api-Key": "API key"},
         )
