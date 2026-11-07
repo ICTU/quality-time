@@ -44,16 +44,19 @@ export function IssueTracker({ report, reload }) {
                     setProjectValid(
                         json.projects.some(({ key }) => key === report.issue_tracker?.parameters?.project_key),
                     )
-                    // For issue types, use the name as value to store because that's what users entered when this wasn't a single choice option yet
+                    // For issue types, use the id as value to store because the name depends on the language of the
+                    // Jira user profile. Issue trackers configured before Quality-time stored the id may contain the
+                    // issue type name, so also accept the name as valid issue type.
                     setIssueTypeOptions(
                         json.issue_types.map(({ key, name }) => ({
                             key: key,
-                            value: name,
+                            value: key,
                             text: name,
                         })),
                     )
+                    const currentIssueType = report.issue_tracker?.parameters?.issue_type
                     setIssueTypeValid(
-                        json.issue_types.some(({ name }) => name === report.issue_tracker?.parameters?.issue_type),
+                        json.issue_types.some(({ key, name }) => [key, name].includes(currentIssueType)),
                     )
                     setIssueEpicOptions(json.epic_links.map(({ key, name }) => ({ key: key, value: key, text: name })))
                     const fieldKeys = json.fields.map((field) => field.key)
@@ -89,6 +92,11 @@ export function IssueTracker({ report, reload }) {
     }
     const projectKey = report.issue_tracker?.parameters?.project_key
     const issueType = report.issue_tracker?.parameters?.issue_type
+    // If the issue type was stored by name instead of by id, select the option with that name
+    const issueTypeIsId = issueTypeOptions.some((option) => option.value === issueType)
+    const issueTypeValue = issueTypeIsId
+        ? issueType
+        : (issueTypeOptions.find((option) => option.text === issueType)?.value ?? issueType)
     const epicLink = report.issue_tracker?.parameters?.epic_link
     const apiVersion = report.issue_tracker
         ? dataModel.sources[report.issue_tracker?.type]?.parameters?.api_version
@@ -203,12 +211,13 @@ export function IssueTracker({ report, reload }) {
                     error={!!report.issue_tracker?.type && issueType && !issueTypeValid}
                     helperText="The issue types available for new issues are determined by the selected project"
                     id="tracker-issue-type"
+                    key={issueTypeValue} // Remount when the issue type name has been resolved to the issue type id
                     label="Issue type for new issues"
                     onChange={(value) => setReportIssueTrackerAttribute(reportUuid, "issue_type", value, reload)}
                     placeholder="None"
                     required={!!report.issue_tracker?.type}
                     select
-                    value={issueType}
+                    value={issueTypeValue}
                 >
                     {issueTypeOptions.map((option) => (
                         <MenuItem key={option.key} value={option.value}>

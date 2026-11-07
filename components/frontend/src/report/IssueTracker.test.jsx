@@ -20,7 +20,7 @@ beforeEach(() => {
     vi.spyOn(reportApi, "getReportIssueTrackerOptions").mockImplementation(() =>
         Promise.resolve({
             projects: [{ key: "PRJ", name: "Project name" }],
-            issue_types: [{ key: "Bug", name: "Bug" }],
+            issue_types: [{ key: "10001", name: "Bug" }],
             fields: [{ key: "labels", name: "Labels" }],
             epic_links: [{ key: "FOO-420", name: "FOO-420" }],
         }),
@@ -200,9 +200,34 @@ it("sets the issue tracker issue type", async () => {
     expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
         "report_uuid",
         "issue_type",
-        "Bug",
+        "10001",
         reload,
     )
+})
+
+function reportWithIssueType(issueType) {
+    return {
+        report_uuid: "report_uuid",
+        title: "Report",
+        issue_tracker: { type: "jira", parameters: { project_key: "PRJ", issue_type: issueType } },
+    }
+}
+
+it("shows the issue type stored by id", async () => {
+    await renderIssueTracker({ report: reportWithIssueType("10001") })
+    expect(screen.getByLabelText(/Issue type/)).toHaveTextContent("Bug")
+    expect(screen.getByDisplayValue("10001")).toBeValid()
+})
+
+it("shows the issue type stored by name", async () => {
+    await renderIssueTracker({ report: reportWithIssueType("Bug") })
+    expect(screen.getByLabelText(/Issue type/)).toHaveTextContent("Bug")
+    expect(screen.getByDisplayValue("10001")).toBeValid()
+})
+
+it("shows an error if the issue type is not available", async () => {
+    await renderIssueTracker({ report: reportWithIssueType("Taak") })
+    expect(screen.getByDisplayValue("Taak")).toBeInvalid()
 })
 
 it("sets the issue tracker issue labels", async () => {

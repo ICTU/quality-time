@@ -6,8 +6,6 @@ from typing import Literal, cast
 
 import requests
 
-from shared.utils.functions import first
-
 from utils.log import get_logger
 from utils.type import URL
 
@@ -145,21 +143,32 @@ class IssueTracker:
         for attribute, name in [(self.url, "URL"), (project_key, "project key"), (issue_type, "issue type")]:
             if not attribute:
                 return "", f"Issue tracker has no {name} configured."
+        options = self.get_options()
+        issue_type_option = self.__current_issue_type(options.issue_types)
+        if options.issue_types and not issue_type_option:  # pragma: no feature-test-cover
+            available_issue_types = ", ".join(sorted(option.name for option in options.issue_types))
+            return "", (
+                f"Issue type '{issue_type}' is not available in project '{project_key}'. Available issue types are: "
+                f"{available_issue_types}. Please select an issue type in the issue tracker settings of the report."
+            )
         fields: dict[str, str | list[str] | dict[str, str]] = {
             "project": {"key": project_key},
-            "issuetype": {"name": issue_type},
+            # Prefer the issue type id because the issue type name depends on the language of the Jira user profile.
+            # Fall back to the configured issue type if the issue types could not be retrieved.
+            "issuetype": {"id": issue_type_option.key} if issue_type_option else {"name": issue_type},
             "summary": summary,
             "description": description if self.api_version == "2" else self.__adf_document(description),
         }
-        if labels and self.__labels_supported():  # pragma: no feature-test-cover
+        if labels and "labels" in [field.key for field in options.fields]:  # pragma: no feature-test-cover
             fields["labels"] = self.__prepare_labels(labels)
         epic_link = self.issue_parameters.epic_link
-        if epic_link and (epic_link_field_id := self.__epic_link_field_id()):  # pragma: no feature-test-cover
+        epic_link_field_id = self.__epic_link_field_id(options.fields)
+        if epic_link and epic_link_field_id:  # pragma: no feature-test-cover
             fields[epic_link_field_id] = epic_link
         try:
             response_json = self.__post_json(self.issue_creation_api, {"fields": fields})
         except Exception as reason:
-            error = str(reason) or reason.__class__.__name__
+            error = self.__error_message(reason)
             logger.warning("Creating a new issue at %s failed: %s", self.issue_creation_api, error)
             return "", error
         return response_json["key"], ""  # pragma: no feature-test-cover
@@ -200,14 +209,44 @@ class IssueTracker:
         """Return a URL to a human readable version of the issue."""
         return URL(f"{self.url}/browse/{issue_key}")  # pragma: no feature-test-cover
 
-    def __labels_supported(self) -> bool:  # pragma: no feature-test-cover
-        """Return whether the current project and issue type support labels."""
-        return "labels" in [field.key for field in self.get_options().fields]
+    def __current_issue_type(self, issue_types: list[Option]) -> Option | None:
+        """Return the issue type option that matches the configured issue type, if any.
 
-    def __epic_link_field_id(self) -> str:  # pragma: no feature-test-cover
+        The configured issue type is the issue type id, or, for issue trackers configured before Quality-time stored
+        the issue type id, the issue type name.
+        """
+        issue_type = self.issue_parameters.issue_type
+        matching_ids = [option for option in issue_types if option.key == issue_type]
+        matching_names = [option for option in issue_types if option.name == issue_type]
+        return next(iter(matching_ids + matching_names), None)
+
+    @staticmethod
+    def __epic_link_field_id(fields: list[Option]) -> str:
         """Return the id of the epic link field, if any."""
-        epic_link_field = [field for field in self.get_options().fields if field.name.lower() == "epic link"]
+        epic_link_field = [field for field in fields if field.name.lower() == "epic link"]
         return epic_link_field[0].key if epic_link_field else ""
+
+    @classmethod
+    def __error_message(cls, reason: Exception) -> str:
+        """Return the error message for the exception, including the error details returned by Jira, if any."""
+        error = str(reason) or reason.__class__.__name__
+        if isinstance(reason, requests.HTTPError) and (details := cls.__error_details(reason.response)):
+            error += f" ({details})"  # pragma: no feature-test-cover
+        return error
+
+    @staticmethod
+    def __error_details(response: requests.Response | None) -> str:  # pragma: no feature-test-cover
+        """Return the error messages from the Jira error response, if any."""
+        # See https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/#status-codes for the error format
+        try:
+            json = response.json() if response is not None else {}
+        except ValueError:
+            return ""
+        if not isinstance(json, dict):
+            return ""
+        messages = [str(message) for message in json.get("errorMessages", [])]
+        messages.extend(f"{field}: {message}" for field, message in json.get("errors", {}).items())
+        return "; ".join(messages)
 
     @staticmethod
     def __prepare_labels(labels: list[str]) -> list[str]:  # pragma: no feature-test-cover
@@ -240,13 +279,11 @@ class IssueTracker:
 
     def __get_field_options(self, issue_types: list[Option]) -> list[Option]:  # pragma: no feature-test-cover
         """Return the issue tracker fields for the current project and issue type."""
-        current_issue_type = self.issue_parameters.issue_type
-        if current_issue_type not in [issue_type.name for issue_type in issue_types]:
+        if not (current_issue_type := self.__current_issue_type(issue_types)):
             # Current issue type is not an option, maybe the project was changed? Anyhow, no use getting fields
             return []
         fields = []
-        issue_type_id = first(issue_types, lambda issue_type: issue_type.name == current_issue_type).key
-        api_url = f"{self.issue_types_api}/{issue_type_id}"
+        api_url = f"{self.issue_types_api}/{current_issue_type.key}"
         fields_json_key = "values" if self.api_version == "2" else "fields"
         try:
             fields = cast(JiraFieldsJSON, self.__get_json(api_url))[fields_json_key]
