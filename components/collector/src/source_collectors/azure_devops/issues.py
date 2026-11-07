@@ -1,11 +1,13 @@
 """Azure DevOps Server issues collector."""
 
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import iterable_to_batches
-from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceResponses
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL, Value
 
 
 class AzureDevopsIssues(SourceCollector):
@@ -23,7 +25,7 @@ class AzureDevopsIssues(SourceCollector):
 
     async def _api_wit_url(self, endpoint: str = "wiql") -> URL:
         """Extend to add the WIQL or WorkItems API path."""
-        return URL(f"{await SourceCollector._api_url(self)}/_apis/wit/{endpoint}?api-version=6.0")  # noqa: SLF001 # codespell:ignore wit
+        return await SourceCollector._api_url(self) / f"_apis/wit/{endpoint}?api-version=6.0"  # noqa: SLF001 # codespell:ignore wit
 
     def _api_list_query(self) -> dict[str, str]:
         """Combine API select and where fields to correct WIQL query."""

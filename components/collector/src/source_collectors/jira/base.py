@@ -4,9 +4,10 @@ from typing import TYPE_CHECKING
 
 from base_collectors import TokenAuthenticationSourceCollector
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.type import URL, Response
 
 if TYPE_CHECKING:
+    from collector_utilities.type import URL, Response
+
     from .json_types import Board
 
 
@@ -63,7 +64,7 @@ class JiraBoardBase(JiraBase):
         start_at = 0
         boards: list[Board] = []
         while not last:
-            url = URL(f"{api_url}/rest/agile/1.0/board?startAt={start_at}")
+            url = api_url / f"rest/agile/1.0/board?startAt={start_at}"
             response = (await super()._get_source_responses(url))[0]
             json = await response.json()
             boards.extend(json["values"])

@@ -4,12 +4,13 @@ from typing import TYPE_CHECKING
 
 from base_collectors import SourceCollector
 from collector_utilities.date_time import datetime_from_timestamp
-from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
     from datetime import datetime
+
+    from collector_utilities.type import URL
 
     from .json_types import Build, Job
 
@@ -21,7 +22,7 @@ class JenkinsJobs(SourceCollector):
         """Extend to add the jobs API path and parameters."""
         url = await super()._api_url()
         job_attrs = "buildable,color,url,name,builds[result,timestamp]"
-        return URL(f"{url}/api/json?tree=jobs[{job_attrs},jobs[{job_attrs},jobs[{job_attrs}]]]")
+        return url / f"api/json?tree=jobs[{job_attrs},jobs[{job_attrs},jobs[{job_attrs}]]]"
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs."""

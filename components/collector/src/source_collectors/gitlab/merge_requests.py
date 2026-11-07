@@ -1,14 +1,18 @@
 """GitLab merge requests collector."""
 
+from typing import TYPE_CHECKING
+
 import aiohttp
 from aiogqlc import GraphQLClient
 
 from base_collectors import MergeRequestCollector, collect_graphql_responses
 from collector_utilities.exceptions import CollectorError, NotFoundError
-from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceResponses
 
 from .base import GitLabBase
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL, Value
 
 # GraphQL query to retrieve the merge requests for a specific project. The project id is passed as a variable. This
 # string needs to be formatted with or without the approved field name, depending on whether the GitLab instance has
@@ -65,7 +69,7 @@ class GitLabMergeRequests(MergeRequestCollector, GitLabBase):
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project merge requests landing page."""
-        return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/-/merge_requests")
+        return await super()._landing_url(responses) / f"{self._parameter('project')}/-/merge_requests"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override to use the GitLab GraphQL API to retrieve the merge requests.
@@ -79,7 +83,7 @@ class GitLabMergeRequests(MergeRequestCollector, GitLabBase):
         # We need to create a new session because the GraphQLClient expects the session to provide the headers.
         # raise_for_status is False so we can inspect GraphQL error bodies (e.g. HTTP 400 on unknown field).
         async with aiohttp.ClientSession(raise_for_status=False, timeout=timeout, headers=self._headers()) as session:
-            client = GraphQLClient(f"{api_url}/api/graphql", session=session)
+            client = GraphQLClient(api_url / "api/graphql", session=session)
             approved_field = await self._approved_field(client)
             return await collect_graphql_responses(
                 lambda cursor: self._get_merge_request_response(client, approved_field, cursor),

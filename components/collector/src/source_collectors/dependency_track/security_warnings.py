@@ -1,12 +1,14 @@
 """Dependency-Track security warnings collector."""
 
-from typing import NotRequired, TypedDict
+from typing import TYPE_CHECKING, NotRequired, TypedDict
 
 from base_collectors import SecurityWarningsSourceCollector
-from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
 from .base import DependencyTrackComponentGraph, DependencyTrackLatestVersionStatusBase
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL
 
 
 class DependencyTrackFindingComponent(TypedDict):
@@ -47,7 +49,7 @@ class DependencyTrackSecurityWarnings(SecurityWarningsSourceCollector, Dependenc
         # The findings API returns no dependency graph information, so retrieve the components of each project to
         # be able to determine the root components of the vulnerable components
         self._graphs = {uuid: await self._get_component_graph(uuid) for uuid in self._projects}
-        project_finding_urls = [URL(f"{api_url}/finding/project/{uuid}") for uuid in self._projects]
+        project_finding_urls = [api_url / f"finding/project/{uuid}" for uuid in self._projects]
         return await super()._get_source_responses(*project_finding_urls)
 
     async def _get_component_graph(self, project_uuid: str) -> DependencyTrackComponentGraph:

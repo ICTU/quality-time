@@ -7,12 +7,13 @@ from shared.utils.date_time import parse_datetime
 
 from base_collectors import TimePassedCollector
 from collector_utilities.date_time import MIN_DATETIME
-from collector_utilities.type import URL, Response
 
 from .base import QualityTimeCollector
 
 if TYPE_CHECKING:
     from datetime import datetime
+
+    from collector_utilities.type import URL, Response
 
 
 class QualityTimeSourceUpToDateness(QualityTimeCollector, TimePassedCollector):
@@ -20,7 +21,7 @@ class QualityTimeSourceUpToDateness(QualityTimeCollector, TimePassedCollector):
 
     async def _api_url(self) -> URL:
         """Extend to add the reports API path."""
-        return URL(await super()._api_url() + "/api/internal/report")
+        return await super()._api_url() / "api/internal/report"
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to parse the oldest datetime from the recent measurements."""

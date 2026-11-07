@@ -1,9 +1,13 @@
 """Quality-time source version collector."""
 
+from typing import TYPE_CHECKING
+
 from packaging.version import Version
 
 from base_collectors import VersionCollector
-from collector_utilities.type import URL, Response
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL, Response
 
 
 class QualityTimeSourceVersion(VersionCollector):
@@ -13,7 +17,7 @@ class QualityTimeSourceVersion(VersionCollector):
 
     async def _api_url(self) -> URL:
         """Extend to add the reports API path."""
-        return URL(f"{await super()._api_url()}/api/{self.EXTERNAL_API_VERSION}/server")
+        return await super()._api_url() / f"api/{self.EXTERNAL_API_VERSION}/server"
 
     async def _parse_source_response_version(self, response: Response) -> Version:
         """Override to parse the version from the response."""

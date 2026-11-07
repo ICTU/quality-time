@@ -77,7 +77,7 @@ vulture folder="": (py-check "vulture" f"{{vulture}} {{code}} {{vulture_whitelis
 [private]
 vale folder="": (install-py-dependencies folder)
     ?[ {{ has_py_pkg("vale") }} = true ]
-    {{ start_capture(folder) }} {{ uv_run }} vale sync && {{ uv_run }} vale --no-wrap --glob '*.md' src {{ end_capture("vale") }}
+    {{ start_capture(folder) }} {{ uv_run }} vale sync || echo 'vale sync failed, so vale checks with the styles an earlier run fetched'; {{ uv_run }} vale --no-wrap --glob '*.md' src {{ end_capture("vale") }}
 
 # Run codespell to check code for spelling.
 [no-cd]

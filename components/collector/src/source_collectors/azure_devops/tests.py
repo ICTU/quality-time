@@ -3,11 +3,13 @@
 import itertools
 from collections import defaultdict
 from types import SimpleNamespace
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from base_collectors import SourceCollector
-from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL
 
 
 class TestRun(SimpleNamespace):
@@ -24,7 +26,7 @@ class AzureDevopsTests(SourceCollector):
     async def _api_url(self) -> URL:
         """Extend to add the test run API path."""
         api_url = await super()._api_url()
-        return URL(f"{api_url}/_apis/test/runs?automated=true&includeRunDetails=true&$api-version=5.0")
+        return api_url / "_apis/test/runs?automated=true&includeRunDetails=true&$api-version=5.0"
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the test runs."""

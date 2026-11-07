@@ -4,13 +4,13 @@ from abc import ABC
 from typing import TYPE_CHECKING
 
 from collector_utilities.date_time import datetime_from_timestamp
-from collector_utilities.type import URL, Response
 
 from .source_collector import SourceCollector, TimePassedCollector
 
 if TYPE_CHECKING:
     from datetime import datetime
 
+    from collector_utilities.type import URL, Response
     from model import SourceResponses
 
 
@@ -23,11 +23,11 @@ class JenkinsPluginCollector(SourceCollector, ABC):
     async def _api_url(self) -> URL:
         """Extend to return the API URL for the plugin, with an optional depth."""
         depth = f"?depth={self.depth}" if self.depth > 0 else ""
-        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/{self.plugin}/api/json{depth}")
+        return await super()._api_url() / f"lastSuccessfulBuild/{self.plugin}/api/json{depth}"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Override to return the URL for the plugin."""
-        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/{self.plugin}")
+        return await super()._api_url() / f"lastSuccessfulBuild/{self.plugin}"
 
 
 class JenkinsPluginSourceUpToDatenessCollector(TimePassedCollector):
@@ -35,7 +35,7 @@ class JenkinsPluginSourceUpToDatenessCollector(TimePassedCollector):
 
     async def _api_url(self) -> URL:
         """Extend to return the API URL for the job."""
-        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/api/json")
+        return await super()._api_url() / "lastSuccessfulBuild/api/json"
 
     async def _parse_source_response_date_time(self, response: Response) -> datetime:
         """Override to parse the job's timestamp."""

@@ -1,14 +1,18 @@
 """GitHub pull requests collector."""
 
+from typing import TYPE_CHECKING
+
 import aiohttp
 from aiogqlc import GraphQLClient
 
 from base_collectors import collect_graphql_responses
 from collector_utilities.exceptions import NotFoundError
-from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceResponses
 
 from .base import GitHubBase
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL, Value
 
 # GraphQL query to retrieve the pull requests for a specific repository. The repository name is passed as a variable.
 # This string needs to be formatted with the pagination arguments, depending on whether the query is used for the
@@ -62,9 +66,8 @@ class GitHubMergeRequests(GitHubBase):
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the repository pull requests."""
-        return URL(
-            f"{await super()._landing_url(responses)}/{self._parameter('owner')}/{self._parameter('repository')}/pulls"
-        )
+        repository = f"{self._parameter('owner')}/{self._parameter('repository')}"
+        return await super()._landing_url(responses) / f"{repository}/pulls"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override to use the GitHub GraphQL API to retrieve the pull requests."""
@@ -72,7 +75,7 @@ class GitHubMergeRequests(GitHubBase):
         timeout = aiohttp.ClientTimeout(total=self._session.timeout.total)
         # We need to create a new session because the GraphQLClient expects the session to provide the headers:
         async with aiohttp.ClientSession(raise_for_status=True, timeout=timeout, headers=self._headers()) as session:
-            client = GraphQLClient(f"{api_url}/graphql", session=session)
+            client = GraphQLClient(api_url / "graphql", session=session)
             return await collect_graphql_responses(lambda cursor: self._get_pull_request_response(client, cursor))
 
     async def _get_pull_request_response(

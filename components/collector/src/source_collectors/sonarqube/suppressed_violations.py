@@ -25,7 +25,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         url = await SourceCollector._api_url(self)  # noqa: SLF001
         component = self._parameter("component")
         branch = self._parameter("branch")
-        return URL(f"{url}/project/issues?id={component}&branch={branch}")
+        return url / f"project/issues?id={component}&branch={branch}"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Get the suppressed violations from SonarQube.
@@ -36,7 +36,7 @@ class SonarQubeSuppressedViolations(SonarQubeViolations):
         url = await SourceCollector._api_url(self)  # noqa: SLF001
         component = self._parameter("component")
         branch = self._parameter("branch")
-        all_issues_api_url = URL(f"{url}/api/issues/search?projects={component}&branch={branch}")
+        all_issues_api_url = url / f"api/issues/search?projects={component}&branch={branch}"
         resolved_issues_api_url = URL(
             f"{all_issues_api_url}&issueStatuses=ACCEPTED,FALSE_POSITIVE,IN_SANDBOX&additionalFields=comments"
             f"{self._query_parameter('clean_code_attribute_categories', uppercase=True)}"

@@ -1,10 +1,14 @@
 """Anchore Jenkins plugin security warnings collector."""
 
+from typing import TYPE_CHECKING
+
 from shared.utils.functions import md5_hash
 
 from base_collectors import SecurityWarningsSourceCollector
-from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL
 
 
 class AnchoreJenkinsPluginSecurityWarnings(SecurityWarningsSourceCollector):
@@ -14,18 +18,18 @@ class AnchoreJenkinsPluginSecurityWarnings(SecurityWarningsSourceCollector):
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Override to return the URL for the plugin."""
-        return URL(f"{await self._api_url()}/lastSuccessfulBuild/anchore-results")
+        return await self._api_url() / "lastSuccessfulBuild/anchore-results"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to get the Anchore security report JSON from the last successful build."""
         # We need to collect the build number of the last successful build because the Anchore Jenkins plugin uses
         # the build number in the name of the folder where it stores the security warnings:
         api_url = await self._api_url()
-        responses = await super()._get_source_responses(URL(f"{api_url}/api/json"))
+        responses = await super()._get_source_responses(api_url / "api/json")
         json = await responses[0].json()
         build = json["lastSuccessfulBuild"]["number"]
         job = json["name"]
-        anchore_security_json_url = URL(f"{api_url}/{build}/artifact/AnchoreReport.{job}_{build}/anchore_security.json")
+        anchore_security_json_url = api_url / f"{build}/artifact/AnchoreReport.{job}_{build}/anchore_security.json"
         return await super()._get_source_responses(anchore_security_json_url)
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:

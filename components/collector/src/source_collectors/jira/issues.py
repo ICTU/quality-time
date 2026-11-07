@@ -22,13 +22,13 @@ class JiraIssues(JiraBase):
 
     async def _api_url(self) -> URL:
         """Extend to get the fields from Jira and create a field name to field id mapping."""
-        api_url = URL(f"{await super()._api_url()}/rest/api/{self._rest_api_version}")
+        api_url = await super()._api_url() / f"rest/api/{self._rest_api_version}"
         await self._get_fields(api_url)
         return await self._search_url(api_url)
 
     async def _get_fields(self, url: URL) -> None:
         """Retrieve the available fields."""
-        fields_url = URL(f"{url}/field")
+        fields_url = url / "field"
         response = (await super()._get_source_responses(fields_url))[0]
         self._field_ids = {}
         for field in await response.json():
@@ -44,13 +44,13 @@ class JiraIssues(JiraBase):
         endpoint = "search" if self._rest_api_version == "2" else "search/jql"
         jql = str(self._parameter("jql", quote=True))
         fields = self._fields()
-        return URL(f"{url}/{endpoint}?jql={jql}&fields={fields}&maxResults={max_results}")
+        return url / f"{endpoint}?jql={jql}&fields={fields}&maxResults={max_results}"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the JQL query to the landing URL."""
         url = await super()._landing_url(responses)
         jql = str(self._parameter("jql", quote=True))
-        return URL(f"{url}/issues/?jql={jql}")
+        return url / f"issues/?jql={jql}"
 
     def _parameter(self, parameter_key: str, quote: bool = False) -> str | list[str]:
         """Extend to replace field names with field ids, if the parameter is a field."""
@@ -108,7 +108,7 @@ class JiraIssues(JiraBase):
             "summary": fields["summary"],
             "type": fields.get("issuetype", {}).get("name", "Unknown issue type"),
             "updated": fields.get("updated"),
-            "url": f"{url}/browse/{issue['key']}",
+            "url": url / f"browse/{issue['key']}",
         }
         if sprint_field_id := self._field_ids.get("sprint"):
             entity_attributes["sprint"] = self.__get_sprint_names(fields.get(sprint_field_id) or [])
@@ -139,8 +139,8 @@ class JiraIssues(JiraBase):
         """Maximum number of issues to retrieve per page."""
         if isinstance(self.max_results, int):  # NB: using cached_property is not doable on asyncio coroutine
             return self.max_results
-        api_url = URL(f"{await super()._api_url()}/rest/api/{self._rest_api_version}")
-        preference_url = URL(f"{api_url}/mypreferences?key=jira.search.views.default.max")
+        api_url = await super()._api_url() / f"rest/api/{self._rest_api_version}"
+        preference_url = api_url / "mypreferences?key=jira.search.views.default.max"
         result_value = await (await super()._get_source_responses(preference_url))[0].json()
         self.max_results = result_value if isinstance(result_value, int) else self.DEFAULT_MAX_RESULTS
         return self.max_results
