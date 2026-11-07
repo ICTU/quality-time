@@ -143,7 +143,7 @@ export function MeasurementValue({ metric, reportDate }) {
                                 {metric.status ? "The metric was last measured" : "Last measurement attempt"}
                             </TimeAgoWithDate>
                             <br />
-                            <TimeAgoWithDate date={metric.latest_measurement.start}>
+                            <TimeAgoWithDate dateFirst={!metric.status} date={metric.latest_measurement.start}>
                                 {metric.status ? "The current value was first measured" : "The value is unknown since"}
                             </TimeAgoWithDate>
                         </>

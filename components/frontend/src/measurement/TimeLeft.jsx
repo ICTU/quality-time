@@ -18,7 +18,7 @@ export function TimeLeft({ metric, report }) {
     let deadlineLabel = "Deadline to address this metric was"
     let trigger = <Label color="error">{triggerText}</Label>
     if (timeLeft >= 0) {
-        deadlineLabel = "Time left to address this metric is"
+        deadlineLabel = "Deadline to address this metric is"
         trigger = triggerText
     }
     return (
