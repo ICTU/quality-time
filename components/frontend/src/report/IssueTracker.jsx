@@ -28,6 +28,7 @@ export function IssueTracker({ report, reload }) {
     const [projectValid, setProjectValid] = useState(true) // Is the current project a possible project?
     const [issueTypeOptions, setIssueTypeOptions] = useState([]) // Possible issue types for new issues in the current project
     const [issueTypeValid, setIssueTypeValid] = useState(true) // Is the current issue type a possible issue type?
+    const [mandatoryFields, setMandatoryFields] = useState([]) // Mandatory fields of the current issue type that Quality-time can't fill
     const [labelFieldSupported, setLabelFieldSupported] = useState(false) // Does the current issue type support labels?
     const [issueEpicOptions, setIssueEpicOptions] = useState([]) // Possible epic links for new issues in the current project
     const [issueEpicFieldSupported, setIssueEpicFieldSupported] = useState(false) // Does the current project and issue type support epic links?
@@ -55,10 +56,9 @@ export function IssueTracker({ report, reload }) {
                         })),
                     )
                     const currentIssueType = report.issue_tracker?.parameters?.issue_type
-                    setIssueTypeValid(
-                        json.issue_types.some(({ key, name }) => [key, name].includes(currentIssueType)),
-                    )
+                    setIssueTypeValid(json.issue_types.some(({ key, name }) => [key, name].includes(currentIssueType)))
                     setIssueEpicOptions(json.epic_links.map(({ key, name }) => ({ key: key, value: key, text: name })))
+                    setMandatoryFields(json.mandatory_fields.map((field) => field.name))
                     const fieldKeys = json.fields.map((field) => field.key)
                     setLabelFieldSupported(fieldKeys.includes("labels"))
                     const fieldNames = json.fields.map((field) => field.name.toLowerCase())
@@ -97,6 +97,7 @@ export function IssueTracker({ report, reload }) {
     const issueTypeValue = issueTypeIsId
         ? issueType
         : (issueTypeOptions.find((option) => option.text === issueType)?.value ?? issueType)
+    const issueTypeName = issueTypeOptions.find((option) => option.value === issueTypeValue)?.text ?? issueType
     const epicLink = report.issue_tracker?.parameters?.epic_link
     const apiVersion = report.issue_tracker
         ? dataModel.sources[report.issue_tracker?.type]?.parameters?.api_version
@@ -206,25 +207,33 @@ export function IssueTracker({ report, reload }) {
                 </TextField>
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
-                <TextField
-                    disabled={issueTrackerFieldDisabled}
-                    error={!!report.issue_tracker?.type && issueType && !issueTypeValid}
-                    helperText="The issue types available for new issues are determined by the selected project"
-                    id="tracker-issue-type"
-                    key={issueTypeValue} // Remount when the issue type name has been resolved to the issue type id
-                    label="Issue type for new issues"
-                    onChange={(value) => setReportIssueTrackerAttribute(reportUuid, "issue_type", value, reload)}
-                    placeholder="None"
-                    required={!!report.issue_tracker?.type}
-                    select
-                    value={issueTypeValue}
-                >
-                    {issueTypeOptions.map((option) => (
-                        <MenuItem key={option.key} value={option.value}>
-                            {option.text}
-                        </MenuItem>
-                    ))}
-                </TextField>
+                <Stack spacing={2}>
+                    <TextField
+                        disabled={issueTrackerFieldDisabled}
+                        error={!!report.issue_tracker?.type && issueType && !issueTypeValid}
+                        helperText="The issue types available for new issues are determined by the selected project"
+                        id="tracker-issue-type"
+                        key={issueTypeValue} // Remount when the issue type name has been resolved to the issue type id
+                        label="Issue type for new issues"
+                        onChange={(value) => setReportIssueTrackerAttribute(reportUuid, "issue_type", value, reload)}
+                        placeholder="None"
+                        required={!!report.issue_tracker?.type}
+                        select
+                        value={issueTypeValue}
+                    >
+                        {issueTypeOptions.map((option) => (
+                            <MenuItem key={option.key} value={option.value}>
+                                {option.text}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <WarningMessage
+                        showIf={Boolean(projectKey && issueType && mandatoryFields.length > 0)}
+                        title="Mandatory fields not supported"
+                    >
+                        {`The issue type '${issueTypeName}' in project '${projectKey}' has mandatory fields that Quality-time cannot fill: ${mandatoryFields.join(", ")}. Creating issues will fail. Please select an issue type without mandatory fields.`}
+                    </WarningMessage>
+                </Stack>
             </Grid>
             <Grid size={{ xs: 1, sm: 1, md: 1 }}>
                 <Stack spacing={2}>
@@ -248,7 +257,7 @@ export function IssueTracker({ report, reload }) {
                         showIf={Boolean(projectKey && issueType && !issueEpicFieldSupported)}
                         title="Epic links not supported"
                     >
-                        {`The issue type '${issueType}' in project '${projectKey}' does not support adding epic links when creating issues, so no epic link will be added to new issues.`}
+                        {`The issue type '${issueTypeName}' in project '${projectKey}' does not support adding epic links when creating issues, so no epic link will be added to new issues.`}
                     </WarningMessage>
                 </Stack>
             </Grid>
@@ -268,7 +277,7 @@ export function IssueTracker({ report, reload }) {
                         showIf={Boolean(projectKey && issueType && !labelFieldSupported)}
                         title="Labels not supported"
                     >
-                        {`The issue type '${issueType}' in project '${projectKey}' does not support adding labels when creating issues, so no labels will be added to new issues.`}
+                        {`The issue type '${issueTypeName}' in project '${projectKey}' does not support adding labels when creating issues, so no labels will be added to new issues.`}
                     </WarningMessage>
                 </Stack>
             </Grid>
