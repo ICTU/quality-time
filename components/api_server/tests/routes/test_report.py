@@ -245,6 +245,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [],
             "fields": [],
+            "mandatory_fields": [],
             "epic_links": [],
         }
         self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
@@ -262,6 +263,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [{"key": "1", "name": "Bug"}],
             "fields": [],
+            "mandatory_fields": [],
             "epic_links": [],
         }
         self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
@@ -283,9 +285,36 @@ class ReportIssueTrackerGetTest(ReportTestCase):
                 {"key": "labels", "name": "Labels"},
                 {"key": "epic_field_id", "name": self.epic_link_field_name},
             ],
+            "mandatory_fields": [],
             "epic_links": [],
         }
         self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
+
+    @patch("requests.get")
+    def test_get_issue_tracker_options_with_mandatory_fields(self, requests_get):
+        """Test that the mandatory fields that Quality-time does not fill are retrieved from the issue tracker."""
+        self.report["issue_tracker"] = {
+            "type": "jira",
+            "parameters": {
+                "url": self.ISSUE_TRACKER_URL,
+                "project_key": "FOO",
+                "issue_type": "Bug",
+                "issue_labels": ["label"],
+            },
+        }
+        self.fields_response.json.return_value = {
+            "values": [
+                {"fieldId": "summary", "name": "Summary", "required": True, "hasDefaultValue": False},
+                {"fieldId": "reporter", "name": "Reporter", "required": True, "hasDefaultValue": False},
+                {"fieldId": "labels", "name": "Labels", "required": True, "hasDefaultValue": False},
+                {"fieldId": "priority", "name": "Priority", "required": True, "hasDefaultValue": True},
+                {"fieldId": "customfield_1", "name": "Team", "required": True, "hasDefaultValue": False},
+                {"fieldId": "customfield_2", "name": "Sprint", "required": False, "hasDefaultValue": False},
+            ],
+        }
+        requests_get.side_effect = [self.project_response, self.issue_types_response, self.fields_response]
+        options = get_report_issue_tracker_options(self.database, REPORT_ID)
+        self.assertEqual([{"key": "customfield_1", "name": "Team"}], options["mandatory_fields"])
 
     @patch("requests.get")
     @disable_logging
@@ -296,7 +325,14 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             "parameters": {"url": self.ISSUE_TRACKER_URL, "project_key": "FOO", "issue_type": "Bug"},
         }
         requests_get.side_effect = RuntimeError("yo")
-        expected_options = {"ok": True, "projects": [], "issue_types": [], "fields": [], "epic_links": []}
+        expected_options = {
+            "ok": True,
+            "projects": [],
+            "issue_types": [],
+            "fields": [],
+            "mandatory_fields": [],
+            "epic_links": [],
+        }
         self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
 
     @patch("requests.get")
@@ -313,6 +349,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [],
             "fields": [],
+            "mandatory_fields": [],
             "epic_links": [],
         }
         self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
@@ -331,6 +368,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
             "projects": [{"key": "FOO", "name": "Foo"}],
             "issue_types": [{"key": "1", "name": "Bug"}],
             "fields": [],
+            "mandatory_fields": [],
             "epic_links": [],
         }
         self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))
@@ -362,6 +400,7 @@ class ReportIssueTrackerGetTest(ReportTestCase):
                 {"key": "labels", "name": "Labels"},
                 {"key": "epic_field_id", "name": self.epic_link_field_name},
             ],
+            "mandatory_fields": [],
             "epic_links": [],
         }
         self.assertEqual(expected_options, get_report_issue_tracker_options(self.database, REPORT_ID))

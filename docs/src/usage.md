@@ -520,6 +520,8 @@ To track work being done on metrics, for example to resolve technical debt, it's
 
 Multiple issues can be linked to one metric. At most one issue tracker can be configured per report.
 
+*Quality-time* fills the summary, description, labels, and epic link of new issues, but no other fields. Creating issues fails if the issue type for new issues has other mandatory fields. If Jira reports such fields as mandatory for the selected issue type, *Quality-time* shows a warning in the issue tracker tab, listing the mandatory fields. Fields can also be made mandatory in ways that Jira doesn't report, for example by a workflow validator. *Quality-time* can't warn about those fields, but if creating an issue fails, the error message lists the missing fields. In both cases, select an issue type without mandatory fields.
+
 ```{index} DORA metrics
 ```
 
