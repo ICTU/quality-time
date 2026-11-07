@@ -153,7 +153,6 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
             "https://sonarqube/api/issues/search?projects=id&branch=main&resolved=false&ps=500&components=id:folder",
             allow_redirects=True,
             headers={},
-            auth=None,
         )
 
     async def test_directories_with_sonarcloud(self):
@@ -172,5 +171,4 @@ class SonarQubeViolationsTest(SonarQubeTestCase):
             "componentKeys=id:folder",
             allow_redirects=True,
             headers={},
-            auth=None,
         )

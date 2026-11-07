@@ -37,13 +37,21 @@ class AzureDevopsIssuesTest(AzureDevopsTestCase):
         """Test wiql parameter is used."""
         self.set_source_parameter("wiql", "WHERE 1")
         _, _, post_mock = await self.collect_measurement_and_mocks(post_request_json_return_value={"workItems": []})
-        post_mock.assert_called_once_with(ANY, auth=ANY, json={"query": "Select [System.Id] From WorkItems WHERE 1"})
+        post_mock.assert_called_once_with(ANY, headers={}, json={"query": "Select [System.Id] From WorkItems WHERE 1"})
+
+    async def test_private_token(self):
+        """Test that the private token is passed as basic authentication header."""
+        self.set_source_parameter("private_token", "token")
+        _, _, post_mock = await self.collect_measurement_and_mocks(post_request_json_return_value={"workItems": []})
+        post_mock.assert_called_once_with(
+            ANY, headers={"Authorization": "Basic dG9rZW46"}, json={"query": "Select [System.Id] From WorkItems"}
+        )
 
     async def test_wiql_without_where(self):
         """Test wiql parameter is used."""
         self.set_source_parameter("wiql", "42")
         _, _, post_mock = await self.collect_measurement_and_mocks(post_request_json_return_value={"workItems": []})
-        post_mock.assert_called_once_with(ANY, auth=ANY, json={"query": "Select [System.Id] From WorkItems WHERE 42"})
+        post_mock.assert_called_once_with(ANY, headers={}, json={"query": "Select [System.Id] From WorkItems WHERE 42"})
 
     async def test_issues(self):
         """Test that the issues are returned."""
