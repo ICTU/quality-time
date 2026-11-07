@@ -38,7 +38,7 @@ def retrieve_issue_tracker_options(context: Context) -> None:
 @then("the issue tracker options are missing")
 def assert_issue_tracker_options(context: Context) -> None:
     """Check the issue tracker options."""
-    assert_equal({"ok": True, "fields": [], "issue_types": [], "projects": [], "epic_links": []}, context.response)
+    assert_equal({"ok": True, "fields": [], "issue_types": [], "projects": [], "mandatory_fields": [], "epic_links": []}, context.response)
 
 
 @when("the client opens a new issue")

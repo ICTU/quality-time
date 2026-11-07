@@ -93,7 +93,7 @@ class IssueParameters:
 
 JiraIssueSuggestionJSON = dict[str, list[dict[str, str | dict[str, str]]]]
 JiraIssueTypesJSON = dict[str, list[dict[str, str]]]
-JiraFieldsJSON = dict[str, list[dict[str, str]]]
+JiraFieldsJSON = dict[str, list[dict[str, str | bool]]]
 JiraEpicsJSON = dict[str, list[dict[str, str | dict[str, str]]]]
 JiraProjectsJSON = list[dict[str, str]]
 JiraJSON = JiraEpicsJSON | JiraIssueSuggestionJSON | JiraIssueTypesJSON | JiraFieldsJSON | JiraProjectsJSON
@@ -114,6 +114,7 @@ class Options(AsDictMixin):
     projects: list[Option]
     issue_types: list[Option]
     fields: list[Option]
+    mandatory_fields: list[Option]
     epic_links: list[Option]
 
 
@@ -191,9 +192,11 @@ class IssueTracker:
         # for more information on how to use the Jira API to discover meta data needed to create issues
         projects = self.__get_project_options()
         issue_types = self.__get_issue_type_options(projects)
-        fields = self.__get_field_options(issue_types)
+        fields_json = self.__get_fields(issue_types)
+        fields = [Option(str(field["fieldId"]), str(field["name"])) for field in fields_json]
+        mandatory_fields = self.__get_mandatory_field_options(fields_json, fields)
         epic_links = self.__get_epic_links(fields)
-        return Options(projects, issue_types, fields, epic_links)
+        return Options(projects, issue_types, fields, mandatory_fields, epic_links)
 
     def get_suggestions(self, query: str) -> list[IssueSuggestion]:
         """Get a list of issue id suggestions based on the query string."""
@@ -277,7 +280,7 @@ class IssueTracker:
         issue_types = [issue_type for issue_type in issue_types if not issue_type["subtask"]]
         return [Option(str(issue_type["id"]), str(issue_type["name"])) for issue_type in issue_types]
 
-    def __get_field_options(self, issue_types: list[Option]) -> list[Option]:  # pragma: no feature-test-cover
+    def __get_fields(self, issue_types: list[Option]) -> list[dict[str, str | bool]]:  # pragma: no feature-test-cover
         """Return the issue tracker fields for the current project and issue type."""
         if not (current_issue_type := self.__current_issue_type(issue_types)):
             # Current issue type is not an option, maybe the project was changed? Anyhow, no use getting fields
@@ -289,7 +292,24 @@ class IssueTracker:
             fields = cast(JiraFieldsJSON, self.__get_json(api_url))[fields_json_key]
         except Exception as reason:
             logger.warning("Getting issue tracker field options at %s failed: %s", api_url, reason)
-        return [Option(str(field["fieldId"]), str(field["name"])) for field in fields]
+        return fields
+
+    def __get_mandatory_field_options(  # pragma: no feature-test-cover
+        self, fields_json: list[dict[str, str | bool]], fields: list[Option]
+    ) -> list[Option]:
+        """Return the mandatory fields that Quality-time does not fill when creating issues.
+
+        Creating issues fails if the issue type has mandatory fields without default value that are not filled.
+        """
+        filled_field_ids = {"project", "issuetype", "summary", "description", "reporter"}  # Jira defaults the reporter
+        if self.issue_parameters.issue_labels:
+            filled_field_ids.add("labels")
+        if self.issue_parameters.epic_link:
+            filled_field_ids.add(self.__epic_link_field_id(fields))
+        mandatory_field_ids = [
+            field["fieldId"] for field in fields_json if field.get("required") and not field.get("hasDefaultValue")
+        ]
+        return [field for field in fields if field.key in mandatory_field_ids and field.key not in filled_field_ids]
 
     def __get_epic_links(self, fields: list[Option]) -> list[Option]:  # pragma: no feature-test-cover
         """Return the possible epic links for the current project."""
