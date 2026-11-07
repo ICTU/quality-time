@@ -8,7 +8,7 @@ class TestNGTestSuitesTest(TestNGCollectorTestCase):
 
     METRIC_TYPE = "test_suites"
     TESTNG_XML = """
-    <testng-results skipped="2" failed="2" ignored="2" total="8" passed="2">
+    <testng-results skipped="2" failed="2" ignored="2" total="9" passed="2" retried="1">
       <suite name="suite1">
         <test name="test1">
           <class name="class1">
@@ -43,6 +43,7 @@ class TestNGTestSuitesTest(TestNGCollectorTestCase):
       <suite name="suite5">
         <test name="test5">
           <class name="class5">
+            <test-method status="SKIP" retried="true"></test-method>
             <test-method status="PASS"></test-method>
           </class>
         </test>

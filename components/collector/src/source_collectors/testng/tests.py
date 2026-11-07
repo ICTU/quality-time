@@ -26,7 +26,8 @@ class TestNGTests(XMLFileSourceCollector):
             tree = await parse_source_response_xml(response)
             for test_result in test_results_to_count:
                 test_count += int(tree.get(test_result) or "0")
-            total += int(tree.get("total") or "0")
+            # Retried test methods are included in the total, but not in the counts per test result
+            total += int(tree.get("total") or "0") - int(tree.get("retried") or "0")
             entities.extend(self.__entities(tree, test_results_to_count))
         return SourceMeasurement(value=str(test_count), total=str(total), entities=entities)
 
@@ -43,9 +44,11 @@ class TestNGTests(XMLFileSourceCollector):
         for test_class in tree.findall(".//class"):
             class_name = test_class.attrib["name"]
             for test_method in test_class.findall(".//test-method"):
+                if test_method.get("is-config", "false") == "true" or test_method.get("retried", "false") == "true":
+                    continue  # Skip config (beforeClass/afterClass) methods and retried test methods
                 test_result = cls.TEST_RESULT[test_method.attrib["status"].upper()]
-                if test_method.get("is-config", "false") == "true" or test_result not in test_results_to_count:
-                    continue  # Skip config (beforeClass/afterClass) methods and test results the user wants to ignore
+                if test_result not in test_results_to_count:
+                    continue  # Skip test results the user wants to ignore
                 name = test_method.attrib["name"]
                 description = test_method.get("description", "")  # Description is optional
                 key = f"{class_name}_{name}"

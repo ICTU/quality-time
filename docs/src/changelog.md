@@ -22,6 +22,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 - Fix broken links to Dockerfiles in the software documentation. Fixes [#14768](https://github.com/ICTU/quality-time/issues/14768).
 - When Jira responded with an error, for example because the JQL query refers to a project that has been renamed, *Quality-time* would only show the HTTP status, such as "400, message='Bad Request'", and not the error message Jira returned. *Quality-time* now includes the error messages Jira returns in the connection error. Fixes [#14925](https://github.com/ICTU/quality-time/issues/14925).
 - Popups showed the relative time between brackets before the date, for example "The metric was last measured (a few seconds ago) 07-11-2026, 18:12". Popups now show the relative time first and the date between brackets, for example "The metric was last measured a few seconds ago (07-11-2026, 18:12)", or the date first and the relative time between brackets if that reads better, for example "Target met since 05-11-2026, 18:12 (2 days ago)". Fixes [#14985](https://github.com/ICTU/quality-time/issues/14985).
+- When TestNG retried a test, the TestNG report would contain the test twice: once for the first attempt, as skipped, and once for the retry. *Quality-time* would report the test as skipped, even when the retry passed, and would also count the retried attempts in the total number of tests. *Quality-time* now ignores the retried attempts in TestNG reports. Fixes [#14958](https://github.com/ICTU/quality-time/issues/14958).
 
 ## v5.62.0 - 2026-11-03
 
