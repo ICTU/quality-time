@@ -16,7 +16,7 @@
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-prettier": "^5.5.7",
         "eslint-plugin-simple-import-sort": "^14.0.0",
-        "globals": "^17.13.0",
+        "globals": "^17.14.0",
         "lockfile-lint": "^5.1.0",
         "prettier": "^3.9.10",
         "supertest": "^7.3.1",
