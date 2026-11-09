@@ -12,9 +12,9 @@ classifiers = [
 
 [dependency-groups]
 dev = [
-    "bump-my-version==1.6.7",
+    "bump-my-version==1.8.1",
     "gitpython==3.2.1",
-    "python-dateutil==3.0.0",
+    "python-dateutil==4.0.0",
     "tools",
     "types-python-dateutil==2.9.0.20261029",
 ]
