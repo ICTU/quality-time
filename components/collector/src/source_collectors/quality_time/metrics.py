@@ -5,13 +5,14 @@ from typing import TYPE_CHECKING, cast
 from shared.utils.date_time import now, parse_datetime
 from shared_data_model import DATA_MODEL
 
-from collector_utilities.type import URL, Response, Value
 from model import Entities, Entity, SourceResponses
 
 from .base import QualityTimeCollector
 
 if TYPE_CHECKING:
     from datetime import datetime
+
+    from collector_utilities.type import URL, Response, Value
 
 Measurements = list[dict[str, dict[str, str]]]
 
@@ -21,7 +22,7 @@ class QualityTimeMetrics(QualityTimeCollector):
 
     async def _api_url(self) -> URL:
         """Extend to add the reports API path."""
-        return URL(await super()._api_url() + "/api/internal/report")
+        return await super()._api_url() / "api/internal/report"
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Parse the entities from the responses."""
@@ -68,7 +69,7 @@ class QualityTimeMetrics(QualityTimeCollector):
         """Update the entity attributes."""
         recent_measurements: Measurements = cast(Measurements, metric.get("recent_measurements", []))
         status, value = self.__get_status_and_value(metric, recent_measurements[-1] if recent_measurements else {})
-        entity["report_url"] = report_url = f"{landing_url}/{metric['report_uuid']}"
+        entity["report_url"] = report_url = landing_url / metric["report_uuid"]
         entity["subject_url"] = f"{report_url}#{metric['subject_uuid']}"
         entity["metric_url"] = f"{report_url}#{entity['key']}"
         entity["metric"] = str(metric.get("name") or DATA_MODEL.metrics[metric["type"]].name)

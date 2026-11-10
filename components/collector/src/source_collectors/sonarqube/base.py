@@ -1,11 +1,14 @@
 """Base collectors for SonarQube."""
 
 from abc import ABC
+from typing import TYPE_CHECKING
 
 from base_collectors import SourceCollector
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.type import URL
 from model import Entities, SourceMeasurement, SourceResponses
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL
 
 
 class SonarQubeCollector(SourceCollector, ABC):
@@ -19,7 +22,7 @@ class SonarQubeCollector(SourceCollector, ABC):
         # check whether the component specified by the user actually exists before getting the data.
         url = await super()._api_url()
         component = self._parameter("component")
-        show_component_url = URL(f"{url}/api/components/show?component={component}")
+        show_component_url = url / f"api/components/show?component={component}"
         response = (await super()._get_source_responses(show_component_url))[0]
         json = await response.json()
         if "errors" in json:
@@ -43,7 +46,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         branch = self._parameter("branch")
         metric = self._landing_url_metric_key()
         metric_parameter = f"&metric={metric}" if metric else ""
-        return URL(f"{url}/component_measures?id={component}&branch={branch}{metric_parameter}")
+        return url / f"component_measures?id={component}&branch={branch}{metric_parameter}"
 
     def _landing_url_metric_key(self) -> str:
         """Return the metric key to use for the landing url. This can be one key or an empty string."""
@@ -54,9 +57,7 @@ class SonarQubeMetricsBaseClass(SonarQubeCollector):
         url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
-        return URL(
-            f"{url}/api/measures/component?component={component}&branch={branch}&metricKeys={self._metric_keys()}",
-        )
+        return url / f"api/measures/component?component={component}&branch={branch}&metricKeys={self._metric_keys()}"
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the metrics."""
@@ -107,11 +108,11 @@ class SonarQubeProjectAnalysesBase(SonarQubeCollector):
         url = await super()._api_url()
         component = self._parameter("component")
         branch = self._parameter("branch")
-        return URL(f"{url}/api/project_analyses/search?project={component}&branch={branch}")
+        return url / f"api/project_analyses/search?project={component}&branch={branch}"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project activity path and parameters."""
         url = await super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")
-        return URL(f"{url}/project/activity?id={component}&branch={branch}")
+        return url / f"project/activity?id={component}&branch={branch}"

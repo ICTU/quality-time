@@ -74,19 +74,19 @@ class DependencyTrackBase(TokenAuthenticationSourceCollector):
 
     async def _api_url(self) -> URL:
         """Override to add the API version."""
-        return URL((await super()._api_url()) + "/api/v1")
+        return await super()._api_url() / "api/v1"
 
     def _landing_url_of_component(self, uuid: str) -> URL:
         """Return the landing URL of the component with the specified UUID."""
-        return URL(f"{self.__landing_url()}/components/{uuid}")
+        return self.__landing_url() / f"components/{uuid}"
 
     def _landing_url_of_project(self, uuid: str) -> URL:
         """Return the landing URL of the project with the specified UUID."""
-        return URL(f"{self.__landing_url()}/projects/{uuid}")
+        return self.__landing_url() / f"projects/{uuid}"
 
-    def __landing_url(self) -> str:
-        """Return the landing URL of the Dependency-Track instance, without trailing slash."""
-        return str(self._parameter("landing_url")).strip("/")
+    def __landing_url(self) -> URL:
+        """Return the landing URL of the Dependency-Track instance."""
+        return URL(str(self._parameter("landing_url")))
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to load multiple pages, if necessary."""
@@ -104,7 +104,7 @@ class DependencyTrackBase(TokenAuthenticationSourceCollector):
         not need memory for that, parse the components one by one while reading the response, and keep only the
         attributes the collector needs.
         """
-        components_api = URL(f"{await self._api_url()}/component/project/{project_uuid}")
+        components_api = await self._api_url() / f"component/project/{project_uuid}"
         async for pages in self.__get_page_batches(components_api, self.__read_components):
             for page in pages:
                 yield page
@@ -170,7 +170,7 @@ class DependencyTrackBase(TokenAuthenticationSourceCollector):
 
     async def _get_projects(self) -> AsyncIterator[DependencyTrackProject]:
         """Return the Dependency-Track projects."""
-        projects_api = URL(await DependencyTrackBase._api_url(self) + "/project")
+        projects_api = await DependencyTrackBase._api_url(self) / "project"
         for response in await DependencyTrackBase._get_source_responses(self, projects_api):
             # We need an async for-loop and yield projects one by one because Python has no `async yield from`,
             # see https://peps.python.org/pep-0525/#asynchronous-yield-from

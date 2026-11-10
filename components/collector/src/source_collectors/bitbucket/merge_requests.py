@@ -30,13 +30,13 @@ class BitbucketMergeRequests(MergeRequestCollector, BitbucketProjectBase):
         landing_url = await self._landing_url(responses)
         return Entities([self._create_entity(mr, landing_url) for mr in merge_requests])
 
-    def _create_entity(self, merge_request, landing_url: str) -> Entity:
+    def _create_entity(self, merge_request, landing_url: URL) -> Entity:
         """Create an entity from a Bitbucket JSON result."""
         return Entity(
             key=merge_request["id"],
             title=merge_request["title"],
             target_branch=merge_request["toRef"]["id"],
-            url=f"{landing_url}/{merge_request['id']}",
+            url=landing_url / str(merge_request["id"]),
             state=merge_request["state"],
             created=merge_request.get("createdDate"),
             closed=merge_request.get("closedDate"),

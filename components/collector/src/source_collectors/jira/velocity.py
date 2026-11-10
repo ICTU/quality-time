@@ -1,12 +1,14 @@
 """Jira velocity collector."""
 
-from typing import TypedDict
+from typing import TYPE_CHECKING, TypedDict
 from urllib.parse import parse_qs, urlparse
 
-from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
 
 from .base import JiraBoardBase
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL
 
 
 class Points(TypedDict):
@@ -33,15 +35,15 @@ class JiraVelocity(JiraBoardBase):
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to pass the Greenhopper velocity chart API."""
         board_id = await self._board_id(urls[0])
-        api_url = URL(f"{urls[0]}/rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId={board_id}")
+        api_url = urls[0] / f"rest/greenhopper/1.0/rapid/charts/velocity.json?rapidViewId={board_id}"
         return await super()._get_source_responses(api_url)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the sprint values from the responses."""
         api_url = await self._api_url()
         board_id = parse_qs(urlparse(str(responses.api_url)).query)["rapidViewId"][0]
-        entity_url = URL(
-            f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=sprintRetrospective&sprint=",
+        entity_url = api_url / (
+            f"secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=sprintRetrospective&sprint="
         )
         json = await responses[0].json()
         # The JSON contains a list with sprints and a dict with the committed and completed points, indexed by sprint id
@@ -88,4 +90,4 @@ class JiraVelocity(JiraBoardBase):
         """Override to create a link to the Greenhopper velocity chart."""
         api_url = await self._api_url()
         board_id = parse_qs(urlparse(str(responses.api_url)).query)["rapidViewId"][0]
-        return URL(f"{api_url}/secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=velocityChart")
+        return api_url / f"secure/RapidBoard.jspa?rapidView={board_id}&view=reporting&chart=velocityChart"

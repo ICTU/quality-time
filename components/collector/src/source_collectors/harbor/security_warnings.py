@@ -1,13 +1,15 @@
 """Harbor security warnings collector."""
 
 from abc import ABC
-from typing import TypedDict, cast
+from typing import TYPE_CHECKING, TypedDict, cast
 from urllib.parse import quote, unquote
 
 from base_collectors import LinkPaginationSourceCollector, SecurityWarningsSourceCollector
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL
 
 # Media types of the vulnerability report formats Harbor may use as keys in an artifact's scan overview:
 VULNERABILITY_REPORT_KEYS = (
@@ -21,7 +23,7 @@ class HarborBase(LinkPaginationSourceCollector, ABC):
 
     async def _api_url(self) -> URL:
         """Extend to add the Harbor REST API base path."""
-        return URL(await super()._api_url() + "/api/v2.0")
+        return await super()._api_url() / "api/v2.0"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to check the credentials before following the pagination links."""
@@ -40,7 +42,7 @@ class HarborBase(LinkPaginationSourceCollector, ABC):
         robot_account_prefix = cast(str, self._parameter("robot_account_prefix"))
         if username and not username.startswith(robot_account_prefix):
             # This will raise an exception for status >= 400:
-            await super()._get_source_responses(URL(await self._api_url() + "/users/current"))
+            await super()._get_source_responses(await self._api_url() / "users/current")
 
 
 class HarborScannerVulnerabilityReportError(CollectorError):
@@ -98,12 +100,12 @@ class HarborSecurityWarnings(HarborBase, SecurityWarningsSourceCollector):
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend because we need to do multiple requests to get all the data we need."""
         responses = SourceResponses()
-        projects_api = URL(f"{await self._api_url()}/projects")
+        projects_api = await self._api_url() / "projects"
         projects_responses = await super()._get_source_responses(projects_api)
         for projects_response in projects_responses:
             for project in await projects_response.json():
                 if self._include_project(project["name"]):
-                    repositories_api = URL(f"{projects_api}/{project['name']}/repositories")
+                    repositories_api = projects_api / f"{project['name']}/repositories"
                     responses.extend(await self._get_source_responses_for_project(project, repositories_api))
         return responses
 
@@ -121,7 +123,7 @@ class HarborSecurityWarnings(HarborBase, SecurityWarningsSourceCollector):
                 if self._include_repository(repository_name):
                     # The repository name contains a slash. For some reason it needs to be encoded twice.
                     repository_name = quote(quote(repository_name, safe=""), safe="")
-                    artifacts_api = URL(f"{repositories_api}/{repository_name}/artifacts?with_scan_overview=true")
+                    artifacts_api = repositories_api / f"{repository_name}/artifacts?with_scan_overview=true"
                     responses.extend(await super()._get_source_responses(artifacts_api))
         return responses
 
@@ -149,7 +151,7 @@ class HarborSecurityWarnings(HarborBase, SecurityWarningsSourceCollector):
         api_url = await super(HarborBase, self)._api_url()  # Get the base API URL without /api/v2.0
         project_id = artifact["project_id"]
         artifact_landing_url = (
-            f"{api_url}/harbor/projects/{project_id}/repositories/{repository}/artifacts-tab/artifacts/{digest}"
+            api_url / f"harbor/projects/{project_id}/repositories/{repository}/artifacts-tab/artifacts/{digest}"
         )
         return Entity(
             key=digest,

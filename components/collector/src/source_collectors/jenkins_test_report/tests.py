@@ -1,10 +1,12 @@
 """Jenkins test report metric tests collector."""
 
-from typing import ClassVar, TypedDict, cast
+from typing import TYPE_CHECKING, ClassVar, TypedDict, cast
 
 from base_collectors import SourceCollector
-from collector_utilities.type import URL
 from model import Entities, Entity, SourceMeasurement, SourceResponses
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL
 
 TestCase = dict[str, str]
 
@@ -27,7 +29,7 @@ class JenkinsTestReportTests(SourceCollector):
 
     async def _api_url(self) -> URL:
         """Extend to add the test report API path."""
-        return URL(f"{await super()._api_url()}/lastSuccessfulBuild/testReport/api/json")
+        return await super()._api_url() / "lastSuccessfulBuild/testReport/api/json"
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the test report."""

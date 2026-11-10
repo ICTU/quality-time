@@ -35,10 +35,10 @@ class GitLabFileUpToDateness(GitLabProjectBase):
         """Override to return a landing URL for the folder or file."""
         if not responses:
             return await super()._landing_url(responses)
-        web_url = (await responses[0].json())["web_url"]
+        web_url = URL((await responses[0].json())["web_url"])
         branch = self._parameter("branch", quote=True)
         file_path = self._parameter("file_path", quote=True)
-        return URL(f"{web_url}/blob/{branch}/{file_path}")
+        return web_url / f"blob/{branch}/{file_path}"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Get the last commit metadata of the file or, in case of a folder, of the files in the folder, recursively."""

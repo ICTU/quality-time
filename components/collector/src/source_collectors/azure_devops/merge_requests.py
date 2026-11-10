@@ -14,13 +14,12 @@ class AzureDevopsMergeRequests(MergeRequestCollector, AzureDevopsRepositoryBase)
 
     async def _api_url(self) -> URL:
         """Extend to add the pull requests API path."""
-        api_url = str(await super()._api_url())
-        return URL(f"{api_url}/pullrequests?api-version=4.1&searchCriteria.status=all&$top={self.PAGE_SIZE}")
+        api_url = await super()._api_url()
+        return api_url / f"pullrequests?api-version=4.1&searchCriteria.status=all&$top={self.PAGE_SIZE}"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the pull requests path."""
-        landing_url = str(await super()._landing_url(responses))
-        return URL(f"{landing_url}/pullrequests")
+        return await super()._landing_url(responses) / "pullrequests"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to use Azure DevOps pagination, if necessary."""
@@ -36,7 +35,7 @@ class AzureDevopsMergeRequests(MergeRequestCollector, AzureDevopsRepositoryBase)
         merge_requests = []
         for response in responses:
             merge_requests.extend((await response.json())["value"])
-        landing_url = (await self._landing_url(responses)).rstrip("s")
+        landing_url = URL((await self._landing_url(responses)).rstrip("s"))
         return Entities([self._create_entity(mr, landing_url) for mr in merge_requests])
 
     async def _parse_total(self, responses: SourceResponses, entities: Entities) -> Value:
@@ -44,13 +43,13 @@ class AzureDevopsMergeRequests(MergeRequestCollector, AzureDevopsRepositoryBase)
         merge_requests = [len((await response.json())["value"]) for response in responses]
         return str(sum(merge_requests))
 
-    def _create_entity(self, merge_request, landing_url: str) -> Entity:
+    def _create_entity(self, merge_request, landing_url: URL) -> Entity:
         """Create an entity from a Azure DevOps JSON result."""
         return Entity(
             key=merge_request["pullRequestId"],
             title=merge_request["title"],
             target_branch=merge_request["targetRefName"],
-            url=f"{landing_url}/{merge_request['pullRequestId']}",
+            url=landing_url / str(merge_request["pullRequestId"]),
             state=merge_request["status"],
             created=merge_request.get("creationDate"),
             closed=merge_request.get("closedDate"),

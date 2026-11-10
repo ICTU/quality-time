@@ -6,9 +6,9 @@ from shared.utils.date_time import parse_datetime
 
 from base_collectors import SourceCollector
 from collector_utilities.date_time import datetime_from_timestamp, days_ago
-from collector_utilities.type import URL, Value
 
 if TYPE_CHECKING:
+    from collector_utilities.type import URL, Value
     from model import Entities, SourceResponses
 
 
@@ -17,8 +17,8 @@ class JenkinsTestReportSourceUpToDateness(SourceCollector):
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to get both the test report and the job that created it, so we can use either one to get a date."""
-        test_report_url = URL(f"{urls[0]}/lastSuccessfulBuild/testReport/api/json")
-        job_url = URL(f"{urls[0]}/lastSuccessfulBuild/api/json")
+        test_report_url = urls[0] / "lastSuccessfulBuild/testReport/api/json"
+        job_url = urls[0] / "lastSuccessfulBuild/api/json"
         return await super()._get_source_responses(test_report_url, job_url)
 
     async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:

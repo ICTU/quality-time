@@ -44,10 +44,10 @@ class BitbucketProjectBase(BitbucketBase, ABC):
         """Return a Bitbucket API url for a project, if present in the parameters."""
         url = await super()._api_url()
         project = f"{self._parameter('owner')}/repos/{self._parameter('repository')}"
-        api_url = URL(f"{url}/rest/api/1.0/projects/{project}" + (f"/{api}?limit{self.page_size}" if api else ""))
+        api_url = url / f"rest/api/1.0/projects/{project}" / (f"{api}?limit{self.page_size}" if api else "")
         return add_query(api_url, "&details=true")
 
     async def _bitbucket_landing_url(self, responses: SourceResponses, api: str) -> URL:
         """Override to create the landing url."""
         project = f"{self._parameter('owner')}/repos/{self._parameter('repository')}"
-        return URL(f"{await super()._landing_url(responses)}/projects/{project}/{api}")
+        return await super()._landing_url(responses) / f"projects/{project}/{api}"

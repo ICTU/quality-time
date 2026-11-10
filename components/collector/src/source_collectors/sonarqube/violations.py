@@ -21,7 +21,7 @@ class SonarQubeViolations(SonarQubeCollector):
         url = await super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")
-        landing_url = f"{url}/project/issues?id={component}&branch={branch}&resolved=false"
+        landing_url: str = url / f"project/issues?id={component}&branch={branch}&resolved=false"
         if directories := self._parameter("directories_to_include"):
             landing_url += f"&directories={','.join(sorted(directories))}"
         return URL(landing_url + self._url_parameters())
@@ -34,7 +34,7 @@ class SonarQubeViolations(SonarQubeCollector):
         # If there's more than 500 issues only the first 500 are returned. This is no problem since we limit
         # the number of "entities" sent to the server anyway (that limit is 250 currently).
         # Issue: https://github.com/ICTU/quality-time/issues/11004
-        api = f"{url}/api/issues/search?projects={component}&branch={branch}&resolved=false&ps={self.PAGE_SIZE}"
+        api: str = url / f"api/issues/search?projects={component}&branch={branch}&resolved=false&ps={self.PAGE_SIZE}"
         if directories := self._parameter("directories_to_include"):
             key = "componentKeys" if urlparse(url).hostname == "sonarcloud.io" else "components"
             directory_keys = [f"{component}:{directory}" for directory in directories]
@@ -88,7 +88,7 @@ class SonarQubeViolations(SonarQubeCollector):
         url = await super()._landing_url(SourceResponses())
         component = self._parameter("component")
         branch = self._parameter("branch")
-        return URL(f"{url}/project/issues?id={component}&branch={branch}&issues={issue_key}&open={issue_key}")
+        return url / f"project/issues?id={component}&branch={branch}&issues={issue_key}&open={issue_key}"
 
     async def _entity(self, issue) -> Entity:
         """Create an entity from an issue."""
@@ -123,9 +123,8 @@ class SonarQubeViolationsWithPercentageScale(SonarQubeViolations):
         component = self._parameter("component")
         branch = self._parameter("branch")
         base_api_url = await SonarQubeCollector._api_url(self)  # noqa: SLF001
-        total_metric_api_url = URL(
-            f"{base_api_url}/api/measures/component?component={component}&branch={branch}"
-            f"&metricKeys={self.total_metric}",
+        total_metric_api_url = base_api_url / (
+            f"api/measures/component?component={component}&branch={branch}&metricKeys={self.total_metric}"
         )
         return await super()._get_source_responses(*([*urls, total_metric_api_url]))
 
