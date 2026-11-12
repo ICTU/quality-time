@@ -14,7 +14,7 @@
         "react": "^19.3.1",
         "react-dom": "^19.3.1",
         "react-grid-layout": "^2.3.0",
-        "victory": "^37.4.1"
+        "victory": "^38.0.0"
     },
     "scripts": {
         "start": "vite",
