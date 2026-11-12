@@ -257,6 +257,14 @@ ref=<branch>`
             default_value="no",
             metrics=["merge_requests"],
         ),
+        "ignore_merge_requests_with_auto_merge_enabled": SingleChoiceParameter(
+            name="Ignore merge requests with auto-merge enabled",
+            help="If 'yes', merge requests that are set to merge automatically are not counted, regardless of their "
+            "number of upvotes.",
+            values=["yes", "no"],
+            default_value="no",
+            metrics=["merge_requests"],
+        ),
         "pipeline_statuses_to_include": MultipleChoiceWithDefaultsParameter(
             name="Pipeline statuses to include",
             values=[
@@ -385,6 +393,7 @@ ref=<branch>`
                 EntityAttribute(name="Updated", type=EntityAttributeType.DATETIME),
                 EntityAttribute(name="Merged", type=EntityAttributeType.DATETIME),
                 EntityAttribute(name="Draft", type=EntityAttributeType.BOOLEAN),
+                EntityAttribute(name="Auto-merge", key="auto_merge", type=EntityAttributeType.BOOLEAN),
             ],
         ),
         "inactive_branches": Entity(
