@@ -4,6 +4,7 @@ from typing import TypedDict
 from unittest.mock import AsyncMock, patch
 
 import aiohttp
+from aiogqlc import GraphQLClient
 
 from base_collectors import MetricCollector
 
@@ -133,12 +134,17 @@ class GitHubMergeRequestsTest(GitHubTestCase):
             "thumbs_up": str(number),
         }
 
-    async def collect_merge_requests(self, execute_mock: AsyncMock):
-        """Return the source responses."""
-        with patch("aiogqlc.GraphQLClient.execute", execute_mock):
+    async def collect_merge_requests(self, *pages):
+        """Collect the merge requests from the GraphQL response pages."""
+        responses = [AsyncMock(json=AsyncMock(return_value=page)) for page in pages]
+        with patch("aiogqlc.GraphQLClient.execute", AsyncMock(side_effect=responses)):
             async with aiohttp.ClientSession() as session:
                 collector = MetricCollector(session, self.metric)
                 return await collector.collect()
+
+    def assert_measurement(self, measurement, **attributes) -> None:
+        """Extend to check the landing URL."""
+        super().assert_measurement(measurement, landing_url=self.LANDING_URL, **attributes)
 
     async def test_merge_requests(self):
         """Test that the number of merge requests can be measured."""
@@ -151,85 +157,36 @@ class GitHubMergeRequestsTest(GitHubTestCase):
                 self.create_node_json(3, branch="dev"),  # Excluded because of target branch
             ],
         )
-
-        merge_requests_response = AsyncMock()
-        execute = AsyncMock(side_effect=[merge_requests_response])
-        merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
-
-        entities = [self.create_entity(1)]
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(
-            measurement,
-            value="1",
-            total="3",
-            entities=entities,
-            landing_url=self.LANDING_URL,
-        )
+        measurement = await self.collect_merge_requests(merge_requests_json)
+        self.assert_measurement(measurement, value="1", total="3", entities=[self.create_entity(1)])
 
     async def test_pagination(self):
         """Test that pagination works."""
-        merge_requests_json1 = self.merge_requests_json([self.create_node_json(1)], count=2, has_next_page=True)
-        merge_requests_json2 = self.merge_requests_json([self.create_node_json(2)], count=2)
-        merge_requests_page1 = AsyncMock()
-        merge_requests_page2 = AsyncMock()
-        execute = AsyncMock(side_effect=[merge_requests_page1, merge_requests_page2])
-        merge_requests_page1.json = AsyncMock(return_value=merge_requests_json1)
-        merge_requests_page2.json = AsyncMock(return_value=merge_requests_json2)
+        page1 = self.merge_requests_json([self.create_node_json(1)], count=2, has_next_page=True)
+        page2 = self.merge_requests_json([self.create_node_json(2)], count=2)
+        measurement = await self.collect_merge_requests(page1, page2)
         entities = [self.create_entity(1), self.create_entity(2)]
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(
-            measurement,
-            value="2",
-            total="2",
-            entities=entities,
-            landing_url=self.LANDING_URL,
-        )
+        self.assert_measurement(measurement, value="2", total="2", entities=entities)
 
     async def test_review_decision(self):
-        """Test that merge requests can be filtered by approval state."""
+        """Test that merge requests can be filtered by review decision."""
         self.set_source_parameter("review_decision", ["Approved"])
         merge_requests_json = self.merge_requests_json(
-            [
-                self.create_node_json(1, review_decision="APPROVED"),
-                self.create_node_json(2),
-            ],
+            [self.create_node_json(1, review_decision="APPROVED"), self.create_node_json(2)],
         )
-        merge_requests_response = AsyncMock()
-        execute = AsyncMock(side_effect=[merge_requests_response])
-        merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
+        measurement = await self.collect_merge_requests(merge_requests_json)
         entities = [self.create_entity(1, review_decision="APPROVED")]
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(
-            measurement,
-            value="1",
-            total="2",
-            entities=entities,
-            landing_url=self.LANDING_URL,
-        )
+        self.assert_measurement(measurement, value="1", total="2", entities=entities)
 
     async def test_insufficient_permissions(self):
         """Test that the collector returns a helpful error message if no merge request info is returned."""
-        merge_requests_json = {"data": {"repository": None}}
-        merge_requests_response = AsyncMock()
-        execute = AsyncMock(side_effect=[merge_requests_response])
-        merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(
-            measurement,
-            landing_url=self.LANDING_URL,
-            connection_error="Pull request info for repository",
-        )
+        measurement = await self.collect_merge_requests({"data": {"repository": None}})
+        self.assert_measurement(measurement, connection_error="Pull request info for repository")
 
     async def test_private_token(self):
-        """Test that the private token is used."""
+        """Test that the private token is passed to the GraphQL client as bearer token."""
         self.set_source_parameter("private_token", "token")
-        merge_requests_json = {"data": {"repository": None}}
-        merge_requests_response = AsyncMock()
-        execute = AsyncMock(side_effect=[merge_requests_response])
-        merge_requests_response.json = AsyncMock(return_value=merge_requests_json)
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(
-            measurement,
-            landing_url=self.LANDING_URL,
-            connection_error="Pull request info for repository",
-        )
+        with patch("source_collectors.github.merge_requests.GraphQLClient", wraps=GraphQLClient) as graphql_client:
+            measurement = await self.collect_merge_requests(self.merge_requests_json([]))
+        self.assertEqual("bearer token", graphql_client.call_args.kwargs["session"].headers["Authorization"])
+        self.assert_measurement(measurement, value="0", total="0", entities=[])
