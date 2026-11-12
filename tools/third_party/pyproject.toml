@@ -1,6 +1,6 @@
 [project]
 name = "tools"
-version = "5.60.1"
+version = "5.62.1"
 requires-python = ">=3.14"
 classifiers = [
     "Programming Language :: Python",
@@ -13,14 +13,14 @@ dependencies = [
     "archunitpython==1.8.1",
     "bandit==1.9.4",
     "codespell==2.4.3",
-    "coverage==7.17.0",
+    "coverage==7.17.1",
     "fixit==2.2.1",
-    "mypy==2.4.0",
+    "mypy==2.4.1",
     "pip-audit==2.10.1",
     "pyproject-fmt==2.30.3",
-    "ruff==0.17.2",
+    "ruff==0.17.3",
     "troml==0.4.1",
-    "ty==0.0.91",
+    "ty==0.0.97",
     "unittest-xml-reporting==4.0.0", # Needed to generate JUnit XML output for Sonarcloud.io
     "vulture==2.16",
 ]
@@ -32,16 +32,16 @@ just = [
 # Tools that are run on the repository as a whole, instead of per component, are in a group so that they are not
 # installed in the components' environments, where their dependencies would needlessly constrain the resolution.
 project-wide = [
-    "compose-lint==0.36.1",
+    "compose-lint==1.2.0",
     "yamllint==1.38.0",
-    "zizmor==1.31.1",       # Static analysis tool for GitHub Actions
+    "zizmor==1.32.0",      # Static analysis tool for GitHub Actions
 ]
 # Update-time is only run on the repository as a whole, and pins its dependencies, so it also gets its own group.
 update-time = [
-    "update-time==0.0.51",
+    "update-time==0.0.55",
 ]
 uv = [
-    "uv==0.13.6",
+    "uv==0.13.7",
 ]
 
 [tool.uv]
@@ -49,7 +49,6 @@ override-dependencies = [
     "click==8.3.3" # PYSEC-2026-2132 (CVE-2026-7246); fixit pins click<8.2, see https://github.com/Instagram/Fixit/issues/570
 ]
 exclude-newer = "7 days"
-exclude-newer-package = { certifi = false, uv = false }  # GHSA-6q48-6c7w-9gw2 (certifi) and GHSA-hq85-5cpj-mr62 (uv) both concern trusting compromised emSign intermediate CAs; the fixes in certifi 2026.10.19 and uv 0.13.4, released 2026-10-20, would be blocked by exclude-newer; remove after 2026-10-27
 package = false
 
 [tool.ruff]

@@ -2,8 +2,9 @@
 
 from typing import TYPE_CHECKING, TypedDict, cast
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import BranchType, InactiveBranchesSourceCollector
-from collector_utilities.date_time import parse_datetime
 from collector_utilities.type import URL
 
 from .base import AzureDevopsRepositoryBase
@@ -36,13 +37,11 @@ class AzureDevopsInactiveBranches[Branch: AzureDevOpsBranchType](
 
     async def _api_url(self) -> URL:
         """Extend to add the branches API path."""
-        api_url = str(await super()._api_url())
-        return URL(f"{api_url}/stats/branches?api-version=4.1")
+        return await super()._api_url() / "stats/branches?api-version=4.1"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the branches path."""
-        landing_url = str(await super()._landing_url(responses))
-        return URL(f"{landing_url}/branches")
+        return await super()._landing_url(responses) / "branches"
 
     async def _branches(self, responses: SourceResponses) -> list[Branch]:
         """Return a list of branches from the responses."""

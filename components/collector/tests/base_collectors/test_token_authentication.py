@@ -26,6 +26,10 @@ class TokenAuthenticationSourceCollectorTest(unittest.TestCase):
             """Override to return the fixed credential, ignoring the parameter key."""
             return self.credential
 
+        def _basic_auth_credentials(self) -> tuple[str, str] | None:
+            """Override to return no basic authentication credentials."""
+            return None
+
     def test_header_with_token(self):
         """Test that the token is added to the configured header with the configured prefix."""
         self.assertEqual({"X-Custom-Header": "Prefix abc"}, self.FakeCollector("abc")._headers())  # noqa: SLF001

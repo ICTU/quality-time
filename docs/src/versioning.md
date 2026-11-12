@@ -29,7 +29,10 @@ The MongoDB version, the MongoDB feature compatibility, and the migrations all l
 
 | Version    | Date       | Mongo  | FC     | Migrations | Max. downgrade | Max. upgrade | Manual changes |
 |------------|------------|--------|--------|------------|----------------|--------------|----------------|
-| v5.60.1    | 2026-10-09 | **v9** | v8     |            | v5.58.0        | n/a          | no             |
+| v5.62.1    | 2026-11-09 | v9     | v8     |            | v5.58.0        | n/a          | no             |
+| v5.62.0    | 2026-11-03 | v9     | v8     |            | v5.58.0        | latest       | no             |
+| v5.61.0    | yanked⁶    | v9     | v8     |            | n/a            | n/a          | n/a            |
+| v5.60.1    | 2026-10-09 | **v9** | v8     |            | v5.58.0        | latest       | no             |
 | v5.60.0    | 2026-09-28 | v8     | v8     |            | v5.58.0        | latest       | no             |
 | v5.59.0    | 2026-08-28 | v8     | v8     |            | v5.58.0        | latest       | no             |
 | v5.58.0    | 2026-08-21 | v8     | v8     | added⁵     | not supported  | latest       | no             |
@@ -113,6 +116,8 @@ The MongoDB version, the MongoDB feature compatibility, and the migrations all l
 | **v5.0.0** | 2023-06-23 | **v6** | v5     |            | v4.10.0        | v5.2.0       | **yes**        |
 | v4.10.0    | 2023-04-26 | v5     | v5     |            | n/a            | v5.2.0       | no             |
 
+(6) Release v5.61.0 was yanked: the release pipeline did not run to completion due to out of date lock files.
+
 (5) Remove support for several sources:
 
 - [Remove support for the Cobertura Jenkins plugin](https://github.com/ICTU/quality-time/issues/12817):
@@ -161,7 +166,7 @@ There are two factors that limit to which versions an existing *Quality-time* in
 
 ### MongoDB
 
-*Quality-time* uses MongoDB as database. MongoDB sets a feature compatibility version in the database to specify which major version of MongoDB the persisted data is compatible with. When upgrading MongoDB to a new major version, the feature compatibility flag should be set to the previous major version, and only when the upgrade was successful should the feature compatibility flag set to the new major version of MongoDB.
+*Quality-time* uses MongoDB as database. MongoDB sets a feature compatibility version in the database to specify which major version of MongoDB the persisted data is compatible with. When upgrading MongoDB to a new major version, the feature compatibility flag should be set to the previous major version, and only when the upgrade was successful should the feature compatibility flag be set to the new major version of MongoDB.
 
 In general, when the feature compatibility of a database is set to version `x`, the database can only be used with MongoDB versions `x` and `x+1`. This limits the down- and upgrade options of *Quality-time* as documented in the table above.
 

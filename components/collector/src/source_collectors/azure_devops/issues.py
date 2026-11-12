@@ -1,13 +1,13 @@
 """Azure DevOps Server issues collector."""
 
-from typing import Final
-
-import aiohttp
+from typing import TYPE_CHECKING, Final
 
 from base_collectors import SourceCollector
 from collector_utilities.functions import iterable_to_batches
-from collector_utilities.type import URL, Value
 from model import Entities, Entity, SourceResponses
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL, Value
 
 
 class AzureDevopsIssues(SourceCollector):
@@ -25,7 +25,7 @@ class AzureDevopsIssues(SourceCollector):
 
     async def _api_wit_url(self, endpoint: str = "wiql") -> URL:
         """Extend to add the WIQL or WorkItems API path."""
-        return URL(f"{await SourceCollector._api_url(self)}/_apis/wit/{endpoint}?api-version=6.0")  # noqa: SLF001 # codespell:ignore wit
+        return await SourceCollector._api_url(self) / f"_apis/wit/{endpoint}?api-version=6.0"  # noqa: SLF001 # codespell:ignore wit
 
     def _api_list_query(self) -> dict[str, str]:
         """Combine API select and where fields to correct WIQL query."""
@@ -41,14 +41,14 @@ class AzureDevopsIssues(SourceCollector):
         """Return the API fields to select for individual issues."""
         return ["System.TeamProject", "System.Title", "System.WorkItemType", "System.State"]
 
-    async def _get_work_item_responses(self, auth: aiohttp.BasicAuth) -> SourceResponses:
+    async def _get_work_item_responses(self, headers: dict[str, str]) -> SourceResponses:
         """Separately get each work item from the API."""
         api_url = await self._api_wit_url(endpoint="workitemsbatch")
         id_iter = iterable_to_batches(self._issue_ids_to_fetch, self.MAX_IDS_PER_WORK_ITEMS_API_CALL)
         responses = [
             await self._session.post(
                 api_url,
-                auth=auth,
+                headers=headers,
                 json={"ids": id_batch, "fields": self._item_select_fields(), "$expand": "links"},
             )
             for id_batch in id_iter
@@ -58,12 +58,12 @@ class AzureDevopsIssues(SourceCollector):
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Override because we need to do a post request and need to separately get the entities."""
         api_url = urls[0]
-        auth = aiohttp.BasicAuth(str(self._parameter("private_token")))
-        response = await self._session.post(api_url, auth=auth, json=self._api_list_query())
+        headers = self._headers()
+        response = await self._session.post(api_url, headers=headers, json=self._api_list_query())
         self._issue_ids_to_fetch = [work_item["id"] for work_item in (await response.json()).get("workItems", [])]
         if not self._issue_ids_to_fetch:
             return SourceResponses(responses=[response], api_url=api_url)
-        work_items = await self._get_work_item_responses(auth)
+        work_items = await self._get_work_item_responses(headers)
         work_items.insert(0, response)
         return work_items
 

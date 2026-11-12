@@ -19,7 +19,7 @@ export function TimeAgoWithDate({ children, date, dateFirst, noTime }) {
         ? formatDate(theDate, language)
         : formatDate(theDate, language) + ", " + formatTime(theDate, language)
     const delta = dayjs(theDate).fromNow()
-    const timeAgo = dateFirst ? `${dateString} (${delta})` : `(${delta}) ${dateString}`
+    const timeAgo = dateFirst ? `${dateString} (${delta})` : `${delta} (${dateString})`
     return (
         <>
             {prefix} {timeAgo}

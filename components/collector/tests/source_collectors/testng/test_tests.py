@@ -65,3 +65,30 @@ class TestNGTestsTest(TestNGCollectorTestCase):
             get_request_content=self.zipped_report(("testng.xml", self.TESTNG_XML))
         )
         self.assert_measurement(measurement, value="2", total="2", entities=self.EXPECTED_ENTITIES)
+
+    async def test_retried_tests(self):
+        """Test that retried test methods are ignored."""
+        testng_xml = """
+        <testng-results skipped="0" failed="0" ignored="0" total="2" passed="1" retried="1">
+          <suite name="suite1">
+            <test name="test1">
+              <class name="class1">
+                <test-method status="SKIP" name="method1" retried="true"></test-method>
+                <test-method status="PASS" name="method1"></test-method>
+              </class>
+            </test>
+          </suite>
+        </testng-results>
+        """
+        measurement = await self.collect_measurement(get_request_text=testng_xml)
+        expected_entities = [
+            {
+                "key": "class1_method1",
+                "class_name": "class1",
+                "name": "method1",
+                "description": "",
+                "suite_names": "suite1/test1/class1",
+                "test_result": "passed",
+            },
+        ]
+        self.assert_measurement(measurement, value="1", total="1", entities=expected_entities)

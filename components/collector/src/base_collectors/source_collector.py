@@ -119,14 +119,17 @@ class SourceCollector:
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Open the url(s). Can be overridden if a post request is needed or serial requests need to be made."""
-        auth = aiohttp.BasicAuth(*credentials) if (credentials := self._basic_auth_credentials()) else None
         headers = self._headers()
-        tasks = [self._session.get(url, allow_redirects=True, headers=headers, auth=auth) for url in urls if url]
+        tasks = [self._get_source_response(url, headers) for url in urls if url]
         responses = await asyncio.gather(*tasks, return_exceptions=True)
         for response in responses:
             if isinstance(response, Exception):
                 raise response
         return SourceResponses(responses=cast(Responses, responses), api_url=urls[0])
+
+    async def _get_source_response(self, url: URL, headers: dict[str, str]) -> Response:
+        """Open the url. Can be overridden to change how the request is made or how error responses are handled."""
+        return await self._session.get(url, allow_redirects=True, headers=headers)
 
     def _basic_auth_credentials(self) -> tuple[str, str] | None:
         """Return the basic authentication credentials, if any."""
@@ -136,7 +139,9 @@ class SourceCollector:
         return credentials if username and password else None
 
     def _headers(self) -> dict[str, str]:
-        """Return the headers for the get request."""
+        """Return the headers for the get request, including the basic authentication credentials, if any."""
+        if credentials := self._basic_auth_credentials():
+            return {"Authorization": aiohttp.encode_basic_auth(*credentials, encoding="latin1")}
         return {}
 
     async def __safely_parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:

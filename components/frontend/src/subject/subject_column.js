@@ -23,7 +23,7 @@ export function determineColumnsToHide(dataModel, measurements, metricEntries, n
         if (metricEntries.every(([_, metric]) => getMetricTags(metric).length === 0)) {
             columnsToHide.add("tags")
         }
-        if (metricEntries.every(([_, metric]) => getMetricResponseTimeLeft(metric, report) === null)) {
+        if (metricEntries.every(([_, metric]) => getMetricResponseTimeLeft(metric, report, dataModel) === null)) {
             columnsToHide.add("time_left")
         }
         if (

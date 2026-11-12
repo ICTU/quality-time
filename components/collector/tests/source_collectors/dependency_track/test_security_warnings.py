@@ -1,8 +1,7 @@
 """Unit tests for the Dependency-Track security warnings collector."""
 
 from typing import TYPE_CHECKING
-
-from aiohttp import BasicAuth
+from unittest.mock import patch
 
 from source_collectors.dependency_track.base import DependencyTrackBase
 from source_collectors.dependency_track.security_warnings import (
@@ -15,7 +14,7 @@ from .base_test import DependencyTrackTestCase
 
 if TYPE_CHECKING:
     from model.measurement import MetricMeasurement
-    from source_collectors.dependency_track.json_types import DependencyTrackComponent, DependencyTrackProject
+    from source_collectors.dependency_track.json_types import DependencyTrackProject
 
 
 class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
@@ -78,7 +77,7 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
         self,
         projects: list[DependencyTrackProject] | None = None,
         findings: list[DependencyTrackFinding] | None = None,
-        components: list[DependencyTrackComponent] | None = None,
+        components: list[dict[str, object]] | None = None,
     ) -> MetricMeasurement:
         """Collect a measurement for the given projects, components, and findings, defaulting to the fixtures."""
         return await self.collect_measurement(
@@ -226,6 +225,26 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
             entities=self.entities(**self.root_component_attributes("root a, root b")),
         )
 
+    async def test_root_component_on_another_page(self):
+        """Test that the root component is reported if the components are spread over multiple pages."""
+        with patch.object(DependencyTrackBase, "PAGE_SIZE", 1):
+            measurement = await self.collect_measurement(
+                get_request_json_side_effect=[
+                    self.projects(),
+                    [],  # Second page of projects
+                    [self.component(name="parent", uuid="parent-uuid", direct_dependencies=["component-uuid"])],
+                    [self.component()],
+                    self.findings(),
+                    [],  # Second page of findings
+                ],
+                get_request_headers={"X-Total-Count": "2"},
+            )
+        self.assert_measurement(
+            measurement,
+            value="1",
+            entities=self.entities(**self.root_component_attributes("parent", "parent-uuid")),
+        )
+
     async def test_vulnerable_component_without_dependency_graph(self):
         """Test that a vulnerable component that is not in the component list has no root component."""
         measurement = await self.collect_findings(components=[])
@@ -238,6 +257,5 @@ class DependencyTrackSecurityWarningsTest(DependencyTrackTestCase):
         get.assert_called_once_with(
             f"https://dependency_track/api/v1/project?pageSize={DependencyTrackBase.PAGE_SIZE}&pageNumber=1",
             allow_redirects=True,
-            auth=BasicAuth(login="API key", password="", encoding="latin1"),  # nosec
-            headers={"X-Api-Key": "API key"},
+            headers={"Authorization": "Basic QVBJIGtleTo=", "X-Api-Key": "API key"},
         )

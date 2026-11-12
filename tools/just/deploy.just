@@ -3,8 +3,6 @@ import 'build.just'
 pid_filename := "/tmp/quality-time-" + file_name(invocation_directory()) + "-pid.txt"
 # Run a started component in the background (detach) or foreground, recording its PID either way.
 record_pid(mode) := if mode == "detach" { "& echo $! > " + pid_filename } else { "; echo $! > " + pid_filename }
-# Terminal width is read at parse time from stderr (still a TTY when stdout is captured by $() ); falls back to 200 if there's no TTY (CI, piped output).
-term_width := shell(f"{{uv_run_project_wide_tool}} python -c 'import os; print(os.get_terminal_size(2).columns if os.isatty(2) else 200)'")
 
 # === Start and stop components ===
 
@@ -13,7 +11,7 @@ term_width := shell(f"{{uv_run_project_wide_tool}} python -c 'import os; print(o
 [private]
 start-docker-component mode *components:
     ?[ {{ docker_folder_exists }} = true ]
-    COLUMNS=$({{ python }} -c 'import subprocess; s = subprocess.run(["docker", "compose", "config", "--services"], capture_output=True, text=True).stdout; print({{ term_width }} - max(len(line.strip()) for line in s.splitlines()) - 6)') docker compose up {{ if mode == "detach" { "--detach" } else { "" } }} {{ components }}
+    docker compose up {{ if mode == "detach" { "--detach" } else { "" } }} {{ components }}
 
 # Start the Python component.
 [no-cd]

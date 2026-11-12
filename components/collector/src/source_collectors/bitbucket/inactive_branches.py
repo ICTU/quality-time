@@ -1,6 +1,6 @@
 """Bitbucket inactive branches collector."""
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from base_collectors import BranchType, InactiveBranchesSourceCollector
 from collector_utilities.date_time import datetime_from_timestamp
@@ -82,7 +82,7 @@ class BitbucketInactiveBranches[Branch: BitbucketBranchType](BitbucketProjectBas
 
     def _branch_landing_url(self, branch: Branch) -> URL:
         """Override to get the landing URL from the branch."""
-        instance_url = super()._parameter("url")
+        instance_url = URL(str(super()._parameter("url")))
         project = f"projects/{self._parameter('owner')}/repos/{self._parameter('repository')}/browse?at="
         branch_id = str(branch.get("id")).lstrip("/")
-        return cast(URL, f"{instance_url}/{project}{branch_id or ''}")
+        return instance_url / f"{project}{branch_id or ''}"

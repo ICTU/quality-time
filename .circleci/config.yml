@@ -7,7 +7,7 @@ orbs:
 jobs:
   unittests:
     docker:
-      - image: cimg/python:3.15.1-node@sha256:2b1fd90599d6af05fbecaa94ed3cf23132b81a30f72b7f93ae4ac82700d35eb2
+      - image: cimg/python:3.15.2-node@sha256:6ff193dc494a39a636bf39dc12effdd2af0528599c13c0bd0666a0d2495b6ce7
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
@@ -74,7 +74,6 @@ jobs:
           export PROXY_PORT=8080
           export QUALITY_TIME_VERSION=ci
           export COMPOSE_PATH_SEPARATOR=':'
-          export COLUMNS=${COLUMNS:-120}
           export COMPOSE_FILE=docker/docker-compose.yml:docker/docker-compose.ci.yml
           docker compose --progress quiet build && docker compose up -d
           docker ps

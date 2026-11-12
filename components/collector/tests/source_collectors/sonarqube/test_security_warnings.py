@@ -91,7 +91,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         measurement, get, post = await self.collect_measurement_and_mocks(
             get_request_json_return_value=self.issues_json
         )
-        get.assert_called_with(self.ISSUES_API, allow_redirects=True, headers={}, auth=None)
+        get.assert_called_with(self.ISSUES_API, allow_redirects=True, headers={})
         post.assert_not_called()
         self.assert_measurement(
             measurement,
@@ -107,7 +107,7 @@ class SonarQubeSecurityWarningsTest(SonarQubeTestCase):
         measurement, get, post = await self.collect_measurement_and_mocks(
             get_request_json_return_value=self.issues_json
         )
-        get.assert_called_with(self.ISSUES_API + "&tags=injection", allow_redirects=True, headers={}, auth=None)
+        get.assert_called_with(self.ISSUES_API + "&tags=injection", allow_redirects=True, headers={})
         post.assert_not_called()
         self.assert_measurement(
             measurement,

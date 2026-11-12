@@ -1,6 +1,6 @@
 [project]
 name = "shared-code"
-version = "5.60.1"
+version = "5.62.1"
 requires-python = ">=3.14"
 classifiers = [
     "Framework :: Bottle",
@@ -14,10 +14,9 @@ classifiers = [
 dependencies = [
     "bottle==0.13.4",
     "packaging==26.3",
-    "pydantic==2.14.1",
+    "pydantic==2.14.2",
     "pymongo==4.19.0",
-    "python-dateutil==3.0.0",
-    "rich==15.0.0",
+    "python-dateutil==4.0.0",
 ]
 
 [dependency-groups]
@@ -25,7 +24,7 @@ dev = [
     "mongomock==4.3.0",
     "shared-test-code",
     "tools",
-    "types-python-dateutil==2.9.0.20261021",
+    "types-python-dateutil==2.9.0.20261104",
 ]
 
 [tool.setuptools]
@@ -41,7 +40,6 @@ override-dependencies = [
 sources.shared-test-code = { path = "../../tests/shared_test_code", package = true }
 sources.tools = { path = "../../tools/third_party", package = false }
 exclude-newer = "7 days"
-exclude-newer-package = { certifi = false }  # GHSA-6q48-6c7w-9gw2 (certifi bundles emSign root CAs with compromised intermediate CA keys) is fixed in certifi 2026.10.19, released 2026-10-20, which exclude-newer would block; remove after 2026-10-27
 
 [tool.ruff]
 line-length = 120

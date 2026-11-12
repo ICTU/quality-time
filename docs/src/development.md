@@ -448,7 +448,9 @@ class ClocLOC(JSONFileSourceCollector):
         return SourceMeasurement(value=str(loc))
 ```
 
-Most collector classes are a bit more complex than that, because to retrieve the data they have to deal with APIs and while parsing the data they have to take parameters into account. See the collector source code for more examples.
+Most collector classes are a bit more complex than that, because to retrieve the data they have to deal with APIs and while parsing the data they have to take parameters into account.
+
+To build API and landing URLs, use the `/` operator of the [`URL`](https://github.com/ICTU/quality-time/blob/master/components/collector/src/collector_utilities/type.py) class, for example `await super()._api_url() / "api/v4/version"`. It joins paths without duplicate or missing slashes, whether or not the URL has a trailing slash and the path has a leading slash. See the collector source code for more examples.
 
 ###### Writing and running unit tests
 

@@ -1,6 +1,5 @@
 """Step implementations for the data model feature."""
 
-import hashlib
 from typing import TYPE_CHECKING
 
 from asserts import assert_equal, assert_true
@@ -10,15 +9,10 @@ if TYPE_CHECKING:
     from behave.runner import Context
 
 
-def md5_hash(string: str) -> str:
-    """Return a md5 hash of the string."""
-    return hashlib.md5(string.encode("utf-8"), usedforsecurity=False).hexdigest()
-
-
 @when("the client gets the most recent data model")
 def get_data_model(context: Context) -> None:
     """Get the most recent data model."""
-    headers = {"If-None-Match": f"{md5_hash(context.response.json()['timestamp'])}"} if context.response else {}
+    headers = {"If-None-Match": context.response.headers["ETag"]} if context.response else {}
     context.get("datamodel", headers=headers)
 
 

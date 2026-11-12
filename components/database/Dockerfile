@@ -1,5 +1,5 @@
 # update-time: allow[hash-drift]
-FROM mongo:9.0.4@sha256:dc28ed5a9d0fc616903c3f463bb1e53b92b49f441721b91926e87d90bf957ce8
+FROM mongo:9.0.4@sha256:452bdaf2127b8ff851e31410a267809b9829eded219979f2210e7c7efb85a058
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time database"
@@ -16,3 +16,6 @@ RUN apt-get purge --yes mongodb-database-tools mongodb-org-database-tools-extra 
 
 # Run as the non-root MongoDB user by default; see README.md ("Runtime user") for overriding the UID.
 USER 999
+
+# Log less than mongod does by default; see README.md ("Logging").
+CMD ["mongod", "--quiet", "--wiredTigerEngineConfigString=verbose=[]"]

@@ -1,6 +1,6 @@
 [project]
 name = "just"
-version = "5.60.1"
+version = "5.62.1"
 requires-python = ">=3.14"
 classifiers = [
     "Programming Language :: Python",
@@ -21,7 +21,6 @@ override-dependencies = [
 ]
 sources.tools = { path = "../third_party", package = false }
 exclude-newer = "7 days"
-exclude-newer-package = { certifi = false }  # GHSA-6q48-6c7w-9gw2 (certifi bundles emSign root CAs with compromised intermediate CA keys) is fixed in certifi 2026.10.19, released 2026-10-20, which exclude-newer would block; remove after 2026-10-27
 
 [tool.ruff]
 line-length = 120

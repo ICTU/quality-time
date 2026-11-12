@@ -609,10 +609,20 @@ class MetricIssueTest(DatabaseTestCase):
             "sources": [{"source_uuid": SOURCE_ID, "parse_error": None, "connection_error": None, "value": "42"}],
         }
         self.database.measurements.find_one.return_value = self.measurement
+        project_response = Mock()
+        project_response.json.return_value = [{"key": "KEY", "name": "Foo"}]
+        issue_types_response = Mock()
+        issue_types_response.json.return_value = {"values": [{"id": "1", "name": "BUG", "subtask": False}]}
+        self.fields_response = Mock()
+        self.fields_response.json.return_value = {"values": []}
+        self.jira_responses = [project_response, issue_types_response, self.fields_response]
+        requests_get_patcher = patch("model.issue_tracker.requests.get", Mock(side_effect=self.jira_responses))
+        self.requests_get = requests_get_patcher.start()
+        self.addCleanup(requests_get_patcher.stop)
         self.expected_json: dict[str, dict[str, str | dict[str, str] | list[str]]] = {
             "fields": {
                 "project": {"key": "KEY"},
-                "issuetype": {"name": "BUG"},
+                "issuetype": {"id": "1"},
                 "summary": "Fix 42 violations from Source",
                 "description": "The metric [name|https://quality_time/metric42] in Quality-time reports 42 violations "
                 "from Source.\nPlease go to [https://zap|https://zap] for more details.\n",
@@ -686,17 +696,10 @@ class MetricIssueTest(DatabaseTestCase):
         self.assert_issue_inserted()
 
     @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
-    @patch("model.issue_tracker.requests.get")
-    def test_add_metric_issue_with_labels(self, requests_get, requests_post):
+    def test_add_metric_issue_with_labels(self, requests_post):
         """Test that an issue can be added to the issue tracker."""
         self.report["issue_tracker"]["parameters"]["issue_labels"] = ["label", "label with spaces"]
-        project_response = Mock()
-        project_response.json.return_value = [{"key": "KEY", "name": "Foo"}]
-        issue_types_response = Mock()
-        issue_types_response.json.return_value = {"values": [{"id": "1", "name": "BUG", "subtask": False}]}
-        fields_response = Mock()
-        fields_response.json.return_value = {"values": [{"fieldId": "labels", "name": "Labels"}]}
-        requests_get.side_effect = [project_response, issue_types_response, fields_response]
+        self.fields_response.json.return_value = {"values": [{"fieldId": "labels", "name": "Labels"}]}
         response = Mock()
         response.json.return_value = {"key": "FOO-42"}
         requests_post.return_value = response
@@ -707,21 +710,15 @@ class MetricIssueTest(DatabaseTestCase):
 
     @patch("bottle.request", Mock(json={"metric_url": METRIC_URL}))
     @disable_logging
-    @patch("model.issue_tracker.requests.get")
-    def test_add_metric_issue_with_epic_link(self, requests_get, requests_post):
+    def test_add_metric_issue_with_epic_link(self, requests_post):
         """Test that an issue can be added to the issue tracker."""
         self.report["issue_tracker"]["parameters"]["epic_link"] = "FOO-420"
-        project_response = Mock()
-        project_response.json.return_value = [{"key": "KEY", "name": "Foo"}]
-        issue_types_response = Mock()
-        issue_types_response.json.return_value = {"values": [{"id": "1", "name": "BUG", "subtask": False}]}
-        fields_response = Mock()
-        fields_response.json.return_value = {"values": [{"fieldId": "epic_link_field_id", "name": "Epic Link"}]}
+        self.fields_response.json.return_value = {"values": [{"fieldId": "epic_link_field_id", "name": "Epic Link"}]}
         epic_links_response = Mock()
         epic_links_response.json.return_value = {
             "issues": [{"key": "FOO-420", "fields": {"summary": "FOO-420 Summary"}}],
         }
-        requests_get.side_effect = [project_response, issue_types_response, fields_response, epic_links_response]
+        self.requests_get.side_effect = [*self.jira_responses, epic_links_response]
         response = Mock()
         response.json.return_value = {"key": "FOO-42"}
         requests_post.return_value = response

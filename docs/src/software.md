@@ -71,7 +71,7 @@ The API of the API-server is versioned. The version is not changed when backward
 
 ### Health check
 
-The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/api_server/Dockerfile) contains a health check script that downloads the health information from the API-server end-point `/api/internal/health`.
+The [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/python.Dockerfile) specifies a [health check script](https://github.com/ICTU/quality-time/blob/master/components/api_server/src/healthcheck.py) that downloads the health information from the API-server end-point `/api/internal/health`.
 
 If the server is healthy the end-point returns a response with HTTP-status 200 and a JSON payload containing:
 
@@ -117,7 +117,7 @@ By default, the collector measures metrics whose configuration hasn't been chang
 
 ### Health check
 
-Every time the collector wakes up, it writes the current date and time in ISO format to the health check file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/collector/Dockerfile)). If the written date and time are too long ago, the collector container is considered to be unhealthy.
+Every time the collector wakes up, it writes the current date and time in ISO format to the health check file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/python.Dockerfile) and the [health check script](https://github.com/ICTU/quality-time/blob/master/components/collector/src/healthcheck.py)). If the written date and time are too long ago, the collector container is considered to be unhealthy.
 
 ### Environment variables
 
@@ -148,9 +148,11 @@ See the [`aiohttp` documentation](https://docs.aiohttp.org/en/stable/client_adva
 
 The notifier is responsible for notifying users about significant events, such as metrics turning red. It wakes up periodically and asks the server for all reports. For each report, the notifier determines whether notification destinations have been configured, and whether events happened that need to be notified.
 
+Once a day, at 7 AM local time (see [configuring the timezone](deployment.md#configuring-the-timezone-optional)), the notifier also determines which metrics have a week or less left to address them, given the desired response times of the report, and notifies the report's notification destinations of those metrics. Note that the notifier doesn't send the daily notification for the current day if it is started after 7 AM.
+
 ### Health check
 
-Every time the notifier wakes up, it writes the current date and time in ISO format to the health check file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/notifier/Dockerfile)). If the written date and time are too long ago, the notifier container is considered to be unhealthy.
+Every time the notifier wakes up, it writes the current date and time in ISO format to the health check file. This date and time is read by the Docker health check (see the [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/python.Dockerfile) and the [health check script](https://github.com/ICTU/quality-time/blob/master/components/notifier/src/healthcheck.py)). If the written date and time are too long ago, the notifier container is considered to be unhealthy.
 
 ### Environment variables
 
@@ -403,7 +405,7 @@ The proxy uses the following environment variables:
 
 The database component consists of a [MongoDB](https://www.mongodb.com) database to store reports and measurements.
 
-The proxy [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile) wraps the {index}`MongoDB` image in a _Quality-time_ image so the MongoDB version number can be changed when needed.
+The database [Dockerfile](https://github.com/ICTU/quality-time/blob/master/components/database/Dockerfile) wraps the {index}`MongoDB` image in a _Quality-time_ image so the MongoDB version number can be changed when needed.
 
 _Quality-time_ stores its data in a Mongo database using the following collections: `datamodels`, `measurements`, `reports`, `reports_overviews`, and `sessions`.
 
@@ -442,7 +444,7 @@ The renderer uses the following environment variables:
 | `PROXY_PORT`     | `80`          | Port of the proxy, within the internal (Docker) network. The renderer uses this to access the reports that need to be exported to PDF. |
 | `PROXY_PROTOCOL` | `http`        | Protocol of the proxy. The renderer uses this to access the reports that need to be exported to PDF.                                   |
 | `LC_ALL`         |               | Set the date format in the PDF export. For example, to get DD-MM-YYYY use: `en_GB.UTF-8`.                                              |
-| `TZ`             |               | Make the PDF export use the correct timezone. For example, to get Central European Time use: `Europe/Amsterdam`.                       |
+| `TZ`             |               | Make the PDF export use the correct timezone. See [configuring the timezone](deployment.md#configuring-the-timezone-optional).        |
 
 ## Test data
 

@@ -90,6 +90,5 @@ class BitbucketInactiveBranchesTest(BitbucketBranchesTestCase):
         get.assert_called_once_with(
             "https://bitbucket/rest/api/1.0/projects/owner/repos/repository/branches?limit100&&details=true&start=0",
             allow_redirects=True,
-            auth=None,
             headers={"Authorization": "Bearer token"},
         )

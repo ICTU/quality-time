@@ -10,19 +10,41 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
-## [Unreleased]
+## v5.62.1 - 2026-11-09
+
+### Changed
+
+- Less logging. The collector, notifier, and API-server write each log message as a single line of plain text. Previously, log messages were laid out in columns and, when running in a container, wrapped to 80 columns, which made them hard to read and search. To prevent drowning out debug logging, the collector, notifier, and API-server no longer log MongoDB client debug messages. The database no longer logs the progress messages of the WiredTiger storage engine. The database image now passes the `--quiet` flag to MongoDB itself, so the database also logs less when deployed with the Helm chart. If you copied `command: --quiet` from the *Quality-time* compose file into your own compose file, you may want to remove it, as it overrides the new default. See the [deployment documentation](deployment.md#configuring-logging-optional). Closes [#14959](https://github.com/ICTU/quality-time/issues/14959).
+
+### Fixed
+
+- When measuring dependencies or security warnings with Dependency-Track as source, the collector would keep all components of the Dependency-Track projects in memory, which could crash the collector for projects with many components. The collector now processes the components page by page, parsing the components without keeping them all in memory. Fixes [#14957](https://github.com/ICTU/quality-time/issues/14957) and [#14974](https://github.com/ICTU/quality-time/issues/14974).
+- Fix broken links to Dockerfiles in the software documentation. Fixes [#14768](https://github.com/ICTU/quality-time/issues/14768).
+- When Jira responded with an error, for example because the JQL query refers to a project that has been renamed, *Quality-time* would only show the HTTP status, such as "400, message='Bad Request'", and not the error message Jira returned. *Quality-time* now includes the error messages Jira returns in the connection error. Fixes [#14925](https://github.com/ICTU/quality-time/issues/14925).
+- Popups showed the relative time between brackets before the date, for example "The metric was last measured (a few seconds ago) 07-11-2026, 18:12". Popups now show the relative time first and the date between brackets, for example "The metric was last measured a few seconds ago (07-11-2026, 18:12)", or the date first and the relative time between brackets if that reads better, for example "Target met since 05-11-2026, 18:12 (2 days ago)". Fixes [#14985](https://github.com/ICTU/quality-time/issues/14985).
+- When TestNG retried a test, the TestNG report would contain the test twice: once for the first attempt, as skipped, and once for the retry. *Quality-time* would report the test as skipped, even when the retry passed, and would also count the retried attempts in the total number of tests. *Quality-time* now ignores the retried attempts in TestNG reports. Fixes [#14958](https://github.com/ICTU/quality-time/issues/14958).
+- Creating issues failed after changing the language of the Jira user profile, because *Quality-time* identified the issue type by its translated name. *Quality-time* now stores the issue type id; reselect the issue type for new issues in existing reports to store it. Fixes [#13005](https://github.com/ICTU/quality-time/issues/13005).
+- Creating Jira issues failed without explanation when the selected issue type has mandatory fields that *Quality-time* does not fill. The issue tracker settings of the report now warn about mandatory fields of the selected issue type. See the [user manual](usage.md#issue-tracker). Fixes [#9797](https://github.com/ICTU/quality-time/issues/9797).
+
+## v5.62.0 - 2026-11-03
 
 ### Added
 
 - Support sending notifications to Microsoft Teams webhooks created with the Microsoft Teams Workflows app. *Quality-time* now sends notifications as Adaptive Cards, which work with both Workflows webhooks and the retired Office 365 connector webhooks. See the [user manual](usage.md#notifications). Closes [#12326](https://github.com/ICTU/quality-time/issues/12326).
+- Send a daily 7 AM notification to configured notification destinations, with the metrics that have a week or less left to address them, including metrics whose desired response time has already passed. See the [user manual](usage.md#notifications). Closes [#7613](https://github.com/ICTU/quality-time/issues/7613).
 
 ### Changed
 
+- The Helm chart now sets the timezone of all containers, instead of only the renderer, using the new `timezone` value. If you set the `TZ` environment variable of the renderer in your Helm values, set `timezone` instead. See the [deployment documentation](deployment.md#configuring-the-timezone-optional).
 - Updated the link to the SIG/TÜV NORD CERT "Evaluation Criteria Trusted Product Maintainability: Guidance for Producers" to the 2026 version. Removed the link from the 'size (LOC)' metric, as the 2026 version no longer uses volume as maintainability criterion. Closes [#14738](https://github.com/ICTU/quality-time/issues/14738).
 
 ### Fixed
 
 - Adding, copying, moving, or reordering a metric in the reports overview would reset the visible metrics setting to 'no metrics', hiding all metrics. Fixes [#14889](https://github.com/ICTU/quality-time/issues/14889).
+
+## v5.61.0 - 2026-11-03
+
+Release yanked: release pipeline did not run to completion due to out of date lock files.
 
 ## v5.60.1 - 2026-10-09
 

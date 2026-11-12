@@ -3,7 +3,8 @@
 import logging
 import sys
 
-from rich.logging import RichHandler
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+LOG_FORMAT = "%(asctime)s %(levelname)-8s %(filename)s:%(lineno)d %(message)s"
 
 
 def get_logger(component_name: str, call_stack_depth: int = 0) -> logging.Logger:
@@ -14,9 +15,15 @@ def get_logger(component_name: str, call_stack_depth: int = 0) -> logging.Logger
 
 
 def init_logging(level: str) -> logging.Logger:
-    """Initialize the logging and return the root logger."""
-    handler = RichHandler(omit_repeated_times=False)
-    logging.basicConfig(datefmt="%Y-%m-%d %H:%M:%S", format="%(message)s", handlers=[handler])
+    """Initialize the logging and return the root logger.
+
+    Write each log record on a single line, so log aggregators see one record per line.
+    """
+    handler = logging.StreamHandler(sys.stdout)
+    logging.basicConfig(datefmt=DATE_FORMAT, format=LOG_FORMAT, handlers=[handler], force=True)
     logger = logging.getLogger()
     logger.setLevel(level)
+    # The MongoDB client logs every command, connection, and server selection at debug level, which drowns out the
+    # Quality-time debug messages, so never let it log below info level:
+    logging.getLogger("pymongo").setLevel(max(logger.level, logging.INFO))
     return logger

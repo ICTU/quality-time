@@ -77,7 +77,6 @@ services:
       - COLLECTOR_MEASUREMENT_TIMEOUT=${COLLECTOR_MEASUREMENT_TIMEOUT:-120}
       - COLLECTOR_SLEEP_DURATION=${COLLECTOR_SLEEP_DURATION:-20}
       - COLLECTOR_LOG_LEVEL=${COLLECTOR_LOG_LEVEL:-WARNING}
-      - COLUMNS=${COLUMNS} # Tell the Rich logging handler the terminal width
     secrets:
       - database_username
       - database_password
@@ -104,7 +103,6 @@ services:
       - DATABASE_PORT=${DATABASE_PORT:-27017}
       - NOTIFIER_SLEEP_DURATION=${NOTIFIER_SLEEP_DURATION:-60}
       - NOTIFIER_LOG_LEVEL=${NOTIFIER_LOG_LEVEL:-WARNING}
-      - COLUMNS=${COLUMNS} # Tell the Rich logging handler the terminal width
     secrets:
       - database_username
       - database_password
@@ -142,7 +140,6 @@ services:
       - RENDERER_HOST=${RENDERER_HOST:-renderer}
       - RENDERER_PORT=${RENDERER_PORT:-9000}
       - USER_SESSION_DURATION=${USER_SESSION_DURATION:-120}
-      - COLUMNS=${COLUMNS} # Tell the Rich logging handler the terminal width
     secrets:
       - database_username
       - database_password
@@ -162,7 +159,6 @@ services:
           cpus: '2'
   database:
     image: ictu/quality-time_database:${QUALITY_TIME_VERSION}
-    command: --quiet
     environment:
       - *tz
       - MONGO_INITDB_ROOT_USERNAME_FILE=/run/secrets/database_username

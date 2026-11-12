@@ -1,13 +1,15 @@
 """SonarQube tests collector."""
 
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 from shared_data_model import DATA_MODEL
 
-from collector_utilities.type import URL
 from model import SourceMeasurement, SourceResponses
 
 from .base import SonarQubeCollector
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL
 
 
 class SonarQubeTests(SonarQubeCollector):
@@ -19,14 +21,14 @@ class SonarQubeTests(SonarQubeCollector):
         component = self._parameter("component")
         branch = self._parameter("branch")
         metric_keys = "tests,test_errors,test_failures,skipped_tests"
-        return URL(f"{url}/api/measures/component?component={component}&branch={branch}&metricKeys={metric_keys}")
+        return url / f"api/measures/component?component={component}&branch={branch}&metricKeys={metric_keys}"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the measures path and parameters."""
         url = await super()._landing_url(responses)
         component = self._parameter("component")
         branch = self._parameter("branch")
-        return URL(f"{url}/component_measures?id={component}&branch={branch}&metric=tests")
+        return url / f"component_measures?id={component}&branch={branch}&metric=tests"
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
         """Override to parse the number of tests."""

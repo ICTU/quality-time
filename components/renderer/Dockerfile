@@ -1,4 +1,4 @@
-FROM node:26.12.1-alpine3.24@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797
+FROM node:26.13.0-alpine3.24@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time PDF render service"
@@ -9,7 +9,7 @@ COPY package*.json /home/renderer/
 # Install, then reduce the attack surface: remove npm/corepack (not needed at runtime) and the package manager.
 # The shell is kept because Chromium's launcher (/usr/bin/chromium-browser) is a shell script.
 # hadolint ignore=DL3018
-RUN apk add --no-cache chromium tzdata=2026e-r0 && \
+RUN apk add --no-cache chromium tzdata=2026f-r0 && \
     npm ci --omit=dev --ignore-scripts && \
     adduser -S renderer && \
     rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx \

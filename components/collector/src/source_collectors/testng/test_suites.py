@@ -35,7 +35,7 @@ class TestNGTestSuites(XMLFileSourceCollector):
     def __entity(cls, suite: Element) -> Entity:
         """Transform a test suite element into a test suite entity."""
         name = suite.get("name", "unknown")
-        tests = len(suite.findall(".//test-method"))
+        tests = len(cls._test_methods(suite))
         skipped = cls._nr_tests(suite, "SKIP")
         failed = cls._nr_tests(suite, "FAIL")
         passed = cls._nr_tests(suite, "PASS")
@@ -58,7 +58,13 @@ class TestNGTestSuites(XMLFileSourceCollector):
             skipped=str(skipped),
         )
 
-    @staticmethod
-    def _nr_tests(suite: Element, status: str) -> int:
+    @classmethod
+    def _nr_tests(cls, suite: Element, status: str) -> int:
         """Return the number of tests in the suite with the given status."""
-        return len(suite.findall(f".//test-method[@status='{status}']"))
+        return len(cls._test_methods(suite, f"[@status='{status}']"))
+
+    @staticmethod
+    def _test_methods(suite: Element, predicate: str = "") -> list[Element]:
+        """Return the test methods in the suite, ignoring retried test methods."""
+        test_methods = suite.findall(f".//test-method{predicate}")
+        return [test_method for test_method in test_methods if test_method.get("retried", "false") != "true"]

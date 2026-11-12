@@ -13,7 +13,6 @@ export function DashboardCard({ children, onClick, selected, title, titleFirst }
         const truncated = Boolean(el) && el.scrollWidth > el.clientWidth
         // Measuring truncation requires reading the laid-out DOM and updating state; the guard keeps it to a single
         // extra render, only when the truncation actually changes.
-        // eslint-disable-next-line @eslint-react/set-state-in-effect -- intentional measure-then-set, guarded above
         setIsTruncated((wasTruncated) => (wasTruncated === truncated ? wasTruncated : truncated))
     }, [])
     // Recompute after each render (e.g. when the title changes) and whenever the window is resized.

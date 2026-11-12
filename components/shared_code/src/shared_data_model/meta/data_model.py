@@ -8,6 +8,7 @@ from shared_data_model.logos import get_logo_names
 
 # Ruff wants these imports in a TYPE_CHECKING block, but that makes Pydantic complain
 # that DataModel is not fully defined.
+from .config import Config  # noqa: TC001
 from .metric import Metric  # noqa: TC001
 from .scale import Scale  # noqa:  TC001
 from .source import Source  # noqa: TC001
@@ -20,6 +21,7 @@ class DataModel(SubjectContainer):
     scales: dict[str, Scale]
     metrics: dict[str, Metric]
     sources: dict[str, Source]
+    config: Config
 
     @model_validator(mode="after")
     def check_scales(self) -> Self:

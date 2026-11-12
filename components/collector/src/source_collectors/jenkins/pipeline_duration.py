@@ -31,13 +31,13 @@ class JenkinsPipelineDuration(SourceCollector):
         pipeline_job = self._parameter("pipeline")
         builds = "builds[duration,result,url]"
         # Add the builds parameter twice to get both builds of jobs as well as builds of multibranch pipelines:
-        return URL(f"{url}/job/{pipeline_job}/api/json?tree=jobs[name,{builds}],{builds}")
+        return url / f"job/{pipeline_job}/api/json?tree=jobs[name,{builds}],{builds}"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to return the selected build as landing URL if the pipeline has any, or else the pipeline itself."""
         if build := await self._build(responses):
             return URL(build["url"])
-        return URL(await super()._landing_url(responses) + f"/job/{self._parameter('pipeline')}")
+        return await super()._landing_url(responses) / f"job/{self._parameter('pipeline')}"
 
     async def _parse_value(self, responses: SourceResponses, included_entities: Entities) -> Value:
         """Parse the value from the responses."""

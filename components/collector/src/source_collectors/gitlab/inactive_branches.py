@@ -5,8 +5,9 @@ from typing import TYPE_CHECKING, cast
 
 import aiohttp
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import BranchType, InactiveBranchesSourceCollector
-from collector_utilities.date_time import parse_datetime
 from collector_utilities.functions import add_query
 from collector_utilities.type import URL
 
@@ -32,9 +33,9 @@ class GitLabInactiveBranches[Branch: GitLabBranchType](GitLabBase, InactiveBranc
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the project branches."""
-        project_or_group = self._parameter("project_or_group")
+        project_or_group = cast(str, self._parameter("project_or_group"))
         landing_path = project_or_group if await self._project_is_group() else f"{project_or_group}/-/branches"
-        return URL(f"{await super()._landing_url(responses)}/{landing_path}")
+        return await super()._landing_url(responses) / landing_path
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to get branches for a project or for multiple projects in a group."""
@@ -42,7 +43,7 @@ class GitLabInactiveBranches[Branch: GitLabBranchType](GitLabBase, InactiveBranc
         if await self._project_is_group():
             group = project_or_group
             group_projects_url = add_query(
-                URL(f"{await self._api_url()}/api/v4/groups/{group}/projects"), self.PAGE_SIZE, "include_subgroups=true"
+                await self._api_url() / f"api/v4/groups/{group}/projects", self.PAGE_SIZE, "include_subgroups=true"
             )
             projects = []
             for response in await super()._get_source_responses(group_projects_url):
@@ -51,7 +52,7 @@ class GitLabInactiveBranches[Branch: GitLabBranchType](GitLabBase, InactiveBranc
         else:
             projects = [project_or_group]
         repo_branches_urls = [
-            add_query(URL(f"{await self._api_url()}/api/v4/projects/{project}/repository/branches"), self.PAGE_SIZE)
+            add_query(await self._api_url() / f"api/v4/projects/{project}/repository/branches", self.PAGE_SIZE)
             for project in projects
         ]
         return await super()._get_source_responses(*repo_branches_urls)
@@ -77,12 +78,12 @@ class GitLabInactiveBranches[Branch: GitLabBranchType](GitLabBase, InactiveBranc
 
     def _branch_landing_url(self, branch: Branch) -> URL:
         """Override to get the landing URL from the branch."""
-        return cast(URL, branch.get("web_url") or "")
+        return URL(branch.get("web_url") or "")
 
     async def _project_is_group(self) -> bool:
         """Return whether the project parameter is actually a group of projects, as opposed to a single project."""
         project_or_group = self._parameter("project_or_group", quote=True)
-        groups_url = URL(f"{await self._api_url()}/api/v4/groups/{project_or_group}")
+        groups_url = await self._api_url() / f"api/v4/groups/{project_or_group}"
         try:
             await super()._get_source_responses(groups_url)
         except aiohttp.ClientResponseError as message:

@@ -4,10 +4,18 @@ from typing import TYPE_CHECKING
 
 from base_collectors import TokenAuthenticationSourceCollector
 from collector_utilities.exceptions import CollectorError
-from collector_utilities.type import URL
 
 if TYPE_CHECKING:
+    from collector_utilities.type import URL, Response
+
     from .json_types import Board
+
+
+class JiraError(CollectorError):
+    """Jira responded with an error."""
+
+    def __init__(self, status: int, reason: str, error_messages: list[str]) -> None:
+        super().__init__(f"Jira responded with HTTP status {status} ({reason}): {' '.join(error_messages)}")
 
 
 class JiraBase(TokenAuthenticationSourceCollector):
@@ -15,18 +23,36 @@ class JiraBase(TokenAuthenticationSourceCollector):
 
     AUTH_PREFIX = "Bearer "
 
-    def _basic_auth_credentials(self) -> tuple[str, str] | None:
-        """Extend to only return the basic auth credentials if no private token is configured.
-
-        This prevents aiohttp from complaining that it "Cannot combine AUTHORIZATION header with AUTH argument or
-        credentials encoded in URL".
-        """
-        return None if self._parameter("private_token") else super()._basic_auth_credentials()
-
     @property
     def _rest_api_version(self) -> str:
         """Return the Jira REST API version set by the user."""
         return str(self._parameter("api_version"))
+
+    async def _get_source_response(self, url: URL, headers: dict[str, str]) -> Response:
+        """Override to add the error messages that Jira returns to the error, if the request fails.
+
+        The session raises an error without the response body if a request fails, and discards the body. To be able
+        to read the error messages from the response body, override the session setting for Jira requests.
+        """
+        response = await self._session.get(url, allow_redirects=True, headers=headers, raise_for_status=False)
+        if not response.ok:
+            if error_messages := await self._error_messages(response):
+                raise JiraError(response.status, str(response.reason), error_messages)
+            response.raise_for_status()
+        return response
+
+    @staticmethod
+    async def _error_messages(response: Response) -> list[str]:
+        """Return the error messages from the Jira response, if any."""
+        try:
+            json = await response.json(content_type=None)
+        except ValueError:  # The response body is not JSON, for example an HTML error page of a proxy
+            return []
+        if not isinstance(json, dict):
+            return []
+        return [str(message) for message in json.get("errorMessages") or []] + [
+            str(message) for message in (json.get("errors") or {}).values()
+        ]
 
 
 class JiraBoardBase(JiraBase):
@@ -38,7 +64,7 @@ class JiraBoardBase(JiraBase):
         start_at = 0
         boards: list[Board] = []
         while not last:
-            url = URL(f"{api_url}/rest/agile/1.0/board?startAt={start_at}")
+            url = api_url / f"rest/agile/1.0/board?startAt={start_at}"
             response = (await super()._get_source_responses(url))[0]
             json = await response.json()
             boards.extend(json["values"])

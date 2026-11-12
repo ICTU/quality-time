@@ -1,6 +1,6 @@
 [project]
 name = "docs"
-version = "5.60.1"
+version = "5.62.1"
 requires-python = ">=3.14"
 classifiers = [
     "Framework :: Pydantic",
@@ -17,12 +17,12 @@ dev = [
     "furo==2025.12.19",
     "gitpython==3.2.1",
     "myst-parser==5.1.0",
-    "pydantic==2.14.1",     # Needed for generating the reference docs from the data model
+    "pydantic==2.14.2",     # Needed for generating the reference docs from the data model
     "shared-code",
     "sphinx==9.2.0",
     "sphinx-design==0.7.0",
     "tools",
-    "vale==3.25.1.0",       # Documentation grammar and style checker
+    "vale==3.26.0.1",       # Documentation grammar and style checker
 ]
 
 [tool.uv]
@@ -32,7 +32,6 @@ override-dependencies = [
 sources.shared-code = { path = "../components/shared_code", editable = true }
 sources.tools = { path = "../tools/third_party", package = false }
 exclude-newer = "7 days"
-exclude-newer-package = { certifi = false }  # GHSA-6q48-6c7w-9gw2 (certifi bundles emSign root CAs with compromised intermediate CA keys) is fixed in certifi 2026.10.19, released 2026-10-20, which exclude-newer would block; remove after 2026-10-27
 
 [tool.ruff]
 line-length = 120

@@ -238,16 +238,33 @@ secrets:
 
 See the [documentation on the MongoDB image](https://hub.docker.com/_/mongo) for more information.
 
+## Configuring the timezone (optional)
+
+The date and time in the reports that users see are determined by their browser. Elsewhere, *Quality-time* uses the timezone of its containers, for example for the date and time in exported PDFs, for the time at which the notifier sends its [daily notification](usage.md#notifications), and for log timestamps. The default timezone is Central European Time (`Europe/Amsterdam`). Use a name from the [IANA time zone database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) to configure a different timezone.
+
+For a Docker-composition, set the `TZ` environment variable before starting the application. The compose file passes it to all containers. For example: `export TZ=America/New_York`.
+
+For a Kubernetes deployment, set the `timezone` value in the [Helm values.yaml](https://github.com/ICTU/quality-time/blob/master/helm/values.yaml). The Helm chart passes it to all containers as `TZ` environment variable:
+
+```yaml
+timezone: "America/New_York"
+```
+
+```{note}
+The `TZ` environment variable takes precedence over the `/etc/localtime` file in the containers. Because the compose file and the Helm chart that come with *Quality-time* always set `TZ`, mounting the host's `/etc/localtime` file into the containers has no effect.
+```
+
 ## Configuring renderer localisation (optional)
 
-The date/time format and timezone of the reports that a user sees are determined by the user's browser. To configure the date/time format and timezone of exported PDFs, the renderer can be configured as follows:
+The date format of the reports that a user sees is determined by the user's browser. To configure the date format of exported PDFs, the renderer can be configured as follows:
 
 ```yaml
   renderer:
     environment:
       - LC_ALL=en_GB.UTF-8  # To get European dates (DD-MM-YYYY)
-      - TZ=Europe/Amsterdam  # To get Central European Time
 ```
+
+To configure the timezone of exported PDFs, see [configuring the timezone](#configuring-the-timezone-optional).
 
 ## Configuring renderer proxy (optional)
 
@@ -261,20 +278,22 @@ The date/time format and timezone of the reports that a user sees are determined
 
 ## Configuring logging (optional)
 
-The options for configuring logging are limited at the moment. The MongoDB daemon can be told to produce less logging by passing the `--quiet` flag:
+The options for configuring logging are limited at the moment. To reduce its logging, the database container starts MongoDB with the `--quiet` flag, which suppresses connection events among other things, and with `--wiredTigerEngineConfigString=verbose=[]`, which suppresses the progress messages that the WiredTiger storage engine logs on start-up and every minute while data is being written. To get the default MongoDB logging, override the database command:
 
 ```yaml
   database:
-    command: --quiet
+    command: mongod
 ```
 
-The collector, notifier, and API-server all have log level `WARNING` as default. This can be overridden by setting an environment variable to `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`.
+The collector, notifier, and API-server all have log level `WARNING` as default. This can be overridden by setting an environment variable to `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`. The MongoDB client used by the components never logs below level `INFO`, to keep debug logging readable.
 
 | Component  | Log level environment variable |
 |:-----------|:-------------------------------|
 | Collector  | `COLLECTOR_LOG_LEVEL`          |
 | API-server | `API_SERVER_LOG_LEVEL`         |
 | Notifier   | `NOTIFIER_LOG_LEVEL`           |
+
+The collector, notifier, and API-server write each log record as a single line of plain text, consisting of the date and time, the log level, the source file and line number, and the log message. For example: `2026-11-04 09:26:52 WARNING  source_collector.py:106 Measuring metric failed`.
 
 The proxy access log is turned off. Please submit an issue if you need this and possibly other logging settings to be configurable.
 

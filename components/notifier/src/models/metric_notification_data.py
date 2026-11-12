@@ -1,8 +1,15 @@
 """Metric data needed for notifications."""
 
+from datetime import datetime, time, timedelta
+from functools import cached_property
 from typing import TYPE_CHECKING, Final
 
+from dateutil.tz import tzlocal
+
+from shared.utils.date_time import parse_datetime
 from shared_data_model import DATA_MODEL
+
+from notifier_utilities.log import get_logger
 
 if TYPE_CHECKING:
     from shared.model.measurement import Measurement
@@ -30,6 +37,7 @@ class MetricNotificationData:
         self.metric = metric
         self.metric_uuid = metric_uuid
         self.measurements = measurements
+        self.report = subject.report
         metric_type = DATA_MODEL.metrics[metric["type"]]
         self.metric_name = metric.get("name") or metric_type.name
         self.subject_name = subject.get("name") or DATA_MODEL.all_subjects[subject["type"]].name
@@ -39,6 +47,42 @@ class MetricNotificationData:
         self.new_metric_status = self.__user_friendly_status(LAST)
         self.old_metric_value = self.__value(LAST_BUT_ONE)
         self.old_metric_status = self.__user_friendly_status(LAST_BUT_ONE)
+
+    @cached_property
+    def deadline(self) -> datetime | None:
+        """Return the deadline for addressing the metric, if any.
+
+        Note that the frontend uses the same logic to determine the time left, in src/utils.jsx.
+        """
+        if self.status == "debt_target_met":
+            if debt_end_date := self.metric.get("debt_end_date"):
+                # The debt end date is a date, or a UTC datetime if set via the frontend's date picker:
+                try:
+                    end_date = parse_datetime(debt_end_date).astimezone(tzlocal()).date()
+                except ValueError, OverflowError:
+                    logger = get_logger()
+                    logger.warning("Ignoring invalid debt end date %s of metric %s", debt_end_date, self.metric_uuid)
+                    return None
+                return datetime.combine(end_date, time(23, 59, 59), tzinfo=tzlocal())
+            return None
+        desired_response_time = self.report.desired_response_time(self.status)
+        measurement = self.__measurement(LAST)
+        status_start = measurement[self.scale].get("status_start") if measurement else None
+        if desired_response_time is None or not status_start:
+            return None
+        return datetime.fromisoformat(status_start) + timedelta(days=desired_response_time)
+
+    def status_changed_after(self, timestamp: datetime) -> bool:
+        """Return whether the metric got a new status after the timestamp."""
+        if len(self.measurements) < NR_OF_MEASUREMENTS_NEEDED_TO_DETERMINE_STATUS_CHANGE:
+            return False
+        status_changed = self.__status(LAST_BUT_ONE) != self.status
+        change_was_recent = datetime.fromisoformat(self.measurements[LAST]["start"]) > timestamp
+        return status_changed and change_was_recent
+
+    def deadline_on_or_before(self, timestamp: datetime) -> bool:
+        """Return whether the metric has a deadline on or before the timestamp."""
+        return self.deadline is not None and self.deadline <= timestamp
 
     def __user_friendly_status(self, index: int) -> str:
         """Get the user friendly status name from the data model."""

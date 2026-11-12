@@ -1,6 +1,6 @@
 {
     "name": "quality-time-renderer",
-    "version": "5.60.1",
+    "version": "5.62.1",
     "private": true,
     "type": "module",
     "proxy": "http://localhost:9000",
@@ -12,11 +12,11 @@
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@vitest/coverage-v8": "^5.0.0",
-        "eslint": "^10.13.0",
+        "eslint": "^10.14.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-prettier": "^5.5.7",
         "eslint-plugin-simple-import-sort": "^14.0.0",
-        "globals": "^17.13.0",
+        "globals": "^17.14.0",
         "lockfile-lint": "^5.1.0",
         "prettier": "^3.9.10",
         "supertest": "^7.3.1",
@@ -32,7 +32,7 @@
         "fix": "npx prettier *.mjs src --write --log-level warn"
     },
     "engines": {
-        "node": "26.12.0"
+        "node": "26.13.0"
     },
     "prettier": {
         "printWidth": 120,

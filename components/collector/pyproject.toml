@@ -1,6 +1,6 @@
 [project]
 name = "collector"
-version = "5.60.1"
+version = "5.62.1"
 requires-python = ">=3.14"
 classifiers = [
     "Framework :: aiohttp",
@@ -15,9 +15,10 @@ dependencies = [
     "aiohttp==3.14.5",
     "beautifulsoup4==4.15.0",
     "defusedxml==0.7.1",
+    "ijson==3.6.0",
     "packaging==26.3",
     "pymongo==4.19.0",
-    "python-dateutil==3.0.0",
+    "python-dateutil==4.0.0",
     "shared-code",
     "typing-extensions==4.16.0",
 ]
@@ -25,12 +26,12 @@ dependencies = [
 [dependency-groups]
 dev = [
     "mongomock==4.3.0",
-    "pydantic==2.14.1",                      # Needed for importing the data model in the tests from the shared code component
+    "pydantic==2.14.2",                      # Needed for importing the data model in the tests from the shared code component
     "shared-test-code",
     "tools",
     "types-beautifulsoup4==4.12.0.20250516",
     "types-defusedxml==0.7.0.20260504",
-    "types-python-dateutil==2.9.0.20261021",
+    "types-python-dateutil==2.9.0.20261104",
 ]
 
 [tool.uv]
@@ -41,7 +42,6 @@ sources.shared-code = { path = "../shared_code", package = true }
 sources.shared-test-code = { path = "../../tests/shared_test_code", package = true }
 sources.tools = { path = "../../tools/third_party", package = false }
 exclude-newer = "7 days"
-exclude-newer-package = { certifi = false }  # GHSA-6q48-6c7w-9gw2 (certifi bundles emSign root CAs with compromised intermediate CA keys) is fixed in certifi 2026.10.19, released 2026-10-20, which exclude-newer would block; remove after 2026-10-27
 
 [tool.ruff]
 line-length = 120

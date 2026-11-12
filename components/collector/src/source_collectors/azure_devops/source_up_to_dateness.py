@@ -3,8 +3,10 @@
 from abc import ABC
 from typing import TYPE_CHECKING, Self, cast
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import SourceCollector, TimePassedCollector
-from collector_utilities.date_time import MIN_DATETIME, parse_datetime
+from collector_utilities.date_time import MIN_DATETIME
 from collector_utilities.type import URL, Response
 from model import SourceMeasurement, SourceResponses
 
@@ -21,13 +23,13 @@ class AzureDevopsFileUpToDateness(TimePassedCollector, AzureDevopsRepositoryBase
 
     async def _api_url(self) -> URL:
         """Extend to add the commit API path and associated parameters."""
-        api_url = str(await super()._api_url())
+        api_url = await super()._api_url()
         path = self._parameter("file_path", quote=True)
         branch = self._parameter("branch", quote=True)
         search_criteria = (
             f"searchCriteria.itemPath={path}&searchCriteria.itemVersion.version={branch}&searchCriteria.$top=1"
         )
-        return URL(f"{api_url}/commits?{search_criteria}&api-version=4.1")
+        return api_url / f"commits?{search_criteria}&api-version=4.1"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add a path to the file."""

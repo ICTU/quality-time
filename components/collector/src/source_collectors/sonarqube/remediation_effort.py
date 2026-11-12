@@ -1,12 +1,16 @@
 """SonarQube remediation effort collector."""
 
+from typing import TYPE_CHECKING
+
 from shared.utils.functions import first
 from shared_data_model import DATA_MODEL
 
-from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
 
 from .base import SonarQubeMetricsBaseClass
+
+if TYPE_CHECKING:
+    from collector_utilities.type import URL
 
 
 class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
@@ -46,7 +50,7 @@ class SonarQubeRemediationEffort(SonarQubeMetricsBaseClass):
         url = await super(SonarQubeMetricsBaseClass, self)._landing_url(SourceResponses())
         component = self._parameter("component")
         branch = self._parameter("branch")
-        return URL(f"{url}/component_measures?id={component}&branch={branch}&metric={effort_type}")
+        return url / f"component_measures?id={component}&branch={branch}&metric={effort_type}"
 
     def __effort_types(self) -> list[str]:
         """Return the user-selected effort types."""

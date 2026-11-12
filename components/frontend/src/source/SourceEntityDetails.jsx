@@ -6,9 +6,16 @@ import { func, node, oneOf, string } from "prop-types"
 import { useContext } from "react"
 
 import { setSourceEntityAttribute } from "../api/source"
+import { DataModelContext } from "../context/DataModel"
 import { accessGranted, EDIT_ENTITY_PERMISSION, PermissionsContext } from "../context/Permissions"
 import { TextField } from "../fields/TextField"
-import { entityPropType, entityStatusPropType, entityUserDataPropType, reportPropType } from "../sharedPropTypes"
+import {
+    dataModelPropType,
+    entityPropType,
+    entityStatusPropType,
+    entityUserDataPropType,
+    reportPropType,
+} from "../sharedPropTypes"
 import { capitalize, formatDays, getDesiredResponseTime } from "../utils"
 import { Header } from "../widgets/Header"
 import { SOURCE_ENTITY_STATUS_ACTION, SOURCE_ENTITY_STATUS_NAME } from "./source_entity_status"
@@ -26,17 +33,18 @@ entityStatusOption.propTypes = {
     subheader: node,
 }
 
-function responseTimeClause(report, status, prefix = "for") {
-    const responseTime = getDesiredResponseTime(report, status)
+function responseTimeClause(report, dataModel, status, prefix = "for") {
+    const responseTime = getDesiredResponseTime(report, status, dataModel)
     return responseTime === null ? "" : ` ${prefix} ${formatDays(responseTime)}`
 }
 responseTimeClause.propTypes = {
+    dataModel: dataModelPropType,
     status: entityStatusPropType,
     report: reportPropType,
     prefix: oneOf(["for", "within"]),
 }
 
-function entityStatusOptions(entityType, report) {
+function entityStatusOptions(entityType, report, dataModel) {
     return [
         entityStatusOption(
             "unconfirmed",
@@ -44,30 +52,32 @@ function entityStatusOptions(entityType, report) {
         ),
         entityStatusOption(
             "confirmed",
-            `This ${entityType} has been reviewed and should be addressed${responseTimeClause(report, "confirmed", "within")}.`,
+            `This ${entityType} has been reviewed and should be addressed${responseTimeClause(report, dataModel, "confirmed", "within")}.`,
         ),
         entityStatusOption(
             "fixed",
-            `Ignore this ${entityType}${responseTimeClause(report, "fixed")} because it has been fixed or will be fixed shortly.`,
+            `Ignore this ${entityType}${responseTimeClause(report, dataModel, "fixed")} because it has been fixed or will be fixed shortly.`,
         ),
         entityStatusOption(
             "false_positive",
             // If the user marks then entity status as false positive, apparently the entity type is incorrect,
             // hence the false positive option has quotes around the entity type:
-            `Ignore this "${entityType}"${responseTimeClause(report, "false_positive")} because it has been incorrectly identified as ${entityType}.`,
+            `Ignore this "${entityType}"${responseTimeClause(report, dataModel, "false_positive")} because it has been incorrectly identified as ${entityType}.`,
         ),
         entityStatusOption(
             "wont_fix",
-            `Ignore this ${entityType}${responseTimeClause(report, "wont_fix")} because it will not be fixed.`,
+            `Ignore this ${entityType}${responseTimeClause(report, dataModel, "wont_fix")} because it will not be fixed.`,
         ),
     ]
 }
 entityStatusOptions.propTypes = {
+    dataModel: dataModelPropType,
     entityType: string,
     report: reportPropType,
 }
 
 export function SourceEntityDetails({ entity, entityUserData, metricUuid, name, reload, report, sourceUuid }) {
+    const dataModel = useContext(DataModelContext)
     const permissions = useContext(PermissionsContext)
     const disabled = !accessGranted(permissions, [EDIT_ENTITY_PERMISSION])
     const { rationale, status, statusEndDate } = entityUserData
@@ -83,7 +93,7 @@ export function SourceEntityDetails({ entity, entityUserData, metricUuid, name, 
                     select
                     value={status}
                 >
-                    {entityStatusOptions(name, report).map((option) => (
+                    {entityStatusOptions(name, report, dataModel).map((option) => (
                         <MenuItem key={option.key} value={option.value}>
                             {option.content}
                         </MenuItem>

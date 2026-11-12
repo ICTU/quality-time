@@ -4,14 +4,17 @@ import urllib.parse
 from abc import ABC
 from typing import TYPE_CHECKING, Any
 
+from shared.utils.date_time import parse_datetime
+
 from base_collectors import SourceCollector
-from collector_utilities.date_time import minutes, parse_datetime
+from collector_utilities.date_time import minutes
 from collector_utilities.exceptions import NotFoundError
-from collector_utilities.type import URL, Response
 from model import Entities, Entity, SourceResponses
 
 if TYPE_CHECKING:
     from datetime import datetime
+
+    from collector_utilities.type import URL, Response
 
 type Job = dict[str, Any]
 
@@ -21,20 +24,19 @@ class AzureDevopsRepositoryBase(SourceCollector, ABC):
 
     async def _api_url(self) -> URL:
         """Extend to add the repository."""
-        api_url = str(await super()._api_url())
-        return URL(f"{api_url}/_apis/git/repositories/{await self.__repository_id()}")
+        return await super()._api_url() / f"_apis/git/repositories/{await self.__repository_id()}"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the repository."""
-        landing_url = str(await super()._landing_url(responses))
+        landing_url = await super()._landing_url(responses)
         repository = self._parameter("repository") or landing_url.rsplit("/", 1)[-1]
-        return URL(f"{landing_url}/_git/{repository}")
+        return landing_url / f"_git/{repository}"
 
     async def __repository_id(self) -> str:
         """Return the repository id belonging to the repository."""
-        api_url = str(await super()._api_url())
+        api_url = await super()._api_url()
         repository = self._parameter("repository") or urllib.parse.unquote(api_url.rsplit("/", 1)[-1])
-        repositories_url = URL(f"{api_url}/_apis/git/repositories?api-version=4.1")
+        repositories_url = api_url / "_apis/git/repositories?api-version=4.1"
         repositories = (await (await super()._get_source_responses(repositories_url))[0].json())["value"]
         matching_repositories = [r for r in repositories if repository in (r["name"], r["id"])]
         if not matching_repositories:
@@ -47,11 +49,11 @@ class AzureDevopsJobs(SourceCollector):
 
     async def _api_url(self) -> URL:
         """Extend to add the build definitions API path."""
-        return URL(f"{await super()._api_url()}/_apis/build/definitions?includeLatestBuilds=true&api-version=4.1")
+        return await super()._api_url() / "_apis/build/definitions?includeLatestBuilds=true&api-version=4.1"
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Override to add the builds path."""
-        return URL(f"{await super()._api_url()}/_build")
+        return await super()._api_url() / "_build"
 
     async def _parse_entities(self, responses: SourceResponses) -> Entities:
         """Override to parse the jobs."""
@@ -119,7 +121,7 @@ class AzureDevopsPipelines(SourceCollector):
         extra_path = "" if not pipeline_id else f"/{pipeline_id}/runs"
         api_url = await SourceCollector._api_url(self)  # noqa: SLF001
         # Use the oldest API version in which the endpoint is available:
-        return URL(f"{api_url}/_apis/pipelines{extra_path}?api-version=6.0-preview.1")
+        return api_url / f"_apis/pipelines{extra_path}?api-version=6.0-preview.1"
 
     async def _active_pipelines(self) -> list[int]:
         """Find all active pipeline ids to traverse."""

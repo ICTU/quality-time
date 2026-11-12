@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from shared.model.iterators import metrics, subjects
 
-from collector_utilities.type import URL
 from model import SourceMeasurement, SourceResponses
 from model.entity import Entities, Entity
 
@@ -13,19 +12,21 @@ from .base import QualityTimeCollector
 if TYPE_CHECKING:
     from shared.utils.type import ReportId
 
+    from collector_utilities.type import URL
+
 
 class QualityTimeMissingMetrics(QualityTimeCollector):
     """Collector to get the number of missing metrics from Quality-time."""
 
     async def _api_url(self) -> URL:
         """Extend to add the reports API path."""
-        return URL(await super()._api_url() + "/api/internal")
+        return await super()._api_url() / "api/internal"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Get responses for reports and the datamodel."""
         api_url = urls[0]
-        datamodel_url = URL(f"{api_url}/datamodel")
-        reports_url = URL(f"{api_url}/report")
+        datamodel_url = api_url / "datamodel"
+        reports_url = api_url / "report"
         return await super()._get_source_responses(datamodel_url, reports_url)
 
     async def _parse_source_responses(self, responses: SourceResponses) -> SourceMeasurement:
@@ -107,7 +108,7 @@ class QualityTimeMissingMetrics(QualityTimeCollector):
     ) -> Entities:
         """Return the subject's missing metric types as entities."""
         report_uuid = report["report_uuid"]
-        report_url = f"{landing_url}/{report_uuid}"
+        report_url = landing_url / report_uuid
         subject = report["subjects"][subject_uuid]
         subject_type = self.subject_type(data_model["subjects"], subject["type"])
         subject_type_name = subject_type["name"]

@@ -6,10 +6,9 @@ from datetime import datetime, timedelta
 from operator import itemgetter
 from typing import cast
 
-from shared.utils.date_time import now
+from shared.utils.date_time import now, parse_datetime
 
 from base_collectors import LinkPaginationSourceCollector, TokenAuthenticationSourceCollector
-from collector_utilities.date_time import parse_datetime
 from collector_utilities.functions import add_query
 from collector_utilities.type import URL
 from model import Entities, Entity, SourceResponses
@@ -35,7 +34,7 @@ class GitLabProjectBase(GitLabBase, ABC):
         """Return a GitLab API url for a project, if present in the parameters."""
         url = await super()._api_url()
         project = self._parameter("project", quote=True)
-        api_url = URL(f"{url}/api/v4/projects/{project}" + (f"/{api}" if api else ""))
+        api_url = url / f"api/v4/projects/{project}" / api
         return add_query(api_url, self.PAGE_SIZE)
 
 
@@ -48,7 +47,7 @@ class GitLabJobsBase(GitLabProjectBase):
 
     async def _landing_url(self, responses: SourceResponses) -> URL:
         """Extend to add the jobs landing page."""
-        return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/-/jobs")
+        return await super()._landing_url(responses) / f"{self._parameter('project')}/-/jobs"
 
     async def _next_urls(self, responses: SourceResponses) -> list[URL]:
         """Return the next (pagination) links from the responses as long as we're within look-back days."""
@@ -129,7 +128,7 @@ class GitLabPipelineBase(GitLabProjectBase):
 
     async def _project_pipelines_landing_url(self, responses: SourceResponses) -> URL:
         """Return the landing URL of the pipelines page of the project."""
-        return URL(f"{await super()._landing_url(responses)}/{self._parameter('project')}/-/pipelines")
+        return await super()._landing_url(responses) / f"{self._parameter('project')}/-/pipelines"
 
     async def _get_source_responses(self, *urls: URL) -> SourceResponses:
         """Extend to get pipeline schedule descriptions."""
