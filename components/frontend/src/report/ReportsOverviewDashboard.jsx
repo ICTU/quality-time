@@ -10,7 +10,7 @@ import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
 import { datesPropType, measurementsPropType, reportsPropType, settingsPropType } from "../sharedPropTypes"
 import { getReportsTags, nrMetricsInReport, sum } from "../utils"
 import { Tag } from "../widgets/Tag"
-import { summarizeReportOnDate, summarizeReportsOnDate } from "./report_utils"
+import { isLatestDate, summarizeReportOnDate, summarizeReportsOnDate } from "./report_utils"
 
 export function ReportsOverviewDashboard({
     dates,
@@ -35,6 +35,7 @@ export function ReportsOverviewDashboard({
                 report,
                 measurements,
                 date,
+                isLatestDate(date, dates),
             )
         })
     })
@@ -43,7 +44,16 @@ export function ReportsOverviewDashboard({
     tags.forEach((tag) => {
         tagSummary[tag] = {}
         dates.forEach((date) => {
-            tagSummary[tag][date] = summarizeReportsOnDate(dataModel, settings, reports, measurements, date, tag)
+            const latestDate = isLatestDate(date, dates)
+            tagSummary[tag][date] = summarizeReportsOnDate(
+                dataModel,
+                settings,
+                reports,
+                measurements,
+                date,
+                latestDate,
+                tag,
+            )
             nrMetrics = Math.max(nrMetrics, sum(tagSummary[tag][date]))
         })
     })

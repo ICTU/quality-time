@@ -1,7 +1,7 @@
 import { STATUS_NAME } from "../metric/status"
 import { sortMetrics, subjectIsEmptyDueToFilters } from "../subject/Subject"
 import { determineColumnsToHide } from "../subject/subject_column"
-import { metricDelta, metricValueAndStatusOnDate } from "../subject/SubjectTableRow"
+import { metricDelta } from "../subject/SubjectTableRow"
 import {
     formatDays,
     formatMetricValueWithScale,
@@ -21,7 +21,7 @@ import {
     identifyingParameterValues,
     visibleMetrics,
 } from "../utils"
-import { reverseSortMeasurements } from "./report_utils"
+import { isLatestDate, metricValueAndStatusOnDate, reverseSortMeasurements } from "./report_utils"
 
 // The metric columns that can appear in the CSV, in the same order as the report table (the trend sparkline column is
 // omitted because it has no textual representation). Date columns are inserted between "Metric" and "Status" for
@@ -116,7 +116,15 @@ function dateCellValues(metric, metricUuid, csvContext, dates, showDelta) {
     const values = []
     let previousValue = "?"
     dates.forEach((date, index) => {
-        const [metricValue] = metricValueAndStatusOnDate(dataModel, metric, metricUuid, reversedMeasurements, date)
+        const latestDate = isLatestDate(date, dates)
+        const [metricValue] = metricValueAndStatusOnDate(
+            dataModel,
+            metric,
+            metricUuid,
+            reversedMeasurements,
+            date,
+            latestDate,
+        )
         if (showDelta && index > 0) {
             values.push(metricDelta(scale, metricValue, previousValue, dateOrderAscending))
         }

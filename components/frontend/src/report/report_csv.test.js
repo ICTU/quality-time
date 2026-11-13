@@ -131,7 +131,9 @@ it("produces value and delta columns for a multi-date view", () => {
             count: { value: "15", status: "near_target_met" },
         },
     ]
-    const csv = reportToCSV(makeReport(), measurements, dates, makeSettings(), dataModel)
+    const report = makeReport()
+    report.subjects.s1.metrics.m1.latest_measurement = { count: { value: "15", status: "near_target_met" } }
+    const csv = reportToCSV(report, measurements, dates, makeSettings(), dataModel)
     const lines = rows(csv)
     const expectedHeader = [
         "Subject",
@@ -150,8 +152,8 @@ it("produces value and delta columns for a multi-date view", () => {
     expect(lines[0]).toBe(expectedHeader)
     // M1 has a measurement on both dates: value 20, delta -5, value 15
     expect(lines[1]).toContain("20,-5,15")
-    // M2 has no measurements on these dates: ?, no delta, ?
-    expect(lines[2]).toContain("?,,?")
+    // M2 has no measurement on the first date, and on the latest date the value of its latest measurement: ?, no delta, 0
+    expect(lines[2]).toContain("?,,0")
 })
 
 it("escapes fields containing commas, quotes, and newlines", () => {
@@ -179,7 +181,7 @@ it("does not neutralize negative numbers", () => {
             name: "M1",
             status: "target_not_met",
             target: "10",
-            latest_measurement: { count: { value: "20", status: "target_not_met" } },
+            latest_measurement: { count: { value: "15", status: "near_target_met" } },
             sources: {},
         },
     }

@@ -21,11 +21,9 @@ import {
     SOURCES_TAB_INDEX,
     TREND_GRAPH_TAB_INDEX,
 } from "../metric/MetricDetails"
-import { measurementOnDate } from "../report/report_utils"
+import { isLatestDate, metricValueAndStatusOnDate } from "../report/report_utils"
 import {
     availabilityMessagePropType,
-    dataModelPropType,
-    datePropType,
     datesPropType,
     directionPropType,
     measurementsPropType,
@@ -173,19 +171,6 @@ DeltaCell.propTypes = {
     previousValue: string,
 }
 
-export function metricValueAndStatusOnDate(dataModel, metric, metricUuid, measurements, date) {
-    const measurement = measurementOnDate(date, measurements, metricUuid)
-    const scale = getMetricScale(metric, dataModel)
-    return [measurement?.[scale]?.value ?? "?", measurement?.[scale]?.status ?? "unknown"]
-}
-metricValueAndStatusOnDate.propTypes = {
-    dataModel: dataModelPropType,
-    metric: metricPropType,
-    metricUuid: string,
-    measurements: measurementsPropType,
-    date: datePropType,
-}
-
 function MeasurementCells({ dates, metric, metricUuid, measurements, settings }) {
     const dataModel = useContext(DataModelContext)
     const showDeltaColumns = settings.hiddenColumns.excludes("delta")
@@ -193,7 +178,15 @@ function MeasurementCells({ dates, metric, metricUuid, measurements, settings })
     const cells = []
     let previousValue = "?"
     dates.forEach((date, index) => {
-        const [metricValue, status] = metricValueAndStatusOnDate(dataModel, metric, metricUuid, measurements, date)
+        const latestDate = isLatestDate(date, dates)
+        const [metricValue, status] = metricValueAndStatusOnDate(
+            dataModel,
+            metric,
+            metricUuid,
+            measurements,
+            date,
+            latestDate,
+        )
         if (showDeltaColumns && index > 0) {
             cells.push(
                 <DeltaCell

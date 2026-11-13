@@ -144,6 +144,8 @@ export function getMetricUnit(metric, dataModel, value) {
 }
 
 export function isMeasurementOutdated(metric) {
+    // Return whether the metric configuration was changed after the most recent measurement,
+    // making that measurement outdated
     if (metric.latest_measurement) {
         return metric.latest_measurement.outdated ?? false
     }
