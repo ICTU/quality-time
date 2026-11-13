@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Allow for ignoring merge requests with auto-merge enabled when using GitLab as source for the 'merge requests' metric. Closes [#14720](https://github.com/ICTU/quality-time/issues/14720).
+
 ## v5.62.1 - 2026-11-09
 
 ### Changed
