@@ -288,7 +288,9 @@ itself.""",
 by setting the parameter "Required number of upvotes", the metric can report on merge requests that have fewer than the
 required number of upvotes. The parameter "Merge request state" can be used to exclude closed merge requests, for
 example. The parameter "Target branches to include" can be used to further limit the merge requests to only count merge
-requests that target specific branches, for example the "develop" branch.""",
+requests that target specific branches, for example the "develop" branch. When using GitLab as source, the parameter
+"Ignore merge requests with auto-merge enabled" can be used to not count merge requests that are deliberately merged
+without review, such as dependency updates.""",
         scales=["count", "percentage"],
         unit=Unit.MERGE_REQUESTS,
         unit_singular=Unit.MERGE_REQUEST,
