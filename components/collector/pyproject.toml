@@ -26,7 +26,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "mongomock==4.3.0",
-    "pydantic==2.14.2",                      # Needed for importing the data model in the tests from the shared code component
+    "pydantic==2.14.3",                      # Needed for importing the data model in the tests from the shared code component
     "shared-test-code",
     "tools",
     "types-beautifulsoup4==4.12.0.20250516",
