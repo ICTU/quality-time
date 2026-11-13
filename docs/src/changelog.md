@@ -16,6 +16,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 - Allow for ignoring merge requests with auto-merge enabled when using GitLab as source for the 'merge requests' metric. Closes [#14720](https://github.com/ICTU/quality-time/issues/14720).
 
+### Fixed
+
+- When the latest measurement of a metric was not from today, for example because the collector had been down since before midnight UTC, the dashboard would count the metric as unknown, while the subject table showed the status of the latest measurement. The dashboard, the subject table, and the CSV export now use the value and status of the latest measurement for the most recent date. Fixes [#10328](https://github.com/ICTU/quality-time/issues/10328).
+
 ## v5.62.1 - 2026-11-09
 
 ### Changed
