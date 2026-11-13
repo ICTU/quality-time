@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- New metric 'licenses' that counts dependencies with one or more of the configured licenses, with Dependency-Track as source. Which licenses are counted can be configured by license name or SPDX identifier, by license group, and by license attribute. Closes [#11842](https://github.com/ICTU/quality-time/issues/11842).
+
 ## v5.62.1 - 2026-11-09
 
 ### Changed

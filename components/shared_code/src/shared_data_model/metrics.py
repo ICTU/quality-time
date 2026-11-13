@@ -199,6 +199,16 @@ other parameters to select deployment jobs. Make sure the look-back period is th
         sources=["azure_devops", "gitlab", "jenkins", "manual_number"],
         tags=[Tag.CI],
     ),
+    "licenses": Metric(
+        name="Licenses",
+        description="The number of dependencies with (unwanted) licenses.",
+        rationale="Dependencies come with licenses that set conditions on how the software may be used and "
+        "distributed. Some licenses, such as copyleft or non-commercial licenses, may not fit the product. "
+        "Monitoring the licenses of dependencies helps to manage this license risk.",
+        unit=Unit.DEPENDENCIES,
+        unit_singular=Unit.DEPENDENCY,
+        sources=["dependency_track"],
+    ),
     "loc": Metric(
         name="Size (LOC)",
         description="The size of the software in lines of code.",
