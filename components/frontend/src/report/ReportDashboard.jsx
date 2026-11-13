@@ -11,7 +11,7 @@ import { MetricSummaryCard } from "../dashboard/MetricSummaryCard"
 import { datesPropType, measurementsPropType, reportPropType, settingsPropType } from "../sharedPropTypes"
 import { getReportTags, getSubjectName, nrMetricsInReport, sum, visibleMetrics } from "../utils"
 import { Tag } from "../widgets/Tag"
-import { summarizeMetricsOnDate, summarizeReportOnDate } from "./report_utils"
+import { isLatestDate, summarizeMetricsOnDate, summarizeReportOnDate } from "./report_utils"
 
 export function ReportDashboard({ dates, measurements, onClick, onClickTag, reload, report, settings }) {
     const dataModel = useContext(DataModelContext)
@@ -23,7 +23,8 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
             if (Object.keys(metrics).length > 0) {
                 const summary = {}
                 for (const date of dates) {
-                    summary[date] = summarizeMetricsOnDate(dataModel, date, measurements, metrics)
+                    const latestDate = isLatestDate(date, dates)
+                    summary[date] = summarizeMetricsOnDate(dataModel, date, latestDate, measurements, metrics)
                 }
                 subjectCards.push(
                     <MetricSummaryCard
@@ -43,7 +44,8 @@ export function ReportDashboard({ dates, measurements, onClick, onClickTag, relo
         getReportTags(report, settings.hiddenTags.value).forEach((tag) => {
             const summary = {}
             dates.forEach((date) => {
-                summary[date] = summarizeReportOnDate(dataModel, settings, report, measurements, date, tag)
+                const latestDate = isLatestDate(date, dates)
+                summary[date] = summarizeReportOnDate(dataModel, settings, report, measurements, date, latestDate, tag)
             })
             if (Object.values(summary).every((summaryOnDate) => sum(summaryOnDate) === 0)) {
                 return // Don't show a tag card when all metrics with the tag have been hidden
