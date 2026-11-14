@@ -39,6 +39,7 @@ query MRs($projectId: ID!) {{
         updatedAt
         mergedAt
         draft
+        autoMergeEnabled
         {approved}
       }}
     }}
@@ -153,6 +154,7 @@ class GitLabMergeRequests(MergeRequestCollector, GitLabBase):
             downvotes=str(merge_request["downvotes"]),
             upvotes=str(merge_request["upvotes"]),
             draft=str(merge_request.get("draft", False)),
+            auto_merge=str(merge_request.get("autoMergeEnabled", False)),
         )
 
     def _request_matches_approval(self, entity: Entity) -> bool:
@@ -166,10 +168,20 @@ class GitLabMergeRequests(MergeRequestCollector, GitLabBase):
 
     def _include_entity(self, entity: Entity) -> bool:
         """Return whether the merge request should be counted."""
-        return super()._include_entity(entity) and self._request_matches_draft_status(entity)
+        return (
+            super()._include_entity(entity)
+            and self._request_matches_draft_status(entity)
+            and self._request_matches_auto_merge_status(entity)
+        )
 
     def _request_matches_draft_status(self, entity: Entity) -> bool:
         """Return whether the merge request draft status matches the configured draft status."""
         ignore_drafts = self._parameter("ignore_draft_merge_requests")
         is_draft = entity["draft"] == "True"
         return not (ignore_drafts == "yes" and is_draft)
+
+    def _request_matches_auto_merge_status(self, entity: Entity) -> bool:
+        """Return whether the merge request auto-merge status matches the configured auto-merge status."""
+        ignore_auto_merge = self._parameter("ignore_merge_requests_with_auto_merge_enabled")
+        has_auto_merge = entity["auto_merge"] == "True"
+        return not (ignore_auto_merge == "yes" and has_auto_merge)

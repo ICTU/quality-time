@@ -23,6 +23,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         upvotes: int = 1,
         approved: bool | None = None,
         draft: bool = False,
+        auto_merge: bool = False,
     ) -> dict[str, int | str | bool | None]:
         """Create a merge request."""
         return {
@@ -38,6 +39,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
             "downvotes": 0,
             "approved": approved,
             "draft": draft,
+            "autoMergeEnabled": auto_merge,
         }
 
     @staticmethod
@@ -65,6 +67,7 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         state: str = "merged",
         upvotes: int = 1,
         approved: str = "?",
+        auto_merge: bool = False,
     ) -> dict[str, str | None]:
         """Create an entity."""
         return {
@@ -80,11 +83,19 @@ class GitLabMergeRequestsTest(GitLabTestCase):
             "upvotes": str(upvotes),
             "downvotes": "0",
             "draft": "False",
+            "auto_merge": str(auto_merge),
         }
 
-    async def collect_merge_requests(self, execute_mock: AsyncMock):
-        """Return the source responses."""
-        with patch("aiogqlc.GraphQLClient.execute", execute_mock):
+    async def collect_merge_requests(self, *pages, dry_run=None):
+        """Collect the merge requests from the GraphQL response pages.
+
+        The collector first does a dry-run to detect the approved field. Unless a separate dry-run response is passed,
+        the dry-run gets the first page as response.
+        """
+        responses = [self.mock_response(page) for page in pages]
+        dry_run_response = responses[0] if dry_run is None else self.mock_response(dry_run)
+        execute = AsyncMock(side_effect=[dry_run_response, *responses])
+        with patch("aiogqlc.GraphQLClient.execute", execute):
             async with aiohttp.ClientSession() as session:
                 collector = MetricCollector(session, self.metric)
                 return await collector.collect()
@@ -97,6 +108,10 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         # raise_for_status is sync on aiohttp.ClientResponse; override AsyncMock to avoid unawaited coroutines.
         response.raise_for_status = MagicMock()
         return response
+
+    def assert_measurement(self, measurement, **attributes) -> None:
+        """Extend to check the landing URL."""
+        super().assert_measurement(measurement, landing_url=self.LANDING_URL, **attributes)
 
     async def test_merge_requests(self):
         """Test that the number of merge requests can be measured."""
@@ -111,24 +126,16 @@ class GitLabMergeRequestsTest(GitLabTestCase):
                 self.merge_request_json(4, branch="dev"),  # Excluded because of target branch
             ],
         )
-        merge_requests_response = self.mock_response(merge_requests_json)
-        # The first call is the dry-run that detects the approved field, the second is the real first page.
-        execute = AsyncMock(side_effect=[merge_requests_response, merge_requests_response])
-        entities = [self.create_entity(1)]
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(measurement, value="1", total="4", entities=entities, landing_url=self.LANDING_URL)
+        measurement = await self.collect_merge_requests(merge_requests_json)
+        self.assert_measurement(measurement, value="1", total="4", entities=[self.create_entity(1)])
 
     async def test_pagination(self):
         """Test that pagination works."""
-        merge_requests_json1 = self.merge_requests_json([self.merge_request_json(1)], count=2, has_next_page=True)
-        merge_requests_json2 = self.merge_requests_json([self.merge_request_json(2)], count=2)
-        merge_requests_page1 = self.mock_response(merge_requests_json1)
-        merge_requests_page2 = self.mock_response(merge_requests_json2)
-        # Dry-run, real page 1, page 2.
-        execute = AsyncMock(side_effect=[merge_requests_page1, merge_requests_page1, merge_requests_page2])
+        page1 = self.merge_requests_json([self.merge_request_json(1)], count=2, has_next_page=True)
+        page2 = self.merge_requests_json([self.merge_request_json(2)], count=2)
+        measurement = await self.collect_merge_requests(page1, page2)
         entities = [self.create_entity(1), self.create_entity(2)]
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(measurement, value="2", total="2", entities=entities, landing_url=self.LANDING_URL)
+        self.assert_measurement(measurement, value="2", total="2", entities=entities)
 
     async def test_approval(self):
         """Test that merge requests can be filtered by approval state."""
@@ -136,23 +143,13 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         merge_requests_json = self.merge_requests_json(
             [self.merge_request_json(1, approved=True), self.merge_request_json(2)],
         )
-        merge_requests_response = self.mock_response(merge_requests_json)
-        execute = AsyncMock(side_effect=[merge_requests_response, merge_requests_response])
-        entities = [self.create_entity(1, approved="yes")]
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(measurement, value="1", total="2", entities=entities, landing_url=self.LANDING_URL)
+        measurement = await self.collect_merge_requests(merge_requests_json)
+        self.assert_measurement(measurement, value="1", total="2", entities=[self.create_entity(1, approved="yes")])
 
     async def test_insufficient_permissions(self):
         """Test that the collector returns a helpful error message if no merge request info is returned."""
-        merge_requests_json = {"data": {"project": None}}
-        merge_requests_response = self.mock_response(merge_requests_json)
-        execute = AsyncMock(side_effect=[merge_requests_response, merge_requests_response])
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(
-            measurement,
-            landing_url=self.LANDING_URL,
-            connection_error="Merge request info for project",
-        )
+        measurement = await self.collect_merge_requests({"data": {"project": None}})
+        self.assert_measurement(measurement, connection_error="Merge request info for project")
 
     async def test_ignore_drafts(self):
         """Test that merge requests can be filtered by draft state."""
@@ -160,46 +157,43 @@ class GitLabMergeRequestsTest(GitLabTestCase):
         merge_requests_json = self.merge_requests_json(
             [self.merge_request_json(1, draft=True), self.merge_request_json(2)],
         )
-        merge_requests_response = self.mock_response(merge_requests_json)
-        execute = AsyncMock(side_effect=[merge_requests_response, merge_requests_response])
-        entities = [self.create_entity(2)]
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(measurement, value="1", total="2", entities=entities, landing_url=self.LANDING_URL)
+        measurement = await self.collect_merge_requests(merge_requests_json)
+        self.assert_measurement(measurement, value="1", total="2", entities=[self.create_entity(2)])
 
-    async def test_ignore_drafts_without_drafts(self):
-        """Test that merge requests can be filtered by draft state."""
-        self.set_source_parameter("ignore_draft_merge_requests", "yes")
+    async def test_ignore_auto_merge(self):
+        """Test that merge requests with auto-merge enabled can be ignored, regardless of their number of upvotes."""
+        self.set_source_parameter("ignore_merge_requests_with_auto_merge_enabled", "yes")
+        self.set_source_parameter("upvotes", "1")
         merge_requests_json = self.merge_requests_json(
-            [self.merge_request_json(1)],
+            [self.merge_request_json(1, upvotes=0, auto_merge=True), self.merge_request_json(2, upvotes=0)],
         )
-        merge_requests_response = self.mock_response(merge_requests_json)
-        execute = AsyncMock(side_effect=[merge_requests_response, merge_requests_response])
-        entities = [self.create_entity(1)]
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(measurement, value="1", total="1", entities=entities, landing_url=self.LANDING_URL)
+        measurement = await self.collect_merge_requests(merge_requests_json)
+        self.assert_measurement(measurement, value="1", total="2", entities=[self.create_entity(2, upvotes=0)])
+
+    async def test_do_not_ignore_auto_merge_by_default(self):
+        """Test that merge requests with auto-merge enabled are counted by default."""
+        merge_requests_json = self.merge_requests_json(
+            [self.merge_request_json(1, auto_merge=True), self.merge_request_json(2)],
+        )
+        measurement = await self.collect_merge_requests(merge_requests_json)
+        entities = [self.create_entity(1, auto_merge=True), self.create_entity(2)]
+        self.assert_measurement(measurement, value="2", total="2", entities=entities)
+
+    async def test_missing_auto_merge_field(self):
+        """Test that a merge request without the auto-merge field is assumed not to have auto-merge enabled."""
+        merge_request_json = self.merge_request_json(1)
+        del merge_request_json["autoMergeEnabled"]
+        measurement = await self.collect_merge_requests(self.merge_requests_json([merge_request_json]))
+        self.assert_measurement(measurement, value="1", total="1", entities=[self.create_entity(1)])
 
     async def test_approved_field_unknown_falls_back(self):
         """Test that the collector falls back to a query without the approved field if GitLab rejects it."""
-        unknown_field_json = {
-            "errors": [{"message": "Field 'approved' doesn't exist on type 'MergeRequest'"}],
-        }
+        unknown_field_json = {"errors": [{"message": "Field 'approved' doesn't exist on type 'MergeRequest'"}]}
         merge_requests_json = self.merge_requests_json([self.merge_request_json(1)])
-        unknown_field_response = self.mock_response(unknown_field_json)
-        merge_requests_response = self.mock_response(merge_requests_json)
-        # Dry-run returns the unknown-field error, then the real first page succeeds without the field.
-        execute = AsyncMock(side_effect=[unknown_field_response, merge_requests_response])
-        entities = [self.create_entity(1)]
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(measurement, value="1", total="1", entities=entities, landing_url=self.LANDING_URL)
+        measurement = await self.collect_merge_requests(merge_requests_json, dry_run=unknown_field_json)
+        self.assert_measurement(measurement, value="1", total="1", entities=[self.create_entity(1)])
 
     async def test_unrelated_graphql_error_surfaces(self):
         """Test that unrelated GraphQL errors are surfaced as a connection error."""
-        error_json = {"errors": [{"message": "Something else went wrong"}]}
-        error_response = self.mock_response(error_json)
-        execute = AsyncMock(side_effect=[error_response, error_response])
-        measurement = await self.collect_merge_requests(execute)
-        self.assert_measurement(
-            measurement,
-            landing_url=self.LANDING_URL,
-            connection_error="Something else went wrong",
-        )
+        measurement = await self.collect_merge_requests({"errors": [{"message": "Something else went wrong"}]})
+        self.assert_measurement(measurement, connection_error="Something else went wrong")

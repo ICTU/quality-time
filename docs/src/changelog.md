@@ -14,6 +14,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ### Added
 
+- Allow for ignoring merge requests with auto-merge enabled when using GitLab as source for the 'merge requests' metric. Closes [#14720](https://github.com/ICTU/quality-time/issues/14720).
 - New metric 'licenses' that counts dependencies with one or more of the configured licenses, with Dependency-Track as source. Which licenses are counted can be configured by license name or SPDX identifier, by license group, and by license attribute. Closes [#11842](https://github.com/ICTU/quality-time/issues/11842).
 
 ## v5.62.1 - 2026-11-09
