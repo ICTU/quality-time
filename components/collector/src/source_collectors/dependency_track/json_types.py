@@ -29,6 +29,32 @@ class DependencyTrackRepositoryMetaData(TypedDict):
     latestVersion: str
 
 
+class DependencyTrackResolvedLicense(TypedDict):
+    """License of a component as returned by Dependency-Track, with only the attributes the collector needs."""
+
+    name: str
+    uuid: str
+    licenseId: NotRequired[str]  # The SPDX license identifier, absent for custom licenses
+
+
+class DependencyTrackLicenseGroup(TypedDict):
+    """License group as returned by Dependency-Track."""
+
+    name: str
+
+
+class DependencyTrackLicense(TypedDict):
+    """License as returned by the Dependency-Track license API."""
+
+    name: str
+    uuid: str
+    licenseId: NotRequired[str]
+    isOsiApproved: NotRequired[bool]
+    isFsfLibre: NotRequired[bool]
+    isDeprecatedLicenseId: NotRequired[bool]
+    licenseGroups: NotRequired[list[DependencyTrackLicenseGroup]]
+
+
 class DependencyTrackComponent(TypedDict):
     """Component as returned by the Dependency-Track component API, with only the attributes the collector needs."""
 
@@ -36,5 +62,7 @@ class DependencyTrackComponent(TypedDict):
     uuid: str
     # Direct dependencies is a JSON string with a list of component identities, and null if the component has none
     directDependencies: NotRequired[str | None]
+    license: NotRequired[str]  # License name, if Dependency-Track could not resolve the license
     repositoryMeta: NotRequired[DependencyTrackRepositoryMetaData]
+    resolvedLicense: NotRequired[DependencyTrackResolvedLicense]
     version: NotRequired[str]

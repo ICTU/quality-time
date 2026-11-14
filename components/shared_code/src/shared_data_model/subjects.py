@@ -97,6 +97,7 @@ SUBJECTS = {
                     "dependencies",
                     "duplicated_lines",
                     "issues",
+                    "licenses",
                     "loc",
                     "long_units",
                     "many_parameters",
