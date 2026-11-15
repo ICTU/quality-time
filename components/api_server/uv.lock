@@ -85,7 +85,7 @@ dev = [
     { name = "pydantic", specifier = "==2.14.3" },
     { name = "shared-test-code", directory = "../../tests/shared_test_code" },
     { name = "tools", virtual = "../../tools/third_party" },
-    { name = "types-ldap3", specifier = "==2.9.13.20260827" },
+    { name = "types-ldap3", specifier = "==2.9.13.20261107" },
     { name = "types-python-dateutil", specifier = "==2.9.0.20261104" },
     { name = "types-requests", specifier = "==2.33.0.20261030" },
 ]
@@ -1193,14 +1193,14 @@ wheels = [
 
 [[package]]
 name = "py-serializable"
-version = "2.1.0"
+version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "defusedxml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/73/21/d250cfca8ff30c2e5a7447bc13861541126ce9bd4426cd5d0c9f08b5547d/py_serializable-2.1.0.tar.gz", hash = "sha256:9d5db56154a867a9b897c0163b33a793c804c80cee984116d02d49e4578fc103", size = 52368, upload-time = "2025-07-21T09:56:48.07Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/48/8c/cad9596066de835b304be48b0eefa30dae1834afae6e670805831cc05ea2/py_serializable-2.2.0.tar.gz", hash = "sha256:8e4fa02e8de819c0488ccdb69c2d3109274adcf224c02357fd8729cb12727aab", size = 52608, upload-time = "2026-11-06T13:43:39.943Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9b/bf/7595e817906a29453ba4d99394e781b6fabe55d21f3c15d240f85dd06bb1/py_serializable-2.1.0-py3-none-any.whl", hash = "sha256:b56d5d686b5a03ba4f4db5e769dc32336e142fc3bd4d68a8c25579ebb0a67304", size = 23045, upload-time = "2025-07-21T09:56:46.848Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/56/94f6a9ac81193713e6be0d41c62d6b916b53c814c05d8b3a0d90976db0d6/py_serializable-2.2.0-py3-none-any.whl", hash = "sha256:2cce775abc5aac12115f9ff572a145c7276d04a770090334bd4e51ed9c782415", size = 23101, upload-time = "2026-11-06T13:43:38.593Z" },
 ]
 
 [[package]]
@@ -1678,7 +1678,7 @@ project-wide = [
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.32.0" },
 ]
-update-time = [{ name = "update-time", specifier = "==0.0.55" }]
+update-time = [{ name = "update-time", specifier = "==0.0.56" }]
 uv = [{ name = "uv", specifier = "==0.13.7" }]
 
 [[package]]
@@ -1759,14 +1759,14 @@ wheels = [
 
 [[package]]
 name = "types-ldap3"
-version = "2.9.13.20260827"
+version = "2.9.13.20261107"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "types-pyasn1" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/12/5a/71a62370bd5ece50c0ab63d764b76200a8ede95efa0e74f16d9246b3f0bb/types_ldap3-2.9.13.20260827.tar.gz", hash = "sha256:06091fb1d93f2a012c446f7476dfc72fc2ae5e818552506c1f87770b4e2264ec", size = 34632, upload-time = "2026-08-27T12:07:07.974Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2f/e6/e20a33fc1c1a8771562435eae8120b1bd4a62afe5c9a034bf02b6e4aa1df/types_ldap3-2.9.13.20261107.tar.gz", hash = "sha256:6a709b501018a3f40aaccd54e259bed2c5b3c3b443f5730895cd70b6131c01d2", size = 34706, upload-time = "2026-11-07T07:55:32.608Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/df/7c/a63bba957b18a33497fadadd285e6a2c4fd2ac25c3dcbf13f6945442c833/types_ldap3-2.9.13.20260827-py3-none-any.whl", hash = "sha256:11917e8e5f34c6c31a256cd361182b188d346f44fe70d036c4843c5cc9d03d96", size = 57457, upload-time = "2026-08-27T12:07:07.073Z" },
+    { url = "https://files.pythonhosted.org/packages/fa/32/f8594da92a18d3cc421e2c06080031c7c6af1b788dfa614c7ea4a9225097/types_ldap3-2.9.13.20261107-py3-none-any.whl", hash = "sha256:ad165e53c18a0c1e7dcf40fb6a2d6706496670505e4e6dc2a0dd7fa3590605fe", size = 57455, upload-time = "2026-11-07T07:55:31.495Z" },
 ]
 
 [[package]]
