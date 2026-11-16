@@ -135,14 +135,15 @@ function fetchMeasurements(
     setMeasurementsStatus,
     showMessage,
 ) {
-    const title = `Could not reach the Quality-time API-server to retrieve measurements for metric ${metricName} in subject ${subjectName}. Please check your network connectivity.`
+    const title = "Could not reach the Quality-time API-server to retrieve measurements"
+    const context = `Metric: ${metricName}. Subject: ${subjectName}. Please check your network connectivity.`
     getMetricMeasurements(metricUuid, reportDate)
         .then(function (json) {
             if (json.ok === false) {
                 showMessage({
                     severity: "error",
                     title: title,
-                    description: `HTTP status code: ${json.status}. HTTP status message: ${json.statusText}.`,
+                    description: `${context} HTTP status code: ${json.status}. HTTP status message: ${json.statusText}.`,
                 })
                 setMeasurementsStatus("failed")
             } else {
@@ -152,7 +153,7 @@ function fetchMeasurements(
             return null
         })
         .catch((error) => {
-            showMessage({ severity: "error", title: title, description: `${error.message}` })
+            showMessage({ severity: "error", title: title, description: `${context} Error message: ${error.message}` })
             setMeasurementsStatus("failed")
         })
 }

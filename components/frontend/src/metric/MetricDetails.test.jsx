@@ -256,8 +256,9 @@ it("loads a missing list of measurements", async () => {
     expect(showSnackbarMessage).toHaveBeenCalledTimes(0)
 })
 
-const expectedFetchMeasurementsErrorTitle =
-    "Could not reach the Quality-time API-server to retrieve measurements for metric Violations in subject Example subject. Please check your network connectivity."
+const expectedFetchMeasurementsErrorTitle = "Could not reach the Quality-time API-server to retrieve measurements"
+const expectedFetchMeasurementsErrorContext =
+    "Metric: Violations. Subject: Example subject. Please check your network connectivity."
 
 it("fails to load measurements due to a failed promise", async () => {
     history.push("?expanded=metric_uuid:5")
@@ -271,7 +272,7 @@ it("fails to load measurements due to a failed promise", async () => {
     expect(showSnackbarMessage).toHaveBeenCalledWith({
         severity: "error",
         title: expectedFetchMeasurementsErrorTitle,
-        description: "Failure",
+        description: `${expectedFetchMeasurementsErrorContext} Error message: Failure`,
     })
 })
 
@@ -287,7 +288,7 @@ it("fails to load measurements due to an HTTP error", async () => {
     expect(showSnackbarMessage).toHaveBeenCalledWith({
         severity: "error",
         title: expectedFetchMeasurementsErrorTitle,
-        description: "HTTP status code: 502. HTTP status message: Bad gateway.",
+        description: `${expectedFetchMeasurementsErrorContext} HTTP status code: 502. HTTP status message: Bad gateway.`,
     })
 })
 

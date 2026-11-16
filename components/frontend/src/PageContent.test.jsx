@@ -145,8 +145,8 @@ it("fails to load measurements", async () => {
     await renderPageContent({ showMessage: showMessage })
     expect(showMessage).toHaveBeenCalledWith({
         severity: "error",
-        title: "Could not reach the Quality-time API-server to retrieve measurements. Please check your network connectivity.",
-        description: "Error description",
+        title: "Could not reach the Quality-time API-server to retrieve measurements",
+        description: "Please check your network connectivity. Error message: Error description",
     })
 })
 
