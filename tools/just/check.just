@@ -104,10 +104,9 @@ lockfile-aliases folder="": (js-check "lockfile-aliases" f"{{ python }} {{ justf
 # GHSA advisory IDs to ignore in npm audit. Document why each one is safe to ignore. The npm-audit-ignores recipe
 # below fails when an advisory listed here is no longer reported, so that fixed advisories don't linger in this list.
 # low: GHSA-238p-pmpm-9mq7 KaTeX: Existing prototype pollution can bypass trust restrictions
-# low: GHSA-gcqx-w48m-w2h4 deepmerge mergeObject() allows prototype poisoning of returned objects
 # moderate: GHSA-g3hv-75wg-m249 minimatch has potential denial of service via globparts amplification
 # moderate: GHSA-3g3m-2fjr-6pw4 Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal
-npm_audit_ignore := "GHSA-238p-pmpm-9mq7 GHSA-gcqx-w48m-w2h4 GHSA-g3hv-75wg-m249 GHSA-3g3m-2fjr-6pw4"
+npm_audit_ignore := "GHSA-238p-pmpm-9mq7 GHSA-g3hv-75wg-m249 GHSA-3g3m-2fjr-6pw4"
 
 # Run npm audit to check JavaScript dependencies for known security vulnerabilities, ignoring the advisories listed in npm_audit_ignore.
 [no-cd]
