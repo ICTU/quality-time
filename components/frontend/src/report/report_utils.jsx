@@ -1,9 +1,10 @@
-import { string } from "prop-types"
+import { bool, string } from "prop-types"
 
 import { STATUS_COLORS } from "../metric/status"
 import {
     dataModelPropType,
     datePropType,
+    datesPropType,
     measurementsPropType,
     metricPropType,
     metricsPropType,
@@ -17,7 +18,9 @@ import {
     addCounts,
     getMetricName,
     getMetricScale,
+    getMetricStatus,
     getMetricTags,
+    getMetricValue,
     getSourceName,
     getSubjectName,
     visibleMetrics,
@@ -48,25 +51,48 @@ measurementOnDate.propTypes = {
     metricUuid: string,
 }
 
-function metricStatusOnDate(metricUuid, metric, measurements, date, dataModel) {
-    const measurement = measurementOnDate(date, measurements, metricUuid)
-    const scale = getMetricScale(metric, dataModel)
-    return measurement?.[scale]?.status ?? "unknown"
+export function isLatestOfDates(date, dates) {
+    // Return whether the date is the most recent of the dates, i.e. the report date or today
+    return date.getTime() === Math.max(...dates.map((d) => d.getTime()))
 }
-metricStatusOnDate.propTypes = {
-    metricUuid: string,
-    metric: metricPropType,
-    measurements: measurementsPropType,
+isLatestOfDates.propTypes = {
     date: datePropType,
-    dataModel: dataModelPropType,
+    dates: datesPropType,
 }
 
-export function summarizeMetricsOnDate(dataModel, date, measurements, metrics, tag) {
+export function metricValueAndStatusOnDate(dataModel, metric, metricUuid, measurements, date, isLatestDate) {
+    // On the latest date, use the metric's value and status as determined by the API-server, so that they are consistent
+    // with the value and status shown elsewhere, even if the latest measurement is not from the latest date, for example
+    // because the collector is down
+    if (isLatestDate) {
+        return [getMetricValue(metric, dataModel, "?"), getMetricStatus(metric)]
+    }
+    const measurement = measurementOnDate(date, measurements, metricUuid)
+    const scale = getMetricScale(metric, dataModel)
+    return [measurement?.[scale]?.value ?? "?", measurement?.[scale]?.status ?? "unknown"]
+}
+metricValueAndStatusOnDate.propTypes = {
+    dataModel: dataModelPropType,
+    metric: metricPropType,
+    metricUuid: string,
+    measurements: measurementsPropType,
+    date: datePropType,
+    isLatestDate: bool,
+}
+
+export function summarizeMetricsOnDate(dataModel, date, isLatestDate, measurements, metrics, tag) {
     // Summarize the number of metrics per color on the given date, and filtered by tag, if specified
     const summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
     for (const [metricUuid, metric] of Object.entries(metrics)) {
         if (!tag || getMetricTags(metric).includes(tag)) {
-            const status = metricStatusOnDate(metricUuid, metric, measurements, date, dataModel)
+            const [, status] = metricValueAndStatusOnDate(
+                dataModel,
+                metric,
+                metricUuid,
+                measurements,
+                date,
+                isLatestDate,
+            )
             summary[STATUS_COLORS[status]] += 1
         }
     }
@@ -75,41 +101,45 @@ export function summarizeMetricsOnDate(dataModel, date, measurements, metrics, t
 summarizeMetricsOnDate.propType = {
     dataModel: dataModelPropType,
     date: datePropType,
+    isLatestDate: bool,
     measurements: measurementsPropType,
     metrics: metricsPropType,
     tag: string,
 }
 
-export function summarizeReportOnDate(dataModel, settings, report, measurements, date, tag) {
+export function summarizeReportOnDate(dataModel, settings, report, measurements, date, isLatestDate, tag) {
     // Summarize the number of metrics per color in the report on the given date, and filtered by tag, if specified
     let summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
     const metricsToHide = settings.metricsToHide.value === "all" ? "none" : settings.metricsToHide.value
     for (const subject of Object.values(report.subjects)) {
         const metrics = visibleMetrics(subject.metrics, metricsToHide, settings.hiddenTags.value)
-        summary = addCounts(summary, summarizeMetricsOnDate(dataModel, date, measurements, metrics, tag))
+        summary = addCounts(summary, summarizeMetricsOnDate(dataModel, date, isLatestDate, measurements, metrics, tag))
     }
     return summary
 }
 summarizeReportOnDate.propTypes = {
     dataModel: dataModelPropType,
     date: datePropType,
+    isLatestDate: bool,
     measurements: measurementsPropType,
     report: reportPropType,
     settings: settingsPropType,
     tag: string,
 }
 
-export function summarizeReportsOnDate(dataModel, settings, reports, measurements, date, tag) {
+export function summarizeReportsOnDate(dataModel, settings, reports, measurements, date, isLatestDate, tag) {
     // Summarize the number of metrics per color in the reports on the given date, and filtered by tag, if specified
     let summary = { red: 0, yellow: 0, green: 0, blue: 0, grey: 0, white: 0 }
     for (const report of reports) {
-        summary = addCounts(summary, summarizeReportOnDate(dataModel, settings, report, measurements, date, tag))
+        const reportSummary = summarizeReportOnDate(dataModel, settings, report, measurements, date, isLatestDate, tag)
+        summary = addCounts(summary, reportSummary)
     }
     return summary
 }
 summarizeReportsOnDate.propTypes = {
     dataModel: dataModelPropType,
     date: datePropType,
+    isLatestDate: bool,
     measurements: measurementsPropType,
     reports: reportsPropType,
     settings: settingsPropType,

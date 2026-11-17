@@ -33,6 +33,7 @@ beforeEach(() => history.push(""))
 
 function SubjectTableRowWrapper({
     ascending,
+    collectorDown,
     comment,
     direction,
     evaluateTargets,
@@ -72,6 +73,9 @@ function SubjectTableRowWrapper({
             version_number: { value: "1.0", status: "target_met" },
         },
     ]
+    if (collectorDown) {
+        reversedMeasurements.shift() // No measurement on the latest date
+    }
     return (
         <Table>
             <TableBody>
@@ -86,6 +90,7 @@ function SubjectTableRowWrapper({
                         issue_ids: issueIds,
                         latest_measurement: {
                             count: { value: value || "8" },
+                            version_number: { value: "0.8" },
                             sources: [{ source_uuid: "source_uuid" }],
                         },
                         name: name,
@@ -111,6 +116,7 @@ function SubjectTableRowWrapper({
 }
 
 function renderSubjectTableRow({
+    collectorDown = false,
     comment = "",
     direction = "<",
     ascending = false,
@@ -131,6 +137,7 @@ function renderSubjectTableRow({
                     <SnackbarAlerts messages={[]} showMessage={() => {}}>
                         <SubjectTableRowWrapper
                             ascending={ascending}
+                            collectorDown={collectorDown}
                             comment={comment}
                             direction={direction}
                             evaluateTargets={evaluateTargets}
@@ -194,6 +201,12 @@ it("takes the date order into account", async () => {
     expectText("+1")
     expectLabelText("Metric type worsened from 11 to 12 things by +1 thing")
     expectText("-4")
+    expectLabelText("Metric type improved from 12 to 8 things by -4 things")
+})
+
+it("shows the value of the latest measurement on the latest date, even if it is not from the latest date", () => {
+    history.push("?nr_dates=3&date_interval=1")
+    renderSubjectTableRow({ collectorDown: true })
     expectLabelText("Metric type improved from 12 to 8 things by -4 things")
 })
 
