@@ -15,6 +15,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Added
 
 - Allow for ignoring merge requests with auto-merge enabled when using GitLab as source for the 'merge requests' metric. Closes [#14720](https://github.com/ICTU/quality-time/issues/14720).
+- Document how to monitor the SIG/TÜV NORD CERT maintainability norms with *Quality-time* and SonarQube. See the [user manual](usage.md#sigtüv-nord-cert-maintainability). Closes [#12721](https://github.com/ICTU/quality-time/issues/12721).
 
 ### Fixed
 

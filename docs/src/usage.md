@@ -536,6 +536,27 @@ DORA metrics are a set of four key metrics for measuring the performance of soft
 - Time to Restore Services: measure [average issue lead time](reference.md#average-issue-lead-time) filtered on issues marked as failure.
 - Change Failure Rate: measure [change failure rate](reference.md#change-failure-rate).
 
+```{index} SIG/TÜV NORD CERT maintainability
+```
+
+## SIG/TÜV NORD CERT maintainability
+
+The [SIG/TÜV NORD CERT Evaluation Criteria Trusted Product Maintainability](https://www.softwareimprovementgroup.com/wp-content/uploads/SIG-TUViT-Evaluation-Criteria-Trusted-Product-Maintainability.pdf) rate the maintainability of software products from 1 to 5 stars. The [Guidance for Producers](https://www.softwareimprovementgroup.com/wp-content/uploads/SIG-TUViT-Evaluation-Criteria-Trusted-Product-Maintainability-Guidance-for-producers.pdf) specifies, for each product property, which measurement values a product needs to be eligible for certification at the level of 4 stars. *Quality-time*, using SonarQube as source, can approximate four of these product properties: duplication, unit size, unit complexity, and unit interfacing. *Quality-time* can't measure the other product properties: module coupling, component entanglement, and component independence.
+
+*Quality-time* and SonarQube can't reproduce the SIG/TÜV measurements exactly. Most SIG/TÜV norms are risk profiles: they limit the percentage of lines of code residing in units that exceed several thresholds. For example, to be eligible for 4 stars, at most 48.0% of the lines of code may reside in units with more than 15 lines of code, at most 24.2% in units with more than 30 lines of code, and at most 9.1% in units with more than 60 lines of code. SonarQube, on the other hand, reports the units that exceed a single maximum, configured in a rule of the SonarQube quality profile, and *Quality-time* shows the percentage of units that SonarQube reports. The settings below are chosen so that a metric meeting its target is a strong indication that the software meets the corresponding SIG/TÜV norm. They are no guarantee, though. And a metric not meeting its target doesn't necessarily mean that the software isn't eligible for 4 stars.
+
+To monitor the SIG/TÜV norms, add the following metrics with SonarQube as source to a subject, and set the [scale](#editing-metrics) of each metric to "Percentage":
+
+- Duplication: measure [duplicated lines](reference.md#duplicated-lines) with a target of at most 8%. This target is higher than the SIG/TÜV norm of 5.8%, because SonarQube counts all occurrences of a duplicated fragment, whereas SIG/TÜV doesn't count the first occurrence. For example, if a fragment occurs twice, SonarQube counts twice as many duplicated lines as SIG/TÜV. On the other hand, SonarQube only detects duplicated fragments of at least 10 lines, whereas SIG/TÜV also counts fragments of 6 to 9 lines of code. The minimum fragment size can't be configured in SonarQube.
+- Unit size: measure [long units](reference.md#long-units) with a target of at most 10%, and set the maximum unit size in the SonarQube quality profile to 20 lines, using rule S138.
+- Unit complexity: measure [complex units](reference.md#complex-units) with a target of at most 5%, and set the maximum cyclomatic complexity in the SonarQube quality profile to 5, using rule S1541, or FunctionComplexity for Python. A more lenient maximum, such as 10, isn't sufficient: SonarQube would not report units with a complexity between 6 and 10, while the SIG/TÜV norm limits the percentage of lines of code in units with a complexity higher than 5.
+- Unit interfacing: measure [many parameters](reference.md#many-parameters) with a target of at most 6%, and set the maximum number of parameters in the SonarQube quality profile to 2, using rule S107. A more lenient maximum, such as 5, isn't sufficient: SonarQube would not report units with 3 to 5 parameters, while the SIG/TÜV norm limits the percentage of lines of code in units with 3 or more parameters.
+
+Keep the following differences between *Quality-time* and SIG/TÜV in mind:
+
+- The SIG/TÜV norms apply to each programming language separately, whereas SonarQube measures all programming languages of a SonarQube project together.
+- *Quality-time* counts the issues SonarQube reports for a set of rules per metric. Besides the rules mentioned above, these sets contain related rules, such as rules for cognitive complexity and file length. If the SonarQube quality profile activates these related rules, the metrics count more issues and are stricter.
+
 ```{index} Notification
 ```
 

@@ -43,6 +43,7 @@ clearable
 cloc
 config
 coroutine
+cyclomatic
 discoverability
 donut
 emptyDir
