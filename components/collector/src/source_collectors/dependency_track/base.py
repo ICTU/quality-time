@@ -16,7 +16,7 @@ from collector_utilities.functions import add_query
 from collector_utilities.type import URL, Response
 from model import Entity, SourceResponses
 
-from .json_types import DependencyTrackComponent
+from .json_types import DependencyTrackComponent, DependencyTrackResolvedLicense
 
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator, Awaitable, Callable, Iterable
@@ -159,6 +159,13 @@ class DependencyTrackBase(TokenAuthenticationSourceCollector):
             slim_component["repositoryMeta"] = component["repositoryMeta"]
         if "version" in component:
             slim_component["version"] = component["version"]
+        if "license" in component:
+            slim_component["license"] = component["license"]
+        if resolved_license := component.get("resolvedLicense"):
+            slim_license = DependencyTrackResolvedLicense(name=resolved_license["name"], uuid=resolved_license["uuid"])
+            if "licenseId" in resolved_license:
+                slim_license["licenseId"] = resolved_license["licenseId"]
+            slim_component["resolvedLicense"] = slim_license
         return slim_component
 
     async def _get_projects_by_uuid(self) -> dict[str, DependencyTrackProject]:

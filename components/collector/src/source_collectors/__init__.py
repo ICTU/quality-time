@@ -36,6 +36,7 @@ from .cobertura.uncovered_branches import CoberturaUncoveredBranches
 from .cobertura.uncovered_lines import CoberturaUncoveredLines
 from .composer.dependencies import ComposerDependencies
 from .dependency_track.dependencies import DependencyTrackDependencies
+from .dependency_track.licenses import DependencyTrackLicenses
 from .dependency_track.security_warnings import DependencyTrackSecurityWarnings
 from .dependency_track.source_up_to_dateness import DependencyTrackSourceUpToDateness
 from .dependency_track.source_version import DependencyTrackSourceVersion

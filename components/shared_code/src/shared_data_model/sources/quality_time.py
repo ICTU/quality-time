@@ -35,6 +35,7 @@ ALL_METRICS = {
     "Inactive branches": "inactive_branches",
     "Issues": "issues",
     "Job runs within time period": "job_runs_within_time_period",
+    "Licenses": "licenses",
     "Long units": "long_units",
     "Manual test duration": "manual_test_duration",
     "Manual test execution": "manual_test_execution",
