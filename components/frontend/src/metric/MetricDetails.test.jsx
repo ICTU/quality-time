@@ -108,7 +108,7 @@ function getMetricMeasurementsSuccessfully(connectionError, infoMessage) {
     })
 }
 
-function MetricDetailsWrapper({ dataModel, showSnackbarMessage, stopFilteringAndSorting }) {
+function MetricDetailsWrapper({ dataModel, reload, showSnackbarMessage, stopFilteringAndSorting }) {
     const settings = useSettings()
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -117,7 +117,7 @@ function MetricDetailsWrapper({ dataModel, showSnackbarMessage, stopFilteringAnd
                     <SnackbarAlerts messages={[]} showMessage={showSnackbarMessage}>
                         <MetricDetails
                             metricUuid="metric_uuid"
-                            reload={vi.fn()}
+                            reload={reload}
                             report={report}
                             reports={[report]}
                             settings={settings}
@@ -137,6 +137,7 @@ async function renderMetricDetails({
     connectionError = null,
     getMetricMeasurements = null,
     infoMessage = null,
+    reload = vi.fn(),
     showSnackbarMessage = vi.fn(),
 } = {}) {
     vi.spyOn(measurementApi, "getMetricMeasurements").mockImplementation(() => {
@@ -149,6 +150,7 @@ async function renderMetricDetails({
         result = render(
             <MetricDetailsWrapper
                 dataModel={dataModel}
+                reload={reload}
                 showSnackbarMessage={showSnackbarMessage}
                 stopFilteringAndSorting={stopFilteringAndSorting}
             />,
@@ -292,13 +294,17 @@ it("fails to load measurements due to an HTTP error", async () => {
     })
 })
 
-it("reloads the measurements after editing a measurement entity", async () => {
+it("reloads the report and the measurements after editing a measurement entity", async () => {
+    const response = { ok: true }
+    vi.spyOn(fetchServerApi, "fetchServerApi").mockImplementation(() => Promise.resolve(response))
+    const reload = vi.fn()
     history.push("?expanded=metric_uuid:5")
-    await renderMetricDetails()
+    await renderMetricDetails({ reload })
     expect(measurementApi.getMetricMeasurements).toHaveBeenCalledTimes(1)
     clickButton("Expand/collapse")
     mouseDownText("Unconfirm")
     await asyncClickText("Confirm")
+    expect(reload).toHaveBeenCalledWith(response)
     expect(measurementApi.getMetricMeasurements).toHaveBeenCalledTimes(2)
 })
 

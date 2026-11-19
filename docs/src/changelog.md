@@ -19,6 +19,7 @@ If your currently installed *Quality-time* version is not the penultimate versio
 ### Fixed
 
 - When the latest measurement of a metric was not from today, for example because the collector had been down since before midnight UTC, the dashboard would count the metric as unknown, while the subject table showed the status of the latest measurement. The dashboard, the subject table, and the CSV export now use the value and status of the latest measurement for the most recent date. Fixes [#10328](https://github.com/ICTU/quality-time/issues/10328).
+- Changing the status, status end date, or status rationale of a measurement entity would cause an unhandled exception in the frontend. Fixes [#15036](https://github.com/ICTU/quality-time/issues/15036).
 
 ## v5.62.1 - 2026-11-09
 

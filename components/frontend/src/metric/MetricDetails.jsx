@@ -201,8 +201,8 @@ export function MetricDetails({
         // The metric and subject names are only used in error messages, so changing them should not refetch measurements
         // eslint-disable-next-line @eslint-react/exhaustive-deps
     }, [metricUuid, reportDate])
-    function measurementsReload() {
-        reload()
+    function measurementsReload(json) {
+        reload(json)
         fetchMeasurements(
             reportDate,
             metricUuid,
