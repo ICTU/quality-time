@@ -465,7 +465,7 @@ wheels = [
 
 [[package]]
 name = "feature-tests"
-version = "5.63.0rc0"
+version = "5.63.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -1468,7 +1468,7 @@ wheels = [
 
 [[package]]
 name = "tools"
-version = "5.63.0rc0"
+version = "5.63.0"
 source = { virtual = "../../tools/third_party" }
 dependencies = [
     { name = "archunitpython" },
