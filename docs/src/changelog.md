@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Changed
+
+- Use `nginx/nginx-unprivileged` as base image for the proxy and frontend container instead of `nginx/nginx-unprivileged`. The latter has been archived. Closes [#15039](https://github.com/ICTU/quality-time/issues/15039).
+
 ## v5.63.0 - 2026-11-19
 
 ### Added

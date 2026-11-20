@@ -12,7 +12,7 @@ COPY .env /home/frontend
 RUN npm ci --ignore-scripts && \
     npm run --ignore-scripts build
 
-FROM nginxinc/nginx-unprivileged:1.31.7-alpine3.24-slim@sha256:a8cb0f33d51fa107c96fd2bd3a71aaf564ec131e9d2bdf8700944f0ed8b170d7
+FROM nginx/nginx-unprivileged:1.31.9-alpine3.24-slim@sha256:75e85a09b0f25bd46d49a9fd85589ffa70b0459c8ed5ee0dc6596fd642e1f829
 
 LABEL maintainer="Quality-time team <quality-time@ictu.nl>"
 LABEL description="Quality-time frontend"
