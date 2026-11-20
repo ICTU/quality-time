@@ -22,7 +22,7 @@ dev = [
     "sphinx==9.2.0",
     "sphinx-design==0.8.0",
     "tools",
-    "vale==3.26.0.1",       # Documentation grammar and style checker
+    "vale==3.27.0.0",       # Documentation grammar and style checker
 ]
 
 [tool.uv]
