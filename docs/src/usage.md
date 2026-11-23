@@ -381,7 +381,7 @@ An entity is a measured entity, such as one single failed job in GitLab for a me
 
 Not every metric will have entities. For example, the source up-to-dateness metric has "days" as unit. These are not shown as measurement entities. But, the issues metric does show the individual issues as measurement entities. To prevent performance issues and limit the storage capacity needed, Quality-time stores and shows at most 250 entities per metric.
 
-To add a source to a metric, expand the metric in the metric table and then click the tab with the source name. It will show a list of entities with all its details.
+To add a source to a metric, expand the metric in the metric table and then click the tab with the source name. It will show a list of entities with all its details. If there are more than ten entities, the list is paginated and can be filtered. Use the buttons below the list to browse the pages and to change the number of entities shown per page. Type in the filter field below the list to only show the entities whose status, status rationale, or attributes contain the filter text. When exporting a report to PDF, all entities are included, regardless of the current page.
 
 When clicking on one of the entities, it can be expanded and edited. Options are for example mark an entity as false positive or as fixed. Entities marked as fixed, false positive, or won't fix are crossed out and subtracted from the measurement value. For example, if a source reports 14 security warnings and two are marked as false positive, the measurement value will be 12.
 

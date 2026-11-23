@@ -21,11 +21,11 @@ export function SourceEntity({
     columnsToHide,
     metricUuid,
     sourceUuid,
-    hideIgnoredEntities,
     entity,
     entityName,
     entityAttributes,
     entityUserData,
+    printOnly,
     reload,
     report,
 }) {
@@ -33,9 +33,6 @@ export function SourceEntity({
 
     const { rationale, status, statusEndDate } = entityUserData
     const ignoredEntity = entityCanBeIgnored(status, statusEndDate)
-    if (hideIgnoredEntities && ignoredEntity) {
-        return null
-    }
     const style = ignoredEntity ? { textDecoration: "line-through" } : {}
     style["maxWidth"] = "60em"
     let statusClassName = "unknown_status"
@@ -66,6 +63,7 @@ export function SourceEntity({
             id={entity.key}
             key={entity.key}
             onExpand={setExpanded}
+            printOnly={printOnly}
             style={{ maxHeight: "100px", overflow: "auto" }}
             firstCellContent={SOURCE_ENTITY_STATUS_NAME[status]}
             firstCellProps={{ colSpan: 2, sx: { paddingLeft: "6px", ...style } }}
@@ -99,11 +97,11 @@ SourceEntity.propTypes = {
     columnsToHide: stringsPropType,
     metricUuid: string,
     sourceUuid: string,
-    hideIgnoredEntities: bool,
     entity: entityPropType,
     entityName: string,
     entityAttributes: entityAttributesPropType,
     entityUserData: entityUserDataPropType,
+    printOnly: bool,
     reload: func,
     report: reportPropType,
 }

@@ -12,8 +12,8 @@ function renderSourceEntity({
     status = "unconfirmed",
     statusEndDate = "",
     rationale = "",
-    hideIgnoredEntities = false,
     firstSeen = null,
+    printOnly = false,
 }) {
     return render(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -25,7 +25,7 @@ function renderSourceEntity({
                         entityAttributes={[{ key: "attr1" }, { key: "attr2", color: { bad: "warning" } }]}
                         entityName="entity"
                         entityUserData={{ rationale: rationale, status: status, statusEndDate: statusEndDate }}
-                        hideIgnoredEntities={hideIgnoredEntities}
+                        printOnly={printOnly}
                     />
                 </TableBody>
             </Table>
@@ -78,7 +78,6 @@ it("renders the status and rationale past end date", async () => {
     renderSourceEntity({
         status: "fixed",
         statusEndDate: "2000-01-01",
-        hideIgnoredEntities: true,
         rationale: "Because",
     })
     const language = renderHook(() => useLanguageURLSearchQuery().value)
@@ -87,7 +86,7 @@ it("renders the status and rationale past end date", async () => {
     expectText(/Because/)
 })
 
-it("renders nothing if the status is to be ignored", async () => {
-    renderSourceEntity({ status: "fixed", hideIgnoredEntities: true })
-    expectNoText(/Fixed/)
+it("renders the entity for print only", async () => {
+    renderSourceEntity({ printOnly: true })
+    expectText(/Unconfirmed/)
 })

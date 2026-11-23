@@ -12,6 +12,10 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 ## [Unreleased]
 
+### Added
+
+- Paginate and filter measurement entities. Closes [#10686](https://github.com/ICTU/quality-time/issues/10686).
+
 ### Changed
 
 - Use `nginx/nginx-unprivileged` as base image for the proxy and frontend container instead of `nginx/nginx-unprivileged`. The latter has been archived. Closes [#15039](https://github.com/ICTU/quality-time/issues/15039).

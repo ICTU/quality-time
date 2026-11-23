@@ -5,7 +5,9 @@ import { childrenPropType } from "../sharedPropTypes"
 import { ExpandButton } from "./buttons/ExpandButton"
 
 export function TableRowWithDetails(props) {
-    const { color, firstCellContent, firstCellProps, children, details, expanded, onExpand, ...otherProps } = props
+    const { color, firstCellContent, firstCellProps, children, details, expanded, onExpand, printOnly, ...otherProps } =
+        props
+    const printOnlySx = printOnly ? { "@media screen": { display: "none" } } : {}
     return (
         <>
             <TableRow
@@ -19,6 +21,7 @@ export function TableRowWithDetails(props) {
                         },
                     },
                     "& > *": { borderBottom: expanded ? "unset" : "set" },
+                    ...printOnlySx,
                 }}
             >
                 <TableCell {...firstCellProps}>
@@ -36,7 +39,7 @@ export function TableRowWithDetails(props) {
                 {children}
             </TableRow>
             {expanded && (
-                <TableRow>
+                <TableRow sx={printOnlySx}>
                     <TableCell colSpan="99" sx={{ paddingLeft: "50px" }}>
                         {details}
                     </TableCell>
@@ -53,4 +56,5 @@ TableRowWithDetails.propTypes = {
     firstCellContent: node,
     firstCellProps: object,
     onExpand: func,
+    printOnly: bool,
 }
