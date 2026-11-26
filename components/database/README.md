@@ -24,6 +24,11 @@ package deletes the vulnerable code outright, so it is preferred over upgrading 
 - **`gzip`**, for [CVE-2026-41991](https://www.cve.org/CVERecord?id=CVE-2026-41991) and
   [CVE-2026-41992](https://www.cve.org/CVERecord?id=CVE-2026-41992), both in the `gzip` binaries themselves. `mongod`
   links its own compression libraries, and nothing installed depends on the package.
+- **`krb5-locales`**, for the Kerberos CVEs listed under *Library upgrades*. It ships only translations of Kerberos
+  messages, and `libkrb5-3` merely recommends it.
+- **`/usr/bin/pebble` and `/var/lib/pebble`**, for [CVE-2026-97054](https://www.cve.org/CVERecord?id=CVE-2026-97054)
+  in the Go standard library it is built with. The `ubuntu` base image is built with Rockcraft, which adds Canonical's
+  Pebble service manager outside of `dpkg`; the `mongo` entrypoint starts `mongod` directly and never uses it.
 - **`/usr/local/bin/gosu`**, made redundant by running as a non-root user with data directories owned by the root
   group (GID 0) and group-writable, which also lets the container run as the arbitrary high UID that platforms such as
   OpenShift assign.
@@ -41,10 +46,28 @@ command-line flags instead.
 
 ### Library upgrades
 
-There are none, and the step needs no network access as a result: the base image ships every Ubuntu security fix Trivy
-knows a fixed version for, so a scan of the built image comes back empty without upgrading anything.
+The `Dockerfile` upgrades packages that cannot be removed because something installed needs them, ahead of the base
+image. Each is pinned to a `package=min-version` guard that fails the build once the base image ships that version or
+stops shipping the package, so the upgrade cannot outlive its purpose; when all guards fire, drop the guard, the
+`apt-get install --only-upgrade` step, and the `apt-get update` that feeds it. The `hadolint ignore=DL3008` is needed
+because `--only-upgrade` pulls the latest patch rather than a pinned version.
 
-That was not always so. The `Dockerfile` used to upgrade twenty-three packages that could not be removed because
+As of the `mongo:9.0.8` base image:
+
+- **`libc6`, `libc-bin`, and `libc-gconv-modules-extra`** (glibc), for
+  [CVE-2026-8674](https://www.cve.org/CVERecord?id=CVE-2026-8674),
+  [CVE-2026-18374](https://www.cve.org/CVERecord?id=CVE-2026-18374),
+  [CVE-2026-84243](https://www.cve.org/CVERecord?id=CVE-2026-84243),
+  [CVE-2026-86805](https://www.cve.org/CVERecord?id=CVE-2026-86805),
+  [CVE-2026-95818](https://www.cve.org/CVERecord?id=CVE-2026-95818), and
+  [CVE-2026-97399](https://www.cve.org/CVERecord?id=CVE-2026-97399). Everything links glibc.
+- **`libgssapi-krb5-2`, `libk5crypto3`, `libkrb5-3`, and `libkrb5support0`** (Kerberos), for nineteen CVEs fixed in
+  `krb5` 1.22.1-2ubuntu4.3, among them [CVE-2026-71199](https://www.cve.org/CVERecord?id=CVE-2026-71199) and
+  [CVE-2026-71200](https://www.cve.org/CVERecord?id=CVE-2026-71200). `mongod` links these libraries directly.
+- **`perl-base`**, for [CVE-2026-82560](https://www.cve.org/CVERecord?id=CVE-2026-82560). Purging it is not an option:
+  `debconf` and `adduser`, which the maintainer scripts of the purges and upgrades above run, are Perl scripts.
+
+Upgrades were dropped once before. The `Dockerfile` used to upgrade twenty-three packages that could not be removed because
 something installed needs them, each pinned to a `package=min-version` guard that failed the build once the base image
 caught up. As of the `mongo:8.3.9` base image all twenty-three guards fired at once, so the guard, the
 `apt-get install --only-upgrade` step, and the `apt-get update` that fed it were dropped. Two things learned there are
@@ -61,7 +84,8 @@ worth keeping:
 
 **When a scan reports a new vulnerability.** Prefer bumping the base image; the `mongo` image usually picks up Ubuntu
 security fixes within days. Purge the package if nothing installed depends on it (see *Removals*). Only if neither
-works, reintroduce an upgrade step: `apt-get --option Acquire::Retries=3 update` followed by
+works, add a `package=min-version` guard to the upgrade step (see *Library upgrades*), or reintroduce the step if it
+has been dropped: `apt-get --option Acquire::Retries=3 update` followed by
 `apt-get --option Acquire::Retries=3 install --only-upgrade --yes --no-install-recommends <package>`, a
 `hadolint ignore=DL3008` because `--only-upgrade` pulls the latest patch rather than a pinned version, and a guard that
 fails the build once the base image makes the upgrade redundant. The retries matter because the base image configures
