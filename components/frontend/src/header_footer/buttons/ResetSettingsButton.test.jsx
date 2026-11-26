@@ -43,7 +43,8 @@ it("resets the settings", async () => {
             "entity_sort_direction=metric_uuid:descending&hidden_columns=comment&" +
             "hide_ignored_entities=metric_uuid&hidden_tags=tag&metrics_to_hide=no_action_required&nr_dates=2&" +
             "show_issue_creation_date=true&show_issue_summary=true&show_issue_update_date=true&" +
-            "show_issue_due_date=true&show_issue_release=true&show_issue_sprint=true&sort_column=status&" +
+            "show_issue_due_date=true&show_issue_release=true&show_issue_sprint=true&show_issue_story_points=true&" +
+            "sort_column=status&" +
             "sort_direction=descending&expanded=tab:0&hidden_cards=tags",
     )
     const handleDateChange = vi.fn()

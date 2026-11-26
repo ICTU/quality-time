@@ -105,6 +105,7 @@ export const settingsPropType = shape({
     showIssueDueDate: boolURLSearchQueryPropType,
     showIssueRelease: boolURLSearchQueryPropType,
     showIssueSprint: boolURLSearchQueryPropType,
+    showIssueStoryPoints: boolURLSearchQueryPropType,
     showIssueSummary: boolURLSearchQueryPropType,
     showIssueUpdateDate: boolURLSearchQueryPropType,
     sortColumn: stringURLSearchQueryPropType,
@@ -156,6 +157,7 @@ export const issueStatusPropType = shape({
     sprint_name: string,
     sprint_state: string,
     status_category: oneOf(["todo", "doing", "done"]),
+    story_points: number,
     summary: string,
     updated: string,
 })

@@ -30,7 +30,11 @@ beforeEach(() => {
 
 const reload = vi.fn()
 
-function createIssueTracker({ report = { report_uuid: "report_uuid", title: "Report" }, helpUrl = "" } = {}) {
+function createIssueTracker({
+    report = { report_uuid: "report_uuid", title: "Report" },
+    helpUrl = "",
+    storyPointsHelpUrl = "",
+} = {}) {
     return (
         <DataModelContext
             value={{
@@ -41,6 +45,11 @@ function createIssueTracker({ report = { report_uuid: "report_uuid", title: "Rep
                         parameters: {
                             private_token: { help_url: helpUrl },
                             api_version: { default_value: "v2", values: ["v2", "v3"] },
+                            story_points_field: {
+                                name: "Story points field (name or id)",
+                                default_value: "Story Points",
+                                help_url: storyPointsHelpUrl,
+                            },
                         },
                     },
                 },
@@ -84,7 +93,15 @@ it("sets the issue tracker type", async () => {
 })
 
 function expectIssueTrackerFieldsToBeDisabled() {
-    const textFields = [/URL/, /Username/, /Password/, /Private token/, /API version/, /Labels for new issues/]
+    const textFields = [
+        /URL/,
+        /Username/,
+        /Password/,
+        /Private token/,
+        /API version/,
+        /Labels for new issues/,
+        /Story points field/,
+    ]
     textFields.forEach((field) => expect(screen.getByLabelText(field)).toBeDisabled())
     const selectionFields = [/Project for new issues/, /Issue type/, /Epic link/]
     selectionFields.forEach((field) => expect(screen.getByLabelText(field).nextSibling).toBeDisabled())
@@ -168,6 +185,33 @@ it("shows the issue tracker private token help url", async () => {
         helpUrl: "https://help.example.org",
     })
     expect(container.querySelector("a")).toHaveAttribute("href", "https://help.example.org")
+})
+
+it("shows the default issue tracker story points field", async () => {
+    await renderIssueTracker({ report: reportWithIssueTracker })
+    expect(screen.getByLabelText(/Story points field/)).toHaveValue("Story Points")
+})
+
+it("sets the issue tracker story points field", async () => {
+    await renderIssueTracker({ report: reportWithIssueTracker })
+    await enterLabeledText(/Story points field/, "customfield_10016", {
+        initialSelectionStart: 0,
+        initialSelectionEnd: 100,
+    })
+    expect(reportApi.setReportIssueTrackerAttribute).toHaveBeenLastCalledWith(
+        "report_uuid",
+        "story_points_field",
+        "customfield_10016",
+        reload,
+    )
+})
+
+it("shows the issue tracker story points field help url", async () => {
+    await renderIssueTracker({ report: reportWithIssueTracker, storyPointsHelpUrl: "https://help.example.org/field" })
+    expect(screen.getByText(/How to find the id of a custom field/).closest("a")).toHaveAttribute(
+        "href",
+        "https://help.example.org/field",
+    )
 })
 
 it("sets the issue tracker API version", async () => {

@@ -36,6 +36,11 @@ export function VisibleIssueDetailsMenu({ settings }) {
                 issueAttribute={settings.showIssueSprint}
                 help="Next to the issue status, also show the sprint issues are assigned to. Note: the popup over the issue always shows the sprint, if the issue has one, regardless of this setting."
             />
+            <IssueAttributeMenuItem
+                issueAttributeName="Story points"
+                issueAttribute={settings.showIssueStoryPoints}
+                help="Next to the issue status, also show the number of story points of issues. Note: the popup over the issue always shows the story points, if the issue has them, regardless of this setting."
+            />
         </SettingsMenu>
     )
 }

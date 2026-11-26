@@ -102,6 +102,14 @@ export function IssueTracker({ report, reload }) {
     const apiVersion = report.issue_tracker
         ? dataModel.sources[report.issue_tracker?.type]?.parameters?.api_version
         : {}
+    const storyPointsField = report.issue_tracker
+        ? dataModel.sources[report.issue_tracker?.type]?.parameters?.story_points_field
+        : {}
+    const storyPointsFieldHelp = storyPointsField?.help_url ? (
+        <HyperLink url={storyPointsField.help_url}>How to find the id of a custom field</HyperLink>
+    ) : (
+        ""
+    )
     // The onChange handler below would erronously save the string "None" as report.issue_tracker.type. That has been
     // fixed in v5.44.0, but we have to take into account that the database may still contain "None":
     const issueTrackerFieldDisabled = disabled || !report.issue_tracker?.type || report.issue_tracker?.type === "None"
@@ -280,6 +288,18 @@ export function IssueTracker({ report, reload }) {
                         {`The issue type '${issueTypeName}' in project '${projectKey}' does not support adding labels when creating issues, so no labels will be added to new issues.`}
                     </WarningMessage>
                 </Stack>
+            </Grid>
+            <Grid size={{ xs: 1, sm: 1, md: 1 }}>
+                <TextField
+                    disabled={issueTrackerFieldDisabled}
+                    helperText={storyPointsFieldHelp}
+                    id="tracker-story-points-field"
+                    label={storyPointsField?.name ?? "Story points field (name or id)"}
+                    onChange={(value) =>
+                        setReportIssueTrackerAttribute(reportUuid, "story_points_field", value, reload)
+                    }
+                    value={report.issue_tracker?.parameters?.story_points_field || storyPointsField?.default_value}
+                />
             </Grid>
         </Grid>
     )
