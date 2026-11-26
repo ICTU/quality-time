@@ -4,7 +4,7 @@ import relativeTime from "dayjs/plugin/relativeTime"
 import { bool, string } from "prop-types"
 
 import { issueStatusPropType, metricPropType, settingsPropType, stringsPropType } from "../sharedPropTypes"
-import { getMetricIssueIds } from "../utils"
+import { getMetricIssueIds, pluralize } from "../utils"
 import { TimeAgoWithDate } from "../widgets/TimeAgoWithDate"
 
 dayjs.extend(relativeTime)
@@ -91,6 +91,9 @@ function cardDetails(issueStatus, settings) {
     if (issueStatus.sprint_name && settings.showIssueSprint.value) {
         details.push(sprint(issueStatus))
     }
+    if (hasStoryPoints(issueStatus) && settings.showIssueStoryPoints.value) {
+        details.push(<ListItem key="story_points">{storyPoints(issueStatus)}</ListItem>)
+    }
     return details.length > 0 ? <List dense>{details}</List> : null
 }
 cardDetails.propTypes = {
@@ -126,6 +129,20 @@ function sprint(issueStatus) {
     )
 }
 sprint.propTypes = {
+    issueStatus: issueStatusPropType,
+}
+
+function hasStoryPoints(issueStatus) {
+    return issueStatus.story_points !== undefined && issueStatus.story_points !== null
+}
+hasStoryPoints.propTypes = {
+    issueStatus: issueStatusPropType,
+}
+
+function storyPoints(issueStatus) {
+    return `${issueStatus.story_points} ${pluralize("story point", issueStatus.story_points)}`
+}
+storyPoints.propTypes = {
     issueStatus: issueStatusPropType,
 }
 
@@ -249,6 +266,15 @@ function issuePopupContent(issueStatus) {
                 {popupContent}
                 <br />
                 {prefixName(issueStatus.sprint_name, "Sprint")} ({issueStatus.sprint_state}) {sprintEnd}
+            </>
+        )
+    }
+    if (hasStoryPoints(issueStatus)) {
+        popupContent = (
+            <>
+                {popupContent}
+                <br />
+                {storyPoints(issueStatus)}
             </>
         )
     }

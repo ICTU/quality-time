@@ -16,25 +16,11 @@ class JiraIssues(JiraBase):
     DEFAULT_MAX_RESULTS: int = 500  # Fallback for maximum number of issues to retrieve per page from Jira
     max_results: int | None = None
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self._field_ids: dict[str, str] = {}
-
     async def _api_url(self) -> URL:
         """Extend to get the fields from Jira and create a field name to field id mapping."""
+        await self._get_fields()
         api_url = await super()._api_url() / f"rest/api/{self._rest_api_version}"
-        await self._get_fields(api_url)
         return await self._search_url(api_url)
-
-    async def _get_fields(self, url: URL) -> None:
-        """Retrieve the available fields."""
-        fields_url = url / "field"
-        response = (await super()._get_source_responses(fields_url))[0]
-        self._field_ids = {}
-        for field in await response.json():
-            field_name, field_id = field["name"].lower(), field["id"]
-            self._field_ids[field_name] = field_id
-            self._field_ids[field_id] = field_id  # Include ids too so we get a key error if a field doesn't exist
 
     async def _search_url(self, url: URL) -> URL:
         """Return the search endpoint, depending on whether Jira is the cloud deployment or not."""

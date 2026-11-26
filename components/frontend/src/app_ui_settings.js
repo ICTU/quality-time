@@ -102,6 +102,10 @@ export function useShowIssueSprintURLSearchQuery(reportUuid) {
     return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_sprint", reportUuid))
 }
 
+export function useShowIssueStoryPointsURLSearchQuery(reportUuid) {
+    return useBooleanURLSearchQuery(urlSearchQueryKey("show_issue_story_points", reportUuid))
+}
+
 export function useSettings(reportUuid) {
     return {
         dateInterval: useDateIntervalURLSearchQuery(reportUuid),
@@ -123,6 +127,7 @@ export function useSettings(reportUuid) {
         showIssueDueDate: useShowIssueDueDateURLSearchQuery(reportUuid),
         showIssueRelease: useShowIssueReleaseURLSearchQuery(reportUuid),
         showIssueSprint: useShowIssueSprintURLSearchQuery(reportUuid),
+        showIssueStoryPoints: useShowIssueStoryPointsURLSearchQuery(reportUuid),
         sortColumn: useSortColumnURLSearchQuery(reportUuid),
         sortDirection: useSortDirectionURLSearchQuery(reportUuid),
         reset: function () {
@@ -152,6 +157,7 @@ export function resetSettings(settings) {
     settings.showIssueDueDate.reset()
     settings.showIssueRelease.reset()
     settings.showIssueSprint.reset()
+    settings.showIssueStoryPoints.reset()
     settings.showIssueSummary.reset()
     settings.showIssueUpdateDate.reset()
     settings.sortColumn.reset()
@@ -177,6 +183,7 @@ export function allSettingsAreDefault(settings) {
         settings.showIssueDueDate.isDefault() &&
         settings.showIssueRelease.isDefault() &&
         settings.showIssueSprint.isDefault() &&
+        settings.showIssueStoryPoints.isDefault() &&
         settings.showIssueSummary.isDefault() &&
         settings.showIssueUpdateDate.isDefault() &&
         settings.sortColumn.isDefault() &&

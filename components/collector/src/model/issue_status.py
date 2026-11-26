@@ -52,6 +52,7 @@ class Issue:
     duedate: str | None = None
     release: IssueRelease | None = None
     sprint: IssueSprint | None = None
+    story_points: float | None = None
 
     def as_dict(self) -> dict:
         """Return the issue as dict."""
@@ -61,6 +62,7 @@ class Issue:
             created=self.created,
             updated=self.updated,
             duedate=self.duedate,
+            story_points=self.story_points,
             **(self.release.as_dict() if self.release else {}),
             **(self.sprint.as_dict() if self.sprint else {}),
         )

@@ -10,6 +10,12 @@ If your currently installed *Quality-time* version is not the penultimate versio
 
 <!-- The line "## <square-bracket>Unreleased</square-bracket>" is replaced by the tools/release/src/release.py script with the new release version and release date. -->
 
+## [Unreleased]
+
+### Added
+
+- Show the number of story points of linked issues in the issue popups and, if so configured via the settings, in the issue cards. The Jira field that contains the story points can be configured in the issue tracker tab. Closes [#14924](https://github.com/ICTU/quality-time/issues/14924).
+
 ## v5.64.0 - 2026-11-26
 
 ### Added

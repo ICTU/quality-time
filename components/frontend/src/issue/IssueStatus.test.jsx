@@ -34,6 +34,7 @@ function renderIssueStatus({
     releaseDate = "3000-01-02",
     sprint = false,
     sprintEndDate = "3000-01-01",
+    storyPoints = null,
     updated = false,
 } = {}) {
     let creationDate = new Date()
@@ -58,6 +59,7 @@ function renderIssueStatus({
         sprint_name: sprint ? "Sprint 42" : null,
         sprint_state: sprint ? "active" : null,
         sprint_enddate: sprint ? sprintEndDate : null,
+        story_points: storyPoints,
     }
     if (statusCategory) {
         issueStatus["status_category"] = statusCategory
@@ -257,6 +259,41 @@ it("displays the sprint in the popup without sprint end date", async () => {
     await expectTextAfterWait(/Sprint 42/)
     expectText(/active/)
     expectNoText(/from now/)
+})
+
+it("displays the story points in the label if configured", async () => {
+    history.push("?show_issue_story_points=true")
+    renderIssueStatus({ storyPoints: 5 })
+    expectText(/5 story points/)
+})
+
+it("displays a single story point in the label if configured", async () => {
+    history.push("?show_issue_story_points=true")
+    renderIssueStatus({ storyPoints: 1 })
+    expectText(/1 story point$/)
+})
+
+it("displays zero story points in the label if configured", async () => {
+    history.push("?show_issue_story_points=true")
+    renderIssueStatus({ storyPoints: 0 })
+    expectText(/0 story points/)
+})
+
+it("does not display the story points in the label if not configured", async () => {
+    renderIssueStatus({ storyPoints: 5 })
+    expectNoText(/story points/)
+})
+
+it("does not display the story points in the label if the issue has no story points", async () => {
+    history.push("?show_issue_story_points=true")
+    renderIssueStatus()
+    expectNoText(/story point/)
+})
+
+it("displays the story points in the popup", async () => {
+    renderIssueStatus({ storyPoints: 3 })
+    await hoverText(/123/)
+    await expectTextAfterWait(/3 story points/)
 })
 
 it("displays no popup if the issue has no creation date and there is no error", async () => {

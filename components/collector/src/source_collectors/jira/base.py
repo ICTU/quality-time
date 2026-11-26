@@ -23,10 +23,26 @@ class JiraBase(TokenAuthenticationSourceCollector):
 
     AUTH_PREFIX = "Bearer "
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._field_ids: dict[str, str] = {}
+
     @property
     def _rest_api_version(self) -> str:
         """Return the Jira REST API version set by the user."""
         return str(self._parameter("api_version"))
+
+    async def _get_fields(self) -> None:
+        """Retrieve the available fields and create a field name and field id to field id mapping."""
+        fields_url = await super()._api_url() / f"rest/api/{self._rest_api_version}/field"
+        # Use the _get_source_responses() method of the superclass so subclasses that override the method, for example
+        # to implement pagination, don't interfere with the retrieval of the fields:
+        response = (await super()._get_source_responses(fields_url))[0]
+        self._field_ids = {}
+        for field in await response.json():
+            field_name, field_id = field["name"].lower(), field["id"]
+            self._field_ids[field_name] = field_id
+            self._field_ids[field_id] = field_id  # Include ids too so we get a key error if a field doesn't exist
 
     async def _get_source_response(self, url: URL, headers: dict[str, str]) -> Response:
         """Override to add the error messages that Jira returns to the error, if the request fails.
