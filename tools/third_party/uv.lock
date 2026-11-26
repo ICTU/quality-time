@@ -1259,7 +1259,7 @@ project-wide = [
     { name = "yamllint", specifier = "==1.38.0" },
     { name = "zizmor", specifier = "==1.32.0" },
 ]
-update-time = [{ name = "update-time", specifier = "==0.0.60" }]
+update-time = [{ name = "update-time", specifier = "==0.0.62" }]
 uv = [{ name = "uv", specifier = "==0.13.8" }]
 
 [[package]]
@@ -1374,7 +1374,7 @@ wheels = [
 
 [[package]]
 name = "update-time"
-version = "0.0.60"
+version = "0.0.62"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cvss" },
@@ -1384,9 +1384,9 @@ dependencies = [
     { name = "rich" },
     { name = "tomlkit" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f6/cd/76ab8fee46704aba051caccd3f2c8881eba62ba4fe35119565a99f50d45b/update_time-0.0.60.tar.gz", hash = "sha256:10519e77e176b56c9eb56c05493cad44c442a9c9beb32d4a9b4e2a46cbb11d55", size = 310557, upload-time = "2026-11-16T08:28:06.546Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fe/c5/6e0d5d64314550848f967cc7afbde811e24832f2689b2dbe106a25835721/update_time-0.0.62.tar.gz", hash = "sha256:2a3445478e89037cd35b6df04168556ffb289a1f33d98e6764cc7a7c25690d3d", size = 309057, upload-time = "2026-11-18T15:10:19.537Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dd/fa/2920a162b6ff6c3197cf970df04c7f14b0b3dc77949f3fd125628b1b9b84/update_time-0.0.60-py3-none-any.whl", hash = "sha256:5711143157f790e0e083a45a9b9eb180ee5ebdcbfb53df084af18e3f022a39b9", size = 327292, upload-time = "2026-11-16T08:28:04.868Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/10/6b4afdc8a33f89682a53f1a0de6f93d542b7cc2029fa69ec131d2d3f3ff6/update_time-0.0.62-py3-none-any.whl", hash = "sha256:12898e102abbca85aaa884dfe6fd8e1e79a4ad25c19dc92cc4793a08a7d0eb34", size = 328809, upload-time = "2026-11-18T15:10:17.968Z" },
 ]
 
 [[package]]
