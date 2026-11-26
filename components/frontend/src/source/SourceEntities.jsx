@@ -4,16 +4,21 @@ import HelpIcon from "@mui/icons-material/Help"
 import {
     Badge,
     IconButton,
+    Stack,
     Table,
     TableBody,
     TableCell,
     TableContainer,
+    TableFooter,
     TableHead,
+    TablePagination,
     TableRow,
+    TextField,
     Tooltip,
+    Typography,
 } from "@mui/material"
 import { bool, func, number, object, string } from "prop-types"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 
 import { DataModelContext } from "../context/DataModel"
 import { zIndexInnerTableHeader } from "../defaults"
@@ -43,6 +48,7 @@ import {
     entityStatusEndDate,
     entityStatusRationale,
     entityUserData,
+    SOURCE_ENTITY_STATUS_NAME,
 } from "./source_entity_status"
 import { SourceEntity } from "./SourceEntity"
 
@@ -181,8 +187,92 @@ function entityColumnType(column, entityAttributes) {
     return builtInEntityColumnTypes[column] ?? entityAttributes.find((a) => a.key === column)?.type ?? "text"
 }
 
+const ROWS_PER_PAGE_OPTIONS = [10, 25, 50, 100]
+const DEFAULT_ROWS_PER_PAGE_OPTION = 1 // Take the second option as default number of rows per page
+
+function entityMatchesFilter(entity, entityAttributes, userData, filter) {
+    const fields = [SOURCE_ENTITY_STATUS_NAME[userData.status], userData.rationale]
+    fields.push(...entityAttributes.map((entityAttribute) => entity[entityAttribute.key]))
+    return fields.join(" ").toLowerCase().includes(filter.toLowerCase())
+}
+
+function SourceEntitiesFooter({
+    entityNamePlural,
+    filter,
+    nrFilteredEntities,
+    nrUnhiddenEntities,
+    onFilterChange,
+    onPageChange,
+    onRowsPerPageChange,
+    page,
+    rowsPerPage,
+}) {
+    if (nrUnhiddenEntities <= ROWS_PER_PAGE_OPTIONS[0]) {
+        return null
+    }
+    return (
+        <TableFooter
+            sx={{
+                bgcolor: "background.paper",
+                bottom: 0,
+                position: "sticky",
+                zIndex: zIndexInnerTableHeader,
+                "@media print": { display: "none" },
+            }}
+        >
+            <TableRow>
+                <TableCell colSpan={99}>
+                    <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", pl: "8px" }}>
+                        <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+                            <TextField
+                                label={`Filter ${entityNamePlural}`}
+                                onChange={(event) => onFilterChange(event.target.value)}
+                                size="small"
+                                type="search"
+                                value={filter}
+                            />
+                            {filter && (
+                                <Typography variant="body2">
+                                    {`${nrFilteredEntities} of ${nrUnhiddenEntities} ${entityNamePlural} ${nrFilteredEntities === 1 ? "matches" : "match"}`}
+                                </Typography>
+                            )}
+                        </Stack>
+                        <TablePagination
+                            component="div"
+                            count={nrFilteredEntities}
+                            onPageChange={(_event, newPage) => onPageChange(newPage)}
+                            onRowsPerPageChange={(event) =>
+                                onRowsPerPageChange(Number.parseInt(event.target.value, 10))
+                            }
+                            page={page}
+                            rowsPerPage={rowsPerPage}
+                            rowsPerPageOptions={ROWS_PER_PAGE_OPTIONS}
+                            showFirstButton
+                            showLastButton
+                        />
+                    </Stack>
+                </TableCell>
+            </TableRow>
+        </TableFooter>
+    )
+}
+SourceEntitiesFooter.propTypes = {
+    entityNamePlural: string,
+    filter: string,
+    nrFilteredEntities: number,
+    nrUnhiddenEntities: number,
+    onFilterChange: func,
+    onPageChange: func,
+    onRowsPerPageChange: func,
+    page: number,
+    rowsPerPage: number,
+}
+
 export function SourceEntities({ loading, measurements, metric, metricUuid, reload, report, settings, sourceUuid }) {
     const dataModel = useContext(DataModelContext)
+    const [page, setPage] = useState(0)
+    const [rowsPerPage, setRowsPerPage] = useState(ROWS_PER_PAGE_OPTIONS[DEFAULT_ROWS_PER_PAGE_OPTION])
+    const [filter, setFilter] = useState("")
     const sortColumn = settings.entitySortColumn.getItem(metricUuid) || null
     const sortDirection = settings.entitySortDirection.getItem(metricUuid)
 
@@ -237,27 +327,38 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
     const entities = sortedEntities(columnType, sortColumn, sortDirection, lastMeasurementSource)
     const columnsToHide = determineColumnsToHide(settings, lastMeasurementSource, entities)
     const hideIgnoredEntities = settings.hideIgnoredEntities.includes(metricUuid)
-    const rows = entities.map((entity) => (
+    const isIgnored = (entity) =>
+        entityCanBeIgnored(
+            entityStatus(lastMeasurementSource, entity),
+            entityStatusEndDate(lastMeasurementSource, entity),
+        )
+    const nrIgnoredEntities = entities.filter(isIgnored).length
+    const unhiddenEntities = hideIgnoredEntities ? entities.filter((entity) => !isIgnored(entity)) : entities
+    const filteredEntities = filter
+        ? unhiddenEntities.filter((entity) =>
+              entityMatchesFilter(entity, entityAttributes, entityUserData(lastMeasurementSource, entity), filter),
+          )
+        : unhiddenEntities
+    // Make sure the current page still exists, e.g. after hiding ignored entities:
+    const lastPage = Math.max(0, Math.ceil(filteredEntities.length / rowsPerPage) - 1)
+    const currentPage = Math.min(page, lastPage)
+    const firstIndex = currentPage * rowsPerPage
+    // Render the entities on other pages as well, but only for printing, so exported PDFs contain all entities:
+    const rows = filteredEntities.map((entity, index) => (
         <SourceEntity
             columnsToHide={columnsToHide}
             entity={entity}
             entityAttributes={entityAttributes}
             entityName={metricEntities.name}
-            hideIgnoredEntities={hideIgnoredEntities}
             key={entity.key}
             metricUuid={metricUuid}
+            printOnly={index < firstIndex || index >= firstIndex + rowsPerPage}
             reload={reload}
             entityUserData={entityUserData(lastMeasurementSource, entity)}
             report={report}
             sourceUuid={sourceUuid}
         />
     ))
-    const nrIgnoredEntities = entities.filter((entity) =>
-        entityCanBeIgnored(
-            entityStatus(lastMeasurementSource, entity),
-            entityStatusEndDate(lastMeasurementSource, entity),
-        ),
-    ).length
     const headers = sourceEntitiesHeaders(
         columnsToHide,
         entityAttributes,
@@ -272,6 +373,23 @@ export function SourceEntities({ loading, measurements, metric, metricUuid, relo
             <Table padding="none" size="small" stickyHeader>
                 <TableHead sx={{ zIndex: zIndexInnerTableHeader }}>{headers}</TableHead>
                 <TableBody>{rows}</TableBody>
+                <SourceEntitiesFooter
+                    entityNamePlural={metricEntities.name_plural}
+                    filter={filter}
+                    nrFilteredEntities={filteredEntities.length}
+                    nrUnhiddenEntities={unhiddenEntities.length}
+                    onFilterChange={(newFilter) => {
+                        setFilter(newFilter)
+                        setPage(0)
+                    }}
+                    onPageChange={setPage}
+                    onRowsPerPageChange={(newRowsPerPage) => {
+                        setRowsPerPage(newRowsPerPage)
+                        setPage(0)
+                    }}
+                    page={currentPage}
+                    rowsPerPage={rowsPerPage}
+                />
             </Table>
         </TableContainer>
     )

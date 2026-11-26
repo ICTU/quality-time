@@ -323,3 +323,105 @@ it("shows help", async () => {
     await userEvent.hover(screen.queryByTestId("HelpIcon"))
     await expectTextAfterWait(/help/)
 })
+
+function manyEntitiesFixture(nrEntities) {
+    const entities = Array.from({ length: nrEntities }, (_, index) => ({ key: `${index}`, text: `T${index}` }))
+    return { source_uuid: "source_uuid", entities: entities, entity_user_data: {} }
+}
+
+it("does not paginate a small number of entities", async () => {
+    renderSourceEntities()
+    expectNoText(/Rows per page/)
+})
+
+it("paginates many entities", async () => {
+    renderSourceEntities({ measurements: [{ sources: [manyEntitiesFixture(60)] }] })
+    expectText(/1–25 of 60/)
+    await userEvent.click(screen.getByLabelText("Go to next page"))
+    expectText(/26–50 of 60/)
+    await userEvent.click(screen.getByLabelText("Go to last page"))
+    expectText(/51–60 of 60/)
+    await userEvent.click(screen.getByLabelText("Go to previous page"))
+    expectText(/26–50 of 60/)
+    await userEvent.click(screen.getByLabelText("Go to first page"))
+    expectText(/1–25 of 60/)
+})
+
+it("renders the entities on all pages so they can be printed", async () => {
+    renderSourceEntities({ measurements: [{ sources: [manyEntitiesFixture(60)] }] })
+    expectText(/^T0$/)
+    expectText(/^T59$/)
+})
+
+it("changes the number of rows per page", async () => {
+    renderSourceEntities({ measurements: [{ sources: [manyEntitiesFixture(60)] }] })
+    await userEvent.click(screen.getByLabelText("Go to next page"))
+    await userEvent.click(screen.getByRole("combobox"))
+    await userEvent.click(screen.getByRole("option", { name: "50" }))
+    expectText(/1–50 of 60/)
+})
+
+it("does not count hidden ignored entities when paginating", async () => {
+    history.push("?hide_ignored_entities=metric_uuid")
+    const fixture = manyEntitiesFixture(30)
+    for (let index = 0; index < 10; index++) {
+        fixture.entity_user_data[`${index}`] = { status: "fixed", status_end_date: "3000-01-01" }
+    }
+    renderSourceEntities({ measurements: [{ sources: [fixture] }] })
+    expectText(/1–20 of 20/)
+    expectNoText(/^T0$/)
+})
+
+it("shows the last page if the current page no longer exists after hiding ignored entities", async () => {
+    const fixture = manyEntitiesFixture(30)
+    for (let index = 0; index < 10; index++) {
+        fixture.entity_user_data[`${index}`] = { status: "fixed", status_end_date: "3000-01-01" }
+    }
+    renderSourceEntities({ measurements: [{ sources: [fixture] }] })
+    await userEvent.click(screen.getByLabelText("Go to last page"))
+    expectText(/26–30 of 30/)
+    await userEvent.click(screen.getByLabelText(/Hide the 10 entities/).firstChild)
+    expectText(/1–20 of 20/)
+})
+
+it("filters the entities", async () => {
+    renderSourceEntities({ measurements: [{ sources: [manyEntitiesFixture(60)] }] })
+    await userEvent.type(screen.getByLabelText("Filter entities"), "t5")
+    expectText(/1–11 of 11/) // T5 and T50-T59
+    expectText("11 of 60 entities match")
+    expectText(/^T5$/)
+    expectNoText(/^T4$/)
+})
+
+it("filters the entities case-insensitively by status and rationale", async () => {
+    const fixture = manyEntitiesFixture(30)
+    fixture.entity_user_data["1"] = { status: "confirmed", rationale: "Some reason" }
+    fixture.entity_user_data["2"] = { status: "wont_fix", rationale: "Another REASON" }
+    renderSourceEntities({ measurements: [{ sources: [fixture] }] })
+    await userEvent.type(screen.getByLabelText("Filter entities"), "reason")
+    expectText(/1–2 of 2/)
+    await userEvent.clear(screen.getByLabelText("Filter entities"))
+    await userEvent.type(screen.getByLabelText("Filter entities"), "won't")
+    expectText(/1–1 of 1/)
+    expectText("1 of 30 entities matches")
+    expectText(/^T2$/)
+})
+
+it("does not show the number of matching entities without filter", async () => {
+    renderSourceEntities({ measurements: [{ sources: [manyEntitiesFixture(60)] }] })
+    expectNoText(/entities match/)
+})
+
+it("shows the first page after changing the filter", async () => {
+    renderSourceEntities({ measurements: [{ sources: [manyEntitiesFixture(60)] }] })
+    await userEvent.click(screen.getByLabelText("Go to last page"))
+    await userEvent.type(screen.getByLabelText("Filter entities"), "T")
+    expectText(/1–25 of 60/)
+})
+
+it("keeps showing the filter if the filter matches few entities", async () => {
+    renderSourceEntities({ measurements: [{ sources: [manyEntitiesFixture(60)] }] })
+    await userEvent.type(screen.getByLabelText("Filter entities"), "no match")
+    expectText(/0–0 of 0/)
+    expect(screen.getByLabelText("Filter entities")).toHaveValue("no match")
+})
